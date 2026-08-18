@@ -1,0 +1,634 @@
+{
+ "task_id": "fresh_066",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:20:32Z",
+ "wall_s": 128.1,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 38,
+   "mcp__formal__decl_grep": 23,
+   "mcp__formal__decl_read": 10,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 8410,
+  "cost_usd": 0.15762654999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Place\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Place': unknown identifier 'Place'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Completion\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Completion': unknown identifier 'Completion'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsUnramified\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsUnramified': unknown identifier 'IsUnramified'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional.finrank\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FiniteDimensional.finrank': unknown identifier 'FiniteDimensional.finrank'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Valuation\"}",
+   "ok": true,
+   "result_chars": 1580,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 992 declarations mentioning Valuation.\\n- Valuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The type of `Γ₀`-valued valuations on `R`.  When you extend this structure, make sure to extend `ValuationClass`.\\n- Valuation.IsNontrivial   [Mathlib.RingTheory.Valuation.Basic]\\n    A valuation on a ring is nontrivial if there exists an element with valuation not equal to `0` or `1`.\\n- Valuation.toPreorder   [Mathlib.RingTheory.Valuation.Basic]\\n    A valuation gives a preorder on the underlying ring.\\n- Valuation.instFunLike   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.IsNontrivial.nontrivial_codomain   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.IsEquiv   [Mathlib.RingTheory.Valuation.Basic]\\n    Two valuations on `R` are defined to be equivalent if they induce the same preorder on `R`.\\n- Valuation.supp   [Mathlib.RingTheory.Valuation.Basic]\\n    The support of a valuation `v : R → Γ₀` is the ideal of `R` where `v` vanishes.\\n- Valuation.IsEquiv.refl   [Mathlib.RingTheory.Valuation.Basic]\\n- AddValuation.ofValuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The `AddValuation` associated to a `Valuation`.\\n- AddValuation.toValuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The `Valuation` associated to an `AddValuation` (useful if the latter is constructed using `AddValuation.of`).\\n- Valuation.instValuationClass   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.leAddSubgroup   [Mathlib.RingTheory.Valuation.Basic]\\n    The subgroup of elements whose valuation is less than or equal to a certain value.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalField\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalField': unknown identifier 'LocalField'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank': unknown identifier 'finrank'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Unramified\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Unramified': unknown identifier 'Unramified'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"vectorSpace\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'vectorSpace': unknown identifier 'vectorSpace'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"RamificationIndex\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'RamificationIndex': unknown identifier 'RamificationIndex'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalRing.completion\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalRing.completion': unknown identifier 'LocalRing.completion'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 1853,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2019 declarations mentioning FiniteDimensional.\\n- FiniteDimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    `FiniteDimensional` vector spaces are defined to be finite modules. Use `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another defini\\n- FiniteDimensional.finiteDimensional_self   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.instFintypeElemOfVectorSpaceIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, `Basis.ofVectorSpace` is indexed by a finite type.\\n- FiniteDimensional.fintypeBasisIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, all bases are indexed by a finite type\\n- Module.Basis.finiteDimensional_of_finite   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a finite basis, then it is finite-dimensional.\\n- FiniteDimensional.of_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_fact_finrank_eq_two   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finrank_pos   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- Module.finrank_of_infinite_dimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.finiteDimensional_pi   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finite_basis   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a basis indexed by elements of a finite set, then it is finite-dimensional.\\n- FiniteDimensional.of_fact_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    We can infer `FiniteDimensional K V` in the presence of `[Fact (finrank K V = n + 1)]`. Use `have : FiniteDimensional K V := .of_fact_finrank_eq_succ` when need\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AbsoluteValue\"}",
+   "ok": true,
+   "result_chars": 1621,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 417 declarations mentioning AbsoluteValue.\\n- AbsoluteValue   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`: the maps that preserve `*`, are nonnegative, positive definite and satisfy the triangl\\n- AbsoluteValue.IsNontrivial   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    An absolute value on a semiring `R` without zero divisors is *nontrivial* if it takes a value `≠ 1` on a nonzero element.  This has the advantage over `v ≠ .tri\\n- AbsoluteValue.Simps.apply   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    See Note [custom simps projection].\\n- AbsoluteValue.funLike   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- IsAbsoluteValue.toAbsoluteValue   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Convert an unbundled `IsAbsoluteValue` to a bundled `AbsoluteValue`.\\n- AbsoluteValue.toMulHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.toMonoidWithZeroHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Absolute values from a nontrivial `R` to a linear ordered ring preserve `*`, `0` and `1`.\\n- AbsoluteValue.mulHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.nonnegHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.zeroHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.monoidWithZeroHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.toMonoidHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Absolute values from a nontrivial `R` to a linear ordered ring preserve `*` and `1`.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"RatCast.ratCast\"}",
+   "ok": true,
+   "result_chars": 318,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3 declarations mentioning RatCast.ratCast.\\n- RatCast.ratCast   [Batteries.Classes.RatCast]\\n    The canonical homomorphism `Rat → K`.\\n- QuadraticAlgebra.re_ratCast   [Mathlib.Algebra.QuadraticAlgebra.Basic]\\n- QuadraticAlgebra.im_ratCast   [Mathlib.Algebra.QuadraticAlgebra.Basic]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"NumberField\"}",
+   "ok": true,
+   "result_chars": 1288,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 743 declarations mentioning NumberField.\\n- Rat.numberField   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField   [Mathlib.NumberTheory.NumberField.Basic]\\n    A number field is a field which has characteristic zero and is finite dimensional over ℚ.\\n- NumberField.RingOfIntegers.instIsDedekindDomain   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.RingOfIntegers.instIsIntegrallyClosed   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.to_charZero   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.RingOfIntegers.not_isField   [Mathlib.NumberTheory.NumberField.Basic]\\n    The ring of integers of a number field is not a field.\\n- NumberField.isAlgebraic   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.RingOfIntegers.instCharZero   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.RingOfIntegers.instFG   [Mathlib.NumberTheory.NumberField.Basic]\\n- AdjoinRoot.instNumberFieldRat   [Mathlib.NumberTheory.NumberField.Basic]\\n    The quotient of `ℚ[X]` by the ideal generated by an irreducible polynomial of `ℚ[X]` is a number field.\\n- NumberField.RingOfIntegers.instIsFractionRing   [Mathlib.NumberTheory.NumberField.Basic]\\n- NumberField.to_finiteDimensional   [Mathlib.NumberTheory.NumberField.Basic]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Filter.Completion\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Filter.Completion': unknown identifier 'Filter.Completion'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalField\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalField': unknown identifier 'LocalField'\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsFractionRing\"}",
+   "ok": true,
+   "result_chars": 1506,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 906 declarations mentioning IsFractionRing.\\n- NNRat.isFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    `NNRat` is the ring of fractions of `Nat`.\\n- Rat.isFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    The cast from `Int` to `Rat` as a `FractionRing`.\\n- IsFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    `IsFractionRing R K` states `K` is the ring of fractions of a commutative ring `R`.\\n- instIsFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n- IsFractionRing.nontrivial   [Mathlib.RingTheory.Localization.FractionRing]\\n- IsFractionRing.nontrivial_iff_nontrivial   [Mathlib.RingTheory.Localization.FractionRing]\\n- IsFractionRing.inv   [Mathlib.RingTheory.Localization.FractionRing]\\n    The inverse of an element in the field of fractions of an integral domain.\\n- IsFractionRing.toField   [Mathlib.RingTheory.Localization.FractionRing]\\n    A `CommRing` `K` which is the localization of an integral domain `R` at `R - {0}` is a field. See note [reducible non-instances].\\n- IsFractionRing.idem   [Mathlib.RingTheory.Localization.FractionRing]\\n- IsFractionRing.isDomain   [Mathlib.RingTheory.Localization.FractionRing]\\n    A `CommRing` `K` which is the localization of an integral domain `R` at `R - {0}` is an integral domain.\\n- IsFractionRing.instFaithfulSMul   [Mathlib.RingTheory.Localization.FractionRing]\\n- IsFractionRing.of_algEquiv   [Mathlib.RingTheory.Localization.FractionRing]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"residueFieldType\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'residueFieldType': unknown identifier 'residueFieldType'\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FieldExtension\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FieldExtension': unknown identifier 'FieldExtension'\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ramified\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ramified': unknown identifier 'ramified'\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AlgEquiv\"}",
+   "ok": true,
+   "result_chars": 1223,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1985 declarations mentioning AlgEquiv.\\n- AlgEquiv   [Mathlib.Algebra.Algebra.Equiv]\\n    An equivalence of algebras (denoted as `A ≃ₐ[R] B`) is an equivalence of rings commuting with the actions of scalars.\\n- AlgEquiv.refl   [Mathlib.Algebra.Algebra.Equiv]\\n    Algebra equivalences are reflexive.\\n- AlgEquiv.aut   [Mathlib.Algebra.Algebra.Equiv]\\n    [Stacks Tag 09HR](https://stacks.math.columbia.edu/tag/09HR)\\n- AlgEquiv.instInhabited   [Mathlib.Algebra.Algebra.Equiv]\\n- ULift.algEquiv   [Mathlib.Algebra.Algebra.Equiv]\\n    The algebra equivalence between `ULift A` and `A`.\\n- AlgEquiv.Simps.apply   [Mathlib.Algebra.Algebra.Equiv]\\n    See Note [custom simps projection]\\n- AlgEquiv.Simps.symm_apply   [Mathlib.Algebra.Algebra.Equiv]\\n    See Note [custom simps projection]\\n- AlgEquiv.instEquivLike   [Mathlib.Algebra.Algebra.Equiv]\\n- AlgEquiv.instFunLike   [Mathlib.Algebra.Algebra.Equiv]\\n    Helper instance since the coercion is not always found.\\n- AlgEquiv.toEquiv   [Mathlib.Algebra.Algebra.Equiv]\\n- AlgEquiv.Simps.toEquiv   [Mathlib.Algebra.Algebra.Equiv]\\n    See Note [custom simps projection]\\n- instUniqueAlgEquivOfSubsingleton   [Mathlib.Algebra.Algebra.Equiv]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*dimension.*equals.*one\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*dimension.*equals.*one' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"adic\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'adic': unknown identifier 'adic'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalRing\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalRing': unknown identifier 'LocalRing'\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"DedekindDomain\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'DedekindDomain': unknown identifier 'DedekindDomain'\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finrank\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finrank': unknown identifier 'Finrank'\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(? → ?) → ? → ℕ\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(? → ?) → ? → ℕ': <input>:1:3: expected '_' or identifier\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Field → Field → Type\"}",
+   "ok": true,
+   "result_chars": 124,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Field → Field → Type': type expected, got\\n  (Field : Type ?u.2 → Type ?u.2)\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"extends\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'extends': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Finrank\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Finrank': unknown identifier 'Module.Finrank'\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Field.Algebra\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Field.Algebra': unknown identifier 'Field.Algebra'\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def finrank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 363,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def finrank' (via ripgrep):\\n- Mathlib/Algebra/Homology/EulerCharacteristic.lean:106\\n    def finrankSupport (X : CategoryTheory.GradedObject ι (ModuleCat R)) : Set ι :=\\n- Mathlib/LinearAlgebra/Dimension/Finrank.lean:62\\n    noncomputable def finrank (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M] : ℕ :=\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*infinite.*place\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*infinite.*place' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Finrank.lean\", \"line\": 62, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Finrank.lean  (lines 62–81 of 154):\\n    62  noncomputable def finrank (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M] : ℕ :=\\n    63    Cardinal.toNat (Module.rank R M)\\n    64  \\n    65  @[simp] theorem finrank_subsingleton [Subsingleton R] : finrank R M = 1 := by\\n    66    rw [finrank, rank_subsingleton, map_one]\\n    67  \\n    68  theorem finrank_eq_of_rank_eq {n : ℕ} (h : Module.rank R M = ↑n) : finrank R M = n := by\\n    69    simp [finrank, h]\\n    70  \\n    71  lemma rank_eq_one_iff_finrank_eq_one : Module.rank R M = 1 ↔ finrank R M = 1 :=\\n    72    Cardinal.toNat_eq_one.symm\\n    73  \\n    74  /-- This is like `rank_eq_one_iff_finrank_eq_one` but works for `2`, `3`, `4`, ... -/\\n    75  lemma rank_eq_ofNat_iff_finrank_eq_ofNat (n : ℕ) [Nat.AtLeastTwo n] :\\n    76      Module.rank R M = OfNat.ofNat n ↔ finrank R M = OfNat.ofNat n :=\\n    77    Cardinal.toNat_eq_ofNat.symm\\n    78  \\n    79  theorem finrank_le_of_rank_le {n : ℕ} (h : Module.rank R M ≤ ↑n) : finrank R M ≤ n := by\\n    80    rwa [← Cardinal.toNat_le_iff_le_of_lt_aleph0, toNat_natCast] at h\\n    81    · exact h.trans_lt natCast_lt_aleph0\\n\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"completion\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'completion': unknown identifier 'completion'\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Metric.Completion\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Metric.Completion': unknown identifier 'Metric.Completion'\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Algebra.IsIntegral\"}",
+   "ok": true,
+   "result_chars": 1293,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 231 declarations mentioning Algebra.IsIntegral.\\n- Algebra.IsIntegral   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n    An algebra is integral if every element of the extension is integral over the base ring.\\n- Algebra.IsIntegral.isIntegral   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n- Algebra.IsIntegral.mk   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n- Algebra.isIntegral_def   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n- Algebra.isIntegral_iff   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n- algebraMap_isIntegral_iff   [Mathlib.RingTheory.IntegralClosure.Algebra.Defs]\\n- Algebra.IsIntegral.of_finite   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n- AlgEquiv.isIntegral_iff   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n- Algebra.IsIntegral.prod   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n    Product of two integral algebras is an integral algebra.\\n- Algebra.isIntegral_of_surjective   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n- Algebra.IsIntegral.of_injective   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n- Algebra.IsIntegral.of_surjective   [Mathlib.RingTheory.IntegralClosure.Algebra.Basic]\\n    Homomorphic image of an integral algebra is an integral algebra.\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Completion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def Completion' (via ripgrep):\\n- Mathlib/Topology/UniformSpace/Completion.lean:291\\n    def Completion := SeparationQuotient (CauchyFilter α)\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*ramified\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for 'theorem.*ramified' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:299\\n    theorem isUnramified_mk_iff_isUnmixed {φ : K →+* ℂ} :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:640\\n    theorem IsUnramified.liesOver_isReal_over (hw : w.IsUnramified K) (hv : v.IsReal) : w.IsReal :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:661\\n    theorem mk_mem_unramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ unmixedEmbeddingsOver L (v.embedding)) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:666\\n    theorem liesOver_embedding_of_mem_ramifiedPlacesOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:670\\n    theorem liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:675\\n    theorem mk_mem_ramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ mixedEmbeddingsOver L (v.embedding)) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:681\\n    theorem embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:685\\n    theorem conjugate_embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:691\\n    theorem disjoint_ramifiedPlacesOver_unramifiedPlacesOver :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:695\\n    theorem union_ramifiedPlacesOver_unramifiedPlacesOver :\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4958,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean  (lines 1–100 of 781):\\n     1  /-\\n     2  Copyright (c) 2022 Andrew Yang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Normed.Ring.WithAbs\\n     9  public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\n    10  public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings\\n    11  \\n    12  /-!\\n    13  # Ramification of infinite places of a number field\\n    14  \\n    15  This file studies the ramification of infinite places of a number field.\\n    16  \\n    17  ## Main Definitions and Results\\n    18  \\n    19  * `NumberField.InfinitePlace.comap`: the restriction of an infinite place along an embedding.\\n    20  * `NumberField.InfinitePlace.orbitRelEquiv`: the equiv between the orbits of infinite places under\\n    21    the action of the Galois group and the infinite places of the base field.\\n    22  * `NumberField.InfinitePlace.IsUnramified`: an infinite place is unramified in a field extension\\n    23    if the restriction has the same multiplicity.\\n    24  * `NumberField.InfinitePlace.not_isUnramified_iff`: an infinite place is not unramified\\n    25    (i.e., is ramified) iff it is a complex place above a real place.\\n    26  * `NumberField.InfinitePlace.IsUnramifiedIn`: an infinite place of the base field is unramified\\n    27    in a field extension if every infinite place over it is unramified.\\n    28  * `IsUnramifiedAtInfinitePlaces`: a field extension is unramified at infinite places if every\\n    29    infinite place is unramified.\\n    30  \\n    31  ## Tags\\n    32  \\n    33  number field, infinite places, ramification\\n    34  -/\\n    35  \\n    36  @[expose] public section\\n    37  \\n    38  open NumberField Fintype Module ComplexEmbedding\\n    39  \\n    40  namespace NumberField.InfinitePlace\\n    41  \\n    42  open scoped Finset\\n    43  \\n    44  variable {k : Type*} [Field k] {K : Type*} [Field K] {F : Type*} [Field F]\\n    45  \\n    46  /-- The restriction of an infinite place along an embedding. -/\\n    47  def comap (w : InfinitePlace K) (f : k →+* K) : InfinitePlace k :=\\n    48    ⟨w.1.comp f.injective, w.embedding.comp f,\\n    49      by { ext x; change _ = w.1 (f x); rw [← w.2.choose_spec]; rfl }⟩\\n    50  \\n    51  @[simp]\\n    52  lemma comap_mk (φ : K →+* ℂ) (f : k →+* K) : (mk φ).comap f = mk (φ.comp f) := rfl\\n    53  \\n    54  lemma comap_id (w : InfinitePlace K) : w.comap (RingHom.id K) = w := rfl\\n    55  \\n    56  lemma comap_comp (w : InfinitePlace K) (f : F →+* K) (g : k →+* F) :\\n    57      w.comap (f.comp g) = (w.comap f).comap g := rfl\\n    58  \\n    59  @[simp]\\n    60  lemma comap_apply (w : InfinitePlace K) (f : k →+* K) (x : k) :\\n    61      w.comap f x = w (f x) := rfl\\n    62  \\n    63  lemma comp_of_comap_eq {v : InfinitePlace k} {w : InfinitePlace K} {f : k →+* K}\\n    64      (h : w.comap f = v) (x : k) : w (f x) = v x := by\\n    65    simp [← h]\\n    66  \\n    67  lemma coe_mk_comp {ψ : K →+* ℂ} {f : k →+* K}\\n    68      (h : Function.Injective f) : (mk (ψ.comp f)).1 = (mk ψ).1.comp h := rfl\\n    69  \\n    70  lemma comap_mk_lift [Algebra k K] [Algebra.IsAlgebraic k K] (φ : k →+* ℂ) :\\n    71      (mk (ComplexEmbedding.lift K φ)).comap (algebraMap k K) = mk φ := by simp\\n    72  \\n    73  lemma IsReal.comap (f : k →+* K) {w : InfinitePlace K} (hφ : IsReal w) :\\n    74      IsReal (w.comap f) := by\\n    75    rw [← mk_embedding w, comap_mk, isReal_mk_iff]\\n    76    rw [← mk_embedding w, isReal_mk_iff] at hφ\\n    77    exact hφ.comp f\\n    78  \\n    79  lemma IsComplex.of_comap (f : k →+* K) {w : InfinitePlace K} (hf : IsComplex (w.comap f)) :\\n    80      IsComplex w := by\\n    81    rw [← not_isReal_iff_isComplex] at hf ⊢\\n    82    exact (IsReal.comap f).mt hf\\n    83  \\n    84  lemma isReal_comap_"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IsUnramified\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 486,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def IsUnramified' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:184\\n    def IsUnramified : Prop := mult (w.comap (algebraMap k K)) = mult w\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:444\\n    def IsUnramifiedIn (w : InfinitePlace k) : Prop :=\\n- Mathlib/RingTheory/Unramified/Locus.lean:98\\n    def IsUnramifiedIn (A : Type*) [CommRing A] [Algebra R A] (𝔭 : Ideal R) : Prop :=\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class InfinitePlace\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class InfinitePlace' under Mathlib/.\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean\", \"line\": 175, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2211,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean  (lines 175–224 of 781):\\n   175  \\n   176  lemma orbitRelEquiv_apply_mk'' [IsGalois k K] (w : InfinitePlace K) :\\n   177      orbitRelEquiv (Quotient.mk'' w) = comap w (algebraMap k K) := rfl\\n   178  \\n   179  variable (k w)\\n   180  \\n   181  /--\\n   182  An infinite place is unramified in a field extension if the restriction has the same multiplicity.\\n   183  -/\\n   184  def IsUnramified : Prop := mult (w.comap (algebraMap k K)) = mult w\\n   185  \\n   186  /--\\n   187  An infinite place is ramified in a field extension if it is not unramified.\\n   188  -/\\n   189  abbrev IsRamified : Prop := ¬w.IsUnramified k\\n   190  \\n   191  variable {k}\\n   192  \\n   193  lemma isUnramified_self : IsUnramified K w := rfl\\n   194  \\n   195  variable {w}\\n   196  \\n   197  lemma IsUnramified.eq (h : IsUnramified k w) : mult (w.comap (algebraMap k K)) = mult w := h\\n   198  \\n   199  lemma isUnramified_iff_mult_le :\\n   200      IsUnramified k w ↔ mult w ≤ mult (w.comap (algebraMap k K)) := by\\n   201    rw [IsUnramified, le_antisymm_iff, and_iff_right]\\n   202    exact mult_comap_le _ _\\n   203  \\n   204  variable [Algebra k F]\\n   205  \\n   206  lemma IsUnramified.comap_algHom {w : InfinitePlace F} (h : IsUnramified k w) (f : K →ₐ[k] F) :\\n   207      IsUnramified k (w.comap (f : K →+* F)) := by\\n   208    rw [InfinitePlace.isUnramified_iff_mult_le, ← InfinitePlace.comap_comp, f.comp_algebraMap, h.eq]\\n   209    exact InfinitePlace.mult_comap_le _ _\\n   210  \\n   211  variable (K)\\n   212  variable [Algebra K F] [IsScalarTower k K F]\\n   213  \\n   214  lemma IsUnramified.of_restrictScalars {w : InfinitePlace F} (h : IsUnramified k w) :\\n   215      IsUnramified K w := by\\n   216    rw [InfinitePlace.isUnramified_iff_mult_le, ← h.eq, IsScalarTower.algebraMap_eq k K F,\\n   217      InfinitePlace.comap_comp]\\n   218    exact InfinitePlace.mult_comap_le _ _\\n   219  \\n   220  lemma IsUnramified.comap {w : InfinitePlace F} (h : IsUnramified k w) :\\n   221      IsUnramified k (w.comap (algebraMap K F)) :=\\n   222    h.comap_algHom (IsScalarTower.toAlgHom k K F)\\n   223  \\n   224  variable {K}\\n\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def mult\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1398,
+   "result_head": "[{\"type\": \"text\", \"text\": \"47 match(es) for 'def mult' (via ripgrep):\\n- Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean:98\\n    def multiplicity (E : Type*) [NormedAddCommGroup E] :=\\n- Mathlib/CategoryTheory/Limits/Shapes/ConcreteCategory.lean:284\\n    def multiequalizerEquivAux {J : MulticospanShape.{w, w'}} (I : MulticospanIndex J C) :\\n- Mathlib/CategoryTheory/Limits/Shapes/ConcreteCategory.lean:317\\n    noncomputable def multiequalizerEquiv {J : MulticospanShape.{w, w'}}\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:330\\n    def multicospan : WalkingMulticospan J ⥤ C where\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:420\\n    def multispan : WalkingMultispan J ⥤ C where\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:751\\n    def multiforkEquivPiForkOfIsLimit :\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:770\\n    noncomputable def multiforkEquivPiFork : Multifork I ≌ Fork I.fstPiMap I.sndPiMap :=\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:785\\n    def multiforkOfParallelHomsEquivFork (J : MulticospanShape) [Unique J.L] [Unique J.R] {X Y : C}\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:1018\\n    noncomputable def multicoforkEquivSigmaCoforkOfIsColimit :\\n- Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:1038\\n    noncomputable def multicoforkEquivSigmaCofork :\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*dimension.*infinite.*place\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*dimension.*infinite.*place' under Mathlib/.\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def mult.*InfinitePlace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 366,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def mult.*InfinitePlace' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean:268\\n    noncomputable def mult (w : InfinitePlace K) : ℕ := if (IsReal w) then 1 else 2\\n- Mathlib/NumberTheory/Height/NumberField.lean:51\\n    noncomputable def multisetInfinitePlace : Multiset (AbsoluteValue K ℝ) :=\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean\", \"line\": 100, \"n\": 75}",
+   "ok": true,
+   "result_chars": 3725,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean  (lines 100–174 of 781):\\n   100    pick_goal 3\\n   101    · exact (h₁ (h₂.comap _)).elim\\n   102    all_goals decide\\n   103  \\n   104  variable [Algebra k K] (σ : Gal(K/k)) (w : InfinitePlace K)\\n   105  variable (k K)\\n   106  \\n   107  lemma card_mono [NumberField k] [NumberField K] :\\n   108      card (InfinitePlace k) ≤ card (InfinitePlace K) :=\\n   109    have := Module.Finite.of_restrictScalars_finite ℚ k K\\n   110    Fintype.card_le_of_surjective _ comap_surjective\\n   111  \\n   112  variable {k K}\\n   113  \\n   114  /-- The action of the Galois group on infinite places. -/\\n   115  @[simps! smul_coe_apply]\\n   116  instance : MulAction Gal(K/k) (InfinitePlace K) where\\n   117    smul := fun σ w ↦ w.comap σ.symm\\n   118    one_smul := fun _ ↦ rfl\\n   119    mul_smul := fun _ _ _ ↦ rfl\\n   120  \\n   121  lemma smul_eq_comap : σ • w = w.comap σ.symm := rfl\\n   122  \\n   123  @[simp] lemma smul_apply (x) : (σ • w) x = w (σ.symm x) := rfl\\n   124  \\n   125  @[simp] lemma smul_mk (φ : K →+* ℂ) : σ • mk φ = mk (φ.comp σ.symm) := rfl\\n   126  \\n   127  lemma comap_smul {f : F →+* K} : (σ • w).comap f = w.comap (RingHom.comp σ.symm f) := rfl\\n   128  \\n   129  variable {σ w}\\n   130  \\n   131  lemma isReal_smul_iff : IsReal (σ • w) ↔ IsReal w := isReal_comap_iff (f := σ.symm.toRingEquiv)\\n   132  \\n   133  lemma isComplex_smul_iff : IsComplex (σ • w) ↔ IsComplex w := by\\n   134    rw [← not_isReal_iff_isComplex, ← not_isReal_iff_isComplex, isReal_smul_iff]\\n   135  \\n   136  lemma ComplexEmbedding.exists_comp_symm_eq_of_comp_eq [IsGalois k K] (φ ψ : K →+* ℂ)\\n   137      (h : φ.comp (algebraMap k K) = ψ.comp (algebraMap k K)) :\\n   138      ∃ σ : Gal(K/k), φ.comp σ.symm = ψ :=\\n   139    NumberField.ComplexEmbedding.exists_comp_symm_eq_of_comp_eq φ ψ h\\n   140  \\n   141  lemma exists_smul_eq_of_comap_eq [IsGalois k K] {w w' : InfinitePlace K}\\n   142      (h : w.comap (algebraMap k K) = w'.comap (algebraMap k K)) : ∃ σ : Gal(K/k), σ • w = w' := by\\n   143    rw [← mk_embedding w, ← mk_embedding w', comap_mk, comap_mk, mk_eq_iff] at h\\n   144    cases h with\\n   145    | inl h =>\\n   146      obtain ⟨σ, hσ⟩ := ComplexEmbedding.exists_comp_symm_eq_of_comp_eq w.embedding w'.embedding h\\n   147      use σ\\n   148      rw [← mk_embedding w, ← mk_embedding w', smul_mk, hσ]\\n   149    | inr h =>\\n   150      obtain ⟨σ, hσ⟩ := ComplexEmbedding.exists_comp_symm_eq_of_comp_eq\\n   151        ((starRingEnd ℂ).comp (embedding w)) w'.embedding h\\n   152      use σ\\n   153      rw [← mk_embedding w, ← mk_embedding w', smul_mk, mk_eq_iff]\\n   154      exact Or.inr hσ\\n   155  \\n   156  lemma mem_orbit_iff [IsGalois k K] {w w' : InfinitePlace K} :\\n   157      w' ∈ MulAction.orbit Gal(K/k) w ↔ w.comap (algebraMap k K) = w'.comap (algebraMap k K) := by\\n   158    refine ⟨?_, exists_smul_eq_of_comap_eq⟩\\n   159    rintro ⟨σ, rfl : σ • w = w'⟩\\n   160    rw [← mk_embedding w, comap_mk, smul_mk, comap_mk]\\n   161    congr 1; ext1; simp\\n   162  \\n   163  /-- The orbits of infinite places under the action of the Galois group are indexed by\\n   164  the infinite places of the base field. -/\\n   165  noncomputable\\n   166  def orbitRelEquiv [IsGalois k K] :\\n   167      Quotient (MulAction.orbitRel Gal(K/k) (InfinitePlace K)) ≃ InfinitePlace k := by\\n   168    refine Equiv.ofBijective (Quotient.lift (comap · (algebraMap k K))\\n   169      fun _ _ e ↦ (mem_orbit_iff.mp e).symm) ⟨?_, ?_⟩\\n   170    · rintro ⟨w⟩ ⟨w'⟩ e\\n   171      exact Quotient.sound (mem_orbit_iff.mpr e.symm)\\n   172    · intro w\\n   173      obtain ⟨w', hw⟩ := comap_surjective (K := K) w\\n   174      exact ⟨⟦w'⟧, hw⟩\\n\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*completion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finrank.*completion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"liesOver\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'liesOver': unknown identifier 'liesOver'\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean\", \"line\": 225, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5697,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean  (lines 225–324 of 781):\\n   225  \\n   226  /--\\n   227  An infinite place is not unramified (i.e. ramified) iff it is a complex place above a real place.\\n   228  -/\\n   229  lemma not_isUnramified_iff :\\n   230      ¬ IsUnramified k w ↔ IsComplex w ∧ IsReal (w.comap (algebraMap k K)) := by\\n   231    rw [IsUnramified, mult, mult, ← not_isReal_iff_isComplex]\\n   232    split_ifs with h₁ h₂ h₂ <;>\\n   233      simp only [not_true_eq_false, false_iff, and_self, forall_true_left, IsEmpty.forall_iff,\\n   234        not_and, OfNat.one_ne_ofNat, not_false_eq_true, true_iff, OfNat.ofNat_ne_one, h₁, h₂]\\n   235    exact h₁ (h₂.comap _)\\n   236  \\n   237  lemma isUnramified_iff :\\n   238      IsUnramified k w ↔ IsReal w ∨ IsComplex (w.comap (algebraMap k K)) := by\\n   239    rw [← not_iff_not, not_isUnramified_iff, not_or,\\n   240      not_isReal_iff_isComplex, not_isComplex_iff_isReal]\\n   241  \\n   242  theorem isRamified_iff : w.IsRamified k ↔ w.IsComplex ∧ (w.comap (algebraMap k K)).IsReal :=\\n   243    not_isUnramified_iff\\n   244  \\n   245  theorem IsRamified.isComplex (h : w.IsRamified k) : w.IsComplex := (isRamified_iff.1 h).1\\n   246  \\n   247  theorem IsRamified.isReal (h : w.IsRamified k) : (w.comap (algebraMap k K)).IsReal :=\\n   248    (isRamified_iff.1 h).2\\n   249  \\n   250  theorem IsRamified.ne_conjugate {w₁ w₂ : InfinitePlace K} (h : w₂.IsRamified k) :\\n   251      w₁.embedding ≠ ComplexEmbedding.conjugate w₂.embedding := by\\n   252    by_cases h_eq : w₁ = w₂\\n   253    · rw [isRamified_iff, isComplex_iff] at h\\n   254      exact Ne.symm (h_eq ▸ h.1)\\n   255    · contrapose h_eq\\n   256      rw [← mk_embedding w₁, h_eq, mk_conjugate_eq, mk_embedding]\\n   257  \\n   258  lemma IsRamified.comap_embedding {w : InfinitePlace K} (h : w.IsRamified k) :\\n   259      (w.comap (algebraMap k K)).embedding = w.embedding.comp (algebraMap k K) := by\\n   260    rw [← comap_embedding_of_isReal _ (isRamified_iff.1 h).2]\\n   261  \\n   262  lemma IsRamified.comap_embedding_conjugate {w : InfinitePlace K} (h : w.IsRamified k) :\\n   263      (w.comap (algebraMap k K)).embedding = (conjugate w.embedding).comp (algebraMap k K) := by\\n   264    rw [← ComplexEmbedding.isReal_iff.1 <| isReal_iff.1 ((isRamified_iff.1 h).2)]\\n   265    simp [conjugate_comp, comap_embedding_of_isReal _ ((isRamified_iff.1 h).2)]\\n   266  \\n   267  lemma IsRamified.isMixed_embedding {w : InfinitePlace K} (h : w.IsRamified k) :\\n   268      IsMixed k w.embedding :=\\n   269    ⟨comap_embedding_of_isReal _ h.isReal ▸ isReal_iff.1 h.isReal, isComplex_iff.1 h.isComplex⟩\\n   270  \\n   271  lemma IsRamified.isMixed_conjugate_embedding {w : InfinitePlace K} (h : w.IsRamified k) :\\n   272      IsMixed k (conjugate w.embedding) :=\\n   273    ⟨h.comap_embedding_conjugate ▸ isReal_iff.1 h.isReal,\\n   274      by simpa using isComplex_iff.1 <| h.isComplex⟩\\n   275  \\n   276  theorem isRamified_mk_iff_isMixed {φ : K →+* ℂ} :\\n   277      (mk φ).IsRamified k ↔ IsMixed k φ := by\\n   278    refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩\\n   279    · rcases embedding_mk_eq φ with (hl | hr)\\n   280      · exact hl ▸ h.isMixed_embedding\\n   281      · rw [← star_star φ]; simpa [← congrArg conjugate hr] using h.isMixed_conjugate_embedding\\n   282    · rw [isRamified_iff, isComplex_iff, comap_mk, isReal_iff, embedding_mk_eq_of_isReal h.1]\\n   283      exact ⟨by rcases embedding_mk_eq φ with (_ | _) <;> aesop, h.1⟩\\n   284  \\n   285  alias ⟨_, _root_.NumberField.ComplexEmbedding.IsMixed.mk_isRamified⟩ := isRamified_mk_iff_isMixed\\n   286  \\n   287  lemma IsUnramified.isUnmixed {w : InfinitePlace K} (h : w.IsUnramified k) :\\n   288      IsUnmixed k w.embedding := by\\n   289    intro hw\\n   290    rw [← isReal_mk_iff, ← comap_mk, mk_embedding] at hw\\n   291    exact isReal_iff.1 <| (isUnramified_iff.1 h).resolve_right (not_isComplex_iff_isReal.2 hw)\\n   292  \\n   293  lemma IsUnramified.isUnmixed_conjugate {w : I"
+  },
+  {
+   "i": 52,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*\\\\|.*dimension\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finrank.*\\\\\\\\|.*dimension' under Mathlib/.\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".* one.*dimension\\\\|dimension.*one\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '.* one.*dimension\\\\\\\\|dimension.*one' under Mathlib/.\"}]"
+  },
+  {
+   "i": 54,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean\", \"line\": 620, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5783,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean  (lines 620–719 of 781):\\n   620  variable {v}\\n   621  \\n   622  /-- If `w : InfinitePlace L` lies above `v : InfinitePlace K` and `v` is complex, then so is `w`. -/\\n   623  theorem isComplex_of_isComplex_under (hv : v.IsComplex) : w.IsComplex := by\\n   624    rw [isComplex_iff, ComplexEmbedding.isReal_iff, RingHom.ext_iff, not_forall] at hv ⊢\\n   625    obtain ⟨x, hx⟩ := hv\\n   626    use algebraMap K L x\\n   627    rw [← comap_eq w v, ← mk_embedding w, comap_mk] at hx\\n   628    rcases embedding_mk_eq (w.embedding.comp (algebraMap K L)) with (_ | _) <;> aesop\\n   629  \\n   630  /-- If `w : InfinitePlace L` lies above `v : InfinitePlace K` and `w` is real, then so is `v`. -/\\n   631  theorem isReal_of_isReal_over (hw : w.IsReal) : v.IsReal := by\\n   632    rw [← not_isComplex_iff_isReal] at hw ⊢\\n   633    exact mt (isComplex_of_isComplex_under w) hw\\n   634  \\n   635  end LiesOver\\n   636  \\n   637  theorem IsRamified.liesOver_isReal_under (hw : w.IsRamified K) :\\n   638      v.IsReal := LiesOver.comap_eq w v ▸ (isRamified_iff.1 hw).2\\n   639  \\n   640  theorem IsUnramified.liesOver_isReal_over (hw : w.IsUnramified K) (hv : v.IsReal) : w.IsReal :=\\n   641    (InfinitePlace.isUnramified_iff.1 hw).resolve_right\\n   642      (by simpa [LiesOver.comap_eq w v] using not_isComplex_iff_isReal.2 hv)\\n   643  \\n   644  end LiesOver\\n   645  \\n   646  section placesOver\\n   647  \\n   648  variable (v : InfinitePlace K) (L)\\n   649  \\n   650  /-- The set of infinite places of `L` that lie above a given infinite place of `K`. -/\\n   651  def placesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 }\\n   652  \\n   653  /-- The set of infinite places of `L` that are unramified over a given infinite place of `K`. -/\\n   654  def unramifiedPlacesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 ∧ w.IsUnramified K }\\n   655  \\n   656  /-- The set of infinite places of `L` that are ramified over a given infinite place of `K`. -/\\n   657  def ramifiedPlacesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 ∧ w.IsRamified K }\\n   658  \\n   659  variable {L} {v} {w : InfinitePlace L}\\n   660  \\n   661  theorem mk_mem_unramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ unmixedEmbeddingsOver L (v.embedding)) :\\n   662      mk φ ∈ unramifiedPlacesOver L v :=\\n   663    ⟨⟨have := h.1; mk_embedding v ▸ LiesOver.comp_eq (mk φ).1 (mk v.embedding).1⟩,\\n   664      h.2.mk_isUnramified⟩\\n   665  \\n   666  theorem liesOver_embedding_of_mem_ramifiedPlacesOver (hw : w ∈ ramifiedPlacesOver L v) :\\n   667      ComplexEmbedding.LiesOver w.embedding v.embedding where\\n   668    over := have := hw.1; hw.2.comap_embedding ▸ congrArg embedding (LiesOver.comap_eq w v)\\n   669  \\n   670  theorem liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver\\n   671      (hw : w ∈ ramifiedPlacesOver L v) :\\n   672      ComplexEmbedding.LiesOver (conjugate w.embedding) v.embedding where\\n   673    over := have := hw.1; hw.2.comap_embedding_conjugate ▸ congrArg embedding (LiesOver.comap_eq w v)\\n   674  \\n   675  theorem mk_mem_ramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ mixedEmbeddingsOver L (v.embedding)) :\\n   676      mk φ ∈ ramifiedPlacesOver L v :=\\n   677    ⟨⟨have := h.1; mk_embedding v ▸ LiesOver.comp_eq (mk φ).1 (mk v.embedding).1⟩, h.2.mk_isRamified⟩\\n   678  \\n   679  variable (w)\\n   680  \\n   681  theorem embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n   682      w.embedding ∈ mixedEmbeddingsOver L (v.embedding) :=\\n   683    ⟨liesOver_embedding_of_mem_ramifiedPlacesOver hw, hw.2.isMixed_embedding⟩\\n   684  \\n   685  theorem conjugate_embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n   686      conjugate w.embedding ∈ mixedEmbeddingsOver L (v.embedding) :=\\n   687    ⟨liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver hw, hw.2.isMixed_conjugate_embedding⟩\\n   688  \\n   689  variable (L) (v)\\n   690  \\n   691  theorem di"
+  },
+  {
+   "i": 55,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def LiesOver\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def LiesOver' under Mathlib/.\"}]"
+  },
+  {
+   "i": 56,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class LiesOver\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 433,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'class LiesOver' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Embeddings.lean:310\\n    protected class LiesOver (φ : L →+* ℂ) (ψ : K →+* ℂ) : Prop where\\n- Mathlib/Analysis/Normed/Ring/WithAbs.lean:318\\n    class LiesOver (w : AbsoluteValue L S) (v : AbsoluteValue K S) : Prop where\\n- Mathlib/RingTheory/Ideal/Over.lean:125\\n    @[mk_iff] class LiesOver : Prop where\"}]"
+  },
+  {
+   "i": 57,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Normed/Ring/WithAbs.lean\", \"line\": 315, \"n\": 30}",
+   "ok": true,
+   "result_chars": 436,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Normed/Ring/WithAbs.lean  (lines 315–321 of 321):\\n   315  \\n   316  /-- An absolute value `w` of `L / K` lies over the absolute value `v` of `K` if `v` is the\\n   317  restriction of `w` to `K`. -/\\n   318  class LiesOver (w : AbsoluteValue L S) (v : AbsoluteValue K S) : Prop where\\n   319    comp_eq (w) (v) : w.comp (algebraMap K L).injective = v\\n   320  \\n   321  end AbsoluteValue\\n\"}]"
+  },
+  {
+   "i": 58,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"completion.*AbsoluteValue\\\\|AbsoluteValue.*completion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'completion.*AbsoluteValue\\\\\\\\|AbsoluteValue.*completion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 59,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AbsoluteValue.Completion\"}",
+   "ok": true,
+   "result_chars": 1821,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27 declarations mentioning AbsoluteValue.Completion.\\n- AbsoluteValue.Completion   [Mathlib.Analysis.Normed.Field.WithAbs]\\n    The completion of a field with respect to a real absolute value.\\n- AbsoluteValue.Completion.instCoe   [Mathlib.Analysis.Normed.Field.WithAbs]\\n- AbsoluteValue.Completion.locallyCompactSpace   [Mathlib.Analysis.Normed.Field.WithAbs]\\n    If the absolute value of a normed field factors through an embedding into another normed field that is locally compact, then the completion of the first normed \\n- NumberField.InfinitePlace.Completion.ofCompletion   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n    Wrap an element of `v.1.Completion` into `v.Completion`.\\n- NumberField.InfinitePlace.Completion.toCompletion   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n    The underlying element of `v.1.Completion`.\\n- NumberField.InfinitePlace.Completion.equivCompletion   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n    `Completion.toCompletion` and `Completion.ofCompletion` as an equivalence.\\n- NumberField.InfinitePlace.Completion.ofCompletion_surjective   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n- NumberField.InfinitePlace.Completion.toCompletion_surjective   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n- NumberField.InfinitePlace.Completion.ext   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n- NumberField.InfinitePlace.Completion.ext_iff   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n- NumberField.InfinitePlace.Completion.toCompletion_ofCompletion   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\\n- NumberField.InfinitePlace.Completion.equivCompletion_apply   [Mathlib.NumberTheory.NumberField.Completion.InfinitePlace]\"}]"
+  },
+  {
+   "i": 60,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Completion.*InfinitePlace\\\\|class.*Completion.*InfinitePlace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*Completion.*InfinitePlace\\\\\\\\|class.*Completion.*InfinitePlace' under Mathlib/.\"}]"
+  },
+  {
+   "i": 61,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Completion/InfinitePlace.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5735,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Completion/InfinitePlace.lean  (lines 1–100 of 295):\\n     1  /-\\n     2  Copyright (c) 2024 Salvatore Mercuri. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Salvatore Mercuri\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Normed.Field.WithAbs\\n     9  public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\n    10  public import Mathlib.NumberTheory.NumberField.InfinitePlace.Ramification\\n    11  \\n    12  /-!\\n    13  # The completion of a number field at an infinite place\\n    14  \\n    15  This file contains the completion of a number field at an infinite place. This is ultimately\\n    16  achieved by applying the `UniformSpace.Completion` functor, however each infinite place induces\\n    17  its own `UniformSpace` instance on the number field, so the inference system cannot automatically\\n    18  infer these. A common approach to handle the ambiguity that arises from having multiple sources\\n    19  of instances is through the use of type synonyms. In this case, we use the type synonym `WithAbs`\\n    20  of a semiring. In particular this type synonym depends on an absolute value, which provides a\\n    21  systematic way of assigning and inferring instances of the semiring that also depend on an absolute\\n    22  value. The completion of a field at multiple absolute values is defined in\\n    23  `Mathlib/Analysis/Normed/Field/WithAbs.lean` as `AbsoluteValue.Completion`. The completion of a\\n    24  number field at an infinite place is then derived in this file, as `InfinitePlace` is a subtype of\\n    25  `AbsoluteValue`.\\n    26  \\n    27  ## Main definitions\\n    28  - `NumberField.InfinitePlace.Completion` : the completion of a number field `K` at an infinite\\n    29    place, obtained by completing `K` with respect to the absolute value associated to the infinite\\n    30    place.\\n    31  - `NumberField.InfinitePlace.Completion.extensionEmbedding` : the embedding `v.embedding : K →+* ℂ`\\n    32    extended to `v.Completion →+* ℂ`.\\n    33  - `NumberField.InfinitePlace.Completion.extensionEmbeddingOfIsReal` : if the infinite place `v`\\n    34    is real, then this extends the embedding `v.embedding_of_isReal : K →+* ℝ` to\\n    35    `v.Completion →+* ℝ`.\\n    36  - `NumberField.InfinitePlace.Completion.ringEquivRealOfIsReal` : the ring isomorphism\\n    37    `v.Completion ≃+* ℝ` when `v` is a real infinite place; the forward direction of this is\\n    38    `extensionEmbeddingOfIsReal`.\\n    39  - `NumberField.InfinitePlace.Completion.ringEquivComplexOfIsComplex` : the ring isomorphism\\n    40    `v.Completion ≃+* ℂ` when `v` is a complex infinite place; the forward direction of this is\\n    41    `extensionEmbedding`.\\n    42  \\n    43  ## Main results\\n    44  - `NumberField.Completion.locallyCompactSpace` : the completion of a number field at\\n    45    an infinite place is locally compact.\\n    46  - `NumberField.Completion.isometry_extensionEmbedding` : the embedding `v.Completion →+* ℂ` is\\n    47    an isometry. See also `isometry_extensionEmbeddingOfIsReal` for the corresponding result on\\n    48    `v.Completion →+* ℝ` when `v` is real.\\n    49  - `NumberField.Completion.bijective_extensionEmbedding_of_isComplex` : the embedding\\n    50    `v.Completion →+* ℂ` is bijective when `v` is complex. See also\\n    51    `bijective_extensionEmbeddingOfIsReal` for the corresponding result for `v.Completion →+* ℝ`\\n    52    when `v` is real.\\n    53  \\n    54  ## Tags\\n    55  number field, embeddings, infinite places, completion, absolute value\\n    56  -/\\n    57  \\n    58  @[expose] public section\\n    59  noncomputable section\\n    60  \\n    61  namespace NumberField.InfinitePlace\\n    62  \\n    63  open AbsoluteValue.Completion UniformSpace.Completion NumberField.ComplexEmbedding\\n    64  \\n    65  variable {K : Type*} [Field K] (v : InfinitePlace"
+  },
+  {
+   "i": 62,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*Completion\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finrank.*Completion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 63,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Completion/InfinitePlace.lean\", \"line\": 100, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6153,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Completion/InfinitePlace.lean  (lines 100–219 of 295):\\n   100      ‖(x : v.Completion)‖ = |x| := by\\n   101    rw [← (WithAbs.equiv v.1).apply_symm_apply x, WithAbs.ratCast_equiv,\\n   102      norm_coe, (WithAbs.equiv v.1).apply_symm_apply,\\n   103      Rat.infinitePlace_apply]\\n   104  \\n   105  /-- The completion of a number field at an infinite place is locally compact. -/\\n   106  instance locallyCompactSpace : LocallyCompactSpace (v.Completion) :=\\n   107    AbsoluteValue.Completion.locallyCompactSpace v.isometry_embedding\\n   108  \\n   109  /-- The embedding associated to an infinite place extended to an embedding `v.Completion →+* ℂ`. -/\\n   110  def extensionEmbedding : v.Completion →+* ℂ := v.isometry_embedding.extensionHom\\n   111  \\n   112  /-- The embedding `K →+* ℝ` associated to a real infinite place extended to `v.Completion →+* ℝ`. -/\\n   113  def extensionEmbeddingOfIsReal {v : InfinitePlace K} (hv : IsReal v) : v.Completion →+* ℝ :=\\n   114    (v.isometry_embedding_of_isReal hv).extensionHom\\n   115  \\n   116  @[simp]\\n   117  theorem extensionEmbedding_coe (x : WithAbs v.1) :\\n   118      extensionEmbedding v x = v.embedding (WithAbs.equiv v.1 x) :=\\n   119    v.isometry_embedding.extensionHom_coe _\\n   120  \\n   121  @[simp]\\n   122  theorem extensionEmbeddingOfIsReal_coe {v : InfinitePlace K} (hv : IsReal v) (x : WithAbs v.1) :\\n   123      extensionEmbeddingOfIsReal hv x = embedding_of_isReal hv (WithAbs.equiv v.1 x) :=\\n   124    (v.isometry_embedding_of_isReal hv).extensionHom_coe _\\n   125  \\n   126  open UniformSpace.Completion in\\n   127  @[simp]\\n   128  theorem extensionEmbeddingOfIsReal_apply {v : InfinitePlace K} (hv : IsReal v) (x : v.Completion) :\\n   129      (extensionEmbeddingOfIsReal hv x : ℂ) = extensionEmbedding v x := by\\n   130    refine UniformSpace.Completion.induction_on x ?_ (by simp)\\n   131    exact isClosed_eq (Continuous.comp' (by fun_prop) continuous_extension) continuous_extension\\n   132  \\n   133  /-- The embedding `v.Completion →+* ℂ` is an isometry. -/\\n   134  theorem isometry_extensionEmbedding : Isometry (extensionEmbedding v) :=\\n   135    v.isometry_embedding.completion_extension\\n   136  \\n   137  /-- The embedding `v.Completion →+* ℝ` at a real infinite place is an isometry. -/\\n   138  theorem isometry_extensionEmbeddingOfIsReal {v : InfinitePlace K} (hv : IsReal v) :\\n   139      Isometry (extensionEmbeddingOfIsReal hv) :=\\n   140    (v.isometry_embedding_of_isReal hv).completion_extension\\n   141  \\n   142  /-- The embedding `v.Completion →+* ℂ` has closed image inside `ℂ`. -/\\n   143  theorem isClosed_image_extensionEmbedding : IsClosed (Set.range (extensionEmbedding v)) :=\\n   144    v.isometry_embedding.completion_extension.isClosedEmbedding.isClosed_range\\n   145  \\n   146  /-- The embedding `v.Completion →+* ℝ` associated to a real infinite place has closed image\\n   147  inside `ℝ`. -/\\n   148  theorem isClosed_image_extensionEmbeddingOfIsReal {v : InfinitePlace K} (hv : IsReal v) :\\n   149      IsClosed (Set.range (extensionEmbeddingOfIsReal hv)) :=\\n   150    (v.isometry_embedding_of_isReal hv).completion_extension.isClosedEmbedding.isClosed_range\\n   151  \\n   152  theorem subfield_ne_real_of_isComplex {v : InfinitePlace K} (hv : IsComplex v) :\\n   153      (extensionEmbedding v).fieldRange ≠ Complex.ofRealHom.fieldRange := by\\n   154    contrapose hv\\n   155    simp only [not_isComplex_iff_isReal, isReal_iff]\\n   156    ext x\\n   157    obtain ⟨r, hr⟩ := hv ▸ RingHom.mem_fieldRange_self (extensionEmbedding v) (x : v.Completion)\\n   158    rw [extensionEmbedding_coe, ← WithAbs.equiv_symm_apply, RingEquiv.apply_symm_apply] at hr\\n   159    simp [ComplexEmbedding.conjugate_coe_eq, ← hr, Complex.conj_ofReal]\\n   160  \\n   161  /-- If `v` is a complex infinite place, then the embedding `v.Completion →+* ℂ` is surjective. -/\\n   162  theorem surjective_extensionEmbedding_of_isComplex {v : InfinitePl"
+  },
+  {
+   "i": 64,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"finrank.*isUnramified\\\\|isUnramified.*finrank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'finrank.*isUnramified\\\\\\\\|isUnramified.*finrank' under Mathlib/.\"}]"
+  },
+  {
+   "i": 65,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*mult.*IsUnramified\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*mult.*IsUnramified' under Mathlib/.\"}]"
+  },
+  {
+   "i": 66,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*Algebra.*Completion\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'instance.*Algebra.*Completion' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Completion/LiesOverInstances.lean:30\\n    noncomputable scoped instance : Algebra v.Completion w.Completion :=\\n- Mathlib/RingTheory/LaurentSeries.lean:1201\\n    instance : Algebra K ((idealX K).adicCompletionIntegers K⟮X⟯) :=\\n- Mathlib/RingTheory/DedekindDomain/AdicValuation.lean:843\\n    noncomputable instance instAlgebraCompletion : Algebra S ((v.valuation K).Completion) where\\n- Mathlib/RingTheory/DedekindDomain/AdicValuation.lean:859\\n    noncomputable instance : Algebra S (v.adicCompletion K) :=\\n- Mathlib/RingTheory/DedekindDomain/AdicValuation.lean:903\\n    instance : Algebra R (v.adicCompletionIntegers K) where\\n- Mathlib/RingTheory/AdicCompletion/Algebra.lean:103\\n    instance [Algebra S R] : Algebra S (AdicCompletion I R) where\\n- Mathlib/Topology/Algebra/UniformRing.lean:198\\n    instance algebra : Algebra R (Completion A) where\\n- Mathlib/Topology/Algebra/UniformRing.lean:224\\n    instance algebra' : Algebra R (Completion R) := by infer_instance\"}]"
+  },
+  {
+   "i": 67,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Algebra v.Completion w.Completion\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Algebra v.Completion w.Completion': Unknown identifier `v.Completion`\"}]"
+  },
+  {
+   "i": 68,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Completion/LiesOverInstances.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 2119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Completion/LiesOverInstances.lean  (lines 1–43 of 43):\\n     1  /-\\n     2  Copyright (c) 2026 Salvatore Mercuri. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Salvatore Mercuri\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace\\n     9  \\n    10  /-!\\n    11  # `LiesOver` instances for completions of number fields\\n    12  \\n    13  If `L` and `K` are number fields such that `Algebra K L` then this algebra extends\\n    14  naturally to the completions of `K` and `L` at places, whenever the place of `L` lies\\n    15  over the place of `K`. This file contains the relevant instances and properties of this extension\\n    16  as `scoped` instances. These are scoped because they create non-defeq instance diamonds when\\n    17  `K = L`.\\n    18  -/\\n    19  \\n    20  public section\\n    21  \\n    22  namespace NumberField.LiesOver\\n    23  \\n    24  open UniformSpace.Completion InfinitePlace\\n    25  \\n    26  variable {K L : Type*} [Field K] [Field L] [Algebra K L] {v : InfinitePlace K} {w : InfinitePlace L}\\n    27  variable [w.1.LiesOver v.1]\\n    28  \\n    29  /-- If `w` lies over `v`, then `w.Completion` is a `v.Completion`-algebra. -/\\n    30  noncomputable scoped instance : Algebra v.Completion w.Completion :=\\n    31    (LiesOver.isometry_algebraMap w v).mapRingHom.toAlgebra\\n    32  \\n    33  scoped instance : IsScalarTower K v.Completion w.Completion :=\\n    34    .of_algebraMap_eq fun x ↦ by\\n    35      simp_rw [RingHom.algebraMap_toAlgebra, UniformSpace.Completion.algebraMap_def,\\n    36        Isometry.mapRingHom_coe]\\n    37      simp [WithAbs.algebraMap_left_apply, WithAbs.algebraMap_right_apply]\\n    38  \\n    39  scoped instance : ContinuousSMul v.Completion w.Completion where\\n    40    continuous_smul := (UniformSpace.Completion.continuous_map.comp continuous_fst).mul\\n    41      (Continuous.comp continuous_id continuous_snd)\\n    42  \\n    43  end NumberField.LiesOver\\n\"}]"
+  },
+  {
+   "i": 69,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*LiesOver\\\\|LiesOver.*finrank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finrank.*LiesOver\\\\\\\\|LiesOver.*finrank' under Mathlib/.\"}]"
+  },
+  {
+   "i": 70,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*unramified\\\\|unramified.*finrank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 123,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finrank.*unramified\\\\\\\\|unramified.*finrank' under Mathlib/.\"}]"
+  },
+  {
+   "i": 71,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"InfinitePlace\", \"IsUnramified\", \"LiesOver\", \"finrank\", \"Algebra\", \"Completion\", \"Module.rank\"]}",
+   "ok": true,
+   "result_chars": 2441,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"InfinitePlace\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"NumberField.InfinitePlace\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.html#NumberField.InfinitePlace\\\"},{\\\"decl\\\":\\\"IsUnramified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LiesOver\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Ideal.LiesOver\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Over\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Over\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Over.html#Ideal.LiesOver\\\"},{\\\"decl\\\":\\\"finrank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\"},{\\\"decl\\\":\\\"Completion\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"UniformSpace.Completion\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Topology.UniformSpace.Completion\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.UniformSpace.Completion\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/UniformSpace/Completion.html#UniformSpace.Completion\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":2,\\\"renamed\\\":3,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

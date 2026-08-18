@@ -1,0 +1,186 @@
+{
+ "task_id": "fresh_017",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:15:11Z",
+ "wall_s": 52.7,
+ "transcript_stats": {
+  "turns": 18,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 7,
+   "mcp__formal__decl_read": 4
+  },
+  "tokens_in": 114,
+  "tokens_out": 3207,
+  "cost_usd": 0.046671649999999995
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sin : ℝ → ℝ\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin : ℝ → ℝ': <input>:1:4: expected end of input\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"abs : ℝ → ℝ\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'abs : ℝ → ℝ': <input>:1:4: expected end of input\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : ℝ) - (?b : ℝ) ≤ (?c : ℝ)\"}",
+   "ok": true,
+   "result_chars": 955,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 429 declarations mentioning Real.instLE, Real, Real.instSub, HSub.hSub, LE.le, and instHSub.\\n- ENNReal.le_toReal_sub   [Mathlib.Data.ENNReal.Operations]\\n- Real.sub_le_dist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- norm_sub_norm_le   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_norm_le'   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_le_norm_add   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_le_norm_mul   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_norm_le_norm_inv_mul   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_norm_le_norm_neg_add   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_div_sub_norm_div_le_norm_div   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_sub_sub_norm_sub_le_norm_sub   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_add_sub_norm_sub_le_two_mul   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_mul_sub_norm_div_le_two_mul   [Mathlib.Analysis.Normed.Group.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sin\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sin': unknown identifier 'sin'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"abs\"}",
+   "ok": true,
+   "result_chars": 857,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1290 declarations mentioning abs.\\n- abs   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n    `abs a`, denoted `|a|`, is the absolute value of `a`\\n- le_abs_self   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_neg   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_by_cases   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- neg_le_abs   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_ite   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- eq_or_eq_neg_of_abs_eq   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_eq_max_neg   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- Pi.abs_apply   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- Pi.abs_def   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_choice   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\\n- abs_sub_comm   [Mathlib.Algebra.Order.Group.Unbundled.Abs]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*sin.*Real\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1380,
+   "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for 'theorem.*sin.*Real' (via ripgrep):\\n- Mathlib/Analysis/Analytic/OfScalars.lean:291\\n    /-- This theorem combines the results of the special cases above, using `ENNReal` division to remove\\n- Mathlib/Analysis/Complex/Trigonometric.lean:162\\n    theorem ofReal_sinh_ofReal_re (x : ℝ) : ((sinh x).re : ℂ) = sinh x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:166\\n    theorem ofReal_sinh (x : ℝ) : (Real.sinh x : ℂ) = sinh x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:170\\n    theorem sinh_ofReal_im (x : ℝ) : (sinh x).im = 0 := by rw [← ofReal_sinh_ofReal_re, ofReal_im]\\n- Mathlib/Analysis/Complex/Trigonometric.lean:172\\n    theorem sinh_ofReal_re (x : ℝ) : (sinh x).re = Real.sinh x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:378\\n    theorem ofReal_sin_ofReal_re (x : ℝ) : ((sin x).re : ℂ) = sin x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:382\\n    theorem ofReal_sin (x : ℝ) : (Real.sin x : ℂ) = sin x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:386\\n    theorem sin_ofReal_im (x : ℝ) : (sin x).im = 0 := by rw [← ofReal_sin_ofReal_re, ofReal_im]\\n- Mathlib/Analysis/Complex/Trigonometric.lean:388\\n    theorem sin_ofReal_re (x : ℝ) : (sin x).re = Real.sin x :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:799\\n    theorem cosh_add_sinh : cosh x + sinh x = exp x := by rw [← ofReal_inj]; simp\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def sin\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1124,
+   "result_head": "[{\"type\": \"text\", \"text\": \"75 match(es) for '^def sin' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:222\\n    def single (m : M) (r : R) : R[M] := .ofCoeff <| .single m r\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:376\\n    def singleAddHom (m : M) : R →+ R[M] where\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:674\\n    def singleHom : R × M →* R[M] where\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:682\\n    def singleOneRingHom : R →+* R[M] where\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:983\\n    def singleHom [AddZeroClass M] : R × Multiplicative M →* R[M] where\\n- Mathlib/Algebra/MonoidAlgebra/Basic.lean:98\\n    def singleOneAlgHom : A →ₐ[R] A[M] where\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:221\\n    def singleDistribMulActionHom [Monoid R] [DistribMulAction R S] (a : M) : S →+[R] S[M] where\\n- Mathlib/Algebra/Lie/Classical.lean:108\\n    def single (h : i ≠ j) : R →ₗ[R] sl n R :=\\n- Mathlib/Algebra/Lie/Classical.lean:117\\n    def singleSubSingle : R →ₗ[R] sl n R :=\\n- Mathlib/Algebra/Homology/DerivedCategory/Basic.lean:237\\n    def singleFunctors : SingleFunctors C (DerivedCategory C) ℤ :=\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Real\\\\.sin\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 801,
+   "result_head": "[{\"type\": \"text\", \"text\": \"119 match(es) for 'Real\\\\\\\\.sin' (via ripgrep):\\n- Mathlib/Probability/Distributions/Gaussian/Fernique.lean:70\\n    = Real.cos θ • L.comp (.inl ℝ E E) - Real.sin θ • L.comp (.inr ℝ E E) := by\\n- Mathlib/Probability/Distributions/Gaussian/Fernique.lean:77\\n    = Real.sin θ • L.comp (.inl ℝ E E) + Real.cos θ • L.comp (.inr ℝ E E) := by\\n- Mathlib/Probability/Distributions/Fernique.lean:103\\n    toFun := fun x ↦ (Real.cos θ • x.1 + Real.sin θ • x.2, - Real.sin θ • x.1 + Real.cos θ • x.2)\\n- Mathlib/Probability/Distributions/Fernique.lean:111\\n    = (Real.cos θ • x.1 + Real.sin θ • x.2, -Real.sin θ • x.1 + Real.cos θ • x.2) := rfl\\n- Mathlib/Probability/Distributions/Fernique.lean:138\\n    Real.cos_pi_div_four, Real.sin_neg, Real.sin_pi_div_four, neg_smul, neg_neg]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^(def|theorem|lemma) (Real\\\\.)?sin\\\\b\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 365,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '^(def|theorem|lemma) (Real\\\\\\\\.)?sin\\\\\\\\b' (via ripgrep):\\n- Mathlib/RingTheory/PowerSeries/WellKnown.lean:184\\n    def sin : PowerSeries A :=\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Angle.lean:252\\n    def sin (θ : Angle) : ℝ :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:30\\n    def sin (z : ℂ) : ℂ :=\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1757,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 1–50 of 990):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Hughes, Abhimanyu Pallavi Sudhir\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Complex.Exponential\\n     9  import Mathlib.Tactic.NormNum.NatFactorial\\n    10  \\n    11  /-!\\n    12  # Trigonometric and hyperbolic trigonometric functions\\n    13  \\n    14  This file contains the definitions of the sine, cosine, tangent,\\n    15  hyperbolic sine, hyperbolic cosine, and hyperbolic tangent functions.\\n    16  \\n    17  -/\\n    18  \\n    19  @[expose] public section\\n    20  \\n    21  open CauSeq Finset IsAbsoluteValue\\n    22  open scoped ComplexConjugate\\n    23  \\n    24  namespace Complex\\n    25  \\n    26  noncomputable section\\n    27  \\n    28  /-- The complex sine function, defined via `exp` -/\\n    29  @[pp_nodot]\\n    30  def sin (z : ℂ) : ℂ :=\\n    31    (exp (-z * I) - exp (z * I)) * I / 2\\n    32  \\n    33  /-- The complex cosine function, defined via `exp` -/\\n    34  @[pp_nodot]\\n    35  def cos (z : ℂ) : ℂ :=\\n    36    (exp (z * I) + exp (-z * I)) / 2\\n    37  \\n    38  /-- The complex tangent function, defined as `sin z / cos z` -/\\n    39  @[pp_nodot]\\n    40  def tan (z : ℂ) : ℂ :=\\n    41    sin z / cos z\\n    42  \\n    43  /-- The complex cotangent function, defined as `cos z / sin z` -/\\n    44  def cot (z : ℂ) : ℂ :=\\n    45    cos z / sin z\\n    46  \\n    47  /-- The complex hyperbolic sine function, defined via `exp` -/\\n    48  @[pp_nodot]\\n    49  def sinh (z : ℂ) : ℂ :=\\n    50    (exp z - exp (-z)) / 2\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace Real\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 453,
+   "result_head": "[{\"type\": \"text\", \"text\": \"119 match(es) for 'namespace Real' (via ripgrep):\\n- Mathlib/NumberTheory/Niven.lean:92\\n    namespace Real\\n- Mathlib/NumberTheory/Harmonic/EulerMascheroni.lean:43\\n    namespace Real\\n- Mathlib/NumberTheory/Harmonic/GammaDeriv.lean:28\\n    namespace Real\\n- Mathlib/NumberTheory/DiophantineApproximation/Basic.lean:76\\n    namespace Real\\n- Mathlib/NumberTheory/DiophantineApproximation/Basic.lean:304\\n    namespace Real\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 300, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 300–379 of 990):\\n   300    have h : I * sin (x * I) = -sinh x := by\\n   301      rw [mul_comm, ← sinh_mul_I]\\n   302      ring_nf\\n   303      simp\\n   304    rw [← neg_neg (sinh x), ← h]\\n   305    apply Complex.ext <;> simp\\n   306  \\n   307  theorem tan_mul_I : tan (x * I) = tanh x * I := by\\n   308    rw [tan, sin_mul_I, cos_mul_I, mul_div_right_comm, tanh_eq_sinh_div_cosh]\\n   309  \\n   310  theorem sin_add : sin (x + y) = sin x * cos y + cos x * sin y := by\\n   311    rw [← mul_left_inj' I_ne_zero, ← sinh_mul_I, add_mul, add_mul, mul_right_comm, ← sinh_mul_I,\\n   312      mul_assoc, ← sinh_mul_I, ← cosh_mul_I, ← cosh_mul_I, sinh_add]\\n   313  \\n   314  @[simp]\\n   315  theorem cos_zero : cos 0 = 1 := by simp [cos]\\n   316  \\n   317  @[simp]\\n   318  theorem cos_neg : cos (-x) = cos x := by simp [cos, exp_neg, add_comm]\\n   319  \\n   320  theorem cos_add : cos (x + y) = cos x * cos y - sin x * sin y := by\\n   321    rw [← cosh_mul_I, add_mul, cosh_add, cosh_mul_I, cosh_mul_I, sinh_mul_I, sinh_mul_I,\\n   322      mul_mul_mul_comm, I_mul_I, mul_neg_one, sub_eq_add_neg]\\n   323  \\n   324  theorem sin_sub : sin (x - y) = sin x * cos y - cos x * sin y := by\\n   325    simp [sub_eq_add_neg, sin_add, sin_neg, cos_neg]\\n   326  \\n   327  theorem cos_sub : cos (x - y) = cos x * cos y + sin x * sin y := by\\n   328    simp [sub_eq_add_neg, cos_add, sin_neg, cos_neg]\\n   329  \\n   330  theorem sin_add_mul_I (x y : ℂ) : sin (x + y * I) = sin x * cosh y + cos x * sinh y * I := by\\n   331    rw [sin_add, cos_mul_I, sin_mul_I, mul_assoc]\\n   332  \\n   333  theorem sin_eq (z : ℂ) : sin z = sin z.re * cosh z.im + cos z.re * sinh z.im * I := by\\n   334    convert! sin_add_mul_I z.re z.im; exact (re_add_im z).symm\\n   335  \\n   336  theorem cos_add_mul_I (x y : ℂ) : cos (x + y * I) = cos x * cosh y - sin x * sinh y * I := by\\n   337    rw [cos_add, cos_mul_I, sin_mul_I, mul_assoc]\\n   338  \\n   339  theorem cos_eq (z : ℂ) : cos z = cos z.re * cosh z.im - sin z.re * sinh z.im * I := by\\n   340    convert! cos_add_mul_I z.re z.im; exact (re_add_im z).symm\\n   341  \\n   342  theorem sin_sub_sin : sin x - sin y = 2 * sin ((x - y) / 2) * cos ((x + y) / 2) := by\\n   343    have s1 := sin_add ((x + y) / 2) ((x - y) / 2)\\n   344    have s2 := sin_sub ((x + y) / 2) ((x - y) / 2)\\n   345    rw [← add_div, add_sub, add_right_comm, add_sub_cancel_right, add_self_div_two] at s1\\n   346    rw [div_sub_div_same, ← sub_add, add_sub_cancel_left, add_self_div_two] at s2\\n   347    rw [s1, s2]\\n   348    ring\\n   349  \\n   350  theorem cos_sub_cos : cos x - cos y = -2 * sin ((x + y) / 2) * sin ((x - y) / 2) := by\\n   351    have s1 := cos_add ((x + y) / 2) ((x - y) / 2)\\n   352    have s2 := cos_sub ((x + y) / 2) ((x - y) / 2)\\n   353    rw [← add_div, add_sub, add_right_comm, add_sub_cancel_right, add_self_div_two] at s1\\n   354    rw [div_sub_div_same, ← sub_add, add_sub_cancel_left, add_self_div_two] at s2\\n   355    rw [s1, s2]\\n   356    ring\\n   357  \\n   358  theorem sin_add_sin : sin x + sin y = 2 * sin ((x + y) / 2) * cos ((x - y) / 2) := by\\n   359    simpa using! sin_sub_sin x (-y)\\n   360  \\n   361  theorem cos_add_cos : cos x + cos y = 2 * cos ((x + y) / 2) * cos ((x - y) / 2) := by\\n   362    calc\\n   363      cos x + cos y = cos ((x + y) / 2 + (x - y) / 2) + cos ((x + y) / 2 - (x - y) / 2) := ?_\\n   364      _ =\\n   365          cos ((x + y) / 2) * cos ((x - y) / 2) - sin ((x + y) / 2) * sin ((x - y) / 2) +\\n   366            (cos ((x + y) / 2) * cos ((x - y) / 2) + sin ((x + y) / 2) * sin ((x - y) / 2)) :=\\n   367        ?_\\n   368      _ = 2 * cos ((x + y) / 2) * cos ((x - y) / 2) := ?_\\n   369    · congr <;> field\\n   370    · rw [cos_add, cos_sub]\\n   371    ring\\n   372  \\n   373  theorem sin_conj : sin (conj x) = conj (sin x) := by\\n   374    rw [← mul_left_inj' I_ne_zero, ← sinh_mul_I, ← conj_neg_I, ← map_mul, ← map_mul,\\n   375      sinh_conj, mul_neg, sinh_n"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 375, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1301,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 375–404 of 990):\\n   375      sinh_conj, mul_neg, sinh_neg, sinh_mul_I, mul_neg]\\n   376  \\n   377  @[simp]\\n   378  theorem ofReal_sin_ofReal_re (x : ℝ) : ((sin x).re : ℂ) = sin x :=\\n   379    conj_eq_iff_re.1 <| by rw [← sin_conj, conj_ofReal]\\n   380  \\n   381  @[simp, norm_cast]\\n   382  theorem ofReal_sin (x : ℝ) : (Real.sin x : ℂ) = sin x :=\\n   383    ofReal_sin_ofReal_re _\\n   384  \\n   385  @[simp]\\n   386  theorem sin_ofReal_im (x : ℝ) : (sin x).im = 0 := by rw [← ofReal_sin_ofReal_re, ofReal_im]\\n   387  \\n   388  theorem sin_ofReal_re (x : ℝ) : (sin x).re = Real.sin x :=\\n   389    rfl\\n   390  \\n   391  theorem cos_conj : cos (conj x) = conj (cos x) := by\\n   392    rw [← cosh_mul_I, ← conj_neg_I, ← map_mul, ← cosh_mul_I, cosh_conj, mul_neg, cosh_neg]\\n   393  \\n   394  @[simp]\\n   395  theorem ofReal_cos_ofReal_re (x : ℝ) : ((cos x).re : ℂ) = cos x :=\\n   396    conj_eq_iff_re.1 <| by rw [← cos_conj, conj_ofReal]\\n   397  \\n   398  @[simp, norm_cast]\\n   399  theorem ofReal_cos (x : ℝ) : (Real.cos x : ℂ) = cos x :=\\n   400    ofReal_cos_ofReal_re _\\n   401  \\n   402  @[simp]\\n   403  theorem cos_ofReal_im (x : ℝ) : (cos x).im = 0 := by rw [← ofReal_cos_ofReal_re, ofReal_im]\\n   404  \\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?x : ℝ) ^ 3\"}",
+   "ok": true,
+   "result_chars": 1405,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2739 declarations mentioning Real, HPow.hPow, and OfNat.ofNat.\\n- Real.cos_three_mul   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.cosh_three_mul   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sin_three_mul   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sinh_three_mul   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sin_bound   [Mathlib.Analysis.Complex.Trigonometric]\\n- tsirelson_inequality   [Mathlib.Algebra.Star.CHSH]\\n    In a noncommutative ordered \\\\*-algebra over ℝ, Tsirelson's bound for a CHSH tuple (A₀, A₁, B₀, B₁) is `A₀ * B₀ + A₀ * B₁ + A₁ * B₀ - A₁ * B₁ ≤ 2^(3/2) • 1`.  We\\n- deriv2_sqrt_mul_log   [Mathlib.Analysis.Convex.SpecificFunctions.Deriv]\\n- Real.abs_sub_sin_le   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds]\\n    `|x - sin x| ≤ |x|³ / 6` for every real `x`.\\n- Real.sin_ge_sub_cube   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds]\\n    For 0 ≤ x we have x - x ^ 3 / 6 ≤ sin x.  This inequality is tight, in that the constant 6 is best possible.\\n- Real.sin_gt_sub_cube   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds]\\n    For 0 < x we have x - x ^ 3 / 6 < sin x.  This inequality is tight, in that the constant 6 is best possible.\\n- integral_sin_mul_cos_sq   [Mathlib.Analysis.SpecialFunctions.Integrals.Basic]\\n- integral_sin_sq_mul_cos   [Mathlib.Analysis.SpecialFunctions.Integrals.Basic]\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Real.abs_sub_sin_le\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Real.abs_sub_sin_le' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abs_sub_sin_le\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 219,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'abs_sub_sin_le' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:169\\n    theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := by\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 169, \"n\": 5}",
+   "ok": true,
+   "result_chars": 326,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 169–173 of 274):\\n   169  theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := by\\n   170    wlog hx : 0 ≤ x\\n   171    · grind [sin_neg]\\n   172    · grind [Real.sin_le, abs_of_nonneg, sin_ge_sub_cube]\\n   173  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := sorry"
+}

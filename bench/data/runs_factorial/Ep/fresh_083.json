@@ -1,0 +1,354 @@
+{
+ "task_id": "fresh_083",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:31:55Z",
+ "wall_s": 138.0,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 29,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 12,
+   "mcp__formal__decl_grep": 18,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 234,
+  "tokens_out": 10596,
+  "cost_usd": 0.13926375
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal\"}",
+   "ok": true,
+   "result_chars": 1321,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2782 declarations mentioning Cardinal.\\n- Cardinal   [Mathlib.SetTheory.Cardinal.Defs]\\n    `Cardinal.{u}` is the type of cardinal numbers in `Type u`, defined as the quotient of `Type u` by existence of an equivalence (a bijection with explicit invers\\n- Cardinal.aleph0   [Mathlib.SetTheory.Cardinal.Defs]\\n    `ℵ₀` is the smallest infinite cardinal.   Conventions for notations in identifiers:   * The recommended spelling of `ℵ₀` in identifiers is `aleph0`.\\n- Cardinal.instAdd   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instInhabited   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instMul   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instNatCast   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instNontrivial   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instOne   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.instZero   [Mathlib.SetTheory.Cardinal.Defs]\\n- Cardinal.lift   [Mathlib.SetTheory.Cardinal.Defs]\\n    The universe lift operation on cardinals. You can specify the universes explicitly with `lift.{u v} : Cardinal.{v} → Cardinal.{max v u}`\\n- Cardinal.mk   [Mathlib.SetTheory.Cardinal.Defs]\\n    The cardinal number of a type\\n- Cardinal.instPowCardinal   [Mathlib.SetTheory.Cardinal.Defs]\\n    The cardinal exponential. `#α ^ #β` is the cardinal of `β → α`.\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal.toNat\"}",
+   "ok": true,
+   "result_chars": 987,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 49 declarations mentioning Cardinal.toNat.\\n- Cardinal.toNat   [Mathlib.SetTheory.Cardinal.ToNat]\\n    This function sends finite cardinals to the corresponding natural, and infinite cardinals to 0.\\n- Cardinal.toNat_surjective   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.toNat_rightInverse   [Mathlib.SetTheory.Cardinal.ToNat]\\n    `toNat` has a right-inverse: coercion.\\n- Cardinal.toNat_ofENat   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.aleph0_toNat   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.toNat_natCast   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.natCast_toNat_le   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.toNat_injOn   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.mk_toNat_eq_card   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.mk_toNat_of_infinite   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.one_toNat   [Mathlib.SetTheory.Cardinal.ToNat]\\n- Cardinal.toNat_monotoneOn   [Mathlib.SetTheory.Cardinal.ToNat]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?κ : Cardinal) → Cardinal\"}",
+   "ok": true,
+   "result_chars": 121,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?κ : Cardinal) → Cardinal': type expected, got\\n  (?κ : Cardinal.{?u.3})\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(κ : Cardinal) → (n : ℕ) → Prop\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(κ : Cardinal) → (n : ℕ) → Prop'.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*toNat.*injOn\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 212,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma).*toNat.*injOn' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:73\\n    theorem toNat_injOn : InjOn toNat (Iio ℵ₀) := toNat_strictMonoOn.injOn\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal ≥ ℕ\"}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Cardinal ≥ ℕ': Type mismatch\\n  ℕ\\nhas type\\n  Type\\nof sort `Type 1` but is expected to have type\\n  Type (?u.2 + 1)\\nof sort `Type (?u.2 + 2)`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2009,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 1–50 of 173):\\n     1  /-\\n     2  Copyright (c) 2021 Aaron Anderson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Aaron Anderson\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.SetTheory.Cardinal.ENat\\n     9  \\n    10  /-!\\n    11  # Projection from cardinal numbers to natural numbers\\n    12  \\n    13  In this file we define `Cardinal.toNat` to be the natural projection `Cardinal → ℕ`,\\n    14  sending all infinite cardinals to zero.\\n    15  We also prove basic lemmas about this definition.\\n    16  -/\\n    17  \\n    18  @[expose] public section\\n    19  \\n    20  assert_not_exists Field\\n    21  \\n    22  universe u v\\n    23  open Function Set\\n    24  \\n    25  namespace Cardinal\\n    26  \\n    27  variable {α : Type u} {c d : Cardinal.{u}}\\n    28  \\n    29  /-- This function sends finite cardinals to the corresponding natural, and infinite cardinals\\n    30    to 0. -/\\n    31  noncomputable def toNat : Cardinal →*₀ ℕ :=\\n    32    ENat.toNatHom.comp (.ofClass toENat)\\n    33  \\n    34  @[simp] lemma toNat_toENat (a : Cardinal) : ENat.toNat (toENat a) = toNat a := rfl\\n    35  \\n    36  @[simp]\\n    37  theorem toNat_ofENat (n : ℕ∞) : toNat n = ENat.toNat n :=\\n    38    congr_arg ENat.toNat <| toENat_ofENat n\\n    39  \\n    40  @[simp, norm_cast] theorem toNat_natCast (n : ℕ) : toNat n = n := toNat_ofENat n\\n    41  \\n    42  @[simp]\\n    43  lemma toNat_eq_zero : toNat c = 0 ↔ c = 0 ∨ ℵ₀ ≤ c := by\\n    44    rw [← toNat_toENat, ENat.toNat_eq_zero, toENat_eq_zero, toENat_eq_top]\\n    45  \\n    46  lemma toNat_ne_zero : toNat c ≠ 0 ↔ c ≠ 0 ∧ c < ℵ₀ := by simp [not_or]\\n    47  @[simp] lemma toNat_pos : 0 < toNat c ↔ c ≠ 0 ∧ c < ℵ₀ := pos_iff_ne_zero.trans toNat_ne_zero\\n    48  \\n    49  theorem cast_toNat_of_lt_aleph0 {c : Cardinal} (h : c < ℵ₀) : ↑(toNat c) = c := by\\n    50    lift c to ℕ using h\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal.toNat injective finite\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Cardinal.toNat injective finite': Unknown identifier `injective`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*toNat.*natCast\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 346,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*toNat.*natCast' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:40\\n    @[simp, norm_cast] theorem toNat_natCast (n : ℕ) : toNat n = n := toNat_ofENat n\\n- Mathlib/Data/Int/Sqrt.lean:40\\n    theorem sqrt_natCast (n : ℕ) : Int.sqrt (n : ℤ) = Nat.sqrt n := by rw [sqrt, toNat_natCast]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(n : ℕ) ≤ (κ : Cardinal)\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(n : ℕ) ≤ (κ : Cardinal)': Unknown identifier `n`\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*natCast.*le.*Cardinal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*natCast.*le.*Cardinal' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Finite.lean:321\\n    theorem _root_.Cardinal.natCast_le_toENat_iff {n : ℕ} {c : Cardinal} :\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/Finite.lean\", \"line\": 321, \"n\": 10}",
+   "ok": true,
+   "result_chars": 653,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/Finite.lean  (lines 321–330 of 418):\\n   321  theorem _root_.Cardinal.natCast_le_toENat_iff {n : ℕ} {c : Cardinal} :\\n   322      ↑n ≤ toENat c ↔ ↑n ≤ c := by\\n   323    rw [← toENat_nat n, toENat_le_iff_of_le_aleph0 natCast_le_aleph0]\\n   324  \\n   325  @[deprecated toENat_le_natCast (since := \\\"2026-02-17\\\")]\\n   326  theorem _root_.Cardinal.toENat_le_natCast_iff {c : Cardinal} {n : ℕ} :\\n   327      toENat c ≤ n ↔ c ≤ n := by simp\\n   328  \\n   329  @[deprecated natCast_eq_toENat (since := \\\"2026-02-17\\\")]\\n   330  theorem _root_.Cardinal.natCast_eq_toENat_iff {n : ℕ} {c : Cardinal} :\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal.toNat finite cardinal equal\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Cardinal.toNat finite cardinal equal': Unknown identifier `finite`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*toNat.*eq\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1851,
+   "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for '(theorem|lemma).*toNat.*eq' (via ripgrep):\\n- Mathlib/Data/Bool/Basic.lean:184\\n    @[simp] lemma toNat_beq_zero (b : Bool) : (b.toNat == 0) = !b := by grind\\n- Mathlib/Data/Bool/Basic.lean:186\\n    @[simp] lemma toNat_beq_one (b : Bool) : (b.toNat == 1) = b := by cases b <;> rfl\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:43\\n    lemma toNat_eq_zero : toNat c = 0 ↔ c = 0 ∨ ℵ₀ ≤ c := by\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:63\\n    theorem cast_toNat_eq_iff_lt_aleph0 {c : Cardinal} : toNat c = c ↔ c < ℵ₀ where\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:115\\n    theorem mk_toNat_eq_card [Fintype α] : toNat #α = Fintype.card α := by simp\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:122\\n    theorem toNat_eq_iff {n : ℕ} (hn : n ≠ 0) : toNat c = n ↔ c = n := by\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:126\\n    theorem toNat_eq_ofNat {n : ℕ} [Nat.AtLeastTwo n] :\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:131\\n    theorem toNat_eq_one : toNat c = 1 ↔ c = 1 := by\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:134\\n    theorem toNat_eq_one_iff_unique : toNat #α = 1 ↔ Subsingleton α ∧ Nonempty α :=\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:168\\n    lemma toNat_eq_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0) :\\n- Mathlib/Data/Num/Lemmas.lean:323\\n    theorem to_nat_inj {m n : Num} : (m : ℕ) = n ↔ m = n := toNat_injective.eq_iff\\n- Mathlib/Data/ENat/Basic.lean:167\\n    @[simp] theorem toNat_eq_zero : toNat n = 0 ↔ n = 0 ∨ n = ⊤ := WithTop.untopD_eq_self_iff\\n- Mathlib/Data/ENat/Basic.lean:236\\n    theorem coe_toNat_eq_self : ENat.toNat n = n ↔ n ≠ ⊤ :=\\n- Mathlib/Data/ENat/Basic.lean:241\\n    @[simp] lemma toNat_eq_iff_eq_coe (n : ℕ∞) (m : ℕ) [NeZero m] :\\n- Mathlib/Data/ENat/Basic.lean:268\\n    theorem toNat_eq_iff {m : ℕ∞} {n : ℕ} (hn : n ≠ 0) : toNat m = n ↔ m = n := by\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 168, \"n\": 10}",
+   "ok": true,
+   "result_chars": 357,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 168–173 of 173):\\n   168  lemma toNat_eq_iff_of_lt_aleph0 {a : Cardinal.{u}} (n : ℕ) (lt : a < Cardinal.aleph0) :\\n   169      a.toNat = n ↔ a = n := by\\n   170    nth_rw 2 [← Cardinal.cast_toNat_of_lt_aleph0 lt]\\n   171    exact Nat.cast_inj.symm\\n   172  \\n   173  end Cardinal\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 63, \"n\": 10}",
+   "ok": true,
+   "result_chars": 586,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 63–72 of 173):\\n    63  theorem cast_toNat_eq_iff_lt_aleph0 {c : Cardinal} : toNat c = c ↔ c < ℵ₀ where\\n    64    mp h := by rw [← h]; simp\\n    65    mpr := cast_toNat_of_lt_aleph0\\n    66  \\n    67  theorem toNat_strictMonoOn : StrictMonoOn toNat (Iio ℵ₀) := by\\n    68    simp only [← range_natCast, StrictMonoOn, forall_mem_range, toNat_natCast, Nat.cast_lt]\\n    69    exact fun _ _ ↦ id\\n    70  \\n    71  theorem toNat_monotoneOn : MonotoneOn toNat (Iio ℵ₀) := toNat_strictMonoOn.monotoneOn\\n    72  \\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*le.*toNat.*natCast\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*le.*toNat.*natCast' under Mathlib/.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"natCast_le Cardinal toNat\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'natCast_le Cardinal toNat': Unknown identifier `natCast_le`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*natCast.*le\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2820,
+   "result_head": "[{\"type\": \"text\", \"text\": \"50 match(es) for 'theorem.*natCast.*le' (via ripgrep):\\n- Mathlib/Data/EReal/Inv.lean:326\\n    theorem natCast_div_le (m n : ℕ) :\\n- Mathlib/Data/EReal/Basic.lean:797\\n    theorem natCast_le_iff {m n : ℕ} : (m : EReal) ≤ (n : EReal) ↔ m ≤ n := by\\n- Mathlib/Data/Matrix/Diagonal.lean:356\\n    theorem transpose_natCast [DecidableEq n] [AddMonoidWithOne α] (d : ℕ) :\\n- Mathlib/Data/Matrix/Diagonal.lean:361\\n    theorem transpose_eq_natCast [DecidableEq n] [AddMonoidWithOne α] {M : Matrix n n α} {d : ℕ} :\\n- Mathlib/Algebra/Star/Module.lean:43\\n    theorem star_natCast_smul [Semiring R] [AddCommMonoid M] [Module R M] [StarAddMonoid M] (n : ℕ)\\n- Mathlib/Algebra/Star/Module.lean:53\\n    theorem star_inv_natCast_smul [DivisionSemiring R] [AddCommMonoid M] [Module R M] [StarAddMonoid M]\\n- Mathlib/Algebra/Order/Ring/StandardPart.lean:68\\n    @[simp] theorem mk_natCast (n : ℕ) : FiniteElement.mk (n : K) (mk_natCast_nonneg n) = n := rfl\\n- Mathlib/Algebra/Module/LinearMap/End.lean:88\\n    theorem natCast_apply (n : ℕ) (m : M) : (↑n : Module.End R M) m = n • m := rfl\\n- Mathlib/Algebra/Module/LinearMap/End.lean:295\\n    theorem Module.End.natCast_def (n : ℕ) [AddCommMonoid N₁] [Module R N₁] :\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:184\\n    theorem degree_natCast_le (n : ℕ) : degree (n : R[X]) ≤ 0 := degree_le_of_natDegree_le (by simp)\\n- Mathlib/Algebra/MonoidAlgebra/ToDirectSum.lean:120\\n    theorem toDirectSum_natCast [DecidableEq ι] [AddMonoid ι] [Semiring M] (n : ℕ) :\\n- Mathlib/Algebra/MonoidAlgebra/ToDirectSum.lean:179\\n    theorem toAddMonoidAlgebra_natCast [AddMonoid ι] [Semiring M] [∀ m : M, Decidable (m ≠ 0)] (n : ℕ) :\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:346\\n    theorem natCast_def (n : ℕ) : (n : SkewMonoidAlgebra k G) = single (1 : G) (n : k) := by\\n- Mathlib/LinearAlgebra/Matrix/Hermitian.lean:324\\n    theorem isHermitian_natCast [DecidableEq n] (d : ℕ) : (d : Matrix n n α).IsHermitian :=\\n- Mathlib/LinearAlgebra/Matrix/PosDef.lean:119\\n    protected theorem natCast [StarOrderedRing R] [DecidableEq n] (d : ℕ) :\\n- Mathlib/LinearAlgebra/Matrix/PosDef.lean:216\\n    protected theorem natCast [StarOrderedRing R] [DecidableEq n] [NoZeroDivisors R]\\n- Mathlib/LinearAlgebra/Matrix/PosDef.lean:223\\n    theorem _root_.Matrix.posDef_natCast_iff [StarOrderedRing R] [DecidableEq n] [NoZeroDivisors R]\\n- Mathlib/LinearAlgebra/Matrix/ConjTranspose.lean:202\\n    theorem conjTranspose_natCast [DecidableEq n] [NonAssocSemiring α] [StarRing α] (d : ℕ) :\\n- Mathlib/LinearAlgebra/Matrix/ConjTranspose.lean:207\\n    theorem map_natCast_star [DecidableEq n] [NonAssocSemiring α] [StarRing α] (d : ℕ) :\\n- Mathlib/LinearAlgebra/Matrix/ConjTranspose.lean:211\\n    theorem conjTranspose_eq_natCast [DecidableEq n] [NonAssocSemiring α] [StarRing α]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*natCast_le\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 1461,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'theorem.*natCast_le' (via ripgrep):\\n- Mathlib/Data/EReal/Basic.lean:797\\n    theorem natCast_le_iff {m n : ℕ} : (m : EReal) ≤ (n : EReal) ↔ m ≤ n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:820\\n    theorem aleph_natCast_le_lift : ℵ_ n ≤ lift.{v} c ↔ ℵ_ n ≤ c := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:868\\n    theorem beth_natCast_le_lift : ℶ_ n ≤ lift.{v} c ↔ ℶ_ n ≤ c := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:947\\n    theorem omega_natCast_le_lift : ω_ n ≤ lift.{v} o ↔ ω_ n ≤ o := by\\n- Mathlib/SetTheory/Cardinal/Finite.lean:321\\n    theorem _root_.Cardinal.natCast_le_toENat_iff {n : ℕ} {c : Cardinal} :\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:184\\n    theorem degree_natCast_le (n : ℕ) : degree (n : R[X]) ≤ 0 := degree_le_of_natDegree_le (by simp)\\n- Mathlib/NumberTheory/NumberField/Completion/FinitePlace.lean:173\\n    theorem adicAbv_natCast_le_one (n : ℕ) : adicAbv K v n ≤ 1 :=\\n- Mathlib/Data/Rat/Cast/Order.lean:65\\n    theorem natCast_le_cast {m : ℕ} {n : ℚ} : (m : K) ≤ n ↔ (m : ℚ) ≤ n := by\\n- Mathlib/Data/Rat/Cast/Order.lean:197\\n    theorem natCast_le_cast {m : ℕ} {n : ℚ≥0} : (m : K) ≤ n ↔ (m : ℚ≥0) ≤ n := by\\n- Mathlib/Tactic/ComputeDegree.lean:106\\n    theorem natDegree_natCast_le (n : ℕ) : natDegree (n : R[X]) ≤ 0 := (natDegree_natCast _).le\\n- Mathlib/Analysis/Normed/Field/Ultra.lean:140\\n    theorem isUltrametricDist_iff_forall_norm_natCast_le_one {R : Type*}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Cardinal.*natCast.*le\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 342,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*Cardinal.*natCast.*le' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Basic.lean:343\\n    theorem nat_lt_aleph0 (n : ℕ) : (n : Cardinal.{u}) < ℵ₀ := natCast_lt_aleph0\\n- Mathlib/SetTheory/Cardinal/Finite.lean:321\\n    theorem _root_.Cardinal.natCast_le_toENat_iff {n : ℕ} {c : Cardinal} :\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(n : ℕ) (κ : Cardinal) : Prop\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(n : ℕ) (κ : Cardinal) : Prop': <input>:1:23: expected end of input\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*natCast.*le.*Cardinal\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*natCast.*le.*Cardinal' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Finite.lean:321\\n    theorem _root_.Cardinal.natCast_le_toENat_iff {n : ℕ} {c : Cardinal} :\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*natCast_le\\\\b\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma.*natCast_le\\\\\\\\b' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*le.*natCast\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2618,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for 'theorem.*le.*natCast' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:649\\n    theorem adjoin_singleton_natCast (n : ℕ) : R[n : A] = ⊥ := by\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:577\\n    theorem closure_singleton_natCast (n : ℕ) : closure {(n : R)} = ⊥ :=\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:581\\n    theorem closure_singleton_zero : closure {(0 : R)} = ⊥ := mod_cast closure_singleton_natCast 0\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:584\\n    theorem closure_singleton_one : closure {(1 : R)} = ⊥ := mod_cast closure_singleton_natCast 1\\n- Mathlib/Algebra/Ring/Subring/Basic.lean:660\\n    theorem closure_singleton_natCast (n : ℕ) : closure {(n : R)} = ⊥ :=\\n- Mathlib/Algebra/Ring/Subring/Basic.lean:664\\n    theorem closure_singleton_zero : closure {(0 : R)} = ⊥ := mod_cast closure_singleton_natCast 0\\n- Mathlib/Algebra/Ring/Subring/Basic.lean:667\\n    theorem closure_singleton_one : closure {(1 : R)} = ⊥ := mod_cast closure_singleton_natCast 1\\n- Mathlib/Algebra/Order/Ring/StandardPart.lean:68\\n    @[simp] theorem mk_natCast (n : ℕ) : FiniteElement.mk (n : K) (mk_natCast_nonneg n) = n := rfl\\n- Mathlib/Algebra/Module/LinearMap/End.lean:295\\n    theorem Module.End.natCast_def (n : ℕ) [AddCommMonoid N₁] [Module R N₁] :\\n- Mathlib/SetTheory/Cardinal/Basic.lean:343\\n    theorem nat_lt_aleph0 (n : ℕ) : (n : Cardinal.{u}) < ℵ₀ := natCast_lt_aleph0\\n- Mathlib/SetTheory/Cardinal/Basic.lean:351\\n    theorem one_lt_aleph0 : 1 < ℵ₀ := by simpa using natCast_lt_aleph0 (n := 1)\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:345\\n    theorem preAleph_natCast (n : ℕ) : preAleph n = n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:353\\n    theorem preAleph_symm_natCast (n : ℕ) : preAleph.symm n = n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:820\\n    theorem aleph_natCast_le_lift : ℵ_ n ≤ lift.{v} c ↔ ℵ_ n ≤ c := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:824\\n    theorem lift_le_aleph_natCast : lift.{v} c ≤ ℵ_ n ↔ c ≤ ℵ_ n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:828\\n    theorem aleph_natCast_lt_lift : ℵ_ n < lift.{v} c ↔ ℵ_ n < c := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:832\\n    theorem lift_lt_aleph_natCast : lift.{v} c < ℵ_ n ↔ c < ℵ_ n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:836\\n    theorem aleph_natCast_eq_lift : ℵ_ n = lift.{v} c ↔ ℵ_ n = c := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:840\\n    theorem lift_eq_aleph_natCast : lift.{v} c = ℵ_ n ↔ c = ℵ_ n := by\\n- Mathlib/SetTheory/Cardinal/Aleph.lean:872\\n    theorem lift_le_beth_natCast : lift.{v} c ≤ ℶ_ n ↔ c ≤ ℶ_ n := by\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/Basic.lean  (lines 1–80 of 1071):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Floris van Doorn\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Countable.Small\\n     9  public import Mathlib.Data.Fintype.BigOperators\\n    10  public import Mathlib.Data.Fintype.Powerset\\n    11  public import Mathlib.Data.Nat.Cast.Order.Basic\\n    12  public import Mathlib.Data.Set.Countable\\n    13  public import Mathlib.Logic.Small.Set\\n    14  public import Mathlib.Logic.UnivLE\\n    15  public import Mathlib.SetTheory.Cardinal.Order\\n    16  \\n    17  /-!\\n    18  # Basic results on cardinal numbers\\n    19  \\n    20  We provide a collection of basic results on cardinal numbers, in particular focusing on\\n    21  finite/countable/small types and sets.\\n    22  \\n    23  ## Main definitions\\n    24  \\n    25  * `Cardinal.powerlt a b` or `a ^< b` is defined as the supremum of `a ^ c` for `c < b`.\\n    26  \\n    27  ## References\\n    28  \\n    29  * <https://en.wikipedia.org/wiki/Cardinal_number>\\n    30  \\n    31  ## Tags\\n    32  \\n    33  cardinal number, cardinal arithmetic, cardinal exponentiation, aleph,\\n    34  Cantor's theorem, König's theorem, Konig's theorem\\n    35  -/\\n    36  \\n    37  @[expose] public section\\n    38  \\n    39  assert_not_exists Field\\n    40  \\n    41  open List (Vector)\\n    42  open Function Order Set\\n    43  \\n    44  noncomputable section\\n    45  \\n    46  universe u v w v' w'\\n    47  \\n    48  variable {α β : Type u}\\n    49  \\n    50  namespace Cardinal\\n    51  \\n    52  /-! ### Lifting cardinals to a higher universe -/\\n    53  \\n    54  @[simp]\\n    55  lemma mk_preimage_down {s : Set α} : #(ULift.down.{v} ⁻¹' s) = lift.{v} (#s) := by\\n    56    rw [← mk_uLift, Cardinal.eq]\\n    57    constructor\\n    58    let f : ULift.down ⁻¹' s → ULift s := fun x ↦ ULift.up (restrictPreimage s ULift.down x)\\n    59    have : Function.Bijective f :=\\n    60      ULift.up_bijective.comp (restrictPreimage_bijective _ (ULift.down_bijective))\\n    61    exact Equiv.ofBijective f this\\n    62  \\n    63  -- `simp` can't figure out universe levels: normal form is `lift_mk_shrink'`.\\n    64  theorem lift_mk_shrink (α : Type u) [Small.{v} α] :\\n    65      Cardinal.lift.{max u w} #(Shrink.{v} α) = Cardinal.lift.{max v w} #α :=\\n    66    lift_mk_eq.2 ⟨(equivShrink α).symm⟩\\n    67  \\n    68  @[simp]\\n    69  theorem lift_mk_shrink' (α : Type u) [Small.{v} α] :\\n    70      Cardinal.lift.{u} #(Shrink.{v} α) = Cardinal.lift.{v} #α :=\\n    71    lift_mk_shrink.{u, v, 0} α\\n    72  \\n    73  @[simp]\\n    74  theorem lift_mk_shrink'' (α : Type max u v) [Small.{v} α] :\\n    75      Cardinal.lift.{u} #(Shrink.{v} α) = #α := by\\n    76    rw [← lift_umax, lift_mk_shrink.{max u v, v, 0} α, ← lift_umax, lift_id]\\n    77  \\n    78  theorem prod_eq_of_fintype {α : Type u} [h : Fintype α] (f : α → Cardinal.{v}) :\\n    79      prod f = Cardinal.lift.{u} (∏ i, f i) := by\\n    80    revert f\\n\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Cardinal natCast le\"}",
+   "ok": true,
+   "result_chars": 243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Cardinal natCast le': Function expected at\\n  Cardinal.{?u.1}\\nbut this term has type\\n  Type (?u.1 + 1)\\n\\nNote: Expected a function because this term is being applied to the argument\\n  natCast\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*natCast.*Cardinal.*≤\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*natCast.*Cardinal.*≤' under Mathlib/.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Nat.cast.*le.*Cardinal\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Nat.cast.*le.*Cardinal' under Mathlib/.\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 80, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2078,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 80–129 of 173):\\n    80  \\n    81  theorem toNat_le_iff_le_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) :\\n    82      toNat c ≤ toNat d ↔ c ≤ d :=\\n    83    toNat_strictMonoOn.le_iff_le hc hd\\n    84  \\n    85  theorem toNat_lt_iff_lt_of_lt_aleph0 (hc : c < ℵ₀) (hd : d < ℵ₀) :\\n    86      toNat c < toNat d ↔ c < d :=\\n    87    toNat_strictMonoOn.lt_iff_lt hc hd\\n    88  \\n    89  @[gcongr]\\n    90  theorem toNat_le_toNat (hcd : c ≤ d) (hd : d < ℵ₀) : toNat c ≤ toNat d :=\\n    91    toNat_monotoneOn (hcd.trans_lt hd) hd hcd\\n    92  \\n    93  theorem toNat_lt_toNat (hcd : c < d) (hd : d < ℵ₀) : toNat c < toNat d :=\\n    94    toNat_strictMonoOn (hcd.trans hd) hd hcd\\n    95  \\n    96  @[simp]\\n    97  theorem toNat_ofNat (n : ℕ) [n.AtLeastTwo] :\\n    98      Cardinal.toNat ofNat(n) = OfNat.ofNat n :=\\n    99    toNat_natCast n\\n   100  \\n   101  /-- `toNat` has a right-inverse: coercion. -/\\n   102  theorem toNat_rightInverse : Function.RightInverse ((↑) : ℕ → Cardinal) toNat :=\\n   103    toNat_natCast\\n   104  \\n   105  theorem toNat_surjective : Surjective toNat :=\\n   106    toNat_rightInverse.surjective\\n   107  \\n   108  @[simp]\\n   109  theorem mk_toNat_of_infinite [h : Infinite α] : toNat #α = 0 := by simp\\n   110  \\n   111  @[simp]\\n   112  theorem aleph0_toNat : toNat ℵ₀ = 0 :=\\n   113    toNat_apply_of_aleph0_le le_rfl\\n   114  \\n   115  theorem mk_toNat_eq_card [Fintype α] : toNat #α = Fintype.card α := by simp\\n   116  \\n   117  @[simp]\\n   118  theorem zero_toNat : toNat 0 = 0 := map_zero _\\n   119  \\n   120  theorem one_toNat : toNat 1 = 1 := map_one _\\n   121  \\n   122  theorem toNat_eq_iff {n : ℕ} (hn : n ≠ 0) : toNat c = n ↔ c = n := by\\n   123    rw [← toNat_toENat, ENat.toNat_eq_iff hn, toENat_eq_natCast]\\n   124  \\n   125  /-- A version of `toNat_eq_iff` for literals -/\\n   126  theorem toNat_eq_ofNat {n : ℕ} [Nat.AtLeastTwo n] :\\n   127      toNat c = OfNat.ofNat n ↔ c = OfNat.ofNat n :=\\n   128    toNat_eq_iff <| OfNat.ofNat_ne_zero n\\n   129  \\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*eq.*iff.*iff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 839,
+   "result_head": "[{\"type\": \"text\", \"text\": \"57 match(es) for 'theorem.*eq.*iff.*iff' (via ripgrep):\\n- Mathlib/Algebra/Lie/Submodule.lean:503\\n    nonrec theorem eq_bot_iff : N = ⊥ ↔ ∀ m : M, m ∈ N → m = 0 := by rw [eq_bot_iff]; exact Iff.rfl\\n- Mathlib/Geometry/Manifold/MFDeriv/Basic.lean:759\\n    theorem mfderivWithin_eq_mfderiv (hs : UniqueMDiffAt[s] x) (h : MDifferentiableAt I I' f x) :\\n- Mathlib/MeasureTheory/Measure/MeasureSpace.lean:266\\n    theorem measure_eq_top_iff_of_symmDiff (hμst : μ (s ∆ t) ≠ ∞) : μ s = ∞ ↔ μ t = ∞ := by\\n- Mathlib/MeasureTheory/Measure/MeasureSpace.lean:297\\n    theorem measure_eq_measure_of_null_sdiff {s t : Set α} (hst : s ⊆ t) (h_nullsdiff : μ (t \\\\ s) = 0) :\\n- Mathlib/Algebra/Group/Subgroup/Lattice.lean:457\\n    theorem closure_eq_bot_iff : closure k = ⊥ ↔ k ⊆ {1} := le_bot_iff.symm.trans <| closure_le _\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*_eq_.*toNat\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1940,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for 'theorem.*_eq_.*toNat' (via ripgrep):\\n- Mathlib/FieldTheory/Relrank.lean:51\\n    theorem relfinrank_eq_toNat_relrank : relfinrank A B = toNat (relrank A B) := rfl\\n- Mathlib/FieldTheory/Relrank.lean:299\\n    theorem relfinrank_eq_toNat_relrank : relfinrank A B = toNat (relrank A B) := rfl\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:63\\n    theorem cast_toNat_eq_iff_lt_aleph0 {c : Cardinal} : toNat c = c ↔ c < ℵ₀ where\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:115\\n    theorem mk_toNat_eq_card [Fintype α] : toNat #α = Fintype.card α := by simp\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:122\\n    theorem toNat_eq_iff {n : ℕ} (hn : n ≠ 0) : toNat c = n ↔ c = n := by\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:131\\n    theorem toNat_eq_one : toNat c = 1 ↔ c = 1 := by\\n- Mathlib/SetTheory/Cardinal/ToNat.lean:134\\n    theorem toNat_eq_one_iff_unique : toNat #α = 1 ↔ Subsingleton α ∧ Nonempty α :=\\n- Mathlib/Analysis/Normed/Ring/Int.lean:40\\n    theorem toNat_add_toNat_neg_eq_nnnorm (n : ℤ) : ↑n.toNat + ↑(-n).toNat = ‖n‖₊ := by\\n- Mathlib/Analysis/Normed/Ring/Int.lean:44\\n    theorem toNat_add_toNat_neg_eq_norm (n : ℤ) : ↑n.toNat + ↑(-n).toNat = ‖n‖ := by\\n- Mathlib/Data/Set/Card.lean:146\\n    theorem Finite.encard_eq_coe (h : s.Finite) : s.encard = ENat.toNat s.encard :=\\n- Mathlib/Data/ENat/Basic.lean:167\\n    @[simp] theorem toNat_eq_zero : toNat n = 0 ↔ n = 0 ∨ n = ⊤ := WithTop.untopD_eq_self_iff\\n- Mathlib/Data/ENat/Basic.lean:173\\n    theorem lift_eq_toNat_of_lt_top {x : ℕ∞} (hx : x < ⊤) : x.lift hx = x.toNat := by\\n- Mathlib/Data/ENat/Basic.lean:236\\n    theorem coe_toNat_eq_self : ENat.toNat n = n ↔ n ≠ ⊤ :=\\n- Mathlib/Data/ENat/Basic.lean:268\\n    theorem toNat_eq_iff {m : ℕ∞} {n : ℕ} (hn : n ≠ 0) : toNat m = n ↔ m = n := by\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:330\\n    theorem cRank_toNat_eq_rank [CommSemiring R] (A : Matrix m n R) : A.cRank.toNat = A.rank := by\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace Cardinal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 425,
+   "result_head": "[{\"type\": \"text\", \"text\": \"32 match(es) for 'namespace Cardinal' (via ripgrep):\\n- Mathlib/FieldTheory/CardinalEmb.lean:81\\n    namespace Cardinal\\n- Mathlib/Algebra/Module/Card.lean:24\\n    namespace Cardinal\\n- Mathlib/Algebra/Quaternion.lean:1243\\n    namespace Cardinal\\n- Mathlib/SetTheory/Cardinal/Cofinality/Ordinal.lean:551\\n    namespace Cardinal\\n- Mathlib/SetTheory/Cardinal/Free.lean:68\\n    namespace Cardinal\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 25, \"n\": 10}",
+   "ok": true,
+   "result_chars": 518,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 25–34 of 173):\\n    25  namespace Cardinal\\n    26  \\n    27  variable {α : Type u} {c d : Cardinal.{u}}\\n    28  \\n    29  /-- This function sends finite cardinals to the corresponding natural, and infinite cardinals\\n    30    to 0. -/\\n    31  noncomputable def toNat : Cardinal →*₀ ℕ :=\\n    32    ENat.toNatHom.comp (.ofClass toENat)\\n    33  \\n    34  @[simp] lemma toNat_toENat (a : Cardinal) : ENat.toNat (toENat a) = toNat a := rfl\\n\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(n : ℕ) ≤ Cardinal\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(n : ℕ) ≤ Cardinal': Unknown identifier `n`\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/SetTheory/Cardinal/ToNat.lean\", \"line\": 40, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1670,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/SetTheory/Cardinal/ToNat.lean  (lines 40–69 of 173):\\n    40  @[simp, norm_cast] theorem toNat_natCast (n : ℕ) : toNat n = n := toNat_ofENat n\\n    41  \\n    42  @[simp]\\n    43  lemma toNat_eq_zero : toNat c = 0 ↔ c = 0 ∨ ℵ₀ ≤ c := by\\n    44    rw [← toNat_toENat, ENat.toNat_eq_zero, toENat_eq_zero, toENat_eq_top]\\n    45  \\n    46  lemma toNat_ne_zero : toNat c ≠ 0 ↔ c ≠ 0 ∧ c < ℵ₀ := by simp [not_or]\\n    47  @[simp] lemma toNat_pos : 0 < toNat c ↔ c ≠ 0 ∧ c < ℵ₀ := pos_iff_ne_zero.trans toNat_ne_zero\\n    48  \\n    49  theorem cast_toNat_of_lt_aleph0 {c : Cardinal} (h : c < ℵ₀) : ↑(toNat c) = c := by\\n    50    lift c to ℕ using h\\n    51    rw [toNat_natCast]\\n    52  \\n    53  theorem toNat_apply_of_lt_aleph0 {c : Cardinal.{u}} (h : c < ℵ₀) :\\n    54      toNat c = Classical.choose (lt_aleph0.1 h) :=\\n    55    Nat.cast_injective (R := Cardinal.{u}) <| by\\n    56      rw [cast_toNat_of_lt_aleph0 h, ← Classical.choose_spec (lt_aleph0.1 h)]\\n    57  \\n    58  theorem toNat_apply_of_aleph0_le {c : Cardinal} (h : ℵ₀ ≤ c) : toNat c = 0 := by simp [h]\\n    59  \\n    60  theorem cast_toNat_of_aleph0_le {c : Cardinal} (h : ℵ₀ ≤ c) : ↑(toNat c) = (0 : Cardinal) := by\\n    61    rw [toNat_apply_of_aleph0_le h, Nat.cast_zero]\\n    62  \\n    63  theorem cast_toNat_eq_iff_lt_aleph0 {c : Cardinal} : toNat c = c ↔ c < ℵ₀ where\\n    64    mp h := by rw [← h]; simp\\n    65    mpr := cast_toNat_of_lt_aleph0\\n    66  \\n    67  theorem toNat_strictMonoOn : StrictMonoOn toNat (Iio ℵ₀) := by\\n    68    simp only [← range_natCast, StrictMonoOn, forall_mem_range, toNat_natCast, Nat.cast_lt]\\n    69    exact fun _ _ ↦ id\\n\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*forall.*natCast\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 209,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*forall.*natCast' (via ripgrep):\\n- Mathlib/Analysis/Normed/Field/Ultra.lean:140\\n    theorem isUltrametricDist_iff_forall_norm_natCast_le_one {R : Type*}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"natCast.*≤.*Cardinal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'natCast.*≤.*Cardinal' under Mathlib/.\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem toNat_eq_of_forall_natCast_le_iff (κ₁ κ₂ : Cardinal)\n    (h : ∀ n : ℕ, (↑n : Cardinal) ≤ κ₁ ↔ (↑n : Cardinal) ≤ κ₂) :\n    κ₁.toNat = κ₂.toNat := sorry"
+}

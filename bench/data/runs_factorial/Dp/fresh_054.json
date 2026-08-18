@@ -1,0 +1,201 @@
+{
+ "task_id": "fresh_054",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:40:00Z",
+ "wall_s": 89.7,
+ "transcript_stats": {
+  "turns": 20,
+  "assistant_turns": 16,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 4,
+   "mcp__wikibrain__brain_search": 5,
+   "mcp__wikibrain__decl_exists": 6,
+   "mcp__wikibrain__brain_cell": 4
+  },
+  "tokens_in": 130,
+  "tokens_out": 6827,
+  "cost_usd": 0.08499075
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"semiring of sets\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring of sets\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"semiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Semiring (α : Type u) extends AddCommMonoid α, MonoidWithZero α, NonUnitalSemiring α,\\\\n  NonAssocSemiring α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\",\\\"via_cell\\\":\\\"cell:Q1333055\\\",\\\"cell_label\\\":\\\"semiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"pairwise disjoint sets union\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3758,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pairwise disjoint sets union\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}]},{\\\"id\\\":\\\"cell:Q185359\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"union\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.union\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def union (s₁ s₂ : Set α) : Set α := {a | a ∈ s₁ ∨ a ∈ s₂}\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.union\\\",\\\"via_cell\\\":\\\"cell:Q185359\\\",\\\"cell_label\\\":\\\"union\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Disjoint\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Disjoint\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Disjoint\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Disjoint (a b : α) : Prop :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Disjoint.html#Disjoint\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"cell_label\\\":\\\"Disjoint\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]},{\\\"decl\\\":\\\"Pairwise\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Pairwise (r : α → α → Prop) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Pairwise.html#Pairwise\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"cell_label\\\":\\\"Pairwise\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"semiring of sets set algebra measure\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3217,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring of sets set algebra measure\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"semiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Semiring (α : Type u) extends AddCommMonoid α, MonoidWithZero α, NonUnitalSemiring α,\\\\n  NonAssocSemiring α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\",\\\"via_cell\\\":\\\"cell:Q1333055\\\",\\\"cell_label\\\":\\\"semiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"semiring sets membership\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring sets membership\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"set difference difference complement relative complement\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 289,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"set difference difference complement relative complement\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"set diff\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"set diff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finite subfamily\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite subfamily\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.diff\", \"Set.sInter\", \"Set.iUnion\", \"Fintype\", \"Set.Finite\", \"Pairwise\", \"Disjoint\"]}",
+   "ok": true,
+   "result_chars": 2067,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.diff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.diff\\\"},{\\\"decl\\\":\\\"Set.sInter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.sInter\\\"},{\\\"decl\\\":\\\"Set.iUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.iUnion\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"Set.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Set.Finite\\\"},{\\\"decl\\\":\\\"Pairwise\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Pairwise.html#Pairwise\\\"},{\\\"decl\\\":\\\"Disjoint\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Disjoint\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Disjoint\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Disjoint.html#Disjoint\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":7,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"semiring\", \"type\": \"cell\", \"limit\": 25}",
+   "ok": true,
+   "result_chars": 5930,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"label\\\":\\\"semiring\\\",\\\"aka\\\":[\\\"Semiring\\\",\\\"Semiring Activation in Neural Networks\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"aka\\\":[\\\"Tensor\\\",\\\"TensorProduct\\\",\\\"Vector Space Tensor Product\\\",\\\"tensor product\\\",\\\"Semiring and semimodule issues in MV-algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Defs\\\"},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"aka\\\":[\\\"Abstract Vector Space\\\",\\\"Definition:Module\\\",\\\"Definition:Vector Space\\\",\\\"Module\\\",\\\"Module mathematics\\\",\\\"Vector Space\\\",\\\"Vector space\\\",\\\"module\\\",\\\"vector space\\\",\\\"The Case for Inverse Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\"},{\\\"id\\\":\\\"cell:Q863912\\\",\\\"label\\\":\\\"Prime ideal\\\",\\\"aka\\\":[\\\"Definition:Prime Ideal of Ring\\\",\\\"Ideal.IsPrime\\\",\\\"Prime Ideal\\\",\\\"prime ideal\\\",\\\"Covering conditions for ideals in semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Prime\\\"},{\\\"id\\\":\\\"cell:Q736753\\\",\\\"label\\\":\\\"Quadratic form\\\",\\\"aka\\\":[\\\"Definition:Quadratic Form\\\",\\\"Quadratic Form\\\",\\\"QuadraticForm\\\",\\\"quadratic form\\\",\\\"Quadratic and Symmetric Bilinear Forms on Modules with Unique Base Over a Semiring\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/QuadraticForm/Basic\\\"},{\\\"id\\\":\\\"cell:Q1057416\\\",\\\"label\\\":\\\"Eisenstein's criterion\\\",\\\"aka\\\":[\\\"Eisensteins Irreducibility Criterion\\\",\\\"Polynomial.irreducible_of_eisenstein_criterion\\\",\\\"Distinguished elements in semiring extensions\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Polynomial/Eisenstein\\\"},{\\\"id\\\":\\\"cell:Q2042963\\\",\\\"label\\\":\\\"Picard group\\\",\\\"aka\\\":[\\\"CommRing.Pic\\\",\\\"Picard Group\\\",\\\"Facets of module theory over semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/PicardGroup\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Flat.projective_of_finitePresentation\\\",\\\"label\\\":\\\"Module.Flat.projective_of_finitePresentation\\\",\\\"aka\\\":[\\\"algebra-lemma-finite-projective\\\",\\\"Facets of module theory over semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Flat/EquationalCriterion\\\"},{\\\"id\\\":\\\"cell:Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"aka\\\":[\\\"UniqueFactorizationMonoid\\\",\\\"Arithmetical Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Adjunction.rightAdjoint_preservesLimits\\\",\\\"label\\\":\\\"CategoryTheory.Adjunction.rightAdjoint_preservesLimits\\\",\\\"aka\\\":[\\\"Flat Semimodules & von Neumann Regular Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Adjunction/Limits\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CommSemigroup\\\",\\\"label\\\":\\\"CommSemigroup\\\",\\\"aka\\\":[\\\"Key exchange protocol based on circulant matrix action over congruence-simple semiring\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FirstOrder.Language.Sentence.Realize\\\",\\\"label\\\":\\\"FirstOrder.Language.Sentence.Realize\\\",\\\"aka\\\":[\\\"Unified Foundations of Team Semantics via Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/ModelTheory/Semantics\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal\\\",\\\"label\\\":\\\"Ideal\\\",\\\"aka\\\":[\\\"Directly decomposable ideals and congruence kernels of commutative semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.exists_maximal\\\",\\\"label\\\":\\\"Ideal.exists_maximal\\\",\\\"aka\\\":[\\\"Is\\\\\\\\'{e}ki spaces of semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Maximal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.isMaximal_iff\\\",\\\"label\\\":\\\"Ideal.isMaximal_iff\\\",\\\"aka\\\":[\\\"Some Remarks on Ideals of Commutative Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Maximal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.isPrime_of_maximally_disjoint\\\",\\\"label\\\":\\\"Ideal.isPrime_of_maximally_disjoint\\\",\\\"aka\\\":[\\\"Some Remarks on Ideals of Commutative Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Maximal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap."
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measure theory\", \"type\": \"cell\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 443,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure theory\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q2709287\\\",\\\"label\\\":\\\"Support (measure theory)\\\",\\\"aka\\\":[\\\"MeasureTheory.Measure.support\\\",\\\"Ergodicity of the 2D Navier-Stokes Equations with Degenerate Stochastic Forcing\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Support\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SemiringOfSets\", \"MeasureTheory.Semiring\", \"Set.IsCompactClass\"]}",
+   "ok": true,
+   "result_chars": 1040,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SemiringOfSets\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.Semiring\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Semiring\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\"},{\\\"decl\\\":\\\"Set.IsCompactClass\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finset\", \"Set.iUnion\", \"Set.biUnion\", \"Set.pairwiseDisjoint\", \"Filter.Cofinite\"]}",
+   "ok": true,
+   "result_chars": 1465,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finset\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset\\\"},{\\\"decl\\\":\\\"Set.iUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.iUnion\\\"},{\\\"decl\\\":\\\"Set.biUnion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.pairwiseDisjoint\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Filter.Cofinite\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"iUnion\", \"Set.iUnion\", \"⋃\", \"Pairwise.disjoint\", \"Set.Finite\"]}",
+   "ok": true,
+   "result_chars": 1451,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"iUnion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.iUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.iUnion\\\"},{\\\"decl\\\":\\\"⋃\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pairwise.disjoint\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Set.Finite\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"Set.iUnion\"}",
+   "ok": false,
+   "result_chars": 367,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"Set.iUnion\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"Pairwise\"}",
+   "ok": true,
+   "result_chars": 1083,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Pairwise\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"anchor\\\":\\\"decl:Mathlib:Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"supercells\\\":[\\\"path:Mathlib/Logic/Pairwise\\\"],\\\"xy\\\":[-640.3,756.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Pairwise (r : α → α → Prop) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q104752\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Set.iUnion\"}",
+   "ok": false,
+   "result_chars": 380,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Set.iUnion\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q185359\"}",
+   "ok": true,
+   "result_chars": 1677,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q185359\\\",\\\"id\\\":\\\"cell:Q185359\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"union\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q185359\\\",\\\"anchor\\\":\\\"Q185359\\\",\\\"label\\\":\\\"union\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Set/Defs\\\"],\\\"f\\\":32,\\\"xy\\\":[-193.4,346.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q185359\\\",\\\"label\\\":\\\"union\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"operation denoted by symbol “∪” applied on two sets; the set of all distinct elements in the collection\\\",\\\"slug\\\":\\\"Union_(set_theory)\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Set.union\\\",\\\"label\\\":\\\"Set.union\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def union (s₁ s₂ : Set α) : Set α := {a | a ∈ s₁ ∨ a ∈ s₂}\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q36161\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q903783\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos774.erdos_774\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/SetTheory\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finset.sUnion\", \"Set.biUnion\", \"Finset.biUnion\", \"Set.sUnion\"]}",
+   "ok": true,
+   "result_chars": 1238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finset.sUnion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.biUnion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finset.biUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Union\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Union\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Union.html#Finset.biUnion\\\"},{\\\"decl\\\":\\\"Set.sUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.sUnion\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.diff\", \"Finset\", \"Disjoint\", \"Set.iUnion\", \"Set.inter\", \"Set.empty\"]}",
+   "ok": true,
+   "result_chars": 1851,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.diff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.diff\\\"},{\\\"decl\\\":\\\"Finset\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset\\\"},{\\\"decl\\\":\\\"Disjoint\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Disjoint\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Disjoint\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Disjoint.html#Disjoint\\\"},{\\\"decl\\\":\\\"Set.iUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.iUnion\\\"},{\\\"decl\\\":\\\"Set.inter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.inter\\\"},{\\\"decl\\\":\\\"Set.empty\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"ZFSet.empty\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.SetTheory.ZFC.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.SetTheory.ZFC.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/SetTheory/ZFC/Basic.html#ZFSet.empty\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":5,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem semiring_of_sets_finite_union_decomposition\n  {α : Type*}\n  (σ : Set (Set α))\n  (h_empty : ∅ ∈ σ)\n  (h_closed_inter : ∀ s t ∈ σ, s ∩ t ∈ σ)\n  (h_closed_diff : ∀ s t ∈ σ, ∃ (I : Finset (Set α)), \n    (∀ i ∈ I, i ∈ σ) ∧ \n    (∀ i j ∈ I, i ≠ j → Disjoint (i : Set α) (j : Set α)) ∧ \n    s \\ t = ⋃ i ∈ I, i)\n  {s : Set α} (hs : s ∈ σ)\n  {I : Finset (Set α)} (hI : ∀ i ∈ I, i ∈ σ) :\n  ∃ (J : Finset (Set α)), \n    (∀ j ∈ J, j ∈ σ) ∧ \n    (∀ j k ∈ J, j ≠ k → Disjoint (j : Set α) (k : Set α)) ∧ \n    s \\ ⋃ i ∈ I, i = ⋃ j ∈ J, j := sorry"
+}

@@ -1,0 +1,280 @@
+{
+ "task_id": "fresh_010",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:51:16Z",
+ "wall_s": 77.2,
+ "transcript_stats": {
+  "turns": 29,
+  "assistant_turns": 20,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 19,
+   "mcp__formal__decl_grep": 3,
+   "mcp__formal__decl_read": 3,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 162,
+  "tokens_out": 4165,
+  "cost_usd": 0.08631249999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearIsometry\"}",
+   "ok": true,
+   "result_chars": 1442,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 228 declarations mentioning LinearIsometry.\\n- LinearIsometry.id   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n    The identity linear isometry.\\n- LinearIsometry.instInhabited   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.instMonoid   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n    A `σ₁₂`-semilinear isometric embedding of a normed `R`-module into an `R₂`-module, denoted as `f : E →ₛₗᵢ[σ₁₂] E₂`.\\n- LinearIsometry.Simps.apply   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n    See Note [custom simps projection]. We need to specify this projection explicitly in this case, because it is a composition of multiple projections.\\n- LinearIsometry.instFunLike   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.coe_id   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.id_apply   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.toLinearMap   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.instSemilinearIsometryClass   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.toLinearMap_injective   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n- LinearIsometry.toContinuousLinearMap   [Mathlib.Analysis.Normed.Operator.LinearIsometry]\\n    Interpret a linear isometry as a continuous linear map.\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.det\"}",
+   "ok": true,
+   "result_chars": 1515,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 513 declarations mentioning Matrix.det.\\n- Matrix.det   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    The determinant of a matrix given by the Leibniz formula.\\n- Matrix.det_eq_elem_of_subsingleton   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_transpose   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    Transposing a matrix preserves the determinant.\\n- Matrix.det_unique   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If `n` has only one element, the determinant of an `n` by `n` matrix is just that element. Although `Unique` implies `DecidableEq` and `Fintype`, the instances \\n- Matrix.det_eq_elem_of_card_eq_one   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_isEmpty   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.coe_det_isEmpty   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_diagonal   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_eq_one_of_card_eq_zero   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_zero_of_row_eq   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If a matrix has a repeated row, the determinant will be zero.\\n- Matrix.det_updateRow_eq_zero   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If we repeat a row of a matrix, we get a matrix of determinant zero.\\n- Matrix.det_zero_of_column_eq   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If a matrix has a repeated column, the determinant will be zero.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"InnerProductSpace\"}",
+   "ok": true,
+   "result_chars": 1863,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3808 declarations mentioning InnerProductSpace.\\n- InnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A (pre) inner product space is a vector space with an additional operation called inner product. The (semi)norm could be derived from the inner product, instead\\n- InnerProductSpace.toInner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PUnit.instInnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- InnerProductSpace.toNormedSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- HilbertSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A Hilbert space is a complete normed inner product space.\\n- HilbertSpace.mk   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PreInnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `PreInnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `PreInnerProductSpace.Core` for `PreInnerProductSpace`s. Note that th\\n- InnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `InnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `InnerProductSpace.Core` for `InnerProductSpace`s. Note that the `Norm` \\n- InnerProductSpace.ofCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Given a `PreInnerProductSpace.Core` structure on a space, one can use it to turn the space into a pre-inner product space (i.e., `SeminormedAddCommGroup` and `I\\n- InnerProductSpace.add_left   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is additive in the first coordinate.\\n- InnerProductSpace.conj_inner_symm   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is *Hermitian*, taking the `conj` swaps the arguments.\\n- InnerProductSpace.norm_sq_eq_re_inner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product induces the norm.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.det\"}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 100 declarations mentioning LinearMap.det.\\n- LinearMap.det   [Mathlib.LinearAlgebra.Determinant]\\n    The determinant of an endomorphism independent of basis.  If there is no finite basis on `M`, the result is `1` instead.\\n- LinearMap.det_id   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_subsingleton   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.finite_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the space is finite-dimensional.\\n- LinearMap.free_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the module is free.\\n- Module.Free.of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_not_module_finite   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map is invertible, so is its determinant.\\n- LinearMap.isUnit_iff_isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.isUnit_det'   [Mathlib.LinearAlgebra.Determinant]\\n    Specialization of `LinearEquiv.isUnit_det`\\n- LinearMap.equivOfIsUnitDet   [Mathlib.LinearAlgebra.Determinant]\\n    Builds a linear equivalence from an endomorphism whose determinant is a unit.\\n- LinearMap.det_zero'   [Mathlib.LinearAlgebra.Determinant]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearIsometry det\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearIsometry det': Unknown identifier `det`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(LinearIsometry ?E ?F) → abs (LinearMap.det (?e.toLinearMap))\"}",
+   "ok": true,
+   "result_chars": 323,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(LinearIsometry ?E ?F) → abs (LinearMap.det (?e.toLinearMap))': type expected, got\\n  (LinearIsometry ?E\\n  ?F : (E₂ : Type ?u.2) →\\n  [inst : SeminormedAddCommGroup ?F] →\\n    [inst_1 : SeminormedAddCommGroup E₂] → [Module ?m.1 ?F] → [Module ?m.2 E₂] → Type (max ?u.3 ?u.2))\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"norm_det\"}",
+   "ok": true,
+   "result_chars": 233,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning norm_det.\\n- norm_det   [Mathlib.Tactic.NormDet]\\n    The `norm_det` simproc normalizes determinants of matrices written using `!![...]` notation over a commutative ring.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"orthonormal\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'orthonormal': unknown identifier 'orthonormal'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Orthonormal\"}",
+   "ok": true,
+   "result_chars": 1442,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 92 declarations mentioning Orthonormal.\\n- Orthonormal   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n    An orthonormal set of vectors in an `InnerProductSpace`\\n- Orthonormal.of_isEmpty   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- Orthonormal.norm_eq_one   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- Orthonormal.nnnorm_eq_one   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- orthonormal_subsingleton_iff   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- Orthonormal.comp   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n    A subfamily of an orthonormal family (i.e., a composition with an injective map) is an orthonormal family.\\n- Orthonormal.ne_zero   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- orthonormal_empty   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- Orthonormal.enorm_eq_one   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n- Orthonormal.toSubtypeRange   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n    If `v : ι → E` is an orthonormal family, then `Subtype.val : (range v) → E` is an orthonormal family.\\n- Orthonormal.linearIndependent   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n    An orthonormal set is linearly independent.\\n- orthonormal_subtype_range   [Mathlib.Analysis.InnerProductSpace.Orthonormal]\\n    An injective family `v : ι → E` is orthonormal if and only if `Subtype.val : (range v) → E` is orthonormal.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 1853,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2019 declarations mentioning FiniteDimensional.\\n- FiniteDimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    `FiniteDimensional` vector spaces are defined to be finite modules. Use `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another defini\\n- FiniteDimensional.finiteDimensional_self   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.instFintypeElemOfVectorSpaceIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, `Basis.ofVectorSpace` is indexed by a finite type.\\n- FiniteDimensional.fintypeBasisIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, all bases are indexed by a finite type\\n- Module.Basis.finiteDimensional_of_finite   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a finite basis, then it is finite-dimensional.\\n- FiniteDimensional.of_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_fact_finrank_eq_two   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finrank_pos   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- Module.finrank_of_infinite_dimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.finiteDimensional_pi   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finite_basis   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a basis indexed by elements of a finite set, then it is finite-dimensional.\\n- FiniteDimensional.of_fact_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    We can infer `FiniteDimensional K V` in the presence of `[Fact (finrank K V = n + 1)]`. Use `have : FiniteDimensional K V := .of_fact_finrank_eq_succ` when need\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearEquiv.det\"}",
+   "ok": true,
+   "result_chars": 1327,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 46 declarations mentioning LinearEquiv.det.\\n- LinearEquiv.det   [Mathlib.LinearAlgebra.Determinant]\\n    On a `LinearEquiv`, the domain of `LinearMap.det` can be promoted to `Rˣ`.\\n- LinearEquiv.det_refl   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.coe_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.coe_inv_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.det_symm   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.det_conj   [Mathlib.LinearAlgebra.Determinant]\\n    Conjugating a linear equiv by a linear equiv does not change its determinant.\\n- LinearEquiv.det_trans   [Mathlib.LinearAlgebra.Determinant]\\n- Submodule.linearEquiv_det_reflection   [Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional]\\n- Module.Basis.map_orientation_eq_det_inv_smul   [Mathlib.LinearAlgebra.Orientation]\\n    The value of `Orientation.map` when the index type has the cardinality of a basis, in terms of `f.det`.\\n- Orientation.map_eq_det_inv_smul   [Mathlib.LinearAlgebra.Orientation]\\n    The value of `Orientation.map` when the index type has cardinality equal to the finite dimension, in terms of `f.det`.\\n- ZLattice.covolume_eq_det_inv   [Mathlib.Algebra.Module.ZLattice.Covolume]\\n- LinearEquiv.det_baseChange   [Mathlib.LinearAlgebra.Charpoly.BaseChange]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"abs (LinearMap.det) = 1\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'abs (LinearMap.det) = 1'.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearIsometry.det_eq_one\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearIsometry.det_eq_one': unknown identifier 'LinearIsometry.det_eq_one'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LinearIsometry.*det\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LinearIsometry.*det' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"isometry preserves norm\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isometry preserves norm': Unknown identifier `isometry`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Isometry\"}",
+   "ok": true,
+   "result_chars": 1321,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 242 declarations mentioning Isometry.\\n- Isometry   [Mathlib.Topology.MetricSpace.Isometry]\\n    An isometry (also known as isometric embedding) is a map preserving the edistance between pseudoemetric spaces, or equivalently the distance between pseudometri\\n- isometry_id   [Mathlib.Topology.MetricSpace.Isometry]\\n    The identity is an isometry\\n- NNReal.isometry_coe   [Mathlib.Topology.MetricSpace.Isometry]\\n- isometry_subsingleton   [Mathlib.Topology.MetricSpace.Isometry]\\n    Any map on a subsingleton is an isometry\\n- PseudoEMetricSpace.isometry_induced   [Mathlib.Topology.MetricSpace.Isometry]\\n- Isometry.injective   [Mathlib.Topology.MetricSpace.Isometry]\\n    An isometry from an emetric space is injective\\n- PseudoMetricSpace.isometry_induced   [Mathlib.Topology.MetricSpace.Isometry]\\n- IsometryEquiv.mk   [Mathlib.Topology.MetricSpace.Isometry]\\n- Isometry.isUniformInducing   [Mathlib.Topology.MetricSpace.Isometry]\\n    An isometry from a metric space is a uniform inducing map\\n- Isometry.uniformContinuous   [Mathlib.Topology.MetricSpace.Isometry]\\n    An isometry from a metric space is a uniform continuous map\\n- EMetricSpace.isometry_induced   [Mathlib.Topology.MetricSpace.Isometry]\\n- IsometryEquiv.isometry_toFun   [Mathlib.Topology.MetricSpace.Isometry]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : E →ₗᵢ F\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : E →ₗᵢ F': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"orthogonal matrix determinant\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'orthogonal matrix determinant': Unknown identifier `orthogonal`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"determinant isometry one\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'determinant isometry one': Unknown identifier `determinant`\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.det = 1\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'LinearMap.det = 1'.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Normed/Operator/LinearIsometry.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5910,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Normed/Operator/LinearIsometry.lean  (lines 1–100 of 1109):\\n     1  /-\\n     2  Copyright (c) 2021 Yury Kudryashov. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yury Kudryashov, Frédéric Dupuis, Heather Macbeth\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Star.Basic  -- shake: keep (used in `notation` only)\\n     9  public import Mathlib.Analysis.Normed.Group.Constructions\\n    10  public import Mathlib.Analysis.Normed.Group.Submodule\\n    11  public import Mathlib.Analysis.Normed.Group.Uniform\\n    12  public import Mathlib.LinearAlgebra.Basis.Defs\\n    13  public import Mathlib.LinearAlgebra.DFinsupp\\n    14  public import Mathlib.Topology.Algebra.Module.Equiv\\n    15  \\n    16  /-!\\n    17  # (Semi-)linear isometries\\n    18  \\n    19  In this file we define `LinearIsometry σ₁₂ E E₂` (notation: `E →ₛₗᵢ[σ₁₂] E₂`) to be a semilinear\\n    20  isometric embedding of `E` into `E₂` and `LinearIsometryEquiv` (notation: `E ≃ₛₗᵢ[σ₁₂] E₂`) to be\\n    21  a semilinear isometric equivalence between `E` and `E₂`.  The notation for the associated purely\\n    22  linear concepts is `E →ₗᵢ[R] E₂`, `E ≃ₗᵢ[R] E₂`, and `E →ₗᵢ⋆[R] E₂`, `E ≃ₗᵢ⋆[R] E₂` for\\n    23  the star-linear versions.\\n    24  \\n    25  We also prove some trivial lemmas and provide convenience constructors.\\n    26  \\n    27  Since a lot of elementary properties don't require `‖x‖ = 0 → x = 0` we start setting up the\\n    28  theory for `SeminormedAddCommGroup` and we specialize to `NormedAddCommGroup` when needed.\\n    29  -/\\n    30  \\n    31  @[expose] public section\\n    32  \\n    33  open Function Set Topology\\n    34  \\n    35  variable {R R₂ R₃ R₄ E E₂ E₃ E₄ F 𝓕 : Type*} [Semiring R] [Semiring R₂] [Semiring R₃] [Semiring R₄]\\n    36    {σ₁₂ : R →+* R₂} {σ₂₁ : R₂ →+* R} {σ₁₃ : R →+* R₃} {σ₃₁ : R₃ →+* R} {σ₁₄ : R →+* R₄}\\n    37    {σ₄₁ : R₄ →+* R} {σ₂₃ : R₂ →+* R₃} {σ₃₂ : R₃ →+* R₂} {σ₂₄ : R₂ →+* R₄} {σ₄₂ : R₄ →+* R₂}\\n    38    {σ₃₄ : R₃ →+* R₄} {σ₄₃ : R₄ →+* R₃} [RingHomInvPair σ₁₂ σ₂₁] [RingHomInvPair σ₂₁ σ₁₂]\\n    39    [RingHomInvPair σ₁₃ σ₃₁] [RingHomInvPair σ₃₁ σ₁₃] [RingHomInvPair σ₂₃ σ₃₂]\\n    40    [RingHomInvPair σ₃₂ σ₂₃] [RingHomInvPair σ₁₄ σ₄₁] [RingHomInvPair σ₄₁ σ₁₄]\\n    41    [RingHomInvPair σ₂₄ σ₄₂] [RingHomInvPair σ₄₂ σ₂₄] [RingHomInvPair σ₃₄ σ₄₃]\\n    42    [RingHomInvPair σ₄₃ σ₃₄] [RingHomCompTriple σ₁₂ σ₂₃ σ₁₃] [RingHomCompTriple σ₁₂ σ₂₄ σ₁₄]\\n    43    [RingHomCompTriple σ₂₃ σ₃₄ σ₂₄] [RingHomCompTriple σ₁₃ σ₃₄ σ₁₄] [RingHomCompTriple σ₃₂ σ₂₁ σ₃₁]\\n    44    [RingHomCompTriple σ₄₂ σ₂₁ σ₄₁] [RingHomCompTriple σ₄₃ σ₃₂ σ₄₂] [RingHomCompTriple σ₄₃ σ₃₁ σ₄₁]\\n    45    [SeminormedAddCommGroup E] [SeminormedAddCommGroup E₂] [SeminormedAddCommGroup E₃]\\n    46    [SeminormedAddCommGroup E₄] [Module R E] [Module R₂ E₂] [Module R₃ E₃] [Module R₄ E₄]\\n    47    [NormedAddCommGroup F] [Module R F]\\n    48  \\n    49  /-- A `σ₁₂`-semilinear isometric embedding of a normed `R`-module into an `R₂`-module,\\n    50  denoted as `f : E →ₛₗᵢ[σ₁₂] E₂`. -/\\n    51  structure LinearIsometry (σ₁₂ : R →+* R₂) (E E₂ : Type*) [SeminormedAddCommGroup E]\\n    52    [SeminormedAddCommGroup E₂] [Module R E] [Module R₂ E₂] extends E →ₛₗ[σ₁₂] E₂ where\\n    53    norm_map' : ∀ x, ‖toLinearMap x‖ = ‖x‖\\n    54  \\n    55  @[inherit_doc]\\n    56  notation:25 E \\\" →ₛₗᵢ[\\\" σ₁₂:25 \\\"] \\\" E₂:0 => LinearIsometry σ₁₂ E E₂\\n    57  \\n    58  /-- A linear isometric embedding of a normed `R`-module into another one. -/\\n    59  notation:25 E \\\" →ₗᵢ[\\\" R:25 \\\"] \\\" E₂:0 => LinearIsometry (RingHom.id R) E E₂\\n    60  \\n    61  /-- An antilinear isometric embedding of a normed `R`-module into another one. -/\\n    62  notation:25 E \\\" →ₗᵢ⋆[\\\" R:25 \\\"] \\\" E₂:0 => LinearIsometry (starRingEnd R) E E₂\\n    63  \\n    64  /-- `SemilinearIsometryClass F σ E E₂` asserts `F` is a type of bundled `σ`-semilinear isometries\\n    65  `E → E₂`.\\n    66  \\n    67  S"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*det.*isometry\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*det.*isometry' under Mathlib/.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*LinearIsometry\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4300,
+   "result_head": "[{\"type\": \"text\", \"text\": \"72 match(es) for 'theorem.*LinearIsometry' (via ripgrep):\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:215\\n    theorem isComplete_image_iff' (f : LinearIsometry σ₁₂ E E₂) {s : Set E} :\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:541\\n    theorem toLinearIsometry_injective : Function.Injective (toLinearIsometry : _ → E →ₛₗᵢ[σ₁₂] E₂) :=\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:545\\n    theorem toLinearIsometry_inj {f g : E ≃ₛₗᵢ[σ₁₂] E₂} :\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:550\\n    theorem coe_toLinearIsometry : ⇑e.toLinearIsometry = e :=\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:848\\n    theorem toContinuousLinearMap_toLinearIsometry :\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:969\\n    theorem coe_ofLinearIsometry (f : E →ₛₗᵢ[σ₁₂] E₂) (g : E₂ →ₛₗ[σ₂₁] E)\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:975\\n    theorem coe_ofLinearIsometry_symm (f : E →ₛₗᵢ[σ₁₂] E₂) (g : E₂ →ₛₗ[σ₂₁] E)\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:1049\\n    theorem ofEq_rfl : ofEq p p rfl = LinearIsometryEquiv.refl R' p := rfl\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:1102\\n    theorem toLinearEquiv_opLinearIsometryEquiv :\\n- Mathlib/Analysis/Normed/Operator/LinearIsometry.lean:1106\\n    theorem toContinuousLinearEquiv_opLinearIsometryEquiv :\\n- Mathlib/Analysis/Normed/Operator/Conformal.lean:69\\n    protected theorem LinearIsometry.isConformalMap (f' : M →ₗᵢ[R] N) :\\n- Mathlib/Analysis/Normed/Operator/Basic.lean:157\\n    theorem _root_.LinearIsometry.toSpanSingleton_apply {v : E} (hv : ‖v‖ = 1) (a : 𝕜) :\\n- Mathlib/Analysis/Normed/Operator/Basic.lean:162\\n    theorem _root_.LinearIsometry.coe_toSpanSingleton {v : E} (hv : ‖v‖ = 1) :\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/Basic.lean:55\\n    theorem _root_.LinearIsometry.angle_map {E F : Type*} [NormedAddCommGroup E] [NormedAddCommGroup F]\\n- Mathlib/Geometry/Euclidean/Angle/Oriented/Rotation.lean:127\\n    theorem rotation_zero : o.rotation 0 = LinearIsometryEquiv.refl ℝ V := by ext; simp [rotation]\\n- Mathlib/Geometry/Euclidean/Angle/Oriented/Rotation.lean:131\\n    theorem rotation_pi : o.rotation π = LinearIsometryEquiv.neg ℝ := by\\n- Mathlib/Analysis/Complex/Isometry.lean:90\\n    theorem LinearIsometry.re_apply_eq_re_of_add_conj_eq (f : ℂ →ₗᵢ[ℝ] ℂ)\\n- Mathlib/Analysis/Complex/Isometry.lean:95\\n    theorem LinearIsometry.im_apply_eq_im_or_neg_of_re_apply_eq_re {f : ℂ →ₗᵢ[ℝ] ℂ}\\n- Mathlib/Analysis/Complex/Isometry.lean:102\\n    theorem LinearIsometry.im_apply_eq_im {f : ℂ →ₗᵢ[ℝ] ℂ} (h : f 1 = 1) (z : ℂ) :\\n- Mathlib/Analysis/Complex/Isometry.lean:108\\n    theorem LinearIsometry.re_apply_eq_re {f : ℂ →ₗᵢ[ℝ] ℂ} (h : f 1 = 1) (z : ℂ) : (f z).re = z.re := by\\n- Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean:152\\n    theorem LinearIsometryEquiv.reflections_generate_dim_aux [FiniteDimensional ℝ F] {n : ℕ}\\n- Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean:230\\n    theorem LinearIsometryEquiv.reflections_generate_dim [FiniteDimensional ℝ F] (φ : F ≃ₗᵢ[ℝ] F) :\\n- Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean:236\\n    theorem LinearIsometryEquiv.reflections_generate [FiniteDimensional ℝ F] :\\n- Mathlib/Analysis/Complex/Basic.lean:429\\n    @[simp] theorem _root_.RCLike.toContinuousLinearMap_complexLinearIsometryEquiv\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:290\\n    theorem _root_.LinearIsometry.map_starProjection {E E' : Type*} [NormedAddCommGroup E]\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:299\\n    theorem _root_.LinearIsometry.map_starProjection' {E E' : Type*} [NormedAddCommGroup E]\\n- Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean:134\\n    theorem reflection_bot : reflection (⊥ : Submodule 𝕜 E) = LinearIsometryEquiv.neg 𝕜 := by\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:214\\n    theorem _root_.LinearIsometry.normDet_eq_one ("
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 1–120 of 441):\\n     1  /-\\n     2  Copyright (c) 2026 Weiyi Wang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Weiyi Wang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.InnerProductSpace.Adjoint\\n     9  public import Mathlib.Analysis.InnerProductSpace.GramMatrix\\n    10  public import Mathlib.Analysis.InnerProductSpace.SingularValues\\n    11  public import Mathlib.Geometry.Euclidean.Volume.Measure\\n    12  \\n    13  import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar\\n    14  import Mathlib.Topology.MetricSpace.HausdorffDimension\\n    15  \\n    16  /-!\\n    17  # Norm determinant of a linear map\\n    18  \\n    19  Given a rectangular matrix $T$, it is common to talk about $\\\\sqrt{det(T^{H}T)}$, where $T^{H}$ is\\n    20  the conjugate transpose of $T$, as a generalization to the determinant of a square matrix. It is the\\n    21  $m$-dimensional volume factor for linear maps $\\\\mathbb{R}^m \\\\to \\\\mathbb{R}^n$. It is given various\\n    22  names in the literature:\\n    23  * \\\"Jacobian\\\" (definition 3.4 of [lawrenceronald2025]), in the context of volume factor\\n    24    for a non-linear map. However, we choose to reserve this name for the matrix consisting of\\n    25    derivatives.\\n    26  * \\\"Gram determinant\\\", which is already used by `Matrix.gram`, and it is often referring to\\n    27    $det(T^{H}T)$ without the square root.\\n    28  * \\\"Nonnegative determinant\\\" (definition 1 of [haruoyoshiohidetoki2006]).\\n    29  \\n    30  Without a standardized name, we give a descriptive name `LinearMap.normDet` to reflect its\\n    31  definition and show that it is a generalization of `‖(f : LinearMap 𝕜 U U).det‖`\\n    32  (See `LinearMap.normDet_eq_norm_det`). We also construct this on linear maps between inner product\\n    33  spaces instead of matrices, and allow the codomain to have infinite dimension.\\n    34  \\n    35  ## Main definition\\n    36  * `LinearMap.normDet` : the norm determinant of a linear map.\\n    37  \\n    38  ## Main result\\n    39  * `ContinuousLinearMap.normDet_sq` and `LinearMap.normDet_sq`: The square of `f.normDet`\\n    40    equals to the determinant of `f.adjoint ∘ₗ f`.\\n    41  * `LinearMap.normDet_sq_eq_det_gram`: The square of `LinearMap.normDet` equals to the determinant of\\n    42    the Gram matrix formed by vectors mapped from an orthonormal basis.\\n    43  * `LinearMap.normDet_eq_prod_singularValues`: `LinearMap.normDet` equals to the product of singular\\n    44    values.\\n    45  * `LinearMap.hausdorffMeasure_image`: `LinearMap.normDet` is the volume factor for Hausdorff\\n    46    measure.\\n    47  \\n    48  -/\\n    49  \\n    50  public section\\n    51  \\n    52  open Module\\n    53  \\n    54  namespace LinearMap\\n    55  \\n    56  variable {𝕜 U V W : Type*} [RCLike 𝕜] [NormedAddCommGroup U] [InnerProductSpace 𝕜 U]\\n    57    [FiniteDimensional 𝕜 U] [NormedAddCommGroup V] [InnerProductSpace 𝕜 V] [NormedAddCommGroup W]\\n    58    [InnerProductSpace 𝕜 W]\\n    59  \\n    60  open Classical in\\n    61  /--\\n    62  The norm determinant of a linear map `f : U →ₗ[𝕜] V` is defined as the norm of the determinant of\\n    63  the square matrix representing the linear map `U →ₗ[𝕜] f.range` over a pair of orthonormal basis of\\n    64  equal dimensions.\\n    65  (See `LinearMap.normDet_eq_norm_det_toMatrix_rangeRestrict` for using arbitrary orthonormal basis)\\n    66  \\n    67  If such basis doesn't exist (e.g. the map is not injective), the norm determinant is zero.\\n    68  (See `LinearMap.normDet_eq_zero_iff_ker_ne_bot`)\\n    69  -/\\n    70  noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\\n    71    if h : Nonempty (OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 f.range) then\\n    72      ‖(f.rangeRestrict.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis h.some.toBasis).det‖\\n    73    else\\n    74      0\\n    75  \\n    76  theorem"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 210, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1575,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 210–239 of 441):\\n   210  /--\\n   211  `LinearMap.normDet` of a linear isometry is 1.\\n   212  -/\\n   213  @[simp]\\n   214  theorem _root_.LinearIsometry.normDet_eq_one (f : U →ₗᵢ[𝕜] V) : f.toLinearMap.normDet = 1 := by\\n   215    obtain ⟨b⟩ := (f.normDet_ne_zero_tfae.out 4 3).mp f.injective\\n   216    rw [normDet_eq_norm_det_toMatrix_rangeRestrict _ (stdOrthonormalBasis 𝕜 U) b]\\n   217    apply CStarRing.norm_of_mem_unitary\\n   218    exact Matrix.det_of_mem_unitary <| (f.equivRange).toMatrix_mem_unitaryGroup _ _\\n   219  \\n   220  @[simp]\\n   221  theorem normDet_id : (id : U →ₗ[𝕜] U).normDet = 1 :=\\n   222    LinearIsometry.id.normDet_eq_one\\n   223  \\n   224  @[simp]\\n   225  theorem normDet_subtype (p : Submodule 𝕜 U) : p.subtype.normDet = 1 :=\\n   226    p.subtypeₗᵢ.normDet_eq_one\\n   227  \\n   228  @[simp]\\n   229  theorem normDet_of_subsingleton [Subsingleton U] (f : U →ₗ[𝕜] V) : f.normDet = 1 := by\\n   230    have h : f.ker = ⊥ := Submodule.eq_bot_of_subsingleton\\n   231    have hrank : finrank 𝕜 U = 0 := finrank_zero_iff.mpr ‹_›\\n   232    let bu : OrthonormalBasis (Fin 0) 𝕜 U := (stdOrthonormalBasis 𝕜 U).reindex (by rw [hrank])\\n   233    let bv := orthonormalBasis_range h bu\\n   234    simp [normDet_eq_norm_det_toMatrix_rangeRestrict f bu bv]\\n   235  \\n   236  @[simp]\\n   237  theorem normDet_zero : (0 : U →ₗ[𝕜] V).normDet = 0 ^ finrank 𝕜 U := by\\n   238    nontriviality U\\n   239    simp [zero_pow finrank_pos.ne.symm, normDet_eq_zero_iff_ker_ne_bot]\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearIsometry\", \"LinearMap.normDet\", \"LinearIsometry.normDet_eq_one\"]}",
+   "ok": true,
+   "result_chars": 1054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearIsometry\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Operator.LinearIsometry\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Operator.LinearIsometry\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Operator/LinearIsometry.html#LinearIsometry\\\"},{\\\"decl\\\":\\\"LinearMap.normDet\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LinearIsometry.normDet_eq_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearMap.normDet\", \"InnerProductSpace\"]}",
+   "ok": true,
+   "result_chars": 783,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.normDet\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"InnerProductSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Defs.html#InnerProductSpace\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearIsometry\", \"InnerProductSpace\", \"RCLike\"]}",
+   "ok": true,
+   "result_chars": 1164,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearIsometry\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Operator.LinearIsometry\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Operator.LinearIsometry\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Operator/LinearIsometry.html#LinearIsometry\\\"},{\\\"decl\\\":\\\"InnerProductSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Defs.html#InnerProductSpace\\\"},{\\\"decl\\\":\\\"RCLike\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.RCLike.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.RCLike.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/RCLike/Basic.html#RCLike\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "import Mathlib.Analysis.InnerProductSpace.NormDet\n\ntheorem norm_determinant_linear_isometry {𝕜 U V : Type*} [RCLike 𝕜] [NormedAddCommGroup U]\n    [InnerProductSpace 𝕜 U] [FiniteDimensional 𝕜 U] [NormedAddCommGroup V]\n    [InnerProductSpace 𝕜 V] (f : U →ₗᵢ[𝕜] V) : f.toLinearMap.normDet = 1 := sorry"
+}

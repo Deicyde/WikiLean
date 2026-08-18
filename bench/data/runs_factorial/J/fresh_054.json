@@ -1,0 +1,241 @@
+{
+ "task_id": "fresh_054",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:21:48Z",
+ "wall_s": 96.5,
+ "transcript_stats": {
+  "turns": 25,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 9,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_search": 6,
+   "mcp__wikibrain__brain_transfer": 4
+  },
+  "tokens_in": 114,
+  "tokens_out": 7902,
+  "cost_usd": 0.09114715
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"semiring of sets\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semiring of sets\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"semiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Semiring (α : Type u) extends AddCommMonoid α, MonoidWithZero α, NonUnitalSemiring α,\\\\n  NonAssocSemiring α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\",\\\"via_cell\\\":\\\"cell:Q1333055\\\",\\\"cell_label\\\":\\\"semiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"pairwise disjoint sets\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2538,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pairwise disjoint sets\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"SetSemiring set system closure\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3989,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SetSemiring set system closure\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Semiring\\\",\\\"label\\\":\\\"Semiring\\\"}]},{\\\"id\\\":\\\"cell:Q4720939\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Closure (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Closure\\\",\\\"label\\\":\\\"Closure\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:closure\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"closure\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"ClosureOperator\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Closure\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Closure\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure ClosureOperator [Preorder α] extends α →o α where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Closure.html#ClosureOperator\\\",\\\"via_cell\\\":\\\"cell:Q4720939\\\",\\\"cell_label\\\":\\\"Closure (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Closure\\\",\\\"label\\\":\\\"Closure\\\"}]},{\\\"decl\\\":\\\"SetSemiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Set.Semiring\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Semiring\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def SetSemiring (α : Type*) : Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Semiring.html#SetSemiring\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"cell_label\\\":\\\"SetSemiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Semiring\\\",\\\"label\\\":\\\"Semiring\\\"}]},{\\\"decl\\\":\\\"closure\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def closure (s : Set X) : Set X :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#closure\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:closure\\\",\\\"cell_label\\\":\\\"closure\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"set difference union finite family\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3063,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"set difference union finite family\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q856215\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"indexed family\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q185359\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"union\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.union\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def union (s₁ s₂ : Set α) : Set α := {a | a ∈ s₁ ∨ a ∈ s₂}\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.union\\\",\\\"via_cell\\\":\\\"cell:Q185359\\\",\\\"cell_label\\\":\\\"union\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"cell_label\\\":\\\"Finite\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:SetSemiring\"}",
+   "ok": true,
+   "result_chars": 1190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"anchor\\\":\\\"decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Set/Semiring\\\"],\\\"xy\\\":[226.5,625]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Semiring\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def SetSemiring (α : Type*) : Type _ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Semiring\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Semiring\\\",\\\"label\\\":\\\"Semiring\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Pairwise.Disjoint sets index family\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2843,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pairwise.Disjoint sets index family\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}]},{\\\"id\\\":\\\"cell:Q856215\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"indexed family\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:Q856215\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"indexed family\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:SetSemiring\"}",
+   "ok": true,
+   "result_chars": 497,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"code\\\":\\\"def SetSemiring (α : Type*) : Type _ :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Semiring.html#SetSemiring\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Pairwise\"}",
+   "ok": true,
+   "result_chars": 1101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Pairwise\\\",\\\"anchor\\\":\\\"decl:Mathlib:Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"supercells\\\":[\\\"path:Mathlib/Logic/Pairwise\\\"],\\\"xy\\\":[-640.3,756.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\",\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Pairwise (r : α → α → Prop) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Pairwise\\\",\\\"label\\\":\\\"Pairwise\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q104752\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"biUnion iUnion finite indexed union\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6501dab80f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6501dab80f63\",\"timestamp\":\"2026-08-08T03:22:04Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Set.diff set difference operation\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6503ab490f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6503ab490f63\",\"timestamp\":\"2026-08-08T03:22:04Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"biUnion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1479,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"biUnion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:biUnion_connectedComponent_pathComponent_eq\\\",\\\"label\\\":\\\"biUnion_connectedComponent_pathComponent_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:Q536640\\\",\\\"label\\\":\\\"Hall's marriage theorem\\\",\\\"aka\\\":[\\\"Finset.all_card_le_biUnion_card_iff_exists_injective\\\",\\\"Hall's Marriage Theorem\\\",\\\"Hall's marriage theorem, proof of\\\",\\\"HallMarriageTheorem.hall_hard_inductive\\\",\\\"Halls Theorem\\\",\\\"Graph Derangements\\\",\\\"Measure Algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Hall/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finset.inclusion_exclusion_card_biUnion\\\",\\\"label\\\":\\\"Finset.inclusion_exclusion_card_biUnion\\\",\\\"aka\\\":[\\\"Normalization of monomial ideals and Hilbert functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Enumerative/InclusionExclusion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.measure_biUnion_finset_eq_sum_inter\\\",\\\"label\\\":\\\"MeasureTheory.measure_biUnion_finset_eq_sum_inter\\\",\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Integral/Bochner\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.GridDiagram.fullyBlockedDifferential_apply_eq_zero_of_notMem_support_biUnion\\\",\\\"label\\\":\\\"TauCeti.GridDiagram.fullyBlockedDifferential_apply_eq_zero_of_notMem_support_biUnion\\\",\\\"supercell\\\":\\\"path:TauCeti/KnotTheory/Grid/Differential/Support\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Set.diff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 320,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Set.diff\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Set.diff\\\",\\\"label\\\":\\\"Set.diff\\\",\\\"aka\\\":[\\\"Matematika 1\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"matched\\\":\\\"decl\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Set.diff\"}",
+   "ok": true,
+   "result_chars": 1535,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Set.diff\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Set.diff\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Set.diff\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Set.diff\\\",\\\"anchor\\\":\\\"decl:Mathlib:Set.diff\\\",\\\"label\\\":\\\"Set.diff\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Set/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[215.9,415.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Set.diff\\\",\\\"label\\\":\\\"Set.diff\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def diff (s t : Set α) : Set α := {a ∈ s | a ∉ t}\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2108.03612#17\\\",\\\"label\\\":\\\"Matematika 1\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2108.03612\\\",\\\"ref\\\":\\\"17\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q36161\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q903783\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/SetTheory\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SetSemiring membership\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SetSemiring membership\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:SetSemiring\"}",
+   "ok": true,
+   "result_chars": 497,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"code\\\":\\\"def SetSemiring (α : Type*) : Type _ :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Semiring.html#SetSemiring\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset.disjoint pairwise\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b652fb80f0f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b652fb80f0f63\",\"timestamp\":\"2026-08-08T03:22:11Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset Finite Set family\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b653f4eff0f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b653f4eff0f63\",\"timestamp\":\"2026-08-08T03:22:14Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Disjoint relation on sets\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 3524,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Disjoint relation on sets\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Rel\\\",\\\"label\\\":\\\"Rel\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"label\\\":\\\"Set-builder notation\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q36161\\\",\\\"label\\\":\\\"Set (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q371983\\\",\\\"label\\\":\\\"Indicator function\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q842346\\\",\\\"label\\\":\\\"Equality (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":192,\\\"withheld_by_shard\\\":628,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Rel\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Rel\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Rel\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Rel (α β : Type*) : Type _ := α → β → Prop\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rel.html#Rel\\\",\\\"via_cell\\\":\\\"cell:Q107223533\\\",\\\"cell_label\\\":\\\"Relation (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Rel\\\",\\\"label\\\":\\\"Rel\\\"}]},{\\\"decl\\\":\\\"Disjoint\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Disjoint\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Disjoint\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Disjoint (a b : α) : Prop :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Disjoint.html#Disjoint\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"cell_label\\\":\\\"Disjoint\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SetSemiring sets closed\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b658bcb7e0f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b658bcb7e0f63\",\"timestamp\":\"2026-08-08T03:22:26Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"iUnion indexed union sets\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b658e1c6c0f63\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b658e1c6c0f63\",\"timestamp\":\"2026-08-08T03:22:26Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"SetSemiring\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 562,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"SetSemiring\\\",\\\"decl\\\":\\\"SetSemiring\\\",\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:SetSemiring\\\",\\\"label\\\":\\\"SetSemiring\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Set/Semiring\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"iUnion\", \"direction\": \"formal_to_informal\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 1641,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"iUnion\\\",\\\"decl\\\":\\\"iUnion\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q536640\\\",\\\"label\\\":\\\"Hall's marriage theorem\\\",\\\"aka\\\":[\\\"Finset.all_card_le_biUnion_card_iff_exists_injective\\\",\\\"Hall's Marriage Theorem\\\",\\\"Hall's marriage theorem, proof of\\\",\\\"HallMarriageTheorem.hall_hard_inductive\\\",\\\"Halls Theorem\\\",\\\"Graph Derangements\\\",\\\"Measure Algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Hall/Basic\\\"},{\\\"id\\\":\\\"cell:Q517378\\\",\\\"label\\\":\\\"Boole's inequality\\\",\\\"aka\\\":[\\\"Bonferroni Inequalities\\\",\\\"MeasureTheory.measure_iUnion_le\\\",\\\"Notes on Measure and Integration\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/OuterMeasure/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finset.inclusion_exclusion_card_biUnion\\\",\\\"label\\\":\\\"Finset.inclusion_exclusion_card_biUnion\\\",\\\"aka\\\":[\\\"Normalization of monomial ideals and Hilbert functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Enumerative/InclusionExclusion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasurableSet.iUnion\\\",\\\"label\\\":\\\"MeasurableSet.iUnion\\\",\\\"aka\\\":[\\\"Mostow Rigidity Made Easier\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.measure_iUnion\\\",\\\"label\\\":\\\"MeasureTheory.measure_iUnion\\\",\\\"aka\\\":[\\\"A moment problem for random discrete measures\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/NullMeasurable\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Pairwise.Disjoint\", \"direction\": \"formal_to_informal\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 1536,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Pairwise.Disjoint\\\",\\\"decl\\\":\\\"Pairwise.Disjoint\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q1244890\\\",\\\"label\\\":\\\"Rational number\\\",\\\"aka\\\":[\\\"Definition:Rational Number\\\",\\\"Rat\\\",\\\"Rational Number\\\",\\\"Disjoint Non-Free Subgoups of Abelian Groups\\\"],\\\"supercell\\\":\\\"path:Init/Data/Rat/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Disjoint\\\",\\\"label\\\":\\\"Disjoint\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Disjoint\\\"},{\\\"id\\\":\\\"cell:Q137164\\\",\\\"label\\\":\\\"Besicovitch covering theorem\\\",\\\"aka\\\":[\\\"Besicovitch.exists_closedBall_covering_tsum_measure_le\\\",\\\"Besicovitch.exists_disjoint_closedBall_covering_ae\\\",\\\"On the inverse absolute continuity of quasiconformal mappings on hypersurfaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Covering/Besicovitch\\\"},{\\\"id\\\":\\\"cell:Q872088\\\",\\\"label\\\":\\\"Boolean prime ideal theorem\\\",\\\"aka\\\":[\\\"DistribLattice.prime_ideal_of_disjoint_filter_ideal\\\",\\\"Colimits of Heyting Algebras through Esakia Duality\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/PrimeSeparator\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FirstOrder.Language.Theory\\\",\\\"label\\\":\\\"FirstOrder.Language.Theory\\\",\\\"aka\\\":[\\\"On Generalization of Definitional Equivalence to Languages with Non-Disjoint Signatures\\\"],\\\"supercell\\\":\\\"path:Mathlib/ModelTheory/Syntax\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Fintype\", \"direction\": \"formal_to_informal\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 1579,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Fintype\\\",\\\"decl\\\":\\\"Fintype\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/BigOperators\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_injective\\\",\\\"label\\\":\\\"Fintype.card_le_of_injective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_surjective\\\",\\\"label\\\":\\\"Fintype.card_le_of_surjective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"label\\\":\\\"Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"aka\\\":[\\\"Constructions and nonexistence results for suitable sets of permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Pigeonhole\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.nonempty_field_iff\\\",\\\"label\\\":\\\"Fintype.nonempty_field_iff\\\",\\\"aka\\\":[\\\"Clique number of Xor products of Kneser graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Cardinality\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem SetSemiring.diff_iUnion_decompose {α : Type*} (C : SetSemiring α) (s : Set α) \n    (hs : s ∈ C) {ι : Type*} [Fintype ι] (I : ι → Set α) (hI : ∀ i, I i ∈ C) :\n  ∃ (J : Type*) (_ : Fintype J) (sets : J → Set α),\n    (∀ j, sets j ∈ C) ∧\n    Pairwise (fun i j => Disjoint (sets i) (sets j)) ∧\n    (⋃ j, sets j) = s \\ ⋃ i, I i := sorry"
+}

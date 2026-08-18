@@ -1,0 +1,329 @@
+{
+ "task_id": "fresh_071",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:37:51Z",
+ "wall_s": 104.7,
+ "transcript_stats": {
+  "turns": 36,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_search": 14,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__decl_exists": 17
+  },
+  "tokens_in": 202,
+  "tokens_out": 8115,
+  "cost_usd": 0.11628329999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"equivalence relation on intervals of a lattice\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3951,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"equivalence relation on intervals of a lattice\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q130998\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Equivalence relation\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Core\\\",\\\"label\\\":\\\"Core\\\"}]},{\\\"id\\\":\\\"cell:decl:Init:Equivalence\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Equivalence\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Core\\\",\\\"label\\\":\\\"Core\\\"}]},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Rel\\\",\\\"label\\\":\\\"Rel\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1211071\\\",\\\"label\\\":\\\"Equivalence class\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q381060\\\",\\\"label\\\":\\\"Partition of a set\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q36161\\\",\\\"label\\\":\\\"Set (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/SetTheory\\\",\\\"label\\\":\\\"SetTheory\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q161519\\\",\\\"label\\\":\\\"Permutation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":162,\\\"withheld_by_shard\\\":78,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Rel\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Rel\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Rel\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Rel (α β : Type*) : Type _ := α → β → Prop\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rel.html#Rel\\\",\\\"via_cell\\\":\\\"cell:Q107223533\\\",\\\"cell_label\\\":\\\"Relation (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Rel\\\",\\\"label\\\":\\\"Rel\\\"}]},{\\\"decl\\\":\\\"Setoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Setoid\\\",\\\"via_cell\\\":\\\"cell:Q130998\\\",\\\"cell_label\\\":\\\"Equivalence relation\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Core\\\",\\\"label\\\":\\\"Core\\\"}]},{\\\"decl\\\":\\\"Equivalence\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"structure\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Equivalence\\\",\\\"via_cell\\\":\\\"cell:decl:Init:Equivalence\\\",\\\"cell_label\\\":\\\"Equivalence\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Core\\\",\\\"label\\\":\\\"Core\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"second isomorphism theorem lattice\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3772,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"second isomorphism theorem lattice\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q189112\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Iso\\\",\\\"label\\\":\\\"Iso\\\"}]},{\\\"id\\\":\\\"cell:Q1096885\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Lattice (group)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q595364\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Lattice (order)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Lattice\\\",\\\"label\\\":\\\"Lattice\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"label\\\":\\\"Morphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"label\\\":\\\"Homeomorphism\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1058314\\\",\\\"label\\\":\\\"Diffeomorphism\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q130998\\\",\\\"label\\\":\\\"Equivalence relation\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q193878\\\",\\\"label\\\":\\\"Chinese remainder theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":135,\\\"withheld_by_shard\\\":166,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.Iso\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Iso\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Iso\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Iso {C : Type u} [Category.{v} C] (X Y : C) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Iso.html#CategoryTheory.Iso\\\",\\\"via_cell\\\":\\\"cell:Q189112\\\",\\\"cell_label\\\":\\\"Isomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Iso\\\",\\\"label\\\":\\\"Iso\\\"}]},{\\\"decl\\\":\\\"Lattice\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Lattice\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Lattice (α : Type u) extends SemilatticeSup α, SemilatticeInf α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Lattice.html#Lattice\\\",\\\"via_cell\\\":\\\"cell:Q595364\\\",\\\"cell_label\\\":\\\"Lattice (order)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Lattice\\\",\\\"label\\\":\\\"Lattice\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"lattice interval\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lattice interval\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"lattice Icc interval\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lattice Icc interval\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"second isomorphism theorem\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"second isomorphism theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Icc interval closed\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Icc interval closed\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"equivalence closure generated\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"equivalence closure generated\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q595364\"}",
+   "ok": true,
+   "result_chars": 4050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q595364\\\",\\\"id\\\":\\\"cell:Q595364\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Lattice (order)\\\",\\\"f\\\":39128,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q595364\\\",\\\"anchor\\\":\\\"Q595364\\\",\\\"label\\\":\\\"Lattice (order)\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Lattice\\\"],\\\"f\\\":39128,\\\"xy\\\":[332,-183.1]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q595364\\\",\\\"label\\\":\\\"Lattice (order)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"partially ordered set that admits greatest lower and least upper bounds of any two elements\\\",\\\"slug\\\":\\\"Lattice_order\\\",\\\"article_annotations\\\":{\\\"total\\\":61,\\\"formalized\\\":35,\\\"partial\\\":11,\\\"not_formalized\\\":15},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Lattice\\\",\\\"label\\\":\\\"Lattice\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Order.Lattice\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Lattice (α : Type u) extends SemilatticeSup α, SemilatticeInf α\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Lattice\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Lattice\\\",\\\"label\\\":\\\"Lattice\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Lattice.html\\\",\\\"qid\\\":\\\"Q595364\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:planetmath:Lattice\\\",\\\"label\\\":\\\"lattice\\\",\\\"db\\\":\\\"planetmath\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":20,\\\"url\\\":\\\"https://planetmath.org/Lattice\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q595364\\\",\\\"snippet\\\":\\\"A lattice is any poset $L$ in which any two elements $x$ and $y$ have a least upper bound, $x\\\\\\\\lor y$, and a greatest lower bound, $x\\\\\\\\land y$. The operation $\\\\\\\\land$ is called meet, and the operation $\\\\\\\\lor$ is called join. In some literature, $L$ is required to be non-empty.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA (PlanetMath)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Lattice\\\",\\\"label\\\":\\\"Definition:Lattice\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Lattice\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q595364\\\",\\\"snippet\\\":\\\"Lattice (Order Theory), also known as an order lattice Point Lattice\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Lattice_order\\\",\\\"label\\\":\\\"Lattice order\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":61,\\\"formalized\\\":35,\\\"partial\\\":11,\\\"not_formalized\\\":15}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2308.04506#3.4\\\",\\\"label\\\":\\\"On complemented, uniquely complemented and uniquely complemented nondistributive lattices (a historical and epistemological note about a mathematical mystery)\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2308.04506\\\",\\\"ref\\\":\\\"3.4\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Lattice\\\",\\\"label\\\":\\\"Lattice\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":11,\\\"depends\\\":214,\\\"mentions\\\":39,\\\"relates\\\":6,\\\"links\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q2362924\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":4,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":6,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1617044\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q4973304\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q187959\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1096885\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"relates\\\":2}},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":214,\\\"organs\\\":7},\\\"truncated\\\":{\\\"syn\\\":14},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"reflexive symmetric transitive relation closure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"reflexive symmetric transitive relation closure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"EqvGen equivalence generated\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EqvGen equivalence generated\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"relation closure minimal finest\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"relation closure minimal finest\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Equivalence\", \"Lattice\", \"Set.Icc\", \"EqvGen\", \"Relation.ReflTransGen\"]}",
+   "ok": true,
+   "result_chars": 1493,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Equivalence\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Equivalence\\\"},{\\\"decl\\\":\\\"Lattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Lattice.html#Lattice\\\"},{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\"},{\\\"decl\\\":\\\"EqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.ReflTransGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.ReflTransGen\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eqvGen generation equivalence\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eqvGen generation equivalence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Relation.Refl Relation.Symm Relation.Trans\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 199,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Relation.Refl Relation.Symm Relation.Trans\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.Refl\", \"Relation.Symm\", \"Relation.Trans\", \"Relation.eqvGen\", \"Relation.Equivalence\"]}",
+   "ok": true,
+   "result_chars": 1409,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.Refl\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.Symm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.Trans\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.Equivalence\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Reflexive\", \"Symmetric\", \"Transitive\", \"reflexive_of_refl\", \"symmetric_of_symm\"]}",
+   "ok": true,
+   "result_chars": 1535,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Reflexive\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.Unbundled\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.Unbundled\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/Unbundled.html#Reflexive\\\"},{\\\"decl\\\":\\\"Symmetric\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.Unbundled\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.Unbundled\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/Unbundled.html#Symmetric\\\"},{\\\"decl\\\":\\\"Transitive\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.Unbundled\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.Unbundled\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/Unbundled.html#Transitive\\\"},{\\\"decl\\\":\\\"reflexive_of_refl\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"symmetric_of_symm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Subrelation\", \"Relation.Closure\", \"equivalence_of_reflexive_transitive_symmetric\"]}",
+   "ok": true,
+   "result_chars": 949,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Subrelation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Subrelation\\\"},{\\\"decl\\\":\\\"Relation.Closure\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"equivalence_of_reflexive_transitive_symmetric\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fineness minimal relation ordering\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fineness minimal relation ordering\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.Pairwise\", \"RelHomClass\", \"Subrelation.trans\"]}",
+   "ok": true,
+   "result_chars": 999,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Pairwise\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Pairwise.html#Set.Pairwise\\\"},{\\\"decl\\\":\\\"RelHomClass\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.RelIso.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Order.RelIso.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/RelIso/Basic.html#RelHomClass\\\"},{\\\"decl\\\":\\\"Subrelation.trans\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"lattice isomorphism homomorphism quotient\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lattice isomorphism homomorphism quotient\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LatticeHom\", \"Sublattice\", \"LatticeIso\", \"order_iso\"]}",
+   "ok": true,
+   "result_chars": 1222,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LatticeHom\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Hom.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Hom.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Hom/Lattice.html#LatticeHom\\\"},{\\\"decl\\\":\\\"Sublattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Sublattice\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Sublattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Sublattice.html#Sublattice\\\"},{\\\"decl\\\":\\\"LatticeIso\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"order_iso\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"OrderIso\", \"Set.ClosedUnder\", \"InvImage\"]}",
+   "ok": true,
+   "result_chars": 1091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"OrderIso\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Hom.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Hom.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Hom/Basic.html#OrderIso\\\"},{\\\"decl\\\":\\\"Set.ClosedUnder\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"FirstOrder.Language.ClosedUnder\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.ModelTheory.Substructures\\\",\\\"import_line\\\":\\\"import Mathlib.ModelTheory.Substructures\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/ModelTheory/Substructures.html#FirstOrder.Language.ClosedUnder\\\"},{\\\"decl\\\":\\\"InvImage\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#InvImage\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen\", \"ReflTransSymm\", \"EqvGen.rel\"]}",
+   "ok": true,
+   "result_chars": 958,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen\\\"},{\\\"decl\\\":\\\"ReflTransSymm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"EqvGen.rel\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Relation.EqvGen\"}",
+   "ok": false,
+   "result_chars": 385,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Relation.EqvGen\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.eqvGen\", \"Relation.EqvGen.of\", \"Relation.EqvGen.rel\"]}",
+   "ok": true,
+   "result_chars": 976,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.EqvGen.of\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.EqvGen.rel\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen.rel\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Relation.EqvGen\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Relation.EqvGen\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen\"]}",
+   "ok": true,
+   "result_chars": 487,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.eqvGen_of_refl\", \"Relation.eqvGen_iff\", \"Relation.EqvGen.classes\", \"Relation.gen_eq_one\"]}",
+   "ok": true,
+   "result_chars": 1342,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.eqvGen_of_refl\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.eqvGen_iff\\\"},{\\\"decl\\\":\\\"Relation.EqvGen.classes\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Setoid.classes\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Data.Setoid.Partition\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Setoid.Partition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Setoid/Partition.html#Setoid.classes\\\"},{\\\"decl\\\":\\\"Relation.gen_eq_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.min_iff_eqvGen\", \"Relation.EqvGen.is_equivalence\", \"Equivalence.eqvGen\", \"Relation.subrel_eqvGen\"]}",
+   "ok": true,
+   "result_chars": 1252,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.min_iff_eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.EqvGen.is_equivalence\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen.is_equivalence\\\"},{\\\"decl\\\":\\\"Equivalence.eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.subrel_eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.eqvGen_le\", \"Relation.le_eqvGen\", \"Relation.eqvGen_subrel\"]}",
+   "ok": true,
+   "result_chars": 944,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.eqvGen_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.le_eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen_subrel\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.rel_eqvGen\", \"Relation.eqvGen_of_rel\", \"Relation.eqvGen_eq\"]}",
+   "ok": true,
+   "result_chars": 1047,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.rel_eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen_of_rel\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen_eq\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Setoid.eqvGen_eq\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Data.Setoid.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Setoid.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Setoid/Basic.html#Setoid.eqvGen_eq\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smallest equivalence relation containing subrel\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smallest equivalence relation containing subrel\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.eqvGen_subrel_of_eqvGen\", \"Relation.eqvGen_mono\"]}",
+   "ok": true,
+   "result_chars": 714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.eqvGen_subrel_of_eqvGen\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Relation.eqvGen_mono\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen\", \"Relation.EqvGen.rel\", \"Subrelation\", \"Equivalence\"]}",
+   "ok": true,
+   "result_chars": 1220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen\\\"},{\\\"decl\\\":\\\"Relation.EqvGen.rel\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen.rel\\\"},{\\\"decl\\\":\\\"Subrelation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Subrelation\\\"},{\\\"decl\\\":\\\"Equivalence\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Equivalence\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen\", \"Equivalence\", \"Subrelation\", \"Lattice\", \"Prod\"]}",
+   "ok": true,
+   "result_chars": 1414,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen\\\"},{\\\"decl\\\":\\\"Equivalence\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Equivalence\\\"},{\\\"decl\\\":\\\"Subrelation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Subrelation\\\"},{\\\"decl\\\":\\\"Lattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Lattice.html#Lattice\\\"},{\\\"decl\\\":\\\"Prod\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Prod\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem finest_equivalence_on_lattice_intervals {α : Type*} [Lattice α]\n  (second_iso_moves : (α × α) → (α × α) → Prop) :\n  let generated_equiv := Relation.EqvGen second_iso_moves\n  (Equivalence generated_equiv) ∧\n  (Subrelation second_iso_moves generated_equiv) ∧\n  (∀ other_equiv : (α × α) → (α × α) → Prop,\n    Equivalence other_equiv →\n    Subrelation second_iso_moves other_equiv →\n    Subrelation generated_equiv other_equiv) := sorry"
+}

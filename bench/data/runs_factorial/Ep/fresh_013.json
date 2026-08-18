@@ -1,0 +1,330 @@
+{
+ "task_id": "fresh_013",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:43:30Z",
+ "wall_s": 124.1,
+ "transcript_stats": {
+  "turns": 36,
+  "assistant_turns": 22,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 17,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 7
+  },
+  "tokens_in": 180,
+  "tokens_out": 9474,
+  "cost_usd": 0.12727519999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"orthogonal inner product\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'orthogonal inner product': Unknown identifier `orthogonal`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"span submodule vector\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'span submodule vector': Unknown identifier `span`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank FiniteDimensional': Unknown identifier `finrank`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsOrthogonal\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsOrthogonal': unknown identifier 'IsOrthogonal'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1081 declarations mentioning Submodule.span.\\n- Submodule.span   [Mathlib.LinearAlgebra.Span.Defs]\\n    The span of a set `s ⊆ M` is the smallest submodule of M that contains `s`.\\n- Submodule.instIsPrincipalSpanSingletonSet   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq_addSubgroupClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_nat_eq_addSubmonoidClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_univ   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.subset_span   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_empty   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.mem_span_singleton_self   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.mk   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.principal   [Mathlib.LinearAlgebra.Span.Defs]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"InnerProductSpace\"}",
+   "ok": true,
+   "result_chars": 1863,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3808 declarations mentioning InnerProductSpace.\\n- InnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A (pre) inner product space is a vector space with an additional operation called inner product. The (semi)norm could be derived from the inner product, instead\\n- InnerProductSpace.toInner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PUnit.instInnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- InnerProductSpace.toNormedSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- HilbertSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A Hilbert space is a complete normed inner product space.\\n- HilbertSpace.mk   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PreInnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `PreInnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `PreInnerProductSpace.Core` for `PreInnerProductSpace`s. Note that th\\n- InnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `InnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `InnerProductSpace.Core` for `InnerProductSpace`s. Note that the `Norm` \\n- InnerProductSpace.ofCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Given a `PreInnerProductSpace.Core` structure on a space, one can use it to turn the space into a pre-inner product space (i.e., `SeminormedAddCommGroup` and `I\\n- InnerProductSpace.add_left   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is additive in the first coordinate.\\n- InnerProductSpace.conj_inner_symm   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is *Hermitian*, taking the `conj` swaps the arguments.\\n- InnerProductSpace.norm_sq_eq_re_inner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product induces the norm.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inner ?a ?b = 0\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'inner ?a ?b = 0'.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank ?K (?V)\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank ?K (?V)': Unknown identifier `finrank`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"orthogonal|Orthogonal\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2074,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1070 match(es) for 'orthogonal|Orthogonal' (via ripgrep):\\n- Mathlib/Combinatorics/Additive/Randomisation.lean:8\\n    public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality\\n- Mathlib/Algebra/Lie/Classical.lean:27\\n    * `LieAlgebra.Orthogonal.so`\\n- Mathlib/Algebra/Lie/Classical.lean:28\\n    * `LieAlgebra.Orthogonal.so'`\\n- Mathlib/Algebra/Lie/Classical.lean:29\\n    * `LieAlgebra.Orthogonal.soIndefiniteEquiv`\\n- Mathlib/Algebra/Lie/Classical.lean:30\\n    * `LieAlgebra.Orthogonal.typeD`\\n- Mathlib/Algebra/Lie/Classical.lean:31\\n    * `LieAlgebra.Orthogonal.typeB`\\n- Mathlib/Algebra/Lie/Classical.lean:32\\n    * `LieAlgebra.Orthogonal.typeDEquivSo'`\\n- Mathlib/Algebra/Lie/Classical.lean:33\\n    * `LieAlgebra.Orthogonal.typeBEquivSo'`\\n- Mathlib/Algebra/Lie/Classical.lean:64\\n    classical lie algebra, special linear, symplectic, orthogonal\\n- Mathlib/Algebra/Lie/Classical.lean:164\\n    namespace Orthogonal\\n- Mathlib/Algebra/Lie/Classical.lean:166\\n    /-- The definite orthogonal Lie subalgebra: skew-adjoint matrices with respect to the symmetric\\n- Mathlib/Algebra/Lie/Classical.lean:180\\n    /-- The indefinite orthogonal Lie subalgebra: skew-adjoint matrices with respect to the symmetric\\n- Mathlib/Algebra/Lie/Classical.lean:224\\n    /-- An equivalence between the indefinite and definite orthogonal Lie algebras, over a ring\\n- Mathlib/Algebra/Lie/Classical.lean:388\\n    end Orthogonal\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:12\\n    # Decomposition of the identity of a semiring into orthogonal idempotents\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:17\\n    `eᵢ`'s form a family of complete orthogonal idempotents.\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:24\\n    section OrthogonalIdempotents\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:43\\n    orthogonal idempotents. -/\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:44\\n    theorem completeOrthogonalIdempotents_idempotent [Fintype I] :\\n- Mathlib/Algebra/DirectSum/Idempotents.lean:45\\n    CompleteOrthogonalIdempotents (idempotent V) where\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inner_self_nonneg\"}",
+   "ok": true,
+   "result_chars": 147,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning inner_self_nonneg.\\n- inner_self_nonneg   [Mathlib.Analysis.InnerProductSpace.Basic]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) inner\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"256 match(es) for '(def|theorem|lemma) inner' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/PerpBisector.lean:185\\n    theorem inner_vsub_vsub_of_dist_eq_of_dist_eq {c₁ c₂ p₁ p₂ : P} (hc₁ : dist p₁ c₁ = dist p₂ c₁)\\n- Mathlib/Geometry/Euclidean/Basic.lean:62\\n    theorem inner_weightedVSub {ι₁ : Type*} {s₁ : Finset ι₁} {w₁ : ι₁ → ℝ} (p₁ : ι₁ → P)\\n- Mathlib/Geometry/Euclidean/Sphere/Basic.lean:443\\n    theorem inner_vsub_vsub_of_mem_sphere_of_mem_sphere {p₁ p₂ : P} {s₁ s₂ : Sphere P} (hp₁s₁ : p₁ ∈ s₁)\\n- Mathlib/Geometry/Euclidean/Sphere/Basic.lean:516\\n    theorem inner_pos_or_eq_of_dist_le_radius {s : Sphere P} {p₁ p₂ : P} (hp₁ : p₁ ∈ s)\\n- Mathlib/Geometry/Euclidean/Sphere/Basic.lean:545\\n    theorem inner_nonneg_of_dist_le_radius {s : Sphere P} {p₁ p₂ : P} (hp₁ : p₁ ∈ s)\\n- Mathlib/Geometry/Euclidean/Sphere/Basic.lean:553\\n    theorem inner_pos_of_dist_lt_radius {s : Sphere P} {p₁ p₂ : P} (hp₁ : p₁ ∈ s)\\n- Mathlib/Geometry/Euclidean/Sphere/Basic.lean:562\\n    theorem inner_vsub_center_vsub_pos {p₁ p₂ : P} {s : Sphere P}\\n- Mathlib/Algebra/Lie/Derivation/Basic.lean:360\\n    def inner : M →ₗ[R] LieDerivation R L M where\\n- Mathlib/Geometry/Euclidean/MongePoint.lean:227\\n    theorem inner_mongePoint_vsub_face_centroid_vsub {n : ℕ} (s : Simplex ℝ P (n + 2))\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/TriangleInequality.lean:36\\n    lemma inner_ortho_nonneg {x y : V} (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) : 0 ≤ ⟪x, ortho y x⟫ := by\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/TriangleInequality.lean:43\\n    lemma inner_normalize_ortho (x y : V) : ⟪y, normalize (ortho y x)⟫ = 0 := by\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/TriangleInequality.lean:52\\n    lemma inner_normalized_ortho_sq_add_inner_sq_eq_one :\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/TriangleInequality.lean:75\\n    lemma inner_ortho_right_eq_sin_angle : ⟪x, normalize (ortho y x)⟫ = Real.sin (angle x y) := by\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/Basic.lean:211\\n    theorem inner_eq_zero_iff_angle_eq_pi_div_two (x y : V) : ⟪x, y⟫ = 0 ↔ angle x y = π / 2 :=\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/Basic.lean:216\\n    theorem inner_eq_neg_mul_norm_of_angle_eq_pi {x y : V} (h : angle x y = π) :\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 1853,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2019 declarations mentioning FiniteDimensional.\\n- FiniteDimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    `FiniteDimensional` vector spaces are defined to be finite modules. Use `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another defini\\n- FiniteDimensional.finiteDimensional_self   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.instFintypeElemOfVectorSpaceIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, `Basis.ofVectorSpace` is indexed by a finite type.\\n- FiniteDimensional.fintypeBasisIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, all bases are indexed by a finite type\\n- Module.Basis.finiteDimensional_of_finite   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a finite basis, then it is finite-dimensional.\\n- FiniteDimensional.of_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_fact_finrank_eq_two   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finrank_pos   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- Module.finrank_of_infinite_dimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.finiteDimensional_pi   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finite_basis   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a basis indexed by elements of a finite set, then it is finite-dimensional.\\n- FiniteDimensional.of_fact_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    We can infer `FiniteDimensional K V` in the presence of `[Fact (finrank K V = n + 1)]`. Use `have : FiniteDimensional K V := .of_fact_finrank_eq_succ` when need\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"finrank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1332,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1800 match(es) for 'finrank' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:48\\n    theorem finrank_sup_eq_finrank_left_mul_finrank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:49\\n    finrank R ↥(A ⊔ B) = finrank R A * finrank A (Algebra.adjoin A (B : Set S)) := by\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:52\\n    theorem finrank_left_dvd_finrank_sup_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:53\\n    finrank R A ∣ finrank R ↥(A ⊔ B) := ⟨_, finrank_sup_eq_finrank_left_mul_finrank_of_free A B⟩\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:64\\n    theorem finrank_sup_eq_finrank_right_mul_finrank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:65\\n    finrank R ↥(A ⊔ B) = finrank R B * finrank B (Algebra.adjoin B (A : Set S)) := by\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:66\\n    rw [sup_comm, finrank_sup_eq_finrank_left_mul_finrank_of_free]\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:68\\n    theorem finrank_right_dvd_finrank_sup_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:69\\n    finrank R B ∣ finrank R ↥(A ⊔ B) := ⟨_, finrank_sup_eq_finrank_right_mul_finrank_of_free A B⟩\\n- Mathlib/MeasureTheory/Integral/PeakFunction.lean:396\\n    (h : Tendsto (fun x ↦ ‖x‖ ^ finrank ℝ F * φ x) (cobounded F) (𝓝 0))\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2805,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean  (lines 1–50 of 254):\\n     1  /-\\n     2  Copyright (c) 2019 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Hughes\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Basis.VectorSpace\\n     9  public import Mathlib.LinearAlgebra.Dimension.Free\\n    10  public import Mathlib.RingTheory.SimpleRing.Basic\\n    11  \\n    12  /-!\\n    13  # Finite-dimensional vector spaces\\n    14  \\n    15  This file defines finite-dimensional vector spaces and shows our definition is equivalent to\\n    16  alternative definitions.\\n    17  \\n    18  ## Main definitions\\n    19  \\n    20  Assume `V` is a vector space over a division ring `K`. There are (at least) three equivalent\\n    21  definitions of finite-dimensionality of `V`:\\n    22  \\n    23  - it admits a finite basis.\\n    24  - it is finitely generated.\\n    25  - it is Noetherian, i.e., every subspace is finitely generated.\\n    26  \\n    27  We introduce a typeclass `FiniteDimensional K V` capturing this property. For ease of transfer of\\n    28  proof, it is defined using the second point of view, i.e., as `Module.Finite`. However, we prove\\n    29  that all these points of view are equivalent, with the following lemmas\\n    30  (in the namespace `FiniteDimensional`):\\n    31  \\n    32  - `Module.finBasis` and `Module.finBasisOfFinrankEq`\\n    33    are bases for finite-dimensional vector spaces, where the index type\\n    34    is `Fin` (in `Mathlib/LinearAlgebra/Dimension/Free.lean`)\\n    35  - `fintypeBasisIndex` states that a finite-dimensional\\n    36    vector space has a finite basis\\n    37  - `Module.Basis.finiteDimensional_of_finite` states that the existence of a basis indexed by a\\n    38    finite type implies finite-dimensionality\\n    39  - `of_finite_basis` states that the existence of a basis indexed by a\\n    40    finite set implies finite-dimensionality\\n    41  - `of_finrank_pos` states that a nonzero `finrank` (implying non-infinite dimension)\\n    42    implies finite-dimensionality\\n    43  - `IsNoetherian.iff_fg` states that the space is finite-dimensional if and only if\\n    44    it is Noetherian (in `Mathlib/FieldTheory/Finiteness.lean`)\\n    45  \\n    46  We make use of `finrank`, the dimension of a finite-dimensional space, returning a `Nat`, as\\n    47  opposed to `Module.rank`, which returns a `Cardinal`. When the space has infinite dimension, its\\n    48  `finrank` is by convention set to `0`. `finrank` is not defined using `FiniteDimensional`.\\n    49  For basic results that do not need the `FiniteDimensional` class, import\\n    50  `Mathlib/LinearAlgebra/Dimension/Finrank.lean`.\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def orthogonal|theorem orthogonal\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2288,
+   "result_head": "[{\"type\": \"text\", \"text\": \"80 match(es) for 'def orthogonal|theorem orthogonal' (via ripgrep):\\n- Mathlib/Algebra/Lie/InvariantForm.lean:73\\n    def orthogonal (hΦ_inv : Φ.lieInvariant L) (N : LieSubmodule R L M) : LieSubmodule R L M where\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:56\\n    theorem orthogonal_orthogonal [K.HasOrthogonalProjection] : Kᗮᗮ = K := by\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:87\\n    theorem orthogonal_orthogonal_eq_closure [CompleteSpace E] :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:101\\n    theorem orthogonalComplement_eq_orthogonalComplement {L : Submodule 𝕜 E} [K.HasOrthogonalProjection]\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:107\\n    theorem orthogonal_eq_bot_iff [K.HasOrthogonalProjection] : Kᗮ = ⊥ ↔ K = ⊤ := by\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:169\\n    theorem orthogonalProjectionOnto_apply_eq_projectionOnto [K.HasOrthogonalProjection] (x : E) :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:220\\n    theorem orthogonal_orthogonal_eq (K : ClosedSubmodule 𝕜 E) [K.HasOrthogonalProjection] :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:223\\n    theorem orthogonal_eq_orthogonal_iff (K₁ K₂ : ClosedSubmodule 𝕜 E) [K₁.HasOrthogonalProjection]\\n- Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean:227\\n    theorem orthogonal_injective [CompleteSpace E] :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:113\\n    def orthogonalProjectionOnto : E →L[𝕜] K := K.projectionOntoL Kᗮ K.isTopCompl_orthogonal\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:135\\n    theorem orthogonalProjectionFn_eq (v : E) :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:201\\n    theorem orthogonalProjectionOnto_orthogonal (u : E) :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:227\\n    theorem orthogonalProjectionOnto_mem_subspace_eq_self (v : K) :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:266\\n    theorem orthogonalProjectionOnto_eq_zero_iff {v : E} :\\n- Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean:318\\n    theorem orthogonalProjectionOnto_bot : (⊥ : Submodule 𝕜 E).orthogonalProjectionOnto = 0 := by ext\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a mem orthogonal\"}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a mem orthogonal': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"orthogonal\\\\s*\\\\(\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1474,
+   "result_head": "[{\"type\": \"text\", \"text\": \"62 match(es) for 'orthogonal\\\\\\\\s*\\\\\\\\(' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Projection.lean:106\\n    theorem orthogonalProjection_mem_orthogonal (s : AffineSubspace 𝕜 P) [Nonempty s]\\n- Mathlib/Geometry/Euclidean/Projection.lean:193\\n    theorem orthogonalProjection_vsub_mem_direction_orthogonal (s : AffineSubspace 𝕜 P) [Nonempty s]\\n- Mathlib/Geometry/Euclidean/Projection.lean:201\\n    theorem vsub_orthogonalProjection_mem_direction_orthogonal (s : AffineSubspace 𝕜 P) [Nonempty s]\\n- Mathlib/Geometry/Euclidean/Projection.lean:300\\n    exact Submodule.inner_right_of_mem_orthogonal (vsub_orthogonalProjection_mem_direction p₂ hp₁)\\n- Mathlib/Geometry/Euclidean/Projection.lean:359\\n    (Submodule.inner_right_of_mem_orthogonal (vsub_mem_direction hp₁ hp₂)\\n- Mathlib/Geometry/Euclidean/Angle/Unoriented/Projection.lean:34\\n    exact Submodule.inner_left_of_mem_orthogonal (K := s.direction)\\n- Mathlib/Geometry/Euclidean/Inversion/Calculus.lean:103\\n    (Submodule.isCompl_orthogonal (ℝ ∙ x)).codisjoint\\n- Mathlib/Geometry/Euclidean/SignedDist.lean:156\\n    lemma signedDist_eq_zero_of_orthogonal (h : ⟪v, q -ᵥ p⟫ = 0) : signedDist v p q = 0 := by\\n- Mathlib/CategoryTheory/Triangulated/TStructure/TruncLTGE.lean:615\\n    lemma isLE_iff_orthogonal (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) (X : C) :\\n- Mathlib/CategoryTheory/Triangulated/TStructure/TruncLTGE.lean:621\\n    lemma isGE_iff_orthogonal (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) (X : C) :\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inner_eq_zero\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'inner_eq_zero': unknown identifier 'inner_eq_zero'\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3930,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean  (lines 1–80 of 237):\\n     1  /-\\n     2  Copyright (c) 2019 Zhouhang Zhou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Zhouhang Zhou, Frédéric Dupuis, Heather Macbeth\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.InnerProductSpace.Projection.Basic\\n     9  \\n    10  /-!\\n    11  # Subspaces associated with orthogonal projections\\n    12  \\n    13  Here, the orthogonal projection is used to prove a series of more subtle lemmas about the\\n    14  orthogonal complement of subspaces of `E` (the orthogonal complement itself was\\n    15  defined in `Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`) such that they admit\\n    16  orthogonal projections; the lemma\\n    17  `Submodule.sup_orthogonal_of_hasOrthogonalProjection`,\\n    18  stating that for a subspace `K` of `E` such that `K` admits an orthogonal projection we have\\n    19  `K ⊔ Kᗮ = ⊤`, is a typical example.\\n    20  -/\\n    21  \\n    22  public section\\n    23  \\n    24  variable {𝕜 E F : Type*} [RCLike 𝕜]\\n    25  variable [NormedAddCommGroup E] [NormedAddCommGroup F]\\n    26  variable [InnerProductSpace 𝕜 E] [InnerProductSpace ℝ F]\\n    27  \\n    28  local notation \\\"⟪\\\" x \\\", \\\" y \\\"⟫\\\" => inner 𝕜 x y\\n    29  \\n    30  variable (K : Submodule 𝕜 E)\\n    31  \\n    32  namespace Submodule\\n    33  \\n    34  /-- If `K₁` admits an orthogonal projection and is contained in `K₂`,\\n    35  then `K₁` and `K₁ᗮ ⊓ K₂` span `K₂`. -/\\n    36  theorem sup_orthogonal_inf_of_hasOrthogonalProjection {K₁ K₂ : Submodule 𝕜 E} (h : K₁ ≤ K₂)\\n    37      [K₁.HasOrthogonalProjection] : K₁ ⊔ K₁ᗮ ⊓ K₂ = K₂ := by\\n    38    ext x\\n    39    rw [Submodule.mem_sup]\\n    40    let v : K₁ := orthogonalProjectionOnto K₁ x\\n    41    have hvm : x - v ∈ K₁ᗮ := sub_starProjection_mem_orthogonal x\\n    42    constructor\\n    43    · rintro ⟨y, hy, z, hz, rfl⟩\\n    44      exact K₂.add_mem (h hy) hz.2\\n    45    · exact fun hx => ⟨v, v.prop, x - v, ⟨hvm, K₂.sub_mem hx (h v.prop)⟩, add_sub_cancel _ _⟩\\n    46  \\n    47  variable {K} in\\n    48  /-- If `K` admits an orthogonal projection, then `K` and `Kᗮ` span the whole space. -/\\n    49  theorem sup_orthogonal_of_hasOrthogonalProjection [K.HasOrthogonalProjection] : K ⊔ Kᗮ = ⊤ := by\\n    50    convert Submodule.sup_orthogonal_inf_of_hasOrthogonalProjection (le_top : K ≤ ⊤)\\n    51    simp\\n    52  \\n    53  /-- If `K` admits an orthogonal projection, then the orthogonal complement of its orthogonal\\n    54  complement is itself. -/\\n    55  @[simp]\\n    56  theorem orthogonal_orthogonal [K.HasOrthogonalProjection] : Kᗮᗮ = K := by\\n    57    ext v\\n    58    constructor\\n    59    · obtain ⟨y, hy, z, hz, rfl⟩ := K.exists_add_mem_mem_orthogonal v\\n    60      intro hv\\n    61      have hz' : z = 0 := by\\n    62        have hyz : ⟪z, y⟫ = 0 := by simp [hz y hy, inner_eq_zero_symm]\\n    63        simpa [inner_add_right, hyz] using hv z hz\\n    64      simp [hy, hz']\\n    65    · intro hv w hw\\n    66      rw [inner_eq_zero_symm]\\n    67      exact hw v hv\\n    68  \\n    69  lemma orthogonal_le_orthogonal_iff {K₀ K₁ : Submodule 𝕜 E} [K₀.HasOrthogonalProjection]\\n    70      [K₁.HasOrthogonalProjection] : K₀ᗮ ≤ K₁ᗮ ↔ K₁ ≤ K₀ :=\\n    71    ⟨fun h ↦ by simpa using orthogonal_le h, orthogonal_le⟩\\n    72  \\n    73  lemma orthogonal_le_iff_orthogonal_le {K₀ K₁ : Submodule 𝕜 E} [K₀.HasOrthogonalProjection]\\n    74      [K₁.HasOrthogonalProjection] : K₀ᗮ ≤ K₁ ↔ K₁ᗮ ≤ K₀ := by\\n    75    rw [← orthogonal_le_orthogonal_iff, orthogonal_orthogonal]\\n    76  \\n    77  lemma le_orthogonal_iff_le_orthogonal {K₀ K₁ : Submodule 𝕜 E} [K₀.HasOrthogonalProjection]\\n    78      [K₁.HasOrthogonalProjection] : K₀ ≤ K₁ᗮ ↔ K₁ ≤ K₀ᗮ := by\\n    79    rw [← orthogonal_le_orthogonal_iff, orthogonal_orthogonal]\\n    80  \\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.orthogonal\"}",
+   "ok": true,
+   "result_chars": 1455,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 209 declarations mentioning Submodule.orthogonal.\\n- Submodule.isOrtho_orthogonal_left   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.isOrtho_orthogonal_right   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.orthogonal   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    The subspace of vectors orthogonal to a given subspace, denoted `Kᗮ`.\\n- orthogonalBilin_innerₗ   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.isClosed_orthogonal   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    The orthogonal complement of any submodule `K` is closed.\\n- Submodule.orthogonal_disjoint   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    `K` and `Kᗮ` have trivial intersection.\\n- ClosedSubmodule.orthogonal_toSubmodule_eq   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    **Alias** of `ClosedSubmodule.toSubmodule_orthogonal_eq`.\\n- ClosedSubmodule.toSubmodule_orthogonal_eq   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.bot_orthogonal_eq_top   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.top_orthogonal_eq_bot   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n- Submodule.le_orthogonal_orthogonal   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    `K` is contained in `Kᗮᗮ`.\\n- Submodule.mem_orthogonal_singleton_iff_inner_left   [Mathlib.Analysis.InnerProductSpace.Orthogonal]\\n    A vector in `(𝕜 ∙ u)ᗮ` is orthogonal to `u`.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"orth.*Submodule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1314,
+   "result_head": "[{\"type\": \"text\", \"text\": \"90 match(es) for 'orth.*Submodule' (via ripgrep):\\n- Mathlib/Algebra/Lie/TraceForm.lean:397\\n    LieSubmodule.toSubmodule I.killingCompl = (killingForm R L).orthogonal I.toSubmodule :=\\n- Mathlib/Algebra/Lie/InvariantForm.lean:73\\n    def orthogonal (hΦ_inv : Φ.lieInvariant L) (N : LieSubmodule R L M) : LieSubmodule R L M where\\n- Mathlib/Algebra/Lie/InvariantForm.lean:79\\n    LinearMap.BilinForm.mem_orthogonal_iff, LieSubmodule.mem_toSubmodule]\\n- Mathlib/Algebra/Lie/InvariantForm.lean:87\\n    lemma orthogonal_toSubmodule (N : LieSubmodule R L M) :\\n- Mathlib/Algebra/Lie/InvariantForm.lean:88\\n    (orthogonal Φ hΦ_inv N).toSubmodule = Φ.orthogonal N.toSubmodule := rfl\\n- Mathlib/Algebra/Lie/InvariantForm.lean:90\\n    lemma mem_orthogonal (N : LieSubmodule R L M) (y : M) :\\n- Mathlib/Algebra/Lie/InvariantForm.lean:132\\n    lemma orthogonal_isCompl_toSubmodule (I : LieIdeal K L) (hI : IsAtom I) :\\n- Mathlib/Algebra/Lie/InvariantForm.lean:133\\n    IsCompl I.toSubmodule (orthogonal Φ hΦ_inv I).toSubmodule := by\\n- Mathlib/Algebra/Lie/InvariantForm.lean:134\\n    rw [orthogonal_toSubmodule, LinearMap.BilinForm.isCompl_orthogonal_iff_disjoint hΦ_refl,\\n- Mathlib/Algebra/Lie/InvariantForm.lean:135\\n    ← orthogonal_toSubmodule _ hΦ_inv, LieSubmodule.disjoint_toSubmodule]\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Orthogonal.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4491,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Orthogonal.lean  (lines 1–100 of 526):\\n     1  /-\\n     2  Copyright (c) 2019 Zhouhang Zhou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Zhouhang Zhou, Sébastien Gouëzel, Frédéric Dupuis\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.InnerProductSpace.Subspace\\n     9  public import Mathlib.LinearAlgebra.SesquilinearForm.Orthogonal\\n    10  public import Mathlib.Topology.Algebra.Module.ClosedSubmodule\\n    11  \\n    12  /-!\\n    13  # Orthogonal complements of submodules\\n    14  \\n    15  In this file, the `orthogonal` complement of a submodule `K` is defined, and basic API established.\\n    16  We make duplicates for `Submodule` and `ClosedSubmodule`.\\n    17  Some of the more subtle results about the orthogonal complement are delayed to\\n    18  `Mathlib/Analysis/InnerProductSpace/Projection/`.\\n    19  \\n    20  See also `BilinForm.orthogonal` for orthogonality with respect to a general bilinear form.\\n    21  \\n    22  ## Notation\\n    23  \\n    24  The orthogonal complement of a submodule `K` is denoted by `Kᗮ`.\\n    25  \\n    26  The proposition that two submodules are orthogonal, `Submodule.IsOrtho`, is denoted by `U ⟂ V`.\\n    27  Note this is not the same unicode symbol as `⊥` (`Bot`).\\n    28  -/\\n    29  \\n    30  @[expose] public section\\n    31  \\n    32  variable {𝕜 E F : Type*} [RCLike 𝕜]\\n    33  variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]\\n    34  variable [NormedAddCommGroup F] [InnerProductSpace 𝕜 F]\\n    35  \\n    36  local notation \\\"⟪\\\" x \\\", \\\" y \\\"⟫\\\" => inner 𝕜 x y\\n    37  \\n    38  namespace Submodule\\n    39  \\n    40  variable (K : Submodule 𝕜 E)\\n    41  \\n    42  /-- The subspace of vectors orthogonal to a given subspace, denoted `Kᗮ`. -/\\n    43  def orthogonal : Submodule 𝕜 E where\\n    44    carrier := { v | ∀ u ∈ K, ⟪u, v⟫ = 0 }\\n    45    zero_mem' _ _ := inner_zero_right _\\n    46    add_mem' hx hy u hu := by rw [inner_add_right, hx u hu, hy u hu, add_zero]\\n    47    smul_mem' c x hx u hu := by rw [inner_smul_right, hx u hu, mul_zero]\\n    48  \\n    49  @[inherit_doc]\\n    50  notation:1200 K \\\"ᗮ\\\" => orthogonal K\\n    51  \\n    52  /-- When a vector is in `Kᗮ`. -/\\n    53  theorem mem_orthogonal (v : E) : v ∈ Kᗮ ↔ ∀ u ∈ K, ⟪u, v⟫ = 0 :=\\n    54    Iff.rfl\\n    55  \\n    56  /-- When a vector is in `Kᗮ`, with the inner product the\\n    57  other way round. -/\\n    58  theorem mem_orthogonal' (v : E) : v ∈ Kᗮ ↔ ∀ u ∈ K, ⟪v, u⟫ = 0 := by\\n    59    simp_rw [mem_orthogonal, inner_eq_zero_symm]\\n    60  \\n    61  variable {K}\\n    62  \\n    63  /-- A vector in `K` is orthogonal to one in `Kᗮ`. -/\\n    64  theorem inner_right_of_mem_orthogonal {u v : E} (hu : u ∈ K) (hv : v ∈ Kᗮ) : ⟪u, v⟫ = 0 :=\\n    65    (K.mem_orthogonal v).1 hv u hu\\n    66  \\n    67  /-- A vector in `Kᗮ` is orthogonal to one in `K`. -/\\n    68  theorem inner_left_of_mem_orthogonal {u v : E} (hu : u ∈ K) (hv : v ∈ Kᗮ) : ⟪v, u⟫ = 0 := by\\n    69    rw [inner_eq_zero_symm]; exact inner_right_of_mem_orthogonal hu hv\\n    70  \\n    71  /-- A vector is in `(𝕜 ∙ u)ᗮ` iff it is orthogonal to `u`. -/\\n    72  theorem mem_orthogonal_singleton_iff_inner_right {u v : E} : v ∈ (𝕜 ∙ u)ᗮ ↔ ⟪u, v⟫ = 0 := by\\n    73    refine ⟨inner_right_of_mem_orthogonal (mem_span_singleton_self u), ?_⟩\\n    74    intro hv w hw\\n    75    rw [mem_span_singleton] at hw\\n    76    obtain ⟨c, rfl⟩ := hw\\n    77    simp [inner_smul_left, hv]\\n    78  \\n    79  /-- A vector in `(𝕜 ∙ u)ᗮ` is orthogonal to `u`. -/\\n    80  theorem mem_orthogonal_singleton_iff_inner_left {u v : E} : v ∈ (𝕜 ∙ u)ᗮ ↔ ⟪v, u⟫ = 0 := by\\n    81    rw [mem_orthogonal_singleton_iff_inner_right, inner_eq_zero_symm]\\n    82  \\n    83  theorem sub_mem_orthogonal_of_inner_left {x y : E} (h : ∀ v : K, ⟪x, v⟫ = ⟪y, v⟫) : x - y ∈ Kᗮ := by\\n    84    rw [mem_orthogonal']\\n    85    intro u hu\\n    86    rw [inner_sub_l"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inner_eq_zero_iff_angle\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'inner_eq_zero_iff_angle': unknown identifier 'inner_eq_zero_iff_angle'\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem).*finrank.*=.*2\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 794,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for '(def|theorem).*finrank.*=.*2' (via ripgrep):\\n- Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean:371\\n    theorem Subalgebra.isSimpleOrder_of_finrank (hr : finrank F E = 2) :\\n- Mathlib/LinearAlgebra/Complex/FiniteDimensional.lean:31\\n    theorem finrank_real_complex : finrank ℝ ℂ = 2 := by\\n- Mathlib/LinearAlgebra/Complex/FiniteDimensional.lean:42\\n    theorem finrank_real_complex_fact : Fact (finrank ℝ ℂ = 2) :=\\n- Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean:786\\n    theorem coplanar_of_finrank_eq_two (s : Set P) (h : finrank k V = 2) : Coplanar k s := by\\n- Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean:792\\n    theorem coplanar_of_fact_finrank_eq_two (s : Set P) [h : Fact (finrank k V = 2)] : Coplanar k s :=\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def inner\\\\s*\\\\{\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def inner\\\\\\\\s*\\\\\\\\{' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"angle\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'angle': unknown identifier 'angle'\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3025,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Defs.lean  (lines 1–50 of 617):\\n     1  /-\\n     2  Copyright (c) 2019 Zhouhang Zhou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Zhouhang Zhou, Sébastien Gouëzel, Frédéric Dupuis\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.QuadraticDiscriminant\\n     9  public import Mathlib.Analysis.LocallyConvex.WithSeminorms\\n    10  public import Mathlib.Analysis.RCLike.Basic\\n    11  public import Mathlib.Data.Complex.Basic\\n    12  \\n    13  /-!\\n    14  # Inner product spaces\\n    15  \\n    16  This file defines inner product spaces.\\n    17  Hilbert spaces can be obtained using the set of assumptions\\n    18  `[RCLike 𝕜] [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]`.\\n    19  For convenience, a variable alias `HilbertSpace` is provided so that one can write\\n    20  `variable? [HilbertSpace 𝕜 E]` and get this as a suggestion.\\n    21  \\n    22  An inner product space is a vector space endowed with an inner product. It generalizes the notion of\\n    23  dot product in `ℝ^n` and provides the means of defining the length of a vector and the angle between\\n    24  two vectors. In particular vectors `x` and `y` are orthogonal if their inner product equals zero.\\n    25  We define both the real and complex cases at the same time using the `RCLike` typeclass.\\n    26  \\n    27  Rather than defining the norm on an inner product space to be `√(re ⟪x, x⟫)`, we assume that a norm\\n    28  is given, and add a hypothesis stating that `‖x‖ ^ 2 = re ⟪x, x⟫`. This makes it possible to\\n    29  handle spaces where the norm is equal, but not defeq, to the square root of the\\n    30  inner product. Defining a norm starting from an inner product is handled via the\\n    31  `InnerProductSpace.Core` structure.\\n    32  \\n    33  This file is intended to contain the minimal amount of machinery needed to define inner product\\n    34  spaces, and to construct a normed space from an inner product space. Many more general lemmas can\\n    35  be found in `Analysis.InnerProductSpace.Basic`. For the specific construction of an inner product\\n    36  structure on `n → 𝕜` for `𝕜 = ℝ` or `ℂ`, see `EuclideanSpace` in\\n    37  `Analysis.InnerProductSpace.PiL2`.\\n    38  \\n    39  ## Main results\\n    40  \\n    41  - We define the class `InnerProductSpace 𝕜 E` extending `NormedSpace 𝕜 E` with a number of basic\\n    42    properties, most notably the Cauchy-Schwarz inequality. Here `𝕜` is understood to be either `ℝ`\\n    43    or `ℂ`, through the `RCLike` typeclass.\\n    44  \\n    45  ## Notation\\n    46  \\n    47  We globally denote the real and complex inner products by `⟪·, ·⟫_ℝ` and `⟪·, ·⟫_ℂ` respectively.\\n    48  We also provide two notation namespaces: `RealInnerProductSpace`, `ComplexInnerProductSpace`,\\n    49  which respectively introduce the plain notation `⟪·, ·⟫` for the real and complex inner product.\\n    50  \\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Defs.lean\", \"line\": 50, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Defs.lean  (lines 50–149 of 617):\\n    50  \\n    51  ## Implementation notes\\n    52  \\n    53  We choose the convention that inner products are conjugate linear in the first argument and linear\\n    54  in the second.\\n    55  \\n    56  ## Tags\\n    57  \\n    58  inner product space, Hilbert space, norm\\n    59  \\n    60  ## References\\n    61  * [Clément & Martin, *The Lax-Milgram Theorem. A detailed proof to be formalized in Coq*]\\n    62  * [Clément & Martin, *A Coq formal proof of the Lax–Milgram theorem*]\\n    63  \\n    64  The Coq code is available at the following address: <http://www.lri.fr/~sboldo/elfic/index.html>\\n    65  -/\\n    66  \\n    67  @[expose] public section\\n    68  \\n    69  \\n    70  noncomputable section\\n    71  \\n    72  open RCLike Real Filter Topology ComplexConjugate Finsupp Bornology\\n    73  \\n    74  open LinearMap (BilinForm)\\n    75  \\n    76  variable {𝕜 E F : Type*} [RCLike 𝕜]\\n    77  \\n    78  /-- Syntactic typeclass for types endowed with an inner product -/\\n    79  class Inner (𝕜 E : Type*) where\\n    80    /-- The inner product function. -/\\n    81    inner (𝕜) : E → E → 𝕜\\n    82  \\n    83  export Inner (inner)\\n    84  \\n    85  /-- The inner product with values in `𝕜`. -/\\n    86  scoped[InnerProductSpace] notation:max \\\"⟪\\\" x \\\", \\\" y \\\"⟫_\\\" 𝕜:max => inner 𝕜 x y\\n    87  \\n    88  section Notations\\n    89  \\n    90  /-- The inner product with values in `ℝ`. -/\\n    91  scoped[RealInnerProductSpace] notation \\\"⟪\\\" x \\\", \\\" y \\\"⟫\\\" => inner ℝ x y\\n    92  \\n    93  /-- The inner product with values in `ℂ`. -/\\n    94  scoped[ComplexInnerProductSpace] notation \\\"⟪\\\" x \\\", \\\" y \\\"⟫\\\" => inner ℂ x y\\n    95  \\n    96  end Notations\\n    97  \\n    98  /-- A (pre) inner product space is a vector space with an additional operation called inner product.\\n    99  The (semi)norm could be derived from the inner product, instead we require the existence of a\\n   100  seminorm and the fact that `‖x‖^2 = re ⟪x, x⟫` to be able to put instances on `𝕂` or product spaces.\\n   101  \\n   102  Note that `NormedSpace` does not assume that `‖x‖=0` implies `x=0` (it is rather a seminorm).\\n   103  \\n   104  To construct a seminorm from an inner product, see `PreInnerProductSpace.ofCore`.\\n   105  -/\\n   106  @[wikidata Q214159]\\n   107  class InnerProductSpace (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [SeminormedAddCommGroup E] extends\\n   108      NormedSpace 𝕜 E, Inner 𝕜 E where\\n   109    /-- The inner product induces the norm. -/\\n   110    norm_sq_eq_re_inner : ∀ x : E, ‖x‖ ^ 2 = re (inner x x)\\n   111    /-- The inner product is *Hermitian*, taking the `conj` swaps the arguments. -/\\n   112    conj_inner_symm : ∀ x y, conj (inner y x) = inner x y\\n   113    /-- The inner product is additive in the first coordinate. -/\\n   114    add_left : ∀ x y z, inner (x + y) z = inner x z + inner y z\\n   115    /-- The inner product is conjugate linear in the first coordinate. -/\\n   116    smul_left : ∀ x y r, inner (r • x) y = conj r * inner x y\\n   117  \\n   118  /-!\\n   119  ### Constructing a normed space structure from an inner product\\n   120  \\n   121  In the definition of an inner product space, we require the existence of a norm, which is equal\\n   122  (but maybe not defeq) to the square root of the scalar product. This makes it possible to put\\n   123  an inner product space structure on spaces with a preexisting norm (for instance `ℝ`), with good\\n   124  properties. However, sometimes, one would like to define the norm starting only from a well-behaved\\n   125  scalar product. This is what we implement in this paragraph, starting from a structure\\n   126  `InnerProductSpace.Core` stating that we have a nice scalar product.\\n   127  \\n   128  Our goal here is not to develop a whole theory with all the supporting API, as this will be done\\n   129  below for `InnerProductSpace`. Instead, we implement the bare minimum to go as directly as\\n   130"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"mem_span_singleton\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mem_span_singleton': unknown identifier 'mem_span_singleton'\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"mem_span_singleton\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 600,
+   "result_head": "[{\"type\": \"text\", \"text\": \"364 match(es) for 'mem_span_singleton' (via ripgrep):\\n- Mathlib/Algebra/CharP/Quotient.lean:23\\n    simp [CharP.intCast_eq_zero_iff R p, Ideal.mem_span_singleton]\\n- Mathlib/Algebra/CharP/Quotient.lean:39\\n    Ideal.mem_span_singleton.1 <|\\n- Mathlib/Algebra/Lie/Normalizer.lean:151\\n    obtain ⟨t, rfl⟩ := Submodule.mem_span_singleton.mp hu₁\\n- Mathlib/Algebra/Lie/Normalizer.lean:152\\n    obtain ⟨s, rfl⟩ := Submodule.mem_span_singleton.mp hu₂\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:271\\n    simpa only [Ideal.mem_radical_iff, Ideal.mem_span_singleton] using\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem mem_span_singleton|lemma mem_span_singleton\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'theorem mem_span_singleton|lemma mem_span_singleton' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Operations.lean:569\\n    theorem mem_span_singleton_mul {x y : A} : x ∈ span R {y} * P ↔ ∃ z ∈ P, y * z = x := by\\n- Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean:135\\n    theorem mem_span_singleton_of_inner_eq_zero_of_inner_eq_zero\\n- Mathlib/RingTheory/Ideal/Span.lean:94\\n    theorem mem_span_singleton' {x y : α} : x ∈ span ({y} : Set α) ↔ ∃ a, a * y = x :=\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.mem_span_singleton_iff_eq_smul\"}",
+   "ok": true,
+   "result_chars": 152,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.mem_span_singleton_iff_eq_smul': unknown identifier 'Submodule.mem_span_singleton_iff_eq_smul'\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean\", \"line\": 130, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3136,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean  (lines 130–179 of 418):\\n   130    exact finrank_add_finrank_orthogonal' <| by\\n   131      simp [finrank_span_singleton hv, _i.elim, add_comm]\\n   132  \\n   133  /-- If a nonzero vector `w` and a vector `u` are both orthogonal to the same nonzero vector `v`\\n   134  in a two-dimensional inner product space, then `u` lies in the span of `w`. -/\\n   135  theorem mem_span_singleton_of_inner_eq_zero_of_inner_eq_zero\\n   136      [Fact (finrank 𝕜 E = 2)] {u v w : E} (hv : v ≠ 0) (hw : w ≠ 0)\\n   137      (huv : ⟪v, u⟫_𝕜 = 0) (hwv : ⟪v, w⟫_𝕜 = 0) :\\n   138      u ∈ 𝕜 ∙ w := by\\n   139    haveI : FiniteDimensional 𝕜 E := .of_fact_finrank_eq_succ 1\\n   140    suffices heq : (𝕜 ∙ v)ᗮ = 𝕜 ∙ w by rwa [← heq, mem_orthogonal_singleton_iff_inner_right]\\n   141    exact eq_span_singleton_of_mem_of_finrank_eq_one\\n   142      (finrank_orthogonal_span_singleton (n := 1) hv)\\n   143      (mem_orthogonal_singleton_iff_inner_right.mpr hwv) hw\\n   144  \\n   145  end Submodule\\n   146  \\n   147  open Module Submodule\\n   148  \\n   149  /-- An element `φ` of the orthogonal group of `F` can be factored as a product of reflections, and\\n   150  specifically at most as many reflections as the dimension of the complement of the fixed subspace\\n   151  of `φ`. -/\\n   152  theorem LinearIsometryEquiv.reflections_generate_dim_aux [FiniteDimensional ℝ F] {n : ℕ}\\n   153      (φ : F ≃ₗᵢ[ℝ] F) (hn : finrank ℝ (ContinuousLinearMap.id ℝ F - φ).kerᗮ ≤ n) :\\n   154      ∃ l : List F, l.length ≤ n ∧ φ = (l.map fun v => (ℝ ∙ v)ᗮ.reflection).prod := by\\n   155    -- We prove this by strong induction on `n`, the dimension of the orthogonal complement of the\\n   156    -- fixed subspace of the endomorphism `φ`\\n   157    induction n generalizing φ with\\n   158    | zero => -- Base case: `n = 0`, the fixed subspace is the whole space, so `φ = id`\\n   159      refine ⟨[], rfl.le, show φ = 1 from ?_⟩\\n   160      have : (ContinuousLinearMap.id ℝ F - φ).ker = ⊤ := by\\n   161        rwa [le_zero_iff, finrank_eq_zero, orthogonal_eq_bot_iff] at hn\\n   162      symm\\n   163      ext x\\n   164      have := LinearMap.congr_fun (LinearMap.ker_eq_top.mp this) x\\n   165      simpa only [sub_eq_zero, ContinuousLinearMap.toLinearMap_sub, LinearMap.sub_apply,\\n   166        LinearMap.zero_apply] using! this\\n   167    | succ n IH =>\\n   168      -- Inductive step.  Let `W` be the fixed subspace of `φ`.  We suppose its complement to have\\n   169      -- dimension at most n + 1.\\n   170      let W := (ContinuousLinearMap.id ℝ F - φ).ker\\n   171      have hW : ∀ w ∈ W, φ w = w := fun w hw => (sub_eq_zero.mp hw).symm\\n   172      by_cases hn' : finrank ℝ Wᗮ ≤ n\\n   173      · obtain ⟨V, hV₁, hV₂⟩ := IH φ hn'\\n   174        exact ⟨V, hV₁.trans n.le_succ, hV₂⟩\\n   175      -- Take a nonzero element `v` of the orthogonal complement of `W`.\\n   176      haveI : Nontrivial Wᗮ := nontrivial_of_finrank_pos (by lia : 0 < finrank ℝ Wᗮ)\\n   177      obtain ⟨v, hv⟩ := exists_ne (0 : Wᗮ)\\n   178      have hφv : φ v ∈ Wᗮ := by\\n   179        intro w hw\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*∙\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 470,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'notation.*∙' (via ripgrep):\\n- Mathlib/LinearAlgebra/Span/Defs.lean:19\\n    * We introduce the notation `R ∙ v` for the span of a singleton, `Submodule.span R {v}`.  This is\\n- Mathlib/LinearAlgebra/Span/Defs.lean:320\\n    notation:70 R:70 \\\" ∙ \\\" x:70 => span R (singleton x)\\n- Mathlib/LinearAlgebra/Span/Basic.lean:28\\n    * We introduce the notation `R ∙ v` for the span of a singleton, `Submodule.span R {v}`.  This is\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean\", \"line\": 133, \"n\": 12}",
+   "ok": true,
+   "result_chars": 919,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean  (lines 133–144 of 418):\\n   133  /-- If a nonzero vector `w` and a vector `u` are both orthogonal to the same nonzero vector `v`\\n   134  in a two-dimensional inner product space, then `u` lies in the span of `w`. -/\\n   135  theorem mem_span_singleton_of_inner_eq_zero_of_inner_eq_zero\\n   136      [Fact (finrank 𝕜 E = 2)] {u v w : E} (hv : v ≠ 0) (hw : w ≠ 0)\\n   137      (huv : ⟪v, u⟫_𝕜 = 0) (hwv : ⟪v, w⟫_𝕜 = 0) :\\n   138      u ∈ 𝕜 ∙ w := by\\n   139    haveI : FiniteDimensional 𝕜 E := .of_fact_finrank_eq_succ 1\\n   140    suffices heq : (𝕜 ∙ v)ᗮ = 𝕜 ∙ w by rwa [← heq, mem_orthogonal_singleton_iff_inner_right]\\n   141    exact eq_span_singleton_of_mem_of_finrank_eq_one\\n   142      (finrank_orthogonal_span_singleton (n := 1) hv)\\n   143      (mem_orthogonal_singleton_iff_inner_right.mpr hwv) hw\\n   144  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem orthogonal_vectors_span_line\n    (𝕜 : Type*) [RCLike 𝕜]\n    (E : Type*) [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]\n    (v w u : E)\n    (hv : v ≠ 0)\n    (hw : w ≠ 0)\n    (h_dim : finrank 𝕜 E = 2)\n    (hv_orth_w : ⟪v, w⟫_𝕜 = 0)\n    (hv_orth_u : ⟪v, u⟫_𝕜 = 0) :\n    u ∈ 𝕜 ∙ w := sorry"
+}

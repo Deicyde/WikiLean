@@ -1,0 +1,138 @@
+{
+ "task_id": "fresh_034",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:30:17Z",
+ "wall_s": 79.9,
+ "transcript_stats": {
+  "turns": 12,
+  "assistant_turns": 11,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 1,
+   "mcp__wikibrain__decl_exists": 3,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__brain_snippets": 2
+  },
+  "tokens_in": 90,
+  "tokens_out": 6258,
+  "cost_usd": 0.06479394999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"C^n manifold smooth map\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3016,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"C^n manifold smooth map\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q203920\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Manifold\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/ChartedSpace\\\",\\\"label\\\":\\\"ChartedSpace\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q3552958\\\",\\\"label\\\":\\\"Differentiable manifold\\\",\\\"w\\\":23},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":12},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q11210\\\",\\\"label\\\":\\\"Coordinate system\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q395\\\",\\\"label\\\":\\\"Mathematics\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q632814\\\",\\\"label\\\":\\\"Riemannian manifold\\\",\\\"w\\\":9},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"label\\\":\\\"Topological space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1047080\\\",\\\"label\\\":\\\"Differential form\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"ChartedSpace\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class ChartedSpace (H : Type*) [TopologicalSpace H] (M : Type*) [TopologicalSpace M] where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ChartedSpace.html#ChartedSpace\\\",\\\"via_cell\\\":\\\"cell:Q203920\\\",\\\"cell_label\\\":\\\"Manifold\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/ChartedSpace\\\",\\\"label\\\":\\\"ChartedSpace\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"immersion manifold continuous differentiable\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4342,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"immersion manifold continuous differentiable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Differentiable\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Differentiable\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus/FDeriv\\\",\\\"label\\\":\\\"FDeriv\\\"}]},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/Immersion\\\",\\\"label\\\":\\\"Immersion\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\",\\\"via_cell\\\":\\\"cell:Q170058\\\",\\\"cell_label\\\":\\\"Continuous function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Manifold.IsImmersion\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Geometry.Manifold.Immersion\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.Immersion\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"code\\\":\\\"def IsImmersion (f : M → N) : Prop :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/Immersion.html#Manifold.IsImmersion\\\",\\\"via_cell\\\":\\\"cell:Q574523\\\",\\\"cell_label\\\":\\\"Immersion (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/Immersion\\\",\\\"label\\\":\\\"Immersion\\\"}]},{\\\"decl\\\":\\\"Differentiable\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.Calculus.FDeriv.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.FDeriv.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Differentiable (f : E → F) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/FDeriv/Defs.html#Differentiable\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Differentiable\\\",\\\"cell_label\\\":\\\"Differentiable\\\",\\\"breadcrumb\\\":["
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"ContMDiff continuous manifold differentiability\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1984cb872067\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1984cb872067\",\"timestamp\":\"2026-08-08T02:30:32Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smooth manifold C infinity differentiable\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b19936c812067\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b19936c812067\",\"timestamp\":\"2026-08-08T02:30:34Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContMDiff\", \"IsImmersion\", \"SmoothManifoldWithCorners\", \"Continuous\"]}",
+   "ok": true,
+   "result_chars": 1427,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ContMDiff/Defs.html#ContMDiff\\\"},{\\\"decl\\\":\\\"IsImmersion\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Manifold.IsImmersion\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.Immersion\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.Immersion\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/Immersion.html#Manifold.IsImmersion\\\"},{\\\"decl\\\":\\\"SmoothManifoldWithCorners\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"HasModelWithCorners\", \"ChartedSpace\", \"SmoothManifold\", \"ModelWithCorners\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b19d3791a2067\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b19d3791a2067\",\"timestamp\":\"2026-08-08T02:30:45Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:ContMDiff\"}",
+   "ok": true,
+   "result_chars": 1551,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:ContMDiff\\\",\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"anchor\\\":\\\"decl:Mathlib:ContMDiff\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"supercells\\\":[\\\"path:Mathlib/Geometry/Manifold/ContMDiff\\\"],\\\"xy\\\":[-36.9,-1013]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ContMDiff\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def ContMDiff (n : ℕ∞ω) (f : M → M') :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ContMDiff.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/ContMDiff\\\",\\\"label\\\":\\\"ContMDiff\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":3,\\\"mentions\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q2264221\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"invocation\\\":2}},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q3552958\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q909601\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.SmoothEmbedding.contMDiff\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":5,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:ContMDiff\"}",
+   "ok": true,
+   "result_chars": 504,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:ContMDiff\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:ContMDiff\\\",\\\"label\\\":\\\"ContMDiff\\\",\\\"code\\\":\\\"def ContMDiff (n : ℕ∞ω) (f : M → M') :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ContMDiff/Defs.html#ContMDiff\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Manifold.IsImmersion\"}",
+   "ok": true,
+   "result_chars": 3236,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Manifold.IsImmersion\\\",\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"f\\\":6296,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q574523\\\",\\\"anchor\\\":\\\"Q574523\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"supercells\\\":[\\\"path:Mathlib/Geometry/Manifold/Immersion\\\"],\\\"f\\\":6296,\\\"xy\\\":[-294.4,-269.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q574523\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"differentiable function whose derivative is everywhere injective\\\",\\\"slug\\\":\\\"Immersion_mathematics\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Manifold.IsImmersion\\\",\\\"label\\\":\\\"Manifold.IsImmersion\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Geometry.Manifold.Immersion\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"`f : M → N` is a `C^n` immersion if around each point `x ∈ M`,\\\\nthere are charts `φ` and `ψ` of `M` and `N` around `x` and `f x`, respectively\\\\nsuch that in these charts, `f` looks like `u ↦ (u, 0)`.\\\\n\\\\nImplicit in this definition is an abstract choice `F` of a complement of `E` in `\\\",\\\"code\\\":\\\"def IsImmersion (f : M → N) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.Immersion\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Immersion\\\",\\\"label\\\":\\\"Immersion\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Immersion.html\\\",\\\"qid\\\":\\\"Q574523\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Immersion\\\",\\\"label\\\":\\\"Definition:Immersion\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Immersion\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q574523\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2205.00114#6\\\",\\\"label\\\":\\\"Fixed Point Theorems for Hypersequences and the Foundation of Generalized Differential Geometry I: The Simplified Algebra\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2205.00114\\\",\\\"ref\\\":\\\"6\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"label\\\":\\\"Geometry\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold\\\",\\\"label\\\":\\\"Manifold\\\"},{\\\"id\\\":\\\"path:Mathlib/Geometry/Manifold/Immersion\\\",\\\"label\\\":\\\"Immersion\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":25,\\\"invocation\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q11210\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q120812\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q185264\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":22,\\\"organs\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ModelWithCorners\", \"ChartedSpace\"]}",
+   "ok": true,
+   "result_chars": 864,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ModelWithCorners\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/Basic.html#ModelWithCorners\\\"},{\\\"decl\\\":\\\"ChartedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ChartedSpace.html#ChartedSpace\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Manifold.IsImmersion\"}",
+   "ok": true,
+   "result_chars": 1682,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q574523\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q574523\\\",\\\"label\\\":\\\"Immersion (mathematics)\\\",\\\"snippet\\\":\\\"differentiable function whose derivative is everywhere injective\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q574523\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Manifold.IsImmersion\\\",\\\"label\\\":\\\"Manifold.IsImmersion\\\",\\\"snippet\\\":\\\"`f : M → N` is a `C^n` immersion if around each point `x ∈ M`,\\\\nthere are charts `φ` and `ψ` of `M` and `N` around `x` and `f x`, respectively\\\\nsuch that in these charts, `f` looks like `u ↦ (u, 0)`.\\\\n\\\\nImplicit in this definition is an abstract choice `F` of a complement of `E` in `\\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"def IsImmersion (f : M → N) : Prop :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/Immersion.html#Manifold.IsImmersion\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:Immersion\\\",\\\"label\\\":\\\"Immersion\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/Immersion.html\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Immersion\\\",\\\"label\\\":\\\"Definition:Immersion\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Immersion\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2205.00114#6\\\",\\\"label\\\":\\\"Fixed Point Theorems for Hypersequences and the Foundation of Generalized Differential Geometry I: The Simplified Algebra\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2205.00114\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem contMDiff_iff_continuous_and_comp_immersion\n  {n : ℕ∞} {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n  {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n  {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)\n  {M N : Type*} [TopologicalSpace M] [TopologicalSpace N]\n  [ChartedSpace H M] [ChartedSpace H N]\n  (f : M → N) :\n  ContMDiff I I n f ↔ Continuous f ∧\n    (∀ (P : Type*) [TopologicalSpace P] [ChartedSpace H P],\n     ∀ (φ : P → M), Manifold.IsImmersion I I φ → ContMDiff I I n φ →\n     ContMDiff I I n (f ∘ φ)) := sorry"
+}

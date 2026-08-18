@@ -1,0 +1,652 @@
+{
+ "task_id": "fresh_077",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:39:07Z",
+ "wall_s": 121.4,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 46,
+   "mcp__formal__decl_grep": 19,
+   "mcp__formal__decl_read": 10
+  },
+  "tokens_in": 244,
+  "tokens_out": 7300,
+  "cost_usd": 0.1453147
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Noetherian CommRing\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Noetherian CommRing': Unknown identifier `Noetherian`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Finite\"}",
+   "ok": true,
+   "result_chars": 1189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1121 declarations mentioning Module.Finite.\\n- Module.Finite   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely generated as a module.\\n- AddMonoid.FG.to_moduleFinite_nat   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.iff_addMonoid_fg   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.iff_addGroup_fg   [Mathlib.RingTheory.Finiteness.Defs]\\n- AddMonoid.FG.to_moduleFinite_int   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.fg_top   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely generated as a module.\\n- Module.Finite.of_fg_top   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.finite_def   [Mathlib.RingTheory.Finiteness.Defs]\\n    See also `Module.Finite.iff_fg` for a version when `M` is itself a submodule.\\n- Module.Finite.exists_fin   [Mathlib.RingTheory.Finiteness.Defs]\\n    See also `Module.Finite.exists_fin'`.\\n- RingHom.finite_algebraMap   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.self   [Mathlib.RingTheory.Finiteness.Basic]\\n- Module.Finite.of_finite   [Mathlib.RingTheory.Finiteness.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ext\"}",
+   "ok": true,
+   "result_chars": 1327,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 6 declarations mentioning Ext.\\n- Ext   [Mathlib.CategoryTheory.Abelian.Ext]\\n    `Ext R C n` is defined by deriving in the first argument of `(X, Y) ↦ ModuleCat.of R (unop X ⟶ Y)` (which is the second argument of `linearYoneda`).\\n- isZero_Ext_succ_of_projective   [Mathlib.CategoryTheory.Abelian.Ext]\\n    If `X : C` is projective and `n : ℕ`, then `Ext^(n + 1) X Y ≅ 0` for any `Y`.\\n- CategoryTheory.ProjectiveResolution.isoExt   [Mathlib.CategoryTheory.Abelian.Ext]\\n    `Ext` can be computed using a projective resolution.\\n- Rep.barResolution.extIso   [Mathlib.RepresentationTheory.Homological.Resolution]\\n    Given a `k`-linear `G`-representation `V`, `Extⁿ(k, V)` (where `k` is the trivial `k`-linear `G`-representation) is isomorphic to the `n`th cohomology group of \\n- Rep.standardResolution.extIso   [Mathlib.RepresentationTheory.Homological.Resolution]\\n    Given a `k`-linear `G`-representation `V`, `Extⁿ(k, V)` (where `k` is a trivial `k`-linear `G`-representation) is isomorphic to the `n`th cohomology group of `H\\n- groupCohomologyIsoExt   [Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic]\\n    The `n`th group cohomology of a `k`-linear `G`-representation `A` is isomorphic to `Extⁿ(k, A)` (taken in `Rep k G`), where `k` is a trivial `k`-linear `G`-repr\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"regular sequence\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'regular sequence': Unknown identifier `regular`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Tor Ext modules homology\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Tor Ext modules homology': Unknown identifier `Tor`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsSupportedBy Submodule ideal vanishing\"}",
+   "ok": true,
+   "result_chars": 124,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsSupportedBy Submodule ideal vanishing': Unknown identifier `IsSupportedBy`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"M-sequence ideal elements\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'M-sequence ideal elements': Unknown identifier `M`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsRegularSeq\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsRegularSeq': unknown identifier 'IsRegularSeq'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.IsPrincipal\"}",
+   "ok": true,
+   "result_chars": 1081,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 135 declarations mentioning Submodule.IsPrincipal.\\n- Submodule.IsPrincipal   [Mathlib.LinearAlgebra.Span.Defs]\\n    An `R`-submodule of `M` is principal if it is generated by one element.\\n- Submodule.IsPrincipal.generator   [Mathlib.LinearAlgebra.Span.Defs]\\n    `generator I`, if `I` is a principal submodule, is an `x ∈ M` such that `span R {x} = I`\\n- Submodule.instIsPrincipalSpanSingletonSet   [Mathlib.LinearAlgebra.Span.Defs]\\n- Module.isPrincipal_def   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.mk   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.principal   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.isPrincipal_iff   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.span_singleton_generator   [Mathlib.LinearAlgebra.Span.Defs]\\n- Module.isPrincipal_submodule_iff   [Mathlib.LinearAlgebra.Span.Defs]\\n- IsPrincipalIdealRing.mk   [Mathlib.RingTheory.Ideal.Span]\\n- IsPrincipalIdealRing.principal   [Mathlib.RingTheory.Ideal.Span]\\n- isPrincipalIdealRing_iff   [Mathlib.RingTheory.Ideal.Span]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : List ?b) → (?c : Type*)\"}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : List ?b) → (?c : Type*)': type expected, got\\n  (?a : List ?b)\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule regular\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule regular': Unknown identifier `regular`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Sequence ideal list\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Sequence ideal list': Unknown identifier `Sequence`\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.nonempty sequence\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'List.nonempty sequence': Unknown constant `List.nonempty`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"depth module\"}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'depth module': Unknown identifier `depth`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsNoetherian\"}",
+   "ok": true,
+   "result_chars": 1401,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 252 declarations mentioning IsNoetherian.\\n- IsNoetherian   [Mathlib.RingTheory.Noetherian.Defs]\\n    `IsNoetherian R M` is the proposition that `M` is a Noetherian `R`-module, implemented as the predicate that all `R`-submodules of `M` are finitely generated.\\n- isNoetherianRing_iff   [Mathlib.RingTheory.Noetherian.Defs]\\n- IsNoetherian.mk   [Mathlib.RingTheory.Noetherian.Defs]\\n- IsNoetherian.noetherian   [Mathlib.RingTheory.Noetherian.Defs]\\n    `IsNoetherian R M` is the proposition that `M` is a Noetherian `R`-module, implemented as the predicate that all `R`-submodules of `M` are finitely generated.\\n- isNoetherian_def   [Mathlib.RingTheory.Noetherian.Defs]\\n    An R-module is Noetherian iff all its submodules are finitely-generated.\\n- isNoetherian_mk   [Mathlib.RingTheory.Noetherian.Defs]\\n    **Alias** of the reverse direction of `isNoetherian_iff'`.\\n- wellFoundedGT   [Mathlib.RingTheory.Noetherian.Defs]\\n- IsNoetherian.wellFoundedGT   [Mathlib.RingTheory.Noetherian.Defs]\\n    **Alias** of the forward direction of `isNoetherian_iff'`.\\n- isNoetherian_iff'   [Mathlib.RingTheory.Noetherian.Defs]\\n- IsNoetherian.wf   [Mathlib.RingTheory.Noetherian.Defs]\\n    **Alias** of the forward direction of `isNoetherian_iff`.\\n- isNoetherian_iff   [Mathlib.RingTheory.Noetherian.Defs]\\n- isNoetherian_submodule'   [Mathlib.RingTheory.Noetherian.Defs]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Support\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Support': unknown identifier 'Module.Support'\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span generators\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.span generators': Unknown identifier `generators`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"support module prime ideal\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'support module prime ideal': Unknown identifier `support`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.map ideal\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.map ideal': Unknown identifier `ideal`\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.prod mul\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'List.prod mul': Unknown identifier `mul`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.Quotient proper\"}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.Quotient proper': Unknown constant `Submodule.Quotient`\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ne Submodule\"}",
+   "ok": true,
+   "result_chars": 79,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Ne Submodule'.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.span R\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.span R': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CommRing\"}",
+   "ok": true,
+   "result_chars": 1231,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 21781 declarations mentioning CommRing.\\n- CommRing   [Mathlib.Algebra.Ring.Defs]\\n    A commutative ring is a ring with commutative multiplication.\\n- CommRing.toAddCommGroupWithOne   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.toCommMonoid   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.toCommSemiring   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.toNonAssocCommRing   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.toNonUnitalCommRing   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.toRing   [Mathlib.Algebra.Ring.Defs]\\n- IsMulCommutative.instCommRing   [Mathlib.Algebra.Ring.Defs]\\n    A `Ring` which `IsMulCommutative` is a `CommRing`.  This is primarily used to deduce the bundled version from the unbundled one for commutative subobjects in a \\n- CommRing.mk   [Mathlib.Algebra.Ring.Defs]\\n- CommRing.mul_comm   [Mathlib.Algebra.Ring.Defs]\\n    Multiplication is commutative in a commutative multiplicative magma.\\n- Int.instCommRing   [Mathlib.Algebra.Ring.Int.Defs]\\n- AddMonoidHom.mkRingHomOfMulSelfOfTwoNeZero   [Mathlib.Algebra.Ring.Hom.Defs]\\n    Make a ring homomorphism from an additive group homomorphism from a commutative ring to an integral domain that commutes with self multiplication, assumes that \"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal R\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal R': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*regular.*sequence\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|def|lemma) .*regular.*sequence' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*M.*[Rr]egular\"}",
+   "ok": true,
+   "result_chars": 2734,
+   "result_head": "[{\"type\": \"text\", \"text\": \"189 match(es) for '(theorem|def|lemma) .*M.*[Rr]egular' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Basic.lean:422\\n    lemma isSMulRegular_algebraMap_iff {r : R} :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:423\\n    theorem integralPositiveLinearMap_inj [μ.Regular] [ν.Regular] :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:431\\n    theorem rieszMeasure_integralPositiveLinearMap [μ.Regular] :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:453\\n    lemma _root_.MeasureTheory.Measure.exists_regular_eq_of_compactSpace [CompactSpace X]\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:470\\n    lemma _root_.MeasureTheory.Measure.exists_innerRegular_eq_of_isCompact\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean:86\\n    theorem integralLinearMap_inj {μ ν : Measure X} [μ.Regular] [ν.Regular] :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean:94\\n    theorem rieszMeasure_integralLinearMap {μ : Measure X} [μ.Regular] :\\n- Mathlib/Algebra/GroupWithZero/NonZeroDivisors.lean:245\\n    lemma IsSMulRegular.mem_nonZeroSMulDivisors {M : Type*} [Zero M] [MulActionWithZero M₀ M] {m₀ : M₀}\\n- Mathlib/Algebra/GroupWithZero/NonZeroDivisors.lean:249\\n    lemma isSMulRegular_iff_mem_nonZeroSMulDivisors {M : Type*} [AddGroup M] [DistribMulAction M₀ M]\\n- Mathlib/Algebra/GroupWithZero/Defs.lean:102\\n    theorem isCancelMulZero_iff_forall_isRegular {M₀} [Mul M₀] [Zero M₀] :\\n- Mathlib/Algebra/Regular/ULift.lean:53\\n    theorem isSMulRegular_iff [SMul α R] {r : α} :\\n- Mathlib/Algebra/Regular/Pi.lean:38\\n    theorem isSMulRegular_iff [∀ i, SMul α (R i)] {r : α} [∀ i, Nonempty (R i)] :\\n- Mathlib/Algebra/Regular/Prod.lean:37\\n    theorem IsLeftRegular.prodMk {a : R} {b : S} (ha : IsLeftRegular a) (hb : IsLeftRegular b) :\\n- Mathlib/Algebra/Regular/Prod.lean:41\\n    theorem IsRightRegular.prodMk {a : R} {b : S} (ha : IsRightRegular a) (hb : IsRightRegular b) :\\n- Mathlib/Algebra/Regular/Prod.lean:45\\n    theorem IsRegular.prodMk {a : R} {b : S} (ha : IsRegular a) (hb : IsRegular b) :\\n- Mathlib/Algebra/Regular/Prod.lean:51\\n    theorem Prod.isSMulRegular_iff [SMul α R] [SMul α S] {r : α} [Nonempty R] [Nonempty S] :\\n- Mathlib/Algebra/Regular/SMul.lean:39\\n    def IsSMulRegular [SMul R M] (c : R) :=\\n- Mathlib/Algebra/Regular/SMul.lean:42\\n    theorem IsLeftRegular.isSMulRegular [Mul R] {c : R} (h : IsLeftRegular c) : IsSMulRegular R c :=\\n- Mathlib/Algebra/Regular/SMul.lean:46\\n    theorem isLeftRegular_iff [Mul R] {a : R} : IsLeftRegular a ↔ IsSMulRegular R a :=\\n- Mathlib/Algebra/Regular/SMul.lean:49\\n    theorem IsRightRegular.isSMulRegular [Mul R] {c : R} (h : IsRightRegular c) :\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.vadd zmultiples\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.vadd zmultiples': Unknown constant `Ideal.vadd`\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*[Rr]egular.*[Ee]lement\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|def|lemma) .*[Rr]egular.*[Ee]lement' under Mathlib/.\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*[Ss]equence.*ideal\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|def|lemma) .*[Ss]equence.*ideal' under Mathlib/.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsRegular\"}",
+   "ok": true,
+   "result_chars": 1022,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 108 declarations mentioning IsRegular.\\n- IsRegular   [Mathlib.Algebra.Regular.Defs]\\n    A regular element is an element `c` such that multiplication by `c` both on the left and on the right is injective.\\n- IsRegular.left   [Mathlib.Algebra.Regular.Defs]\\n    A regular element `c` is left-regular\\n- IsRegular.right   [Mathlib.Algebra.Regular.Defs]\\n    A regular element `c` is right-regular\\n- IsRegular.mk   [Mathlib.Algebra.Regular.Defs]\\n- isRegular_iff   [Mathlib.Algebra.Regular.Defs]\\n- IsRegular.all   [Mathlib.Algebra.Group.Defs]\\n    If all multiplications cancel then every element is regular.\\n- isCancelMul_iff_forall_isRegular   [Mathlib.Algebra.Group.Defs]\\n- isLeftRegular_iff_isRegular   [Mathlib.Algebra.Group.Defs]\\n- isRightRegular_iff_isRegular   [Mathlib.Algebra.Group.Defs]\\n- isRegular_ofAdd   [Mathlib.Algebra.Group.TypeTags.Basic]\\n- isAddRegular_toAdd   [Mathlib.Algebra.Group.TypeTags.Basic]\\n- isAddRegular_ofMul   [Mathlib.Algebra.Group.TypeTags.Basic]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Sequence\"}",
+   "ok": true,
+   "result_chars": 2578,
+   "result_head": "[{\"type\": \"text\", \"text\": \"73 match(es) for 'def.*Sequence' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:861\\n    noncomputable def kernelSequence : ShortComplex C :=\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:866\\n    noncomputable def cokernelSequence : ShortComplex C :=\\n- Mathlib/Algebra/Homology/SpectralObject/Homology.lean:51\\n    noncomputable def dCokernelSequence\\n- Mathlib/Algebra/Homology/SpectralObject/Homology.lean:81\\n    noncomputable def dKernelSequence\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:257\\n    noncomputable def cokernelSequenceCyclesE\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:267\\n    noncomputable def cokernelSequenceCyclesEIso\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:367\\n    noncomputable def kernelSequenceOpcyclesE\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:377\\n    noncomputable def kernelSequenceOpcyclesEIso\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:397\\n    noncomputable def cokernelSequenceE (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ + 1 = n₂ := by lia) :\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:452\\n    noncomputable def kernelSequenceE (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ + 1 = n₂ := by lia) :\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:597\\n    noncomputable def cokernelSequenceOpcyclesE\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:659\\n    noncomputable def kernelSequenceCyclesE\\n- Mathlib/Algebra/Homology/SpectralObject/FirstPage.lean:78\\n    noncomputable def spectralSequenceFirstPageXIso (pq : κ)\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:16\\n    The main definition in this file is `Abelian.SpectralObject.spectralSequence`.\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:53\\n    hold, the definition `SpectralObject.SpectralSequence.shortComplexIso`\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:481\\n    noncomputable def spectralSequence : SpectralSequence C c r₀ where\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:490\\n    noncomputable def spectralSequencePageXIso (r : ℤ) (hr : r₀ ≤ r) (pq : κ)\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:553\\n    noncomputable def spectralSequencePageSc'Iso (r : ℤ) (hr : r₀ ≤ r) (pq pq' pq'' : κ)\\n- Mathlib/Algebra/Homology/SpectralObject/SpectralSequence.lean:586\\n    noncomputable def spectralSequenceHomologyData\\n- Mathlib/Algebra/Homology/SpectralObject/Cycles.lean:116\\n    noncomputable def kernelSequenceCycles (hn₁ : n₀ + 1 = n₁ := by lia) :\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def) .*divisor\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2872,
+   "result_head": "[{\"type\": \"text\", \"text\": \"96 match(es) for '(theorem|def) .*divisor' (via ripgrep):\\n- Mathlib/Algebra/Ring/Regular.lean:23\\n    theorem isLeftRegular_of_non_zero_divisor [NonUnitalNonAssocRing α] (k : α)\\n- Mathlib/Algebra/Ring/Regular.lean:30\\n    theorem isRightRegular_of_non_zero_divisor [NonUnitalNonAssocRing α] (k : α)\\n- Mathlib/Analysis/Complex/JensenFormula.lean:389\\n    theorem AnalyticOnNhd.sum_divisor_le {c : ℂ} {r R M : ℝ} {f : ℂ → ℂ} (r_pos : 0 < |r|)\\n- Mathlib/Algebra/BigOperators/Associated.lean:87\\n    theorem divisor_closure_eq_closure [CommMonoidWithZero M₀] [IsCancelMulZero M₀]\\n- Mathlib/Analysis/Complex/ValueDistribution/LogCounting/Basic.lean:588\\n    theorem Function.locallyFinsuppWithin.logCounting_divisor_eq_circleAverage_sub_const {R : ℝ}\\n- Mathlib/Analysis/Complex/CanonicalDecomposition.lean:193\\n    theorem divisor_canonicalFactor (hw : w ∈ ball 0 R) :\\n- Mathlib/Analysis/Complex/CanonicalDecomposition.lean:391\\n    theorem CanonicalDecomp.divisor_eq_divisor {x : ℂ} (D : CanonicalDecomp f g R) (hR : 0 < R) :\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:151\\n    theorem sigma_apply {k n : ℕ} : σ k n = ∑ d ∈ divisors n, d ^ k :=\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:169\\n    theorem sigma_one_apply (n : ℕ) : σ 1 n = ∑ d ∈ divisors n, d := by simp [sigma_apply]\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:175\\n    theorem sigma_eq_sum_div (k n : ℕ) : sigma k n = ∑ d ∈ divisors n, (n / d) ^ k := by\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:178\\n    theorem sigma_zero_apply (n : ℕ) : σ 0 n = #n.divisors := by simp [sigma_apply]\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:222\\n    theorem _root_.Nat.card_divisors {n : ℕ} (hn : n ≠ 0) :\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:229\\n    theorem _root_.Nat.divisors_card_eq_one_iff (n : ℕ) : #n.divisors = 1 ↔ n = 1 := by\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:252\\n    theorem _root_.Nat.sum_divisors {n : ℕ} (hn : n ≠ 0) :\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:444\\n    theorem card_divisors_mul {m n : ℕ} (hmn : m.Coprime n) :\\n- Mathlib/NumberTheory/ArithmeticFunction/Misc.lean:448\\n    theorem sum_divisors_mul {m n : ℕ} (hmn : m.Coprime n) :\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:102\\n    theorem vonMangoldt_sum {n : ℕ} : ∑ i ∈ n.divisors, Λ i = Real.log n := by\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:133\\n    theorem sum_moebius_mul_log_eq {n : ℕ} : (∑ d ∈ n.divisors, (μ d : ℝ) * log d) = -Λ n := by\\n- Mathlib/NumberTheory/ArithmeticFunction/Zeta.lean:71\\n    theorem sum_divisorsAntidiagonal_eq_sum_divisors {M} [Semiring R] [AddCommMonoid M] [MulAction R M]\\n- Mathlib/NumberTheory/ArithmeticFunction/Zeta.lean:90\\n    theorem zeta_mul_apply {f : ArithmeticFunction ℕ} {x : ℕ} : (ζ * f) x = ∑ i ∈ divisors x, f i := by\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Proper Submodule\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Proper Submodule': Unknown identifier `Proper`\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"vadd Submodule scaling\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'vadd Submodule scaling': Unknown identifier `vadd`\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"support.*module.*prime\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'support.*module.*prime' (via ripgrep):\\n- Mathlib/RingTheory/Support.lean:47\\n    /-- The support of a module, defined as the set of primes `p` such that `Mₚ ≠ 0`. -/\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.support\"}",
+   "ok": true,
+   "result_chars": 965,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 40 declarations mentioning Module.support.\\n- Module.support   [Mathlib.RingTheory.Support]\\n    The support of a module, defined as the set of primes `p` such that `Mₚ ≠ 0`.\\n- Module.nonempty_support_of_nontrivial   [Mathlib.RingTheory.Support]\\n- Module.nonempty_support_iff   [Mathlib.RingTheory.Support]\\n- Module.support_eq_empty   [Mathlib.RingTheory.Support]\\n- Module.support_eq_empty_iff   [Mathlib.RingTheory.Support]\\n- Module.support_of_noZeroSMulDivisors   [Mathlib.RingTheory.Support]\\n- LocalizedModule.subsingleton_iff_support_subset   [Mathlib.RingTheory.Support]\\n- Module.mem_support_iff   [Mathlib.RingTheory.Support]\\n- Module.notMem_support_iff   [Mathlib.RingTheory.Support]\\n- Module.support_eq_zeroLocus   [Mathlib.RingTheory.Support]\\n    If `M` is `R`-finite, then `Supp M = Z(Ann(M))`.\\n- Module.mem_support_mono   [Mathlib.RingTheory.Support]\\n- LinearEquiv.support_eq   [Mathlib.RingTheory.Support]\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.Zero.support prime\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.Zero.support prime': Unknown constant `Ideal.Zero.support`\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.zeroLocus\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.zeroLocus': unknown identifier 'Ideal.zeroLocus'\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Support.lean\", \"line\": 47, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1654,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Support.lean  (lines 47–76 of 277):\\n    47  /-- The support of a module, defined as the set of primes `p` such that `Mₚ ≠ 0`. -/\\n    48  @[stacks 00L1]\\n    49  def Module.support : Set (PrimeSpectrum R) :=\\n    50    { p | Nontrivial (LocalizedModule p.asIdeal.primeCompl M) }\\n    51  \\n    52  lemma Module.mem_support_iff :\\n    53      p ∈ Module.support R M ↔ Nontrivial (LocalizedModule p.asIdeal.primeCompl M) := Iff.rfl\\n    54  \\n    55  lemma Module.notMem_support_iff :\\n    56      p ∉ Module.support R M ↔ Subsingleton (LocalizedModule p.asIdeal.primeCompl M) :=\\n    57    not_nontrivial_iff_subsingleton\\n    58  \\n    59  lemma Module.notMem_support_iff' :\\n    60      p ∉ Module.support R M ↔ ∀ m : M, ∃ r ∉ p.asIdeal, r • m = 0 := by\\n    61    simp only [notMem_support_iff, Ideal.primeCompl, LocalizedModule.subsingleton_iff,\\n    62      Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_compl_iff, SetLike.mem_coe]\\n    63  \\n    64  lemma Module.mem_support_iff' :\\n    65      p ∈ Module.support R M ↔ ∃ m : M, ∀ r ∉ p.asIdeal, r • m ≠ 0 := by\\n    66    rw [← @not_not (_ ∈ _), notMem_support_iff']\\n    67    push Not\\n    68    rfl\\n    69  \\n    70  lemma Module.mem_support_iff_exists_annihilator :\\n    71      p ∈ Module.support R M ↔ ∃ m : M, (R ∙ m).annihilator ≤ p.asIdeal := by\\n    72    rw [Module.mem_support_iff']\\n    73    simp_rw [not_imp_not, SetLike.le_def, Submodule.mem_annihilator_span_singleton]\\n    74  \\n    75  lemma Module.mem_support_mono {p q : PrimeSpectrum R} (H : p ≤ q) (hp : p ∈ Module.support R M) :\\n    76      q ∈ Module.support R M := by\\n\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.ZeroLocus\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.ZeroLocus': unknown identifier 'Ideal.ZeroLocus'\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*[Zz]ero[Ll]ocus\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'def.*[Zz]ero[Ll]ocus' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Topology.lean:72\\n    def zeroLocus (s : Set A) : Set (ProjectiveSpectrum 𝒜) :=\\n- Mathlib/AlgebraicGeometry/Scheme.lean:757\\n    def zeroLocus {U : X.Opens} (s : Set Γ(X, U)) : Set X := X.toRingedSpace.zeroLocus s\\n- Mathlib/AlgebraicGeometry/Scheme.lean:820\\n    simp only [Set.subset_def, Scheme.mem_zeroLocus_iff]\\n- Mathlib/AlgebraicGeometry/Scheme.lean:843\\n    simp only [Set.subset_def, mem_zeroLocus_iff, SetLike.mem_coe]\\n- Mathlib/AlgebraicGeometry/IdealSheaf/Basic.lean:613\\n    simp only [le_def, vanishingIdeal_ideal, ← PrimeSpectrum.subset_zeroLocus_iff_le_vanishingIdeal]\\n- Mathlib/FieldTheory/AxGrothendieck.lean:238\\n    exact ax_grothendieck_of_definable S (mvPolynomial_zeroLocus_definable s) p\\n- Mathlib/RingTheory/Nullstellensatz.lean:18\\n    The statement is in terms of new definitions `vanishingIdeal` and `zeroLocus`.\\n- Mathlib/RingTheory/Nullstellensatz.lean:40\\n    def zeroLocus (I : Ideal (MvPolynomial σ k)) : Set (σ → K) :=\\n- Mathlib/Geometry/RingedSpace/Basic.lean:221\\n    def zeroLocus {U : Opens X} (s : Set (X.presheaf.obj (op U))) : Set X :=\\n- Mathlib/RingTheory/Spectrum/Prime/RingHom.lean:271\\n    noncomputable def Ideal.primeSpectrumOrderIsoZeroLocusOfSurj (hf : Surjective f) {I : Ideal R}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PrimeSpectrum Ideal vanish\"}",
+   "ok": true,
+   "result_chars": 268,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'PrimeSpectrum Ideal vanish': Application type mismatch: The argument\\n  Ideal\\nhas type\\n  (R : Type ?u.1) → [Semiring R] → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\nin the application\\n  @PrimeSpectrum Ideal\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PrimeSpectrum.zeroLocus Ideal\"}",
+   "ok": true,
+   "result_chars": 1155,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 113 declarations mentioning PrimeSpectrum.zeroLocus.\\n- PrimeSpectrum.zeroLocus_empty   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_univ   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_anti_mono   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_iUnion   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_singleton_zero   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_insert_zero   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_union   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.subset_vanishingIdeal_zeroLocus   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_diff_singleton_zero   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n    **Alias** of `PrimeSpectrum.zeroLocus_sdiff_singleton_zero`.\\n- PrimeSpectrum.zeroLocus_nilradical   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_sdiff_singleton_zero   [Mathlib.RingTheory.Spectrum.Prime.Basic]\\n- PrimeSpectrum.zeroLocus_singleton_one   [Mathlib.RingTheory.Spectrum.Prime.Basic]\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*PrimeSpectrum.*[Zz]ero\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def.*PrimeSpectrum.*[Zz]ero' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/IdealSheaf/Basic.lean:613\\n    simp only [le_def, vanishingIdeal_ideal, ← PrimeSpectrum.subset_zeroLocus_iff_le_vanishingIdeal]\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def PrimeSpectrum.zeroLocus\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def PrimeSpectrum.zeroLocus' under Mathlib/.\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span ideal module\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.span ideal module': Unknown identifier `ideal`\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule lt top\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule lt top': Unknown identifier `lt`\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"zeroLocus.*Ideal.*Prime\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 807,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'zeroLocus.*Ideal.*Prime' (via ripgrep):\\n- Mathlib/RingTheory/Nullstellensatz.lean:184\\n    theorem IsPrime.vanishingIdeal_zeroLocus (P : Ideal (MvPolynomial σ k)) [h : P.IsPrime] :\\n- Mathlib/AlgebraicGeometry/FunctionField.lean:112\\n    rw [← PrimeSpectrum.zeroLocus_vanishingIdeal_eq_closure, PrimeSpectrum.vanishingIdeal_singleton]\\n- Mathlib/RingTheory/Spectrum/Prime/Basic.lean:175\\n    theorem subset_zeroLocus_iff_le_vanishingIdeal (t : Set (PrimeSpectrum R)) (I : Ideal R) :\\n- Mathlib/RingTheory/Spectrum/Prime/Basic.lean:197\\n    theorem subset_zeroLocus_iff_subset_vanishingIdeal (t : Set (PrimeSpectrum R)) (s : Set R) :\\n- Mathlib/RingTheory/Spectrum/Prime/Basic.lean:226\\n    theorem subset_zeroLocus_vanishingIdeal (t : Set (PrimeSpectrum R)) :\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.span sum mul Submodule\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.span sum mul Submodule': Unknown identifier `sum`\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.map Ideal scale\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.map Ideal scale': Unknown identifier `scale`\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/Basic.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 5464,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/Basic.lean  (lines 1–120 of 504):\\n     1  /-\\n     2  Copyright (c) 2020 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Filippo A. E. Nuccio, Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.RingTheory.Ideal.MinimalPrime.Basic\\n     9  public import Mathlib.RingTheory.Nilpotent.Lemmas\\n    10  public import Mathlib.RingTheory.Noetherian.Basic\\n    11  public import Mathlib.RingTheory.Spectrum.Prime.Defs\\n    12  \\n    13  /-!\\n    14  # Prime spectrum of a commutative (semi)ring\\n    15  \\n    16  For the Zariski topology, see `Mathlib/RingTheory/Spectrum/Prime/Topology.lean`.\\n    17  \\n    18  (It is also naturally endowed with a sheaf of rings,\\n    19  which is constructed in `AlgebraicGeometry.StructureSheaf`.)\\n    20  \\n    21  ## Main definitions\\n    22  \\n    23  * `zeroLocus s`: The zero locus of a subset `s` of `R`\\n    24    is the subset of `PrimeSpectrum R` consisting of all prime ideals that contain `s`.\\n    25  * `vanishingIdeal t`: The vanishing ideal of a subset `t` of `PrimeSpectrum R`\\n    26    is the intersection of points in `t` (viewed as prime ideals).\\n    27  \\n    28  ## Conventions\\n    29  \\n    30  We denote subsets of (semi)rings with `s`, `s'`, etc...\\n    31  whereas we denote subsets of prime spectra with `t`, `t'`, etc...\\n    32  \\n    33  ## Inspiration/contributors\\n    34  \\n    35  The contents of this file draw inspiration from <https://github.com/ramonfmir/lean-scheme>\\n    36  which has contributions from Ramon Fernandez Mir, Kevin Buzzard, Kenny Lau,\\n    37  and Chris Hughes (on an earlier repository).\\n    38  \\n    39  ## References\\n    40  * [M. F. Atiyah and I. G. Macdonald, *Introduction to commutative algebra*][atiyah-macdonald]\\n    41  * [P. Samuel, *Algebraic Theory of Numbers*][samuel1967]\\n    42  -/\\n    43  \\n    44  @[expose] public section\\n    45  \\n    46  -- A dividing line between this file and `Mathlib/RingTheory/Spectrum/Prime/Topology.lean` is\\n    47  -- that we should not depend on the Zariski topology here\\n    48  assert_not_exists TopologicalSpace\\n    49  \\n    50  noncomputable section\\n    51  \\n    52  open scoped Pointwise\\n    53  \\n    54  universe u v\\n    55  \\n    56  variable (R : Type u) (S : Type v)\\n    57  \\n    58  namespace PrimeSpectrum\\n    59  \\n    60  section CommSemiRing\\n    61  \\n    62  variable [CommSemiring R] [CommSemiring S]\\n    63  variable {R S}\\n    64  \\n    65  lemma nonempty_iff_nontrivial : Nonempty (PrimeSpectrum R) ↔ Nontrivial R := by\\n    66    refine ⟨fun ⟨p⟩ ↦ ⟨0, 1, fun h ↦ p.2.ne_top ?_⟩, fun h ↦ ?_⟩\\n    67    · simp [Ideal.eq_top_iff_one p.asIdeal, ← h]\\n    68    · obtain ⟨I, hI⟩ := Ideal.exists_maximal R\\n    69      exact ⟨⟨I, hI.isPrime⟩⟩\\n    70  \\n    71  lemma isEmpty_iff_subsingleton : IsEmpty (PrimeSpectrum R) ↔ Subsingleton R := by\\n    72    contrapose!; exact nonempty_iff_nontrivial\\n    73  \\n    74  instance [Nontrivial R] : Nonempty <| PrimeSpectrum R :=\\n    75    nonempty_iff_nontrivial.mpr inferInstance\\n    76  \\n    77  /-- The prime spectrum of the zero ring is empty. -/\\n    78  instance [Subsingleton R] : IsEmpty (PrimeSpectrum R) :=\\n    79    isEmpty_iff_subsingleton.mpr inferInstance\\n    80  \\n    81  lemma nontrivial (p : PrimeSpectrum R) : Nontrivial R :=\\n    82    nonempty_iff_nontrivial.mp ⟨p⟩\\n    83  \\n    84  variable (R S)\\n    85  \\n    86  theorem range_asIdeal : Set.range PrimeSpectrum.asIdeal = {J : Ideal R | J.IsPrime} :=\\n    87    Set.ext fun J ↦\\n    88      ⟨fun hJ ↦ let ⟨j, hj⟩ := Set.mem_range.mp hJ; Set.mem_setOf.mpr <| hj ▸ j.isPrime,\\n    89        fun hJ ↦ Set.mem_range.mpr ⟨⟨J, Set.mem_setOf.mp hJ⟩, rfl⟩⟩\\n    90  \\n    91  /-- The map from the direct sum of prime spectra to the prime spectrum of a direct product. -/\\n    92  @[simp]\\n    93  def primeSpectrumPro"
+  },
+  {
+   "i": 52,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def zeroLocus.*s : Set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 583,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def zeroLocus.*s : Set' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Topology.lean:72\\n    def zeroLocus (s : Set A) : Set (ProjectiveSpectrum 𝒜) :=\\n- Mathlib/AlgebraicGeometry/Scheme.lean:757\\n    def zeroLocus {U : X.Opens} (s : Set Γ(X, U)) : Set X := X.toRingedSpace.zeroLocus s\\n- Mathlib/Geometry/RingedSpace/Basic.lean:221\\n    def zeroLocus {U : Opens X} (s : Set (X.presheaf.obj (op U))) : Set X :=\\n- Mathlib/RingTheory/Spectrum/Prime/Basic.lean:137\\n    def zeroLocus (s : Set R) : Set (PrimeSpectrum R) :=\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/Defs.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 2929,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/Defs.lean  (lines 1–74 of 74):\\n     1  /-\\n     2  Copyright (c) 2020 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Filippo A. E. Nuccio, Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.RingTheory.Ideal.Prime\\n     9  \\n    10  /-!\\n    11  # Prime spectrum of a commutative (semi)ring as a type\\n    12  \\n    13  The prime spectrum of a commutative (semi)ring is the type of all prime ideals.\\n    14  \\n    15  For the Zariski topology, see `Mathlib/RingTheory/Spectrum/Prime/Topology.lean`.\\n    16  \\n    17  (It is also naturally endowed with a sheaf of rings,\\n    18  which is constructed in `AlgebraicGeometry.StructureSheaf`.)\\n    19  \\n    20  ## Main definitions\\n    21  \\n    22  * `PrimeSpectrum R`: The prime spectrum of a commutative (semi)ring `R`,\\n    23    i.e., the set of all prime ideals of `R`.\\n    24  -/\\n    25  \\n    26  @[expose] public section\\n    27  \\n    28  /-- The prime spectrum of a commutative (semi)ring `R` is the type of all prime ideals of `R`.\\n    29  \\n    30  It is naturally endowed with a topology (the Zariski topology),\\n    31  and a sheaf of commutative rings (see `Mathlib/AlgebraicGeometry/StructureSheaf.lean`).\\n    32  It is a fundamental building block in algebraic geometry. -/\\n    33  @[ext]\\n    34  structure PrimeSpectrum (R : Type*) [CommSemiring R] where\\n    35    asIdeal : Ideal R\\n    36    isPrime : asIdeal.IsPrime\\n    37  \\n    38  attribute [instance] PrimeSpectrum.isPrime\\n    39  \\n    40  namespace PrimeSpectrum\\n    41  \\n    42  /-!\\n    43  ## The specialization order\\n    44  \\n    45  We endow `PrimeSpectrum R` with a partial order induced from the ideal lattice.\\n    46  This is exactly the specialization order.\\n    47  See the corresponding section at `Mathlib/RingTheory/Spectrum/Prime/Topology.lean`.\\n    48  -/\\n    49  \\n    50  variable {R : Type*} [CommSemiring R]\\n    51  \\n    52  instance : Coe (PrimeSpectrum R) (Ideal R) where\\n    53    coe P := P.asIdeal\\n    54  \\n    55  instance : PartialOrder (PrimeSpectrum R) :=\\n    56    PartialOrder.lift asIdeal (@PrimeSpectrum.ext _ _)\\n    57  \\n    58  @[simp]\\n    59  theorem asIdeal_le_asIdeal (x y : PrimeSpectrum R) : x.asIdeal ≤ y.asIdeal ↔ x ≤ y :=\\n    60    Iff.rfl\\n    61  \\n    62  @[simp]\\n    63  theorem asIdeal_lt_asIdeal (x y : PrimeSpectrum R) : x.asIdeal < y.asIdeal ↔ x < y :=\\n    64    Iff.rfl\\n    65  \\n    66  variable (R) in\\n    67  /-- The prime spectrum is in bijection with the set of prime ideals. -/\\n    68  @[simps]\\n    69  def equivSubtype : PrimeSpectrum R ≃o {I : Ideal R // I.IsPrime} where\\n    70    toFun I := ⟨I.asIdeal, I.2⟩\\n    71    invFun I := ⟨I, I.2⟩\\n    72    map_rel_iff' := .rfl\\n    73  \\n    74  end PrimeSpectrum\\n\"}]"
+  },
+  {
+   "i": 54,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Spectrum/Prime/Basic.lean\", \"line\": 135, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Spectrum/Prime/Basic.lean  (lines 135–154 of 504):\\n   135  `PrimeSpectrum R` where all \\\"functions\\\" in `s` vanish simultaneously.\\n   136  -/\\n   137  def zeroLocus (s : Set R) : Set (PrimeSpectrum R) :=\\n   138    { x | s ⊆ x.asIdeal }\\n   139  \\n   140  @[simp]\\n   141  theorem mem_zeroLocus (x : PrimeSpectrum R) (s : Set R) : x ∈ zeroLocus s ↔ s ⊆ x.asIdeal :=\\n   142    Iff.rfl\\n   143  \\n   144  @[simp]\\n   145  theorem zeroLocus_span (s : Set R) : zeroLocus (Ideal.span s : Set R) = zeroLocus s := by\\n   146    ext x\\n   147    exact (Submodule.gi R R).gc s x.asIdeal\\n   148  \\n   149  /-- The vanishing ideal of a set `t` of points of the prime spectrum of a commutative ring `R` is\\n   150  the intersection of all the prime ideals in the set `t`.\\n   151  \\n   152  An element `f` of `R` can be thought of as a dependent function on the prime spectrum of `R`.\\n   153  At a point `x` (a prime ideal) the function (i.e., element) `f` takes values in the quotient ring\\n   154  `R` modulo the prime ideal `x`. In this manner, `vanishingIdeal t` is exactly the ideal of `R`\\n\"}]"
+  },
+  {
+   "i": 55,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Support.lean\", \"line\": 60, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2245,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Support.lean  (lines 60–99 of 277):\\n    60      p ∉ Module.support R M ↔ ∀ m : M, ∃ r ∉ p.asIdeal, r • m = 0 := by\\n    61    simp only [notMem_support_iff, Ideal.primeCompl, LocalizedModule.subsingleton_iff,\\n    62      Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_compl_iff, SetLike.mem_coe]\\n    63  \\n    64  lemma Module.mem_support_iff' :\\n    65      p ∈ Module.support R M ↔ ∃ m : M, ∀ r ∉ p.asIdeal, r • m ≠ 0 := by\\n    66    rw [← @not_not (_ ∈ _), notMem_support_iff']\\n    67    push Not\\n    68    rfl\\n    69  \\n    70  lemma Module.mem_support_iff_exists_annihilator :\\n    71      p ∈ Module.support R M ↔ ∃ m : M, (R ∙ m).annihilator ≤ p.asIdeal := by\\n    72    rw [Module.mem_support_iff']\\n    73    simp_rw [not_imp_not, SetLike.le_def, Submodule.mem_annihilator_span_singleton]\\n    74  \\n    75  lemma Module.mem_support_mono {p q : PrimeSpectrum R} (H : p ≤ q) (hp : p ∈ Module.support R M) :\\n    76      q ∈ Module.support R M := by\\n    77    rw [Module.mem_support_iff_exists_annihilator] at hp ⊢\\n    78    exact ⟨_, hp.choose_spec.trans H⟩\\n    79  \\n    80  lemma Module.mem_support_iff_of_span_eq_top {s : Set M} (hs : Submodule.span R s = ⊤) :\\n    81      p ∈ Module.support R M ↔ ∃ m ∈ s, (R ∙ m).annihilator ≤ p.asIdeal := by\\n    82    constructor\\n    83    · contrapose\\n    84      rw [notMem_support_iff, LocalizedModule.subsingleton_iff_ker_eq_top, ← top_le_iff,\\n    85        ← hs, Submodule.span_le, Set.subset_def]\\n    86      simp_rw [SetLike.le_def, Submodule.mem_annihilator_span_singleton, SetLike.mem_coe,\\n    87        LocalizedModule.mem_ker_mkLinearMap_iff]\\n    88      push Not\\n    89      simp_rw [and_comm]\\n    90      exact id\\n    91    · intro ⟨m, _, hm⟩\\n    92      exact mem_support_iff_exists_annihilator.mpr ⟨m, hm⟩\\n    93  \\n    94  lemma Module.annihilator_le_of_mem_support (hp : p ∈ Module.support R M) :\\n    95      Module.annihilator R M ≤ p.asIdeal := by\\n    96    obtain ⟨m, hm⟩ := mem_support_iff_exists_annihilator.mp hp\\n    97    exact le_trans ((Submodule.subtype _).annihilator_le_of_injective Subtype.val_injective) hm\\n    98  \\n    99  lemma LocalizedModule.subsingleton_iff_support_subset {f : R} :\\n\"}]"
+  },
+  {
+   "i": 56,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ext module homology derived functor\"}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ext module homology derived functor': Unknown identifier `module`\"}]"
+  },
+  {
+   "i": 57,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"support_eq_zeroLocus\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1284,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'support_eq_zeroLocus' (via ripgrep):\\n- Mathlib/RingTheory/Support.lean:25\\n    - `Module.support_eq_zeroLocus`: If `M` is `R`-finite, then `Supp M = Z(Ann(M))`.\\n- Mathlib/RingTheory/Support.lean:216\\n    lemma Module.support_eq_zeroLocus :\\n- Mathlib/RingTheory/Support.lean:227\\n    rw [Module.support_eq_zeroLocus, ← Set.biUnion_of_singleton (Module.annihilator R M : Set R),\\n- Mathlib/RingTheory/Support.lean:248\\n    · rw [support_eq_zeroLocus]\\n- Mathlib/RingTheory/KrullDimension/Module.lean:52\\n    rw [support_eq_zeroLocus, ringKrullDim_quotient]\\n- Mathlib/RingTheory/Depth/Rees.lean:75\\n    rw [Module.support_eq_zeroLocus, PrimeSpectrum.zeroLocus_eq_iff] at h_supp\\n- Mathlib/RingTheory/Depth/Rees.lean:113\\n    rw [Module.support_eq_zeroLocus, PrimeSpectrum.zeroLocus_subset_zeroLocus_iff] at le_rad\\n- Mathlib/RingTheory/Depth/Rees.lean:173\\n    rw [(Shrink.linearEquiv R _).support_eq, Module.support_eq_zeroLocus, annihilator_quotient]\\n- Mathlib/RingTheory/Smooth/Locus.lean:141\\n    rw [smoothLocus_eq_compl_support_inter, Module.support_eq_zeroLocus]\\n- Mathlib/RingTheory/Ideal/AssociatedPrime/Localization.lean:137\\n    simpa [← Module.mem_support_iff (p := ⟨p, prime⟩), Module.support_eq_zeroLocus] using! hp.1.2\"}]"
+  },
+  {
+   "i": 58,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Support.lean\", \"line\": 100, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Support.lean  (lines 100–149 of 277):\\n   100      Subsingleton (LocalizedModule.Away f M) ↔\\n   101        Module.support R M ⊆ PrimeSpectrum.zeroLocus {f} := by\\n   102    rw [LocalizedModule.subsingleton_iff]\\n   103    constructor\\n   104    · rintro H x hx' f rfl\\n   105      obtain ⟨m, hm⟩ := Module.mem_support_iff_exists_annihilator.mp hx'\\n   106      obtain ⟨_, ⟨n, rfl⟩, e⟩ := H m\\n   107      exact Ideal.IsPrime.mem_of_pow_mem inferInstance n\\n   108        (hm ((Submodule.mem_annihilator_span_singleton _ _).mpr e))\\n   109    · intro H m\\n   110      by_cases h : (Submodule.span R {m}).annihilator = ⊤\\n   111      · rw [Submodule.annihilator_eq_top_iff, Submodule.span_singleton_eq_bot] at h\\n   112        exact ⟨1, one_mem _, by simpa using h⟩\\n   113      obtain ⟨n, hn⟩ : f ∈ (Submodule.span R {m}).annihilator.radical := by\\n   114        rw [Ideal.radical_eq_sInf, Ideal.mem_sInf]\\n   115        rintro p ⟨hp, hp'⟩\\n   116        simpa using H (Module.mem_support_iff_exists_annihilator (p := ⟨p, hp'⟩).mpr ⟨_, hp⟩)\\n   117      exact ⟨_, ⟨n, rfl⟩, (Submodule.mem_annihilator_span_singleton _ _).mp hn⟩\\n   118  \\n   119  lemma Module.support_eq_empty_iff :\\n   120      Module.support R M = ∅ ↔ Subsingleton M := by\\n   121    rw [← Set.subset_empty_iff, ← PrimeSpectrum.zeroLocus_singleton_one,\\n   122      ← LocalizedModule.subsingleton_iff_support_subset, LocalizedModule.subsingleton_iff,\\n   123      subsingleton_iff_forall_eq 0]\\n   124    simp only [Submonoid.powers_one, Submonoid.mem_bot, exists_eq_left, one_smul]\\n   125  \\n   126  lemma Module.nonempty_support_iff :\\n   127      (Module.support R M).Nonempty ↔ Nontrivial M := by\\n   128    rw [Set.nonempty_iff_ne_empty, ne_eq,\\n   129      Module.support_eq_empty_iff, ← not_subsingleton_iff_nontrivial]\\n   130  \\n   131  lemma Module.nonempty_support_of_nontrivial [Nontrivial M] : (Module.support R M).Nonempty :=\\n   132    Module.nonempty_support_iff.mpr ‹_›\\n   133  \\n   134  lemma Module.support_eq_empty [Subsingleton M] :\\n   135      Module.support R M = ∅ :=\\n   136    Module.support_eq_empty_iff.mpr ‹_›\\n   137  \\n   138  lemma Module.support_of_algebra {A : Type*} [Ring A] [Algebra R A] :\\n   139      Module.support R A = PrimeSpectrum.zeroLocus (RingHom.ker (algebraMap R A)) := by\\n   140    ext p\\n   141    simp only [mem_support_iff', ne_eq, PrimeSpectrum.mem_zeroLocus, SetLike.coe_subset_coe]\\n   142    refine ⟨fun ⟨m, hm⟩ x hx ↦ not_not.mp fun hx' ↦ ?_, fun H ↦ ⟨1, fun r hr e ↦ ?_⟩⟩\\n   143    · simpa [Algebra.smul_def, (show _ = _ from hx)] using hm _ hx'\\n   144    · exact hr (H ((Algebra.algebraMap_eq_smul_one _).trans e))\\n   145  \\n   146  lemma Module.support_of_noZeroSMulDivisors [IsDomain R] [IsTorsionFree R M] [Nontrivial M] :\\n   147      Module.support R M = Set.univ := by\\n   148    simp only [Set.eq_univ_iff_forall, mem_support_iff', ne_eq, smul_eq_zero, not_or]\\n   149    obtain ⟨x, hx⟩ := exists_ne (0 : M)\\n\"}]"
+  },
+  {
+   "i": 59,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Support.lean\", \"line\": 216, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1334,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Support.lean  (lines 216–235 of 277):\\n   216  lemma Module.support_eq_zeroLocus :\\n   217      Module.support R M = zeroLocus (Module.annihilator R M) :=\\n   218    Set.ext fun _ ↦ mem_support_iff_of_finite\\n   219  \\n   220  /-- If `M` is a finite module such that `Mₚ = 0` for some `p`,\\n   221  then `M[1/f] = 0` for some `p ∈ D(f)`. -/\\n   222  lemma LocalizedModule.exists_subsingleton_away (p : Ideal R) [p.IsPrime]\\n   223      [Subsingleton (LocalizedModule p.primeCompl M)] :\\n   224      ∃ f ∉ p, Subsingleton (LocalizedModule.Away f M) := by\\n   225    have : ⟨p, inferInstance⟩ ∈ (Module.support R M)ᶜ := by\\n   226      simpa [Module.notMem_support_iff]\\n   227    rw [Module.support_eq_zeroLocus, ← Set.biUnion_of_singleton (Module.annihilator R M : Set R),\\n   228      PrimeSpectrum.zeroLocus_iUnion₂, Set.compl_iInter₂, Set.mem_iUnion₂] at this\\n   229    obtain ⟨f, hf, hf'⟩ := this\\n   230    exact ⟨f, by simpa using hf', subsingleton_iff.mpr\\n   231      fun m ↦ ⟨f, Submonoid.mem_powers f, Module.mem_annihilator.mp hf _⟩⟩\\n   232  \\n   233  lemma IsLocalizedModule.exists_subsingleton_away {M' : Type*} [AddCommMonoid M'] [Module R M']\\n   234      (l : M →ₗ[R] M') (p : Ideal R) [p.IsPrime] [IsLocalizedModule p.primeCompl l]\\n   235      [Subsingleton M'] :\\n\"}]"
+  },
+  {
+   "i": 60,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Ext.*R.*?M.*?N\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 780,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def.*Ext.*R.*?M.*?N' (via ripgrep):\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:1071\\n    def map (f : M →ₗ[R'] N) : TrivSqZeroExt R' M →ₐ[R'] TrivSqZeroExt R' N :=\\n- Mathlib/LinearAlgebra/ExteriorAlgebra/OfAlternating.lean:45\\n    def liftAlternating : (∀ i, M [⋀^Fin i]→ₗ[R] N) →ₗ[R] ExteriorAlgebra R M →ₗ[R] N := by\\n- Mathlib/LinearAlgebra/ExteriorAlgebra/OfAlternating.lean:140\\n    def liftAlternatingEquiv : (∀ i, M [⋀^Fin i]→ₗ[R] N) ≃ₗ[R] ExteriorAlgebra R M →ₗ[R] N where\\n- Mathlib/LinearAlgebra/ExteriorAlgebra/Basic.lean:403\\n    def map (f : M →ₗ[R] N) : ExteriorAlgebra R M →ₐ[R] ExteriorAlgebra R N :=\\n- Mathlib/RingTheory/Localization/Module.lean:270\\n    def mapExtendScalars : (M →ₗ[R] N) →ₗ[R] (M' →ₗ[Rₛ] N') :=\"}]"
+  },
+  {
+   "i": 61,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Tor Ext group cohomology\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Tor Ext group cohomology': Unknown identifier `Tor`\"}]"
+  },
+  {
+   "i": 62,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Ext.*vanishing.*support\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Ext.*vanishing.*support' under Mathlib/.\"}]"
+  },
+  {
+   "i": 63,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*exists.*regular\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 510,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*exists.*regular' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:453\\n    lemma _root_.MeasureTheory.Measure.exists_regular_eq_of_compactSpace [CompactSpace X]\\n- Mathlib/SetTheory/Cardinal/HasCardinalLT.lean:200\\n    lemma exists_regular_cardinal (X : Type u) [Small.{w} X] :\\n- Mathlib/SetTheory/Cardinal/HasCardinalLT.lean:209\\n    lemma exists_regular_cardinal_forall {ι : Type v} (X : ι → Type u) [Small.{w} ι]\"}]"
+  },
+  {
+   "i": 64,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsSMulRegular Submodule ideal\"}",
+   "ok": true,
+   "result_chars": 364,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsSMulRegular Submodule ideal': Application type mismatch: The argument\\n  Submodule\\nhas type\\n  (R : Type ?u.4) → (M : Type ?u.3) → [inst : Semiring R] → [inst_1 : AddCommMonoid M] → [Module R M] → Type ?u.3\\nbut is expected to have type\\n  Type (max ?u.3 ?u.4)\\nin the application\\n  @IsSMulRegular ?m.1 Submodule\"}]"
+  },
+  {
+   "i": 65,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Ee]xt.*vanish\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*[Ee]xt.*vanish' under Mathlib/.\"}]"
+  },
+  {
+   "i": 66,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List sum product Ideal\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'List sum product Ideal': Unknown identifier `sum`\"}]"
+  },
+  {
+   "i": 67,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Ext\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for 'def Ext' (via ripgrep):\\n- Mathlib/Algebra/Module/Injective.lean:160\\n    def ExtensionOf.max {c : Set (ExtensionOf i f)} (hchain : IsChain (· ≤ ·) c)\\n- Mathlib/Algebra/Module/Injective.lean:238\\n    def ExtensionOfMaxAdjoin.fst {y : N} (x : supExtensionOfMaxSingleton i f y) :\\n- Mathlib/Algebra/Module/Injective.lean:245\\n    def ExtensionOfMaxAdjoin.snd {y : N} (x : supExtensionOfMaxSingleton i f y) : R :=\\n- Mathlib/Algebra/Module/Injective.lean:256\\n    def ExtensionOfMaxAdjoin.ideal (y : N) : Ideal R :=\\n- Mathlib/Algebra/Module/Injective.lean:260\\n    def ExtensionOfMaxAdjoin.idealTo (y : N) : ExtensionOfMaxAdjoin.ideal i f y →ₗ[R] Q where\\n- Mathlib/Algebra/Module/Injective.lean:273\\n    def ExtensionOfMaxAdjoin.extendIdealTo (h : Module.Baer R Q) (y : N) : R →ₗ[R] Q :=\\n- Mathlib/Algebra/Module/Injective.lean:306\\n    def ExtensionOfMaxAdjoin.extensionToFun (h : Module.Baer R Q) {y : N} :\\n- Mathlib/CategoryTheory/Abelian/Ext.lean:43\\n    def Ext (n : ℕ) : Cᵒᵖ ⥤ C ⥤ ModuleCat R :=\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean:120\\n    def Ext (X Y : C) (n : ℕ) : Type w :=\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean:477\\n    noncomputable def Ext.biproductAddEquiv {J : Type*} [Fintype J] {X : J → C} {c : Bicone X}\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean:494\\n    noncomputable def Ext.addEquivBiproduct (X : C) {J : Type*} [Fintype J] {Y : J → C} {c : Bicone Y}\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean:514\\n    noncomputable def Ext.biprodAddEquiv {X₁ X₂ Y : C} {n : ℕ} :\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean:525\\n    noncomputable def Ext.addEquivBiprod {X : C} {Y₁ Y₂ : C} {n : ℕ} :\\n- Mathlib/FieldTheory/Finite/Extension.lean:48\\n    def Extension : Type :=\\n- Mathlib/FieldTheory/Finite/Extension.lean:103\\n    noncomputable def Extension.frob :\\n- Mathlib/AlgebraicTopology/ExtraDegeneracy.lean:337\\n    noncomputable def ExtraDegeneracy.s (n : ℕ) :\\n- Mathlib/Topology/ExtremallyDisconnected.lean:247\\n    noncomputable def ExtremallyDisconnected.homeoCompactToT2 [ExtremallyDisconnected A] [T2Space A]\"}]"
+  },
+  {
+   "i": 68,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ext R C succ projective\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ext R C succ projective': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 69,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/Abelian/Ext.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Abelian/Ext.lean  (lines 1–80 of 86):\\n     1  /-\\n     2  Copyright (c) 2021 Kim Morrison. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kim Morrison, Adam Topaz\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Category.ModuleCat.Abelian\\n     9  public import Mathlib.Algebra.Homology.Opposite\\n    10  public import Mathlib.CategoryTheory.Abelian.LeftDerived\\n    11  public import Mathlib.CategoryTheory.Abelian.Opposite\\n    12  public import Mathlib.CategoryTheory.Abelian.Projective.Resolution\\n    13  public import Mathlib.CategoryTheory.Linear.Yoneda\\n    14  \\n    15  /-!\\n    16  # Ext\\n    17  \\n    18  We define `Ext R C n : Cᵒᵖ ⥤ C ⥤ ModuleCat R` for any `R`-linear abelian category `C`\\n    19  by (left) deriving in the first argument of the bifunctor `(X, Y) ↦ ModuleCat.of R (unop X ⟶ Y)`.\\n    20  \\n    21  ## Implementation\\n    22  \\n    23  TODO (@joelriou): When the derived category enters mathlib, the Ext groups shall be\\n    24  redefined using morphisms in the derived category, and then it will be possible to\\n    25  compute `Ext` using both projective or injective resolutions.\\n    26  \\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  \\n    32  noncomputable section\\n    33  \\n    34  open CategoryTheory Limits\\n    35  \\n    36  variable (R : Type*) [Ring R] (C : Type*) [Category* C] [Abelian C] [Linear R C]\\n    37    [EnoughProjectives C]\\n    38  \\n    39  /-- `Ext R C n` is defined by deriving in\\n    40  the first argument of `(X, Y) ↦ ModuleCat.of R (unop X ⟶ Y)`\\n    41  (which is the second argument of `linearYoneda`).\\n    42  -/\\n    43  def Ext (n : ℕ) : Cᵒᵖ ⥤ C ⥤ ModuleCat R :=\\n    44    Functor.flip\\n    45      { obj := fun Y => (((linearYoneda R C).obj Y).rightOp.leftDerived n).leftOp\\n    46        map := fun f => ((((linearYoneda R C).map f).rightOp).leftDerived n).leftOp }\\n    47  \\n    48  open ZeroObject\\n    49  \\n    50  variable {R C}\\n    51  \\n    52  /-- Given a chain complex `X` and an object `Y`, this is the cochain complex\\n    53  which in degree `i` consists of the module of morphisms `X.X i ⟶ Y`. -/\\n    54  @[simps! X d]\\n    55  def ChainComplex.linearYonedaObj {α : Type*} [AddRightCancelSemigroup α] [One α]\\n    56      (X : ChainComplex C α) (A : Type*) [Ring A] [Linear A C] (Y : C) :\\n    57      CochainComplex (ModuleCat A) α :=\\n    58    ((((linearYoneda A C).obj Y).rightOp.mapHomologicalComplex _).obj X).unop\\n    59  \\n    60  namespace CategoryTheory\\n    61  \\n    62  namespace ProjectiveResolution\\n    63  \\n    64  variable {X : C} (P : ProjectiveResolution X)\\n    65  \\n    66  /-- `Ext` can be computed using a projective resolution. -/\\n    67  def isoExt (n : ℕ) (Y : C) : ((Ext R C n).obj (Opposite.op X)).obj Y ≅\\n    68      (P.complex.linearYonedaObj R Y).homology n :=\\n    69    (P.isoLeftDerivedObj ((linearYoneda R C).obj Y).rightOp n).unop.symm ≪≫\\n    70      (HomologicalComplex.homologyUnop _ _).symm\\n    71  \\n    72  end ProjectiveResolution\\n    73  \\n    74  end CategoryTheory\\n    75  \\n    76  /-- If `X : C` is projective and `n : ℕ`, then `Ext^(n + 1) X Y ≅ 0` for any `Y`. -/\\n    77  lemma isZero_Ext_succ_of_projective (X Y : C) [Projective X] (n : ℕ) :\\n    78      IsZero (((Ext R C (n + 1)).obj (Opposite.op X)).obj Y) := by\\n    79    refine IsZero.of_iso ?_ ((ProjectiveResolution.self X).isoExt (n + 1) Y)\\n    80    rw [← HomologicalComplex.exactAt_iff_isZero_homology, HomologicalComplex.exactAt_iff]\\n\"}]"
+  },
+  {
+   "i": 70,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean  (lines 1–120 of 569):\\n     1  /-\\n     2  Copyright (c) 2024 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.DerivedCategory.FullyFaithful\\n     9  public import Mathlib.CategoryTheory.Localization.SmallShiftedHom\\n    10  \\n    11  /-!\\n    12  # Ext groups in abelian categories\\n    13  \\n    14  Let `C` be an abelian category (with `C : Type u` and `Category.{v} C`).\\n    15  In this file, we introduce the assumption `HasExt.{w} C` which asserts\\n    16  that morphisms between single complexes in arbitrary degrees in\\n    17  the derived category of `C` are `w`-small. Under this assumption,\\n    18  we define `Ext.{w} X Y n : Type w` as shrunk versions of suitable\\n    19  types of morphisms in the derived category. In particular, when `C` has\\n    20  enough projectives or enough injectives, the property `HasExt.{v} C`\\n    21  shall hold.\\n    22  \\n    23  Note: in certain situations, `w := v` shall be the preferred\\n    24  choice of universe (e.g. if `C := ModuleCat.{v} R` with `R : Type v`).\\n    25  However, in the development of the API for Ext-groups, it is important\\n    26  to keep a larger degree of generality for universes, as `w < v`\\n    27  may happen in certain situations. Indeed, if `X : Scheme.{u}`,\\n    28  then the underlying category of the étale site of `X` shall be a large\\n    29  category. However, the category `Sheaf X.Etale AddCommGrpCat.{u}`\\n    30  shall have good properties (because there is a small category of affine\\n    31  schemes with the same category of sheaves), and even though the type of\\n    32  morphisms in `Sheaf X.Etale AddCommGrpCat.{u}` shall be\\n    33  in `Type (u + 1)`, these types are going to be `u`-small.\\n    34  Then, for `C := Sheaf X.etale AddCommGrpCat.{u}`, we will have\\n    35  `Category.{u + 1} C`, but `HasExt.{u} C` will hold\\n    36  (as `C` has enough injectives). Then, the `Ext` groups between étale\\n    37  sheaves over `X` shall be in `Type u`.\\n    38  \\n    39  -/\\n    40  \\n    41  @[expose] public section\\n    42  \\n    43  assert_not_exists TwoSidedIdeal\\n    44  \\n    45  universe w'' w' w v u\\n    46  \\n    47  namespace CategoryTheory\\n    48  \\n    49  variable (C : Type u) [Category.{v} C] [Abelian C]\\n    50  \\n    51  open Localization Limits ZeroObject DerivedCategory Pretriangulated\\n    52  \\n    53  /-- The property that morphisms between single complexes in arbitrary degrees are `w`-small\\n    54  in the derived category. -/\\n    55  abbrev HasExt : Prop :=\\n    56    ∀ (X Y : C), HasSmallLocalizedShiftedHom.{w} (HomologicalComplex.quasiIso C (ComplexShape.up ℤ)) ℤ\\n    57      ((CochainComplex.singleFunctor C 0).obj X) ((CochainComplex.singleFunctor C 0).obj Y)\\n    58  \\n    59  set_option backward.isDefEq.respectTransparency false in\\n    60  lemma hasExt_iff [HasDerivedCategory.{w'} C] :\\n    61      HasExt.{w} C ↔ ∀ (X Y : C) (n : ℤ) (_ : 0 ≤ n), Small.{w}\\n    62        ((singleFunctor C 0).obj X ⟶\\n    63          (((singleFunctor C 0).obj Y)⟦n⟧)) := by\\n    64    dsimp [HasExt]\\n    65    simp only [hasSmallLocalizedShiftedHom_iff _ _ Q]\\n    66    constructor\\n    67    · intro h X Y n hn\\n    68      exact (small_congr ((shiftFunctorZero _ ℤ).app\\n    69        ((singleFunctor C 0).obj X)).homFromEquiv).1 (h X Y 0 n)\\n    70    · intro h X Y a b\\n    71      obtain hab | hab := le_or_gt a b\\n    72      · refine (small_congr ?_).1 (h X Y (b - a) (by simpa))\\n    73        exact (Functor.FullyFaithful.ofFullyFaithful\\n    74          (shiftFunctor _ a)).homEquiv.trans\\n    75          ((shiftFunctorAdd' _ _ _ _ (Int.sub_add_cancel b a)).symm.app _).homToEquiv\\n    76      · suffices Subsingleton ((Q.obj ((CochainComplex.singleFunctor C 0).obj X))⟦a⟧ ⟶\\n    77            (Q.obj"
+  },
+  {
+   "i": 71,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean\", \"line\": 115, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2296,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.lean  (lines 115–164 of 569):\\n   115  variable [HasExt.{w} C]\\n   116  \\n   117  namespace Abelian\\n   118  \\n   119  /-- An Ext-group in an abelian category `C`, defined as a `Type w` when `[HasExt.{w} C]`. -/\\n   120  def Ext (X Y : C) (n : ℕ) : Type w :=\\n   121    SmallShiftedHom.{w} (HomologicalComplex.quasiIso C (ComplexShape.up ℤ))\\n   122      ((CochainComplex.singleFunctor C 0).obj X)\\n   123      ((CochainComplex.singleFunctor C 0).obj Y) (n : ℤ)\\n   124  \\n   125  namespace Ext\\n   126  \\n   127  variable {X Y Z T : C}\\n   128  \\n   129  /-- The composition of `Ext`. -/\\n   130  noncomputable def comp {a b : ℕ} (α : Ext X Y a) (β : Ext Y Z b) {c : ℕ} (h : a + b = c) :\\n   131      Ext X Z c :=\\n   132    SmallShiftedHom.comp α β (by lia)\\n   133  \\n   134  lemma comp_assoc {a₁ a₂ a₃ a₁₂ a₂₃ a : ℕ} (α : Ext X Y a₁) (β : Ext Y Z a₂) (γ : Ext Z T a₃)\\n   135      (h₁₂ : a₁ + a₂ = a₁₂) (h₂₃ : a₂ + a₃ = a₂₃) (h : a₁ + a₂ + a₃ = a) :\\n   136      (α.comp β h₁₂).comp γ (show a₁₂ + a₃ = a by lia) =\\n   137        α.comp (β.comp γ h₂₃) (by lia) :=\\n   138    SmallShiftedHom.comp_assoc _ _ _ _ _ _ (by lia)\\n   139  \\n   140  @[simp]\\n   141  lemma comp_assoc_of_second_deg_zero\\n   142      {a₁ a₃ a₁₃ : ℕ} (α : Ext X Y a₁) (β : Ext Y Z 0) (γ : Ext Z T a₃)\\n   143      (h₁₃ : a₁ + a₃ = a₁₃) :\\n   144      (α.comp β (add_zero _)).comp γ h₁₃ = α.comp (β.comp γ (zero_add _)) h₁₃ := by\\n   145    apply comp_assoc\\n   146    lia\\n   147  \\n   148  @[simp]\\n   149  lemma comp_assoc_of_third_deg_zero\\n   150      {a₁ a₂ a₁₂ : ℕ} (α : Ext X Y a₁) (β : Ext Y Z a₂) (γ : Ext Z T 0)\\n   151      (h₁₂ : a₁ + a₂ = a₁₂) :\\n   152      (α.comp β h₁₂).comp γ (add_zero _) = α.comp (β.comp γ (add_zero _)) h₁₂ := by\\n   153    apply comp_assoc\\n   154    lia\\n   155  \\n   156  section\\n   157  \\n   158  variable [HasDerivedCategory.{w'} C]\\n   159  \\n   160  /-- When an instance of `[HasDerivedCategory.{w'} C]` is available, this is the bijection\\n   161  between `Ext.{w} X Y n` and a type of morphisms in the derived category. -/\\n   162  noncomputable def homEquiv {n : ℕ} :\\n   163      Ext.{w} X Y n ≃ ShiftedHom ((singleFunctor C 0).obj X)\\n   164        ((singleFunctor C 0).obj Y) (n : ℤ) :=\\n\"}]"
+  },
+  {
+   "i": 72,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule lt top ne\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule lt top ne': Unknown identifier `lt`\"}]"
+  },
+  {
+   "i": 73,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Ext.*Int.*mod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Ext.*Int.*mod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 74,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Finite.of_map\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Finite.of_map': unknown identifier 'Module.Finite.of_map'\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

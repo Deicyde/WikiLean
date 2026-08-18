@@ -1,0 +1,296 @@
+{
+ "task_id": "fresh_064",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:56:11Z",
+ "wall_s": 88.8,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 20,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 7,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 162,
+  "tokens_out": 6239,
+  "cost_usd": 0.10125850000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"UpperHalfPlane\"}",
+   "ok": true,
+   "result_chars": 1338,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 736 declarations mentioning UpperHalfPlane.\\n- UpperHalfPlane   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    The open upper half plane, denoted as `ℍ` within the `UpperHalfPlane` namespace\\n- UpperHalfPlane.I   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    Define `I := √-1` as an element of the upper half plane.\\n- UpperHalfPlane.ρ   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    Define the cube root of unity `ρ := (-1 + √-3) / 2` as an element of the upper half plane.\\n- UpperHalfPlane.coe   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    Canonical embedding of the upper half-plane into `ℂ`.\\n- UpperHalfPlane.im   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    Imaginary part\\n- UpperHalfPlane.instInfinite   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n- UpperHalfPlane.instInhabited   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n- UpperHalfPlane.instNontrivial   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n- UpperHalfPlane.re   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n    Real part\\n- UpperHalfPlane.instCoeOutComplex   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n- UpperHalfPlane.coe_injective   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\\n- UpperHalfPlane.instAddActionReal   [Mathlib.Analysis.Complex.UpperHalfPlane.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries\"}",
+   "ok": true,
+   "result_chars": 1150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Formal power series over a coefficient type `R`\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) UpperHalfPlane\"}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) UpperHalfPlane' (via ripgrep):\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean:25\\n    structure UpperHalfPlane where\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable\"}",
+   "ok": true,
+   "result_chars": 1165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 671 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the value.\\n- summable_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.mono_filter   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- summable_of_ne_finset_zero   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- summable_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Filter.Tendsto\"}",
+   "ok": true,
+   "result_chars": 993,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3154 declarations mentioning Filter.Tendsto.\\n- Filter.Tendsto   [Mathlib.Order.Filter.Defs]\\n    `Filter.Tendsto` is the generic \\\"limit of a function\\\" predicate. `Tendsto f l₁ l₂` asserts that for every `l₂` neighborhood `a`, the `f`-preimage of `a` is an `\\n- Filter.Tendsto.basis_right   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.HasBasis.tendsto_right_iff   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.Tendsto.basis_left   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.HasBasis.tendsto_left_iff   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.Tendsto.basis_both   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.HasBasis.tendsto_iff   [Mathlib.Order.Filter.Bases.Basic]\\n- Filter.tendsto_id   [Mathlib.Order.Filter.Tendsto]\\n- Filter.tendsto_bot   [Mathlib.Order.Filter.Tendsto]\\n- Filter.tendsto_comap   [Mathlib.Order.Filter.Tendsto]\\n- Filter.tendsto_const_pure   [Mathlib.Order.Filter.Tendsto]\\n- Filter.tendsto_map   [Mathlib.Order.Filter.Tendsto]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*cusp\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 736,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'theorem.*cusp' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:79\\n    theorem eq_cuspFunction {f : ℍ → ℂ} (τ : ℍ) (hh : h ≠ 0)\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:83\\n    theorem differentiableAt_cuspFunction {f : ℍ → ℂ} (hh : 0 < h)\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:132\\n    protected theorem eq_cuspFunction [SlashInvariantFormClass F Γ k] (τ : ℍ)\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:147\\n    protected theorem differentiableAt_cuspFunction [ModularFormClass F Γ k]\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:364\\n    theorem cuspFunction_apply_zero {f : ℍ → ℂ} (hf : IsZeroAtImInfty f) (hh : 0 < h) :\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean  (lines 1–120 of 724):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Complex.TaylorSeries\\n     9  public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp\\n    10  public import Mathlib.NumberTheory.ModularForms.Basic\\n    11  public import Mathlib.NumberTheory.ModularForms.Identities\\n    12  public import Mathlib.RingTheory.PowerSeries.Basic\\n    13  \\n    14  /-!\\n    15  # q-expansions of functions on the upper half plane\\n    16  \\n    17  We show that a function on the upper half plane with strict period `n` can be written as\\n    18  `τ ↦ F (𝕢 n τ)` where `F` is analytic on the open unit disc, and `𝕢 n` is the parameter\\n    19  `τ ↦ exp (2 * I * π * τ / n)`. As an application, we show that cusp forms decay exponentially to 0\\n    20  as `im τ → ∞`.\\n    21  \\n    22  We also define the `q`-expansion of a function `f` on the upper half plane, either as a power series\\n    23  or as a `FormalMultilinearSeries`, and show that it converges to `f` if `f` is periodic, holomorphic\\n    24  and bounded at infinity.\\n    25  \\n    26  ## Main definitions and results\\n    27  \\n    28  * `UpperHalfPlane.cuspFunction`: for a function on the upper half plane with strict period `n`,\\n    29    this is the function `F` such that `f τ = F (exp (2 * π * I * τ / n))`, extended by a choice of\\n    30    limit at `0`.\\n    31  * `UpperHalfPlane.differentiableAt_cuspFunction`: when `f` is periodic, holomorphic and bounded at\\n    32    infinity, its `cuspFunction` is differentiable on the open unit disc (including at `0`).\\n    33  * `UpperHalfPlane.qExpansion`: the `q`-expansion of a function on the upper half plane (defined as\\n    34    the Taylor series of its `cuspFunction`), bundled as a `PowerSeries`.\\n    35  * `UpperHalfPlane.hasSum_qExpansion`: the `q`-expansion evaluated at `𝕢 n τ` sums to `f τ`, for\\n    36    `τ` in the upper half plane.\\n    37  * `ModularForm.qExpansionRingHom` defines the ring homomorphism from the graded ring of\\n    38    modular forms to power series given by taking `q`-expansions.\\n    39  * `UpperHalfPlane.qExpansion_coeff_unique` shows that q-expansion coefficients are uniquely\\n    40    determined.\\n    41  * There are also more specialized versions of some of these lemmas in the `ModularFormClass`\\n    42    namespace.\\n    43  -/\\n    44  \\n    45  @[expose] public noncomputable section\\n    46  \\n    47  open ModularForm Complex Filter Function Matrix.SpecialLinearGroup Metric Set\\n    48  open UpperHalfPlane hiding I\\n    49  \\n    50  open scoped Real MatrixGroups CongruenceSubgroup Topology Manifold\\n    51  \\n    52  variable {k : ℤ} {F : Type*} [FunLike F ℍ ℂ] {Γ : Subgroup (GL (Fin 2) ℝ)} {h : ℝ} (f : F)\\n    53  \\n    54  local notation \\\"I∞\\\" => comap Complex.im atTop\\n    55  local notation \\\"𝕢\\\" => Periodic.qParam\\n    56  \\n    57  namespace UpperHalfPlane\\n    58  \\n    59  /-- The value of `f` at the cusp `∞` (or an arbitrary choice of value if this limit is not\\n    60  well-defined). -/\\n    61  def valueAtInfty (f : ℍ → ℂ) : ℂ := limUnder atImInfty f\\n    62  \\n    63  lemma IsZeroAtImInfty.valueAtInfty_eq_zero {f : ℍ → ℂ} (hf : IsZeroAtImInfty f) :\\n    64      valueAtInfty f = 0 :=\\n    65    hf.limUnder_eq\\n    66  \\n    67  lemma qParam_tendsto_atImInfty {h : ℝ} (hh : 0 < h) :\\n    68      Tendsto (fun τ : ℍ ↦ 𝕢 h τ) atImInfty (nhds 0) :=\\n    69    ((Periodic.qParam_tendsto hh).mono_right nhdsWithin_le_nhds).comp tendsto_coe_atImInfty\\n    70  \\n    71  variable (h) in\\n    72  /--\\n    73  The analytic function `F` such that `f τ = F (exp (2 * π * I * τ / h))`, extended by a choice of\\n    74  limit at `0`.\\n    75  -/\\n    76  def cuspFunction (f : ℍ → ℂ) : ℂ → ℂ :=\\n    77    Fun"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IsBoundedAtImInfty\"}",
+   "ok": true,
+   "result_chars": 231,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def IsBoundedAtImInfty' (via ripgrep):\\n- Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:46\\n    def IsBoundedAtImInfty {α : Type*} [Norm α] (f : ℍ → α) : Prop :=\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsBoundedAtImInfty\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsBoundedAtImInfty': unknown identifier 'IsBoundedAtImInfty'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean\", \"line\": 40, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1731,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean  (lines 40–69 of 98):\\n    40    Filter.HasBasis.comap UpperHalfPlane.im Filter.atTop_basis\\n    41  \\n    42  theorem atImInfty_mem (S : Set ℍ) : S ∈ atImInfty ↔ ∃ A : ℝ, ∀ z : ℍ, A ≤ im z → z ∈ S := by\\n    43    simp only [atImInfty_basis.mem_iff, true_and]; rfl\\n    44  \\n    45  /-- A function `f : ℍ → α` is bounded at infinity if it is bounded along `atImInfty`. -/\\n    46  def IsBoundedAtImInfty {α : Type*} [Norm α] (f : ℍ → α) : Prop :=\\n    47    BoundedAtFilter atImInfty f\\n    48  \\n    49  /-- A function `f : ℍ → α` is zero at infinity it is zero along `atImInfty`. -/\\n    50  def IsZeroAtImInfty {α : Type*} [Zero α] [TopologicalSpace α] (f : ℍ → α) : Prop :=\\n    51    ZeroAtFilter atImInfty f\\n    52  \\n    53  theorem zero_form_isBoundedAtImInfty {α : Type*} [NormedField α] :\\n    54      IsBoundedAtImInfty (0 : ℍ → α) :=\\n    55    const_boundedAtFilter atImInfty (0 : α)\\n    56  \\n    57  /-- Module of functions that are zero at infinity. -/\\n    58  def zeroAtImInftySubmodule (α : Type*) [NormedField α] : Submodule α (ℍ → α) :=\\n    59    zeroAtFilterSubmodule _ atImInfty\\n    60  \\n    61  /-- Subalgebra of functions that are bounded at infinity. -/\\n    62  def boundedAtImInftySubalgebra (α : Type*) [NormedField α] : Subalgebra α (ℍ → α) :=\\n    63    boundedFilterSubalgebra _ atImInfty\\n    64  \\n    65  theorem isBoundedAtImInfty_iff {α : Type*} [Norm α] {f : ℍ → α} :\\n    66      IsBoundedAtImInfty f ↔ ∃ M A : ℝ, ∀ z : ℍ, A ≤ im z → ‖f z‖ ≤ M := by\\n    67    simp [IsBoundedAtImInfty, BoundedAtFilter, Asymptotics.isBigO_iff, Filter.Eventually,\\n    68      atImInfty_mem]\\n    69  \\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"qExpansion\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'qExpansion': unknown identifier 'qExpansion'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem) qExpansion\"}",
+   "ok": true,
+   "result_chars": 721,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|theorem) qExpansion' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:166\\n    def qExpansion (f : ℍ → ℂ) : PowerSeries ℂ :=\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:203\\n    def qExpansionFormalMultilinearSeries : FormalMultilinearSeries ℂ ℂ ℂ :=\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:427\\n    theorem qExpansion_coeff_zero (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) :\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:632\\n    def qExpansionAddHom (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) (k : ℤ) :\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:640\\n    def qExpansionRingHom (h) [Γ.HasDetPlusMinusOne] (hh : 0 < h)\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean\", \"line\": 160, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2871,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean  (lines 160–209 of 724):\\n   160  namespace UpperHalfPlane\\n   161  \\n   162  variable (h) in\\n   163  /-- The `q`-expansion of a function on the upper half plane with strict period `h`, bundled as a\\n   164  `PowerSeries`. The `m`-th coefficient is the Taylor coefficient of the `cuspFunction` at `q = 0`,\\n   165  where `q = exp(2πiτ/h)` is the local parameter at the cusp. -/\\n   166  def qExpansion (f : ℍ → ℂ) : PowerSeries ℂ :=\\n   167    .mk fun m ↦ (↑m.factorial)⁻¹ * iteratedDeriv m (cuspFunction h f) 0\\n   168  \\n   169  lemma qExpansion_coeff (f : ℍ → ℂ) (m : ℕ) :\\n   170      (qExpansion h f).coeff m = (↑m.factorial)⁻¹ * iteratedDeriv m (cuspFunction h f) 0 := by\\n   171    simp [qExpansion]\\n   172  \\n   173  lemma qExpansion_coeff_zero {f : ℍ → ℂ} (hh : 0 < h)\\n   174      (hfanalytic : AnalyticAt ℂ (cuspFunction h f) 0)\\n   175      (hfper : Periodic (f ∘ UpperHalfPlane.ofComplex) h) :\\n   176      (qExpansion h f).coeff 0 = valueAtInfty f := by\\n   177    simp [qExpansion_coeff, cuspFunction_apply_zero hh hfanalytic hfper]\\n   178  \\n   179  lemma hasSum_qExpansion_of_norm_lt {f : ℍ → ℂ} (hh : 0 < h)\\n   180      (hfper : Periodic (f ∘ ofComplex) h) (hfhol : MDiff f) (hfbdd : IsBoundedAtImInfty f)\\n   181      {q : ℂ} (hq : ‖q‖ < 1) :\\n   182      HasSum (fun m : ℕ ↦ (qExpansion h f).coeff m • q ^ m) (cuspFunction h f q) := by\\n   183    convert!\\n   184      hasSum_taylorSeries_on_ball (differentiableOn_cuspFunction_ball hh hfper hfhol hfbdd)\\n   185        (by simpa using hq) using\\n   186      2 with m\\n   187    grind [qExpansion_coeff, sub_zero, smul_eq_mul]\\n   188  \\n   189  lemma hasSum_qExpansion {f : ℍ → ℂ} (hh : 0 < h)\\n   190      (hfper : Periodic (f ∘ ofComplex) h) (hfhol : MDiff f) (hfbdd : IsBoundedAtImInfty f)\\n   191      (τ : ℍ) : HasSum (fun m : ℕ ↦ (qExpansion h f).coeff m • 𝕢 h τ ^ m) (f τ) := by\\n   192    have : ‖𝕢 h τ‖ < 1 := Periodic.norm_qParam_lt_one hh τ.im_pos\\n   193    simpa [eq_cuspFunction τ hh.ne' hfper] using\\n   194      hasSum_qExpansion_of_norm_lt hh hfper hfhol hfbdd this\\n   195  \\n   196  variable (h) in\\n   197  /--\\n   198  The `q`-expansion of a function on the upper half plane, bundled as a `FormalMultilinearSeries`.\\n   199  \\n   200  TODO: Maybe get rid of this and instead define a general API for converting `PowerSeries` to\\n   201  `FormalMultilinearSeries`.\\n   202  -/\\n   203  def qExpansionFormalMultilinearSeries : FormalMultilinearSeries ℂ ℂ ℂ :=\\n   204    .ofScalars ℂ fun m ↦ (qExpansion h f).coeff m\\n   205  \\n   206  @[simp]\\n   207  lemma qExpansionFormalMultilinearSeries_coeff (m : ℕ) :\\n   208      (qExpansionFormalMultilinearSeries h f).coeff m = (qExpansion h f).coeff m := by\\n   209    simp [qExpansionFormalMultilinearSeries, FormalMultilinearSeries.coeff_ofScalars]\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*qExpansion.*Bounded\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*qExpansion.*Bounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*IsBoundedAtImInfty\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 227,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*IsBoundedAtImInfty' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/EisensteinSeries/E2/Summable.lean:119\\n    theorem isBoundedAtImInfty_E2 : IsBoundedAtImInfty E2 :=\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"HasSum PowerSeries\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'HasSum PowerSeries'.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*HasSum.*qExpansion\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*HasSum.*qExpansion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*hasSum.*\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2812,
+   "result_head": "[{\"type\": \"text\", \"text\": \"158 match(es) for 'theorem.*hasSum.*' (via ripgrep):\\n- Mathlib/Analysis/Analytic/IsolatedZeros.lean:54\\n    theorem hasSum_at_zero (a : ℕ → E) : HasSum (fun n => (0 : 𝕜) ^ n • a n) (a 0) := by\\n- Mathlib/Analysis/Analytic/IsolatedZeros.lean:57\\n    theorem exists_hasSum_smul_of_apply_eq_zero (hs : HasSum (fun m => z ^ m • a m) s)\\n- Mathlib/Analysis/Quaternion.lean:208\\n    theorem hasSum_coe {f : α → ℝ} {r : ℝ} : HasSum (fun a => (f a : ℍ)) (↑r : ℍ) L ↔ HasSum f r L :=\\n- Mathlib/Analysis/Analytic/CPolynomialDef.lean:302\\n    protected theorem FormalMultilinearSeries.hasSum_of_finite (p : FormalMultilinearSeries 𝕜 E F)\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:316\\n    theorem hasSum_geometric_of_lt_one {r : ℝ} (h₁ : 0 ≤ r) (h₂ : r < 1) :\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:332\\n    theorem hasSum_geometric_two : HasSum (fun n : ℕ ↦ ((1 : ℝ) / 2) ^ n) 2 := by\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:368\\n    theorem hasSum_geometric_two' (a : ℝ) : HasSum (fun n : ℕ ↦ a / 2 / 2 ^ n) a := by\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:384\\n    theorem NNReal.hasSum_geometric {r : ℝ≥0} (hr : r < 1) : HasSum (fun n : ℕ ↦ r ^ n) (1 - r)⁻¹ := by\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:518\\n    theorem aux_hasSum_of_le_geometric : HasSum (fun n : ℕ ↦ C * r ^ n) (C / (1 - r)) := by\\n- Mathlib/Analysis/SpecificLimits/Basic.lean:604\\n    theorem Set.Countable.exists_pos_hasSum_le {ι : Type*} {s : Set ι} (hs : s.Countable) {ε : ℝ}\\n- Mathlib/Analysis/Analytic/Basic.lean:209\\n    theorem HasFPowerSeriesWithinOnBall.hasSum_sub (hf : HasFPowerSeriesWithinOnBall f p s x r) {y : E}\\n- Mathlib/Analysis/Analytic/Basic.lean:215\\n    theorem HasFPowerSeriesOnBall.hasSum_sub (hf : HasFPowerSeriesOnBall f p x r) {y : E}\\n- Mathlib/Analysis/Analytic/Basic.lean:313\\n    theorem HasFPowerSeriesOnBall.eventually_hasSum (hf : HasFPowerSeriesOnBall f p x r) :\\n- Mathlib/Analysis/Analytic/Basic.lean:317\\n    theorem HasFPowerSeriesAt.eventually_hasSum (hf : HasFPowerSeriesAt f p x) :\\n- Mathlib/Analysis/Analytic/Basic.lean:322\\n    theorem HasFPowerSeriesOnBall.eventually_hasSum_sub (hf : HasFPowerSeriesOnBall f p x r) :\\n- Mathlib/Analysis/Analytic/Basic.lean:326\\n    theorem HasFPowerSeriesAt.eventually_hasSum_sub (hf : HasFPowerSeriesAt f p x) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:345\\n    theorem hasSum_geom_series_inverse (x : R) (h : ‖x‖ < 1) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:359\\n    theorem hasSum_geometric_of_norm_lt_one (h : ‖ξ‖ < 1) : HasSum (fun n : ℕ ↦ ξ ^ n) (1 - ξ)⁻¹ := by\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:375\\n    theorem hasSum_geometric_of_abs_lt_one {r : ℝ} (h : |r| < 1) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:517\\n    theorem hasSum_coe_mul_geometric_of_norm_lt_one'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean\", \"line\": 220, \"n\": 80}",
+   "ok": true,
+   "result_chars": 5243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean  (lines 220–299 of 724):\\n   220    refine le_of_forall_lt_imp_le_of_dense fun r hr ↦ ?_\\n   221    lift r to NNReal using hr.ne_top\\n   222    apply FormalMultilinearSeries.le_radius_of_summable\\n   223    simp only [qExpansionFormalMultilinearSeries_apply_norm]\\n   224    rw [← r.abs_eq]\\n   225    simp_rw [← Real.norm_eq_abs, ← Complex.norm_real, ← norm_pow, ← norm_mul]\\n   226    exact (UpperHalfPlane.hasSum_qExpansion_of_norm_lt hh hfper hfhol hfbdd\\n   227      (by simpa using hr)).summable.norm\\n   228  \\n   229  private lemma hasSum_cuspFunction_of_hasSum_punctured {f : ℍ → ℂ} (hh : 0 < h) {c : ℕ → ℂ}\\n   230      (hf : ∀ (τ : ℍ), HasSum (fun m ↦ c m • 𝕢 h τ ^ m) (f τ)) {q : ℂ} (hq : ‖q‖ < 1)\\n   231      (hq1 : q ≠ 0) : HasSum (fun m ↦ c m • q ^ m) (cuspFunction h f q) := by\\n   232    have h1 := Periodic.im_invQParam_pos_of_norm_lt_one hh hq hq1\\n   233    let τ : ℍ := ⟨Periodic.invQParam h q, h1⟩\\n   234    have h2 := (Periodic.cuspFunction_eq_of_nonzero h (f ∘ ofComplex) hq1)\\n   235    have : cuspFunction h f q = f τ := by simpa [UpperHalfPlane.ofComplex_apply_of_im_pos h1]\\n   236      using! h2\\n   237    grind [hf τ, Periodic.qParam_right_inv]\\n   238  \\n   239  private lemma hasFPowerSeriesOnBall_update {f : ℍ → ℂ} (hh : 0 < h) {c : ℕ → ℂ}\\n   240      (hf : ∀ τ : ℍ, HasSum (fun m : ℕ ↦ (c m) • 𝕢 h τ ^ m) (f τ)) :\\n   241      HasFPowerSeriesOnBall (update (cuspFunction h f) 0 (c 0)) (.ofScalars ℂ c) 0 1 := by\\n   242    constructor\\n   243    · refine le_of_forall_lt_imp_le_of_dense fun r hr ↦ ?_\\n   244      rcases eq_or_ne r 0 with rfl | hr'\\n   245      · simp\\n   246      · lift r to NNReal using hr.ne_top\\n   247        letI : FiniteDimensional ℝ ℂ := basisOneI.finiteDimensional_of_finite\\n   248        apply FormalMultilinearSeries.le_radius_of_summable\\n   249        simpa [smul_eq_mul, norm_mul, mul_comm, mul_left_comm, mul_assoc] using\\n   250          (hasSum_cuspFunction_of_hasSum_punctured hh hf (q := r) (by simpa using hr)\\n   251            (mod_cast hr')).summable.norm\\n   252    · simp\\n   253    · intro y hy\\n   254      rw [← ENNReal.coe_one, Metric.eball_coe, NNReal.coe_one, mem_ball_zero_iff] at hy\\n   255      rcases eq_or_ne y 0 with rfl | hy'\\n   256      · simpa +contextual [zero_pow_eq] using hasSum_ite_eq 0 (c 0)\\n   257      · simpa [update_of_ne hy', mul_comm]\\n   258          using hasSum_cuspFunction_of_hasSum_punctured hh hf hy hy'\\n   259  \\n   260  /-- A function on the upper half plane that is given everywhere by a convergent `q`-expansion with\\n   261  non-negative exponents, `f τ = ∑' m, c m * 𝕢 h τ ^ m`, is bounded at `i∞`. This is a converse to\\n   262  `hasSum_qExpansion`: there, boundedness is a hypothesis used to produce the `q`-expansion, while\\n   263  here convergence of the `q`-expansion is enough to deduce boundedness. -/\\n   264  theorem isBoundedAtImInfty_of_hasSum_qExpansion {f : ℍ → ℂ} {c : ℕ → ℂ} (hh : 0 < h)\\n   265      (hf : ∀ τ : ℍ, HasSum (fun m ↦ c m • 𝕢 h τ ^ m) (f τ)) : IsBoundedAtImInfty f := by\\n   266    have hfeq : f = fun τ : ℍ ↦ update (cuspFunction h f) 0 (c 0) (𝕢 h τ) := by\\n   267      funext τ\\n   268      rw [update_of_ne (Periodic.qParam_ne_zero _)]\\n   269      exact (hf τ).unique (hasSum_cuspFunction_of_hasSum_punctured hh hf\\n   270        (Periodic.norm_qParam_lt_one hh τ.im_pos) (exp_ne_zero _))\\n   271    have htend : Tendsto f atImInfty (𝓝 (c 0)) := by\\n   272      rw [hfeq]\\n   273      simpa [update_self, Function.comp_def] using\\n   274        (hasFPowerSeriesOnBall_update hh hf).hasFPowerSeriesAt.continuousAt.tendsto.comp\\n   275          (qParam_tendsto_atImInfty hh)\\n   276    -- `IsBoundedAtImInfty f = BoundedAtFilter atImInfty f = (f =O[atImInfty] 1)` by definition.\\n   277    exact htend.isBigO_one ℝ\\n   278  \\n   279  lemma hasFPowerSeriesOnBall_cuspFunction {f : ℍ → ℂ} {c : ℕ → ℂ} (hh : 0 < h)\\n   280      (hfanalytic : AnalyticAt ℂ (cuspFunction"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"UpperHalfPlane.isBoundedAtImInfty_of_hasSum_qExpansion\", \"IsBoundedAtImInfty\", \"HasSum\", \"Complex.I\"]}",
+   "ok": true,
+   "result_chars": 1319,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UpperHalfPlane.isBoundedAtImInfty_of_hasSum_qExpansion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IsBoundedAtImInfty\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\"},{\\\"decl\\\":\\\"Complex.I\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex.I\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem isBoundedAtImInfty_of_hasSum_qExpansion\"}",
+   "ok": true,
+   "result_chars": 257,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem isBoundedAtImInfty_of_hasSum_qExpansion' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:264\\n    theorem isBoundedAtImInfty_of_hasSum_qExpansion {f : ℍ → ℂ} {c : ℕ → ℂ} (hh : 0 < h)\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean\", \"line\": 264, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1053,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ModularForms/QExpansion.lean  (lines 264–278 of 724):\\n   264  theorem isBoundedAtImInfty_of_hasSum_qExpansion {f : ℍ → ℂ} {c : ℕ → ℂ} (hh : 0 < h)\\n   265      (hf : ∀ τ : ℍ, HasSum (fun m ↦ c m • 𝕢 h τ ^ m) (f τ)) : IsBoundedAtImInfty f := by\\n   266    have hfeq : f = fun τ : ℍ ↦ update (cuspFunction h f) 0 (c 0) (𝕢 h τ) := by\\n   267      funext τ\\n   268      rw [update_of_ne (Periodic.qParam_ne_zero _)]\\n   269      exact (hf τ).unique (hasSum_cuspFunction_of_hasSum_punctured hh hf\\n   270        (Periodic.norm_qParam_lt_one hh τ.im_pos) (exp_ne_zero _))\\n   271    have htend : Tendsto f atImInfty (𝓝 (c 0)) := by\\n   272      rw [hfeq]\\n   273      simpa [update_self, Function.comp_def] using\\n   274        (hasFPowerSeriesOnBall_update hh hf).hasFPowerSeriesAt.continuousAt.tendsto.comp\\n   275          (qParam_tendsto_atImInfty hh)\\n   276    -- `IsBoundedAtImInfty f = BoundedAtFilter atImInfty f = (f =O[atImInfty] 1)` by definition.\\n   277    exact htend.isBigO_one ℝ\\n   278  \\n\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean\", \"line\": 1, \"n\": 70}",
+   "ok": true,
+   "result_chars": 3314,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean  (lines 1–70 of 98):\\n     1  /-\\n     2  Copyright (c) 2022 Chris Birkbeck. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Birkbeck, David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Submodule.Basic\\n     9  public import Mathlib.Analysis.Complex.UpperHalfPlane.Topology\\n    10  public import Mathlib.Order.Filter.ZeroAndBoundedAtFilter\\n    11  \\n    12  /-!\\n    13  # Bounded at infinity\\n    14  \\n    15  For complex-valued functions on the upper half plane, this file defines the filter\\n    16  `UpperHalfPlane.atImInfty` required for defining when functions are bounded at infinity and zero at\\n    17  infinity. Both of which are relevant for defining modular forms.\\n    18  -/\\n    19  \\n    20  @[expose] public section\\n    21  \\n    22  open Complex Filter\\n    23  \\n    24  open scoped Topology UpperHalfPlane\\n    25  \\n    26  noncomputable section\\n    27  \\n    28  namespace UpperHalfPlane\\n    29  \\n    30  /-- Filter for approaching `i∞`. -/\\n    31  def atImInfty :=\\n    32    Filter.atTop.comap UpperHalfPlane.im\\n    33  \\n    34  instance : atImInfty.NeBot := by\\n    35    refine comap_neBot_iff_frequently.mpr (Eventually.frequently ?_)\\n    36    filter_upwards [eventually_gt_atTop 0] with t ht\\n    37      using ⟨⟨I * t, by simp [ht]⟩, by simp⟩\\n    38  \\n    39  theorem atImInfty_basis : atImInfty.HasBasis (fun _ => True) fun i : ℝ => im ⁻¹' Set.Ici i :=\\n    40    Filter.HasBasis.comap UpperHalfPlane.im Filter.atTop_basis\\n    41  \\n    42  theorem atImInfty_mem (S : Set ℍ) : S ∈ atImInfty ↔ ∃ A : ℝ, ∀ z : ℍ, A ≤ im z → z ∈ S := by\\n    43    simp only [atImInfty_basis.mem_iff, true_and]; rfl\\n    44  \\n    45  /-- A function `f : ℍ → α` is bounded at infinity if it is bounded along `atImInfty`. -/\\n    46  def IsBoundedAtImInfty {α : Type*} [Norm α] (f : ℍ → α) : Prop :=\\n    47    BoundedAtFilter atImInfty f\\n    48  \\n    49  /-- A function `f : ℍ → α` is zero at infinity it is zero along `atImInfty`. -/\\n    50  def IsZeroAtImInfty {α : Type*} [Zero α] [TopologicalSpace α] (f : ℍ → α) : Prop :=\\n    51    ZeroAtFilter atImInfty f\\n    52  \\n    53  theorem zero_form_isBoundedAtImInfty {α : Type*} [NormedField α] :\\n    54      IsBoundedAtImInfty (0 : ℍ → α) :=\\n    55    const_boundedAtFilter atImInfty (0 : α)\\n    56  \\n    57  /-- Module of functions that are zero at infinity. -/\\n    58  def zeroAtImInftySubmodule (α : Type*) [NormedField α] : Submodule α (ℍ → α) :=\\n    59    zeroAtFilterSubmodule _ atImInfty\\n    60  \\n    61  /-- Subalgebra of functions that are bounded at infinity. -/\\n    62  def boundedAtImInftySubalgebra (α : Type*) [NormedField α] : Subalgebra α (ℍ → α) :=\\n    63    boundedFilterSubalgebra _ atImInfty\\n    64  \\n    65  theorem isBoundedAtImInfty_iff {α : Type*} [Norm α] {f : ℍ → α} :\\n    66      IsBoundedAtImInfty f ↔ ∃ M A : ℝ, ∀ z : ℍ, A ≤ im z → ‖f z‖ ≤ M := by\\n    67    simp [IsBoundedAtImInfty, BoundedAtFilter, Asymptotics.isBigO_iff, Filter.Eventually,\\n    68      atImInfty_mem]\\n    69  \\n    70  theorem isZeroAtImInfty_iff {α : Type*} [SeminormedAddGroup α] {f : ℍ → α} :\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"qParam\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'qParam': unknown identifier 'qParam'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def qParam\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def qParam' (via ripgrep):\\n- Mathlib/Analysis/Complex/Periodic.lean:40\\n    def qParam (z : ℂ) : ℂ := exp (2 * π * I * z / h)\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*cuspFunction\"}",
+   "ok": true,
+   "result_chars": 519,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def.*cuspFunction' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/QExpansion.lean:76\\n    def cuspFunction (f : ℍ → ℂ) : ℂ → ℂ :=\\n- Mathlib/Analysis/Complex/Periodic.lean:119\\n    def cuspFunction : ℂ → ℂ :=\\n- Mathlib/Analysis/Complex/Periodic.lean:231\\n    simpa only [Function.comp_def, eq_cuspFunction hh.ne' hf] using this.comp (qParam_tendsto hh)\\n- Mathlib/Analysis/Complex/Periodic.lean:242\\n    simpa [comp_def, eq_cuspFunction hh.ne' hf, norm_qParam] using\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Periodic.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2808,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Periodic.lean  (lines 1–60 of 290):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Complex.RemovableSingularity\\n     9  public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv\\n    10  public import Mathlib.Order.Filter.ZeroAndBoundedAtFilter\\n    11  \\n    12  /-!\\n    13  # Periodic holomorphic functions\\n    14  \\n    15  We show that if `f : ℂ → ℂ` satisfies `f (z + h) = f z`, for some nonzero real `h`, then there is a\\n    16  function `F` such that `f z = F (exp (2 * π * I * z / h))` for all `z`; and if `f` is holomorphic\\n    17  at some `z`, then `F` is holomorphic at `exp (2 * π * I * z / h)`.\\n    18  \\n    19  We also show (using Riemann's removable singularity theorem) that if `f` is holomorphic and bounded\\n    20  for all sufficiently large `im z`, then `F` extends to a holomorphic function on a neighbourhood of\\n    21  `0`. As a consequence, if `f` tends to zero as `im z → ∞`, then in fact it decays *exponentially*\\n    22  to zero. These results are important in the theory of modular forms.\\n    23  -/\\n    24  \\n    25  @[expose] public section\\n    26  \\n    27  open Complex Filter Asymptotics\\n    28  \\n    29  open scoped Real Topology\\n    30  \\n    31  noncomputable section\\n    32  \\n    33  local notation \\\"I∞\\\" => comap im atTop\\n    34  \\n    35  variable (h : ℝ)\\n    36  \\n    37  namespace Function.Periodic\\n    38  \\n    39  /-- Parameter for q-expansions, `qParam h z = exp (2 * π * I * z / h)` -/\\n    40  def qParam (z : ℂ) : ℂ := exp (2 * π * I * z / h)\\n    41  \\n    42  /-- One-sided inverse of `qParam h`. -/\\n    43  def invQParam (q : ℂ) : ℂ := h / (2 * π * I) * log q\\n    44  \\n    45  local notation \\\"𝕢\\\" => qParam\\n    46  \\n    47  section qParam\\n    48  \\n    49  theorem norm_qParam (z : ℂ) : ‖𝕢 h z‖ = Real.exp (-2 * π * im z / h) := by\\n    50    simp only [qParam, norm_exp, div_ofReal_re, mul_re, re_ofNat, ofReal_re, im_ofNat, ofReal_im,\\n    51      mul_zero, sub_zero, I_re, mul_im, zero_mul, add_zero, I_im, mul_one, sub_self, zero_sub,\\n    52      neg_mul]\\n    53  \\n    54  theorem im_invQParam (q : ℂ) : im (invQParam h q) = -h / (2 * π) * Real.log ‖q‖ := by\\n    55    simp only [invQParam, ← div_div, div_I, neg_mul, neg_im, mul_im, mul_re, div_ofReal_re,\\n    56      div_ofNat_re, ofReal_re, I_re, mul_zero, div_ofReal_im, div_ofNat_im, ofReal_im, zero_div, I_im,\\n    57      mul_one, sub_self, zero_mul, add_zero, log_re, zero_add, neg_div]\\n    58  \\n    59  variable {h} -- next few theorems all assume h ≠ 0 or 0 < h\\n    60  \\n\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"HasSum\", \"Function.Periodic.qParam\"]}",
+   "ok": true,
+   "result_chars": 850,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\"},{\\\"decl\\\":\\\"Function.Periodic.qParam\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Periodic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Periodic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Periodic.html#Function.Periodic.qParam\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"UpperHalfPlane\", \"Complex\"]}",
+   "ok": true,
+   "result_chars": 823,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UpperHalfPlane\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/UpperHalfPlane/Basic.html#UpperHalfPlane\\\"},{\\\"decl\\\":\\\"Complex\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem qExpansionBoundedAtCusp (f : ℍ → ℂ) {c : ℕ → ℂ} (h : ℝ) (hh : 0 < h)\n    (hf : ∀ τ : ℍ, HasSum (fun m ↦ c m • Function.Periodic.qParam h τ ^ m) (f τ)) :\n    UpperHalfPlane.IsBoundedAtImInfty f := sorry"
+}

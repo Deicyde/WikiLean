@@ -1,0 +1,322 @@
+{
+ "task_id": "fresh_012",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:42:37Z",
+ "wall_s": 107.6,
+ "transcript_stats": {
+  "turns": 35,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 19,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_transfer": 2,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 9
+  },
+  "tokens_in": 186,
+  "tokens_out": 7610,
+  "cost_usd": 0.1131972
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Gram matrix\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Gram matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"operator norm determinant\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"operator norm determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"orthonormal basis\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orthonormal basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"linear map norm\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear map norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"determinant matrix\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"inner product space\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inner product space\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"aka\\\":[\\\"Definition:Hilbert Space\\\",\\\"Hilbert Space\\\",\\\"Hilbert space\\\",\\\"Inner Product Space\\\",\\\"InnerProductSpace\\\",\\\"inner product space\\\",\\\"Discrete Function Bases and Convolutional Neural Networks\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Defs\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1817177\\\",\\\"label\\\":\\\"Polarization identity\\\",\\\"aka\\\":[\\\"inner_eq_sum_norm_sq_div_four\\\",\\\"polarization identity\\\",\\\"Rigidity of angles in Inner product Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.dualAnnihilator\\\",\\\"label\\\":\\\"Submodule.dualAnnihilator\\\",\\\"aka\\\":[\\\"Tensor Operations on Degenerate Inner Product Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dual/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:real_inner_le_norm\\\",\\\"label\\\":\\\"real_inner_le_norm\\\",\\\"aka\\\":[\\\"Rigidity of angles in Inner product Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"basis linear algebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 508,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"basis linear algebra\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q189569\\\",\\\"label\\\":\\\"Basis (linear algebra)\\\",\\\"aka\\\":[\\\"Basis\\\",\\\"Basis linear algebra\\\",\\\"Definition:Basis (Linear Algebra)\\\",\\\"Module.Basis\\\",\\\"Vector Basis\\\",\\\"An Algebraic Formalization of Forward and Forward-backward Algorithms\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Basis/Defs\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"matrix determinant\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix determinant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"determinant\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2587,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"determinant\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"aka\\\":[\\\"Matrix.det\\\",\\\"determinant\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Determinant\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q5265690\\\",\\\"label\\\":\\\"Determinantal conjecture\\\",\\\"aka\\\":[\\\"DeterminantalConjecture.determinantal_conjecture\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:gcd_greatest_associated\\\",\\\"label\\\":\\\"gcd_greatest_associated\\\",\\\"aka\\\":[\\\"Determinantal Conditions for Modules of Generalized Splines\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/GCDMonoid/Basic\\\"},{\\\"id\\\":\\\"cell:Q579544\\\",\\\"label\\\":\\\"Vandermonde matrix\\\",\\\"aka\\\":[\\\"Matrix.det_vandermonde\\\",\\\"Matrix.vandermonde\\\",\\\"Vandermonde Matrix\\\",\\\"Lower Bounds for Intersection Reporting among Flat Objects\\\",\\\"The determinant of one-dimensional polyharmonic operators of arbitrary order\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Vandermonde\\\"},{\\\"id\\\":\\\"cell:Q538557\\\",\\\"label\\\":\\\"Leibniz formula for determinants\\\",\\\"aka\\\":[\\\"Matrix.det_apply\\\",\\\"Matrix.det_apply'\\\",\\\"Mathematics for theoretical physics\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Determinant\\\"},{\\\"id\\\":\\\"cell:Q124743\\\",\\\"label\\\":\\\"Wronskian\\\",\\\"aka\\\":[\\\"Polynomial.wronskian\\\",\\\"Wronskian determinant\\\",\\\"Formalizing Mason-Stothers Theorem and its Corollaries in Lean 4\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Polynomial/Wronskian\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.taylorSeries_eq_on_ball\\\",\\\"label\\\":\\\"Complex.taylorSeries_eq_on_ball\\\",\\\"aka\\\":[\\\"The role of the branch cut of the logarithm in the definition of the spectral determinant for non-selfadjoint operators\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/TaylorSeries\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.aeval_eq_aeval_mod_charpoly\\\",\\\"label\\\":\\\"Matrix.aeval_eq_aeval_mod_charpoly\\\",\\\"aka\\\":[\\\"Study-type determinants and their properties\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Charpoly\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.det_eq_prod_roots_charpoly\\\",\\\"label\\\":\\\"Matrix.det_eq_prod_roots_charpoly\\\",\\\"aka\\\":[\\\"The characteristic polynomial and determinant are not ad hoc constructions\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Charpoly\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.det_mul\\\",\\\"label\\\":\\\"Matrix.det_mul\\\",\\\"aka\\\":[\\\"Quasi-determinant and right eigenvalues of dual quaternion matrices\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Determinant\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"operator norm\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"operator norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"LinearMap\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 3117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"aka\\\":[\\\"Linear Transformation\\\",\\\"Linear function\\\",\\\"LinearMap\\\",\\\"Operator\\\",\\\"Operator (mathematics)\\\",\\\"Operator mathematics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/LinearMap\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q190546\\\",\\\"label\\\":\\\"Cauchy–Schwarz inequality\\\",\\\"aka\\\":[\\\"Cauchy Schwarz inequality\\\",\\\"Cauchy-Bunyakovsky-Schwarz Inequality\\\",\\\"Cauchy-Schwarz inequality\\\",\\\"LinearMap.BilinForm.apply_mul_apply_le_of_forall_zero_le\\\",\\\"Schwarzs Inequality\\\",\\\"inner_mul_inner_self_le\\\",\\\"norm_inner_le_norm\\\",\\\"A Parallel Repetition Theorem for the GHZ Game\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"},{\\\"id\\\":\\\"cell:Q1068085\\\",\\\"label\\\":\\\"closed graph theorem\\\",\\\"aka\\\":[\\\"Closed Graph Theorem\\\",\\\"Closed graph theorem (functional analysis)\\\",\\\"Closed graph theorem functional analysis\\\",\\\"ContinuousLinearMap.ofIsClosedGraph\\\",\\\"LinearMap.continuous_of_isClosed_graph\\\",\\\"A symplectic approach to Schr\\\\\\\\\\\\\\\"odinger equations in the infinite-dimensional unbounded setting\\\",\\\"The differentiation operator on discrete function spaces of a tree\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operator\\\"},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"label\\\":\\\"Spectral theorem\\\",\\\"aka\\\":[\\\"LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply\\\",\\\"Matrix.IsHermitian.spectral_theorem\\\",\\\"Spectral Theorem\\\",\\\"spectral theorem\\\",\\\"An Exposition on Wigner's Semicircular Law\\\",\\\"Elements of Linear Algebra. Lecture Notes\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"},{\\\"id\\\":\\\"cell:Q1065966\\\",\\\"label\\\":\\\"Isomorphism theorems\\\",\\\"aka\\\":[\\\"LinearMap.quotKerEquivRange\\\",\\\"QuotientAddGroup.quotientKerEquivRange\\\",\\\"QuotientGroup.quotientKerEquivRange\\\",\\\"fundamental theorem on homomorphisms\\\",\\\"A Group Theoretic Construction of Batch Codes\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Isomorphisms\\\"},{\\\"id\\\":\\\"cell:Q303402\\\",\\\"label\\\":\\\"Rank–nullity theorem\\\",\\\"aka\\\":[\\\"LinearMap.rank_range_add_rank_ker\\\",\\\"Rank-Nullity Theorem\\\",\\\"Rank-nullity theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/RankNullity\\\"},{\\\"id\\\":\\\"cell:Q445569\\\",\\\"label\\\":\\\"Complexification\\\",\\\"aka\\\":[\\\"LinearMap.baseChange\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Tower\\\"},{\\\"id\\\":\\\"cell:Q1472120\\\",\\\"label\\\":\\\"Hellinger–Toeplitz theorem\\\",\\\"aka\\\":[\\\"LinearMap.IsSymmetric.continuous\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Symmetric\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.BilinForm.IsOrtho\\\",\\\"label\\\":\\\"LinearMap.BilinForm.IsOrtho\\\",\\\"aka\\\":[\\\"On orthogonality graphs of Okubo algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/BilinearForm/Orthogonal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.BilinForm.iIsOrtho\\\",\\\"label\\\":\\\"LinearMap.BilinForm.iIsOrtho\\\",\\\"aka\\\":[\\\"Klein-Gordon-Maxwell equations driven by mixed local-nonlocal operators\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/BilinearForm/Orthogonal\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q189569\"}",
+   "ok": true,
+   "result_chars": 3720,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q189569\\\",\\\"id\\\":\\\"cell:Q189569\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Basis (linear algebra)\\\",\\\"f\\\":6361,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q189569\\\",\\\"anchor\\\":\\\"Q189569\\\",\\\"label\\\":\\\"Basis (linear algebra)\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Basis/Defs\\\"],\\\"f\\\":6361,\\\"xy\\\":[-81.2,-104.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q189569\\\",\\\"label\\\":\\\"Basis (linear algebra)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"subset of a vector space that allows defining coordinates\\\",\\\"slug\\\":\\\"Basis_linear_algebra\\\",\\\"article_annotations\\\":{\\\"total\\\":47,\\\"formalized\\\":32,\\\"partial\\\":3,\\\"not_formalized\\\":12},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Basis\\\",\\\"label\\\":\\\"Basis\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":7,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"code\\\":\\\"structure Basis where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"renamed_to\\\":\\\"Module.Basis\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Basis.Defs\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.Basis\\\",\\\"label\\\":\\\"Module.Basis\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Basis where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Basis.Defs\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:VectorBasis\\\",\\\"label\\\":\\\"Vector Basis\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/VectorBasis.html\\\",\\\"qid\\\":\\\"Q189569\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Basis_(Linear_Algebra)\\\",\\\"label\\\":\\\"Definition:Basis (Linear Algebra)\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Basis_(Linear_Algebra)\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q189569\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Basis_linear_algebra\\\",\\\"label\\\":\\\"Basis linear algebra\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":47,\\\"formalized\\\":32,\\\"partial\\\":3,\\\"not_formalized\\\":12}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1702.06941#11\\\",\\\"label\\\":\\\"An Algebraic Formalization of Forward and Forward-backward Algorithms\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1702.06941\\\",\\\"ref\\\":\\\"11\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2,\\\"page\\\":2,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Basis\\\",\\\"label\\\":\\\"Basis\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Basis/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":4,\\\"depends\\\":274,\\\"links\\\":2,\\\"mentions\\\":30,\\\"invocation\\\":9,\\\"relates\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":5,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q11210\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"invocation\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q27670\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q62912\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":423,\\\"organs\\\":7},\\\"truncated\\\":{\\\"syn\\\":223},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q178546\"}",
+   "ok": true,
+   "result_chars": 3337,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q178546\\\",\\\"id\\\":\\\"cell:Q178546\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Determinant\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q178546\\\",\\\"anchor\\\":\\\"Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Matrix/Determinant\\\"],\\\"f\\\":36057,\\\"xy\\\":[-49.5,-270.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"sum of signed terms of n factors from n×n matrix with no two factors sharing row or column\\\",\\\"slug\\\":\\\"Determinant\\\",\\\"article_annotations\\\":{\\\"total\\\":85,\\\"formalized\\\":49,\\\"partial\\\":16,\\\"not_formalized\\\":20},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Matrix.det\\\",\\\"label\\\":\\\"Matrix.det\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Determinant.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def det (M : Matrix n n R) : R :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Determinant.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Determinant\\\",\\\"label\\\":\\\"Determinant\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Determinant.html\\\",\\\"qid\\\":\\\"Q178546\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:determinant\\\",\\\"label\\\":\\\"determinant\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/determinant\\\",\\\"qid\\\":\\\"Q178546\\\",\\\"snippet\\\":\\\"The determinant is the (essentially unique) universal alternating multilinear map.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Determinant\\\",\\\"label\\\":\\\"Determinant\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":85,\\\"formalized\\\":49,\\\"partial\\\":16,\\\"not_formalized\\\":20}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Determinant\\\",\\\"label\\\":\\\"Determinant\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":11,\\\"co-page\\\":11,\\\"co-statement\\\":1,\\\"depends\\\":198,\\\"links\\\":191,\\\"mentions\\\":51,\\\"relates\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q538557\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"cites\\\":1,\\\"co-page\\\":1,\\\"co-statement\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":3}},{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q178192\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q181365\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q190524\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":4}}],\\\"counts\\\":{\\\"syn\\\":368,\\\"organs\\\":5},\\\"truncated\\\":{\\\"syn\\\":168},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q214159\"}",
+   "ok": true,
+   "result_chars": 5991,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q214159\\\",\\\"id\\\":\\\"cell:Q214159\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"f\\\":40153,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q214159\\\",\\\"anchor\\\":\\\"Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/InnerProductSpace/Defs\\\"],\\\"f\\\":40153,\\\"xy\\\":[-141.5,-188.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q190056\\\",\\\"label\\\":\\\"Hilbert space\\\",\\\"bond\\\":\\\"generalization\\\",\\\"prov\\\":0,\\\"description\\\":\\\"inner product space that is metrically complete; a Banach space whose norm induces an inner product (follows the parallelogram identity)\\\",\\\"slug\\\":\\\"Hilbert_space\\\",\\\"article_annotations\\\":{\\\"total\\\":129,\\\"formalized\\\":93,\\\"partial\\\":11,\\\"not_formalized\\\":25},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"real or complex vector space with an additional structure called an inner product\\\",\\\"slug\\\":\\\"Inner_product_space\\\",\\\"article_annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":9,\\\"not_formalized\\\":3},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class InnerProductSpace (𝕜 : Type*) (E : Type*) [RCLike 𝕜] [SeminormedAddCommGroup E] extends\\\\n    NormedSpace 𝕜 E, Inner 𝕜 E where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Defs\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Hilbert_space\\\",\\\"label\\\":\\\"Hilbert space\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Hilbert_space\\\",\\\"qid\\\":\\\"Q190056\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:HilbertSpace\\\",\\\"label\\\":\\\"Hilbert Space\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/HilbertSpace.html\\\",\\\"qid\\\":\\\"Q190056\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:InnerProductSpace\\\",\\\"label\\\":\\\"Inner Product Space\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/InnerProductSpace.html\\\",\\\"qid\\\":\\\"Q214159\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:Hilbert space\\\",\\\"label\\\":\\\"Hilbert space\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/Hilbert+space\\\",\\\"qid\\\":\\\"Q190056\\\",\\\"snippet\\\":\\\"> *Dr. von Neumann, ich möchte gerne wissen, was ist denn eigentlich ein Hilbertscher Raum ?* [^Hilbert]\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:inner product space\\\",\\\"label\\\":\\\"inner product space\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/inner+product+space\\\",\\\"qid\\\":\\\"Q214159\\\",\\\"snippet\\\":\\\"An _inner product_ on a vector space $V$ (also \\\\\\\"scalar product\\\\\\\" in the sense of \\\\\\\"with values in the scalars\\\\\\\", namely in the ground field $\\\\\\\\mathbb{K}$) is a pairing $\\\\\\\\langle\\\\\\\\text{-},\\\\\\\\text{-}\\\\\\\\rangle$ of vectors to scalars $$ v_1,\\\\\\\\, v_2 \\\\\\\\,\\\\\\\\in\\\\\\\\, V \\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\; \\\\\\\\vdash \\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\;\\\\\\\\; \\\\\\\\langle v_1,\\\\\\\\, v_2 \\\\\\\\rangle \\\\\\\\,\\\\\\\\in\\\\\\\\, \\\\\\\\mathbb{K} $$ which is bilinear (or rather sesquilinear, if $\\\\\\\\mathbb{K}$ is…\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Hilbert_Space\\\",\\\"label\\\":\\\"Definition:Hilbert Space\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Hilbert_Space\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q190056\\\",\\\"snippet\\\":\\\"Let $H$ be a vector space over $\\\\\\\\mathbb F \\\\\\\\in \\\\\\\\set {\\\\\\\\R, \\\\\\\\C}$.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Hilbert_space\\\",\\\"label\\\":\\\"Hilbert space\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Hilbert-Schmidt norm\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Hilbert-Schmidt norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"matrix norm\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix norm\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"norm-determinant linear map\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 223,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"norm-determinant linear map\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Gram matrix bilinear form\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 221,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Gram matrix bilinear form\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 18,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"LinearMap\\\", \\\"Matrix.det\\\", \\\"Module.Basis\\\", \\\"InnerProductSpace\\\", \\\"Matrix\\\", \\\"FiniteDimensional\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearMap\", \"Matrix.det\", \"Module.Basis\", \"InnerProductSpace\", \"Matrix\", \"FiniteDimensional\"]}",
+   "ok": true,
+   "result_chars": 2111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html#LinearMap\\\"},{\\\"decl\\\":\\\"Matrix.det\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Determinant.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Determinant.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.html#Matrix.det\\\"},{\\\"decl\\\":\\\"Module.Basis\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Basis/Defs.html#Module.Basis\\\"},{\\\"decl\\\":\\\"InnerProductSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Defs.html#InnerProductSpace\\\"},{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix\\\"},{\\\"decl\\\":\\\"FiniteDimensional\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.FiniteDimensional.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.FiniteDimensional.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/FiniteDimensional/Defs.html#FiniteDimensional\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bilinear form\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 472,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bilinear form\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q736753\\\",\\\"label\\\":\\\"Quadratic form\\\",\\\"aka\\\":[\\\"Definition:Quadratic Form\\\",\\\"Quadratic Form\\\",\\\"QuadraticForm\\\",\\\"quadratic form\\\",\\\"Quadratic and Symmetric Bilinear Forms on Modules with Unique Base Over a Semiring\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/QuadraticForm/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"norm finite dimensional\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27ad4321bdb0f4b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27ad4321bdb0f4b\",\"timestamp\":\"2026-08-08T01:43:13Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"inner product matrix\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27ad440df9e0f4b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27ad440df9e0f4b\",\"timestamp\":\"2026-08-08T01:43:15Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"linear isometry\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear isometry\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Orthonormal\", \"norm\", \"ContinuousLinearMap\", \"LinearMap.norm\"]}",
+   "ok": true,
+   "result_chars": 1403,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Orthonormal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Orthonormal\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Orthonormal\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Orthonormal.html#Orthonormal\\\"},{\\\"decl\\\":\\\"norm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ContinuousLinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.html#ContinuousLinearMap\\\"},{\\\"decl\\\":\\\"LinearMap.norm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"‖·‖\", \"Norm.norm\", \"norm_eq_norm\"]}",
+   "ok": true,
+   "result_chars": 974,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"‖·‖\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Norm.norm\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Group/Defs.html#Norm.norm\\\"},{\\\"decl\\\":\\\"norm_eq_norm\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Matrix.vecMul\", \"Matrix.mulVec\", \"Fin\", \"Matrix.of_fun\"]}",
+   "ok": true,
+   "result_chars": 1214,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.vecMul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Mul\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Mul\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Mul.html#Matrix.vecMul\\\"},{\\\"decl\\\":\\\"Matrix.mulVec\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Mul\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Mul\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Mul.html#Matrix.mulVec\\\"},{\\\"decl\\\":\\\"Fin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Fin\\\"},{\\\"decl\\\":\\\"Matrix.of_fun\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Matrix.mk\", \"fun_get\", \"Matrix.setElem\"]}",
+   "ok": true,
+   "result_chars": 916,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix.mk\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"fun_get\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Matrix.setElem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearMap.toMatrix\", \"Matrix.toLin'\", \"basis_to_matrix\"]}",
+   "ok": true,
+   "result_chars": 1073,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.toMatrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/ToLin.html#LinearMap.toMatrix\\\"},{\\\"decl\\\":\\\"Matrix.toLin'\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.ToLin\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/ToLin.html#Matrix.toLin'\\\"},{\\\"decl\\\":\\\"basis_to_matrix\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"inner\", \"InnerProductSpace.inner\", \"inner_self_eq_norm_sq\"]}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"inner\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"InnerProductSpace.inner\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"inner_self_eq_norm_sq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Basic.html#inner_self_eq_norm_sq\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"inner product notation angle brackets\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27ad534dc230f4b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27ad534dc230f4b\",\"timestamp\":\"2026-08-08T01:43:54Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContinuousLinearMap.toLinearMap\", \"LinearMap.of_ContinuousLinearMap\"]}",
+   "ok": true,
+   "result_chars": 880,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousLinearMap.toLinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.html#ContinuousLinearMap.toLinearMap\\\"},{\\\"decl\\\":\\\"LinearMap.of_ContinuousLinearMap\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Gram\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2933,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Gram\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q338047\\\",\\\"label\\\":\\\"Context-free grammar\\\",\\\"aka\\\":[\\\"ContextFreeGrammar\\\",\\\"Grammar, context-free\\\",\\\"context-free grammar\\\",\\\"Metric-Guided Synthesis of Class Activation Mapping\\\"],\\\"supercell\\\":\\\"path:Mathlib/Computability/ContextFreeGrammar\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.symplecticGroup\\\",\\\"label\\\":\\\"Matrix.symplecticGroup\\\",\\\"aka\\\":[\\\"Gram-Schmidt-Vaserstein generators for odd sized elementary groups\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/SymplecticGroup\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:gramSchmidtOrthonormalBasis\\\",\\\"label\\\":\\\"gramSchmidtOrthonormalBasis\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho\\\"},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"aka\\\":[\\\"Definition of ring\\\",\\\"Definition:Ring with Unity\\\",\\\"Noncommutative Ring\\\",\\\"Noncommutative ring\\\",\\\"Ring\\\",\\\"Ring mathematics\\\",\\\"ring\\\",\\\"Quantum Integer Programming (QuIP) 47-779: Lecture Notes\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\"},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"aka\\\":[\\\"CategoryTheory.CommSq\\\",\\\"Commutative Diagram\\\",\\\"Definition:Commutative Diagram\\\",\\\"commutative diagram\\\",\\\"Category Theory for Programming\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/CommSq\\\"},{\\\"id\\\":\\\"cell:Q845060\\\",\\\"label\\\":\\\"Maximum and minimum\\\",\\\"aka\\\":[\\\"Extremum\\\",\\\"IsExtrOn\\\",\\\"IsMaxOn\\\",\\\"IsMinOn\\\",\\\"The Lax-Milgram Theorem. A detailed proof to be formalized in Coq\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Filter/Extr\\\"},{\\\"id\\\":\\\"cell:Q919125\\\",\\\"label\\\":\\\"Parallelogram law\\\",\\\"aka\\\":[\\\"Parallelogram Law\\\",\\\"parallelogram_law\\\",\\\"parallelogram_law_with_norm\\\",\\\"Compressive Sensing of Large-Scale Images: An Assumption-Free Approach\\\",\\\"The Lax-Milgram Theorem. A detailed proof to be formalized in Coq\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"},{\\\"id\\\":\\\"cell:Q320577\\\",\\\"label\\\":\\\"Yoneda lemma\\\",\\\"aka\\\":[\\\"CategoryTheory.yonedaEquiv\\\",\\\"CategoryTheory.yonedaLemma\\\",\\\"Yoneda Lemma\\\",\\\"Directed type theory, with a twist\\\",\\\"On The Universality of Diagrams for Causal Inference and The Causal Reproducing Property\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Yoneda\\\"},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"aka\\\":[\\\"Banach Space\\\",\\\"Definition:Banach Space\\\",\\\"NormedSpace\\\",\\\"The Lax-Milgram Theorem. A detailed proof to be formalized in Coq\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:Q901446\\\",\\\"label\\\":\\\"Hasse diagram\\\",\\\"aka\\\":[\\\"Definition:Hasse Diagram\\\",\\\"Hasse Diagram\\\",\\\"SimpleGraph.hasse\\\",\\\"Sequential Decision Model for Inference and Prediction on Non-Uniform Hypergraphs with Application to Knot Matching from Computational Forestry\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Hasse\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"gramSchmidtOrthonormalBasis\", \"gram\", \"innerProductToMatrix\"]}",
+   "ok": true,
+   "result_chars": 1171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"gramSchmidtOrthonormalBasis\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"InnerProductSpace.gramSchmidtOrthonormalBasis\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.html#InnerProductSpace.gramSchmidtOrthonormalBasis\\\"},{\\\"decl\\\":\\\"gram\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"innerProductToMatrix\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem norm_det_sq_eq_gram_det\n  {n : ℕ}\n  {E F : Type*}\n  [InnerProductSpace ℝ E] [InnerProductSpace ℝ F]\n  (f : E →L[ℝ] F)\n  (b_E : Module.Basis (Fin n) ℝ E)\n  (b_F : Module.Basis (Fin n) ℝ F)\n  (h_ortho_E : Orthonormal ℝ b_E)\n  : let M := LinearMap.toMatrix b_E b_F f.toLinearMap\n    let G : Matrix (Fin n) (Fin n) ℝ := fun i j => ⟨f (b_E i), f (b_E j)⟩_ℝ\n    (Matrix.det M) ^ 2 = Matrix.det G := sorry"
+}

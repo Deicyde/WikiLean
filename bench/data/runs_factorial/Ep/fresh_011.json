@@ -1,0 +1,354 @@
+{
+ "task_id": "fresh_011",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:58:54Z",
+ "wall_s": 119.1,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 21,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 17,
+   "mcp__formal__decl_grep": 13,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 170,
+  "tokens_out": 8770,
+  "cost_usd": 0.11926740000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap α α → ℝ\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap α α → ℝ': Unknown identifier `α`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.det\"}",
+   "ok": true,
+   "result_chars": 1515,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 513 declarations mentioning Matrix.det.\\n- Matrix.det   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    The determinant of a matrix given by the Leibniz formula.\\n- Matrix.det_eq_elem_of_subsingleton   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_transpose   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    Transposing a matrix preserves the determinant.\\n- Matrix.det_unique   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If `n` has only one element, the determinant of an `n` by `n` matrix is just that element. Although `Unique` implies `DecidableEq` and `Fintype`, the instances \\n- Matrix.det_eq_elem_of_card_eq_one   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_isEmpty   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.coe_det_isEmpty   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_diagonal   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_eq_one_of_card_eq_zero   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n- Matrix.det_zero_of_row_eq   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If a matrix has a repeated row, the determinant will be zero.\\n- Matrix.det_updateRow_eq_zero   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If we repeat a row of a matrix, we get a matrix of determinant zero.\\n- Matrix.det_zero_of_column_eq   [Mathlib.LinearAlgebra.Matrix.Determinant.Basic]\\n    If a matrix has a repeated column, the determinant will be zero.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.det\"}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 100 declarations mentioning LinearMap.det.\\n- LinearMap.det   [Mathlib.LinearAlgebra.Determinant]\\n    The determinant of an endomorphism independent of basis.  If there is no finite basis on `M`, the result is `1` instead.\\n- LinearMap.det_id   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_subsingleton   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.finite_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the space is finite-dimensional.\\n- LinearMap.free_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the module is free.\\n- Module.Free.of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_not_module_finite   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map is invertible, so is its determinant.\\n- LinearMap.isUnit_iff_isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.isUnit_det'   [Mathlib.LinearAlgebra.Determinant]\\n    Specialization of `LinearEquiv.isUnit_det`\\n- LinearMap.equivOfIsUnitDet   [Mathlib.LinearAlgebra.Determinant]\\n    Builds a linear equivalence from an endomorphism whose determinant is a unit.\\n- LinearMap.det_zero'   [Mathlib.LinearAlgebra.Determinant]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap norm operator\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap norm operator': Unknown identifier `operator`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"InnerProductSpace\"}",
+   "ok": true,
+   "result_chars": 1863,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3808 declarations mentioning InnerProductSpace.\\n- InnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A (pre) inner product space is a vector space with an additional operation called inner product. The (semi)norm could be derived from the inner product, instead\\n- InnerProductSpace.toInner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PUnit.instInnerProductSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- InnerProductSpace.toNormedSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- HilbertSpace   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    A Hilbert space is a complete normed inner product space.\\n- HilbertSpace.mk   [Mathlib.Analysis.InnerProductSpace.Defs]\\n- PreInnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `PreInnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `PreInnerProductSpace.Core` for `PreInnerProductSpace`s. Note that th\\n- InnerProductSpace.toCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Define `InnerProductSpace.Core` from `InnerProductSpace`. Defined to reuse lemmas about `InnerProductSpace.Core` for `InnerProductSpace`s. Note that the `Norm` \\n- InnerProductSpace.ofCore   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    Given a `PreInnerProductSpace.Core` structure on a space, one can use it to turn the space into a pre-inner product space (i.e., `SeminormedAddCommGroup` and `I\\n- InnerProductSpace.add_left   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is additive in the first coordinate.\\n- InnerProductSpace.conj_inner_symm   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product is *Hermitian*, taking the `conj` swaps the arguments.\\n- InnerProductSpace.norm_sq_eq_re_inner   [Mathlib.Analysis.InnerProductSpace.Defs]\\n    The inner product induces the norm.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"norm.*det|det.*norm\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"106 match(es) for 'norm.*det|det.*norm' (via ripgrep):\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:24\\n    /-- The norm of an element in a quadratic algebra is the determinant of the endomorphism defined by\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:27\\n    theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b) :\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:28\\n    (DistribSMul.toLinearMap R (QuadraticAlgebra R a b) z).det = z.norm := by\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:30\\n    have : !![z.re, a * z.im; z.im, z.re + b * z.im].det = z.norm := by\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:457\\n    rw [mixedEmbedding.det_basisOfFractionalIdeal_eq_norm]\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:732\\n    theorem det_basisOfFractionalIdeal_eq_norm\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:758\\n    rw [isUnit_iff_ne_zero, ne_eq, ← abs_eq_zero.not, det_basisOfFractionalIdeal_eq_norm,\\n- Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean:107\\n    rw [← nnnorm_real, ← ofRealHom_eq_coe, RingHom.map_det, RingHom.mapMatrix_apply, this,\\n- Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean:111\\n    rw [det_matrixToStdBasis, nnnorm_mul, nnnorm_pow, nnnorm_mul, this, mul_one, nnnorm_inv,\\n- Mathlib/LinearAlgebra/Matrix/GeneralLinearGroup/FinTwo.lean:94\\n    det_fin_two, sq, (by norm_num : (4 : K) = 2 * 2)]\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:29\\n    where `E` is a real normed space. (See `SimpleFunc.integral` for details.)\\n- Mathlib/NumberTheory/ClassNumber/Finite.lean:78\\n    rw [Algebra.norm_apply, ← LinearMap.det_toMatrix bS]\\n- Mathlib/NumberTheory/ModularForms/Petersson.lean:84\\n    Subgroup.HasDetPlusMinusOne.abs_det hg, Complex.ofReal_one, one_zpow, one_mul, norm_σ]\\n- Mathlib/NumberTheory/ModularForms/Derivative.lean:211\\n    /-- The `SL(2, ℤ)` case of `normalizedDerivOfComplex_slash`, where the determinant factor is `1`. -/\\n- Mathlib/Analysis/Normed/Unbundled/RingSeminorm.lean:156\\n    /-- The `SeminormedRing` structure on a ring `R` determined by a `RingSeminorm`. -/\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean\", \"line\": 1, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1668,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean  (lines 1–40 of 44):\\n     1  /-\\n     2  Copyright (c) 2025 Snir Broshi. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Snir Broshi\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.QuadraticAlgebra.Basic\\n     9  public import Mathlib.LinearAlgebra.Determinant\\n    10  \\n    11  /-!\\n    12  # Quadratic Algebra\\n    13  \\n    14  We prove that the expression for the norm of an element in a quadratic algebra comes from looking at\\n    15  the endomorphism defined by left multiplication by that element and taking its determinant.\\n    16  -/\\n    17  \\n    18  public section\\n    19  \\n    20  namespace QuadraticAlgebra\\n    21  \\n    22  variable {R : Type*} [CommRing R] {a b : R}\\n    23  \\n    24  /-- The norm of an element in a quadratic algebra is the determinant of the endomorphism defined by\\n    25  left multiplication by that element. -/\\n    26  @[simp]\\n    27  theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b) :\\n    28      (DistribSMul.toLinearMap R (QuadraticAlgebra R a b) z).det = z.norm := by\\n    29    rw [← LinearMap.det_toMatrix <| basis ..]\\n    30    have : !![z.re, a * z.im; z.im, z.re + b * z.im].det = z.norm := by\\n    31      simp [norm]\\n    32      ring\\n    33    convert! this\\n    34    apply LinearEquiv.eq_symm_apply _ |>.mp\\n    35    ext1 w\\n    36    apply basis .. |>.repr.injective\\n    37    apply DFunLike.coe_injective\\n    38    rw [LinearMap.toMatrix_symm, Matrix.repr_toLin]\\n    39    ext i\\n    40    fin_cases i\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.norm\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.norm': unknown identifier 'LinearMap.norm'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"operator norm finite dimensional\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'operator norm finite dimensional': Unknown identifier `operator`\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*endomorphism.*det\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*endomorphism.*det' under Mathlib/.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"singular values\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'singular values': Unknown identifier `singular`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"spectral theorem\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'spectral theorem': <input>:1:9: expected end of input\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LinearMap.*det.*abs|abs.*det\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1414,
+   "result_head": "[{\"type\": \"text\", \"text\": \"94 match(es) for 'LinearMap.*det.*abs|abs.*det' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Order.lean:164\\n    det (CFC.abs A) = ‖det A‖ := by\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:156\\n    · rw [← Basis.det_mul_det _ (Pi.basisFun ℝ ι) _, abs_mul, Pi.basisFun_det_apply,\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:189\\n    ENNReal.ofReal_inv_of_pos (abs_pos.2 (LinearEquiv.det _).ne_zero), inv_inv, LinearEquiv.coe_det]\\n- Mathlib/Analysis/Normed/Ring/Basic.lean:926\\n    /-- A real absolute value on a ring determines a `NormedRing` structure. -/\\n- Mathlib/Analysis/Normed/Field/Basic.lean:363\\n    /-- A real absolute value on a field determines a `NormedField` structure. -/\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/PolarCoord.lean:147\\n    integral_image_eq_integral_abs_det_fderiv_smul volume\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/PolarCoord.lean:159\\n    lintegral_image_eq_lintegral_abs_det_fderiv_mul volume\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:758\\n    rw [isUnit_iff_ne_zero, ne_eq, ← abs_eq_zero.not, det_basisOfFractionalIdeal_eq_norm,\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:439\\n    theorem abs_det_completeBasis_equivFunL_symm :\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:586\\n    theorem abs_det_fderiv_expMapBasis (x : realSpace K) :\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Matrix/Order.lean\", \"line\": 150, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1901,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Matrix/Order.lean  (lines 150–179 of 367):\\n   150      Matrix.toLinearMap₂' 𝕜 A (star x) x = 0 ↔ A *ᵥ x = 0 := by\\n   151    simpa only [toLinearMap₂'_apply'] using hA.dotProduct_mulVec_zero_iff x\\n   152  \\n   153  theorem det_sqrt [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.PosSemidef) :\\n   154      (CFC.sqrt A).det = RCLike.sqrt A.det := by\\n   155    rw [CFC.sqrt_eq_cfc, cfc_nnreal_eq_real _ A, hA.1.cfc_eq, RCLike.sqrt_of_nonneg hA.det_nonneg]\\n   156    simp only [IsHermitian.cfc, Real.coe_sqrt, Real.coe_toNNReal', det_map, det_diagonal,\\n   157      Function.comp_apply, hA.isHermitian.det_eq_prod_eigenvalues, ← RCLike.ofReal_prod,\\n   158      RCLike.ofReal_re, Real.sqrt_prod _ fun _ _ ↦ hA.eigenvalues_nonneg _]\\n   159    grind\\n   160  \\n   161  end PosSemidef\\n   162  \\n   163  theorem IsHermitian.det_abs [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.IsHermitian) :\\n   164      det (CFC.abs A) = ‖det A‖ := by\\n   165    rw [CFC.abs_eq_cfc_norm A, hA.cfc_eq]\\n   166    simp [IsHermitian.cfc, -Unitary.conjStarAlgAut_apply, hA.det_eq_prod_eigenvalues]\\n   167  \\n   168  theorem posSemidef_iff_isHermitian_and_spectrum_nonneg [DecidableEq n] {A : Matrix n n 𝕜} :\\n   169      A.PosSemidef ↔ A.IsHermitian ∧ spectrum 𝕜 A ⊆ {a : 𝕜 | 0 ≤ a} := by\\n   170    refine ⟨fun h => ⟨h.isHermitian, fun a => ?_⟩, fun ⟨h1, h2⟩ => ?_⟩\\n   171    · simp only [h.isHermitian.spectrum_eq_image_range, Set.mem_image, Set.mem_range,\\n   172        exists_exists_eq_and, Set.mem_setOf_eq, forall_exists_index]\\n   173      rintro i rfl\\n   174      exact_mod_cast h.eigenvalues_nonneg _\\n   175    · rw [h1.posSemidef_iff_eigenvalues_nonneg]\\n   176      intro i\\n   177      simpa [h1.spectrum_eq_image_range] using @h2 (h1.eigenvalues i)\\n   178  \\n   179  /-- A positive semi-definite matrix is positive definite if and only if it is invertible. -/\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"CFC.abs\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 844,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'CFC.abs' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Order.lean:164\\n    det (CFC.abs A) = ‖det A‖ := by\\n- Mathlib/Analysis/Matrix/Order.lean:165\\n    rw [CFC.abs_eq_cfc_norm A, hA.cfc_eq]\\n- Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean:23\\n    + `CFC.abs`: The absolute value as `abs a := CFC.sqrt (star a * a)`.\\n- Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean:295\\n    protected lemma continuous_abs : Continuous (CFC.abs : A → A) :=\\n- Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean:313\\n    rw [CFC.abs, sqrt_eq_zero_iff _, CStarRing.star_mul_self_eq_zero_iff]\\n- Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean:318\\n    (abs_nonneg _).star_eq, CFC.abs_mul_abs, CStarRing.norm_star_mul_self]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CFC.abs\"}",
+   "ok": true,
+   "result_chars": 1222,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 43 declarations mentioning CFC.abs.\\n- CFC.abs_one   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_of_mem_unitary   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_sq   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_intCast   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_natCast   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_eq_cfc_norm   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_ofNat   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n    The absolute value defined via the non-unital continuous functional calculus.\\n- CFC.abs_coe_unitary   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_nonneg   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_zero   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\\n- CFC.abs_neg   [Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Abs]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.toMatrix\"}",
+   "ok": true,
+   "result_chars": 1266,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 104 declarations mentioning LinearMap.toMatrix.\\n- LinearMap.toMatrix   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n    Given bases of two modules `M₁` and `M₂` over a commutative ring `R`, we get a linear equivalence between linear maps `M₁ →ₗ M₂` and matrices over `R` indexed b\\n- LinearMap.toMatrix_symm   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- Matrix.toLin_symm   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.toMatrix_eq_toMatrix'   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n    `LinearMap.toMatrix'` is a particular case of `LinearMap.toMatrix`, for the standard basis `Pi.basisFun R n`.\\n- LinearMap.toMatrix_id   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n    This will be a special case of `LinearMap.toMatrix_id_eq_basis_toMatrix`.\\n- toMatrix_distrib_mul_action_toLinearMap   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.isUnit_toMatrix_iff   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.toMatrix_one   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.toMatrix_basis_equiv   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.toMatrix_algebraMap   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- Algebra.toMatrix_lmul_eq   [Mathlib.LinearAlgebra.Matrix.ToLin]\\n- LinearMap.toMatrix_apply   [Mathlib.LinearAlgebra.Matrix.ToLin]\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional LinearMap\"}",
+   "ok": true,
+   "result_chars": 1859,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2019 declarations mentioning FiniteDimensional.\\n- FiniteDimensional.finiteDimensional_self   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.instFintypeElemOfVectorSpaceIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, `Basis.ofVectorSpace` is indexed by a finite type.\\n- FiniteDimensional.fintypeBasisIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, all bases are indexed by a finite type\\n- Module.Basis.finiteDimensional_of_finite   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a finite basis, then it is finite-dimensional.\\n- FiniteDimensional.of_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_fact_finrank_eq_two   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finrank_pos   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- Module.finrank_of_infinite_dimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.finiteDimensional_pi   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finite_basis   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a basis indexed by elements of a finite set, then it is finite-dimensional.\\n- FiniteDimensional.of_fact_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    We can infer `FiniteDimensional K V` in the presence of `[Fact (finrank K V = n + 1)]`. Use `have : FiniteDimensional K V := .of_fact_finrank_eq_succ` when need\\n- Module.finrank_eq_rank'   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    In a finite-dimensional space, its dimension (seen as a cardinal) coincides with its `finrank`. This is a copy of `finrank_eq_rank _ _` which creates easier typ\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def toMatrix\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1329,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'def toMatrix' (via ripgrep):\\n- Mathlib/Data/Matrix/PEquiv.lean:54\\n    def toMatrix [DecidableEq n] [Zero α] [One α] (f : m ≃. n) : Matrix m n α :=\\n- Mathlib/LinearAlgebra/QuadraticForm/Basic.lean:1215\\n    def toMatrix' (Q : QuadraticForm R (n → R)) : Matrix n n R :=\\n- Mathlib/LinearAlgebra/QuadraticForm/Basic.lean:1255\\n    noncomputable def toMatrix : Matrix n n R :=\\n- Mathlib/LinearAlgebra/Matrix/Basis.lean:51\\n    def toMatrix (e : Basis ι R M) (v : ι' → M) : Matrix ι ι' R := fun i j ↦ e.repr (v j) i\\n- Mathlib/LinearAlgebra/Matrix/Basis.lean:127\\n    def toMatrixEquiv [Fintype ι] (e : Basis ι R M) : (ι → M) ≃ₗ[R] Matrix ι ι R where\\n- Mathlib/LinearAlgebra/Matrix/Transvection.lean:159\\n    def toMatrix (t : TransvectionStruct n R) : Matrix n n R :=\\n- Mathlib/LinearAlgebra/AffineSpace/Matrix.lean:40\\n    noncomputable def toMatrix {ι' : Type*} (q : ι' → P) : Matrix ι' ι k :=\\n- Mathlib/Analysis/Matrix/Order.lean:309\\n    noncomputable def toMatrixSeminormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosSemidef) :\\n- Mathlib/Analysis/Matrix/Order.lean:318\\n    noncomputable def toMatrixNormedAddCommGroup (M : Matrix n n 𝕜) (hM : M.PosDef) :\\n- Mathlib/Analysis/Matrix/Order.lean:336\\n    def toMatrixInnerProductSpace (M : Matrix n n 𝕜) (hM : M.PosSemidef) :\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2031,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Abs.lean  (lines 1–50 of 322):\\n     1  /-\\n     2  Copyright (c) 2024 Jon Bannon. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jon Bannon, Jireh Loreaux\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic\\n     9  public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.PosPart.Basic\\n    10  public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Isometric\\n    11  import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute\\n    12  import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Isometric\\n    13  \\n    14  \\n    15  /-!\\n    16  # Absolute value defined via the continuous functional calculus\\n    17  \\n    18  This file defines the absolute value via the non-unital continuous functional calculus\\n    19  and provides basic API.\\n    20  \\n    21  ## Main declarations\\n    22  \\n    23  + `CFC.abs`: The absolute value as `abs a := CFC.sqrt (star a * a)`.\\n    24  \\n    25  -/\\n    26  \\n    27  @[expose] public section\\n    28  \\n    29  variable {𝕜 A : Type*}\\n    30  \\n    31  open scoped NNReal\\n    32  open CFC\\n    33  \\n    34  namespace CFC\\n    35  \\n    36  section NonUnital\\n    37  \\n    38  section Real\\n    39  \\n    40  variable [NonUnitalRing A] [StarRing A] [TopologicalSpace A]\\n    41    [Module ℝ A] [SMulCommClass ℝ A A] [IsScalarTower ℝ A A]\\n    42    [NonUnitalContinuousFunctionalCalculus ℝ A IsSelfAdjoint]\\n    43    [PartialOrder A] [StarOrderedRing A] [NonnegSpectrumClass ℝ A]\\n    44  \\n    45  /-- The absolute value defined via the non-unital continuous functional calculus. -/\\n    46  noncomputable def abs (a : A) := sqrt (star a * a)\\n    47  \\n    48  @[simp, grind =]\\n    49  lemma abs_neg (a : A) : abs (-a) = abs a := by\\n    50    simp [abs]\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"det.*CFC\\\\.abs|CFC\\\\.abs.*det\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'det.*CFC\\\\\\\\.abs|CFC\\\\\\\\.abs.*det' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Order.lean:164\\n    det (CFC.abs A) = ‖det A‖ := by\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"InnerProductSpace Endomorphism determinant\"}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'InnerProductSpace Endomorphism determinant': Unknown identifier `Endomorphism`\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*InnerProduct.*det|det.*InnerProduct\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*InnerProduct.*det|det.*InnerProduct' under Mathlib/.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.det InnerProductSpace\"}",
+   "ok": true,
+   "result_chars": 1575,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 98 declarations mentioning MonoidHom.instFunLike, MonoidHom, CommSemiring.toSemiring, AddCommGroup.toAddCommMonoid, Module.End.instSemiring, LinearMap.det, LinearMap, MulZeroOneClass.toMulOneClass, instMulZeroOneClassOfSemiring, MulOneClass.toMulOne, CommRing.toCommSemiring, RingHom.id, Semiring.toNonAssocSemiring, and DFunLike.coe.\\n- LinearMap.det_id   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_subsingleton   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.finite_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the space is finite-dimensional.\\n- LinearMap.free_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the module is free.\\n- Module.Free.of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_not_module_finite   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map is invertible, so is its determinant.\\n- LinearMap.isUnit_iff_isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.isUnit_det'   [Mathlib.LinearAlgebra.Determinant]\\n    Specialization of `LinearEquiv.isUnit_det`\\n- LinearMap.equivOfIsUnitDet   [Mathlib.LinearAlgebra.Determinant]\\n    Builds a linear equivalence from an endomorphism whose determinant is a unit.\\n- LinearMap.det_zero'   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_finrank_eq_zero   [Mathlib.LinearAlgebra.Determinant]\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LinearMap.det\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"127 match(es) for 'LinearMap.det' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Angle/Oriented/Rotation.lean:107\\n    theorem det_rotation (θ : Real.Angle) : LinearMap.det (o.rotation θ).toLinearMap = 1 := by\\n- Mathlib/Geometry/Euclidean/Angle/Oriented/Rotation.lean:330\\n    (hd : 0 < LinearMap.det (f.toLinearEquiv : V →ₗ[ℝ] V)) :\\n- Mathlib/LinearAlgebra/Matrix/Gershgorin.lean:70\\n    exact ne_of_lt (LinearMap.bot_lt_ker_of_det_eq_zero (by rwa [LinearMap.det_toLin']))\\n- Mathlib/Analysis/Normed/Lp/Matrix.lean:93\\n    theorem LinearMap.det_toLpLin {ι R : Type*} [Fintype ι] [DecidableEq ι] [CommRing R] (p : ℝ≥0∞)\\n- Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean:434\\n    (hf : LinearMap.det f ≠ 0) : Measure.map f volume =\\n- Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean:435\\n    ENNReal.ofReal (abs (LinearMap.det f)⁻¹) • volume := by\\n- Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean:439\\n    have A : LinearMap.det f = det M := by simp only [M, LinearMap.det_toMatrix']\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:219\\n    (hf : LinearMap.det f ≠ 0) (μ : Measure (ι → ℝ)) [IsAddHaarMeasure μ] :\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:220\\n    Measure.map f μ = ENNReal.ofReal (abs (LinearMap.det f)⁻¹) • μ := by\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:231\\n    theorem map_linearMap_addHaar_eq_smul_addHaar {f : E →ₗ[ℝ] E} (hf : LinearMap.det f ≠ 0) :\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:232\\n    Measure.map f μ = ENNReal.ofReal |(LinearMap.det f)⁻¹| • μ := by\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:241\\n    have gdet : LinearMap.det g = LinearMap.det f := by rw [hg]; exact LinearMap.det_conj f e\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:261\\n    theorem addHaar_preimage_linearMap {f : E →ₗ[ℝ] E} (hf : LinearMap.det f ≠ 0) (s : Set E) :\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:262\\n    μ (f ⁻¹' s) = ENNReal.ofReal |(LinearMap.det f)⁻¹| * μ s :=\\n- Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:267\\n    _ = ENNReal.ofReal |(LinearMap.det f)⁻¹| * μ s := by\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"det_abs_eq\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 81,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'det_abs_eq' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Matrix/Order.lean\", \"line\": 160, \"n\": 15}",
+   "ok": true,
+   "result_chars": 933,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Matrix/Order.lean  (lines 160–174 of 367):\\n   160  \\n   161  end PosSemidef\\n   162  \\n   163  theorem IsHermitian.det_abs [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.IsHermitian) :\\n   164      det (CFC.abs A) = ‖det A‖ := by\\n   165    rw [CFC.abs_eq_cfc_norm A, hA.cfc_eq]\\n   166    simp [IsHermitian.cfc, -Unitary.conjStarAlgAut_apply, hA.det_eq_prod_eigenvalues]\\n   167  \\n   168  theorem posSemidef_iff_isHermitian_and_spectrum_nonneg [DecidableEq n] {A : Matrix n n 𝕜} :\\n   169      A.PosSemidef ↔ A.IsHermitian ∧ spectrum 𝕜 A ⊆ {a : 𝕜 | 0 ≤ a} := by\\n   170    refine ⟨fun h => ⟨h.isHermitian, fun a => ?_⟩, fun ⟨h1, h2⟩ => ?_⟩\\n   171    · simp only [h.isHermitian.spectrum_eq_image_range, Set.mem_image, Set.mem_range,\\n   172        exists_exists_eq_and, Set.mem_setOf_eq, forall_exists_index]\\n   173      rintro i rfl\\n   174      exact_mod_cast h.eigenvalues_nonneg _\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CFC.abs norm determinant\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CFC.abs norm determinant': Unknown identifier `determinant`\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"det.*norm|norm.*det\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2842,
+   "result_head": "[{\"type\": \"text\", \"text\": \"111 match(es) for 'det.*norm|norm.*det' (via ripgrep):\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:24\\n    /-- The norm of an element in a quadratic algebra is the determinant of the endomorphism defined by\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:27\\n    theorem det_toLinearMap_eq_norm (z : QuadraticAlgebra R a b) :\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:28\\n    (DistribSMul.toLinearMap R (QuadraticAlgebra R a b) z).det = z.norm := by\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:30\\n    have : !![z.re, a * z.im; z.im, z.re + b * z.im].det = z.norm := by\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:457\\n    rw [mixedEmbedding.det_basisOfFractionalIdeal_eq_norm]\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:732\\n    theorem det_basisOfFractionalIdeal_eq_norm\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:758\\n    rw [isUnit_iff_ne_zero, ne_eq, ← abs_eq_zero.not, det_basisOfFractionalIdeal_eq_norm,\\n- Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean:107\\n    rw [← nnnorm_real, ← ofRealHom_eq_coe, RingHom.map_det, RingHom.mapMatrix_apply, this,\\n- Mathlib/NumberTheory/NumberField/Discriminant/Basic.lean:111\\n    rw [det_matrixToStdBasis, nnnorm_mul, nnnorm_pow, nnnorm_mul, this, mul_one, nnnorm_inv,\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:20\\n    determined by the norm.\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:21\\n    * `Valued.toNormedField` : the normed field structure determined by a rank one valuation.\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:65\\n    /-- The valued field structure on a nonarchimedean normed field `K`, determined by the norm. -/\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:119\\n    /-- The norm function determined by a rank one valuation on a field `L`. -/\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:147\\n    /-- The normed field structure determined by a rank one valuation. -/\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:267\\n    The nontrivially normed field structure determined by a rank one valuation.\\n- Mathlib/NumberTheory/ClassNumber/Finite.lean:78\\n    rw [Algebra.norm_apply, ← LinearMap.det_toMatrix bS]\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Affine/Point.lean:399\\n    simp_rw [Algebra.norm_eq_matrix_det <| CoordinateRing.basis W', Matrix.det_fin_two,\\n- Mathlib/NumberTheory/ModularForms/Petersson.lean:84\\n    Subgroup.HasDetPlusMinusOne.abs_det hg, Complex.ofReal_one, one_zpow, one_mul, norm_σ]\\n- Mathlib/NumberTheory/ModularForms/Derivative.lean:211\\n    /-- The `SL(2, ℤ)` case of `normalizedDerivOfComplex_slash`, where the determinant factor is `1`. -/\\n- Mathlib/Tactic/Determinant/Bird.lean:11\\n    # `norm_det` simproc and `eval_det` tactic\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.det CFC\"}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.det CFC': Unknown identifier `CFC`\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*abs.*det|theorem.*det.*abs\", \"limit\": 25}",
+   "ok": true,
+   "result_chars": 3441,
+   "result_head": "[{\"type\": \"text\", \"text\": \"28 match(es) for 'theorem.*abs.*det|theorem.*det.*abs' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:439\\n    theorem abs_det_completeBasis_equivFunL_symm :\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/NormLeOne.lean:586\\n    theorem abs_det_fderiv_expMapBasis (x : realSpace K) :\\n- Mathlib/NumberTheory/NumberField/Units/Regulator.lean:187\\n    theorem abs_det_eq_abs_det (u : Fin (rank K) → (𝓞 K)ˣ)\\n- Mathlib/NumberTheory/NumberField/FractionalIdeal.lean:106\\n    theorem det_basisOfFractionalIdeal_eq_absNorm (I : (FractionalIdeal (𝓞 K)⁰ K)ˣ)\\n- Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean:238\\n    theorem abs_det_submatrix_equiv_equiv {R : Type*}\\n- Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean:267\\n    theorem abs_det_reindex {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R]\\n- Mathlib/LinearAlgebra/FreeModule/Finite/CardQuotient.lean:113\\n    theorem AddSubgroup.relIndex_eq_abs_det {E : Type*} [AddCommGroup E] [Module ℚ E]\\n- Mathlib/LinearAlgebra/Orientation.lean:316\\n    theorem abs_det_adjustToOrientation [Nonempty ι] (e : Basis ι R M)\\n- Mathlib/Analysis/Matrix/Order.lean:163\\n    theorem IsHermitian.det_abs [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.IsHermitian) :\\n- Mathlib/RingTheory/FractionalIdeal/Norm.lean:108\\n    theorem abs_det_basis_change [IsDomain K] {ι : Type*} [Fintype ι]\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:390\\n    theorem normDet_eq_abs_det (f : U →ₗ[ℝ] U) : f.normDet = |f.det| := by\\n- Mathlib/Analysis/InnerProductSpace/Orientation.lean:133\\n    theorem abs_det_adjustToOrientation (v : ι → E) :\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:741\\n    theorem aemeasurable_ofReal_abs_det_fderivWithin (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:749\\n    theorem aemeasurable_toNNReal_abs_det_fderivWithin (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:800\\n    theorem addHaar_image_le_lintegral_abs_det_fderiv_aux1 (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:879\\n    theorem addHaar_image_le_lintegral_abs_det_fderiv_aux2 (hs : MeasurableSet s) (h's : μ s ≠ ∞)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:897\\n    theorem addHaar_image_le_lintegral_abs_det_fderiv (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:927\\n    theorem lintegral_abs_det_fderiv_le_addHaar_image_aux1 (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1032\\n    theorem lintegral_abs_det_fderiv_le_addHaar_image_aux2 (hs : MeasurableSet s) (h's : μ s ≠ ∞)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1050\\n    theorem lintegral_abs_det_fderiv_le_addHaar_image (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1095\\n    theorem lintegral_abs_det_fderiv_eq_addHaar_image (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1105\\n    theorem lintegral_abs_det_fderiv_eq_addHaar_image₀ (hs : NullMeasurableSet s μ)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1127\\n    theorem map_withDensity_abs_det_fderiv_eq_addHaar (hs : NullMeasurableSet s μ)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1151\\n    theorem restrict_map_withDensity_abs_det_fderiv_eq_addHaar (hs : MeasurableSet s)\\n- Mathlib/MeasureTheory/Function/Jacobian.lean:1183\\n    theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul (hs : MeasurableSet s)\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2817,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 1–50 of 441):\\n     1  /-\\n     2  Copyright (c) 2026 Weiyi Wang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Weiyi Wang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.InnerProductSpace.Adjoint\\n     9  public import Mathlib.Analysis.InnerProductSpace.GramMatrix\\n    10  public import Mathlib.Analysis.InnerProductSpace.SingularValues\\n    11  public import Mathlib.Geometry.Euclidean.Volume.Measure\\n    12  \\n    13  import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar\\n    14  import Mathlib.Topology.MetricSpace.HausdorffDimension\\n    15  \\n    16  /-!\\n    17  # Norm determinant of a linear map\\n    18  \\n    19  Given a rectangular matrix $T$, it is common to talk about $\\\\sqrt{det(T^{H}T)}$, where $T^{H}$ is\\n    20  the conjugate transpose of $T$, as a generalization to the determinant of a square matrix. It is the\\n    21  $m$-dimensional volume factor for linear maps $\\\\mathbb{R}^m \\\\to \\\\mathbb{R}^n$. It is given various\\n    22  names in the literature:\\n    23  * \\\"Jacobian\\\" (definition 3.4 of [lawrenceronald2025]), in the context of volume factor\\n    24    for a non-linear map. However, we choose to reserve this name for the matrix consisting of\\n    25    derivatives.\\n    26  * \\\"Gram determinant\\\", which is already used by `Matrix.gram`, and it is often referring to\\n    27    $det(T^{H}T)$ without the square root.\\n    28  * \\\"Nonnegative determinant\\\" (definition 1 of [haruoyoshiohidetoki2006]).\\n    29  \\n    30  Without a standardized name, we give a descriptive name `LinearMap.normDet` to reflect its\\n    31  definition and show that it is a generalization of `‖(f : LinearMap 𝕜 U U).det‖`\\n    32  (See `LinearMap.normDet_eq_norm_det`). We also construct this on linear maps between inner product\\n    33  spaces instead of matrices, and allow the codomain to have infinite dimension.\\n    34  \\n    35  ## Main definition\\n    36  * `LinearMap.normDet` : the norm determinant of a linear map.\\n    37  \\n    38  ## Main result\\n    39  * `ContinuousLinearMap.normDet_sq` and `LinearMap.normDet_sq`: The square of `f.normDet`\\n    40    equals to the determinant of `f.adjoint ∘ₗ f`.\\n    41  * `LinearMap.normDet_sq_eq_det_gram`: The square of `LinearMap.normDet` equals to the determinant of\\n    42    the Gram matrix formed by vectors mapped from an orthonormal basis.\\n    43  * `LinearMap.normDet_eq_prod_singularValues`: `LinearMap.normDet` equals to the product of singular\\n    44    values.\\n    45  * `LinearMap.hausdorffMeasure_image`: `LinearMap.normDet` is the volume factor for Hausdorff\\n    46    measure.\\n    47  \\n    48  -/\\n    49  \\n    50  public section\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 380, \"n\": 20}",
+   "ok": true,
+   "result_chars": 979,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 380–399 of 441):\\n   380    push_cast\\n   381    rw [← LinearMap.IsSymmetric.det_eq_prod_eigenvalues]\\n   382  \\n   383  section Real\\n   384  \\n   385  open MeasureTheory Measure\\n   386  \\n   387  variable {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℝ U] [FiniteDimensional ℝ U]\\n   388    [NormedAddCommGroup V] [InnerProductSpace ℝ V]\\n   389  \\n   390  theorem normDet_eq_abs_det (f : U →ₗ[ℝ] U) : f.normDet = |f.det| := by\\n   391    simpa using f.normDet_eq_norm_det\\n   392  \\n   393  /--\\n   394  Using Hausdorff measure with the domain dimension, the volume of the image is scaled by\\n   395  `LinearMap.normDet`.\\n   396  -/\\n   397  theorem hausdorffMeasure_image [MeasurableSpace U] [BorelSpace U] [MeasurableSpace V] [BorelSpace V]\\n   398      (f : U →ₗ[ℝ] V) (s : Set U) :\\n   399      μH[finrank ℝ U] (f '' s) = ENNReal.ofReal f.normDet * μH[finrank ℝ U] s := by\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.normDet\"}",
+   "ok": true,
+   "result_chars": 1731,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27 declarations mentioning LinearMap.normDet.\\n- LinearMap.normDet_id   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearMap.normDet   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    The norm determinant of a linear map `f : U →ₗ[𝕜] V` is defined as the norm of the determinant of the square matrix representing the linear map `U →ₗ[𝕜] f.range\\n- LinearMap.normDet_nonneg   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearMap.normDet_of_subsingleton   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearIsometry.normDet_eq_one   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    `LinearMap.normDet` of a linear isometry is 1.\\n- LinearMap.normDet_eq_prod_singularValues   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    The volume of the image measured by Euclidean Hausdorff measure is equal to the Lebesgue measure scaled by `LinearMap.normDet`.\\n- LinearMap.normDet_subtype   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearMap.euclideanHausdorffMeasure_image   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    Using Euclidean Hausdorff measure with the domain dimension, the volume of the image is scaled by `LinearMap.normDet`.\\n- LinearMap.hausdorffMeasure_image   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    Using Hausdorff measure with the domain dimension, the volume of the image is scaled by `LinearMap.normDet`.\\n- LinearMap.normDet_neg   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n- LinearMap.normDet_eq_zero_iff_ker_ne_bot   [Mathlib.Analysis.InnerProductSpace.NormDet]\\n    `LinearMap.normDet` vanishes iff the map is not injective.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def normDet\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def normDet' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:70\\n    noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 65, \"n\": 35}",
+   "ok": true,
+   "result_chars": 2113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 65–99 of 441):\\n    65  (See `LinearMap.normDet_eq_norm_det_toMatrix_rangeRestrict` for using arbitrary orthonormal basis)\\n    66  \\n    67  If such basis doesn't exist (e.g. the map is not injective), the norm determinant is zero.\\n    68  (See `LinearMap.normDet_eq_zero_iff_ker_ne_bot`)\\n    69  -/\\n    70  noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\\n    71    if h : Nonempty (OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 f.range) then\\n    72      ‖(f.rangeRestrict.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis h.some.toBasis).det‖\\n    73    else\\n    74      0\\n    75  \\n    76  theorem normDet_nonneg (f : U →ₗ[𝕜] V) : 0 ≤ f.normDet := by\\n    77    unfold normDet\\n    78    split <;> simp\\n    79  \\n    80  /--\\n    81  `LinearMap.normDet` is well-defined under any pair of orthonormal basis.\\n    82  -/\\n    83  theorem normDet_eq_norm_det_toMatrix_rangeRestrict {ι : Type*} [Fintype ι] [DecidableEq ι]\\n    84      (f : U →ₗ[𝕜] V) (bu : OrthonormalBasis ι 𝕜 U) (bv : OrthonormalBasis ι 𝕜 f.range) :\\n    85      f.normDet = ‖(f.rangeRestrict.toMatrix bu.toBasis bv.toBasis).det‖ := by\\n    86    have hrank : finrank 𝕜 U = finrank 𝕜 f.range := by\\n    87      rw [finrank_eq_nat_card_basis bu.toBasis, finrank_eq_nat_card_basis bv.toBasis]\\n    88    have h : Nonempty (OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 f.range) := by\\n    89      rw [hrank]\\n    90      exact ⟨stdOrthonormalBasis 𝕜 f.range⟩\\n    91    simp only [normDet, h, ↓reduceDIte]\\n    92    rw [← basis_toMatrix_mul_linearMap_toMatrix_mul_basis_toMatrix (stdOrthonormalBasis 𝕜 U).toBasis\\n    93      bu.toBasis h.some.toBasis bv.toBasis]\\n    94    have h1 : bu.toBasis.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis *\\n    95        (stdOrthonormalBasis 𝕜 U).toBasis.toMatrix bu.toBasis = 1 :=\\n    96      Basis.toMatrix_mul_toMatrix_flip _ _\\n    97    have h2 : (stdOrthonormalBasis 𝕜 U).toBasis.toMatrix bu.toBasis *\\n    98        bu.toBasis.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis = 1 :=\\n    99      Basis.toMatrix_mul_toMatrix_flip _ _\\n\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 383, \"n\": 12}",
+   "ok": true,
+   "result_chars": 598,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 383–394 of 441):\\n   383  section Real\\n   384  \\n   385  open MeasureTheory Measure\\n   386  \\n   387  variable {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℝ U] [FiniteDimensional ℝ U]\\n   388    [NormedAddCommGroup V] [InnerProductSpace ℝ V]\\n   389  \\n   390  theorem normDet_eq_abs_det (f : U →ₗ[ℝ] U) : f.normDet = |f.det| := by\\n   391    simpa using f.normDet_eq_norm_det\\n   392  \\n   393  /--\\n   394  Using Hausdorff measure with the domain dimension, the volume of the image is scaled by\\n\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"normDet_eq_norm_det\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 835,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'normDet_eq_norm_det' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:32\\n    (See `LinearMap.normDet_eq_norm_det`). We also construct this on linear maps between inner product\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:65\\n    (See `LinearMap.normDet_eq_norm_det_toMatrix_rangeRestrict` for using arbitrary orthonormal basis)\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:83\\n    theorem normDet_eq_norm_det_toMatrix_rangeRestrict {ι : Type*} [Fintype ι] [DecidableEq ι]\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:120\\n    rw [f.normDet_eq_norm_det_toMatrix_rangeRestrict bu bv, norm_eq_zero.not]\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:183\\n    theorem normDet_eq_norm_det_toMatrix {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem normDet_eq_abs_det {U : Type*} [NormedAddCommGroup U] [InnerProductSpace ℝ U] \n    [FiniteDimensional ℝ U] (f : U →ₗ[ℝ] U) : f.normDet = |f.det| := sorry"
+}

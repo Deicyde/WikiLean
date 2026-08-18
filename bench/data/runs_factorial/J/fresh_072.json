@@ -1,0 +1,386 @@
+{
+ "task_id": "fresh_072",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T01:44:39Z",
+ "wall_s": 98.1,
+ "transcript_stats": {
+  "turns": 43,
+  "assistant_turns": 26,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 4,
+   "mcp__wikibrain__brain_search": 21,
+   "mcp__wikibrain__brain_cell": 9,
+   "mcp__wikibrain__brain_snippets": 4,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__brain_neighborhood": 2
+  },
+  "tokens_in": 210,
+  "tokens_out": 6333,
+  "cost_usd": 0.13017815000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"linear order well-founded\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 258,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"linear order well-founded\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"well-founded order finite\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 1973,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"well-founded order finite\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"LinearOrder\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1937,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"aka\\\":[\\\"Definition:Inequality\\\",\\\"Inequality\\\",\\\"Inequality (mathematics)\\\",\\\"LinearOrder\\\",\\\"Total Order\\\",\\\"total order\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.lift\\\",\\\"label\\\":\\\"LinearOrder.lift\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.toBiheytingAlgebra\\\",\\\"label\\\":\\\"LinearOrder.toBiheytingAlgebra\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Heyting/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.toLattice\\\",\\\"label\\\":\\\"LinearOrder.toLattice\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Lattice\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Prod.Lex.instLinearOrder\\\",\\\"label\\\":\\\"Prod.Lex.instLinearOrder\\\",\\\"aka\\\":[\\\"Generalized echelon subgroups\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Prod/Lex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"Real.instConditionallyCompleteLinearOrder\\\",\\\"aka\\\":[\\\"A new approach to the real numbers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Archimedean\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.linearOrder\\\",\\\"label\\\":\\\"Real.linearOrder\\\",\\\"aka\\\":[\\\"The reals as rational Cauchy filters\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Cardinal.linearOrder\\\",\\\"label\\\":\\\"Cardinal.linearOrder\\\",\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedLT\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1223,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedLT\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"aka\\\":[\\\"Structural Induction Principles for Functional Programmers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"label\\\":\\\"WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.fix\\\",\\\"label\\\":\\\"WellFoundedLT.fix\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:Q1457052\\\",\\\"label\\\":\\\"well-ordering theorem\\\",\\\"aka\\\":[\\\"Zermelo's Well-Ordering Theorem\\\",\\\"exists_wellFoundedLT\\\"],\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.to_wellFoundedLT\\\",\\\"label\\\":\\\"Fintype.to_wellFoundedLT\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SuccOrder.ofLinearWellFoundedLT\\\",\\\"label\\\":\\\"SuccOrder.ofLinearWellFoundedLT\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/SuccPred/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/BigOperators\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_injective\\\",\\\"label\\\":\\\"Fintype.card_le_of_injective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_surjective\\\",\\\"label\\\":\\\"Fintype.card_le_of_surjective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"label\\\":\\\"Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"aka\\\":[\\\"Constructions and nonexistence results for suitable sets of permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Pigeonhole\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.nonempty_field_iff\\\",\\\"label\\\":\\\"Fintype.nonempty_field_iff\\\",\\\"aka\\\":[\\\"Clique number of Xor products of Kneser graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Cardinality\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq_of_infinite\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq_of_infinite\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_eq\\\",\\\"label\\\":\\\"Fintype.card_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/EquivFin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_finset\\\",\\\"label\\\":\\\"Fintype.card_finset\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Powerset\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q369377\"}",
+   "ok": true,
+   "result_chars": 4404,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q369377\\\",\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"f\\\":40184,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q369377\\\",\\\"anchor\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Defs/LinearOrder\\\"],\\\"f\\\":40184,\\\"xy\\\":[55,-181]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q28113351\\\",\\\"label\\\":\\\"Inequality (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":8,\\\"description\\\":\\\"mathematical relation comparing two different values\\\",\\\"slug\\\":\\\"Inequality_mathematics\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"partial order where all elements can be compared\\\",\\\"slug\\\":\\\"Total_order\\\",\\\"article_annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Inequality\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Inequality.html\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:TotalOrder\\\",\\\"label\\\":\\\"Total Order\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/TotalOrder.html\\\",\\\"qid\\\":\\\"Q369377\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:total order\\\",\\\"label\\\":\\\"total order\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/total+order\\\",\\\"qid\\\":\\\"Q369377\\\",\\\"snippet\\\":\\\"A *total order* or *linear order* or *chain order* on a set is a way of ordering its elements to say that some elements precede others, with the understanding that any two elements can be compared one way or the other.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Inequality\\\",\\\"label\\\":\\\"Definition:Inequality\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Inequality\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q28113351\\\",\\\"snippet\\\":\\\"An inequality is a mathematical statement that two expressions relate in one of several conventional ways: $a b$ $a \\\\\\\\ge b$\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Total_order\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2}}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":5,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":225,\\\"links\\\":148,\\\"mentions\\\":40,\\\"relates\\\":27,\\\"cites\\\":11,\\\"co-page\\\":2,\\\"invocation\\\":8,\\\"co-statement\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"links\\\":5}},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q41299\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:WellFoundedLT.induction\"}",
+   "ok": true,
+   "result_chars": 1589,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"anchor\\\":\\\"decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/RelClasses\\\"],\\\"f\\\":128,\\\"xy\\\":[968.6,-553.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"module\\\":\\\"Mathlib.Order.RelClasses\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"code\\\":\\\"theorem induction {motive : α → Prop} (a : α)\\\\n    (ind : ∀ x, (∀ y, y < x → motive y) → motive x) : motive a :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.RelClasses\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1312.2696\\\",\\\"label\\\":\\\"Structural Induction Principles for Functional Programmers\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1312.2696\\\",\\\"ref\\\":\\\"\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"label\\\":\\\"RelClasses\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q659746\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Fintype.card\"}",
+   "ok": true,
+   "result_chars": 2054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"anchor\\\":\\\"decl:Mathlib:Fintype.card\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Fintype/Card\\\"],\\\"xy\\\":[974.2,231.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Fintype.card\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Card\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def card (α) [Fintype α] : ℕ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Card\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Fintype\\\",\\\"label\\\":\\\"Fintype\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Fintype/Card\\\",\\\"label\\\":\\\"Card\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":84,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q3554829\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"invocation\\\":4}},{\\\"id\\\":\\\"cell:Q48996048\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"invocation\\\":2}},{\\\"id\\\":\\\"cell:Q7662204\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"invocation\\\":2}},{\\\"id\\\":\\\"cell:Q2993338\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:Q4049983\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q603880\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Arxiv.«2107.00295».independentDominationEven\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Arxiv.«2107.00295».independentDominationOdd\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Arxiv.«2208.14736».zariski_cancellation_problem.variants.false_pos_card\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:BabaiSeressConjectures.babai_seress_conjecture\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":81,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedGT\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 341,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedGT\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finite type class\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finite type class\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2635,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finite\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"label\\\":\\\"Finite\\\",\\\"aka\\\":[\\\"Symmetries in Reversible Programming: From Symmetric Rig Groupoids to Reversible Programming Languages\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q1475760\\\",\\\"label\\\":\\\"Projective plane\\\",\\\"aka\\\":[\\\"Configuration.ProjectivePlane\\\",\\\"Definition:Fano Plane\\\",\\\"Fano Plane\\\",\\\"Fano plane\\\",\\\"Finite Geometry\\\",\\\"Projective Plane\\\",\\\"Synthetic geometry\\\",\\\"finite geometry\\\",\\\"synthetic geometry\\\",\\\"The Schwarzian Curvature\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Configuration\\\"},{\\\"id\\\":\\\"cell:Q2068418\\\",\\\"label\\\":\\\"Finite difference\\\",\\\"aka\\\":[\\\"Discrete calculus\\\",\\\"Finite Difference\\\",\\\"Finite-difference calculus\\\",\\\"Numerical Differentiation\\\",\\\"Numerical differentiation\\\",\\\"fwdDiff\\\",\\\"Fourier decay of absolutely and H\\\\\\\\\\\\\\\"older continuous functions with infinitely or finitely many oscillations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/ForwardDiff\\\"},{\\\"id\\\":\\\"cell:Q550593\\\",\\\"label\\\":\\\"Klein four-group\\\",\\\"aka\\\":[\\\"Definition:Klein Four-Group\\\",\\\"Finite Group C2x C2\\\",\\\"IsKleinFour\\\",\\\"Klein 4-group\\\",\\\"Klein Four-Group\\\",\\\"Vierergruppe\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/SpecificGroups/KleinFour\\\"},{\\\"id\\\":\\\"cell:Q603880\\\",\\\"label\\\":\\\"Finite field\\\",\\\"aka\\\":[\\\"Finite Field\\\",\\\"Galois field\\\",\\\"GaloisField\\\",\\\"finite field\\\",\\\"Reliability on QR codes and Reed-Solomon codes\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Finite/GaloisField\\\"},{\\\"id\\\":\\\"cell:Q1057968\\\",\\\"label\\\":\\\"Finite group\\\",\\\"aka\\\":[\\\"Definition:Finite Group\\\",\\\"Finite Group\\\",\\\"FiniteGrp\\\",\\\"finite group\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/Grp\\\"},{\\\"id\\\":\\\"cell:Q578304\\\",\\\"label\\\":\\\"finite character\\\",\\\"aka\\\":[\\\"Order.IsOfFiniteCharacter\\\",\\\"An approach to basic set theory and logic\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/TeichmullerTukey\\\"},{\\\"id\\\":\\\"cell:Q272404\\\",\\\"label\\\":\\\"finite set\\\",\\\"aka\\\":[\\\"Set.Finite\\\",\\\"Fluctuation Spectra and Coarse Graining in Stochastic Dynamics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Finite/Defs\\\"},{\\\"id\\\":\\\"cell:Q21083858\\\",\\\"label\\\":\\\"finitely generated group\\\",\\\"aka\\\":[\\\"Group.FG\\\",\\\"The Continuum Limit of Discrete Geometries\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/Finiteness\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConjClasses.card_carrier\\\",\\\"label\\\":\\\"ConjClasses.card_carrier\\\",\\\"aka\\\":[\\\"Finite flavour groups of fermions\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/GroupAction/Quotient\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:WellFoundedLT.induction\"}",
+   "ok": true,
+   "result_chars": 809,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"code\\\":\\\"theorem induction {motive : α → Prop} (a : α)\\\\n    (ind : ∀ x, (∀ y, y < x → motive y) → motive x) : motive a :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/RelClasses.html#WellFoundedLT.induction\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:1312.2696\\\",\\\"label\\\":\\\"Structural Induction Principles for Functional Programmers\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/1312.2696\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Finite\"}",
+   "ok": true,
+   "result_chars": 1489,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"anchor\\\":\\\"decl:Mathlib:Finite\\\",\\\"label\\\":\\\"Finite\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Finite/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[467.8,-247]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Finite\\\",\\\"label\\\":\\\"Finite\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2110.05404#10\\\",\\\"label\\\":\\\"Symmetries in Reversible Programming: From Symmetric Rig Groupoids to Reversible Programming Languages\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2110.05404\\\",\\\"ref\\\":\\\"10\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q33198\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q4049983\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:Finite\"}",
+   "ok": true,
+   "result_chars": 621,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Finite\\\",\\\"label\\\":\\\"Finite\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2110.05404#10\\\",\\\"label\\\":\\\"Symmetries in Reversible Programming: From Symmetric Rig Groupoids to Reversible Programming Languages\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2110.05404\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedLT class\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedLT class\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"WellFoundedLT\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"WellFoundedLT\\\",\\\"decl\\\":\\\"WellFoundedLT\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"aka\\\":[\\\"Structural Induction Principles for Functional Programmers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"label\\\":\\\"WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.fix\\\",\\\"label\\\":\\\"WellFoundedLT.fix\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:Q1457052\\\",\\\"label\\\":\\\"well-ordering theorem\\\",\\\"aka\\\":[\\\"Zermelo's Well-Ordering Theorem\\\",\\\"exists_wellFoundedLT\\\"],\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.to_wellFoundedLT\\\",\\\"label\\\":\\\"Fintype.to_wellFoundedLT\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsWellFounded\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 509,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsWellFounded\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsWellFounded.fix\\\",\\\"label\\\":\\\"IsWellFounded.fix\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Prod.Lex.instIsWellFounded\\\",\\\"label\\\":\\\"Prod.Lex.instIsWellFounded\\\",\\\"aka\\\":[\\\"On connectedness of power graphs of finite groups\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"well founded decreasing\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"well founded decreasing\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"linear order well-founded finite\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 1980,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear order well-founded finite\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finite linear order\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite linear order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Noetherian order\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Noetherian order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"biwell-founded\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"biwell-founded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q369377\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 16120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":4},\\\"traces_total\\\":7,\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q19033\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Finset.centerMass_le_sup\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q19033\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Finset.centerMass_le_sup\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q2796622\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"Real.harm_mean_le_geom_mean\\\",\\\"Real.linearOrder\\\"]]}}]},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q28474\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q28474\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}}]},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q28113351\\\",\\\"dst\\\":\\\"Q290810\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"LinearOrder\\\",\\\"PartialOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q290810\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"exists_wellOrder\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q290810\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":0,\\\"proof\\\":5},\\\"witnesses\\\":[[\\\"exists_maximal_of_chains_bounded\\\",\\\"IsChain\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q369377\\\",\\\"dst\\\":\\\"Q290810\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":20,\\\"w_types\\\":{\\\"sig\\\":18,\\\"def\\\":0,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"Ordinal.instLinearOrder\\\",\\\"LinearOrder\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q159943\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Polynomial.isNoetherianRing\\\",\\\"IsNoetherianRing\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q205464\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"BooleanAlgebra\\\",\\\"DistribLattice\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q369377\\\",\\\"dst\\\":\\\"Q159943\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ConditionallyCompleteLinearOrderedField.inducedOrderRingIso\\\",\\\"Field\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q369377\\\",\\\"dst\\\":\\\"Q205464\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ConditionallyCompleteLinearOrderedField.inducedOrderRingIso\\\",\\\"Field\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q369377\\\",\\\"dst\\\":\\\"Q3968\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"Eq\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q3968\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_typ"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\"}",
+   "ok": true,
+   "result_chars": 1460,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"anchor\\\":\\\"decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/OrderIsoNat\\\"],\\\"xy\\\":[-704.1,-518.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"module\\\":\\\"Mathlib.Order.OrderIsoNat\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"code\\\":\\\"theorem WellFoundedGT.monotone_chain_condition [PartialOrder α] [h : WellFoundedGT α] (a : ℕ →o α) :\\\\n    ∃ n, ∀ m, n ≤ m → a n = a m :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.OrderIsoNat\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\",\\\"label\\\":\\\"OrderIsoNat\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\"}",
+   "ok": true,
+   "result_chars": 703,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"code\\\":\\\"theorem WellFoundedGT.monotone_chain_condition [PartialOrder α] [h : WellFoundedGT α] (a : ℕ →o α) :\\\\n    ∃ n, ∀ m, n ≤ m → a n = a m :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/OrderIsoNat.html#WellFoundedGT.monotone_chain_condition\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedLT WellFoundedGT class definition\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedLT WellFoundedGT class definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"the reverse of a linear order well-founded\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 275,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"the reverse of a linear order well-founded\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"RelClasses\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 271,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"RelClasses\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RelClasses\\\",\\\"n_cells\\\":8}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Order/RelClasses\"}",
+   "ok": true,
+   "result_chars": 961,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"id\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RelClasses\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"parent\\\":\\\"path:Mathlib/Order\\\",\\\"cells\\\":[\\\"cell:Q659746\\\",\\\"cell:decl:Mathlib:IsWellFounded.fix\\\",\\\"cell:decl:Mathlib:Prod.Lex.instIsWellFounded\\\",\\\"cell:decl:Mathlib:Set.Unbounded\\\",\\\"cell:decl:Mathlib:WellFoundedLT.fix\\\",\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"cell:decl:Mathlib:instIsStrictWeakOrder\\\",\\\"cell:decl:Mathlib:isWellOrder_lt\\\"],\\\"fa\\\":38105},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:isWellOrder_lt\"}",
+   "ok": true,
+   "result_chars": 1416,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:isWellOrder_lt\\\",\\\"id\\\":\\\"cell:decl:Mathlib:isWellOrder_lt\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"isWellOrder_lt\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:isWellOrder_lt\\\",\\\"anchor\\\":\\\"decl:Mathlib:isWellOrder_lt\\\",\\\"label\\\":\\\"isWellOrder_lt\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/RelClasses\\\"],\\\"f\\\":128,\\\"xy\\\":[788.5,-681.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:isWellOrder_lt\\\",\\\"label\\\":\\\"isWellOrder_lt\\\",\\\"module\\\":\\\"Mathlib.Order.RelClasses\\\",\\\"decl_kind\\\":\\\"inst\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.RelClasses\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2204.03563#3\\\",\\\"label\\\":\\\"Transfinite Modal Logic: a Semi-quantitative Explanation for Bayesian Reasoning\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2204.03563\\\",\\\"ref\\\":\\\"3\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"label\\\":\\\"RelClasses\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q659746\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:isWellOrder_lt\"}",
+   "ok": true,
+   "result_chars": 628,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:isWellOrder_lt\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:isWellOrder_lt\\\",\\\"label\\\":\\\"isWellOrder_lt\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/RelClasses.html#isWellOrder_lt\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2204.03563#3\\\",\\\"label\\\":\\\"Transfinite Modal Logic: a Semi-quantitative Explanation for Bayesian Reasoning\\\",\\\"license_open\\\":true,\\\"url\\\":\\\"https://arxiv.org/abs/2204.03563\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q659746\"}",
+   "ok": true,
+   "result_chars": 3752,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q659746\\\",\\\"id\\\":\\\"cell:Q659746\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Well-order\\\",\\\"f\\\":38105,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q659746\\\",\\\"anchor\\\":\\\"Q659746\\\",\\\"label\\\":\\\"Well-order\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/RelClasses\\\"],\\\"f\\\":38105,\\\"xy\\\":[420.2,-204.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q659746\\\",\\\"label\\\":\\\"Well-order\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"total order such that every nonempty subset of the domain has a least element\\\",\\\"slug\\\":\\\"Well-order\\\",\\\"article_annotations\\\":{\\\"total\\\":47,\\\"formalized\\\":25,\\\"partial\\\":6,\\\"not_formalized\\\":16},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:IsWellOrder\\\",\\\"label\\\":\\\"IsWellOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Order.RelClasses\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class IsWellOrder (α : Type u) (r : α → α → Prop) : Prop\\\\n    extends IsWellFounded α r, Std.Trichotomous r\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.RelClasses\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:well-order\\\",\\\"label\\\":\\\"well-order\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/well-order\\\",\\\"qid\\\":\\\"Q659746\\\",\\\"snippet\\\":\\\"A _well-order_ on a set $S$ is a relation $\\\\\\\\prec$ that allows one to interpret $S$ as an ordinal number $\\\\\\\\alpha$ and $\\\\\\\\prec$ as the relation $\\\\\\\\lt$ on the ordinal numbers less than $\\\\\\\\alpha$. In particular, one can do induction on $S$ over $\\\\\\\\prec$ (although the more general well-founded relations also allow this).\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Well-Ordering\\\",\\\"label\\\":\\\"Definition:Well-Ordering\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Well-Ordering\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q659746\\\",\\\"snippet\\\":\\\"Let $\\\\\\\\struct {S, \\\\\\\\preceq}$ be an ordered set.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Well-order\\\",\\\"label\\\":\\\"Well-order\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":47,\\\"formalized\\\":25,\\\"partial\\\":6,\\\"not_formalized\\\":16}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1810.02982#3.1\\\",\\\"label\\\":\\\"A complete solution to the infinite Oberwolfach problem\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1810.02982\\\",\\\"ref\\\":\\\"3.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/RelClasses\\\",\\\"label\\\":\\\"RelClasses\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":94,\\\"links\\\":19,\\\"relates\\\":1,\\\"mentions\\\":24,\\\"cites\\\":9,\\\"related\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1457052\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"links\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q163875\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q191780\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q1361825\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q36161\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q66707394\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q1166618\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":106,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderIsoNat theorem finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderIsoNat theorem finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"path:Mathlib/Order/OrderIsoNat\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\",\\\"kind\\\":\\\"supercell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"withheld_by_shard\\\":0,\\\"traces_hydrated\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"LinearOrder\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 986,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"LinearOrder\\\",\\\"decl\\\":\\\"LinearOrder\\\",\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q28113351\\\",\\\"label\\\":\\\"Inequality (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Inequality_mathematics\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Inequality_mathematics\\\",\\\"description\\\":\\\"mathematical relation comparing two different values\\\",\\\"snippet_sources\\\":[\\\"eom\\\",\\\"mathworld\\\",\\\"nlab\\\",\\\"proofwiki\\\"],\\\"via_cell\\\":\\\"cell:Q369377\\\"},{\\\"qid\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Total_order\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Total_order\\\",\\\"description\\\":\\\"partial order where all elements can be compared\\\",\\\"snippet_sources\\\":[\\\"eom\\\",\\\"mathworld\\\",\\\"nlab\\\",\\\"proofwiki\\\"],\\\"via_cell\\\":\\\"cell:Q369377\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedLT\", \"type\": \"cell\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1241,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedLT\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.induction\\\",\\\"label\\\":\\\"WellFoundedLT.induction\\\",\\\"aka\\\":[\\\"Structural Induction Principles for Functional Programmers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"label\\\":\\\"WellFoundedLT.conditionallyCompleteLinearOrderBot\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedLT.fix\\\",\\\"label\\\":\\\"WellFoundedLT.fix\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/RelClasses\\\"},{\\\"id\\\":\\\"cell:Q1457052\\\",\\\"label\\\":\\\"well-ordering theorem\\\",\\\"aka\\\":[\\\"Zermelo's Well-Ordering Theorem\\\",\\\"exists_wellFoundedLT\\\"],\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.to_wellFoundedLT\\\",\\\"label\\\":\\\"Fintype.to_wellFoundedLT\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SuccOrder.ofLinearWellFoundedLT\\\",\\\"label\\\":\\\"SuccOrder.ofLinearWellFoundedLT\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/SuccPred/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WellFoundedGT\", \"type\": \"cell\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 359,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WellFoundedGT\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WellFoundedGT.monotone_chain_condition\\\",\\\"label\\\":\\\"WellFoundedGT.monotone_chain_condition\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/OrderIsoNat\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"path:Mathlib/Order/Defs\", \"type\": \"supercell\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 307,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"type\\\":\\\"supercell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Defs\\\",\\\"matched\\\":\\\"supercell\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Order/Defs\"}",
+   "ok": true,
+   "result_chars": 750,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Defs\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"parent\\\":\\\"path:Mathlib/Order\\\",\\\"children\\\":[\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"path:Mathlib/Order/Defs/PartialOrder\\\",\\\"path:Mathlib/Order/Defs/Unbundled\\\"],\\\"fa\\\":40184},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"wellFounded finite not infinite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"wellFounded finite not infinite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype wellFounded iff\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype wellFounded iff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"antitone decreasing chain\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone decreasing chain\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem linear_order_well_founded_both_directions_is_finite {α : Type*} \n    [LinearOrder α] [WellFoundedLT α] [WellFoundedGT α] : \n    Finite α := sorry"
+}

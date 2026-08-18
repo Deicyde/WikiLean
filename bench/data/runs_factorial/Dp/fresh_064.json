@@ -1,0 +1,194 @@
+{
+ "task_id": "fresh_064",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:36:46Z",
+ "wall_s": 90.5,
+ "transcript_stats": {
+  "turns": 19,
+  "assistant_turns": 10,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 7,
+   "mcp__wikibrain__brain_cell": 1,
+   "mcp__wikibrain__decl_exists": 6,
+   "mcp__wikibrain__brain_neighborhood": 1
+  },
+  "tokens_in": 82,
+  "tokens_out": 7747,
+  "cost_usd": 0.07836649999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"upper half-plane complex analysis\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3987,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half-plane complex analysis\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11567\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Complex number\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Complex\\\",\\\"label\\\":\\\"Complex\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Complex/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q381040\\\",\\\"label\\\":\\\"Complex conjugate\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q190556\\\",\\\"label\\\":\\\"De Moivre's formula\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192760\\\",\\\"label\\\":\\\"Fundamental theorem of algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"label\\\":\\\"Matrix multiplication\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"label\\\":\\\"Taylor's theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q168698\\\",\\\"label\\\":\\\"Exponential function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q173582\\\",\\\"label\\\":\\\"Gradient\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":127,\\\"withheld_by_shard\\\":287,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Complex\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Complex : Type where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex\\\",\\\"via_cell\\\":\\\"cell:Q11567\\\",\\\"cell_label\\\":\\\"Complex number\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Complex\\\",\\\"label\\\":\\\"Complex\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Complex/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"EuclideanSpace\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev EuclideanSpace (𝕜 : Type*) (n : Type*) : Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/PiL2.html#EuclideanSpace\\\",\\\"via_cell\\\":\\\"cell:Q17295\\\",\\\"cell_label\\\":\\\"Euclidean space\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"q-expansion modular forms\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b22dbef0686ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b22dbef0686ba\",\"timestamp\":\"2026-08-08T02:36:55Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"convergent power series\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b22dd3a7b86ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b22dd3a7b86ba\",\"timestamp\":\"2026-08-08T02:36:55Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"modular form\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"modular form\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"aka\\\":[\\\"Automorphic form\\\",\\\"ModularForm\\\",\\\"automorphic form\\\",\\\"Anomaly cancellation and modularity: E8*E8*E8 case\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1387602\\\",\\\"label\\\":\\\"transcendence degree\\\",\\\"aka\\\":[\\\"Algebra.trdeg\\\",\\\"fields-definition-transcendence-degree\\\",\\\"A geometric introduction to transcendence questions on values of modular forms\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AlgebraicIndependent/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"power series convergence\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b22f14b1b86ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b22f14b1b86ba\",\"timestamp\":\"2026-08-08T02:36:58Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded function\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b22f31f7086ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b22f31f7086ba\",\"timestamp\":\"2026-08-08T02:36:58Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q870797\"}",
+   "ok": true,
+   "result_chars": 3700,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q870797\\\",\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"modular form\\\",\\\"f\\\":34024,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q870797\\\",\\\"anchor\\\":\\\"Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\"],\\\"f\\\":34024,\\\"xy\\\":[-6.8,-268.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1134435\\\",\\\"label\\\":\\\"Automorphic form\\\",\\\"bond\\\":\\\"special_case\\\",\\\"prov\\\":0,\\\"description\\\":\\\"generalization of periodic functions to have group domains\\\",\\\"slug\\\":\\\"Automorphic_form\\\",\\\"article_annotations\\\":{\\\"total\\\":9,\\\"formalized\\\":1,\\\"partial\\\":4,\\\"not_formalized\\\":4},\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"analytic function on the upper half-plane with a certain behavior under the modular group\\\",\\\"slug\\\":\\\"Modular_form\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ModularForm\\\",\\\"label\\\":\\\"ModularForm\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"decl_kind\\\":\\\"structure\\\",\\\"docstring\\\":\\\"These are `SlashInvariantForm`'s that are holomorphic and bounded at infinity. \\\",\\\"code\\\":\\\"structure ModularForm extends SlashInvariantForm Γ k where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:automorphic form\\\",\\\"label\\\":\\\"automorphic form\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/automorphic+form\\\",\\\"qid\\\":\\\"Q1134435\\\",\\\"snippet\\\":\\\"Quite generally, _automorphic forms_ are suitably well-behaved functions on a quotient space $K\\\\\\\\backslash X$ where $K$ is typically a discrete group, hence suitable functions on $X$ which are invariant under the action of a discrete group. The precise definition has evolved a good bit through time.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Automorphic_form\\\",\\\"label\\\":\\\"Automorphic form\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":9,\\\"formalized\\\":1,\\\"partial\\\":4,\\\"not_formalized\\\":4}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2402.15138#2.1\\\",\\\"label\\\":\\\"Anomaly cancellation and modularity: E8*E8*E8 case\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2402.15138\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":1,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":44,\\\"links\\\":17,\\\"relates\\\":2,\\\"mentions\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q1063579\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q1393253\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":56,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"q-expansion\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b2306a97986ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b2306a97986ba\",\"timestamp\":\"2026-08-08T02:37:01Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ModularForm\", \"SlashInvariantForm\", \"Tendsto\", \"Filter.atTop\", \"CauSeq\"]}",
+   "ok": true,
+   "result_chars": 1825,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ModularForm\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/Basic.html#ModularForm\\\"},{\\\"decl\\\":\\\"SlashInvariantForm\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.SlashInvariantForms\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.SlashInvariantForms\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/SlashInvariantForms.html#SlashInvariantForm\\\"},{\\\"decl\\\":\\\"Tendsto\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Filter.Tendsto\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter.Tendsto\\\"},{\\\"decl\\\":\\\"Filter.atTop\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/AtTopBot/Defs.html#Filter.atTop\\\"},{\\\"decl\\\":\\\"CauSeq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.CauSeq.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.CauSeq.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/CauSeq/Basic.html#CauSeq\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q870797\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 6847,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q2285809\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q524607\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q12916\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q208237\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Units.instGroup\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q901718\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}}]},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q33198\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix\\\"]]}}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q40276\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":6,\\\"w_types\\\":{\\\"sig\\\":6,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q679903\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}}]},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q83478\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Subgroup\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q159943\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q3968\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q1046291\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q1049914\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q11205\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":8,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q648995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proo"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Complex.exp\", \"Filter.Tendsto\", \"Bornology.IsBounded\", \"FunLike.ext\", \"UpperHalfPlane\"]}",
+   "ok": true,
+   "result_chars": 1687,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Complex.exp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Exponential\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Exponential\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Exponential.html#Complex.exp\\\"},{\\\"decl\\\":\\\"Filter.Tendsto\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter.Tendsto\\\"},{\\\"decl\\\":\\\"Bornology.IsBounded\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Bornology.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Bornology.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Bornology/Basic.html#Bornology.IsBounded\\\"},{\\\"decl\\\":\\\"FunLike.ext\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"UpperHalfPlane\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/UpperHalfPlane/Basic.html#UpperHalfPlane\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"holomorphic function\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b234258f286ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b234258f286ba\",\"timestamp\":\"2026-08-08T02:37:11Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"tsum\", \"Summable\", \"HasSum\", \"abs_nonneg\", \"Set.Ioi\"]}",
+   "ok": true,
+   "result_chars": 1754,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"tsum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#tsum\\\"},{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#Summable\\\"},{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\"},{\\\"decl\\\":\\\"abs_nonneg\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Abs.html#abs_nonneg\\\"},{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ioi\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"convergent series sum\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b23547eb086ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b23547eb086ba\",\"timestamp\":\"2026-08-08T02:37:14Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"BddAbove\", \"ContinuousAt\", \"Filter.Tendsto\", \"Pi.const\", \"ℝ≥0\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b23c26acc86ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b23c26acc86ba\",\"timestamp\":\"2026-08-08T02:37:31Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded above supremum\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b23c45faa86ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b23c45faa86ba\",\"timestamp\":\"2026-08-08T02:37:32Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"BddAbove\", \"IsCompact\", \"IsClosed\", \"lpMeasSubgroup\"]}",
+   "ok": true,
+   "result_chars": 1273,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"},{\\\"decl\\\":\\\"IsCompact\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#IsCompact\\\"},{\\\"decl\\\":\\\"IsClosed\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#IsClosed\\\"},{\\\"decl\\\":\\\"lpMeasSubgroup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.pi\", \"Complex.I\", \"ℝ\", \"ℂ\", \"ℕ\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b245e8fea86ba\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b245e8fea86ba\",\"timestamp\":\"2026-08-08T02:37:56Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem q_expansion_bounded_at_cusp\n    (f : UpperHalfPlane → ℂ)\n    (h : ℝ)\n    (h_pos : 0 < h)\n    (c : ℕ → ℂ)\n    (h_expansion : ∀ τ : UpperHalfPlane,\n      f τ = tsum (fun n : ℕ => c n * Complex.exp (2 * π * I * (↑τ : ℂ) / h) ^ n))\n    (h_summable : ∀ τ : UpperHalfPlane,\n      Summable (fun n : ℕ => c n * Complex.exp (2 * π * I * (↑τ : ℂ) / h) ^ n)) :\n    ∃ M : ℝ, ∀ τ : UpperHalfPlane, Complex.abs (f τ) ≤ M :=\n  sorry"
+}

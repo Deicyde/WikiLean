@@ -1,0 +1,290 @@
+{
+ "task_id": "fresh_070",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:21:14Z",
+ "wall_s": 128.2,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 29,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 15,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 234,
+  "tokens_out": 9173,
+  "cost_usd": 0.1084421
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove (Set.range ?f)\"}",
+   "ok": true,
+   "result_chars": 946,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 187 declarations mentioning BddAbove and Set.range.\\n- BddAbove.range_comp_right   [Mathlib.Order.Bounds.Basic]\\n    If the range of a function `g` is bounded above, then `g ∘ f` is bounded above for all functions `f`.\\n- bbdAbove_range_left_of_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_right_of_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_sup_iff   [Mathlib.Order.Bounds.Basic]\\n- BddAbove.range_mono   [Mathlib.Order.Bounds.Image]\\n- BddAbove.range_comp   [Mathlib.Order.Bounds.Image]\\n    **Alias** of `BddAbove.range_comp_left`.\\n- BddAbove.range_comp_left   [Mathlib.Order.Bounds.Image]\\n- bddAbove_range_pi   [Mathlib.Order.Bounds.Image]\\n- bddAbove_range_prod   [Mathlib.Order.Bounds.Image]\\n- StrictMono.not_bddAbove_range_of_wellFoundedLT   [Mathlib.Order.WellFounded]\\n- Set.nonempty_iInter_Ici_iff   [Mathlib.Data.Set.Lattice]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.range\"}",
+   "ok": true,
+   "result_chars": 1126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3331 declarations mentioning Set.range.\\n- Set.range   [Mathlib.Data.Set.Operations]\\n    Range of a function.  This function is more flexible than `f '' univ`, as the image requires that the domain is in Type and not an arbitrary Sort.\\n- Set.rangeFactorization   [Mathlib.Data.Set.Operations]\\n    Any map `f : ι → α` factors through a map `rangeFactorization f : ι → range f`.\\n- Set.rangeSplitting   [Mathlib.Data.Set.Operations]\\n    We can use the axiom of choice to pick a preimage for every element of `range f`.\\n- Set.rangeFactorization_surjective   [Mathlib.Data.Set.Operations]\\n- Set.mem_range_self   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_bijective   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_injective   [Mathlib.Data.Set.Operations]\\n- Set.mem_range   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_eq_rangeFactorization_iff   [Mathlib.Data.Set.Operations]\\n- Set.apply_rangeSplitting   [Mathlib.Data.Set.Operations]\\n- Set.Subtype.range_coind   [Mathlib.Data.Set.Operations]\\n- Set.comp_rangeSplitting   [Mathlib.Data.Set.Operations]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*range_comp_right\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*range_comp_right' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"range_comp_right\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'range_comp_right' under Mathlib/.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"BddAbove.*range.*comp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'BddAbove.*range.*comp' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Bounds.lean:20\\n    /-- A variant of `BddAbove.range_comp` that assumes that `f` is nonnegative and `g` is monotone on\\n- Mathlib/Algebra/Order/GroupWithZero/Bounds.lean:22\\n    lemma BddAbove.range_comp_of_nonneg {α β γ : Type*} [Nonempty α] [Preorder β] [Zero β] [Preorder γ]\\n- Mathlib/Algebra/Order/GroupWithZero/Bounds.lean:38\\n    BddAbove.range_comp_of_nonneg (f := fun i ↦ (u i, v i)) (g := fun x ↦ x.1 * x.2)\\n- Mathlib/Order/Filter/AtTopBot/CompleteLattice.lean:97\\n    rwa [BddAbove, ← Function.comp_def f g, hf.upperBounds_range_comp_tendsto_atTop hg]\\n- Mathlib/Order/Bounds/Image.lean:433\\n    lemma BddAbove.range_comp {γ : Type*} [Preorder β] [Preorder γ] {f : α → β} {g : β → γ}\\n- Mathlib/Analysis/LocallyConvex/WithSeminorms.lean:737\\n    ∀ i, BddAbove (range fun k ↦ (q i).comp (f k)) ∧ Continuous (⨆ k, (q i).comp (f k)) ] := by\\n- Mathlib/Analysis/LocallyConvex/WithSeminorms.lean:755\\n    have bdd : BddAbove (range fun k ↦ (q i).comp (f k)) :=\\n- Mathlib/Analysis/LocallyConvex/WithSeminorms.lean:782\\n    BddAbove (range fun k ↦ (q i).comp (f k)) ∧\\n- Mathlib/Analysis/LocallyConvex/Barrelled.lean:171\\n    have : BddAbove (range fun i ↦ (q k).comp (𝓕 i).toLinearMap) := by\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Bounds/Image.lean\", \"line\": 433, \"n\": 15}",
+   "ok": true,
+   "result_chars": 393,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Bounds/Image.lean  (lines 433–436 of 436):\\n   433  lemma BddAbove.range_comp {γ : Type*} [Preorder β] [Preorder γ] {f : α → β} {g : β → γ}\\n   434      (hf : BddAbove (range f)) (hg : Monotone g) : BddAbove (range (fun x => g (f x))) := by\\n   435    change BddAbove (range (g ∘ f))\\n   436    simpa only [Set.range_comp] using hg.map_bddAbove hf\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"BddAbove.*range.*comp.*right\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'BddAbove.*range.*comp.*right' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Mathlib/Order/Bounds/Basic.lean\", \"limit\": 1}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Mathlib/Order/Bounds/Basic.lean' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove ?s → ?t ⊆ ?s → BddAbove ?t\"}",
+   "ok": true,
+   "result_chars": 206,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 23 declarations mentioning LE.le, BddAbove, Set.instLE, and Set.\\n- BddAbove.mono   [Mathlib.Order.Bounds.Basic]\\n    If `s ⊆ t` and `t` is bounded above, then so is `s`.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.range (?g ∘ ?f) ⊆ Set.range ?g\"}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning Function.comp, LE.le, Set.instLE, Set.range, and Set.\\n- Set.range_comp_subset_range   [Mathlib.Data.Set.Image]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"range_comp_subset_range\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 681,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for 'range_comp_subset_range' (via ripgrep):\\n- Mathlib/Computability/MyhillNerode.lean:63\\n    (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:480\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:564\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:976\\n    (union_subset_union_left {0} (range_comp_subset_range φ f)) using 1\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:983\\n    refine (Finset.sum_subset (SimpleFunc.range_comp_subset_range _ hφ) fun y _ hy => ?_).symm\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^.*lemma.*range_comp_subset_range\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^.*lemma.*range_comp_subset_range' under Mathlib/.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.range_comp_subset_range\"}",
+   "ok": true,
+   "result_chars": 149,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Set.range_comp_subset_range.\\n- Set.range_comp_subset_range   [Mathlib.Data.Set.Image]\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove.mono\"}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning BddAbove.mono.\\n- BddAbove.mono   [Mathlib.Order.Bounds.Basic]\\n    If `s ⊆ t` and `t` is bounded above, then so is `s`.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*BddAbove.*mono\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 611,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'lemma.*BddAbove.*mono' (via ripgrep):\\n- Mathlib/Order/Bounds/Image.lean:425\\n    lemma BddAbove.range_mono [Preorder β] {f : α → β} (g : α → β) (h : ∀ a, f a ≤ g a)\\n- Mathlib/Order/Bounds/Basic.lean:510\\n    @[simp] lemma bddAbove_Ico : BddAbove (Ico a b) := bddAbove_Icc.mono Ico_subset_Icc_self\\n- Mathlib/Order/Bounds/Basic.lean:512\\n    @[simp] lemma bddAbove_Ioc : BddAbove (Ioc a b) := bddAbove_Icc.mono Ioc_subset_Icc_self\\n- Mathlib/Order/Bounds/Basic.lean:514\\n    @[simp] lemma bddAbove_Ioo : BddAbove (Ioo a b) := bddAbove_Icc.mono Ioo_subset_Icc_self\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*BddAbove.*mono\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 207,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*BddAbove.*mono' (via ripgrep):\\n- Mathlib/Order/Bounds/Basic.lean:225\\n    theorem BddAbove.mono ⦃s t : Set α⦄ (h : s ⊆ t) : BddAbove t → BddAbove s :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Bounds/Basic.lean\", \"line\": 225, \"n\": 5}",
+   "ok": true,
+   "result_chars": 373,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Bounds/Basic.lean  (lines 225–229 of 913):\\n   225  theorem BddAbove.mono ⦃s t : Set α⦄ (h : s ⊆ t) : BddAbove t → BddAbove s :=\\n   226    Nonempty.mono <| upperBounds_mono_set h\\n   227  \\n   228  /-- If `a` is a least upper bound for sets `s` and `p`, then it is a least upper bound for any\\n   229  set `t`, `s ⊆ t ⊆ p`. -/\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Set.range.*comp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1236,
+   "result_head": "[{\"type\": \"text\", \"text\": \"252 match(es) for 'Set.range.*comp' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:583\\n    simp only [← Algebra.map_top, ← adjoin_range_ι, AlgHom.map_adjoin, ← Set.range_comp,\\n- Mathlib/Computability/MyhillNerode.lean:63\\n    (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:476\\n    SetLike.coe_injective (Set.range_comp g f)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:480\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:191\\n    simp only [iInf, sInf_toSubsemiring, ← Set.range_comp, Function.comp_def]\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:196\\n    simp only [iSup, Set.range_nonempty, sSup_toSubsemiring, ← Set.range_comp, Function.comp_def]\\n- Mathlib/Algebra/Star/NonUnitalSubalgebra.lean:467\\n    SetLike.coe_injective (Set.range_comp g f)\\n- Mathlib/Algebra/Star/NonUnitalSubalgebra.lean:471\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:561\\n    SetLike.coe_injective (Set.range_comp g f)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:564\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma Set.range_comp\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma Set.range_comp' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"range_comp\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2487,
+   "result_head": "[{\"type\": \"text\", \"text\": \"556 match(es) for 'range_comp' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:583\\n    simp only [← Algebra.map_top, ← adjoin_range_ι, AlgHom.map_adjoin, ← Set.range_comp,\\n- Mathlib/Algebra/DualNumber.lean:224\\n    AlgHom.map_adjoin, ← AlgHom.range_comp, Set.image_singleton, lift_apply_eps, lift_comp_inlHom,\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:474\\n    theorem range_comp (f : A →ₙₐ[R] B) (g : B →ₙₐ[R] C) :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:476\\n    SetLike.coe_injective (Set.range_comp g f)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:478\\n    theorem range_comp_le_range (f : A →ₙₐ[R] B) (g : B →ₙₐ[R] C) :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:480\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Computability/MyhillNerode.lean:63\\n    (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n- Mathlib/Geometry/Manifold/PartitionOfUnity.lean:740\\n    · exact Subset.trans (range_comp_subset_range _ _) f_range\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:191\\n    simp only [iInf, sInf_toSubsemiring, ← Set.range_comp, Function.comp_def]\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:196\\n    simp only [iSup, Set.range_nonempty, sSup_toSubsemiring, ← Set.range_comp, Function.comp_def]\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:560\\n    theorem range_comp (f : A →ₐ[R] B) (g : B →ₐ[R] C) : (g.comp f).range = f.range.map g :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:561\\n    SetLike.coe_injective (Set.range_comp g f)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:563\\n    theorem range_comp_le_range (f : A →ₐ[R] B) (g : B →ₐ[R] C) : (g.comp f).range ≤ g.range :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:564\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:762\\n    theorem range_comp_val : (f.comp S.val).range = S.map f := by\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:763\\n    rw [AlgHom.range_comp, range_val]\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:782\\n    (equivOfEq _ _ (range_comp_val S f))\\n- Mathlib/Order/GaloisConnection/Basic.lean:106\\n    rw [range_comp, ← sSup_range]; exact gc.isLUB_l_image (isLUB_sSup _)\\n- Mathlib/RingTheory/Localization/FractionRing.lean:328\\n    f.map_field_closure, ← Set.range_comp, ← f.coe_comp, h, g.coe_range]\\n- Mathlib/SetTheory/Cardinal/Cofinality/Ordinal.lean:267\\n    convert! range_comp (· + 1) (fun i ↦ (f i).1)\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Image.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1520,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Image.lean  (lines 1–50 of 1414):\\n     1  /-\\n     2  Copyright (c) 2014 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jeremy Avigad, Leonardo de Moura\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Batteries.Tactic.Congr\\n     9  public import Mathlib.Data.Option.Basic\\n    10  public import Mathlib.Data.Prod.Basic\\n    11  public import Mathlib.Data.Set.Subsingleton\\n    12  public import Mathlib.Data.Set.SymmDiff\\n    13  public import Mathlib.Data.Set.Inclusion\\n    14  \\n    15  /-!\\n    16  # Images and preimages of sets\\n    17  \\n    18  ## Main definitions\\n    19  \\n    20  * `preimage f t : Set α` : the preimage f⁻¹(t) (written `f ⁻¹' t` in Lean) of a subset of β.\\n    21  \\n    22  * `range f : Set β` : the image of `univ` under `f`.\\n    23    Also works for `{p : Prop} (f : p → α)` (unlike `image`)\\n    24  \\n    25  ## Notation\\n    26  \\n    27  * `f ⁻¹' t` for `Set.preimage f t`\\n    28  \\n    29  * `f '' s` for `Set.image f s`\\n    30  \\n    31  ## Tags\\n    32  \\n    33  set, sets, image, preimage, pre-image, range\\n    34  \\n    35  -/\\n    36  \\n    37  public section\\n    38  \\n    39  assert_not_exists WithTop OrderIso\\n    40  \\n    41  universe u v\\n    42  \\n    43  open Function Set\\n    44  \\n    45  namespace Set\\n    46  \\n    47  variable {α β γ : Type*} {ι : Sort*}\\n    48  \\n    49  /-! ### Inverse image -/\\n    50  \\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".*range_comp_subset_range.*\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 414,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for '.*range_comp_subset_range.*' (via ripgrep):\\n- Mathlib/Computability/MyhillNerode.lean:63\\n    (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:480\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:564\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Computability/MyhillNerode.lean\", \"line\": 60, \"n\": 10}",
+   "ok": true,
+   "result_chars": 577,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Computability/MyhillNerode.lean  (lines 60–69 of 108):\\n    60    have ⟨σ, x, M, hM⟩ := h\\n    61    rw [← hM, leftQuotient_accepts]\\n    62    exact Set.finite_of_finite_preimage (Set.toFinite _)\\n    63      (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n    64  \\n    65  variable (L) in\\n    66  /-- The left quotients of a language are the states of an automaton that accepts the language. -/\\n    67  def toDFA : DFA α (Set.range L.leftQuotient) where\\n    68    step s a := by\\n    69      refine ⟨s.val.leftQuotient [a], ?_⟩\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^.*lemma.*range_comp_subset_range\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^.*lemma.*range_comp_subset_range' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"range_comp_subset_range\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'range_comp_subset_range': unknown identifier 'range_comp_subset_range'\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.range_comp_subset_range\"}",
+   "ok": true,
+   "result_chars": 149,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Set.range_comp_subset_range.\\n- Set.range_comp_subset_range   [Mathlib.Data.Set.Image]\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"range_comp_subset\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1277,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for 'range_comp_subset' (via ripgrep):\\n- Mathlib/Computability/MyhillNerode.lean:63\\n    (Set.range_comp_subset_range M.eval M.acceptsFrom)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:480\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:564\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/Probability/Kernel/MeasurableIntegral.lean:95\\n    exact Finset.Subset.trans (Finset.filter_subset _ _) (SimpleFunc.range_comp_subset_range _ _)\\n- Mathlib/Algebra/Module/Submodule/Range.lean:88\\n    SetLike.coe_mono (Set.range_comp_subset_range f g)\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:976\\n    (union_subset_union_left {0} (range_comp_subset_range φ f)) using 1\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:983\\n    refine (Finset.sum_subset (SimpleFunc.range_comp_subset_range _ hφ) fun y _ hy => ?_).symm\\n- Mathlib/Data/Set/Image.lean:652\\n    theorem range_comp_subset_range (f : α → β) (g : β → γ) : range (g ∘ f) ⊆ range g := by grind\\n- Mathlib/Geometry/Manifold/PartitionOfUnity.lean:740\\n    · exact Subset.trans (range_comp_subset_range _ _) f_range\\n- Mathlib/CategoryTheory/CofilteredSystem.lean:158\\n    apply range_comp_subset_range\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Image.lean\", \"line\": 652, \"n\": 3}",
+   "ok": true,
+   "result_chars": 280,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Image.lean  (lines 652–654 of 1414):\\n   652  theorem range_comp_subset_range (f : α → β) (g : β → γ) : range (g ∘ f) ⊆ range g := by grind\\n   653  \\n   654  theorem range_nonempty_iff_nonempty : (range f).Nonempty ↔ Nonempty ι :=\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Bounds/Image.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1024,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Bounds/Image.lean  (lines 1–30 of 436):\\n     1  /-\\n     2  Copyright (c) 2017 Paul Lezeau. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Yury Kudryashov, Paul Lezeau\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.NAry\\n     9  public import Mathlib.Order.Bounds.Basic\\n    10  \\n    11  /-!\\n    12  \\n    13  # Images of upper/lower bounds under monotone functions\\n    14  \\n    15  In this file we prove various results about the behaviour of bounds under monotone/antitone maps.\\n    16  -/\\n    17  \\n    18  public section\\n    19  \\n    20  open Function Set\\n    21  \\n    22  open OrderDual (toDual ofDual)\\n    23  \\n    24  universe u v w x\\n    25  \\n    26  variable {α : Type u} {β : Type v} {γ : Type w} {ι : Sort x}\\n    27  \\n    28  namespace MonotoneOn\\n    29  \\n    30  variable [Preorder α] [Preorder β] {f : α → β} {s t : Set α} {a : α}\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem bddAbove_range_comp {α β γ : Type*} [Preorder γ] {g : β → γ} {f : α → β}\n    (hg : BddAbove (range g)) : BddAbove (range (g ∘ f)) :=\n  BddAbove.mono (Set.range_comp_subset_range f g) hg"
+}

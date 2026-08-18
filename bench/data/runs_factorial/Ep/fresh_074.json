@@ -1,0 +1,444 @@
+{
+ "task_id": "fresh_074",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:17:46Z",
+ "wall_s": 105.9,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 10,
+   "mcp__formal__decl_grep": 32,
+   "mcp__formal__decl_read": 7
+  },
+  "tokens_in": 242,
+  "tokens_out": 7477,
+  "cost_usd": 0.1212387
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 650 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- strictMono_id   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.strictMono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.strictMono_coe   [Mathlib.Order.Monotone.Defs]\\n- Function.const_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- strictMonoOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.monotone   [Mathlib.Order.Monotone.Defs]\\n- Monotone.strictMono_of_injective   [Mathlib.Order.Monotone.Defs]\\n- Function.update_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.imp   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearOrder\"}",
+   "ok": true,
+   "result_chars": 1244,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 9532 declarations mentioning LinearOrder.\\n- LinearOrder   [Mathlib.Order.Defs.LinearOrder]\\n    A linear order is reflexive, transitive, antisymmetric and total relation `≤`. We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`.\\n- LinOrd.of   [Mathlib.Order.Defs.LinearOrder]\\n    Construct a bundled `LinOrd` from the underlying type and typeclass.\\n- LinOrd.str   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toDecidableEq   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- LinearOrder.toMax   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toMin   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toOrd   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toPartialOrder   [Mathlib.Order.Defs.LinearOrder]\\n- instIsLinearOrder_mathlib   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toDecidableLE   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- LinearOrder.toDecidableLT   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- max_self   [Mathlib.Order.Defs.LinearOrder]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype\"}",
+   "ok": true,
+   "result_chars": 1035,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 8573 declarations mentioning Fintype.\\n- Fintype   [Mathlib.Data.Fintype.Defs]\\n    `Fintype α` means that `α` is finite, i.e. there are only finitely many distinct elements of type `α`. The evidence of this is a finset `elems` (a list up to pe\\n- Bool.fintype   [Mathlib.Data.Fintype.Defs]\\n- Ordering.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.instFastSubsingleton   [Mathlib.Data.Fintype.Defs]\\n- Fintype.subsingleton   [Mathlib.Data.Fintype.Defs]\\n- Finset.univ   [Mathlib.Data.Fintype.Defs]\\n    `univ` is the universal finite set of type `Finset α` implied from the assumption `Fintype α`.\\n- Fintype.elems   [Mathlib.Data.Fintype.Defs]\\n    The `Finset` containing all elements of a `Fintype`\\n- Lex.fintype   [Mathlib.Data.Fintype.Defs]\\n- OrderDual.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEmbeddingFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEquivFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableForallFintype   [Mathlib.Data.Fintype.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype ?α → StrictMono ?f → ∀ ?x, ?f ?x = ?x\"}",
+   "ok": true,
+   "result_chars": 156,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype ?α → StrictMono ?f → ∀ ?x, ?f ?x = ?x': <input>:1:31: expected '(', '[', '_', '{', '⦃' or identifier\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finite linear order identity strictly monotone\"}",
+   "ok": true,
+   "result_chars": 124,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite linear order identity strictly monotone': Unknown identifier `finite`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"strictly_monotone.*fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'strictly_monotone.*fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.*finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'StrictMono.*finite' (via ripgrep):\\n- Mathlib/Order/RelSeries.lean:1105\\n    (f : α → β) (hf : StrictMono f) [InfiniteDimensionalOrder α] :\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Fintype.*StrictMono\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Fintype.*StrictMono' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype\"}",
+   "ok": true,
+   "result_chars": 1035,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 8573 declarations mentioning Fintype.\\n- Fintype   [Mathlib.Data.Fintype.Defs]\\n    `Fintype α` means that `α` is finite, i.e. there are only finitely many distinct elements of type `α`. The evidence of this is a finset `elems` (a list up to pe\\n- Bool.fintype   [Mathlib.Data.Fintype.Defs]\\n- Ordering.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.instFastSubsingleton   [Mathlib.Data.Fintype.Defs]\\n- Fintype.subsingleton   [Mathlib.Data.Fintype.Defs]\\n- Finset.univ   [Mathlib.Data.Fintype.Defs]\\n    `univ` is the universal finite set of type `Finset α` implied from the assumption `Fintype α`.\\n- Fintype.elems   [Mathlib.Data.Fintype.Defs]\\n    The `Finset` containing all elements of a `Fintype`\\n- Lex.fintype   [Mathlib.Data.Fintype.Defs]\\n- OrderDual.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEmbeddingFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEquivFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableForallFintype   [Mathlib.Data.Fintype.Defs]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype Injective\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype Injective': Unknown identifier `Injective`\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Surjective Injective Fintype\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Surjective Injective Fintype': Unknown identifier `Surjective`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Injective\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 745,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'def Injective' (via ripgrep):\\n- Mathlib/Logic/Unique.lean:208\\n    protected def Injective.unique [Inhabited α] [Subsingleton β] (hf : Injective f) : Unique α :=\\n- Mathlib/Logic/Function/Basic.lean:200\\n    protected def Injective.decidableEq [DecidableEq β] (I : Injective f) : DecidableEq α :=\\n- Mathlib/Logic/Function/Basic.lean:1064\\n    def Injective2 {α β γ : Sort*} (f : α → β → γ) : Prop :=\\n- Mathlib/CategoryTheory/Abelian/RightDerived.lean:72\\n    noncomputable def InjectiveResolution.isoRightDerivedToHomotopyCategoryObj {X : C}\\n- Mathlib/CategoryTheory/Abelian/RightDerived.lean:114\\n    noncomputable def InjectiveResolution.isoRightDerivedObj {X : C} (I : InjectiveResolution X)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Fintype.*fixed.*point\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Fintype.*fixed.*point' under Mathlib/.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.*Injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 473,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'StrictMono.*Injective' (via ripgrep):\\n- Mathlib/Order/Monotone/Basic.lean:402\\n    theorem StrictMono.injective (hf : StrictMono f) : Injective f :=\\n- Mathlib/Order/Monotone/Basic.lean:429\\n    theorem Monotone.strictMono_iff_injective (hf : Monotone f) : StrictMono f ↔ Injective f :=\\n- Mathlib/Dynamics/Circle/RotationNumber/TranslationNumber.lean:149\\n    theorem strictMono_iff_injective : StrictMono f ↔ Injective f :=\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Fintype.*Bijective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1351,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'Fintype.*Bijective' (via ripgrep):\\n- Mathlib/Control/EquivFunctor/Instances.lean:50\\n    map e _ := Fintype.ofBijective e e.bijective\\n- Mathlib/Algebra/BigOperators/Group/Finset/Defs.lean:694\\n    /-- `Fintype.prod_bijective` is a variant of `Finset.prod_bij` that accepts `Function.Bijective`.\\n- Mathlib/Data/Finset/Density.lean:115\\n    lemma dens_image [Fintype β] [DecidableEq β] {f : α → β} (hf : Bijective f) (s : Finset α) :\\n- Mathlib/GroupTheory/Perm/Cycle/Concrete.lean:482\\n    { toFun := Fintype.bijInv (show Function.Bijective f by\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean:453\\n    refine Fintype.card_congr (Equiv.ofBijective ?_ ⟨fun _ _ h => ?_, fun ⟨φ, hφ⟩ => ?_⟩)\\n- Mathlib/Data/Fintype/EquivFin.lean:93\\n    def truncFinBijection (α) [Fintype α] : Trunc { f : Fin (card α) → α // Bijective f } := by\\n- Mathlib/Data/Fintype/OfMap.lean:19\\n    * `Fintype.ofBijective`, `Fintype.ofInjective`, `Fintype.ofSurjective`:\\n- Mathlib/Data/Fintype/OfMap.lean:51\\n    def ofBijective [Fintype α] (f : α → β) (H : Function.Bijective f) : Fintype β :=\\n- Mathlib/Data/Fintype/Sum.lean:70\\n    Fintype.ofBijective (Sum.elim ((↑) : { b // b = a } → α) ((↑) : { b // b ≠ a } → α)) <| by\\n- Mathlib/Combinatorics/Digraph/Basic.lean:70\\n    Fintype.ofBijective Digraph.mk' <| by\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Injective.*Surjective.*Fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Injective.*Surjective.*Fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Fintype.*injective.*surjective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 371,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'Fintype.*injective.*surjective' (via ripgrep):\\n- Mathlib/Algebra/CharP/Reduced.lean:40\\n    (((Fintype.bijective_iff_injective_and_card _).mpr ⟨frobenius_inj R 2, rfl⟩).surjective a)\\n- Mathlib/Data/Set/Finite/Basic.lean:798\\n    Fintype.card_lt_of_injective_not_surjective (Set.inclusion h.1) (Set.inclusion_injective h.1)\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"bijective_iff_injective_and_card\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 682,
+   "result_head": "[{\"type\": \"text\", \"text\": \"19 match(es) for 'bijective_iff_injective_and_card' (via ripgrep):\\n- Mathlib/Data/ZMod/Basic.lean:405\\n    rw [Fintype.bijective_iff_injective_and_card, ZMod.card, h, eq_self_iff_true, and_true]\\n- Mathlib/CategoryTheory/Galois/Basic.lean:367\\n    apply (Fintype.bijective_iff_injective_and_card (F.map f)).mpr\\n- Mathlib/FieldTheory/Fixed.lean:354\\n    rw [Fintype.bijective_iff_injective_and_card]\\n- Mathlib/FieldTheory/Galois/Basic.lean:279\\n    ((Nat.bijective_iff_injective_and_card (Set.inclusion H_le)).mpr\\n- Mathlib/Algebra/CharP/Reduced.lean:40\\n    (((Fintype.bijective_iff_injective_and_card _).mpr ⟨frobenius_inj R 2, rfl⟩).surjective a)\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"injective_iff_bijective.*Fintype\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'injective_iff_bijective.*Fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*StrictMono.*id\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2232,
+   "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'theorem.*StrictMono.*id' (via ripgrep):\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:51\\n    theorem toSubmonoid_strictMono : StrictMono (toSubmonoid : Subsemiring R → Submonoid R) :=\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:59\\n    theorem toAddSubmonoid_strictMono : StrictMono (toAddSubmonoid : Subsemiring R → AddSubmonoid R) :=\\n- Mathlib/Algebra/Ring/Subring/Basic.lean:93\\n    theorem toSubmonoid_strictMono : StrictMono (fun s : Subring R => s.toSubmonoid) := fun _ _ => id\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:40\\n    theorem toAddSubmonoid_strictMono : StrictMono (toAddSubmonoid : Submodule R M → AddSubmonoid M) :=\\n- Mathlib/Algebra/Group/Subgroup/Defs.lean:388\\n    theorem toSubmonoid_strictMono : StrictMono (toSubmonoid : Subgroup G → Submonoid G) := fun _ _ =>\\n- Mathlib/Data/Ordmap/Ordset.lean:569\\n    theorem map.valid {β} [Preorder β] {f : α → β} (f_strict_mono : StrictMono f) {t} (h : Valid t) :\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Pow.lean:148\\n    theorem pow_left_strictMono (hn : n ≠ 0) : StrictMono (· ^ n : M → M) := strictMono_id.pow_const hn\\n- Mathlib/Algebra/Order/Monoid/ToMulBot.lean:53\\n    theorem toMulBot_strictMono : StrictMono (@toMulBot α _) := fun _ _ => id\\n- Mathlib/Order/Monotone/Defs.lean:318\\n    theorem strictMono_id [Preorder α] : StrictMono (id : α → α) := fun _ _ ↦ id\\n- Mathlib/Order/Monotone/Defs.lean:320\\n    theorem strictMonoOn_id [Preorder α] {s : Set α} : StrictMonoOn id s := fun _ _ _ _ ↦ id\\n- Mathlib/Order/WellFounded.lean:242\\n    theorem StrictMono.id_le [WellFoundedLT β] {f : β → β} (hf : StrictMono f) : id ≤ f := by\\n- Mathlib/Order/WellFounded.lean:252\\n    theorem StrictMono.le_id [WellFoundedGT β] {f : β → β} (hf : StrictMono f) : f ≤ id :=\\n- Mathlib/Order/Interval/Set/Monotone.lean:196\\n    theorem StrictMonoOn.Iic_id_le [SuccOrder α] [IsSuccArchimedean α] [OrderBot α] {n : α} {φ : α → α}\\n- Mathlib/Order/Interval/Set/Monotone.lean:213\\n    theorem StrictMonoOn.Ici_le_id [PredOrder α] [IsPredArchimedean α] [OrderTop α] {n : α} {φ : α → α}\\n- Mathlib/Order/Interval/Basic.lean:115\\n    theorem toDualProd_strictMono : StrictMono (toDualProd : _ → αᵒᵈ × α) := fun _ _ => id\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*fixed_point\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'theorem.*fixed_point' (via ripgrep):\\n- Mathlib/Computability/PartrecCode.lean:1004\\n    theorem fixed_point {f : Code → Code} (hf : Computable f) : ∃ c : Code, eval (f c) = eval c :=\\n- Mathlib/Computability/PartrecCode.lean:1022\\n    theorem fixed_point₂ {f : Code → ℕ →. ℕ} (hf : Partrec₂ f) : ∃ c : Code, eval c = f c :=\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:389\\n    theorem exists_fixed_point_of_prime {p n : ℕ} [hp : Fact p.Prime] (hα : ¬p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:397\\n    theorem exists_fixed_point_of_prime' {p n : ℕ} [hp : Fact p.Prime] (hα : p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Support.lean:641\\n    theorem fixed_point_card_lt_of_ne_one [DecidableEq α] [Fintype α] {σ : Perm α} (h : σ ≠ 1) :\\n- Mathlib/GroupTheory/PGroup.lean:199\\n    theorem nonempty_fixed_point_of_prime_not_dvd_card (α) [MulAction G α] (hpα : ¬p ∣ Nat.card α) :\\n- Mathlib/GroupTheory/PGroup.lean:211\\n    theorem exists_fixed_point_of_prime_dvd_card_of_fixed_point (hpα : p ∣ Nat.card α) {a : α}\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:226\\n    theorem exists_fixed_point_of_contractible (F : (β →ᵤ Seq α) → (β →ᵤ Seq α))\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:239\\n    theorem FriendlyOperation.exists_fixed_point (F : β → Option (α × γ × β)) (op : γ → Seq α → Seq α)\\n- Mathlib/Logic/Function/Basic.lean:363\\n    theorem exists_fixed_point_of_surjective {α β : Type*} (f : α → α → β)\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/WellFounded.lean\", \"line\": 252, \"n\": 10}",
+   "ok": true,
+   "result_chars": 646,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/WellFounded.lean  (lines 252–261 of 386):\\n   252  theorem StrictMono.le_id [WellFoundedGT β] {f : β → β} (hf : StrictMono f) : f ≤ id :=\\n   253    StrictMono.id_le (β := βᵒᵈ) hf.dual\\n   254  \\n   255  theorem StrictMono.apply_le [WellFoundedGT β] {f : β → β} (hf : StrictMono f) {x} : f x ≤ x :=\\n   256    StrictMono.le_apply (β := βᵒᵈ) hf.dual\\n   257  \\n   258  theorem StrictMono.not_bddAbove_range_of_wellFoundedLT {f : β → β} [WellFoundedLT β] [NoMaxOrder β]\\n   259      (hf : StrictMono f) : ¬ BddAbove (Set.range f) := by\\n   260    rintro ⟨a, ha⟩\\n   261    obtain ⟨b, hb⟩ := exists_gt a\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Fintype.*WellFounded\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Fintype.*WellFounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/WellFounded.lean\", \"line\": 242, \"n\": 15}",
+   "ok": true,
+   "result_chars": 896,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/WellFounded.lean  (lines 242–256 of 386):\\n   242  theorem StrictMono.id_le [WellFoundedLT β] {f : β → β} (hf : StrictMono f) : id ≤ f := by\\n   243    rw [Pi.le_def]\\n   244    by_contra! H\\n   245    obtain ⟨m, hm, hm'⟩ := wellFounded_lt.has_min {i | f i < i} H\\n   246    exact hm' _ (hf hm) hm\\n   247  \\n   248  theorem StrictMono.le_apply [WellFoundedLT β] {f : β → β} (hf : StrictMono f) {x} : x ≤ f x :=\\n   249    hf.id_le x\\n   250  \\n   251  /-- A strictly monotone function `f` on a cowell-order satisfies `f x ≤ x` for all `x`. -/\\n   252  theorem StrictMono.le_id [WellFoundedGT β] {f : β → β} (hf : StrictMono f) : f ≤ id :=\\n   253    StrictMono.id_le (β := βᵒᵈ) hf.dual\\n   254  \\n   255  theorem StrictMono.apply_le [WellFoundedGT β] {f : β → β} (hf : StrictMono f) {x} : f x ≤ x :=\\n   256    StrictMono.le_apply (β := βᵒᵈ) hf.dual\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*Fintype.*WellFounded\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*Fintype.*WellFounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(α : Type*) → [LinearOrder α] → [Fintype α] → WellFoundedLT α\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(α : Type*) → [LinearOrder α] → [Fintype α] → WellFoundedLT α'.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"WellFounded.*Fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'WellFounded.*Fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*WellFoundedLT\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1321,
+   "result_head": "[{\"type\": \"text\", \"text\": \"54 match(es) for 'instance.*WellFoundedLT' (via ripgrep):\\n- Mathlib/CategoryTheory/Localization/BousfieldTransfiniteComposition.lean:36\\n    instance (J : Type w) [LinearOrder J] [SuccOrder J] [OrderBot J] [WellFoundedLT J] :\\n- Mathlib/Data/Multiset/Defs.lean:244\\n    instance instWellFoundedLT : WellFoundedLT (Multiset α) :=\\n- Mathlib/Data/Fintype/Card.lean:455\\n    instance (priority := 100) to_wellFoundedLT [Preorder α] : WellFoundedLT α :=\\n- Mathlib/Data/Fintype/Card.lean:462\\n    instance Bool.instWellFoundedLT : WellFoundedLT Bool := inferInstance\\n- Mathlib/Data/Fintype/Card.lean:464\\n    instance Prop.instWellFoundedLT : WellFoundedLT Prop := inferInstance\\n- Mathlib/Data/Multiset/DershowitzManna.lean:170\\n    instance instWellFoundedIsDershowitzMannaLT [WellFoundedLT α] : WellFoundedRelation (Multiset α) :=\\n- Mathlib/Data/Finset/Defs.lean:290\\n    instance wellFoundedLT : WellFoundedLT (Finset α) :=\\n- Mathlib/Data/Set/Finite/Basic.lean:413\\n    instance : WellFoundedLT {s : Set α // s.Finite} :=\\n- Mathlib/CategoryTheory/Subobject/ArtinianObject.lean:58\\n    instance [IsArtinianObject X] : WellFoundedLT (Subobject X) :=\\n- Mathlib/Data/Finsupp/WellFounded.lean:60\\n    instance Colex.wellFoundedLT {α N} [LT α] [@Std.Trichotomous α (· < ·)] [WellFoundedLT α]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Fintype/Card.lean\", \"line\": 455, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Fintype/Card.lean  (lines 455–474 of 532):\\n   455  instance (priority := 100) to_wellFoundedLT [Preorder α] : WellFoundedLT α :=\\n   456    ⟨wellFounded_of_trans_of_irrefl _⟩\\n   457  \\n   458  end Finite\\n   459  \\n   460  -- Shortcut instances to make sure those are found even in the presence of other instances\\n   461  -- See https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/WellFoundedLT.20Prop.20is.20not.20found.20when.20importing.20too.20much\\n   462  instance Bool.instWellFoundedLT : WellFoundedLT Bool := inferInstance\\n   463  instance Bool.instWellFoundedGT : WellFoundedGT Bool := inferInstance\\n   464  instance Prop.instWellFoundedLT : WellFoundedLT Prop := inferInstance\\n   465  instance Prop.instWellFoundedGT : WellFoundedGT Prop := inferInstance\\n   466  \\n   467  section Trunc\\n   468  \\n   469  /-- A `Fintype` with positive cardinality constructively contains an element.\\n   470  -/\\n   471  def truncOfCardPos {α} [Fintype α] (h : 0 < Fintype.card α) : Trunc α :=\\n   472    letI := Fintype.card_pos_iff.mp h\\n   473    truncOfNonemptyFintype α\\n   474  \\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Fintype/Card.lean\", \"line\": 440, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1644,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Fintype/Card.lean  (lines 440–469 of 532):\\n   440  \\n   441  theorem wellFounded_of_trans_of_irrefl (r : α → α → Prop) [IsTrans α r] [Std.Irrefl r] :\\n   442      WellFounded r := by\\n   443    classical\\n   444    cases nonempty_fintype α\\n   445    have (x y) (hxy : r x y) : #{z | r z x} < #{z | r z y} :=\\n   446      Finset.card_lt_card <| by\\n   447        simp_rw [lt_iff_le_not_ge, Finset.subset_iff, mem_filter_univ]\\n   448        exact\\n   449          ⟨fun z hzx => _root_.trans hzx hxy,\\n   450            not_forall_of_exists_not ⟨x, Classical.not_imp.2 ⟨hxy, irrefl x⟩⟩⟩\\n   451    exact Subrelation.wf (this _ _) (measure _).wf\\n   452  \\n   453  -- See note [lower instance priority]\\n   454  @[to_dual]\\n   455  instance (priority := 100) to_wellFoundedLT [Preorder α] : WellFoundedLT α :=\\n   456    ⟨wellFounded_of_trans_of_irrefl _⟩\\n   457  \\n   458  end Finite\\n   459  \\n   460  -- Shortcut instances to make sure those are found even in the presence of other instances\\n   461  -- See https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/WellFoundedLT.20Prop.20is.20not.20found.20when.20importing.20too.20much\\n   462  instance Bool.instWellFoundedLT : WellFoundedLT Bool := inferInstance\\n   463  instance Bool.instWellFoundedGT : WellFoundedGT Bool := inferInstance\\n   464  instance Prop.instWellFoundedLT : WellFoundedLT Prop := inferInstance\\n   465  instance Prop.instWellFoundedGT : WellFoundedGT Prop := inferInstance\\n   466  \\n   467  section Trunc\\n   468  \\n   469  /-- A `Fintype` with positive cardinality constructively contains an element.\\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"le_antisymm\"}",
+   "ok": true,
+   "result_chars": 1289,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 7 declarations mentioning le_antisymm.\\n- le_antisymm   [Mathlib.Order.Defs.PartialOrder]\\n- AlgebraicGeometry.PresheafedSpace.IsOpenImmersion.app_inv_app'   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\\n- AlgebraicGeometry.PresheafedSpace.IsOpenImmersion.app_inv_app'_assoc   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\\n- AlgebraicGeometry.LocallyRingedSpace.IsOpenImmersion.app_inv_app'   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\\n- AlgebraicGeometry.SheafedSpace.IsOpenImmersion.app_inv_app'   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\\n- AlgebraicGeometry.LocallyRingedSpace.IsOpenImmersion.app_inv_app'_assoc   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\\n- AlgebraicGeometry.SheafedSpace.IsOpenImmersion.app_inv_app'_assoc   [Mathlib.Geometry.RingedSpace.OpenImmersion]\\n    A variant of `app_inv_app` that gives an `eqToHom` instead of `homOfLe`.\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*to_wellFoundedGT\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*to_wellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*wellFoundedGT.*Fintype\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*wellFoundedGT.*Fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"WellFoundedGT\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2557,
+   "result_head": "[{\"type\": \"text\", \"text\": \"120 match(es) for 'WellFoundedGT' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Arithmetic.lean:330\\n    theorem mk_Ici_lt {α : Type*} [LinearOrder α] [WellFoundedGT α] (i : α)\\n- Mathlib/SetTheory/Cardinal/Order.lean:550\\n    every type has a linear order which satisfies `WellFoundedGT` -/\\n- Mathlib/SetTheory/Cardinal/Order.lean:551\\n    lemma exists_wellFoundedGT : ∃ (_ : LinearOrder α), WellFoundedGT α := by\\n- Mathlib/SetTheory/Ordinal/Basic.lean:1214\\n    theorem mk_Ioi_lt {α : Type*} [LinearOrder α] [WellFoundedGT α] (i : α) (h : ord #α = typeLT αᵒᵈ) :\\n- Mathlib/SetTheory/Ordinal/Rank.lean:90\\n    theorem WellFoundedGT.rank_strictAnti [Preorder α] [WellFoundedGT α] :\\n- Mathlib/Algebra/Lie/Submodule.lean:522\\n    instance wellFoundedGT_of_noetherian [IsNoetherian R M] : WellFoundedGT (LieSubmodule R L M) :=\\n- Mathlib/Algebra/Lie/Nilpotent.lean:184\\n    have h_wf : WellFoundedGT (LieSubmodule R L M)ᵒᵈ :=\\n- Mathlib/Algebra/Lie/Nilpotent.lean:721\\n    have hwf := CompleteLattice.WellFoundedGT.isSupClosedCompact (LieSubmodule R L M) inferInstance\\n- Mathlib/Algebra/Lie/Weights/Basic.lean:684\\n    WellFoundedGT.finite_ne_bot_of_iSupIndep (iSupIndep_genWeightSpaceOf R L M x)\\n- Mathlib/Algebra/Lie/Weights/Basic.lean:688\\n    WellFoundedGT.finite_ne_bot_of_iSupIndep (iSupIndep_genWeightSpace R L M)\\n- Mathlib/Algebra/Lie/Subalgebra.lean:542\\n    instance wellFoundedGT_of_noetherian [IsNoetherian R L] : WellFoundedGT (LieSubalgebra R L) :=\\n- Mathlib/Algebra/Order/Group/Ideal.lean:54\\n    instance : WellFoundedGT (SemigroupIdeal M) := by\\n- Mathlib/LinearAlgebra/Eigenspace/Basic.lean:281\\n    have := WellFoundedGT.iSup_eq_monotonicSequenceLimit <|\\n- Mathlib/Data/Fintype/Card.lean:463\\n    instance Bool.instWellFoundedGT : WellFoundedGT Bool := inferInstance\\n- Mathlib/Data/Fintype/Card.lean:465\\n    instance Prop.instWellFoundedGT : WellFoundedGT Prop := inferInstance\\n- Mathlib/RingTheory/MvPowerSeries/LexOrder.lean:13\\n    Given an ordering of `σ` such that `WellFoundedGT σ`,\\n- Mathlib/RingTheory/MvPowerSeries/LexOrder.lean:30\\n    variable [LinearOrder σ] [WellFoundedGT σ]\\n- Mathlib/Data/Finset/Lattice/Fold.lean:317\\n    theorem exists_sup_ge [SemilatticeSup β] [OrderBot β] [WellFoundedGT β] (f : α → β) :\\n- Mathlib/Data/Finset/Lattice/Fold.lean:328\\n    theorem exists_sup_eq_iSup [CompleteLattice β] [WellFoundedGT β] (f : α → β) :\\n- Mathlib/Data/Finsupp/MonomialOrder.lean:40\\n    For this, `σ` needs to be embedded with an ordering relation which satisfies `WellFoundedGT σ`.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class WellFoundedGT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class WellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"variable.*Fintype.*WellFounded\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'variable.*Fintype.*WellFounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"WellFoundedGT.*:=\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 692,
+   "result_head": "[{\"type\": \"text\", \"text\": \"34 match(es) for 'WellFoundedGT.*:=' (via ripgrep):\\n- Mathlib/Data/Fintype/Card.lean:463\\n    instance Bool.instWellFoundedGT : WellFoundedGT Bool := inferInstance\\n- Mathlib/Data/Fintype/Card.lean:465\\n    instance Prop.instWellFoundedGT : WellFoundedGT Prop := inferInstance\\n- Mathlib/Algebra/Lie/Submodule.lean:522\\n    instance wellFoundedGT_of_noetherian [IsNoetherian R M] : WellFoundedGT (LieSubmodule R L M) :=\\n- Mathlib/Algebra/Lie/Nilpotent.lean:184\\n    have h_wf : WellFoundedGT (LieSubmodule R L M)ᵒᵈ :=\\n- Mathlib/Algebra/Lie/Subalgebra.lean:542\\n    instance wellFoundedGT_of_noetherian [IsNoetherian R L] : WellFoundedGT (LieSubalgebra R L) :=\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def WellFoundedGT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def WellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure WellFoundedGT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'structure WellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/WellFounded.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2560,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/WellFounded.lean  (lines 1–50 of 386):\\n     1  /-\\n     2  Copyright (c) 2020 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jeremy Avigad, Mario Carneiro\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Function\\n     9  public import Mathlib.Order.Bounds.Defs\\n    10  \\n    11  /-!\\n    12  # Well-founded relations\\n    13  \\n    14  A relation is well-founded if it can be used for induction: for each `x`, `(∀ y, r y x → P y) → P x`\\n    15  implies `P x`. Well-founded relations can be used for induction and recursion, including\\n    16  construction of fixed points in the space of dependent functions `Π x : α, β x`.\\n    17  \\n    18  The predicate `WellFounded` is defined in the core library. In this file we prove some extra lemmas\\n    19  and provide a few new definitions: `WellFounded.min`, `WellFounded.sup`, and `WellFounded.succ`,\\n    20  and an induction principle `WellFounded.induction_bot`.\\n    21  -/\\n    22  \\n    23  @[expose] public section\\n    24  \\n    25  theorem acc_def {α} {r : α → α → Prop} {a : α} : Acc r a ↔ ∀ b, r b a → Acc r b where\\n    26    mp h := h.rec fun _ h _ ↦ h\\n    27    mpr := .intro a\\n    28  \\n    29  theorem exists_not_acc_lt_of_not_acc {α} {a : α} {r} (h : ¬Acc r a) : ∃ b, ¬Acc r b ∧ r b a := by\\n    30    rw [acc_def] at h\\n    31    push Not at h\\n    32    simpa only [and_comm]\\n    33  \\n    34  theorem not_acc_iff_exists_descending_chain {α} {r : α → α → Prop} {x : α} :\\n    35      ¬Acc r x ↔ ∃ f : ℕ → α, f 0 = x ∧ ∀ n, r (f (n + 1)) (f n) where\\n    36    mp hx := let f : ℕ → {a : α // ¬Acc r a} :=\\n    37        Nat.rec ⟨x, hx⟩ fun _ a ↦ ⟨_, (exists_not_acc_lt_of_not_acc a.2).choose_spec.1⟩\\n    38      ⟨(f · |>.1), rfl, fun n ↦ (exists_not_acc_lt_of_not_acc (f n).2).choose_spec.2⟩\\n    39    mpr h acc := acc.rec\\n    40      (fun _x _ ih ⟨f, hf⟩ ↦ ih (f 1) (hf.1 ▸ hf.2 0) ⟨(f <| · + 1), rfl, fun _ ↦ hf.2 _⟩) h\\n    41  \\n    42  theorem acc_iff_isEmpty_descending_chain {α} {r : α → α → Prop} {x : α} :\\n    43      Acc r x ↔ IsEmpty { f : ℕ → α // f 0 = x ∧ ∀ n, r (f (n + 1)) (f n) } := by\\n    44    contrapose!\\n    45    rw [nonempty_subtype]\\n    46    exact not_acc_iff_exists_descending_chain\\n    47  \\n    48  /-- A relation is well-founded iff it doesn't have any infinite descending chain.\\n    49  \\n    50  See `RelEmbedding.wellFounded_iff_isEmpty` for a version in terms of relation embeddings. -/\\n\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class.*WellFounded.*\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 340,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'class.*WellFounded.*' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Cofinality/Enum.lean:49\\n    class IsRegularCardinalOrder (α : Type*) [LinearOrder α] [WellFoundedLT α] where\\n- Mathlib/Order/RelClasses.lean:163\\n    @[mk_iff] class IsWellFounded (α : Type u) (r : α → α → Prop) : Prop where\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev WellFoundedLT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 323,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'abbrev WellFoundedLT' (via ripgrep):\\n- Mathlib/Order/ConditionallyCompleteLattice/Defs.lean:163\\n    noncomputable abbrev WellFoundedLT.conditionallyCompleteLinearOrderBot (α : Type*)\\n- Mathlib/Order/RelClasses.lean:254\\n    abbrev WellFoundedLT (α : Type*) [LT α] : Prop :=\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev WellFoundedGT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'abbrev WellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/RelClasses.lean\", \"line\": 254, \"n\": 15}",
+   "ok": true,
+   "result_chars": 701,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/RelClasses.lean  (lines 254–268 of 659):\\n   254  abbrev WellFoundedLT (α : Type*) [LT α] : Prop :=\\n   255    IsWellFounded α (· < ·)\\n   256  \\n   257  @[to_dual wellFounded_gt]\\n   258  lemma wellFounded_lt [LT α] [WellFoundedLT α] : @WellFounded α (· < ·) := IsWellFounded.wf\\n   259  \\n   260  -- See note [lower instance priority]\\n   261  @[to_dual]\\n   262  instance (priority := 100) (α : Type*) [LT α] [h : WellFoundedLT α] : WellFoundedGT αᵒᵈ :=\\n   263    h\\n   264  \\n   265  @[to_dual]\\n   266  theorem wellFoundedGT_dual_iff (α : Type*) [LT α] : WellFoundedGT αᵒᵈ ↔ WellFoundedLT α :=\\n   267    ⟨fun h => ⟨h.wf⟩, fun h => ⟨h.wf⟩⟩\\n   268  \\n\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"wellFounded_gt\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 658,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'wellFounded_gt' (via ripgrep):\\n- Mathlib/Order/CompactlyGenerated/Basic.lean:214\\n    obtain ⟨m, ⟨t, ⟨ht₁, rfl⟩⟩, hm⟩ := wellFounded_gt.has_min S ⟨⊥, ∅, by simp⟩\\n- Mathlib/Order/Atoms.lean:502\\n    theorem IsStronglyCoatomic.of_wellFounded_gt (h : WellFounded ((· > ·) : α → α → Prop)) :\\n- Mathlib/Order/Atoms.lean:510\\n    IsStronglyCoatomic.of_wellFounded_gt wellFounded_gt\\n- Mathlib/Order/ModularLattice.lean:215\\n    theorem wellFounded_gt_exact_sequence {β γ : Type*} [Preorder β] [Preorder γ]\\n- Mathlib/Order/WithBot.lean:761\\n    (wellFounded_gt.1 a).rec fun _ _ ih ↦ ⟨_, by simpa [WithBot.forall]⟩\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev WellFoundedGT.*:=\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'abbrev WellFoundedGT.*:=' under Mathlib/.\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def WellFoundedGT\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def WellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/RelClasses.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/RelClasses.lean  (lines 1–50 of 659):\\n     1  /-\\n     2  Copyright (c) 2020 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jeremy Avigad, Mario Carneiro, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Logic.IsEmpty.Basic\\n     9  public import Mathlib.Order.OrderDual\\n    10  public import Mathlib.Tactic.CrossRefAttribute\\n    11  public import Mathlib.Tactic.MkIffOfInductiveProp\\n    12  \\n    13  /-!\\n    14  # Unbundled relation classes\\n    15  \\n    16  In this file we prove some properties of `Is*` classes defined in\\n    17  `Mathlib/Order/Defs/Unbundled.lean`.\\n    18  The main difference between these classes and the usual order classes (`Preorder` etc) is that\\n    19  usual classes extend `LE` and/or `LT` while these classes take a relation as an explicit argument.\\n    20  -/\\n    21  \\n    22  @[expose] public section\\n    23  \\n    24  universe u v\\n    25  \\n    26  variable {α : Type u} {β : Type v} {r : α → α → Prop} {s : β → β → Prop}\\n    27  \\n    28  open Function\\n    29  \\n    30  @[deprecated inferInstance (since := \\\"2026-04-28\\\")]\\n    31  theorem Std.Refl.swap (r : α → α → Prop) [Std.Refl r] : Std.Refl (swap r) :=\\n    32    inferInstance\\n    33  \\n    34  @[deprecated (since := \\\"2026-01-09\\\")] alias IsRefl.swap := Std.Refl.swap\\n    35  \\n    36  @[deprecated inferInstance (since := \\\"2026-04-28\\\")]\\n    37  theorem Std.Irrefl.swap (r : α → α → Prop) [Std.Irrefl r] : Std.Irrefl (swap r) :=\\n    38    inferInstance\\n    39  \\n    40  @[deprecated inferInstance (since := \\\"2026-04-28\\\")]\\n    41  theorem IsTrans.swap (r) [IsTrans α r] : IsTrans α (swap r) :=\\n    42    inferInstance\\n    43  \\n    44  @[deprecated inferInstance (since := \\\"2026-04-28\\\")]\\n    45  theorem Std.Antisymm.swap (r : α → α → Prop) [Std.Antisymm r] : Std.Antisymm (swap r) :=\\n    46    inferInstance\\n    47  \\n    48  @[deprecated inferInstance (since := \\\"2026-04-28\\\")]\\n    49  theorem Std.Asymm.swap (r : α → α → Prop) [Std.Asymm r] : Std.Asymm (swap r) :=\\n    50    inferInstance\\n\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"WellFounded.*>.*GT\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'WellFounded.*>.*GT' under Mathlib/.\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

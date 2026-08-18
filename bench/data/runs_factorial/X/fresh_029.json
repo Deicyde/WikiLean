@@ -1,0 +1,128 @@
+{
+ "task_id": "fresh_029",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:14:11Z",
+ "wall_s": 48.0,
+ "transcript_stats": {
+  "turns": 10,
+  "assistant_turns": 7,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 2,
+   "mcp__formal__decl_grep": 2,
+   "mcp__formal__decl_read": 4,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 58,
+  "tokens_out": 4085,
+  "cost_usd": 0.04077235
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"commutative cube\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'commutative cube': Unknown identifier `commutative`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"mono monomorphism commutes\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mono monomorphism commutes': Unknown identifier `mono`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"cube.*commut\"}",
+   "ok": true,
+   "result_chars": 357,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'cube.*commut' (via ripgrep):\\n- Mathlib/CategoryTheory/EpiMono.lean:246\\n    /-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,\\n- Mathlib/CategoryTheory/EpiMono.lean:254\\n    /-- This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 246, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2032,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 246–275 of 278):\\n   246  /-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,\\n   247    then the sixth face must also commute. -/\\n   248  theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   249      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n   250      (hxx0 : f0x0 ≫ fx10 = fx00 ≫ f1x0) [Epi f00x] : f0x1 ≫ fx11 = fx01 ≫ f1x1 := by\\n   251    rw [← cancel_epi f00x]\\n   252    grind\\n   253  \\n   254  /-- This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,\\n   255    then the sixth face must also commute. -/\\n   256  theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   257      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n   258      (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1) [Mono f11x] : f0x0 ≫ fx10 = fx00 ≫ f1x0 := by\\n   259    rw [← cancel_mono f11x]\\n   260    grind\\n   261  \\n   262  theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   263      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   264      (hx1x : CommSq fx10 f01x f11x fx11) (hxx0 : CommSq f0x0 fx00 fx10 f1x0) [Epi f00x] :\\n   265      CommSq f0x1 fx01 fx11 f1x1 :=\\n   266    ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x\\n   267        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩\\n   268  \\n   269  theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   270      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   271      (hx1x : CommSq fx10 f01x f11x fx11) (hxx1 : CommSq f0x1 fx01 fx11 f1x1) [Mono f11x] :\\n   272      CommSq f0x0 fx00 fx10 f1x0 :=\\n   273    ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x\\n   274        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx1.w⟩\\n   275  \\n\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 254, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1596,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 254–278 of 278):\\n   254  /-- This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,\\n   255    then the sixth face must also commute. -/\\n   256  theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   257      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n   258      (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1) [Mono f11x] : f0x0 ≫ fx10 = fx00 ≫ f1x0 := by\\n   259    rw [← cancel_mono f11x]\\n   260    grind\\n   261  \\n   262  theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   263      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   264      (hx1x : CommSq fx10 f01x f11x fx11) (hxx0 : CommSq f0x0 fx00 fx10 f1x0) [Epi f00x] :\\n   265      CommSq f0x1 fx01 fx11 f1x1 :=\\n   266    ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x\\n   267        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩\\n   268  \\n   269  theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   270      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   271      (hx1x : CommSq fx10 f01x f11x fx11) (hxx1 : CommSq f0x1 fx01 fx11 f1x1) [Mono f11x] :\\n   272      CommSq f0x0 fx00 fx10 f1x0 :=\\n   273    ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x\\n   274        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx1.w⟩\\n   275  \\n   276  end cubeLemma\\n   277  \\n   278  end CategoryTheory\\n\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 200, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2309,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 200–249 of 278):\\n   200  \\n   201  end\\n   202  \\n   203  section\\n   204  \\n   205  /-- When `f` is an epimorphism, `f ≫ g` is epic iff `g` is. -/\\n   206  @[to_dual (attr := simp) (reorder := g f 7)\\n   207  /-- When `g` is a monomorphism, `f ≫ g` is monic iff `f` is. -/]\\n   208  lemma epi_comp_iff_of_epi {X Y Z : C} (f : X ⟶ Y) [Epi f] (g : Y ⟶ Z) :\\n   209      Epi (f ≫ g) ↔ Epi g :=\\n   210    ⟨fun _ ↦ epi_of_epi f _, fun _ ↦ inferInstance⟩\\n   211  \\n   212  /-- When `g` is an isomorphism, `f ≫ g` is epic iff `f` is. -/\\n   213  @[to_dual (attr := simp) (reorder := g f 8)\\n   214  /-- When `f` is an isomorphism, `f ≫ g` is monic iff `g` is. -/]\\n   215  lemma epi_comp_iff_of_isIso {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) [IsIso g] :\\n   216      Epi (f ≫ g) ↔ Epi f := by\\n   217    refine ⟨fun h ↦ ?_, fun h ↦ inferInstance⟩\\n   218    simpa using (inferInstance : Epi ((f ≫ g) ≫ inv g))\\n   219  \\n   220  end\\n   221  \\n   222  section Opposite\\n   223  \\n   224  variable {X Y : C} {f : X ⟶ Y}\\n   225  \\n   226  /-- The opposite of a split epi is a split mono. -/\\n   227  @[to_dual /-- The opposite of a split mono is a split epi. -/]\\n   228  def SplitEpi.op (h : SplitEpi f) : SplitMono f.op where\\n   229    retraction := h.section_.op\\n   230    id := Quiver.Hom.unop_inj (by simp)\\n   231  \\n   232  @[to_dual]\\n   233  instance [IsSplitMono f] : IsSplitEpi f.op :=\\n   234    .mk' IsSplitMono.exists_splitMono.some.op\\n   235  \\n   236  end Opposite\\n   237  \\n   238  \\n   239  section cubeLemma\\n   240  \\n   241  variable {M000 M001 M010 M011 M100 M101 M110 M111 : C}\\n   242    (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)\\n   243    (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)\\n   244    (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)\\n   245  \\n   246  /-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,\\n   247    then the sixth face must also commute. -/\\n   248  theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   249      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Category\", \"Mono\", \"CategoryTheory.cube_lemma_of_mono\"]}",
+   "ok": true,
+   "result_chars": 1227,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Category\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"CategoryTheory.Category\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html#CategoryTheory.Category\\\"},{\\\"decl\\\":\\\"Mono\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"CategoryTheory.Mono\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html#CategoryTheory.Mono\\\"},{\\\"decl\\\":\\\"CategoryTheory.cube_lemma_of_mono\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":2,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem cube_lemma\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem cube_lemma' (via ripgrep):\\n- Mathlib/CategoryTheory/EpiMono.lean:248\\n    theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:256\\n    theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 1–30 of 278):\\n     1  /-\\n     2  Copyright (c) 2019 Reid Barton. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Reid Barton, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.CategoryTheory.Groupoid\\n     9  public import Mathlib.CategoryTheory.CommSq\\n    10  \\n    11  /-!\\n    12  # Facts about epimorphisms and monomorphisms.\\n    13  \\n    14  The definitions of `Epi` and `Mono` are in `CategoryTheory.Category`,\\n    15  since they are used by some lemmas for `Iso`, which is used everywhere.\\n    16  -/\\n    17  \\n    18  @[expose] public section\\n    19  \\n    20  \\n    21  universe v₁ v₂ u₁ u₂\\n    22  \\n    23  namespace CategoryTheory\\n    24  \\n    25  variable {C : Type u₁} [Category.{v₁} C]\\n    26  \\n    27  @[to_dual unop_mono_of_epi]\\n    28  instance unop_epi_of_mono {A B : Cᵒᵖ} (f : A ⟶ B) [Mono f] : Epi f.unop :=\\n    29    ⟨fun _ _ eq => Quiver.Hom.op_inj ((cancel_mono f).1 (Quiver.Hom.unop_inj eq))⟩\\n    30  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem commutative_cube_of_mono \n    {C : Type u₁} [CategoryTheory.Category.{v₁} C]\n    {M000 M001 M010 M011 M100 M101 M110 M111 : C}\n    (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)\n    (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)\n    (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)\n    (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) \n    (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\n    (hx0x : fx00 ≫ f10x = f00x ≫ fx01) \n    (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\n    (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1) \n    [CategoryTheory.Mono f11x] : \n    f0x0 ≫ fx10 = fx00 ≫ f1x0 := sorry"
+}

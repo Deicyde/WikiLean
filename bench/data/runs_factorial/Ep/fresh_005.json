@@ -1,0 +1,170 @@
+{
+ "task_id": "fresh_005",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:31:16Z",
+ "wall_s": 74.6,
+ "transcript_stats": {
+  "turns": 16,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 5,
+   "mcp__formal__decl_grep": 2,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 114,
+  "tokens_out": 5523,
+  "cost_usd": 0.06432044999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Antitone\"}",
+   "ok": true,
+   "result_chars": 798,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 545 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone'   [Mathlib.Order.Monotone.Defs]\\n- antitoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Antitone.antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.antitone   [Mathlib.Order.Monotone.Defs]\\n- Antitone.strictAnti_of_injective   [Mathlib.Order.Monotone.Defs]\\n- antitone_lam   [Mathlib.Order.Monotone.Defs]\\n- Antitone.imp   [Mathlib.Order.Monotone.Defs]\\n- antitone_app   [Mathlib.Order.Monotone.Defs]\\n- instDecidableAntitoneOfForallForallForallLe   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SMul ?a ?b\"}",
+   "ok": true,
+   "result_chars": 1008,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3122 declarations mentioning SMul.\\n- instSMulOfMul   [Init.Prelude]\\n- SMul.mk   [Init.Prelude]\\n- SMul.smul   [Init.Prelude]\\n    `m • a : α` denotes the product of `m : M` and `a : α`. The meaning of this notation is type-dependent, but it is intended to be used for left actions.\\n- instHSMul   [Init.Prelude]\\n- Lean.Grind.IntModule.nsmul   [Init.Grind.Module.Basic]\\n    Scalar multiplication by natural numbers.\\n- Lean.Grind.IntModule.zsmul   [Init.Grind.Module.Basic]\\n    Scalar multiplication by integers.\\n- Lean.Grind.NatModule.nsmul   [Init.Grind.Module.Basic]\\n    Scalar multiplication by natural numbers.\\n- Lean.Grind.NatModule.mk   [Init.Grind.Module.Basic]\\n- Lean.Grind.IntModule.mk   [Init.Grind.Module.Basic]\\n- Lean.Grind.Ring.zsmul   [Init.Grind.Ring.Basic]\\n    Scalar multiplication by integers.\\n- Lean.Grind.Semiring.nsmul   [Init.Grind.Ring.Basic]\\n    Scalar multiplication by natural numbers.\\n- Lean.Grind.Ring.mk   [Init.Grind.Ring.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Antitone (fun x => ?a • ?f x)\"}",
+   "ok": true,
+   "result_chars": 446,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 4 declarations mentioning Antitone and HSMul.hSMul.\\n- Antitone.const_smul   [Mathlib.Algebra.Order.Module.Defs]\\n    Scalar multiplication on the left by a nonnegative element preserves antitonicity.\\n- Antitone.smul_const   [Mathlib.Algebra.Order.Module.Defs]\\n    Scalar multiplication on the right by a nonnegative element preserves antitonicity.\\n- antitone_smul_left   [Mathlib.Algebra.Order.Module.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(fun x => ?a • ?f x) Antitone\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(fun x => ?a • ?f x) Antitone'.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Antitone\\\\.const_smul\"}",
+   "ok": true,
+   "result_chars": 218,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'Antitone\\\\\\\\.const_smul' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:336\\n    lemma Antitone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 336, \"n\": 10}",
+   "ok": true,
+   "result_chars": 776,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 336–345 of 1365):\\n   336  lemma Antitone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   337      (hf : Antitone f) (ha : 0 ≤ a) : Antitone fun x ↦ a • f x :=\\n   338    (monotone_smul_left_of_nonneg ha).comp_antitone hf\\n   339  \\n   340  /-- Scalar multiplication on the left by a positive element preserves strict monotonicity. -/\\n   341  lemma StrictMono.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   342      (hf : StrictMono f) (ha : 0 < a) : StrictMono fun x ↦ a • f x :=\\n   343    (strictMono_smul_left_of_pos ha).comp hf\\n   344  \\n   345  /-- Scalar multiplication on the left by a positive element preserves strict antitonicity. -/\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class PosSMulMono\"}",
+   "ok": true,
+   "result_chars": 162,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class PosSMulMono' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/Defs.lean:144\\n    class PosSMulMono : Prop where\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 144, \"n\": 15}",
+   "ok": true,
+   "result_chars": 914,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 144–158 of 1365):\\n   144  class PosSMulMono : Prop where\\n   145    /-- Do not use this. Use `smul_le_smul_of_nonneg_left` instead. -/\\n   146    protected smul_le_smul_of_nonneg_left ⦃a : α⦄ (ha : 0 ≤ a) ⦃b₁ b₂ : β⦄ (hb : b₁ ≤ b₂) :\\n   147      a • b₁ ≤ a • b₂\\n   148  \\n   149  /-- Typeclass for strict monotonicity of scalar multiplication by positive elements on the left,\\n   150  namely `b₁ < b₂ → a • b₁ < a • b₂` if `0 < a`.\\n   151  \\n   152  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n   153  `IsOrderedModule`. -/\\n   154  class PosSMulStrictMono : Prop where\\n   155    /-- Do not use this. Use `smul_lt_smul_of_pos_left` instead. -/\\n   156    protected smul_lt_smul_of_pos_left ⦃a : α⦄ (ha : 0 < a) ⦃b₁ b₂ : β⦄ (hb : b₁ < b₂) :\\n   157      a • b₁ < a • b₂\\n   158  \\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 330, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1450,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 330–349 of 1365):\\n   330  /-- Scalar multiplication on the left by a nonnegative element preserves monotonicity. -/\\n   331  lemma Monotone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   332      (hf : Monotone f) (ha : 0 ≤ a) : Monotone fun x ↦ a • f x :=\\n   333    (monotone_smul_left_of_nonneg ha).comp hf\\n   334  \\n   335  /-- Scalar multiplication on the left by a nonnegative element preserves antitonicity. -/\\n   336  lemma Antitone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   337      (hf : Antitone f) (ha : 0 ≤ a) : Antitone fun x ↦ a • f x :=\\n   338    (monotone_smul_left_of_nonneg ha).comp_antitone hf\\n   339  \\n   340  /-- Scalar multiplication on the left by a positive element preserves strict monotonicity. -/\\n   341  lemma StrictMono.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   342      (hf : StrictMono f) (ha : 0 < a) : StrictMono fun x ↦ a • f x :=\\n   343    (strictMono_smul_left_of_pos ha).comp hf\\n   344  \\n   345  /-- Scalar multiplication on the left by a positive element preserves strict antitonicity. -/\\n   346  lemma StrictAnti.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   347      (hf : StrictAnti f) (ha : 0 < a) : StrictAnti fun x ↦ a • f x :=\\n   348    (strictMono_smul_left_of_pos ha).comp_strictAnti hf\\n   349  \\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 320, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 320–349 of 1365):\\n   320  \\n   321  lemma strictMono_smul_left_of_pos [PosSMulStrictMono α β] (ha : 0 < a) :\\n   322      StrictMono ((a • ·) : β → β) := PosSMulStrictMono.smul_lt_smul_of_pos_left ha\\n   323  \\n   324  @[gcongr] lemma smul_le_smul_of_nonneg_left [PosSMulMono α β] (hb : b₁ ≤ b₂) (ha : 0 ≤ a) :\\n   325      a • b₁ ≤ a • b₂ := monotone_smul_left_of_nonneg ha hb\\n   326  \\n   327  @[gcongr] lemma smul_lt_smul_of_pos_left [PosSMulStrictMono α β] (hb : b₁ < b₂) (ha : 0 < a) :\\n   328      a • b₁ < a • b₂ := strictMono_smul_left_of_pos ha hb\\n   329  \\n   330  /-- Scalar multiplication on the left by a nonnegative element preserves monotonicity. -/\\n   331  lemma Monotone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   332      (hf : Monotone f) (ha : 0 ≤ a) : Monotone fun x ↦ a • f x :=\\n   333    (monotone_smul_left_of_nonneg ha).comp hf\\n   334  \\n   335  /-- Scalar multiplication on the left by a nonnegative element preserves antitonicity. -/\\n   336  lemma Antitone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   337      (hf : Antitone f) (ha : 0 ≤ a) : Antitone fun x ↦ a • f x :=\\n   338    (monotone_smul_left_of_nonneg ha).comp_antitone hf\\n   339  \\n   340  /-- Scalar multiplication on the left by a positive element preserves strict monotonicity. -/\\n   341  lemma StrictMono.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   342      (hf : StrictMono f) (ha : 0 < a) : StrictMono fun x ↦ a • f x :=\\n   343    (strictMono_smul_left_of_pos ha).comp hf\\n   344  \\n   345  /-- Scalar multiplication on the left by a positive element preserves strict antitonicity. -/\\n   346  lemma StrictAnti.const_smul [PosSMulStrictMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   347      (hf : StrictAnti f) (ha : 0 < a) : StrictAnti fun x ↦ a • f x :=\\n   348    (strictMono_smul_left_of_pos ha).comp_strictAnti hf\\n   349  \\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3056,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 1–50 of 1365):\\n     1  /-\\n     2  Copyright (c) 2023 Yaël Dillies. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yaël Dillies\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Torsion.Free\\n     9  public import Mathlib.Algebra.Order.Group.Basic\\n    10  public import Mathlib.Algebra.Order.GroupWithZero.Action.Synonym\\n    11  public import Mathlib.Algebra.Order.Monoid.Unbundled.Pow\\n    12  public import Mathlib.Algebra.Order.Ring.Defs\\n    13  public import Mathlib.Order.Hom.Basic\\n    14  public import Mathlib.Algebra.GroupWithZero.Action.Units\\n    15  \\n    16  /-!\\n    17  # Monotonicity of scalar multiplication by positive elements\\n    18  \\n    19  This file defines typeclasses to reason about monotonicity of the operations\\n    20  * `b ↦ a • b`, \\\"left scalar multiplication\\\"\\n    21  * `a ↦ a • b`, \\\"right scalar multiplication\\\"\\n    22  \\n    23  We use eight typeclasses to encode the various properties we care about for those two operations.\\n    24  These typeclasses are meant to be mostly internal to this file, to set up each lemma in the\\n    25  appropriate generality.\\n    26  \\n    27  Less granular typeclasses like `IsOrderedAddMonoid` and `IsOrderedModule` should be enough for most\\n    28  purposes, and the system is set up so that they imply the correct granular typeclasses here.\\n    29  If those are enough for you, you may stop reading here! Else, beware that what\\n    30  follows is a bit technical.\\n    31  \\n    32  \\n    33  In all that follows, `α` and `β` are orders which have a `0` and such that `α` acts on `β` by scalar\\n    34  multiplication. Note however that we do not use lawfulness of this action in most of the file. Hence\\n    35  `•` should be considered here as a mostly arbitrary function `α → β → β`.\\n    36  \\n    37  We use the following four typeclasses to reason about left scalar multiplication (`b ↦ a • b`):\\n    38  * `PosSMulMono`: If `a ≥ 0`, then `b₁ ≤ b₂` implies `a • b₁ ≤ a • b₂`.\\n    39  * `PosSMulStrictMono`: If `a > 0`, then `b₁ < b₂` implies `a • b₁ < a • b₂`.\\n    40  * `PosSMulReflectLT`: If `a ≥ 0`, then `a • b₁ < a • b₂` implies `b₁ < b₂`.\\n    41  * `PosSMulReflectLE`: If `a > 0`, then `a • b₁ ≤ a • b₂` implies `b₁ ≤ b₂`.\\n    42  \\n    43  We use the following four typeclasses to reason about right scalar multiplication (`a ↦ a • b`):\\n    44  * `SMulPosMono`: If `b ≥ 0`, then `a₁ ≤ a₂` implies `a₁ • b ≤ a₂ • b`.\\n    45  * `SMulPosStrictMono`: If `b > 0`, then `a₁ < a₂` implies `a₁ • b < a₂ • b`.\\n    46  * `SMulPosReflectLT`: If `b ≥ 0`, then `a₁ • b < a₂ • b` implies `a₁ < a₂`.\\n    47  * `SMulPosReflectLE`: If `b > 0`, then `a₁ • b ≤ a₂ • b` implies `a₁ ≤ a₂`.\\n    48  \\n    49  Furthermore, in a *module*, i.e. a group acted on by a ring, `PosSMulMono` and `SMulPosMono` are\\n    50  equivalent (they are both the same as `∀ r ≥ 0, ∀ m ≥ 0, 0 ≤ r • m`),\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 100, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2772,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 100–149 of 1365):\\n   100  not covered by the current implications, please bring it up on Zulip!\\n   101  \\n   102  ## Implementation notes\\n   103  \\n   104  This file uses custom typeclasses instead of abbreviations of `CovariantClass`/`ContravariantClass`\\n   105  because:\\n   106  * They get displayed as classes in the docs. In particular, one can see their list of instances,\\n   107    instead of their instances being invariably dumped to the `CovariantClass`/`ContravariantClass`\\n   108    list.\\n   109  * They don't pollute other typeclass searches. Having many abbreviations of the same typeclass for\\n   110    different purposes always felt like a performance issue (more instances with the same key, for no\\n   111    added benefit), and indeed making the classes here abbreviation previous creates timeouts due to\\n   112    the higher number of `CovariantClass`/`ContravariantClass` instances.\\n   113  * `SMulPosReflectLT`/`SMulPosReflectLE` do not fit in the framework since they relate `≤` on two\\n   114    different types. So we would have to generalise `CovariantClass`/`ContravariantClass` to three\\n   115    types and two relations.\\n   116  * Very minor, but the constructors let you work with `a : α`, `h : 0 ≤ a` instead of\\n   117    `a : {a : α // 0 ≤ a}`. This actually makes some instances surprisingly cleaner to prove.\\n   118  * The `CovariantClass`/`ContravariantClass` framework is only useful to automate very simple logic\\n   119    anyway. It is easily copied over.\\n   120  \\n   121  In the future, it would be good to make the corresponding typeclasses in\\n   122  `Mathlib/Algebra/Order/GroupWithZero/Unbundled/Defs.lean` custom typeclasses too.\\n   123  -/\\n   124  \\n   125  @[expose] public section\\n   126  \\n   127  assert_not_exists Field Finset\\n   128  \\n   129  open OrderDual\\n   130  \\n   131  variable (α β : Type*)\\n   132  \\n   133  section Defs\\n   134  variable [SMul α β] [Preorder α] [Preorder β]\\n   135  \\n   136  section Left\\n   137  variable [Zero α]\\n   138  \\n   139  /-- Typeclass for monotonicity of scalar multiplication by nonnegative elements on the left,\\n   140  namely `b₁ ≤ b₂ → a • b₁ ≤ a • b₂` if `0 ≤ a`.\\n   141  \\n   142  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n   143  `IsOrderedModule`. -/\\n   144  class PosSMulMono : Prop where\\n   145    /-- Do not use this. Use `smul_le_smul_of_nonneg_left` instead. -/\\n   146    protected smul_le_smul_of_nonneg_left ⦃a : α⦄ (ha : 0 ≤ a) ⦃b₁ b₂ : β⦄ (hb : b₁ ≤ b₂) :\\n   147      a • b₁ ≤ a • b₂\\n   148  \\n   149  /-- Typeclass for strict monotonicity of scalar multiplication by positive elements on the left,\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 300, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 300–339 of 1365):\\n   300  \\n   301  instance {G : Type*} [PartialOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] :\\n   302      PosSMulStrictMono ℤ G where\\n   303    smul_lt_smul_of_pos_left _n hn _m₁ _m₂ := zsmul_lt_zsmul_right hn\\n   304  \\n   305  instance {G : Type*} [PartialOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] :\\n   306      SMulPosStrictMono ℤ G where\\n   307    smul_lt_smul_of_pos_right _a ha _m _n hmn := zsmul_lt_zsmul_left ha hmn\\n   308  \\n   309  section SMul\\n   310  variable [SMul α β]\\n   311  \\n   312  section Preorder\\n   313  variable [Preorder α] [Preorder β]\\n   314  \\n   315  section Left\\n   316  variable [Zero α]\\n   317  \\n   318  lemma monotone_smul_left_of_nonneg [PosSMulMono α β] (ha : 0 ≤ a) : Monotone ((a • ·) : β → β) :=\\n   319    PosSMulMono.smul_le_smul_of_nonneg_left ha\\n   320  \\n   321  lemma strictMono_smul_left_of_pos [PosSMulStrictMono α β] (ha : 0 < a) :\\n   322      StrictMono ((a • ·) : β → β) := PosSMulStrictMono.smul_lt_smul_of_pos_left ha\\n   323  \\n   324  @[gcongr] lemma smul_le_smul_of_nonneg_left [PosSMulMono α β] (hb : b₁ ≤ b₂) (ha : 0 ≤ a) :\\n   325      a • b₁ ≤ a • b₂ := monotone_smul_left_of_nonneg ha hb\\n   326  \\n   327  @[gcongr] lemma smul_lt_smul_of_pos_left [PosSMulStrictMono α β] (hb : b₁ < b₂) (ha : 0 < a) :\\n   328      a • b₁ < a • b₂ := strictMono_smul_left_of_pos ha hb\\n   329  \\n   330  /-- Scalar multiplication on the left by a nonnegative element preserves monotonicity. -/\\n   331  lemma Monotone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   332      (hf : Monotone f) (ha : 0 ≤ a) : Monotone fun x ↦ a • f x :=\\n   333    (monotone_smul_left_of_nonneg ha).comp hf\\n   334  \\n   335  /-- Scalar multiplication on the left by a nonnegative element preserves antitonicity. -/\\n   336  lemma Antitone.const_smul [PosSMulMono α β] {γ : Type*} [Preorder γ] {f : γ → β}\\n   337      (hf : Antitone f) (ha : 0 ≤ a) : Antitone fun x ↦ a • f x :=\\n   338    (monotone_smul_left_of_nonneg ha).comp_antitone hf\\n   339  \\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Module/Defs.lean\", \"line\": 250, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3334,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Module/Defs.lean  (lines 250–309 of 1365):\\n   250  instance (priority := 100) PosMulStrictMono.toPosSMulStrictMono [PosMulStrictMono α] :\\n   251      PosSMulStrictMono α α where\\n   252    smul_lt_smul_of_pos_left _a ha _b₁ _b₂ hb := mul_lt_mul_of_pos_left hb ha\\n   253  \\n   254  -- See note [lower instance priority]\\n   255  instance (priority := 100) PosMulReflectLT.toPosSMulReflectLT [PosMulReflectLT α] :\\n   256      PosSMulReflectLT α α where\\n   257    lt_of_smul_lt_smul_left _a ha _b₁ _b₂ h := lt_of_mul_lt_mul_left h ha\\n   258  \\n   259  -- See note [lower instance priority]\\n   260  instance (priority := 100) PosMulReflectLE.toPosSMulReflectLE [PosMulReflectLE α] :\\n   261      PosSMulReflectLE α α where\\n   262    le_of_smul_le_smul_left _a ha _b₁ _b₂ h := le_of_mul_le_mul_left h ha\\n   263  \\n   264  -- See note [lower instance priority]\\n   265  instance (priority := 100) MulPosMono.toSMulPosMono [MulPosMono α] : SMulPosMono α α where\\n   266    smul_le_smul_of_nonneg_right _b hb _a₁ _a₂ ha := mul_le_mul_of_nonneg_right ha hb\\n   267  \\n   268  -- See note [lower instance priority]\\n   269  instance (priority := 100) MulPosStrictMono.toSMulPosStrictMono [MulPosStrictMono α] :\\n   270      SMulPosStrictMono α α where\\n   271    smul_lt_smul_of_pos_right _b hb _a₁ _a₂ ha := mul_lt_mul_of_pos_right ha hb\\n   272  \\n   273  -- See note [lower instance priority]\\n   274  instance (priority := 100) MulPosReflectLT.toSMulPosReflectLT [MulPosReflectLT α] :\\n   275      SMulPosReflectLT α α where\\n   276    lt_of_smul_lt_smul_right _b hb _a₁ _a₂ h := lt_of_mul_lt_mul_right h hb\\n   277  \\n   278  -- See note [lower instance priority]\\n   279  instance (priority := 100) MulPosReflectLE.toSMulPosReflectLE [MulPosReflectLE α] :\\n   280      SMulPosReflectLE α α where\\n   281    le_of_smul_le_smul_right _b hb _a₁ _a₂ h := le_of_mul_le_mul_right h hb\\n   282  \\n   283  end Mul\\n   284  \\n   285  instance {M : Type*} [PartialOrder M] [AddCommMonoid M] [IsOrderedAddMonoid M] :\\n   286      PosSMulMono ℕ M where\\n   287    smul_le_smul_of_nonneg_left _n _ _a _b hab := nsmul_le_nsmul_right hab _\\n   288  \\n   289  instance {M : Type*} [PartialOrder M] [AddCommMonoid M] [IsOrderedAddMonoid M] :\\n   290      SMulPosMono ℕ M where\\n   291    smul_le_smul_of_nonneg_right _a ha _m _n hmn := nsmul_le_nsmul_left ha hmn\\n   292  \\n   293  instance {M : Type*} [PartialOrder M] [AddCancelCommMonoid M] [IsOrderedAddMonoid M] :\\n   294      PosSMulStrictMono ℕ M where\\n   295    smul_lt_smul_of_pos_left _n hn _m₁ _m₂ := nsmul_lt_nsmul_right hn.ne'\\n   296  \\n   297  instance {M : Type*} [PartialOrder M] [AddCommMonoid M] [IsOrderedCancelAddMonoid M] :\\n   298      SMulPosStrictMono ℕ M where\\n   299    smul_lt_smul_of_pos_right _a ha _m _n hmn := nsmul_lt_nsmul_left ha hmn\\n   300  \\n   301  instance {G : Type*} [PartialOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] :\\n   302      PosSMulStrictMono ℤ G where\\n   303    smul_lt_smul_of_pos_left _n hn _m₁ _m₂ := zsmul_lt_zsmul_right hn\\n   304  \\n   305  instance {G : Type*} [PartialOrder G] [AddCommGroup G] [IsOrderedAddMonoid G] :\\n   306      SMulPosStrictMono ℤ G where\\n   307    smul_lt_smul_of_pos_right _a ha _m _n hmn := zsmul_lt_zsmul_left ha hmn\\n   308  \\n   309  section SMul\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PosSMulMono\"}",
+   "ok": true,
+   "result_chars": 1061,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 210 declarations mentioning PosSMulMono.\\n- PosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n    Typeclass for monotonicity of scalar multiplication by nonnegative elements on the left, namely `b₁ ≤ b₂ → a • b₁ ≤ a • b₂` if `0 ≤ a`.  You should usually not \\n- PosMulMono.toPosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n- instPosSMulMonoNatOfIsOrderedAddMonoid   [Mathlib.Algebra.Order.Module.Defs]\\n- IsOrderedModule.toPosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n- OrderDual.instPosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n- OrderedSemiring.toPosSMulMonoNat   [Mathlib.Algebra.Order.Module.Defs]\\n- IsOrderedModule.mk   [Mathlib.Algebra.Order.Module.Defs]\\n- Pi.instPosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n- PosSMulMono.toPosSMulReflectLT   [Mathlib.Algebra.Order.Module.Defs]\\n- PosSMulReflectLT.toPosSMulMono   [Mathlib.Algebra.Order.Module.Defs]\\n- posSMulMono_iff_posSMulReflectLT   [Mathlib.Algebra.Order.Module.Defs]\\n- monotone_smul_left_of_nonneg   [Mathlib.Algebra.Order.Module.Defs]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem scalar_mul_left_antitone {α β : Type*} [SMul α β] [Preorder α] [Preorder β] [Zero α]\n    [PosSMulMono α β] {γ : Type*} [Preorder γ] {a : α} {f : γ → β}\n    (hf : Antitone f) (ha : 0 ≤ a) : Antitone fun x ↦ a • f x := sorry"
+}

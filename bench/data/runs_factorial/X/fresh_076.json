@@ -1,0 +1,457 @@
+{
+ "task_id": "fresh_076",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:54:01Z",
+ "wall_s": 103.7,
+ "transcript_stats": {
+  "turns": 51,
+  "assistant_turns": 28,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 18,
+   "mcp__formal__decl_grep": 17,
+   "mcp__formal__decl_read": 9,
+   "mcp__formal__wikibrain__decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 5
+  },
+  "tokens_in": 226,
+  "tokens_out": 6681,
+  "cost_usd": 0.15865239999999997
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Representation\"}",
+   "ok": true,
+   "result_chars": 1839,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 552 declarations mentioning Representation.\\n- Representation   [Mathlib.RepresentationTheory.Basic]\\n    A representation of `G` on the `k`-module `V` is a homomorphism `G →* (V →ₗ[k] V)`.\\n- Representation.trivial   [Mathlib.RepresentationTheory.Basic]\\n    The trivial representation of `G` on a `k`-module V.\\n- Representation.IsTrivial   [Mathlib.RepresentationTheory.Basic]\\n    A predicate for representations that fix every element.\\n- Representation.asModule   [Mathlib.RepresentationTheory.Basic]\\n    If `ρ : Representation k G V`, then `ρ.asModule` is a type synonym for `V`, which we equip with an instance `Module k[G] ρ.asModule`.  You should use `asModuleE\\n- Representation.leftRegular   [Mathlib.RepresentationTheory.Basic]\\n    The natural `k`-linear `G`-representation on `k[G]` induced by left multiplication in `G`.\\n- Representation.instAddCommMonoidAsModule   [Mathlib.RepresentationTheory.Basic]\\n- Representation.instInhabitedAsModule   [Mathlib.RepresentationTheory.Basic]\\n- Representation.ofMulAction   [Mathlib.RepresentationTheory.Basic]\\n    A `G`-action on `H` induces a representation `G →* End(k[H])` in the natural way.\\n- Representation.norm   [Mathlib.RepresentationTheory.Basic]\\n    Given a representation `(V, ρ)` of a finite group `G`, `norm ρ` is the linear map `V →ₗ[k] V` defined by `x ↦ ∑ ρ g x` for `g` in `G`.\\n- Representation.diagonal   [Mathlib.RepresentationTheory.Basic]\\n    The natural `k`-linear `G`-representation on `k[Gⁿ]` induced by left multiplication in `G`.\\n- Representation.ofMulDistribMulAction   [Mathlib.RepresentationTheory.Basic]\\n    Turns a `CommGroup` `G` with a `MulDistribMulAction` of a monoid `M` into a `ℤ`-linear `M`-representation on `Additive G`.\\n- Representation.instModuleAsModule   [Mathlib.RepresentationTheory.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ShortComplex\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortComplex': unknown identifier 'ShortComplex'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"restriction functor representation\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restriction functor representation': Unknown identifier `restriction`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Exact\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Exact': unknown identifier 'Exact'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"counitFunctor representation\"}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'counitFunctor representation': Unknown identifier `counitFunctor`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"restrict Representation\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restrict Representation': Unknown identifier `restrict`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Sequence exactness\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Sequence exactness': Unknown identifier `Sequence`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a →ₗ ?b) → (?b →ₗ ?c) → Prop\"}",
+   "ok": true,
+   "result_chars": 166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a →ₗ ?b) → (?b →ₗ ?c) → Prop': elaboration function for `Mathlib.Tactic.subscriptTerm` has not been implemented\\n  ₗ\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*exact.*representation\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*exact.*representation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"scalarExtension Representation\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'scalarExtension Representation': Unknown identifier `scalarExtension`\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"induceRepresentation\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'induceRepresentation': unknown identifier 'induceRepresentation'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*functor.*representation\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*functor.*representation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"HomologicalComplex\"}",
+   "ok": true,
+   "result_chars": 1574,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2290 declarations mentioning HomologicalComplex.\\n- HomologicalComplex   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    A `HomologicalComplex V c` with a \\\"shape\\\" controlled by `c : ComplexShape ι` has chain groups `X i` (objects in `V`) indexed by `i : ι`, and a differential `d i\\n- HomologicalComplex.instCategory   [Mathlib.Algebra.Homology.HomologicalComplex]\\n- HomologicalComplex.X   [Mathlib.Algebra.Homology.HomologicalComplex]\\n- HomologicalComplex.xNext   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    Either `C.X j`, if there is some `j` with `c.rel i j`, or `C.X i`.\\n- HomologicalComplex.xPrev   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    Either `C.X i`, if there is some `i` with `c.Rel i j`, or `C.X j`.\\n- HomologicalComplex.zero   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    The zero complex\\n- HomologicalComplex.instInhabitedOfHasZeroObject   [Mathlib.Algebra.Homology.HomologicalComplex]\\n- HomologicalComplex.Hom   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    A morphism of homological complexes consists of maps between the chain groups, commuting with the differentials.\\n- HomologicalComplex.instHasZeroMorphisms   [Mathlib.Algebra.Homology.HomologicalComplex]\\n- HomologicalComplex.id   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    Identity chain map.\\n- HomologicalComplex.eval   [Mathlib.Algebra.Homology.HomologicalComplex]\\n    The functor picking out the `i`-th object of a complex.\\n- HomologicalComplex.instHasZeroObject   [Mathlib.Algebra.Homology.HomologicalComplex]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exact sequence\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exact sequence': Unknown identifier `exact`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class.*Exact\"}",
+   "ok": true,
+   "result_chars": 714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'class.*Exact' (via ripgrep):\\n- Mathlib/CategoryTheory/GuitartExact/Basic.lean:25\\n    In this file, we define a typeclass `w.GuitartExact` which expresses\\n- Mathlib/CategoryTheory/GuitartExact/Basic.lean:221\\n    class GuitartExact : Prop where\\n- Mathlib/CategoryTheory/Monoidal/Rigid/Basic.lean:77\\n    class ExactPairing (X Y : C) where\\n- Mathlib/CategoryTheory/Abelian/GrothendieckAxioms/Basic.lean:68\\n    class HasExactColimitsOfShape (J : Type u') [Category.{v'} J] (C : Type u) [Category.{v} C]\\n- Mathlib/CategoryTheory/Abelian/GrothendieckAxioms/Basic.lean:77\\n    class HasExactLimitsOfShape (J : Type u') [Category.{v'} J] (C : Type u) [Category.{v} C]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Exact HomologicalComplex\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Exact HomologicalComplex': Unknown identifier `Exact`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Exact\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4080,
+   "result_head": "[{\"type\": \"text\", \"text\": \"77 match(es) for 'def.*Exact' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:65\\n    protected def compExactValue (pconts conts : Pair K) (fr : K) : K :=\\n- Mathlib/Algebra/Category/ModuleCat/Free.lean:158\\n    def Basis.ofShortExact\\n- Mathlib/Algebra/Exact/Basic.lean:45\\n    def MulExact [One P] : Prop := ∀ y, g y = 1 ↔ y ∈ Set.range f\\n- Mathlib/Algebra/Exact/Basic.lean:380\\n    def Exact.splitSurjectiveEquiv (h : Function.Exact f g) (hf : Function.Injective f) :\\n- Mathlib/Algebra/Exact/Basic.lean:416\\n    def Exact.splitInjectiveEquiv\\n- Mathlib/Algebra/Exact/Basic.lean:580\\n    noncomputable def Function.Exact.linearEquivOfSurjective (h : Function.Exact f g)\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:129\\n    noncomputable def Abelian.Ext.mapExactFunctor [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} {n : ℕ}\\n- Mathlib/Algebra/Category/ModuleCat/Kernels.lean:49\\n    def isLimitKernelFork (f : M ⟶ N) (g : N ⟶ P) (H : Function.Exact f.hom g.hom)\\n- Mathlib/Algebra/Category/ModuleCat/Kernels.lean:74\\n    def isColimitCokernelCofork (f : M ⟶ N) (g : N ⟶ P) (H : Function.Exact f.hom g.hom)\\n- Mathlib/Algebra/Homology/HomologySequence.lean:235\\n    noncomputable def snakeInput (hS : S.ShortExact) (i j : ι) (hij : c.Rel i j) :\\n- Mathlib/Algebra/Homology/ExactSequenceFour.lean:13\\n    The main definition in this file is `ComposableArrows.Exact.cokerIsoKer`:\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:352\\n    noncomputable def Exact.leftHomologyDataOfIsLimitKernelFork\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:376\\n    noncomputable def Exact.rightHomologyDataOfIsColimitCokernelCofork\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:749\\n    noncomputable def fIsKernel (hS : S.Exact) [Mono S.f] : IsLimit (KernelFork.ofι S.f S.zero) := by\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:764\\n    noncomputable def gIsCokernel (hS : S.Exact) [Epi S.g] :\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:779\\n    noncomputable def lift (hS : S.Exact) {A : C} (k : A ⟶ S.X₂) (hk : k ≫ S.g = 0) [Mono S.f] :\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:793\\n    noncomputable def desc (hS : S.Exact) {A : C} (k : S.X₂ ⟶ A) (hk : S.f ≫ k = 0) [Epi S.g] :\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:939\\n    noncomputable def Exact.descToInjective\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:954\\n    noncomputable def Exact.liftFromProjective\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:1003\\n    noncomputable def ofExactOfSection (S : ShortComplex C) (hS : S.Exact) (s : S.X₃ ⟶ S.X₂)\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:1014\\n    noncomputable def ofExactOfRetraction (S : ShortComplex C) (hS : S.Exact) (r : S.X₂ ⟶ S.X₁)\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:162\\n    noncomputable def ShortExact.fIsKernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:169\\n    noncomputable def ShortExact.gIsCokernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:205\\n    noncomputable def splittingOfInjective {S : ShortComplex C} (hS : S.ShortExact)\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:213\\n    noncomputable def splittingOfProjective {S : ShortComplex C} (hS : S.ShortExact)\\n- Mathlib/Algebra/Homology/ShortComplex/HomologicalComplex.lean:650\\n    def ExactAt := (K.sc i).Exact\\n- Mathlib/Algebra/Homology/ShortComplex/HomologicalComplex.lean:680\\n    def Acyclic := ∀ i, K.ExactAt i\\n- Mathlib/Algebra/Module/Presentation/Cokernel.lean:141\\n    noncomputable def ofExact {f : M₁ →ₗ[A] M₂} {g : M₂ →ₗ[A] M₃}\\n- Mathlib/Algebra/Category/ModuleCat/Biproducts.lean:147\\n    private noncomputable def lequivProdOfRightSplitExact' {f : B →ₗ[R] M} (hj : Function.Injective j)\\n- Mathlib/Algebra/Category/ModuleCat/Biproducts.lean:156\\n    private noncomputable"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 3844,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean  (lines 1–100 of 1028):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.PreservesHomology\\n     9  public import Mathlib.Algebra.Homology.ShortComplex.Abelian\\n    10  public import Mathlib.Algebra.Homology.ShortComplex.QuasiIso\\n    11  public import Mathlib.CategoryTheory.Abelian.Opposite\\n    12  public import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor\\n    13  public import Mathlib.CategoryTheory.Preadditive.Injective.Basic\\n    14  \\n    15  /-!\\n    16  # Exact short complexes\\n    17  \\n    18  When `S : ShortComplex C`, this file defines a structure\\n    19  `S.Exact` which expresses the exactness of `S`, i.e. there\\n    20  exists a homology data `h : S.HomologyData` such that\\n    21  `h.left.H` is zero. When `[S.HasHomology]`, it is equivalent\\n    22  to the assertion `IsZero S.homology`.\\n    23  \\n    24  Almost by construction, this notion of exactness is self dual,\\n    25  see `Exact.op` and `Exact.unop`.\\n    26  \\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  namespace CategoryTheory\\n    32  \\n    33  open Category Limits ZeroObject Preadditive\\n    34  \\n    35  variable {C D : Type*} [Category* C] [Category* D]\\n    36  \\n    37  namespace ShortComplex\\n    38  \\n    39  section\\n    40  \\n    41  variable\\n    42    [HasZeroMorphisms C] [HasZeroMorphisms D] (S : ShortComplex C) {S₁ S₂ : ShortComplex C}\\n    43  \\n    44  /-- The assertion that the short complex `S : ShortComplex C` is exact. -/\\n    45  structure Exact : Prop where\\n    46    /-- the condition that there exists a homology data whose `left.H` field is zero -/\\n    47    condition : ∃ (h : S.HomologyData), IsZero h.left.H\\n    48  \\n    49  variable {S}\\n    50  \\n    51  lemma Exact.hasHomology (h : S.Exact) : S.HasHomology :=\\n    52    HasHomology.mk' h.condition.choose\\n    53  \\n    54  lemma Exact.hasZeroObject (h : S.Exact) : HasZeroObject C :=\\n    55    ⟨h.condition.choose.left.H, h.condition.choose_spec⟩\\n    56  \\n    57  variable (S)\\n    58  \\n    59  lemma exact_iff_isZero_homology [S.HasHomology] :\\n    60      S.Exact ↔ IsZero S.homology := by\\n    61    constructor\\n    62    · rintro ⟨⟨h', z⟩⟩\\n    63      exact IsZero.of_iso z h'.left.homologyIso\\n    64    · intro h\\n    65      exact ⟨⟨_, h⟩⟩\\n    66  \\n    67  variable {S}\\n    68  \\n    69  lemma LeftHomologyData.exact_iff [S.HasHomology]\\n    70      (h : S.LeftHomologyData) :\\n    71      S.Exact ↔ IsZero h.H := by\\n    72    rw [S.exact_iff_isZero_homology]\\n    73    exact Iso.isZero_iff h.homologyIso\\n    74  \\n    75  lemma RightHomologyData.exact_iff [S.HasHomology]\\n    76      (h : S.RightHomologyData) :\\n    77      S.Exact ↔ IsZero h.H := by\\n    78    rw [S.exact_iff_isZero_homology]\\n    79    exact Iso.isZero_iff h.homologyIso\\n    80  \\n    81  variable (S)\\n    82  \\n    83  lemma exact_iff_isZero_leftHomology [S.HasHomology] :\\n    84      S.Exact ↔ IsZero S.leftHomology :=\\n    85    LeftHomologyData.exact_iff _\\n    86  \\n    87  lemma exact_iff_isZero_rightHomology [S.HasHomology] :\\n    88      S.Exact ↔ IsZero S.rightHomology :=\\n    89    RightHomologyData.exact_iff _\\n    90  \\n    91  variable {S}\\n    92  \\n    93  lemma HomologyData.exact_iff (h : S.HomologyData) :\\n    94      S.Exact ↔ IsZero h.left.H := by\\n    95    haveI := HasHomology.mk' h\\n    96    exact LeftHomologyData.exact_iff h.left\\n    97  \\n    98  lemma HomologyData.exact_iff' (h : S.HomologyData) :\\n    99      S.Exact ↔ IsZero h.right.H := by\\n   100    haveI := HasHomology.mk' h\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"counit Representation\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'counit Representation': Unknown identifier `counit`\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Representation.*restrict\"}",
+   "ok": true,
+   "result_chars": 207,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'Representation.*restrict' (via ripgrep):\\n- Mathlib/RepresentationTheory/Basic.lean:218\\n    we have a `Representation k G (restrictScalars k k[G] ρ.asModule)`.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Representation\", \"limit\": 40}",
+   "ok": true,
+   "result_chars": 5032,
+   "result_head": "[{\"type\": \"text\", \"text\": \"42 match(es) for 'def.*Representation' (via ripgrep):\\n- Mathlib/Algebra/Module/Presentation/DirectSum.lean:88\\n    noncomputable def directSum.isRepresentationCore :\\n- Mathlib/RepresentationTheory/Induced.lean:79\\n    noncomputable def ind : Representation k H (IndV φ ρ) where\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:149\\n    def comp {π₁ : ContRepresentation R G V} {π₂ : ContRepresentation R G W}\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:427\\n    def trivial : ContRepresentation R G V := ofMonoidHom 1\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:434\\n    def restrict {H : Type*} [Monoid H] (π : ContRepresentation R G V) (φ : H →* G) :\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:445\\n    def _root_.ContIntertwiningMap.restrict {H : Type*} [Monoid H] {π : ContRepresentation R G V}\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:465\\n    def invariants (π : ContRepresentation R G V) : Submodule R V where\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:546\\n    def coind (π : ContRepresentation R G V) : ContRepresentation R H (π.coindV φ) where\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:564\\n    def coind₁ (π : ContRepresentation R G V) :\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:581\\n    def coind₁Map {π₁ : ContRepresentation R G V} {π₂ : ContRepresentation R G W} (f : π₁ →ⁱL π₂) :\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:591\\n    def coind₁ι (π : ContRepresentation R G V) : π →ⁱL coind₁ π where\\n- Mathlib/RepresentationTheory/Continuous/Basic.lean:611\\n    def coind₁Res (φ : H →ₜ* G) (π : ContRepresentation R G V) :\\n- Mathlib/RepresentationTheory/Semisimple.lean:18\\n    This file defines the typeclass `IsSemisimpleRepresentation` for semisimple monoid representations.\\n- Mathlib/RepresentationTheory/Subrepresentation.lean:55\\n    def toRepresentation (ρ' : Subrepresentation ρ) : Representation A G ρ'.toSubmodule where\\n- Mathlib/RepresentationTheory/Subrepresentation.lean:121\\n    def asSubmodule' (σ : Subrepresentation (Representation.ofModule (k := A) (G := G) M)) :\\n- Mathlib/RepresentationTheory/Action.lean:43\\n    def linearize : Representation k G k[X.V] where\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:182\\n    def _root_.Representation.equivOfIso (i : A ≅ B) : A.ρ.Equiv B.ρ where\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:368\\n    def ofDistribMulAction : Rep k G := Rep.of (Representation.ofDistribMulAction k G A)\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:385\\n    def ofMulDistribMulAction : Rep ℤ M := Rep.of (Representation.ofMulDistribMulAction M G)\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:872\\n    def norm : End A := Rep.ofHom (σ := A.ρ) (ρ := A.ρ) ⟨Representation.norm A.ρ,\\n- Mathlib/RepresentationTheory/Basic.lean:62\\n    def trivial : Representation k G V :=\\n- Mathlib/RepresentationTheory/Basic.lean:80\\n    theorem isTrivial_def (ρ : Representation k G V) [IsTrivial ρ] (g : G) :\\n- Mathlib/RepresentationTheory/Basic.lean:144\\n    def asModule (_ : Representation k G V) := V\\n- Mathlib/RepresentationTheory/Basic.lean:155\\n    def asModuleEquiv (ρ : Representation k G V) : ρ.asModule ≃ₗ[k] V :=\\n- Mathlib/RepresentationTheory/Basic.lean:206\\n    noncomputable def ofModule : Representation k G (RestrictScalars k k[G] M) :=\\n- Mathlib/RepresentationTheory/Basic.lean:398\\n    noncomputable def ofMulAction : Representation k G k[H] where\\n- Mathlib/RepresentationTheory/Basic.lean:428\\n    def ofDistribMulAction : Representation k G A where\\n- Mathlib/RepresentationTheory/Basic.lean:452\\n    def ofMulDistribMulAction : Representation ℤ M (Additive G) :=\\n- Mathlib/RepresentationTheory/Basic.lean:587\\n    noncomputable def directSum : Representation k G (⨁ i, V i) where\\n- Mathlib/RepresentationTheory/Basic.lean:604\\n    noncomputable def prod : Representation k G (V × W) where\\n- Mathlib/RepresentationTheory/Basic.lean:622\\n    noncomputable def tprod : Representation k G (V ⊗[k] W)"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Representation group homomorphism\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Representation group homomorphism': Unknown identifier `group`\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"restrict.*Representation.*hom\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'restrict.*Representation.*hom' under Mathlib/.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 2882,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Basic.lean  (lines 1–80 of 764):\\n     1  /-\\n     2  Copyright (c) 2022 Antoine Labelle. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Antoine Labelle\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Contraction\\n     9  public import Mathlib.Algebra.Group.Equiv.TypeTags\\n    10  \\n    11  /-!\\n    12  # Monoid representations\\n    13  \\n    14  This file introduces monoid representations and their characters and defines a few ways to construct\\n    15  representations.\\n    16  \\n    17  ## Main definitions\\n    18  \\n    19    * `Representation`\\n    20    * `Representation.directSum`\\n    21    * `Representation.prod`\\n    22    * `Representation.tprod`\\n    23    * `Representation.linHom`\\n    24    * `Representation.dual`\\n    25    * `Representation.free`\\n    26  \\n    27  ## Implementation notes\\n    28  \\n    29  Representations of a monoid `G` on a `k`-module `V` are implemented as\\n    30  homomorphisms `G →* (V →ₗ[k] V)`. We use the abbreviation `Representation` for this hom space.\\n    31  \\n    32  The theorem `asAlgebraHom_def` constructs a module over the group `k`-algebra of `G` (implemented\\n    33  as `k[G]`) corresponding to a representation. If `ρ : Representation k G V`, this\\n    34  module can be accessed via `ρ.asModule`. Conversely, given a `k[G]`-module `M`,\\n    35  `M.ofModule` is the associated representation seen as a homomorphism.\\n    36  -/\\n    37  \\n    38  @[expose] public section\\n    39  \\n    40  open MonoidAlgebra\\n    41  open LinearMap Module\\n    42  \\n    43  section\\n    44  \\n    45  variable (k G V : Type*) [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]\\n    46  \\n    47  /-- A representation of `G` on the `k`-module `V` is a homomorphism `G →* (V →ₗ[k] V)`.\\n    48  -/\\n    49  abbrev Representation :=\\n    50    G →* V →ₗ[k] V\\n    51  \\n    52  end\\n    53  \\n    54  namespace Representation\\n    55  \\n    56  section trivial\\n    57  \\n    58  variable (k G V : Type*) [Semiring k] [Monoid G] [AddCommMonoid V] [Module k V]\\n    59  \\n    60  /-- The trivial representation of `G` on a `k`-module V.\\n    61  -/\\n    62  def trivial : Representation k G V :=\\n    63    1\\n    64  \\n    65  variable {G V}\\n    66  \\n    67  @[simp]\\n    68  theorem trivial_apply (g : G) (v : V) : trivial k G V g v = v :=\\n    69    rfl\\n    70  \\n    71  variable {k}\\n    72  \\n    73  /-- A predicate for representations that fix every element. -/\\n    74  class IsTrivial (ρ : Representation k G V) : Prop where\\n    75    out : ∀ g, ρ g = LinearMap.id := by aesop\\n    76  \\n    77  instance : IsTrivial (trivial k G V) where\\n    78  \\n    79  @[simp]\\n    80  theorem isTrivial_def (ρ : Representation k G V) [IsTrivial ρ] (g : G) :\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Rep\", \"limit\": 40}",
+   "ok": true,
+   "result_chars": 4673,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2191 match(es) for 'Rep' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/Basic.lean:87\\n    instance [Repr K] : Repr (IntFractPair K) :=\\n- Mathlib/Algebra/ContinuedFractions/Basic.lean:67\\n    instance [Repr α] : Repr (Pair α) :=\\n- Mathlib/Algebra/DualNumber.lean:228\\n    instance instRepr [Repr R] : Repr (DualNumber R) where\\n- Mathlib/Algebra/Algebra/Defs.lean:72\\n    * Replace `Semiring A` with `NonUnitalNonAssocSemiring A` in order to describe non-unital and/or\\n- Mathlib/Algebra/Algebra/Defs.lean:74\\n    * Replace `CommSemiring R` and `Module R A` with `CommGroup R'` and `DistribMulAction R' A`,\\n- Mathlib/CategoryTheory/Yoneda.lean:283\\n    the API in the file `Mathlib/CategoryTheory/ConcreteCategory/Representable.lean`. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:284\\n    structure RepresentableBy (F : Cᵒᵖ ⥤ Type v) (Y : C) where\\n- Mathlib/CategoryTheory/Yoneda.lean:290\\n    lemma RepresentableBy.comp_homEquiv_symm {F : Cᵒᵖ ⥤ Type v} {Y : C}\\n- Mathlib/CategoryTheory/Yoneda.lean:291\\n    (e : F.RepresentableBy Y) {X X' : C} (x : F.obj (op X')) (f : X ⟶ X') :\\n- Mathlib/CategoryTheory/Yoneda.lean:295\\n    lemma RepresentableBy.homEquiv_unop_comp {F : Cᵒᵖ ⥤ Type*} {Y : C}\\n- Mathlib/CategoryTheory/Yoneda.lean:296\\n    (h : F.RepresentableBy Y) {X : Cᵒᵖ} {X' : C} (f : Opposite.op X' ⟶ X) (g : X' ⟶ Y) :\\n- Mathlib/CategoryTheory/Yoneda.lean:301\\n    def RepresentableBy.ofIso {F F' : Cᵒᵖ ⥤ Type v} {Y : C} (e : F.RepresentableBy Y)\\n- Mathlib/CategoryTheory/Yoneda.lean:302\\n    (e' : F ≅ F') : F'.RepresentableBy Y where\\n- Mathlib/CategoryTheory/Yoneda.lean:331\\n    lemma RepresentableBy.homEquiv_eq {F : Cᵒᵖ ⥤ Type v} {Y : C} (e : F.RepresentableBy Y)\\n- Mathlib/CategoryTheory/Yoneda.lean:341\\n    /-- Representing objects are unique up to isomorphism. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:343\\n    def RepresentableBy.uniqueUpToIso {F : Cᵒᵖ ⥤ Type v} {Y Y' : C} (e : F.RepresentableBy Y)\\n- Mathlib/CategoryTheory/Yoneda.lean:344\\n    (e' : F.RepresentableBy Y') : Y ≅ Y' :=\\n- Mathlib/CategoryTheory/Yoneda.lean:358\\n    lemma RepresentableBy.ext {F : Cᵒᵖ ⥤ Type v} {Y : C} {e e' : F.RepresentableBy Y}\\n- Mathlib/CategoryTheory/Yoneda.lean:377\\n    /-- The obvious bijection `F.RepresentableBy Y ≃ (yoneda.obj Y ≅ F)`\\n- Mathlib/CategoryTheory/Yoneda.lean:380\\n    F.RepresentableBy Y ≃ (yoneda.obj Y ≅ F) where\\n- Mathlib/CategoryTheory/Yoneda.lean:390\\n    protected def RepresentableBy.yoneda (X : C) : (yoneda.obj X).RepresentableBy X :=\\n- Mathlib/CategoryTheory/Yoneda.lean:394\\n    lemma RepresentableBy.coyoneda_homEquiv (X Y : C) :\\n- Mathlib/CategoryTheory/Yoneda.lean:395\\n    (RepresentableBy.yoneda X).homEquiv = Equiv.refl (Y ⟶ X) :=\\n- Mathlib/CategoryTheory/Yoneda.lean:398\\n    /-- The isomorphism `yoneda.obj Y ≅ F` induced by `e : F.RepresentableBy Y`. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:399\\n    def RepresentableBy.toIso {F : Cᵒᵖ ⥤ Type v₁} {Y : C} (e : F.RepresentableBy Y) :\\n- Mathlib/CategoryTheory/Yoneda.lean:430\\n    /-- Transport `RepresentableBy` along an isomorphism of the object. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:432\\n    def RepresentableBy.ofIsoObj {F : Cᵒᵖ ⥤ Type w} {X Y : C} (R : F.RepresentableBy X)\\n- Mathlib/CategoryTheory/Yoneda.lean:434\\n    F.RepresentableBy Y where\\n- Mathlib/CategoryTheory/Yoneda.lean:438\\n    /-- Transport `RepresentableBy` along an isomorphism of the object. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:449\\n    def RepresentableBy.equivOfIsoObj {F : Cᵒᵖ ⥤ Type w} {X Y : C} (e : Y ≅ X) :\\n- Mathlib/CategoryTheory/Yoneda.lean:450\\n    F.RepresentableBy X ≃ F.RepresentableBy Y where\\n- Mathlib/CategoryTheory/Yoneda.lean:468\\n    /-- Representing `F` composed with universe lifting is the same as representing `F`. -/\\n- Mathlib/CategoryTheory/Yoneda.lean:471\\n    (F ⋙ uliftFunctor.{w}).RepresentableBy X ≃ F.RepresentableBy X where\\n- Mathlib/CategoryTheory/Yoneda.lean:494\\n    def RepresentableBy.equivUliftYonedaIso (F : Cᵒᵖ ⥤ Type (m"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Rep k G\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Rep k G': Unknown identifier `k`\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class Rep\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 276,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'class Rep' (via ripgrep):\\n- Mathlib/CategoryTheory/Functor/Flat.lean:70\\n    class RepresentablyFlat (F : C ⥤ D) : Prop where\\n- Mathlib/CategoryTheory/Functor/Flat.lean:75\\n    class RepresentablyCoflat (F : C ⥤ D) : Prop where\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure Rep\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 307,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'structure Rep' (via ripgrep):\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:31\\n    structure Rep (k : Type u) (G : Type v) [Semiring k] [Monoid G] where\\n- Mathlib/CategoryTheory/Yoneda.lean:284\\n    structure RepresentableBy (F : Cᵒᵖ ⥤ Type v) (Y : C) where\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Basic.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 4911,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Basic.lean  (lines 1–120 of 1053):\\n     1  /-\\n     2  Copyright (c) 2026 Yunzhou Xie. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Edison Xie, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Category.ModuleCat.Abelian\\n     9  public import Mathlib.Algebra.Category.ModuleCat.Colimits\\n    10  public import Mathlib.RepresentationTheory.Action\\n    11  public import Mathlib.RepresentationTheory.Equiv\\n    12  \\n    13  /-!\\n    14  # `Rep k G` is the category of `k`-linear representations of `G`.\\n    15  \\n    16  Given a `G`-representation `ρ` on a module `V`, you can construct the bundled representation as\\n    17  `Rep.of ρ`. Conversely, given a bundled representation `A : Rep k G`, you can get the underlying\\n    18  module as `A.V` and the representation on it as `A.ρ`.\\n    19  \\n    20  -/\\n    21  \\n    22  @[expose] public section\\n    23  \\n    24  universe w w' u u' v v'\\n    25  \\n    26  open CategoryTheory\\n    27  open scoped MonoidAlgebra\\n    28  \\n    29  set_option backward.privateInPublic true in\\n    30  /-- The category of representations of monoid `G` and their morphisms. -/\\n    31  structure Rep (k : Type u) (G : Type v) [Semiring k] [Monoid G] where\\n    32    private mk ::\\n    33    /-- the underlying type of an object in `Rep k G` -/\\n    34    V : Type w\\n    35    [hV1 : AddCommGroup V]\\n    36    [hV2 : Module k V]\\n    37    /-- the underlying representation of an object in `Rep k G` -/\\n    38    ρ : Representation k G V\\n    39  \\n    40  namespace Rep\\n    41  \\n    42  noncomputable section\\n    43  \\n    44  section semiring\\n    45  \\n    46  variable {k : Type u} {G : Type v} [Semiring k] [Monoid G] {X Y : Type w} [AddCommGroup X]\\n    47    [AddCommGroup Y] [Module k X] [Module k Y] {ρ : Representation k G X} {σ : Representation k G Y}\\n    48    (A B C : Rep.{w} k G)\\n    49  \\n    50  attribute [instance] hV1 hV2\\n    51  \\n    52  initialize_simps_projections Rep (-hV1, -hV2)\\n    53  \\n    54  instance : CoeSort (Rep k G) (Type w) := ⟨Rep.V⟩\\n    55  \\n    56  attribute [coe] V\\n    57  \\n    58  variable (ρ) in\\n    59  set_option backward.privateInPublic true in\\n    60  set_option backward.privateInPublic.warn false in\\n    61  /-- The object in the category of representations associated to a type equipped a representation.\\n    62  This is the preferred way to construct a term of `Rep k G`. -/\\n    63  abbrev of : Rep.{w} k G := ⟨X, ρ⟩\\n    64  \\n    65  variable (X ρ) in\\n    66  lemma of_V : (of ρ).V = X := by with_reducible rfl\\n    67  \\n    68  variable (X ρ) in\\n    69  lemma of_ρ : (of ρ).ρ = ρ := by with_reducible rfl\\n    70  \\n    71  set_option backward.privateInPublic true in\\n    72  /-- The type of morphisms in `Rep.{w} k G`. -/\\n    73  @[ext]\\n    74  structure Hom where\\n    75    private mk ::\\n    76    /-- The underlying `G`-equivariant linear map. -/\\n    77    hom' : A.ρ.IntertwiningMap B.ρ\\n    78  \\n    79  set_option backward.privateInPublic true in\\n    80  set_option backward.privateInPublic.warn false in\\n    81  instance : Category (Rep.{w} k G) where\\n    82    Hom A B := Hom A B\\n    83    id A := ⟨.id A.ρ⟩\\n    84    comp f g := ⟨g.hom'.comp f.hom'⟩\\n    85  \\n    86  set_option backward.privateInPublic true in\\n    87  set_option backward.privateInPublic.warn false in\\n    88  instance : ConcreteCategory (Rep.{w} k G) (fun A B ↦ A.ρ.IntertwiningMap B.ρ) where\\n    89    hom := Hom.hom'\\n    90    ofHom := Hom.mk\\n    91  \\n    92  variable {A B} in\\n    93  /-- Turn a morphism in `Rep` back into an `IntertwiningMap`. -/\\n    94  abbrev Hom.hom (f : Hom A B) := ConcreteCategory.hom (C := Rep k G) f\\n    95  \\n    96  variable {A B} in\\n    97  /-- Typecheck an `IntertwiningMap` as a morphism in `Rep`. -/\\n    98  abbrev ofHom (f : ρ.IntertwiningMap σ) : of ρ ⟶ of σ :=\\n    99 "
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"functor.*Rep\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4505,
+   "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for 'functor.*Rep' (via ripgrep):\\n- Mathlib/RepresentationTheory/Induced.lean:21\\n    We also prove that the restriction functor `Rep k H ⥤ Rep k G` along `φ` is right adjoint to the\\n- Mathlib/RepresentationTheory/Induced.lean:24\\n    Additionally, we show that the functor `Rep k H ⥤ ModuleCat k` sending `B : Rep k H` to\\n- Mathlib/RepresentationTheory/Induced.lean:35\\n    between the induction functor along `φ` and the restriction functor `Rep k H ⥤ Rep k G`\\n- Mathlib/RepresentationTheory/Induced.lean:38\\n    `A : Rep k G`, this is a natural isomorphism between the functor sending `B : Rep k H` to\\n- Mathlib/RepresentationTheory/Induced.lean:155\\n    /-- Given a group homomorphism `φ : G →* H`, the induction functor `Rep k G ⥤ Rep k H` is left\\n- Mathlib/RepresentationTheory/Induced.lean:256\\n    /-- Given a group hom `φ : G →* H` and `A : Rep k G`, the functor `Rep k H ⥤ ModuleCat k` sending\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:18\\n    For a topological group `G` we define the invariants functor `TopRep.invariantsFunctor`, the\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:19\\n    coinduction functor `TopRep.coind₁Functor`, the restriction functor `TopRep.resFunctor` along a\\n- Mathlib/RepresentationTheory/Action.lean:15\\n    This file is the preliminary for the `linearize` functor from `Action (Type w) G` to `Rep k G`,\\n- Mathlib/RepresentationTheory/Action.lean:16\\n    constructing the functor from the `Representation` would reduce the amount of DefEq abuses that we\\n- Mathlib/RepresentationTheory/FiniteIndex.lean:182\\n    `Coind_G^S` functors `Rep k S ⥤ Rep k G`. -/\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:516\\n    functor := RepToAction k G\\n- Mathlib/RepresentationTheory/Rep/Res.lean:36\\n    /-- The restriction functor `Rep R G ⥤ Rep R H` for a subgroup `H` of `G`. -/\\n- Mathlib/RepresentationTheory/Rep/Res.lean:114\\n    The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n- Mathlib/RepresentationTheory/Tannaka.lean:17\\n    of `G`, and the monoidal forgetful functor `forget : FDRep k G ⥤ FGModuleCat k`.\\n- Mathlib/RepresentationTheory/Tannaka.lean:46\\n    /-- The monoidal forgetful functor from `FDRep k G` to `FGModuleCat k`. -/\\n- Mathlib/RepresentationTheory/Tannaka.lean:225\\n    and `forget k G` is the monoidal forgetful functor `FDRep k G ⥤ FGModuleCat k G`. -/\\n- Mathlib/RepresentationTheory/Coinvariants.lean:357\\n    from the forgetful functor `Rep k G ⥤ ModuleCat k` to the coinvariants functor. -/\\n- Mathlib/RepresentationTheory/FDRep.lean:165\\n    /-- The forgetful functor to `Rep k G` preserves hom-sets and their vector space structure. -/\\n- Mathlib/RepresentationTheory/Homological/TateCohomology/Basic.lean:183\\n    /-- The next two statements say that `tateComplexFunctor` is an exact functor from `Rep R G` to\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/Functoriality.lean:529\\n    noncomputable def functor (n : ℕ) : Rep k G ⥤ ModuleCat k where\\n- Mathlib/RepresentationTheory/Homological/FiniteCyclic.lean:128\\n    /-- Given a finite group `G` and `g : G`, this is the functor `Rep k G ⥤ ChainComplex (Rep k G) ℕ`\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Shapiro.lean:18\\n    the functor `Coind_S^G : Rep k S ⥤ Rep k G` preserves epimorphisms.\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Shapiro.lean:27\\n    we define a natural isomorphism between the functors `Rep k S ⥤ ModuleCat k` sending `A` to\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Basic.lean:62\\n    $(A, B) \\\\mapsto (A \\\\otimes_k B)_G$. The functor `Rep.coinvariantsTensor k G` is naturally\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Functoriality.lean:27\\n    transformation of `n`th group homology functors which sends `A : Rep k H` to the \\\"corestriction\\\"\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Functoriality.lean:30\\n    transformation of `n`th group homology f"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Functor.*Rep\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4084,
+   "result_head": "[{\"type\": \"text\", \"text\": \"52 match(es) for 'Functor.*Rep' (via ripgrep):\\n- Mathlib/RepresentationTheory/Induced.lean:117\\n    noncomputable def indFunctor : Rep.{w} k G ⥤ Rep k H where\\n- Mathlib/RepresentationTheory/Homological/Resolution.lean:243\\n    (Functor.congr_obj (map_alternatingFaceMapComplex (forget₂ (Rep k G) (ModuleCat.{u} k))).symm\\n- Mathlib/RepresentationTheory/Invariants.lean:250\\n    noncomputable def invariantsFunctor : Rep.{w} k G ⥤ ModuleCat k where\\n- Mathlib/RepresentationTheory/Invariants.lean:267\\n    map {X Y} f := Rep.ofHom ⟨((invariantsFunctor k S).map ((Rep.resFunctor S.subtype).map f)).hom,\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:19\\n    coinduction functor `TopRep.coind₁Functor`, the restriction functor `TopRep.resFunctor` along a\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:237\\n    abbrev invariantsFunctor : TopRep k G ⥤ TopModuleCat k where\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:251\\n    abbrev coind₁Functor : TopRep k G ⥤ TopRep k G where\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:279\\n    lemma resFunctor_map_hom [Monoid H] (φ : H →* G) {A B : TopRep k G} (f : A ⟶ B) :\\n- Mathlib/RepresentationTheory/Homological/ContCohomology/LowDegree.lean:21\\n    open CategoryTheory Functor TopRep ContRepresentation\\n- Mathlib/RepresentationTheory/Homological/TateCohomology/Basic.lean:132\\n    def tateComplexFunctor : Rep R G ⥤ CochainComplex (ModuleCat R) ℤ where\\n- Mathlib/RepresentationTheory/Homological/TateCohomology/Basic.lean:140\\n    def tateCohomologyFunctor (n : ℤ) : Rep R G ⥤ ModuleCat R :=\\n- Mathlib/RepresentationTheory/Homological/TateCohomology/Basic.lean:171\\n    lemma map_tateComplexFunctor_shortExact {S : ShortComplex (Rep R G)} (hS : S.ShortExact) :\\n- Mathlib/RepresentationTheory/Homological/TateCohomology/Basic.lean:183\\n    /-- The next two statements say that `tateComplexFunctor` is an exact functor from `Rep R G` to\\n- Mathlib/Control/Functor/Multivariate.lean:89\\n    MvFunctor.LiftP fun i x => ofRepeat <| P i x\\n- Mathlib/Control/Functor/Multivariate.lean:94\\n    MvFunctor.LiftR @fun i x y => ofRepeat <| R i <| TypeVec.prod.mk _ x y\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:442\\n    def trivialFunctor : ModuleCat.{w} k ⥤ Rep.{w} k G where\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:630\\n    instance : Functor.Linear k (forget₂ (Rep.{w} k G) (ModuleCat.{w} k)) where\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/Functoriality.lean:517\\n    noncomputable def cochainsFunctor : Rep k G ⥤ CochainComplex (ModuleCat k) ℕ where\\n- Mathlib/RepresentationTheory/Rep/Res.lean:14\\n    `resFunctor f : Rep k G ⥤ Rep k H` which sends a `G`-representation `ρ` to the\\n- Mathlib/RepresentationTheory/Rep/Res.lean:37\\n    abbrev resFunctor (f : H →* G) : Rep.{t} k G ⥤ Rep k H where\\n- Mathlib/RepresentationTheory/Rep/Res.lean:98\\n    have : PreservesLimitsOfSize.{w, w} (resFunctor f ⋙ forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n- Mathlib/RepresentationTheory/Homological/FiniteCyclic.lean:136\\n    noncomputable def chainComplexFunctor : Rep k G ⥤ ChainComplex (Rep k G) ℕ where\\n- Mathlib/RepresentationTheory/Tannaka.lean:47\\n    def forget := LaxMonoidalFunctor.of (forget₂ (FDRep k G) (FGModuleCat k))\\n- Mathlib/RepresentationTheory/Coinvariants.lean:350\\n    noncomputable def coinvariantsFunctor : Rep.{w} k G ⥤ ModuleCat k where\\n- Mathlib/RepresentationTheory/FDRep.lean:85\\n    (Functor.map_injective (forget₂ (FDRep k G) (FGModuleCat k)))\\n- Mathlib/RepresentationTheory/Coinduced.lean:132\\n    noncomputable def coindFunctor : Rep.{t} k G ⥤ Rep k H where\\n- Mathlib/RepresentationTheory/Coinduced.lean:201\\n    noncomputable def coindFunctor' : Rep k G ⥤ Rep k H where\\n- Mathlib/AlgebraicGeometry/Sites/Representability.lean:65\\n    open Functor.relativelyRepresentable in\\n- Mathlib/AlgebraicGeometry/Sites/Representability.lean:108\\n    Functor.relativelyRepresentable.symmetry_fst, ((hf i).rep.isPullback' (f j)).w]))\\n- Mathlib/Cate"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 5466,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 1–120 of 159):\\n     1  /-\\n     2  Copyright (c) 2026 Yunzhou Xie. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Edison Xie\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.ShortExact\\n     9  public import Mathlib.RepresentationTheory.Rep.Iso\\n    10  /-!\\n    11  # Restriction of representations\\n    12  \\n    13  Given a group homomorphism `f : H →* G`, we have the restriction functor\\n    14  `resFunctor f : Rep k G ⥤ Rep k H` which sends a `G`-representation `ρ` to the\\n    15  `H`-representation `ρ.comp f`.\\n    16  \\n    17  -/\\n    18  \\n    19  public section\\n    20  \\n    21  universe t w u v v1 v2\\n    22  \\n    23  variable {k : Type u} [Semiring k] {G : Type v1} {H : Type v2} [Monoid G] [Monoid H]\\n    24  \\n    25  open CategoryTheory\\n    26  \\n    27  namespace Rep\\n    28  \\n    29  /-- The map induced by a monoid homomorphism `f : H →* G` on morphisms between\\n    30  `G`-representations. -/\\n    31  @[expose, implicit_reducible]\\n    32  def resMap {X Y : Rep k G} (f : H →* G) (p : X ⟶ Y) :\\n    33      of (X := X.V) (X.ρ.comp f) ⟶ of (X := Y.V) (Y.ρ.comp f) :=\\n    34    ofHom ⟨p.hom, fun h ↦ by simpa using p.hom.2 (f h)⟩\\n    35  \\n    36  /-- The restriction functor `Rep R G ⥤ Rep R H` for a subgroup `H` of `G`. -/\\n    37  abbrev resFunctor (f : H →* G) : Rep.{t} k G ⥤ Rep k H where\\n    38    obj A := of (X := A.V) (A.ρ.comp f)\\n    39    map f' := resMap f f'\\n    40  \\n    41  /-- The restriction of `X : Rep k G` associated to a monoid homomorphism `f : H →* G` -/\\n    42  abbrev res (f : H →* G) (M : Rep k G) := (resFunctor f).obj M\\n    43  \\n    44  variable (f : H →* G) (M : Rep k G)\\n    45  \\n    46  lemma res_id : res (MonoidHom.id G) M = M := rfl\\n    47  \\n    48  @[simp] lemma res_obj_ρ : (res f M).ρ = (M.ρ.comp f) := rfl\\n    49  \\n    50  lemma coe_res_obj_ρ' (h : H) : (res f M).ρ h = M.ρ (f h) := rfl\\n    51  \\n    52  lemma res_obj_V : (res f M).V = M.V := rfl\\n    53  \\n    54  @[simp]\\n    55  lemma resMap_hom_toLinearMap {M N : Rep k G} (p : M ⟶ N) :\\n    56      (resMap f p).hom.toLinearMap = p.hom.toLinearMap := rfl\\n    57  \\n    58  @[deprecated (since := \\\"26/06/2026\\\")]\\n    59  alias res_map_hom_toLinearMap := resMap_hom_toLinearMap\\n    60  \\n    61  @[simp]\\n    62  lemma resMap_hom_apply {M N : Rep k G} (p : M ⟶ N) (x : M.V) :\\n    63      @DFunLike.coe (Representation.IntertwiningMap (M.ρ.comp f) (N.ρ.comp f)) _ _ _\\n    64        (resMap f p).hom x = p.hom x := rfl\\n    65  \\n    66  section\\n    67  \\n    68  instance : (resFunctor (k := k) f).Faithful where\\n    69    map_injective h := by\\n    70      simpa [Rep.hom_ext_iff, Representation.IntertwiningMap.ext_iff] using h\\n    71  \\n    72  /-- Morphism between `X Y : Rep k G` can be lifted from restrictions associated with `f : H →* G`\\n    73    when `f` is surjective. -/\\n    74  abbrev liftHomOfSurj {X Y : Rep k G} (hf : Function.Surjective f) (f' : res f X ⟶ res f Y) :\\n    75      X ⟶ Y := ofHom ⟨f'.hom.toLinearMap, fun g ↦ by obtain ⟨h, rfl⟩ := hf g; simpa using f'.hom.2 h⟩\\n    76  \\n    77  @[simp]\\n    78  lemma liftHomOfSurj_toLinearMap {X Y : Rep k G} (hf : Function.Surjective f)\\n    79      (f' : res f X ⟶ res f Y) : (liftHomOfSurj f hf f').hom.toLinearMap =\\n    80        f'.hom.toLinearMap := rfl\\n    81  \\n    82  lemma full_res (hf : (⇑f).Surjective) : (resFunctor (k := k) f).Full where\\n    83    map_surjective {X Y} f' := ⟨liftHomOfSurj f hf f', by ext; simp⟩\\n    84  \\n    85  instance : (resFunctor (k := k) f).Additive where\\n    86    map_add {_ _} _ _ := by ext : 2; simp [add_hom]\\n    87  \\n    88  instance {k : Type u} [CommSemiring k] : (resFunctor (k := k) f).Linear k where\\n    89    map_smul {_ _} _ _ := by ext : 2; simp [smul_hom]\\n    90  \\n    91  section ShortComplex\\n    92  \\n    93  open "
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 110, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2371,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 110–159 of 159):\\n   110      IsZero (res f M) ↔ IsZero M := by\\n   111    rw [isZero_iff, isZero_iff, Rep.res_obj_V]\\n   112  \\n   113  /--\\n   114  The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n   115  preserves and reflects exactness. -/\\n   116  lemma res_map_exact {k : Type u} [CommRing k]\\n   117      (S : ShortComplex (Rep.{w} k G)) :\\n   118      (S.map (resFunctor f)).Exact ↔ S.Exact := by\\n   119    rw [ShortComplex.exact_map_iff_of_faithful]\\n   120  \\n   121  lemma shortExact_res {k : Type u} [CommRing k] (φ : H →* G) {S : ShortComplex (Rep.{w} k G)} :\\n   122      (S.map (resFunctor φ)).ShortExact ↔ S.ShortExact := by\\n   123    constructor\\n   124    · intro h\\n   125      have h₁ := h.1\\n   126      have h₂ := h.2\\n   127      have h₃ := h.3\\n   128      rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n   129      simp only [ShortComplex.map_f, mono_iff_injective, ShortComplex.map_g,\\n   130        epi_iff_surjective] at h₂ h₃\\n   131      exact {exact := h₁, mono_f := mono_iff_injective _|>.2 h₂, epi_g := epi_iff_surjective _|>.2 h₃}\\n   132    · rintro @⟨_, mono_f, epi_g⟩\\n   133      exact {\\n   134        exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\\n   135        mono_f := by simpa [mono_iff_injective] using! mono_f\\n   136        epi_g := by simpa [epi_iff_surjective] using! epi_g\\n   137      }\\n   138  \\n   139  end ShortComplex\\n   140  \\n   141  noncomputable section\\n   142  \\n   143  variable {G : Type v} [Group G] (A : Rep k G) (S : Subgroup G)\\n   144    [S.Normal] [Representation.IsTrivial (A.ρ.comp S.subtype)]\\n   145  \\n   146  /-- Given a normal subgroup `S ≤ G`, a `G`-representation `ρ` which is trivial on `S` factors\\n   147  through `G ⧸ S`. -/\\n   148  abbrev ofQuotient : Rep k (G ⧸ S) := Rep.of (A.ρ.ofQuotient S)\\n   149  \\n   150  /-- A `G`-representation `A` on which a normal subgroup `S ≤ G` acts trivially induces a\\n   151  `G ⧸ S`-representation on `A`, and composing this with the quotient map `G → G ⧸ S` gives the\\n   152  original representation by definition. Useful for typechecking. -/\\n   153  abbrev resOfQuotientIso : (res (QuotientGroup.mk' S) (A.ofQuotient S)) ≅ A := Iso.refl _\\n   154  \\n   155  end\\n   156  \\n   157  end\\n   158  \\n   159  end Rep\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ShortComplex.map\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortComplex.map': unknown identifier 'ShortComplex.map'\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*map.*ShortComplex\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'def.*map.*ShortComplex' (via ripgrep):\\n- Mathlib/Algebra/Homology/ExactSequence.lean:44\\n    def ShortComplex.mapToComposableArrows {S₁ S₂ : ShortComplex C} (φ : S₁ ⟶ S₂) :\\n- Mathlib/Algebra/Homology/ShortComplex/Basic.lean:168\\n    def map (F : C ⥤ D) [F.PreservesZeroMorphisms] : ShortComplex D :=\\n- Mathlib/Algebra/Homology/ShortComplex/Basic.lean:200\\n    def _root_.CategoryTheory.Functor.mapShortComplex (F : C ⥤ D) [F.PreservesZeroMorphisms] :\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/Functoriality.lean:280\\n    noncomputable def mapShortComplexH1 :\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/Functoriality.lean:445\\n    noncomputable def mapShortComplexH2 :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Functoriality.lean:295\\n    noncomputable def mapShortComplexH1 :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Functoriality.lean:709\\n    noncomputable def mapShortComplexH2 :\\n- Mathlib/CategoryTheory/Abelian/GrothendieckAxioms/Colim.lean:110\\n    def colim.mapShortComplex : ShortComplex C :=\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ShortComplex exact map functor\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortComplex exact map functor': Unknown identifier `ShortComplex`\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/Basic.lean\", \"line\": 160, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2901,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/Basic.lean  (lines 160–219 of 324):\\n   160  \\n   161  set_option backward.defeqAttrib.useBackward true in\\n   162  @[reassoc (attr := simp)]\\n   163  lemma π₁Toπ₂_comp_π₂Toπ₃ : (π₁Toπ₂ : (_ : _ ⥤ C) ⟶ _) ≫ π₂Toπ₃ = 0 := by cat_disch\\n   164  \\n   165  /-- The short complex in `D` obtained by applying a functor `F : C ⥤ D` to a\\n   166  short complex in `C`, assuming that `F` preserves zero morphisms. -/\\n   167  @[simps]\\n   168  def map (F : C ⥤ D) [F.PreservesZeroMorphisms] : ShortComplex D :=\\n   169    ShortComplex.mk (F.map S.f) (F.map S.g) (by rw [← F.map_comp, S.zero, F.map_zero])\\n   170  \\n   171  @[simp] lemma map_id (S : ShortComplex C) : S.map (𝟭 C) = S := rfl\\n   172  \\n   173  @[simp] lemma map_comp (S : ShortComplex C)\\n   174      (F : C ⥤ D) [F.PreservesZeroMorphisms] (G : D ⥤ E) [G.PreservesZeroMorphisms] :\\n   175      S.map (F ⋙ G) = (S.map F).map G := rfl\\n   176  \\n   177  set_option backward.defeqAttrib.useBackward true in\\n   178  /-- The morphism of short complexes `S.map F ⟶ S.map G` induced by\\n   179  a natural transformation `F ⟶ G`. -/\\n   180  @[simps]\\n   181  def mapNatTrans {F G : C ⥤ D} [F.PreservesZeroMorphisms] [G.PreservesZeroMorphisms] (τ : F ⟶ G) :\\n   182      S.map F ⟶ S.map G where\\n   183    τ₁ := τ.app _\\n   184    τ₂ := τ.app _\\n   185    τ₃ := τ.app _\\n   186  \\n   187  set_option backward.defeqAttrib.useBackward true in\\n   188  /-- The isomorphism of short complexes `S.map F ≅ S.map G` induced by\\n   189  a natural isomorphism `F ≅ G`. -/\\n   190  @[simps]\\n   191  def mapNatIso {F G : C ⥤ D} [F.PreservesZeroMorphisms] [G.PreservesZeroMorphisms] (τ : F ≅ G) :\\n   192      S.map F ≅ S.map G where\\n   193    hom := S.mapNatTrans τ.hom\\n   194    inv := S.mapNatTrans τ.inv\\n   195  \\n   196  set_option backward.defeqAttrib.useBackward true in\\n   197  /-- The functor `ShortComplex C ⥤ ShortComplex D` induced by a functor `C ⥤ D` which\\n   198  preserves zero morphisms. -/\\n   199  @[simps]\\n   200  def _root_.CategoryTheory.Functor.mapShortComplex (F : C ⥤ D) [F.PreservesZeroMorphisms] :\\n   201      ShortComplex C ⥤ ShortComplex D where\\n   202    obj S := S.map F\\n   203    map φ :=\\n   204      { τ₁ := F.map φ.τ₁\\n   205        τ₂ := F.map φ.τ₂\\n   206        τ₃ := F.map φ.τ₃\\n   207        comm₁₂ := by\\n   208          dsimp\\n   209          simp only [← F.map_comp, φ.comm₁₂]\\n   210        comm₂₃ := by\\n   211          dsimp\\n   212          simp only [← F.map_comp, φ.comm₂₃] }\\n   213  \\n   214  /-- A constructor for isomorphisms in the category `ShortComplex C` -/\\n   215  @[simps]\\n   216  def isoMk (e₁ : S₁.X₁ ≅ S₂.X₁) (e₂ : S₁.X₂ ≅ S₂.X₂) (e₃ : S₁.X₃ ≅ S₂.X₃)\\n   217      (comm₁₂ : e₁.hom ≫ S₂.f = S₁.f ≫ e₂.hom := by cat_disch)\\n   218      (comm₂₃ : e₂.hom ≫ S₂.g = S₁.g ≫ e₃.hom := by cat_disch) :\\n   219      S₁ ≅ S₂ where\\n\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__wikibrain__decl_exists",
+   "input": "{\"names\": \"[\\\"ShortComplex\\\", \\\"ShortComplex.Exact\\\", \\\"Rep.resFunctor\\\", \\\"Rep.res_map_exact\\\"]\"}",
+   "ok": false,
+   "result_chars": 99,
+   "result_head": "<tool_use_error>Error: No such tool available: mcp__formal__wikibrain__decl_exists</tool_use_error>"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ShortComplex\", \"ShortComplex.Exact\", \"Rep.resFunctor\", \"Rep.res_map_exact\"]}",
+   "ok": true,
+   "result_chars": 1246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ShortComplex\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ShortComplex.Exact\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Rep.resFunctor\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RepresentationTheory.Rep.Res\\\",\\\"import_line\\\":\\\"import Mathlib.RepresentationTheory.Rep.Res\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Rep/Res.html#Rep.resFunctor\\\"},{\\\"decl\\\":\\\"Rep.res_map_exact\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma res_map_exact\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'lemma res_map_exact' (via ripgrep):\\n- Mathlib/RepresentationTheory/Rep/Res.lean:116\\n    lemma res_map_exact {k : Type u} [CommRing k]\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*Exact\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 6150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"252 match(es) for 'lemma.*Exact' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:63\\n    `GenContFract.of v` as described in lemma `compExactValue_correctness_of_stream_eq_some`.\\n- Mathlib/Condensed/AB.lean:37\\n    lemma hasExactColimitsOfShape [HasColimitsOfShape J A] [HasExactColimitsOfShape J A]\\n- Mathlib/Condensed/AB.lean:44\\n    lemma hasExactLimitsOfShape [HasLimitsOfShape J A] [HasExactLimitsOfShape J A]\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:68\\n    lemma composableArrows₂_exact (hS₁ : S₁.ShortExact) (i : ι) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:187\\n    lemma exactAt_X₁ (hS : S.ShortExact) (j : ι)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:206\\n    lemma exactAt_X₂ (hS : S.ShortExact) (i : ι) (h₁ : S.X₁.ExactAt i) (h₃ : S.X₃.ExactAt i) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:211\\n    lemma exactAt_X₃ (hS : S.ShortExact) (i : ι)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:230\\n    lemma acyclic_X₁ (hS : S.ShortExact) (hg : _root_.QuasiIso S.g) : S.X₁.Acyclic :=\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:233\\n    lemma acyclic_X₂ (hS : S.ShortExact) (h₁ : S.X₁.Acyclic) (h₃ : S.X₃.Acyclic) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:237\\n    lemma acyclic_X₃ (hS : S.ShortExact) (h : _root_.QuasiIso S.f) : S.X₃.Acyclic :=\\n- Mathlib/Algebra/Homology/Factorizations/CM5a.lean:325\\n    lemma shortExact [Mono f] : (ShortComplex.mk _ _ (cokernel.condition f)).ShortExact where\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:81\\n    lemma ShortComplex.ShortExact.mapShiftedHom_singleδ'\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:107\\n    lemma ShortComplex.ShortExact.mapShiftedHom_singleδ\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:137\\n    lemma Abelian.Ext.mapExactFunctor_hom\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:163\\n    lemma Abelian.Ext.mapExactFunctor_zero : (0 : Ext X Y n).mapExactFunctor F = 0 := by\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:167\\n    lemma Abelian.Ext.mapExactFunctor_add (f g : Ext.{w} X Y n) :\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:179\\n    lemma Functor.mapExtAddHom_coe : ⇑(F.mapExtAddHom X Y n) = Ext.mapExactFunctor F := rfl\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:181\\n    lemma Functor.mapExtAddHom_apply (e : Ext X Y n) : F.mapExtAddHom X Y n e = e.mapExactFunctor F :=\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:187\\n    lemma Functor.mapExactFunctor_smul (r : R) (f : Ext.{w} X Y n) :\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:201\\n    lemma Functor.mapExtLinearMap_coe : ⇑(F.mapExtLinearMap R X Y n) = Ext.mapExactFunctor F := rfl\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:211\\n    lemma mapExactFunctor_mk₀ [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} (f : X ⟶ Y) :\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:221\\n    lemma mapExactFunctor₀ [HasExt.{w} C] [HasExt.{w'} D] (X Y : C) :\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:227\\n    lemma mapExactFunctor_comp [HasExt.{w} C] [HasExt.{w'} D] {X Y Z : C} {a b : ℕ}\\n- Mathlib/Algebra/Homology/DerivedCategory/Ext/Map.lean:234\\n    lemma mapExactFunctor_extClass [HasExt.{w} C] [HasExt.{w'} D] {S : ShortComplex C}\\n- Mathlib/Algebra/Homology/HomologySequence.lean:181\\n    lemma opcycles_right_exact (S : ShortComplex (HomologicalComplex C c)) (hS : S.Exact) [Epi S.g]\\n- Mathlib/Algebra/Homology/HomologySequence.lean:205\\n    lemma cycles_left_exact (S : ShortComplex (HomologicalComplex C c)) (hS : S.Exact) [Mono S.f]\\n- Mathlib/Algebra/Homology/HomologySequence.lean:300\\n    lemma homology_exact₁ : (ShortComplex.mk _ _ (δ_comp hS i j hij)).Exact :=\\n- Mathlib/Algebra/Homology/HomologySequence.lean:321\\n    lemma homology_exact₃ : (ShortComplex.mk _ _ (comp_δ hS i j hij)).Exact :=\\n- Mathlib/Algebra/Homology/ShortComple"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"exact_map_iff\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1140,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'exact_map_iff' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ConcreteCategory.lean:87\\n    (S.exact_map_iff_of_faithful (forget₂ C Ab)).symm\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:201\\n    lemma LeftHomologyData.exact_map_iff (h : S.LeftHomologyData) (F : C ⥤ D)\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:206\\n    lemma RightHomologyData.exact_map_iff (h : S.RightHomologyData) (F : C ⥤ D)\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:216\\n    rw [S.leftHomologyData.exact_map_iff F, IsZero.iff_id_eq_zero,\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:224\\n    rw [S.rightHomologyData.exact_map_iff F, IsZero.iff_id_eq_zero,\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:235\\n    lemma exact_map_iff_of_faithful [S.HasHomology]\\n- Mathlib/RepresentationTheory/Rep/Res.lean:119\\n    rw [ShortComplex.exact_map_iff_of_faithful]\\n- Mathlib/RepresentationTheory/Rep/Res.lean:128\\n    rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n- Mathlib/RepresentationTheory/Rep/Res.lean:134\\n    exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.ShortComplex\", \"CategoryTheory.ShortComplex.Exact\"]}",
+   "ok": true,
+   "result_chars": 946,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.ShortComplex\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Homology.ShortComplex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.ShortComplex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/ShortComplex/Basic.html#CategoryTheory.ShortComplex\\\"},{\\\"decl\\\":\\\"CategoryTheory.ShortComplex.Exact\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Homology.ShortComplex.Exact\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.ShortComplex.Exact\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/ShortComplex/Exact.html#CategoryTheory.ShortComplex.Exact\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.ShortComplex.exact_map_iff_of_faithful\", \"Rep.resFunctor\", \"Rep.res\"]}",
+   "ok": true,
+   "result_chars": 1238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.ShortComplex.exact_map_iff_of_faithful\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Homology.ShortComplex.Exact\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.ShortComplex.Exact\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/ShortComplex/Exact.html#CategoryTheory.ShortComplex.exact_map_iff_of_faithful\\\"},{\\\"decl\\\":\\\"Rep.resFunctor\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RepresentationTheory.Rep.Res\\\",\\\"import_line\\\":\\\"import Mathlib.RepresentationTheory.Rep.Res\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Rep/Res.html#Rep.resFunctor\\\"},{\\\"decl\\\":\\\"Rep.res\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RepresentationTheory.Rep.Res\\\",\\\"import_line\\\":\\\"import Mathlib.RepresentationTheory.Rep.Res\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RepresentationTheory/Rep/Res.html#Rep.res\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Rep.Res.res_map_exact\"]}",
+   "ok": true,
+   "result_chars": 459,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Rep.Res.res_map_exact\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*exact\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 6148,
+   "result_head": "[{\"type\": \"text\", \"text\": \"97 match(es) for 'theorem.*exact' (via ripgrep):\\n- Mathlib/Topology/Sheaves/AddCommGrpCat.lean:30\\n    theorem Presheaf.sections_exact_of_exact\\n- Mathlib/GroupTheory/FreeGroup/Reduce.lean:172\\n    theorem reduce.exact (H : reduce L₁ = reduce L₂) : mk L₁ = mk L₂ :=\\n- Mathlib/GroupTheory/FreeGroup/Reduce.lean:195\\n    theorem mk_toWord : ∀ {x : FreeGroup α}, mk (toWord x) = x := by rintro ⟨L⟩; exact reduce.self\\n- Mathlib/GroupTheory/FreeGroup/Basic.lean:647\\n    theorem Red.exact : mk L₁ = mk L₂ ↔ Join Red L₁ L₂ :=\\n- Mathlib/GroupTheory/MonoidLocalization/Maps.lean:176\\n    theorem lift_comp : (f.lift hg).comp f.toMonoidHom = g := by ext; exact f.lift_eq hg _\\n- Mathlib/Topology/Sheaves/Abelian.lean:103\\n    theorem exact_iff_stalkFunctor_map_exact (S : ShortComplex (Sheaf C X)) :\\n- Mathlib/SetTheory/ZFC/Basic.lean:167\\n    theorem exact {x y : PSet} : mk x = mk y → PSet.Equiv x y :=\\n- Mathlib/Data/PNat/Basic.lean:344\\n    theorem mul_div_exact {m k : ℕ+} (h : k ∣ m) : k * divExact m k = m := by\\n- Mathlib/Algebra/Module/LocalizedModule/Exact.lean:56\\n    theorem IsLocalizedModule.map_exact (g : M₀ →ₗ[R] M₁) (h : M₁ →ₗ[R] M₂) (ex : Function.Exact g h) :\\n- Mathlib/Combinatorics/SimpleGraph/Connectivity/Connected.lean:424\\n    protected theorem exact {v w : V} :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean:98\\n    /-- Since we have `sum_[]_adjacent_intervals` theorems for both exact and trapezoidal integration,\\n- Mathlib/Data/Seq/Basic.lean:42\\n    theorem length_nil : length (nil : Seq α) terminates_nil = 0 := by simp [length]; exact rfl\\n- Mathlib/NumberTheory/MulChar/Basic.lean:257\\n    theorem one_apply_coe (a : Rˣ) : (1 : MulChar R R') a = 1 := by classical exact dif_pos a.isUnit\\n- Mathlib/Algebra/Homology/ExactSequence.lean:322\\n    theorem natAddLEFunctor_obj_exact {n k l : ℕ} (h : k + l ≤ n) {R : ComposableArrows C n}\\n- Mathlib/Data/Quot.lean:723\\n    theorem exact' {a b : α} :\\n- Mathlib/Data/Sym/Sym2.lean:116\\n    protected theorem exact {a b c d : α} (h : s(a, b) = s(c, d)) : Rel α (a, b) (c, d) :=\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:162\\n    theorem degree_one_le : degree (1 : R[X]) ≤ (0 : WithBot ℕ) := by rw [← C_1]; exact degree_C_le\\n- Mathlib/Topology/Homotopy/Path.lean:315\\n    theorem exact {p q : Path x₀ x₁} (h : Quotient.mk p = Quotient.mk q) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:116\\n    theorem comap_coe_Ioo_nhdsLT (a b : X) (hb : IsSuccPrelimit b := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:124\\n    theorem comap_coe_Ioo_nhdsGT (a b : X) (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:130\\n    theorem comap_coe_Ioi_nhdsGT (a : X) (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:135\\n    theorem comap_coe_Iio_nhdsLT (a : X) (ha : IsSuccPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:140\\n    theorem map_coe_Ioo_atTop (h : a < b) (hb : IsSuccPrelimit b := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:145\\n    theorem map_coe_Ioo_atBot (h : a < b) (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:150\\n    theorem map_coe_Ioi_atBot (a : X) (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:155\\n    theorem map_coe_Iio_atTop (a : X) (ha : IsSuccPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:162\\n    theorem tendsto_comp_coe_Ioo_atTop (h : a < b) (hb : IsSuccPrelimit b := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:167\\n    theorem tendsto_comp_coe_Ioo_atBot (h : a < b) (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:172\\n    theorem tendsto_comp_coe_Ioi_atBot (ha : IsPredPrelimit a := by exact .of_dense _) :\\n- Mathlib/Topology/Order/AtTopBotIxx.lean:177\\n    theorem tendsto_comp_coe"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 113, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1359,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 113–137 of 159):\\n   113  /--\\n   114  The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n   115  preserves and reflects exactness. -/\\n   116  lemma res_map_exact {k : Type u} [CommRing k]\\n   117      (S : ShortComplex (Rep.{w} k G)) :\\n   118      (S.map (resFunctor f)).Exact ↔ S.Exact := by\\n   119    rw [ShortComplex.exact_map_iff_of_faithful]\\n   120  \\n   121  lemma shortExact_res {k : Type u} [CommRing k] (φ : H →* G) {S : ShortComplex (Rep.{w} k G)} :\\n   122      (S.map (resFunctor φ)).ShortExact ↔ S.ShortExact := by\\n   123    constructor\\n   124    · intro h\\n   125      have h₁ := h.1\\n   126      have h₂ := h.2\\n   127      have h₃ := h.3\\n   128      rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n   129      simp only [ShortComplex.map_f, mono_iff_injective, ShortComplex.map_g,\\n   130        epi_iff_surjective] at h₂ h₃\\n   131      exact {exact := h₁, mono_f := mono_iff_injective _|>.2 h₂, epi_g := epi_iff_surjective _|>.2 h₃}\\n   132    · rintro @⟨_, mono_f, epi_g⟩\\n   133      exact {\\n   134        exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\\n   135        mono_f := by simpa [mono_iff_injective] using! mono_f\\n   136        epi_g := by simpa [epi_iff_surjective] using! epi_g\\n   137      }\\n\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 91, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2544,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 91–140 of 159):\\n    91  section ShortComplex\\n    92  \\n    93  open Limits\\n    94  \\n    95  variable {k : Type u} [Ring k]\\n    96  \\n    97  instance : PreservesLimits (resFunctor.{w} (k := k) f) :=\\n    98    have : PreservesLimitsOfSize.{w, w} (resFunctor f ⋙ forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n    99      inferInstanceAs (PreservesLimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   100    preservesLimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   101  \\n   102  instance : Limits.PreservesColimits (resFunctor.{w} (k := k) f) :=\\n   103    have : PreservesColimitsOfSize.{w, w} (resFunctor (k := k) f ⋙\\n   104        forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n   105      inferInstanceAs (PreservesColimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   106    preservesColimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   107  \\n   108  /-- An object of `Rep k G` is zero iff its restriction to `H` is zero. -/\\n   109  lemma isZero_res_iff (M : Rep k G) :\\n   110      IsZero (res f M) ↔ IsZero M := by\\n   111    rw [isZero_iff, isZero_iff, Rep.res_obj_V]\\n   112  \\n   113  /--\\n   114  The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n   115  preserves and reflects exactness. -/\\n   116  lemma res_map_exact {k : Type u} [CommRing k]\\n   117      (S : ShortComplex (Rep.{w} k G)) :\\n   118      (S.map (resFunctor f)).Exact ↔ S.Exact := by\\n   119    rw [ShortComplex.exact_map_iff_of_faithful]\\n   120  \\n   121  lemma shortExact_res {k : Type u} [CommRing k] (φ : H →* G) {S : ShortComplex (Rep.{w} k G)} :\\n   122      (S.map (resFunctor φ)).ShortExact ↔ S.ShortExact := by\\n   123    constructor\\n   124    · intro h\\n   125      have h₁ := h.1\\n   126      have h₂ := h.2\\n   127      have h₃ := h.3\\n   128      rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n   129      simp only [ShortComplex.map_f, mono_iff_injective, ShortComplex.map_g,\\n   130        epi_iff_surjective] at h₂ h₃\\n   131      exact {exact := h₁, mono_f := mono_iff_injective _|>.2 h₂, epi_g := epi_iff_surjective _|>.2 h₃}\\n   132    · rintro @⟨_, mono_f, epi_g⟩\\n   133      exact {\\n   134        exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\\n   135        mono_f := by simpa [mono_iff_injective] using! mono_f\\n   136        epi_g := by simpa [epi_iff_surjective] using! epi_g\\n   137      }\\n   138  \\n   139  end ShortComplex\\n   140  \\n\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 19, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 19–68 of 159):\\n    19  public section\\n    20  \\n    21  universe t w u v v1 v2\\n    22  \\n    23  variable {k : Type u} [Semiring k] {G : Type v1} {H : Type v2} [Monoid G] [Monoid H]\\n    24  \\n    25  open CategoryTheory\\n    26  \\n    27  namespace Rep\\n    28  \\n    29  /-- The map induced by a monoid homomorphism `f : H →* G` on morphisms between\\n    30  `G`-representations. -/\\n    31  @[expose, implicit_reducible]\\n    32  def resMap {X Y : Rep k G} (f : H →* G) (p : X ⟶ Y) :\\n    33      of (X := X.V) (X.ρ.comp f) ⟶ of (X := Y.V) (Y.ρ.comp f) :=\\n    34    ofHom ⟨p.hom, fun h ↦ by simpa using p.hom.2 (f h)⟩\\n    35  \\n    36  /-- The restriction functor `Rep R G ⥤ Rep R H` for a subgroup `H` of `G`. -/\\n    37  abbrev resFunctor (f : H →* G) : Rep.{t} k G ⥤ Rep k H where\\n    38    obj A := of (X := A.V) (A.ρ.comp f)\\n    39    map f' := resMap f f'\\n    40  \\n    41  /-- The restriction of `X : Rep k G` associated to a monoid homomorphism `f : H →* G` -/\\n    42  abbrev res (f : H →* G) (M : Rep k G) := (resFunctor f).obj M\\n    43  \\n    44  variable (f : H →* G) (M : Rep k G)\\n    45  \\n    46  lemma res_id : res (MonoidHom.id G) M = M := rfl\\n    47  \\n    48  @[simp] lemma res_obj_ρ : (res f M).ρ = (M.ρ.comp f) := rfl\\n    49  \\n    50  lemma coe_res_obj_ρ' (h : H) : (res f M).ρ h = M.ρ (f h) := rfl\\n    51  \\n    52  lemma res_obj_V : (res f M).V = M.V := rfl\\n    53  \\n    54  @[simp]\\n    55  lemma resMap_hom_toLinearMap {M N : Rep k G} (p : M ⟶ N) :\\n    56      (resMap f p).hom.toLinearMap = p.hom.toLinearMap := rfl\\n    57  \\n    58  @[deprecated (since := \\\"26/06/2026\\\")]\\n    59  alias res_map_hom_toLinearMap := resMap_hom_toLinearMap\\n    60  \\n    61  @[simp]\\n    62  lemma resMap_hom_apply {M N : Rep k G} (p : M ⟶ N) (x : M.V) :\\n    63      @DFunLike.coe (Representation.IntertwiningMap (M.ρ.comp f) (N.ρ.comp f)) _ _ _\\n    64        (resMap f p).hom x = p.hom x := rfl\\n    65  \\n    66  section\\n    67  \\n    68  instance : (resFunctor (k := k) f).Faithful where\\n\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.Functor.Faithful\", \"CategoryTheory.ShortComplex.map\"]}",
+   "ok": true,
+   "result_chars": 953,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.Functor.Faithful\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Functor.FullyFaithful\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Functor.FullyFaithful\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Functor/FullyFaithful.html#CategoryTheory.Functor.Faithful\\\"},{\\\"decl\\\":\\\"CategoryTheory.ShortComplex.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Homology.ShortComplex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.ShortComplex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/ShortComplex/Basic.html#CategoryTheory.ShortComplex.map\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem restrictionFunctorPreservesReflectsExactness\n    {k : Type u} [CommRing k]\n    {G : Type v1} {H : Type v2} [Monoid G] [Monoid H]\n    (f : H →* G)\n    (S : CategoryTheory.ShortComplex (Rep k G)) :\n    (S.map (Rep.resFunctor f)).Exact ↔ S.Exact := sorry"
+}

@@ -1,0 +1,492 @@
+{
+ "task_id": "fresh_079",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:19:10Z",
+ "wall_s": 114.6,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 27,
+   "mcp__formal__decl_grep": 22,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 244,
+  "tokens_out": 6474,
+  "cost_usd": 0.13949640000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finite flat module\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite flat module': Unknown identifier `finite`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Rank\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Rank': unknown identifier 'Module.Rank'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Free\"}",
+   "ok": true,
+   "result_chars": 1378,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 688 declarations mentioning Module.Free.\\n- Module.Free   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n    `Module.Free R M` is the statement that the `R`-module `M` is free.\\n- Module.Free.self   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n    The module structure provided by `Semiring.toModule` is free.\\n- Module.Free.ChooseBasisIndex   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n    If `Module.Free R M` then `ChooseBasisIndex R M` is the `ι` which indexes the basis `ι → M`. Note that this is defined such that this type is finite if `R` is t\\n- Module.Free.of_subsingleton   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.of_subsingleton'   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.infinite   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.instIsTorsionFree   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.instDecidableEqChooseBasisIndex   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n    There is no hope of computing this, but we add the instance anyway to avoid fumbling with `open scoped Classical`.\\n- Module.Free.of_basis   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.instNonemptyChooseBasisIndexOfNontrivial   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.exists_basis   [Mathlib.LinearAlgebra.FreeModule.Basic]\\n- Module.Free.mk   [Mathlib.LinearAlgebra.FreeModule.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Flat\"}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 315 declarations mentioning Module.Flat.\\n- Module.Flat   [Mathlib.RingTheory.Flat.Basic]\\n    An `R`-module `M` is flat if for every finitely generated submodule `N` of every finitely generated `R`-module `P` in the same universe as `R`, the canonical ma\\n- Module.Flat.self   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.of_free   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.of_projective   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.of_ulift   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.ulift   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.of_shrink   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.shrink   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.finsupp   [Mathlib.RingTheory.Flat.Basic]\\n    Free `R`-modules over discrete types are flat.\\n- Module.Flat.directSum   [Mathlib.RingTheory.Flat.Basic]\\n    A direct sum of flat `R`-modules is flat.\\n- Module.Flat.directSum_iff   [Mathlib.RingTheory.Flat.Basic]\\n- Module.Flat.dfinsupp   [Mathlib.RingTheory.Flat.Basic]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.localization_away\"}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.localization_away': unknown identifier 'Submodule.localization_away'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"localization away\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'localization away': Unknown identifier `localization`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank stalk\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank stalk': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Localization.Away\"}",
+   "ok": true,
+   "result_chars": 2238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 107 declarations mentioning Localization.Away.\\n- Localization.Away   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n    Given `x : M`, the Localization of `M` at the Submonoid generated by `x`, as a quotient.\\n- Localization.Away.invSelf   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n    Given `x : M`, `invSelf` is `x⁻¹` in the Localization (as a quotient type) of `M` at the Submonoid generated by `x`.\\n- Localization.Away.monoidOf   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n    Given `x : M`, the natural hom sending `y : M`, `M` a `CommMonoid`, to the equivalence class of `(y, 1)` in the Localization of `M` at the Submonoid generated b\\n- Localization.Away.mulEquivOfQuotient   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n    Given `x : M` and a Localization map `f : M →* N` away from `x`, we get an isomorphism between the Localization of `M` at the Submonoid generated by `x` as a qu\\n- Localization.Away.mk_eq_monoidOf_mk'   [Mathlib.GroupTheory.MonoidLocalization.Away]\\n- Localization.Away.isDomain   [Mathlib.RingTheory.Localization.Away.Basic]\\n    If `x ≠ 0`, then the localization of a domain away from `x` is again a domain.\\n- Localization.awayLift   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Given a map `f : R →+* S` and an element `r : R`, such that `f r` is invertible, we may construct a map `Rᵣ →+* S`.\\n- Localization.awayMap   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Given a map `f : R →+* S` and an element `r : R`, we may construct a map `Rᵣ →+* Sᵣ`.\\n- IsLocalization.Away.instHMulAwayCoeRingHomAlgebraMap   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Localizing the localization of `R` at `x` at the image of `y` is the same as localizing `R` at `y * x`.\\n- IsLocalization.Away.instHMulAwayCoeRingHomAlgebraMap_1   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Localizing the localization of `R` at `x` at the image of `y` is the same as localizing `R` at `x * y`.\\n- Localization.awayMapₐ   [Mathlib.RingTheory.Localization.Away.Basic]\\n    Given a map `f : A →ₐ[R] B` and an element `a : A`, we may construct a map `Aₐ →ₐ[R] Bₐ`.\\n- Localization.algebraMap_injective_of_span_eq_top   [Mathlib.RingTheory.Localization.Away.Basic]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.FiniteType\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.FiniteType': unknown identifier 'Module.FiniteType'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.Prime\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.Prime': unknown identifier 'Ideal.Prime'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank': unknown identifier 'rank'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteType\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FiniteType': unknown identifier 'FiniteType'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPrime\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsPrime': unknown identifier 'IsPrime'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : Type) → (?b : Type) → (?r : Type) → Prop\"}",
+   "ok": true,
+   "result_chars": 161,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : Type) → (?b : Type) → (?r : Type) → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"prime ideal\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'prime ideal': Unknown identifier `prime`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finite module\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finite module': Unknown identifier `module`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalRing\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalRing': unknown identifier 'LocalRing'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*prime.*ideal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 921,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*prime.*ideal' (via ripgrep):\\n- Mathlib/Algebra/Module/DedekindDomain.lean:35\\n    theorem isInternal_prime_power_torsion_of_is_torsion_by_ideal\\n- Mathlib/NumberTheory/RamificationInertia/Basic.lean:536\\n    /-- **Chinese remainder theorem** for a ring of integers: if the prime ideal `p : Ideal R`\\n- Mathlib/NumberTheory/RamificationInertia/Basic.lean:562\\n    /-- **Chinese remainder theorem** for a ring of integers: if the prime ideal `p : Ideal R`\\n- Mathlib/NumberTheory/KummerDedekind.lean:15\\n    This file proves the Kummer-Dedekind theorem on the splitting of prime ideals in an extension of\\n- Mathlib/Order/PrimeSeparator.lean:44\\n    theorem DistribLattice.prime_ideal_of_disjoint_filter_ideal [DistribLattice α]\\n- Mathlib/Order/PrimeSeparator.lean:124\\n    -- theorem prime_filter_of_disjoint_filter_ideal (hFI : Disjoint (F : Set α) (I : Set α)) :\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1334,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1484 match(es) for 'fintype' (via ripgrep):\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:522\\n    /-- The range of a morphism of algebras is a fintype, if the domain is a fintype.\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:524\\n    Note that this instance can cause a diamond with `Subtype.fintype` if `B` is also a fintype. -/\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:525\\n    instance fintypeRange [Fintype A] [DecidableEq B] (φ : F) :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:527\\n    Set.fintypeRange φ\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:598\\n    /-- The range of a morphism of algebras is a fintype, if the domain is a fintype.\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:600\\n    Note that this instance can cause a diamond with `Subtype.fintype` if `B` is also a fintype. -/\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:601\\n    instance fintypeRange [Fintype A] [DecidableEq B] (φ : A →ₐ[R] B) : Fintype φ.range :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:602\\n    Set.fintypeRange φ\\n- Mathlib/FieldTheory/Finiteness.lean:46\\n    noncomputable def fintypeBasisIndex {ι : Type*} [IsNoetherian K V] (b : Basis ι K V) : Fintype ι :=\\n- Mathlib/FieldTheory/Finiteness.lean:47\\n    b.fintypeIndexOfRankLtAleph0 (rank_lt_aleph0 K V)\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1373,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2576 match(es) for 'rank' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:21\\n    theorem Subalgebra.isSimpleOrder_of_finrank_prime (F A) [Field F] [Ring A] [IsDomain A]\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:22\\n    [Algebra F A] (hp : (finrank F A).Prime) : IsSimpleOrder (Subalgebra F A) :=\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:25\\n    Nat.not_prime_one ((Subalgebra.bot_eq_top_iff_finrank_eq_one.1 he).subst hp)⟩⟩\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:27\\n    haveI : FiniteDimensional _ _ := .of_finrank_pos hp.pos\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:29\\n    refine (hp.eq_one_or_self_of_dvd _ ⟨_, (finrank_mul_finrank F K A).symm⟩).imp ?_ fun h => ?_\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:30\\n    · exact fun h' => Subalgebra.eq_bot_of_finrank_one h'\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:32\\n    Algebra.toSubmodule_eq_top.1 (eq_top_of_finrank_eq <| K.finrank_toSubmodule.trans h) }\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:14\\n    # Some results on the ranks of subalgebras\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:16\\n    This file contains some results on the ranks of subalgebras,\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:17\\n    which are corollaries of `rank_mul_rank`.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem).*rank\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2704,
+   "result_head": "[{\"type\": \"text\", \"text\": \"898 match(es) for '(def|theorem).*rank' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:21\\n    theorem Subalgebra.isSimpleOrder_of_finrank_prime (F A) [Field F] [Ring A] [IsDomain A]\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:35\\n    theorem rank_sup_eq_rank_left_mul_rank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:48\\n    theorem finrank_sup_eq_finrank_left_mul_finrank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:52\\n    theorem finrank_left_dvd_finrank_sup_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:60\\n    theorem rank_sup_eq_rank_right_mul_rank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:64\\n    theorem finrank_sup_eq_finrank_right_mul_finrank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:68\\n    theorem finrank_right_dvd_finrank_sup_of_free :\\n- Mathlib/Algebra/Lie/Classical.lean:240\\n    /-- A matrix defining a canonical even-rank symmetric bilinear form.\\n- Mathlib/Algebra/Lie/Classical.lean:300\\n    /-- A matrix defining a canonical odd-rank symmetric bilinear form.\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:337\\n    def stereographic' (n : ℕ) [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:344\\n    theorem stereographic'_source {n : ℕ} [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:348\\n    theorem stereographic'_target {n : ℕ} [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:374\\n    theorem stereographic'_symm_apply {n : ℕ} [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1)\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:423\\n    theorem contMDiff_coe_sphere {m : ℕ∞ω} {n : ℕ} [Fact (finrank ℝ E = n + 1)] :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:443\\n    theorem ContMDiff.codRestrict_sphere {n : ℕ} [Fact (finrank ℝ E = n + 1)] {f : M → E}\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:465\\n    theorem contMDiff_neg_sphere {m : ℕ∞ω} {n : ℕ} [Fact (finrank ℝ E = n + 1)] :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:489\\n    theorem range_mfderiv_coe_sphere {n : ℕ} [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:526\\n    theorem mfderiv_coe_sphere_injective {n : ℕ} [Fact (finrank ℝ E = n + 1)] (v : sphere (0 : E) 1) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:551\\n    theorem finrank_real_complex_fact' : Fact (finrank ℝ ℂ = 1 + 1) :=\\n- Mathlib/Combinatorics/SimpleGraph/LapMatrix.lean:221\\n    theorem card_connectedComponent_eq_finrank_ker_toLin'_lapMatrix :\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Prime\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1913,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3786 match(es) for 'Prime' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Defs.lean:179\\n    set_option linter.docPrime false in\\n- Mathlib/Algebra/Algebra/Defs.lean:185\\n    set_option linter.docPrime false in\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:22\\n    [Algebra F A] (hp : (finrank F A).Prime) : IsSimpleOrder (Subalgebra F A) :=\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:9\\n    public import Mathlib.Algebra.Prime.Lemmas\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:233\\n    protected theorem Associated.prime [CommMonoidWithZero M] {p q : M} (h : p ~ᵤ q) (hp : Prime p) :\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:234\\n    Prime q :=\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:244\\n    Prime (x * y) ↔ (Prime x ∧ IsUnit y) ∨ (IsUnit x ∧ Prime y) := by\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:255\\n    Prime (p ^ n) ↔ Prime p ∧ n = 1 := by\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:280\\n    theorem Prime.associated_of_dvd [CommMonoidWithZero M] [IsCancelMulZero M] {p q : M}\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:281\\n    (p_prime : Prime p) (q_prime : Prime q) (dvd : p ∣ q) : Associated p q :=\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:284\\n    theorem Prime.dvd_prime_iff_associated [CommMonoidWithZero M] [IsCancelMulZero M] {p q : M}\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:285\\n    (pp : Prime p) (qp : Prime q) : p ∣ q ↔ Associated p q :=\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:288\\n    theorem Associated.prime_iff [CommMonoidWithZero M] {p q : M} (h : p ~ᵤ q) : Prime p ↔ Prime q :=\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:333\\n    (hp₁ : Prime p₁) (hp₂ : Prime p₂) (hk₁ : 0 < k₁) (h : p₁ ^ k₁ ~ᵤ p₂ ^ k₂) : p₁ ~ᵤ p₂ := by\\n- Mathlib/Algebra/GroupWithZero/Associated.lean:342\\n    (hp₁ : Prime p₁) (hp₂ : Prime p₂) (hk₂ : 0 < k₂) (h : p₁ ^ k₁ ~ᵤ p₂ ^ k₂) : p₁ ~ᵤ p₂ :=\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Module.rank\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2925,
+   "result_head": "[{\"type\": \"text\", \"text\": \"471 match(es) for 'Module.rank' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:36\\n    Module.rank R ↥(A ⊔ B) = Module.rank R A * Module.rank A (Algebra.adjoin A (B : Set S)) := by\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:45\\n    change _ = Module.rank R ((Algebra.adjoin A (B : Set S)).restrictScalars R)\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:61\\n    Module.rank R ↥(A ⊔ B) = Module.rank R B * Module.rank B (Algebra.adjoin B (A : Set S)) := by\\n- Mathlib/FieldTheory/Finiteness.lean:31\\n    theorem iff_rank_lt_aleph0 : IsNoetherian K V ↔ Module.rank K V < ℵ₀ := by\\n- Mathlib/Algebra/QuadraticAlgebra/Defs.lean:425\\n    theorem rank_eq_two [StrongRankCondition R] : Module.rank R (QuadraticAlgebra R a b) = 2 := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:93\\n    Module.rank K ↥(E1 ⊔ E2) ≤ Module.rank K E1 * Module.rank K E2 := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:178\\n    Module.rank E (adjoin E (L : Set K)) ≤ Module.rank F L := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:187\\n    Module.rank E (adjoin E (L : Set K)) ≤ Module.rank F L :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:192\\n    Module.rank E (adjoin E (L : Set K)) ≤ Module.rank F L :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:270\\n    theorem rank_eq_one_iff : Module.rank F K = 1 ↔ K = ⊥ := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:280\\n    protected theorem rank_bot : Module.rank F (⊥ : IntermediateField F E) = 1 := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:287\\n    @[simp] theorem rank_bot' : Module.rank (⊥ : IntermediateField F E) E = Module.rank F E := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:294\\n    @[simp] protected theorem rank_top : Module.rank (⊤ : IntermediateField F E) E = 1 :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:301\\n    @[simp] theorem rank_top' : Module.rank F (⊤ : IntermediateField F E) = Module.rank F E :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:328\\n    theorem rank_adjoin_eq_one_iff : Module.rank F (adjoin F S) = 1 ↔ S ⊆ (⊥ : IntermediateField F E) :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:332\\n    Module.rank F F⟮α⟯ = 1 ↔ α ∈ (⊥ : IntermediateField F E) := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:343\\n    theorem bot_eq_top_of_rank_adjoin_eq_one (h : ∀ x : E, Module.rank F F⟮x⟯ = 1) :\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:355\\n    theorem subsingleton_of_rank_adjoin_eq_one (h : ∀ x : E, Module.rank F F⟮x⟯ = 1) :\\n- Mathlib/FieldTheory/IntermediateField/Algebraic.lean:56\\n    theorem rank_eq_rank_subalgebra : Module.rank K F.toSubalgebra = Module.rank K F :=\\n- Mathlib/FieldTheory/RatFunc/Basic.lean:782\\n    theorem rank_ratFunc_ratFunc : Module.rank k⟮X⟯ K⟮X⟯ = Module.rank k K := by\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.Prime\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.Prime': unknown identifier 'Ideal.Prime'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure Ideal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 403,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'structure Ideal' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/IdealSheaf/Basic.lean:65\\n    structure IdealSheafData (X : Scheme.{u}) : Type u where\\n- Mathlib/Order/Ideal.lean:66\\n    structure Ideal (P) [LE P] extends LowerSet P where\\n- Mathlib/RingTheory/Filtration.lean:52\\n    structure Ideal.Filtration (M : Type*) [AddCommGroup M] [Module R M] where\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Prime.*Ideal\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"562 match(es) for 'Prime.*Ideal' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/AtPrime.lean:19\\n    protected abbrev IsLocalizedModule.AtPrime {R M M' : Type*} [CommSemiring R] (P : Ideal R)\\n- Mathlib/Algebra/Module/LocalizedModule/AtPrime.lean:25\\n    protected abbrev LocalizedModule.AtPrime {R : Type*} [CommSemiring R] (P : Ideal R) [P.IsPrime]\\n- Mathlib/AlgebraicGeometry/Properties.lean:116\\n    have : _root_.IsReduced (CommRingCat.of <| Localization.AtPrime (PrimeSpectrum.asIdeal x)) := by\\n- Mathlib/AlgebraicGeometry/Properties.lean:231\\n    rwa [← PrimeSpectrum.vanishingIdeal_singleton, PrimeSpectrum.vanishingIdeal_mem_minimalPrimes]\\n- Mathlib/AlgebraicGeometry/Properties.lean:383\\n    have : IsLocalization.AtPrime (↑((Spec R).presheaf.stalk x)) x.asIdeal :=\\n- Mathlib/AlgebraicGeometry/Properties.lean:385\\n    rw [IsLocalization.AtPrime.ringKrullDim_eq_height x.asIdeal ((Spec R).presheaf.stalk x)]\\n- Mathlib/AlgebraicGeometry/GammaSpecAdjunction.lean:320\\n    refine PrimeSpectrum.ext (Ideal.ext fun x => ?_)\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:189\\n    theorem isPrime_carrier : Ideal.IsPrime (carrier x) := by\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:662\\n    (closedPoint (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal)) := by\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:667\\n    (HomogeneousLocalization.AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _ _\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:672\\n    toSpec_base_apply_eq_comap 𝒜 x |>.trans <| PrimeSpectrum.ext <| Ideal.ext fun z =>\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:726\\n    (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:728\\n    letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:784\\n    CommRingCat.of (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:785\\n    letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"prime\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'prime': unknown identifier 'prime'\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPrime\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsPrime': unknown identifier 'IsPrime'\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*IsPrime\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1415,
+   "result_head": "[{\"type\": \"text\", \"text\": \"30 match(es) for 'def.*IsPrime' (via ripgrep):\\n- Mathlib/Algebra/IsPrimePow.lean:27\\n    def IsPrimePow : Prop :=\\n- Mathlib/Algebra/IsPrimePow.lean:30\\n    theorem isPrimePow_def : IsPrimePow n ↔ ∃ (p : R) (k : ℕ), Prime p ∧ 0 < k ∧ p ^ k = n :=\\n- Mathlib/NumberTheory/FactorisationProperties.lean:164\\n    theorem _root_.IsPrimePow.deficient (h : IsPrimePow n) : Deficient n := by\\n- Mathlib/Order/PrimeIdeal.lean:91\\n    def IsPrime.toPrimePair {I : Ideal P} (h : IsPrime I) : PrimePair P :=\\n- Mathlib/Order/PrimeIdeal.lean:199\\n    def IsPrime.toPrimePair {F : PFilter P} (h : IsPrime F) : Ideal.PrimePair P :=\\n- Mathlib/Data/Nat/Factorization/PrimePow.lean:151\\n    def Nat.Primes.prodNatEquiv : Nat.Primes × ℕ ≃ {n : ℕ // IsPrimePow n} where\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:145\\n    def orderIsoOfPrime : { p : Ideal S // p.IsPrime } ≃o { p : Ideal R // p.IsPrime ∧ p ≤ I } :=\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:239\\n    noncomputable def localRingHom (J : Ideal P) [J.IsPrime] (f : R →+* P) (hIJ : I = J.comap f) :\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:290\\n    noncomputable def localRingEquiv (J : Ideal P) [J.IsPrime] (f : R ≃+* P) (hIJ : I = J.comap f) :\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:303\\n    noncomputable def localAlgHom [Algebra R P] (I : Ideal S) [I.IsPrime] (J : Ideal P) [J.IsPrime]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization\\\\.Away\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1318,
+   "result_head": "[{\"type\": \"text\", \"text\": \"440 match(es) for 'Localization\\\\\\\\.Away' (via ripgrep):\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:311\\n    (s : S) [IsLocalization.Away s T] : Algebra.QuasiFinite R T := by\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:314\\n    let f : Localization.Away sA →+* T := IsLocalization.Away.lift sA (g := algebraMap _ _)\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:315\\n    (IsLocalization.Away.algebraMap_isUnit s)\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:317\\n    let : Algebra A (Localization.Away sA) := OreLocalization.instAlgebra\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:318\\n    let : SMul A (Localization.Away sA) := Algebra.toSMul\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:319\\n    let : MulAction A (Localization.Away sA) := Algebra.toModule.toDistribMulAction.toMulAction\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:320\\n    have : IsScalarTower R A (Localization.Away sA) := OreLocalization.instIsScalarTower\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:321\\n    have : IsScalarTower A (Localization.Away sA) T :=\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:323\\n    have : IsScalarTower R (Localization.Away sA) T := .to₁₃₄ R A (Localization.Away sA) T\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:324\\n    have : Algebra.IsIntegral (Localization.Away sA) T := by\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"away R\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'away R': Unknown identifier `away`\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/Away.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1153,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/MonoidLocalization/Away.lean  (lines 1–30 of 178):\\n     1  /-\\n     2  Copyright (c) 2019 Amelia Livingston. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Amelia Livingston\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Group.Submonoid.Membership\\n     9  public import Mathlib.GroupTheory.MonoidLocalization.Maps\\n    10  \\n    11  /-!\\n    12  # Localizing commutative monoids away from an element\\n    13  \\n    14  We treat the special case of localizing away from an element in the sections\\n    15  `AwayMap` and `Away`.\\n    16  \\n    17  ## Tags\\n    18  localization, monoid localization, quotient monoid, congruence relation, characteristic predicate,\\n    19  commutative monoid, grothendieck group\\n    20  -/\\n    21  \\n    22  @[expose] public section\\n    23  \\n    24  assert_not_exists MonoidWithZero\\n    25  \\n    26  open Function\\n    27  \\n    28  section CommMonoid\\n    29  \\n    30  variable {M : Type*} [CommMonoid M] {S : Submonoid M} {N : Type*} [CommMonoid N] {P : Type*}\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev.*Away\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1481,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'abbrev.*Away' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:1464\\n    protected abbrev IsLocalizedModule.Away {R M M' : Type*} [CommSemiring R] (x : R) [AddCommMonoid M]\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:1470\\n    protected abbrev LocalizedModule.Away {R : Type*} [CommSemiring R] (x : R)\\n- Mathlib/GroupTheory/MonoidLocalization/Away.lean:47\\n    abbrev AwayMap (N' : Type*) [CommMonoid N'] := LocalizationMap (powers x) N'\\n- Mathlib/GroupTheory/MonoidLocalization/Away.lean:142\\n    abbrev Away :=\\n- Mathlib/GroupTheory/MonoidLocalization/Away.lean:158\\n    abbrev Away.monoidOf : Submonoid.LocalizationMap.AwayMap x (Away x) :=\\n- Mathlib/RingTheory/Localization/BaseChange.lean:454\\n    noncomputable abbrev tensorEquiv [IsLocalization.Away r A] :\\n- Mathlib/RingTheory/Localization/BaseChange.lean:467\\n    noncomputable abbrev tensorRightEquiv [IsLocalization.Away r A] :\\n- Mathlib/RingTheory/Localization/Away/Basic.lean:50\\n    abbrev Away (S : Type*) [CommSemiring S] [Algebra R S] :=\\n- Mathlib/RingTheory/Smooth/StandardSmoothCotangent.lean:265\\n    abbrev Generators.cMulXSubOneCotangent : (Generators.localizationAway S r).toExtension.Cotangent :=\\n- Mathlib/RingTheory/GradedAlgebra/HomogeneousLocalization.lean:601\\n    abbrev Away (𝒜 : ι → σ) (f : A) :=\\n- Mathlib/RingTheory/GradedAlgebra/HomogeneousLocalization.lean:877\\n    abbrev Away.isLocalizationElem : Away 𝒜 f :=\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/Away/Basic.lean\", \"line\": 40, \"n\": 20}",
+   "ok": true,
+   "result_chars": 880,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Away/Basic.lean  (lines 40–59 of 745):\\n    40  \\n    41  namespace IsLocalization\\n    42  \\n    43  section Away\\n    44  \\n    45  variable (x : R)\\n    46  \\n    47  /-- Given `x : R`, the typeclass `IsLocalization.Away x S` states that `S` is\\n    48  isomorphic to the localization of `R` at the submonoid generated by `x`.\\n    49  See `IsLocalization.Away.mk` for a specialized constructor. -/\\n    50  abbrev Away (S : Type*) [CommSemiring S] [Algebra R S] :=\\n    51    IsLocalization (Submonoid.powers x) S\\n    52  \\n    53  namespace Away\\n    54  \\n    55  variable [IsLocalization.Away x S]\\n    56  \\n    57  /-- Given `x : R` and a localization map `F : R →+* S` away from `x`, `invSelf` is `(F x)⁻¹`. -/\\n    58  noncomputable def invSelf : S :=\\n    59    mk' S (1 : R) ⟨x, Submonoid.mem_powers _⟩\\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FiniteType\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2021,
+   "result_head": "[{\"type\": \"text\", \"text\": \"523 match(es) for 'FiniteType' (via ripgrep):\\n- Mathlib/Algebra/Category/Ring/FinitePresentation.lean:45\\n    lemma RingHom.EssFiniteType.exists_comp_map_eq_of_isColimit (hf : f.hom.EssFiniteType)\\n- Mathlib/Algebra/Category/Ring/FinitePresentation.lean:81\\n    lemma RingHom.EssFiniteType.exists_eq_comp_ι_app_of_isColimit (hf : f.hom.FinitePresentation)\\n- Mathlib/Algebra/Category/Ring/FinitePresentation.lean:152\\n    obtain ⟨i, g, h₁, h₂⟩ := RingHom.EssFiniteType.exists_eq_comp_ι_app_of_isColimit\\n- Mathlib/Algebra/Category/Ring/FinitePresentation.lean:157\\n    obtain ⟨k, hik, hjk, e⟩ := RingHom.EssFiniteType.exists_comp_map_eq_of_isColimit\\n- Mathlib/Algebra/Category/Ring/FinitePresentation.lean:160\\n    (RingHom.FiniteType.of_finitePresentation hS).essFiniteType\\n- Mathlib/Algebra/Category/Ring/Small.lean:8\\n    public import Mathlib.Algebra.Category.CommAlgCat.FiniteType\\n- Mathlib/Algebra/Category/Ring/Small.lean:25\\n    (hPQ : ∀ S, P S → ∃ R, Q R ∧ ∃ (f : R ⟶ S), f.hom.FiniteType) :\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:287\\n    lemma iff_finite_comap_preimage_singleton [FiniteType R S] :\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:294\\n    exact ⟨Algebra.FiniteType.isNoetherianRing P.ResidueField _,\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:297\\n    lemma iff_finite_primesOver [FiniteType R S] :\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:310\\n    lemma of_isIntegral_of_finiteType [Algebra.IsIntegral R S] [Algebra.FiniteType R T]\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:338\\n    have : Algebra.FiniteType (Localization.Away sA) T := .of_restrictScalars_finiteType R _ _\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:440\\n    (p : Ideal S) [p.IsPrime] [IsArtinianRing R] [Algebra.EssFiniteType R S]\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:449\\n    have : IsNoetherianRing S := Algebra.EssFiniteType.isNoetherianRing R S\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:471\\n    (p : PrimeSpectrum S) [IsArtinianRing R] [Algebra.FiniteType R S]\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Finite\"}",
+   "ok": true,
+   "result_chars": 1189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1121 declarations mentioning Module.Finite.\\n- Module.Finite   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely generated as a module.\\n- AddMonoid.FG.to_moduleFinite_nat   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.iff_addMonoid_fg   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.iff_addGroup_fg   [Mathlib.RingTheory.Finiteness.Defs]\\n- AddMonoid.FG.to_moduleFinite_int   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.fg_top   [Mathlib.RingTheory.Finiteness.Defs]\\n    A module over a semiring is `Module.Finite` if it is finitely generated as a module.\\n- Module.Finite.of_fg_top   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.finite_def   [Mathlib.RingTheory.Finiteness.Defs]\\n    See also `Module.Finite.iff_fg` for a version when `M` is itself a submodule.\\n- Module.Finite.exists_fin   [Mathlib.RingTheory.Finiteness.Defs]\\n    See also `Module.Finite.exists_fin'`.\\n- RingHom.finite_algebraMap   [Mathlib.RingTheory.Finiteness.Defs]\\n- Module.Finite.self   [Mathlib.RingTheory.Finiteness.Basic]\\n- Module.Finite.of_finite   [Mathlib.RingTheory.Finiteness.Basic]\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Finite\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3002,
+   "result_head": "[{\"type\": \"text\", \"text\": \"465 match(es) for 'def.*Finite' (via ripgrep):\\n- Mathlib/Probability/Kernel/Posterior.lean:70\\n    def posterior (κ : Kernel Ω 𝓧) (μ : Measure Ω) [IsFiniteMeasure μ] [IsFiniteKernel κ] :\\n- Mathlib/Probability/Kernel/Defs.lean:365\\n    noncomputable def seq (κ : Kernel α β) [h : IsSFiniteKernel κ] : ℕ → Kernel α β :=\\n- Mathlib/Probability/Kernel/WithDensity.lean:48\\n    noncomputable def withDensity (κ : Kernel α β) [IsSFiniteKernel κ] (f : α → β → ℝ≥0∞) :\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:17\\n    for the type. (Note: we could have defined a `Finite.card` that required you to\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:39\\n    def Finite.equivFin (α : Type*) [Finite α] : α ≃ Fin (Nat.card α) := by\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:44\\n    def Finite.equivFinOfCardEq [Finite α] {n : ℕ} (h : Nat.card α = n) : α ≃ Fin n := by\\n- Mathlib/Probability/Kernel/RadonNikodym.lean:259\\n    irreducible_def singularPart (κ η : Kernel α γ) [IsSFiniteKernel κ] [IsSFiniteKernel η] :\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:127\\n    def condKernelCDF (κ : Kernel α (γ × ℝ)) [IsFiniteKernel κ] : α × γ → StieltjesFunction ℝ :=\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:138\\n    def condKernelReal (κ : Kernel α (γ × ℝ)) [IsFiniteKernel κ] : Kernel (α × γ) ℝ :=\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:154\\n    def condKernelUnitReal (κ : Kernel Unit (α × ℝ)) [IsFiniteKernel κ] : Kernel (Unit × α) ℝ :=\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:317\\n    def condKernelBorel (κ : Kernel α (γ × Ω)) [IsFiniteKernel κ] : Kernel (α × γ) Ω :=\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:361\\n    irreducible_def _root_.MeasureTheory.Measure.condKernel (ρ : Measure (α × Ω)) [IsFiniteMeasure ρ] :\\n- Mathlib/Probability/Distributions/TwoValued.lean:34\\n    · simp [h, Measure.real, Set.preimage, integral_undef, Integrable, HasFiniteIntegral]\\n- Mathlib/Probability/Kernel/Condexp.lean:71\\n    noncomputable irreducible_def condExpKernel (μ : Measure Ω) [IsFiniteMeasure μ]\\n- Mathlib/CategoryTheory/Preadditive/Mat.lean:467\\n    def equivalenceSelfOfHasFiniteBiproductsAux [HasFiniteBiproducts C] :\\n- Mathlib/CategoryTheory/Preadditive/Mat.lean:479\\n    def equivalenceSelfOfHasFiniteBiproducts (C : Type (u₁ + 1)) [LargeCategory C] [Preadditive C]\\n- Mathlib/CategoryTheory/Preadditive/Biproducts.lean:286\\n    def biproduct.reindex {β γ : Type} [Finite β] (ε : β ≃ γ)\\n- Mathlib/CategoryTheory/Preadditive/HomOrthogonal.lean:76\\n    noncomputable def matrixDecomposition (o : HomOrthogonal s) {α β : Type} [Finite α] [Finite β]\\n- Mathlib/CategoryTheory/Preadditive/HomOrthogonal.lean:119\\n    noncomputable def matrixDecompositionAddEquiv (o : HomOrthogonal s) {α β : Type} [Finite α]\\n- Mathlib/CategoryTheory/Preadditive/HomOrthogonal.lean:177\\n    noncomputable def matrixDecompositionLinearEquiv (o : HomOrthogonal s) {α β : Type} [Finite α]\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank localization\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank localization': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank.*localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'rank.*localization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalizedModule\"}",
+   "ok": true,
+   "result_chars": 1645,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 146 declarations mentioning LocalizedModule.\\n- LocalizedModule   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    If `S` is a multiplicative subset of a ring `R` and `M` an `R`-module, then we can localize `M` by `S`.\\n- LocalizedModule.instMonoid   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.instSemiring   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.instSubsingleton   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.instCommSemiring   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.instRing   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.algebra'   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.instCommRing   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n- LocalizedModule.smulOfIsLocalization   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    If `IsLocalization S T`, then `M[S⁻¹]` has a `T`-action. This should eventually be replaced with `IsLocalizedModule f N` and `SMul T N`.\\n- LocalizedModule.algebraOfIsLocalization   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    If `IsLocalization S T`, then `A[S⁻¹]` is a `T`-algebra. This should eventually be replaced with `IsLocalizedModule f N` and `Algebra T N`.\\n- LocalizedModule.mul   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    The multiplication on the localized module. Note that this gives a diamond with the instance on `R[S⁻¹]` (which does not require commutativity), but is defeq to\\n- LocalizedModule.mk   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    The canonical map sending `(m, s) ↦ m/s`\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LocalizedModule\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2731,
+   "result_head": "[{\"type\": \"text\", \"text\": \"612 match(es) for 'LocalizedModule' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:37\\n    - `Module.FinitePresentation.isLocalizedModule_map`: If `M` and `N` are `R`-modules and `M` is f.p.,\\n- Mathlib/Algebra/Module/FinitePresentation.lean:314\\n    variable [AddCommGroup N'] [Module R N'] (S : Submonoid R) (f : N →ₗ[R] N') [IsLocalizedModule S f]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:357\\n    Module.FinitePresentation (Localization S) (LocalizedModule S M) :=\\n- Mathlib/Algebra/Module/FinitePresentation.lean:358\\n    FinitePresentation.of_isBaseChange (LocalizedModule.mkLinearMap S M)\\n- Mathlib/Algebra/Module/FinitePresentation.lean:359\\n    ((isLocalizedModule_iff_isBaseChange S _ _).mp inferInstance)\\n- Mathlib/Algebra/Module/FinitePresentation.lean:361\\n    lemma Module.FinitePresentation.exists_lift_of_isLocalizedModule\\n- Mathlib/Algebra/Module/FinitePresentation.lean:370\\n    choose s hs using IsLocalizedModule.surj S f\\n- Mathlib/Algebra/Module/FinitePresentation.lean:385\\n    apply IsLocalizedModule.exists_of_eq (S := S) (f := f)\\n- Mathlib/Algebra/Module/FinitePresentation.lean:408\\n    lemma Module.Finite.exists_smul_of_comp_eq_of_isLocalizedModule\\n- Mathlib/Algebra/Module/FinitePresentation.lean:413\\n    IsLocalizedModule.exists_of_eq (S := S) (f := f) (LinearMap.congr_fun h x)\\n- Mathlib/Algebra/Module/FinitePresentation.lean:422\\n    variable {M' : Type*} [AddCommGroup M'] [Module R M'] (f : M →ₗ[R] M') [IsLocalizedModule S f]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:423\\n    variable {N' : Type*} [AddCommGroup N'] [Module R N'] (g : N →ₗ[R] N') [IsLocalizedModule S g]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:431\\n    (l : M →ₗ[R] N) (hf : Function.Bijective (IsLocalizedModule.map S f g l)) :\\n- Mathlib/Algebra/Module/FinitePresentation.lean:432\\n    ∃ r, r ∈ S ∧ ∀ t, r ∣ t → Function.Bijective (LocalizedModule.map (.powers t) l) := by\\n- Mathlib/Algebra/Module/FinitePresentation.lean:434\\n    obtain ⟨l', s₀, H⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S f\\n- Mathlib/Algebra/Module/FinitePresentation.lean:438\\n    obtain ⟨s₁, hs₁⟩ := Module.Finite.exists_smul_of_comp_eq_of_isLocalizedModule S g _ _ H₁\\n- Mathlib/Algebra/Module/FinitePresentation.lean:441\\n    ← IsLocalizedModule.map_comp S f g l, ← LinearMap.comp_assoc]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:444\\n    obtain ⟨s₂, hs₂⟩ := Module.Finite.exists_smul_of_comp_eq_of_isLocalizedModule S f _ _ H₂\\n- Mathlib/Algebra/Module/FinitePresentation.lean:447\\n    let lₛ := LocalizedModule.map (.powers t) l\\n- Mathlib/Algebra/Module/FinitePresentation.lean:455\\n    let lₛ' := LocalizedModule.map (.powers t) l'\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AtPrime\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AtPrime': unknown identifier 'AtPrime'\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"AtPrime\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2777,
+   "result_head": "[{\"type\": \"text\", \"text\": \"642 match(es) for 'AtPrime' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Properties.lean:116\\n    have : _root_.IsReduced (CommRingCat.of <| Localization.AtPrime (PrimeSpectrum.asIdeal x)) := by\\n- Mathlib/AlgebraicGeometry/Properties.lean:383\\n    have : IsLocalization.AtPrime (↑((Spec R).presheaf.stalk x)) x.asIdeal :=\\n- Mathlib/AlgebraicGeometry/Properties.lean:385\\n    rw [IsLocalization.AtPrime.ringKrullDim_eq_height x.asIdeal ((Spec R).presheaf.stalk x)]\\n- Mathlib/AlgebraicGeometry/GammaSpecAdjunction.lean:321\\n    rw [← IsLocalization.AtPrime.to_map_mem_maximal_iff ((structureSheaf R).presheaf.stalk p)\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Functor.lean:57\\n    (s : ∀ x : U, AtPrime 𝒜 x.1.1.1) (y : V) : AtPrime ℬ y.1.1.1 :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Functor.lean:62\\n    (s : ∀ x : U, AtPrime 𝒜 x.1.1.1) (hs : (isLocallyFraction 𝒜).pred s) :\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:662\\n    (closedPoint (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal)) := by\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:667\\n    (HomogeneousLocalization.AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _ _\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:678\\n    IsLocalization.AtPrime.isUnit_mk'_iff]\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:726\\n    (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:728\\n    letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:784\\n    CommRingCat.of (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:785\\n    letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:792\\n    (Q := AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal)).toRingEquiv.toCommRingCatIso\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:797\\n    letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:804\\n    (Q := AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal)).toAlgHom.comp_algebraMap\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/StructureSheaf.lean:66\\n    HomogeneousLocalization.AtPrime 𝒜\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Basic.lean:355\\n    (Proj 𝒜).presheaf.stalk x ≅ .of (AtPrime 𝒜 x.asHomogeneousIdeal.toIdeal) :=\\n- Mathlib/AlgebraicGeometry/FunctionField.lean:119\\n    delta IsFractionRing IsLocalization.AtPrime\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:213\\n    (H : p.map (algebraMap R (Localization.AtPrime P)) = maximalIdeal (Localization.AtPrime P)) :\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization.AtPrime\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1364,
+   "result_head": "[{\"type\": \"text\", \"text\": \"475 match(es) for 'Localization.AtPrime' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Properties.lean:116\\n    have : _root_.IsReduced (CommRingCat.of <| Localization.AtPrime (PrimeSpectrum.asIdeal x)) := by\\n- Mathlib/AlgebraicGeometry/Properties.lean:383\\n    have : IsLocalization.AtPrime (↑((Spec R).presheaf.stalk x)) x.asIdeal :=\\n- Mathlib/AlgebraicGeometry/Properties.lean:385\\n    rw [IsLocalization.AtPrime.ringKrullDim_eq_height x.asIdeal ((Spec R).presheaf.stalk x)]\\n- Mathlib/AlgebraicGeometry/GammaSpecAdjunction.lean:321\\n    rw [← IsLocalization.AtPrime.to_map_mem_maximal_iff ((structureSheaf R).presheaf.stalk p)\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:667\\n    (HomogeneousLocalization.AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _ _\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean:678\\n    IsLocalization.AtPrime.isUnit_mk'_iff]\\n- Mathlib/AlgebraicGeometry/ProjectiveSpectrum/StructureSheaf.lean:66\\n    HomogeneousLocalization.AtPrime 𝒜\\n- Mathlib/AlgebraicGeometry/FunctionField.lean:119\\n    delta IsFractionRing IsLocalization.AtPrime\\n- Mathlib/AlgebraicGeometry/Scheme.lean:860\\n    exact IsLocalization.AtPrime.isUnit_to_map_iff _ (PrimeSpectrum.asIdeal x) f\\n- Mathlib/AlgebraicGeometry/SpreadingOut.lean:173\\n    let J := RingHom.ker <| algebraMap R (Localization.AtPrime I)\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev).*AtPrime\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1401,
+   "result_head": "[{\"type\": \"text\", \"text\": \"16 match(es) for '(def|abbrev).*AtPrime' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/AtPrime.lean:19\\n    protected abbrev IsLocalizedModule.AtPrime {R M M' : Type*} [CommSemiring R] (P : Ideal R)\\n- Mathlib/Algebra/Module/LocalizedModule/AtPrime.lean:25\\n    protected abbrev LocalizedModule.AtPrime {R : Type*} [CommSemiring R] (P : Ideal R) [P.IsPrime]\\n- Mathlib/RingTheory/Localization/LocalizationLocalization.lean:156\\n    noncomputable def localizationLocalizationAtPrimeIsoLocalization (p : Ideal (Localization M))\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:52\\n    protected abbrev IsLocalization.AtPrime :=\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:57\\n    protected abbrev Localization.AtPrime :=\\n- Mathlib/AlgebraicGeometry/AffineScheme.lean:1271\\n    def Spec.stalkIso : (Spec R).presheaf.stalk x ≅ .of (Localization.AtPrime x.asIdeal) :=\\n- Mathlib/RingTheory/KrullDimension/Polynomial.lean:86\\n    rw [p'_def, Localization.AtPrime.map_eq_maximalIdeal]\\n- Mathlib/RingTheory/LocalRing/LocalSubring.lean:106\\n    def ofPrimeEquiv : Localization.AtPrime P ≃ₐ[A] (ofPrime A P).toSubring := by\\n- Mathlib/RingTheory/GradedAlgebra/HomogeneousLocalization.lean:569\\n    abbrev AtPrime :=\\n- Mathlib/RingTheory/GradedAlgebra/HomogeneousLocalization.lean:752\\n    noncomputable def localRingHom : AtPrime 𝒜 I →+* AtPrime ℬ J :=\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/AtPrime/Basic.lean\", \"line\": 50, \"n\": 15}",
+   "ok": true,
+   "result_chars": 887,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/AtPrime/Basic.lean  (lines 50–64 of 711):\\n    50  /-- Given a prime ideal `P`, the typeclass `IsLocalization.AtPrime S P` states that `S` is\\n    51  isomorphic to the localization of `R` at the complement of `P`. -/\\n    52  protected abbrev IsLocalization.AtPrime :=\\n    53    IsLocalization P.primeCompl S\\n    54  \\n    55  /-- Given a prime ideal `P`, `Localization.AtPrime P` is a localization of\\n    56  `R` at the complement of `P`, as a quotient type. -/\\n    57  protected abbrev Localization.AtPrime :=\\n    58    Localization P.primeCompl\\n    59  \\n    60  namespace IsLocalization\\n    61  \\n    62  theorem AtPrime.nontrivial [IsLocalization.AtPrime S P] : Nontrivial S :=\\n    63    nontrivial_of_ne (0 : S) 1 fun hze => by\\n    64      rw [← (algebraMap R S).map_one, ← (algebraMap R S).map_zero] at hze\\n\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"stalk\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2823,
+   "result_head": "[{\"type\": \"text\", \"text\": \"820 match(es) for 'stalk' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:28\\n    * `smoothSheaf.eval`: Canonical map onto `N` from the stalk of `smoothSheaf IM I M N` at `x`,\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:33\\n    * `smoothSheafCommRing.forgetStalk`: Identify the stalk at a point of the sheaf-of-commutative-rings\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:34\\n    of functions from `M` to `R` (for `R` a smooth ring) with the stalk at that point of the\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:110\\n    /-- Canonical map from the stalk of `smoothSheaf IM I M N` at `x` to `N`, given by evaluating\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:112\\n    def smoothSheaf.eval (x : M) : (smoothSheaf IM I M N).presheaf.stalk x → N :=\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:113\\n    TopCat.stalkToFiber (StructureGroupoid.LocalInvariantProp.localPredicate M N _) x\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:115\\n    /-- Canonical map from the stalk of `smoothSheaf IM I M N` at `x` to `N`, given by evaluating\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:118\\n    (smoothSheaf IM I M N).presheaf.stalk x ⟶ N :=\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:119\\n    TopCat.stalkToFiber (StructureGroupoid.LocalInvariantProp.localPredicate M N _) x\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:137\\n    apply TopCat.stalkToFiber_surjective\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:141\\n    instance [Nontrivial N] (x : M) : Nontrivial ((smoothSheaf IM I M N).presheaf.stalk x) :=\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:149\\n    TopCat.stalkToFiber_germ ((contDiffWithinAt_localInvariantProp ∞).localPredicate M N) _ _ _ _\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:311\\n    /-- Identify the stalk at a point of the sheaf-of-commutative-rings of functions from `M` to `R`\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:312\\n    (for `R` a smooth ring) with the stalk at that point of the corresponding sheaf of types. -/\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:314\\n    ((smoothSheafCommRing IM I M R).presheaf.stalk x).carrier ≅\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:315\\n    (smoothSheaf IM I M R).presheaf.stalk x :=\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:339\\n    /-- Canonical ring homomorphism from the stalk of `smoothSheafCommRing IM I M R` at `x` to `R`,\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:343\\n    (smoothSheafCommRing IM I M R).presheaf.stalk x ⟶ CommRingCat.of R := by\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:348\\n    /-- Canonical ring homomorphism from the stalk of `smoothSheafCommRing IM I M R` at `x` to `R`,\\n- Mathlib/Geometry/Manifold/Sheaf/Smooth.lean:350\\n    def smoothSheafCommRing.eval (x : M) : (smoothSheafCommRing IM I M R).presheaf.stalk x →+* R :=\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalizedModule.Away\"}",
+   "ok": true,
+   "result_chars": 2326,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 15 declarations mentioning LocalizedModule.Away.\\n- LocalizedModule.Away   [Mathlib.Algebra.Module.LocalizedModule.Basic]\\n    Given `x : R`, `LocalizedModule.Away x M` is the localization of `M` at the submonoid generated by `x`.\\n- Module.flat_of_localized_span   [Mathlib.RingTheory.Flat.Localization]\\n- Module.FinitePresentation.exists_lift_equiv_of_isLocalizedModule   [Mathlib.Algebra.Module.FinitePresentation]\\n    Let `M` `N` be a finitely presented `R`-modules. Any `Mₛ ≃ₗ[R] Nₛ` between the localizations at `S : Submonoid R` can be lifted to an isomorphism between `Mᵣ ≃ₗ\\n- Module.Finite.of_localizationSpan   [Mathlib.RingTheory.Localization.Finiteness]\\n    If there exists a set `{ r }` of `R` that generates the unit ideal and such that `Mᵣ` is `Rᵣ`-finite for each `r`, then `M` is a finite `R`-module.\\n- Module.Finite.of_localizationSpan_finite   [Mathlib.RingTheory.Localization.Finiteness]\\n    If there exists a finite set `{ r }` of `R` that generates the unit ideal and such that `Mᵣ` is `Rᵣ`-finite for each `r`, then `M` is a finite `R`-module.  See \\n- LocalizedModule.subsingleton_iff_support_subset   [Mathlib.RingTheory.Support]\\n- LocalizedModule.exists_subsingleton_away   [Mathlib.RingTheory.Support]\\n    If `M` is a finite module such that `Mₚ = 0` for some `p`, then `M[1/f] = 0` for some `p ∈ D(f)`.\\n- IsLocalizedModule.exists_subsingleton_away   [Mathlib.RingTheory.Support]\\n- Module.Invertible.exists_finset_free_localization   [Mathlib.RingTheory.PicardGroup]\\n    An invertible module over a commutative semiring is Zariski-locally free of rank 1. Theorem 10.7 in [BorgerJun2024].  More precisely, there is a finite set of e\\n- Module.FinitePresentation.exists_free_localizedModule_powers   [Mathlib.RingTheory.Localization.Free]\\n    If `M` is a finitely presented `R`-module such that `Mₛ` is free over `Rₛ` for some `S : Submonoid R`, then `Mᵣ` is already free over `Rᵣ` for some `r ∈ S`.\\n- Module.FinitePresentation.exists_basis_localizedModule_powers   [Mathlib.RingTheory.Localization.Free]\\n    If `M` is a finitely presented `R`-module, then any `Rₛ`-basis of `Mₛ` for some `S : Submonoid R` can be lifted to a `Rᵣ`-basis of `Mᵣ` for some `r ∈ S`.\\n- Module.basicOpen_subset_freeLocus_iff   [Mathlib.RingTheory.Spectrum.Prime.FreeLocus]\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1460, \"n\": 20}",
+   "ok": true,
+   "result_chars": 890,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1460–1472 of 1472):\\n  1460  -/\\n  1461  \\n  1462  /-- Given `x : R` and `f : M →ₗ[R] M'`, `IsLocalizedModule.Away x f` states that `M'`\\n  1463    is isomorphic to the localization of `M` at the submonoid generated by `x`. -/\\n  1464  protected abbrev IsLocalizedModule.Away {R M M' : Type*} [CommSemiring R] (x : R) [AddCommMonoid M]\\n  1465      [Module R M] [AddCommMonoid M'] [Module R M'] (f : M →ₗ[R] M') :=\\n  1466    IsLocalizedModule (Submonoid.powers x) f\\n  1467  \\n  1468  /-- Given `x : R`, `LocalizedModule.Away x M` is the localization of `M` at the\\n  1469    submonoid generated by `x`. -/\\n  1470  protected abbrev LocalizedModule.Away {R : Type*} [CommSemiring R] (x : R)\\n  1471      (M : Type*) [AddCommMonoid M] [Module R M] :=\\n  1472    LocalizedModule (Submonoid.powers x) M\\n\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2451,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1–50 of 1472):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang, Jujian Zhang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Algebra.Tower\\n     9  public import Mathlib.Algebra.Module.TransferInstance\\n    10  public import Mathlib.RingTheory.Localization.Defs\\n    11  public import Mathlib.RingTheory.OreLocalization.Ring\\n    12  \\n    13  /-!\\n    14  # Localized Module\\n    15  \\n    16  Given a commutative semiring `R`, a multiplicative subset `S ⊆ R` and an `R`-module `M`, we can\\n    17  localize `M` by `S`. This gives us a `Localization S`-module.\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  * `LocalizedModule.r`: the equivalence relation defining this localization, namely\\n    22    `(m, s) ≈ (m', s')` if and only if there is some `u : S` such that `u • s' • m = u • s • m'`.\\n    23  * `LocalizedModule M S`: the localized module by `S`.\\n    24  * `LocalizedModule.mk`: the canonical map sending `(m, s) : M × S ↦ m/s : LocalizedModule M S`\\n    25  * `LocalizedModule.liftOn`: any well-defined function `f : M × S → α` respecting `r` descents to\\n    26    a function `LocalizedModule M S → α`\\n    27  * `LocalizedModule.liftOn₂`: any well-defined function `f : M × S → M × S → α` respecting `r`\\n    28    descents to a function `LocalizedModule M S → LocalizedModule M S`\\n    29  * `LocalizedModule.mk_add_mk`: in the localized module\\n    30    `mk m s + mk m' s' = mk (s' • m + s • m') (s * s')`\\n    31  * `LocalizedModule.mk_smul_mk` : in the localized module, for any `r : R`, `s t : S`, `m : M`,\\n    32    we have `mk r s • mk m t = mk (r • m) (s * t)` where `mk r s : Localization S` is localized ring\\n    33    by `S`.\\n    34  * `LocalizedModule.isModule` : `LocalizedModule M S` is a `Localization S`-module.\\n    35  \\n    36  ## Future work\\n    37  \\n    38  * Redefine `Localization` for monoids and rings to coincide with `LocalizedModule`.\\n    39  -/\\n    40  \\n    41  @[expose] public section\\n    42  \\n    43  open Module\\n    44  \\n    45  namespace LocalizedModule\\n    46  \\n    47  universe u v\\n    48  \\n    49  variable {R : Type u} [CommSemiring R] (S : Submonoid R)\\n    50  variable (M : Type v) [AddCommMonoid M] [Module R M]\\n\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/Away/Basic.lean\", \"line\": 45, \"n\": 10}",
+   "ok": true,
+   "result_chars": 539,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Away/Basic.lean  (lines 45–54 of 745):\\n    45  variable (x : R)\\n    46  \\n    47  /-- Given `x : R`, the typeclass `IsLocalization.Away x S` states that `S` is\\n    48  isomorphic to the localization of `R` at the submonoid generated by `x`.\\n    49  See `IsLocalization.Away.mk` for a specialized constructor. -/\\n    50  abbrev Away (S : Type*) [CommSemiring S] [Algebra R S] :=\\n    51    IsLocalization (Submonoid.powers x) S\\n    52  \\n    53  namespace Away\\n    54  \\n\"}]"
+  },
+  {
+   "i": 52,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev) Localization.Away\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|abbrev) Localization.Away' under Mathlib/.\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization\\\\.Away\\\\s\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1371,
+   "result_head": "[{\"type\": \"text\", \"text\": \"346 match(es) for 'Localization\\\\\\\\.Away\\\\\\\\s' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:488\\n    instance isLocalization : IsLocalization.Away (X : R[X]) R[T;T⁻¹] :=\\n- Mathlib/Algebra/Category/Ring/Small.lean:39\\n    (hPQ : ∀ S, P S → ∃ s : Set S, Ideal.span s = ⊤ ∧ ∀ f ∈ s, Q (.of (Localization.Away f))) :\\n- Mathlib/Algebra/Category/Ring/Instances.lean:23\\n    IsIso (CommRingCat.ofHom <| algebraMap R (Localization.Away (1 : R))) :=\\n- Mathlib/Algebra/Category/Ring/Instances.lean:24\\n    Iso.isIso_hom (IsLocalization.atOne R (Localization.Away (1 : R))).toRingEquiv.toCommRingCatIso\\n- Mathlib/Algebra/Category/Ring/Instances.lean:27\\n    @IsIso CommRingCat _ R _ (CommRingCat.ofHom <| algebraMap R (Localization.Away (1 : R))) := by\\n- Mathlib/AlgebraicGeometry/Cover/Open.lean:209\\n    X i := .of (Localization.Away (s i))\\n- Mathlib/AlgebraicGeometry/Cover/Open.lean:210\\n    f i := Spec.map (CommRingCat.ofHom (algebraMap R (Localization.Away (s i))))\\n- Mathlib/AlgebraicGeometry/Cover/Open.lean:218\\n    have := PrimeSpectrum.localization_away_comap_range (Localization.Away (s i)) (s i)\\n- Mathlib/AlgebraicGeometry/Cover/Open.lean:270\\n    X r := Spec <| .of <| Localization.Away r\\n- Mathlib/AlgebraicGeometry/Cover/Open.lean:271\\n    f r := Spec.map (CommRingCat.ofHom (algebraMap R (Localization.Away r)))\"}]"
+  },
+  {
+   "i": 54,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace Localization\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 525,
+   "result_head": "[{\"type\": \"text\", \"text\": \"56 match(es) for 'namespace Localization' (via ripgrep):\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:70\\n    namespace Localization\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:135\\n    namespace Localization\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:432\\n    namespace Localization\\n- Mathlib/CategoryTheory/Localization/StructuredArrow.lean:35\\n    namespace Localization\\n- Mathlib/CategoryTheory/Localization/SmallShiftedHom.lean:38\\n    namespace Localization\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

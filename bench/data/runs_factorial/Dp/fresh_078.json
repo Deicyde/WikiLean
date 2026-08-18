@@ -1,0 +1,458 @@
+{
+ "task_id": "fresh_078",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:03:25Z",
+ "wall_s": 114.6,
+ "transcript_stats": {
+  "turns": 52,
+  "assistant_turns": 27,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 5,
+   "mcp__wikibrain__brain_search": 31,
+   "mcp__wikibrain__brain_cell": 3,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 11
+  },
+  "tokens_in": 218,
+  "tokens_out": 8416,
+  "cost_usd": 0.14427215
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"commutative Noetherian ring\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4221,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative Noetherian ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q582271\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"noetherian ring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Noetherian\\\",\\\"label\\\":\\\"Noetherian\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Noetherian/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q165474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CommMagma\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class CommMagma (G : Type u) extends Mul G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommMagma\\\",\\\"via_cell\\\":\\\"cell:Q165474\\\",\\\"cell_label\\\":\\\"Commutative property\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"IsNoetherianRing\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Noetherian.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Noetherian.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev IsNoetherianRing (R) [Semiring R] :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Noetherian/Defs.html#IsNoetherianRing\\\",\\\"via_cell\\\":\\\"cell:Q582271\\\",\\\"cell_label\\\":\\\"noetherian ring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Noetherian\\\",\\\"label\\\":\\\"Noetherian\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Noetherian/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Ring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Ring (R : Type u) extends Semiring R, AddCommGroup R, AddGroupWithOne R\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Ring\\\",\\\"via_cell\\\":\\\"cell:Q161172\\\",\\\"cell_label\\\":\\\"Ring (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Ext group module homological algebra\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 5032,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ext group module homological algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":19},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":12},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q674689\\\",\\\"label\\\":\\\"Clifford algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":7}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":235,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Group\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Group (G : Type u) extends DivInvMonoid G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group\\\",\\\"via_cell\\\":\\\"cell:Q83478\\\",\\\"cell_label\\\":\\\"Group (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathli"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"regular sequence algebra\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3895,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular sequence algebra\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Sequence\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Stream\\\",\\\"label\\\":\\\"Stream\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Stream/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":8},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q47577\\\",\\\"label\\\":\\\"Fibonacci number\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q140744\\\",\\\"label\\\":\\\"Arithmetic function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q170198\\\",\\\"label\\\":\\\"Series (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q191780\\\",\\\"label\\\":\\\"Ordinal number\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"label\\\":\\\"Hausdorff space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1065257\\\",\\\"label\\\":\\\"squeeze theorem\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q176623\\\",\\\"label\\\":\\\"Random variable\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":150,\\\"withheld_by_shard\\\":484,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Stream'\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Stream.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Stream.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Stream' (α : Type u) := ℕ → α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Stream/Defs.html#Stream'\\\",\\\"via_cell\\\":\\\"cell:Q133250\\\",\\\"cell_label\\\":\\\"Sequence\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Stream\\\",\\\"label\\\":\\\"Stream\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Stream/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Ext functor derived functor\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 5019,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ext functor derived functor\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1384902\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ext functor\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology\\\",\\\"label\\\":\\\"Homology\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology/DerivedCategory\\\",\\\"label\\\":\\\"DerivedCategory\\\"}]},{\\\"id\\\":\\\"cell:Q864475\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Functor\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Functor\\\",\\\"label\\\":\\\"Functor\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Functor/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology\\\",\\\"label\\\":\\\"Homology\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1198376\\\",\\\"label\\\":\\\"Cohomology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"label\\\":\\\"Morphism\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q318737\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q864475\\\",\\\"label\\\":\\\"Functor\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1144780\\\",\\\"label\\\":\\\"Homology (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12485\\\",\\\"label\\\":\\\"Symmetry\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":38,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.Abelian.Ext\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"code\\\":\\\"def Ext (X Y : C) (n : ℕ) : Type w :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.html#CategoryTheory.Abelian.Ext\\\",\\\"via_cell\\\":\\\"cell:Q1384902\\\",\\\"cell_label\\\":\\\"Ext functor\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology\\\",\\\"label\\\":\\\"Homology\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology/DerivedCategory\\\",\\\"label\\\":\\\"DerivedCategory\\\"}]},{\\\"decl\\\":\\\"CategoryTheory.Abelian.extFunctor\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"code\\\":\\\"noncomputable def extFunctor (n : ℕ) : Cᵒᵖ ⥤ C ⥤ AddCommGrpCat.{w} where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.html#CategoryTheory.Abelian.extFunctor\\\",\\\"via_cell\\\":\\\"cell:Q1384902\\\",\\\"cell_label\\\":\\\"Ext functor\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology\\\",\\\"label\\"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"support of a module localization\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3362,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support of a module localization\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Module (R : Type u) (M : Type v) [Semiring R] [AddCommMonoid M] extends\\\\n  DistribMulAction R M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\",\\\"via_cell\\\":\\\"cell:Q18848\\\",\\\"cell_label\\\":\\\"Module (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Localization\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Localization := OreLocalization S M\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/MonoidLocalization/Basic.html#Localization\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"cell_label\\\":\\\"Localization\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.support\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.support\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support\\\",\\\"label\\\":\\\"Module.support\\\",\\\"aka\\\":[\\\"algebra-definition-support-module\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Support\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"aka\\\":[\\\"algebra-lemma-support-closed\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Support\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.supportDim\\\",\\\"label\\\":\\\"Module.supportDim\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/KrullDimension/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.supportDim_le_supportDim_quotSMulTop_succ\\\",\\\"label\\\":\\\"Module.supportDim_le_supportDim_quotSMulTop_succ\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/KrullDimension/Regular\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.supportDim_quotSMulTop_succ_eq_of_notMem_minimalPrimes_of_mem_maximalIdeal\\\",\\\"label\\\":\\\"Module.supportDim_quotSMulTop_succ_eq_of_notMem_minimalPrimes_of_mem_maximalIdeal\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/KrullDimension/Regular\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"regular sequence\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zero locus vanishing ideal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zero locus vanishing ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Module.support\"}",
+   "ok": true,
+   "result_chars": 1631,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.support\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.support\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.support\\\",\\\"f\\\":40970,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.support\\\",\\\"label\\\":\\\"Module.support\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Support\\\"],\\\"f\\\":40970,\\\"xy\\\":[-948.8,-2364.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.support\\\",\\\"label\\\":\\\"Module.support\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Support\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Module.support : Set (PrimeSpectrum R) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Support\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:00L1\\\",\\\"label\\\":\\\"algebra-definition-support-module\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/00L1\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"Let $R$ be a ring and let $M$ be an $R$-module. The {\\\\\\\\it support of $M$} is the set $$ \\\\\\\\text{Supp}(M) = \\\\\\\\{ \\\\\\\\mathfrak p \\\\\\\\in \\\\\\\\Spec(R) \\\\\\\\mid M_{\\\\\\\\mathfrak p} \\\\\\\\not = 0 \\\\\\\\} $$\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Support\\\",\\\"label\\\":\\\"Support\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"M-regular exact sequence\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"M-regular exact sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsMRegular sequence\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsMRegular sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"isRegular sequence\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isRegular sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"regular element module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular element module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PrimeSpectrum zero set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PrimeSpectrum zero set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zeroLocus ideal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zeroLocus ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ideal.zeroLocus\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 387,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.zeroLocus\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.zeroLocus_inj_of_pure\\\",\\\"label\\\":\\\"Ideal.zeroLocus_inj_of_pure\\\",\\\"aka\\\":[\\\"algebra-lemma-pure-ideal-determined-by-zero-set\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Pure\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.support_eq\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 367,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.support_eq\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"aka\\\":[\\\"algebra-lemma-support-closed\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Support\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"CommRing\\\", \\\"IsNoetherianRing\\\", \\\"Ideal\\\", \\\"Module\\\", \\\"Submodule\\\", \\\"CategoryTheory.Abelian.Ext\\\", \\\"Module.support\\\", \\\"Fintype.card\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CommRing\", \"IsNoetherianRing\", \"Ideal\", \"Module\", \"Submodule\", \"CategoryTheory.Abelian.Ext\", \"Module.support\"]}",
+   "ok": true,
+   "result_chars": 2305,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"},{\\\"decl\\\":\\\"IsNoetherianRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Noetherian.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Noetherian.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Noetherian/Defs.html#IsNoetherianRing\\\"},{\\\"decl\\\":\\\"Ideal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Defs.html#Ideal\\\"},{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\"},{\\\"decl\\\":\\\"Submodule\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Submodule.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Submodule/Defs.html#Submodule\\\"},{\\\"decl\\\":\\\"CategoryTheory.Abelian.Ext\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Homology/DerivedCategory/Ext/Basic.html#CategoryTheory.Abelian.Ext\\\"},{\\\"decl\\\":\\\"Module.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Support\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Support\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Support.html#Module.support\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":7,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Nontrivial Module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nontrivial Module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FinitelyGenerated Module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FinitelyGenerated Module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Proper Submodule\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Proper Submodule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Nontrivial\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1362,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nontrivial\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsPGroup.center_nontrivial\\\",\\\"label\\\":\\\"IsPGroup.center_nontrivial\\\",\\\"aka\\\":[\\\"Equitable voting rules\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/PGroup\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Set.Nontrivial.infsep_exists_of_finite\\\",\\\"label\\\":\\\"Set.Nontrivial.infsep_exists_of_finite\\\",\\\"aka\\\":[\\\"Forbidden Four Cycle, Star Graphs and Isometric Embeddings\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Infsep\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SimpleGraph.IsTree.exists_vert_degree_one_of_nontrivial\\\",\\\"label\\\":\\\"SimpleGraph.IsTree.exists_vert_degree_one_of_nontrivial\\\",\\\"aka\\\":[\\\"Vertex decomposability of complexes associated to forests\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Acyclic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ringKrullDim_nonneg_of_nontrivial\\\",\\\"label\\\":\\\"ringKrullDim_nonneg_of_nontrivial\\\",\\\"aka\\\":[\\\"The ring of real-valued multivariate polynomials: an analyst's perspective\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/KrullDimension/Basic\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos358.intervalRepresentationsNonTrivial\\\",\\\"label\\\":\\\"Erdos358.intervalRepresentationsNonTrivial\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FinitelyGenerated\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 284,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FinitelyGenerated\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/ModelTheory/FinitelyGenerated\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"FinitelyGenerated\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Nontrivial\", \"Module.Finite\", \"Submodule.IsProperly\"]}",
+   "ok": true,
+   "result_chars": 1047,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nontrivial\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Nontrivial.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Nontrivial.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Nontrivial/Defs.html#Nontrivial\\\"},{\\\"decl\\\":\\\"Module.Finite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Finiteness.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Finiteness.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Finiteness/Defs.html#Module.Finite\\\"},{\\\"decl\\\":\\\"Submodule.IsProperly\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.Finite finitely generated\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.Finite finitely generated\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ideal.Quotient\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1347,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.Quotient\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.Quotient\\\",\\\"label\\\":\\\"Ideal.Quotient\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Quotient\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.Quotient.commRing\\\",\\\"label\\\":\\\"Ideal.Quotient.commRing\\\",\\\"aka\\\":[\\\"On the Number of Control Nodes of Threshold and XOR Boolean Networks\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Quotient\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.Quotient.field\\\",\\\"label\\\":\\\"Ideal.Quotient.field\\\",\\\"aka\\\":[\\\"Multistage Compute-and-Forward with Multilevel Lattice Codes Based on Product Constructions\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Quotient\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.Quotient.isDomain_iff_prime\\\",\\\"label\\\":\\\"Ideal.Quotient.isDomain_iff_prime\\\",\\\"aka\\\":[\\\"On the rings of Fricke characters of free abelian groups\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Quotient\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.Quotient.maximal_ideal_iff_isField_quotient\\\",\\\"label\\\":\\\"Ideal.Quotient.maximal_ideal_iff_isField_quotient\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Quotient\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"proper ideal subset\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"proper ideal subset\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Ideal.Quotient\", \"PrimeSpectrum\", \"Submodule.Ne_top\"]}",
+   "ok": true,
+   "result_chars": 1148,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.Quotient\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Ideal.Quotient.mk\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Quotient.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Quotient.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Quotient/Defs.html#Ideal.Quotient.mk\\\"},{\\\"decl\\\":\\\"PrimeSpectrum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Spectrum.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Spectrum.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Spectrum/Prime/Defs.html#PrimeSpectrum\\\"},{\\\"decl\\\":\\\"Submodule.Ne_top\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PrimeSpectrum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1296,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PrimeSpectrum\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PrimeSpectrum\\\",\\\"label\\\":\\\"PrimeSpectrum\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q147978\\\",\\\"label\\\":\\\"Zariski topology\\\",\\\"aka\\\":[\\\"PrimeSpectrum.zariskiTopology\\\",\\\"Zariski Topology\\\",\\\"Even more spectra: tensor triangular comparison maps via graded commutative 2-rings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PrimeSpectrum.denseRange_comap_iff_minimalPrimes\\\",\\\"label\\\":\\\"PrimeSpectrum.denseRange_comap_iff_minimalPrimes\\\",\\\"aka\\\":[\\\"algebra-lemma-image-dense-generic-points\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PrimeSpectrum.exists_range_eq_of_isConstructible\\\",\\\"label\\\":\\\"PrimeSpectrum.exists_range_eq_of_isConstructible\\\",\\\"aka\\\":[\\\"algebra-lemma-constructible-is-image\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PrimeSpectrum.isHomeomorph_comap\\\",\\\"label\\\":\\\"PrimeSpectrum.isHomeomorph_comap\\\",\\\"aka\\\":[\\\"algebra-lemma-powers\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"depth module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"depth module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"regular element\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"regular element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ideal.map module multiplication\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.map module multiplication\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Submodule.span\", \"Submodule.top\"]}",
+   "ok": true,
+   "result_chars": 749,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.span\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Span.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Span/Defs.html#Submodule.span\\\"},{\\\"decl\\\":\\\"Submodule.top\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Submodule top full module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submodule top full module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Submodule.map\", \"Ideal.span\", \"AddSubmonoid.span\"]}",
+   "ok": true,
+   "result_chars": 1050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Map\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Submodule.Map\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Submodule/Map.html#Submodule.map\\\"},{\\\"decl\\\":\\\"Ideal.span\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Span\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Span\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Span.html#Ideal.span\\\"},{\\\"decl\\\":\\\"AddSubmonoid.span\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Module.support_eq_zeroLocus\"}",
+   "ok": true,
+   "result_chars": 1786,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"f\\\":40970,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Support\\\"],\\\"f\\\":40970,\\\"xy\\\":[-858.7,-2572.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Support\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"code\\\":\\\"lemma Module.support_eq_zeroLocus :\\\\n    Module.support R M = zeroLocus (Module.annihilator R M) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Support\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:00L2\\\",\\\"label\\\":\\\"algebra-lemma-support-closed\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/00L2\\\",\\\"kind_hint\\\":\\\"lemma\\\",\\\"snippet\\\":\\\"Let $R$ be a ring and let $M$ be an $R$-module. If $M$ is finite, then $\\\\\\\\text{Supp}(M)$ is closed. More precisely, if $I = \\\\\\\\text{Ann}(M)$ is the annihilator of $M$, then $V(I) = \\\\\\\\text{Supp}(M)$.\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Support\\\",\\\"label\\\":\\\"Support\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Ideal.zeroLocus\", \"Set.Nontrivial\"]}",
+   "ok": true,
+   "result_chars": 745,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.zeroLocus\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.Nontrivial\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Subsingleton\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Subsingleton\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Subsingleton.html#Set.Nontrivial\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zeroLocus\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zeroLocus\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1068976\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"aka\\\":[\\\"Hilberts Nullstellensatz\\\",\\\"MvPolynomial.vanishingIdeal_zeroLocus_eq_radical\\\",\\\"Projective Nullstellensatz for not necessarily algebraically closed fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.zeroLocus_inj_of_pure\\\",\\\"label\\\":\\\"Ideal.zeroLocus_inj_of_pure\\\",\\\"aka\\\":[\\\"algebra-lemma-pure-ideal-determined-by-zero-set\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Ideal/Pure\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.support_eq_zeroLocus\\\",\\\"label\\\":\\\"Module.support_eq_zeroLocus\\\",\\\"aka\\\":[\\\"algebra-lemma-support-closed\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Support\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.mem_zeroLocus_iff\\\",\\\"label\\\":\\\"MvPolynomial.mem_zeroLocus_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.zeroLocus\\\",\\\"label\\\":\\\"MvPolynomial.zeroLocus\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"zeroLocus\", \"Module.annihilator\"]}",
+   "ok": true,
+   "result_chars": 747,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"zeroLocus\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Module.annihilator\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Maps\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Maps\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Maps.html#Module.annihilator\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1068976\"}",
+   "ok": true,
+   "result_chars": 3701,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1068976\\\",\\\"id\\\":\\\"cell:Q1068976\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"f\\\":39064,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1068976\\\",\\\"anchor\\\":\\\"Q1068976\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"],\\\"f\\\":39064,\\\"xy\\\":[-39.7,21.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1068976\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"Theorem: polynomials without common complex zeros generate the unit ideal\\\",\\\"slug\\\":\\\"Hilberts_Nullstellensatz\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MvPolynomial.vanishingIdeal_zeroLocus_eq_radical\\\",\\\"label\\\":\\\"MvPolynomial.vanishingIdeal_zeroLocus_eq_radical\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.RingTheory.Nullstellensatz\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"Main statement of the Nullstellensatz \\\",\\\"code\\\":\\\"theorem vanishingIdeal_zeroLocus_eq_radical (I : Ideal (MvPolynomial σ k)) :\\\\n    vanishingIdeal k (zeroLocus K I) = I.radical := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Nullstellensatz\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:HilbertsNullstellensatz\\\",\\\"label\\\":\\\"Hilberts Nullstellensatz\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/HilbertsNullstellensatz.html\\\",\\\"qid\\\":\\\"Q1068976\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Hilbert's_Nullstellensatz\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Hilbert's_Nullstellensatz\\\",\\\"kind_hint\\\":\\\"theorem\\\",\\\"qid\\\":\\\"Q1068976\\\",\\\"snippet\\\":\\\"Let $k$ be an algebraically closed field. Let $n \\\\\\\\geq 0$ be an natural number. Let $k \\\\\\\\sqbrk {x_1, \\\\\\\\ldots, x_n}$ be the polynomial ring in $n$ variables over $k$. Then for every ideal $J \\\\\\\\subseteq k \\\\\\\\sqbrk {x_1, \\\\\\\\ldots, x_n}$, the associated ideal of its zero-locus equals its radical: $\\\\\\\\map I {\\\\\\\\map Z J} = \\\\\\\\map \\\\\\\\Rad J$\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2411.06325#7\\\",\\\"label\\\":\\\"Projective Nullstellensatz for not necessarily algebraically closed fields\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2411.06325\\\",\\\"ref\\\":\\\"7\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\",\\\"label\\\":\\\"Nullstellensatz\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":57,\\\"cites\\\":4,\\\"mentions\\\":6,\\\"links\\\":1,\\\"relates\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q382698\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"path:Mathlib/AlgebraicGeometry\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1203540\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q33456\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Geometry\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":54,\\\"organs\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PrimeSpectrum.zeroLocus Ideal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PrimeSpectrum.zeroLocus Ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ideal support vanishing set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal support vanishing set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Ideal.zeroLocus_span\", \"PrimeSpectrum.zeroLocus\"]}",
+   "ok": true,
+   "result_chars": 798,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.zeroLocus_span\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"PrimeSpectrum.zeroLocus\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Spectrum.Prime.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Spectrum.Prime.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Spectrum/Prime/Basic.html#PrimeSpectrum.zeroLocus\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ideal.map Module ideals\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ideal.map Module ideals\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Submodule.smul\", \"Submodule.comap\"]}",
+   "ok": true,
+   "result_chars": 845,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.smul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Submodule.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Submodule/Defs.html#Submodule.smul\\\"},{\\\"decl\\\":\\\"Submodule.comap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Submodule.Map\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Submodule.Map\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Submodule/Map.html#Submodule.comap\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsZero trivial abelian group\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsZero trivial abelian group\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsZero\", \"Subsingleton\"]}",
+   "ok": true,
+   "result_chars": 867,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsZero\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"CategoryTheory.Limits.IsZero\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Limits.Shapes.ZeroObjects\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Limits.Shapes.ZeroObjects\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Limits/Shapes/ZeroObjects.html#CategoryTheory.Limits.IsZero\\\"},{\\\"decl\\\":\\\"Subsingleton\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Subsingleton\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"List length fintype\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List length fintype\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List\", \"Fin\"]}",
+   "ok": true,
+   "result_chars": 654,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\"},{\\\"decl\\\":\\\"Fin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Fin\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ext vanishing zero module\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ext vanishing zero module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem ext_vanishing_equivalence\n  {R : Type*} [CommRing R] [IsNoetherianRing R]\n  {I : Ideal R}\n  {M : Type*} [AddCommMonoid M] [Module R M]\n  (hM_nontrivial : Nontrivial M)\n  (hM_finite : Module.Finite R M)\n  (hI_proper : Submodule.smul (I.map (Submodule.subtype (⊤ : Submodule R R))) M ≠ ⊤)\n  (n : ℕ) :\n  (∀ (N : Type*) [AddCommMonoid N] [Module R N],\n    Nontrivial N → Module.Finite R N →\n    Module.support R N ⊆ PrimeSpectrum.zeroLocus I →\n    ∀ i < n, Subsingleton (CategoryTheory.Abelian.Ext R N M i))\n  ↔ (∀ i < n, Subsingleton (CategoryTheory.Abelian.Ext R (R ⧸ I) M i))\n  ↔ (∃ (N : Type*) [AddCommMonoid N] [Module R N],\n    Nontrivial N ∧ Module.Finite R N ∧\n    Module.support R N = PrimeSpectrum.zeroLocus I ∧\n    ∀ i < n, Subsingleton (CategoryTheory.Abelian.Ext R N M i))\n  ↔ (∃ (seq : Fin n → R), (∀ i, seq i ∈ I) ∧\n    ∀ i : Fin n, Function.Injective (fun m : M => seq i • m)) :=\n  sorry"
+}

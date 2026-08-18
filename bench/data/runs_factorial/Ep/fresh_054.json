@@ -1,0 +1,410 @@
+{
+ "task_id": "fresh_054",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:17:56Z",
+ "wall_s": 181.1,
+ "transcript_stats": {
+  "turns": 46,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 30,
+   "mcp__formal__decl_read": 9,
+   "mcp__formal__decl_grep": 6
+  },
+  "tokens_in": 242,
+  "tokens_out": 10733,
+  "cost_usd": 0.14311130000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Semiring Set\"}",
+   "ok": true,
+   "result_chars": 223,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Semiring Set': Application type mismatch: The argument\\n  Set\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\nin the application\\n  Semiring Set\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.diff Set.union\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Set.diff Set.union'.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PairwiseDisjoint\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'PairwiseDisjoint': unknown identifier 'PairwiseDisjoint'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.disjoint\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.disjoint': unknown identifier 'Set.disjoint'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pairwise\"}",
+   "ok": true,
+   "result_chars": 875,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 448 declarations mentioning Pairwise.\\n- Pairwise   [Mathlib.Logic.Pairwise]\\n    A relation `r` holds pairwise if `r i j` for all `i ≠ j`.\\n- Subsingleton.pairwise   [Mathlib.Logic.Pairwise]\\n- Pairwise.set_pairwise   [Mathlib.Logic.Pairwise]\\n- Pairwise.eq   [Mathlib.Logic.Pairwise]\\n- Pairwise.mono   [Mathlib.Logic.Pairwise]\\n- Function.Injective.pairwise_ne   [Mathlib.Logic.Pairwise]\\n    **Alias** of the forward direction of `Function.injective_iff_pairwise_ne`.\\n- Function.injective_iff_pairwise_ne   [Mathlib.Logic.Pairwise]\\n- Pairwise.comp_of_injective   [Mathlib.Logic.Pairwise]\\n- Pairwise.of_comp_of_surjective   [Mathlib.Logic.Pairwise]\\n- Function.Bijective.pairwise_comp_iff   [Mathlib.Logic.Pairwise]\\n- Set.Pairwise.on_injective   [Mathlib.Logic.Pairwise]\\n- pairwise_fin_succ_iff_of_isSymm   [Mathlib.Logic.Pairwise]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SetSemiring\"}",
+   "ok": true,
+   "result_chars": 1019,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 56 declarations mentioning SetSemiring.\\n- SetSemiring   [Mathlib.Data.Set.Semiring]\\n    An alias for `Set α`, which has a semiring structure given by `∪` as \\\"addition\\\" and pointwise multiplication `*` as \\\"multiplication\\\".\\n- instInhabitedSetSemiring   [Mathlib.Data.Set.Semiring]\\n- instPartialOrderSetSemiring   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instAdd   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instAddCommMonoid   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instCompleteBooleanAlgebra   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instZero   [Mathlib.Data.Set.Semiring]\\n- Set.up   [Mathlib.Data.Set.Semiring]\\n    The identity function `Set α → SetSemiring α`.\\n- SetSemiring.down   [Mathlib.Data.Set.Semiring]\\n    The identity function `SetSemiring α → Set α`.\\n- SetSemiring.instCommMonoid   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instCommSemigroup   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instIdemCommSemiringOfCommMonoid   [Mathlib.Data.Set.Semiring]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Semiring.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1840,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Semiring.lean  (lines 1–50 of 234):\\n     1  /-\\n     2  Copyright (c) 2020 Floris van Doorn. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Floris van Doorn\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.Kleene\\n     9  public import Mathlib.Algebra.Order.Ring.Canonical\\n    10  public import Mathlib.Data.Set.BooleanAlgebra\\n    11  public import Mathlib.Algebra.Group.Pointwise.Set.Basic\\n    12  \\n    13  /-!\\n    14  # Sets as a semiring under union\\n    15  \\n    16  This file defines `SetSemiring α`, an alias of `Set α`, which we endow with `∪` as addition and\\n    17  pointwise `*` as multiplication. If `α` is a (commutative) monoid, `SetSemiring α` is a\\n    18  (commutative) semiring.\\n    19  -/\\n    20  \\n    21  @[expose] public section\\n    22  \\n    23  \\n    24  open Function Set\\n    25  \\n    26  open scoped Pointwise\\n    27  \\n    28  variable {α β : Type*}\\n    29  \\n    30  /-- An alias for `Set α`, which has a semiring structure given by `∪` as \\\"addition\\\" and pointwise\\n    31    multiplication `*` as \\\"multiplication\\\". -/\\n    32  def SetSemiring (α : Type*) : Type _ :=\\n    33    Set α\\n    34  deriving Inhabited, PartialOrder, OrderBot\\n    35  \\n    36  /-- The identity function `Set α → SetSemiring α`. -/\\n    37  protected def Set.up : Set α ≃ SetSemiring α :=\\n    38    Equiv.refl _\\n    39  \\n    40  namespace SetSemiring\\n    41  \\n    42  /-- The identity function `SetSemiring α → Set α`. -/\\n    43  protected def down : SetSemiring α ≃ Set α :=\\n    44    Equiv.refl _\\n    45  \\n    46  open SetSemiring (down)\\n    47  open Set (up)\\n    48  \\n    49  @[simp]\\n    50  protected theorem down_up (s : Set α) : s.up.down = s :=\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a → Set ?b) → Fintype ?a\"}",
+   "ok": true,
+   "result_chars": 303,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 850 declarations mentioning Fintype and Set.\\n- LocallyFinite.fintypeOfCompact   [Mathlib.Topology.Compactness.LocallyFinite]\\n    If `X` is a compact space, then a locally finite family of nonempty sets of `X` can have only finitely many elements, `Fintype` version.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"disjoint\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'disjoint': unknown identifier 'disjoint'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Disjoint\"}",
+   "ok": true,
+   "result_chars": 983,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1726 declarations mentioning Disjoint.\\n- Disjoint   [Mathlib.Order.Disjoint]\\n    Two elements of a lattice are disjoint if their inf is the bottom element.   (This generalizes disjoint sets, viewed as members of the subset lattice.)  Note th\\n- symm_disjoint   [Mathlib.Order.Disjoint]\\n- symmetric_disjoint   [Mathlib.Order.Disjoint]\\n    **Alias** of `symm_disjoint`.\\n- disjoint_of_subsingleton   [Mathlib.Order.Disjoint]\\n- Disjoint.symm   [Mathlib.Order.Disjoint]\\n- disjoint_comm   [Mathlib.Order.Disjoint]\\n- disjoint_bot_left   [Mathlib.Order.Disjoint]\\n- disjoint_bot_right   [Mathlib.Order.Disjoint]\\n- Disjoint.eq_bot_of_self   [Mathlib.Order.Disjoint]\\n    **Alias** of the forward direction of `disjoint_self`.\\n- disjoint_self   [Mathlib.Order.Disjoint]\\n- IsCompl.disjoint   [Mathlib.Order.Disjoint]\\n    If `x` and `y` are to be complementary in an order, they should be disjoint.\\n- Disjoint.mono_left   [Mathlib.Order.Disjoint]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.pairwise_disjoint\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.pairwise_disjoint': unknown identifier 'Set.pairwise_disjoint'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype disjoint union\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype disjoint union': Unknown identifier `disjoint`\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"biUnion Fintype\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'biUnion Fintype': Unknown identifier `biUnion`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.diff\"}",
+   "ok": true,
+   "result_chars": 276,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Set.diff.\\n- Set.diff   [Mathlib.Data.Set.Defs]\\n    The difference of two sets `s` and `t` is the set of elements contained in `s` but not in `t`.  Note that you should **not** use this definition directly, but i\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype Pairwise Disjoint\"}",
+   "ok": true,
+   "result_chars": 241,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype Pairwise Disjoint': Function expected at\\n  Fintype ?m.2\\nbut this term has type\\n  Type ?u.1\\n\\nNote: Expected a function because this term is being applied to the argument\\n  Disjoint\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"iUnion\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'iUnion': unknown identifier 'iUnion'\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?ι → Set ?α) → Set ?α\"}",
+   "ok": true,
+   "result_chars": 928,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 52906 declarations mentioning Set.\\n- Set.iInter   [Mathlib.Order.SetNotation]\\n    Indexed intersection of a family of sets\\n- Set.iUnion   [Mathlib.Order.SetNotation]\\n    Indexed union of a family of sets\\n- Set.accumulate   [Mathlib.Order.SetAccumulate]\\n    `accumulate s` is the union of `s y` for `y ≤ x`.\\n- Set.dissipate   [Mathlib.Order.SetDissipate]\\n    `dissipate s` is the intersection of `s y` for `y ≤ x`.\\n- piiUnionInter   [Mathlib.MeasureTheory.PiSystem]\\n    From a set of indices `S : Set ι` and a family of sets of sets `π : ι → Set (Set α)`, define the set of sets that can be written as `⋂ x ∈ t, f x` for some fins\\n- memPartitionSet   [Mathlib.Data.Set.MemPartition]\\n    The set in `memPartition f n` to which `a : α` belongs.\\n- ShrinkingLemma.PartialRefinement.toFun   [Mathlib.Topology.ShrinkingLemma]\\n    A family of sets that form a partial refinement of `u`.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.iUnion pairwise disjoint\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.iUnion pairwise disjoint': Unknown identifier `pairwise`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pairwise.on\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pairwise.on': unknown identifier 'Pairwise.on'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Logic/Pairwise.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1903,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Logic/Pairwise.lean  (lines 1–50 of 114):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Logic.Function.Basic\\n     9  public import Mathlib.Data.Set.Defs\\n    10  public import Mathlib.Data.Nat.Notation\\n    11  \\n    12  /-!\\n    13  # Relations holding pairwise\\n    14  \\n    15  This file defines pairwise relations.\\n    16  \\n    17  ## Main declarations\\n    18  \\n    19  * `Pairwise`: `Pairwise r` states that `r i j` for all `i ≠ j`.\\n    20  * `Set.Pairwise`: `s.Pairwise r` states that `r i j` for all `i ≠ j` with `i, j ∈ s`.\\n    21  -/\\n    22  \\n    23  @[expose] public section\\n    24  \\n    25  open Function\\n    26  \\n    27  variable {α β ι : Type*} {r p : α → α → Prop}\\n    28  \\n    29  section Pairwise\\n    30  \\n    31  variable {f : ι → α} {s : Set α} {a b : α}\\n    32  \\n    33  /-- A relation `r` holds pairwise if `r i j` for all `i ≠ j`. -/\\n    34  def Pairwise (r : α → α → Prop) :=\\n    35    ∀ ⦃i j⦄, i ≠ j → r i j\\n    36  \\n    37  theorem Pairwise.mono (hr : Pairwise r) (h : ∀ ⦃i j⦄, r i j → p i j) : Pairwise p :=\\n    38    fun _i _j hij => h <| hr hij\\n    39  \\n    40  protected theorem Pairwise.eq (h : Pairwise r) : ¬r a b → a = b :=\\n    41    not_imp_comm.1 <| @h _ _\\n    42  \\n    43  @[simp]\\n    44  protected lemma Subsingleton.pairwise [Subsingleton α] : Pairwise r :=\\n    45    fun _ _ h ↦ False.elim <| h.elim <| Subsingleton.elim _ _\\n    46  \\n    47  theorem Function.injective_iff_pairwise_ne : Injective f ↔ Pairwise ((· ≠ ·) on f) :=\\n    48    forall₂_congr fun _i _j => not_imp_not.symm\\n    49  \\n    50  alias ⟨Function.Injective.pairwise_ne, _⟩ := Function.injective_iff_pairwise_ne\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?ι → Set ?α) → Set ?α\"}",
+   "ok": true,
+   "result_chars": 928,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 52906 declarations mentioning Set.\\n- Set.iInter   [Mathlib.Order.SetNotation]\\n    Indexed intersection of a family of sets\\n- Set.iUnion   [Mathlib.Order.SetNotation]\\n    Indexed union of a family of sets\\n- Set.accumulate   [Mathlib.Order.SetAccumulate]\\n    `accumulate s` is the union of `s y` for `y ≤ x`.\\n- Set.dissipate   [Mathlib.Order.SetDissipate]\\n    `dissipate s` is the intersection of `s y` for `y ≤ x`.\\n- piiUnionInter   [Mathlib.MeasureTheory.PiSystem]\\n    From a set of indices `S : Set ι` and a family of sets of sets `π : ι → Set (Set α)`, define the set of sets that can be written as `⋂ x ∈ t, f x` for some fins\\n- memPartitionSet   [Mathlib.Data.Set.MemPartition]\\n    The set in `memPartition f n` to which `a : α` belongs.\\n- ShrinkingLemma.PartialRefinement.toFun   [Mathlib.Topology.ShrinkingLemma]\\n    A family of sets that form a partial refinement of `u`.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finite\"}",
+   "ok": true,
+   "result_chars": 996,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3647 declarations mentioning Finite.\\n- Finite   [Mathlib.Data.Finite.Defs]\\n    A type is `Finite` if it is in bijective correspondence to some `Fin n`.  This is similar to `Fintype`, but `Finite` is a proposition rather than data. A partic\\n- Bool.instFinite   [Mathlib.Data.Finite.Defs]\\n- Prop.instFinite   [Mathlib.Data.Finite.Defs]\\n- finite_or_infinite   [Mathlib.Data.Finite.Defs]\\n- instFinitePLift   [Mathlib.Data.Finite.Defs]\\n- instFiniteULift   [Mathlib.Data.Finite.Defs]\\n- not_finite   [Mathlib.Data.Finite.Defs]\\n    `Infinite α` is not `Finite`\\n- Finite.false   [Mathlib.Data.Finite.Defs]\\n- Finite.nonempty_decidableEq   [Mathlib.Data.Finite.Defs]\\n- Finite.not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the reverse direction of `not_infinite_iff_finite`.\\n- Finite.of_not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the forward direction of `not_infinite_iff_finite`.\\n- Infinite.false   [Mathlib.Data.Finite.Defs]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"semiring partition\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'semiring partition': Unknown identifier `semiring`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"disjoint_iff inf bot\"}",
+   "ok": true,
+   "result_chars": 258,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'disjoint_iff inf bot': Function expected at\\n  disjoint_iff\\nbut this term has type\\n  Disjoint ?m.4 ?m.5 ↔ ?m.4 ⊓ ?m.5 = ⊥\\n\\nNote: Expected a function because this term is being applied to the argument\\n  inf\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pairwise fun\"}",
+   "ok": true,
+   "result_chars": 131,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pairwise fun': <input>:1:12: unexpected end of input; expected '[', '{', '|' or '⦃'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.mem iUnion\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.mem iUnion': Unknown constant `Set.mem`\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.iUnion Set.diff\"}",
+   "ok": true,
+   "result_chars": 720,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1782 declarations mentioning Set.iUnion.\\n- Set.iSup_eq_iUnion   [Mathlib.Order.SetNotation]\\n- Set.mem_iUnion   [Mathlib.Order.SetNotation]\\n- Set.iUnion_true   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_const   [Mathlib.Data.Set.Lattice]\\n- Set.nonempty_of_nonempty_iUnion   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_false   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_nonempty_self   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_le_nat   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_of_singleton   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_empty   [Mathlib.Data.Set.Lattice]\\n- Set.subset_iUnion   [Mathlib.Data.Set.Lattice]\\n- Set.nonempty_of_nonempty_iUnion_eq_univ   [Mathlib.Data.Set.Lattice]\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"theorem disjoint Set\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'theorem disjoint Set': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Disjoint.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2211,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Disjoint.lean  (lines 1–50 of 629):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.BoundedOrder.Lattice\\n     9  \\n    10  /-!\\n    11  # Disjointness and complements\\n    12  \\n    13  This file defines `Disjoint`, `Codisjoint`, and the `IsCompl` predicate.\\n    14  \\n    15  ## Main declarations\\n    16  \\n    17  * `Disjoint x y`: two elements of a lattice are disjoint if their `inf` is the bottom element.\\n    18  * `Codisjoint x y`: two elements of a lattice are codisjoint if their `join` is the top element.\\n    19  * `IsCompl x y`: In a bounded lattice, predicate for \\\"`x` is a complement of `y`\\\". Note that in a\\n    20    non-distributive lattice, an element can have several complements.\\n    21  * `ComplementedLattice α`: Typeclass stating that any element of a lattice has a complement.\\n    22  \\n    23  -/\\n    24  \\n    25  @[expose] public section\\n    26  \\n    27  open Function\\n    28  \\n    29  variable {α : Type*}\\n    30  \\n    31  section Disjoint\\n    32  \\n    33  section PartialOrderBot\\n    34  \\n    35  variable [PartialOrder α] [OrderBot α] {a b c d : α}\\n    36  \\n    37  /-- Two elements of a lattice are disjoint if their inf is the bottom element.\\n    38    (This generalizes disjoint sets, viewed as members of the subset lattice.)\\n    39  \\n    40  Note that we define this without reference to `⊓`, as this allows us to talk about orders where\\n    41  the infimum is not unique, or where implementing `Inf` would require additional `Decidable`\\n    42  arguments. -/\\n    43  @[to_dual /-- Two elements of a lattice are codisjoint if their sup is the top element.\\n    44  \\n    45  Note that we define this without reference to `⊔`, as this allows us to talk about orders where\\n    46  the supremum is not unique, or where implementing `Sup` would require additional `Decidable`\\n    47  arguments. -/]\\n    48  def Disjoint (a b : α) : Prop :=\\n    49    ∀ ⦃x⦄, x ≤ a → x ≤ b → x ≤ ⊥\\n    50  \\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/SetNotation.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3074,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/SetNotation.lean  (lines 1–80 of 266):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Patrick Massot, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Operations\\n     9  public import Mathlib.Util.Notation3\\n    10  \\n    11  /-!\\n    12  # Notation classes for set supremum and infimum\\n    13  \\n    14  In this file we introduce notation for indexed suprema, infima, unions, and intersections.\\n    15  \\n    16  ## Main definitions\\n    17  \\n    18  - `SupSet α`: typeclass introducing the operation `SupSet.sSup` (exported to the root namespace);\\n    19    `sSup s` is the supremum of the set `s`;\\n    20  - `InfSet`: similar typeclass for infimum of a set;\\n    21  - `iSup f`, `iInf f`: supremum and infimum of an indexed family of elements,\\n    22    defined as `sSup (Set.range f)` and `sInf (Set.range f)`, respectively;\\n    23  - `Set.sUnion s`, `Set.sInter s`: same as `sSup s` and `sInf s`,\\n    24    but works only for sets of sets;\\n    25  - `Set.iUnion s`, `Set.iInter s`: same as `iSup s` and `iInf s`,\\n    26    but works only for indexed families of sets.\\n    27  \\n    28  ## Notation\\n    29  \\n    30  - `⨆ i, f i`, `⨅ i, f i`: supremum and infimum of an indexed family, respectively;\\n    31  - `⋃₀ s`, `⋂₀ s`: union and intersection of a set of sets;\\n    32  - `⋃ i, s i`, `⋂ i, s i`: union and intersection of an indexed family of sets.\\n    33  \\n    34  -/\\n    35  \\n    36  @[expose] public section\\n    37  \\n    38  open Set\\n    39  \\n    40  universe u v\\n    41  variable {α : Type u} {ι : Sort v}\\n    42  \\n    43  /-- Class for the `sSup` operator -/\\n    44  class SupSet (α : Type*) where\\n    45    /-- Supremum of a set -/\\n    46    sSup : Set α → α\\n    47  \\n    48  /-- Class for the `sInf` operator -/\\n    49  @[to_dual existing]\\n    50  class InfSet (α : Type*) where\\n    51    /-- Infimum of a set -/\\n    52    sInf : Set α → α\\n    53  \\n    54  export SupSet (sSup)\\n    55  \\n    56  export InfSet (sInf)\\n    57  \\n    58  /-- Indexed supremum -/\\n    59  @[to_dual /-- Indexed infimum -/]\\n    60  def iSup [SupSet α] (s : ι → α) : α :=\\n    61    sSup (range s)\\n    62  \\n    63  @[to_dual]\\n    64  instance (priority := 50) infSet_to_nonempty (α) [InfSet α] : Nonempty α :=\\n    65    ⟨sInf ∅⟩\\n    66  \\n    67  /-- Indexed supremum. -/\\n    68  notation3 \\\"⨆ \\\" (...)\\\", \\\" r:60:(scoped f => iSup f) => r\\n    69  \\n    70  /-- Indexed infimum. -/\\n    71  notation3 \\\"⨅ \\\" (...)\\\", \\\" r:60:(scoped f => iInf f) => r\\n    72  \\n    73  section delaborators\\n    74  \\n    75  open Lean Lean.PrettyPrinter.Delaborator\\n    76  \\n    77  /-- Delaborator for indexed supremum. -/\\n    78  @[app_delab iSup]\\n    79  meta def iSup_delab : Delab := whenPPOption Lean.getPPNotation <| withOverApp 4 do\\n    80    let #[_, ι, _, f] := (← SubExpr.getExpr).getAppArgs | failure\\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.iUnion (?ι → Set ?α)\"}",
+   "ok": true,
+   "result_chars": 720,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1782 declarations mentioning Set.iUnion.\\n- Set.iSup_eq_iUnion   [Mathlib.Order.SetNotation]\\n- Set.mem_iUnion   [Mathlib.Order.SetNotation]\\n- Set.iUnion_true   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_const   [Mathlib.Data.Set.Lattice]\\n- Set.nonempty_of_nonempty_iUnion   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_false   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_nonempty_self   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_le_nat   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_of_singleton   [Mathlib.Data.Set.Lattice]\\n- Set.iUnion_empty   [Mathlib.Data.Set.Lattice]\\n- Set.subset_iUnion   [Mathlib.Data.Set.Lattice]\\n- Set.nonempty_of_nonempty_iUnion_eq_univ   [Mathlib.Data.Set.Lattice]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"def Set.iUnion\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'def Set.iUnion': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Set\\\\.iUnion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Set\\\\\\\\.iUnion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"iUnion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1351,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3649 match(es) for 'iUnion' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Spectrum/Pi.lean:79\\n    simp_rw [spectrum, Set.compl_iUnion, compl_compl, resolventSet, Set.iInter_setOf,\\n- Mathlib/Algebra/Algebra/Spectrum/Pi.lean:92\\n    simp only [quasispectrum, Set.mem_setOf_eq, Set.mem_iUnion]\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:984\\n    let ⟨i, hi⟩ := Set.mem_iUnion.1 hx\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:985\\n    Set.mem_iUnion.2 ⟨i, (S i).smul_mem' r hi⟩ }\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:987\\n    (iSup_le fun i ↦ le_iSup (fun i ↦ (S i : Set A)) i) (Set.iUnion_subset fun _ ↦ le_iSup S _)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1011\\n    Set.iUnionLift (fun i => ↑(K i)) (fun i x => f i x)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1019\\n    exact Set.iUnionLift_const _ (fun i : ι => (0 : K i)) (fun _ => rfl) _ (by simp)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1022\\n    apply Set.iUnionLift_binary (coe_iSup_of_directed dir) dir _ (fun _ => (· * ·))\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1026\\n    apply Set.iUnionLift_binary (coe_iSup_of_directed dir) dir _ (fun _ => (· + ·))\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1030\\n    apply Set.iUnionLift_unary (coe_iSup_of_directed dir) _ (fun _ x => r • x)\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace Set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 429,
+   "result_head": "[{\"type\": \"text\", \"text\": \"217 match(es) for 'namespace Set' (via ripgrep):\\n- Mathlib/Algebra/Ring/Pointwise/Set.lean:31\\n    namespace Set\\n- Mathlib/Algebra/Star/Pointwise.lean:27\\n    namespace Set\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:161\\n    namespace Set\\n- Mathlib/Algebra/GroupWithZero/Pointwise/Set/Basic.lean:31\\n    namespace Set\\n- Mathlib/Algebra/GroupWithZero/Pointwise/Set/Card.lean:24\\n    namespace Set\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set (?a → Set ?b) ?b\"}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set (?a → Set ?b) ?b': Function expected at\\n  Set (?a → Set ?b)\\nbut this term has type\\n  Type ?u.1\\n\\nNote: Expected a function because this term is being applied to the argument\\n  ?b\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Set.diff\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Set.diff' under Mathlib/.\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Defs.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 3923,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Defs.lean  (lines 1–100 of 278):\\n     1  /-\\n     2  Copyright (c) 2016 Microsoft Corporation. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Leonardo de Moura\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Batteries.Util.ExtendedBinder\\n     9  public import Mathlib.Tactic.SetNotationForOrder\\n    10  \\n    11  import Mathlib.Tactic.ToDual\\n    12  \\n    13  /-!\\n    14  # Sets\\n    15  \\n    16  This file sets up the theory of sets whose elements have a given type.\\n    17  \\n    18  ## Main definitions\\n    19  \\n    20  Given a type `X` and a predicate `p : X → Prop`:\\n    21  \\n    22  * `Set X` : the type of sets whose elements have type `X`\\n    23  * `{a : X | p a} : Set X` : the set of all elements of `X` satisfying `p`\\n    24  * `{a | p a} : Set X` : a more concise notation for `{a : X | p a}`\\n    25  * `{f x y | (x : X) (y : Y)} : Set Z` : a more concise notation for `{z : Z | ∃ x y, f x y = z}`\\n    26  * `{a ∈ S | p a} : Set X` : given `S : Set X`, the subset of `S` consisting of\\n    27    its elements satisfying `p`.\\n    28  \\n    29  ## Implementation issues\\n    30  \\n    31  As in Lean 3, `Set X := X → Prop`\\n    32  This file is a port of the core Lean 3 file `lib/lean/library/init/data/set.lean`.\\n    33  \\n    34  -/\\n    35  \\n    36  @[expose] public section\\n    37  \\n    38  open Lean Elab Term Meta Batteries.ExtendedBinder\\n    39  \\n    40  universe u\\n    41  variable {α : Type u}\\n    42  \\n    43  /-- A set is a collection of elements of some type `α`.\\n    44  \\n    45  Although `Set` is defined as `α → Prop`, this is an implementation detail which should not be\\n    46  relied on. Instead, `setOf` and membership of a set (`∈`) should be used to convert between sets\\n    47  and predicates.\\n    48  -/\\n    49  @[use_set_notation_for_order]\\n    50  def Set (α : Type u) := α → Prop\\n    51  \\n    52  /-\\n    53  We don't translate the order on sets (i.e. turning `s ⊆ t` into `t ⊆ s`).\\n    54  This is because for example the following theorems should be dual\\n    55  ```\\n    56  theorem sSup_le_sSup {s t : Set α} (h : s ⊆ t) : sSup s ≤ sSup t\\n    57  theorem sInf_le_sInf {s t : Set α} (h : s ⊆ t) : sInf t ≤ sInf s\\n    58  ```\\n    59  Additionally, dualizing the order on sets would mean that a set is dual to its complement.\\n    60  But we would like to dualize set intervals such that e.g. `Ico a b` is dual to `Ioc b a`.\\n    61  -/\\n    62  attribute [to_dual_dont_translate] Set\\n    63  \\n    64  /-- Turn a predicate `p : α → Prop` into a set, also written as `{x | p x}` -/\\n    65  def setOf {α : Type u} (p : α → Prop) : Set α :=\\n    66    p\\n    67  \\n    68  namespace Set\\n    69  \\n    70  /-- Membership in a set -/\\n    71  protected def Mem (s : Set α) (a : α) : Prop :=\\n    72    s a\\n    73  \\n    74  instance : Membership α (Set α) :=\\n    75    ⟨Set.Mem⟩\\n    76  \\n    77  @[ext, grind ext]\\n    78  theorem ext {a b : Set α} (h : ∀ (x : α), x ∈ a ↔ x ∈ b) : a = b :=\\n    79    funext (fun x ↦ propext (h x))\\n    80  \\n    81  /-- The subset relation on sets. `s ⊆ t` means that all elements of `s` are elements of `t`.\\n    82  \\n    83  Note that you should **not** use this definition directly, but instead write `s ⊆ t`. -/\\n    84  protected def Subset (s₁ s₂ : Set α) :=\\n    85    ∀ ⦃a⦄, a ∈ s₁ → a ∈ s₂\\n    86  \\n    87  /-- We introduce `≤` before `⊆` to help the unifier when applying lattice theorems\\n    88  to subset hypotheses. -/\\n    89  instance : LE (Set α) :=\\n    90    ⟨Set.Subset⟩\\n    91  \\n    92  instance : EmptyCollection (Set α) :=\\n    93    ⟨fun _ ↦ False⟩\\n    94  \\n    95  end Set\\n    96  \\n    97  namespace Mathlib.Meta\\n    98  \\n    99  /-- Set builder syntax. This can be elaborated to either a `Set` or a `Finset` depending on context.\\n   100  \\n\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Defs.lean\", \"line\": 100, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5651,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Defs.lean  (lines 100–199 of 278):\\n   100  \\n   101  The elaborators for this syntax are located in:\\n   102  * `Data.Set.Defs` for the `Set` builder notation elaborator for syntax of the form `{x | p x}`,\\n   103    `{x : α | p x}`, `{binder x | p x}`.\\n   104  * `Data.Finset.Basic` for the `Finset` builder notation elaborator for syntax of the form\\n   105    `{x ∈ s | p x}`.\\n   106  * `Data.Fintype.Basic` for the `Finset` builder notation elaborator for syntax of the form\\n   107    `{x | p x}`, `{x : α | p x}`, `{x ∉ s | p x}`, `{x ≠ a | p x}`.\\n   108  * `Order.LocallyFinite.Basic` for the `Finset` builder notation elaborator for syntax of the form\\n   109    `{x ≤ a | p x}`, `{x ≥ a | p x}`, `{x < a | p x}`, `{x > a | p x}`.\\n   110  -/\\n   111  syntax (name := setBuilder) \\\"{\\\" extBinder \\\" | \\\" term \\\"}\\\" : term\\n   112  \\n   113  /-- Elaborate set builder notation for `Set`.\\n   114  \\n   115  * `{x | p x}` is elaborated as `Set.setOf fun x ↦ p x`\\n   116  * `{x : α | p x}` is elaborated as `Set.setOf fun x : α ↦ p x`\\n   117  * `{binder x | p x}`, where `x` is bound by the `binder` binder, is elaborated as\\n   118    `{x | binder x ∧ p x}`. The typical example is `{x ∈ s | p x}`, which is elaborated as\\n   119    `{x | x ∈ s ∧ p x}`. The possible binders are\\n   120    * `· ∈ s`, `· ∉ s`\\n   121    * `· ⊆ s`, `· ⊂ s`, `· ⊇ s`, `· ⊃ s`\\n   122    * `· ≤ a`, `· ≥ a`, `· < a`, `· > a`, `· ≠ a`\\n   123  \\n   124    More binders can be declared using the `binder_predicate` command, see `Init.BinderPredicates` for\\n   125    more info.\\n   126  \\n   127  See also\\n   128  * `Data.Finset.Basic` for the `Finset` builder notation elaborator partly overriding this one for\\n   129    syntax of the form `{x ∈ s | p x}`.\\n   130  * `Data.Fintype.Basic` for the `Finset` builder notation elaborator partly overriding this one for\\n   131    syntax of the form `{x | p x}`, `{x : α | p x}`, `{x ∉ s | p x}`, `{x ≠ a | p x}`.\\n   132  * `Order.LocallyFinite.Basic` for the `Finset` builder notation elaborator partly overriding this\\n   133    one for syntax of the form `{x ≤ a | p x}`, `{x ≥ a | p x}`, `{x < a | p x}`, `{x > a | p x}`.\\n   134  -/\\n   135  @[term_elab setBuilder]\\n   136  meta def elabSetBuilder : TermElab\\n   137    | `({ $x:ident | $p }), expectedType? => do\\n   138      elabTerm (← `(setOf fun $x:ident ↦ $p)) expectedType?\\n   139    | `({ $x:ident : $t | $p }), expectedType? => do\\n   140      elabTerm (← `(setOf fun $x:ident : $t ↦ $p)) expectedType?\\n   141    | `({ $x:ident $b:binderPred | $p }), expectedType? => do\\n   142      elabTerm (← `(setOf fun $x:ident ↦ satisfies_binder_pred% $x $b ∧ $p)) expectedType?\\n   143    | _, _ => throwUnsupportedSyntax\\n   144  \\n   145  /-- Unexpander for set builder notation. -/\\n   146  @[app_unexpander setOf]\\n   147  meta def setOf.unexpander : Lean.PrettyPrinter.Unexpander\\n   148    | `($_ fun $x:ident ↦ $p) => `({ $x:ident | $p })\\n   149    | `($_ fun ($x:ident : $ty:term) ↦ $p) => `({ $x:ident : $ty:term | $p })\\n   150    | _ => throw ()\\n   151  \\n   152  open Batteries.ExtendedBinder in\\n   153  /--\\n   154  `{ f x y | (x : X) (y : Y) }` is notation for the set of elements `f x y` constructed from the\\n   155  binders `x` and `y`, equivalent to `{z : Z | ∃ x y, f x y = z}`.\\n   156  \\n   157  If `f x y` is a single identifier, it must be parenthesized to avoid ambiguity with `{x | p x}`;\\n   158  for instance, `{(x) | (x : Nat) (y : Nat) (_hxy : x = y^2)}`.\\n   159  -/\\n   160  macro (priority := low) \\\"{\\\" t:term \\\" | \\\" bs:extBinders \\\"}\\\" : term =>\\n   161    `({x | ∃ᵉ $bs:extBinders, $t = x})\\n   162  \\n   163  /--\\n   164  * `{ pat : X | p }` is notation for pattern matching in set-builder notation,\\n   165    where `pat` is a pattern that is matched by all objects of type `X`\\n   166    and `p` is a proposition that can refer to variables in the pattern.\\n   167    It is the set of all objects of type `X` which, w"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Defs.lean\", \"line\": 200, \"n\": 78}",
+   "ok": true,
+   "result_chars": 3927,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Defs.lean  (lines 200–277 of 278):\\n   200  \\n   201  end Mathlib.Meta\\n   202  \\n   203  namespace Set\\n   204  \\n   205  /-- The universal set on a type `α` is the set containing all elements of `α`.\\n   206  \\n   207  This is conceptually the \\\"same as\\\" `α` (in set theory, it is actually the same), but type theory\\n   208  makes the distinction that `α` is a type while `Set.univ` is a term of type `Set α`. `Set.univ` can\\n   209  itself be coerced to a type `↥Set.univ` which is in bijection with (but distinct from) `α`. -/\\n   210  def univ : Set α := {_a | True}\\n   211  \\n   212  /-- `Set.insert a s` is the set `{a} ∪ s`.\\n   213  \\n   214  Note that you should **not** use this definition directly, but instead write `insert a s` (which is\\n   215  mediated by the `Insert` typeclass). -/\\n   216  protected def insert (a : α) (s : Set α) : Set α := {b | b = a ∨ b ∈ s}\\n   217  \\n   218  instance : Insert α (Set α) := ⟨Set.insert⟩\\n   219  \\n   220  /-- The singleton of an element `a` is the set with `a` as a single element.\\n   221  \\n   222  Note that you should **not** use this definition directly, but instead write `{a}`. -/\\n   223  protected def singleton (a : α) : Set α := {b | b = a}\\n   224  \\n   225  instance instSingletonSet : Singleton α (Set α) := ⟨Set.singleton⟩\\n   226  \\n   227  /-- The union of two sets `s` and `t` is the set of elements contained in either `s` or `t`.\\n   228  \\n   229  Note that you should **not** use this definition directly, but instead write `s ∪ t`. -/\\n   230  protected def union (s₁ s₂ : Set α) : Set α := {a | a ∈ s₁ ∨ a ∈ s₂}\\n   231  \\n   232  instance : Union (Set α) := ⟨Set.union⟩\\n   233  \\n   234  /-- The intersection of two sets `s` and `t` is the set of elements contained in both `s` and `t`.\\n   235  \\n   236  Note that you should **not** use this definition directly, but instead write `s ∩ t`. -/\\n   237  protected def inter (s₁ s₂ : Set α) : Set α := {a | a ∈ s₁ ∧ a ∈ s₂}\\n   238  \\n   239  instance : Inter (Set α) := ⟨Set.inter⟩\\n   240  \\n   241  /-- The complement of a set `s` is the set of elements not contained in `s`.\\n   242  \\n   243  Note that you should **not** use this definition directly, but instead write `sᶜ`. -/\\n   244  protected def compl (s : Set α) : Set α := {a | a ∉ s}\\n   245  \\n   246  /-- The difference of two sets `s` and `t` is the set of elements contained in `s` but not in `t`.\\n   247  \\n   248  Note that you should **not** use this definition directly, but instead write `s \\\\ t`. -/\\n   249  protected def diff (s t : Set α) : Set α := {a ∈ s | a ∉ t}\\n   250  \\n   251  instance : SDiff (Set α) := ⟨Set.diff⟩\\n   252  \\n   253  /-- `𝒫 s` is the set of all subsets of `s`. -/\\n   254  def powerset (s : Set α) : Set (Set α) := {t | t ⊆ s}\\n   255  \\n   256  @[inherit_doc] prefix:100 \\\"𝒫 \\\" => powerset\\n   257  \\n   258  universe v in\\n   259  /-- The image of `s : Set α` by `f : α → β`, written `f '' s`, is the set of `b : β` such that\\n   260  `f a = b` for some `a ∈ s`. -/\\n   261  def image {β : Type v} (f : α → β) (s : Set α) : Set β := {f a | a ∈ s}\\n   262  \\n   263  instance : Functor Set where map := @Set.image\\n   264  \\n   265  instance : LawfulFunctor Set where\\n   266    id_map _ := funext fun _ ↦ propext ⟨fun ⟨_, sb, rfl⟩ ↦ sb, fun sb ↦ ⟨_, sb, rfl⟩⟩\\n   267    comp_map g h _ := funext <| fun c ↦ propext\\n   268      ⟨fun ⟨a, ⟨h₁, h₂⟩⟩ ↦ ⟨g a, ⟨⟨a, ⟨h₁, rfl⟩⟩, h₂⟩⟩,\\n   269       fun ⟨_, ⟨⟨a, ⟨h₁, h₂⟩⟩, h₃⟩⟩ ↦ ⟨a, ⟨h₁, show h (g a) = c from h₂ ▸ h₃⟩⟩⟩\\n   270    map_const := rfl\\n   271  \\n   272  /-- The property `s.Nonempty` expresses the fact that the set `s` is not empty. It should be used\\n   273  in theorem assumptions instead of `∃ x, x ∈ s` or `s ≠ ∅` as it gives access to a nice API thanks\\n   274  to the dot notation. -/\\n   275  protected def Nonempty (s : Set α) : Prop :=\\n   276    ∃ x, x ∈ s\\n   277  \\n\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"pairwise.*disjoint|disjoint.*pairwise\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1577,
+   "result_head": "[{\"type\": \"text\", \"text\": \"258 match(es) for 'pairwise.*disjoint|disjoint.*pairwise' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Limits.lean:310\\n    /-- `S` is the disjoint union of `Xᵢ` if the `Xᵢ` are covering, pairwise disjoint open subschemes\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:37\\n    pairwise disjoint closed subintervals of `[a, b]` of total length `b - a` where the slope of `f`\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:100\\n    /-- If `f` is absolutely continuous on `[d, b]` and there is a collection of pairwise disjoint\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1457\\n    hasSum_integral_iUnion (fun i => measurableSet_Ioc) (pairwise_disjoint_Ioc_add_intCast y)\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:135\\n    · -- The sets `E n` are pairwise disjoint.\\n- Mathlib/MeasureTheory/Covering/VitaliFamily.lean:137\\n    (pairwise_subtype_iff_pairwise_set _ _).2 h.covering_disjoint\\n- Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean:229\\n    /- Let `s` be a covering of `α` by pairwise disjoint measurable sets of finite measure. Let\\n- Mathlib/MeasureTheory/SetSemiring.lean:30\\n    pairwise disjoint sets such that `s \\\\ t = ⋃₀ hC.disjointOfDiff hs ht`.\\n- Mathlib/MeasureTheory/SetSemiring.lean:32\\n    `I` of sets in `C` (with `hI : ↑I ⊆ C`), this is a `Finset` of pairwise disjoint sets such that\\n- Mathlib/MeasureTheory/SetSemiring.lean:35\\n    `Finset` of pairwise disjoint sets such that `⋃₀ J = ⋃₀ hC.disjointOfUnion hJ`.\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/SetSemiring.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4308,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/SetSemiring.lean  (lines 1–80 of 625):\\n     1  /-\\n     2  Copyright (c) 2023 Rémy Degenne. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Rémy Degenne, Peter Pfaffelhuber\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.PiSystem\\n     9  public import Mathlib.Order.Partition.Finpartition\\n    10  public import Mathlib.Order.SupClosed\\n    11  \\n    12  /-! # Semirings and rings of sets\\n    13  \\n    14  A semi-ring of sets `C` (in the sense of measure theory) is a family of sets containing `∅`,\\n    15  stable by intersection and such that for all `s, t ∈ C`, `t \\\\ s` is equal to a disjoint union of\\n    16  finitely many sets in `C`. Note that a semi-ring of sets may not contain unions.\\n    17  \\n    18  An important example of a semi-ring of sets is intervals in `ℝ`. The intersection of two intervals\\n    19  is an interval (possibly empty). The union of two intervals may not be an interval.\\n    20  The set difference of two intervals may not be an interval, but it will be a disjoint union of\\n    21  two intervals.\\n    22  \\n    23  A ring of sets is a set of sets containing `∅`, stable by union, set difference and intersection.\\n    24  \\n    25  ## Main definitions\\n    26  \\n    27  * `MeasureTheory.IsSetSemiring C`: property of being a semi-ring of sets.\\n    28  * `MeasureTheory.IsSetSemiring.disjointOfDiff hs ht`: for `s, t` in a semi-ring `C`\\n    29    (with `hC : IsSetSemiring C`) with `hs : s ∈ C`, `ht : t ∈ C`, this is a `Finset` of\\n    30    pairwise disjoint sets such that `s \\\\ t = ⋃₀ hC.disjointOfDiff hs ht`.\\n    31  * `MeasureTheory.IsSetSemiring.disjointOfDiffUnion hs hI`: for `hs : s ∈ C` and a finset\\n    32    `I` of sets in `C` (with `hI : ↑I ⊆ C`), this is a `Finset` of pairwise disjoint sets such that\\n    33    `s \\\\ ⋃₀ I = ⋃₀ hC.disjointOfDiffUnion hs hI`.\\n    34  * `MeasureTheory.IsSetSemiring.disjointOfUnion hJ`: for `hJ ⊆ C`, this is a\\n    35    `Finset` of pairwise disjoint sets such that `⋃₀ J = ⋃₀ hC.disjointOfUnion hJ`.\\n    36  \\n    37  * `MeasureTheory.IsSetRing`: property of being a ring of sets.\\n    38  \\n    39  ## Main statements\\n    40  \\n    41  * `MeasureTheory.IsSetSemiring.exists_disjoint_finset_sdiff_eq`: the existence of the `Finset` given\\n    42    by the definition `IsSetSemiring.disjointOfDiffUnion` (see above).\\n    43  * `MeasureTheory.IsSetSemiring.disjointOfUnion_props`: In a `hC : IsSetSemiring C`,\\n    44    for a `J : Finset (Set α)` with `J ⊆ C`, there is\\n    45    for every `x in J` some `K x ⊆ C` finite, such that\\n    46    * `⋃ x ∈ J, K x` are pairwise disjoint and do not contain ∅,\\n    47    * `⋃ s ∈ K x, s ⊆ x`,\\n    48    * `⋃ x ∈ J, x = ⋃ x ∈ J, ⋃ s ∈ K x, s`.\\n    49  \\n    50  -/\\n    51  \\n    52  @[expose] public section\\n    53  \\n    54  open Finset Set\\n    55  \\n    56  namespace MeasureTheory\\n    57  \\n    58  variable {α : Type*} {C : Set (Set α)} {s t : Set α}\\n    59  \\n    60  /-- A semi-ring of sets `C` is a family of sets containing `∅`, stable by intersection and such that\\n    61  for all `s, t ∈ C`, `s \\\\ t` is equal to a disjoint union of finitely many sets in `C`. -/\\n    62  structure IsSetSemiring (C : Set (Set α)) : Prop where\\n    63    empty_mem : ∅ ∈ C\\n    64    inter_mem : ∀ s ∈ C, ∀ t ∈ C, s ∩ t ∈ C\\n    65    sdiff_eq_sUnion' : ∀ s ∈ C, ∀ t ∈ C,\\n    66      ∃ I : Finset (Set α), ↑I ⊆ C ∧ PairwiseDisjoint (I : Set (Set α)) id ∧ s \\\\ t = ⋃₀ I\\n    67  \\n    68  /-- A ring of sets `C` is a family of sets containing `∅`, stable by union and set difference.\\n    69  It is then also stable by intersection (see `IsSetRing.inter_mem`). -/\\n    70  structure IsSetRing (C : Set (Set α)) : Prop where\\n    71    empty_mem : ∅ ∈ C\\n    72    union_mem ⦃s t : Set α⦄ : s ∈ C → t ∈ C → s ∪ t ∈ C\\n    73    sdiff_mem ⦃s t : Set α⦄ : s ∈ C → t ∈ C → s \\\\ t ∈ C\\n    74  \\n    75  nam"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PairwiseDisjoint\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'PairwiseDisjoint': unknown identifier 'PairwiseDisjoint'\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def PairwiseDisjoint\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def PairwiseDisjoint' (via ripgrep):\\n- Mathlib/Data/Set/Pairwise/Basic.lean:243\\n    def PairwiseDisjoint (s : Set ι) (f : ι → α) : Prop :=\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Pairwise/Basic.lean\", \"line\": 243, \"n\": 20}",
+   "ok": true,
+   "result_chars": 995,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Pairwise/Basic.lean  (lines 243–262 of 457):\\n   243  def PairwiseDisjoint (s : Set ι) (f : ι → α) : Prop :=\\n   244    s.Pairwise (Disjoint on f)\\n   245  \\n   246  theorem PairwiseDisjoint.subset (ht : t.PairwiseDisjoint f) (h : s ⊆ t) : s.PairwiseDisjoint f :=\\n   247    Pairwise.mono h ht\\n   248  \\n   249  theorem PairwiseDisjoint.mono_on (hs : s.PairwiseDisjoint f) (h : ∀ ⦃i⦄, i ∈ s → g i ≤ f i) :\\n   250      s.PairwiseDisjoint g := fun _a ha _b hb hab => (hs ha hb hab).mono (h ha) (h hb)\\n   251  \\n   252  theorem PairwiseDisjoint.mono (hs : s.PairwiseDisjoint f) (h : g ≤ f) : s.PairwiseDisjoint g :=\\n   253    hs.mono_on fun i _ => h i\\n   254  \\n   255  @[simp]\\n   256  theorem pairwiseDisjoint_empty : (∅ : Set ι).PairwiseDisjoint f :=\\n   257    pairwise_empty _\\n   258  \\n   259  @[simp]\\n   260  theorem pairwiseDisjoint_singleton (i : ι) (f : ι → α) : PairwiseDisjoint {i} f :=\\n   261    pairwise_singleton i _\\n   262  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem semiring_of_sets_diff_decomposition {α : Type*} (s : SetSemiring α) {β : Type*} \n    [Finite β] (I : β → SetSemiring α) :\n  ∃ (γ : Type*) [Finite γ] (J : γ → SetSemiring α),\n    Pairwise (fun i j : γ => Disjoint (J i) (J j)) ∧\n    s \\ Set.iUnion I = Set.iUnion J := sorry"
+}

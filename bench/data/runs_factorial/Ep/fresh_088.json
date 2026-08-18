@@ -1,0 +1,306 @@
+{
+ "task_id": "fresh_088",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:36:32Z",
+ "wall_s": 107.7,
+ "transcript_stats": {
+  "turns": 33,
+  "assistant_turns": 26,
+  "tool_calls_by_name": {
+   "mcp__formal__decl_grep": 20,
+   "mcp__formal__loogle": 4,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 210,
+  "tokens_out": 7898,
+  "cost_usd": 0.12280660000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*otalVar\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1159,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for '(theorem|lemma|def) .*otalVar' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singularPart_totalVariation (s : SignedMeasure α) (μ : Measure α) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:460\\n    def totalVariation (s : SignedMeasure α) : Measure α :=\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:463\\n    theorem totalVariation_zero : (0 : SignedMeasure α).totalVariation = 0 := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:466\\n    theorem totalVariation_neg (s : SignedMeasure α) : (-s).totalVariation = s.totalVariation := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:469\\n    theorem null_of_totalVariation_zero (s : SignedMeasure α) {i : Set α}\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:491\\n    theorem totalVariation_absolutelyContinuous_iff (s : SignedMeasure α) (μ : Measure α) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:543\\n    theorem totalVariation_mutuallySingular_iff (s : SignedMeasure α) (μ : Measure α) :\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*Monotone\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2642,
+   "result_head": "[{\"type\": \"text\", \"text\": \"939 match(es) for '(theorem|lemma|def) .*Monotone' (via ripgrep):\\n- Mathlib/Logic/Encodable/Basic.lean:581\\n    theorem sequence_mono : Monotone (f ∘ hf.sequence f) :=\\n- Mathlib/Computability/Ackermann.lean:134\\n    theorem ack_mono_right (m : ℕ) : Monotone (ack m) :=\\n- Mathlib/Computability/Ackermann.lean:197\\n    theorem ack_mono_left (n : ℕ) : Monotone fun m => ack m n :=\\n- Mathlib/Algebra/Lie/Normalizer.lean:78\\n    theorem monotone_normalizer : Monotone (normalizer : LieSubmodule R L M → LieSubmodule R L M) :=\\n- Mathlib/Logic/Equiv/Set.lean:176\\n    lemma image_monotone (hs : Monotone e) : Monotone (e.image s) :=\\n- Mathlib/Algebra/Lie/Ideal.lean:213\\n    theorem map_mono : Monotone (map f) := fun I₁ I₂ h ↦ by\\n- Mathlib/Algebra/Lie/Ideal.lean:218\\n    theorem comap_mono : Monotone (comap f) := fun J₁ J₂ h ↦ by\\n- Mathlib/Data/EReal/Inv.lean:399\\n    lemma monotone_div_right_of_nonneg (h : 0 ≤ b) : Monotone fun a ↦ a / b :=\\n- Mathlib/Algebra/Tropical/Basic.lean:188\\n    theorem trop_monotone [Preorder R] : Monotone (trop : R → Tropical R) := fun _ _ => id\\n- Mathlib/Algebra/Tropical/Basic.lean:190\\n    theorem untrop_monotone [Preorder R] : Monotone (untrop : Tropical R → R) := fun _ _ => id\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:47\\n    theorem toAddSubmonoid_mono : Monotone (toAddSubmonoid : Submodule R M → AddSubmonoid M) :=\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:55\\n    theorem toSubMulAction_mono : Monotone (toSubMulAction : Submodule R M → SubMulAction R M) :=\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:135\\n    theorem toAddSubgroup_mono : Monotone (toAddSubgroup : Submodule R M → AddSubgroup M) :=\\n- Mathlib/Algebra/Star/NonUnitalSubalgebra.lean:592\\n    theorem star_mono : Monotone (star : NonUnitalSubalgebra R A → NonUnitalSubalgebra R A) :=\\n- Mathlib/Algebra/Star/NonUnitalSubalgebra.lean:640\\n    theorem starClosure_mono : Monotone (starClosure (R := R) (A := A)) :=\\n- Mathlib/Algebra/Module/Submodule/RestrictScalars.lean:103\\n    lemma restrictScalars_monotone : Monotone (restrictScalars S : Submodule R M → Submodule S M) :=\\n- Mathlib/Data/Multiset/Sym.lean:87\\n    theorem monotone_sym2 : Monotone (Multiset.sym2 : Multiset α → _) := fun _ _ => sym2_mono\\n- Mathlib/Algebra/Star/Subalgebra.lean:379\\n    theorem star_mono : Monotone (star : Subalgebra R A → Subalgebra R A) := fun _ _ h _ hx => h hx\\n- Mathlib/Data/Multiset/MapFold.lean:183\\n    theorem map_mono (f : α → β) : Monotone (map f) := fun _ _ => map_le_map\\n- Mathlib/Data/Multiset/Defs.lean:238\\n    theorem card_mono : Monotone (@card α) := fun _a _b => card_le_card\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"total variation monotone\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'total variation monotone': Unknown identifier `total`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*BddVariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma|def) .*BddVariation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*Variation\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"109 match(es) for '(theorem|lemma|def) .*Variation' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:50\\n    def signVariations : ℕ :=\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:57\\n    theorem signVariations_zero : signVariations (0 : R[X]) = 0 := by\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:62\\n    theorem signVariations_monomial (d : ℕ) (c : R) : signVariations (monomial d c) = 0 := by\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:68\\n    theorem signVariations_eraseLead (h : SignType.sign P.leadingCoeff = SignType.sign P.nextCoeff) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:79\\n    theorem signVariations_eq_eraseLead_add_ite {P : Polynomial R} (h : P ≠ 0) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:112\\n    theorem signVariations_eraseLead_le : signVariations P.eraseLead ≤ signVariations P := by\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:118\\n    theorem signVariations_le_eraseLead_succ : signVariations P ≤ signVariations P.eraseLead + 1 := by\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:131\\n    theorem signVariations_neg : signVariations (-P) = signVariations P := by\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:152\\n    theorem signVariations_C_mul (P : Polynomial R) (hx : η ≠ 0) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:166\\n    lemma signVariations_eraseLead_mul_X_sub_C (hη : 0 < η) (hP₀ : 0 < leadingCoeff P)\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:208\\n    /-- This lemma is really a specialization of `succ_signVariations_le_sub_mul` to monomials. -/\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:209\\n    lemma succ_signVariations_X_sub_C_mul_monomial {d c} (hc : c ≠ 0) (hη : 0 < η) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:277\\n    lemma signVariations_X_sub_C_mul_eraseLead_le (h : 0 < P.leadingCoeff) (h₂ : 0 < P.nextCoeff) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:298\\n    theorem succ_signVariations_le_X_sub_C_mul (hη : 0 < η) (hP : P ≠ 0) :\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:379\\n    theorem roots_countP_pos_le_signVariations : P.roots.countP (0 < ·) ≤ signVariations P := by\\n- Mathlib/Util/CountHeartbeats.lean:65\\n    def logVariation {m} [Monad m] [MonadLog m] [AddMessageContext m] [MonadOptions m]\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:143\\n    theorem BoundedVariationOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:53\\n    noncomputable def preVariationFun (s : Set X) : ℝ≥0∞ :=\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:58\\n    lemma preVariationFun_apply {s : Set X} (h : MeasurableSet s) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:63\\n    lemma preVariationFun_of_not_measurableSet {s : Set X} (h : ¬ MeasurableSet s) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:74\\n    lemma empty : preVariationFun f ∅ = 0 := by simp [preVariationFun]\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:77\\n    lemma zero : preVariationFun (0 : Set X → ℝ≥0∞) = 0 := by ext; simp [preVariationFun]\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:99\\n    lemma sum_le_preVariationFun_of_subset {s₁ s₂ : Set X} (hs₁ : MeasurableSet s₁)\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:151\\n    lemma sum_le_preVariationFun_iUnion' {s : ℕ → Set X} (hs : ∀ i, MeasurableSet (s i))\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:169\\n    lemma sum_le_preVariationFun_iUnion {s : ℕ → Set X} (hs : ∀ i, MeasurableSet (s i))\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:247\\n    noncomputable def ennrealPreVariation (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:254\\n    lemma ennrealPreVariation_apply (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) (s : Set X) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:258\\n    lemma ennrealPreVariation_zero :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:263\\n    noncomputable def preVariation (hf : IsSigmaSubadd"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*BoundedVariation\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4394,
+   "result_head": "[{\"type\": \"text\", \"text\": \"66 match(es) for '(theorem|lemma|def) .*BoundedVariation' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:143\\n    theorem BoundedVariationOn.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:60\\n    private noncomputable def measureAux (hf : BoundedVariationOn f univ) : Measure α :=\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:76\\n    private lemma exists_vectorMeasure_le_measureAux (hf : BoundedVariationOn f univ) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:114\\n    @[no_expose] noncomputable def vectorMeasure (hf : BoundedVariationOn f univ) : VectorMeasure α E :=\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:118\\n    lemma vectorMeasure_Ioc (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:134\\n    lemma vectorMeasure_singleton (hf : BoundedVariationOn f univ) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:173\\n    lemma vectorMeasure_Icc (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:180\\n    theorem vectorMeasure_Ioo (hf : BoundedVariationOn f univ) (h : a < b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:187\\n    theorem vectorMeasure_Ico (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:195\\n    theorem vectorMeasure_Ici (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:223\\n    theorem vectorMeasure_Ioi (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:230\\n    theorem vectorMeasure_Iic (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:258\\n    theorem vectorMeasure_Iio (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:265\\n    theorem vectorMeasure_univ (hf : BoundedVariationOn f univ) :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:64\\n    def BoundedVariationOn (f : α → E) (s : Set α) :=\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:69\\n    def LocallyBoundedVariationOn (f : α → E) (s : Set α) :=\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:174\\n    theorem _root_.BoundedVariationOn.mono {f : α → E} {s : Set α} (h : BoundedVariationOn f s)\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:178\\n    theorem _root_.BoundedVariationOn.locallyBoundedVariationOn {f : α → E} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:254\\n    theorem _root_.BoundedVariationOn.dist_le {E : Type*} [PseudoMetricSpace E] {f : α → E}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:260\\n    theorem _root_.BoundedVariationOn.sub_le {f : α → ℝ} {s : Set α} (h : BoundedVariationOn f s)\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:508\\n    protected lemma _root_.BoundedVariationOn.ofDual\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:517\\n    protected lemma _root_.LocallyBoundedVariationOn.ofDual {f : α → E} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:524\\n    @[simp] lemma locallyBoundedVariation_ofDual {f : α → E} {s : Set α} :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:689\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ici_zero_of_filter\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:743\\n    theorem _root_.BoundedVariationOn.exists_tendsto_left_of_filter [CompleteSpace E]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:765\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ico_zero\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:782\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ioc_zero [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:793\\n    theorem _roo"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*eVariationOn\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4076,
+   "result_head": "[{\"type\": \"text\", \"text\": \"31 match(es) for '(theorem|lemma|def) .*eVariationOn' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:59\\n    noncomputable def eVariationOn (f : α → E) (s : Set α) : ℝ≥0∞ :=\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:123\\n    theorem eVariationOn_eq_strictMonoOn (f : α → E) (s : Set α) :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:156\\n    theorem mono (f : α → E) {s t : Set α} (hst : t ⊆ s) : eVariationOn f t ≤ eVariationOn f s := by\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:161\\n    theorem eq_biSup_inter_Icc {f : α → E} {s : Set α} : eVariationOn f s =\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:182\\n    theorem congr {f g : α → E} {s : Set α} (h : EqOn f g s) : eVariationOn f s = eVariationOn g s := by\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:535\\n    theorem eVariationOn_on_inter_Iic_eq_Iio_add_edist\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:601\\n    theorem eVariationOn_on_inter_Ici_eq_Ioi_add_edist\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:611\\n    lemma eVariationOn_inter_Iio_eq_inter_Iic_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:623\\n    lemma eVariationOn_inter_Ioi_eq_inter_Ici_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:630\\n    lemma eVariationOn_Ioc_eq_Icc_of_continuousWithinAt'\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:642\\n    lemma eVariationOn_Ioc_eq_Icc_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:651\\n    lemma eVariationOn_Ico_eq_Icc_of_continuousWithinAt'\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:658\\n    lemma eVariationOn_Ico_eq_Icc_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:665\\n    lemma exists_lt_eVariationOn_inter_Icc {f : α → E} {ε : ℝ≥0∞} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:689\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ici_zero_of_filter\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:765\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ico_zero\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:782\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ioc_zero [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:822\\n    theorem _root_.BoundedVariationOn.eVariationOn_Iic_eq_Iio_add_edist [CompleteSpace E]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:838\\n    theorem _root_.BoundedVariationOn.eVariationOn_Ici_eq_Ioi_add_edist [CompleteSpace E]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:847\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:873\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_right\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:887\\n    theorem _root_.LocallyBoundedVariationOn.tendsto_eVariationOn_Icc_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:908\\n    theorem _root_.LocallyBoundedVariationOn.tendsto_eVariationOn_Icc_right\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:922\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_zero_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:947\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_zero_right\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:961\\n    private lemma eVariationOn_le_of_mapClusterPt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:1011\\n    lemma eVariationOn_leftLim_le [TopologicalSpace α] [OrderTopology α] {f : α → E}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:1018\\n    lemma eVariationOn_rightLim_le [TopologicalSpace α] [OrderTopology α] {f : α → E}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:1049\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ici_zero\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 59, \"n\": 10}",
+   "ok": true,
+   "result_chars": 726,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 59–68 of 1178):\\n    59  noncomputable def eVariationOn (f : α → E) (s : Set α) : ℝ≥0∞ :=\\n    60    ⨆ p : ℕ × { u : ℕ → α // Monotone u ∧ ∀ i, u i ∈ s },\\n    61      ∑ i ∈ Finset.range p.1, edist (f (p.2.1 (i + 1))) (f (p.2.1 i))\\n    62  \\n    63  /-- A function has bounded variation on a set `s` if its total variation there is finite. -/\\n    64  def BoundedVariationOn (f : α → E) (s : Set α) :=\\n    65    eVariationOn f s ≠ ∞\\n    66  \\n    67  /-- A function has locally bounded variation on a set `s` if, given any interval `[a, b]` with\\n    68  endpoints in `s`, then the function has finite variation on `s ∩ [a, b]`. -/\\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*eVariationOn.*monotone\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*eVariationOn.*monotone' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Monotone.*eVariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 257,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma) .*Monotone.*eVariation' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:1096\\n    theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"eVariationOn Icc Monotone\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'eVariationOn Icc Monotone': Unknown identifier `Icc`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1096, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1057,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1096–1110 of 1178):\\n  1096  theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\\n  1097      (as : a ∈ s) (bs : b ∈ s) : eVariationOn f (s ∩ Icc a b) ≤ ENNReal.ofReal (f b - f a) := by\\n  1098    apply iSup_le _\\n  1099    rintro ⟨n, ⟨u, hu, us⟩⟩\\n  1100    calc\\n  1101      (∑ i ∈ Finset.range n, edist (f (u (i + 1))) (f (u i))) =\\n  1102          ∑ i ∈ Finset.range n, ENNReal.ofReal (f (u (i + 1)) - f (u i)) := by\\n  1103        refine Finset.sum_congr rfl fun i hi => ?_\\n  1104        simp only [Finset.mem_range] at hi\\n  1105        rw [edist_dist, Real.dist_eq, abs_of_nonneg]\\n  1106        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n  1107      _ = ENNReal.ofReal (∑ i ∈ Finset.range n, (f (u (i + 1)) - f (u i))) := by\\n  1108        rw [ENNReal.ofReal_sum_of_nonneg]\\n  1109        intro i _\\n  1110        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1096, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1968,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1096–1125 of 1178):\\n  1096  theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\\n  1097      (as : a ∈ s) (bs : b ∈ s) : eVariationOn f (s ∩ Icc a b) ≤ ENNReal.ofReal (f b - f a) := by\\n  1098    apply iSup_le _\\n  1099    rintro ⟨n, ⟨u, hu, us⟩⟩\\n  1100    calc\\n  1101      (∑ i ∈ Finset.range n, edist (f (u (i + 1))) (f (u i))) =\\n  1102          ∑ i ∈ Finset.range n, ENNReal.ofReal (f (u (i + 1)) - f (u i)) := by\\n  1103        refine Finset.sum_congr rfl fun i hi => ?_\\n  1104        simp only [Finset.mem_range] at hi\\n  1105        rw [edist_dist, Real.dist_eq, abs_of_nonneg]\\n  1106        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n  1107      _ = ENNReal.ofReal (∑ i ∈ Finset.range n, (f (u (i + 1)) - f (u i))) := by\\n  1108        rw [ENNReal.ofReal_sum_of_nonneg]\\n  1109        intro i _\\n  1110        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n  1111      _ = ENNReal.ofReal (f (u n) - f (u 0)) := by rw [Finset.sum_range_sub fun i => f (u i)]\\n  1112      _ ≤ ENNReal.ofReal (f b - f a) := by\\n  1113        apply ENNReal.ofReal_le_ofReal\\n  1114        exact sub_le_sub (hf (us n).1 bs (us n).2.2) (hf as (us 0).1 (us 0).2.1)\\n  1115  \\n  1116  theorem MonotoneOn.locallyBoundedVariationOn {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) :\\n  1117      LocallyBoundedVariationOn f s := fun _ _ as bs =>\\n  1118    ((hf.eVariationOn_le as bs).trans_lt ENNReal.ofReal_lt_top).ne\\n  1119  \\n  1120  theorem MonotoneOn.boundedVariationOn\\n  1121      {f : α → ℝ} {s : Set α} {C : ℝ} (hf : MonotoneOn f s) (h : ∀ x ∈ s, |f x| ≤ C) :\\n  1122      BoundedVariationOn f s := by\\n  1123    suffices eVariationOn f s ≤ ENNReal.ofReal (2 * C) from\\n  1124      ne_of_lt (this.trans_lt (by simp [ENNReal.mul_lt_top]))\\n  1125    rw [eVariationOn.eq_biSup_inter_Icc]\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*eVariationOn.*Icc\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1498,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for '(theorem|lemma) .*eVariationOn.*Icc' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:630\\n    lemma eVariationOn_Ioc_eq_Icc_of_continuousWithinAt'\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:642\\n    lemma eVariationOn_Ioc_eq_Icc_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:651\\n    lemma eVariationOn_Ico_eq_Icc_of_continuousWithinAt'\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:658\\n    lemma eVariationOn_Ico_eq_Icc_of_continuousWithinAt\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:665\\n    lemma exists_lt_eVariationOn_inter_Icc {f : α → E} {ε : ℝ≥0∞} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:847\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:873\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_right\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:887\\n    theorem _root_.LocallyBoundedVariationOn.tendsto_eVariationOn_Icc_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:908\\n    theorem _root_.LocallyBoundedVariationOn.tendsto_eVariationOn_Icc_right\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:922\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_zero_left\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:947\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Icc_zero_right\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*MonotoneOn.*eVariationOn\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 261,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma) .*MonotoneOn.*eVariationOn' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:1096\\n    theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*eVariationOn.*=\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 558,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma) .*eVariationOn.*=' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:156\\n    theorem mono (f : α → E) {s t : Set α} (hst : t ⊆ s) : eVariationOn f t ≤ eVariationOn f s := by\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:161\\n    theorem eq_biSup_inter_Icc {f : α → E} {s : Set α} : eVariationOn f s =\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:182\\n    theorem congr {f g : α → E} {s : Set α} (h : EqOn f g s) : eVariationOn f s = eVariationOn g s := by\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*eVariationOn_inter_Icc\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 241,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma) .*eVariationOn_inter_Icc' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:665\\n    lemma exists_lt_eVariationOn_inter_Icc {f : α → E} {ε : ℝ≥0∞} {s : Set α}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Antitone.*eVariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*Antitone.*eVariation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1096, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2893,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1096–1145 of 1178):\\n  1096  theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\\n  1097      (as : a ∈ s) (bs : b ∈ s) : eVariationOn f (s ∩ Icc a b) ≤ ENNReal.ofReal (f b - f a) := by\\n  1098    apply iSup_le _\\n  1099    rintro ⟨n, ⟨u, hu, us⟩⟩\\n  1100    calc\\n  1101      (∑ i ∈ Finset.range n, edist (f (u (i + 1))) (f (u i))) =\\n  1102          ∑ i ∈ Finset.range n, ENNReal.ofReal (f (u (i + 1)) - f (u i)) := by\\n  1103        refine Finset.sum_congr rfl fun i hi => ?_\\n  1104        simp only [Finset.mem_range] at hi\\n  1105        rw [edist_dist, Real.dist_eq, abs_of_nonneg]\\n  1106        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n  1107      _ = ENNReal.ofReal (∑ i ∈ Finset.range n, (f (u (i + 1)) - f (u i))) := by\\n  1108        rw [ENNReal.ofReal_sum_of_nonneg]\\n  1109        intro i _\\n  1110        exact sub_nonneg_of_le (hf (us i).1 (us (i + 1)).1 (hu (Nat.le_succ _)))\\n  1111      _ = ENNReal.ofReal (f (u n) - f (u 0)) := by rw [Finset.sum_range_sub fun i => f (u i)]\\n  1112      _ ≤ ENNReal.ofReal (f b - f a) := by\\n  1113        apply ENNReal.ofReal_le_ofReal\\n  1114        exact sub_le_sub (hf (us n).1 bs (us n).2.2) (hf as (us 0).1 (us 0).2.1)\\n  1115  \\n  1116  theorem MonotoneOn.locallyBoundedVariationOn {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) :\\n  1117      LocallyBoundedVariationOn f s := fun _ _ as bs =>\\n  1118    ((hf.eVariationOn_le as bs).trans_lt ENNReal.ofReal_lt_top).ne\\n  1119  \\n  1120  theorem MonotoneOn.boundedVariationOn\\n  1121      {f : α → ℝ} {s : Set α} {C : ℝ} (hf : MonotoneOn f s) (h : ∀ x ∈ s, |f x| ≤ C) :\\n  1122      BoundedVariationOn f s := by\\n  1123    suffices eVariationOn f s ≤ ENNReal.ofReal (2 * C) from\\n  1124      ne_of_lt (this.trans_lt (by simp [ENNReal.mul_lt_top]))\\n  1125    rw [eVariationOn.eq_biSup_inter_Icc]\\n  1126    simp only [mem_setOf_eq, iSup_le_iff, and_imp, Prod.forall]\\n  1127    intro a b as bs hab\\n  1128    grw [hf.eVariationOn_le as bs]\\n  1129    exact ENNReal.ofReal_mono (by grind)\\n  1130  \\n  1131  /-! ### Lipschitz functions and bounded variation -/\\n  1132  \\n  1133  section LipschitzOnWith\\n  1134  \\n  1135  variable {F : Type*} [PseudoEMetricSpace F]\\n  1136  \\n  1137  theorem LipschitzOnWith.comp_eVariationOn_le {f : E → F} {C : ℝ≥0} {t : Set E}\\n  1138      (h : LipschitzOnWith C f t) {g : α → E} {s : Set α} (hg : MapsTo g s t) :\\n  1139      eVariationOn (f ∘ g) s ≤ C * eVariationOn g s := by\\n  1140    apply iSup_le _\\n  1141    rintro ⟨n, ⟨u, hu, us⟩⟩\\n  1142    calc\\n  1143      (∑ i ∈ Finset.range n, edist (f (g (u (i + 1)))) (f (g (u i)))) ≤\\n  1144          ∑ i ∈ Finset.range n, C * edist (g (u (i + 1))) (g (u i)) :=\\n  1145        Finset.sum_le_sum fun i _ => h (hg (us _)) (hg (us _))\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*eVariationOn.*ofReal.*Icc\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*eVariationOn.*ofReal.*Icc' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Icc\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 592,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'def Icc' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:268\\n    def IccLeftChart (x y : ℝ) [h : Fact (x < y)] :\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:333\\n    def IccRightChart (x y : ℝ) [h : Fact (x < y)] :\\n- Mathlib/Analysis/BoxIntegral/Box/Basic.lean:184\\n    protected def Icc : Box ι ↪o Set (ι → ℝ) :=\\n- Mathlib/Order/Interval/Set/Defs.lean:76\\n    def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:162\\n    def IccExtend {a b : α} (h : a ≤ b) (f : Icc a b → β) : α → β :=\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/Defs.lean\", \"line\": 76, \"n\": 5}",
+   "ok": true,
+   "result_chars": 322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/Defs.lean  (lines 76–80 of 94):\\n    76  def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\n    77  \\n    78  to_dual_insert_cast Icc := by simp only [and_comm]\\n    79  \\n    80  @[simp, grind =, push, to_dual none] theorem mem_Icc : x ∈ Icc a b ↔ a ≤ x ∧ x ≤ b := .rfl\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1090, \"n\": 10}",
+   "ok": true,
+   "result_chars": 560,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1090–1099 of 1178):\\n  1090    tendsto_nhds_limUnder (by simpa using hf.exists_tendsto_atBot)\\n  1091  \\n  1092  end eVariationOn\\n  1093  \\n  1094  /-! ### Variation of monotone functions -/\\n  1095  \\n  1096  theorem MonotoneOn.eVariationOn_le {f : α → ℝ} {s : Set α} (hf : MonotoneOn f s) {a b : α}\\n  1097      (as : a ∈ s) (bs : b ∈ s) : eVariationOn f (s ∩ Icc a b) ≤ ENNReal.ofReal (f b - f a) := by\\n  1098    apply iSup_le _\\n  1099    rintro ⟨n, ⟨u, hu, us⟩⟩\\n\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2735,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 1–50 of 1178):\\n     1  /-\\n     2  Copyright (c) 2022 Sébastien Gouëzel. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Sébastien Gouëzel\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Interval.Set.ProjIcc\\n     9  public import Mathlib.Tactic.Finiteness\\n    10  public import Mathlib.Topology.UniformSpace.UniformConvergenceTopology\\n    11  public import Mathlib.Topology.Instances.ENNReal.Lemmas\\n    12  public import Mathlib.Topology.Order.LeftRightLim\\n    13  public import Mathlib.Topology.Semicontinuity.Defs\\n    14  public import Mathlib.Tactic.Bound\\n    15  \\n    16  /-!\\n    17  # Functions of bounded variation\\n    18  \\n    19  We study functions of bounded variation. In particular, we show that a bounded variation function\\n    20  is a difference of monotone functions, and differentiable almost everywhere. This implies that\\n    21  Lipschitz functions from the real line into finite-dimensional vector space are also differentiable\\n    22  almost everywhere.\\n    23  \\n    24  ## Main definitions and results\\n    25  \\n    26  * `eVariationOn f s` is the total variation of the function `f` on the set `s`, in `ℝ≥0∞`.\\n    27  * `BoundedVariationOn f s` registers that the variation of `f` on `s` is finite.\\n    28  * `LocallyBoundedVariationOn f s` registers that `f` has finite variation on any compact\\n    29    subinterval of `s`.\\n    30  * `variationOnFromTo f s a b` is the signed variation of `f` on `s ∩ Icc a b`, converted to `ℝ`.\\n    31  \\n    32  * `eVariationOn.Icc_add_Icc` states that the variation of `f` on `[a, c]` is the sum of its\\n    33    variations on `[a, b]` and `[b, c]`.\\n    34  * `LocallyBoundedVariationOn.exists_monotoneOn_sub_monotoneOn` proves that a function\\n    35    with locally bounded variation is the difference of two monotone functions.\\n    36  * `LipschitzWith.locallyBoundedVariationOn` shows that a Lipschitz function has locally\\n    37    bounded variation.\\n    38  \\n    39  We also give several variations around these results.\\n    40  \\n    41  ## Implementation\\n    42  \\n    43  We define the variation as an extended nonnegative real, to allow for infinite variation. This makes\\n    44  it possible to use the complete linear order structure of `ℝ≥0∞`. The proofs would be much\\n    45  more tedious with an `ℝ`-valued or `ℝ≥0`-valued variation, since one would always need to check\\n    46  that the sets one uses are nonempty and bounded above as these are only conditionally complete.\\n    47  -/\\n    48  \\n    49  @[expose] public section\\n    50  \\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean\", \"line\": 50, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1656,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/EMetricSpace/BoundedVariation.lean  (lines 50–79 of 1178):\\n    50  \\n    51  open scoped NNReal ENNReal Topology UniformConvergence\\n    52  open Set Filter OrderDual\\n    53  \\n    54  variable {α : Type*} [LinearOrder α] {E : Type*} [PseudoEMetricSpace E]\\n    55  \\n    56  /-- The (extended-real-valued) variation of a function `f` on a set `s` inside a linear order is\\n    57  the supremum of the sum of `edist (f (u (i+1))) (f (u i))` over all finite increasing\\n    58  sequences `u` in `s`. -/\\n    59  noncomputable def eVariationOn (f : α → E) (s : Set α) : ℝ≥0∞ :=\\n    60    ⨆ p : ℕ × { u : ℕ → α // Monotone u ∧ ∀ i, u i ∈ s },\\n    61      ∑ i ∈ Finset.range p.1, edist (f (p.2.1 (i + 1))) (f (p.2.1 i))\\n    62  \\n    63  /-- A function has bounded variation on a set `s` if its total variation there is finite. -/\\n    64  def BoundedVariationOn (f : α → E) (s : Set α) :=\\n    65    eVariationOn f s ≠ ∞\\n    66  \\n    67  /-- A function has locally bounded variation on a set `s` if, given any interval `[a, b]` with\\n    68  endpoints in `s`, then the function has finite variation on `s ∩ [a, b]`. -/\\n    69  def LocallyBoundedVariationOn (f : α → E) (s : Set α) :=\\n    70    ∀ a b, a ∈ s → b ∈ s → BoundedVariationOn f (s ∩ Icc a b)\\n    71  \\n    72  /-! ### Basic computations of variation -/\\n    73  \\n    74  namespace eVariationOn\\n    75  \\n    76  theorem nonempty_monotone_mem {s : Set α} (hs : s.Nonempty) :\\n    77      Nonempty { u // Monotone u ∧ ∀ i : ℕ, u i ∈ s } := by\\n    78    obtain ⟨x, hx⟩ := hs\\n    79    exact ⟨⟨fun _ => x, fun i j _ => le_rfl, fun _ => hx⟩⟩\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MonotoneOn ?f ?s → eVariationOn ?f _ = ENNReal.ofReal _\"}",
+   "ok": true,
+   "result_chars": 307,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning ENNReal.ofReal, eVariationOn, MonotoneOn, ENNReal, and Eq.\\n- MonotoneOn.eVariationOn_eq   [Mathlib.Topology.EMetricSpace.BoundedVariation]\\n    The variation of a monotone real-valued function on `s ∩ Icc a b` equals its increment `f b - f a`.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem MonotoneOn.eVariationOn_eq\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem MonotoneOn.eVariationOn_eq' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"eVariationOn_eq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 519,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'eVariationOn_eq' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:123\\n    theorem eVariationOn_eq_strictMonoOn (f : α → E) (s : Set α) :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:541\\n    · rw [eVariationOn_eq_strictMonoOn]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:575\\n    rw [eVariationOn_eq_strictMonoOn, ENNReal.iSup_add]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:965\\n    rw [eVariationOn_eq_strictMonoOn]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MonotoneOn.*eVariationOn.*eq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'MonotoneOn.*eVariationOn.*eq' under Mathlib/.\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*\\\\.eVariationOn.*=.*ENNReal.ofReal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 125,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*\\\\\\\\.eVariationOn.*=.*ENNReal.ofReal' under Mathlib/.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*ofReal.*ENNReal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 202,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def.*ofReal.*ENNReal' (via ripgrep):\\n- Mathlib/Probability/CDF.lean:83\\n    rw [measureReal_def, ← ofReal_cdf μ x, ENNReal.toReal_ofReal (cdf_nonneg μ x)]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ENNReal.ofReal\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 521 declarations mentioning ENNReal.ofReal.\\n- ENNReal.ofReal   [Mathlib.Data.ENNReal.Basic]\\n    `ofReal x` returns `x` if it is nonnegative, `0` otherwise.\\n- ENNReal.coe_nnreal_eq   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofNNReal_toNNReal   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_coe_nnreal   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_ne_top   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_toReal_le   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.top_ne_ofReal   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_lt_top   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_toReal   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_toReal_eq_iff   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_one   [Mathlib.Data.ENNReal.Basic]\\n- ENNReal.ofReal_zero   [Mathlib.Data.ENNReal.Basic]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem monotone_variation_equals {α : Type*} [LinearOrder α] {f : α → ℝ} {s : Set α}\n    (hf : MonotoneOn f s) {a b : α} (as : a ∈ s) (bs : b ∈ s) :\n    eVariationOn f (s ∩ Icc a b) = ENNReal.ofReal (f b - f a) := sorry"
+}

@@ -1,0 +1,210 @@
+{
+ "task_id": "fresh_098",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:27:03Z",
+ "wall_s": 57.5,
+ "transcript_stats": {
+  "turns": 21,
+  "assistant_turns": 12,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 8,
+   "mcp__formal__decl_grep": 7,
+   "mcp__formal__decl_read": 5
+  },
+  "tokens_in": 98,
+  "tokens_out": 4005,
+  "cost_usd": 0.0537762
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"fixed point continuous\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'fixed point continuous': Unknown identifier `fixed`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc interval closed\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc interval closed': Unknown identifier `Icc`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(α → α) → α → Prop\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(α → α) → α → Prop': Unknown identifier `α`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsFixedPt\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsFixedPt': unknown identifier 'IsFixedPt'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"HasFixedPt\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasFixedPt': unknown identifier 'HasFixedPt'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*[Ff]ixed\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2377,
+   "result_head": "[{\"type\": \"text\", \"text\": \"393 match(es) for '(def|theorem|lemma) .*[Ff]ixed' (via ripgrep):\\n- Mathlib/Order/BourbakiWitt.lean:219\\n    theorem nonempty_fixedPoints_of_inflationary [Nonempty α] (le_map : ∀ x, x ≤ f x) :\\n- Mathlib/Computability/PartrecCode.lean:1004\\n    theorem fixed_point {f : Code → Code} (hf : Computable f) : ∃ c : Code, eval (f c) = eval c :=\\n- Mathlib/Computability/PartrecCode.lean:1022\\n    theorem fixed_point₂ {f : Code → ℕ →. ℕ} (hf : Partrec₂ f) : ∃ c : Code, eval c = f c :=\\n- Mathlib/Order/FixedPoints.lean:61\\n    theorem lfp_le_fixed {a : α} (h : f a = a) : f.lfp ≤ a :=\\n- Mathlib/Order/FixedPoints.lean:75\\n    theorem isFixedPt_lfp : IsFixedPt f f.lfp :=\\n- Mathlib/Order/FixedPoints.lean:86\\n    theorem isLeast_lfp : IsLeast (fixedPoints f) f.lfp :=\\n- Mathlib/Order/FixedPoints.lean:104\\n    theorem isFixedPt_gfp : IsFixedPt f f.gfp :=\\n- Mathlib/Order/FixedPoints.lean:120\\n    theorem isGreatest_gfp : IsGreatest (fixedPoints f) f.gfp :=\\n- Mathlib/Order/FixedPoints.lean:170\\n    def prevFixed (x : α) (hx : f x ≤ x) : fixedPoints f :=\\n- Mathlib/Order/FixedPoints.lean:181\\n    def nextFixed (x : α) (hx : x ≤ f x) : fixedPoints f :=\\n- Mathlib/Order/FixedPoints.lean:184\\n    theorem prevFixed_le {x : α} (hx : f x ≤ x) : ↑(f.prevFixed x hx) ≤ x :=\\n- Mathlib/Order/FixedPoints.lean:187\\n    theorem le_nextFixed {x : α} (hx : x ≤ f x) : x ≤ f.nextFixed x hx :=\\n- Mathlib/Order/FixedPoints.lean:190\\n    theorem nextFixed_le {x : α} (hx : x ≤ f x) {y : fixedPoints f} (h : x ≤ y) :\\n- Mathlib/Order/FixedPoints.lean:195\\n    theorem nextFixed_le_iff {x : α} (hx : x ≤ f x) {y : fixedPoints f} :\\n- Mathlib/Order/FixedPoints.lean:200\\n    theorem le_prevFixed_iff {x : α} (hx : f x ≤ x) {y : fixedPoints f} :\\n- Mathlib/Order/FixedPoints.lean:204\\n    theorem le_prevFixed {x : α} (hx : f x ≤ x) {y : fixedPoints f} (h : ↑y ≤ x) :\\n- Mathlib/Order/FixedPoints.lean:208\\n    theorem le_map_sup_fixedPoints (x y : fixedPoints f) : (x ⊔ y : α) ≤ f (x ⊔ y) :=\\n- Mathlib/Order/FixedPoints.lean:214\\n    theorem map_inf_fixedPoints_le (x y : fixedPoints f) : f (x ⊓ y) ≤ x.val ⊓ y.val :=\\n- Mathlib/Order/FixedPoints.lean:217\\n    theorem le_map_sSup_subset_fixedPoints (A : Set α) (hA : A ⊆ fixedPoints f) :\\n- Mathlib/Order/FixedPoints.lean:221\\n    theorem map_sInf_subset_fixedPoints_le (A : Set α) (hA : A ⊆ fixedPoints f) :\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/FixedPoints.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3121,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/FixedPoints.lean  (lines 1–80 of 286):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Kenny Lau, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Dynamics.FixedPoints.Basic\\n     9  public import Mathlib.Order.Hom.Order\\n    10  public import Mathlib.Order.BourbakiWitt\\n    11  \\n    12  /-!\\n    13  # Fixed point construction on complete lattices\\n    14  \\n    15  This file sets up the basic theory of fixed points of a monotone function in a complete lattice.\\n    16  \\n    17  ## Main definitions\\n    18  \\n    19  * `OrderHom.lfp`: The least fixed point of a bundled monotone function.\\n    20  * `OrderHom.gfp`: The greatest fixed point of a bundled monotone function.\\n    21  * `OrderHom.prevFixed`: The greatest fixed point of a bundled monotone function smaller than or\\n    22    equal to a given element.\\n    23  * `OrderHom.nextFixed`: The least fixed point of a bundled monotone function greater than or\\n    24    equal to a given element.\\n    25  * `fixedPoints.completeLattice`: The Knaster-Tarski theorem: fixed points of a monotone\\n    26    self-map of a complete lattice form themselves a complete lattice.\\n    27  \\n    28  ## Tags\\n    29  \\n    30  fixed point, complete lattice, monotone function\\n    31  -/\\n    32  \\n    33  @[expose] public section\\n    34  \\n    35  \\n    36  universe u v w\\n    37  \\n    38  variable {α : Type u} {β : Type v} {γ : Type w}\\n    39  \\n    40  open Function (fixedPoints IsFixedPt)\\n    41  \\n    42  namespace OrderHom\\n    43  \\n    44  section Basic\\n    45  \\n    46  variable [CompleteLattice α] (f : α →o α)\\n    47  \\n    48  /-- Least fixed point of a monotone function -/\\n    49  def lfp : (α →o α) →o α where\\n    50    toFun f := sInf { a | f a ≤ a }\\n    51    monotone' _ _ hle := sInf_le_sInf fun a ha => (hle a).trans ha\\n    52  \\n    53  /-- Greatest fixed point of a monotone function -/\\n    54  def gfp : (α →o α) →o α where\\n    55    toFun f := sSup { a | a ≤ f a }\\n    56    monotone' _ _ hle := sSup_le_sSup fun a ha => le_trans ha (hle a)\\n    57  \\n    58  theorem lfp_le {a : α} (h : f a ≤ a) : f.lfp ≤ a :=\\n    59    sInf_le h\\n    60  \\n    61  theorem lfp_le_fixed {a : α} (h : f a = a) : f.lfp ≤ a :=\\n    62    f.lfp_le h.le\\n    63  \\n    64  theorem le_lfp {a : α} (h : ∀ b, f b ≤ b → a ≤ b) : a ≤ f.lfp :=\\n    65    le_sInf h\\n    66  \\n    67  theorem map_le_lfp {a : α} (ha : a ≤ f.lfp) : f a ≤ f.lfp :=\\n    68    f.le_lfp fun _ hb => (f.mono <| le_sInf_iff.1 ha _ hb).trans hb\\n    69  \\n    70  @[simp]\\n    71  theorem map_lfp : f f.lfp = f.lfp :=\\n    72    have h : f f.lfp ≤ f.lfp := f.map_le_lfp le_rfl\\n    73    h.antisymm <| f.lfp_le <| f.mono h\\n    74  \\n    75  theorem isFixedPt_lfp : IsFixedPt f f.lfp :=\\n    76    f.map_lfp\\n    77  \\n    78  theorem lfp_le_map {a : α} (ha : f.lfp ≤ a) : f.lfp ≤ f a :=\\n    79    calc\\n    80      f.lfp = f f.lfp := f.map_lfp.symm\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*[Cc]ontinuous.*[Ff]ixed\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 241,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|theorem|lemma) .*[Cc]ontinuous.*[Ff]ixed' (via ripgrep):\\n- Mathlib/Dynamics/FixedPoints/Topology.lean:42\\n    theorem isClosed_fixedPoints (hf : Continuous f) : IsClosed (fixedPoints f) :=\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*[Ff]ixed.*[Cc]ontinuous\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 688,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(def|theorem|lemma) .*[Ff]ixed.*[Cc]ontinuous' (via ripgrep):\\n- Mathlib/Topology/Order/IntermediateValue.lean:570\\n    theorem exists_mem_uIcc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (uIcc a b))\\n- Mathlib/Topology/Order/IntermediateValue.lean:579\\n    theorem exists_mem_Icc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n- Mathlib/Topology/Order/IntermediateValue.lean:586\\n    theorem exists_mem_Icc_isFixedPt_of_mapsTo {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n- Mathlib/Dynamics/FixedPoints/Topology.lean:42\\n    theorem isClosed_fixedPoints (hf : Continuous f) : IsClosed (fixedPoints f) :=\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/IntermediateValue.lean\", \"line\": 570, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2320,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/IntermediateValue.lean  (lines 570–599 of 946):\\n   570  theorem exists_mem_uIcc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (uIcc a b))\\n   571      (ha : a ≤ f a) (hb : f b ≤ b) : ∃ c ∈ [[a, b]], IsFixedPt f c :=\\n   572    isPreconnected_uIcc.intermediate_value₂ right_mem_uIcc left_mem_uIcc hf continuousOn_id hb ha\\n   573  \\n   574  /-- If `f : α → α` is continuous on `[a, b]`, `a ≤ b`, `a ≤ f a`, and `f b ≤ b`,\\n   575  then `f` has a fixed point on `[a, b]`.\\n   576  \\n   577  In particular, if `[a, b]` is forward-invariant under `f`,\\n   578  then `f` has a fixed point on `[a, b]`, see `exists_mem_Icc_isFixedPt_of_mapsTo`. -/\\n   579  theorem exists_mem_Icc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n   580      (hle : a ≤ b) (ha : a ≤ f a) (hb : f b ≤ b) : ∃ c ∈ Icc a b, IsFixedPt f c :=\\n   581    isPreconnected_Icc.intermediate_value₂\\n   582      (right_mem_Icc.2 hle) (left_mem_Icc.2 hle) hf continuousOn_id hb ha\\n   583  \\n   584  /-- If a closed interval is forward-invariant under a continuous map `f : α → α`,\\n   585  then this map has a fixed point on this interval. -/\\n   586  theorem exists_mem_Icc_isFixedPt_of_mapsTo {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n   587      (hle : a ≤ b) (hmaps : MapsTo f (Icc a b) (Icc a b)) : ∃ c ∈ Icc a b, IsFixedPt f c :=\\n   588    exists_mem_Icc_isFixedPt hf hle (hmaps <| left_mem_Icc.2 hle).1 (hmaps <| right_mem_Icc.2 hle).2\\n   589  \\n   590  theorem intermediate_value_Ico {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n   591      Ico (f a) (f b) ⊆ f '' Ico a b :=\\n   592    Or.elim (eq_or_lt_of_le hab) (fun he _ h => absurd h.2 (not_lt_of_ge (he ▸ h.1))) fun hlt =>\\n   593      @IsPreconnected.intermediate_value_Ico _ _ _ _ _ _ _ isPreconnected_Ico _ _ ⟨refl a, hlt⟩\\n   594        (right_nhdsWithin_Ico_neBot hlt) inf_le_right _ (hf.mono Ico_subset_Icc_self) _\\n   595        ((hf.continuousWithinAt ⟨hab, refl b⟩).mono Ico_subset_Icc_self)\\n   596  \\n   597  theorem intermediate_value_Ico' {a b : α} (hab : a ≤ b) {f : α → δ}\\n   598      (hf : ContinuousOn f (Icc a b)) : Ioc (f b) (f a) ⊆ f '' Ico a b :=\\n   599    Or.elim (eq_or_lt_of_le hab) (fun he _ h => absurd h.1 (not_lt_of_ge (he ▸ h.2))) fun hlt =>\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MapsTo\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MapsTo': unknown identifier 'MapsTo'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc': unknown identifier 'Icc'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsFixedPt\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsFixedPt': unknown identifier 'IsFixedPt'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) Icc[^A-Za-z]\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 575,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|structure) Icc[^A-Za-z]' (via ripgrep):\\n- Mathlib/Analysis/BoxIntegral/Box/Basic.lean:184\\n    protected def Icc : Box ι ↪o Set (ι → ℝ) :=\\n- Mathlib/Order/Hom/Set.lean:217\\n    protected def Icc [Lattice α] [Lattice β] (e : α ≃o β) (x y : α) :\\n- Mathlib/Order/Interval/Set/Defs.lean:76\\n    def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\n- Mathlib/Order/Interval/Multiset.lean:48\\n    def Icc (a b : α) : Multiset α := (Finset.Icc a b).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:280\\n    def Icc (a b : α) : Finset α :=\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) MapsTo[^A-Za-z]\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|structure) MapsTo[^A-Za-z]' (via ripgrep):\\n- Mathlib/Data/Set/Operations.lean:282\\n    def MapsTo (f : α → β) (s : Set α) (t : Set β) : Prop := ∀ ⦃x⦄, x ∈ s → f x ∈ t\\n- Mathlib/Data/Set/Operations.lean:290\\n    def MapsTo.restrict (f : α → β) (s : Set α) (t : Set β) (h : MapsTo f s t) : s → t :=\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) IsFixedPt[^A-Za-z]\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) IsFixedPt[^A-Za-z]' (via ripgrep):\\n- Mathlib/Logic/Function/Defs.lean:173\\n    def IsFixedPt (f : α → α) (x : α) := f x = x\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) ContinuousOn[^A-Za-z]\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) ContinuousOn[^A-Za-z]' (via ripgrep):\\n- Mathlib/Topology/Defs/Filter.lean:191\\n    def ContinuousOn (f : X → Y) (s : Set X) : Prop :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/IntermediateValue.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2485,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/IntermediateValue.lean  (lines 1–50 of 946):\\n     1  /-\\n     2  Copyright (c) 2021 Yury Kudryashov. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yury Kudryashov, Alistair Tucker, Wen Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Interval.Set.Image\\n     9  public import Mathlib.Order.CompleteLatticeIntervals\\n    10  public import Mathlib.Topology.Order.DenselyOrdered\\n    11  public import Mathlib.Topology.Order.Monotone\\n    12  public import Mathlib.Topology.Connected.TotallyDisconnected\\n    13  \\n    14  /-!\\n    15  # Intermediate Value Theorem\\n    16  \\n    17  In this file we prove the Intermediate Value Theorem: if `f : α → β` is a function defined on a\\n    18  connected set `s` that takes both values `≤ a` and values `≥ a` on `s`, then it is equal to `a` at\\n    19  some point of `s`. We also prove that intervals in a dense conditionally complete order are\\n    20  preconnected and any preconnected set is an interval. Then we specialize IVT to functions continuous\\n    21  on intervals.\\n    22  \\n    23  ## Main results\\n    24  \\n    25  * `IsPreconnected_I??` : all intervals `I??` are preconnected,\\n    26  * `IsPreconnected.intermediate_value`, `intermediate_value_univ` : Intermediate Value Theorem for\\n    27    connected sets and connected spaces, respectively;\\n    28  * `intermediate_value_Icc`, `intermediate_value_Icc'`: Intermediate Value Theorem for functions\\n    29    on closed intervals.\\n    30  \\n    31  ### Miscellaneous facts\\n    32  \\n    33  * `IsClosed.Icc_subset_of_forall_mem_nhdsWithin` : “Continuous induction” principle;\\n    34    if `s ∩ [a, b]` is closed, `a ∈ s`, and for each `x ∈ [a, b) ∩ s` some of its right neighborhoods\\n    35    is included in `s`, then `[a, b] ⊆ s`.\\n    36  * `IsClosed.Icc_subset_of_forall_exists_gt`, `IsClosed.mem_of_ge_of_forall_exists_gt` : two\\n    37    other versions of the “continuous induction” principle.\\n    38  * `ContinuousOn.StrictMonoOn_of_InjOn_Ioo` :\\n    39    Every continuous injective `f : (a, b) → δ` is strictly monotone\\n    40    or antitone (increasing or decreasing).\\n    41  \\n    42  ## Tags\\n    43  \\n    44  intermediate value theorem, connected space, connected set\\n    45  -/\\n    46  \\n    47  public section\\n    48  \\n    49  \\n    50  open Filter OrderDual TopologicalSpace Function Set\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/IntermediateValue.lean\", \"line\": 540, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3960,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/IntermediateValue.lean  (lines 540–599 of 946):\\n   540  /-!\\n   541  ### Intermediate Value Theorem on an interval\\n   542  \\n   543  In this section we prove several versions of the Intermediate Value Theorem for a function\\n   544  continuous on an interval.\\n   545  -/\\n   546  \\n   547  \\n   548  variable {δ : Type*} [LinearOrder δ] [TopologicalSpace δ] [OrderClosedTopology δ]\\n   549  \\n   550  /-- **Intermediate Value Theorem** for continuous functions on closed intervals, case\\n   551  `f a ≤ t ≤ f b`. -/\\n   552  @[wikidata Q245098]\\n   553  theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n   554      Icc (f a) (f b) ⊆ f '' Icc a b :=\\n   555    isPreconnected_Icc.intermediate_value (left_mem_Icc.2 hab) (right_mem_Icc.2 hab) hf\\n   556  \\n   557  /-- **Intermediate Value Theorem** for continuous functions on closed intervals, case\\n   558  `f a ≥ t ≥ f b`. -/\\n   559  theorem intermediate_value_Icc' {a b : α} (hab : a ≤ b) {f : α → δ}\\n   560      (hf : ContinuousOn f (Icc a b)) : Icc (f b) (f a) ⊆ f '' Icc a b :=\\n   561    isPreconnected_Icc.intermediate_value (right_mem_Icc.2 hab) (left_mem_Icc.2 hab) hf\\n   562  \\n   563  /-- **Intermediate Value Theorem** for continuous functions on closed intervals, unordered case. -/\\n   564  theorem intermediate_value_uIcc {a b : α} {f : α → δ} (hf : ContinuousOn f [[a, b]]) :\\n   565      [[f a, f b]] ⊆ f '' uIcc a b := by\\n   566    cases le_total (f a) (f b) <;> simp [*, isPreconnected_uIcc.intermediate_value]\\n   567  \\n   568  /-- If `f : α → α` is continuous on `[[a, b]]`, `a ≤ f a`, and `f b ≤ b`,\\n   569  then `f` has a fixed point on `[[a, b]]`. -/\\n   570  theorem exists_mem_uIcc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (uIcc a b))\\n   571      (ha : a ≤ f a) (hb : f b ≤ b) : ∃ c ∈ [[a, b]], IsFixedPt f c :=\\n   572    isPreconnected_uIcc.intermediate_value₂ right_mem_uIcc left_mem_uIcc hf continuousOn_id hb ha\\n   573  \\n   574  /-- If `f : α → α` is continuous on `[a, b]`, `a ≤ b`, `a ≤ f a`, and `f b ≤ b`,\\n   575  then `f` has a fixed point on `[a, b]`.\\n   576  \\n   577  In particular, if `[a, b]` is forward-invariant under `f`,\\n   578  then `f` has a fixed point on `[a, b]`, see `exists_mem_Icc_isFixedPt_of_mapsTo`. -/\\n   579  theorem exists_mem_Icc_isFixedPt {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n   580      (hle : a ≤ b) (ha : a ≤ f a) (hb : f b ≤ b) : ∃ c ∈ Icc a b, IsFixedPt f c :=\\n   581    isPreconnected_Icc.intermediate_value₂\\n   582      (right_mem_Icc.2 hle) (left_mem_Icc.2 hle) hf continuousOn_id hb ha\\n   583  \\n   584  /-- If a closed interval is forward-invariant under a continuous map `f : α → α`,\\n   585  then this map has a fixed point on this interval. -/\\n   586  theorem exists_mem_Icc_isFixedPt_of_mapsTo {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\\n   587      (hle : a ≤ b) (hmaps : MapsTo f (Icc a b) (Icc a b)) : ∃ c ∈ Icc a b, IsFixedPt f c :=\\n   588    exists_mem_Icc_isFixedPt hf hle (hmaps <| left_mem_Icc.2 hle).1 (hmaps <| right_mem_Icc.2 hle).2\\n   589  \\n   590  theorem intermediate_value_Ico {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n   591      Ico (f a) (f b) ⊆ f '' Ico a b :=\\n   592    Or.elim (eq_or_lt_of_le hab) (fun he _ h => absurd h.2 (not_lt_of_ge (he ▸ h.1))) fun hlt =>\\n   593      @IsPreconnected.intermediate_value_Ico _ _ _ _ _ _ _ isPreconnected_Ico _ _ ⟨refl a, hlt⟩\\n   594        (right_nhdsWithin_Ico_neBot hlt) inf_le_right _ (hf.mono Ico_subset_Icc_self) _\\n   595        ((hf.continuousWithinAt ⟨hab, refl b⟩).mono Ico_subset_Icc_self)\\n   596  \\n   597  theorem intermediate_value_Ico' {a b : α} (hab : a ≤ b) {f : α → δ}\\n   598      (hf : ContinuousOn f (Icc a b)) : Ioc (f b) (f a) ⊆ f '' Ico a b :=\\n   599    Or.elim (eq_or_lt_of_le hab) (fun he _ h => absurd h.1 (not_lt_of_ge (he ▸ h.2))) fun hlt =>\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/IntermediateValue.lean\", \"line\": 50, \"n\": 100}",
+   "ok": true,
+   "result_chars": 6150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/IntermediateValue.lean  (lines 50–149 of 946):\\n    50  open Filter OrderDual TopologicalSpace Function Set\\n    51  open scoped Topology Filter Interval\\n    52  \\n    53  universe u v\\n    54  \\n    55  /-!\\n    56  ### Intermediate value theorem on a (pre)connected space\\n    57  \\n    58  In this section we prove the following theorem (see `IsPreconnected.intermediate_value₂`): if `f`\\n    59  and `g` are two functions continuous on a preconnected set `s`, `f a ≤ g a` at some `a ∈ s` and\\n    60  `g b ≤ f b` at some `b ∈ s`, then `f c = g c` at some `c ∈ s`. We prove several versions of this\\n    61  statement, including the classical IVT that corresponds to a constant function `g`.\\n    62  -/\\n    63  \\n    64  section\\n    65  \\n    66  variable {X : Type u} {α : Type v} [TopologicalSpace X] [LinearOrder α] [TopologicalSpace α]\\n    67    [OrderClosedTopology α]\\n    68  \\n    69  /-- Intermediate value theorem for two functions: if `f` and `g` are two continuous functions\\n    70  on a preconnected space and `f a ≤ g a` and `g b ≤ f b`, then for some `x` we have `f x = g x`. -/\\n    71  theorem intermediate_value_univ₂ [PreconnectedSpace X] {a b : X} {f g : X → α} (hf : Continuous f)\\n    72      (hg : Continuous g) (ha : f a ≤ g a) (hb : g b ≤ f b) : ∃ x, f x = g x := by\\n    73    obtain ⟨x, _, hfg, hgf⟩ : (univ ∩ { x | f x ≤ g x ∧ g x ≤ f x }).Nonempty :=\\n    74      isPreconnected_closed_iff.1 PreconnectedSpace.isPreconnected_univ _ _ (isClosed_le hf hg)\\n    75        (isClosed_le hg hf) (fun _ _ => le_total _ _) ⟨a, trivial, ha⟩ ⟨b, trivial, hb⟩\\n    76    exact ⟨x, le_antisymm hfg hgf⟩\\n    77  \\n    78  theorem intermediate_value_univ₂_eventually₁ [PreconnectedSpace X] {a : X} {l : Filter X} [NeBot l]\\n    79      {f g : X → α} (hf : Continuous f) (hg : Continuous g) (ha : f a ≤ g a) (he : g ≤ᶠ[l] f) :\\n    80      ∃ x, f x = g x :=\\n    81    let ⟨_, h⟩ := he.exists; intermediate_value_univ₂ hf hg ha h\\n    82  \\n    83  theorem intermediate_value_univ₂_eventually₂ [PreconnectedSpace X] {l₁ l₂ : Filter X} [NeBot l₁]\\n    84      [NeBot l₂] {f g : X → α} (hf : Continuous f) (hg : Continuous g) (he₁ : f ≤ᶠ[l₁] g)\\n    85      (he₂ : g ≤ᶠ[l₂] f) : ∃ x, f x = g x :=\\n    86    let ⟨_, h₁⟩ := he₁.exists\\n    87    let ⟨_, h₂⟩ := he₂.exists\\n    88    intermediate_value_univ₂ hf hg h₁ h₂\\n    89  \\n    90  /-- Intermediate value theorem for two functions: if `f` and `g` are two functions continuous\\n    91  on a preconnected set `s` and for some `a b ∈ s` we have `f a ≤ g a` and `g b ≤ f b`,\\n    92  then for some `x ∈ s` we have `f x = g x`. -/\\n    93  theorem IsPreconnected.intermediate_value₂ {s : Set X} (hs : IsPreconnected s) {a b : X}\\n    94      (ha : a ∈ s) (hb : b ∈ s) {f g : X → α} (hf : ContinuousOn f s) (hg : ContinuousOn g s)\\n    95      (ha' : f a ≤ g a) (hb' : g b ≤ f b) : ∃ x ∈ s, f x = g x :=\\n    96    let ⟨x, hx⟩ :=\\n    97      @intermediate_value_univ₂ s α _ _ _ _ (Subtype.preconnectedSpace hs) ⟨a, ha⟩ ⟨b, hb⟩ _ _\\n    98        (continuousOn_iff_continuous_restrict.1 hf) (continuousOn_iff_continuous_restrict.1 hg) ha'\\n    99        hb'\\n   100    ⟨x, x.2, hx⟩\\n   101  \\n   102  theorem IsPreconnected.intermediate_value₂_eventually₁ {s : Set X} (hs : IsPreconnected s) {a : X}\\n   103      {l : Filter X} (ha : a ∈ s) [NeBot l] (hl : l ≤ 𝓟 s) {f g : X → α} (hf : ContinuousOn f s)\\n   104      (hg : ContinuousOn g s) (ha' : f a ≤ g a) (he : g ≤ᶠ[l] f) : ∃ x ∈ s, f x = g x := by\\n   105    rw [continuousOn_iff_continuous_restrict] at hf hg\\n   106    obtain ⟨b, h⟩ :=\\n   107      @intermediate_value_univ₂_eventually₁ _ _ _ _ _ _ (Subtype.preconnectedSpace hs) ⟨a, ha⟩ _\\n   108        (comap_coe_neBot_of_le_principal hl) _ _ hf hg ha' (he.comap _)\\n   109    exact ⟨b, b.prop, h⟩\\n   110  \\n   111  theorem IsPreconnected.intermediate_value₂_eventually₂ {s : Set X} (hs : IsPreconnected s)\\n   112      {l₁ l₂ : Filter X} [NeBot l₁] [NeBot l₂] (hl₁ :"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem continuous_self_map_interval_has_fixed_point \n    {α : Type*} [LinearOrder α] [TopologicalSpace α] [OrderClosedTopology α]\n    {a b : α} {f : α → α} (hf : ContinuousOn f (Icc a b))\n    (hle : a ≤ b) (hmaps : MapsTo f (Icc a b) (Icc a b)) : \n    ∃ c ∈ Icc a b, IsFixedPt f c := sorry"
+}

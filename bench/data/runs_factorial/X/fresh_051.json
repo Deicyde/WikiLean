@@ -1,0 +1,304 @@
+{
+ "task_id": "fresh_051",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:43:10Z",
+ "wall_s": 121.5,
+ "transcript_stats": {
+  "turns": 32,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 7,
+   "mcp__wikibrain__decl_exists": 4
+  },
+  "tokens_in": 186,
+  "tokens_out": 8362,
+  "cost_usd": 0.10440785
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StronglyMeasurable': unknown identifier 'StronglyMeasurable'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AEStronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AEStronglyMeasurable': unknown identifier 'AEStronglyMeasurable'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PseudoMetricSpace\"}",
+   "ok": true,
+   "result_chars": 1361,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1764 declarations mentioning PseudoMetricSpace.\\n- PseudoMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    A pseudometric space is a type endowed with a `ℝ`-valued distance `dist` satisfying reflexivity `dist x x = 0`, commutativity `dist x y = dist y x`, and the tri\\n- Real.pseudoMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Instantiate the reals as a pseudometric space.\\n- PseudoMetricSpace.toBornology   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toEDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toNNDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Distance as a nonnegative real number.\\n- PseudoMetricSpace.toPseudoEMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    A pseudometric space induces a pseudoemetric space\\n- PseudoMetricSpace.toUniformSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceAdditive   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceMultiplicative   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceOrderDual   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.edist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Extended distance between two points\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Measurable\"}",
+   "ok": true,
+   "result_chars": 1137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1417 declarations mentioning Measurable.\\n- Measurable   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A function `f` between measurable spaces is measurable if the preimage of every measurable set is measurable.\\n- measurable_id   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- measurable_id'   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- measurable_const   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.of_discrete   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.le   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.comp'   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    **Alias** of `Measurable.fun_comp`.  ---  Eta-expanded form of `Measurable.comp`\\n- Measurable.fun_comp   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    Eta-expanded form of `Measurable.comp`\\n- Measurable.comp   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- comap_measurable   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\\n- measurable_of_empty   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\\n- measurable_of_empty_codomain   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StronglyMeasurable\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 753,
+   "result_head": "[{\"type\": \"text\", \"text\": \"535 match(es) for 'StronglyMeasurable' (via ripgrep):\\n- Mathlib/InformationTheory/KullbackLeibler/ChainRule.lean:124\\n    swap; · exact StronglyMeasurable.aestronglyMeasurable (by fun_prop)\\n- Mathlib/InformationTheory/KullbackLeibler/ChainRule.lean:162\\n    · exact StronglyMeasurable.aestronglyMeasurable (by fun_prop)\\n- Mathlib/InformationTheory/KullbackLeibler/KLFun.lean:84\\n    lemma stronglyMeasurable_klFun : StronglyMeasurable klFun := measurable_klFun.stronglyMeasurable\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:345\\n    by_cases hf : AEStronglyMeasurable f (μ.restrict t); swap\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:372\\n    (haux : StronglyMeasurable f) (H : IntegrableOn f (s ∪ t) μ) :\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure|class) StronglyMeasurable\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 394,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|structure|class) StronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:41\\n    def StronglyMeasurableAtFilter (f : α → β) (l : Filter α) (μ : Measure α := by volume_tac) :=\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:64\\n    def StronglyMeasurable [MeasurableSpace α] (f : α → β) : Prop :=\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure|class) AEStronglyMeasurable\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 278,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure|class) AEStronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean:66\\n    def AEStronglyMeasurable [m : MeasurableSpace α] {m₀ : MeasurableSpace α} (f : α → β)\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 64, \"n\": 10}",
+   "ok": true,
+   "result_chars": 670,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 64–73 of 1325):\\n    64  def StronglyMeasurable [MeasurableSpace α] (f : α → β) : Prop :=\\n    65    ∃ fs : ℕ → α →ₛ β, ∀ x, Tendsto (fun n => fs n x) atTop (𝓝 (f x))\\n    66  \\n    67  add_aesop_rules safe tactic\\n    68    (rule_sets := [Measurable])\\n    69    (index := [target @StronglyMeasurable ..])\\n    70    (by fun_prop (disch := measurability))\\n    71  \\n    72  /-- The notation for StronglyMeasurable giving the measurable space instance explicitly. -/\\n    73  scoped notation \\\"StronglyMeasurable[\\\" m \\\"]\\\" => @MeasureTheory.StronglyMeasurable _ _ _ m\\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean\", \"line\": 66, \"n\": 10}",
+   "ok": true,
+   "result_chars": 647,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean  (lines 66–75 of 987):\\n    66  def AEStronglyMeasurable [m : MeasurableSpace α] {m₀ : MeasurableSpace α} (f : α → β)\\n    67      (μ : Measure[m₀] α := by volume_tac) : Prop :=\\n    68    ∃ g : α → β, StronglyMeasurable[m] g ∧ f =ᵐ[μ] g\\n    69  \\n    70  add_aesop_rules safe tactic\\n    71    (rule_sets := [Measurable])\\n    72    (index := [target @AEStronglyMeasurable ..])\\n    73    (by fun_prop (disch := measurability))\\n    74  \\n    75  /-- A function is `m`-`AEStronglyMeasurable` with respect to a measure `μ` if it is almost\\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous → StronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 139,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Continuous → StronglyMeasurable': type expected, got\\n  (Continuous : (?m.1 → ?m.2) → Prop)\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"continuous.*StronglyMeasurable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'continuous.*StronglyMeasurable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*StronglyMeasurable\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2449,
+   "result_head": "[{\"type\": \"text\", \"text\": \"212 match(es) for 'theorem.*StronglyMeasurable' (via ripgrep):\\n- Mathlib/Probability/Process/Filtration.lean:458\\n    theorem stronglyMeasurable_limitProcess : StronglyMeasurable[⨆ n, ℱ n] (limitProcess f ℱ μ) := by\\n- Mathlib/Probability/Process/Filtration.lean:463\\n    theorem stronglyMeasurable_limit_process' : StronglyMeasurable[m] (limitProcess f ℱ μ) :=\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:87\\n    theorem _root_.MeasureTheory.AEStronglyMeasurable.integral_kernel_compProd [NormedSpace ℝ E]\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:93\\n    theorem _root_.MeasureTheory.AEStronglyMeasurable.compProd_mk_left {δ : Type*} [TopologicalSpace δ]\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:102\\n    theorem hasFiniteIntegral_compProd_iff ⦃f : β × γ → E⦄ (h1f : StronglyMeasurable f) :\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:135\\n    theorem integrable_compProd_iff ⦃f : β × γ → E⦄ (hf : AEStronglyMeasurable f ((κ ⊗ₖ η) a)) :\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:283\\n    theorem _root_.MeasureTheory.AEStronglyMeasurable.integral_kernel_comp [NormedSpace ℝ E]\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:289\\n    theorem _root_.MeasureTheory.AEStronglyMeasurable.comp {δ : Type*} [TopologicalSpace δ]\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:297\\n    theorem hasFiniteIntegral_comp_iff ⦃f : γ → E⦄ (hf : StronglyMeasurable f) :\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:313\\n    theorem hasFiniteIntegral_comp_iff' ⦃f : γ → E⦄ (hf : AEStronglyMeasurable f ((η ∘ₖ κ) a)) :\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:323\\n    theorem integrable_comp_iff ⦃f : γ → E⦄ (hf : AEStronglyMeasurable f ((η ∘ₖ κ) a)) :\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:826\\n    theorem setIntegral_le_nonneg {s : Set X} (hs : MeasurableSet s) (hf : StronglyMeasurable f)\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:849\\n    theorem setIntegral_nonpos_le {s : Set X} (hs : MeasurableSet s) (hf : StronglyMeasurable f)\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:209\\n    theorem integral_non_aestronglyMeasurable {f : α → G} (h : ¬AEStronglyMeasurable f μ) :\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:378\\n    theorem tendsto_integral_of_L1 {ι} (f : α → G) (hfi : AEStronglyMeasurable f μ)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Continuous\\\\.stronglyMeasurable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 995,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'Continuous\\\\\\\\.stronglyMeasurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:1184\\n    apply Continuous.stronglyMeasurable_of_support_subset_isCompact (A p hp) hk\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:836\\n    theorem Continuous.stronglyMeasurableAtFilter [TopologicalSpace α] [OpensMeasurableSpace α]\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:717\\n    theorem _root_.Continuous.stronglyMeasurable [MeasurableSpace α] [TopologicalSpace α]\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:730\\n    theorem _root_.Continuous.stronglyMeasurable_of_mulSupport_subset_isCompact\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:741\\n    theorem _root_.Continuous.stronglyMeasurable_of_hasCompactMulSupport\\n- Mathlib/Analysis/SpecialFunctions/MulExpNegMulSqIntegral.lean:86\\n    exact fun n => StronglyMeasurable.aestronglyMeasurable (Continuous.stronglyMeasurable\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"stronglyMeasurable_of_continuous\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'stronglyMeasurable_of_continuous' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 717, \"n\": 15}",
+   "ok": true,
+   "result_chars": 989,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 717–731 of 1325):\\n   717  theorem _root_.Continuous.stronglyMeasurable [MeasurableSpace α] [TopologicalSpace α]\\n   718      [OpensMeasurableSpace α] [TopologicalSpace β] [PseudoMetrizableSpace β]\\n   719      [h : SecondCountableTopologyEither α β] {f : α → β} (hf : Continuous f) :\\n   720      StronglyMeasurable f := by\\n   721    borelize β\\n   722    cases h.out\\n   723    · rw [stronglyMeasurable_iff_measurable_separable]\\n   724      refine ⟨hf.measurable, ?_⟩\\n   725      exact isSeparable_range hf\\n   726    · exact hf.measurable.stronglyMeasurable\\n   727  \\n   728  /-- A continuous function whose support is contained in a compact set is strongly measurable. -/\\n   729  @[to_additive]\\n   730  theorem _root_.Continuous.stronglyMeasurable_of_mulSupport_subset_isCompact\\n   731      [MeasurableSpace α] [TopologicalSpace α] [OpensMeasurableSpace α] [TopologicalSpace β]\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"countable.*continuous\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1568,
+   "result_head": "[{\"type\": \"text\", \"text\": \"34 match(es) for 'countable.*continuous' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:926\\n    /-- If `s` is a countable family of compact sets, `f` is a continuous function, and the sequence\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:940\\n    /-- If `s` is a countable family of compact sets covering `X`, `f` is a continuous function, and\\n- Mathlib/MeasureTheory/Measure/Stieltjes.lean:254\\n    refine Countable.mono ?_ f.mono.countable_not_continuousAt\\n- Mathlib/MeasureTheory/Measure/Prokhorov.lean:72\\n    ultrafilters terms as things are not second countable. The integral against any bounded continuous\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:846\\n    theorem of_countable_not_continuousAt [MeasurableSpace α] [TopologicalSpace α]\\n- Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean:387\\n    the two spaces has second countable topology. This is the right assumption to ensure that continuous\\n- Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean:509\\n    theorem measurable_of_countable_not_continuousAt [MeasurableSingletonClass α]\\n- Mathlib/MeasureTheory/Constructions/Polish/Basic.lean:954\\n    have ht' : Set.Countable t' := hg.countable_not_continuousWithinAt\\n- Mathlib/Topology/Order/Monotone.lean:113\\n    /-- In a second countable space, the set of points where a monotone function is not right-continuous\\n- Mathlib/Topology/Order/Monotone.lean:114\\n    within a set is at most countable. Superseded by `MonotoneOn.countable_not_continuousWithinAt`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f Continuous → AEStronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f Continuous → AEStronglyMeasurable': Unknown identifier `AEStronglyMeasurable`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 846, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1337,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 846–865 of 1325):\\n   846  theorem of_countable_not_continuousAt [MeasurableSpace α] [TopologicalSpace α]\\n   847      [OpensMeasurableSpace α] [MeasurableSingletonClass α]\\n   848      [TopologicalSpace β] [PseudoMetrizableSpace β]\\n   849      [h : SecondCountableTopologyEither α β] {f : α → β}\\n   850      (hf : Set.Countable {x | ¬ ContinuousAt f x}) : StronglyMeasurable f := by\\n   851    have : ContinuousOn f {x | ContinuousAt f x} := fun x hx ↦ hx.continuousWithinAt\\n   852    apply this.stronglyMeasurable_of_countable_compl\\n   853    convert hf\\n   854    grind\\n   855  \\n   856  @[fun_prop]\\n   857  theorem _root_.MeasurableEmbedding.stronglyMeasurable_extend {f : α → β} {g : α → γ} {g' : γ → β}\\n   858      {mα : MeasurableSpace α} {mγ : MeasurableSpace γ} [TopologicalSpace β]\\n   859      (hg : MeasurableEmbedding g) (hf : StronglyMeasurable f) (hg' : StronglyMeasurable g') :\\n   860      StronglyMeasurable (Function.extend g f g') := by\\n   861    refine ⟨fun n => SimpleFunc.extend (hf.approx n) g hg (hg'.approx n), ?_⟩\\n   862    intro x\\n   863    by_cases hx : ∃ y, g y = x\\n   864    · rcases hx with ⟨y, rfl⟩\\n   865      simpa only [SimpleFunc.extend_apply, hg.injective, Injective.extend_apply] using\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"stronglyMeasurable_of_countable_compl\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'stronglyMeasurable_of_countable_compl' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:830\\n    theorem _root_.ContinuousOn.stronglyMeasurable_of_countable_compl [MeasurableSpace α]\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:852\\n    apply this.stronglyMeasurable_of_countable_compl\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 830, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 830–844 of 1325):\\n   830  theorem _root_.ContinuousOn.stronglyMeasurable_of_countable_compl [MeasurableSpace α]\\n   831      [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSingletonClass α]\\n   832      [TopologicalSpace β] [PseudoMetrizableSpace β]\\n   833      [h : SecondCountableTopologyEither α β] {f : α → β} {s : Set α} (hf : ContinuousOn f s)\\n   834      (hs : (sᶜ).Countable) : StronglyMeasurable f := by\\n   835    classical\\n   836    have h's : MeasurableSet s := by simpa using hs.measurableSet.compl\\n   837    have : f = fun x ↦ if hx : x ∈ s then f (⟨x, hx⟩ : s) else f (⟨x, hx⟩ : (sᶜ : Set α)) := by simp\\n   838    rw [this]\\n   839    apply StronglyMeasurable.dite (f := fun x ↦ f x) (g := fun x ↦ f x) ?_ ?_ h's\\n   840    · have : SecondCountableTopologyEither s β := by cases h.out <;> infer_instance\\n   841      exact (continuousOn_iff_continuous_restrict.1 hf).stronglyMeasurable\\n   842    · have := hs.to_subtype\\n   843      exact MeasureTheory.StronglyMeasurable.of_discrete\\n   844  \\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContinuousOn\", \"Set.Countable\", \"StronglyMeasurable\", \"PseudoMetrizableSpace\", \"SecondCountableTopologyEither\", \"OpensMeasurableSpace\", \"MeasurableSingletonClass\"]}",
+   "ok": true,
+   "result_chars": 2382,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"Set.Countable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Countable\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Countable\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Countable.html#Set.Countable\\\"},{\\\"decl\\\":\\\"StronglyMeasurable\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"PseudoMetrizableSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"SecondCountableTopologyEither\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.html#SecondCountableTopologyEither\\\"},{\\\"decl\\\":\\\"OpensMeasurableSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.html#OpensMeasurableSpace\\\"},{\\\"decl\\\":\\\"MeasurableSingletonClass\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#MeasurableSingletonClass\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StronglyMeasurable ?f\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StronglyMeasurable ?f': Unknown identifier `StronglyMeasurable`\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PseudoMetric\"}",
+   "ok": true,
+   "result_chars": 1248,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 39 declarations mentioning PseudoMetric.\\n- PseudoMetric   [Mathlib.Topology.MetricSpace.BundledFun]\\n    A pseudometric as a bundled function.\\n- PseudoMetric.instLE   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.IsUltra   [Mathlib.Topology.MetricSpace.BundledFun]\\n    A pseudometric can be nonarchimedean (or ultrametric), with a stronger triangle inequality such that `d x z ≤ max (d x y) (d y z)`.\\n- PseudoMetric.toFun   [Mathlib.Topology.MetricSpace.BundledFun]\\n    The underlying binary function mapping into a linearly ordered additive monoid.\\n- PseudoMetric.instFunLikeForall   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.instPartialOrder   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.instBot   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.refl'   [Mathlib.Topology.MetricSpace.BundledFun]\\n    A pseudometric must take identical elements to 0.\\n- PseudoMetric.symm'   [Mathlib.Topology.MetricSpace.BundledFun]\\n    A pseudometric must be symmetric.\\n- PseudoMetric.refl   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.ext   [Mathlib.Topology.MetricSpace.BundledFun]\\n- PseudoMetric.ext_iff   [Mathlib.Topology.MetricSpace.BundledFun]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.StronglyMeasurable\", \"Mathlib.Topology.Pseudo.Defs.PseudoMetrizableSpace\"]}",
+   "ok": true,
+   "result_chars": 894,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.StronglyMeasurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.html#MeasureTheory.StronglyMeasurable\\\"},{\\\"decl\\\":\\\"Mathlib.Topology.Pseudo.Defs.PseudoMetrizableSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PseudoMetrizableSpace\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'PseudoMetrizableSpace': unknown identifier 'PseudoMetrizableSpace'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def|structure) PseudoMetrizableSpace\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 234,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(class|def|structure) PseudoMetrizableSpace' (via ripgrep):\\n- Mathlib/Topology/Metrizable/Basic.lean:40\\n    class PseudoMetrizableSpace (X : Type*) [t : TopologicalSpace X] : Prop where\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"PseudoMetrizableSpace\"}",
+   "ok": true,
+   "result_chars": 377,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"PseudoMetrizableSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 830, \"n\": 5}",
+   "ok": true,
+   "result_chars": 526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 830–834 of 1325):\\n   830  theorem _root_.ContinuousOn.stronglyMeasurable_of_countable_compl [MeasurableSpace α]\\n   831      [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSingletonClass α]\\n   832      [TopologicalSpace β] [PseudoMetrizableSpace β]\\n   833      [h : SecondCountableTopologyEither α β] {f : α → β} {s : Set α} (hf : ContinuousOn f s)\\n   834      (hs : (sᶜ).Countable) : StronglyMeasurable f := by\\n\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContinuousOn\", \"Set.Countable\", \"SecondCountableTopologyEither\", \"OpensMeasurableSpace\", \"MeasurableSingletonClass\", \"MeasureTheory.StronglyMeasurable\"]}",
+   "ok": true,
+   "result_chars": 2301,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"Set.Countable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Countable\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Countable\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Countable.html#Set.Countable\\\"},{\\\"decl\\\":\\\"SecondCountableTopologyEither\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.html#SecondCountableTopologyEither\\\"},{\\\"decl\\\":\\\"OpensMeasurableSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.html#OpensMeasurableSpace\\\"},{\\\"decl\\\":\\\"MeasurableSingletonClass\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#MeasurableSingletonClass\\\"},{\\\"decl\\\":\\\"MeasureTheory.StronglyMeasurable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.html#MeasureTheory.StronglyMeasurable\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*ContinuousOn\\\\.stronglyMeasurable_of_countable_compl\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 285,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*ContinuousOn\\\\\\\\.stronglyMeasurable_of_countable_compl' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:830\\n    theorem _root_.ContinuousOn.stronglyMeasurable_of_countable_compl [MeasurableSpace α]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean\", \"line\": 1, \"n\": 70}",
+   "ok": true,
+   "result_chars": 3176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean  (lines 1–70 of 1325):\\n     1  /-\\n     2  Copyright (c) 2021 Rémy Degenne. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Rémy Degenne, Sébastien Gouëzel\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Normed.Module.Basic\\n     9  public import Mathlib.MeasureTheory.Function.SimpleFuncDense\\n    10  \\n    11  /-!\\n    12  # Strongly measurable and finitely strongly measurable functions\\n    13  \\n    14  A function `f` is said to be strongly measurable if `f` is the sequential limit of simple functions.\\n    15  It is said to be finitely strongly measurable with respect to a measure `μ` if the supports\\n    16  of those simple functions have finite measure.\\n    17  \\n    18  If the target space has a second countable topology, strongly measurable and measurable are\\n    19  equivalent.\\n    20  \\n    21  If the measure is sigma-finite, strongly measurable and finitely strongly measurable are equivalent.\\n    22  \\n    23  The main property of finitely strongly measurable functions is\\n    24  `FinStronglyMeasurable.exists_set_sigmaFinite`: there exists a measurable set `t` such that the\\n    25  function is supported on `t` and `μ.restrict t` is sigma-finite. As a consequence, we can prove some\\n    26  results for those functions as if the measure was sigma-finite.\\n    27  \\n    28  We provide a solid API for strongly measurable functions, as a basis for the Bochner integral.\\n    29  \\n    30  ## Main definitions\\n    31  \\n    32  * `StronglyMeasurable f`: `f : α → β` is the limit of a sequence `fs : ℕ → SimpleFunc α β`.\\n    33  * `FinStronglyMeasurable f μ`: `f : α → β` is the limit of a sequence `fs : ℕ → SimpleFunc α β`\\n    34    such that for all `n ∈ ℕ`, the measure of the support of `fs n` is finite.\\n    35  \\n    36  ## References\\n    37  \\n    38  * [Hytönen, Tuomas, Jan Van Neerven, Mark Veraar, and Lutz Weis. Analysis in Banach spaces.\\n    39    Springer, 2016.][Hytonen_VanNeerven_Veraar_Wies_2016]\\n    40  \\n    41  -/\\n    42  \\n    43  @[expose] public section\\n    44  \\n    45  -- Guard against import creep\\n    46  assert_not_exists InnerProductSpace\\n    47  \\n    48  open MeasureTheory Filter TopologicalSpace Function Set MeasureTheory.Measure\\n    49  \\n    50  open ENNReal Topology MeasureTheory NNReal\\n    51  \\n    52  variable {α β γ ι : Type*} [Countable ι]\\n    53  \\n    54  namespace MeasureTheory\\n    55  \\n    56  local infixr:25 \\\" →ₛ \\\" => SimpleFunc\\n    57  \\n    58  section Definitions\\n    59  \\n    60  variable [TopologicalSpace β]\\n    61  \\n    62  /-- A function is `StronglyMeasurable` if it is the limit of simple functions. -/\\n    63  @[fun_prop]\\n    64  def StronglyMeasurable [MeasurableSpace α] (f : α → β) : Prop :=\\n    65    ∃ fs : ℕ → α →ₛ β, ∀ x, Tendsto (fun n => fs n x) atTop (𝓝 (f x))\\n    66  \\n    67  add_aesop_rules safe tactic\\n    68    (rule_sets := [Measurable])\\n    69    (index := [target @StronglyMeasurable ..])\\n    70    (by fun_prop (disch := measurability))\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem function_into_pseudo_metrizable_continuous_outside_countable_is_strongly_measurable\n    [MeasurableSpace α] [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSingletonClass α]\n    [TopologicalSpace β] [PseudoMetrizableSpace β] [SecondCountableTopologyEither α β]\n    {f : α → β} {s : Set α} (hf : ContinuousOn f s) (hs : (sᶜ).Countable) :\n    MeasureTheory.StronglyMeasurable f := sorry"
+}

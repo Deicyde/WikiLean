@@ -1,0 +1,434 @@
+{
+ "task_id": "fresh_046",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:47:24Z",
+ "wall_s": 132.9,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 23,
+   "mcp__formal__decl_read": 8,
+   "mcp__formal__decl_grep": 14,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 242,
+  "tokens_out": 8907,
+  "cost_usd": 0.12551360000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?M : Module ?R → ℕ\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?M : Module ?R → ℕ': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1081 declarations mentioning Submodule.span.\\n- Submodule.span   [Mathlib.LinearAlgebra.Span.Defs]\\n    The span of a set `s ⊆ M` is the smallest submodule of M that contains `s`.\\n- Submodule.instIsPrincipalSpanSingletonSet   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq_addSubgroupClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_nat_eq_addSubmonoidClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_univ   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.subset_span   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_empty   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.mem_span_singleton_self   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.mk   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.principal   [Mathlib.LinearAlgebra.Span.Defs]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.rank\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.rank': unknown identifier 'Submodule.rank'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank_eq_one\"}",
+   "ok": true,
+   "result_chars": 246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning rank_eq_one.\\n- rank_eq_one   [Mathlib.LinearAlgebra.Dimension.Finite]\\n    If there is a nonzero vector and every other vector is a multiple of it, then the module has dimension one.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span_singleton\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.span_singleton': unknown identifier 'Submodule.span_singleton'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Finite.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Finite.lean  (lines 1–50 of 552):\\n     1  /-\\n     2  Copyright (c) 2018 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Mario Carneiro, Johannes Hölzl, Sander Dahmen, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Dimension.Constructions\\n     9  public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition\\n    10  public import Mathlib.LinearAlgebra.Dimension.Subsingleton\\n    11  public import Mathlib.LinearAlgebra.FreeModule.Finite.Basic\\n    12  public import Mathlib.SetTheory.Cardinal.Cofinality.Ordinal\\n    13  \\n    14  /-!\\n    15  # Conditions for rank to be finite\\n    16  \\n    17  Also contains characterization for when rank equals zero or rank equals one.\\n    18  \\n    19  -/\\n    20  \\n    21  @[expose] public section\\n    22  \\n    23  noncomputable section\\n    24  \\n    25  universe u v v' w\\n    26  \\n    27  variable {R : Type u} {M : Type v} {ι : Type w}\\n    28  variable [Semiring R] [AddCommMonoid M]\\n    29  variable [Module R M]\\n    30  \\n    31  attribute [local instance] nontrivial_of_invariantBasisNumber\\n    32  \\n    33  open Basis Cardinal Function Module Set Submodule\\n    34  \\n    35  /-- If every finite set of linearly independent vectors has cardinality at most `n`,\\n    36  then the same is true for arbitrary sets of linearly independent vectors.\\n    37  -/\\n    38  theorem linearIndependent_bounded_of_finset_linearIndependent_bounded {n : ℕ}\\n    39      (H : ∀ s : Finset M, (LinearIndependent R fun i : s => (i : M)) → s.card ≤ n) :\\n    40      ∀ s : Set M, LinearIndependent R ((↑) : s → M) → #s ≤ n := by\\n    41    intro s li\\n    42    apply Cardinal.card_le_of\\n    43    intro t\\n    44    rw [← Finset.card_map (Embedding.subtype (· ∈ s))]\\n    45    apply H\\n    46    apply linearIndependent_finset_map_embedding_subtype _ li\\n    47  \\n    48  theorem rank_le {n : ℕ}\\n    49      (H : ∀ s : Finset M, (LinearIndependent R fun i : s => (i : M)) → s.card ≤ n) :\\n    50      Module.rank R M ≤ n := by\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem rank_eq_one\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 779,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'theorem rank_eq_one' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean:105\\n    theorem rank_eq_one_iff [Module.Free K V] :\\n- Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean:262\\n    theorem rank_eq_one_iff [Nontrivial E] [Module.Free F S] : Module.rank F S = 1 ↔ S = ⊥ := by\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:503\\n    theorem rank_eq_one (v : M) (n : v ≠ 0) (h : ∀ w : M, ∃ c : R, c • v = w) :\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:270\\n    theorem rank_eq_one_iff : Module.rank F K = 1 ↔ K = ⊥ := by\\n- Mathlib/RingTheory/LinearDisjoint.lean:517\\n    theorem rank_eq_one_of_commute_of_flat_of_self_of_inj (H : A.LinearDisjoint A) [Module.Flat R A]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Finite.lean\", \"line\": 503, \"n\": 15}",
+   "ok": true,
+   "result_chars": 806,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Finite.lean  (lines 503–517 of 552):\\n   503  theorem rank_eq_one (v : M) (n : v ≠ 0) (h : ∀ w : M, ∃ c : R, c • v = w) :\\n   504      Module.rank R M = 1 := by\\n   505    haveI := nontrivial_of_invariantBasisNumber R\\n   506    obtain ⟨b⟩ := (Basis.basis_singleton_iff.{_, _, u} PUnit).mpr ⟨v, n, h⟩\\n   507    rw [rank_eq_card_basis b, Fintype.card_punit, Nat.cast_one]\\n   508  \\n   509  /-- If there is a nonzero vector and every other vector is a multiple of it,\\n   510  then the module has dimension one. -/\\n   511  theorem finrank_eq_one (v : M) (n : v ≠ 0) (h : ∀ w : M, ∃ c : R, c • v = w) : finrank R M = 1 :=\\n   512    finrank_eq_of_rank_eq (rank_eq_one v n h)\\n   513  \\n   514  end RankOne\\n   515  \\n   516  section\\n   517  \\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?rank = 1 → ?x ≠ 0 → Submodule.span ?R {?x} = ⊤\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '?rank = 1 → ?x ≠ 0 → Submodule.span ?R {?x} = ⊤'.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Basis.singleton\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Basis.singleton': unknown identifier 'Basis.singleton'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"basis_singleton_iff\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'basis_singleton_iff': unknown identifier 'basis_singleton_iff'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"basis_singleton_iff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 355,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'basis_singleton_iff' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:506\\n    obtain ⟨b⟩ := (Basis.basis_singleton_iff.{_, _, u} PUnit).mpr ⟨v, n, h⟩\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:298\\n    theorem basis_singleton_iff {R M : Type*} [Ring R] [IsDomain R] [AddCommGroup M] [Module R M]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Basis.basis_singleton_iff\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Basis.basis_singleton_iff': unknown identifier 'Basis.basis_singleton_iff'\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Basis/Basic.lean\", \"line\": 298, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Basis/Basic.lean  (lines 298–317 of 334):\\n   298  theorem basis_singleton_iff {R M : Type*} [Ring R] [IsDomain R] [AddCommGroup M] [Module R M]\\n   299      [IsTorsionFree R M] (ι : Type*) [Unique ι] :\\n   300      Nonempty (Basis ι R M) ↔ ∃ x ≠ 0, ∀ y : M, ∃ r : R, r • x = y := by\\n   301    constructor\\n   302    · rintro ⟨b⟩\\n   303      refine ⟨b default, b.linearIndependent.ne_zero _, ?_⟩\\n   304      simpa [span_singleton_eq_top_iff, Set.range_unique] using b.span_eq\\n   305    · rintro ⟨x, nz, w⟩\\n   306      refine ⟨ofRepr <| LinearEquiv.symm\\n   307        { toFun := fun f => f default • x\\n   308          invFun := fun y => Finsupp.single default (w y).choose\\n   309          left_inv := fun f => Finsupp.unique_ext ?_\\n   310          right_inv := fun y => ?_\\n   311          map_add' := fun y z => ?_\\n   312          map_smul' := fun c y => ?_ }⟩\\n   313      · simp [Finsupp.add_apply, add_smul]\\n   314      · simp only [Finsupp.coe_smul, Pi.smul_apply, RingHom.id_apply]\\n   315        rw [← smul_assoc]\\n   316      · refine smul_left_injective _ nz ?_\\n   317        simp only [Finsupp.single_eq_same]\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"span_singleton_eq_top_iff\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'span_singleton_eq_top_iff': unknown identifier 'span_singleton_eq_top_iff'\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"span_singleton_eq_top_iff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 671,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'span_singleton_eq_top_iff' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Sphere/OrthRadius.lean:260\\n    rw [Submodule.span_singleton_eq_top_iff] at hb'\\n- Mathlib/Geometry/Euclidean/Sphere/OrthRadius.lean:270\\n    rw [Submodule.span_singleton_eq_top_iff]\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:618\\n    apply span_singleton_eq_top_iff\\n- Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean:89\\n    theorem sup_span_singleton_eq_top_iff [Module.Finite K V] {W : Submodule K V} {v : V} (hv : v ∉ W) :\\n- Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean:221\\n    rw [Submodule.span_singleton_eq_top_iff]\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem span_singleton_eq_top_iff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 231,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem span_singleton_eq_top_iff' (via ripgrep):\\n- Mathlib/LinearAlgebra/Span/Defs.lean:471\\n    theorem span_singleton_eq_top_iff (x : M) : R ∙ x = ⊤ ↔ ∀ v, ∃ r : R, r • x = v := by\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Span/Defs.lean\", \"line\": 471, \"n\": 10}",
+   "ok": true,
+   "result_chars": 500,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Span/Defs.lean  (lines 471–480 of 721):\\n   471  theorem span_singleton_eq_top_iff (x : M) : R ∙ x = ⊤ ↔ ∀ v, ∃ r : R, r • x = v := by\\n   472    rw [eq_top_iff, le_span_singleton_iff]\\n   473    tauto\\n   474  \\n   475  @[simp]\\n   476  theorem span_zero_singleton : R ∙ (0 : M) = ⊥ := by\\n   477    ext\\n   478    simp [mem_span_singleton, eq_comm]\\n   479  \\n   480  theorem span_singleton_eq_range (y : M) : R ∙ y = range ((· • y) : R → M) :=\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank ?M = 1 → ?x : ?M → ?x ≠ 0 → Submodule.span ?R {?x}\"}",
+   "ok": true,
+   "result_chars": 148,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.rank ?M = 1 → ?x : ?M → ?x ≠ 0 → Submodule.span ?R {?x}': <input>:1:24: expected end of input\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank_eq_one → Submodule.span\"}",
+   "ok": true,
+   "result_chars": 206,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank_eq_one → Submodule.span': type expected, got\\n  (finrank_eq_one : ∀ (v : ?m.2), v ≠ 0 → (∀ (w : ?m.2), ∃ c, c • v = w) → Module.finrank ?m.1 ?m.2 = 1)\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank_eq_one_iff\"}",
+   "ok": true,
+   "result_chars": 284,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning rank_eq_one_iff.\\n- rank_eq_one_iff   [Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition]\\n    A vector space has dimension `1` if and only if there is a single non-zero vector of which all vectors are multiples.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank_eq_one_iff\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1445,
+   "result_head": "[{\"type\": \"text\", \"text\": \"76 match(es) for 'rank_eq_one_iff' (via ripgrep):\\n- Mathlib/Algebra/Lie/Weights/IsSimple.lean:397\\n    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' ⟨f, hf⟩ (by simp [ht.f_ne_zero])).mp\\n- Mathlib/Algebra/Lie/Weights/IsSimple.lean:409\\n    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' ⟨e, he⟩ (by simp [ht.e_ne_zero])).mp\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:644\\n    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' ⟨e, hte⟩ (by simpa using t.e_ne_zero)).mp\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:648\\n    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' ⟨f, htf⟩ (by simpa using t.f_ne_zero)).mp\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:714\\n    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' ⟨g, hg⟩\\n- Mathlib/Algebra/Lie/Weights/RootSystem.lean:85\\n    simpa using (finrank_eq_one_iff_of_nonzero' ⟨x', h.1⟩ (by simpa using h.2)).mp\\n- Mathlib/Algebra/Lie/Weights/RootSystem.lean:280\\n    simpa using! (finrank_eq_one_iff_of_nonzero' ⟨f, hf⟩ (by simpa using! isSl2.f_ne_zero)).mp\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:270\\n    theorem rank_eq_one_iff : Module.rank F K = 1 ↔ K = ⊥ := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:271\\n    rw [← toSubalgebra_inj, ← rank_eq_rank_subalgebra, Subalgebra.rank_eq_one_iff,\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:275\\n    theorem finrank_eq_one_iff : finrank F K = 1 ↔ K = ⊥ := by\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem rank_eq_one_iff.*Free\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem rank_eq_one_iff.*Free' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean:105\\n    theorem rank_eq_one_iff [Module.Free K V] :\\n- Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean:262\\n    theorem rank_eq_one_iff [Nontrivial E] [Module.Free F S] : Module.rank F S = 1 ↔ S = ⊥ := by\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean\", \"line\": 105, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1276,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.lean  (lines 105–124 of 305):\\n   105  theorem rank_eq_one_iff [Module.Free K V] :\\n   106      Module.rank K V = 1 ↔ ∃ v₀ : V, v₀ ≠ 0 ∧ ∀ v, ∃ r : K, r • v₀ = v := by\\n   107    haveI := nontrivial_of_invariantBasisNumber K\\n   108    refine ⟨fun h ↦ ?_, fun ⟨v₀, h, hv⟩ ↦ (rank_le_one_iff.2 ⟨v₀, hv⟩).antisymm ?_⟩\\n   109    · obtain ⟨v₀, hv⟩ := rank_le_one_iff.1 h.le\\n   110      refine ⟨v₀, fun hzero ↦ ?_, hv⟩\\n   111      simp_rw [hzero, smul_zero, exists_const] at hv\\n   112      haveI : Subsingleton V := .intro fun _ _ ↦ by simp_rw [← hv]\\n   113      exact one_ne_zero (h ▸ rank_subsingleton' K V)\\n   114    · by_contra H\\n   115      rw [not_le, Cardinal.lt_one_iff] at H\\n   116      obtain ⟨κ, b⟩ := Module.Free.exists_basis (R := K) (M := V)\\n   117      haveI := mk_eq_zero_iff.1 (H ▸ b.mk_eq_rank'')\\n   118      haveI := b.repr.toEquiv.subsingleton\\n   119      exact h (Subsingleton.elim _ _)\\n   120  \\n   121  /-- A submodule has dimension at most `1` if and only if there is a\\n   122  single vector in the submodule such that the submodule is contained in\\n   123  its span. -/\\n   124  theorem rank_submodule_le_one_iff (s : Submodule K V) [Module.Free K s] :\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"⊤ : Submodule\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '⊤ : Submodule': <input>:1:2: expected end of input\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span_singleton\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.span_singleton': unknown identifier 'Submodule.span_singleton'\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPrincipal\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsPrincipal': unknown identifier 'IsPrincipal'\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"span.*singleton.*nonzero\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'span.*singleton.*nonzero' (via ripgrep):\\n- Mathlib/LinearAlgebra/Projectivization/Basic.lean:146\\n    exact finrank_span_singleton v.rep_nonzero\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank_span_singleton\"}",
+   "ok": true,
+   "result_chars": 162,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning finrank_span_singleton.\\n- finrank_span_singleton   [Mathlib.LinearAlgebra.FiniteDimensional.Basic]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?P = Submodule.span ?R {?x}\"}",
+   "ok": true,
+   "result_chars": 1213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 194 declarations mentioning Submodule, Set.instSingletonSet, Submodule.span, Singleton.singleton, Eq, and Set.\\n- Submodule.IsPrincipal.mk   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.principal   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.isPrincipal_iff   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_singleton_smul_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_singleton_group_smul_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.submodule_eq_sSup_le_nonzero_spans   [Mathlib.LinearAlgebra.Span.Defs]\\n    A submodule is equal to the supremum of the spans of the submodule's nonzero elements.\\n- Submodule.eq_span_singleton_of_surjective   [Mathlib.LinearAlgebra.Span.Defs]\\n- LinearMap.range_toSpanSingleton   [Mathlib.LinearAlgebra.Span.Basic]\\n    The range of `toSpanSingleton x` is the span of `x`.\\n- Submodule.span_singleton_eq_span_singleton   [Mathlib.LinearAlgebra.Span.Basic]\\n- LinearMap.submoduleOf_span_singleton_of_mem   [Mathlib.LinearAlgebra.Span.Basic]\\n- Submodule.map_subtype_span_singleton   [Mathlib.LinearAlgebra.Span.Basic]\\n- LinearMap.range_dualMap_dual_eq_span_singleton   [Mathlib.LinearAlgebra.Dual.Defs]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"submodule.*rank.*one.*span\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'submodule.*rank.*one.*span' under Mathlib/.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"eq_span_singleton_of_surjective\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 528,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'eq_span_singleton_of_surjective' (via ripgrep):\\n- Mathlib/LinearAlgebra/Span/Defs.lean:462\\n    theorem eq_span_singleton_of_surjective {s : Submodule R M}\\n- Mathlib/RingTheory/PicardGroup.lean:716\\n    have h := eq_span_singleton_of_surjective e.surjective\\n- Mathlib/RingTheory/PicardGroup.lean:717\\n    have h' := eq_span_singleton_of_surjective e'.surjective\\n- Mathlib/RingTheory/PicardGroup.lean:825\\n    have := eq_span_singleton_of_surjective <| LinearEquiv.surjective <|\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Span/Defs.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Span/Defs.lean  (lines 1–100 of 721):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Kevin Buzzard, Yury Kudryashov, Frédéric Dupuis,\\n     5    Heather Macbeth\\n     6  -/\\n     7  module\\n     8  \\n     9  public import Mathlib.Algebra.Module.Submodule.Lattice\\n    10  public import Mathlib.Algebra.Group.Pointwise.Set.Basic\\n    11  \\n    12  /-!\\n    13  # The span of a set of vectors, as a submodule\\n    14  \\n    15  * `Submodule.span s` is defined to be the smallest submodule containing the set `s`.\\n    16  \\n    17  ## Notation\\n    18  \\n    19  * We introduce the notation `R ∙ v` for the span of a singleton, `Submodule.span R {v}`.  This is\\n    20    `\\\\span`, not the same as the scalar multiplication `•`/`\\\\bub`.\\n    21  \\n    22  -/\\n    23  \\n    24  @[expose] public section\\n    25  \\n    26  assert_not_exists Field\\n    27  \\n    28  variable {R R₂ K M M₂ V S : Type*}\\n    29  \\n    30  namespace Submodule\\n    31  \\n    32  open Function Set\\n    33  \\n    34  open scoped Pointwise\\n    35  \\n    36  section AddCommMonoid\\n    37  \\n    38  variable [Semiring R] [AddCommMonoid M] [Module R M]\\n    39  variable {x : M} (p p' : Submodule R M)\\n    40  variable [Semiring R₂] {σ₁₂ : R →+* R₂}\\n    41  variable [AddCommMonoid M₂] [Module R₂ M₂]\\n    42  variable {F : Type*} [FunLike F M M₂] [SemilinearMapClass F σ₁₂ M M₂]\\n    43  \\n    44  section\\n    45  \\n    46  variable (R) in\\n    47  /-- The span of a set `s ⊆ M` is the smallest submodule of M that contains `s`. -/\\n    48  def span (s : Set M) : Submodule R M :=\\n    49    sInf { p | s ⊆ p }\\n    50  \\n    51  /-- An `R`-submodule of `M` is principal if it is generated by one element. -/\\n    52  @[mk_iff, wikidata Q44382]\\n    53  class IsPrincipal (S : Submodule R M) : Prop where\\n    54    principal (S) : ∃ a, S = span R {a}\\n    55  \\n    56  instance (x : R) : (span R {x}).IsPrincipal := ⟨x, rfl⟩\\n    57  \\n    58  namespace IsPrincipal\\n    59  \\n    60  /-- `generator I`, if `I` is a principal submodule, is an `x ∈ M` such that `span R {x} = I` -/\\n    61  noncomputable def generator (S : Submodule R M) [S.IsPrincipal] : M :=\\n    62    Classical.choose (principal S)\\n    63  \\n    64  theorem span_singleton_generator (S : Submodule R M) [S.IsPrincipal] : span R {generator S} = S :=\\n    65    (Classical.choose_spec (principal S)).symm\\n    66  \\n    67  end IsPrincipal\\n    68  \\n    69  end\\n    70  \\n    71  variable {s t : Set M}\\n    72  \\n    73  theorem mem_span : x ∈ span R s ↔ ∀ p : Submodule R M, s ⊆ p → x ∈ p :=\\n    74    mem_iInter₂\\n    75  \\n    76  @[simp, aesop safe 20 (rule_sets := [SetLike])]\\n    77  theorem subset_span : s ⊆ span R s := fun _ h => mem_span.2 fun _ hp => hp h\\n    78  \\n    79  @[aesop 80% (rule_sets := [SetLike])]\\n    80  theorem mem_span_of_mem {s : Set M} {x : M} (hx : x ∈ s) : x ∈ span R s := subset_span hx\\n    81  \\n    82  theorem span_le {p} : span R s ≤ p ↔ s ⊆ p :=\\n    83    ⟨Subset.trans subset_span, fun ss _ h => mem_span.1 h _ ss⟩\\n    84  \\n    85  @[gcongr] theorem span_mono (h : s ⊆ t) : span R s ≤ span R t :=\\n    86    span_le.2 <| Subset.trans h subset_span\\n    87  \\n    88  theorem span_monotone : Monotone (span R : Set M → Submodule R M) := fun _ _ => span_mono\\n    89  \\n    90  theorem span_eq_of_le (h₁ : s ⊆ p) (h₂ : p ≤ span R s) : span R s = p :=\\n    91    le_antisymm (span_le.2 h₁) h₂\\n    92  \\n    93  theorem span_eq : span R (p : Set M) = p :=\\n    94    span_eq_of_le _ (Subset.refl _) subset_span\\n    95  \\n    96  theorem span_eq_span (hs : s ⊆ span R t) (ht : t ⊆ span R s) : span R s = span R t :=\\n    97    le_antisymm (span_le.2 hs) (span_le.2 ht)\\n    98  \\n    99  /-- A version of `Submodule.span_eq` for subobjects closed under addition and scalar multiplication\\n   100"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Span/Defs.lean\", \"line\": 462, \"n\": 15}",
+   "ok": true,
+   "result_chars": 781,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Span/Defs.lean  (lines 462–476 of 721):\\n   462  theorem eq_span_singleton_of_surjective {s : Submodule R M}\\n   463      {f : R →ₗ[R] s} (hf : Surjective f) : s = span R {(f 1 : M)} := by\\n   464    refine le_antisymm (fun x hx ↦ mem_span_singleton.mpr ?_)\\n   465      (span_le.mpr <| by rintro _ rfl; exact (f 1).2)\\n   466    have ⟨r, eq⟩ := hf ⟨x, hx⟩\\n   467    exact ⟨r, by rw [← coe_smul, ← map_smul, smul_eq_mul, mul_one, eq]⟩\\n   468  \\n   469  variable (R)\\n   470  \\n   471  theorem span_singleton_eq_top_iff (x : M) : R ∙ x = ⊤ ↔ ∀ v, ∃ r : R, r • x = v := by\\n   472    rw [eq_top_iff, le_span_singleton_iff]\\n   473    tauto\\n   474  \\n   475  @[simp]\\n   476  theorem span_zero_singleton : R ∙ (0 : M) = ⊥ := by\\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"span_eq_top\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'span_eq_top': unknown identifier 'span_eq_top'\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank_eq_one.*nonzero.*span\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'rank_eq_one.*nonzero.*span' under Mathlib/.\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearIndependent.singleton\"}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearIndependent.singleton': unknown identifier 'LinearIndependent.singleton'\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"basis_singleton_iff\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'basis_singleton_iff': unknown identifier 'basis_singleton_iff'\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Module.rank\", \"Submodule.span\", \"rank_eq_one_iff\", \"span_singleton_eq_top_iff\"]}",
+   "ok": true,
+   "result_chars": 1452,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"Submodule.span\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Span.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Span/Defs.html#Submodule.span\\\"},{\\\"decl\\\":\\\"rank_eq_one_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition.html#rank_eq_one_iff\\\"},{\\\"decl\\\":\\\"span_singleton_eq_top_iff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*span_singleton.*eq_top\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 840,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'theorem.*span_singleton.*eq_top' (via ripgrep):\\n- Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean:89\\n    theorem sup_span_singleton_eq_top_iff [Module.Finite K V] {W : Submodule K V} {v : V} (hv : v ∉ W) :\\n- Mathlib/LinearAlgebra/Span/Defs.lean:471\\n    theorem span_singleton_eq_top_iff (x : M) : R ∙ x = ⊤ ↔ ∀ v, ∃ r : R, r • x = v := by\\n- Mathlib/LinearAlgebra/Span/Basic.lean:860\\n    theorem span_singleton_sup_ker_eq_top (f : V →ₗ[K] K) {x : V} (hx : f x ≠ 0) :\\n- Mathlib/LinearAlgebra/SesquilinearForm/Orthogonal.lean:105\\n    theorem span_singleton_sup_orthogonal_eq_top {B : V →ₗ[K] V →ₗ[K] K} {x : V} (hx : B x x ≠ 0) :\\n- Mathlib/LinearAlgebra/BilinearForm/Orthogonal.lean:180\\n    theorem span_singleton_sup_orthogonal_eq_top {B : BilinForm K V} {x : V} (hx : B x x ≠ 0) :\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Submodule.span_singleton_eq_top_iff\", \"eq_top_iff_rank_eq_one\", \"Submodule.eq_span_singleton_of_rank_one\"]}",
+   "ok": true,
+   "result_chars": 1063,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.span_singleton_eq_top_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Span.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Span/Defs.html#Submodule.span_singleton_eq_top_iff\\\"},{\\\"decl\\\":\\\"eq_top_iff_rank_eq_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Submodule.eq_span_singleton_of_rank_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*rank.*one.*span\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*rank.*one.*span' under Mathlib/.\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"finrank_eq_one.*span\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'finrank_eq_one.*span' under Mathlib/.\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank_eq_one_iff_of_nonzero\"}",
+   "ok": true,
+   "result_chars": 253,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning finrank_eq_one_iff_of_nonzero.\\n- finrank_eq_one_iff_of_nonzero   [Mathlib.LinearAlgebra.FiniteDimensional.Basic]\\n    A vector space with a nonzero vector `v` has dimension 1 iff `v` spans.\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem finrank_eq_one_iff_of_nonzero\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 349,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem finrank_eq_one_iff_of_nonzero' (via ripgrep):\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:608\\n    theorem finrank_eq_one_iff_of_nonzero (v : V) (nz : v ≠ 0) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:615\\n    theorem finrank_eq_one_iff_of_nonzero' (v : V) (nz : v ≠ 0) :\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2300,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean  (lines 1–50 of 680):\\n     1  /-\\n     2  Copyright (c) 2019 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Hughes\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Projective\\n     9  public import Mathlib.LinearAlgebra.Dimension.Finite\\n    10  public import Mathlib.LinearAlgebra.FiniteDimensional.Defs\\n    11  public import Mathlib.LinearAlgebra.Matrix.ToLin\\n    12  import Mathlib.RingTheory.Finiteness.Lattice\\n    13  public import Mathlib.Algebra.NoZeroSMulDivisors.Basic\\n    14  \\n    15  /-!\\n    16  # Finite-dimensional vector spaces\\n    17  \\n    18  Basic properties of finite-dimensional vector spaces, of their dimensions, and\\n    19  of linear maps on such spaces.\\n    20  \\n    21  ## Main definitions\\n    22  \\n    23  Preservation of finite-dimensionality and formulas for the dimension are given for\\n    24  - submodules (`FiniteDimensional.finiteDimensional_submodule`)\\n    25  - quotients (for the dimension of a quotient, see `Submodule.finrank_quotient_add_finrank` in\\n    26    `Mathlib/LinearAlgebra/Dimension/RankNullity.lean`)\\n    27  - linear equivs, in `LinearEquiv.finiteDimensional`\\n    28  \\n    29  Basic properties of linear maps of a finite-dimensional vector space are given. Notably, the\\n    30  equivalence of injectivity and surjectivity is proved in `LinearMap.injective_iff_surjective`,\\n    31  and the equivalence between left-inverse and right-inverse in `LinearMap.mul_eq_one_comm`\\n    32  and `LinearMap.comp_eq_id_comm`.\\n    33  \\n    34  ## Implementation notes\\n    35  \\n    36  You should not assume that there has been any effort to state lemmas as generally as possible.\\n    37  \\n    38  Plenty of the results hold for general finitely generated modules (see\\n    39  `Mathlib/RingTheory/Finiteness/Basic.lean`) or Noetherian modules (see\\n    40  `Mathlib/RingTheory/Noetherian/Basic.lean`).\\n    41  -/\\n    42  \\n    43  @[expose] public section\\n    44  \\n    45  universe u v v' w\\n    46  \\n    47  open Cardinal Function IsNoetherian Module Submodule\\n    48  \\n    49  variable {K : Type u} {V : Type v}\\n    50  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

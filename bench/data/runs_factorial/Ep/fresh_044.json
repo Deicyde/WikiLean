@@ -1,0 +1,482 @@
+{
+ "task_id": "fresh_044",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:20:31Z",
+ "wall_s": 131.1,
+ "transcript_stats": {
+  "turns": 55,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 43,
+   "mcp__formal__decl_grep": 6,
+   "mcp__formal__decl_read": 5
+  },
+  "tokens_in": 186,
+  "tokens_out": 9070,
+  "cost_usd": 0.13019314999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"diagonalizable\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'diagonalizable': unknown identifier 'diagonalizable'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"triangularizable\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'triangularizable': unknown identifier 'triangularizable'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"eigenspace generalized\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'eigenspace generalized': Unknown identifier `eigenspace`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.End\"}",
+   "ok": true,
+   "result_chars": 1172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 817 declarations mentioning Module.End.\\n- Module.End   [Mathlib.Algebra.Module.LinearMap.End]\\n    Linear endomorphisms of a module, with associated ring structure `Module.End.semiring` and algebra structure `Module.End.algebra`.\\n- Module.End.instMonoid   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.instMul   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.instOne   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.instSemiring   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.instNontrivial   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.instRing   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.applyModule   [Mathlib.Algebra.Module.LinearMap.End]\\n    The tautological action by `Module.End R M` (aka `M →ₗ[R] M`) on `M`.  This generalizes `Function.End.applyMulAction`.\\n- Module.End.smulLeft   [Mathlib.Algebra.Module.LinearMap.End]\\n    Scalar multiplication on the left, as a linear map.\\n- Module.End.one_eq_id   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.commute_id_right   [Mathlib.Algebra.Module.LinearMap.End]\\n- Module.End.coe_one   [Mathlib.Algebra.Module.LinearMap.End]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.IsNilpotent\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.IsNilpotent': unknown identifier 'LinearMap.IsNilpotent'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"minpoly separable\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'minpoly separable': Unknown identifier `separable`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"eigenvalue\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'eigenvalue': unknown identifier 'eigenvalue'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.Separable\"}",
+   "ok": true,
+   "result_chars": 1086,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 92 declarations mentioning Polynomial.Separable.\\n- Polynomial.Separable   [Mathlib.FieldTheory.Separable]\\n    A polynomial is separable iff it is coprime with its derivative.\\n- Polynomial.separable_X   [Mathlib.FieldTheory.Separable]\\n- Polynomial.separable_of_subsingleton   [Mathlib.FieldTheory.Separable]\\n- Polynomial.separable_one   [Mathlib.FieldTheory.Separable]\\n- Polynomial.not_separable_zero   [Mathlib.FieldTheory.Separable]\\n- Polynomial.nodup_roots   [Mathlib.FieldTheory.Separable]\\n- Polynomial.Separable.squarefree   [Mathlib.FieldTheory.Separable]\\n    A separable polynomial is square-free.  See `PerfectField.separable_iff_squarefree` for the converse when the coefficients are a perfect field.\\n- Polynomial.rootMultiplicity_le_one_of_separable   [Mathlib.FieldTheory.Separable]\\n- Polynomial.Separable.ne_zero   [Mathlib.FieldTheory.Separable]\\n- Associated.separable   [Mathlib.FieldTheory.Separable]\\n- Associated.separable_iff   [Mathlib.FieldTheory.Separable]\\n- Polynomial.Separable.map   [Mathlib.FieldTheory.Separable]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"minpoly\"}",
+   "ok": true,
+   "result_chars": 1262,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 367 declarations mentioning minpoly.\\n- minpoly   [Mathlib.FieldTheory.Minpoly.Basic]\\n    Suppose `x : B`, where `B` is an `A`-algebra.  The minimal polynomial `minpoly A x` of `x` is a monic polynomial with coefficients in `A` of smallest degree tha\\n- minpoly.monic   [Mathlib.FieldTheory.Minpoly.Basic]\\n    A minimal polynomial is monic.\\n- minpoly.natDegree_pos   [Mathlib.FieldTheory.Minpoly.Basic]\\n    The degree of a minimal polynomial, as a natural number, is positive.\\n- minpoly.not_isUnit   [Mathlib.FieldTheory.Minpoly.Basic]\\n    A minimal polynomial is not a unit.\\n- minpoly.ne_one   [Mathlib.FieldTheory.Minpoly.Basic]\\n    A minimal polynomial is not `1`.\\n- minpoly.subsingleton   [Mathlib.FieldTheory.Minpoly.Basic]\\n- minpoly.degree_pos   [Mathlib.FieldTheory.Minpoly.Basic]\\n    The degree of a minimal polynomial is positive.\\n- minpoly.eq_zero   [Mathlib.FieldTheory.Minpoly.Basic]\\n- minpoly.ne_zero   [Mathlib.FieldTheory.Minpoly.Basic]\\n    A minimal polynomial is nonzero.\\n- minpoly.irreducible   [Mathlib.FieldTheory.Minpoly.Basic]\\n    A minimal polynomial is irreducible.\\n- minpoly.ne_zero_iff   [Mathlib.FieldTheory.Minpoly.Basic]\\n- minpoly.map_ne_one   [Mathlib.FieldTheory.Minpoly.Basic]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.span\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1081 declarations mentioning Submodule.span.\\n- Submodule.span   [Mathlib.LinearAlgebra.Span.Defs]\\n    The span of a set `s ⊆ M` is the smallest submodule of M that contains `s`.\\n- Submodule.instIsPrincipalSpanSingletonSet   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq_addSubgroupClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_nat_eq_addSubmonoidClosure   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_univ   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.subset_span   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_empty   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.span_int_eq   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.mem_span_singleton_self   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.mk   [Mathlib.LinearAlgebra.Span.Defs]\\n- Submodule.IsPrincipal.principal   [Mathlib.LinearAlgebra.Span.Defs]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Dual.Orthogonal\"}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Dual.Orthogonal': unknown identifier 'Module.Dual.Orthogonal'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.ker\"}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 663 declarations mentioning LinearMap.ker.\\n- LinearMap.ker   [Mathlib.Algebra.Module.Submodule.Ker]\\n    The kernel of a linear map `f : M → M₂` is defined to be `comap f ⊥`. This is equivalent to the set of `x : M` such that `f x = 0`. The kernel is a submodule of\\n- LinearMap.ker_id   [Mathlib.Algebra.Module.Submodule.Ker]\\n- Submodule.comap_bot   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_zero   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_le_comap   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_eq_bot_of_injective   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearEquiv.ker   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.mem_ker   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_eq_top   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_toAddSubgroup   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.le_ker_iff_map   [Mathlib.Algebra.Module.Submodule.Ker]\\n- LinearMap.ker_eq_bot'   [Mathlib.Algebra.Module.Submodule.Ker]\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Semisimple Module\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Semisimple Module': Unknown identifier `Semisimple`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 1853,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2019 declarations mentioning FiniteDimensional.\\n- FiniteDimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    `FiniteDimensional` vector spaces are defined to be finite modules. Use `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another defini\\n- FiniteDimensional.finiteDimensional_self   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.instFintypeElemOfVectorSpaceIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, `Basis.ofVectorSpace` is indexed by a finite type.\\n- FiniteDimensional.fintypeBasisIndex   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space is `FiniteDimensional`, all bases are indexed by a finite type\\n- Module.Basis.finiteDimensional_of_finite   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a finite basis, then it is finite-dimensional.\\n- FiniteDimensional.of_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_fact_finrank_eq_two   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finrank_pos   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- Module.finrank_of_infinite_dimensional   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.finiteDimensional_pi   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n- FiniteDimensional.of_finite_basis   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    If a vector space has a basis indexed by elements of a finite set, then it is finite-dimensional.\\n- FiniteDimensional.of_fact_finrank_eq_succ   [Mathlib.LinearAlgebra.FiniteDimensional.Defs]\\n    We can infer `FiniteDimensional K V` in the presence of `[Fact (finrank K V = n + 1)]`. Use `have : FiniteDimensional K V := .of_fact_finrank_eq_succ` when need\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"charP 0 perfect\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'charP 0 perfect': Unknown identifier `charP`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Jordan canonical form\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Jordan canonical form': Unknown identifier `Jordan`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.isNilpotent\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.isNilpotent': unknown identifier 'LinearMap.isNilpotent'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.trace\"}",
+   "ok": true,
+   "result_chars": 977,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 93 declarations mentioning Matrix.trace.\\n- Matrix.trace   [Mathlib.LinearAlgebra.Matrix.Trace]\\n    The trace of a square matrix. For more bundled versions, see: * `Matrix.traceAddMonoidHom` * `Matrix.traceLinearMap`\\n- Matrix.trace_surjective   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_transpose   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_eq_zero_of_isEmpty   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_single_eq_same   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_diagonal   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_multiset_sum   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_vecMulVec   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_fin_zero   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_sum   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_conjTranspose   [Mathlib.LinearAlgebra.Matrix.Trace]\\n- Matrix.trace_zero   [Mathlib.LinearAlgebra.Matrix.Trace]\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.squarefree\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.squarefree': unknown identifier 'Polynomial.squarefree'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsSemisimple module\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsSemisimple module': Unknown identifier `IsSemisimple`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.Free.rank\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.Free.rank': unknown identifier 'Module.Free.rank'\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Squarefree\"}",
+   "ok": true,
+   "result_chars": 907,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 102 declarations mentioning Squarefree.\\n- Squarefree   [Mathlib.Algebra.Squarefree.Basic]\\n    An element of a monoid is squarefree if the only squares that divide it are the squares of units.\\n- Int.squarefree_natAbs   [Mathlib.Algebra.Squarefree.Basic]\\n- Int.squarefree_natCast   [Mathlib.Algebra.Squarefree.Basic]\\n- Irreducible.squarefree   [Mathlib.Algebra.Squarefree.Basic]\\n- IsUnit.squarefree   [Mathlib.Algebra.Squarefree.Basic]\\n- Associated.squarefree_iff   [Mathlib.Algebra.Squarefree.Basic]\\n- squarefree_one   [Mathlib.Algebra.Squarefree.Basic]\\n- Squarefree.squarefree_of_dvd   [Mathlib.Algebra.Squarefree.Basic]\\n- not_squarefree_zero   [Mathlib.Algebra.Squarefree.Basic]\\n- Squarefree.ne_zero   [Mathlib.Algebra.Squarefree.Basic]\\n- Squarefree.of_mul_left   [Mathlib.Algebra.Squarefree.Basic]\\n- Squarefree.gcd_left   [Mathlib.Algebra.Squarefree.Basic]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.splits\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.splits': unknown identifier 'Polynomial.splits'\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"char_zero\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'char_zero': unknown identifier 'char_zero'\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CharP\"}",
+   "ok": true,
+   "result_chars": 852,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 555 declarations mentioning CharP.\\n- CharP   [Mathlib.Algebra.CharP.Defs]\\n    The generator of the kernel of the unique homomorphism ℕ → R for a semiring R.  *Warning*: for a semiring `R`, `CharP R 0` and `CharZero R` need not coincide. *\\n- ringChar.charP   [Mathlib.Algebra.CharP.Defs]\\n- CharP.exists   [Mathlib.Algebra.CharP.Defs]\\n- CharP.existsUnique   [Mathlib.Algebra.CharP.Defs]\\n- CharP.ofCharZero   [Mathlib.Algebra.CharP.Defs]\\n- ExpChar.prime   [Mathlib.Algebra.CharP.Defs]\\n- expChar_prime   [Mathlib.Algebra.CharP.Defs]\\n- CharP.congr   [Mathlib.Algebra.CharP.Defs]\\n- CharP.eq   [Mathlib.Algebra.CharP.Defs]\\n- CharP.CharOne.subsingleton   [Mathlib.Algebra.CharP.Defs]\\n- CharP.charP_to_charZero   [Mathlib.Algebra.CharP.Defs]\\n- CharP.false_of_nontrivial_of_char_one   [Mathlib.Algebra.CharP.Defs]\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.splits_id\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.splits_id': unknown identifier 'Polynomial.splits_id'\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.mu\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.mu': unknown identifier 'LinearMap.mu'\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PerfectField\"}",
+   "ok": true,
+   "result_chars": 1264,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 57 declarations mentioning PerfectField.\\n- PerfectField   [Mathlib.FieldTheory.Perfect]\\n    A perfect field.  See also `PerfectRing` for a generalisation in positive characteristic.\\n- PerfectField.ofFinite   [Mathlib.FieldTheory.Perfect]\\n- PerfectField.ofCharZero   [Mathlib.FieldTheory.Perfect]\\n- PerfectField.toPerfectRing   [Mathlib.FieldTheory.Perfect]\\n    A perfect field of characteristic `p` (prime) is a perfect ring.\\n- PerfectRing.toPerfectField   [Mathlib.FieldTheory.Perfect]\\n- Algebra.IsAlgebraic.perfectField   [Mathlib.FieldTheory.Perfect]\\n    If `L / K` is an algebraic extension, `K` is a perfect field, then so is `L`.\\n- Algebra.IsAlgebraic.isSeparable_of_perfectField   [Mathlib.FieldTheory.Perfect]\\n    If `L / K` is an algebraic extension, `K` is a perfect field, then `L / K` is separable.\\n- PerfectField.mk   [Mathlib.FieldTheory.Perfect]\\n- PerfectField.separable_of_irreducible   [Mathlib.FieldTheory.Perfect]\\n    A field is perfect if every irreducible polynomial is separable.\\n- PerfectField.separable_iff_squarefree   [Mathlib.FieldTheory.Perfect]\\n- PerfectField.of_ringEquiv   [Mathlib.FieldTheory.Perfect]\\n- Module.End.IsSemisimple.mul_of_commute   [Mathlib.LinearAlgebra.Semisimple]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.End iff forall\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.End iff forall': <input>:1:15: expected end of input\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearEquiv\"}",
+   "ok": true,
+   "result_chars": 1441,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3733 declarations mentioning LinearEquiv.\\n- LinearEquiv.refl   [Mathlib.Algebra.Module.Equiv.Defs]\\n    The identity map is a linear equivalence.\\n- LinearEquiv   [Mathlib.Algebra.Module.Equiv.Defs]\\n    A linear equivalence is an invertible linear map.\\n- LinearEquiv.cast   [Mathlib.Algebra.Module.Equiv.Defs]\\n    `Equiv.cast (congrArg _ h)` as a linear equiv.  Note that unlike `Equiv.cast`, this takes an equality of indices rather than an equality of types, to avoid havi\\n- LinearEquiv.invFun   [Mathlib.Algebra.Module.Equiv.Defs]\\n    The backward map of an equivalence.  Do NOT use `e.invFun` directly. Use the coercion of `e.symm` instead.\\n- LinearEquiv.Simps.apply   [Mathlib.Algebra.Module.Equiv.Defs]\\n    See Note [custom simps projection]\\n- LinearEquiv.Simps.symm_apply   [Mathlib.Algebra.Module.Equiv.Defs]\\n    See Note [custom simps projection]\\n- LinearEquiv.instEquivLike   [Mathlib.Algebra.Module.Equiv.Defs]\\n- LinearEquiv.toEquiv   [Mathlib.Algebra.Module.Equiv.Defs]\\n    The equivalence of types underlying a linear equivalence.\\n- LinearEquiv.refl_symm   [Mathlib.Algebra.Module.Equiv.Defs]\\n- LinearEquiv.toLinearMap   [Mathlib.Algebra.Module.Equiv.Defs]\\n    The linear map underlying a linear equivalence.\\n- LinearEquiv.instCoeLinearMap   [Mathlib.Algebra.Module.Equiv.Defs]\\n- LinearEquiv.symm   [Mathlib.Algebra.Module.Equiv.Defs]\\n    Linear equivalences are symmetric.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.End.IsSemisimple\"}",
+   "ok": true,
+   "result_chars": 1156,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 35 declarations mentioning Module.End.IsSemisimple.\\n- Module.End.IsSemisimple   [Mathlib.LinearAlgebra.Semisimple]\\n    A linear endomorphism of an `R`-module `M` is called *semisimple* if the induced `R[X]`-module structure on `M` is semisimple. This is equivalent to saying that\\n- Module.End.isSemisimple_id   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple.isFinitelySemisimple   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.isFinitelySemisimple_iff_isSemisimple   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.isSemisimple_neg   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.isSemisimple_zero   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple.pow   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple.mul_of_commute   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.eq_zero_of_isNilpotent_isSemisimple   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple_smul   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple.sub_of_commute   [Mathlib.LinearAlgebra.Semisimple]\\n- Module.End.IsSemisimple.add_of_commute   [Mathlib.LinearAlgebra.Semisimple]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsSemisimple\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3420,
+   "result_head": "[{\"type\": \"text\", \"text\": \"182 match(es) for 'IsSemisimple' (via ripgrep):\\n- Mathlib/Algebra/Lie/AdjointAction/JordanChevalley.lean:37\\n    (hc : Commute n s) (hn : IsNilpotent n) (hs : s.IsSemisimple) :\\n- Mathlib/Algebra/Lie/AdjointAction/JordanChevalley.lean:53\\n    (hc : Commute n s) (hn : IsNilpotent n) (hs : s.IsSemisimple) :\\n- Mathlib/Algebra/Lie/AdjointAction/Basic.lean:69\\n    theorem LieAlgebra.ad_isSemisimple_of_isSemisimple {a : Module.End K V} (ha : a.IsSemisimple) :\\n- Mathlib/Algebra/Lie/AdjointAction/Basic.lean:70\\n    (LieAlgebra.ad K (Module.End K V) a).IsSemisimple := by\\n- Mathlib/Algebra/Lie/AdjointAction/Basic.lean:72\\n    have hl : Module.End.IsSemisimple (LinearMap.mulLeft K a) := by\\n- Mathlib/Algebra/Lie/AdjointAction/Basic.lean:77\\n    have hr : Module.End.IsSemisimple (LinearMap.mulRight K a) := by\\n- Mathlib/Algebra/Lie/Killing.lean:77\\n    instance instSemisimple [IsKilling K L] [Module.Finite K L] : IsSemisimple K L := by\\n- Mathlib/Algebra/Lie/Killing.lean:90\\n    `LieAlgebra.IsKilling.instSemisimple` and `LieAlgebra.IsSemisimple.instHasTrivialRadical`. -/\\n- Mathlib/Algebra/Lie/InvariantForm.lean:195\\n    theorem isSemisimple_of_nondegenerate : IsSemisimple K L := by\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:326\\n    (ad K L x).IsSemisimple := by\\n- Mathlib/Algebra/Lie/Semisimple/Defs.lean:20\\n    * `LieAlgebra.IsSemisimple`\\n- Mathlib/Algebra/Lie/Semisimple/Defs.lean:55\\n    In characteristic zero, it is also equivalent to `LieAlgebra.IsSemisimple`.\\n- Mathlib/Algebra/Lie/Semisimple/Defs.lean:96\\n    These ideals are simple Lie algebras, by `LieAlgebra.IsSemisimple.isSimple_of_isAtom`.\\n- Mathlib/Algebra/Lie/Semisimple/Defs.lean:105\\n    class IsSemisimple : Prop where\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:20\\n    * `LieAlgebra.IsSemisimple.instHasTrivialRadical`: A semisimple Lie algebra has trivial radical.\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:21\\n    * `LieAlgebra.IsSemisimple.instBooleanAlgebra`:\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:117\\n    namespace IsSemisimple\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:122\\n    variable [IsSemisimple R L]\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:125\\n    non_abelian := IsSemisimple.non_abelian_of_isAtom I hI\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:140\\n    IsSemisimple.sSup_atoms_eq_top]\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:158\\n    ← (IsSemisimple.sSupIndep_isAtom hI).eq_bot]\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:285\\n    apply IsSemisimple.non_abelian_of_isAtom J hJ\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:294\\n    end IsSemisimple\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:297\\n    instance (priority := 100) IsSimple.instIsSemisimple [IsSimple R L] :\\n- Mathlib/Algebra/Lie/Semisimple/Basic.lean:298\\n    IsSemisimple R L := by\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:598\\n    IsSemisimpleModule (R ⧸ I) M ↔ IsSemisimpleModule R M :=\\n- Mathlib/Algebra/Module/PID.lean:68\\n    IsSemisimpleModule R (torsionBy R M a) :=\\n- Mathlib/LinearAlgebra/Semisimple.lean:27\\n    * `Module.End.IsSemisimple`: the definition that a linear endomorphism is semisimple\\n- Mathlib/LinearAlgebra/Semisimple.lean:34\\n    * `Module.End.IsSemisimple.minpoly_squarefree`: the minimal polynomial of a semisimple\\n- Mathlib/LinearAlgebra/Semisimple.lean:36\\n    * `IsSemisimple.of_mem_adjoin_pair`: every endomorphism in the subalgebra generated by two\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Semisimple.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4012,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Semisimple.lean  (lines 1–80 of 326):\\n     1  /-\\n     2  Copyright (c) 2024 Oliver Nash. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Oliver Nash\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Torsion.Basic\\n     9  public import Mathlib.FieldTheory.Perfect\\n    10  public import Mathlib.LinearAlgebra.AnnihilatingPolynomial\\n    11  public import Mathlib.RingTheory.Artinian.Instances\\n    12  public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent\\n    13  public import Mathlib.RingTheory.SimpleModule.Basic\\n    14  \\n    15  /-!\\n    16  # Semisimple linear endomorphisms\\n    17  \\n    18  Given an `R`-module `M` together with an `R`-linear endomorphism `f : M → M`, the following two\\n    19  conditions are equivalent:\\n    20  1. Every `f`-invariant submodule of `M` has an `f`-invariant complement.\\n    21  2. `M` is a semisimple `R[X]`-module, where the action of the polynomial ring is induced by `f`.\\n    22  \\n    23  A linear endomorphism `f` satisfying these equivalent conditions is known as a *semisimple*\\n    24  endomorphism. We provide basic definitions and results about such endomorphisms in this file.\\n    25  \\n    26  ## Main definitions / results:\\n    27  * `Module.End.IsSemisimple`: the definition that a linear endomorphism is semisimple\\n    28  * `Module.End.isSemisimple_iff`: the characterisation of semisimplicity in terms of invariant\\n    29    submodules.\\n    30  * `Module.End.eq_zero_of_isNilpotent_isSemisimple`: the zero endomorphism is the only endomorphism\\n    31    that is both nilpotent and semisimple.\\n    32  * `Module.End.isSemisimple_of_squarefree_aeval_eq_zero`: an endomorphism that is a root of a\\n    33    square-free polynomial is semisimple (in finite dimensions over a field).\\n    34  * `Module.End.IsSemisimple.minpoly_squarefree`: the minimal polynomial of a semisimple\\n    35    endomorphism is squarefree.\\n    36  * `IsSemisimple.of_mem_adjoin_pair`: every endomorphism in the subalgebra generated by two\\n    37    commuting semisimple endomorphisms is semisimple, if the base field is perfect.\\n    38  \\n    39  ## TODO\\n    40  \\n    41  In finite dimensions over a field:\\n    42  * Triangularizable iff diagonalisable for semisimple endomorphisms\\n    43  \\n    44  -/\\n    45  \\n    46  @[expose] public section\\n    47  \\n    48  open Set Function Polynomial\\n    49  \\n    50  variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n    51  \\n    52  namespace Module.End\\n    53  \\n    54  section CommRing\\n    55  \\n    56  variable (f : End R M)\\n    57  \\n    58  /-- A linear endomorphism of an `R`-module `M` is called *semisimple* if the induced `R[X]`-module\\n    59  structure on `M` is semisimple. This is equivalent to saying that every `f`-invariant `R`-submodule\\n    60  of `M` has an `f`-invariant complement: see `Module.End.isSemisimple_iff`. -/\\n    61  def IsSemisimple := IsSemisimpleModule R[X] (AEval' f)\\n    62  \\n    63  /-- A weaker version of semisimplicity that only prescribes behaviour on finitely-generated\\n    64  submodules. -/\\n    65  def IsFinitelySemisimple : Prop :=\\n    66    ∀ p (hp : p ∈ invtSubmodule f), Module.Finite R p → IsSemisimple (LinearMap.restrict f hp)\\n    67  \\n    68  variable {f}\\n    69  \\n    70  /-- A linear endomorphism is semisimple if every invariant submodule has in invariant complement.\\n    71  \\n    72  See also `Module.End.isSemisimple_iff`. -/\\n    73  lemma isSemisimple_iff' :\\n    74      f.IsSemisimple ↔ ∀ p : invtSubmodule f, ∃ q : invtSubmodule f, IsCompl p q := by\\n    75    rw [IsSemisimple, isSemisimpleModule_iff, (AEval.mapSubmodule R M f).symm.complementedLattice_iff,\\n    76      complementedLattice_iff]\\n    77    rfl\\n    78  \\n    79  lemma isSemisimple_iff :\\n    80      f.IsSemisimple ↔ ∀ p ∈ invtSubmodule f, ∃ q ∈ invtSubmodule f, IsCompl p "
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"isFinitelySemisimple\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isFinitelySemisimple': unknown identifier 'isFinitelySemisimple'\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Semisimple.lean\", \"line\": 60, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5855,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Semisimple.lean  (lines 60–159 of 326):\\n    60  of `M` has an `f`-invariant complement: see `Module.End.isSemisimple_iff`. -/\\n    61  def IsSemisimple := IsSemisimpleModule R[X] (AEval' f)\\n    62  \\n    63  /-- A weaker version of semisimplicity that only prescribes behaviour on finitely-generated\\n    64  submodules. -/\\n    65  def IsFinitelySemisimple : Prop :=\\n    66    ∀ p (hp : p ∈ invtSubmodule f), Module.Finite R p → IsSemisimple (LinearMap.restrict f hp)\\n    67  \\n    68  variable {f}\\n    69  \\n    70  /-- A linear endomorphism is semisimple if every invariant submodule has in invariant complement.\\n    71  \\n    72  See also `Module.End.isSemisimple_iff`. -/\\n    73  lemma isSemisimple_iff' :\\n    74      f.IsSemisimple ↔ ∀ p : invtSubmodule f, ∃ q : invtSubmodule f, IsCompl p q := by\\n    75    rw [IsSemisimple, isSemisimpleModule_iff, (AEval.mapSubmodule R M f).symm.complementedLattice_iff,\\n    76      complementedLattice_iff]\\n    77    rfl\\n    78  \\n    79  lemma isSemisimple_iff :\\n    80      f.IsSemisimple ↔ ∀ p ∈ invtSubmodule f, ∃ q ∈ invtSubmodule f, IsCompl p q := by\\n    81    simp [isSemisimple_iff']\\n    82  \\n    83  lemma isSemisimple_restrict_iff (p) (hp : p ∈ invtSubmodule f) :\\n    84      IsSemisimple (LinearMap.restrict f hp) ↔\\n    85      ∀ q ∈ f.invtSubmodule, q ≤ p → ∃ r ≤ p, r ∈ f.invtSubmodule ∧ Disjoint q r ∧ q ⊔ r = p := by\\n    86    let e : Submodule R[X] (AEval' (f.restrict hp)) ≃o Iic (AEval.mapSubmodule R M f ⟨p, hp⟩) :=\\n    87      (Submodule.orderIsoMapComap <| AEval.restrict_equiv_mapSubmodule f p hp).trans\\n    88        (Submodule.mapIic _)\\n    89    simp_rw [IsSemisimple, isSemisimpleModule_iff, e.complementedLattice_iff, disjoint_iff,\\n    90      ← (OrderIso.Iic _ _).complementedLattice_iff, Iic.complementedLattice_iff, Subtype.forall,\\n    91      Subtype.exists, Subtype.mk_le_mk, Sublattice.mk_inf_mk, Sublattice.mk_sup_mk, Subtype.mk.injEq,\\n    92      exists_and_left, exists_and_right, invtSubmodule.mk_eq_bot_iff, exists_prop, and_assoc]\\n    93    rfl\\n    94  \\n    95  /-- A linear endomorphism is finitely semisimple if it is semisimple on every finitely-generated\\n    96  invariant submodule.\\n    97  \\n    98  See also `Module.End.isFinitelySemisimple_iff`. -/\\n    99  lemma isFinitelySemisimple_iff' :\\n   100      f.IsFinitelySemisimple ↔ ∀ p (hp : p ∈ invtSubmodule f),\\n   101        Module.Finite R p → IsSemisimple (LinearMap.restrict f hp) :=\\n   102    Iff.rfl\\n   103  \\n   104  /-- A characterisation of `Module.End.IsFinitelySemisimple` using only the lattice of submodules of\\n   105  `M` (thus avoiding submodules of submodules). -/\\n   106  lemma isFinitelySemisimple_iff :\\n   107      f.IsFinitelySemisimple ↔ ∀ p ∈ invtSubmodule f, Module.Finite R p → ∀ q ∈ invtSubmodule f,\\n   108        q ≤ p → ∃ r, r ≤ p ∧ r ∈ invtSubmodule f ∧ Disjoint q r ∧ q ⊔ r = p := by\\n   109    simp_rw [isFinitelySemisimple_iff', isSemisimple_restrict_iff]\\n   110  \\n   111  @[simp]\\n   112  lemma isSemisimple_zero [IsSemisimpleModule R M] : IsSemisimple (0 : Module.End R M) := by\\n   113    simpa [isSemisimple_iff] using exists_isCompl\\n   114  \\n   115  @[simp]\\n   116  lemma isSemisimple_id [IsSemisimpleModule R M] : IsSemisimple (LinearMap.id : Module.End R M) := by\\n   117    simpa [isSemisimple_iff] using exists_isCompl\\n   118  \\n   119  @[simp] lemma isSemisimple_neg : (-f).IsSemisimple ↔ f.IsSemisimple := by\\n   120    simp [isSemisimple_iff, mem_invtSubmodule]\\n   121  \\n   122  variable (f) in\\n   123  protected lemma _root_.LinearEquiv.isSemisimple_iff {M₂ : Type*} [AddCommGroup M₂] [Module R M₂]\\n   124      (g : End R M₂) (e : M ≃ₗ[R] M₂) (he : e ∘ₗ f = g ∘ₗ e) :\\n   125      f.IsSemisimple ↔ g.IsSemisimple := by\\n   126    let e : AEval' f ≃ₗ[R[X]] AEval' g := LinearEquiv.ofAEval _ (e.trans (AEval'.of g)) fun x ↦ by\\n   127      simpa [AEval'.X_smul_of] using LinearMap.congr_fun he x\\n   128    simp_rw [IsSemi"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Jordan.Decomposition\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Jordan.Decomposition': unknown identifier 'Jordan.Decomposition'\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"generalizedEigenspace kernel\"}",
+   "ok": true,
+   "result_chars": 121,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'generalizedEigenspace kernel': Unknown identifier `generalizedEigenspace`\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.ker sup\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap.ker sup': Unknown identifier `sup`\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"charpoly\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'charpoly': unknown identifier 'charpoly'\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.eigenvalue\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.eigenvalue': unknown identifier 'Matrix.eigenvalue'\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*diagonalizable\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*diagonalizable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.GeneralizedEigenspace\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.GeneralizedEigenspace': unknown identifier 'Module.GeneralizedEigenspace'\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.roots\"}",
+   "ok": true,
+   "result_chars": 994,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 193 declarations mentioning Polynomial.roots.\\n- Polynomial.roots   [Mathlib.Algebra.Polynomial.Roots]\\n    `roots p` noncomputably gives a multiset containing all the roots of `p`, including their multiplicities.\\n- Polynomial.card_roots'   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.count_roots   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.isRoot_of_mem_roots   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.roots_neg   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.roots_X   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.card_le_degree_of_subset_roots   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.roots_one   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.roots_zero   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.card_roots_map_le_natDegree   [Mathlib.Algebra.Polynomial.Roots]\\n- Polynomial.card_roots_le_one_of_irreducible   [Mathlib.Algebra.Polynomial.Roots]\\n- Associated.roots_eq   [Mathlib.Algebra.Polynomial.Roots]\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*eigen\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 2824,
+   "result_head": "[{\"type\": \"text\", \"text\": \"22 match(es) for 'def.*eigen' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Spectrum.lean:58\\n    noncomputable def eigenvalues₀ : Fin (Fintype.card n) → ℝ :=\\n- Mathlib/Analysis/Matrix/Spectrum.lean:65\\n    noncomputable def eigenvalues : n → ℝ := fun i =>\\n- Mathlib/Analysis/Matrix/Spectrum.lean:69\\n    noncomputable def eigenvectorBasis : OrthonormalBasis n 𝕜 (EuclideanSpace 𝕜 n) :=\\n- Mathlib/Analysis/Matrix/Spectrum.lean:87\\n    noncomputable def eigenvectorUnitary {𝕜 : Type*} [RCLike 𝕜] {n : Type*}\\n- Mathlib/Analysis/Matrix/Order.lean:100\\n    hA.posSemidef.1.spectrum_real_eq_range_eigenvalues x |>.mp hx\\n- Mathlib/Analysis/Matrix/Order.lean:101\\n    exact hA.posSemidef.eigenvalues_nonneg _\\n- Mathlib/Analysis/Matrix/Order.lean:175\\n    · rw [h1.posSemidef_iff_eigenvalues_nonneg]\\n- Mathlib/Analysis/Matrix/PosDef.lean:33\\n    /-- A Hermitian matrix is positive semi-definite if and only if its eigenvalues are non-negative. -/\\n- Mathlib/Analysis/Matrix/PosDef.lean:34\\n    lemma IsHermitian.posSemidef_iff_eigenvalues_nonneg [DecidableEq n] (hA : IsHermitian A) :\\n- Mathlib/Analysis/Matrix/PosDef.lean:35\\n    PosSemidef A ↔ 0 ≤ hA.eigenvalues := by\\n- Mathlib/Analysis/Matrix/PosDef.lean:42\\n    lemma eigenvalues_nonneg [DecidableEq n] (hA : A.PosSemidef) (i : n) : 0 ≤ hA.1.eigenvalues i :=\\n- Mathlib/Analysis/Matrix/PosDef.lean:43\\n    hA.isHermitian.posSemidef_iff_eigenvalues_nonneg.mp hA _\\n- Mathlib/Analysis/Matrix/PosDef.lean:62\\n    (posSemidef_conjTranspose_mul_self _).eigenvalues_nonneg _\\n- Mathlib/Analysis/Matrix/PosDef.lean:66\\n    (posSemidef_self_mul_conjTranspose _).eigenvalues_nonneg _\\n- Mathlib/Analysis/Matrix/PosDef.lean:70\\n    /-- A Hermitian matrix is positive-definite if and only if its eigenvalues are positive. -/\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/Eigs.lean:37\\n    Mathlib has already defined eigenvalues in `LinearAlgebra.Eigenspace` as the roots of the minimal\\n- Mathlib/LinearAlgebra/Eigenspace/Basic.lean:20\\n    This file defines eigenspaces, eigenvalues, and eigenvectors, as well as their generalized\\n- Mathlib/LinearAlgebra/Eigenspace/Triangularizable.lean:89\\n    -- We define `ES` to be the generalized eigenspace\\n- Mathlib/Analysis/InnerProductSpace/Spectrum.lean:34\\n    * The definition `LinearMap.IsSymmetric.eigenvectorBasis` provides an orthonormal basis for `E`\\n- Mathlib/Analysis/InnerProductSpace/Spectrum.lean:279\\n    noncomputable irreducible_def eigenvalues (hT : T.IsSymmetric) (hn : Module.finrank 𝕜 E = n) :\\n- Mathlib/Analysis/InnerProductSpace/Spectrum.lean:300\\n    noncomputable irreducible_def eigenvectorBasis (hT : T.IsSymmetric) (hn : Module.finrank 𝕜 E = n) :\\n- Mathlib/Analysis/InnerProductSpace/Spectrum.lean:308\\n    rw [eigenvalues_def, eigenvectorBasis_def, OrthonormalBasis.reindex_apply]\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Eigenspace/Triangularizable.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Eigenspace/Triangularizable.lean  (lines 1–120 of 243):\\n     1  /-\\n     2  Copyright (c) 2020 Alexander Bentkamp. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Alexander Bentkamp\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Eigenspace.Basic\\n     9  public import Mathlib.FieldTheory.IsAlgClosed.Spectrum\\n    10  public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix\\n    11  \\n    12  /-!\\n    13  # Triangularizable linear endomorphisms\\n    14  \\n    15  This file contains basic results relevant to the triangularizability of linear endomorphisms.\\n    16  \\n    17  ## Main definitions / results\\n    18  \\n    19  * `Module.End.exists_eigenvalue`: in finite dimensions, over an algebraically closed field, every\\n    20    linear endomorphism has an eigenvalue.\\n    21  * `Module.End.iSup_genEigenspace_eq_top`: in finite dimensions, over an algebraically\\n    22    closed field, the generalized eigenspaces of any linear endomorphism span the whole space.\\n    23  * `Module.End.iSup_genEigenspace_restrict_eq_top`: in finite dimensions, if the\\n    24    generalized eigenspaces of a linear endomorphism span the whole space then the same is true of\\n    25    its restriction to any invariant submodule.\\n    26  \\n    27  ## References\\n    28  \\n    29  * [Sheldon Axler, *Linear Algebra Done Right*][axler2024]\\n    30  * https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors\\n    31  \\n    32  ## TODO\\n    33  \\n    34  Define triangularizable endomorphisms (e.g., as existence of a maximal chain of invariant subspaces)\\n    35  and prove that in finite dimensions over a field, this is equivalent to the property that the\\n    36  generalized eigenspaces span the whole space.\\n    37  \\n    38  ## Tags\\n    39  \\n    40  eigenspace, eigenvector, eigenvalue, eigen\\n    41  -/\\n    42  \\n    43  public section\\n    44  \\n    45  open Set Function Module Module\\n    46  \\n    47  variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V]\\n    48    {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n    49  \\n    50  namespace Module.End\\n    51  \\n    52  theorem exists_hasEigenvalue_of_genEigenspace_eq_top [Nontrivial M] {f : End R M} (k : ℕ∞)\\n    53      (hf : ⨆ μ, f.genEigenspace μ k = ⊤) :\\n    54      ∃ μ, f.HasEigenvalue μ := by\\n    55    suffices ∃ μ, f.HasUnifEigenvalue μ k by\\n    56      peel this with μ hμ\\n    57      exact HasUnifEigenvalue.lt zero_lt_one hμ\\n    58    simp [HasUnifEigenvalue, ← not_forall, ← iSup_eq_bot, hf]\\n    59  \\n    60  -- This is Lemma 5.19 of [axler2024], although we are no longer following that proof.\\n    61  /-- In finite dimensions, over an algebraically closed field, every linear endomorphism has an\\n    62  eigenvalue. -/\\n    63  theorem exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V) :\\n    64      ∃ c : K, f.HasEigenvalue c := by\\n    65    simp_rw [hasEigenvalue_iff_mem_spectrum]\\n    66    exact spectrum.nonempty_of_isAlgClosed_of_finiteDimensional K f\\n    67  \\n    68  noncomputable instance [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V) :\\n    69      Inhabited f.Eigenvalues :=\\n    70    ⟨⟨f.exists_eigenvalue.choose, f.exists_eigenvalue.choose_spec⟩⟩\\n    71  \\n    72  -- Lemma 8.22(c) of [axler2024]\\n    73  /-- In finite dimensions, over an algebraically closed field, the generalized eigenspaces of any\\n    74  linear endomorphism span the whole space. -/\\n    75  theorem iSup_maxGenEigenspace_eq_top [IsAlgClosed K] [FiniteDimensional K V] (f : End K V) :\\n    76      ⨆ (μ : K), f.maxGenEigenspace μ = ⊤ := by\\n    77    -- We prove the claim by strong induction on the dimension of the vector space.\\n    78    suffices ∀ n, finrank K V = n → ⨆ (μ : K), f.maxGenEigenspace μ = ⊤ by exact this _ rfl\\n    79    intro n h_dim\\n    80    induction n"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Eigenspace/Basic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5208,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Eigenspace/Basic.lean  (lines 1–100 of 920):\\n     1  /-\\n     2  Copyright (c) 2020 Alexander Bentkamp. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Alexander Bentkamp\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Algebra.Spectrum.Basic\\n     9  public import Mathlib.Algebra.Module.LinearMap.Basic\\n    10  public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\n    11  public import Mathlib.LinearAlgebra.GeneralLinearGroup.Basic\\n    12  public import Mathlib.RingTheory.Nilpotent.Basic\\n    13  public import Mathlib.RingTheory.Nilpotent.Defs\\n    14  public import Mathlib.RingTheory.Nilpotent.Lemmas\\n    15  public import Mathlib.Tactic.Peel\\n    16  \\n    17  /-!\\n    18  # Eigenvectors and eigenvalues\\n    19  \\n    20  This file defines eigenspaces, eigenvalues, and eigenvectors, as well as their generalized\\n    21  counterparts. We follow Axler's approach [axler2024] because it allows us to derive many properties\\n    22  without choosing a basis and without using matrices.\\n    23  \\n    24  An eigenspace of a linear map `f` for a scalar `μ` is the kernel of the map `(f - μ • id)`. The\\n    25  nonzero elements of an eigenspace are eigenvectors `x`. They have the property `f x = μ • x`. If\\n    26  there are eigenvectors for a scalar `μ`, the scalar `μ` is called an eigenvalue.\\n    27  \\n    28  There is no consensus in the literature whether `0` is an eigenvector. Our definition of\\n    29  `HasEigenvector` permits only nonzero vectors. For an eigenvector `x` that may also be `0`, we\\n    30  write `x ∈ f.eigenspace μ`.\\n    31  \\n    32  A generalized eigenspace of a linear map `f` for a natural number `k` and a scalar `μ` is the kernel\\n    33  of the map `(f - μ • id) ^ k`. The nonzero elements of a generalized eigenspace are generalized\\n    34  eigenvectors `x`. If there are generalized eigenvectors for a natural number `k` and a scalar `μ`,\\n    35  the scalar `μ` is called a generalized eigenvalue.\\n    36  \\n    37  The fact that the eigenvalues are the roots of the minimal polynomial is proved in\\n    38  `LinearAlgebra.Eigenspace.Minpoly`.\\n    39  \\n    40  The existence of eigenvalues over an algebraically closed field\\n    41  (and the fact that the generalized eigenspaces then span) is deferred to\\n    42  `LinearAlgebra.Eigenspace.IsAlgClosed`.\\n    43  \\n    44  ## References\\n    45  \\n    46  * [Sheldon Axler, *Linear Algebra Done Right*][axler2024]\\n    47  * https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors\\n    48  \\n    49  ## Tags\\n    50  \\n    51  eigenspace, eigenvector, eigenvalue, eigen\\n    52  -/\\n    53  \\n    54  @[expose] public section\\n    55  \\n    56  \\n    57  universe u v w\\n    58  \\n    59  namespace Module\\n    60  \\n    61  namespace End\\n    62  \\n    63  open Module Set\\n    64  \\n    65  variable {K R : Type v} {V M : Type w} [CommRing R] [AddCommGroup M] [Module R M] [Field K]\\n    66    [AddCommGroup V] [Module K V]\\n    67  \\n    68  /-- The submodule `genEigenspace f μ k` for a linear map `f`, a scalar `μ`,\\n    69  and a number `k : ℕ∞` is the kernel of `(f - μ • id) ^ k` if `k` is a natural number,\\n    70  or the union of all these kernels if `k = ∞`. (`k = ∞` corresponds to Def 8.19 of [axler2024].)\\n    71  A generalized eigenspace for some exponent `k` is contained in\\n    72  the generalized eigenspace for exponents larger than `k`. -/\\n    73  def genEigenspace (f : End R M) (μ : R) : ℕ∞ →o Submodule R M where\\n    74    toFun k := ⨆ l : ℕ, ⨆ _ : l ≤ k, LinearMap.ker ((f - μ • 1) ^ l)\\n    75    monotone' _ _ hkl := biSup_mono fun _ hi ↦ hi.trans hkl\\n    76  \\n    77  lemma mem_genEigenspace {f : End R M} {μ : R} {k : ℕ∞} {x : M} :\\n    78      x ∈ f.genEigenspace μ k ↔ ∃ l : ℕ, l ≤ k ∧ x ∈ LinearMap.ker ((f - μ • 1) ^ l) := by\\n    79    have : Nonempty {l : ℕ // l ≤ k} := ⟨⟨0, zero_le⟩⟩\\n    80 "
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.End.eigenspace\"}",
+   "ok": true,
+   "result_chars": 1575,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 53 declarations mentioning Module.End.eigenspace.\\n- Module.End.eigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    The submodule `eigenspace f μ` for a linear map `f` and a scalar `μ` consists of all vectors `x` such that `f x = μ • x`. (Def 5.52 of [axler2024]).\\n- Module.End.eigenspaces_iSupIndep   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    The eigenspaces of a linear operator form an independent family of subspaces of `M`.  That is, any eigenspace has trivial intersection with the span of all the \\n- Module.End.hasEigenvalue_iff   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_zero   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_le_maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.hasEigenvector_iff   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.mem_eigenspace_iff   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_le_genEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    The eigenspace is a subspace of the generalized eigenspace.\\n- Module.End.eigenspace_mem_invtSubmodule   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_def   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_restrict_le_eigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    If `p` is an invariant submodule of an endomorphism `f`, then the `μ`-eigenspace of the restriction of `f` to `p` is a submodule of the `μ`-eigenspace of `f`.\\n- Module.End.eigenspace_div   [Mathlib.LinearAlgebra.Eigenspace.Basic]\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def eigenspace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def eigenspace' under Mathlib/.\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"iSup genEigenspace top\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'iSup genEigenspace top': Unknown identifier `genEigenspace`\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"iSup eigenspace\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'iSup eigenspace': Unknown identifier `eigenspace`\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"iSup.*eigenspace.*eq_top\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1328,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'iSup.*eigenspace.*eq_top' (via ripgrep):\\n- Mathlib/Algebra/Lie/CartanCriterion.lean:94\\n    s.eigenspaces_iSupIndep hs_ss.iSup_eigenspace_eq_top\\n- Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean:22\\n    * `Module.End.IsSemisimple.iSup_eigenspace_eq_top`: over an algebraically closed field,\\n- Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean:79\\n    lemma IsSemisimple.iSup_eigenspace_eq_top (hf : f.IsSemisimple) :\\n- Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean:94\\n    rw [← hf.iSup_eigenspace_eq_top]\\n- Mathlib/LinearAlgebra/Eigenspace/Matrix.lean:89\\n    lemma iSup_eigenspace_toLin_diagonal_eq_top :\\n- Mathlib/LinearAlgebra/Eigenspace/Matrix.lean:95\\n    lemma iSup_eigenspace_toLin'_diagonal_eq_top :\\n- Mathlib/LinearAlgebra/Eigenspace/Matrix.lean:97\\n    iSup_eigenspace_toLin_diagonal_eq_top d <| Pi.basisFun R n\\n- Mathlib/Analysis/InnerProductSpace/JointEigenspace.lean:24\\n    * `LinearMap.IsSymmetric.iSup_iInf_eigenspace_eq_top_of_commute` establishes that in finite\\n- Mathlib/Analysis/InnerProductSpace/JointEigenspace.lean:101\\n    theorem iSup_iSup_eigenspace_inf_eigenspace_eq_top_of_commute (hA : A.IsSymmetric)\\n- Mathlib/Analysis/InnerProductSpace/JointEigenspace.lean:115\\n    exact iSup_iSup_eigenspace_inf_eigenspace_eq_top_of_commute hA hB hAB\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 5304,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean  (lines 1–103 of 103):\\n     1  /-\\n     2  Copyright (c) 2024 Oliver Nash. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Oliver Nash\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Eigenspace.Basic\\n     9  public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable\\n    10  public import Mathlib.LinearAlgebra.Semisimple\\n    11  \\n    12  /-!\\n    13  # Eigenspaces of semisimple linear endomorphisms\\n    14  \\n    15  This file contains basic results relevant to the study of eigenspaces of semisimple linear\\n    16  endomorphisms.\\n    17  \\n    18  ## Main definitions / results\\n    19  \\n    20  * `Module.End.IsFinitelySemisimple.genEigenspace_eq_eigenspace`: for a semisimple endomorphism,\\n    21    a generalized eigenspace is an eigenspace.\\n    22  * `Module.End.IsSemisimple.iSup_eigenspace_eq_top`: over an algebraically closed field,\\n    23    the eigenspaces of a semisimple endomorphism span the whole space.\\n    24  * `Module.End.IsSemisimple.eq_zero_iff_forall_eigenvalue`: a semisimple endomorphism over\\n    25    an algebraically closed field is zero iff all eigenvalues are zero.\\n    26  \\n    27  -/\\n    28  \\n    29  public section\\n    30  \\n    31  open Function Set\\n    32  \\n    33  namespace Module.End\\n    34  \\n    35  variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] {f g : End R M}\\n    36  \\n    37  lemma apply_eq_of_mem_of_comm_of_isFinitelySemisimple_of_isNil\\n    38      {μ : R} {k : ℕ∞} {m : M} (hm : m ∈ f.genEigenspace μ k)\\n    39      (hfg : Commute f g) (hss : g.IsFinitelySemisimple) (hnil : IsNilpotent (f - g)) :\\n    40      g m = μ • m := by\\n    41    rw [f.mem_genEigenspace] at hm\\n    42    obtain ⟨l, -, hm⟩ := hm\\n    43    rw [← f.mem_genEigenspace_nat] at hm\\n    44    set p := f.genEigenspace μ l\\n    45    have h₁ : MapsTo g p p := mapsTo_genEigenspace_of_comm hfg μ l\\n    46    have h₂ : MapsTo (g - algebraMap R (End R M) μ) p p :=\\n    47      mapsTo_genEigenspace_of_comm (hfg.sub_right <| Algebra.commute_algebraMap_right μ f) μ l\\n    48    have h₃ : MapsTo (f - g) p p :=\\n    49      mapsTo_genEigenspace_of_comm (Commute.sub_right rfl hfg) μ l\\n    50    have h₄ : MapsTo (f - algebraMap R (End R M) μ) p p :=\\n    51      mapsTo_genEigenspace_of_comm (Algebra.mul_sub_algebraMap_commutes f μ) μ l\\n    52    replace hfg : Commute (f - algebraMap R (End R M) μ) (f - g) :=\\n    53      (Commute.sub_right rfl hfg).sub_left <| Algebra.commute_algebraMap_left μ (f - g)\\n    54    suffices IsNilpotent ((g - algebraMap R (End R M) μ).restrict h₂) by\\n    55      replace this : g.restrict h₁ - algebraMap R (End R p) μ = 0 :=\\n    56        eq_zero_of_isNilpotent_of_isFinitelySemisimple this (by simpa using hss.restrict _)\\n    57      simpa [LinearMap.restrict_apply, sub_eq_zero] using LinearMap.congr_fun this ⟨m, hm⟩\\n    58    simpa [LinearMap.restrict_sub h₄ h₃] using (LinearMap.restrict_commute hfg h₄ h₃).isNilpotent_sub\\n    59      (f.isNilpotent_restrict_sub_algebraMap μ l) (Module.End.isNilpotent.restrict h₃ hnil)\\n    60  \\n    61  lemma IsFinitelySemisimple.genEigenspace_eq_eigenspace\\n    62      (hf : f.IsFinitelySemisimple) (μ : R) {k : ℕ∞} (hk : 0 < k) :\\n    63      f.genEigenspace μ k = f.eigenspace μ := by\\n    64    refine le_antisymm (fun m hm ↦ mem_eigenspace_iff.mpr ?_) (f.genEigenspace μ |>.mono ?_)\\n    65    · apply apply_eq_of_mem_of_comm_of_isFinitelySemisimple_of_isNil hm rfl hf\\n    66      simp\\n    67    · exact Order.one_le_iff_pos.mpr hk\\n    68  \\n    69  lemma IsFinitelySemisimple.maxGenEigenspace_eq_eigenspace\\n    70      (hf : f.IsFinitelySemisimple) (μ : R) :\\n    71      f.maxGenEigenspace μ = f.eigenspace μ :=\\n    72    hf.genEigenspace_eq_eigenspace μ ENat.top_pos\\n    73  \\n    74  section AlgClosed\\n    75  \\n    76  variable {K V : Type*} [Field K]"
+  },
+  {
+   "i": 52,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.End.maxGenEigenspace\"}",
+   "ok": true,
+   "result_chars": 1331,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 35 declarations mentioning Module.End.maxGenEigenspace.\\n- Module.End.maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    The union of the kernels of `(f - μ • id) ^ k` over all `k`.\\n- Module.End.independent_maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.eigenspace_le_maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.injOn_maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.maxGenEigenspace_eq   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n    For an endomorphism of a Noetherian module, the maximal eigenspace is always of the form kernel `(f - μ • id) ^ k` for some `k`.\\n- Module.End.mapsTo_maxGenEigenspace_of_comm   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.genEigenspace_le_maximal   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.maxGenEigenspace_eq_genEigenspace_finrank   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.iSup_genEigenspace_eq   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.maxGenEigenspace_eq_maxGenEigenspace_zero   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.mem_maxGenEigenspace   [Mathlib.LinearAlgebra.Eigenspace.Basic]\\n- Module.End.mapsTo_restrict_maxGenEigenspace_restrict_of_mapsTo   [Mathlib.LinearAlgebra.Eigenspace.Basic]\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def maxGenEigenspace\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def maxGenEigenspace' under Mathlib/.\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem IsFinitelySemisimple.triangularizable_iff_diagonalizable\n    {K V : Type*} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]\n    (f : Module.End K V) (hf : f.IsFinitelySemisimple) :\n    (⨆ μ : K, f.maxGenEigenspace μ = ⊤) ↔ (⨆ μ : K, f.eigenspace μ = ⊤) := sorry"
+}

@@ -1,0 +1,256 @@
+{
+ "task_id": "fresh_099",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:52:42Z",
+ "wall_s": 126.7,
+ "transcript_stats": {
+  "turns": 26,
+  "assistant_turns": 18,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 11,
+   "mcp__formal__decl_grep": 5,
+   "mcp__formal__decl_read": 6,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 146,
+  "tokens_out": 10268,
+  "cost_usd": 0.10756104999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f → Continuous ?f → sSup_image\"}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone ?f → Continuous ?f → sSup_image': type expected, got\\n  (sSup_image : sSup (?m.14 '' ?m.13) = ⨆ a ∈ ?m.13, ?m.14 a)\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sSup_image ?f ?s\"}",
+   "ok": true,
+   "result_chars": 255,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sSup_image ?f ?s': Function expected at\\n  sSup_image\\nbut this term has type\\n  sSup (?m.5 '' ?m.4) = ⨆ a ∈ ?m.4, ?m.5 a\\n\\nNote: Expected a function because this term is being applied to the argument\\n  ?f\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f\"}",
+   "ok": true,
+   "result_chars": 705,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1307 declarations mentioning Monotone.\\n- monotone_id   [Mathlib.Order.Monotone.Defs]\\n- monotone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone'   [Mathlib.Order.Monotone.Defs]\\n- Function.const_mono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.mono_coe   [Mathlib.Order.Monotone.Defs]\\n- monotone_fst   [Mathlib.Order.Monotone.Defs]\\n- monotone_snd   [Mathlib.Order.Monotone.Defs]\\n- Monotone.iterate   [Mathlib.Order.Monotone.Defs]\\n- monotoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Monotone.monotoneOn   [Mathlib.Order.Monotone.Defs]\\n- Function.monotone_eval   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous ?f → sSup ?s\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Continuous ?f → sSup ?s'.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f (sSup ?s) = sSup (?f '' ?s)\"}",
+   "ok": true,
+   "result_chars": 992,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 113 declarations mentioning Set.image, Eq, and SupSet.sSup.\\n- Prod.fst_sSup   [Mathlib.Order.CompleteLattice.Basic]\\n- Prod.snd_sSup   [Mathlib.Order.CompleteLattice.Basic]\\n- Prod.swap_sSup   [Mathlib.Order.CompleteLattice.Basic]\\n- WithTop.coe_sSup'   [Mathlib.Order.ConditionallyCompleteLattice.Basic]\\n- WithBot.coe_sSup'   [Mathlib.Order.ConditionallyCompleteLattice.Basic]\\n- Set.Iic.coe_sSup   [Mathlib.Order.CompleteLatticeIntervals]\\n- Set.Icc.coe_sSup   [Mathlib.Order.CompleteLatticeIntervals]\\n- GaloisConnection.l_csSup_of_directedOn'   [Mathlib.Order.ConditionallyCompletePartialOrder.Indexed]\\n- OrderIso.map_csSup_of_directedOn'   [Mathlib.Order.ConditionallyCompletePartialOrder.Indexed]\\n- GaloisConnection.l_csSup'   [Mathlib.Order.ConditionallyCompleteLattice.Indexed]\\n- OrderIso.map_csSup'   [Mathlib.Order.ConditionallyCompleteLattice.Indexed]\\n- Set.Finite.map_sSup_of_monotone   [Mathlib.Order.ConditionallyCompleteLattice.Finset]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sSup ?s = ?f (sSup ?s)\"}",
+   "ok": true,
+   "result_chars": 829,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 527 declarations mentioning Eq and SupSet.sSup.\\n- Set.sSup_eq_sUnion   [Mathlib.Order.SetNotation]\\n- IsLUB.sSup_eq   [Mathlib.Order.CompleteLattice.Defs]\\n    **Alias** of the forward direction of `isLUB_iff_sSup_eq`.\\n- isLUB_iff_sSup_eq   [Mathlib.Order.CompleteLattice.Defs]\\n- Equiv.supSet_def   [Mathlib.Order.CompleteLattice.Defs]\\n- sSup_eq_top   [Mathlib.Order.CompleteLattice.Defs]\\n- sSup_singleton   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_range   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_Prop_eq   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_eq_iSup'   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_lowerBounds_eq_sInf   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_pair   [Mathlib.Order.CompleteLattice.Basic]\\n- sSup_image'   [Mathlib.Order.CompleteLattice.Basic]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous.map_sSup\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Continuous.map_sSup': unknown identifier 'Continuous.map_sSup'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous.sSup_image\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Continuous.sSup_image': unknown identifier 'Continuous.sSup_image'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"image ?f (sSup ?s) sSup\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'image ?f (sSup ?s) sSup': Unknown identifier `image`\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Continuous.*Monotone.*sSup\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*Continuous.*Monotone.*sSup' under Mathlib/.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Monotone.*Continuous.*sSup\"}",
+   "ok": true,
+   "result_chars": 253,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma) .*Monotone.*Continuous.*sSup' (via ripgrep):\\n- Mathlib/Topology/Order/Monotone.lean:325\\n    theorem Monotone.map_sSup_of_continuousAt {f : α → β} {s : Set α} (Cf : ContinuousAt f (sSup s))\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"map_sSup_of_continuousOn\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'map_sSup_of_continuousOn': unknown identifier 'map_sSup_of_continuousOn'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 325, \"n\": 10}",
+   "ok": true,
+   "result_chars": 894,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 325–334 of 527):\\n   325  theorem Monotone.map_sSup_of_continuousAt {f : α → β} {s : Set α} (Cf : ContinuousAt f (sSup s))\\n   326      (Mf : Monotone f) (fbot : f ⊥ = ⊥) : f (sSup s) = sSup (f '' s) :=\\n   327    MonotoneOn.map_sSup_of_continuousWithinAt Cf.continuousWithinAt (Mf.monotoneOn _) fbot\\n   328  \\n   329  /-- If a monotone function sending `bot` to `bot` is continuous at the indexed supremum over\\n   330  a `Sort`, then it sends this indexed supremum to the indexed supremum of the composition. -/\\n   331  theorem Monotone.map_iSup_of_continuousAt {ι : Sort*} {f : α → β} {g : ι → α}\\n   332      (Cf : ContinuousAt f (iSup g)) (Mf : Monotone f) (fbot : f ⊥ = ⊥) :\\n   333      f (⨆ i, g i) = ⨆ i, f (g i) := by\\n   334    rw [iSup, Mf.map_sSup_of_continuousAt Cf fbot, ← range_comp, iSup, comp_def]\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Monotone.map.*Continuous\\\\s\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*Monotone.map.*Continuous\\\\\\\\s' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2274,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 1–50 of 527):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Tactic.Order\\n     9  public import Mathlib.Topology.Order.IsLUB\\n    10  \\n    11  /-!\\n    12  # Monotone functions on an order topology\\n    13  \\n    14  This file contains lemmas about limits and continuity for monotone / antitone functions on\\n    15  linearly-ordered sets (with the order topology). For example, we prove that a monotone function\\n    16  has left and right limits at any point (`Monotone.tendsto_nhdsLT`, `Monotone.tendsto_nhdsGT`).\\n    17  \\n    18  -/\\n    19  \\n    20  public section\\n    21  \\n    22  open Set Filter TopologicalSpace Topology Function\\n    23  \\n    24  open OrderDual (toDual ofDual)\\n    25  \\n    26  variable {α β : Type*}\\n    27  \\n    28  section LinearOrder\\n    29  \\n    30  variable [LinearOrder α] [TopologicalSpace α] [OrderTopology α] [LinearOrder β]\\n    31    {s : Set α} {x : α} {f : α → β}\\n    32  \\n    33  lemma MonotoneOn.insert_of_continuousWithinAt [TopologicalSpace β] [OrderClosedTopology β]\\n    34      (hf : MonotoneOn f s) (hx : ClusterPt x (𝓟 s)) (h'x : ContinuousWithinAt f s x) :\\n    35      MonotoneOn f (insert x s) := by\\n    36    have : (𝓝[s] x).NeBot := hx\\n    37    apply monotoneOn_insert_iff.2 ⟨fun b hb hbx ↦ ?_, fun b hb hxb ↦ ?_, hf⟩\\n    38    · rcases hbx.eq_or_lt with rfl | hbx\\n    39      · exact le_rfl\\n    40      simp only [ContinuousWithinAt] at h'x\\n    41      apply ge_of_tendsto h'x\\n    42      have : s ∩ Ioi b ∈ 𝓝[s] x := inter_mem_nhdsWithin _ (Ioi_mem_nhds hbx)\\n    43      filter_upwards [this] with y hy using hf hb hy.1 (le_of_lt hy.2)\\n    44    · rcases hxb.eq_or_lt with rfl | hxb\\n    45      · exact le_rfl\\n    46      simp only [ContinuousWithinAt] at h'x\\n    47      apply le_of_tendsto h'x\\n    48      have : s ∩ Iio b ∈ 𝓝[s] x := inter_mem_nhdsWithin _ (Iio_mem_nhds hxb)\\n    49      filter_upwards [this] with y hy\\n    50      exact hf hy.1 hb (le_of_lt hy.2)\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 300, \"n\": 100}",
+   "ok": true,
+   "result_chars": 6147,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 300–399 of 527):\\n   300    [TopologicalSpace β] [OrderClosedTopology β]\\n   301  \\n   302  theorem sSup_mem_closure {s : Set α} (hs : s.Nonempty) : sSup s ∈ closure s :=\\n   303    (isLUB_sSup s).mem_closure hs\\n   304  \\n   305  theorem sInf_mem_closure {s : Set α} (hs : s.Nonempty) : sInf s ∈ closure s :=\\n   306    (isGLB_sInf s).mem_closure hs\\n   307  \\n   308  theorem IsClosed.sSup_mem {s : Set α} (hs : s.Nonempty) (hc : IsClosed s) : sSup s ∈ s :=\\n   309    (isLUB_sSup s).mem_of_isClosed hs hc\\n   310  \\n   311  theorem IsClosed.sInf_mem {s : Set α} (hs : s.Nonempty) (hc : IsClosed s) : sInf s ∈ s :=\\n   312    (isGLB_sInf s).mem_of_isClosed hs hc\\n   313  \\n   314  /-- A monotone function `f` sending `bot` to `bot` and continuous at the supremum of a set sends\\n   315  this supremum to the supremum of the image of this set. -/\\n   316  theorem MonotoneOn.map_sSup_of_continuousWithinAt {f : α → β} {s : Set α}\\n   317      (Cf : ContinuousWithinAt f s (sSup s))\\n   318      (Mf : MonotoneOn f s) (fbot : f ⊥ = ⊥) : f (sSup s) = sSup (f '' s) := by\\n   319    rcases s.eq_empty_or_nonempty with h | h\\n   320    · simp [h, fbot]\\n   321    · exact Mf.map_csSup_of_continuousWithinAt Cf h\\n   322  \\n   323  /-- A monotone function `f` sending `bot` to `bot` and continuous at the supremum of a set sends\\n   324  this supremum to the supremum of the image of this set. -/\\n   325  theorem Monotone.map_sSup_of_continuousAt {f : α → β} {s : Set α} (Cf : ContinuousAt f (sSup s))\\n   326      (Mf : Monotone f) (fbot : f ⊥ = ⊥) : f (sSup s) = sSup (f '' s) :=\\n   327    MonotoneOn.map_sSup_of_continuousWithinAt Cf.continuousWithinAt (Mf.monotoneOn _) fbot\\n   328  \\n   329  /-- If a monotone function sending `bot` to `bot` is continuous at the indexed supremum over\\n   330  a `Sort`, then it sends this indexed supremum to the indexed supremum of the composition. -/\\n   331  theorem Monotone.map_iSup_of_continuousAt {ι : Sort*} {f : α → β} {g : ι → α}\\n   332      (Cf : ContinuousAt f (iSup g)) (Mf : Monotone f) (fbot : f ⊥ = ⊥) :\\n   333      f (⨆ i, g i) = ⨆ i, f (g i) := by\\n   334    rw [iSup, Mf.map_sSup_of_continuousAt Cf fbot, ← range_comp, iSup, comp_def]\\n   335  \\n   336  /-- A monotone function `f` sending `top` to `top` and continuous at the infimum of a set sends\\n   337  this infimum to the infimum of the image of this set. -/\\n   338  theorem MonotoneOn.map_sInf_of_continuousWithinAt {f : α → β} {s : Set α}\\n   339      (Cf : ContinuousWithinAt f s (sInf s)) (Mf : MonotoneOn f s) (ftop : f ⊤ = ⊤) :\\n   340      f (sInf s) = sInf (f '' s) :=\\n   341    MonotoneOn.map_sSup_of_continuousWithinAt (α := αᵒᵈ) (β := βᵒᵈ) Cf Mf.dual ftop\\n   342  \\n   343  /-- A monotone function `f` sending `top` to `top` and continuous at the infimum of a set sends\\n   344  this infimum to the infimum of the image of this set. -/\\n   345  theorem Monotone.map_sInf_of_continuousAt {f : α → β} {s : Set α} (Cf : ContinuousAt f (sInf s))\\n   346      (Mf : Monotone f) (ftop : f ⊤ = ⊤) : f (sInf s) = sInf (f '' s) :=\\n   347    Monotone.map_sSup_of_continuousAt (α := αᵒᵈ) (β := βᵒᵈ) Cf Mf.dual ftop\\n   348  \\n   349  /-- If a monotone function sending `top` to `top` is continuous at the indexed infimum over\\n   350  a `Sort`, then it sends this indexed infimum to the indexed infimum of the composition. -/\\n   351  theorem Monotone.map_iInf_of_continuousAt {ι : Sort*} {f : α → β} {g : ι → α}\\n   352      (Cf : ContinuousAt f (iInf g)) (Mf : Monotone f) (ftop : f ⊤ = ⊤) : f (iInf g) = iInf (f ∘ g) :=\\n   353    Monotone.map_iSup_of_continuousAt (α := αᵒᵈ) (β := βᵒᵈ) Cf Mf.dual ftop\\n   354  \\n   355  /-- An antitone function `f` sending `bot` to `top` and continuous at the supremum of a set sends\\n   356  this supremum to the infimum of the image of this set. -/\\n   357  theorem AntitoneOn.map_sSup_of_continuousWithinAt {f : α → β} {s : Set α}\\n   358      (Cf : ContinuousWithi"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*Continuous\\\\s.*sSup\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*Continuous\\\\\\\\s.*sSup' under Mathlib/.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Continuous\", \"Monotone\", \"sSup\", \"Monotone.map_sSup_of_continuousAt\"]}",
+   "ok": true,
+   "result_chars": 1330,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"},{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"sSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.map_sSup_of_continuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Monotone\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Monotone\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/Monotone.html#Monotone.map_sSup_of_continuousAt\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sSup ?s\"}",
+   "ok": true,
+   "result_chars": 1107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 779 declarations mentioning SupSet.sSup.\\n- Set.sSup_eq_sUnion   [Mathlib.Order.SetNotation]\\n- completeLatticeOfSup   [Mathlib.Order.CompleteLattice.Defs]\\n    Create a `CompleteLattice` from a `PartialOrder` and `SupSet` that returns the least upper bound of a set. Usually this constructor provides poor definitional e\\n- isLUB_sSup   [Mathlib.Order.CompleteLattice.Defs]\\n- CompleteSemilatticeSup.isLUB_sSup   [Mathlib.Order.CompleteLattice.Defs]\\n    Every set has a least upper bound.\\n- CompleteSemilatticeSup.mk   [Mathlib.Order.CompleteLattice.Defs]\\n- CompleteLattice.isLUB_sSup   [Mathlib.Order.CompleteLattice.Defs]\\n    Every set has a least upper bound.\\n- IsLUB.sSup_eq   [Mathlib.Order.CompleteLattice.Defs]\\n    **Alias** of the forward direction of `isLUB_iff_sSup_eq`.\\n- isLUB_iff_sSup_eq   [Mathlib.Order.CompleteLattice.Defs]\\n- sSup_mem_upperBounds   [Mathlib.Order.CompleteLattice.Defs]\\n- le_sSup   [Mathlib.Order.CompleteLattice.Defs]\\n- sSup_le_sSup   [Mathlib.Order.CompleteLattice.Defs]\\n- le_sSup_of_le   [Mathlib.Order.CompleteLattice.Defs]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Continuous.continuousAt\", \"Continuous.continuousWithinAt\", \"ContinuousAt\", \"Set.image\"]}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Continuous.continuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Continuous\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Continuous\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Continuous.html#Continuous.continuousAt\\\"},{\\\"decl\\\":\\\"Continuous.continuousWithinAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.ContinuousOn\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.ContinuousOn\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/ContinuousOn.html#Continuous.continuousWithinAt\\\"},{\\\"decl\\\":\\\"ContinuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousAt\\\"},{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 280, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3140,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 280–329 of 527):\\n   280  /-- An antitone function continuous at the supremum of a nonempty set sends this supremum to\\n   281  the infimum of the image of this set. -/\\n   282  theorem Antitone.map_csSup_of_continuousAt {f : α → β} {A : Set α} (Cf : ContinuousAt f (sSup A))\\n   283      (Af : Antitone f) (A_nonemp : A.Nonempty) (A_bdd : BddAbove A := by bddDefault) :\\n   284      f (sSup A) = sInf (f '' A) :=\\n   285    Monotone.map_csSup_of_continuousAt (β := βᵒᵈ) Cf Af.dual_right A_nonemp A_bdd\\n   286  \\n   287  /-- An antitone function continuous at the indexed supremum over a nonempty `Sort` sends this\\n   288  indexed supremum to the indexed infimum of the composition. -/\\n   289  theorem Antitone.map_ciSup_of_continuousAt {ι : Sort*} [Nonempty ι] {f : α → β} {g : ι → α}\\n   290      (Cf : ContinuousAt f (iSup g)) (Af : Antitone f)\\n   291      (bdd : BddAbove (range g) := by bddDefault) : f (⨆ i, g i) = ⨅ i, f (g i) := by\\n   292    rw [iSup, Antitone.map_csSup_of_continuousAt Cf Af (range_nonempty g) bdd, ← range_comp, iInf,\\n   293      comp_def]\\n   294  \\n   295  end ConditionallyCompleteLinearOrder\\n   296  \\n   297  section CompleteLinearOrder\\n   298  \\n   299  variable [CompleteLinearOrder α] [TopologicalSpace α] [OrderTopology α] [CompleteLinearOrder β]\\n   300    [TopologicalSpace β] [OrderClosedTopology β]\\n   301  \\n   302  theorem sSup_mem_closure {s : Set α} (hs : s.Nonempty) : sSup s ∈ closure s :=\\n   303    (isLUB_sSup s).mem_closure hs\\n   304  \\n   305  theorem sInf_mem_closure {s : Set α} (hs : s.Nonempty) : sInf s ∈ closure s :=\\n   306    (isGLB_sInf s).mem_closure hs\\n   307  \\n   308  theorem IsClosed.sSup_mem {s : Set α} (hs : s.Nonempty) (hc : IsClosed s) : sSup s ∈ s :=\\n   309    (isLUB_sSup s).mem_of_isClosed hs hc\\n   310  \\n   311  theorem IsClosed.sInf_mem {s : Set α} (hs : s.Nonempty) (hc : IsClosed s) : sInf s ∈ s :=\\n   312    (isGLB_sInf s).mem_of_isClosed hs hc\\n   313  \\n   314  /-- A monotone function `f` sending `bot` to `bot` and continuous at the supremum of a set sends\\n   315  this supremum to the supremum of the image of this set. -/\\n   316  theorem MonotoneOn.map_sSup_of_continuousWithinAt {f : α → β} {s : Set α}\\n   317      (Cf : ContinuousWithinAt f s (sSup s))\\n   318      (Mf : MonotoneOn f s) (fbot : f ⊥ = ⊥) : f (sSup s) = sSup (f '' s) := by\\n   319    rcases s.eq_empty_or_nonempty with h | h\\n   320    · simp [h, fbot]\\n   321    · exact Mf.map_csSup_of_continuousWithinAt Cf h\\n   322  \\n   323  /-- A monotone function `f` sending `bot` to `bot` and continuous at the supremum of a set sends\\n   324  this supremum to the supremum of the image of this set. -/\\n   325  theorem Monotone.map_sSup_of_continuousAt {f : α → β} {s : Set α} (Cf : ContinuousAt f (sSup s))\\n   326      (Mf : Monotone f) (fbot : f ⊥ = ⊥) : f (sSup s) = sSup (f '' s) :=\\n   327    MonotoneOn.map_sSup_of_continuousWithinAt Cf.continuousWithinAt (Mf.monotoneOn _) fbot\\n   328  \\n   329  /-- If a monotone function sending `bot` to `bot` is continuous at the indexed supremum over\\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Continuous.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2505,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Continuous.lean  (lines 1–60 of 457):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Jeremy Avigad\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Topology.ClusterPt\\n     9  \\n    10  /-!\\n    11  # Continuity in topological spaces\\n    12  \\n    13  For topological spaces `X` and `Y`, a function `f : X → Y` and a point `x : X`,\\n    14  `ContinuousAt f x` means `f` is continuous at `x`, and global continuity is\\n    15  `Continuous f`. There is also a version of continuity `PContinuous` for\\n    16  partially defined functions.\\n    17  \\n    18  ## Tags\\n    19  \\n    20  continuity, continuous function\\n    21  -/\\n    22  \\n    23  @[expose] public section\\n    24  \\n    25  open Set Filter Topology\\n    26  \\n    27  variable {X Y Z : Type*}\\n    28  \\n    29  open TopologicalSpace\\n    30  \\n    31  -- The curly braces are intentional, so this definition works well with simp\\n    32  -- when topologies are not those provided by instances.\\n    33  theorem continuous_def {_ : TopologicalSpace X} {_ : TopologicalSpace Y} {f : X → Y} :\\n    34      Continuous f ↔ ∀ s, IsOpen s → IsOpen (f ⁻¹' s) :=\\n    35    ⟨fun hf => hf.1, fun h => ⟨h⟩⟩\\n    36  \\n    37  variable [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]\\n    38  variable {f : X → Y} {s : Set X} {x : X} {y : Y}\\n    39  \\n    40  theorem IsOpen.preimage (hf : Continuous f) {t : Set Y} (h : IsOpen t) :\\n    41      IsOpen (f ⁻¹' t) :=\\n    42    hf.isOpen_preimage t h\\n    43  \\n    44  lemma Equiv.continuous_symm_iff (e : X ≃ Y) : Continuous e.symm ↔ IsOpenMap e := by\\n    45    simp_rw [continuous_def, ← Equiv.image_eq_preimage_symm, IsOpenMap]\\n    46  \\n    47  lemma Equiv.isOpenMap_symm_iff (e : X ≃ Y) : IsOpenMap e.symm ↔ Continuous e := by\\n    48    simp_rw [← Equiv.continuous_symm_iff, Equiv.symm_symm]\\n    49  \\n    50  theorem continuous_congr {g : X → Y} (h : ∀ x, f x = g x) :\\n    51      Continuous f ↔ Continuous g :=\\n    52    .of_eq <| congrArg _ <| funext h\\n    53  \\n    54  theorem Continuous.congr {g : X → Y} (h : Continuous f) (h' : ∀ x, f x = g x) : Continuous g :=\\n    55    continuous_congr h' |>.mp h\\n    56  \\n    57  theorem ContinuousAt.tendsto (h : ContinuousAt f x) :\\n    58      Tendsto f (𝓝 x) (𝓝 (f x)) :=\\n    59    h\\n    60  \\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Continuous.continuousAt\"}",
+   "ok": true,
+   "result_chars": 212,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem Continuous.continuousAt' (via ripgrep):\\n- Mathlib/Topology/Continuous.lean:149\\n    theorem Continuous.continuousAt (h : Continuous f) : ContinuousAt f x :=\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CompleteLinearOrder\", \"TopologicalSpace\", \"OrderTopology\", \"OrderClosedTopology\"]}",
+   "ok": true,
+   "result_chars": 1425,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CompleteLinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Defs.html#CompleteLinearOrder\\\"},{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#TopologicalSpace\\\"},{\\\"decl\\\":\\\"OrderTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/Basic.html#OrderTopology\\\"},{\\\"decl\\\":\\\"OrderClosedTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.OrderClosed\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.OrderClosed\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/OrderClosed.html#OrderClosedTopology\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/Monotone.lean\", \"line\": 297, \"n\": 5}",
+   "ok": true,
+   "result_chars": 311,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/Monotone.lean  (lines 297–301 of 527):\\n   297  section CompleteLinearOrder\\n   298  \\n   299  variable [CompleteLinearOrder α] [TopologicalSpace α] [OrderTopology α] [CompleteLinearOrder β]\\n   300    [TopologicalSpace β] [OrderClosedTopology β]\\n   301  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem continuous_monotone_supremum_preserving {α β : Type*}\n    [CompleteLinearOrder α] [TopologicalSpace α] [OrderTopology α]\n    [CompleteLinearOrder β] [TopologicalSpace β] [OrderClosedTopology β]\n    {f : α → β} (hcont : Continuous f) (hmono : Monotone f) (hbot : f ⊥ = ⊥)\n    (s : Set α) : f (sSup s) = sSup (f '' s) := sorry"
+}

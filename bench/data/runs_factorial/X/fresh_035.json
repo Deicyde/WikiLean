@@ -1,0 +1,392 @@
+{
+ "task_id": "fresh_035",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:34:03Z",
+ "wall_s": 165.3,
+ "transcript_stats": {
+  "turns": 43,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 11,
+   "mcp__formal__decl_grep": 16,
+   "mcp__formal__decl_read": 9,
+   "mcp__wikibrain__decl_exists": 6
+  },
+  "tokens_in": 242,
+  "tokens_out": 11802,
+  "cost_usd": 0.19158630000000004
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?α : Type*) [I : ModelWithCorners] [M : SmoothManifoldWithCorners I α] → ?β → ?f → SmoothAt ?f\"}",
+   "ok": true,
+   "result_chars": 312,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?α : Type*) [I : ModelWithCorners] [M : SmoothManifoldWithCorners I α] → ?β → ?f → SmoothAt ?f': Function expected at\\n  ?α\\nbut this term has type\\n  Type u_1\\n\\nNote: Expected a function because this term is being applied to the argument\\n  [I:ModelWithCorners]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Immersion\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Immersion': unknown identifier 'Immersion'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SmoothAt\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SmoothAt': unknown identifier 'SmoothAt'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ContMDiffAt\"}",
+   "ok": true,
+   "result_chars": 1110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 183 declarations mentioning ContMDiffAt.\\n- ContMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    `ContMDiffAt I I' n f x` indicates that the function `f : M → M'` between manifolds is `n` times continuously differentiable at `x : M`.  `f` is `n` times conti\\n- ContMDiffAt.continuousAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffWithinAt_univ   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.contMDiffWithinAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffAt_infty   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.congr_of_eventuallyEq   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- Filter.EventuallyEq.contMDiffAt_iff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.of_le   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffOn.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffWithinAt.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffAt_iff_nat   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ManifoldWithCorners\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ManifoldWithCorners': unknown identifier 'ManifoldWithCorners'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"immersion\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'immersion': unknown identifier 'immersion'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LocalHomeomorph\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LocalHomeomorph': unknown identifier 'LocalHomeomorph'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ContinuousAt\"}",
+   "ok": true,
+   "result_chars": 886,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 625 declarations mentioning ContinuousAt.\\n- ContinuousAt   [Mathlib.Topology.Defs.Filter]\\n    A function between topological spaces is continuous at a point `x₀` if `f x` tends to `f x₀` when `x` tends to `x₀`.\\n- ContinuousAt.mapClusterPt   [Mathlib.Topology.ClusterPt]\\n- MapClusterPt.continuousAt_comp   [Mathlib.Topology.ClusterPt]\\n- continuousAt_id   [Mathlib.Topology.Continuous]\\n- continuousAt_id'   [Mathlib.Topology.Continuous]\\n- continuousAt_const   [Mathlib.Topology.Continuous]\\n- Continuous.continuousAt   [Mathlib.Topology.Continuous]\\n- continuous_iff_continuousAt   [Mathlib.Topology.Continuous]\\n- Filter.EventuallyEq.continuousAt   [Mathlib.Topology.Continuous]\\n- ContinuousAt.iterate   [Mathlib.Topology.Continuous]\\n- ContinuousAt.tendsto   [Mathlib.Topology.Continuous]\\n- ContinuousAt.congr   [Mathlib.Topology.Continuous]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*[Ii]mmersion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1491,
+   "result_head": "[{\"type\": \"text\", \"text\": \"27 match(es) for 'def.*[Ii]mmersion' (via ripgrep):\\n- Mathlib/Analysis/Normed/Module/ContinuousInverse.lean:27\\n    This concept is used to give an equivalent definition of immersions and submersions of manifolds.\\n- Mathlib/AlgebraicGeometry/Modules/Sheaf.lean:387\\n    def restrictUnitIso (f : X ⟶ Y) [IsOpenImmersion f] :\\n- Mathlib/AlgebraicGeometry/Modules/Sheaf.lean:481\\n    def restrictFunctorCongr {f g : X ⟶ Y} (hf : f = g) [IsOpenImmersion f] [IsOpenImmersion g] :\\n- Mathlib/AlgebraicGeometry/Birational/Birational.lean:279\\n    noncomputable def Hom.partialIso (f : U ⟶ X) [IsOpenImmersion f] [IsDominant f] : U.PartialIso X :=\\n- Mathlib/AlgebraicGeometry/OpenImmersion.lean:310\\n    def IsOpenImmersion.opensEquiv {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] :\\n- Mathlib/AlgebraicGeometry/OpenImmersion.lean:712\\n    def isoOfRangeEq [IsOpenImmersion g] (e : Set.range f = Set.range g) : X ≅ Y where\\n- Mathlib/AlgebraicGeometry/OpenImmersion.lean:766\\n    def ΓIso {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] (U : Y.Opens) :\\n- Mathlib/AlgebraicGeometry/OpenImmersion.lean:792\\n    def ΓIsoTop {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] :\\n- Mathlib/AlgebraicGeometry/Restrict.lean:418\\n    def Scheme.Hom.isoOpensRange {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] :\\n- Mathlib/AlgebraicGeometry/Restrict.lean:694\\n    def morphismRestrictOpensRange {X Y U : Scheme.{u}} (f : X ⟶ Y) (g : U ⟶ Y) [IsOpenImmersion g] :\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def (Immersion|immersion)\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 237,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def (Immersion|immersion)' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:134\\n    def ImmersionAtProp : (M → N) → OpenPartialHomeomorph M H → OpenPartialHomeomorph N G → Prop :=\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ContMDiff (?f : ?α → ?β)\"}",
+   "ok": true,
+   "result_chars": 1041,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 269 declarations mentioning ContMDiff.\\n- ContMDiff.continuous   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiff_zero_iff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    zero-smoothness is equivalent to continuity.\\n- ContMDiff.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffOn_univ   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.contMDiffOn   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.congr   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiff_congr   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiff_infty   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.of_le   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiff_of_locally_contMDiffOn   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.of_succ   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiff_iff_target   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    One can reformulate being `C^n` as continuity and being `C^n` in any extended chart in the target.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 1, \"n\": 200}",
+   "ok": true,
+   "result_chars": 6144,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 1–120 of 830):\\n     1  /-\\n     2  Copyright (c) 2025 Michael Rothgang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Michael Rothgang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Geometry.Manifold.ContMDiff.Atlas\\n     9  public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace\\n    10  public import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\n    11  public import Mathlib.Geometry.Manifold.LocalSourceTargetProperty\\n    12  public import Mathlib.Geometry.Manifold.Notation\\n    13  public import Mathlib.Analysis.Normed.Module.Shrink  -- shake: keep (NormedAddCommGroup (Shrink ...)), cf. lean#13417\\n    14  public import Mathlib.Topology.Algebra.Module.TransferInstance\\n    15  \\n    16  /-! # Smooth immersions\\n    17  \\n    18  In this file, we define `C^n` immersions between `C^n` manifolds.\\n    19  The correct definition in the infinite-dimensional setting differs from the standard\\n    20  finite-dimensional definition (concerning the `mfderiv` being injective): future pull requests will\\n    21  prove that our definition implies the latter, and that both are equivalent for finite-dimensional\\n    22  manifolds.\\n    23  \\n    24  This definition can be conveniently formulated in terms of local properties: `f` is an immersion at\\n    25  `x` iff there exist suitable charts near `x` and `f x` such that `f` has a nice form w.r.t. these\\n    26  charts. Most results below can be deduced from more abstract results about such local properties.\\n    27  This shortens the overall argument, as the definition of submersions has the same general form.\\n    28  \\n    29  ## Main definitions\\n    30  \\n    31  * `IsImmersionAtOfComplement F I J n f x` means a map `f : M → N` between `C^n` manifolds `M` and\\n    32    `N` is an immersion at `x : M`: there are charts `φ` and `ψ` of `M` and `N` around `x` and `f x`,\\n    33    respectively, such that in these charts, `f` looks like `u ↦ (u, 0)`, w.r.t. some equivalence\\n    34    `E' ≃L[𝕜] E × F`. We do not demand that `f` be differentiable (this follows from this definition).\\n    35  * `IsImmersionAt I J n f x` means that `f` is a `C^n` immersion at `x : M` for some choice of a\\n    36    complement `F` of the model normed space `E` of `M` in the model normed space `E'` of `N`.\\n    37    In most cases, prefer this definition over `IsImmersionAtOfComplement`.\\n    38  * `IsImmersionOfComplement F I J n f` means `f : M → N` is an immersion at every point `x : M`,\\n    39    w.r.t. the chosen complement `F`.\\n    40  * `IsImmersion I J n f` means `f : M → N` is an immersion at every point `x : M`,\\n    41    w.r.t. some global choice of complement.\\n    42  \\n    43  ## Main results\\n    44  \\n    45  * `IsImmersionAt.congr_of_eventuallyEq`: being an immersion is a local property.\\n    46    If `f` and `g` agree near `x` and `f` is an immersion at `x`, so is `g`\\n    47  * `IsImmersionAtOfComplement.congr_F`, `IsImmersionOfComplement.congr_F`:\\n    48    being an immersion (at `x`) w.r.t. `F` is stable under\\n    49    replacing the complement `F` by an isomorphic copy.\\n    50  * `IsOpen.isImmersionAtOfComplement` and `IsOpen.isImmersionAt`:\\n    51    the set of points where `IsImmersionAt(OfComplement)` holds is open.\\n    52  * `IsImmersionAt.prodMap` and `IsImmersion.prodMap`: the product of two immersions (at a point)\\n    53    is an immersion (at the product point).\\n    54  * `IsImmersion.id`: the identity map is an immersion\\n    55  * `IsImmersion.of_opens`: the inclusion of an open subset `s → M` of a smooth manifold\\n    56    is a smooth immersion\\n    57  * `ModelWithCorners.isImmersion`: every model with corners is itself an immersion\\n    58  * `IsImmersionOfComplement.sumInl` and `IsImmersionOfComplement.sumInr`: given `C^n` manifolds\\n    59    `M` and `N`, `Sum.inl : M → M ⊕ N` and `Sum.i"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/Immersion.lean\", \"line\": 100, \"n\": 100}",
+   "ok": true,
+   "result_chars": 6001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Immersion.lean  (lines 100–199 of 830):\\n   100  \\n   101  open scoped Topology ContDiff\\n   102  open Function Set\\n   103  \\n   104  public noncomputable section\\n   105  \\n   106  namespace Manifold\\n   107  \\n   108  -- We manually name the universe of `E''` as `IsImmersionAt` will use it.\\n   109  universe u\\n   110  variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]\\n   111    {E E' E''' : Type*} {E'' : Type u} {F F' : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n   112    [NormedAddCommGroup E'] [NormedSpace 𝕜 E']\\n   113    [NormedAddCommGroup E''] [NormedSpace 𝕜 E''] [NormedAddCommGroup E'''] [NormedSpace 𝕜 E''']\\n   114    [NormedAddCommGroup F] [NormedSpace 𝕜 F] [NormedAddCommGroup F'] [NormedSpace 𝕜 F']\\n   115    {H : Type*} [TopologicalSpace H] {H' : Type*} [TopologicalSpace H']\\n   116    {G : Type*} [TopologicalSpace G] {G' : Type*} [TopologicalSpace G']\\n   117    {I : ModelWithCorners 𝕜 E H} {I' : ModelWithCorners 𝕜 E' H'}\\n   118    {J : ModelWithCorners 𝕜 E'' G} {J' : ModelWithCorners 𝕜 E''' G'}\\n   119  \\n   120  variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]\\n   121    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']\\n   122    {N : Type*} [TopologicalSpace N] [ChartedSpace G N]\\n   123    {N' : Type*} [TopologicalSpace N'] [ChartedSpace G' N']\\n   124    {n : ℕ∞ω}\\n   125  \\n   126  variable (F I J M N) in\\n   127  /-- The local property of being an immersion at a point: `f : M → N` is an immersion at `x` if\\n   128  there exist charts `φ` and `ψ` of `M` and `N` around `x` and `f x`, respectively, such that in these\\n   129  charts, `f` looks like the inclusion `u ↦ (u, 0)`.\\n   130  \\n   131  This definition has a fixed parameter `F`, which is a choice of complement of `E` in the model\\n   132  normed space `E'` of `N`: being an immersion at `x` includes a choice of linear isomorphism\\n   133  between `E × F` and `E'`. -/\\n   134  def ImmersionAtProp : (M → N) → OpenPartialHomeomorph M H → OpenPartialHomeomorph N G → Prop :=\\n   135    fun f domChart codChart ↦ ∃ equiv : (E × F) ≃L[𝕜] E'',\\n   136      EqOn ((codChart.extend J) ∘ f ∘ (domChart.extend I).symm) (equiv ∘ (·, 0))\\n   137        (domChart.extend I).target\\n   138  \\n   139  omit [ChartedSpace H M] [ChartedSpace G N] in\\n   140  /-- Being an immersion at `x` is a local property. -/\\n   141  lemma isLocalSourceTargetProperty_immersionAtProp :\\n   142      IsLocalSourceTargetProperty (ImmersionAtProp F I J M N) where\\n   143    mono_source {f φ ψ s} hs := fun ⟨equiv, hf⟩ ↦ ⟨equiv, hf.mono (by simp; grind)⟩\\n   144    congr {f g φ ψ} hfg := by\\n   145      intro ⟨equiv, hf⟩\\n   146      refine ⟨equiv, EqOn.trans (fun x hx ↦ ?_) (hf.mono (by simp))⟩\\n   147      have : ((φ.extend I).symm) x ∈ φ.source := by simp_all\\n   148      grind\\n   149  \\n   150  variable (F I J n) in\\n   151  /-- `f : M → N` is a `C^n` immersion at `x` if there are charts `φ` and `ψ` of `M` and `N`\\n   152  around `x` and `f x`, respectively such that in these charts, `f` looks like `u ↦ (u, 0)`.\\n   153  Additionally, we demand that `f` map `φ.source` into `ψ.source`.\\n   154  \\n   155  NB. We don't know the particular atlases used for `M` and `N`, so asking for `φ` and `ψ` to be\\n   156  in the `atlas` would be too optimistic: lying in the `maximalAtlas` is sufficient.\\n   157  \\n   158  This definition has a fixed parameter `F`, which is a choice of complement of `E` in `E'`:\\n   159  being an immersion at `x` includes a choice of linear isomorphism between `E × F` and `E'`.\\n   160  While the particular choice of complement is often not important, choosing a complement is useful\\n   161  in some settings, such as proving that embedded submanifolds are locally given either by an\\n   162  immersion or a submersion.\\n   163  Unless you have a particular reason, prefer to use `IsImmersionAt` instead.\\n   164  -/\\n   165  def IsImmersionAtOfComplement (f : M → N) (x : M) : Prop :=\\n   166    LiftSo"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ContMDiffAt (?f : ?α → ?β) (?x : ?α)\"}",
+   "ok": true,
+   "result_chars": 1126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 183 declarations mentioning ContMDiffAt.\\n- ContMDiffAt.continuousAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiff.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffWithinAt_univ   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.contMDiffWithinAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffAt_infty   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.congr_of_eventuallyEq   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- Filter.EventuallyEq.contMDiffAt_iff   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffAt.of_le   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffOn.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- ContMDiffWithinAt.contMDiffAt   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffAt_iff_nat   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n- contMDiffAt_iff_le_ne_infty   [Mathlib.Geometry.Manifold.ContMDiff.Defs]\\n    A function is `C^n` at a point iff it is `C^m` at this point, for any `m ≤ n` which is different from `∞`. This result is useful because, when `m ≠ ∞`, being `C\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*contMDiff.*iff.*continuous\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiff.*iff.*continuous' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*contMDiff.*composition\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiff.*composition' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*contMDiffAt.*iff\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1310,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'lemma.*contMDiffAt.*iff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:230\\n    lemma localInverse_contMDiffAt (hf : IsLocalDiffeomorphAt I J n f x) :\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:285\\n    lemma IsLocalDiffeomorphAt.contMDiffAt (hf : IsLocalDiffeomorphAt I J n f x) :\\n- Mathlib/Geometry/Manifold/VectorBundle/Tangent.lean:476\\n    lemma contMDiffAt_vectorSpace_iff_contDiffAt\\n- Mathlib/Geometry/Manifold/VectorBundle/Hom.lean:148\\n    lemma Bundle.Trivialization.contMDiffAt_symmL [ContMDiffVectorBundle n F₁ E₁ IB]\\n- Mathlib/Geometry/Manifold/VectorBundle/LocalFrame.lean:456\\n    lemma contMDiffAt_localFrame_coeff (hxe : x ∈ e.baseSet) (hs : CMDiffAt k (T% s) x) (i : ι) :\\n- Mathlib/Geometry/Manifold/VectorBundle/LocalFrame.lean:497\\n    lemma contMDiffAt_iff_localFrame_coeff (hx : x' ∈ e.baseSet) :\\n- Mathlib/Geometry/Manifold/VectorBundle/MDifferentiable.lean:692\\n    lemma contMDiffAt_extend {x : M} (σ₀ : V x) : CMDiffAt k (T% (extend F σ₀)) x := by\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:52\\n    lemma contMDiffAt_ofComplex {z : ℂ} (hz : 0 < z.im) : CMDiffAt n ofComplex z := by\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:65\\n    lemma contMDiffAt_iff {f : ℍ → ℂ} {τ : ℍ} :\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"contMDiff_iff_target\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 298,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'contMDiff_iff_target' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:446\\n    rw [contMDiff_iff_target]\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:579\\n    theorem contMDiff_iff_target [IsManifold I n M] [IsManifold I' n M'] :\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 1–50 of 925):\\n     1  /-\\n     2  Copyright (c) 2020 Sébastien Gouëzel. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Sébastien Gouëzel, Floris van Doorn\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\n     9  public import Mathlib.Geometry.Manifold.LocalInvariantProperties\\n    10  \\n    11  /-!\\n    12  # `C^n` functions between manifolds\\n    13  \\n    14  We define `Cⁿ` functions between manifolds, as functions which are `Cⁿ` in charts, and prove\\n    15  basic properties of these notions. Here, `n` can be finite, or `∞`, or `ω`.\\n    16  \\n    17  ## Main definitions and statements\\n    18  \\n    19  Let `M` and `M'` be two manifolds, with respect to models with corners `I` and `I'`. Let\\n    20  `f : M → M'`.\\n    21  \\n    22  * `ContMDiffWithinAt I I' n f s x` states that the function `f` is `Cⁿ` within the set `s`\\n    23    around the point `x`.\\n    24  * `ContMDiffAt I I' n f x` states that the function `f` is `Cⁿ` around `x`.\\n    25  * `ContMDiffOn I I' n f s` states that the function `f` is `Cⁿ` on the set `s`\\n    26  * `ContMDiff I I' n f` states that the function `f` is `Cⁿ`.\\n    27  \\n    28  We also give some basic properties of `Cⁿ` functions between manifolds, following the API of\\n    29  `C^n` functions between vector spaces.\\n    30  See `Basic.lean` for further basic properties of `Cⁿ` functions between manifolds,\\n    31  `NormedSpace.lean` for the equivalence of manifold-smoothness to usual smoothness,\\n    32  `Product.lean` for smoothness results related to the product of manifolds and\\n    33  `Atlas.lean` for smoothness of atlas members and local structomorphisms.\\n    34  \\n    35  ## Implementation details\\n    36  \\n    37  Many properties follow for free from the corresponding properties of functions in vector spaces,\\n    38  as being `Cⁿ` is a local property invariant under the `Cⁿ` groupoid. We take advantage of the\\n    39  general machinery developed in `LocalInvariantProperties.lean` to get these properties\\n    40  automatically. For instance, the fact that being `Cⁿ` does not depend on the chart one considers\\n    41  is given by `liftPropWithinAt_indep_chart`.\\n    42  \\n    43  For this to work, the definition of `ContMDiffWithinAt` and friends has to\\n    44  follow definitionally the setup of local invariant properties. Still, we recast the definition\\n    45  in terms of extended charts in `contMDiffOn_iff` and `contMDiff_iff`.\\n    46  -/\\n    47  \\n    48  @[expose] public section\\n    49  \\n    50  \\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 570, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2434,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 570–619 of 925):\\n   570        Continuous f ∧\\n   571          ∀ (x : M) (y : M'),\\n   572            ContDiffOn 𝕜 n (extChartAt I' y ∘ f ∘ (extChartAt I x).symm)\\n   573              ((extChartAt I x).target ∩\\n   574                (extChartAt I x).symm ⁻¹' f ⁻¹' (extChartAt I' y).source) := by\\n   575    simp [← contMDiffOn_univ, contMDiffOn_iff, continuousOn_univ]\\n   576  \\n   577  /-- One can reformulate being `C^n` as continuity and being `C^n` in any extended chart in the\\n   578  target. -/\\n   579  theorem contMDiff_iff_target [IsManifold I n M] [IsManifold I' n M'] :\\n   580      ContMDiff I I' n f ↔\\n   581        Continuous f ∧ ∀ y : M',\\n   582          ContMDiffOn I 𝓘(𝕜, E') n (extChartAt I' y ∘ f) (f ⁻¹' (extChartAt I' y).source) := by\\n   583    rw [← contMDiffOn_univ, contMDiffOn_iff_target]\\n   584    simp [continuousOn_univ]\\n   585  \\n   586  /-- zero-smoothness is equivalent to continuity. -/\\n   587  theorem contMDiff_zero_iff :\\n   588      ContMDiff I I' 0 f ↔ Continuous f := by\\n   589    rw [← contMDiffOn_univ, ← continuousOn_univ, contMDiffOn_zero_iff]\\n   590  \\n   591  end IsManifold\\n   592  \\n   593  \\n   594  /-! ### `C^(n+1)` functions are `C^n` -/\\n   595  \\n   596  theorem ContMDiffWithinAt.of_succ (h : ContMDiffWithinAt I I' (n + 1) f s x) :\\n   597      ContMDiffWithinAt I I' n f s x :=\\n   598    h.of_le le_self_add\\n   599  \\n   600  theorem ContMDiffAt.of_succ (h : ContMDiffAt I I' (n + 1) f x) : ContMDiffAt I I' n f x :=\\n   601    ContMDiffWithinAt.of_succ h\\n   602  \\n   603  theorem ContMDiffOn.of_succ (h : ContMDiffOn I I' (n + 1) f s) : ContMDiffOn I I' n f s :=\\n   604    fun x hx => (h x hx).of_succ\\n   605  \\n   606  theorem ContMDiff.of_succ (h : ContMDiff I I' (n + 1) f) : ContMDiff I I' n f := fun x =>\\n   607    (h x).of_succ\\n   608  \\n   609  \\n   610  /-! ### `C^n` functions are continuous -/\\n   611  \\n   612  theorem ContMDiffWithinAt.continuousWithinAt (hf : ContMDiffWithinAt I I' n f s x) :\\n   613      ContinuousWithinAt f s x :=\\n   614    hf.1\\n   615  \\n   616  theorem ContMDiffAt.continuousAt (hf : ContMDiffAt I I' n f x) : ContinuousAt f x :=\\n   617    (continuousWithinAt_univ _ _).1 <| ContMDiffWithinAt.continuousWithinAt hf\\n   618  \\n   619  theorem ContMDiffOn.continuousOn (hf : ContMDiffOn I I' n f s) : ContinuousOn f s := fun x hx =>\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem).*ContMDiffAt.*composition|comp\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1905,
+   "result_head": "[{\"type\": \"text\", \"text\": \"47618 match(es) for '(lemma|theorem).*ContMDiffAt.*composition|comp' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:29\\n    1. `ι_comp_lift` states that the composition `(lift R f) ∘ (ι R)` is identical to `f`.\\n- Mathlib/Algebra/FreeAlgebra.lean:31\\n    given whose composition with `ι R` is `f`, then one has `g = lift R f`.\\n- Mathlib/Algebra/FreeAlgebra.lean:33\\n    4. `lift_comp_ι` is a combination of `ι_comp_lift` and `lift_unique`. It states that the lift\\n- Mathlib/Algebra/FreeAlgebra.lean:34\\n    of the composition of an algebra morphism with `ι` is the algebra morphism itself.\\n- Mathlib/Algebra/FreeAlgebra.lean:141\\n    -- compatibility\\n- Mathlib/Algebra/FreeAlgebra.lean:142\\n    | add_compat_left {a b c : Pre R X} : Rel a b → Rel (a + c) (b + c)\\n- Mathlib/Algebra/FreeAlgebra.lean:143\\n    | add_compat_right {a b c : Pre R X} : Rel a b → Rel (c + a) (c + b)\\n- Mathlib/Algebra/FreeAlgebra.lean:144\\n    | mul_compat_left {a b c : Pre R X} : Rel a b → Rel (a * c) (b * c)\\n- Mathlib/Algebra/FreeAlgebra.lean:145\\n    | mul_compat_right {a b c : Pre R X} : Rel a b → Rel (c * a) (c * b)\\n- Mathlib/Algebra/FreeAlgebra.lean:154\\n    then this function is the composite of `FreeAlgebra.ι R` and a unique `R`-algebra homomorphism\\n- Mathlib/Algebra/FreeAlgebra.lean:179\\n    smul r := Quot.map (HMul.hMul (algebraMap R A r : Pre A X)) fun _ _ ↦ Rel.mul_compat_right\\n- Mathlib/Algebra/FreeAlgebra.lean:186\\n    add := Quot.map₂ HAdd.hAdd (fun _ _ _ ↦ Rel.add_compat_right) fun _ _ _ ↦ Rel.add_compat_left\\n- Mathlib/Algebra/FreeAlgebra.lean:189\\n    mul := Quot.map₂ HMul.hMul (fun _ _ _ ↦ Rel.mul_compat_right) fun _ _ _ ↦ Rel.mul_compat_left\\n- Mathlib/Algebra/FreeAlgebra.lean:268\\n    map_add' := fun _ _ => Quot.sound Rel.add_scalar } : A →+* FreeAlgebra A X).comp\\n- Mathlib/Algebra/FreeAlgebra.lean:374\\n    simp only [Function.comp_apply, ι_def]\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?g ∘ ?f\"}",
+   "ok": true,
+   "result_chars": 716,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 4992 declarations mentioning Function.comp.\\n- Function.comp_id   [Init.Core]\\n- Function.id_comp   [Init.Core]\\n- Function.false_comp   [Init.Core]\\n- Function.true_comp   [Init.Core]\\n- Function.comp_apply   [Init.Core]\\n- Function.comp_def   [Init.Core]\\n- Function.const_comp   [Init.Core]\\n- Function.comp_const   [Init.Core]\\n- instDecidablePredComp   [Init.PropLemmas]\\n- LawfulFunctor.map_const   [Init.Control.Lawful.Basic]\\n    The `mapConst` implementation is equivalent to the default implementation.\\n- LawfulFunctor.comp_map   [Init.Control.Lawful.Basic]\\n    The `map` implementation preserves function composition.\\n- LawfulFunctor.mk   [Init.Control.Lawful.Basic]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Cc]ontMDiff.*[Ii]mmersion|[Ii]mmersion.*[Cc]ontMDiff\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1529,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'theorem.*[Cc]ontMDiff.*[Ii]mmersion|[Ii]mmersion.*[Cc]ontMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Immersion.lean:60\\n    * `IsImmersionAt.contMDiffAt`: if f is an immersion at `x`, it is `C^n` at `x`.\\n- Mathlib/Geometry/Manifold/Immersion.lean:61\\n    * `IsImmersion.contMDiff`: if f is a `C^n` immersion, it is automatically `C^n`\\n- Mathlib/Geometry/Manifold/Immersion.lean:418\\n    /-- Prefer using `IsImmersionAtOfComplement.contMDiffAt` instead -/\\n- Mathlib/Geometry/Manifold/Immersion.lean:419\\n    theorem contMDiffOn (h : IsImmersionAtOfComplement F I J n f x) :\\n- Mathlib/Geometry/Manifold/Immersion.lean:434\\n    theorem contMDiffAt (h : IsImmersionAtOfComplement F I J n f x) : CMDiffAt n f x :=\\n- Mathlib/Geometry/Manifold/Immersion.lean:615\\n    /-- Prefer using `IsImmersionAt.contMDiffAt` instead -/\\n- Mathlib/Geometry/Manifold/Immersion.lean:616\\n    theorem contMDiffOn (h : IsImmersionAt I J n f x) : CMDiff[h.domChart.source] n f :=\\n- Mathlib/Geometry/Manifold/Immersion.lean:617\\n    h.isImmersionAtOfComplement_complement.contMDiffOn\\n- Mathlib/Geometry/Manifold/Immersion.lean:620\\n    theorem contMDiffAt (h : IsImmersionAt I J n f x) : CMDiffAt n f x :=\\n- Mathlib/Geometry/Manifold/Immersion.lean:621\\n    h.isImmersionAtOfComplement_complement.contMDiffAt\\n- Mathlib/Geometry/Manifold/Immersion.lean:826\\n    h.isImmersionOfComplement_complement.contMDiff\\n- Mathlib/Geometry/Manifold/SmoothEmbedding.lean:116\\n    hf.isImmersion.contMDiff\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*(iff|characterize).*contMDiff\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2863,
+   "result_head": "[{\"type\": \"text\", \"text\": \"39 match(es) for '(theorem|lemma).*(iff|characterize).*contMDiff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Algebra/SMul.lean:145\\n    theorem ContMDiffSMul.contMDiff_const_smul {n : ℕ∞ω} [ContMDiffSMul I I' n G M] (g : G) :\\n- Mathlib/Geometry/Manifold/Instances/Quotient.lean:93\\n    lemma symm_trans_trans_mem_contDiffGroupoid_of_contMDiffOn {e e' : OpenPartialHomeomorph M H}\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:125\\n    protected theorem contMDiffOn : CMDiff[Φ.source] n Φ := Φ.contMDiffOn_toFun\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:285\\n    lemma IsLocalDiffeomorphAt.contMDiffAt (hf : IsLocalDiffeomorphAt I J n f x) :\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:297\\n    lemma IsLocalDiffeomorphOn.contMDiffOn (hf : IsLocalDiffeomorphOn I J n f s) :\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:307\\n    lemma IsLocalDiffeomorph.contMDiff (hf : IsLocalDiffeomorph I J n f) : CMDiff n f :=\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:71\\n    theorem ContDiffWithinAt.comp_contMDiffWithinAt {g : F → F'} {f : M → F} {s : Set M} {t : Set F}\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:76\\n    theorem ContDiffAt.comp_contMDiffWithinAt {g : F → F'} {f : M → F} {s : Set M}\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:81\\n    theorem ContDiffAt.comp_contMDiffAt {g : F → F'} {f : M → F} {x : M} (hg : ContDiffAt 𝕜 n g (f x))\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:85\\n    theorem ContDiff.comp_contMDiffWithinAt {g : F → F'} {f : M → F} {s : Set M} {x : M}\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:90\\n    theorem ContDiff.comp_contMDiffAt {g : F → F'} {f : M → F} {x : M} (hg : ContDiff 𝕜 n g)\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:94\\n    theorem ContDiff.comp_contMDiff {g : F → F'} {f : M → F} (hg : ContDiff 𝕜 n g)\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:232\\n    theorem ContMDiff.contMDiffAt (h : ContMDiff I I' n f) : ContMDiffAt I I' n f x :=\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:715\\n    protected theorem ContMDiffAt.contMDiffWithinAt (hf : ContMDiffAt I I' n f x) :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:722\\n    protected theorem ContMDiff.contMDiffOn (hf : ContMDiff I I' n f) : ContMDiffOn I I' n f s :=\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:733\\n    protected theorem ContMDiffWithinAt.contMDiffAt\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:738\\n    protected theorem ContMDiffOn.contMDiffAt (h : ContMDiffOn I I' n f s) (hx : s ∈ 𝓝 x) :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:754\\n    theorem contMDiffWithinAt_iff_contMDiffOn_nhds\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:787\\n    theorem ContMDiffWithinAt.contMDiffOn'\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:808\\n    theorem ContMDiffWithinAt.contMDiffOn\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*contMDiffAt.*iff.*continuous\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*contMDiffAt.*iff.*continuous' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 100, \"n\": 100}",
+   "ok": true,
+   "result_chars": 6158,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 100–199 of 925):\\n   100  it lifts nicely to manifolds. -/\\n   101  theorem contDiffWithinAt_localInvariantProp_of_le (n m : ℕ∞ω) (hmn : m ≤ n) :\\n   102      (contDiffGroupoid n I).LocalInvariantProp (contDiffGroupoid n I')\\n   103        (ContDiffWithinAtProp I I' m) where\\n   104    is_local {s x u f} u_open xu := by\\n   105      have : I.symm ⁻¹' (s ∩ u) ∩ range I = I.symm ⁻¹' s ∩ range I ∩ I.symm ⁻¹' u := by\\n   106        simp only [inter_right_comm, preimage_inter]\\n   107      rw [ContDiffWithinAtProp, ContDiffWithinAtProp, this]\\n   108      symm\\n   109      apply contDiffWithinAt_inter\\n   110      have : u ∈ 𝓝 (I.symm (I x)) := by\\n   111        rw [ModelWithCorners.left_inv]\\n   112        exact u_open.mem_nhds xu\\n   113      apply ContinuousAt.preimage_mem_nhds I.continuous_symm.continuousAt this\\n   114    right_invariance' {s x f e} he hx h := by\\n   115      rw [ContDiffWithinAtProp] at h ⊢\\n   116      have : I x = (I ∘ e.symm ∘ I.symm) (I (e x)) := by simp only [hx, mfld_simps]\\n   117      rw [this] at h\\n   118      have : I (e x) ∈ I.symm ⁻¹' e.target ∩ range I := by simp only [hx, mfld_simps]\\n   119      have := (mem_groupoid_of_pregroupoid.2 he).2.contDiffWithinAt this\\n   120      convert! (h.comp_inter _ (this.of_le hmn)).mono_of_mem_nhdsWithin _ using 1\\n   121      · ext y; simp only [mfld_simps]\\n   122      refine mem_nhdsWithin.mpr\\n   123        ⟨I.symm ⁻¹' e.target, e.open_target.preimage I.continuous_symm, by\\n   124          simp_rw [mem_preimage, I.left_inv, e.mapsTo hx], ?_⟩\\n   125      mfld_set_tac\\n   126    congr_of_forall {s x f g} h hx hf := by\\n   127      apply hf.congr\\n   128      · intro y hy\\n   129        simp only [mfld_simps] at hy\\n   130        simp only [h, hy, mfld_simps]\\n   131      · simp only [hx, mfld_simps]\\n   132    left_invariance' {s x f e'} he' hs hx h := by\\n   133      rw [ContDiffWithinAtProp] at h ⊢\\n   134      have A : (I' ∘ f ∘ I.symm) (I x) ∈ I'.symm ⁻¹' e'.source ∩ range I' := by\\n   135        simp only [hx, mfld_simps]\\n   136      have := (mem_groupoid_of_pregroupoid.2 he').1.contDiffWithinAt A\\n   137      convert! (this.of_le hmn).comp _ h _\\n   138      · ext y; simp only [mfld_simps]\\n   139      · intro y hy; simp only [mfld_simps] at hy; simpa only [hy, mfld_simps] using hs hy.1\\n   140  \\n   141  /-- Being `Cⁿ` in the model space is a local property, invariant under `C^n` maps. Therefore,\\n   142  it lifts nicely to manifolds. -/\\n   143  theorem contDiffWithinAt_localInvariantProp (n : ℕ∞ω) :\\n   144      (contDiffGroupoid n I).LocalInvariantProp (contDiffGroupoid n I')\\n   145        (ContDiffWithinAtProp I I' n) :=\\n   146    contDiffWithinAt_localInvariantProp_of_le n n le_rfl\\n   147  \\n   148  theorem contDiffWithinAtProp_mono_of_mem_nhdsWithin\\n   149      (n : ℕ∞ω) ⦃s x t⦄ ⦃f : H → H'⦄ (hts : s ∈ 𝓝[t] x)\\n   150      (h : ContDiffWithinAtProp I I' n f s x) : ContDiffWithinAtProp I I' n f t x := by\\n   151    refine h.mono_of_mem_nhdsWithin ?_\\n   152    refine inter_mem ?_ (mem_of_superset self_mem_nhdsWithin inter_subset_right)\\n   153    rwa [← Filter.mem_map, ← I.image_eq, I.symm_map_nhdsWithin_image]\\n   154  \\n   155  theorem contDiffWithinAtProp_id (x : H) : ContDiffWithinAtProp I I n id univ x := by\\n   156    simp only [ContDiffWithinAtProp, id_comp, preimage_univ, univ_inter]\\n   157    have : ContDiffWithinAt 𝕜 n id (range I) (I x) := contDiff_id.contDiffAt.contDiffWithinAt\\n   158    refine this.congr (fun y hy => ?_) ?_\\n   159    · simp only [ModelWithCorners.right_inv I hy, mfld_simps]\\n   160    · simp only [mfld_simps]\\n   161  \\n   162  variable (I I') in\\n   163  /-- `ContMDiffWithinAt I I' n f x` indicates that the function `f : M → M'` between manifolds\\n   164  is `n` times continuously differentiable at `x : M` within the set `s`.\\n   165  \\n   166  `f` is `n` times continuously differentiable within `s` at `x` if it is continuous "
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*contMDiffAt.*comp\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 403,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma).*contMDiffAt.*comp' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Diffeomorph.lean:305\\n    theorem contMDiffAt_comp_diffeomorph_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : N → M'} {x} (hm : m ≤ n) :\\n- Mathlib/Geometry/Manifold/Diffeomorph.lean:323\\n    theorem contMDiffAt_diffeomorph_comp_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : M' → M} (hm : m ≤ n) {x} :\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/Diffeomorph.lean\", \"line\": 300, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/Diffeomorph.lean  (lines 300–359 of 675):\\n   300    h.toEquiv.forall_congr fun {_} => by\\n   301      simp only [hm, coe_toEquiv, h.symm_apply_apply, contMDiffWithinAt_comp_diffeomorph_iff,\\n   302        mem_preimage]\\n   303  \\n   304  @[simp]\\n   305  theorem contMDiffAt_comp_diffeomorph_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : N → M'} {x} (hm : m ≤ n) :\\n   306      CMDiffAt m (f ∘ h) x ↔ CMDiffAt m f (h x) :=\\n   307    h.contMDiffWithinAt_comp_diffeomorph_iff hm\\n   308  \\n   309  @[simp]\\n   310  theorem contMDiff_comp_diffeomorph_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : N → M'} (hm : m ≤ n) :\\n   311      CMDiff m (f ∘ h) ↔ CMDiff m f :=\\n   312    h.toEquiv.forall_congr fun _ ↦ h.contMDiffAt_comp_diffeomorph_iff hm\\n   313  \\n   314  @[simp]\\n   315  theorem contMDiffWithinAt_diffeomorph_comp_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : M' → M} (hm : m ≤ n)\\n   316      {s x} : CMDiffAt[s] m (h ∘ f) x ↔ CMDiffAt[s] m f x :=\\n   317    ⟨fun Hhf => by\\n   318      simpa only [Function.comp_def, h.symm_apply_apply] using\\n   319        (h.symm.contMDiffAt.of_le hm).comp_contMDiffWithinAt _ Hhf,\\n   320      fun Hf => (h.contMDiffAt.of_le hm).comp_contMDiffWithinAt _ Hf⟩\\n   321  \\n   322  @[simp]\\n   323  theorem contMDiffAt_diffeomorph_comp_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : M' → M} (hm : m ≤ n) {x} :\\n   324      CMDiffAt m (h ∘ f) x ↔ CMDiffAt m f x :=\\n   325    h.contMDiffWithinAt_diffeomorph_comp_iff hm\\n   326  \\n   327  @[simp]\\n   328  theorem contMDiffOn_diffeomorph_comp_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : M' → M} (hm : m ≤ n) {s} :\\n   329      CMDiff[s] m (h ∘ f) ↔ CMDiff[s] m f :=\\n   330    forall₂_congr fun _ _ => h.contMDiffWithinAt_diffeomorph_comp_iff hm\\n   331  \\n   332  @[simp]\\n   333  theorem contMDiff_diffeomorph_comp_iff {m} (h : M ≃ₘ^n⟮I, J⟯ N) {f : M' → M} (hm : m ≤ n) :\\n   334      CMDiff m (h ∘ f) ↔ CMDiff m f :=\\n   335    forall_congr' fun _ => h.contMDiffWithinAt_diffeomorph_comp_iff hm\\n   336  \\n   337  theorem toOpenPartialHomeomorph_mdifferentiable (h : M ≃ₘ^n⟮I, J⟯ N) (hn : n ≠ 0) :\\n   338      h.toHomeomorph.toOpenPartialHomeomorph.MDifferentiable I J :=\\n   339    ⟨h.mdifferentiableOn _ hn, h.symm.mdifferentiableOn _ hn⟩\\n   340  \\n   341  theorem uniqueMDiffOn_image_aux (h : M ≃ₘ^n⟮I, J⟯ N) (hn : n ≠ 0) {s : Set M}\\n   342      (hs : UniqueMDiff[s]) : UniqueMDiff[h '' s] := by\\n   343    convert! hs.uniqueMDiffOn_preimage (h.toOpenPartialHomeomorph_mdifferentiable hn)\\n   344    simp [h.image_eq_preimage_symm]\\n   345  \\n   346  @[simp]\\n   347  theorem uniqueMDiffOn_image (h : M ≃ₘ^n⟮I, J⟯ N) (hn : n ≠ 0) {s : Set M} :\\n   348      UniqueMDiff[h '' s] ↔ UniqueMDiff[s] :=\\n   349    ⟨fun hs => h.symm_image_image s ▸ h.symm.uniqueMDiffOn_image_aux hn hs,\\n   350      h.uniqueMDiffOn_image_aux hn⟩\\n   351  \\n   352  @[simp]\\n   353  theorem uniqueMDiffOn_preimage (h : M ≃ₘ^n⟮I, J⟯ N) (hn : n ≠ 0) {s : Set N} :\\n   354      UniqueMDiff[h ⁻¹' s] ↔ UniqueMDiff[s] :=\\n   355    h.symm_image_eq_preimage s ▸ h.symm.uniqueMDiffOn_image hn\\n   356  \\n   357  @[simp]\\n   358  theorem uniqueDiffOn_image (h : E ≃ₘ^n⟮𝓘(𝕜, E), 𝓘(𝕜, F)⟯ F) (hn : n ≠ 0) {s : Set E} :\\n   359      UniqueDiffOn 𝕜 (h '' s) ↔ UniqueDiffOn 𝕜 s := by\\n\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"contMDiffAt_iff\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1690,
+   "result_head": "[{\"type\": \"text\", \"text\": \"39 match(es) for 'contMDiffAt_iff' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Algebra/LieGroup.lean:221\\n    rw [contMDiffAt_iff_contDiffAt]\\n- Mathlib/Geometry/Manifold/PartitionOfUnity.lean:208\\n    simp only [← contMDiffAt_iff_contDiffAt] at *\\n- Mathlib/Geometry/Manifold/Instances/UnitsOfNormedAlgebra.lean:81\\n    rw [contMDiffAt_iff_contDiffAt]\\n- Mathlib/Geometry/Manifold/Instances/Icc.lean:71\\n    rw [contMDiffAt_iff]\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:54\\n    theorem contMDiffAt_iff_contDiffAt {f : E → E'} {x : E} :\\n- Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean:58\\n    alias ⟨ContMDiffAt.contDiffAt, ContDiffAt.contMDiffAt⟩ := contMDiffAt_iff_contDiffAt\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:184\\n    theorem contMDiffAt_iff {n : ℕ∞ω} {f : M → M'} {x : M} :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:288\\n    theorem contMDiffAt_iff_target {x : M} :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:328\\n    theorem contMDiffAt_iff_source :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:356\\n    theorem contMDiffAt_iff_source_of_mem_source\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:381\\n    theorem contMDiffAt_iff_target_of_mem_source [IsManifold I' n M']\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:455\\n    theorem contMDiffAt_iff_of_mem_source [IsManifold I n M] [IsManifold I' n M']\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:649\\n    theorem contMDiffAt_iff_nat {n : ℕ∞} :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:668\\n    theorem contMDiffAt_iff_le_ne_infty :\\n- Mathlib/Geometry/Manifold/ContMDiff/Defs.lean:818\\n    theorem contMDiffAt_iff_contMDiffOn_nhds\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 280, \"n\": 100}",
+   "ok": true,
+   "result_chars": 6003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 280–379 of 925):\\n   280          ContinuousWithinAt f s x :=\\n   281        and_iff_left_of_imp <| (continuousAt_extChartAt _).comp_continuousWithinAt\\n   282    simp_rw [cont, ContDiffWithinAtProp, extChartAt, OpenPartialHomeomorph.extend,\\n   283      PartialEquiv.coe_trans, ModelWithCorners.toPartialEquiv_coe,\\n   284      OpenPartialHomeomorph.coe_toPartialEquiv, modelWithCornersSelf_coe, chartAt_self_eq,\\n   285      OpenPartialHomeomorph.refl_apply, id_comp]\\n   286    rfl\\n   287  \\n   288  theorem contMDiffAt_iff_target {x : M} :\\n   289      ContMDiffAt I I' n f x ↔\\n   290        ContinuousAt f x ∧ ContMDiffAt I 𝓘(𝕜, E') n (extChartAt I' (f x) ∘ f) x := by\\n   291    rw [ContMDiffAt, ContMDiffAt, contMDiffWithinAt_iff_target, continuousWithinAt_univ]\\n   292  \\n   293  theorem continuousWithinAt_iff_source :\\n   294      ContinuousWithinAt f s x ↔\\n   295        ContinuousWithinAt (f ∘ (extChartAt I x).symm)\\n   296          ((extChartAt I x).symm ⁻¹' s ∩ range I) (extChartAt I x x) := by\\n   297    refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩\\n   298    · apply h.comp_of_eq\\n   299      · exact (continuousAt_extChartAt_symm x).continuousWithinAt\\n   300      · exact (mapsTo_preimage _ _).mono_left inter_subset_left\\n   301      · exact extChartAt_to_inv x\\n   302    · rw [← continuousWithinAt_inter (extChartAt_source_mem_nhds (I := I) x)]\\n   303      have : ContinuousWithinAt ((f ∘ ↑(extChartAt I x).symm) ∘ ↑(extChartAt I x))\\n   304          (s ∩ (extChartAt I x).source) x := by\\n   305        apply h.comp (continuousAt_extChartAt x).continuousWithinAt\\n   306        intro y hy\\n   307        have : (chartAt H x).symm ((chartAt H x) y) = y :=\\n   308          OpenPartialHomeomorph.left_inv _ (by simpa using hy.2)\\n   309        simpa [this] using hy.1\\n   310      apply this.congr\\n   311      · intro y hy\\n   312        have : (chartAt H x).symm ((chartAt H x) y) = y :=\\n   313          OpenPartialHomeomorph.left_inv _ (by simpa using hy.2)\\n   314        simp [this]\\n   315      · simp\\n   316  \\n   317  /-- One can reformulate being `Cⁿ` within a set at a point as being `Cⁿ` in the source space when\\n   318  composing with the extended chart. -/\\n   319  theorem contMDiffWithinAt_iff_source :\\n   320      ContMDiffWithinAt I I' n f s x ↔\\n   321        ContMDiffWithinAt 𝓘(𝕜, E) I' n (f ∘ (extChartAt I x).symm)\\n   322          ((extChartAt I x).symm ⁻¹' s ∩ range I) (extChartAt I x x) := by\\n   323    simp_rw [ContMDiffWithinAt, liftPropWithinAt_iff', ← continuousWithinAt_iff_source]\\n   324    simp only [ContDiffWithinAtProp, mfld_simps, preimage_comp, comp_assoc]\\n   325  \\n   326  /-- One can reformulate being `Cⁿ` at a point as being `Cⁿ` in the source space when\\n   327  composing with the extended chart. -/\\n   328  theorem contMDiffAt_iff_source :\\n   329      ContMDiffAt I I' n f x ↔\\n   330        ContMDiffWithinAt 𝓘(𝕜, E) I' n (f ∘ (extChartAt I x).symm) (range I) (extChartAt I x x) := by\\n   331    rw [← contMDiffWithinAt_univ, contMDiffWithinAt_iff_source]\\n   332    simp\\n   333  \\n   334  section IsManifold\\n   335  \\n   336  theorem contMDiffWithinAt_iff_source_of_mem_maximalAtlas\\n   337      (he : e ∈ maximalAtlas I n M) (hx : x ∈ e.source) :\\n   338      ContMDiffWithinAt I I' n f s x ↔\\n   339        ContMDiffWithinAt 𝓘(𝕜, E) I' n (f ∘ (e.extend I).symm) ((e.extend I).symm ⁻¹' s ∩ range I)\\n   340          (e.extend I x) := by\\n   341    have h2x := hx; rw [← e.extend_source (I := I)] at h2x\\n   342    simp_rw [ContMDiffWithinAt,\\n   343      (contDiffWithinAt_localInvariantProp n).liftPropWithinAt_indep_chart_source he hx,\\n   344      StructureGroupoid.liftPropWithinAt_self_source,\\n   345      e.extend_symm_continuousWithinAt_comp_right_iff, contDiffWithinAtProp_self_source,\\n   346      ContDiffWithinAtProp, Function.comp, e.left_inv hx, (e.extend I).left_inv h2x]\\n   347    rfl\\n   348  \\n   349  theorem contMDiffWithin"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContMDiffAt\", \"ContinuousAt\", \"extChartAt\", \"ModelWithCorners\"]}",
+   "ok": true,
+   "result_chars": 1491,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiffAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ContMDiff/Defs.html#ContMDiffAt\\\"},{\\\"decl\\\":\\\"ContinuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousAt\\\"},{\\\"decl\\\":\\\"extChartAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/ExtChartAt.html#extChartAt\\\"},{\\\"decl\\\":\\\"ModelWithCorners\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/Basic.html#ModelWithCorners\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"contMDiffAt_iff_target\"]}",
+   "ok": true,
+   "result_chars": 555,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"contMDiffAt_iff_target\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ContMDiff/Defs.html#contMDiffAt_iff_target\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 288, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1748,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 288–317 of 925):\\n   288  theorem contMDiffAt_iff_target {x : M} :\\n   289      ContMDiffAt I I' n f x ↔\\n   290        ContinuousAt f x ∧ ContMDiffAt I 𝓘(𝕜, E') n (extChartAt I' (f x) ∘ f) x := by\\n   291    rw [ContMDiffAt, ContMDiffAt, contMDiffWithinAt_iff_target, continuousWithinAt_univ]\\n   292  \\n   293  theorem continuousWithinAt_iff_source :\\n   294      ContinuousWithinAt f s x ↔\\n   295        ContinuousWithinAt (f ∘ (extChartAt I x).symm)\\n   296          ((extChartAt I x).symm ⁻¹' s ∩ range I) (extChartAt I x x) := by\\n   297    refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩\\n   298    · apply h.comp_of_eq\\n   299      · exact (continuousAt_extChartAt_symm x).continuousWithinAt\\n   300      · exact (mapsTo_preimage _ _).mono_left inter_subset_left\\n   301      · exact extChartAt_to_inv x\\n   302    · rw [← continuousWithinAt_inter (extChartAt_source_mem_nhds (I := I) x)]\\n   303      have : ContinuousWithinAt ((f ∘ ↑(extChartAt I x).symm) ∘ ↑(extChartAt I x))\\n   304          (s ∩ (extChartAt I x).source) x := by\\n   305        apply h.comp (continuousAt_extChartAt x).continuousWithinAt\\n   306        intro y hy\\n   307        have : (chartAt H x).symm ((chartAt H x) y) = y :=\\n   308          OpenPartialHomeomorph.left_inv _ (by simpa using hy.2)\\n   309        simpa [this] using hy.1\\n   310      apply this.congr\\n   311      · intro y hy\\n   312        have : (chartAt H x).symm ((chartAt H x) y) = y :=\\n   313          OpenPartialHomeomorph.left_inv _ (by simpa using hy.2)\\n   314        simp [this]\\n   315      · simp\\n   316  \\n   317  /-- One can reformulate being `Cⁿ` within a set at a point as being `Cⁿ` in the source space when\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"variable.*ModelWithCorners.*ChartedSpace.*SmoothManifold\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'variable.*ModelWithCorners.*ChartedSpace.*SmoothManifold' under Mathlib/.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean\", \"line\": 50, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Geometry/Manifold/ContMDiff/Defs.lean  (lines 50–149 of 925):\\n    50  \\n    51  open Set Function Filter ChartedSpace IsManifold\\n    52  \\n    53  open scoped Topology Manifold ContDiff\\n    54  \\n    55  /-! ### Definition of `Cⁿ` functions between manifolds -/\\n    56  \\n    57  \\n    58  variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]\\n    59    -- Prerequisite typeclasses to say that `M` is a manifold over the pair `(E, H)`\\n    60    {E : Type*}\\n    61    [NormedAddCommGroup E] [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H]\\n    62    {I : ModelWithCorners 𝕜 E H} {M : Type*} [TopologicalSpace M] [ChartedSpace H M]\\n    63    -- Prerequisite typeclasses to say that `M'` is a manifold over the pair `(E', H')`\\n    64    {E' : Type*}\\n    65    [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {H' : Type*} [TopologicalSpace H']\\n    66    {I' : ModelWithCorners 𝕜 E' H'} {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']\\n    67    -- Prerequisite typeclasses to say that `M''` is a manifold over the pair `(E'', H'')`\\n    68    {E'' : Type*}\\n    69    [NormedAddCommGroup E''] [NormedSpace 𝕜 E''] {H'' : Type*} [TopologicalSpace H'']\\n    70    {I'' : ModelWithCorners 𝕜 E'' H''} {M'' : Type*} [TopologicalSpace M''] [ChartedSpace H'' M'']\\n    71    -- declare functions, sets, points and smoothness indices\\n    72    {e : OpenPartialHomeomorph M H} {e' : OpenPartialHomeomorph M' H'}\\n    73    {f f₁ : M → M'} {s s₁ t : Set M} {x x' : M} {y : M'} {m n : ℕ∞ω}\\n    74  \\n    75  variable (I I') in\\n    76  /-- Property in the model space of a model with corners of being `C^n` within a set at a point,\\n    77  when read in the model vector space. This property will be lifted to manifolds to define `C^n`\\n    78  functions between manifolds.\\n    79  The parameter `n` belongs to `ℕ∞ω` (accessible in the `ContDiff` scope), i.e. it can be a natural\\n    80  number, `∞`, or `ω`, where `C^ω` corresponds to analytic functions.\\n    81  -/\\n    82  def ContDiffWithinAtProp (n : ℕ∞ω) (f : H → H') (s : Set H) (x : H) : Prop :=\\n    83    ContDiffWithinAt 𝕜 n (I' ∘ f ∘ I.symm) (I.symm ⁻¹' s ∩ range I) (I x)\\n    84  \\n    85  theorem contDiffWithinAtProp_self_source {f : E → H'} {s : Set E} {x : E} :\\n    86      ContDiffWithinAtProp 𝓘(𝕜, E) I' n f s x ↔ ContDiffWithinAt 𝕜 n (I' ∘ f) s x := by\\n    87    simp_rw [ContDiffWithinAtProp, modelWithCornersSelf_coe, range_id, inter_univ,\\n    88      modelWithCornersSelf_coe_symm, CompTriple.comp_eq, preimage_id_eq, id_eq]\\n    89  \\n    90  theorem contDiffWithinAtProp_self {f : E → E'} {s : Set E} {x : E} :\\n    91      ContDiffWithinAtProp 𝓘(𝕜, E) 𝓘(𝕜, E') n f s x ↔ ContDiffWithinAt 𝕜 n f s x :=\\n    92    contDiffWithinAtProp_self_source\\n    93  \\n    94  theorem contDiffWithinAtProp_self_target {f : H → E'} {s : Set H} {x : H} :\\n    95      ContDiffWithinAtProp I 𝓘(𝕜, E') n f s x ↔\\n    96        ContDiffWithinAt 𝕜 n (f ∘ I.symm) (I.symm ⁻¹' s ∩ range I) (I x) :=\\n    97    Iff.rfl\\n    98  \\n    99  /-- Being `Cⁿ` in the model space is a local property, invariant under `Cⁿ` maps. Therefore,\\n   100  it lifts nicely to manifolds. -/\\n   101  theorem contDiffWithinAt_localInvariantProp_of_le (n m : ℕ∞ω) (hmn : m ≤ n) :\\n   102      (contDiffGroupoid n I).LocalInvariantProp (contDiffGroupoid n I')\\n   103        (ContDiffWithinAtProp I I' m) where\\n   104    is_local {s x u f} u_open xu := by\\n   105      have : I.symm ⁻¹' (s ∩ u) ∩ range I = I.symm ⁻¹' s ∩ range I ∩ I.symm ⁻¹' u := by\\n   106        simp only [inter_right_comm, preimage_inter]\\n   107      rw [ContDiffWithinAtProp, ContDiffWithinAtProp, this]\\n   108      symm\\n   109      apply contDiffWithinAt_inter\\n   110      have : u ∈ 𝓝 (I.symm (I x)) := by\\n   111        rw [ModelWithCorners.left_inv]\\n   112        exact u_open.mem_nhds xu\\n   113      apply ContinuousAt.preimage_mem_nhds I.continuous_symm.continuousAt this\\n   114    right_invariance' {s x f e} he hx h := by\\n   115      rw "
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"NontriviallyNormedField\", \"ChartedSpace\", \"𝓘\", \"ℕ∞ω\"]}",
+   "ok": true,
+   "result_chars": 1309,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NontriviallyNormedField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Field.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Field.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Field/Basic.html#NontriviallyNormedField\\\"},{\\\"decl\\\":\\\"ChartedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ChartedSpace\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ChartedSpace.html#ChartedSpace\\\"},{\\\"decl\\\":\\\"𝓘\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ℕ∞ω\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*𝓘\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 655,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'notation.*𝓘' (via ripgrep):\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:216\\n    @[inherit_doc] scoped[Manifold] notation \\\"𝓘(\\\" 𝕜 \\\", \\\" E \\\")\\\" => modelWithCornersSelf 𝕜 E\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:219\\n    scoped[Manifold] notation \\\"𝓘(\\\" 𝕜 \\\")\\\" => modelWithCornersSelf 𝕜 𝕜\\n- Mathlib/Geometry/Manifold/Diffeomorph.lean:97\\n    scoped[Manifold] notation E \\\" ≃ₘ^\\\" n:1000 \\\"[\\\" 𝕜 \\\"] \\\" E' => Diffeomorph 𝓘(𝕜, E) 𝓘(𝕜, E') E E' n\\n- Mathlib/Geometry/Manifold/Diffeomorph.lean:100\\n    scoped[Manifold] notation3 E \\\" ≃ₘ[\\\" 𝕜 \\\"] \\\" E' => Diffeomorph 𝓘(𝕜, E) 𝓘(𝕜, E') E E' ∞\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev.*𝓘\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'abbrev.*𝓘' under Mathlib/.\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"modelWithCornersSelf\", \"NormedAddCommGroup\", \"NormedSpace\"]}",
+   "ok": true,
+   "result_chars": 1179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"modelWithCornersSelf\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/Basic.html#modelWithCornersSelf\\\"},{\\\"decl\\\":\\\"NormedAddCommGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Group/Defs.html#NormedAddCommGroup\\\"},{\\\"decl\\\":\\\"NormedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Module.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Module.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Module/Basic.html#NormedSpace\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(notation|abbrev).*∞ω\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(notation|abbrev).*∞ω' (via ripgrep):\\n- Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean:116\\n    scoped[ContDiff] notation \\\"ℕ∞ω\\\" => WithTop ℕ∞\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"WithTop\", \"ENat\"]}",
+   "ok": true,
+   "result_chars": 722,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"WithTop\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.TypeTags\\\",\\\"import_line\\\":\\\"import Mathlib.Order.TypeTags\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/TypeTags.html#WithTop\\\"},{\\\"decl\\\":\\\"ENat\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENat.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.ENat.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ENat/Defs.html#ENat\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContMDiffAt\", \"modelWithCornersSelf\", \"extChartAt\", \"ContinuousAt\"]}",
+   "ok": true,
+   "result_chars": 1499,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContMDiffAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.ContMDiff.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/ContMDiff/Defs.html#ContMDiffAt\\\"},{\\\"decl\\\":\\\"modelWithCornersSelf\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/Basic.html#modelWithCornersSelf\\\"},{\\\"decl\\\":\\\"extChartAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\\",\\\"import_line\\\":\\\"import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Geometry/Manifold/IsManifold/ExtChartAt.html#extChartAt\\\"},{\\\"decl\\\":\\\"ContinuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousAt\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem contMDiffAt_iff_continuous_and_comp_immersion {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E E' : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    [NormedAddCommGroup E'] [NormedSpace 𝕜 E']\n    {H H' : Type*} [TopologicalSpace H] [TopologicalSpace H']\n    {I : ModelWithCorners 𝕜 E H} {I' : ModelWithCorners 𝕜 E' H'}\n    {M M' : Type*} [TopologicalSpace M] [ChartedSpace H M]\n    [TopologicalSpace M'] [ChartedSpace H' M']\n    {n : ℕ∞ω} {f : M → M'} {x : M} :\n    ContMDiffAt I I' n f x ↔\n      ContinuousAt f x ∧ ContMDiffAt I 𝓘(𝕜, E') n (extChartAt I' (f x) ∘ f) x :=\n  sorry"
+}

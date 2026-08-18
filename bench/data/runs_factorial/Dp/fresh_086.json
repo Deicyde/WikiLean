@@ -1,0 +1,275 @@
+{
+ "task_id": "fresh_086",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:42:14Z",
+ "wall_s": 101.2,
+ "transcript_stats": {
+  "turns": 29,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_search": 13,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__decl_exists": 9,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_transfer": 1
+  },
+  "tokens_in": 186,
+  "tokens_out": 7719,
+  "cost_usd": 0.10624275000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"path-connected topological space\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3845,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"path-connected topological space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Topological space\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q472971\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Space (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Curve\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Path\\\",\\\"label\\\":\\\"Path\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"label\\\":\\\"Hausdorff space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"label\\\":\\\"Homeomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q680081\\\",\\\"label\\\":\\\"Separable space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q213363\\\",\\\"label\\\":\\\"Open set\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q2478475\\\",\\\"label\\\":\\\"Neighbourhood (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q3552958\\\",\\\"label\\\":\\\"Differentiable manifold\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q381892\\\",\\\"label\\\":\\\"Compact space\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":104,\\\"withheld_by_shard\\\":358,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class TopologicalSpace (X : Type u) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#TopologicalSpace\\\",\\\"via_cell\\\":\\\"cell:Q179899\\\",\\\"cell_label\\\":\\\"Topological space\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Path\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Path\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Path\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Path (x y : X) extends C(I, X) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Path.html#Path\\\",\\\"via_cell\\\":\\\"cell:Q161973\\\",\\\"cell_label\\\":\\\"Curve\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Path\\\",\\\"label\\\":\\\"Path\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Cartesian product of path-connected sets\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b82b1693743b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b82b1693743b2\",\"timestamp\":\"2026-08-08T03:42:20Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"path-connected\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b82c0fc6943b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b82c0fc6943b2\",\"timestamp\":\"2026-08-08T03:42:22Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsPathConnected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2135,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsPathConnected\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsPathConnected.image\\\",\\\"label\\\":\\\"IsPathConnected.image\\\",\\\"aka\\\":[\\\"When Can Neural Networks Learn Connected Decision Regions?\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsPathConnected.subset_pathComponent\\\",\\\"label\\\":\\\"IsPathConnected.subset_pathComponent\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:isPathConnected_compl_singleton_of_one_lt_rank\\\",\\\"label\\\":\\\"isPathConnected_compl_singleton_of_one_lt_rank\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Convex.isPathConnected\\\",\\\"label\\\":\\\"Convex.isPathConnected\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsOpen.isConnected_iff_isPathConnected\\\",\\\"label\\\":\\\"IsOpen.isConnected_iff_isPathConnected\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:SemilocallySimplyConnectedAt.exists_isOpen_mem_isPathConnected_isPathHomotopyTrivial\\\",\\\"label\\\":\\\"SemilocallySimplyConnectedAt.exists_isOpen_mem_isPathConnected_isPathHomotopyTrivial\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicTopology/SemilocallySimplyConnected\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.isPathConnected_cube\\\",\\\"label\\\":\\\"TauCeti.isPathConnected_cube\\\",\\\"supercell\\\":\\\"path:TauCeti/Topology/Homotopy\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.isPathConnected_cubeBoundary\\\",\\\"label\\\":\\\"TauCeti.isPathConnected_cubeBoundary\\\",\\\"supercell\\\":\\\"path:TauCeti/Topology/Homotopy\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.isPathConnected_cubeBoundary_fin\\\",\\\"label\\\":\\\"TauCeti.isPathConnected_cubeBoundary_fin\\\",\\\"supercell\\\":\\\"path:TauCeti/Topology/Homotopy\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:exists_isOpen_mem_isPathConnected_isPathHomotopyTrivial\\\",\\\"label\\\":\\\"exists_isOpen_mem_isPathConnected_isPathHomotopyTrivial\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicTopology/SemilocallySimplyConnected\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:IsPathConnected\"}",
+   "ok": false,
+   "result_chars": 385,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:IsPathConnected\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"product path connected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"product path connected\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:IsPathConnected.image\"}",
+   "ok": true,
+   "result_chars": 1812,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:IsPathConnected.image\\\",\\\"id\\\":\\\"cell:decl:Mathlib:IsPathConnected.image\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"IsPathConnected.image\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:IsPathConnected.image\\\",\\\"anchor\\\":\\\"decl:Mathlib:IsPathConnected.image\\\",\\\"label\\\":\\\"IsPathConnected.image\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Connected/PathConnected\\\"],\\\"f\\\":128,\\\"xy\\\":[-765.9,-283.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:IsPathConnected.image\\\",\\\"label\\\":\\\"IsPathConnected.image\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"code\\\":\\\"theorem IsPathConnected.image (hF : IsPathConnected F) {f : X → Y} (hf : Continuous f) :\\\\n    IsPathConnected (f '' F) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1901.08710#4\\\",\\\"label\\\":\\\"When Can Neural Networks Learn Connected Decision Regions?\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1901.08710\\\",\\\"ref\\\":\\\"4\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected\\\",\\\"label\\\":\\\"Connected\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"label\\\":\\\"PathConnected\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi.isPathConnected\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b82e12a6643b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b82e12a6643b2\",\"timestamp\":\"2026-08-08T03:42:28Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"prod isPathConnected\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b82edcaf143b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b82edcaf143b2\",\"timestamp\":\"2026-08-08T03:42:30Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PathConnectedSpace prod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace prod\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsPathConnected\", \"Path\", \"TopologicalSpace\", \"Prod.mk\", \"Pi.isPathConnected\"]}",
+   "ok": true,
+   "result_chars": 1698,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsPathConnected\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#IsPathConnected\\\"},{\\\"decl\\\":\\\"Path\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Path\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Path\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Path.html#Path\\\"},{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#TopologicalSpace\\\"},{\\\"decl\\\":\\\"Prod.mk\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Prod.mk\\\"},{\\\"decl\\\":\\\"Pi.isPathConnected\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Convex.isPathConnected\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Analysis.Convex.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Convex.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Convex/PathConnected.html#Convex.isPathConnected\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"Mathlib.Topology.Connected.PathConnected\", \"limit\": 50, \"kinds\": \"depends\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b83148d8443b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b83148d8443b2\",\"timestamp\":\"2026-08-08T03:42:36Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"isPathConnected_prod\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b8325aa2f43b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b8325aa2f43b2\",\"timestamp\":\"2026-08-08T03:42:39Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Prod isPathConnected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Prod isPathConnected\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Cartesian product topology\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b83338cf443b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b83338cf443b2\",\"timestamp\":\"2026-08-08T03:42:41Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"isPathConnected_prod\", \"IsPathConnected.prod\", \"PathConnectedSpace\", \"isPathConnected_prod_mk\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b83560ddc43b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b83560ddc43b2\",\"timestamp\":\"2026-08-08T03:42:46Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PathConnectedSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"aka\\\":[\\\"Connectedness of the Moduli Space of Genus 1 Planar Tropical Curves\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace.connectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace.connectedSpace\\\",\\\"aka\\\":[\\\"Metric characterization of connectedness for topological spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:pathConnectedSpace_iff_connectedSpace\\\",\\\"label\\\":\\\"pathConnectedSpace_iff_connectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace\\\",\\\"aka\\\":[\\\"Corona-type theorems and division in some function algebras on planar domains\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ChartedSpace.locPathConnectedSpace\\\",\\\"label\\\":\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/ChartedSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContractibleSpace.toPathConnectedSpace\\\",\\\"label\\\":\\\"ContractibleSpace.toPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Homotopy/Contractible\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"label\\\":\\\"IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instPathConnectedSpace\\\",\\\"label\\\":\\\"Real.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"label\\\":\\\"SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"PathConnectedSpace\", \"instPathConnectedSpace\", \"Pi.instPathConnectedSpace\", \"Prod.instPathConnectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1293,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PathConnectedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#PathConnectedSpace\\\"},{\\\"decl\\\":\\\"instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Prod.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Prod pathConnected\", \"limit\": 15}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b839fcf1b43b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b839fcf1b43b2\",\"timestamp\":\"2026-08-08T03:42:58Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.prod\", \"instTopologicalSpaceProd\", \"Prod\", \"isPathConnected_prod\", \"IsPathConnected.prod_mk\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b83c3db9443b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b83c3db9443b2\",\"timestamp\":\"2026-08-08T03:43:04Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"set product\", \"type\": \"cell\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"set product\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsConnected prod\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b84082dd543b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b84082dd543b2\",\"timestamp\":\"2026-08-08T03:43:15Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsConnected\", \"Continuous\", \"continuous_fst\", \"Prod.fst\", \"Prod.snd\"]}",
+   "ok": true,
+   "result_chars": 1564,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsConnected\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/Basic.html#IsConnected\\\"},{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"},{\\\"decl\\\":\\\"continuous_fst\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Constructions.SumProd\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Constructions.SumProd\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Constructions/SumProd.html#continuous_fst\\\"},{\\\"decl\\\":\\\"Prod.fst\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Prod.fst\\\"},{\\\"decl\\\":\\\"Prod.snd\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Prod.snd\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"isPathConnected\", \"limit\": 20}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b843eddaa43b2\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b843eddaa43b2\",\"timestamp\":\"2026-08-08T03:43:24Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"Set.prod\"}",
+   "ok": true,
+   "result_chars": 406,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"Set.prod\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Operations\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Operations.html#Set.prod\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"SProd\", \"instHProd\", \"HMul.hMul\"]}",
+   "ok": true,
+   "result_chars": 919,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"SProd\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.SProd\\\",\\\"import_line\\\":\\\"import Mathlib.Data.SProd\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/SProd.html#SProd\\\"},{\\\"decl\\\":\\\"instHProd\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"HMul.hMul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#HMul.hMul\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"isPathConnected_prod_mk\", \"IsPathConnected.prod_mk\", \"isPathConnected_prod\"]}",
+   "ok": true,
+   "result_chars": 952,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"isPathConnected_prod_mk\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IsPathConnected.prod_mk\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"isPathConnected_prod\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Prod.topologicalSpace\", \"instTopologicalSpaceProd\", \"Prod.map\"]}",
+   "ok": true,
+   "result_chars": 1018,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Prod.topologicalSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"instTopologicalSpaceProd\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Constructions.SumProd\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Constructions.SumProd\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Constructions/SumProd.html#instTopologicalSpaceProd\\\"},{\\\"decl\\\":\\\"Prod.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Prod.map\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem isPathConnected_prod {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]\n    {s : Set X} {t : Set Y} (hs : IsPathConnected s) (ht : IsPathConnected t) :\n    IsPathConnected (Set.prod s t) := sorry"
+}

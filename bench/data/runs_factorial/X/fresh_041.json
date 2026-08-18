@@ -1,0 +1,352 @@
+{
+ "task_id": "fresh_041",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:26:56Z",
+ "wall_s": 139.0,
+ "transcript_stats": {
+  "turns": 38,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 20,
+   "mcp__formal__decl_grep": 9,
+   "mcp__formal__decl_read": 6,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 186,
+  "tokens_out": 10346,
+  "cost_usd": 0.12142610000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank (M : Module ?R) ?R → ℕ\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank (M : Module ?R) ?R → ℕ': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FractionField\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FractionField': unknown identifier 'FractionField'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank (?M : Module ?R) ?R → ℕ\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank (?M : Module ?R) ?R → ℕ': Unknown identifier `finrank`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FiniteDimensional.finrank\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FiniteDimensional.finrank': unknown identifier 'FiniteDimensional.finrank'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"fraction field\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'fraction field': Unknown identifier `fraction`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank': unknown identifier 'finrank'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Algebra.IsIntegral.rank\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Algebra.IsIntegral.rank': unknown identifier 'Algebra.IsIntegral.rank'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsLocalization\"}",
+   "ok": true,
+   "result_chars": 1867,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 642 declarations mentioning IsLocalization.\\n- IsLocalization   [Mathlib.RingTheory.Localization.Defs]\\n    The typeclass `IsLocalization (M : Submonoid R) S` where `S` is an `R`-algebra expresses that `S` is isomorphic to the localization of `R` at `M`.\\n- IsLocalization.fintype'   [Mathlib.RingTheory.Localization.Defs]\\n    The localization of a `Fintype` is a `Fintype`. Cannot be an instance.\\n- IsLocalization.toLocalizationMap   [Mathlib.RingTheory.Localization.Defs]\\n    `IsLocalization.toLocalizationMap M S` shows `S` is the monoid localization of `R` at `M`.\\n- Localization.isLocalization   [Mathlib.RingTheory.Localization.Defs]\\n- IsLocalization.noZeroDivisors   [Mathlib.RingTheory.Localization.Defs]\\n    Any localization of a commutative semiring without zero-divisors also has no zero-divisors.\\n- IsLocalization.mk'   [Mathlib.RingTheory.Localization.Defs]\\n    `IsLocalization.mk' S` is the surjection sending `(x, y) : R × M` to `f x * (f y)⁻¹`.\\n- IsLocalization.sec   [Mathlib.RingTheory.Localization.Defs]\\n    Given a localization map `f : M →* N`, a section function sending `z : N` to some `(x, y) : M × S` such that `f x * (f y)⁻¹ = z`.\\n- IsLocalization.subsingleton   [Mathlib.RingTheory.Localization.Defs]\\n    If `M` contains `0` then the localization at `M` is trivial.\\n- IsLocalization.uniqueOfZeroMem   [Mathlib.RingTheory.Localization.Defs]\\n    Localizing at a submonoid with 0 inside it leads to the trivial ring.\\n- IsLocalization.subsingleton_iff   [Mathlib.RingTheory.Localization.Defs]\\n- isLocalization_iff_isLocalizationMap   [Mathlib.RingTheory.Localization.Defs]\\n- IsLocalization.isDomain_of_le_nonZeroDivisors   [Mathlib.RingTheory.Localization.Defs]\\n    A `CommRing` `S` which is the localization of an integral domain `R` at a subset of non-zero elements is an integral domain.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.coeff_repr\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submodule.coeff_repr': unknown identifier 'Submodule.coeff_repr'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank Module field extension base change\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank Module field extension base change': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank ?M ?R = Module.rank ?M ?S\"}",
+   "ok": true,
+   "result_chars": 1471,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 282 declarations mentioning Cardinal, Module.rank, and Eq.\\n- LinearEquiv.rank_eq   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Two linearly equivalent vector spaces have the same dimension.\\n- rank_top   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_range_of_injective   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_range_of_surjective   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_map_eq   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearEquiv.rank_map_eq   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Pushforwards of submodules along a `LinearEquiv` have the same dimension.\\n- LinearEquiv.ofRankEq   [Mathlib.LinearAlgebra.Dimension.Free]\\n    Two vector spaces are isomorphic if they have the same dimension.\\n- nonempty_linearEquiv_of_rank_eq   [Mathlib.LinearAlgebra.Dimension.Free]\\n    Two vector spaces are isomorphic if they have the same dimension.\\n- LinearEquiv.nonempty_equiv_iff_rank_eq   [Mathlib.LinearAlgebra.Dimension.Free]\\n    **Alias** of `Module.nonempty_linearEquiv_iff_rank_eq`.  ---  Two vector spaces are isomorphic if and only if they have the same dimension.\\n- Module.nonempty_linearEquiv_iff_rank_eq   [Mathlib.LinearAlgebra.Dimension.Free]\\n    Two vector spaces are isomorphic if and only if they have the same dimension.\\n- Subalgebra.rank_top   [Mathlib.LinearAlgebra.Dimension.Constructions]\\n- subalgebra_top_rank_eq_submodule_top_rank   [Mathlib.LinearAlgebra.Dimension.Constructions]\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FractionRing\"}",
+   "ok": true,
+   "result_chars": 1523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 187 declarations mentioning FractionRing.\\n- FractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    The fraction ring of a commutative ring `R` as a quotient type.  We instantiate this definition as generally as possible, and assume that the commutative ring `\\n- FractionRing.instDecidableEq   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.instNontrivial   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.unique   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.field   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\\n    This is not an instance because it creates a diamond when `K = FractionRing R`. Should usually be introduced locally along with `isScalarTower_liftAlgebra` See \\n- FractionRing.instIsFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.algEquiv   [Mathlib.RingTheory.Localization.FractionRing]\\n    Given a ring `A` and a localization map to a fraction ring `f : A →+* K`, we get an `A`-isomorphism between the fraction ring of `A` as a quotient type and `K`.\\n- FractionRing.instFaithfulSMul   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.instIsScalarTower   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.isScalarTower_liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.algebraMap_liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(M : Type*) [Module R M] [Module S M] rank\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(M : Type*) [Module R M] [Module S M] rank': Unknown identifier `M`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsLocalization rank dimension\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLocalization rank dimension': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*rank.*localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*rank.*localization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*Module\\\\.rank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2239,
+   "result_head": "[{\"type\": \"text\", \"text\": \"138 match(es) for '(theorem|lemma).*Module\\\\\\\\.rank' (via ripgrep):\\n- Mathlib/FieldTheory/Finiteness.lean:31\\n    theorem iff_rank_lt_aleph0 : IsNoetherian K V ↔ Module.rank K V < ℵ₀ := by\\n- Mathlib/Algebra/QuadraticAlgebra/Defs.lean:425\\n    theorem rank_eq_two [StrongRankCondition R] : Module.rank R (QuadraticAlgebra R a b) = 2 := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:270\\n    theorem rank_eq_one_iff : Module.rank F K = 1 ↔ K = ⊥ := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:280\\n    protected theorem rank_bot : Module.rank F (⊥ : IntermediateField F E) = 1 := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:287\\n    @[simp] theorem rank_bot' : Module.rank (⊥ : IntermediateField F E) E = Module.rank F E := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:294\\n    @[simp] protected theorem rank_top : Module.rank (⊤ : IntermediateField F E) E = 1 :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:301\\n    @[simp] theorem rank_top' : Module.rank F (⊤ : IntermediateField F E) = Module.rank F E :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:328\\n    theorem rank_adjoin_eq_one_iff : Module.rank F (adjoin F S) = 1 ↔ S ⊆ (⊥ : IntermediateField F E) :=\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:343\\n    theorem bot_eq_top_of_rank_adjoin_eq_one (h : ∀ x : E, Module.rank F F⟮x⟯ = 1) :\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:355\\n    theorem subsingleton_of_rank_adjoin_eq_one (h : ∀ x : E, Module.rank F F⟮x⟯ = 1) :\\n- Mathlib/FieldTheory/IntermediateField/Algebraic.lean:56\\n    theorem rank_eq_rank_subalgebra : Module.rank K F.toSubalgebra = Module.rank K F :=\\n- Mathlib/FieldTheory/RatFunc/Basic.lean:782\\n    theorem rank_ratFunc_ratFunc : Module.rank k⟮X⟯ K⟮X⟯ = Module.rank k K := by\\n- Mathlib/FieldTheory/Fixed.lean:262\\n    theorem rank_le_card : Module.rank (FixedPoints.subfield G F) F ≤ Fintype.card G :=\\n- Mathlib/Algebra/Quaternion.lean:532\\n    theorem rank_eq_four [StrongRankCondition R] : Module.rank R ℍ[R,c₁,c₂,c₃] = 4 := by\\n- Mathlib/Algebra/Quaternion.lean:972\\n    theorem rank_eq_four [StrongRankCondition R] : Module.rank R ℍ[R] = 4 :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean\", \"line\": 287, \"n\": 15}",
+   "ok": true,
+   "result_chars": 975,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean  (lines 287–301 of 791):\\n   287  @[simp] theorem rank_bot' : Module.rank (⊥ : IntermediateField F E) E = Module.rank F E := by\\n   288    rw [← rank_mul_rank F (⊥ : IntermediateField F E) E, IntermediateField.rank_bot, one_mul]\\n   289  \\n   290  @[simp]\\n   291  theorem finrank_bot' : finrank (⊥ : IntermediateField F E) E = finrank F E :=\\n   292    congr(Cardinal.toNat $(rank_bot'))\\n   293  \\n   294  @[simp] protected theorem rank_top : Module.rank (⊤ : IntermediateField F E) E = 1 :=\\n   295    Subalgebra.bot_eq_top_iff_rank_eq_one.mp <| top_le_iff.mp fun x _ ↦ ⟨⟨x, trivial⟩, rfl⟩\\n   296  \\n   297  @[simp]\\n   298  protected theorem finrank_top : finrank (⊤ : IntermediateField F E) E = 1 :=\\n   299    rank_eq_one_iff_finrank_eq_one.mp IntermediateField.rank_top\\n   300  \\n   301  @[simp] theorem rank_top' : Module.rank F (⊤ : IntermediateField F E) = Module.rank F E :=\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean\", \"line\": 301, \"n\": 15}",
+   "ok": true,
+   "result_chars": 810,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean  (lines 301–315 of 791):\\n   301  @[simp] theorem rank_top' : Module.rank F (⊤ : IntermediateField F E) = Module.rank F E :=\\n   302    rank_top F E\\n   303  \\n   304  @[simp] theorem finrank_top' : finrank F (⊤ : IntermediateField F E) = finrank F E :=\\n   305    finrank_top F E\\n   306  \\n   307  lemma finrank_eq_one_iff_eq_top {K : IntermediateField F E} :\\n   308      Module.finrank K E = 1 ↔ K = ⊤ := by\\n   309    refine ⟨?_, (· ▸ IntermediateField.finrank_top)⟩\\n   310    rw [← Subalgebra.bot_eq_top_iff_finrank_eq_one, ← top_le_iff, ← top_le_iff]\\n   311    intro H x _\\n   312    obtain ⟨x, rfl⟩ := @H x IntermediateField.mem_top\\n   313    exact x.2\\n   314  \\n   315  theorem bot_eq_top_iff_finrank_eq_one :\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finrank ?M ?R\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finrank ?M ?R': Unknown identifier `finrank`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*rank_mul_rank\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 480,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*rank_mul_rank' (via ripgrep):\\n- Mathlib/FieldTheory/Relrank.lean:108\\n    theorem relrank_mul_rank_top (h : A ≤ B) : relrank A B * Module.rank B E = Module.rank A E := by\\n- Mathlib/FieldTheory/Relrank.lean:429\\n    theorem relrank_mul_rank_top (h : A ≤ B) : relrank A B * Module.rank B E = Module.rank A E :=\\n- Mathlib/LinearAlgebra/Dimension/Free.lean:58\\n    theorem rank_mul_rank (A : Type v) [AddCommMonoid A]\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Free.lean\", \"line\": 58, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1378,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Free.lean  (lines 58–82 of 391):\\n    58  theorem rank_mul_rank (A : Type v) [AddCommMonoid A]\\n    59      [Module K A] [Module F A] [IsScalarTower F K A] [Module.Free K A] :\\n    60      Module.rank F K * Module.rank K A = Module.rank F A := by\\n    61    convert! lift_rank_mul_lift_rank F K A <;> rw [lift_id]\\n    62  \\n    63  /-- Tower law: if `A` is a `K`-module and `K` is an extension of `F` then\\n    64  $\\\\operatorname{rank}_F(A) = \\\\operatorname{rank}_F(K) * \\\\operatorname{rank}_K(A)$. -/\\n    65  theorem Module.finrank_mul_finrank : finrank F K * finrank K A = finrank F A := by\\n    66    simp_rw [finrank]\\n    67    rw [← toNat_lift.{w} (Module.rank F K), ← toNat_lift.{v} (Module.rank K A), ← toNat_mul,\\n    68      lift_rank_mul_lift_rank, toNat_lift]\\n    69  \\n    70  end Tower\\n    71  \\n    72  variable {R : Type u} {S : Type*} {M M₁ : Type v} {M' : Type v'}\\n    73  variable [Semiring R]\\n    74  variable [AddCommMonoid M] [Module R M] [Module.Free R M]\\n    75  variable [AddCommMonoid M'] [Module R M'] [Module.Free R M']\\n    76  variable [AddCommMonoid M₁] [Module R M₁] [Module.Free R M₁]\\n    77  \\n    78  namespace Module.Free\\n    79  \\n    80  variable {N : Type v} [AddCommMonoid N] [Module R N]\\n    81  variable {N' : Type v'} [AddCommMonoid N'] [Module R N']\\n    82  \\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank ?F (?F : Type*) [Field ?F]\"}",
+   "ok": true,
+   "result_chars": 266,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.rank ?F (?F : Type*) [Field ?F]': Function expected at\\n  Module.rank ?F ?F\\nbut this term has type\\n  Cardinal.{u_1}\\n\\nNote: Expected a function because this term is being applied to the argument\\n  [Field ?F]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*rank.*field.*fraction\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*rank.*field.*fraction' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank F K = 1\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank F K = 1': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*rank.*equation.*field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*rank.*equation.*field' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*rank.*Field\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1499,
+   "result_head": "[{\"type\": \"text\", \"text\": \"47 match(es) for '(theorem|lemma).*rank.*Field' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:21\\n    theorem Subalgebra.isSimpleOrder_of_finrank_prime (F A) [Field F] [Ring A] [IsDomain A]\\n- Mathlib/Algebra/Module/SpanRankOperations.lean:58\\n    lemma TensorProduct.spanFinrank_top_eq_of_residueField (fg : N.FG) :\\n- Mathlib/Algebra/Category/ModuleCat/Simple.lean:47\\n    theorem simple_of_finrank_eq_one {k : Type*} [Field k] [Algebra k R] {V : ModuleCat R}\\n- Mathlib/LinearAlgebra/Dimension/ErdosKaplansky.lean:113\\n    theorem rank_dual_eq_card_dual_of_aleph0_le_rank {K V} [Field K] [AddCommGroup V] [Module K V]\\n- Mathlib/LinearAlgebra/Dimension/ErdosKaplansky.lean:131\\n    theorem lift_rank_lt_rank_dual {K : Type u} {V : Type v} [Field K] [AddCommGroup V] [Module K V]\\n- Mathlib/LinearAlgebra/Dimension/ErdosKaplansky.lean:141\\n    theorem rank_lt_rank_dual {K V : Type u} [Field K] [AddCommGroup V] [Module K V]\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:483\\n    theorem rank_transpose [Field R] [Fintype m] (A : Matrix m n R) : Aᵀ.rank = A.rank := by\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:490\\n    theorem rank_self_mul_transpose [Field R] [LinearOrder R] [IsStrictOrderedRing R]\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:496\\n    theorem rank_eq_finrank_span_row [Field R] [Finite m] (A : Matrix m n R) :\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:501\\n    theorem _root_.LinearIndependent.rank_matrix [Field R] [Fintype m]\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*(Module\\\\.rank|rank_eq).*Field.*Module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 586,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*(Module\\\\\\\\.rank|rank_eq).*Field.*Module' (via ripgrep):\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:287\\n    @[simp] theorem rank_bot' : Module.rank (⊥ : IntermediateField F E) E = Module.rank F E := by\\n- Mathlib/FieldTheory/IntermediateField/Adjoin/Basic.lean:301\\n    @[simp] theorem rank_top' : Module.rank F (⊤ : IntermediateField F E) = Module.rank F E :=\\n- Mathlib/Algebra/Category/ModuleCat/Simple.lean:47\\n    theorem simple_of_finrank_eq_one {k : Type*} [Field k] [Algebra k R] {V : ModuleCat R}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*IsLocalization.*rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 232,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma).*IsLocalization.*rank' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Localization.lean:65\\n    lemma IsLocalization.rank_eq : Module.rank S N = Module.rank R N := by\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4934,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean  (lines 1–100 of 231):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.LocalizedModule.Submodule\\n     9  public import Mathlib.LinearAlgebra.Dimension.DivisionRing\\n    10  public import Mathlib.RingTheory.IsTensorProduct\\n    11  public import Mathlib.RingTheory.Localization.BaseChange\\n    12  public import Mathlib.RingTheory.Localization.FractionRing\\n    13  public import Mathlib.RingTheory.OreLocalization.OreSet\\n    14  \\n    15  /-!\\n    16  # Rank of localization\\n    17  \\n    18  ## Main statements\\n    19  \\n    20  - `IsLocalizedModule.lift_rank_eq`: `rank_Rₚ Mₚ = rank R M`.\\n    21  - `rank_quotient_add_rank_of_isDomain`: The **rank-nullity theorem** for commutative domains.\\n    22  -/\\n    23  \\n    24  public section\\n    25  \\n    26  open Cardinal Module nonZeroDivisors\\n    27  \\n    28  section CommRing\\n    29  \\n    30  universe uR uS uT uM uN uP\\n    31  \\n    32  variable {R : Type uR} (S : Type uS) {M : Type uM} {N : Type uN}\\n    33  variable [CommRing R] [CommRing S] [AddCommGroup M] [AddCommGroup N]\\n    34  variable [Module R M] [Module R N] [Algebra R S] [Module S N] [IsScalarTower R S N]\\n    35  variable (p : Submonoid R) [IsLocalization p S] (f : M →ₗ[R] N) [IsLocalizedModule p f]\\n    36  variable (hp : p ≤ R⁰)\\n    37  \\n    38  section\\n    39  include hp\\n    40  \\n    41  section\\n    42  include f\\n    43  \\n    44  lemma IsLocalizedModule.lift_rank_eq :\\n    45      Cardinal.lift.{uM} (Module.rank R N) = Cardinal.lift.{uN} (Module.rank R M) := by\\n    46    cases subsingleton_or_nontrivial R\\n    47    · simp only [rank_subsingleton, lift_one]\\n    48    apply le_antisymm <;>\\n    49      rw [Module.rank_def, lift_iSup bddAbove_of_small] <;>\\n    50      apply ciSup_le' <;>\\n    51      intro ⟨s, hs⟩\\n    52    exacts [(IsLocalizedModule.linearIndependent_lift p f hs).choose_spec.cardinal_lift_le_rank,\\n    53      hs.of_isLocalizedModule_of_isRegular p f (le_nonZeroDivisors_iff_isRegular.mp hp)\\n    54        |>.cardinal_lift_le_rank]\\n    55  \\n    56  lemma IsLocalizedModule.finrank_eq : finrank R N = finrank R M := by\\n    57    simpa using! congr_arg toNat (lift_rank_eq p f hp)\\n    58  \\n    59  end\\n    60  \\n    61  lemma IsLocalizedModule.rank_eq {N : Type uM} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N)\\n    62      [IsLocalizedModule p f] : Module.rank R N = Module.rank R M := by\\n    63    simpa using lift_rank_eq p f hp\\n    64  \\n    65  lemma IsLocalization.rank_eq : Module.rank S N = Module.rank R N := by\\n    66    cases subsingleton_or_nontrivial R\\n    67    · have := (algebraMap R S).codomain_trivial; simp only [rank_subsingleton]\\n    68    have inj := IsLocalization.injective S hp\\n    69    apply le_antisymm <;> (rw [Module.rank]; apply ciSup_le'; intro ⟨s, hs⟩)\\n    70    · have := (faithfulSMul_iff_algebraMap_injective R S).mpr inj\\n    71      exact (hs.restrict_scalars' R).cardinal_le_rank\\n    72    · have := inj.nontrivial\\n    73      exact (hs.localization S p).cardinal_le_rank\\n    74  \\n    75  end\\n    76  \\n    77  variable (R M) in\\n    78  theorem exists_set_linearIndependent_of_isDomain [IsDomain R] :\\n    79      ∃ s : Set M, #s = Module.rank R M ∧ LinearIndepOn R id s := by\\n    80    obtain ⟨w, hw⟩ :=\\n    81      IsLocalizedModule.linearIndependent_lift R⁰ (LocalizedModule.mkLinearMap R⁰ M) <|\\n    82        Module.Free.chooseBasis (FractionRing R) (LocalizedModule R⁰ M)\\n    83          |>.linearIndependent.restrict_scalars' _\\n    84    refine ⟨Set.range w, ?_, (linearIndepOn_id_range_iff hw.injective).mpr hw⟩\\n    85    apply Cardinal.lift_injective.{max uR uM}\\n    86    rw [Cardinal.mk_range_eq_of_injective hw.injective, ← Module.Free.rank_eq_card_cho"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsLocalization.rank_eq\", \"Module.rank\", \"FractionRing\", \"IsLocalization\", \"IsScalarTower\", \"nonZeroDivisors\"]}",
+   "ok": true,
+   "result_chars": 2167,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsLocalization.rank_eq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Localization\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Localization\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Localization.html#IsLocalization.rank_eq\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"FractionRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/FractionRing.html#FractionRing\\\"},{\\\"decl\\\":\\\"IsLocalization\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/Defs.html#IsLocalization\\\"},{\\\"decl\\\":\\\"IsScalarTower\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Action.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Action/Defs.html#IsScalarTower\\\"},{\\\"decl\\\":\\\"nonZeroDivisors\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.NonZeroDivisors\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.NonZeroDivisors\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/NonZeroDivisors.html#nonZeroDivisors\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*⁰.*nonZeroDivisors\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 223,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'notation.*⁰.*nonZeroDivisors' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/NonZeroDivisors.lean:102\\n    scoped[nonZeroDivisors] notation:9000 M₀ \\\"⁰\\\" => nonZeroDivisors M₀\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean\", \"line\": 55, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Localization.lean  (lines 55–74 of 231):\\n    55  \\n    56  lemma IsLocalizedModule.finrank_eq : finrank R N = finrank R M := by\\n    57    simpa using! congr_arg toNat (lift_rank_eq p f hp)\\n    58  \\n    59  end\\n    60  \\n    61  lemma IsLocalizedModule.rank_eq {N : Type uM} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N)\\n    62      [IsLocalizedModule p f] : Module.rank R N = Module.rank R M := by\\n    63    simpa using lift_rank_eq p f hp\\n    64  \\n    65  lemma IsLocalization.rank_eq : Module.rank S N = Module.rank R N := by\\n    66    cases subsingleton_or_nontrivial R\\n    67    · have := (algebraMap R S).codomain_trivial; simp only [rank_subsingleton]\\n    68    have inj := IsLocalization.injective S hp\\n    69    apply le_antisymm <;> (rw [Module.rank]; apply ciSup_le'; intro ⟨s, hs⟩)\\n    70    · have := (faithfulSMul_iff_algebraMap_injective R S).mpr inj\\n    71      exact (hs.restrict_scalars' R).cardinal_le_rank\\n    72    · have := inj.nontrivial\\n    73      exact (hs.localization S p).cardinal_le_rank\\n    74  \\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FractionRing.instIsLocalization\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FractionRing.instIsLocalization': unknown identifier 'FractionRing.instIsLocalization'\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/FractionRing.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3849,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/FractionRing.lean  (lines 1–80 of 793):\\n     1  /-\\n     2  Copyright (c) 2018 Kenny Lau. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kenny Lau, Mario Carneiro, Johan Commelin, Amelia Livingston, Anne Baanen\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Field.Equiv\\n     9  public import Mathlib.Algebra.Field.Subfield.Basic\\n    10  public import Mathlib.Algebra.Order.GroupWithZero.Submonoid\\n    11  public import Mathlib.Algebra.Order.Ring.Int\\n    12  public import Mathlib.Algebra.Ring.CompTypeclasses\\n    13  public import Mathlib.RingTheory.Localization.Basic\\n    14  public import Mathlib.RingTheory.SimpleRing.Basic\\n    15  \\n    16  /-!\\n    17  # Fraction ring / fraction field Frac(R) as localization\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  * `IsFractionRing R K` expresses that `K` is a field of fractions of `R`, as an abbreviation of\\n    22    `IsLocalization (NonZeroDivisors R) K`\\n    23  \\n    24  ## Main results\\n    25  \\n    26  * `IsFractionRing.field`: a definition (not an instance) stating the localization of an integral\\n    27    domain `R` at `R \\\\ {0}` is a field\\n    28  * `Rat.isFractionRing` is an instance stating `ℚ` is the field of fractions of `ℤ`\\n    29  \\n    30  ## Implementation notes\\n    31  \\n    32  See `Mathlib/RingTheory/Localization/Basic.lean` for a design overview.\\n    33  \\n    34  ## Tags\\n    35  localization, ring localization, commutative ring localization, characteristic predicate,\\n    36  commutative ring, field of fractions\\n    37  -/\\n    38  \\n    39  @[expose] public section\\n    40  \\n    41  assert_not_exists Ideal\\n    42  \\n    43  open nonZeroDivisors\\n    44  \\n    45  variable (R : Type*) [CommRing R] {M : Submonoid R} (S : Type*) [CommRing S]\\n    46  variable [Algebra R S] {P : Type*} [CommRing P]\\n    47  variable {A : Type*} [CommRing A] (K : Type*)\\n    48  \\n    49  -- TODO: should this extend `Algebra` instead of assuming it?\\n    50  -- TODO: this was recently generalized from `CommRing` to `CommSemiring`, but all lemmas below are\\n    51  -- still stated for `CommRing`. Generalize these lemmas where it is appropriate.\\n    52  /-- `IsFractionRing R K` states `K` is the ring of fractions of a commutative ring `R`. -/\\n    53  abbrev IsFractionRing (R : Type*) [CommSemiring R] (K : Type*) [CommSemiring K] [Algebra R K] :=\\n    54    IsLocalization (nonZeroDivisors R) K\\n    55  \\n    56  instance {R : Type*} [Field R] : IsFractionRing R R :=\\n    57    IsLocalization.of_le_isUnit fun _ ↦ isUnit_of_mem_nonZeroDivisors\\n    58  \\n    59  theorem IsFractionRing.of_algEquiv {R : Type*} [CommSemiring R] {K L : Type*}\\n    60      [CommSemiring K] [Algebra R K] [CommSemiring L] [Algebra R L] [h : IsFractionRing R K]\\n    61      (e : K ≃ₐ[R] L) :\\n    62      IsFractionRing R L := IsLocalization.isLocalization_of_algEquiv _ e\\n    63  \\n    64  /-- The cast from `Int` to `Rat` as a `FractionRing`. -/\\n    65  instance Rat.isFractionRing : IsFractionRing ℤ ℚ where\\n    66    map_units := by\\n    67      rintro ⟨x, hx⟩\\n    68      rw [mem_nonZeroDivisors_iff_ne_zero] at hx\\n    69      simpa only [eq_intCast, isUnit_iff_ne_zero, Int.cast_eq_zero, Ne, Subtype.coe_mk] using hx\\n    70    surj := by\\n    71      rintro ⟨n, d, hd, h⟩\\n    72      refine ⟨⟨n, ⟨d, ?_⟩⟩, Rat.mul_den_eq_num _⟩\\n    73      rw [mem_nonZeroDivisors_iff_ne_zero, Int.natCast_ne_zero_iff_pos]\\n    74      exact Nat.zero_lt_of_ne_zero hd\\n    75    exists_of_eq {x y} := by\\n    76      rw [eq_intCast, eq_intCast, Int.cast_inj]\\n    77      rintro rfl\\n    78      use 1\\n    79  \\n    80  /-- As a corollary, `Rat` is also a localization at only positive integers. -/\\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"nonZeroDivisors\"}",
+   "ok": true,
+   "result_chars": 1229,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 882 declarations mentioning nonZeroDivisors.\\n- nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n    The submonoid of non-zero-divisors of a `MonoidWithZero` `M₀`.\\n- nonZeroDivisorsLeft_eq_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- nonZeroDivisorsRight_eq_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- IsUnit.mem_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- isUnit_le_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- IsRegular.mem_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- zero_notMem_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- isUnit_of_mem_nonZeroDivisors   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- nonZeroDivisors.ne_zero   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- instLeftCancelMonoidSubtypeMemSubmonoidNonZeroDivisorsOfIsLeftCancelMulZero   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- instRightCancelMonoidSubtypeMemSubmonoidNonZeroDivisorsOfIsRightCancelMulZero   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\\n- mem_nonZeroDivisors_of_ne_zero   [Mathlib.Algebra.GroupWithZero.NonZeroDivisors]\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsLocalization.rank_eq\", \"Module.rank\", \"FractionRing\", \"nonZeroDivisors\", \"IsScalarTower\", \"Module\", \"CommRing\", \"AddCommGroup\"]}",
+   "ok": true,
+   "result_chars": 2671,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsLocalization.rank_eq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Localization\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Localization\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Localization.html#IsLocalization.rank_eq\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"FractionRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/FractionRing.html#FractionRing\\\"},{\\\"decl\\\":\\\"nonZeroDivisors\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.NonZeroDivisors\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.NonZeroDivisors\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/NonZeroDivisors.html#nonZeroDivisors\\\"},{\\\"decl\\\":\\\"IsScalarTower\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Action.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Action/Defs.html#IsScalarTower\\\"},{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\"},{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"},{\\\"decl\\\":\\\"AddCommGroup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#AddCommGroup\\\"}],\\\"counts\\\":{\\\"total\\\":8,\\\"exists\\\":8,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem fraction_field_rank (R : Type*) [CommRing R] (N : Type*) [AddCommGroup N]\n    [Module R N] [Module (FractionRing R) N] [IsScalarTower R (FractionRing R) N] :\n    Module.rank (FractionRing R) N = Module.rank R N :=\n  IsLocalization.rank_eq (FractionRing R) (nonZeroDivisors R) le_rfl"
+}

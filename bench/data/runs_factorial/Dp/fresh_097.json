@@ -1,0 +1,220 @@
+{
+ "task_id": "fresh_097",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T02:15:38Z",
+ "wall_s": 96.8,
+ "transcript_stats": {
+  "turns": 22,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_search": 7,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_transfer": 1,
+   "mcp__wikibrain__decl_exists": 5
+  },
+  "tokens_in": 114,
+  "tokens_out": 8967,
+  "cost_usd": 0.10108359999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"fixed point theorem continuous function closed interval\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3927,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fixed point theorem continuous function closed interval\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q217608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"fixed point\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics\\\",\\\"label\\\":\\\"Dynamics\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics/FixedPoints\\\",\\\"label\\\":\\\"FixedPoints\\\"}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"label\\\":\\\"Topological space\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"label\\\":\\\"Homeomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"label\\\":\\\"Hausdorff space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q185148\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":100,\\\"withheld_by_shard\\\":395,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\",\\\"via_cell\\\":\\\"cell:Q170058\\\",\\\"cell_label\\\":\\\"Continuous function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Function.fixedPoints\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Dynamics/FixedPoints/Defs.html#Function.fixedPoints\\\",\\\"via_cell\\\":\\\"cell:Q217608\\\",\\\"cell_label\\\":\\\"fixed point\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics\\\",\\\"label\\\":\\\"Dynamics\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics/FixedPoints\\\",\\\"label\\\":\\\"FixedPoints\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"interval contained in image ordered space\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3998,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"interval contained in image ordered space\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q185148\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"id\\\":\\\"cell:Q472971\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Space (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q860623\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"image\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q245098\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q827230\\\",\\\"label\\\":\\\"Lebesgue measure\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1217677\\\",\\\"label\\\":\\\"Fundamental theorem of calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"label\\\":\\\"Real number\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q189156\\\",\\\"label\\\":\\\"Cellular automaton\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q381892\\\",\\\"label\\\":\\\"Compact space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q637347\\\",\\\"label\\\":\\\"Polynomial interpolation\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":111,\\\"withheld_by_shard\\\":181,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\",\\\"via_cell\\\":\\\"cell:Q185148\\\",\\\"cell_label\\\":\\\"Interval (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def image {β : Type v} (f : α → β) (s : Set α) : Set β := {f a | a ∈ s}\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\",\\\"via_cell\\\":\\\"cell:Q860623\\\",\\\"cell_label\\\":\\\"image\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set\\\",\\\"label\\\":\\\"Set\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Set/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q217608\"}",
+   "ok": true,
+   "result_chars": 1260,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q217608\\\",\\\"id\\\":\\\"cell:Q217608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"fixed point\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q217608\\\",\\\"anchor\\\":\\\"Q217608\\\",\\\"label\\\":\\\"fixed point\\\",\\\"supercells\\\":[\\\"path:Mathlib/Dynamics/FixedPoints\\\"],\\\"f\\\":32,\\\"xy\\\":[3132.8,-253.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q217608\\\",\\\"label\\\":\\\"fixed point\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"point that is left unchanged by a function\\\",\\\"slug\\\":\\\"Fixed_point_(mathematics)\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Function.fixedPoints\\\",\\\"label\\\":\\\"Function.fixedPoints\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.FixedPoints.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics\\\",\\\"label\\\":\\\"Dynamics\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics/FixedPoints\\\",\\\"label\\\":\\\"FixedPoints\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q245098\"}",
+   "ok": true,
+   "result_chars": 4216,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q245098\\\",\\\"id\\\":\\\"cell:Q245098\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"f\\\":40089,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q245098\\\",\\\"anchor\\\":\\\"Q245098\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Order/IntermediateValue\\\"],\\\"f\\\":40089,\\\"xy\\\":[-154,-86]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q245098\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"theorem\\\",\\\"slug\\\":\\\"Intermediate_value_theorem\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:intermediate_value_Icc\\\",\\\"label\\\":\\\"intermediate_value_Icc\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Topology.Order.IntermediateValue\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"code\\\":\\\"theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\\\n    Icc (f a) (f b) ⊆ f '' Icc a b :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.IntermediateValue\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:IntermediateValueTheorem\\\",\\\"label\\\":\\\"Intermediate Value Theorem\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/IntermediateValueTheorem.html\\\",\\\"qid\\\":\\\"Q245098\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:intermediate value theorem\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/intermediate+value+theorem\\\",\\\"qid\\\":\\\"Q245098\\\",\\\"snippet\\\":\\\"The _intermediate value theorem_ (IVT) is a fundamental principle of analysis which allows one to find a desired value by interpolation. It says that a continuous function $f \\\\\\\\colon [0,1] \\\\\\\\to \\\\\\\\mathbb{R}$ from an interval to the real numbers (all with its Euclidean topology) takes all values in between $f(0)$ and $f(1)$.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Intermediate_Value_Theorem\\\",\\\"label\\\":\\\"Intermediate Value Theorem\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Intermediate_Value_Theorem\\\",\\\"kind_hint\\\":\\\"theorem\\\",\\\"qid\\\":\\\"Q245098\\\",\\\"snippet\\\":\\\"Let $I \\\\\\\\subseteq \\\\\\\\R$ be a real interval. Let $f: I \\\\\\\\to \\\\\\\\R$ be continuous on $I$. Then $f$ is a Darboux function. That is: Let $a, b \\\\\\\\in I$. Let $k \\\\\\\\in \\\\\\\\R$ lie between $\\\\\\\\map f a$ and $\\\\\\\\map f b$. That is, either: $\\\\\\\\map f a < k < \\\\\\\\map f b$ or: $\\\\\\\\map f b < k < \\\\\\\\map f a$ Then $\\\\\\\\exists c \\\\\\\\in \\\\\\\\openint a b$ such that $\\\\\\\\map f c = k$.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1810.10133#3\\\",\\\"label\\\":\\\"Voltage Collapse Stabilization: A Game Theory Viewpoint\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1810.10133\\\",\\\"ref\\\":\\\"3\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Order/IntermediateValue\\\",\\\"label\\\":\\\"IntermediateValue\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":3,\\\"depends\\\":22,\\\"links\\\":14,\\\"mentions\\\":6,\\\"relates\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q185148\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11216\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1144897\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q193394\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q752375\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"lin"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fixed point closed interval image intermediate value\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 209,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fixed point closed interval image intermediate value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"intermediate_value continuous on interval\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"intermediate_value continuous on interval\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q245098\", \"kinds\": \"depends\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 6494,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q245098\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q185148\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q185148\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"Set.Icc\\\"]]}}]},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q170058\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"TopologicalSpace\\\"]]}}]},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q179899\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"TopologicalSpace\\\"]]}}]},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"OrderTopology\\\"]]}}]},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q854531\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"LinearOrder\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q42989\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"TopologicalSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q621550\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"OrderTopology\\\"]]}}]},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q203066\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"Set\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q11348\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"Set.image\\\"]]}}]},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q121416\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"Set\\\"]]}}]},{\\\"id\\\":\\\"cell:Q189156\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q189156\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"Set.Icc\\\"]]}}]},{\\\"id\\\":\\\"cell:Q213363\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q213363\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermediate_value_Icc\\\",\\\"TopologicalSpace\\\"]]}}]},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q245098\\\",\\\"dst\\\":\\\"Q290810\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"intermedi"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:Q245098\"}",
+   "ok": true,
+   "result_chars": 2418,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q245098\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q245098\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"snippet\\\":\\\"theorem\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q245098\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:intermediate_value_Icc\\\",\\\"label\\\":\\\"intermediate_value_Icc\\\",\\\"code\\\":\\\"theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\\\n    Icc (f a) (f b) ⊆ f '' Icc a b :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/IntermediateValue.html#intermediate_value_Icc\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:IntermediateValueTheorem\\\",\\\"label\\\":\\\"Intermediate Value Theorem\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/IntermediateValueTheorem.html\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:intermediate value theorem\\\",\\\"label\\\":\\\"intermediate value theorem\\\",\\\"snippet\\\":\\\"The _intermediate value theorem_ (IVT) is a fundamental principle of analysis which allows one to find a desired value by interpolation. It says that a continuous function $f \\\\\\\\colon [0,1] \\\\\\\\to \\\\\\\\mathbb{R}$ from an interval to the real numbers (all with its Euclidean topology) takes all values in between $f(0)$ and $f(1)$.\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/intermediate+value+theorem\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Intermediate_Value_Theorem\\\",\\\"label\\\":\\\"Intermediate Value Theorem\\\",\\\"snippet\\\":\\\"Let $I \\\\\\\\subseteq \\\\\\\\R$ be a real interval. Let $f: I \\\\\\\\to \\\\\\\\R$ be continuous on $I$. Then $f$ is a Darboux function. That is: Let $a, b \\\\\\\\in I$. Let $k \\\\\\\\in \\\\\\\\R$ lie between $\\\\\\\\map f a$ and $\\\\\\\\map f b$. That is, either: $\\\\\\\\map f a < k < \\\\\\\\map f b$ or: $\\\\\\\\map f b < k < \\\\\\\\map f a$ Then $\\\\\\\\exists c \\\\\\\\in \\\\\\\\openint a b$ such that $\\\\\\\\map f c = k$.\\\",\\\"license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Intermediate_Value_Theorem\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:1810.10133#3\\\",\\\"label\\\":\\\"Voltage Collapse Stabilization: A Game Theory Viewpoint\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/1810.10133\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fixed point theorem monotone continuous function order\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 211,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fixed point theorem monotone continuous function order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Brouwer fixed point theorem real interval\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Brouwer fixed point theorem real interval\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderTopology linear order\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderTopology linear order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"OrderTopology\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"OrderTopology\\\",\\\"decl\\\":\\\"OrderTopology\\\",\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology.completelyNormalSpace\\\",\\\"label\\\":\\\"OrderTopology.completelyNormalSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/T5\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology.t5Space\\\",\\\"label\\\":\\\"OrderTopology.t5Space\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/T5\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:instOrderTopologyReal\\\",\\\"label\\\":\\\"instOrderTopologyReal\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Pseudo\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.Icc\", \"ContinuousOn\", \"Set.image\", \"intermediate_value_Icc\", \"Function.fixedPoints\", \"Set.Nonempty\"]}",
+   "ok": true,
+   "result_chars": 1962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\"},{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\"},{\\\"decl\\\":\\\"intermediate_value_Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.IntermediateValue\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.IntermediateValue\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/IntermediateValue.html#intermediate_value_Icc\\\"},{\\\"decl\\\":\\\"Function.fixedPoints\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Dynamics/FixedPoints/Defs.html#Function.fixedPoints\\\"},{\\\"decl\\\":\\\"Set.Nonempty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.Nonempty\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"intermediate_value_Ioo\", \"intermediate_value_Ici\", \"Set.mem_image\", \"ContinuousAt\", \"sub_neg_of_lt\"]}",
+   "ok": true,
+   "result_chars": 1702,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intermediate_value_Ioo\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.IntermediateValue\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.IntermediateValue\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/IntermediateValue.html#intermediate_value_Ioo\\\"},{\\\"decl\\\":\\\"intermediate_value_Ici\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.mem_image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Operations\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Operations.html#Set.mem_image\\\"},{\\\"decl\\\":\\\"ContinuousAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousAt\\\"},{\\\"decl\\\":\\\"sub_neg_of_lt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Basic.html#sub_neg_of_lt\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"intermediate_value_univ_Icc\", \"exists_hasDerivAt_eq_zero\", \"exists_ratio_has_deriv_eq_ratio_slope\"]}",
+   "ok": true,
+   "result_chars": 1076,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"intermediate_value_univ_Icc\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"exists_hasDerivAt_eq_zero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.LocalExtr.Rolle\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.LocalExtr.Rolle\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/LocalExtr/Rolle.html#exists_hasDerivAt_eq_zero\\\"},{\\\"decl\\\":\\\"exists_ratio_has_deriv_eq_ratio_slope\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"interval image subset fixed point\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"interval image subset fixed point\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Function.fixedPoints\"}",
+   "ok": true,
+   "result_chars": 1282,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Function.fixedPoints\\\",\\\"id\\\":\\\"cell:Q217608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"fixed point\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q217608\\\",\\\"anchor\\\":\\\"Q217608\\\",\\\"label\\\":\\\"fixed point\\\",\\\"supercells\\\":[\\\"path:Mathlib/Dynamics/FixedPoints\\\"],\\\"f\\\":32,\\\"xy\\\":[3132.8,-253.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q217608\\\",\\\"label\\\":\\\"fixed point\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"point that is left unchanged by a function\\\",\\\"slug\\\":\\\"Fixed_point_(mathematics)\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Function.fixedPoints\\\",\\\"label\\\":\\\"Function.fixedPoints\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.FixedPoints.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics\\\",\\\"label\\\":\\\"Dynamics\\\"},{\\\"id\\\":\\\"path:Mathlib/Dynamics/FixedPoints\\\",\\\"label\\\":\\\"FixedPoints\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Function.fixedPoints\"}",
+   "ok": true,
+   "result_chars": 634,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q217608\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q217608\\\",\\\"label\\\":\\\"fixed point\\\",\\\"snippet\\\":\\\"point that is left unchanged by a function\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q217608\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Function.fixedPoints\\\",\\\"label\\\":\\\"Function.fixedPoints\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Dynamics/FixedPoints/Defs.html#Function.fixedPoints\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fixedPoints definition\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fixedPoints definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearOrder\", \"OrderTopology\", \"Set.Icc_nonempty\"]}",
+   "ok": true,
+   "result_chars": 1030,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"},{\\\"decl\\\":\\\"OrderTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/Basic.html#OrderTopology\\\"},{\\\"decl\\\":\\\"Set.Icc_nonempty\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.image_image\", \"Set.mem_Icc\"]}",
+   "ok": true,
+   "result_chars": 779,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.image_image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Image\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Image\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Image.html#Set.image_image\\\"},{\\\"decl\\\":\\\"Set.mem_Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.mem_Icc\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem exists_fixed_point_of_closedInterval_subset_image {α : Type*}\n    [LinearOrder α] [OrderTopology α]\n    {a b : α} (hab : a ≤ b) {f : α → α}\n    (hf : ContinuousOn f (Set.Icc a b))\n    (h_subset : Set.Icc a b ⊆ f '' Set.Icc a b) :\n    ∃ x ∈ Set.Icc a b, f x = x := sorry"
+}

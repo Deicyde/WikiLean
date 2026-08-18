@@ -1,0 +1,291 @@
+{
+ "task_id": "fresh_006",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T02:04:48Z",
+ "wall_s": 122.5,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_search": 12,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__decl_exists": 9
+  },
+  "tokens_in": 242,
+  "tokens_out": 8349,
+  "cost_usd": 0.14349480000000006
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"monotone function scalar multiplication by non-negative element\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3296,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone function scalar multiplication by non-negative element\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Scalar multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Monotone composition with scalar multiplication\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3836,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone composition with scalar multiplication\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q244761\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function composition\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Function.comp\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Function.comp\\\",\\\"via_cell\\\":\\\"cell:Q244761\\\",\\\"cell_label\\\":\\\"Function composition\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Scalar multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Monotone predicate order-preserving function\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3570,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone predicate order-preserving function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Monotone\"}",
+   "ok": true,
+   "result_chars": 2412,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"anchor\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[-895.9,-185.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Monotone (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2502.01265#monotoneD\\\",\\\"label\\\":\\\"On Exact Learning of $d$-Monotone Functions\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2502.01265\\\",\\\"ref\\\":\\\"monotoneD\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":35},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.equivMonotoneSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.exists_minimal_true_subset\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_monotone\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_toSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.toSperner_isSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_b\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Monotone\"}",
+   "ok": true,
+   "result_chars": 669,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"code\\\":\\\"def Monotone (f : α → β) : Prop :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2502.01265#monotoneD\\\",\\\"label\\\":\\\"On Exact Learning of $d$-Monotone Functions\\\",\\\"license_open\\\":true,\\\"url\\\":\\\"https://arxiv.org/abs/2502.01265\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Monotone.smul scalar multiplication\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone.smul scalar multiplication\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monotone scalar smul nonneg\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone scalar smul nonneg\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:Monotone\", \"limit\": 50, \"kinds\": \"mentions,invocation\"}",
+   "ok": true,
+   "result_chars": 12536,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"mentions\\\",\\\"invocation\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q133250\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":3,\\\"statuses\\\":{\\\"formalized\\\":3},\\\"sample\\\":[{\\\"id\\\":\\\"190b6c011e0d\\\",\\\"label\\\":\\\"Monotonically increasing\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"623fd21d1682\\\",\\\"label\\\":\\\"Monotone sequence\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"7dc23f25a56d\\\",\\\"label\\\":\\\"Nondecreasing / nonincreasing\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q11348\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"485a3bd097e9\\\",\\\"label\\\":\\\"Monotonic real function\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q854531\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"bf9c1e5893a4\\\",\\\"label\\\":\\\"Monotonic sequence\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.equivMonotoneSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DedekindNumber.equivMonotoneSperner\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.exists_minimal_true_subset\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DedekindNumber.exists_minimal_true_subset\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_monotone\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DedekindNumber.fromSperner_monotone\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_toSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DedekindNumber.fromSperner_toSperner\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.toSperner_isSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DedekindNumber.toSperner_isSperner\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_a\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_b\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_b\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma2_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:DegreeSequencesTriangleFree.lemma2_a\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"Monotone\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangl"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul\", \"type\": \"cell\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2250,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"aka\\\":[\\\"SMul\\\",\\\"Scalar Multiplication\\\"],\\\"supercell\\\":\\\"path:Init/Prelude\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SMul.smul\\\",\\\"label\\\":\\\"SMul.smul\\\",\\\"supercell\\\":\\\"path:Mathlib\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:smul_add\\\",\\\"label\\\":\\\"smul_add\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/GroupWithZero/Action\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:smul_dotProduct\\\",\\\"label\\\":\\\"smul_dotProduct\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Matrix/Mul\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:smul_set_closure_subset\\\",\\\"label\\\":\\\"smul_set_closure_subset\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/MulAction\\\"},{\\\"id\\\":\\\"cell:Q913764\\\",\\\"label\\\":\\\"Cauchy's integral formula\\\",\\\"aka\\\":[\\\"Cauchy Integral Formula\\\",\\\"Cauchy integral\\\",\\\"Cauchy's Integral Formula\\\",\\\"Cauchys integral formula\\\",\\\"DiffContOnCl.circleIntegral_sub_inv_smul\\\",\\\"DifferentiableOn.circleIntegral_sub_inv_smul\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/CauchyIntegral\\\"},{\\\"id\\\":\\\"cell:Q1072771\\\",\\\"label\\\":\\\"Möbius inversion formula\\\",\\\"aka\\\":[\\\"ArithmeticFunction.prod_eq_iff_prod_pow_moebius_eq\\\",\\\"ArithmeticFunction.sum_eq_iff_sum_smul_moebius_eq\\\",\\\"Moebius Transform\\\",\\\"Additive transform of an arithmetic function : Part I\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ArithmeticFunction/Moebius\\\"},{\\\"id\\\":\\\"cell:Q595742\\\",\\\"label\\\":\\\"Möbius transformation\\\",\\\"aka\\\":[\\\"Definition:Möbius Transformation\\\",\\\"Linear Fractional Transformation\\\",\\\"Mobius transformation\\\",\\\"UpperHalfPlane.smulAux'\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"},{\\\"id\\\":\\\"cell:Q3859392\\\",\\\"label\\\":\\\"Discrete measure\\\",\\\"aka\\\":[\\\"Definition:Discrete Measure\\\",\\\"MeasureTheory.Measure.sum_smul_dirac\\\",\\\"Numerical action for endomorphisms\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Dirac\\\"},{\\\"id\\\":\\\"cell:Q848810\\\",\\\"label\\\":\\\"Kronecker's theorem\\\",\\\"aka\\\":[\\\"AddCircle.denseRange_zsmul_coe_iff\\\",\\\"Some questions in Diophantine approximation: real and p-adics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Instances/AddCircle\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_mono nonneg order\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_mono nonneg order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monotone const mul\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone const mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone\", \"Monotone.const_smul\", \"Monotone.smul\", \"Monotone.smul_mono\", \"smul_mono\"]}",
+   "ok": true,
+   "result_chars": 1502,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"Monotone.const_smul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.smul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.AddTorsor\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AddTorsor\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AddTorsor.html#Monotone.smul\\\"},{\\\"decl\\\":\\\"Monotone.smul_mono\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"smul_mono\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Monotone.smul\"}",
+   "ok": false,
+   "result_chars": 383,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Monotone.smul\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"Monotone.smul\"}",
+   "ok": false,
+   "result_chars": 368,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"Monotone.smul\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:Monotone\", \"limit\": 100, \"min_w\": 2}",
+   "ok": true,
+   "result_chars": 1171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"min_w\\\":2,\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q133250\\\",\\\"dst\\\":\\\"lit:2502.01265#monotoneD\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Monotone\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.887,\\\"primary\\\":false,\\\"license_open\\\":true}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q133250\\\",\\\"dst\\\":\\\"decl:Mathlib:Monotone\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":3,\\\"statuses\\\":{\\\"formalized\\\":3},\\\"sample\\\":[{\\\"id\\\":\\\"190b6c011e0d\\\",\\\"label\\\":\\\"Monotonically increasing\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"623fd21d1682\\\",\\\"label\\\":\\\"Monotone sequence\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"7dc23f25a56d\\\",\\\"label\\\":\\\"Nondecreasing / nonincreasing\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monotone nonneg\", \"limit\": 25}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone nonneg\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone.const_mul_left\", \"Monotone.const_mul_right\", \"Monotone.mul_left\", \"Monotone.mul_right\", \"monotone_const_mul\", \"Monotone.smul_const\"]}",
+   "ok": true,
+   "result_chars": 1837,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone.const_mul_left\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Asymptotics.IsBigO.const_mul_left\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Analysis.Asymptotics.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Asymptotics.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Asymptotics/Defs.html#Asymptotics.IsBigO.const_mul_left\\\"},{\\\"decl\\\":\\\"Monotone.const_mul_right\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.mul_left\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.mul_right\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"monotone_const_mul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.smul_const\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monotone multiplication zero positive\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone multiplication zero positive\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderedSMul module action\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderedSMul module action\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"le_of_smul_le_smul\", \"smul_le_smul_of_le_of_le\", \"smul_le_smul_left\", \"smul_le_smul_right\", \"smul_mono_left\", \"smul_mono_right\"]}",
+   "ok": true,
+   "result_chars": 1806,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"le_of_smul_le_smul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"smul_le_smul_of_le_of_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"smul_le_smul_left\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Action\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Action\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Action.html#smul_le_smul_left\\\"},{\\\"decl\\\":\\\"smul_le_smul_right\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"smul_mono_left\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"smul_mono_right\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Action\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Action\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Action.html#smul_mono_right\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_mono_right\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_mono_right\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"OrderedModule\", \"Distrib_mul_action\", \"Module\", \"OrderedSemiring\", \"CovariantClass\"]}",
+   "ok": true,
+   "result_chars": 1536,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"OrderedModule\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Distrib_mul_action\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\"},{\\\"decl\\\":\\\"OrderedSemiring\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"CovariantClass\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Monoid.Unbundled.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Monoid.Unbundled.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Monoid/Unbundled/Defs.html#CovariantClass\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"DistribMulAction\", \"LinearOrderedField\", \"LinearOrderedSemifield\", \"OrderedRing\", \"Preorder\"]}",
+   "ok": true,
+   "result_chars": 1555,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"DistribMulAction\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/Action/Defs.html#DistribMulAction\\\"},{\\\"decl\\\":\\\"LinearOrderedField\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LinearOrderedSemifield\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"OrderedRing\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.PartialOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/PartialOrder.html#Preorder\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Monotone.const\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone.const\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone.comp\", \"Function.Monotone.comp\", \"Monotone.mul\", \"Monotone.nsmul\"]}",
+   "ok": true,
+   "result_chars": 1306,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone.comp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone.comp\\\"},{\\\"decl\\\":\\\"Function.Monotone.comp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.mul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Basic.html#Monotone.mul\\\"},{\\\"decl\\\":\\\"Monotone.nsmul\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"smul_mono_left\", \"monotone_smul_of_nonneg\", \"Monotone.const_smul_of_nonneg\"]}",
+   "ok": true,
+   "result_chars": 952,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"smul_mono_left\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"monotone_smul_of_nonneg\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone.const_smul_of_nonneg\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zsmul_mono nsmul_mono\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zsmul_mono nsmul_mono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Monotone.mul_left mul_mono_left\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone.mul_left mul_mono_left\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone\", \"Preorder\", \"LE.le\", \"Zero\", \"Zero.instOfLE\"]}",
+   "ok": true,
+   "result_chars": 1455,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.PartialOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/PartialOrder.html#Preorder\\\"},{\\\"decl\\\":\\\"LE.le\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#LE.le\\\"},{\\\"decl\\\":\\\"Zero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Zero\\\"},{\\\"decl\\\":\\\"Zero.instOfLE\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone\", \"fun\", \"Preorder\", \"Monoid\", \"DistribMulAction\", \"CovariantClass\"]}",
+   "ok": true,
+   "result_chars": 1934,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"fun\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.PartialOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/PartialOrder.html#Preorder\\\"},{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\"},{\\\"decl\\\":\\\"DistribMulAction\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/Action/Defs.html#DistribMulAction\\\"},{\\\"decl\\\":\\\"CovariantClass\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Monoid.Unbundled.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Monoid.Unbundled.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Monoid/Unbundled/Defs.html#CovariantClass\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem scalar_mul_monotone_of_nonneg {α β : Type*} [Preorder α] [Preorder β]\n    {R : Type*} [Monoid R] [Preorder R] [DistribMulAction R β]\n    [CovariantClass R β (· • ·) (· ≤ ·)] (f : α → β) (a : R)\n    (hf : Monotone f) (ha : 0 ≤ a) :\n    Monotone (fun x => a • f x) := sorry"
+}

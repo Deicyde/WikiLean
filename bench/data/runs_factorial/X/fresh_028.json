@@ -1,0 +1,232 @@
+{
+ "task_id": "fresh_028",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:32:49Z",
+ "wall_s": 74.2,
+ "transcript_stats": {
+  "turns": 23,
+  "assistant_turns": 16,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 7,
+   "mcp__formal__decl_grep": 8,
+   "mcp__formal__decl_read": 4,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 132,
+  "tokens_out": 5219,
+  "cost_usd": 0.07207355
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CommDiagram\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CommDiagram': unknown identifier 'CommDiagram'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Epimorphism\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epimorphism': unknown identifier 'Epimorphism'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"cube diagram commutative\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'cube diagram commutative': Unknown identifier `cube`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Epi\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epi': unknown identifier 'Epi'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Square commutative\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Square commutative': Unknown identifier `Square`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPullback\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsPullback': unknown identifier 'IsPullback'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*epi\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2827,
+   "result_head": "[{\"type\": \"text\", \"text\": \"374 match(es) for '(theorem|lemma|def) .*epi' (via ripgrep):\\n- Mathlib/RepresentationTheory/Rep/Basic.lean:575\\n    theorem epi_iff_surjective (f : A ⟶ B) : Epi f ↔ Function.Surjective f.hom :=\\n- Mathlib/Algebra/Category/Ring/Epi.lean:26\\n    lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :\\n- Mathlib/Algebra/Category/Ring/Epi.lean:46\\n    lemma RingHom.surjective_of_epi_of_finite {R S : CommRingCat} (f : R ⟶ S) [Epi f]\\n- Mathlib/Algebra/Category/Ring/Epi.lean:52\\n    lemma RingHom.surjective_iff_epi_and_finite {R S : CommRingCat} {f : R ⟶ S} :\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/Functoriality.lean:98\\n    lemma cochainsMap_f_map_epi (hf : Function.Injective f) [Epi φ] (i : ℕ) :\\n- Mathlib/RepresentationTheory/Homological/GroupCohomology/LongExactSequence.lean:100\\n    theorem epi_δ_of_isZero (n : ℕ) (h : IsZero (groupCohomology X.X₂ (n + 1))) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/Functoriality.lean:121\\n    lemma chainsMap_f_map_epi (hf : Function.Surjective f) [Epi φ] (i : ℕ) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LongExactSequence.lean:97\\n    theorem epi_δ_of_isZero (n : ℕ) (h : IsZero (groupHomology X.X₂ n)) :\\n- Mathlib/Algebra/Homology/CommSq.lean:114\\n    lemma IsPushout.epi_shortComplex_g (h : IsPushout f g inl inr) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:136\\n    lemma epi_homologyMap_τ₃ (i : ι)\\n- Mathlib/Algebra/Category/Ring/Instances.lean:31\\n    theorem IsLocalization.epi {R : Type*} [CommRing R] (M : Submonoid R) (S : Type _) [CommRing S]\\n- Mathlib/AlgebraicGeometry/OpenImmersion.lean:506\\n    theorem _root_.AlgebraicGeometry.isIso_iff_isOpenImmersion_and_epi_base\\n- Mathlib/Algebra/Homology/ImageToKernel.lean:108\\n    theorem imageToKernel_epi_comp {Z : V} (h : Z ⟶ A) [Epi h] (w) :\\n- Mathlib/Algebra/Homology/ExactSequenceFour.lean:112\\n    lemma epi_cokerToKer' (hS' : (S.sc hS (k + 1)).Exact) :\\n- Mathlib/Algebra/Homology/Factorizations/CM5a.lean:291\\n    lemma epi_homologyMap_π (q : ℤ) (hq : q < n) : Epi (homologyMap (π f n) q) :=\\n- Mathlib/Algebra/Homology/Factorizations/Basic.lean:67\\n    lemma degreewiseEpiWithInjectiveKernel.epi {K L : CochainComplex C ℤ} {f : K ⟶ L}\\n- Mathlib/Algebra/Homology/HomologicalComplex.lean:318\\n    lemma epi_of_epi_f {K L : HomologicalComplex V c} (φ : K ⟶ L)\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:315\\n    theorem fundamentalDomain_subset_parallelepiped [Fintype ι] :\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:400\\n    theorem fundamentalDomain_ae_parallelepiped [Fintype ι] [MeasurableSpace E] (μ : Measure E)\\n- Mathlib/Algebra/Category/ModuleCat/Presheaf/EpiMono.lean:30\\n    lemma epi_of_surjective (hf : ∀ ⦃X : Cᵒᵖ⦄, Function.Surjective (f.app X)) : Epi f where\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*commutative.*square\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 427,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma|def) .*commutative.*square' (via ripgrep):\\n- Mathlib/CategoryTheory/Adjunction/Lifting/Left.lean:24\\n    The adjoint lifting theorem says that given a commutative square of functors (up to isomorphism):\\n- Mathlib/CategoryTheory/Adjunction/Lifting/Right.lean:25\\n    The adjoint lifting theorem says that given a commutative square of functors (up to isomorphism):\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*Cube\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1269,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for '(theorem|lemma|def) .*Cube' (via ripgrep):\\n- Mathlib/Topology/Homotopy/HomotopyGroup.lean:139\\n    theorem boundary (f : Ω^ N X x) : ∀ y ∈ Cube.boundary N, f y = x :=\\n- Mathlib/Topology/Homotopy/HomotopyGroup.lean:166\\n    theorem _root_.Cube.boundary_sum_iff {y : I^(M ⊕ N)} :\\n- Mathlib/Topology/Homotopy/HomotopyGroup.lean:333\\n    def homotopyTo (i : N) {p q : Ω^ N X x} (H : p.1.HomotopyRel q.1 (Cube.boundary N)) :\\n- Mathlib/Topology/Homotopy/HomotopyGroup.lean:339\\n    theorem homotopyTo_apply (i : N) {p q : Ω^ N X x} (H : p.1.HomotopyRel q.1 <| Cube.boundary N)\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:31\\n    private noncomputable def E₄CubeSubE₆SqForm : ModularForm 𝒮ℒ 12 :=\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:34\\n    private lemma E₄CubeSubE₆SqForm_apply (z : ℍ) :\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:38\\n    private lemma E₄CubeSubE₆SqForm_qExpansion_eq :\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:46\\n    private lemma E₄CubeSubE₆SqForm_isCuspForm : IsCuspForm E₄CubeSubE₆SqForm := by\\n- Mathlib/NumberTheory/ModularForms/LevelOne/GradedRing.lean:51\\n    private lemma E₄CubeSubE₆SqForm_qExpansion_coeff_one :\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) .*commute\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2661,
+   "result_head": "[{\"type\": \"text\", \"text\": \"311 match(es) for '(theorem|lemma|def) .*commute' (via ripgrep):\\n- Mathlib/Algebra/DualNumber.lean:95\\n    theorem commute_eps_left [Semiring R] (x : DualNumber R) : Commute ε x := by\\n- Mathlib/Algebra/DualNumber.lean:99\\n    theorem commute_eps_right [Semiring R] (x : DualNumber R) : Commute x ε := (commute_eps_left x).symm\\n- Mathlib/Algebra/Algebra/Hom.lean:203\\n    theorem commutes (r : R) : φ (algebraMap R A r) = algebraMap R B r :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:122\\n    theorem coe_mk {toEquiv map_mul map_add commutes} :\\n- Mathlib/Algebra/Algebra/Equiv.lean:203\\n    theorem coe_ringHom_commutes : ((e : A₁ →ₐ[R] A₂) : A₁ →+* A₂) = ((e : A₁ ≃+* A₂) : A₁ →+* A₂) :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:207\\n    theorem commutes : ∀ r : R, e (algebraMap R A₁ r) = algebraMap R A₂ r :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1188\\n    lemma commute_of_mem_adjoin_of_forall_mem_commute {a b : A} {s : Set A}\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1194\\n    lemma commute_of_mem_adjoin_singleton_of_commute {a b c : A}\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1199\\n    lemma commute_of_mem_adjoin_self {a b : A} (hb : b ∈ adjoin R {a}) :\\n- Mathlib/Algebra/Algebra/Defs.lean:288\\n    theorem commutes (r : R) (x : A) : algebraMap R A r * x = x * algebraMap R A r :=\\n- Mathlib/Algebra/Algebra/Defs.lean:291\\n    lemma commute_algebraMap_left (r : R) (x : A) : Commute (algebraMap R A r) x :=\\n- Mathlib/Algebra/Algebra/Defs.lean:294\\n    lemma commute_algebraMap_right (r : R) (x : A) : Commute x (algebraMap R A r) :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:781\\n    lemma commute_of_mem_adjoin_of_forall_mem_commute {a b : A} {s : Set A}\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:790\\n    lemma commute_of_mem_adjoin_singleton_of_commute {a b c : A}\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:795\\n    lemma commute_of_mem_adjoin_self {a b : A} (hb : b ∈ R[a]) :\\n- Mathlib/Algebra/Algebra/Operations.lean:275\\n    theorem mul_comm_of_commute (h : ∀ m ∈ M, ∀ n ∈ N, Commute m n) : M * N = N * M :=\\n- Mathlib/Algebra/Algebra/Basic.lean:163\\n    theorem mul_sub_algebraMap_commutes [Ring A] [Algebra R A] (x : A) (r : R) :\\n- Mathlib/Algebra/Algebra/Basic.lean:166\\n    theorem mul_sub_algebraMap_pow_commutes [Ring A] [Algebra R A] (x : A) (r : R) (n : ℕ) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:390\\n    theorem ker_comp_eq_of_commute_of_disjoint_ker [FiniteDimensional K V] {f g : V →ₗ[K] V}\\n- Mathlib/Algebra/Algebra/Bilinear.lean:91\\n    theorem commute_mulLeft_right (a b : A) : Commute (mulLeft R a) (mulRight R b) := by\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*FiveLemma\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*FiveLemma' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*SnakeLemma\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for '(theorem|lemma) .*SnakeLemma' (via ripgrep):\\n- Mathlib/Algebra/Module/SnakeLemma.lean:14\\n    The snake lemma is proven in `Mathlib/Algebra/Homology/ShortComplex/SnakeLemma.lean` for all abelian\\n- Mathlib/Algebra/Module/SnakeLemma.lean:65\\n    lemma SnakeLemma.δ_aux (x : K₃) : g₁ (ρ (i₂ (σ (ι₃ x)))) = i₂ (σ (ι₃ x)) := by\\n- Mathlib/Algebra/Module/SnakeLemma.lean:73\\n    lemma SnakeLemma.eq_of_eq (x : K₃)\\n- Mathlib/Algebra/Module/SnakeLemma.lean:124\\n    lemma SnakeLemma.δ_eq (x : K₃) (y) (hy : f₂ y = ι₃ x) (z) (hz : g₁ z = i₂ y) :\\n- Mathlib/Algebra/Module/SnakeLemma.lean:151\\n    lemma SnakeLemma.exact_δ_right (F : K₂ →ₗ[R] K₃) (hF : f₂.comp ι₂ = ι₃.comp F)\\n- Mathlib/Algebra/Module/SnakeLemma.lean:190\\n    lemma SnakeLemma.exact_δ_left (G : C₁ →ₗ[R] C₂) (hF : G.comp π₁ = π₂.comp g₁) (h : Surjective π₁) :\\n- Mathlib/Algebra/Module/SnakeLemma.lean:231\\n    lemma SnakeLemma.δ'_eq (hf₂ : Surjective f₂) (hg₁ : Injective g₁)\\n- Mathlib/Algebra/Module/SnakeLemma.lean:258\\n    lemma SnakeLemma.exact_δ'_right (hf₂ : Surjective f₂) (hg₁ : Injective g₁)\\n- Mathlib/Algebra/Module/SnakeLemma.lean:285\\n    lemma SnakeLemma.exact_δ'_left (hf₂ : Surjective f₂) (hg₁ : Injective g₁)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*CommSq\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2698,
+   "result_head": "[{\"type\": \"text\", \"text\": \"79 match(es) for '(def|theorem|lemma) .*CommSq' (via ripgrep):\\n- Mathlib/CategoryTheory/CommSq.lean:60\\n    lemma w' (self : CommSq f g h i) : g ≫ i = f ≫ h := self.w.symm\\n- Mathlib/CategoryTheory/CommSq.lean:65\\n    lemma mk' (w : g ≫ i = f ≫ h := by cat_disch) : CommSq f g h i :=\\n- Mathlib/CategoryTheory/CommSq.lean:71\\n    theorem flip (p : CommSq f g h i) : CommSq g f i h :=\\n- Mathlib/CategoryTheory/CommSq.lean:74\\n    theorem of_arrow {f g : Arrow C} (h : f ⟶ g) : CommSq f.hom h.left h.right g.hom :=\\n- Mathlib/CategoryTheory/CommSq.lean:79\\n    theorem op (p : CommSq f g h i) : CommSq i.op h.op g.op f.op :=\\n- Mathlib/CategoryTheory/CommSq.lean:84\\n    theorem unop {W X Y Z : Cᵒᵖ} {f : W ⟶ X} {g : W ⟶ Y} {h : X ⟶ Z} {i : Y ⟶ Z} (p : CommSq f g h i) :\\n- Mathlib/CategoryTheory/CommSq.lean:89\\n    theorem vert_inv {g : W ≅ Y} {h : X ≅ Z} (p : CommSq f g.hom h.hom i) :\\n- Mathlib/CategoryTheory/CommSq.lean:94\\n    theorem horiz_inv {f : W ≅ X} {i : Y ≅ Z} (p : CommSq f.hom g h i.hom) :\\n- Mathlib/CategoryTheory/CommSq.lean:143\\n    theorem eq_of_mono {f : W ⟶ X} {g : W ⟶ X} {i : X ⟶ Y} [Mono i] (sq : CommSq f g i i) : f = g :=\\n- Mathlib/CategoryTheory/CommSq.lean:147\\n    theorem eq_of_epi {f : W ⟶ X} {h : X ⟶ Y} {i : X ⟶ Y} [Epi f] (sq : CommSq f f h i) : h = i :=\\n- Mathlib/CategoryTheory/CommSq.lean:160\\n    theorem map_commSq (s : CommSq f g h i) : CommSq (F.map f) (F.map g) (F.map h) (F.map i) :=\\n- Mathlib/CategoryTheory/CommSq.lean:204\\n    def op {sq : CommSq f i p g} (l : LiftStruct sq) : LiftStruct sq.op where\\n- Mathlib/CategoryTheory/CommSq.lean:212\\n    def unop {A B X Y : Cᵒᵖ} {f : A ⟶ X} {i : A ⟶ B} {p : X ⟶ Y} {g : B ⟶ Y} {sq : CommSq f i p g}\\n- Mathlib/CategoryTheory/CommSq.lean:221\\n    def opEquiv (sq : CommSq f i p g) : LiftStruct sq ≃ LiftStruct sq.op where\\n- Mathlib/CategoryTheory/EpiMono.lean:262\\n    theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:269\\n    theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:171\\n    lemma IsLocalizedEquivalence.mk' [CatCommSq Φ.functor L₁ L₂ G] [G.IsEquivalence] :\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:179\\n    lemma isEquivalence [h : Φ.IsLocalizedEquivalence] [CatCommSq Φ.functor L₁ L₂ G] :\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:268\\n    lemma IsLocalizedFullyFaithful.mk' [CatCommSq Φ.functor L₁ L₂ G] (hG : G.FullyFaithful) :\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:286\\n    lemma faithful [Φ.IsLocalizedFullyFaithful] [CatCommSq Φ.functor L₁ L₂ G] :\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 262, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1058,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 262–276 of 278):\\n   262  theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   263      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   264      (hx1x : CommSq fx10 f01x f11x fx11) (hxx0 : CommSq f0x0 fx00 fx10 f1x0) [Epi f00x] :\\n   265      CommSq f0x1 fx01 fx11 f1x1 :=\\n   266    ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x\\n   267        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩\\n   268  \\n   269  theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   270      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   271      (hx1x : CommSq fx10 f01x f11x fx11) (hxx1 : CommSq f0x1 fx01 fx11 f1x1) [Mono f11x] :\\n   272      CommSq f0x0 fx00 fx10 f1x0 :=\\n   273    ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x\\n   274        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx1.w⟩\\n   275  \\n   276  end cubeLemma\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.CommSq\", \"Epi\"]}",
+   "ok": true,
+   "result_chars": 889,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.CommSq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.CommSq\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.CommSq\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/CommSq.html#CategoryTheory.CommSq\\\"},{\\\"decl\\\":\\\"Epi\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"CategoryTheory.Epi\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html#CategoryTheory.Epi\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2012,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 1–50 of 278):\\n     1  /-\\n     2  Copyright (c) 2019 Reid Barton. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Reid Barton, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.CategoryTheory.Groupoid\\n     9  public import Mathlib.CategoryTheory.CommSq\\n    10  \\n    11  /-!\\n    12  # Facts about epimorphisms and monomorphisms.\\n    13  \\n    14  The definitions of `Epi` and `Mono` are in `CategoryTheory.Category`,\\n    15  since they are used by some lemmas for `Iso`, which is used everywhere.\\n    16  -/\\n    17  \\n    18  @[expose] public section\\n    19  \\n    20  \\n    21  universe v₁ v₂ u₁ u₂\\n    22  \\n    23  namespace CategoryTheory\\n    24  \\n    25  variable {C : Type u₁} [Category.{v₁} C]\\n    26  \\n    27  @[to_dual unop_mono_of_epi]\\n    28  instance unop_epi_of_mono {A B : Cᵒᵖ} (f : A ⟶ B) [Mono f] : Epi f.unop :=\\n    29    ⟨fun _ _ eq => Quiver.Hom.op_inj ((cancel_mono f).1 (Quiver.Hom.unop_inj eq))⟩\\n    30  \\n    31  @[to_dual op_mono_of_epi]\\n    32  instance op_epi_of_mono {A B : C} (f : A ⟶ B) [Mono f] : Epi f.op :=\\n    33    ⟨fun _ _ eq => Quiver.Hom.unop_inj ((cancel_mono f).1 (Quiver.Hom.op_inj eq))⟩\\n    34  \\n    35  @[to_dual (attr := simp)]\\n    36  lemma op_epi_iff {X Y : C} (f : X ⟶ Y) :\\n    37      Epi f.op ↔ Mono f :=\\n    38    ⟨fun _ ↦ unop_mono_of_epi f.op, fun _ ↦ inferInstance⟩\\n    39  \\n    40  @[to_dual (attr := simp)]\\n    41  lemma unop_epi_iff {X Y : Cᵒᵖ} (f : X ⟶ Y) :\\n    42      Epi f.unop ↔ Mono f :=\\n    43    ⟨fun _ ↦ op_mono_of_epi f.unop, fun _ ↦ inferInstance⟩\\n    44  \\n    45  /-- A split monomorphism is a morphism `f : X ⟶ Y` with a given retraction `retraction f : Y ⟶ X`\\n    46  such that `f ≫ retraction f = 𝟙 X`.\\n    47  \\n    48  Every split monomorphism is a monomorphism.\\n    49  -/\\n    50  structure SplitMono {X Y : C} (f : X ⟶ Y) where\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.CommSq.cube_lemma_of_epi\"]}",
+   "ok": true,
+   "result_chars": 477,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.CommSq.cube_lemma_of_epi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"cube_lemma\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 802,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'cube_lemma' (via ripgrep):\\n- Mathlib/CategoryTheory/EpiMono.lean:248\\n    theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:256\\n    theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:262\\n    theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:266\\n    ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x\\n- Mathlib/CategoryTheory/EpiMono.lean:269\\n    theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n- Mathlib/CategoryTheory/EpiMono.lean:273\\n    ⟨CategoryTheory.cube_lemma_of_mono f00x f01x f10x f11x\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 230, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2271,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 230–269 of 278):\\n   230    id := Quiver.Hom.unop_inj (by simp)\\n   231  \\n   232  @[to_dual]\\n   233  instance [IsSplitMono f] : IsSplitEpi f.op :=\\n   234    .mk' IsSplitMono.exists_splitMono.some.op\\n   235  \\n   236  end Opposite\\n   237  \\n   238  \\n   239  section cubeLemma\\n   240  \\n   241  variable {M000 M001 M010 M011 M100 M101 M110 M111 : C}\\n   242    (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)\\n   243    (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)\\n   244    (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)\\n   245  \\n   246  /-- This is a theorem saying if five faces of a cube commute and one edge is an epimorphism,\\n   247    then the sixth face must also commute. -/\\n   248  theorem cube_lemma_of_epi (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   249      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n   250      (hxx0 : f0x0 ≫ fx10 = fx00 ≫ f1x0) [Epi f00x] : f0x1 ≫ fx11 = fx01 ≫ f1x1 := by\\n   251    rw [← cancel_epi f00x]\\n   252    grind\\n   253  \\n   254  /-- This is a theorem saying if five faces of a cube commute and one edge is a monomorphism,\\n   255    then the sixth face must also commute. -/\\n   256  theorem cube_lemma_of_mono (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1) (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\\n   257      (hx0x : fx00 ≫ f10x = f00x ≫ fx01) (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\\n   258      (hxx1 : f0x1 ≫ fx11 = fx01 ≫ f1x1) [Mono f11x] : f0x0 ≫ fx10 = fx00 ≫ f1x0 := by\\n   259    rw [← cancel_mono f11x]\\n   260    grind\\n   261  \\n   262  theorem CommSq.cube_lemma_of_epi (h0xx : CommSq f0x0 f00x f01x f0x1)\\n   263      (h1xx : CommSq f1x0 f10x f11x f1x1) (hx0x : CommSq fx00 f00x f10x fx01)\\n   264      (hx1x : CommSq fx10 f01x f11x fx11) (hxx0 : CommSq f0x0 fx00 fx10 f1x0) [Epi f00x] :\\n   265      CommSq f0x1 fx01 fx11 f1x1 :=\\n   266    ⟨CategoryTheory.cube_lemma_of_epi f00x f01x f10x f11x\\n   267        f0x0 f0x1 f1x0 f1x1 fx00 fx01 fx10 fx11 h0xx.w h1xx.w hx0x.w hx1x.w hxx0.w⟩\\n   268  \\n   269  theorem CommSq.cube_lemma_of_mono (h0xx : CommSq f0x0 f00x f01x f0x1)\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"CategoryTheory.cube_lemma_of_epi\", \"Epi\"]}",
+   "ok": true,
+   "result_chars": 839,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"CategoryTheory.cube_lemma_of_epi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Epi\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"CategoryTheory.Epi\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html#CategoryTheory.Epi\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"cube\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'cube': unknown identifier 'cube'\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/EpiMono.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/EpiMono.lean  (lines 1–30 of 278):\\n     1  /-\\n     2  Copyright (c) 2019 Reid Barton. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Reid Barton, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.CategoryTheory.Groupoid\\n     9  public import Mathlib.CategoryTheory.CommSq\\n    10  \\n    11  /-!\\n    12  # Facts about epimorphisms and monomorphisms.\\n    13  \\n    14  The definitions of `Epi` and `Mono` are in `CategoryTheory.Category`,\\n    15  since they are used by some lemmas for `Iso`, which is used everywhere.\\n    16  -/\\n    17  \\n    18  @[expose] public section\\n    19  \\n    20  \\n    21  universe v₁ v₂ u₁ u₂\\n    22  \\n    23  namespace CategoryTheory\\n    24  \\n    25  variable {C : Type u₁} [Category.{v₁} C]\\n    26  \\n    27  @[to_dual unop_mono_of_epi]\\n    28  instance unop_epi_of_mono {A B : Cᵒᵖ} (f : A ⟶ B) [Mono f] : Epi f.unop :=\\n    29    ⟨fun _ _ eq => Quiver.Hom.op_inj ((cancel_mono f).1 (Quiver.Hom.unop_inj eq))⟩\\n    30  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem CubeLemmaCommutativeSquare {C : Type u₁} [CategoryTheory.Category.{v₁} C]\n    {M000 M001 M010 M011 M100 M101 M110 M111 : C}\n    (f00x : M000 ⟶ M001) (f01x : M010 ⟶ M011) (f10x : M100 ⟶ M101) (f11x : M110 ⟶ M111)\n    (f0x0 : M000 ⟶ M010) (f0x1 : M001 ⟶ M011) (f1x0 : M100 ⟶ M110) (f1x1 : M101 ⟶ M111)\n    (fx00 : M000 ⟶ M100) (fx01 : M001 ⟶ M101) (fx10 : M010 ⟶ M110) (fx11 : M011 ⟶ M111)\n    (h0xx : f0x0 ≫ f01x = f00x ≫ f0x1)\n    (h1xx : f1x0 ≫ f11x = f10x ≫ f1x1)\n    (hx0x : fx00 ≫ f10x = f00x ≫ fx01)\n    (hx1x : fx10 ≫ f11x = f01x ≫ fx11)\n    (hxx0 : f0x0 ≫ fx10 = fx00 ≫ f1x0)\n    [CategoryTheory.Epi f00x] :\n    f0x1 ≫ fx11 = fx01 ≫ f1x1 := sorry"
+}

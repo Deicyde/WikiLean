@@ -1,0 +1,210 @@
+{
+ "task_id": "fresh_050",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:46:17Z",
+ "wall_s": 53.5,
+ "transcript_stats": {
+  "turns": 21,
+  "assistant_turns": 12,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 14,
+   "mcp__formal__decl_grep": 5,
+   "mcp__formal__decl_read": 1
+  },
+  "tokens_in": 100,
+  "tokens_out": 3119,
+  "cost_usd": 0.04302945
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Measurable\"}",
+   "ok": true,
+   "result_chars": 1137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1417 declarations mentioning Measurable.\\n- Measurable   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A function `f` between measurable spaces is measurable if the preimage of every measurable set is measurable.\\n- measurable_id   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- measurable_id'   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- measurable_const   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.of_discrete   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.le   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Measurable.comp'   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    **Alias** of `Measurable.fun_comp`.  ---  Eta-expanded form of `Measurable.comp`\\n- Measurable.fun_comp   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    Eta-expanded form of `Measurable.comp`\\n- Measurable.comp   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- comap_measurable   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\\n- measurable_of_empty   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\\n- measurable_of_empty_codomain   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"discontinuity\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'discontinuity': unknown identifier 'discontinuity'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Countable\"}",
+   "ok": true,
+   "result_chars": 772,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 724 declarations mentioning Countable.\\n- Countable   [Mathlib.Data.Countable.Defs]\\n    A type `α` is countable if there exists an injective map `α → ℕ`.\\n- instCountableNat   [Mathlib.Data.Countable.Defs]\\n- instCountablePUnit   [Mathlib.Data.Countable.Defs]\\n- Bool.countable   [Mathlib.Data.Countable.Defs]\\n- Prop.countable'   [Mathlib.Data.Countable.Defs]\\n- Prop.countable   [Mathlib.Data.Countable.Defs]\\n- instCountableFin   [Mathlib.Data.Countable.Defs]\\n- Finite.to_countable   [Mathlib.Data.Countable.Defs]\\n- Subsingleton.to_countable   [Mathlib.Data.Countable.Defs]\\n- instCountablePLift   [Mathlib.Data.Countable.Defs]\\n- instCountableULift   [Mathlib.Data.Countable.Defs]\\n- not_countable   [Mathlib.Data.Countable.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ContinuousAt\"}",
+   "ok": true,
+   "result_chars": 886,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 625 declarations mentioning ContinuousAt.\\n- ContinuousAt   [Mathlib.Topology.Defs.Filter]\\n    A function between topological spaces is continuous at a point `x₀` if `f x` tends to `f x₀` when `x` tends to `x₀`.\\n- ContinuousAt.mapClusterPt   [Mathlib.Topology.ClusterPt]\\n- MapClusterPt.continuousAt_comp   [Mathlib.Topology.ClusterPt]\\n- continuousAt_id   [Mathlib.Topology.Continuous]\\n- continuousAt_id'   [Mathlib.Topology.Continuous]\\n- continuousAt_const   [Mathlib.Topology.Continuous]\\n- Continuous.continuousAt   [Mathlib.Topology.Continuous]\\n- continuous_iff_continuousAt   [Mathlib.Topology.Continuous]\\n- Filter.EventuallyEq.continuousAt   [Mathlib.Topology.Continuous]\\n- ContinuousAt.iterate   [Mathlib.Topology.Continuous]\\n- ContinuousAt.tendsto   [Mathlib.Topology.Continuous]\\n- ContinuousAt.congr   [Mathlib.Topology.Continuous]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"continuousOn\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'continuousOn': unknown identifier 'continuousOn'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AEStronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AEStronglyMeasurable': unknown identifier 'AEStronglyMeasurable'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous → Measurable\"}",
+   "ok": true,
+   "result_chars": 131,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Continuous → Measurable': type expected, got\\n  (Continuous : (?m.1 → ?m.2) → Prop)\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"measurable_of_continuous\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'measurable_of_continuous': unknown identifier 'measurable_of_continuous'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous\"}",
+   "ok": true,
+   "result_chars": 1264,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2420 declarations mentioning Continuous.\\n- Continuous   [Mathlib.Topology.Defs.Basic]\\n    A function between topological spaces is continuous if the preimage of every open set is open. Registered as a structure to make sure it is not unfolded by Lean\\n- IsOpenQuotientMap.continuous   [Mathlib.Topology.Defs.Basic]\\n    An open quotient map is continuous.\\n- Continuous.isOpen_preimage   [Mathlib.Topology.Defs.Basic]\\n    The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage` instead.\\n- Continuous.mk   [Mathlib.Topology.Defs.Basic]\\n- IsOpenQuotientMap.mk   [Mathlib.Topology.Defs.Basic]\\n- isOpenQuotientMap_iff   [Mathlib.Topology.Defs.Basic]\\n- ContinuousMap.mk   [Mathlib.Topology.ContinuousMap.Defs]\\n- ContinuousMap.continuous_toFun   [Mathlib.Topology.ContinuousMap.Defs]\\n    Proposition that `toFun` is continuous\\n- ContinuousMap.continuous   [Mathlib.Topology.ContinuousMap.Defs]\\n    Deprecated. Use `map_continuous` instead.\\n- ContinuousMap.instCanLiftForallCoeContinuous   [Mathlib.Topology.ContinuousMap.Defs]\\n- ContinuousMapClass.map_continuous   [Mathlib.Topology.ContinuousMap.Defs]\\n    Continuity\\n- ContinuousMapClass.mk   [Mathlib.Topology.ContinuousMap.Defs]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Mm]easurable.*[Cc]ontinuous|theorem.*[Cc]ontinuous.*[Mm]easurable\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2492,
+   "result_head": "[{\"type\": \"text\", \"text\": \"88 match(es) for 'theorem.*[Mm]easurable.*[Cc]ontinuous|theorem.*[Cc]ontinuous.*[Mm]easurable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:159\\n    theorem exists_le_lowerSemicontinuous_lintegral_ge (f : α → ℝ≥0∞) (hf : Measurable f) {ε : ℝ≥0∞}\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:222\\n    theorem exists_lt_lowerSemicontinuous_lintegral_ge_of_aemeasurable [SigmaFinite μ] (f : α → ℝ≥0)\\n- Mathlib/MeasureTheory/Integral/Bochner/FundThmCalculus.lean:93\\n    theorem ContinuousAt.integral_sub_linear_isLittleO_ae [TopologicalSpace X] [OpensMeasurableSpace X]\\n- Mathlib/MeasureTheory/Integral/Bochner/FundThmCalculus.lean:109\\n    theorem ContinuousOn.integral_sub_linear_isLittleO_ae [TopologicalSpace X] [OpensMeasurableSpace X]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:724\\n    theorem ContinuousOn.aemeasurable [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSpace β]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:738\\n    theorem ContinuousOn.aemeasurable₀ [TopologicalSpace α] [OpensMeasurableSpace α] [MeasurableSpace β]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:747\\n    theorem ContinuousOn.aestronglyMeasurable_of_isSeparable [TopologicalSpace α]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:760\\n    theorem ContinuousOn.aestronglyMeasurable [TopologicalSpace α] [TopologicalSpace β]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:776\\n    theorem ContinuousOn.aestronglyMeasurable_of_subset_isCompact\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:789\\n    theorem ContinuousOn.aestronglyMeasurable_of_isCompact [TopologicalSpace α] [OpensMeasurableSpace α]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:825\\n    theorem ContinuousOn.stronglyMeasurableAtFilter [TopologicalSpace α] [OpensMeasurableSpace α]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:831\\n    theorem ContinuousAt.stronglyMeasurableAtFilter [TopologicalSpace α] [OpensMeasurableSpace α]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:836\\n    theorem Continuous.stronglyMeasurableAtFilter [TopologicalSpace α] [OpensMeasurableSpace α]\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:843\\n    theorem ContinuousOn.stronglyMeasurableAtFilter_nhdsWithin {α β : Type*} [MeasurableSpace α]\\n- Mathlib/MeasureTheory/Measure/WithDensity.lean:146\\n    theorem withDensity_absolutelyContinuous {m : MeasurableSpace α} (μ : Measure α) (f : α → ℝ≥0∞) :\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Cc]ountable.*[Mm]easurable|[Mm]easurable.*[Cc]ountable\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2861,
+   "result_head": "[{\"type\": \"text\", \"text\": \"352 match(es) for 'theorem.*[Cc]ountable.*[Mm]easurable|[Mm]easurable.*[Cc]ountable' (via ripgrep):\\n- Mathlib/Probability/Process/Kolmogorov.lean:25\\n    measurable in `ω` for fixed `s, t`. In a space with second-countable topology, the measurability\\n- Mathlib/Probability/Process/PartitionFiltration.lean:19\\n    Here, we build the filtration of the measurable spaces generated by `countablePartition α n` for all\\n- Mathlib/Probability/Process/PartitionFiltration.lean:72\\n    refine @measurable_to_countable' (memPartition t n) α m _\\n- Mathlib/Probability/Process/PartitionFiltration.lean:106\\n    /-- A filtration built from the measurable spaces generated by `countablePartition α n` for\\n- Mathlib/Probability/Process/PartitionFiltration.lean:114\\n    lemma measurableSet_countableFiltration_of_mem (n : ℕ) {s : Set α}\\n- Mathlib/Probability/Process/PartitionFiltration.lean:116\\n    MeasurableSet[countableFiltration α n] s :=\\n- Mathlib/Probability/Process/PartitionFiltration.lean:119\\n    lemma measurableSet_countableFiltration_countablePartitionSet (n : ℕ) (t : α) :\\n- Mathlib/Probability/Process/PartitionFiltration.lean:120\\n    MeasurableSet[countableFiltration α n] (countablePartitionSet n t) :=\\n- Mathlib/Probability/Process/PartitionFiltration.lean:121\\n    measurableSet_countableFiltration_of_mem n (countablePartitionSet_mem n t)\\n- Mathlib/Probability/Process/PartitionFiltration.lean:123\\n    lemma measurable_countablePartitionSet_subtype (n : ℕ)\\n- Mathlib/Probability/Process/PartitionFiltration.lean:124\\n    (m : MeasurableSpace (countablePartition α n)) :\\n- Mathlib/Probability/Process/PartitionFiltration.lean:125\\n    @Measurable α (countablePartition α n) (countableFiltration α n) m\\n- Mathlib/Probability/Process/PartitionFiltration.lean:128\\n    (measurableSet_enumerateCountable_countableGeneratingSet (α := α)) n m\\n- Mathlib/Probability/Process/PartitionFiltration.lean:130\\n    lemma measurable_countableFiltration_countablePartitionSet (α : Type*)\\n- Mathlib/Probability/Process/PartitionFiltration.lean:132\\n    Measurable[countableFiltration α n] (countablePartitionSet n) :=\\n- Mathlib/Probability/Process/PartitionFiltration.lean:133\\n    measurable_subtype_coe.comp (measurable_countablePartitionSet_subtype _ _)\\n- Mathlib/Probability/Process/PartitionFiltration.lean:135\\n    lemma measurable_countablePartitionSet (α : Type*) [MeasurableSpace α] [CountablyGenerated α]\\n- Mathlib/Probability/Process/PartitionFiltration.lean:137\\n    Measurable (countablePartitionSet (α := α) n) :=\\n- Mathlib/Probability/Process/PartitionFiltration.lean:138\\n    (measurable_countableFiltration_countablePartitionSet α n).mono ((countableFiltration α).le n)\\n- Mathlib/Probability/Process/Stopping.lean:120\\n    protected theorem measurableSet_eq_of_countable_range (hτ : IsStoppingTime f τ)\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AEStronglyMeasurable\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AEStronglyMeasurable': unknown identifier 'AEStronglyMeasurable'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Cc]ontinuous.*except.*countable|except.*countable.*measurable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 142,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*[Cc]ontinuous.*except.*countable|except.*countable.*measurable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"measurable_of_countable_preimage\"}",
+   "ok": true,
+   "result_chars": 136,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'measurable_of_countable_preimage': unknown identifier 'measurable_of_countable_preimage'\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.Countable\"}",
+   "ok": true,
+   "result_chars": 1152,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 429 declarations mentioning Set.Countable.\\n- Set.Countable   [Mathlib.Data.Set.Countable]\\n    A set `s` is countable if the corresponding subtype is countable, i.e., there exists an injective map `f : s → ℕ`.  Note that this is an abbreviation, so `hs : \\n- Set.countable_univ   [Mathlib.Data.Set.Countable]\\n- Set.countable_empty   [Mathlib.Data.Set.Countable]\\n- Set.countable_univ_iff   [Mathlib.Data.Set.Countable]\\n- Set.not_countable_univ   [Mathlib.Data.Set.Countable]\\n- Set.Countable.of_subsingleton   [Mathlib.Data.Set.Countable]\\n- Set.enumerateCountable   [Mathlib.Data.Set.Countable]\\n    Noncomputably enumerate elements in a set. The `default` value is used to extend the domain to all of `ℕ`.\\n- Set.not_countable_univ_iff   [Mathlib.Data.Set.Countable]\\n- Set.Finite.countable   [Mathlib.Data.Set.Countable]\\n- Set.Subsingleton.countable   [Mathlib.Data.Set.Countable]\\n- Countable.to_set   [Mathlib.Data.Set.Countable]\\n    Restate `Set.Countable` as a `Countable` instance.\\n- Set.to_countable   [Mathlib.Data.Set.Countable]\\n    Prove `Set.Countable` from a `Countable` instance on the subtype.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*measurable.*Continuous\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 951,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*measurable.*Continuous' (via ripgrep):\\n- Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean:492\\n    theorem Continuous.measurable {f : α → γ} (hf : Continuous f) : Measurable f :=\\n- Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean:498\\n    theorem Continuous.aemeasurable {f : α → γ} (h : Continuous f) {μ : Measure α} : AEMeasurable f μ :=\\n- Mathlib/Analysis/Calculus/LineDeriv/Measurable.lean:37\\n    theorem measurableSet_lineDifferentiableAt (hf : Continuous f) :\\n- Mathlib/Analysis/Calculus/LineDeriv/Measurable.lean:76\\n    theorem measurableSet_lineDifferentiableAt_uncurry (hf : Continuous f) :\\n- Mathlib/Analysis/Calculus/FDeriv/Measurable.lean:894\\n    theorem measurableSet_of_differentiableAt_with_param (hf : Continuous f.uncurry) :\\n- Mathlib/Analysis/Calculus/FDeriv/Measurable.lean:900\\n    theorem measurable_fderiv_with_param (hf : Continuous f.uncurry) :\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Measurable.piecewise\"}",
+   "ok": true,
+   "result_chars": 156,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Measurable.piecewise.\\n- Measurable.piecewise   [Mathlib.MeasureTheory.MeasurableSpace.Basic]\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Cc]ontinuousOn.*[Cc]ountable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1066,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*[Cc]ontinuousOn.*[Cc]ountable' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean:830\\n    theorem _root_.ContinuousOn.stronglyMeasurable_of_countable_compl [MeasurableSpace α]\\n- Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean:502\\n    theorem ContinuousOn.measurable_of_countable_compl [MeasurableSingletonClass α]\\n- Mathlib/MeasureTheory/Function/LocallyIntegrable.lean:750\\n    theorem IntegrableOn.continuousOn_smul_of_subset [SecondCountableTopologyEither X 𝕜] {f : X → 𝕜}\\n- Mathlib/MeasureTheory/Function/LocallyIntegrable.lean:758\\n    theorem IntegrableOn.continuousOn_smul [T2Space X] [SecondCountableTopologyEither X 𝕜] {g : X → E}\\n- Mathlib/MeasureTheory/Function/LocallyIntegrable.lean:763\\n    theorem IntegrableOn.smul_continuousOn_of_subset [SecondCountableTopologyEither X E] {f : X → 𝕜}\\n- Mathlib/MeasureTheory/Function/LocallyIntegrable.lean:771\\n    theorem IntegrableOn.smul_continuousOn [T2Space X] [SecondCountableTopologyEither X E] {f : X → 𝕜}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean\", \"line\": 502, \"n\": 10}",
+   "ok": true,
+   "result_chars": 849,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean  (lines 502–511 of 751):\\n   502  theorem ContinuousOn.measurable_of_countable_compl [MeasurableSingletonClass α]\\n   503      {f : α → γ} {s : Set α} (hf : ContinuousOn f s) (hs : (sᶜ).Countable) : Measurable f := by\\n   504    apply measurable_of_measurable_on_compl_countable _ hs\\n   505    rw [compl_compl]\\n   506    exact (continuousOn_iff_continuous_restrict.1 hf).measurable\\n   507  \\n   508  /-- If a function is continuous outside of a countable set, then it is measurable. -/\\n   509  theorem measurable_of_countable_not_continuousAt [MeasurableSingletonClass α]\\n   510      {f : α → γ} (hf : Set.Countable {x | ¬ ContinuousAt f x}) : Measurable f := by\\n   511    have : ContinuousOn f {x | ContinuousAt f x} := fun x hx ↦ hx.continuousWithinAt\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeasurableSingletonClass\"}",
+   "ok": true,
+   "result_chars": 1299,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 265 declarations mentioning MeasurableSingletonClass.\\n- MeasurableSingletonClass   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A typeclass mixin for `MeasurableSpace`s such that each singleton is measurable.\\n- DiscreteMeasurableSpace.toMeasurableSingletonClass   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    Warning: Creates a typeclass loop with `MeasurableSingletonClass.toDiscreteMeasurableSpace`. To be monitored.\\n- MeasurableSingletonClass.toDiscreteMeasurableSpace   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Set.Countable.measurableSet   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Set.Finite.measurableSet   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Set.Subsingleton.measurableSet   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- measurableSet_eq   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- MeasurableSet.singleton   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- MeasurableSingletonClass.measurableSet_singleton   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n    A singleton is a measurable set.\\n- MeasurableSingletonClass.mk   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- Finset.measurableSet   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\\n- MeasurableSet.insert   [Mathlib.MeasureTheory.MeasurableSpace.Defs]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem measurable_of_countable_not_continuousAt [MeasurableSingletonClass α]\n    {f : α → γ} (hf : Set.Countable {x | ¬ ContinuousAt f x}) : Measurable f := sorry"
+}

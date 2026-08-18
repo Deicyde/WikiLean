@@ -1,0 +1,462 @@
+{
+ "task_id": "fresh_007",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T03:29:13Z",
+ "wall_s": 94.7,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 8,
+   "mcp__wikibrain__brain_search": 32,
+   "mcp__wikibrain__brain_cell": 4,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 244,
+  "tokens_out": 6793,
+  "cost_usd": 0.13569415
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"strictly monotone strictly increasing\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2013,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictly monotone strictly increasing\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"scalar multiplication order preserving\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3271,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"scalar multiplication order preserving\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q1289248\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Scalar multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"StrictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2097,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"aka\\\":[\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono.orderIsoOfSurjective\\\",\\\"label\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMonoOn.orderIso\\\",\\\"label\\\":\\\"StrictMonoOn.orderIso\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.exp_strictMono\\\",\\\"label\\\":\\\"Real.exp_strictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/Exponential\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_degree\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_degree\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/Degree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_weightedDegree\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_weightedDegree\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/Degree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_strictMonoOn_norm_sub_right\\\",\\\"label\\\":\\\"TauCeti.Contour.exists_strictMonoOn_norm_sub_right\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Crossing\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Probability.ContractableLaw.map_prefixProj_of_strictMono\\\",\\\"label\\\":\\\"TauCeti.Probability.ContractableLaw.map_prefixProj_of_strictMono\\\",\\\"supercell\\\":\\\"path:TauCeti/Probability/Exchangeability/PathSpace\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Probability.blockLaw_strictMono_eq_lintegral_prod_directingMeasure\\\",\\\"label\\\":\\\"TauCeti.Probability.blockLaw_strictMono_eq_lintegral_prod_directingMeasure\\\",\\\"supercell\\\":\\\"path:TauCeti/Probability/DeFinetti\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"StrictMono\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4342,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono.orderIsoOfSurjective\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom\\\",\\\"label\\\":\\\"Hom\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMonoOn.orderIso\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMonoOn.orderIso\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom\\\",\\\"label\\\":\\\"Hom\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom/Set\\\",\\\"label\\\":\\\"Set\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"cell_label\\\":\\\"StrictMono\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Hom.Set\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Hom.Set\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"noncomputable def orderIsoOfSurjective : α ≃o β :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Hom/Set.html#StrictMono.orderIsoOfSurjective\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:StrictMono.orderIsoOfSurjective\\\",\\\"cell_label\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom\\\",\\\"label\\\":\\\"Hom\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"decl\\\":\\\"StrictMonoOn.orderIso\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Hom.Set\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Hom.Set\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected noncomputable def StrictMonoOn.orderIso {α β} [LinearOrder α] [Preorder β] (f : α → β)\\\\n    (s : Set α) (hf : StrictMonoOn f s) :\\\\n    s ≃o f '' s where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Hom/Set.html#StrictMonoOn.orderIso\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:StrictMonoOn.orderIso\\\",\\\"cell_label\\\":\\\"StrictM"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:PosSMulStrictMono\"}",
+   "ok": true,
+   "result_chars": 1272,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"anchor\\\":\\\"decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/Order/Module\\\"],\\\"xy\\\":[-923.2,220.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Module.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class PosSMulStrictMono : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Module.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/Module\\\",\\\"label\\\":\\\"Module\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:StrictMono\"}",
+   "ok": true,
+   "result_chars": 2426,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"anchor\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[407.6,980.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2301.09904#2.8\\\",\\\"label\\\":\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2301.09904\\\",\\\"ref\\\":\\\"2.8\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":83},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190667\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_1\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_2\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Equidistribution.isAccumulationPoint_iff_exists_subsequence_tendsto\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051.variants.rapid_growth\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056.variants.noll_simmons\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":86,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:PosSMulStrictMono\"}",
+   "ok": true,
+   "result_chars": 526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"code\\\":\\\"class PosSMulStrictMono : Prop where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Module/Defs.html#PosSMulStrictMono\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SMul StrictMono\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SMul StrictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"positive scalar multiplication preserves strict monotonicity\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3293,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"positive scalar multiplication preserves strict monotonicity\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q1289248\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Scalar multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_strictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pos_smul strictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pos_smul strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:StrictMono\", \"kinds\": \"depends,relates\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"relates\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":86,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"StrictMono.comp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono.comp\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderedSMul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderedSMul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"comp StrictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"comp StrictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"mul_strictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mul_strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:PosSMulStrictMono\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 684,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q125977\\\",\\\"dst\\\":\\\"decl:Mathlib:PosSMulStrictMono\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"d2aaed92e061\\\",\\\"label\\\":\\\"Ordered vector space\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"strictMono_smul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictMono_smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"fun composition scalar multiplication\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3826,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fun composition scalar multiplication\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q244761\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function composition\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Function.comp\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Function.comp\\\",\\\"via_cell\\\":\\\"cell:Q244761\\\",\\\"cell_label\\\":\\\"Function composition\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Scalar multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"strictMono_const_smul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictMono_const_smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderedModule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderedModule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"scalarOrder\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"scalarOrder\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"strict mono mul\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strict mono mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Preorder\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1774,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Preorder\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Preorder\\\",\\\"label\\\":\\\"Preorder\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Defs/PartialOrder\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Preorder.smallCategory\\\",\\\"label\\\":\\\"Preorder.smallCategory\\\",\\\"aka\\\":[\\\"categories-definition-directed-set\\\",\\\"Category theory for genetics I: mutations and sequence alignments\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Category/Preorder\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Preorder.topology\\\",\\\"label\\\":\\\"Preorder.topology\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Init:Relation.TransGen\\\",\\\"label\\\":\\\"Relation.TransGen\\\",\\\"aka\\\":[\\\"Basic constructions in the categories of sets, sets with a binary relation on them, preorders, and posets\\\"],\\\"supercell\\\":\\\"path:Init/Core\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Limits.IsCofiltered.preorder_of_cofiltered\\\",\\\"label\\\":\\\"CategoryTheory.Limits.IsCofiltered.preorder_of_cofiltered\\\",\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Limits/Shapes/Countable\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:specializationPreorder\\\",\\\"label\\\":\\\"specializationPreorder\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Defs/Filter\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category/Preorder\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Preorder\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Limits/Preorder\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Preorder\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Limits/Shapes/Preorder\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Preorder\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace/PreorderRestrict\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"PreorderRestrict\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PosMulStrictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PosMulStrictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pos zero lt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pos zero lt\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"ordered semiring\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ordered semiring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"semiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Semiring (α : Type u) extends AddCommMonoid α, MonoidWithZero α, NonUnitalSemiring α,\\\\n  NonAssocSemiring α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\",\\\"via_cell\\\":\\\"cell:Q1333055\\\",\\\"cell_label\\\":\\\"semiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PosMulMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 167,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PosMulMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PosMulReflectLT\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PosMulReflectLT\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"ordered module positive scalar preserves inequality\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ordered module positive scalar preserves inequality\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}]},{\\\"id\\\":\\\"cell:Q1289248\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"label\\\":\\\"Zorn's lemma\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q41299\\\",\\\"label\\\":\\\"Quadratic equation\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q659746\\\",\\\"label\\\":\\\"Well-order\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q845060\\\",\\\"label\\\":\\\"Maximum and minimum\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1096885\\\",\\\"label\\\":\\\"Lattice (group)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1217677\\\",\\\"label\\\":\\\"Fundamental theorem of calculus\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":107,\\\"withheld_by_shard\\\":334,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\",\\\"via_cell\\\":\\\"cell:Q369377\\\",\\\"cell_label\\\":\\\"Total order\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}]},{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Module (R : Type u) (M : Type v) [Semiring R] [AddCommMonoid M] extends\\\\n  DistribMulAction R M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\",\\\"via_cell\\\":\\\"cell:Q18848\\\",\\\"cell_label\\\":\\\"Module (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"D"
+  },
+  {
+   "i": 30,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"StrictMono\\\", \\\"SMul\\\", \\\"Preorder\\\", \\\"LinearOrder\\\", \\\"Module\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"StrictMono\", \"SMul\", \"Preorder\", \"LinearOrder\", \"Module\"]}",
+   "ok": true,
+   "result_chars": 1558,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\"},{\\\"decl\\\":\\\"Preorder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.PartialOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/PartialOrder.html#Preorder\\\"},{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"},{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"nsmul strictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nsmul strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zsmul strictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zsmul strictMono\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"StrictMono map\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"const_smul strict\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"const_smul strict\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Order.Monotone\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Order.Monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Algebra/Order/Module\"}",
+   "ok": true,
+   "result_chars": 865,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Algebra/Order/Module\\\",\\\"id\\\":\\\"path:Mathlib/Algebra/Order/Module\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Module\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Algebra/Order/Module\\\",\\\"parent\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"cell:decl:Mathlib:PositiveLinearMap\\\",\\\"cell:decl:Mathlib:sup_eq_half_smul_add_add_abs_sub\\\"],\\\"fa\\\":128},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PositiveLinearMap\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PositiveLinearMap\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PositiveLinearMap\\\",\\\"label\\\":\\\"PositiveLinearMap\\\",\\\"aka\\\":[\\\"A local and operational framework for the foundations of physics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Module\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PositiveLinearMap.GNS\\\",\\\"label\\\":\\\"PositiveLinearMap.GNS\\\",\\\"aka\\\":[\\\"BRST Reduction of Quantum Algebras with $^*$-Involutions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/CStarAlgebra/GelfandNaimarkSegal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PositiveLinearMap.gnsStarAlgHom\\\",\\\"label\\\":\\\"PositiveLinearMap.gnsStarAlgHom\\\",\\\"aka\\\":[\\\"Local state and sector theory in local quantum physics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/CStarAlgebra/GelfandNaimarkSegal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PositiveLinearMap.preGNSpreInnerProdSpace\\\",\\\"label\\\":\\\"PositiveLinearMap.preGNSpreInnerProdSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/CStarAlgebra/GelfandNaimarkSegal\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/CStarAlgebra/PositiveLinearMap\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"PositiveLinearMap\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"preserves strict inequality scalar multiplication\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4230,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"preserves strict inequality scalar multiplication\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q126736\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Scalar multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q31924\\\",\\\"label\\\":\\\"Connection (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":195,\\\"withheld_by_shard\\\":94,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\",\\\"via_cell\\\":\\\"cell:Q369377\\\",\\\"cell_label\\\":\\\"Total order\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}]},{\\\"decl\\\":\\\"Mul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Mul\\\",\\\"via_cell\\\":\\\"cell:Q40276\\\",\\\"cell_label\\\":\\\"Multiplication\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"SMul\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#SMul\\\",\\\"via_cell\\\":\\\"cell:Q126736\\\",\\\"cell_label\\\":\\\"Sc"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderedSMul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderedSMul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PosMulStrictMono.smul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PosMulStrictMono.smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_le_smul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_le_smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_lt_smul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_lt_smul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"mul_lt_mul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 598,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"mul_lt_mul\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_left_of_neg\\\",\\\"label\\\":\\\"mul_lt_mul_left_of_neg\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Ring\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_neg_left\\\",\\\"label\\\":\\\"mul_lt_mul_of_neg_left\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Ring\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"label\\\":\\\"mul_lt_mul_of_pos_left\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/GroupWithZero\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"le_of_lt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"le_of_lt\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:mul_lt_mul_of_pos_left\"}",
+   "ok": true,
+   "result_chars": 1312,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"mul_lt_mul_of_pos_left\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"anchor\\\":\\\"decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"label\\\":\\\"mul_lt_mul_of_pos_left\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/Order/GroupWithZero\\\"],\\\"xy\\\":[455.7,585]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"label\\\":\\\"mul_lt_mul_of_pos_left\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs\\\",\\\"decl_kind\\\":\\\"thm\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/GroupWithZero\\\",\\\"label\\\":\\\"GroupWithZero\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:mul_lt_mul_of_pos_left\"}",
+   "ok": true,
+   "result_chars": 471,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:mul_lt_mul_of_pos_left\\\",\\\"label\\\":\\\"mul_lt_mul_of_pos_left\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Unbundled/Defs.html#mul_lt_mul_of_pos_left\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_lt_smul_of_pos\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_lt_smul_of_pos\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"smul_le_smul_of_le_left\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"smul_le_smul_of_le_left\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"OrderedSemiring\", \"DistribMulAction\", \"OrderedModule\", \"PartialOrder\"]}",
+   "ok": true,
+   "result_chars": 1316,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"OrderedSemiring\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"DistribMulAction\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.Action.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/Action/Defs.html#DistribMulAction\\\"},{\\\"decl\\\":\\\"OrderedModule\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"PartialOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.PartialOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.PartialOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/PartialOrder.html#PartialOrder\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

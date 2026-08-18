@@ -1,0 +1,381 @@
+{
+ "task_id": "fresh_085",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:16:46Z",
+ "wall_s": 84.8,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_search": 22,
+   "mcp__wikibrain__brain_cell": 5,
+   "mcp__wikibrain__brain_transfer": 1,
+   "mcp__wikibrain__brain_neighborhood": 3,
+   "mcp__wikibrain__decl_exists": 9
+  },
+  "tokens_in": 242,
+  "tokens_out": 5856,
+  "cost_usd": 0.13085225000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"product of path-connected spaces is path-connected\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3727,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"product of path-connected spaces is path-connected\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Curve\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Path\\\",\\\"label\\\":\\\"Path\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":15},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q118084\\\",\\\"label\\\":\\\"unit\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6}],\\\"returned\\\":12,\\\"total\\\":138,\\\"withheld_by_shard\\\":537,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Path\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Path\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Path\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Path (x y : X) extends C(I, X) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Path.html#Path\\\",\\\"via_cell\\\":\\\"cell:Q161973\\\",\\\"cell_label\\\":\\\"Curve\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Path\\\",\\\"label\\\":\\\"Path\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"path-connected space\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"path-connected space\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PathConnectedSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"aka\\\":[\\\"Connectedness of the Moduli Space of Genus 1 Planar Tropical Curves\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace.connectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace.connectedSpace\\\",\\\"aka\\\":[\\\"Metric characterization of connectedness for topological spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:pathConnectedSpace_iff_connectedSpace\\\",\\\"label\\\":\\\"pathConnectedSpace_iff_connectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace\\\",\\\"aka\\\":[\\\"Corona-type theorems and division in some function algebras on planar domains\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ChartedSpace.locPathConnectedSpace\\\",\\\"label\\\":\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/ChartedSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContractibleSpace.toPathConnectedSpace\\\",\\\"label\\\":\\\"ContractibleSpace.toPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Homotopy/Contractible\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"label\\\":\\\"IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instPathConnectedSpace\\\",\\\"label\\\":\\\"Real.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"label\\\":\\\"SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi topology product connected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi topology product connected\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:PathConnectedSpace\"}",
+   "ok": true,
+   "result_chars": 2052,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"anchor\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Connected/PathConnected\\\"],\\\"f\\\":128,\\\"xy\\\":[253.1,1111.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class PathConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1901.03795#2.4\\\",\\\"label\\\":\\\"Connectedness of the Moduli Space of Genus 1 Planar Tropical Curves\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1901.03795\\\",\\\"ref\\\":\\\"2.4\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected\\\",\\\"label\\\":\\\"Connected\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"label\\\":\\\"PathConnected\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":2,\\\"invocation\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le_subgroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_subsingleton_fundamentalGroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi instTopologicalSpace product\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi instTopologicalSpace product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi pathConnected family\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi pathConnected family\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pathConnectedSpace Pi instance\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pathConnectedSpace Pi instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"topological space Pi type dependent product\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 200,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"topological space Pi type dependent product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ConnectedSpace Pi product instance\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ConnectedSpace Pi product instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"product of path-connected spaces\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 228,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"product of path-connected spaces\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"instPathConnectedSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 561,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"instPathConnectedSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instPathConnectedSpace\\\",\\\"label\\\":\\\"Real.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"label\\\":\\\"SimplyConnectedSpace.instPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:PathConnectedSpace\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 2127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"lit:1901.03795#2.4\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"PathConnectedSpace\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.911,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"78f4d16fc7b2\\\",\\\"label\\\":\\\"Path-component and path-connected space\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le_subgroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le_subgroup\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":33,\\\"evidence\\\":{\\\"name\\\":\\\"PathConnectedSpace\\\"}}]},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_subsingleton_fundamentalGroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_subsingleton_fundamentalGroup\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":33,\\\"evidence\\\":{\\\"name\\\":\\\"PathConnectedSpace\\\"}}]},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q621550\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"3c6459f1ea96\\\",\\\"label\\\":\\\"Path-connected space\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":4,\\\"matched\\\":4,\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi.instConnectedSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi.instConnectedSpace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"section indexed family topological\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"section indexed family topological\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"connected Pi nonempty\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"connected Pi nonempty\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"nonempty ConnectedSpace Pi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nonempty ConnectedSpace Pi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ConnectedSpace\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 3595,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ConnectedSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"label\\\":\\\"Connected space\\\",\\\"aka\\\":[\\\"Connected Set\\\",\\\"ConnectedSpace\\\",\\\"The notion of abstract Manifold: a pedagogical approach\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q865967\\\",\\\"label\\\":\\\"Locally connected space\\\",\\\"aka\\\":[\\\"Locally Connected\\\",\\\"LocallyConnectedSpace\\\",\\\"The Classification Theorem for Compact Surfaces And A Detour On Fractals\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocallyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousMap.HomotopyEquiv.simplyConnectedSpace\\\",\\\"label\\\":\\\"ContinuousMap.HomotopyEquiv.simplyConnectedSpace\\\",\\\"aka\\\":[\\\"Mathematics for theoretical physics\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace\\\",\\\"aka\\\":[\\\"Corona-type theorems and division in some function algebras on planar domains\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocPathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace\\\",\\\"aka\\\":[\\\"Connectedness of the Moduli Space of Genus 1 Planar Tropical Curves\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace.connectedSpace\\\",\\\"label\\\":\\\"PathConnectedSpace.connectedSpace\\\",\\\"aka\\\":[\\\"Metric characterization of connectedness for topological spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SimplyConnectedSpace\\\",\\\"label\\\":\\\"SimplyConnectedSpace\\\",\\\"aka\\\":[\\\"Ribbon graphs and the fundamental group of surfaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TotallyDisconnectedSpace\\\",\\\"label\\\":\\\"TotallyDisconnectedSpace\\\",\\\"aka\\\":[\\\"On linearly ordered sets of chain components\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/TotallyDisconnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:locallyConnectedSpace_iff_connectedComponentIn_open\\\",\\\"label\\\":\\\"locallyConnectedSpace_iff_connectedComponentIn_open\\\",\\\"aka\\\":[\\\"The Classification Theorem for Compact Surfaces And A Detour On Fractals\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocallyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ChartedSpace.locPathConnectedSpace\\\",\\\"label\\\":\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/ChartedSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousMap.HomotopyEquiv.simplyConnectedSpace_iff\\\",\\\"label\\\":\\\"ContinuousMap.HomotopyEquiv.simplyConnectedSpace_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContractibleSpace.toPathConnectedSpace\\\",\\\"label\\\":\\\"ContractibleSpace.toPathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Homotopy/Contractible\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsOpen.locallyConnectedSpace\\\",\\\"label\\\":\\\"IsOpen.locallyConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected/LocallyConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"label\\\":\\\"IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/PathConnected\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"label\\\":\\\"LocPathConnectedSpace.toLocallyConnectedSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Connected\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1491995\"}",
+   "ok": true,
+   "result_chars": 3040,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1491995\\\",\\\"id\\\":\\\"cell:Q1491995\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Connected space\\\",\\\"f\\\":2265,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"anchor\\\":\\\"Q1491995\\\",\\\"label\\\":\\\"Connected space\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Connected/Basic\\\"],\\\"f\\\":2265,\\\"xy\\\":[403.1,253.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1491995\\\",\\\"label\\\":\\\"Connected space\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"topological space that cannot be written as the disjoint union of two nonempty open subsets\\\",\\\"slug\\\":\\\"Connected_space\\\",\\\"article_annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":44,\\\"partial\\\":6,\\\"not_formalized\\\":27},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ConnectedSpace\\\",\\\"label\\\":\\\"ConnectedSpace\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class ConnectedSpace (α : Type u) [TopologicalSpace α] : Prop extends PreconnectedSpace α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ConnectedSet\\\",\\\"label\\\":\\\"Connected Set\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ConnectedSet.html\\\",\\\"qid\\\":\\\"Q1491995\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Connected_space\\\",\\\"label\\\":\\\"Connected space\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":44,\\\"partial\\\":6,\\\"not_formalized\\\":27}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1204.2191#1.34\\\",\\\"label\\\":\\\"The notion of abstract Manifold: a pedagogical approach\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1204.2191\\\",\\\"ref\\\":\\\"1.34\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":1,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected\\\",\\\"label\\\":\\\"Connected\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":12,\\\"depends\\\":124,\\\"mentions\\\":47,\\\"relates\\\":1,\\\"invocation\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q622506\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q622679\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":160,\\\"organs\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q1491995\", \"limit\": 50, \"kinds\": \"depends,invocation\"}",
+   "ok": true,
+   "result_chars": 17786,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1491995\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"invocation\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q42989\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":54,\\\"w_types\\\":{\\\"sig\\\":52,\\\"def\\\":1,\\\"proof\\\":10},\\\"witnesses\\\":[[\\\"isPreconnected_iff_ordConnected\\\",\\\"TopologicalSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q621550\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":84,\\\"w_types\\\":{\\\"sig\\\":70,\\\"def\\\":10,\\\"proof\\\":21},\\\"witnesses\\\":[[\\\"isPreconnected_iff_ordConnected\\\",\\\"OrderTopology\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621550\\\",\\\"dst\\\":\\\"Q1491995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":2,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"IsConnected.image\\\",\\\"IsConnected\\\"]]}}]},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q203920\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"ChartedSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q2721559\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"ChartedSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q3783831\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"ChartedSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q484298\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"ChartedSpace.locPathConnectedSpace\\\",\\\"ChartedSpace\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1046291\\\",\\\"dst\\\":\\\"Q1491995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Subgroup.connectedComponentOfOne\\\",\\\"connectedComponent\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q1046291\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Convex.isConnected\\\",\\\"ContinuousSMul\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1887083\\\",\\\"dst\\\":\\\"Q1491995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Subgroup.connectedComponentOfOne\\\",\\\"connectedComponent\\\"]]}}]},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q170058\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":43,\\\"w_types\\\":{\\\"sig\\\":41,\\\"def\\\":2,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"isPreconnected_iff_ordConnected\\\",\\\"TopologicalSpace\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q170058\\\",\\\"dst\\\":\\\"Q1491995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"IsConnected.image\\\",\\\"IsConnected\\\"]]}}]},{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q179899\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":47,\\\"w_types\\\":{\\\"sig\\\":44,\\\"def\\\":3,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"isPreconnected_iff_ordConnected\\\",\\\"TopologicalSpace\\\"]]}}]},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q125977\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":6,\\\"w_types\\\":{\\\"sig\\\":6,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Convex.isConnected\\\",\\\"ContinuousSMul\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"Q18848\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Convex.isConnected\\\",\\\"Module\\\"]]}}]},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"instConnectedSpacePi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"instConnectedSpacePi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"instPathConnectedSpacePi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"instPathConnectedSpacePi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Pi.pathConnectedSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Pi.pathConnectedSpace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PathConnectedSpace Pi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PathConnectedSpace Pi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"nonempty pathConnected pi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nonempty pathConnected pi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"connectedSpace nonempty pi product\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"connectedSpace nonempty pi product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:PathConnectedSpace\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 2127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1491995\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"lit:1901.03795#2.4\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"PathConnectedSpace\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.911,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q1491995\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"78f4d16fc7b2\\\",\\\"label\\\":\\\"Path-component and path-connected space\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le_subgroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le_subgroup\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":33,\\\"evidence\\\":{\\\"name\\\":\\\"PathConnectedSpace\\\"}}]},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_subsingleton_fundamentalGroup\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:TauCeti:TauCeti.IsCoveringMap.existsUnique_continuousMap_lifts_of_subsingleton_fundamentalGroup\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":33,\\\"evidence\\\":{\\\"name\\\":\\\"PathConnectedSpace\\\"}}]},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q621550\\\",\\\"dst\\\":\\\"decl:Mathlib:PathConnectedSpace\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"3c6459f1ea96\\\",\\\"label\\\":\\\"Path-connected space\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":4,\\\"matched\\\":4,\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Topology/Connected/PathConnected\"}",
+   "ok": true,
+   "result_chars": 1141,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"id\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"PathConnected\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Topology/Connected/PathConnected\\\",\\\"parent\\\":\\\"path:Mathlib/Topology/Connected\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:IsPathConnected.image\\\",\\\"cell:decl:Mathlib:IsPathConnected.subset_pathComponent\\\",\\\"cell:decl:Mathlib:PathConnectedSpace\\\",\\\"cell:decl:Mathlib:PathConnectedSpace.connectedSpace\\\",\\\"cell:decl:Mathlib:Real.instPathConnectedSpace\\\",\\\"cell:decl:Mathlib:biUnion_connectedComponent_pathComponent_eq\\\",\\\"cell:decl:Mathlib:pathComponent\\\"],\\\"fa\\\":128},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Connected\\\",\\\"label\\\":\\\"Connected\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"topological space Pi dependent product instance\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"topological space Pi dependent product instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Mathlib Topology Pi\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Mathlib Topology Pi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"instTopologicalSpacePi\", \"Pi.instTopologicalSpace\", \"instPathConnectedSpacePi\", \"Pi.instPathConnectedSpace\", \"instConnectedSpacePi\"]}",
+   "ok": true,
+   "result_chars": 1448,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"instTopologicalSpacePi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.instTopologicalSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"instPathConnectedSpacePi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"instConnectedSpacePi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pi.topologicalSpace\", \"TopologicalSpace.pi\", \"instTopologicalSpace_pi\", \"Pi.pathConnectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1440,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pi.topologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Constructions\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Constructions\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Constructions.html#Pi.topologicalSpace\\\"},{\\\"decl\\\":\\\"TopologicalSpace.pi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"instTopologicalSpace_pi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.pathConnectedSpace\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"IsTopologicalAddGroup.pathConnectedSpace\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Analysis.Convex.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Convex.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Convex/PathConnected.html#IsTopologicalAddGroup.pathConnectedSpace\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pi.pathConnectedSpace_nonempty\", \"nonempty_iff_pi_pathConnectedSpace\", \"pathConnectedSpace_pi\", \"Pi.instPathConnectedSpace_nonempty\", \"Pi.connectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1605,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pi.pathConnectedSpace_nonempty\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"nonempty_iff_pi_pathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"pathConnectedSpace_pi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.instPathConnectedSpace_nonempty\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Pi.connectedSpace\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"instConnectedSpaceForall\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/Basic.html#instConnectedSpaceForall\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"instConnectedSpaceForall\", \"instPathConnectedSpaceForall\", \"pathConnectedSpace_iff_forall\", \"connectedSpace_iff_forall\", \"nonempty_pi_iff\"]}",
+   "ok": true,
+   "result_chars": 1528,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"instConnectedSpaceForall\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/Basic.html#instConnectedSpaceForall\\\"},{\\\"decl\\\":\\\"instPathConnectedSpaceForall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"pathConnectedSpace_iff_forall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"connectedSpace_iff_forall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"nonempty_pi_iff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:instConnectedSpaceForall\"}",
+   "ok": false,
+   "result_chars": 394,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:instConnectedSpaceForall\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"instConnectedSpaceForall\"}",
+   "ok": false,
+   "result_chars": 381,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"instConnectedSpaceForall\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pi.instPathConnectedSpace\", \"instPathConnectedSpaceForall\", \"PathConnectedSpace.pi\", \"nonempty_pi_pathConnectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1214,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pi.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"instPathConnectedSpaceForall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"PathConnectedSpace.pi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"nonempty_pi_pathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pi\", \"Nonempty\", \"PathConnectedSpace\", \"Path\", \"ContinuousMap\"]}",
+   "ok": true,
+   "result_chars": 1702,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pi\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"HomotopyGroup.Pi\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Topology.Homotopy.HomotopyGroup\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Homotopy.HomotopyGroup\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Homotopy/HomotopyGroup.html#HomotopyGroup.Pi\\\"},{\\\"decl\\\":\\\"Nonempty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Nonempty\\\"},{\\\"decl\\\":\\\"PathConnectedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#PathConnectedSpace\\\"},{\\\"decl\\\":\\\"Path\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Path\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Path\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Path.html#Path\\\"},{\\\"decl\\\":\\\"ContinuousMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.ContinuousMap.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.ContinuousMap.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/ContinuousMap/Defs.html#ContinuousMap\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsPathConnected\", \"isPathConnected_iff\", \"pathConnectedSpace_iff\", \"connectedSpace_subtype\"]}",
+   "ok": true,
+   "result_chars": 1463,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsPathConnected\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#IsPathConnected\\\"},{\\\"decl\\\":\\\"isPathConnected_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#isPathConnected_iff\\\"},{\\\"decl\\\":\\\"pathConnectedSpace_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#pathConnectedSpace_iff\\\"},{\\\"decl\\\":\\\"connectedSpace_subtype\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Subtype\", \"instTopologicalSpaceSubtype\", \"Pi.instPathConnectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1008,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Subtype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Subtype\\\"},{\\\"decl\\\":\\\"instTopologicalSpaceSubtype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Induced\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Induced\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Induced.html#instTopologicalSpaceSubtype\\\"},{\\\"decl\\\":\\\"Pi.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.pi\", \"piSet\", \"Set.pi_def\", \"pathConnectedSpace_forall\"]}",
+   "ok": true,
+   "result_chars": 1231,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.pi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Operations\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Operations.html#Set.pi\\\"},{\\\"decl\\\":\\\"piSet\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.pi_def\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Lattice.html#Set.pi_def\\\"},{\\\"decl\\\":\\\"pathConnectedSpace_forall\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

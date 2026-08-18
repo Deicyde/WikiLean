@@ -1,0 +1,398 @@
+{
+ "task_id": "fresh_058",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:15:19Z",
+ "wall_s": 88.3,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 22,
+   "mcp__wikibrain__brain_bridge": 7,
+   "mcp__wikibrain__brain_cell": 4,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 6,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 6159,
+  "cost_usd": 0.11965505
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"signed measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"total variation measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"the norm of a signed measure on a set is at most the total variation measure on that set\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2960,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"the norm of a signed measure on a set is at most the total variation measure on that set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q956437\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Norm (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q120812\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1572357\\\",\\\"label\\\":\\\"Locally convex topological vector space\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":172,\\\"withheld_by_shard\\\":309,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Norm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.Normed.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Norm (E : Type*) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Group/Defs.html#Norm\\\",\\\"via_cell\\\":\\\"cell:Q956437\\\",\\\"cell_label\\\":\\\"Norm (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"aka\\\":[\\\"Hahn decomposition\\\",\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"totalVariation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1568811\"}",
+   "ok": true,
+   "result_chars": 4003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"anchor\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"supercells\\\":[\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"],\\\"f\\\":152,\\\"xy\\\":[170.5,-1]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"theorem\\\",\\\"slug\\\":\\\"Hahn_decomposition_theorem\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"Alternative formulation of `MeasureTheory.SignedMeasure.exists_isCompl_positive_negative`\\\\n(the Hahn decomposition theorem) using set complements. \\\",\\\"code\\\":\\\"theorem exists_compl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ s ≤[iᶜ] 0 := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"**The Hahn decomposition theorem**: Given a signed measure `s`, there exist\\\\ncomplement measurable sets `i` and `j` such that `i` is positive, `j` is negative. \\\",\\\"code\\\":\\\"theorem exists_isCompl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i j : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ MeasurableSet j ∧ s ≤[j] 0 ∧ IsCompl i j :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Hahn_decomposition\\\",\\\"label\\\":\\\"Hahn decomposition\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Hahn_decomposition\\\",\\\"qid\\\":\\\"Q1568811\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1206.5449#1\\\",\\\"label\\\":\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1206.5449\\\",\\\"ref\\\":\\\"1\\\",\\\"license_open\\\":false},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1403.3341#2.1\\\",\\\"label\\\":\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1403.3341\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2,\\\"page\\\":1,\\\"statement\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"label\\\":\\\"Decomposition\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":46,\\\"relates\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q10290214\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1076611\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":43,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measure absolute value total variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure absolute value total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure apply\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure apply\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Jordan decomposition\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"absolute value of measure of set bounded by total variation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3773,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value of measure of set bounded by total variation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":158,\\\"withheld_by_shard\\\":276,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\\\n    extends R →ₙ* S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]},{\\\"decl\\\":\\\"AbsoluteValue.abs\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def abs : AbsoluteValue S S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.abs\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"VectorMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 274,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"VectorMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure\"}",
+   "ok": true,
+   "result_chars": 1053,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"VectorMeasure\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"children\\\":[\\\"path:Mathlib/MeasureTheory/VectorMeasure/AddContent\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Basic\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/BoundedVariation\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/WithDensity\\\"],\\\"fa\\\":152},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Variation\"}",
+   "ok": true,
+   "result_chars": 809,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Variation\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"apply norm ennreal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"apply norm ennreal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"signed measure apply set measurable bounded\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure apply set measurable bounded\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q176623\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Random variable\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace\\\",\\\"label\\\":\\\"MeasurableSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"label\\\":\\\"Probability\\\",\\\"w\\\":13},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q853831\\\",\\\"label\\\":\\\"Lebesgue integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1591095\\\",\\\"label\\\":\\\"Hausdorff measure\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q623472\\\",\\\"label\\\":\\\"Probability space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":99,\\\"withheld_by_shard\\\":620,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Measurable\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Measurable [MeasurableSpace α] [MeasurableSpace β] (f : α → β) : Prop :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#Measurable\\\",\\\"via_cell\\\":\\\"cell:Q176623\\\",\\\"cell_label\\\":\\\"Random variable\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace\\\",\\\"label\\\":\\\"MeasurableSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/MeasurableSpace/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"for a signed measure the absolute value of its value on a set is less than or equal to the total variation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3820,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"for a signed measure the absolute value of its value on a set is less than or equal to the total variation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":158,\\\"withheld_by_shard\\\":276,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\\\n    extends R →ₙ* S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]},{\\\"decl\\\":\\\"AbsoluteValue.abs\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def abs : AbsoluteValue S S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.abs\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"MeasureTheory.SignedMeasure\\\", \\\"MeasureTheory.SignedMeasure.apply\\\", \\\"MeasureTheory.SignedMeasure.totalVariation\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SignedMeasure\", \"MeasureTheory.SignedMeasure.apply\", \"MeasureTheory.SignedMeasure.totalVariation\"]}",
+   "ok": true,
+   "result_chars": 1254,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/VectorMeasure/Basic.html#MeasureTheory.SignedMeasure\\\"},{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Jordan\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Jordan\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.html#MeasureTheory.SignedMeasure.totalVariation\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:MeasureTheory.SignedMeasure\"}",
+   "ok": false,
+   "result_chars": 395,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"MeasureTheory.SignedMeasure\"}",
+   "ok": false,
+   "result_chars": 382,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"norm apply signed measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm apply signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"norm of signed measure applied to set\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2909,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm of signed measure applied to set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q956437\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Norm (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q120812\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1572357\\\",\\\"label\\\":\\\"Locally convex topological vector space\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":172,\\\"withheld_by_shard\\\":309,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Norm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.Normed.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Norm (E : Type*) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Group/Defs.html#Norm\\\",\\\"via_cell\\\":\\\"cell:Q956437\\\",\\\"cell_label\\\":\\\"Norm (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"le_totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"le_totalVariation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"abs_apply le\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"abs_apply le\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"apply le variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"apply le variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"measure value bounded by variation\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 267,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"measure value bounded by variation\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ENNReal\", \"Set\", \"MeasurableSet\"]}",
+   "ok": true,
+   "result_chars": 1058,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ENNReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.ENNReal.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ENNReal/Basic.html#ENNReal\\\"},{\\\"decl\\\":\\\"Set\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set\\\"},{\\\"decl\\\":\\\"MeasurableSet\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#MeasurableSet\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure instance coeFun\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure instance coeFun\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"apply abs le totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"apply abs le totalVariation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1568811\"}",
+   "ok": true,
+   "result_chars": 4003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"anchor\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"supercells\\\":[\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"],\\\"f\\\":152,\\\"xy\\\":[170.5,-1]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"theorem\\\",\\\"slug\\\":\\\"Hahn_decomposition_theorem\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"Alternative formulation of `MeasureTheory.SignedMeasure.exists_isCompl_positive_negative`\\\\n(the Hahn decomposition theorem) using set complements. \\\",\\\"code\\\":\\\"theorem exists_compl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ s ≤[iᶜ] 0 := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"**The Hahn decomposition theorem**: Given a signed measure `s`, there exist\\\\ncomplement measurable sets `i` and `j` such that `i` is positive, `j` is negative. \\\",\\\"code\\\":\\\"theorem exists_isCompl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i j : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ MeasurableSet j ∧ s ≤[j] 0 ∧ IsCompl i j :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Hahn_decomposition\\\",\\\"label\\\":\\\"Hahn decomposition\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Hahn_decomposition\\\",\\\"qid\\\":\\\"Q1568811\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1206.5449#1\\\",\\\"label\\\":\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1206.5449\\\",\\\"ref\\\":\\\"1\\\",\\\"license_open\\\":false},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1403.3341#2.1\\\",\\\"label\\\":\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1403.3341\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2,\\\"page\\\":1,\\\"statement\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"label\\\":\\\"Decomposition\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":46,\\\"relates\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q10290214\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1076611\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":43,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"MeasureTheory.SignedMeasure\", \"limit\": 30, \"kinds\": \"depends\"}",
+   "ok": false,
+   "result_chars": 382,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"MeasureTheory.SignedMeasure\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure.ofMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure.ofMeasure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Int ennreal abs\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Int ennreal abs\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SignedMeasure.le_totalVariation_apply\", \"MeasureTheory.SignedMeasure.abs_apply_le_totalVariation\", \"MeasureTheory.SignedMeasure.apply_abs_le_totalVariation\"]}",
+   "ok": true,
+   "result_chars": 1047,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.le_totalVariation_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.abs_apply_le_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.apply_abs_le_totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SignedMeasure.norm_apply_le\", \"MeasureTheory.SignedMeasure.normApply_le\", \"MeasureTheory.totalVariation_apply_le\"]}",
+   "ok": true,
+   "result_chars": 1179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.norm_apply_le\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"NonUnitalStarAlgHom.norm_apply_le\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Analysis.CStarAlgebra.Spectrum\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.CStarAlgebra.Spectrum\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/CStarAlgebra/Spectrum.html#NonUnitalStarAlgHom.norm_apply_le\\\"},{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.normApply_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.totalVariation_apply_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"VectorMeasure of IntegrationComp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"VectorMeasure of IntegrationComp\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure mk create construct\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure mk create construct\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SignedMeasure\", \"Measure\", \"ℝ\", \"Int\", \"MeasurableSet\"]}",
+   "ok": true,
+   "result_chars": 1765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/VectorMeasure/Basic.html#MeasureTheory.SignedMeasure\\\"},{\\\"decl\\\":\\\"Measure\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"MeasureTheory.Measure\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Measure.MeasureSpaceDef\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Measure.MeasureSpaceDef\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.html#MeasureTheory.Measure\\\"},{\\\"decl\\\":\\\"ℝ\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Int\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Int.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.Int.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Int/Basic.html#Int\\\"},{\\\"decl\\\":\\\"MeasurableSet\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.MeasurableSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/MeasurableSpace/Defs.html#MeasurableSet\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"coe_fn_sign measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"coe_fn_sign measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"vector measure is bounded by its total variation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2340,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"vector measure is bounded by its total variation\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q13471665\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Vector (mathematics and physics)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q181365\\\",\\\"label\\\":\\\"Dot product\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q44528\\\",\\\"label\\\":\\\"Euclidean vector\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q919459\\\",\\\"label\\\":\\\"Gateaux derivative\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"label\\\":\\\"Matrix multiplication\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11203\\\",\\\"label\\\":\\\"System of linear equations\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":146,\\\"withheld_by_shard\\\":156,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q13471665\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Vector (mathematics and physics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"no Mathlib declaration is an organ of this candidate atom\\\"}],\\\"note\\\":\\\"the candidate atoms hold no Mathlib declaration — nearest atoms returned; try brain_neighborhood or a different phrasing\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.SignedMeasure.totalVariation\", \"ENNReal\", \"abs\", \"Int.natAbs\"]}",
+   "ok": true,
+   "result_chars": 1472,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.SignedMeasure.totalVariation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Jordan\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Jordan\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.html#MeasureTheory.SignedMeasure.totalVariation\\\"},{\\\"decl\\\":\\\"ENNReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.ENNReal.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ENNReal/Basic.html#ENNReal\\\"},{\\\"decl\\\":\\\"abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Abs.html#abs\\\"},{\\\"decl\\\":\\\"Int.natAbs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Int.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.Int.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Int/Basic.html#Int.natAbs\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"norm le ennreal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm le ennreal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measurable set theorem property\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measurable set theorem property\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

@@ -1,0 +1,276 @@
+{
+ "task_id": "fresh_063",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:00:34Z",
+ "wall_s": 96.7,
+ "transcript_stats": {
+  "turns": 29,
+  "assistant_turns": 13,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_search": 15,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_filter": 1,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 4
+  },
+  "tokens_in": 106,
+  "tokens_out": 8629,
+  "cost_usd": 0.09638275
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"upper half-plane\"}",
+   "ok": true,
+   "result_chars": 3009,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half-plane\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q632814\\\",\\\"label\\\":\\\"Riemannian manifold\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q11518\\\",\\\"label\\\":\\\"Pythagorean theorem\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q838611\\\",\\\"label\\\":\\\"Ball (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q134787\\\",\\\"label\\\":\\\"Analytic geometry\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q62912\\\",\\\"label\\\":\\\"Cartesian coordinate system\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q11476\\\",\\\"label\\\":\\\"Kinematics\\\",\\\"w\\\":6}],\\\"returned\\\":12,\\\"total\\\":100,\\\"withheld_by_shard\\\":403,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"EuclideanSpace\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev EuclideanSpace (𝕜 : Type*) (n : Type*) : Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/PiL2.html#EuclideanSpace\\\",\\\"via_cell\\\":\\\"cell:Q17295\\\",\\\"cell_label\\\":\\\"Euclidean space\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"divisor sum function sigma\"}",
+   "ok": true,
+   "result_chars": 2252,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor sum function sigma\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q4047453\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"divisor sum function\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q4047453\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"divisor sum function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"series convergence summable\"}",
+   "ok": true,
+   "result_chars": 3941,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"series convergence summable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1211057\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Convergent series\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]},{\\\"id\\\":\\\"cell:Q170198\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Series (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q906520\\\",\\\"label\\\":\\\"Divergent series\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"label\\\":\\\"Real analysis\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"label\\\":\\\"Sequence\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q32043\\\",\\\"label\\\":\\\"Addition\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1051404\\\",\\\"label\\\":\\\"Cauchy product\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1051423\\\",\\\"label\\\":\\\"Cauchy condensation test\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1072412\\\",\\\"label\\\":\\\"Weierstrass M-test\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q10843274\\\",\\\"label\\\":\\\"Analytic number theory\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1149022\\\",\\\"label\\\":\\\"Fubini's theorem\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":49,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\",\\\"via_cell\\\":\\\"cell:Q170198\\\",\\\"cell_label\\\":\\\"Series (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]},{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#Summable\\\",\\\"via_cell\\\":\\\"cell:Q1211057\\\",\\\"cell_label\\\":\\\"Convergent series\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q4047453\"}",
+   "ok": true,
+   "result_chars": 1711,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q4047453\\\",\\\"id\\\":\\\"cell:Q4047453\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"divisor sum function\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q4047453\\\",\\\"anchor\\\":\\\"Q4047453\\\",\\\"label\\\":\\\"divisor sum function\\\",\\\"f\\\":32,\\\"xy\\\":[-566,1644.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q4047453\\\",\\\"label\\\":\\\"divisor sum function\\\",\\\"description\\\":\\\"arithmetic function mapping a positive integer to the sum of all its positive divisors (including itself)\\\",\\\"slug\\\":\\\"Sum-of-divisors_function\\\",\\\"status\\\":\\\"partial\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1},\\\"synapses_summary\\\":{\\\"mentions\\\":9},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1060.erdos_1060.parts.i\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1060.erdos_1060.parts.ii\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1061.erdos_1061\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos250.erdos_250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos277.erdos_277\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos48.erdos_48\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos825.erdos_825\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OeisA56777.comesFromPrimeQuadruple_of_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OeisA63880.mod_216_of_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":9,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"upper half plane modular form\"}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half plane modular form\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"divisor sum sigma Mathlib\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor sum sigma Mathlib\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"divisor\"}",
+   "ok": true,
+   "result_chars": 5669,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"divisor\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q50708\\\",\\\"label\\\":\\\"Divisor\\\",\\\"aka\\\":[\\\"Divisor (of an integer or of a polynomial)\\\",\\\"Nat.divisors\\\",\\\"Regular graphs to induce even periodic Grover walks\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/Divisors\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q915474\\\",\\\"label\\\":\\\"divisor function\\\",\\\"aka\\\":[\\\"ArithmeticFunction.sigma\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ArithmeticFunction/Misc\\\"},{\\\"id\\\":\\\"cell:Q4047453\\\",\\\"label\\\":\\\"divisor sum function\\\"},{\\\"id\\\":\\\"cell:Q170043\\\",\\\"label\\\":\\\"Perfect number\\\",\\\"aka\\\":[\\\"Definition:Perfect Number\\\",\\\"Nat.Perfect\\\",\\\"Perfect Number\\\",\\\"Perfect numbers k: k is equal to the sum of the proper divisors of k.\\\",\\\"PerfectNumbers.infinitely_many_even_perfect\\\",\\\"PerfectNumbers.infinitely_many_perfect\\\",\\\"PerfectNumbers.odd_perfect_number.lower_bound\\\",\\\"PerfectNumbers.odd_perfect_number_conjecture\\\",\\\"odd perfect number\\\",\\\"Generalizing the Abundancy of an Integer\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:Q6366842\\\",\\\"label\\\":\\\"Kaplansky's conjectures\\\",\\\"aka\\\":[\\\"Kaplansky.UnitConjecture.counterexamples.i\\\",\\\"Kaplansky.UnitConjecture.counterexamples.ii\\\",\\\"Kaplansky.counter_unit_conjecture\\\",\\\"Kaplansky.counter_unit_conjecture_weak\\\",\\\"Kaplansky.idempotent_conjecture\\\",\\\"Kaplansky.zero_divisor_conjecture\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:Q131752\\\",\\\"label\\\":\\\"Greatest common divisor\\\",\\\"aka\\\":[\\\"GCDMonoid\\\",\\\"Greatest Common Divisor\\\",\\\"greatest common divisor\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/GCDMonoid/Basic\\\"},{\\\"id\\\":\\\"cell:Q60679\\\",\\\"label\\\":\\\"harmonic divisor number\\\",\\\"aka\\\":[\\\"Harmonic Divisor Number\\\",\\\"Harmonic or Ore numbers: numbers k such that the harmonic mean of the divisors of k is an integer.\\\"]},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.Scheme.smallEtaleTopology\\\",\\\"label\\\":\\\"AlgebraicGeometry.Scheme.smallEtaleTopology\\\",\\\"aka\\\":[\\\"Generalized Divisors on DMH Stacks\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Sites/Etale\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.ModEq.cancel_left_div_gcd\\\",\\\"label\\\":\\\"Nat.ModEq.cancel_left_div_gcd\\\",\\\"aka\\\":[\\\"Cut edges and Central vertices of zero divisor graph of the ring of integers modulo n\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Nat/ModEq\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.Prime.emultiplicity_factorial\\\",\\\"label\\\":\\\"Nat.Prime.emultiplicity_factorial\\\",\\\"aka\\\":[\\\"The Greatest Common Divisor of Multinomial Coefficients, or A Neat Little Number Theory Result\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Nat/Multiplicity\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.card_divisors\\\",\\\"label\\\":\\\"Nat.card_divisors\\\",\\\"aka\\\":[\\\"A conjecture on the prime factorization of $n!+1$\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ArithmeticFunction/Misc\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.perfect_iff_sum_divisors_eq_two_mul\\\",\\\"label\\\":\\\"Nat.perfect_iff_sum_divisors_eq_two_mul\\\",\\\"aka\\\":[\\\"On a Recursive Integer Sequence Implying the Nonexistence of Odd Perfect Numbers\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/Divisors\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.perfect_iff_sum_properDivisors\\\",\\\"label\\\":\\\"Nat.perfect_iff_sum_properDivisors\\\",\\\"aka\\\":[\\\"Measuring Abundance with Abundancy Index\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/Divisors\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ringKrullDim_quotient_span_singleton_succ_eq_ringKrullDim_of_mem_nonZeroDivisors\\\",\\\"label\\\":\\\"ringKrullDim_quotient_span_singleton_succ_eq_ringKrullDim_of_mem_nonZeroDivisors\\\",\\\"aka\\\":[\\\"algebra-lemma-one-equation\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/KrullDimension/Regular\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Cardinal.noZeroDivisors\\\",\\\"label\\\":\\\"Cardinal.noZeroDivisors\\\",\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1049.lambert_series_eq_num_divisor_sum\\\",\\\"label\\\":\\\"Erdos1049.lambert_series_eq_num_divisor_sum\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:Form"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"upper half ℍ complex\"}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half ℍ complex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"exp 2 pi i complex exponential\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"exp 2 pi i complex exponential\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q915474\"}",
+   "ok": true,
+   "result_chars": 2410,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q915474\\\",\\\"id\\\":\\\"cell:Q915474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"divisor function\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q915474\\\",\\\"anchor\\\":\\\"Q915474\\\",\\\"label\\\":\\\"divisor function\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/ArithmeticFunction/Misc\\\"],\\\"f\\\":32,\\\"xy\\\":[392.3,1002.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q915474\\\",\\\"label\\\":\\\"divisor function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"arithmetic function related to the divisors of an integer\\\",\\\"slug\\\":\\\"Divisor_function\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ArithmeticFunction.sigma\\\",\\\"label\\\":\\\"ArithmeticFunction.sigma\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.Misc\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def sigma (k : ℕ) : ArithmeticFunction ℕ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ArithmeticFunction.Misc\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ArithmeticFunction\\\",\\\"label\\\":\\\"ArithmeticFunction\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ArithmeticFunction/Misc\\\",\\\"label\\\":\\\"Misc\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":26},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q140744\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q205966\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q50708\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1049.erdos_1049\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos252.erdos_252\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos257.erdos_257.variants.tsum_top\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos258.erdos_258\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos409.erdos_409.variants.sigma\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos410.erdos_410\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos412.erdos_412\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":26,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"modular form\"}",
+   "ok": true,
+   "result_chars": 714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"modular form\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"aka\\\":[\\\"Automorphic form\\\",\\\"ModularForm\\\",\\\"automorphic form\\\",\\\"Anomaly cancellation and modularity: E8*E8*E8 case\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1387602\\\",\\\"label\\\":\\\"transcendence degree\\\",\\\"aka\\\":[\\\"Algebra.trdeg\\\",\\\"fields-definition-transcendence-degree\\\",\\\"A geometric introduction to transcendence questions on values of modular forms\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AlgebraicIndependent/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"upper half-plane ℑ Im positive\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half-plane ℑ Im positive\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q870797\"}",
+   "ok": true,
+   "result_chars": 3700,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q870797\\\",\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"modular form\\\",\\\"f\\\":34024,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q870797\\\",\\\"anchor\\\":\\\"Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\"],\\\"f\\\":34024,\\\"xy\\\":[-6.8,-268.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1134435\\\",\\\"label\\\":\\\"Automorphic form\\\",\\\"bond\\\":\\\"special_case\\\",\\\"prov\\\":0,\\\"description\\\":\\\"generalization of periodic functions to have group domains\\\",\\\"slug\\\":\\\"Automorphic_form\\\",\\\"article_annotations\\\":{\\\"total\\\":9,\\\"formalized\\\":1,\\\"partial\\\":4,\\\"not_formalized\\\":4},\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"analytic function on the upper half-plane with a certain behavior under the modular group\\\",\\\"slug\\\":\\\"Modular_form\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ModularForm\\\",\\\"label\\\":\\\"ModularForm\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"decl_kind\\\":\\\"structure\\\",\\\"docstring\\\":\\\"These are `SlashInvariantForm`'s that are holomorphic and bounded at infinity. \\\",\\\"code\\\":\\\"structure ModularForm extends SlashInvariantForm Γ k where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:automorphic form\\\",\\\"label\\\":\\\"automorphic form\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/automorphic+form\\\",\\\"qid\\\":\\\"Q1134435\\\",\\\"snippet\\\":\\\"Quite generally, _automorphic forms_ are suitably well-behaved functions on a quotient space $K\\\\\\\\backslash X$ where $K$ is typically a discrete group, hence suitable functions on $X$ which are invariant under the action of a discrete group. The precise definition has evolved a good bit through time.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Automorphic_form\\\",\\\"label\\\":\\\"Automorphic form\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":9,\\\"formalized\\\":1,\\\"partial\\\":4,\\\"not_formalized\\\":4}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2402.15138#2.1\\\",\\\"label\\\":\\\"Anomaly cancellation and modularity: E8*E8*E8 case\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2402.15138\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":1,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":44,\\\"links\\\":17,\\\"relates\\\":2,\\\"mentions\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q1063579\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q1393253\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":56,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"q-expansion q-series Fourier\"}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"q-expansion q-series Fourier\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q870797\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 6847,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q2285809\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q524607\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q12916\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q208237\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Units.instGroup\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q901718\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}}]},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q33198\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix\\\"]]}}]},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q40276\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":6,\\\"w_types\\\":{\\\"sig\\\":6,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q679903\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}}]},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q83478\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Subgroup\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q159943\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashAction\\\",\\\"Monoid\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q3968\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q1046291\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q1049914\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Matrix.GeneralLinearGroup\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q11205\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":8,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"SlashInvariantForm\\\",\\\"Real\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1134435\\\",\\\"dst\\\":\\\"Q648995\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proo"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Complex Im positive imaginary part\"}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Complex Im positive imaginary part\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 0, \"type\": \"cell\", \"under\": \"path:Mathlib/NumberTheory/ModularForms\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 3002,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q870797\\\",\\\"label\\\":\\\"modular form\\\",\\\"f\\\":34024,\\\"aka\\\":[\\\"Automorphic form\\\",\\\"ModularForm\\\",\\\"automorphic form\\\",\\\"Anomaly cancellation and modularity: E8*E8*E8 case\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\"},{\\\"id\\\":\\\"cell:Q1182161\\\",\\\"label\\\":\\\"Dedekind eta function\\\",\\\"f\\\":36504,\\\"aka\\\":[\\\"Dedekind Eta Function\\\",\\\"ModularForm.eta\\\",\\\"On the Computation of Identities Relating Partition Numbers in Arithmetic Progressions with Eta Quotients: An Implementation of Radu's Algorithm\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/DedekindEta\\\"},{\\\"id\\\":\\\"cell:Q1154787\\\",\\\"label\\\":\\\"Theta function\\\",\\\"f\\\":35032,\\\"aka\\\":[\\\"Jacobi $\\\\\\\\vartheta$ functions\\\",\\\"Jacobi Theta Functions\\\",\\\"jacobiTheta₂\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"f\\\":33816,\\\"aka\\\":[\\\"eisensteinSeries\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta_S_smul\\\",\\\"label\\\":\\\"jacobiTheta_S_smul\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"Extremal Determinants of Laplace-Beltrami Operators for Rectangular Tori\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta_eq_tsum_nat\\\",\\\"label\\\":\\\"jacobiTheta_eq_tsum_nat\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"Protein atom traps as seeing by neutron scattering\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta₂_add_left\\\",\\\"label\\\":\\\"jacobiTheta₂_add_left\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"Computing Jacobi's $\\\\\\\\theta$ in quasi-linear time\\\"],\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CuspFormClass.qExpansion_isBigO\\\",\\\"label\\\":\\\"CuspFormClass.qExpansion_isBigO\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Bounds\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SlashAction\\\",\\\"label\\\":\\\"SlashAction\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/SlashActions\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SlashInvariantForm\\\",\\\"label\\\":\\\"SlashInvariantForm\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/SlashInvariantForms\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:eisensteinSeriesMF\\\",\\\"label\\\":\\\"eisensteinSeriesMF\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta\\\",\\\"label\\\":\\\"jacobiTheta\\\",\\\"f\\\":128,\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta₂_add_left'\\\",\\\"label\\\":\\\"jacobiTheta₂_add_left'\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:jacobiTheta₂_functional_equation\\\",\\\"label\\\":\\\"jacobiTheta₂_functional_equation\\\",\\\"p\\\":\\\"path:Mathlib/NumberTheory/ModularForms/JacobiTheta\\\"}],\\\"returned\\\":14,\\\"cursor\\\":0,\\\"next_cursor\\\":null,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Eisenstein series\"}",
+   "ok": true,
+   "result_chars": 359,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Eisenstein series\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"aka\\\":[\\\"eisensteinSeries\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"q-expansion qExpansion\"}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"q-expansion qExpansion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"ArithmeticFunction.sigma\\\", \\\"Summable\\\", \\\"Complex\\\", \\\"Real.im\\\", \\\"exp\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ArithmeticFunction.sigma\", \"Summable\", \"Complex\", \"Real.im\", \"Complex.exp\"]}",
+   "ok": true,
+   "result_chars": 1793,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ArithmeticFunction.sigma\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.Misc\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ArithmeticFunction.Misc\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ArithmeticFunction/Misc.html#ArithmeticFunction.sigma\\\"},{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#Summable\\\"},{\\\"decl\\\":\\\"Complex\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex\\\"},{\\\"decl\\\":\\\"Real.im\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Quaternion.im\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Algebra.Quaternion\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Quaternion\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Quaternion.html#Quaternion.im\\\"},{\\\"decl\\\":\\\"Complex.exp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Exponential\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Exponential\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Exponential.html#Complex.exp\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"two pi i tau\"}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"two pi i tau\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Complex.im\", \"Complex.re\", \"Int.fract\", \"Pi\"]}",
+   "ok": true,
+   "result_chars": 1425,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Complex.im\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex.im\\\"},{\\\"decl\\\":\\\"Complex.re\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex.re\\\"},{\\\"decl\\\":\\\"Int.fract\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Floor.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Floor.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Floor/Defs.html#Int.fract\\\"},{\\\"decl\\\":\\\"Pi\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"HomotopyGroup.Pi\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Topology.Homotopy.HomotopyGroup\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Homotopy.HomotopyGroup\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Homotopy/HomotopyGroup.html#HomotopyGroup.Pi\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pi constant Real.pi\"}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pi constant Real.pi\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pi mathematics constant\"}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pi mathematics constant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.pi\", \"π\", \"Complex.ofReal\"]}",
+   "ok": true,
+   "result_chars": 1072,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.pi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.html#Real.pi\\\"},{\\\"decl\\\":\\\"π\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Complex.ofReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex.ofReal\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Complex.I\", \"Nat.cast\", \"ArithmeticFunction\", \"Summable\"]}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Complex.I\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex.I\\\"},{\\\"decl\\\":\\\"Nat.cast\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Cast\\\",\\\"import_line\\\":\\\"import Init.Data.Cast\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Cast.html#Nat.cast\\\"},{\\\"decl\\\":\\\"ArithmeticFunction\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ArithmeticFunction.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ArithmeticFunction/Defs.html#ArithmeticFunction\\\"},{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#Summable\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"arithmetic function modular\"}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"arithmetic function modular\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem sigma_series_summable (k : ℕ) (hk : 1 ≤ k) (z : ℂ) (hz : 0 < Complex.im z) :\n  Summable fun (n : ℕ) => \n    (ArithmeticFunction.sigma (k - 1) n : ℂ) * \n    (Complex.exp (2 * Real.pi * Complex.I * z)) ^ n := sorry"
+}

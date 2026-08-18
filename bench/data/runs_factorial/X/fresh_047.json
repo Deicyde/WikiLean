@@ -1,0 +1,352 @@
+{
+ "task_id": "fresh_047",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:06:29Z",
+ "wall_s": 148.7,
+ "transcript_stats": {
+  "turns": 38,
+  "assistant_turns": 26,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 14,
+   "mcp__formal__decl_grep": 13,
+   "mcp__formal__decl_read": 7,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 210,
+  "tokens_out": 10424,
+  "cost_usd": 0.1342042
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix ?n ?n ?F\"}",
+   "ok": true,
+   "result_chars": 1277,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 5005 declarations mentioning Matrix.\\n- Matrix.transpose_involutive   [Mathlib.LinearAlgebra.Matrix.Defs]\\n- Matrix.map_smul'   [Mathlib.LinearAlgebra.Matrix.Defs]\\n    The scalar action via `Mul.toSMul` is transformed by the same map as the elements of the matrix, when `f` preserves multiplication.\\n- Matrix.map_op_smul'   [Mathlib.LinearAlgebra.Matrix.Defs]\\n    The scalar action via `mul.toOppositeSMul` is transformed by the same map as the elements of the matrix, when `f` preserves multiplication.\\n- Matrix.diag   [Mathlib.Data.Matrix.Diagonal]\\n    The diagonal of a square matrix.\\n- Matrix.instAddCommGroupWithOne   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.instAddCommMonoidWithOne   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.instAddGroupWithOne   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.instAddMonoidWithOne   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.diagonal   [Mathlib.Data.Matrix.Diagonal]\\n    `diagonal d` is the square matrix such that `(diagonal d) i i = d i` and `(diagonal d) i j = 0` if `i ≠ j`.  Note that bundled versions exist as: * `Matrix.diag\\n- Matrix.instIntCastOfZero   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.instNatCastOfZero   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one   [Mathlib.Data.Matrix.Diagonal]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank Matrix\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank Matrix': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsUnit Matrix\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'IsUnit Matrix'.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".*rank.*Matrix\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1886,
+   "result_head": "[{\"type\": \"text\", \"text\": \"32 match(es) for '.*rank.*Matrix' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Spectrum.lean:200\\n    rw [rank_eq_rank_diagonal hA, Matrix.rank_diagonal]\\n- Mathlib/Algebra/Lie/Classical.lean:40\\n    endomorphisms of the corresponding finite-rank free module as Lie algebras, see `lieEquivMatrix'`.\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1313\\n    (rankOne 𝕜 x y).toMatrix b'.toBasis b = .vecMulVec (b.repr x) (star (b'.repr y)) := by\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:204\\n    Module.rank R (Matrix m n M) =\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:217\\n    Module.rank R (Matrix m n M) =\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:223\\n    Module.rank R (Matrix m n R) =\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:231\\n    Module.rank R (Matrix m n R) = Cardinal.lift.{u} (#m * #n) := by\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:237\\n    Module.rank R (Matrix m n R) = #m * #n := by simp\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:263\\n    finrank R (Matrix m n M) = card m * card n * finrank R M := by simp [finrank]\\n- Mathlib/LinearAlgebra/Matrix/InvariantBasisNumber.lean:59\\n    simp_rw [rankCondition_iff_matrix, ← opEquiv.mapMatrix.forall_congr_right,\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:33\\n    * `Matrix.rank_eq_finrank_span_cols`, `Matrix.rank_eq_finrank_span_row`: the rank equals the\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:37\\n    * `Matrix.rank_mul_eq_left_of_isUnit_det`, `Matrix.rank_mul_eq_right_of_isUnit_det`: multiplying by\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:67\\n    lemma cRank_toNat_eq_finrank (A : Matrix m n R) :\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:105\\n    lemma eRank_toNat_eq_finrank (A : Matrix m n R) :\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:133\\n    noncomputable def rank [CommSemiring R] (A : Matrix m n R) : ℕ :=\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank': unknown identifier 'rank'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 133, \"n\": 15}",
+   "ok": true,
+   "result_chars": 873,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 133–147 of 530):\\n   133  noncomputable def rank [CommSemiring R] (A : Matrix m n R) : ℕ :=\\n   134    finrank R <| LinearMap.range A.mulVecLin\\n   135  \\n   136  @[simp]\\n   137  theorem rank_subsingleton [CommSemiring R] [Subsingleton R] (A : Matrix m n R) : A.rank = 1 :=\\n   138    finrank_subsingleton\\n   139  \\n   140  @[simp]\\n   141  theorem cRank_one [Semiring R] [Nontrivial R] [DecidableEq m] [StrongRankCondition R] :\\n   142      (cRank (1 : Matrix m m R)) = lift.{uR} #m := by\\n   143    have h : LinearIndependent R (1 : Matrix m m R).col := by\\n   144      convert! Pi.linearIndependent_single_one m R\\n   145      simp [funext_iff, one_apply, Pi.single_apply]\\n   146    rw [cRank, rank_span h, ← lift_umax, ← Cardinal.mk_range_eq_of_injective h.injective, lift_id']\\n   147  \\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsUnit Matrix det\"}",
+   "ok": true,
+   "result_chars": 224,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsUnit Matrix det': Function expected at\\n  IsUnit Matrix\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being applied to the argument\\n  det\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"diagonal matrix\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'diagonal matrix': Unknown identifier `diagonal`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsUnit\"}",
+   "ok": true,
+   "result_chars": 1525,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1302 declarations mentioning IsUnit.\\n- IsUnit   [Mathlib.Algebra.Group.Units.Defs]\\n    An element `a : M` of a `Monoid` is a unit if it has a two-sided inverse. The actual definition says that `a` is equal to some `u : Mˣ`, where `Mˣ` is a bundled\\n- groupOfIsUnit   [Mathlib.Algebra.Group.Units.Defs]\\n    Constructs a `Group` structure on a `Monoid` consisting only of units.\\n- invOfIsUnit   [Mathlib.Algebra.Group.Units.Defs]\\n    Constructs an inv operation for a `Monoid` consisting only of units.\\n- IsUnit.unit   [Mathlib.Algebra.Group.Units.Defs]\\n    The element of the group of units, corresponding to an element of a monoid which is a unit. When `α` is a `DivisionMonoid`, use `IsUnit.unit'` instead.\\n- commGroupOfIsUnit   [Mathlib.Algebra.Group.Units.Defs]\\n    Constructs a `CommGroup` structure on a `CommMonoid` consisting only of units.\\n- Group.isUnit   [Mathlib.Algebra.Group.Units.Defs]\\n- Units.isUnit   [Mathlib.Algebra.Group.Units.Defs]\\n- isUnit_one   [Mathlib.Algebra.Group.Units.Defs]\\n- IsUnit.unit'   [Mathlib.Algebra.Group.Units.Defs]\\n    The element of the group of units, corresponding to an element of a monoid which is a unit. As opposed to `IsUnit.unit`, the inverse is computable and comes fro\\n- IsUnit.unit_spec   [Mathlib.Algebra.Group.Units.Defs]\\n- IsUnit.instDecidableOfExistsUnitsEqVal   [Mathlib.Algebra.Group.Units.Defs]\\n    `IsUnit x` is decidable if we can decide if `x` comes from `Mˣ`.\\n- IsUnit.pow   [Mathlib.Algebra.Group.Units.Defs]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def diagonal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1237,
+   "result_head": "[{\"type\": \"text\", \"text\": \"25 match(es) for 'def diagonal' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Pullbacks.lean:634\\n    def diagonalCover : (pullback.diagonalObj f).OpenCover :=\\n- Mathlib/AlgebraicGeometry/Pullbacks.lean:640\\n    def diagonalCoverDiagonalRange : (pullback.diagonalObj f).Opens :=\\n- Mathlib/AlgebraicGeometry/Pullbacks.lean:658\\n    def diagonalRestrictIsoDiagonal (i j) :\\n- Mathlib/Data/Matrix/Basic.lean:89\\n    def diagonalAddMonoidHom [AddZeroClass α] : (n → α) →+ Matrix n n α where\\n- Mathlib/Data/Matrix/Basic.lean:98\\n    def diagonalLinearMap [Semiring R] [AddCommMonoid α] [Module R α] : (n → α) →ₗ[R] Matrix n n α :=\\n- Mathlib/Data/Matrix/Basic.lean:168\\n    def diagonalRingHom [Fintype n] [DecidableEq n] : (n → α) →+* Matrix n n α :=\\n- Mathlib/Data/Matrix/Basic.lean:252\\n    def diagonalAlgHom : (n → α) →ₐ[R] Matrix n n α :=\\n- Mathlib/Data/Matrix/Diagonal.lean:50\\n    def diagonal [Zero α] (d : n → α) : Matrix n n α :=\\n- Mathlib/AlgebraicTopology/FundamentalGroupoid/InducedMaps.lean:221\\n    def diagonalPath : fromTop (H (0, x₀)) ⟶ fromTop (H (1, x₁)) :=\\n- Mathlib/AlgebraicTopology/FundamentalGroupoid/InducedMaps.lean:225\\n    def diagonalPath' : fromTop (f x₀) ⟶ fromTop (g x₁) :=\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Matrix/Diagonal.lean\", \"line\": 50, \"n\": 10}",
+   "ok": true,
+   "result_chars": 601,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Matrix/Diagonal.lean  (lines 50–59 of 430):\\n    50  def diagonal [Zero α] (d : n → α) : Matrix n n α :=\\n    51    of fun i j => if i = j then d i else 0\\n    52  \\n    53  -- TODO: set as an equation lemma for `diagonal`, see https://github.com/leanprover-community/mathlib4/pull/3024\\n    54  theorem diagonal_apply [Zero α] (d : n → α) (i j) : diagonal d i j = if i = j then d i else 0 :=\\n    55    rfl\\n    56  \\n    57  @[simp]\\n    58  theorem diagonal_apply_eq [Zero α] (d : n → α) (i : n) : (diagonal d) i i = d i := by\\n    59    simp [diagonal]\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.one_apply\"}",
+   "ok": true,
+   "result_chars": 133,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Matrix.one_apply.\\n- Matrix.one_apply   [Mathlib.Data.Matrix.Diagonal]\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Matrix\\\\.one\\\\s\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Matrix\\\\\\\\.one\\\\\\\\s' under Mathlib/.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.one\"}",
+   "ok": true,
+   "result_chars": 745,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 391 declarations mentioning Matrix.one.\\n- Matrix.one   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one_apply_eq   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one_apply_ne   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one_apply_ne'   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.diagonal_one   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.diag_one   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one_eq_pi_single   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.diagonal_one'   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.transpose_one   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.one_apply   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.diagonal_eq_one   [Mathlib.Data.Matrix.Diagonal]\\n- Matrix.transpose_eq_one   [Mathlib.Data.Matrix.Diagonal]\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"block diagonal\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'block diagonal': Unknown identifier `block`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Matrix.*det.*IsUnit\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 239,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'Matrix.*det.*IsUnit' (via ripgrep):\\n- Mathlib/LinearAlgebra/Matrix/NonsingularInverse.lean:432\\n    theorem isUnit_nonsing_inv_det_iff {A : Matrix n n α} : IsUnit A⁻¹.det ↔ IsUnit A.det := by\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsUnit det\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsUnit det': Unknown identifier `det`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix n n\"}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix n n': Unknown identifier `n`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Matrix.*det\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1858,
+   "result_head": "[{\"type\": \"text\", \"text\": \"414 match(es) for 'Matrix.*det' (via ripgrep):\\n- Mathlib/Algebra/Lie/Basis.lean:297\\n    rw [Matrix.nondegenerate_iff_det_ne_zero, ← RingHom.map_det]\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:127\\n    covolume L = |(Matrix.of ((↑) ∘ b)).det| := by\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:389\\n    volume (fundamentalDomain b) = ENNReal.ofReal |(Matrix.of b).det| := by\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:392\\n    mul_one, ← Matrix.det_transpose]\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:397\\n    volume.real (fundamentalDomain b) = |(Matrix.of b).det| := by\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Affine/Point.lean:399\\n    simp_rw [Algebra.norm_eq_matrix_det <| CoordinateRing.basis W', Matrix.det_fin_two,\\n- Mathlib/Analysis/Normed/Algebra/MatrixExponential.lean:59\\n    * Show that `Matrix.det (NormedSpace.exp A) = NormedSpace.exp (Matrix.trace A)`\\n- Mathlib/Analysis/Normed/Algebra/MatrixExponential.lean:184\\n    · have : IsUnit (exp A).det := (Matrix.isUnit_iff_isUnit_det _).mp (isUnit_exp _)\\n- Mathlib/FieldTheory/Galois/NormalBasis.lean:81\\n    refine ⟨g, congr(Matrix.det $(?_)).trans Matrix.det_one⟩\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:50\\n    suffices Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) = 0 by\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:51\\n    simpa [Matrix.det_apply] using this\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:52\\n    exact Matrix.det_zero_of_column_eq hij (by simp [hf])\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:60\\n    Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:61\\n    simp [alternatingMapToDual, Matrix.det_apply]\\n- Mathlib/LinearAlgebra/ExteriorPower/Pairing.lean:73\\n    Matrix.det (n := Fin n) (.of (fun i j ↦ f j (v i))) := by\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*rank.*Smith\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*rank.*Smith' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Smith.*form\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1267,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'Smith.*form' (via ripgrep):\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:41\\n    a matrix in Smith normal form, a diagonal matrix with the coefficients `a i`\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:405\\n    /-- A Smith normal form basis for a submodule `N` of a module `M` consists of\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:407\\n    (rectangular) matrix with `a` along the diagonal: in Smith normal form. -/\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:460\\n    /-- Given a Smith-normal-form pair of bases for `N ⊆ M`, and a linear endomorphism `f` of `M`\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:480\\n    in Smith normal form.\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:507\\n    in Smith normal form.\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:526\\n    in Smith normal form.\\n- Mathlib/LinearAlgebra/FreeModule/Finite/CardQuotient.lean:45\\n    -- Use the Smith normal form to choose a nice basis for `N`.\\n- Mathlib/LinearAlgebra/FreeModule/Int.lean:29\\n    /-- Given a submodule `N` in Smith normal form of a free `R`-module, its index as an additive\\n- Mathlib/LinearAlgebra/FreeModule/Int.lean:146\\n    /-- Given a submodule `N` in Smith normal form of a free `R`-module, its index as an additive\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Equiv.*Matrix\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"263 match(es) for 'Equiv.*Matrix' (via ripgrep):\\n- Mathlib/Algebra/Lie/Classical.lean:40\\n    endomorphisms of the corresponding finite-rank free module as Lie algebras, see `lieEquivMatrix'`.\\n- Mathlib/Algebra/Lie/Classical.lean:235\\n    (soIndefiniteEquiv p q R hi A : Matrix (p ⊕ q) (p ⊕ q) R) =\\n- Mathlib/Algebra/Lie/Classical.lean:367\\n    Matrix.reindexLieEquiv_apply, Matrix.submatrix_apply, Equiv.symm_symm, Matrix.reindex_apply,\\n- Mathlib/Algebra/Lie/Classical.lean:369\\n    Equiv.sumAssoc_apply_inl_inr, if_false, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,\\n- Mathlib/Algebra/Lie/SkewAdjoint.lean:125\\n    def skewAdjointMatricesLieSubalgebraEquiv (P : Matrix n n R) (h : Invertible P) :\\n- Mathlib/Algebra/Lie/SkewAdjoint.lean:135\\n    theorem skewAdjointMatricesLieSubalgebraEquiv_apply (P : Matrix n n R) (h : Invertible P)\\n- Mathlib/Algebra/Lie/SkewAdjoint.lean:156\\n    (skewAdjointMatricesLieSubalgebraEquivTranspose J e h A : Matrix m m R) = e A :=\\n- Mathlib/Algebra/Lie/Matrix.lean:21\\n    * `lieEquivMatrix'`\\n- Mathlib/Algebra/Lie/Matrix.lean:46\\n    def lieEquivMatrix' : Module.End R (n → R) ≃ₗ⁅R⁆ Matrix n n R :=\\n- Mathlib/Algebra/Lie/Matrix.lean:55\\n    theorem lieEquivMatrix'_apply (f : Module.End R (n → R)) :\\n- Mathlib/Algebra/Lie/Matrix.lean:56\\n    lieEquivMatrix' f = LinearMap.toMatrix' f :=\\n- Mathlib/Algebra/Lie/Matrix.lean:60\\n    theorem lieEquivMatrix'_symm_apply (A : Matrix n n R) :\\n- Mathlib/Algebra/Lie/Matrix.lean:61\\n    (@lieEquivMatrix' R _ n _ _).symm A = Matrix.toLin' A :=\\n- Mathlib/Algebra/Lie/Matrix.lean:68\\n    ((@lieEquivMatrix' R _ n _ _).symm.trans (P.toLinearEquiv' h).lieConj).trans lieEquivMatrix'\\n- Mathlib/Algebra/Lie/Matrix.lean:73\\n    simp [LinearEquiv.conj_apply, Matrix.lieConj, LinearMap.toMatrix'_comp,\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.mul_eq_mul_assoc_of_mul\"}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.mul_eq_mul_assoc_of_mul': unknown identifier 'Matrix.mul_eq_mul_assoc_of_mul'\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Matrix\", \"Matrix.rank\", \"Matrix.one\", \"Matrix.mul_mul_mul_cancel\", \"IsUnit\", \"Matrix.diagonal\"]}",
+   "ok": true,
+   "result_chars": 1906,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix\\\"},{\\\"decl\\\":\\\"Matrix.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Rank\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Rank\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Rank.html#Matrix.rank\\\"},{\\\"decl\\\":\\\"Matrix.one\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Diagonal\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Diagonal\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Diagonal.html#Matrix.one\\\"},{\\\"decl\\\":\\\"Matrix.mul_mul_mul_cancel\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IsUnit\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Units.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Units.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Units/Defs.html#IsUnit\\\"},{\\\"decl\\\":\\\"Matrix.diagonal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Diagonal\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Diagonal\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Diagonal.html#Matrix.diagonal\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Matrix\\\\.fromBlocks\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 548,
+   "result_head": "[{\"type\": \"text\", \"text\": \"39 match(es) for 'Matrix\\\\\\\\.fromBlocks' (via ripgrep):\\n- Mathlib/Data/Matrix/Block.lean:17\\n    * `Matrix.fromBlocks`: build a block matrix out of 4 blocks\\n- Mathlib/Data/Matrix/Block.lean:19\\n    extract each of the four blocks from `Matrix.fromBlocks`.\\n- Mathlib/Algebra/Lie/Classical.lean:250\\n    Matrix.fromBlocks 0 1 1 0\\n- Mathlib/Algebra/Lie/Classical.lean:267\\n    Matrix.fromBlocks 1 (-1) 1 1\\n- Mathlib/Algebra/Lie/Classical.lean:273\\n    theorem s_as_blocks : S l R = Matrix.fromBlocks 1 0 0 (-1) := by\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Matrix/Block.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2333,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Matrix/Block.lean  (lines 1–50 of 867):\\n     1  /-\\n     2  Copyright (c) 2018 Ellen Arlt. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Ellen Arlt, Blair Shi, Sean Leather, Mario Carneiro, Johan Commelin\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Matrix.Basic\\n     9  public import Mathlib.Data.Matrix.Composition\\n    10  public import Mathlib.LinearAlgebra.Matrix.ConjTranspose\\n    11  \\n    12  /-!\\n    13  # Block Matrices\\n    14  \\n    15  ## Main definitions\\n    16  \\n    17  * `Matrix.fromBlocks`: build a block matrix out of 4 blocks\\n    18  * `Matrix.toBlocks₁₁`, `Matrix.toBlocks₁₂`, `Matrix.toBlocks₂₁`, `Matrix.toBlocks₂₂`:\\n    19    extract each of the four blocks from `Matrix.fromBlocks`.\\n    20  * `Matrix.blockDiagonal`: block diagonal of equally sized blocks. On square blocks, this is a\\n    21    ring homomorphisms, `Matrix.blockDiagonalRingHom`.\\n    22  * `Matrix.blockDiag`: extract the blocks from the diagonal of a block diagonal matrix.\\n    23  * `Matrix.blockDiagonal'`: block diagonal of unequally sized blocks. On square blocks, this is a\\n    24    ring homomorphisms, `Matrix.blockDiagonal'RingHom`.\\n    25  * `Matrix.blockDiag'`: extract the blocks from the diagonal of a block diagonal matrix.\\n    26  -/\\n    27  \\n    28  @[expose] public section\\n    29  \\n    30  variable {l m n o p q : Type*} {m' n' p' : o → Type*}\\n    31  variable {R : Type*} {S : Type*} {α : Type*} {β : Type*}\\n    32  \\n    33  open Matrix\\n    34  \\n    35  namespace Matrix\\n    36  \\n    37  theorem dotProduct_block [Fintype m] [Fintype n] [Mul α] [AddCommMonoid α] (v w : m ⊕ n → α) :\\n    38      v ⬝ᵥ w = v ∘ Sum.inl ⬝ᵥ w ∘ Sum.inl + v ∘ Sum.inr ⬝ᵥ w ∘ Sum.inr :=\\n    39    Fintype.sum_sum_type _\\n    40  \\n    41  section BlockMatrices\\n    42  \\n    43  /-- We can form a single large matrix by flattening smaller 'block' matrices of compatible\\n    44  dimensions. -/\\n    45  @[pp_nodot]\\n    46  def fromBlocks (A : Matrix n l α) (B : Matrix n m α) (C : Matrix o l α) (D : Matrix o m α) :\\n    47      Matrix (n ⊕ o) (l ⊕ m) α :=\\n    48    of <| Sum.elim (fun i => Sum.elim (A i) (B i)) (fun j => Sum.elim (C j) (D j))\\n    49  \\n    50  @[simp]\\n\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank.*zero.*matrix\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 226,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'rank.*zero.*matrix' (via ripgrep):\\n- Mathlib/Analysis/Matrix/Spectrum.lean:198\\n    /-- rank of a Hermitian matrix is the number of nonzero eigenvalues of the Hermitian matrix -/\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2548,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 1–50 of 530):\\n     1  /-\\n     2  Copyright (c) 2021 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Eric Wieser\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Determinant\\n     9  public import Mathlib.LinearAlgebra.Dimension.OrzechProperty\\n    10  public import Mathlib.LinearAlgebra.Dual.Lemmas\\n    11  public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\n    12  public import Mathlib.LinearAlgebra.Matrix.Diagonal\\n    13  public import Mathlib.LinearAlgebra.Matrix.DotProduct\\n    14  public import Mathlib.LinearAlgebra.Matrix.Dual\\n    15  public import Mathlib.LinearAlgebra.Matrix.Transvection\\n    16  \\n    17  /-!\\n    18  # Rank of matrices\\n    19  \\n    20  The rank of a matrix `A` is defined to be the rank of range of the linear map corresponding to `A`.\\n    21  This definition does not depend on the choice of basis, see `Matrix.rank_eq_finrank_range_toLin`.\\n    22  \\n    23  ## Main declarations\\n    24  \\n    25  * `Matrix.rank`: the rank of a matrix\\n    26  * `Matrix.cRank`: the rank of a matrix as a cardinal\\n    27  * `Matrix.eRank`: the rank of a matrix as a term in `ℕ∞`.\\n    28  \\n    29  ## Main results\\n    30  \\n    31  * `Matrix.rank_eq_finrank_range_toLin`: the rank equals the dimension of the range of the\\n    32  corresponding linear map, and is therefore independent of the choice of bases.\\n    33  * `Matrix.rank_eq_finrank_span_cols`, `Matrix.rank_eq_finrank_span_row`: the rank equals the\\n    34  dimension of the space spanned by the columns (resp. rows).\\n    35  * `Matrix.rank_transpose`: transposing a matrix does not change its rank.\\n    36  * `Matrix.rank_mul_le`: the rank of `A * B` is at most the rank of `A` and at most the rank of `B`.\\n    37  * `Matrix.rank_mul_eq_left_of_isUnit_det`, `Matrix.rank_mul_eq_right_of_isUnit_det`: multiplying by\\n    38  an invertible matrix does not change the rank.\\n    39  * `Matrix.exists_rank_normal_form`: every square matrix over a field can be brought, by left and\\n    40  right multiplication by invertible matrices, into the block form `fromBlocks 1 0 0 0`, where the\\n    41  identity block has size equal to the rank of the matrix.\\n    42  -/\\n    43  \\n    44  @[expose] public section\\n    45  \\n    46  open Matrix\\n    47  \\n    48  namespace Matrix\\n    49  \\n    50  open Module Cardinal Set Submodule\\n\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"exists_rank_normal_form\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 481,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'exists_rank_normal_form' (via ripgrep):\\n- Mathlib/LinearAlgebra/SymplecticGroup.lean:260\\n    rcases exists_rank_normal_form C with ⟨V, U, s, hV, hU, heq⟩\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:39\\n    * `Matrix.exists_rank_normal_form`: every square matrix over a field can be brought, by left and\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:351\\n    theorem exists_rank_normal_form [Fintype m] [DecidableEq m] (M : Matrix m m R) :\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 351, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2373,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 351–380 of 530):\\n   351  theorem exists_rank_normal_form [Fintype m] [DecidableEq m] (M : Matrix m m R) :\\n   352      ∃ (V U : Matrix m m R) (e : m ≃ Fin M.rank ⊕ Fin (Fintype.card m - M.rank)),\\n   353        IsUnit V ∧ IsUnit U ∧\\n   354        V * M * U = (fromBlocks 1 0 0 0).submatrix e e := by\\n   355    classical\\n   356    obtain ⟨L, L', D, hM0⟩ := Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec M\\n   357    set E := fun i ↦ if D i = 0 then 1 else (D i)⁻¹ with E_def\\n   358    set s : Finset m := .filter (fun i ↦ D i ≠ 0) .univ with s_def\\n   359    set V := diagonal E * (L.reverse.map (toMatrix ∘ .inv)).prod with V_def\\n   360    set U := (L'.reverse.map (toMatrix ∘ .inv)).prod with U_def\\n   361    have hUdet : IsUnit U.det := (isUnit_iff_isUnit_det _).1 <| isUnit_prod_comp_inverse _\\n   362    have hVdet : IsUnit V.det := by\\n   363      rw [V_def, det_mul, det_diagonal]\\n   364      exact IsUnit.mk0 _ (Finset.prod_ne_zero_iff.2 (by grind)) |>.mul <|\\n   365        (isUnit_iff_isUnit_det _).1 (isUnit_prod_comp_inverse _)\\n   366    have hM : V * M * U = diagonal (fun i ↦ if i ∈ s then 1 else 0) := by\\n   367      rw [V_def, U_def, hM0, mul_assoc, mul_assoc _ (L'.map _).prod, prod_mul_reverse_inv_prod,\\n   368        mul_one, ← mul_assoc, mul_assoc _ (L.reverse.map _).prod, reverse_inv_prod_mul_prod, mul_one]\\n   369      ext\\n   370      simp only [E_def, mul_diagonal, diagonal_apply, ite_mul, one_mul, zero_mul, s_def,\\n   371        Finset.mem_filter, Finset.mem_univ, true_and, ite_not]\\n   372      split_ifs with h1 h2 <;> first | rw [← h1, h2] | rw [← h1, inv_mul_cancel₀ h2] | rfl\\n   373    have hs : s.card = M.rank := by\\n   374      simp [← rank_mul_eq_right_of_isUnit_det V M hVdet, ← rank_mul_eq_left_of_isUnit_det U (V * M)\\n   375        hUdet, hM, rank_diagonal]\\n   376    set e : m ≃ Fin M.rank ⊕ Fin (Fintype.card m - M.rank) :=\\n   377      (Equiv.sumCompl (· ∈ s)).symm.trans <| (Finset.equivFinOfCardEq hs).sumCongr <|\\n   378        Fintype.equivFinOfCardEq <| by rw [Fintype.card_subtype_compl, Fintype.card_coe, hs] with he\\n   379    refine ⟨V, U, e, (isUnit_iff_isUnit_det _).2 hVdet, isUnit_prod_comp_inverse _, ?_⟩\\n   380    rw [hM, ← diagonal_one, ← diagonal_zero, fromBlocks_diagonal, submatrix_diagonal_equiv]\\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 340, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1444,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 340–359 of 530):\\n   340  \\n   341  /-- The rank of a diagonal matrix is the count of non-zero elements on its main diagonal -/\\n   342  theorem rank_diagonal [Fintype m] [DecidableEq m] [DecidableEq R] (w : m → R) :\\n   343      (diagonal w).rank = Fintype.card {i // (w i) ≠ 0} := by\\n   344    rw [Matrix.rank, ← Matrix.toLin'_apply', Module.finrank, ← LinearMap.rank,\\n   345      LinearMap.rank_diagonal, Cardinal.toNat_natCast]\\n   346  \\n   347  open TransvectionStruct in\\n   348  /-- Every square matrix over a field can be brought, by left and right multiplication by\\n   349  invertible matrices, into the block form `fromBlocks 1 0 0 0`, where the identity block has size\\n   350  equal to the rank of the matrix. -/\\n   351  theorem exists_rank_normal_form [Fintype m] [DecidableEq m] (M : Matrix m m R) :\\n   352      ∃ (V U : Matrix m m R) (e : m ≃ Fin M.rank ⊕ Fin (Fintype.card m - M.rank)),\\n   353        IsUnit V ∧ IsUnit U ∧\\n   354        V * M * U = (fromBlocks 1 0 0 0).submatrix e e := by\\n   355    classical\\n   356    obtain ⟨L, L', D, hM0⟩ := Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec M\\n   357    set E := fun i ↦ if D i = 0 then 1 else (D i)⁻¹ with E_def\\n   358    set s : Finset m := .filter (fun i ↦ D i ≠ 0) .univ with s_def\\n   359    set V := diagonal E * (L.reverse.map (toMatrix ∘ .inv)).prod with V_def\\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Field.*exists_rank_normal_form|exists_rank_normal_form.*Field\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Field.*exists_rank_normal_form|exists_rank_normal_form.*Field' under Mathlib/.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean\", \"line\": 100, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5089,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Matrix/Rank.lean  (lines 100–199 of 530):\\n   100  \\n   101  @[simp]\\n   102  theorem eRank_subsingleton [Subsingleton R] (A : Matrix m n R) : A.eRank = 1 := by\\n   103    simp [eRank]\\n   104  \\n   105  lemma eRank_toNat_eq_finrank (A : Matrix m n R) :\\n   106      A.eRank.toNat = Module.finrank R (span R (range A.col)) :=\\n   107    toNat_toENat ..\\n   108  \\n   109  lemma eRank_submatrix_le (A : Matrix m n R) (r : m₀ → m) (c : n₀ → n) :\\n   110      (A.submatrix r c).eRank ≤ A.eRank := by\\n   111    simpa using! OrderHom.mono (β := ℕ∞) Cardinal.toENat <| lift_cRank_submatrix_le A r c\\n   112  \\n   113  lemma eRank_le_card_width [StrongRankCondition R] (A : Matrix m n R) : A.eRank ≤ ENat.card n := by\\n   114    wlog hfin : Finite n\\n   115    · simp [ENat.card_eq_top.2 (by simpa using hfin)]\\n   116    have _ := Fintype.ofFinite n\\n   117    rw [ENat.card_eq_coe_fintype_card, eRank, toENat_le_natCast]\\n   118    exact A.cRank_le_card_width\\n   119  \\n   120  lemma eRank_le_card_height [StrongRankCondition R] (A : Matrix m n R) : A.eRank ≤ ENat.card m := by\\n   121    classical\\n   122    wlog hfin : Finite m\\n   123    · simp [ENat.card_eq_top.2 (by simpa using hfin)]\\n   124    have _ := Fintype.ofFinite m\\n   125    rw [ENat.card_eq_coe_fintype_card, eRank, toENat_le_natCast]\\n   126    exact A.cRank_le_card_height\\n   127  \\n   128  end Infinite\\n   129  \\n   130  variable [Fintype n] [Fintype o]\\n   131  \\n   132  /-- The rank of a matrix is the rank of its image. -/\\n   133  noncomputable def rank [CommSemiring R] (A : Matrix m n R) : ℕ :=\\n   134    finrank R <| LinearMap.range A.mulVecLin\\n   135  \\n   136  @[simp]\\n   137  theorem rank_subsingleton [CommSemiring R] [Subsingleton R] (A : Matrix m n R) : A.rank = 1 :=\\n   138    finrank_subsingleton\\n   139  \\n   140  @[simp]\\n   141  theorem cRank_one [Semiring R] [Nontrivial R] [DecidableEq m] [StrongRankCondition R] :\\n   142      (cRank (1 : Matrix m m R)) = lift.{uR} #m := by\\n   143    have h : LinearIndependent R (1 : Matrix m m R).col := by\\n   144      convert! Pi.linearIndependent_single_one m R\\n   145      simp [funext_iff, one_apply, Pi.single_apply]\\n   146    rw [cRank, rank_span h, ← lift_umax, ← Cardinal.mk_range_eq_of_injective h.injective, lift_id']\\n   147  \\n   148  @[simp] theorem eRank_one [Semiring R] [Nontrivial R] [DecidableEq m] [StrongRankCondition R] :\\n   149      (eRank (1 : Matrix m m R)) = ENat.card m := by\\n   150    rw [eRank, cRank_one, toENat_lift, ENat.card]\\n   151  \\n   152  @[simp]\\n   153  theorem rank_one [CommSemiring R] [DecidableEq n] [StrongRankCondition R] :\\n   154      rank (1 : Matrix n n R) = Fintype.card n := by\\n   155    rw [rank, mulVecLin_one, LinearMap.range_id, finrank_top, finrank_pi]\\n   156  \\n   157  @[simp]\\n   158  theorem rank_zero [CommSemiring R] [Nontrivial R] : rank (0 : Matrix m n R) = 0 := by\\n   159    rw [rank, mulVecLin_zero, LinearMap.range_zero, finrank_bot]\\n   160  \\n   161  @[simp]\\n   162  theorem cRank_zero {m n : Type*} [Semiring R] [Nontrivial R] : cRank (0 : Matrix m n R) = 0 := by\\n   163    obtain hn | hn := isEmpty_or_nonempty n\\n   164    · rw [cRank, range_eq_empty, span_empty, rank_bot]\\n   165    rw [cRank, col_eq_transpose, transpose_zero, of_symm_zero, range_zero, span_zero_singleton,\\n   166      rank_bot]\\n   167  \\n   168  @[simp]\\n   169  theorem eRank_zero {m n : Type*} [Semiring R] [Nontrivial R] : eRank (0 : Matrix m n R) = 0 := by\\n   170    simp [eRank]\\n   171  \\n   172  theorem rank_le_card_width [CommSemiring R] [StrongRankCondition R] (A : Matrix m n R) :\\n   173      A.rank ≤ Fintype.card n :=\\n   174    A.mulVecLin.finrank_range_le.trans_eq <| finrank_pi R\\n   175  \\n   176  theorem rank_le_width [CommSemiring R] [StrongRankCondition R] {m n : ℕ}\\n   177      (A : Matrix (Fin m) (Fin n) R) : A.rank ≤ n :=\\n   178    A.rank_le_card_width.trans <| (Fintype.card_fin n).le\\n   179  \\n   180  theorem rank_mul_le_left ["
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Field\"}",
+   "ok": true,
+   "result_chars": 1155,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 9056 declarations mentioning Field.\\n- Field   [Mathlib.Algebra.Field.Defs]\\n    A `Field` is a `CommRing` with multiplicative inverses for nonzero elements.  An instance of `Field K` includes maps `ratCast : ℚ → K` and `qsmul : ℚ → K → K`. \\n- Field.toCommRing   [Mathlib.Algebra.Field.Defs]\\n- Field.toDiv   [Mathlib.Algebra.Field.Defs]\\n- Field.toDivisionRing   [Mathlib.Algebra.Field.Defs]\\n- Field.toInv   [Mathlib.Algebra.Field.Defs]\\n- Field.toNNRatCast   [Mathlib.Algebra.Field.Defs]\\n- Field.toNontrivial   [Mathlib.Algebra.Field.Defs]\\n- Field.toRatCast   [Mathlib.Algebra.Field.Defs]\\n- Field.toSemifield   [Mathlib.Algebra.Field.Defs]\\n- Field.toZPow   [Mathlib.Algebra.Field.Defs]\\n- Field.nnqsmul   [Mathlib.Algebra.Field.Defs]\\n    Scalar multiplication by a nonnegative rational number.  Unless there is a risk of a `Module ℚ≥0 _` instance diamond, write `nnqsmul := _`. This will set `nnqsm\\n- Field.qsmul   [Mathlib.Algebra.Field.Defs]\\n    Scalar multiplication by a rational number.  Unless there is a risk of a `Module ℚ _` instance diamond, write `qsmul := _`. This will set `qsmul` to `(Rat.cast \"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"exists_rank_normal_form.*Field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'exists_rank_normal_form.*Field' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Field\", \"Fintype\", \"DecidableEq\", \"Matrix.rank\", \"IsUnit\", \"Matrix.fromBlocks\", \"Matrix.submatrix\"]}",
+   "ok": true,
+   "result_chars": 2157,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"DecidableEq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#DecidableEq\\\"},{\\\"decl\\\":\\\"Matrix.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Rank\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Rank\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Rank.html#Matrix.rank\\\"},{\\\"decl\\\":\\\"IsUnit\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Units.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Units.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Units/Defs.html#IsUnit\\\"},{\\\"decl\\\":\\\"Matrix.fromBlocks\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Block\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Block\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Block.html#Matrix.fromBlocks\\\"},{\\\"decl\\\":\\\"Matrix.submatrix\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix.submatrix\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":7,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Fin\", \"Matrix.fromBlocks\", \"Equiv\"]}",
+   "ok": true,
+   "result_chars": 978,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Fin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Fin\\\"},{\\\"decl\\\":\\\"Matrix.fromBlocks\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Matrix.Block\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Matrix.Block\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Matrix/Block.html#Matrix.fromBlocks\\\"},{\\\"decl\\\":\\\"Equiv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Equiv.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Equiv.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Equiv/Defs.html#Equiv\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem square_matrix_rank_decomposition (F : Type*) [Field F] {n : Type*} [Fintype n] [DecidableEq n]\n    (A : Matrix n n F) :\n  ∃ (P Q : Matrix n n F) (e : n ≃ Fin A.rank ⊕ Fin (Fintype.card n - A.rank)),\n    IsUnit P ∧ IsUnit Q ∧\n    P * A * Q = (Matrix.fromBlocks (1 : Matrix (Fin A.rank) (Fin A.rank) F) 0 0 0).submatrix e e := sorry"
+}

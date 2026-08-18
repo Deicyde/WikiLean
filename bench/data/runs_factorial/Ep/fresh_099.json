@@ -1,0 +1,81 @@
+{
+ "task_id": "fresh_099",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:55:45Z",
+ "wall_s": 20.9,
+ "transcript_stats": {
+  "turns": 5,
+  "assistant_turns": 2,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 4
+  },
+  "tokens_in": 20,
+  "tokens_out": 1491,
+  "cost_usd": 0.012889799999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone\"}",
+   "ok": true,
+   "result_chars": 755,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1307 declarations mentioning Monotone.\\n- Monotone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is monotone if `a ≤ b` implies `f a ≤ f b`.\\n- monotone_id   [Mathlib.Order.Monotone.Defs]\\n- monotone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone'   [Mathlib.Order.Monotone.Defs]\\n- Function.const_mono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.mono_coe   [Mathlib.Order.Monotone.Defs]\\n- monotone_fst   [Mathlib.Order.Monotone.Defs]\\n- monotone_snd   [Mathlib.Order.Monotone.Defs]\\n- Monotone.iterate   [Mathlib.Order.Monotone.Defs]\\n- monotoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Monotone.monotoneOn   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"OrderContinuous\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'OrderContinuous': unknown identifier 'OrderContinuous'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous\"}",
+   "ok": true,
+   "result_chars": 1264,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2420 declarations mentioning Continuous.\\n- Continuous   [Mathlib.Topology.Defs.Basic]\\n    A function between topological spaces is continuous if the preimage of every open set is open. Registered as a structure to make sure it is not unfolded by Lean\\n- IsOpenQuotientMap.continuous   [Mathlib.Topology.Defs.Basic]\\n    An open quotient map is continuous.\\n- Continuous.isOpen_preimage   [Mathlib.Topology.Defs.Basic]\\n    The preimage of an open set under a continuous function is an open set. Use `IsOpen.preimage` instead.\\n- Continuous.mk   [Mathlib.Topology.Defs.Basic]\\n- IsOpenQuotientMap.mk   [Mathlib.Topology.Defs.Basic]\\n- isOpenQuotientMap_iff   [Mathlib.Topology.Defs.Basic]\\n- ContinuousMap.mk   [Mathlib.Topology.ContinuousMap.Defs]\\n- ContinuousMap.continuous_toFun   [Mathlib.Topology.ContinuousMap.Defs]\\n    Proposition that `toFun` is continuous\\n- ContinuousMap.continuous   [Mathlib.Topology.ContinuousMap.Defs]\\n    Deprecated. Use `map_continuous` instead.\\n- ContinuousMap.instCanLiftForallCoeContinuous   [Mathlib.Topology.ContinuousMap.Defs]\\n- ContinuousMapClass.map_continuous   [Mathlib.Topology.ContinuousMap.Defs]\\n    Continuity\\n- ContinuousMapClass.mk   [Mathlib.Topology.ContinuousMap.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sSup_image\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning sSup_image.\\n- sSup_image   [Mathlib.Order.CompleteLattice.Basic]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": null,
+ "no_lean": true
+}

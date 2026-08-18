@@ -1,0 +1,208 @@
+{
+ "task_id": "fresh_004",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:36:26Z",
+ "wall_s": 68.3,
+ "transcript_stats": {
+  "turns": 20,
+  "assistant_turns": 17,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 6,
+   "mcp__formal__decl_read": 5,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 138,
+  "tokens_out": 4631,
+  "cost_usd": 0.06652580000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"GroupAlgebra\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'GroupAlgebra': unknown identifier 'GroupAlgebra'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(G : Monoid) → GroupAlgebra\"}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(G : Monoid) → GroupAlgebra': type expected, got\\n  (Monoid : Type ?u.2 → Type ?u.2)\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"GroupAlgebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'GroupAlgebra' (via ripgrep):\\n- Mathlib/RepresentationTheory/Character.lean:108\\n    simp [character, GroupAlgebra.average, _root_.map_sum]\\n- Mathlib/RepresentationTheory/Character.lean:204\\n    simp [character, GroupAlgebra.average, _root_.map_sum]\\n- Mathlib/RepresentationTheory/Invariants.lean:33\\n    namespace GroupAlgebra\\n- Mathlib/RepresentationTheory/Invariants.lean:60\\n    end GroupAlgebra\\n- Mathlib/RepresentationTheory/Invariants.lean:66\\n    open GroupAlgebra\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MonoidAlgebra|GroupAlgebra|group_algebra\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1675,
+   "result_head": "[{\"type\": \"text\", \"text\": \"663 match(es) for 'MonoidAlgebra|GroupAlgebra|group_algebra' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:11\\n    public import Mathlib.Algebra.MonoidAlgebra.Basic\\n- Mathlib/Algebra/FreeAlgebra.lean:12\\n    public import Mathlib.Algebra.MonoidAlgebra.NoZeroDivisors\\n- Mathlib/Algebra/FreeAlgebra.lean:35\\n    5. `equivMonoidAlgebraFreeMonoid : FreeAlgebra R X ≃ₐ[R] R[FreeMonoid X]`\\n- Mathlib/Algebra/FreeAlgebra.lean:55\\n    open scoped MonoidAlgebra\\n- Mathlib/Algebra/FreeAlgebra.lean:457\\n    noncomputable def equivMonoidAlgebraFreeMonoid : FreeAlgebra R X ≃ₐ[R] R[FreeMonoid X] :=\\n- Mathlib/Algebra/FreeAlgebra.lean:459\\n    (MonoidAlgebra.lift R (FreeAlgebra R X) (FreeMonoid X) (FreeMonoid.lift (ι R)))\\n- Mathlib/Algebra/FreeAlgebra.lean:460\\n    (MonoidAlgebra.algHom_ext' (by ext; simp) (by ext)) (by ext; simp)\\n- Mathlib/Algebra/FreeAlgebra.lean:464\\n    equivMonoidAlgebraFreeMonoid.surjective.nontrivial\\n- Mathlib/Algebra/FreeAlgebra.lean:468\\n    equivMonoidAlgebraFreeMonoid.toMulEquiv.noZeroDivisors\\n- Mathlib/Algebra/Polynomial/Inductions.lean:8\\n    public import Mathlib.Algebra.MonoidAlgebra.Division\\n- Mathlib/Algebra/Polynomial/Inductions.lean:41\\n    ⟨AddMonoidAlgebra.divOf p.toFinsupp 1⟩\\n- Mathlib/Algebra/Polynomial/Cardinal.lean:8\\n    public import Mathlib.Algebra.MonoidAlgebra.Cardinal\\n- Mathlib/Algebra/Polynomial/Basis.lean:30\\n    .ofRepr <| (toFinsuppIsoLinear R).trans <| AddMonoidAlgebra.coeffLinearEquiv _\\n- Mathlib/Algebra/Polynomial/Coeff.lean:9\\n    public import Mathlib.Algebra.MonoidAlgebra.Support\\n- Mathlib/Algebra/Polynomial/Coeff.lean:27\\n    open Finsupp Finset AddMonoidAlgebra\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3625,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Basic.lean  (lines 1–80 of 693):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Yury Kudryashov, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Algebra.Equiv\\n     9  public import Mathlib.Algebra.Algebra.NonUnitalHom\\n    10  public import Mathlib.Algebra.Algebra.Tower\\n    11  public import Mathlib.Algebra.Module.BigOperators\\n    12  public import Mathlib.Algebra.MonoidAlgebra.MapDomain\\n    13  public import Mathlib.Algebra.MonoidAlgebra.Module\\n    14  public import Mathlib.Data.Finsupp.SMul\\n    15  public import Mathlib.LinearAlgebra.Finsupp.LSum\\n    16  \\n    17  /-!\\n    18  # Algebra structure on monoid algebras\\n    19  \\n    20  -/\\n    21  \\n    22  @[expose] public noncomputable section\\n    23  \\n    24  open Finset\\n    25  \\n    26  open Finsupp hiding single mapDomain\\n    27  \\n    28  variable {R S T A B C M N O : Type*}\\n    29  \\n    30  /-! ### Multiplicative monoids -/\\n    31  \\n    32  namespace MonoidAlgebra\\n    33  \\n    34  /-! #### Non-unital, non-associative algebra structure -/\\n    35  \\n    36  \\n    37  section NonUnitalNonAssocAlgebra\\n    38  \\n    39  variable (R) [Semiring R] [Mul M] [NonUnitalNonAssocSemiring A]\\n    40  \\n    41  /-- A non-unital `R`-algebra homomorphism from `R[M]` is uniquely defined by its\\n    42  values on the monomials `single a 1`. -/\\n    43  @[to_additive (dont_translate := R) /--\\n    44  A non-unital `R`-algebra homomorphism from `R[M]` is uniquely defined by its\\n    45  values on the monomials `single a 1`. -/]\\n    46  theorem nonUnitalAlgHom_ext [DistribMulAction R A] {φ₁ φ₂ : R[M] →ₙₐ[R] A}\\n    47      (h : ∀ x, φ₁ (single x 1) = φ₂ (single x 1)) : φ₁ = φ₂ :=\\n    48    NonUnitalAlgHom.to_distribMulActionHom_injective <|\\n    49      MonoidAlgebra.distribMulActionHom_ext' fun a => DistribMulActionHom.ext_ring (h a)\\n    50  \\n    51  /-- See note [partially-applied ext lemmas]. -/\\n    52  @[ext high]\\n    53  theorem nonUnitalAlgHom_ext' [DistribMulAction R A] {φ₁ φ₂ : R[M] →ₙₐ[R] A}\\n    54      (h : φ₁.toMulHom.comp (ofMagma R M) = φ₂.toMulHom.comp (ofMagma R M)) : φ₁ = φ₂ :=\\n    55    nonUnitalAlgHom_ext R <| DFunLike.congr_fun h\\n    56  \\n    57  set_option backward.isDefEq.respectTransparency false in\\n    58  /-- The functor `M ↦ R[M]`, from the category of magmas to the category of non-unital,\\n    59  non-associative algebras over `R` is adjoint to the forgetful functor in the other direction. -/\\n    60  @[simps apply_apply symm_apply]\\n    61  def liftMagma [Module R A] [IsScalarTower R A A] [SMulCommClass R A A] :\\n    62      (M →ₙ* A) ≃ (R[M] →ₙₐ[R] A) where\\n    63    toFun f := {\\n    64      toAddMonoidHom :=\\n    65        (liftAddHom fun x ↦ (smulAddHom R A).flip (f x)).comp coeffAddEquiv.toAddMonoidHom\\n    66      map_smul' t' a := by simp [Finsupp.smul_sum, sum_smul_index', mul_smul]\\n    67      map_mul' a₁ a₂ := by\\n    68        simpa [mul_def, sum_sum_index, add_smul, Finsupp.mul_sum, Finsupp.sum_mul,\\n    69          smul_mul_smul_comm] using Finsupp.sum_comm ..\\n    70    }\\n    71    invFun F := F.toMulHom.comp (ofMagma R M)\\n    72    left_inv f := by ext; simp\\n    73    right_inv F := by ext; simp\\n    74  \\n    75  end NonUnitalNonAssocAlgebra\\n    76  \\n    77  /-! #### Algebra structure -/\\n    78  \\n    79  section Algebra\\n    80  variable [CommSemiring R] [Semiring A] [Algebra R A] [Monoid M] [Monoid N]\\n\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"support.*MonoidAlgebra|MonoidAlgebra.*support\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1391,
+   "result_head": "[{\"type\": \"text\", \"text\": \"59 match(es) for 'support.*MonoidAlgebra|MonoidAlgebra.*support' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Coeff.lean:64\\n    grw [AddMonoidAlgebra.support_coeff_mul_subset]\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:328\\n    using! AddMonoidAlgebra.sup_support_coeff_add_le _ _ _\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:395\\n    simpa [degree, ← support_toFinsupp] using! AddMonoidAlgebra.sup_support_coeff_mul_le (by simp) ..\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:113\\n    Finset.map ⟨toAdd, toAdd.injective⟩ (SkewMonoidAlgebra.support p)\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:115\\n    /-- Though `SkewPolynomial.support` is not definiyionally equal to `SkewMonoidAlgebra.support` we\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:117\\n    lemma support_eq_skewMonoidAlgebra_support (p : SkewPolynomial R) :\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:118\\n    p.support = Finset.map (Multiplicative.toAdd (α := ℕ)) (SkewMonoidAlgebra.support p) := by\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:128\\n    simpa [support, ← Finset.map_union, Finset.map_subset_map] using SkewMonoidAlgebra.support_add\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:446\\n    simp [monomial_def, support_eq_skewMonoidAlgebra_support, h]\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:449\\n    simp only [monomial_def, support_eq_skewMonoidAlgebra_support]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def support|theorem support\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2764,
+   "result_head": "[{\"type\": \"text\", \"text\": \"375 match(es) for 'def support|theorem support' (via ripgrep):\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:103\\n    def support (a : FreeAbelianGroup X) : Finset X :=\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:116\\n    theorem support_zero : support (0 : FreeAbelianGroup X) = ∅ := by\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:120\\n    theorem support_of (x : X) : support (of x) = {x} := by\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:124\\n    theorem support_neg (a : FreeAbelianGroup X) : support (-a) = support a := by\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:128\\n    theorem support_zsmul (k : ℤ) (h : k ≠ 0) (a : FreeAbelianGroup X) :\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:134\\n    theorem support_nsmul (k : ℕ) (h : k ≠ 0) (a : FreeAbelianGroup X) :\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:140\\n    theorem support_add (a b : FreeAbelianGroup X) : support (a + b) ⊆ a.support ∪ b.support := by\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:144\\n    @[simp] theorem support_eq_empty {a : FreeAbelianGroup X} : a.support = ∅ ↔ a = 0 :=\\n- Mathlib/Computability/TuringMachine/StackTuringMachine.lean:445\\n    theorem supports_run (S : Finset Λ) {k : K} (s : StAct K Γ σ k) (q : TM2.Stmt Γ Λ σ) :\\n- Mathlib/Algebra/MvPolynomial/Equiv.lean:766\\n    theorem support_finSuccEquiv (f : MvPolynomial (Fin (n + 1)) R) :\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:40\\n    noncomputable def supported (s : Set σ) : Subalgebra R (MvPolynomial σ R) :=\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:46\\n    theorem supported_eq_range_rename (s : Set σ) : supported R s = (rename ((↑) : s → σ)).range := by\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:52\\n    noncomputable def supportedEquivMvPolynomial (s : Set σ) : supported R s ≃ₐ[R] MvPolynomial s R :=\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:57\\n    theorem supportedEquivMvPolynomial_symm_C (s : Set σ) (x : R) :\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:63\\n    theorem supportedEquivMvPolynomial_symm_X (s : Set σ) (i : s) :\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:80\\n    theorem supported_eq_vars_subset : (supported R s : Set (MvPolynomial σ R)) = { p | ↑p.vars ⊆ s } :=\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:89\\n    theorem supported_eq_adjoin_X : supported R s = Algebra.adjoin R (X '' s) := rfl\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:92\\n    theorem supported_univ : supported R (Set.univ : Set σ) = ⊤ := by\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:96\\n    theorem supported_empty : supported R (∅ : Set σ) = ⊥ := by simp [supported_eq_adjoin_X]\\n- Mathlib/Algebra/MvPolynomial/Supported.lean:100\\n    theorem supported_mono (st : s ⊆ t) : supported R s ≤ supported R t :=\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.support\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 431 declarations mentioning Finsupp.support.\\n- Finsupp.support   [Mathlib.Data.Finsupp.Defs]\\n    The support of a finitely supported function (aka `Finsupp`).\\n- Finsupp.support_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.ofSupportFinite_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_embDomain   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_nonempty_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.fun_support_eq   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_toFun   [Mathlib.Data.Finsupp.Defs]\\n    The witness that the support of a `Finsupp` is indeed the exact locus where its underlying function is nonzero.\\n- Finsupp.onFinset_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_eq_empty   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.card_support_eq_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.notMem_support_iff   [Mathlib.Data.Finsupp.Defs]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a ∈ Submodule.span\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '?a ∈ Submodule.span'.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(s : Set ?α) → Submodule.span ?R s\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(s : Set ?α) → Submodule.span ?R s'.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Basis ?ι ?R (MonoidAlgebra ?R ?G)\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Basis ?ι ?R (MonoidAlgebra ?R ?G)': Unknown identifier `Basis`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"basis.*MonoidAlgebra|Basis.*monoid\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 759,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'basis.*MonoidAlgebra|Basis.*monoid' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:186\\n    def basis (R k) [Semiring k] : Module.Basis R k (MonoidAlgebra k R) where\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:191\\n    MonoidAlgebra.basis R k r = MonoidAlgebra.single r 1 :=\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:830\\n    /-- The basis on `SkewMonoidAlgebra k G` with basis vectors `fun i ↦ single i 1` -/\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:831\\n    def basisSingleOne [Semiring k] : Module.Basis G k (SkewMonoidAlgebra k G) where\\n- Mathlib/RingTheory/FractionalIdeal/Norm.lean:123\\n    Basis.map_apply, LinearEquiv.restrictScalars_apply, equivNum_apply, Submonoid.smul_def,\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Module.lean\", \"line\": 180, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1875,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Module.lean  (lines 180–209 of 359):\\n   180  @[to_additive (dont_translate := R) faithfulSMul]\\n   181  instance faithfulSMul [Semiring S] [SMulZeroClass R S] [FaithfulSMul R S] [Nonempty M] :\\n   182      FaithfulSMul R S[M] := coeffEquiv.faithfulSMul _\\n   183  \\n   184  /-- The standard basis for a monoid algebra. -/\\n   185  @[to_additive /-- The standard basis for an additive monoid algebra. -/]\\n   186  def basis (R k) [Semiring k] : Module.Basis R k (MonoidAlgebra k R) where\\n   187    repr := coeffLinearEquiv _\\n   188  \\n   189  @[to_additive (dont_translate := k) (attr := simp)]\\n   190  lemma basis_apply (k) [Semiring k] (r : R) :\\n   191      MonoidAlgebra.basis R k r = MonoidAlgebra.single r 1 :=\\n   192    rfl\\n   193  \\n   194  /-- This is not an instance as it conflicts with `MonoidAlgebra.distribMulAction` when `M = kˣ`.\\n   195  \\n   196  TODO: Change the type to `DistribMulAction Gᵈᵐᵃ S[M]` and then it can be an instance.\\n   197  TODO: Generalise to a group acting on another, instead of just the left multiplication action.\\n   198  -/\\n   199  @[implicit_reducible]\\n   200  def comapDistribMulActionSelf [Group G] [Semiring S] : DistribMulAction G S[G] :=\\n   201    have := Finsupp.comapDistribMulAction (G := G) (α := G) (M := S)\\n   202    fast_instance% coeffEquiv.distribMulAction _\\n   203  \\n   204  @[to_additive (dont_translate := R)]\\n   205  lemma single_mem_span_single [Semiring R] [Nontrivial R] {m : M} {s : Set M} :\\n   206      single m 1 ∈ Submodule.span R ((single · (1 : R)) '' s) ↔ m ∈ s := by\\n   207    refine (Set.mem_image_equiv (f := (coeffLinearEquiv R).toEquiv)).symm.trans ?_\\n   208    change _ ∈ (Submodule.span R _).map (coeffLinearEquiv R).toLinearMap ↔ _\\n   209    simp [Submodule.map_span, ← Set.image_comp, Finsupp.single_mem_span_single]\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"mem_span.*support|support.*mem_span\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1943,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'mem_span.*support|support.*mem_span' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Support.lean:112\\n    theorem mem_span_support_coeff [MulOneClass G] (f : k[G]) :\\n- Mathlib/Algebra/MonoidAlgebra/Support.lean:116\\n    @[deprecated (since := \\\"2026-06-18\\\")] alias mem_span_support := mem_span_support_coeff\\n- Mathlib/Algebra/MonoidAlgebra/Support.lean:131\\n    theorem mem_span_support_coeff (f : k[G]) : f ∈ Submodule.span k (of' k G '' f.coeff.support) := by\\n- Mathlib/Algebra/MonoidAlgebra/Support.lean:134\\n    @[deprecated (since := \\\"2026-06-18\\\")] alias mem_span_support := mem_span_support_coeff\\n- Mathlib/Algebra/SkewMonoidAlgebra/Support.lean:129\\n    theorem mem_span_support (f : SkewMonoidAlgebra k G) :\\n- Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean:257\\n    apply Basis.mem_span_repr_support\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:50\\n    theorem mem_span_repr_support (m : M) : m ∈ span R (b '' (b.repr m).support) :=\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:54\\n    theorem repr_support_subset_of_mem_span (s : Set ι) {m : M}\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:59\\n    theorem mem_span_image {m : M} {s : Set ι} : m ∈ span R (b '' s) ↔ ↑(b.repr m).support ⊆ s :=\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:60\\n    ⟨repr_support_subset_of_mem_span _ _, fun h ↦\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:61\\n    span_mono (Set.image_mono h) (mem_span_repr_support b _)⟩\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:66\\n    simp [mem_span_image, Finsupp.support_single]\\n- Mathlib/LinearAlgebra/Basis/Basic.lean:69\\n    span_mono (image_subset_range _ _) (mem_span_repr_support b x)\\n- Mathlib/LinearAlgebra/StdBasis.lean:146\\n    simp [spanSubset, Module.Basis.mem_span_image, Finsupp.support_subset_iff]\\n- Mathlib/LinearAlgebra/RootSystem/GeckConstruction/Basic.lean:308\\n    lemma apply_inr_eq_zero_of_mem_span_range_u (j : ι) {x : b.support ⊕ ι → R}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean\", \"line\": 100, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1679,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean  (lines 100–138 of 138):\\n   100  \\n   101  @[deprecated (since := \\\"2026-06-18\\\")] alias support_one_subset := support_coeff_one_subset\\n   102  \\n   103  @[to_additive (dont_translate := k) (attr := simp) support_coeff_one]\\n   104  lemma support_coeff_one [One G] [NeZero (1 : k)] : (1 : k[G]).coeff.support = 1 :=\\n   105    Finsupp.support_single _ one_ne_zero\\n   106  \\n   107  @[deprecated (since := \\\"2026-06-18\\\")] alias support_one := support_coeff_one\\n   108  \\n   109  section Span\\n   110  \\n   111  /-- An element of `k[G]` is in the subalgebra generated by its support. -/\\n   112  theorem mem_span_support_coeff [MulOneClass G] (f : k[G]) :\\n   113      f ∈ Submodule.span k (of k G '' f.coeff.support) := by\\n   114    simp [of, ← supported_eq_span_single, mem_supported]\\n   115  \\n   116  @[deprecated (since := \\\"2026-06-18\\\")] alias mem_span_support := mem_span_support_coeff\\n   117  \\n   118  end Span\\n   119  \\n   120  end MonoidAlgebra\\n   121  \\n   122  namespace AddMonoidAlgebra\\n   123  \\n   124  open Finset Finsupp MulOpposite\\n   125  \\n   126  variable {k : Type u₁} {G : Type u₂} [Semiring k]\\n   127  \\n   128  section Span\\n   129  \\n   130  /-- An element of `k[G]` is in the submodule generated by its support. -/\\n   131  theorem mem_span_support_coeff (f : k[G]) : f ∈ Submodule.span k (of' k G '' f.coeff.support) := by\\n   132    simp [of', ← supported_eq_span_single, mem_supported]\\n   133  \\n   134  @[deprecated (since := \\\"2026-06-18\\\")] alias mem_span_support := mem_span_support_coeff\\n   135  \\n   136  end Span\\n   137  \\n   138  end AddMonoidAlgebra\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MonoidAlgebra\", \"Submodule.span\", \"Finsupp.support\", \"MonoidAlgebra.coeff\", \"MonoidAlgebra.of\"]}",
+   "ok": true,
+   "result_chars": 1727,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\"},{\\\"decl\\\":\\\"Submodule.span\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Span.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Span/Defs.html#Submodule.span\\\"},{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp.support\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra.coeff\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.of\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra.of\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"MonoidAlgebra.mem_span_support_coeff\"}",
+   "ok": true,
+   "result_chars": 392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"MonoidAlgebra.mem_span_support_coeff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean  (lines 1–50 of 138):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Damiano Testa\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Group.Embedding\\n     9  public import Mathlib.Algebra.MonoidAlgebra.Module\\n    10  public import Mathlib.LinearAlgebra.Finsupp.Supported\\n    11  public import Mathlib.Algebra.Group.Pointwise.Finset.Basic\\n    12  \\n    13  import Mathlib.LinearAlgebra.Span.Basic\\n    14  \\n    15  /-!\\n    16  # Lemmas about the support of a finitely supported function\\n    17  -/\\n    18  \\n    19  public section\\n    20  \\n    21  open scoped Pointwise\\n    22  \\n    23  universe u₁ u₂ u₃\\n    24  \\n    25  namespace MonoidAlgebra\\n    26  \\n    27  open Finset Finsupp\\n    28  \\n    29  variable {k : Type u₁} {G : Type u₂} [Semiring k]\\n    30  \\n    31  section Mul\\n    32  variable [Mul G]\\n    33  \\n    34  @[to_additive (dont_translate := k) support_coeff_mul_subset]\\n    35  theorem support_coeff_mul_subset [DecidableEq G] (x y : k[G]) :\\n    36      (x * y).coeff.support ⊆ x.coeff.support * y.coeff.support := by\\n    37    simp only [MonoidAlgebra.mul_def, coeff_finsuppSum]\\n    38    grw [Finsupp.support_sum, biUnion_subset]\\n    39    rintro x hx\\n    40    grw [Finsupp.support_sum, biUnion_subset]\\n    41    exact fun y hy ↦ support_single_subset.trans <| singleton_subset_iff.2 <| mem_image₂_of_mem hx hy\\n    42  \\n    43  @[deprecated (since := \\\"2026-06-18\\\")] alias support_single_mul_eq_image := support_coeff_mul_subset\\n    44  \\n    45  @[to_additive (dont_translate := k) support_coeff_single_mul_subset]\\n    46  lemma support_coeff_single_mul_subset [DecidableEq G] (x : k[G]) (r : k) (a : G) :\\n    47      (single a r * x).coeff.support ⊆ x.coeff.support.image (a * ·) := by\\n    48    grw [support_coeff_mul_subset, coeff_single, support_single_subset]\\n    49    change image₂ _ _ _ ⊆ _\\n    50    rw [image₂_singleton_left]\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean\", \"line\": 109, \"n\": 10}",
+   "ok": true,
+   "result_chars": 552,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MonoidAlgebra/Support.lean  (lines 109–118 of 138):\\n   109  section Span\\n   110  \\n   111  /-- An element of `k[G]` is in the subalgebra generated by its support. -/\\n   112  theorem mem_span_support_coeff [MulOneClass G] (f : k[G]) :\\n   113      f ∈ Submodule.span k (of k G '' f.coeff.support) := by\\n   114    simp [of, ← supported_eq_span_single, mem_supported]\\n   115  \\n   116  @[deprecated (since := \\\"2026-06-18\\\")] alias mem_span_support := mem_span_support_coeff\\n   117  \\n   118  end Span\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem group_algebra_element_mem_span_support {k G : Type*} [Semiring k] [MulOneClass G] \n    (f : MonoidAlgebra k G) :\n    f ∈ Submodule.span k (MonoidAlgebra.of k G '' f.coeff.support) := sorry"
+}

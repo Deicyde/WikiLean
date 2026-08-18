@@ -1,0 +1,188 @@
+{
+ "task_id": "fresh_074",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:54:49Z",
+ "wall_s": 48.8,
+ "transcript_stats": {
+  "turns": 18,
+  "assistant_turns": 11,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 5,
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_cell": 4,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 2,
+   "mcp__wikibrain__brain_transfer": 1,
+   "mcp__wikibrain__brain_snippets": 3
+  },
+  "tokens_in": 90,
+  "tokens_out": 3734,
+  "cost_usd": 0.05039085000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"strictly monotone function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictly monotone function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"linear order finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear order finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fixed point function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fixed point function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"A strictly monotone self-map of a finite linear order fixes every point\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 3113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"A strictly monotone self-map of a finite linear order fixes every point\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q44946\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Point (geometry)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:Q44946\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Point (geometry)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Monotone\"}",
+   "ok": true,
+   "result_chars": 2412,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"anchor\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[-895.9,-185.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Monotone (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2502.01265#monotoneD\\\",\\\"label\\\":\\\"On Exact Learning of $d$-Monotone Functions\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2502.01265\\\",\\\"ref\\\":\\\"monotoneD\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":35},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.equivMonotoneSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.exists_minimal_true_subset\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_monotone\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_toSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.toSperner_isSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_b\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"StrictMono\\\", \\\"Fintype\\\", \\\"LinearOrder\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"StrictMono\", \"Fintype\", \"LinearOrder\"]}",
+   "ok": true,
+   "result_chars": 1047,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:StrictMono\"}",
+   "ok": true,
+   "result_chars": 2422,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"anchor\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[407.6,980.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2301.09904#2.8\\\",\\\"label\\\":\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2301.09904\\\",\\\"ref\\\":\\\"2.8\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":83},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190667\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_1\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_2\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Equidistribution.isAccumulationPoint_iff_exists_subsequence_tendsto\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051.variants.rapid_growth\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056.variants.noll_simmons\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":86,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Fintype\"}",
+   "ok": false,
+   "result_chars": 377,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:Fintype\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:LinearOrder\"}",
+   "ok": true,
+   "result_chars": 4417,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:LinearOrder\\\",\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"f\\\":40184,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q369377\\\",\\\"anchor\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Defs/LinearOrder\\\"],\\\"f\\\":40184,\\\"xy\\\":[55,-181]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q28113351\\\",\\\"label\\\":\\\"Inequality (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":8,\\\"description\\\":\\\"mathematical relation comparing two different values\\\",\\\"slug\\\":\\\"Inequality_mathematics\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"partial order where all elements can be compared\\\",\\\"slug\\\":\\\"Total_order\\\",\\\"article_annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Inequality\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Inequality.html\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:TotalOrder\\\",\\\"label\\\":\\\"Total Order\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/TotalOrder.html\\\",\\\"qid\\\":\\\"Q369377\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:total order\\\",\\\"label\\\":\\\"total order\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/total+order\\\",\\\"qid\\\":\\\"Q369377\\\",\\\"snippet\\\":\\\"A *total order* or *linear order* or *chain order* on a set is a way of ordering its elements to say that some elements precede others, with the understanding that any two elements can be compared one way or the other.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Inequality\\\",\\\"label\\\":\\\"Definition:Inequality\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Inequality\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q28113351\\\",\\\"snippet\\\":\\\"An inequality is a mathematical statement that two expressions relate in one of several conventional ways: $a b$ $a \\\\\\\\ge b$\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Total_order\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2}}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":5,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":225,\\\"links\\\":148,\\\"mentions\\\":40,\\\"relates\\\":27,\\\"cites\\\":11,\\\"co-page\\\":2,\\\"invocation\\\":8,\\\"co-statement\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"links\\\":5}},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q41299\\\",\\\"w\\\":5,\\\"kinds\\\":{\\"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1388,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/BigOperators\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_injective\\\",\\\"label\\\":\\\"Fintype.card_le_of_injective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_surjective\\\",\\\"label\\\":\\\"Fintype.card_le_of_surjective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"label\\\":\\\"Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"aka\\\":[\\\"Constructions and nonexistence results for suitable sets of permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Pigeonhole\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.nonempty_field_iff\\\",\\\"label\\\":\\\"Fintype.nonempty_field_iff\\\",\\\"aka\\\":[\\\"Clique number of Xor products of Kneser graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Cardinality\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"StrictMono\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 1188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"StrictMono\\\",\\\"decl\\\":\\\"StrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"aka\\\":[\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono.orderIsoOfSurjective\\\",\\\"label\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMonoOn.orderIso\\\",\\\"label\\\":\\\"StrictMonoOn.orderIso\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.exp_strictMono\\\",\\\"label\\\":\\\"Real.exp_strictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/Exponential\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:StrictMono\"}",
+   "ok": true,
+   "result_chars": 680,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2301.09904#2.8\\\",\\\"label\\\":\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2301.09904\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"self-map fixed point monotone\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"self-map fixed point monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:LinearOrder\"}",
+   "ok": true,
+   "result_chars": 2347,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q28113351\\\",\\\"label\\\":\\\"Inequality (mathematics)\\\",\\\"snippet\\\":\\\"mathematical relation comparing two different values\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q28113351\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"snippet\\\":\\\"partial order where all elements can be compared\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q369377\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Inequality\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/Inequality.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:TotalOrder\\\",\\\"label\\\":\\\"Total Order\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/TotalOrder.html\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:total order\\\",\\\"label\\\":\\\"total order\\\",\\\"snippet\\\":\\\"A *total order* or *linear order* or *chain order* on a set is a way of ordering its elements to say that some elements precede others, with the understanding that any two elements can be compared one way or the other.\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/total+order\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Inequality\\\",\\\"label\\\":\\\"Definition:Inequality\\\",\\\"snippet\\\":\\\"An inequality is a mathematical statement that two expressions relate in one of several conventional ways: $a b$ $a \\\\\\\\ge b$\\\",\\\"license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Inequality\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Total_order\\\",\\\"label\\\":\\\"Total order\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Total_order\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Fintype\"}",
+   "ok": false,
+   "result_chars": 375,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:Fintype\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"StrictMono\", \"Fintype\", \"LinearOrder\", \"Type\"]}",
+   "ok": true,
+   "result_chars": 1275,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"},{\\\"decl\\\":\\\"Type\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem strict_mono_fintype_linear_order_fixed_point \n    {α : Type*} [Fintype α] [LinearOrder α] (f : α → α) (hf : StrictMono f) : \n    ∀ x, f x = x := sorry"
+}

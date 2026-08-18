@@ -1,0 +1,392 @@
+{
+ "task_id": "fresh_080",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:32:16Z",
+ "wall_s": 181.8,
+ "transcript_stats": {
+  "turns": 43,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 28,
+   "mcp__formal__decl_grep": 9,
+   "mcp__formal__decl_read": 2,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 204,
+  "tokens_out": 12214,
+  "cost_usd": 0.15283105000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 1131,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 733 declarations mentioning MvPowerSeries.\\n- MvPowerSeries   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    Multivariate formal power series, where `σ` is the index set of the variables and `R` is the coefficient ring.\\n- MvPowerSeries.X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The variables of the multivariate formal power series ring.\\n- MvPowerSeries.instAddCommGroup   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddCommMonoid   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddGroup   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddMonoid   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddMonoidWithOne   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instCommRing   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instCommSemiring   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instInhabited   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instMul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instNontrivial   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"partial_deriv\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'partial_deriv': unknown identifier 'partial_deriv'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddMonoidCancellative\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddMonoidCancellative': unknown identifier 'AddMonoidCancellative'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → AddCancelMonoid\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a → AddCancelMonoid': type expected, got\\n  (AddCancelMonoid : Type ?u.3 → Type ?u.3)\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.coeff\"}",
+   "ok": true,
+   "result_chars": 1091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 148 declarations mentioning MvPowerSeries.coeff.\\n- MvPowerSeries.coeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The `n`th coefficient of a multivariate formal power series.\\n- MvPowerSeries.coeff_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_comp_monomial   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_index_single_self_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.eq_zero_iff_forall_coeff_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_one   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.ne_zero_iff_exists_coeff_ne_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_index_single_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_X_mul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_mul_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.sum deriv\"}",
+   "ok": true,
+   "result_chars": 962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 277 declarations mentioning Finsupp.sum.\\n- MulOpposite.op_finsuppSum   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- MulOpposite.unop_finsuppSum   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Multiset.card_finsuppSum   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.multiset_sum_sum   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_zero_index   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_eq_one_iff   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_fun_zero   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_single_index   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.multiset_map_sum   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_embDomain   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_finsetSum_comm   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\\n- Finsupp.sum_neg   [Mathlib.Algebra.BigOperators.Finsupp.Basic]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv PowerSeries\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'deriv PowerSeries'.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddCancelMonoid\"}",
+   "ok": true,
+   "result_chars": 1246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 44 declarations mentioning AddCancelMonoid.\\n- AddCancelMonoid   [Mathlib.Algebra.Group.Defs]\\n    An additive monoid in which addition is cancellative on both sides. Main examples are `ℕ` and groups. This is the right typeclass for many sum lemmas, as having\\n- AddCancelCommMonoid.toAddCancelMonoid   [Mathlib.Algebra.Group.Defs]\\n- AddCancelMonoid.toAddLeftCancelMonoid   [Mathlib.Algebra.Group.Defs]\\n- AddCancelMonoid.toAddRightCancelMonoid   [Mathlib.Algebra.Group.Defs]\\n- AddGroup.toAddCancelMonoid   [Mathlib.Algebra.Group.Defs]\\n- AddCancelMonoid.mk   [Mathlib.Algebra.Group.Defs]\\n- AddCancelMonoid.toIsRightCancelAdd   [Mathlib.Algebra.Group.Defs]\\n- AddCancelMonoid.toIsCancelAdd   [Mathlib.Algebra.Group.Defs]\\n    Any `AddCancelMonoid G` satisfies `IsCancelAdd G`.\\n- instIsCancelVAdd   [Mathlib.Algebra.Group.Action.Defs]\\n- Pi.addCancelMonoid   [Mathlib.Algebra.Group.Pi.Basic]\\n- AddMonoidHom.instAddMonoidHomClassAddHom_2   [Mathlib.Algebra.Group.Hom.Defs]\\n- Function.Injective.addCancelMonoid   [Mathlib.Algebra.Group.InjSurj]\\n    A type endowed with `0` and `+` is an additive left cancel monoid,if it admits an injective map that preserves `0` and `+` to an additive left cancel monoid.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.constant_coeff\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries.constant_coeff': unknown identifier 'MvPowerSeries.constant_coeff'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.partialDeriv\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.partialDeriv': unknown identifier 'Polynomial.partialDeriv'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.coeff 0\"}",
+   "ok": true,
+   "result_chars": 747,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 13 declarations mentioning Nat.instMulZeroClass, Nat, MvPowerSeries.coeff, Zero.toOfNat0, Finsupp.instZero, OfNat.ofNat, Finsupp, and MulZeroClass.toZero.\\n- MvPowerSeries.coeff_zero_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_one   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_X_mul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_mul_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_C   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_eq_constantCoeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_eq_constantCoeff_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MvPowerSeries.*deriv\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'MvPowerSeries.*deriv' under Mathlib/.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.constantCoeff\"}",
+   "ok": true,
+   "result_chars": 1393,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 77 declarations mentioning MvPowerSeries.constantCoeff.\\n- MvPowerSeries.constantCoeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The constant coefficient of a formal power series.\\n- MvPowerSeries.constantCoeff_comp_C   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.isUnit_constantCoeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    If a multivariate formal power series is invertible, then so is its constant coefficient.\\n- MvPowerSeries.constantCoeff_one   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_C   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_eq_constantCoeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_eq_constantCoeff_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_map   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_smul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_eq_zero_of_constantCoeff_nilpotent   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    Vanishing of coefficients of powers of multivariate power series when the constant coefficient is nilpotent [N. Bourbaki, *Algebra II*, Chapter 4, §4, n°2, prop\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"constantCoeff\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1911,
+   "result_head": "[{\"type\": \"text\", \"text\": \"412 match(es) for 'constantCoeff' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Coeff.lean:125\\n    /-- `constantCoeff p` returns the constant term of the polynomial `p`,\\n- Mathlib/Algebra/Polynomial/Coeff.lean:128\\n    def constantCoeff : R[X] →+* R where\\n- Mathlib/Algebra/Polynomial/Coeff.lean:135\\n    lemma constantCoeff_surjective : Function.Surjective (constantCoeff (R := R)) :=\\n- Mathlib/Algebra/Polynomial/Coeff.lean:139\\n    ⟨fun h => (congr_arg IsUnit coeff_C_zero).mp (h.map <| @constantCoeff R _), fun h => h.map C⟩\\n- Mathlib/Algebra/Polynomial/Eval/Coeff.lean:196\\n    theorem evalRingHom_zero : evalRingHom 0 = constantCoeff :=\\n- Mathlib/Algebra/Polynomial/Degree/TrailingDegree.lean:409\\n    theorem nextCoeffUp_of_constantCoeff_eq_zero (p : R[X]) (hp : coeff p 0 = 0) :\\n- Mathlib/Algebra/Polynomial/Degree/TrailingDegree.lean:428\\n    lemma natTrailingDegree_eq_zero_of_constantCoeff_ne_zero (h : constantCoeff p ≠ 0) :\\n- Mathlib/FieldTheory/SeparableDegree.lean:683\\n    apply_fun constantCoeff at h\\n- Mathlib/FieldTheory/SeparableDegree.lean:684\\n    simp_rw [map_pow, map_sub, constantCoeff_apply, coeff_map, coeff_X_zero, coeff_C_zero] at h\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:107\\n    lemma toMvPolynomial_constantCoeff (M : Matrix m n R) (i : m) :\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:108\\n    constantCoeff (M.toMvPolynomial i) = 0 := by\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:109\\n    simp only [toMvPolynomial, ← C_mul_X_eq_monomial, map_sum, map_mul, constantCoeff_X,\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:182\\n    lemma toMvPolynomial_constantCoeff (f : M₁ →ₗ[R] M₂) (i : ι₂) :\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:183\\n    constantCoeff (f.toMvPolynomial b₁ b₂ i) = 0 :=\\n- Mathlib/Algebra/Module/LinearMap/Polynomial.lean:184\\n    Matrix.toMvPolynomial_constantCoeff _ _\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'deriv MvPowerSeries'.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"deriv.*MvPowerSeries\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'deriv.*MvPowerSeries' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPolynomial deriv\"}",
+   "ok": true,
+   "result_chars": 1350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2267 declarations mentioning MvPolynomial.\\n- MvPolynomial.X   [Mathlib.Algebra.MvPolynomial.Basic]\\n    `X n` is the degree `1` monomial $X_n$.\\n- MvPolynomial.coeffs   [Mathlib.Algebra.MvPolynomial.Basic]\\n    The finset of nonzero coefficients of a multivariate polynomial.\\n- MvPolynomial.infinite_of_infinite   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.nontrivial_of_nontrivial   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.infinite_of_nonempty   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.coeff   [Mathlib.Algebra.MvPolynomial.Basic]\\n    The coefficient of the monomial `m` in the multi-variable polynomial `p`.\\n- MvPolynomial.support   [Mathlib.Algebra.MvPolynomial.Basic]\\n    The finite set of all `m : σ →₀ ℕ` such that `X^m` has a non-zero coefficient.\\n- MvPolynomial.X_injective   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.coeffs_eq_empty_of_subsingleton   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.X_inj   [Mathlib.Algebra.MvPolynomial.Basic]\\n- MvPolynomial.C   [Mathlib.Algebra.MvPolynomial.Basic]\\n    `C a` is the constant polynomial with value `a`\\n- MvPolynomial.constantCoeff   [Mathlib.Algebra.MvPolynomial.Basic]\\n    `constantCoeff p` returns the constant term of the polynomial `p`, defined as `coeff 0 p`. This is a ring homomorphism.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".*[Dd]eriv.*\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2695,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8438 match(es) for '.*[Dd]eriv.*' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Determinant.lean:16\\n    We derive the so-called *determinant formula* for `GenContFract`:\\n- Mathlib/Algebra/ContinuedFractions/Determinant.lean:55\\n    -- unfold the recurrence relation for `conts` once and simplify to derive the following\\n- Mathlib/Algebra/ContinuedFractions/ConvergentsEquiv.lean:189\\n    /-! Again, we derive some simple lemmas that are not really of interest. This time for the\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:24\\n    Moreover, we derive some upper bounds for the error term when computing a continued fraction up a\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:26\\n    `|v - (GenContFract.of v).convs n|`. The derived bounds will show us that the error term indeed gets\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:259\\n    /-! As a simple consequence, we can now derive that all denominators are nonnegative. -/\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:321\\n    Next we derive some approximations for the error term when computing a continued fraction up a given\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:353\\n    -- now we can unfold `g.compExactValue` to derive the following equality for `v`\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:361\\n    -- To continue, we need use the determinant equality. So let's derive the needed hypothesis.\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:378\\n    -- however, for this, we first have to derive quite a few tedious inequalities.\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:426\\n    -- derive some tedious inequalities that we need to rewrite our goal\\n- Mathlib/Algebra/ContinuedFractions/Basic.lean:56\\n    deriving Inhabited\\n- Mathlib/Algebra/ContinuedFractions/Basic.lean:137\\n    deriving Decidable\\n- Mathlib/Algebra/QuadraticAlgebra/Defs.lean:43\\n    deriving DecidableEq\\n- Mathlib/Algebra/Field/Subfield/Defs.lean:213\\n    section DerivedFromSubfieldClass\\n- Mathlib/Algebra/Field/Subfield/Defs.lean:305\\n    end DerivedFromSubfieldClass\\n- Mathlib/Algebra/Field/Subfield/Basic.lean:76\\n    section DerivedFromSubfieldClass\\n- Mathlib/Algebra/Field/Subfield/Basic.lean:95\\n    end DerivedFromSubfieldClass\\n- Mathlib/Algebra/Lie/AdjointAction/Derivation.lean:9\\n    public import Mathlib.Algebra.Lie.Derivation.Basic\\n- Mathlib/Algebra/Lie/AdjointAction/Derivation.lean:19\\n    - `LieDerivation.ad`: The adjoint action of a Lie algebra `L` on itself, seen as a morphism of Lie\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Derivation\"}",
+   "ok": true,
+   "result_chars": 1109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 351 declarations mentioning Derivation.\\n- Derivation   [Mathlib.RingTheory.Derivation.Basic]\\n    `D : Derivation R A M` is an `R`-linear map from `A` to `M` that satisfies the `leibniz` equality. We also require that `D 1 = 0`. See `Derivation.mk'` for a co\\n- Derivation.instAdd   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instAddCommMonoid   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instInhabited   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instZero   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.Simps.apply   [Mathlib.RingTheory.Derivation.Basic]\\n    See Note [custom simps projection]\\n- Derivation.instFunLike   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instAddCommGroup   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instNeg   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instSub   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.coe_injective   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.toLinearMap   [Mathlib.RingTheory.Derivation.Basic]\\n    The `LinearMap` underlying a `Derivation`.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^(lemma|def|theorem).*deriv\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2572,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1498 match(es) for '^(lemma|def|theorem).*deriv' (via ripgrep):\\n- Mathlib/Computability/ContextFreeGrammar.lean:169\\n    lemma Produces.trans_derives {u v w : List (Symbol T g.NT)}\\n- Mathlib/Computability/ContextFreeGrammar.lean:178\\n    lemma derives_iff_eq_or_head {u w : List (Symbol T g.NT)} :\\n- Mathlib/Computability/ContextFreeGrammar.lean:186\\n    lemma derives_iff_eq_or_tail {u w : List (Symbol T g.NT)} :\\n- Mathlib/Computability/ContextFreeGrammar.lean:223\\n    lemma derives_nonterminal {t : g.NT} (hgt : ∀ r ∈ g.rules, r.input ≠ t)\\n- Mathlib/Computability/ContextFreeGrammar.lean:321\\n    lemma derives_reverse : g.reverse.Derives u.reverse v.reverse ↔ g.Derives u v :=\\n- Mathlib/Algebra/Lie/Character.lean:52\\n    theorem lieCharacter_apply_of_mem_derived (χ : LieCharacter R L) {x : L}\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:82\\n    lemma eventually_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:99\\n    lemma eventually_deriv_rpow_p_mul_one_add_smoothingFn (p : ℝ) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:116\\n    lemma isEquivalent_deriv_rpow_p_mul_one_sub_smoothingFn {p : ℝ} (hp : p ≠ 0) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:139\\n    lemma isEquivalent_deriv_rpow_p_mul_one_add_smoothingFn {p : ℝ} (hp : p ≠ 0) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:162\\n    lemma isTheta_deriv_rpow_p_mul_one_sub_smoothingFn {p : ℝ} (hp : p ≠ 0) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:169\\n    lemma isTheta_deriv_rpow_p_mul_one_add_smoothingFn {p : ℝ} (hp : p ≠ 0) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:176\\n    lemma growsPolynomially_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:195\\n    lemma growsPolynomially_deriv_rpow_p_mul_one_add_smoothingFn (p : ℝ) :\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:358\\n    lemma deriv_smoothingFn {x : ℝ} : deriv ε x = -x⁻¹ / (log x ^ 2) := by\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:362\\n    lemma isLittleO_deriv_smoothingFn : deriv ε =o[atTop] fun x => x⁻¹ :=\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:379\\n    lemma eventually_deriv_one_sub_smoothingFn :\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:388\\n    lemma eventually_deriv_one_add_smoothingFn :\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:397\\n    lemma isLittleO_deriv_one_sub_smoothingFn :\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:404\\n    lemma isLittleO_deriv_one_add_smoothingFn :\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4346,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 1–100 of 1014):\\n     1  /-\\n     2  Copyright (c) 2019 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Kenny Lau\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.Antidiag.Finsupp\\n     9  public import Mathlib.Data.Finsupp.Weight\\n    10  public import Mathlib.LinearAlgebra.Pi\\n    11  public import Mathlib.Algebra.MvPolynomial.Basic\\n    12  public import Mathlib.Tactic.NormNum\\n    13  \\n    14  /-!\\n    15  # Formal (multivariate) power series\\n    16  \\n    17  This file defines multivariate formal power series\\n    18  and develops the basic properties of these objects.\\n    19  \\n    20  A formal power series is to a polynomial like an infinite sum is to a finite sum.\\n    21  \\n    22  We provide the natural inclusion from multivariate polynomials to multivariate formal power series.\\n    23  \\n    24  ## Main definitions\\n    25  \\n    26  - `MvPowerSeries.C`: constant power series\\n    27  \\n    28  - `MvPowerSeries.X`: the indeterminates\\n    29  \\n    30  - `MvPowerSeries.coeff`, `MvPowerSeries.constantCoeff`:\\n    31    the coefficients of a `MvPowerSeries`, its constant coefficient\\n    32  \\n    33  - `MvPowerSeries.monomial`: the monomials\\n    34  \\n    35  - `MvPowerSeries.coeff_mul`: computes the coefficients of the product of two `MvPowerSeries`\\n    36  \\n    37  - `MvPowerSeries.coeff_prod` : computes the coefficients of products of `MvPowerSeries`\\n    38  \\n    39  - `MvPowerSeries.coeff_pow` : computes the coefficients of powers of a `MvPowerSeries`\\n    40  \\n    41  - `MvPowerSeries.coeff_eq_zero_of_constantCoeff_nilpotent`: if the constant coefficient\\n    42    of a `MvPowerSeries` is nilpotent, then some coefficients of its powers are automatically zero\\n    43  \\n    44  - `MvPowerSeries.map`: apply a `RingHom` to the coefficients of a `MvPowerSeries` (as a `RingHom`).\\n    45  \\n    46  - `MvPowerSeries.X_pow_dvd_iff`, `MvPowerSeries.X_dvd_iff`: equivalent\\n    47    conditions for (a power of) an indeterminate to divide a `MvPowerSeries`\\n    48  \\n    49  - `MvPolynomial.toMvPowerSeries`: the canonical coercion from `MvPolynomial` to `MvPowerSeries`\\n    50  \\n    51  \\n    52  ## Note\\n    53  \\n    54  This file sets up the (semi)ring structure on multivariate power series:\\n    55  additional results are in:\\n    56  * `Mathlib/RingTheory/MvPowerSeries/Inverse.lean` : invertibility,\\n    57    formal power series over a local ring form a local ring;\\n    58  * `Mathlib/RingTheory/MvPowerSeries/Trunc.lean`: truncation of power series.\\n    59  \\n    60  In `Mathlib/RingTheory/PowerSeries/Basic.lean`, formal power series in one variable\\n    61  will be obtained as a particular case, defined by\\n    62    `PowerSeries R := MvPowerSeries Unit R`.\\n    63  See that file for a specific description.\\n    64  \\n    65  ## Implementation notes\\n    66  \\n    67  In this file we define multivariate formal power series with\\n    68  variables indexed by `σ` and coefficients in `R` as\\n    69  `MvPowerSeries σ R := (σ →₀ ℕ) → R`.\\n    70  Unfortunately there is not yet enough API to show that they are the completion\\n    71  of the ring of multivariate polynomials. However, we provide most of the infrastructure\\n    72  that is needed to do this. Once I-adic completion (topological or algebraic) is available\\n    73  it should not be hard to fill in the details.\\n    74  \\n    75  -/\\n    76  \\n    77  @[expose] public section\\n    78  \\n    79  \\n    80  noncomputable section\\n    81  \\n    82  open Finset (antidiagonal mem_antidiagonal)\\n    83  \\n    84  /-- Multivariate formal power series, where `σ` is the index set of the variables\\n    85  and `R` is the coefficient ring. -/\\n    86  def MvPowerSeries (σ : Type*) (R : Type*) :=\\n    87    (σ →₀ ℕ) → R\\n    88  \\n    89  namespace MvPow"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.deriv\"}",
+   "ok": true,
+   "result_chars": 147,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Polynomial.deriv.\\n- Polynomial.deriv   [Mathlib.Analysis.Calculus.Deriv.Polynomial]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^(def|lemma|theorem) deriv\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2532,
+   "result_head": "[{\"type\": \"text\", \"text\": \"434 match(es) for '^(def|lemma|theorem) deriv' (via ripgrep):\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:358\\n    lemma deriv_smoothingFn {x : ℝ} : deriv ε x = -x⁻¹ / (log x ^ 2) := by\\n- Mathlib/Computability/RegularExpressions.lean:145\\n    def deriv : RegularExpression α → α → RegularExpression α\\n- Mathlib/Computability/RegularExpressions.lean:154\\n    theorem deriv_zero (a : α) : deriv 0 a = 0 :=\\n- Mathlib/Computability/RegularExpressions.lean:158\\n    theorem deriv_one (a : α) : deriv 1 a = 0 :=\\n- Mathlib/Computability/RegularExpressions.lean:162\\n    theorem deriv_char_self (a : α) : deriv (char a) a = 1 :=\\n- Mathlib/Computability/RegularExpressions.lean:166\\n    theorem deriv_char_of_ne (h : a ≠ b) : deriv (char a) b = 0 :=\\n- Mathlib/Computability/RegularExpressions.lean:170\\n    theorem deriv_add (P Q : RegularExpression α) (a : α) : deriv (P + Q) a = deriv P a + deriv Q a :=\\n- Mathlib/Computability/RegularExpressions.lean:174\\n    theorem deriv_star (P : RegularExpression α) (a : α) : deriv P.star a = deriv P a * star P :=\\n- Mathlib/Computability/ContextFreeGrammar.lean:178\\n    lemma derives_iff_eq_or_head {u w : List (Symbol T g.NT)} :\\n- Mathlib/Computability/ContextFreeGrammar.lean:186\\n    lemma derives_iff_eq_or_tail {u w : List (Symbol T g.NT)} :\\n- Mathlib/Computability/ContextFreeGrammar.lean:223\\n    lemma derives_nonterminal {t : g.NT} (hgt : ∀ r ∈ g.rules, r.input ≠ t)\\n- Mathlib/Computability/ContextFreeGrammar.lean:321\\n    lemma derives_reverse : g.reverse.Derives u.reverse v.reverse ↔ g.Derives u v :=\\n- Mathlib/InformationTheory/KullbackLeibler/KLFun.lean:99\\n    lemma deriv_klFun : deriv klFun = log := by\\n- Mathlib/Algebra/Lie/Solvable.lean:57\\n    def derivedSeriesOfIdeal (k : ℕ) : LieIdeal R L → LieIdeal R L :=\\n- Mathlib/Algebra/Lie/Solvable.lean:61\\n    theorem derivedSeriesOfIdeal_zero : derivedSeriesOfIdeal R L 0 I = I :=\\n- Mathlib/Algebra/Lie/Solvable.lean:65\\n    theorem derivedSeriesOfIdeal_succ (k : ℕ) :\\n- Mathlib/Algebra/Lie/Solvable.lean:74\\n    theorem derivedSeries_def (k : ℕ) : derivedSeries R L k = derivedSeriesOfIdeal R L k ⊤ :=\\n- Mathlib/Algebra/Lie/Solvable.lean:88\\n    theorem derivedSeriesOfIdeal_add (k l : ℕ) : D (k + l) I = D k (D l I) := by\\n- Mathlib/Algebra/Lie/Solvable.lean:94\\n    theorem derivedSeriesOfIdeal_le {I J : LieIdeal R L} {k l : ℕ} (h₁ : I ≤ J) (h₂ : l ≤ k) :\\n- Mathlib/Algebra/Lie/Solvable.lean:105\\n    theorem derivedSeriesOfIdeal_succ_le (k : ℕ) : D (k + 1) I ≤ D k I :=\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv\"}",
+   "ok": true,
+   "result_chars": 1123,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 569 declarations mentioning deriv.\\n- deriv   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    Derivative of `f` at the point `x`, if it exists.  Zero otherwise.  If the derivative exists (i.e., `∃ f', HasDerivAt f f' x`), then `f x' = f x + (x' - x) • de\\n- deriv_const   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_const'   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id'   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id''   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    Variant with `fun x => x` rather than `id`\\n- derivWithin_univ   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- norm_deriv_le_of_lipschitz   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    Converse to the mean value inequality: if `f` is `C`-lipschitz then its derivative at `x₀` has norm bounded by `C`. Version using `deriv`.\\n- deriv_intCast   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_natCast   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_one   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_ofNat   [Mathlib.Analysis.Calculus.Deriv.Basic]\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries deriv\"}",
+   "ok": true,
+   "result_chars": 1138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.C   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The constant formal power series.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"coeff_smul MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'coeff_smul MvPowerSeries': Unknown identifier `coeff_smul`\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^(def|lemma) MvPowerSeries\\\\.\", \"limit\": 40}",
+   "ok": true,
+   "result_chars": 301,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^(def|lemma) MvPowerSeries\\\\\\\\.' (via ripgrep):\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:229\\n    lemma MvPowerSeries.rename_comp_toMvPowerSeries :\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:236\\n    lemma MvPowerSeries.rename_toMvPowerSeries :\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MvPowerSeries\\\\.(coeff|constantCoeff|C|X)\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2060,
+   "result_head": "[{\"type\": \"text\", \"text\": \"83 match(es) for 'MvPowerSeries\\\\\\\\.(coeff|constantCoeff|C|X)' (via ripgrep):\\n- Mathlib/RingTheory/HahnSeries/PowerSeries.lean:187\\n    MvPowerSeries.coeff n (toMvPowerSeries f) = f.coeff n :=\\n- Mathlib/RingTheory/HahnSeries/PowerSeries.lean:191\\n    (HahnSeries.toMvPowerSeries.symm f).coeff n = MvPowerSeries.coeff n f :=\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:179\\n    theorem toMvPowerSeries_C : (C r).toMvPowerSeries i = MvPowerSeries.C r := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:183\\n    theorem toMvPowerSeries_X : X.toMvPowerSeries i = MvPowerSeries.X i (R := R) := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:197\\n    theorem toMvPowerSeries_eq_subst : f.toMvPowerSeries i = f.subst (MvPowerSeries.X i) := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:209\\n    simp only [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, smul_eq_mul, mul_ite, mul_one,\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:26\\n    - `MvPowerSeries.C`: constant power series\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:28\\n    - `MvPowerSeries.X`: the indeterminates\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:30\\n    - `MvPowerSeries.coeff`, `MvPowerSeries.constantCoeff`:\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:35\\n    - `MvPowerSeries.coeff_mul`: computes the coefficients of the product of two `MvPowerSeries`\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:37\\n    - `MvPowerSeries.coeff_prod` : computes the coefficients of products of `MvPowerSeries`\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:39\\n    - `MvPowerSeries.coeff_pow` : computes the coefficients of powers of a `MvPowerSeries`\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:41\\n    - `MvPowerSeries.coeff_eq_zero_of_constantCoeff_nilpotent`: if the constant coefficient\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:46\\n    - `MvPowerSeries.X_pow_dvd_iff`, `MvPowerSeries.X_dvd_iff`: equivalent\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:560\\n    theorem map_X (s : σ) : map f (X s) = X s := by simp [MvPowerSeries.X]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"eval MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'eval MvPowerSeries': Unknown identifier `eval`\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MvPowerSeries\", \"MvPowerSeries.coeff\", \"MvPowerSeries.constantCoeff\", \"AddCancelMonoid\"]}",
+   "ok": true,
+   "result_chars": 1490,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries\\\"},{\\\"decl\\\":\\\"MvPowerSeries.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries.coeff\\\"},{\\\"decl\\\":\\\"MvPowerSeries.constantCoeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries.constantCoeff\\\"},{\\\"decl\\\":\\\"AddCancelMonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#AddCancelMonoid\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(σ → ?a) → ?b MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(σ → ?a) → ?b MvPowerSeries': Unknown identifier `σ`\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def.*deriv.*MvPolynomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def.*deriv.*MvPolynomial' (via ripgrep):\\n- Mathlib/Algebra/MvPolynomial/PDeriv.lean:61\\n    def pderiv (i : σ) : Derivation R (MvPolynomial σ R) (MvPolynomial σ R) :=\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3131,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean  (lines 1–80 of 186):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Shing Tak Lam, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.MvPolynomial.Derivation\\n     9  public import Mathlib.Algebra.MvPolynomial.Equiv\\n    10  \\n    11  /-!\\n    12  # Partial derivatives of polynomials\\n    13  \\n    14  This file defines the notion of the formal *partial derivative* of a polynomial,\\n    15  the derivative with respect to a single variable.\\n    16  This derivative is not connected to the notion of derivative from analysis.\\n    17  It is based purely on the polynomial exponents and coefficients.\\n    18  \\n    19  ## Main declarations\\n    20  \\n    21  * `MvPolynomial.pderiv i p` : the partial derivative of `p` with respect to `i`, as a bundled\\n    22    derivation of `MvPolynomial σ R`.\\n    23  \\n    24  ## Notation\\n    25  \\n    26  As in other polynomial files, we typically use the notation:\\n    27  \\n    28  + `σ : Type*` (indexing the variables)\\n    29  \\n    30  + `R : Type*` `[CommRing R]` (the coefficients)\\n    31  \\n    32  + `s : σ →₀ ℕ`, a function from `σ` to `ℕ` which is zero away from a finite set.\\n    33    This will give rise to a monomial in `MvPolynomial σ R` which mathematicians might call `X^s`.\\n    34  \\n    35  + `a : R`\\n    36  \\n    37  + `i : σ`, with corresponding monomial `X i`, often denoted `X_i` by mathematicians\\n    38  \\n    39  + `p : MvPolynomial σ R`\\n    40  \\n    41  -/\\n    42  \\n    43  @[expose] public section\\n    44  \\n    45  \\n    46  noncomputable section\\n    47  \\n    48  universe u v\\n    49  \\n    50  namespace MvPolynomial\\n    51  \\n    52  open Set Function Finsupp\\n    53  \\n    54  variable {R : Type u} {σ : Type v} {a a' a₁ a₂ : R} {s : σ →₀ ℕ}\\n    55  \\n    56  section PDeriv\\n    57  \\n    58  variable [CommSemiring R]\\n    59  \\n    60  /-- `pderiv i p` is the partial derivative of `p` with respect to `i` -/\\n    61  def pderiv (i : σ) : Derivation R (MvPolynomial σ R) (MvPolynomial σ R) :=\\n    62    letI := Classical.decEq σ\\n    63    mkDerivation R <| Pi.single i 1\\n    64  \\n    65  theorem pderiv_def [DecidableEq σ] (i : σ) : pderiv i = mkDerivation R (Pi.single i 1) := by\\n    66    unfold pderiv; congr!\\n    67  \\n    68  @[simp]\\n    69  theorem pderiv_monomial {i : σ} :\\n    70      pderiv i (monomial s a) = monomial (s - single i 1) (a * s i) := by\\n    71    classical\\n    72    simp only [pderiv_def, mkDerivation_monomial, Finsupp.smul_sum, smul_eq_mul, ← smul_mul_assoc,\\n    73      ← (monomial _).map_smul]\\n    74    refine (Finset.sum_eq_single i (fun j _ hne => ?_) fun hi => ?_).trans ?_\\n    75    · simp [Pi.single_eq_of_ne hne]\\n    76    · rw [Finsupp.notMem_support_iff] at hi; simp [hi]\\n    77    · simp\\n    78  \\n    79  lemma X_mul_pderiv_monomial {i : σ} {m : σ →₀ ℕ} {r : R} :\\n    80      X i * pderiv i (monomial m r) = m i • monomial m r := by\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pderiv\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pderiv': unknown identifier 'pderiv'\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPolynomial.pderiv\"}",
+   "ok": true,
+   "result_chars": 1006,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 44 declarations mentioning MvPolynomial.pderiv.\\n- MvPolynomial.pderiv   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n    `pderiv i p` is the partial derivative of `p` with respect to `i`\\n- MvPolynomial.pderiv_X_self   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_X_of_ne   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_def   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_eq_zero_of_notMem_vars   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_one   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_X   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_C   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.coeff_pderiv   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_monomial_single   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_monomial   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.X_mul_pderiv_monomial   [Mathlib.Algebra.MvPolynomial.PDeriv]\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.single\"}",
+   "ok": true,
+   "result_chars": 1188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 453 declarations mentioning Finsupp.single.\\n- Finsupp.single   [Mathlib.Data.Finsupp.Single]\\n    `single a b` is the finitely supported function with value `b` at `a` and zero otherwise.\\n- Finsupp.single_injective   [Mathlib.Data.Finsupp.Single]\\n    `Finsupp.single a b` is injective in `b`. For the statement that it is injective in `a`, see `Finsupp.single_left_injective`\\n- Finsupp.single_left_injective   [Mathlib.Data.Finsupp.Single]\\n    `Finsupp.single a b` is injective in `a`. For the statement that it is injective in `b`, see `Finsupp.single_injective`\\n- Finsupp.single_eq_same   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.unique_single_eq_iff   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.erase_single_ne   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single_subset   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single_ne_zero   [Mathlib.Data.Finsupp.Single]\\n    **Alias** of `Finsupp.support_single`.\\n- Finsupp.single_zero   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.erase_single   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.single_eq_of_ne   [Mathlib.Data.Finsupp.Single]\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"DFinsupp.equiv_fun_on_fintype\"}",
+   "ok": true,
+   "result_chars": 130,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'DFinsupp.equiv_fun_on_fintype': unknown identifier 'DFinsupp.equiv_fun_on_fintype'\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.add\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finsupp.add': unknown identifier 'Finsupp.add'\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a + ?b Finsupp\"}",
+   "ok": true,
+   "result_chars": 576,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 26908 declarations mentioning HAdd.hAdd.\\n- Nat.lt_add_one   [Init.Prelude]\\n- Nat.add_pos_right   [Init.Prelude]\\n- Nat.div_rec_fuel_lemma   [Init.Prelude]\\n- Lean.Name.num.sizeOf_spec   [Init.SizeOf]\\n- Lean.Name.str.sizeOf_spec   [Init.SizeOf]\\n- Nat.add_zero   [Init.Core]\\n- Thunk.sizeOf_eq   [Init.Core]\\n- instNeZeroNatHAdd   [Init.Data.NeZero]\\n- instNeZeroNatHAdd_1   [Init.Data.NeZero]\\n- Nat.instAssociativeHAdd   [Init.Data.Nat.Basic]\\n- Nat.instCommutativeHAdd   [Init.Data.Nat.Basic]\\n- Nat.le_add_left   [Init.Data.Nat.Basic]\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(σ →₀ ℕ) → (σ →₀ ℕ) → (σ →₀ ℕ)\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(σ →₀ ℕ) → (σ →₀ ℕ) → (σ →₀ ℕ)': Unknown identifier `σ`\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.single\", \"MvPowerSeries.ext\", \"CommRing\"]}",
+   "ok": true,
+   "result_chars": 1093,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.single\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.single\\\"},{\\\"decl\\\":\\\"MvPowerSeries.ext\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries.ext\\\"},{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MvPowerSeries.eq_of_constantCoeff_eq_and_partialDeriv_eq\", \"MvPowerSeries.constantCoeff\", \"MvPowerSeries.coeff\", \"Finsupp.single\", \"AddCancelMonoid\", \"CommRing\"]}",
+   "ok": true,
+   "result_chars": 2007,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries.eq_of_constantCoeff_eq_and_partialDeriv_eq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MvPowerSeries.constantCoeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries.constantCoeff\\\"},{\\\"decl\\\":\\\"MvPowerSeries.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries.coeff\\\"},{\\\"decl\\\":\\\"Finsupp.single\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.single\\\"},{\\\"decl\\\":\\\"AddCancelMonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#AddCancelMonoid\\\"},{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem MvPowerSeries.eq_of_constantCoeff_eq_and_partialDeriv_eq\n    {σ R : Type*} [CommRing R] [AddCancelMonoid R]\n    (f g : MvPowerSeries σ R)\n    (h_const : f.constantCoeff = g.constantCoeff)\n    (h_deriv : ∀ (i : σ) (m : σ →₀ ℕ),\n      (m i + 1 : ℕ) • f.coeff (m + Finsupp.single i 1) =\n      (m i + 1 : ℕ) • g.coeff (m + Finsupp.single i 1)) :\n    f = g := sorry"
+}

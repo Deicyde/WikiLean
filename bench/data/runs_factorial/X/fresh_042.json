@@ -1,0 +1,256 @@
+{
+ "task_id": "fresh_042",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:41:30Z",
+ "wall_s": 134.6,
+ "transcript_stats": {
+  "turns": 26,
+  "assistant_turns": 22,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 8,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 5,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 178,
+  "tokens_out": 10618,
+  "cost_usd": 0.12114104999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FractionRing\"}",
+   "ok": true,
+   "result_chars": 1523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 187 declarations mentioning FractionRing.\\n- FractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n    The fraction ring of a commutative ring `R` as a quotient type.  We instantiate this definition as generally as possible, and assume that the commutative ring `\\n- FractionRing.instDecidableEq   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.instNontrivial   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.unique   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.field   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\\n    This is not an instance because it creates a diamond when `K = FractionRing R`. Should usually be introduced locally along with `isScalarTower_liftAlgebra` See \\n- FractionRing.instIsFractionRing   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.algEquiv   [Mathlib.RingTheory.Localization.FractionRing]\\n    Given a ring `A` and a localization map to a fraction ring `f : A →+* K`, we get an `A`-isomorphism between the fraction ring of `A` as a quotient type and `K`.\\n- FractionRing.instFaithfulSMul   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.instIsScalarTower   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.isScalarTower_liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\\n- FractionRing.algebraMap_liftAlgebra   [Mathlib.RingTheory.Localization.FractionRing]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank FractionRing\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank FractionRing': Unknown identifier `rank`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank.*FractionRing|fraction.*rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'rank.*FractionRing|fraction.*rank' (via ripgrep):\\n- Mathlib/Algebra/Module/Lattice.lean:161\\n    lemma of_rank_le [Module.Finite K V] [IsFractionRing R K] {M : Submodule R V}\\n- Mathlib/Algebra/Module/Lattice.lean:178\\n    lemma rank' [IsFractionRing R K] (M : Submodule R V) [IsLattice K M] :\\n- Mathlib/Algebra/Module/Lattice.lean:184\\n    lemma rank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n- Mathlib/Algebra/Module/Lattice.lean:190\\n    lemma finrank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n- Mathlib/FieldTheory/RatFunc/Basic.lean:783\\n    rw [Algebra.IsAlgebraic.rank_of_isFractionRing k[X] k⟮X⟯ K[X] K⟮X⟯,\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:109\\n    rw [card_eq_finrank G (FractionRing A) (FractionRing B)]\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:126\\n    rw [IsGaloisGroup.card_eq_finrank G (FractionRing A) (FractionRing B),\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:127\\n    Algebra.IsAlgebraic.finrank_of_isFractionRing A (FractionRing A) B (FractionRing B)]\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:451\\n    fractionalIdeal_rank]\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:753\\n    fractionalIdeal_rank]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank restriction scalars\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.rank restriction scalars': Unknown identifier `restriction`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank.*scalars|rank.*base\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1452,
+   "result_head": "[{\"type\": \"text\", \"text\": \"21 match(es) for 'rank.*scalars|rank.*base' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Localization.lean:124\\n    ← rank_baseChange (R := ST), ← lift_id'.{max uS uT, max uS uT uN} (Module.rank ..),\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:370\\n    theorem Module.rank_baseChange :\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:378\\n    theorem Module.finrank_baseChange : finrank R (R ⊗[S] M') = finrank S M' := by simp\\n- Mathlib/LinearAlgebra/RootSystem/Finite/Nondegenerate.lean:244\\n    /-- Equality of `finrank`s when the base is a domain. -/\\n- Mathlib/Combinatorics/Matroid/Rank/Cardinal.lean:78\\n    /-- The rank (supremum of the cardinalities of bases) of a matroid `M` as a `Cardinal`.\\n- Mathlib/Combinatorics/Matroid/Rank/Cardinal.lean:82\\n    /-- The rank (supremum of the cardinalities of bases) of a set `X` in a matroid `M`,\\n- Mathlib/Combinatorics/Matroid/Rank/ENat.lean:19\\n    The 'rank' of a matroid is the cardinality of all its bases,\\n- Mathlib/Combinatorics/Matroid/Rank/ENat.lean:72\\n    /-- The rank `Matroid.eRank M` of `M` is the `ℕ∞`-valued cardinality of each base of `M`.\\n- Mathlib/Combinatorics/Matroid/IndepAxioms.lean:514\\n    instance ofExistsFiniteIsBase_rankFinite (E : Set α) IsBase exists_finite_base\\n- Mathlib/RingTheory/Spectrum/Prime/FreeLocus.lean:322\\n    lemma rankAtStalk_baseChange {S : Type*} [CommRing S] [Algebra R S] (p : PrimeSpectrum S) :\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Constructions.lean\", \"line\": 370, \"n\": 15}",
+   "ok": true,
+   "result_chars": 692,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Constructions.lean  (lines 370–384 of 642):\\n   370  theorem Module.rank_baseChange :\\n   371      Module.rank R (R ⊗[S] M') = Cardinal.lift.{u} (Module.rank S M') := by simp\\n   372  \\n   373  /-- The `S`-`finrank` of `M ⊗[R] M'` is `(finrank S M) * (finrank R M')`. -/\\n   374  @[simp]\\n   375  theorem Module.finrank_tensorProduct :\\n   376      finrank R (M ⊗[S] M') = finrank R M * finrank S M' := by simp [finrank]\\n   377  \\n   378  theorem Module.finrank_baseChange : finrank R (R ⊗[S] M') = finrank S M' := by simp\\n   379  \\n   380  end TensorProduct\\n   381  \\n   382  section SubmoduleRank\\n   383  \\n   384  section\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*rank.*algebra|theorem.*rank.*field\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"21 match(es) for 'theorem.*rank.*algebra|theorem.*rank.*field' (via ripgrep):\\n- Mathlib/FieldTheory/IntermediateField/Algebraic.lean:56\\n    theorem rank_eq_rank_subalgebra : Module.rank K F.toSubalgebra = Module.rank K F :=\\n- Mathlib/FieldTheory/IntermediateField/Algebraic.lean:60\\n    theorem finrank_eq_finrank_subalgebra : finrank K F.toSubalgebra = finrank K F :=\\n- Mathlib/FieldTheory/Fixed.lean:262\\n    theorem rank_le_card : Module.rank (FixedPoints.subfield G F) F ≤ Fintype.card G :=\\n- Mathlib/FieldTheory/Fixed.lean:298\\n    theorem finrank_le_card [Fintype G] : finrank (subfield G F) F ≤ Fintype.card G := by\\n- Mathlib/FieldTheory/Relrank.lean:145\\n    theorem lift_relrank_comap (f : L →+* E) (B : Subfield L) :\\n- Mathlib/FieldTheory/Relrank.lean:154\\n    theorem relfinrank_comap (f : L →+* E) (B : Subfield L) :\\n- Mathlib/FieldTheory/Relrank.lean:166\\n    theorem finrank_comap (f : L →+* E) : finrank (A.comap f) L = relfinrank A f.fieldRange := by\\n- Mathlib/FieldTheory/Relrank.lean:190\\n    theorem lift_relrank_comap_comap_eq_lift_relrank_of_le (f : L →+* E) (h : B ≤ f.fieldRange) :\\n- Mathlib/FieldTheory/Relrank.lean:200\\n    theorem relfinrank_comap_comap_eq_relfinrank_of_le (f : L →+* E) (h : B ≤ f.fieldRange) :\\n- Mathlib/FieldTheory/Relrank.lean:332\\n    theorem relrank_self : relrank A A = 1 := A.toSubfield.relrank_self\\n- Mathlib/FieldTheory/Relrank.lean:335\\n    theorem relfinrank_self : relfinrank A A = 1 := A.toSubfield.relfinrank_self\\n- Mathlib/FieldTheory/Relrank.lean:359\\n    theorem finrank_comap (f : L →ₐ[F] E) : finrank (A.comap f) L = relfinrank A f.fieldRange := by\\n- Mathlib/FieldTheory/Relrank.lean:400\\n    theorem lift_relrank_comap_comap_eq_lift_relrank_of_le (f : L →ₐ[F] E) (h : B ≤ f.fieldRange) :\\n- Mathlib/FieldTheory/Relrank.lean:409\\n    theorem relfinrank_comap_comap_eq_relfinrank_of_le (f : L →ₐ[F] E) (h : B ≤ f.fieldRange) :\\n- Mathlib/LinearAlgebra/Dimension/Constructions.lean:517\\n    theorem Subalgebra.rank_toSubmodule (S : Subalgebra F E) :\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"restrictScalars rank\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restrictScalars rank': Unknown identifier `restrictScalars`\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"restrictScalars.*rank|rank.*restrictScalars\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1508,
+   "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'restrictScalars.*rank|rank.*restrictScalars' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:45\\n    change _ = Module.rank R ((Algebra.adjoin A (B : Set S)).restrictScalars R)\\n- Mathlib/LinearAlgebra/Dimension/RankNullity.lean:256\\n    rw [← (N.restrictScalars R).finrank_quotient_add_finrank]\\n- Mathlib/LinearAlgebra/Dimension/Basic.lean:482\\n    LinearMap.lift_rank_le_of_injective ((LinearMap.toSpanSingleton R' T 1).restrictScalars R) <|\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:652\\n    Module.finrank R (restrictScalars R I) = Module.finrank R S := by\\n- Mathlib/LinearAlgebra/FreeModule/PID.lean:656\\n    exact Ideal.rank_eq bS hI (bI.map ((restrictScalarsEquiv R S S I).restrictScalars R))\\n- Mathlib/LinearAlgebra/FreeModule/IdealQuotient.lean:34\\n    Submodule.quotientEquivPiSpan (I.restrictScalars R) b <| finrank_eq_finrank b I hI\\n- Mathlib/LinearAlgebra/FreeModule/IdealQuotient.lean:40\\n    Submodule.quotientEquivPiZMod (I.restrictScalars ℤ) b <| finrank_eq_finrank b I hI\\n- Mathlib/LinearAlgebra/FreeModule/IdealQuotient.lean:49\\n    Submodule.finiteQuotientOfFreeOfRankEq (I.restrictScalars ℤ) <| finrank_eq_finrank b I hI\\n- Mathlib/LinearAlgebra/FreeModule/IdealQuotient.lean:58\\n    Submodule.quotientEquivDirectSum F b (N := (I.restrictScalars R)) <| finrank_eq_finrank b I hI\\n- Mathlib/FieldTheory/Galois/Basic.lean:511\\n    Nat.card (K⟮x⟯.restrictScalars F →ₐ[F] E) = Nat.card (K →ₐ[F] E) * finrank K K⟮x⟯ := by\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(R : Type*) [CommRing R] (K : Type*) [Field K] [Algebra R K] (M : Type*) [Module K M]\"}",
+   "ok": true,
+   "result_chars": 158,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(R : Type*) [CommRing R] (K : Type*) [Field K] [Algebra R K] (M : Type*) [Module K M]': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*rank.*equal|theorem.*rank.*eq\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2814,
+   "result_head": "[{\"type\": \"text\", \"text\": \"272 match(es) for 'theorem.*rank.*equal|theorem.*rank.*eq' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:35\\n    theorem rank_sup_eq_rank_left_mul_rank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:48\\n    theorem finrank_sup_eq_finrank_left_mul_finrank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:60\\n    theorem rank_sup_eq_rank_right_mul_rank_of_free :\\n- Mathlib/Algebra/Algebra/Subalgebra/Rank.lean:64\\n    theorem finrank_sup_eq_finrank_right_mul_finrank_of_free :\\n- Mathlib/LinearAlgebra/FreeAlgebra.lean:48\\n    theorem rank_eq [CommRing R] [Nontrivial R] :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:144\\n    theorem of_finrank_eq_succ {n : ℕ} (hn : finrank K V = n.succ) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:153\\n    theorem of_fact_finrank_eq_succ (n : ℕ) [hn : Fact (finrank K V = n + 1)] :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:169\\n    theorem finrank_eq_rank' [FiniteDimensional K V] : (finrank K V : Cardinal.{v}) = Module.rank K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:177\\n    theorem finiteDimensional_iff_of_rank_eq_nsmul {W} [AddCommGroup W] [Module K W] {n : ℕ}\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:184\\n    theorem finrank_eq_card_basis' [FiniteDimensional K V] {ι : Type w} (h : Basis ι K V) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:70\\n    theorem _root_.Submodule.eq_top_of_finrank_eq [FiniteDimensional K V] {S : Submodule K V}\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:168\\n    theorem FiniteDimensional.of_rank_eq_nat {n : ℕ} (h : Module.rank K V = n) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:172\\n    theorem FiniteDimensional.of_rank_eq_zero (h : Module.rank K V = 0) : FiniteDimensional K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:175\\n    theorem FiniteDimensional.of_rank_eq_one (h : Module.rank K V = 1) : FiniteDimensional K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:259\\n    theorem eq_of_le_of_finrank_eq {S₁ S₂ : Submodule K V} [FiniteDimensional K S₂] (hle : S₁ ≤ S₂)\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:278\\n    theorem eq_of_le_of_finrank_eq (h_le : F ≤ E) (h_finrank : finrank K F = finrank K E) : F = E :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:558\\n    theorem Submodule.isAtom_iff_finrank_eq_one {S : Submodule K V} :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:586\\n    theorem eq_span_singleton_of_mem_of_finrank_eq_one {S : Submodule K V} {w : V}\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:608\\n    theorem finrank_eq_one_iff_of_nonzero (v : V) (nz : v ≠ 0) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:615\\n    theorem finrank_eq_one_iff_of_nonzero' (v : V) (nz : v ≠ 0) :\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsFractionRing.*rank|rank.*IsFractionRing\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 624,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'IsFractionRing.*rank|rank.*IsFractionRing' (via ripgrep):\\n- Mathlib/Algebra/Module/Lattice.lean:161\\n    lemma of_rank_le [Module.Finite K V] [IsFractionRing R K] {M : Submodule R V}\\n- Mathlib/Algebra/Module/Lattice.lean:178\\n    lemma rank' [IsFractionRing R K] (M : Submodule R V) [IsLattice K M] :\\n- Mathlib/Algebra/Module/Lattice.lean:184\\n    lemma rank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n- Mathlib/Algebra/Module/Lattice.lean:190\\n    lemma finrank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Lattice.lean\", \"line\": 161, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2278,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Lattice.lean  (lines 161–200 of 212):\\n   161  lemma of_rank_le [Module.Finite K V] [IsFractionRing R K] {M : Submodule R V}\\n   162      (hfg : M.FG) (hr : Module.rank K V ≤ Module.rank R M) : IsLattice K M where\\n   163    fg := hfg\\n   164    span_eq_top := by\\n   165      simpa using Submodule.span_range_eq_top_of_injective_of_rank_le M.injective_subtype hr\\n   166  \\n   167  variable [IsPrincipalIdealRing R]\\n   168  \\n   169  /-- Any lattice over a PID is a free `R`-module.\\n   170  Note that under our conditions, `Module.IsTorsionFree R K` simply says that `algebraMap R K` is\\n   171  injective. -/\\n   172  instance free [Module.IsTorsionFree R K] (M : Submodule R V) [IsLattice K M] : Module.Free R M := by\\n   173    have := Module.IsTorsionFree.trans_faithfulSMul R K V\\n   174    -- any torsion free finite module over a PID is free\\n   175    infer_instance\\n   176  \\n   177  /-- Any lattice has `R`-rank equal to the `K`-rank of `V`. -/\\n   178  lemma rank' [IsFractionRing R K] (M : Submodule R V) [IsLattice K M] :\\n   179      Module.rank R M = Module.rank K V := by\\n   180    let b := Module.Free.chooseBasis R M\\n   181    rw [rank_eq_card_basis b, ← rank_eq_card_basis (b.extendOfIsLattice K)]\\n   182  \\n   183  /-- Any `R`-lattice in `ι → K` has `#ι` as `R`-rank. -/\\n   184  lemma rank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n   185      [IsLattice K M] : Module.rank R M = Fintype.card ι := by\\n   186    rw [IsLattice.rank' K M]\\n   187    simp\\n   188  \\n   189  /-- `Module.finrank` version of `IsLattice.rank`. -/\\n   190  lemma finrank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n   191      [IsLattice K M] : Module.finrank R M = Fintype.card ι :=\\n   192    Module.finrank_eq_of_rank_eq (IsLattice.rank_of_pi K M)\\n   193  \\n   194  /-- The intersection of two lattices is a lattice. -/\\n   195  instance inf [Module.Finite K V] [IsFractionRing R K] (M N : Submodule R V)\\n   196      [IsLattice K M] [IsLattice K N] : IsLattice K (M ⊓ N) where\\n   197    fg := by\\n   198      have : IsNoetherian R ↥(M ⊓ N) := isNoetherian_of_le inf_le_left\\n   199      rw [← Module.Finite.iff_fg]\\n   200      infer_instance\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsLattice\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsLattice': unknown identifier 'IsLattice'\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class IsLattice|structure IsLattice\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 209,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class IsLattice|structure IsLattice' (via ripgrep):\\n- Mathlib/Algebra/Module/Lattice.lean:67\\n    class IsLattice (A : outParam Type*) [CommRing A] [Algebra R A]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Lattice.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4583,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Lattice.lean  (lines 1–100 of 212):\\n     1  /-\\n     2  Copyright (c) 2024 Judith Ludwig, Christian Merten. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Judith Ludwig, Christian Merten\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.Dimension.Localization\\n     9  public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\n    10  public import Mathlib.LinearAlgebra.FreeModule.PID\\n    11  \\n    12  /-!\\n    13  # Lattices\\n    14  \\n    15  Let `A` be an `R`-algebra and `V` an `A`-module. Then an `R`-submodule `M` of `V` is a lattice,\\n    16  if `M` is finitely generated and spans `V` as an `A`-module.\\n    17  \\n    18  The typical use case is `A = K` is the fraction field of an integral domain `R` and `V = ι → K`\\n    19  for some finite `ι`. The scalar multiple a lattice by a unit in `K` is again a lattice. This gives\\n    20  rise to a homothety relation.\\n    21  \\n    22  When `R` is a DVR and `ι = Fin 2`, then by taking the quotient of the type of `R`-lattices in\\n    23  `ι → K` by the homothety relation, one obtains the vertices of what is called the Bruhat-Tits tree\\n    24  of `GL 2 K`.\\n    25  \\n    26  ## Main definitions\\n    27  \\n    28  - `Submodule.IsLattice`: An `R`-submodule `M` of `V` is a lattice, if it is finitely generated\\n    29    and its `A`-span is `V`.\\n    30  \\n    31  ## Main properties\\n    32  \\n    33  Let `R` be a PID and `A = K` its field of fractions.\\n    34  \\n    35  - `Submodule.IsLattice.free`: Every lattice in `V` is `R`-free.\\n    36  - `Basis.extendOfIsLattice`: Any `R`-basis of a lattice `M` in `V` defines a `K`-basis of `V`.\\n    37  - `Submodule.IsLattice.rank`: The `R`-rank of a lattice in `V` is equal to the `K`-rank of `V`.\\n    38  - `Submodule.IsLattice.inf`: The intersection of two lattices is a lattice.\\n    39  \\n    40  ## Note\\n    41  \\n    42  In the case `R = ℤ` and `A = K` a field, there is also `IsZLattice` where the finitely\\n    43  generated condition is replaced by having the discrete topology. This is for example used\\n    44  for complex tori.\\n    45  -/\\n    46  \\n    47  @[expose] public section\\n    48  \\n    49  open Module\\n    50  open scoped Pointwise\\n    51  \\n    52  universe u\\n    53  \\n    54  variable {R : Type*} [CommRing R]\\n    55  \\n    56  namespace Submodule\\n    57  \\n    58  /--\\n    59  An `R`-submodule `M` of `V` is a lattice if it is finitely generated\\n    60  and spans `V` as an `A`-module.\\n    61  \\n    62  Note 1: `A` is marked as an `outParam` here. In practice this should not cause issues, since\\n    63  `R` and `A` are fixed, where typically `A` is the fraction field of `R`.\\n    64  \\n    65  Note 2: In the case `R = ℤ` and `A = K` a field, there is also `IsZLattice` where the finitely\\n    66  generated condition is replaced by having the discrete topology. -/\\n    67  class IsLattice (A : outParam Type*) [CommRing A] [Algebra R A]\\n    68      {V : Type*} [AddCommMonoid V] [Module R V] [Module A V] [IsScalarTower R A V]\\n    69      [IsScalarTower R A V] (M : Submodule R V) : Prop where\\n    70    fg : M.FG\\n    71    span_eq_top : Submodule.span A (M : Set V) = ⊤\\n    72  \\n    73  namespace IsLattice\\n    74  \\n    75  section\\n    76  \\n    77  variable (A : Type*) [CommRing A] [Algebra R A]\\n    78  variable {V : Type*} [AddCommGroup V] [Module R V] [Module A V] [IsScalarTower R A V]\\n    79  variable (M : Submodule R V)\\n    80  \\n    81  /-- Any `R`-lattice is finite. -/\\n    82  instance finite [IsLattice A M] : Module.Finite R M := by\\n    83    rw [Module.Finite.iff_fg]\\n    84    exact IsLattice.fg\\n    85  \\n    86  set_option backward.isDefEq.respectTransparency false in\\n    87  /-- The action of `Aˣ` on `R`-submodules of `V` preserves `IsLattice`. -/\\n    88  instance smul [IsLattice A M] (a : Aˣ) : IsLattice A (a • M : Submodule R V) where\\n    89"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class IsFractionRing\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class IsFractionRing' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsFractionRing\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 675,
+   "result_head": "[{\"type\": \"text\", \"text\": \"359 match(es) for 'IsFractionRing' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:62\\n    instance (R A : Type*) [CommRing R] [IsDomain R] [Field A] [Algebra R A] [IsFractionRing R A] :\\n- Mathlib/Algebra/Algebra/Epi.lean:65\\n    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective R x\\n- Mathlib/Algebra/Polynomial/Roots.lean:802\\n    rw [← map_dvd_map _ (IsFractionRing.injective R <| FractionRing R)\\n- Mathlib/Algebra/Polynomial/Roots.lean:807\\n    exact (pairwise_coprime_X_sub_C (IsFractionRing.injective R <| FractionRing R) h).pow\\n- Mathlib/Algebra/Module/Lattice.lean:118\\n    [IsFractionRing R K] [AddCommGroup M] [Module R M]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsFractionRing R K\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsFractionRing R K': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IsFractionRing|structure IsFractionRing|class IsFractionRing\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 386,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def IsFractionRing|structure IsFractionRing|class IsFractionRing' (via ripgrep):\\n- Mathlib/RingTheory/Invariant/Basic.lean:311\\n    noncomputable def IsFractionRing.stabilizerHom : MulAction.stabilizer G Q →* Gal(L/K) :=\\n- Mathlib/RingTheory/Invariant/Basic.lean:373\\n    noncomputable def IsFractionRing.stabilizerQuotientInertiaEquiv :\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem IsFractionRing\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 708,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'theorem IsFractionRing' (via ripgrep):\\n- Mathlib/RingTheory/Localization/FractionRing.lean:59\\n    theorem IsFractionRing.of_algEquiv {R : Type*} [CommSemiring R] {K L : Type*}\\n- Mathlib/RingTheory/Invariant/Basic.lean:316\\n    theorem IsFractionRing.stabilizerHom_apply_apply_mk (σ : MulAction.stabilizer G Q) (x : B) :\\n- Mathlib/RingTheory/Invariant/Basic.lean:322\\n    theorem IsFractionRing.ker_stabilizerHom :\\n- Mathlib/RingTheory/Invariant/Basic.lean:351\\n    theorem IsFractionRing.stabilizerHom_surjective :\\n- Mathlib/RingTheory/Invariant/Basic.lean:379\\n    theorem IsFractionRing.stabilizerQuotientInertiaEquiv_mk (g : MulAction.stabilizer G Q) :\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/FractionRing.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2913,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/FractionRing.lean  (lines 1–60 of 793):\\n     1  /-\\n     2  Copyright (c) 2018 Kenny Lau. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kenny Lau, Mario Carneiro, Johan Commelin, Amelia Livingston, Anne Baanen\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Field.Equiv\\n     9  public import Mathlib.Algebra.Field.Subfield.Basic\\n    10  public import Mathlib.Algebra.Order.GroupWithZero.Submonoid\\n    11  public import Mathlib.Algebra.Order.Ring.Int\\n    12  public import Mathlib.Algebra.Ring.CompTypeclasses\\n    13  public import Mathlib.RingTheory.Localization.Basic\\n    14  public import Mathlib.RingTheory.SimpleRing.Basic\\n    15  \\n    16  /-!\\n    17  # Fraction ring / fraction field Frac(R) as localization\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  * `IsFractionRing R K` expresses that `K` is a field of fractions of `R`, as an abbreviation of\\n    22    `IsLocalization (NonZeroDivisors R) K`\\n    23  \\n    24  ## Main results\\n    25  \\n    26  * `IsFractionRing.field`: a definition (not an instance) stating the localization of an integral\\n    27    domain `R` at `R \\\\ {0}` is a field\\n    28  * `Rat.isFractionRing` is an instance stating `ℚ` is the field of fractions of `ℤ`\\n    29  \\n    30  ## Implementation notes\\n    31  \\n    32  See `Mathlib/RingTheory/Localization/Basic.lean` for a design overview.\\n    33  \\n    34  ## Tags\\n    35  localization, ring localization, commutative ring localization, characteristic predicate,\\n    36  commutative ring, field of fractions\\n    37  -/\\n    38  \\n    39  @[expose] public section\\n    40  \\n    41  assert_not_exists Ideal\\n    42  \\n    43  open nonZeroDivisors\\n    44  \\n    45  variable (R : Type*) [CommRing R] {M : Submonoid R} (S : Type*) [CommRing S]\\n    46  variable [Algebra R S] {P : Type*} [CommRing P]\\n    47  variable {A : Type*} [CommRing A] (K : Type*)\\n    48  \\n    49  -- TODO: should this extend `Algebra` instead of assuming it?\\n    50  -- TODO: this was recently generalized from `CommRing` to `CommSemiring`, but all lemmas below are\\n    51  -- still stated for `CommRing`. Generalize these lemmas where it is appropriate.\\n    52  /-- `IsFractionRing R K` states `K` is the ring of fractions of a commutative ring `R`. -/\\n    53  abbrev IsFractionRing (R : Type*) [CommSemiring R] (K : Type*) [CommSemiring K] [Algebra R K] :=\\n    54    IsLocalization (nonZeroDivisors R) K\\n    55  \\n    56  instance {R : Type*} [Field R] : IsFractionRing R R :=\\n    57    IsLocalization.of_le_isUnit fun _ ↦ isUnit_of_mem_nonZeroDivisors\\n    58  \\n    59  theorem IsFractionRing.of_algEquiv {R : Type*} [CommSemiring R] {K L : Type*}\\n    60      [CommSemiring K] [Algebra R K] [CommSemiring L] [Algebra R L] [h : IsFractionRing R K]\\n\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Lattice.lean\", \"line\": 173, \"n\": 12}",
+   "ok": true,
+   "result_chars": 764,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Lattice.lean  (lines 173–184 of 212):\\n   173    have := Module.IsTorsionFree.trans_faithfulSMul R K V\\n   174    -- any torsion free finite module over a PID is free\\n   175    infer_instance\\n   176  \\n   177  /-- Any lattice has `R`-rank equal to the `K`-rank of `V`. -/\\n   178  lemma rank' [IsFractionRing R K] (M : Submodule R V) [IsLattice K M] :\\n   179      Module.rank R M = Module.rank K V := by\\n   180    let b := Module.Free.chooseBasis R M\\n   181    rw [rank_eq_card_basis b, ← rank_eq_card_basis (b.extendOfIsLattice K)]\\n   182  \\n   183  /-- Any `R`-lattice in `ι → K` has `#ι` as `R`-rank. -/\\n   184  lemma rank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Submodule.IsLattice\", \"IsLattice.rank'\", \"Submodule.IsLattice.rank'\", \"Module.rank\", \"IsFractionRing\"]}",
+   "ok": true,
+   "result_chars": 1722,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Submodule.IsLattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Lattice.html#Submodule.IsLattice\\\"},{\\\"decl\\\":\\\"IsLattice.rank'\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Submodule.IsLattice.rank'\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.Lattice\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Lattice\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Lattice.html#Submodule.IsLattice.rank'\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"IsFractionRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/FractionRing.html#IsFractionRing\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem rank_eq_in_fraction_field_tower\n    {R : Type*} [CommRing R]\n    {K : Type*} [CommRing K] [Algebra R K] [IsFractionRing R K]\n    {V : Type*} [AddCommGroup V] [Module R V] [Module K V] [IsScalarTower R K V]\n    {M : Submodule R V} [IsLattice K M] :\n    Module.rank R M = Module.rank K V :=\n  Submodule.IsLattice.rank' K M"
+}

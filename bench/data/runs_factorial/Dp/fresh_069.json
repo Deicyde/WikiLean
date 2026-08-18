@@ -1,0 +1,121 @@
+{
+ "task_id": "fresh_069",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 3,
+ "timestamp": "2026-08-08T02:40:29Z",
+ "wall_s": 38.6,
+ "transcript_stats": {
+  "turns": 10,
+  "assistant_turns": 5,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 5,
+   "mcp__wikibrain__brain_search": 1,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 42,
+  "tokens_out": 3154,
+  "cost_usd": 0.03413165
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"inertia degree prime ideal ring extension\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"inertia degree prime ideal ring extension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q863912\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prime ideal\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Prime\\\",\\\"label\\\":\\\"Prime\\\"}]},{\\\"id\\\":\\\"cell:Q383444\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"degree\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ideal\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1203540\\\",\\\"label\\\":\\\"Maximal ideal\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q49008\\\",\\\"label\\\":\\\"Prime number\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"label\\\":\\\"Scheme (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1057416\\\",\\\"label\\\":\\\"Eisenstein's criterion\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q147978\\\",\\\"label\\\":\\\"Zariski topology\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"label\\\":\\\"Set-builder notation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Ideal.IsPrime\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Prime\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Prime\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class IsPrime (I : Ideal α) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Prime.html#Ideal.IsPrime\\\",\\\"via_cell\\\":\\\"cell:Q863912\\\",\\\"cell_label\\\":\\\"Prime ideal\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Prime\\\",\\\"label\\\":\\\"Prime\\\"}]},{\\\"decl\\\":\\\"Ideal\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Ideal (R : Type u) [Semiring R] :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Defs.html#Ideal\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Ideal\\\",\\\"cell_label\\\":\\\"Ideal\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"finite ring extension\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3014,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite ring extension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Ring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Ring (R : Type u) extends Semiring R, AddCommGroup R, AddGroupWithOne R\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Ring\\\",\\\"via_cell\\\":\\\"cell:Q161172\\\",\\\"cell_label\\\":\\\"Ring (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"cell_label\\\":\\\"Finite\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"prime ideal lying over\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4915,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime ideal lying over\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q863912\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prime ideal\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Prime\\\",\\\"label\\\":\\\"Prime\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ideal\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Prime\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prime\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Prime\\\",\\\"label\\\":\\\"Prime\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Prime/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1203540\\\",\\\"label\\\":\\\"Maximal ideal\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q49008\\\",\\\"label\\\":\\\"Prime number\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"label\\\":\\\"Scheme (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1057416\\\",\\\"label\\\":\\\"Eisenstein's criterion\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q147978\\\",\\\"label\\\":\\\"Zariski topology\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"label\\\":\\\"Set-builder notation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Ideal.IsPrime\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Prime\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Prime\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class IsPrime (I : Ideal α) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Prime.html#Ideal.IsPrime\\\",\\\"via_cell\\\":\\\"cell:Q863912\\\",\\\"cell_label\\\":\\\"Prime ideal\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal\\\",\\\"label\\\":\\\"Ideal\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Ideal/Prime\\\",\\\"label\\\":\\\"Prime\\\"}]},{\\\"decl\\\":\\\"Ideal\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Ideal.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Ideal.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Ideal (R : Type u) [Semiring R] :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Ideal/Defs.html#Ideal\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Ideal\\\",\\\"cell_label\\\":\\\"Ideal\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\""
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"residue degree field extension\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b28703cbd0f36\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b28703cbd0f36\",\"timestamp\":\"2026-08-08T02:40:43Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"inertia\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b28739fd10f36\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b28739fd10f36\",\"timestamp\":\"2026-08-08T02:40:44Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"LocalRing.ResidueField\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b287569850f36\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b287569850f36\",\"timestamp\":\"2026-08-08T02:40:44Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"inertia degree\", \"direction\": \"informal_to_formal\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b288608920f36\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b288608920f36\",\"timestamp\":\"2026-08-08T02:40:47Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"ramification index\", \"direction\": \"informal_to_formal\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 214,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"ramification index\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Ideal.IsPrime\", \"Ideal.Lying\", \"Ideal.LiesOver\", \"LocalRing.ResidueField\", \"Module.Finite\", \"FiniteDimensional.finrank\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b28b47f590f36\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b28b47f590f36\",\"timestamp\":\"2026-08-08T02:40:54Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem inertiaDegrePos {R S : Type*} [CommRing R] [CommRing S] (f : R →+* S)\n    (hfs : Module.Finite R S) (p : Ideal R) (hp : p.IsPrime)\n    (P : Ideal S) (hP : P.IsPrime) (hLiesOver : Ideal.comap f P = p) :\n    0 < Finrank (Ideal.Quotient.field p) (Ideal.Quotient.field P) := sorry"
+}

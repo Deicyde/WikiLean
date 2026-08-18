@@ -1,0 +1,78 @@
+{
+ "task_id": "fresh_031",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:53:51Z",
+ "wall_s": 24.9,
+ "transcript_stats": {
+  "turns": 4,
+  "assistant_turns": 2,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 3
+  },
+  "tokens_in": 20,
+  "tokens_out": 1625,
+  "cost_usd": 0.014945100000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries ?R\"}",
+   "ok": true,
+   "result_chars": 1138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.C   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The constant formal power series.\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp ?α ?M\"}",
+   "ok": true,
+   "result_chars": 1286,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 5415 declarations mentioning Finsupp.\\n- Finsupp.instInhabited   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.instZero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support   [Mathlib.Data.Finsupp.Defs]\\n    The support of a finitely supported function (aka `Finsupp`).\\n- Finsupp.toFun   [Mathlib.Data.Finsupp.Defs]\\n    The underlying function of a bundled finitely supported function (aka `Finsupp`).\\n- Finsupp.instFunLike   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.instSubsingleton   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.instSubsingleton'   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.nontrivial_of_nontrivial   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.equivFunOnFinite   [Mathlib.Data.Finsupp.Defs]\\n    Given `Finite α`, `equivFunOnFinite` is the `Equiv` between `α →₀ β` and `α → β`. (All functions on a finite type are finitely supported.)\\n- Finsupp.instDecidableEq   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.embDomain   [Mathlib.Data.Finsupp.Defs]\\n    Given `f : α ↪ β` and `v : α →₀ M`, `Finsupp.embDomain f v : β →₀ M` is the finitely supported function whose value at `f a : β` is `v a`. For a `b : β` outside\\n- Finsupp.ofSupportFinite   [Mathlib.Data.Finsupp.Defs]\\n    The natural `Finsupp` induced by the function `f` given that it has finite support.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum\"}",
+   "ok": true,
+   "result_chars": 1354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 825 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    If the summation filter is the trivial filter `⊥`, then the topological sum is equal to the finite sum (which is taken to be 1 if the support of `f` is infinite\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.tsum_eq   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_fintype   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_comp_neg   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": null,
+ "no_lean": true
+}

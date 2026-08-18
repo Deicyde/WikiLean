@@ -1,0 +1,340 @@
+{
+ "task_id": "fresh_075",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:57:00Z",
+ "wall_s": 98.0,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 17,
+   "mcp__formal__decl_grep": 15,
+   "mcp__formal__decl_read": 4
+  },
+  "tokens_in": 242,
+  "tokens_out": 5913,
+  "cost_usd": 0.11032555000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 650 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- strictMono_id   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.strictMono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.strictMono_coe   [Mathlib.Order.Monotone.Defs]\\n- Function.const_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- strictMonoOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.monotone   [Mathlib.Order.Monotone.Defs]\\n- Monotone.strictMono_of_injective   [Mathlib.Order.Monotone.Defs]\\n- Function.update_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.imp   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype LinearOrder\"}",
+   "ok": true,
+   "result_chars": 245,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype LinearOrder': Application type mismatch: The argument\\n  LinearOrder\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\nin the application\\n  Fintype LinearOrder\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Function.Injective\"}",
+   "ok": true,
+   "result_chars": 826,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3867 declarations mentioning Function.Injective.\\n- Function.Injective   [Init.Data.Function]\\n    A function `f : α → β` is called injective if `f x = f y` implies `x = y`.\\n- Function.injective_id   [Init.Data.Function]\\n- Function.HasLeftInverse.injective   [Init.Data.Function]\\n- Function.LeftInverse.injective   [Init.Data.Function]\\n- Function.rightInverse_of_injective_of_leftInverse   [Init.Data.Function]\\n- Function.Injective.exists_leftInverse   [Init.Data.Function]\\n- Function.Injective.leftInverse   [Init.Data.Function]\\n- Function.Injective.ne   [Init.Data.Function]\\n- Function.Injective.eq_iff   [Init.Data.Function]\\n- Function.Injective.ne_iff   [Init.Data.Function]\\n- Function.Injective.comp   [Init.Data.Function]\\n- Function.Injective.eq_iff'   [Init.Data.Function]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Fintype eq_id\"}",
+   "ok": true,
+   "result_chars": 238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono Fintype eq_id': Function expected at\\n  StrictMono Fintype\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being applied to the argument\\n  eq_id\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Injective LinearOrder\"}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono Injective LinearOrder': Unknown identifier `Injective`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*StrictMono.*Fintype\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*StrictMono.*Fintype' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono ?f → ?f = id\"}",
+   "ok": true,
+   "result_chars": 216,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning StrictMono, id, and Eq.\\n- StrictMono.eq_id   [Mathlib.Order.Preorder.Finite]\\n    A strictly monotone self-map of a finite linear order is the identity.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*endomorph.*strict\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*endomorph.*strict' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype → Equiv.refl\"}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype → Equiv.refl': type expected, got\\n  (Fintype : Type ?u.2 → Type ?u.2)\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.eq_id\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'StrictMono.eq_id' under Mathlib/.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"eq_id\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"314 match(es) for 'eq_id' (via ripgrep):\\n- Mathlib/CategoryTheory/FintypeCat.lean:108\\n    lemma homMk_eq_id_iff {X : FintypeCat} (f : X → X) :\\n- Mathlib/Algebra/Algebra/Bilinear.lean:119\\n    | 0 => by rw [pow_zero, pow_zero, mulLeft_one, Module.End.one_eq_id]\\n- Mathlib/Algebra/Algebra/Bilinear.lean:130\\n    | 0 => by rw [pow_zero, pow_zero, mulRight_one, Module.End.one_eq_id]\\n- Mathlib/Algebra/Star/LinearMap.lean:272\\n    simp [← mul_eq_comp, one_eq_id]\\n- Mathlib/Algebra/Star/LinearMap.lean:301\\n    simp [one_eq_id]\\n- Mathlib/Algebra/Ring/CompTypeclasses.lean:57\\n    eq_id : σ = RingHom.id R\\n- Mathlib/Algebra/Ring/CompTypeclasses.lean:60\\n    eq_id := rfl\\n- Mathlib/Algebra/Ring/BooleanRing.lean:551\\n    theorem Bool.neg_eq_id (b : Bool) : -b = b := rfl\\n- Mathlib/Algebra/Ring/Parity.lean:362\\n    rw [iterate_mul, involutive_iff_iter_2_eq_id.1 hf, iterate_id]\\n- Mathlib/Algebra/Ring/Parity.lean:379\\n    lemma iterate_eq_id (hf : Involutive f) (hne : f ≠ id) : f^[n] = id ↔ Even n :=\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:859\\n    one_smul f := by rw [comapSMul_def, one_smul_eq_id, mapDomain_id]\\n- Mathlib/Algebra/GroupWithZero/Basic.lean:67\\n    /-- To match `one_mul_eq_id`. -/\\n- Mathlib/Algebra/GroupWithZero/Basic.lean:71\\n    /-- To match `mul_one_eq_id`. -/\\n- Mathlib/Algebra/Lie/Engel.lean:119\\n    simp only [add_zero, LieIdeal.lcs_succ, pow_zero, Module.End.one_eq_id,\\n- Mathlib/CategoryTheory/Endofunctor/Algebra.lean:96\\n    theorem id_eq_id : Algebra.Hom.id A = 𝟙 A :=\\n- Mathlib/CategoryTheory/Endofunctor/Algebra.lean:287\\n    theorem id_eq_id : Coalgebra.Hom.id V = 𝟙 V :=\\n- Mathlib/Probability/Independence/Kernel/Indep.lean:228\\n    rw [Function.comp_assoc, hg'.comp_eq_id, Function.comp_id]\\n- Mathlib/Algebra/Polynomial/OfFn.lean:100\\n    theorem toFn_comp_ofFn_eq_id (n : ℕ) (v : Fin n → R) : toFn n (ofFn n v) = v := by\\n- Mathlib/Algebra/Polynomial/OfFn.lean:104\\n    Function.LeftInverse.injective <| toFn_comp_ofFn_eq_id n\\n- Mathlib/Algebra/Polynomial/OfFn.lean:109\\n    Function.RightInverse.surjective <| toFn_comp_ofFn_eq_id n\\n- Mathlib/Algebra/Polynomial/OfFn.lean:111\\n    theorem ofFn_comp_toFn_eq_id_of_natDegree_lt {n : ℕ} {p : R[X]} (h_deg : p.natDegree < n) :\\n- Mathlib/CategoryTheory/Adjunction/Triple.lean:230\\n    ← (asIso _).comp_hom_eq_id.1 <| t.adj₂.left_triangle_components (F.obj X)]\\n- Mathlib/CategoryTheory/Adjunction/FullyFaithful.lean:202\\n    isIso_of_hom_comp_eq_id _ (h.left_triangle_components Y)\\n- Mathlib/CategoryTheory/Adjunction/FullyFaithful.lean:206\\n    isIso_of_hom_comp_eq_id _ (h.right_triangle_components Y)\\n- Mathlib/CategoryTheory/Adjunction/FullyFaithful.lean:229\\n    isIso_of_comp_hom_eq_id _ (h.right_triangle_components Y)\\n- Mathlib/CategoryTheory/Adjunction/FullyFaithful.lean:233\\n    isIso_of_comp_hom_eq_id _ (h.left_triangle_components X)\\n- Mathlib/CategoryTheory/Equivalence.lean:269\\n    simpa using Iso.hom_comp_eq_id (e.functor.mapIso (e.unitIso.app X)) (f := e.counit.app _)\\n- Mathlib/CategoryTheory/Equivalence.lean:310\\n    simpa using Iso.comp_hom_eq_id (e.inverse.mapIso (e.counitIso.app Y)) (f := e.unit.app _)\\n- Mathlib/Data/Multiset/Filter.lean:418\\n    eq_true_eq_id, Function.comp_apply]\\n- Mathlib/CategoryTheory/Iso.lean:206\\n    @[to_dual comp_inv_eq_id]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Preorder.*Finite.*eq_id\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Preorder.*Finite.*eq_id' under Mathlib/.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*StrictMono.*LinearOrder\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 907,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*StrictMono.*LinearOrder' (via ripgrep):\\n- Mathlib/Topology/Order/Basic.lean:316\\n    nonrec theorem StrictMono.induced_topology_eq_preorder {α β : Type*} [LinearOrder α]\\n- Mathlib/Topology/Order/Basic.lean:327\\n    theorem StrictMono.isEmbedding_of_ordConnected {α β : Type*} [LinearOrder α] [LinearOrder β]\\n- Mathlib/Data/Finset/Sort.lean:76\\n    theorem _root_.StrictMonoOn.map_finsetSort [LinearOrder α] [LinearOrder β]\\n- Mathlib/Order/Hom/Basic.lean:681\\n    theorem coe_ofStrictMono {α β} [LinearOrder α] [Preorder β] {f : α → β} (h : StrictMono f) :\\n- Mathlib/Order/BoundedOrder/Monotone.lean:40\\n    theorem StrictMono.maximal_preimage_top [LinearOrder α] [Preorder β] [OrderTop β] {f : α → β}\\n- Mathlib/Order/BoundedOrder/Monotone.lean:60\\n    theorem StrictMono.minimal_preimage_bot [LinearOrder α] [Preorder β] [OrderBot β] {f : α → β}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Preorder/Finite.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4463,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Preorder/Finite.lean  (lines 1–100 of 147):\\n     1  /-\\n     2  Copyright (c) 2025 Yaël Dillies. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yaël Dillies\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Finite.Basic\\n     9  public import Mathlib.Order.Minimal\\n    10  \\n    11  /-!\\n    12  # Finite preorders and finite sets in a preorder\\n    13  \\n    14  This file shows that non-empty finite sets in a preorder have minimal/maximal elements, and\\n    15  contrapositively that non-empty sets without minimal or maximal elements are infinite.\\n    16  -/\\n    17  \\n    18  public section\\n    19  \\n    20  variable {ι α β : Type*}\\n    21  \\n    22  namespace Finset\\n    23  section IsTrans\\n    24  variable [LE α] [IsTrans α LE.le] {s : Finset α} {a : α}\\n    25  \\n    26  @[to_dual]\\n    27  lemma exists_maximalFor (f : ι → α) (s : Finset ι) (hs : s.Nonempty) :\\n    28      ∃ i, MaximalFor (· ∈ s) f i := by\\n    29    induction hs using Finset.Nonempty.cons_induction with\\n    30    | singleton i => exact ⟨i, by simp⟩\\n    31    | @cons i s hi hs ih =>\\n    32      obtain ⟨j, hj⟩ := ih\\n    33      by_cases hji : f j ≤ f i\\n    34      · refine ⟨i, mem_cons_self .., ?_⟩\\n    35        simp only [mem_cons, forall_eq_or_imp, imp_self, true_and]\\n    36        exact fun k hk hik ↦ _root_.trans (hj.2 hk <| _root_.trans hji hik) hji\\n    37      · exact ⟨j, mem_cons_of_mem hj.1, by simpa [hji] using hj.2⟩\\n    38  \\n    39  @[to_dual]\\n    40  lemma exists_maximal (hs : s.Nonempty) : ∃ i, Maximal (· ∈ s) i := s.exists_maximalFor id hs\\n    41  \\n    42  end IsTrans\\n    43  \\n    44  section Preorder\\n    45  variable [Preorder α] {s : Finset α} {a : α}\\n    46  \\n    47  @[to_dual]\\n    48  lemma exists_le_maximal (s : Finset α) (ha : a ∈ s) : ∃ b, a ≤ b ∧ Maximal (· ∈ s) b := by\\n    49    classical\\n    50    obtain ⟨b, hb, hab, hbmin⟩ : ∃ b ∈ s, a ≤ b ∧ _ := by\\n    51      simpa [Maximal, and_assoc] using {x ∈ s | a ≤ x}.exists_maximal ⟨a, mem_filter.2 ⟨ha, le_rfl⟩⟩\\n    52    exact ⟨b, hab, hb, fun c hc hbc ↦ hbmin hc (hab.trans hbc) hbc⟩\\n    53  \\n    54  end Preorder\\n    55  end Finset\\n    56  \\n    57  namespace Set\\n    58  section IsTrans\\n    59  variable [LE α] [IsTrans α LE.le] {s : Set α} {a : α}\\n    60  \\n    61  @[to_dual]\\n    62  lemma Finite.exists_maximalFor (f : ι → α) (s : Set ι) (h : s.Finite) (hs : s.Nonempty) :\\n    63      ∃ i, MaximalFor (· ∈ s) f i := by\\n    64    lift s to Finset ι using h; exact s.exists_maximalFor f hs\\n    65  \\n    66  @[to_dual]\\n    67  lemma Finite.exists_maximal (h : s.Finite) (hs : s.Nonempty) : ∃ i, Maximal (· ∈ s) i :=\\n    68    h.exists_maximalFor id _ hs\\n    69  \\n    70  /-- A version of `Finite.exists_maximalFor` with the (weaker) hypothesis that the image of `s`\\n    71  is finite rather than `s` itself. -/\\n    72  @[to_dual /- A version of `Finite.exists_minimalFor` with the (weaker) hypothesis that the image of\\n    73  `s` is finite rather than `s` itself.-/]\\n    74  lemma Finite.exists_maximalFor' (f : ι → α) (s : Set ι) (h : (f '' s).Finite) (hs : s.Nonempty) :\\n    75      ∃ i, MaximalFor (· ∈ s) f i := by\\n    76    obtain ⟨_, ⟨a, ha, rfl⟩, hmax⟩ := Finite.exists_maximalFor id (f '' s) h (hs.image f)\\n    77    exact ⟨a, ha, fun a' ha' hf ↦ hmax (mem_image_of_mem f ha') hf⟩\\n    78  \\n    79  end IsTrans\\n    80  \\n    81  section Preorder\\n    82  variable [Preorder α] {s : Set α} {a : α}\\n    83  \\n    84  @[to_dual]\\n    85  lemma Finite.exists_le_maximal (hs : s.Finite) (ha : a ∈ s) : ∃ b, a ≤ b ∧ Maximal (· ∈ s) b := by\\n    86    lift s to Finset α using hs; exact s.exists_le_maximal ha\\n    87  \\n    88  variable [Nonempty α]\\n    89  \\n    90  lemma infinite_of_forall_exists_gt (h : ∀ a, ∃ b ∈ s, a < b) : s.Infinite := by\\n    91    inhabit α\\n    92    let f (n : ℕ) : α := Nat.recOn n (h default).choose"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Preorder/Finite.lean\", \"line\": 100, \"n\": 47}",
+   "ok": true,
+   "result_chars": 2012,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Preorder/Finite.lean  (lines 100–146 of 147):\\n   100  \\n   101  end Preorder\\n   102  \\n   103  section PartialOrder\\n   104  variable (α) [PartialOrder α]\\n   105  \\n   106  @[to_dual]\\n   107  lemma finite_isTop : {a : α | IsTop a}.Finite := (subsingleton_isTop α).finite\\n   108  \\n   109  end PartialOrder\\n   110  \\n   111  section LinearOrder\\n   112  variable [LinearOrder α] {s : Set α} {t : Set β} {f : α → β}\\n   113  \\n   114  lemma Infinite.exists_lt_map_eq_of_mapsTo (hs : s.Infinite) (hf : MapsTo f s t) (ht : t.Finite) :\\n   115      ∃ x ∈ s, ∃ y ∈ s, x < y ∧ f x = f y :=\\n   116    let ⟨x, hx, y, hy, hxy, hf⟩ := hs.exists_ne_map_eq_of_mapsTo hf ht\\n   117    hxy.lt_or_gt.elim (fun hxy => ⟨x, hx, y, hy, hxy, hf⟩) fun hyx => ⟨y, hy, x, hx, hyx, hf.symm⟩\\n   118  \\n   119  lemma Finite.exists_lt_map_eq_of_forall_mem [Infinite α] (hf : ∀ a, f a ∈ t) (ht : t.Finite) :\\n   120      ∃ a b, a < b ∧ f a = f b := by\\n   121    rw [← mapsTo_univ_iff] at hf\\n   122    obtain ⟨a, -, b, -, h⟩ := infinite_univ.exists_lt_map_eq_of_mapsTo hf ht\\n   123    exact ⟨a, b, h⟩\\n   124  \\n   125  /-- If the cofinality of a linear order is finite, it's at most one. -/\\n   126  theorem Finite.exists_subsingleton_isCofinal {s : Set α} (hs : s.Finite) (hs' : IsCofinal s) :\\n   127      ∃ t : Set α, t.Subsingleton ∧ IsCofinal t := by\\n   128    obtain rfl | hn := s.eq_empty_or_nonempty\\n   129    · use ∅; simpa\\n   130    · obtain ⟨a, ha⟩ := hs.exists_maximal hn\\n   131      use {a}\\n   132      suffices IsTop a by simpa [IsCofinal]\\n   133      intro b\\n   134      obtain ⟨c, hc, hbc⟩ := hs' b\\n   135      exact hbc.trans (ha.le hc)\\n   136  \\n   137  end LinearOrder\\n   138  end Set\\n   139  \\n   140  section Preorder\\n   141  variable [Preorder α] [Finite α] {p : α → Prop} {a : α}\\n   142  \\n   143  @[to_dual]\\n   144  lemma Finite.exists_le_maximal (h : p a) : ∃ b, a ≤ b ∧ Maximal p b :=\\n   145    {x | p x}.toFinite.exists_le_maximal h\\n   146  \\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : ?α → ?α StrictMono ?f Fintype ?α\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ?α → ?α StrictMono ?f Fintype ?α': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype α → (f : α → α) → StrictMono f → f = id\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype α → (f : α → α) → StrictMono f → f = id': Unknown identifier `α`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?f : ?α → ?α) → StrictMono ?f → ?f = id\"}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?f : ?α → ?α) → StrictMono ?f → ?f = id': type expected, got\\n  (?f : ?α → ?α)\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.*→.*id\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"16 match(es) for 'StrictMono.*→.*id' (via ripgrep):\\n- Mathlib/RingTheory/NonUnitalSubsemiring/Basic.lean:40\\n    StrictMono (toSubsemigroup : NonUnitalSubsemiring R → Subsemigroup R) := fun _ _ => id\\n- Mathlib/RingTheory/NonUnitalSubsemiring/Basic.lean:48\\n    StrictMono (toAddSubmonoid : NonUnitalSubsemiring R → AddSubmonoid R) := fun _ _ => id\\n- Mathlib/RingTheory/NonUnitalSubring/Defs.lean:226\\n    StrictMono (toAddSubgroup : NonUnitalSubring R → AddSubgroup R) := fun _ _ => id\\n- Mathlib/RingTheory/NonUnitalSubring/Defs.lean:238\\n    StrictMono (toSubsemigroup : NonUnitalSubring R → Subsemigroup R) := fun _ _ => id\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:40\\n    theorem toAddSubmonoid_strictMono : StrictMono (toAddSubmonoid : Submodule R M → AddSubmonoid M) :=\\n- Mathlib/Algebra/Module/Submodule/Basic.lean:52\\n    StrictMono (toSubMulAction : Submodule R M → SubMulAction R M) := fun _ _ => id\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:51\\n    theorem toSubmonoid_strictMono : StrictMono (toSubmonoid : Subsemiring R → Submonoid R) :=\\n- Mathlib/Algebra/Ring/Subsemiring/Basic.lean:59\\n    theorem toAddSubmonoid_strictMono : StrictMono (toAddSubmonoid : Subsemiring R → AddSubmonoid R) :=\\n- Mathlib/Algebra/Group/Subgroup/Defs.lean:388\\n    theorem toSubmonoid_strictMono : StrictMono (toSubmonoid : Subgroup G → Submonoid G) := fun _ _ =>\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Pow.lean:148\\n    theorem pow_left_strictMono (hn : n ≠ 0) : StrictMono (· ^ n : M → M) := strictMono_id.pow_const hn\\n- Mathlib/Order/WellFounded.lean:242\\n    theorem StrictMono.id_le [WellFoundedLT β] {f : β → β} (hf : StrictMono f) : id ≤ f := by\\n- Mathlib/Order/WellFounded.lean:252\\n    theorem StrictMono.le_id [WellFoundedGT β] {f : β → β} (hf : StrictMono f) : f ≤ id :=\\n- Mathlib/Order/Monotone/Defs.lean:318\\n    theorem strictMono_id [Preorder α] : StrictMono (id : α → α) := fun _ _ ↦ id\\n- Mathlib/Order/Fin/Basic.lean:179\\n    lemma val_strictMono : StrictMono (val : Fin n → ℕ) := fun _ _ ↦ id\\n- Mathlib/Order/Fin/Basic.lean:183\\n    lemma strictMono_castLE (h : n ≤ m) : StrictMono (castLE h : Fin n → Fin m) := fun _ _ ↦ id\\n- Mathlib/Order/Interval/Basic.lean:115\\n    theorem toDualProd_strictMono : StrictMono (toDualProd : _ → αᵒᵈ × α) := fun _ _ => id\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem|lemma\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 5783,
+   "result_head": "[{\"type\": \"text\", \"text\": \"148088 match(es) for 'theorem|lemma' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:32\\n    3. `hom_ext` is a variant of `lift_unique` in the form of an extensionality theorem.\\n- Mathlib/Algebra/FreeAlgebra.lean:191\\n    -- `Quot.mk` is an implementation detail of `FreeAlgebra`, so this lemma is private\\n- Mathlib/Algebra/FreeAlgebra.lean:192\\n    private theorem mk_mul (x y : Pre R X) :\\n- Mathlib/Algebra/FreeAlgebra.lean:309\\n    theorem quot_mk_eq_ι (m : X) : Quot.mk (FreeAlgebra.Rel R X) m = ι R m := by rw [ι_def]\\n- Mathlib/Algebra/FreeAlgebra.lean:402\\n    theorem liftAux_eq (f : X → A) : liftAux R f = lift R f := by\\n- Mathlib/Algebra/FreeAlgebra.lean:407\\n    theorem lift_symm_apply (F : FreeAlgebra R X →ₐ[R] A) : (lift R).symm F = F ∘ ι R := by\\n- Mathlib/Algebra/FreeAlgebra.lean:414\\n    theorem ι_comp_lift (f : X → A) : (lift R f : FreeAlgebra R X → A) ∘ ι R = f := by\\n- Mathlib/Algebra/FreeAlgebra.lean:420\\n    theorem lift_ι_apply (f : X → A) (x) : lift R f (ι R x) = f x := by\\n- Mathlib/Algebra/FreeAlgebra.lean:425\\n    theorem lift_unique (f : X → A) (g : FreeAlgebra R X →ₐ[R] A) :\\n- Mathlib/Algebra/FreeAlgebra.lean:440\\n    theorem lift_comp_ι (g : FreeAlgebra R X →ₐ[R] A) :\\n- Mathlib/Algebra/FreeAlgebra.lean:445\\n    /-- See note [partially-applied ext lemmas]. -/\\n- Mathlib/Algebra/FreeAlgebra.lean:447\\n    theorem hom_ext {f g : FreeAlgebra R X →ₐ[R] A}\\n- Mathlib/Algebra/FreeAlgebra.lean:480\\n    theorem algebraMap_leftInverse :\\n- Mathlib/Algebra/FreeAlgebra.lean:485\\n    theorem algebraMap_inj (x y : R) :\\n- Mathlib/Algebra/FreeAlgebra.lean:490\\n    theorem algebraMap_eq_zero_iff (x : R) : algebraMap R (FreeAlgebra R X) x = 0 ↔ x = 0 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:494\\n    theorem algebraMap_eq_one_iff (x : R) : algebraMap R (FreeAlgebra R X) x = 1 ↔ x = 1 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:498\\n    theorem ι_injective [Nontrivial R] : Function.Injective (ι R : X → FreeAlgebra R X) :=\\n- Mathlib/Algebra/FreeAlgebra.lean:509\\n    theorem ι_inj [Nontrivial R] (x y : X) : ι R x = ι R y ↔ x = y :=\\n- Mathlib/Algebra/FreeAlgebra.lean:513\\n    theorem ι_ne_algebraMap [Nontrivial R] (x : X) (r : R) : ι R x ≠ algebraMap R _ r := fun h ↦ by\\n- Mathlib/Algebra/FreeAlgebra.lean:523\\n    theorem ι_ne_zero [Nontrivial R] (x : X) : ι R x ≠ 0 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:527\\n    theorem ι_ne_one [Nontrivial R] (x : X) : ι R x ≠ 1 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:544\\n    theorem induction {motive : FreeAlgebra R X → Prop}\\n- Mathlib/Algebra/FreeAlgebra.lean:569\\n    theorem adjoin_range_ι : Algebra.adjoin R (Set.range (ι R : X → FreeAlgebra R X)) = ⊤ := by\\n- Mathlib/Algebra/FreeAlgebra.lean:581\\n    theorem _root_.Algebra.adjoin_range_eq_range_freeAlgebra_lift (f : X → A) :\\n- Mathlib/Algebra/FreeAlgebra.lean:587\\n    theorem _root_.Algebra.adjoin_eq_range_freeAlgebra_lift (s : Set A) :\\n- Mathlib/Algebra/WithConv.lean:42\\n    lemma ofConv_toConv (x : A) : ofConv (toConv x) = x := rfl\\n- Mathlib/Algebra/WithConv.lean:43\\n    @[simp] lemma toConv_ofConv (x : WithConv A) : toConv (ofConv x) = x := rfl\\n- Mathlib/Algebra/WithConv.lean:45\\n    lemma ofConv_surjective : Function.Surjective (@ofConv A) :=\\n- Mathlib/Algebra/WithConv.lean:48\\n    lemma toConv_surjective : Function.Surjective (@toConv A) :=\\n- Mathlib/Algebra/WithConv.lean:51\\n    lemma ofConv_injective : Function.Injective (@ofConv A) :=\\n- Mathlib/Algebra/WithConv.lean:54\\n    lemma toConv_injective : Function.Injective (@toConv A) :=\\n- Mathlib/Algebra/WithConv.lean:57\\n    lemma ofConv_bijective : Function.Bijective (@ofConv A) := ⟨ofConv_injective, ofConv_surjective⟩\\n- Mathlib/Algebra/WithConv.lean:58\\n    lemma toConv_bijective : Function.Bijective (@toConv A) := ⟨toConv_injective, toConv_surjective⟩\\n- Mathlib/Algebra/WithConv.lean:62\\n    @[ext] protected theorem ext {x y : WithConv A}\\n- Mathlib/Algebra/WithConv.lean:73\\n    @[simp] lemma equiv_apply (x : WithConv A) : WithConv.equiv A x "
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Function.bijective Fintype\"}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono Function.bijective Fintype': Unknown identifier `Function.bijective`\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"\\\\.eq_id\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3078,
+   "result_head": "[{\"type\": \"text\", \"text\": \"24 match(es) for '\\\\\\\\.eq_id' (via ripgrep):\\n- Mathlib/Algebra/Module/LinearMap/Defs.lean:285\\n    have := (RingHomId.eq_id : σ = _)\\n- Mathlib/Data/Finset/Sort.lean:389\\n    lemma OrderHom.eq_id_of_injective {α : Type*} [LinearOrder α] [Finite α] (f : α →o α)\\n- Mathlib/Algebra/Group/Hom/CompTypeclasses.lean:63\\n    eq_id := by ext; exact congr_fun h.eq_id _\\n- Mathlib/Algebra/Group/Hom/CompTypeclasses.lean:68\\n    comp_eq := by simp only [IsId.eq_id, MonoidHom.comp_id]\\n- Mathlib/Algebra/Group/Hom/CompTypeclasses.lean:73\\n    comp_eq := by simp only [IsId.eq_id, MonoidHom.id_comp]\\n- Mathlib/Algebra/Group/Hom/CompTypeclasses.lean:78\\n    comp_eq := by simp only [IsId.eq_id, ← DFunLike.coe_fn_eq, coe_comp, h.id, coe_id]\\n- Mathlib/Algebra/Order/Archimedean/Hom.lean:53\\n    theorem OrderRingHom.eq_id [IsStrictOrderedRing α] [Archimedean α] (f : α →+*o α) : f = .id _ :=\\n- Mathlib/Algebra/Order/Archimedean/Hom.lean:61\\n    rw [f.eq_id]; rfl\\n- Mathlib/AlgebraicTopology/SimplexCategory/MorphismProperty.lean:71\\n    obtain rfl : f = 𝟙 _ := ObjectProperty.hom_ext _ (SimplexCategory.eq_id_of_epi _)\\n- Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:861\\n    SimplexCategory.eq_id_of_isIso (image.isoStrongEpiMono e i fac).hom, Category.id_comp]\\n- Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:730\\n    simpa only [EmbeddingLike.apply_eq_iff_eq] using SimplexCategory.eq_id_of_mono f\\n- Mathlib/AlgebraicTopology/SimplicialSet/Degenerate.lean:203\\n    apply SimplexCategory.eq_id_of_mono\\n- Mathlib/AlgebraicTopology/SimplicialSet/NonDegenerateSimplices.lean:102\\n    obtain rfl := SimplexCategory.eq_id_of_mono f\\n- Mathlib/AlgebraicTopology/SimplicialSet/NonDegenerateSimplices.lean:115\\n    obtain rfl := SimplexCategory.eq_id_of_mono f\\n- Mathlib/AlgebraicTopology/SimplicialSet/ProdStdSimplex.lean:151\\n    · exact OrderHom.eq_id_of_injective _ (strictMono_orderHomOfSimplex ⟨z, h⟩ hn).injective\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/RelativeCellComplex.lean:446\\n    · obtain rfl := SimplexCategory.eq_id_of_mono g\\n- Mathlib/AlgebraicTopology/SimplicialSet/Simplices.lean:141\\n    obtain rfl := SimplexCategory.eq_id_of_mono f\\n- Mathlib/AlgebraicTopology/SimplicialSet/Simplices.lean:145\\n    obtain rfl := SimplexCategory.eq_id_of_isIso f\\n- Mathlib/AlgebraicTopology/DoldKan/NCompGamma.lean:91\\n    simp only [SimplexCategory.eq_id_of_mono i, Γ₀.Obj.Termwise.mapMono_id, op_id, X.map_id]\\n- Mathlib/AlgebraicTopology/DoldKan/FunctorGamma.lean:141\\n    simp only [SimplexCategory.eq_id_of_mono i, comp_id, id_comp, mapMono_id K]\\n- Mathlib/AlgebraicTopology/DoldKan/FunctorGamma.lean:145\\n    simp only [SimplexCategory.eq_id_of_mono i', comp_id, id_comp, mapMono_id K]\\n- Mathlib/Logic/Function/CompTypeclasses.lean:47\\n    comp_eq := by simp only [IsId.eq_id, Function.comp_id]\\n- Mathlib/Logic/Function/CompTypeclasses.lean:51\\n    comp_eq := by simp only [IsId.eq_id, Function.id_comp]\\n- Mathlib/Logic/Function/CompTypeclasses.lean:62\\n    comp_eq := by simp only [IsId.eq_id, h.id]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Finset/Sort.lean\", \"line\": 385, \"n\": 20}",
+   "ok": true,
+   "result_chars": 630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finset/Sort.lean  (lines 385–393 of 393):\\n   385    exact DFunLike.congr_fun ((OrderEmbedding.range_eq_iff\\n   386      (f := .ofStrictMono f (f.monotone.strictMono_of_injective hf))\\n   387      (g := .ofStrictMono g (g.monotone.strictMono_of_injective hg))).1 (by simpa)) _\\n   388  \\n   389  lemma OrderHom.eq_id_of_injective {α : Type*} [LinearOrder α] [Finite α] (f : α →o α)\\n   390      (hf : Function.Injective f) :\\n   391      f = .id :=\\n   392    (range_eq_iff hf Function.injective_id).1 (by\\n   393      simpa [Set.range_eq_univ] using Finite.surjective_of_injective hf)\\n\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : ?a → ?a → StrictMono\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ?a → ?a → StrictMono': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono\\\\.eq_id\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'StrictMono\\\\\\\\.eq_id' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono ?f ?f = id Finite\"}",
+   "ok": true,
+   "result_chars": 234,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono ?f ?f = id Finite': Function expected at\\n  StrictMono ?f\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being applied to the argument\\n  ?f\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"OrderHom Fintype LinearOrder self-map\"}",
+   "ok": true,
+   "result_chars": 256,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'OrderHom Fintype LinearOrder self-map': Application type mismatch: The argument\\n  Fintype\\nhas type\\n  Type ?u.5 → Type ?u.5\\nbut is expected to have type\\n  Type ?u.5\\nin the application\\n  OrderHom Fintype\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*(Finite|Fintype).*monotone\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 552,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*(Finite|Fintype).*monotone' (via ripgrep):\\n- Mathlib/Data/Set/Finite/Lattice.lean:303\\n    theorem Finite.iSup_biInf_of_monotone {ι ι' α : Type*} [Preorder ι'] [Nonempty ι']\\n- Mathlib/Order/ConditionallyCompleteLattice/Finset.lean:59\\n    theorem Set.Finite.map_sSup_of_monotone {s : Set α} (hne : s.Nonempty) (hfin : s.Finite) :\\n- Mathlib/Order/ConditionallyCompleteLattice/Finset.lean:64\\n    theorem Set.Finite.map_sInf_of_monotone {s : Set α} (hne : s.Nonempty) (hfin : s.Finite) :\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Injective\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'StrictMono Injective': Unknown identifier `Injective`\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Function.Injective\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'StrictMono Function.Injective'.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.*injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 894,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'StrictMono.*injective' (via ripgrep):\\n- Mathlib/Order/Monotone/Basic.lean:402\\n    theorem StrictMono.injective (hf : StrictMono f) : Injective f :=\\n- Mathlib/Data/Finset/Sort.lean:386\\n    (f := .ofStrictMono f (f.monotone.strictMono_of_injective hf))\\n- Mathlib/Data/Finset/Sort.lean:387\\n    (g := .ofStrictMono g (g.monotone.strictMono_of_injective hg))).1 (by simpa)) _\\n- Mathlib/NumberTheory/Cyclotomic/PrimitiveRoots.lean:310\\n    exact StrictMono.injective hodd.strictMono_pow hz\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:122\\n    apply (StrictMono.injective (nsmul_left_strictMono hg)) hn.symm\\n- Mathlib/RingTheory/Valuation/RankOne.lean:74\\n    exact StrictMono.comp strictMono_id (f.monotone'.strictMono_of_injective hf)\\n- Mathlib/RingTheory/Valuation/Basic.lean:703\\n    let H : StrictMono f := hf.strictMono_of_injective inf\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono Monotone\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'StrictMono Monotone'.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"StrictMono.monotone\"}",
+   "ok": true,
+   "result_chars": 522,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'StrictMono.monotone' (via ripgrep):\\n- Mathlib/Algebra/Order/Positive/Ring.lean:77\\n    ⟨@fun _ _ _ h₁ => StrictMono.monotone (fun _ _ h => add_lt_add_right h _) h₁⟩\\n- Mathlib/Order/Monotone/Defs.lean:276\\n    protected theorem StrictMono.monotone (hf : StrictMono f) : Monotone f :=\\n- Mathlib/Order/Hom/Basic.lean:760\\n    monotone' := StrictMono.monotone fun _ _ => f.map_rel\\n- Mathlib/Order/RelIso/Set.lean:36\\n    (StrictMono.monotone fun _ _ => map_rel a).map_inf m n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Hom/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3074,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Hom/Basic.lean  (lines 1–50 of 1340):\\n     1  /-\\n     2  Copyright (c) 2020 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Disjoint\\n     9  public import Mathlib.Order.RelIso.Basic\\n    10  public import Mathlib.Tactic.Monotonicity.Attr\\n    11  public import Mathlib.Tactic.PPWithUniv\\n    12  \\n    13  /-!\\n    14  # Order homomorphisms\\n    15  \\n    16  This file defines order homomorphisms, which are bundled monotone functions. A preorder\\n    17  homomorphism `f : α →o β` is a function `α → β` along with a proof that `∀ x y, x ≤ y → f x ≤ f y`.\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  In this file we define the following bundled monotone maps:\\n    22  * `OrderHom α β` a.k.a. `α →o β`: Preorder homomorphism.\\n    23    An `OrderHom α β` is a function `f : α → β` such that `a₁ ≤ a₂ → f a₁ ≤ f a₂`\\n    24  * `OrderEmbedding α β` a.k.a. `α ↪o β`: Relation embedding.\\n    25    An `OrderEmbedding α β` is an embedding `f : α ↪ β` such that `a ≤ b ↔ f a ≤ f b`.\\n    26    Defined as an abbreviation of `@RelEmbedding α β (≤) (≤)`.\\n    27  * `OrderIso`: Relation isomorphism.\\n    28    An `OrderIso α β` is an equivalence `f : α ≃ β` such that `a ≤ b ↔ f a ≤ f b`.\\n    29    Defined as an abbreviation of `@RelIso α β (≤) (≤)`.\\n    30  \\n    31  We also define many `OrderHom`s. In some cases we define two versions, one with `ₘ` suffix and\\n    32  one without it (e.g., `OrderHom.compₘ` and `OrderHom.comp`). This means that the former\\n    33  function is a \\\"more bundled\\\" version of the latter. We can't just drop the \\\"less bundled\\\" version\\n    34  because the more bundled version usually does not work with dot notation.\\n    35  \\n    36  * `OrderHom.id`: identity map as `α →o α`;\\n    37  * `OrderHom.curry`: an order isomorphism between `α × β →o γ` and `α →o β →o γ`;\\n    38  * `OrderHom.comp`: composition of two bundled monotone maps;\\n    39  * `OrderHom.compₘ`: composition of bundled monotone maps as a bundled monotone map;\\n    40  * `OrderHom.const`: constant function as a bundled monotone map;\\n    41  * `OrderHom.prod`: combine `α →o β` and `α →o γ` into `α →o β × γ`;\\n    42  * `OrderHom.prodₘ`: a more bundled version of `OrderHom.prod`;\\n    43  * `OrderHom.prodIso`: order isomorphism between `α →o β × γ` and `(α →o β) × (α →o γ)`;\\n    44  * `OrderHom.diag`: diagonal embedding of `α` into `α × α` as a bundled monotone map;\\n    45  * `OrderHom.onDiag`: restrict a monotone map `α →o α →o β` to the diagonal;\\n    46  * `OrderHom.fst`: projection `Prod.fst : α × β → α` as a bundled monotone map;\\n    47  * `OrderHom.snd`: projection `Prod.snd : α × β → β` as a bundled monotone map;\\n    48  * `OrderHom.prodMap`: `Prod.map f g` as a bundled monotone map;\\n    49  * `Pi.evalOrderHom`: evaluation of a function at a point `Function.eval i` as a bundled\\n    50    monotone map;\\n\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"OrderHom\\\\.(mk|ofMonotone)\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 422,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'OrderHom\\\\\\\\.(mk|ofMonotone)' (via ripgrep):\\n- Mathlib/Algebra/Order/Group/Finset.lean:66\\n    map_finset_inf' (OrderHom.mk _ <| pow_left_mono n) hs _\\n- Mathlib/Algebra/Order/Group/Finset.lean:71\\n    map_finset_sup' (OrderHom.mk _ <| pow_left_mono n) hs _\\n- Mathlib/Order/Hom/Bounded.lean:61\\n    attribute [to_dual self (reorder := map_top' map_bot')] BoundedOrderHom.mk\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure OrderHom\"}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'structure OrderHom' (via ripgrep):\\n- Mathlib/Order/Hom/Basic.lean:82\\n    structure OrderHom (α β : Type*) [Preorder α] [Preorder β] where\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

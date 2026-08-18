@@ -1,0 +1,194 @@
+{
+ "task_id": "fresh_042",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:33:19Z",
+ "wall_s": 57.5,
+ "transcript_stats": {
+  "turns": 19,
+  "assistant_turns": 11,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 8,
+   "mcp__wikibrain__brain_cell": 1,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 5
+  },
+  "tokens_in": 90,
+  "tokens_out": 4202,
+  "cost_usd": 0.05768765000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"fraction field of a ring\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fraction field of a ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q66055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Fraction\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11203\\\",\\\"label\\\":\\\"System of linear equations\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q165474\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q168817\\\",\\\"label\\\":\\\"Algebraic number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q180345\\\",\\\"label\\\":\\\"rational root theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q187959\\\",\\\"label\\\":\\\"Distributive property\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":23,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Field (K : Type u) extends CommRing K, DivisionRing K\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\",\\\"via_cell\\\":\\\"cell:Q190109\\\",\\\"cell_label\\\":\\\"Field (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Ring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Ring (R : Type u) extends Semiring R, AddCommGroup R, AddGroupWithOne R\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Ring\\\",\\\"via_cell\\\":\\\"cell:Q161172\\\",\\\"cell_label\\\":\\\"Ring (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pi"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"rank of a module\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2930,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank of a module\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":17},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":14},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":13},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":10}],\\\"returned\\\":12,\\\"total\\\":128,\\\"withheld_by_shard\\\":615,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Module (R : Type u) (M : Type v) [Semiring R] [AddCommMonoid M] extends\\\\n  DistribMulAction R M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\",\\\"via_cell\\\":\\\"cell:Q18848\\\",\\\"cell_label\\\":\\\"Module (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"scalar extension and rank\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1dc42c07ac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1dc42c07ac6e\",\"timestamp\":\"2026-08-08T02:33:26Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1dd219faac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1dd219faac6e\",\"timestamp\":\"2026-08-08T02:33:28Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fraction\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1983,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fraction\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q66055\\\",\\\"label\\\":\\\"Fraction\\\",\\\"matched\\\":\\\"slug\\\"},{\\\"id\\\":\\\"cell:Q190573\\\",\\\"label\\\":\\\"Gamma function\\\",\\\"aka\\\":[\\\"Complex.Gamma\\\",\\\"Euler gamma function\\\",\\\"Gamma Function\\\",\\\"Gamma-function\\\",\\\"Fractional $\\\\\\\\alpha$-Bernstein-Kantorovich operators of order $\\\\\\\\beta$: A new construction and approximation results\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Gamma\\\"},{\\\"id\\\":\\\"cell:Q1339058\\\",\\\"label\\\":\\\"fractional calculus\\\",\\\"aka\\\":[\\\"Definition:Fractional Calculus\\\",\\\"Fractional Calculus\\\"]},{\\\"id\\\":\\\"cell:decl:Mathlib:Cardinal.not_countable_real\\\",\\\"label\\\":\\\"Cardinal.not_countable_real\\\",\\\"aka\\\":[\\\"Fractional analogue of k-Hessian operators\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Real/Cardinality\\\"},{\\\"id\\\":\\\"cell:Q1143293\\\",\\\"label\\\":\\\"Fractional Brownian motion\\\",\\\"aka\\\":[\\\"ProbabilityTheory.IsBrownianReal\\\"],\\\"supercell\\\":\\\"path:Mathlib/Probability\\\"},{\\\"id\\\":\\\"cell:Q1497184\\\",\\\"label\\\":\\\"fractional ideal\\\",\\\"aka\\\":[\\\"FractionalIdeal\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/FractionalIdeal/Basic\\\"},{\\\"id\\\":\\\"cell:Q2366982\\\",\\\"label\\\":\\\"fractional part\\\",\\\"aka\\\":[\\\"Int.fract\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Floor\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FractionRing\\\",\\\"label\\\":\\\"FractionRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:Q4817582\\\",\\\"label\\\":\\\"Fractional Fourier transform\\\"},{\\\"id\\\":\\\"cell:Q6520159\\\",\\\"label\\\":\\\"Fourier transform\\\",\\\"aka\\\":[\\\"Fourier Transform\\\",\\\"MeasureTheory.Lp.fourierTransformₗᵢ\\\",\\\"VectorFourier.fourierIntegral\\\",\\\"§1.14 Integral Transforms\\\",\\\"Characterizations of Fractional Sobolev Spaces From the Perspective of Riemann-Liouville Operators\\\",\\\"Harmonic Analysis on the Space of M-positive Vectors\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Fourier/FourierTransform\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"tensor product rank\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1dd6ef7cac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1dd6ef7cac6e\",\"timestamp\":\"2026-08-08T02:33:29Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:FractionRing\"}",
+   "ok": true,
+   "result_chars": 1418,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:FractionRing\\\",\\\"id\\\":\\\"cell:decl:Mathlib:FractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"FractionRing\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:FractionRing\\\",\\\"anchor\\\":\\\"decl:Mathlib:FractionRing\\\",\\\"label\\\":\\\"FractionRing\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"],\\\"xy\\\":[-1017.7,593.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:FractionRing\\\",\\\"label\\\":\\\"FractionRing\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev FractionRing :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Localization\\\",\\\"label\\\":\\\"Localization\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\",\\\"label\\\":\\\"FractionRing\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1,\\\"invocation\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:ClassGroup.mulEquiv_mk_fractionRing\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"Module.rank\\\", \\\"FractionRing\\\", \\\"Localization.Away\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Module.rank\", \"FractionRing\", \"LocalizationMap.rank\", \"TensorProduct.rank\"]}",
+   "ok": true,
+   "result_chars": 1343,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"FractionRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/FractionRing.html#FractionRing\\\"},{\\\"decl\\\":\\\"LocalizationMap.rank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"TensorProduct.rank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"TensorProduct\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2136,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"TensorProduct\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"aka\\\":[\\\"Tensor\\\",\\\"TensorProduct\\\",\\\"Vector Space Tensor Product\\\",\\\"tensor product\\\",\\\"Semiring and semimodule issues in MV-algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.lift.equiv\\\",\\\"label\\\":\\\"TensorProduct.lift.equiv\\\",\\\"aka\\\":[\\\"Exterior algebras in matroid theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.map_surjective\\\",\\\"label\\\":\\\"TensorProduct.map_surjective\\\",\\\"aka\\\":[\\\"Biset functors as module Mackey functors, and its relation to derivators\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/RightExactness\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.toMatrix_map\\\",\\\"label\\\":\\\"TensorProduct.toMatrix_map\\\",\\\"aka\\\":[\\\"On the Faithfulness of 1-dimensional Topological Quantum Field Theories\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Matrix\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.addCommMonoid\\\",\\\"label\\\":\\\"TensorProduct.addCommMonoid\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.assoc\\\",\\\"label\\\":\\\"TensorProduct.assoc\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Associator\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.comm\\\",\\\"label\\\":\\\"TensorProduct.comm\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.contractLeft\\\",\\\"label\\\":\\\"TensorProduct.contractLeft\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Contraction\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.instInnerProductSpace\\\",\\\"label\\\":\\\"TensorProduct.instInnerProductSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/TensorProduct\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:TensorProduct.lift\\\",\\\"label\\\":\\\"TensorProduct.lift\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/TensorProduct/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2445,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime\\\",\\\"label\\\":\\\"Localization.AtPrime\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"label\\\":\\\"Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"aka\\\":[\\\"algebra-lemma-produce-finite\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Etale/QuasiFinite\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime.isLocalRing\\\",\\\"label\\\":\\\"Localization.AtPrime.isLocalRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:Q1047749\\\",\\\"label\\\":\\\"Turán's theorem\\\",\\\"aka\\\":[\\\"SimpleGraph.CliqueFree.card_edgeFinset_le\\\",\\\"Vertex-Based Localization of Tur\\\\\\\\'{a}n's Theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Extremal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Adjunction.rightAdjointUniq\\\",\\\"label\\\":\\\"CategoryTheory.Adjunction.rightAdjointUniq\\\",\\\"aka\\\":[\\\"On monads of exact reflective localizations of Abelian categories\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Adjunction/Unique\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.ObjectProperty.SerreClassLocalization.abelian\\\",\\\"label\\\":\\\"CategoryTheory.ObjectProperty.SerreClassLocalization.abelian\\\",\\\"aka\\\":[\\\"homology-lemma-serre-subcategory-is-kernel\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/SerreClass\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CommRingCat.epi_iff_epi\\\",\\\"label\\\":\\\"CommRingCat.epi_iff_epi\\\",\\\"aka\\\":[\\\"Gabriel localization theory and its applications\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/Ring\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:HomologicalComplex₂\\\",\\\"label\\\":\\\"HomologicalComplex₂\\\",\\\"aka\\\":[\\\"Trace theories and localization\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Homology/HomologicalBicomplex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MaximalSpectrum.toPiLocalizationEquiv\\\",\\\"label\\\":\\\"MaximalSpectrum.toPiLocalizationEquiv\\\",\\\"aka\\\":[\\\"algebra-lemma-product-local\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank extension scalars\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1e2a6ec1ac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1e2a6ec1ac6e\",\"timestamp\":\"2026-08-08T02:33:42Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"dimension vector space field\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1e2b3886ac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1e2b3886ac6e\",\"timestamp\":\"2026-08-08T02:33:42Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsDomain\", \"Algebra.TensorProduct.Base\", \"TensorProduct.map\", \"Module.rank_lt_aleph0\", \"LinearIndependent\"]}",
+   "ok": true,
+   "result_chars": 1913,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsDomain\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#IsDomain\\\"},{\\\"decl\\\":\\\"Algebra.TensorProduct.Base\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"RootPairing.Base\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.RootSystem.Base\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.RootSystem.Base\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/RootSystem/Base.html#RootPairing.Base\\\"},{\\\"decl\\\":\\\"TensorProduct.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.TensorProduct.Map\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.TensorProduct.Map\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/TensorProduct/Map.html#TensorProduct.map\\\"},{\\\"decl\\\":\\\"Module.rank_lt_aleph0\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.StrongRankCondition\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.StrongRankCondition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.html#Module.rank_lt_aleph0\\\"},{\\\"decl\\\":\\\"LinearIndependent\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.LinearIndependent.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.LinearIndependent.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/LinearIndependent/Defs.html#LinearIndependent\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FractionRing algebra instance\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1e6edbd9ac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1e6edbd9ac6e\",\"timestamp\":\"2026-08-08T02:33:53Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Field\", \"Algebra\", \"RingHom.injective\", \"Submodule.span\"]}",
+   "ok": true,
+   "result_chars": 1368,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\"},{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\"},{\\\"decl\\\":\\\"RingHom.injective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.SimpleRing.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.SimpleRing.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/SimpleRing/Basic.html#RingHom.injective\\\"},{\\\"decl\\\":\\\"Submodule.span\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Span.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Span.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Span/Defs.html#Submodule.span\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"TensorProduct.instModule\", \"Module.rank\", \"CommRing\", \"NoZeroDivisors\"]}",
+   "ok": true,
+   "result_chars": 1444,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"TensorProduct.instModule\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.TensorProduct.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.TensorProduct.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/TensorProduct/Defs.html#TensorProduct.instModule\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"},{\\\"decl\\\":\\\"NoZeroDivisors\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/Defs.html#NoZeroDivisors\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"TensorProduct.rTensor\", \"Module.end_comm_map_tensor\", \"noZeroDivisors_of_injective\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1ecffec1ac6e\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1ecffec1ac6e\",\"timestamp\":\"2026-08-08T02:34:09Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem rank_eq_rank_tensorProduct_fractionRing\n  (R : Type*) [CommRing R] [IsDomain R]\n  (M : Type*) [AddCommMonoid M] [Module R M] :\n  Module.rank R M = Module.rank (FractionRing R) (M ⊗[R] FractionRing R) := sorry"
+}

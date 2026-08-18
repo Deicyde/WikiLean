@@ -1,0 +1,353 @@
+{
+ "task_id": "fresh_014",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:53:05Z",
+ "wall_s": 78.2,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 25,
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_cell": 6,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 4
+  },
+  "tokens_in": 122,
+  "tokens_out": 6101,
+  "cost_usd": 0.09311205000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"meromorphic function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"removable singularity analytic extension\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"removable singularity analytic extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pole order meromorphic\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pole order meromorphic\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"meromorphic function at a point has non-negative order if and only if analytic extension\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic function at a point has non-negative order if and only if analytic extension\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q200227\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Negative number\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:Q200227\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Negative number\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"analytic function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1942,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"analytic function\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q215084\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"aka\\\":[\\\"Analytic Function\\\",\\\"AnalyticAt\\\",\\\"analytic function\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q967972\\\",\\\"label\\\":\\\"open mapping theorem\\\",\\\"aka\\\":[\\\"AnalyticOnNhd.is_constant_or_isOpen\\\",\\\"A probabilistic proof of the Open Mapping Theorem for analytic functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/OpenMapping\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.cpow_def_of_ne_zero\\\",\\\"label\\\":\\\"Complex.cpow_def_of_ne_zero\\\",\\\"aka\\\":[\\\"Elementary analytic functions in $VTC^0$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Pow\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.exp_add\\\",\\\"label\\\":\\\"Complex.exp_add\\\",\\\"aka\\\":[\\\"Elementary analytic functions in $VTC^0$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/Exponential\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.exp_log\\\",\\\"label\\\":\\\"Complex.exp_log\\\",\\\"aka\\\":[\\\"Elementary analytic functions in $VTC^0$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Complex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.log_exp_exists\\\",\\\"label\\\":\\\"Complex.log_exp_exists\\\",\\\"aka\\\":[\\\"Elementary analytic functions in $VTC^0$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Complex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.log_im\\\",\\\"label\\\":\\\"Complex.log_im\\\",\\\"aka\\\":[\\\"Elementary analytic functions in $VTC^0$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Complex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.TendstoInMeasure.exists_seq_tendsto_ae\\\",\\\"label\\\":\\\"MeasureTheory.TendstoInMeasure.exists_seq_tendsto_ae\\\",\\\"aka\\\":[\\\"Boundary behavior of analytic functions and Approximation Theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Function/ConvergenceInMeasure\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Laurent series\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 331,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent series\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q425432\\\",\\\"label\\\":\\\"Laurent series\\\",\\\"aka\\\":[\\\"LaurentSeries\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/LaurentSeries\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"holomorphic\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2644,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"holomorphic\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q931001\\\",\\\"label\\\":\\\"Inverse function theorem\\\",\\\"aka\\\":[\\\"HasStrictFDerivAt.to_localInverse\\\",\\\"Inverse Function Theorem\\\",\\\"inverse function theorem\\\",\\\"Lectures on Holomorphic Curves in Symplectic and Contact Geometry\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/InverseFunctionTheorem\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.integral_boundary_rect_of_hasFDerivAt_real_off_countable\\\",\\\"label\\\":\\\"Complex.integral_boundary_rect_of_hasFDerivAt_real_off_countable\\\",\\\"aka\\\":[\\\"Continuous solutions of nonlinear Cauchy-Riemann equations and pseudoholomorphic curves in normal coordinates\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/CauchyIntegral\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousMap.Nullhomotopic\\\",\\\"label\\\":\\\"ContinuousMap.Nullhomotopic\\\",\\\"aka\\\":[\\\"A parametric jet-interpolation theorem for holomorphic automorphisms of C^n\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Homotopy/Contractible\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicAt_iff\\\",\\\"label\\\":\\\"TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicAt_iff\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicWithinAt_iff\\\",\\\"label\\\":\\\"TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicWithinAt_iff\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicWithinAt_iff_of_mem\\\",\\\"label\\\":\\\"TauCeti.Filter.EventuallyEq.isConstStructureJHolomorphicWithinAt_iff_of_mem\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsConstStructureJHolomorphic\\\",\\\"label\\\":\\\"TauCeti.IsConstStructureJHolomorphic\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsConstStructureJHolomorphic.add\\\",\\\"label\\\":\\\"TauCeti.IsConstStructureJHolomorphic.add\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsConstStructureJHolomorphic.comp\\\",\\\"label\\\":\\\"TauCeti.IsConstStructureJHolomorphic.comp\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsConstStructureJHolomorphic.comp_neg_stdComplexLineConj\\\",\\\"label\\\":\\\"TauCeti.IsConstStructureJHolomorphic.comp_neg_stdComplexLineConj\\\",\\\"supercell\\\":\\\"path:TauCeti/Geometry/Symplectic/JHolomorphic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q215084\"}",
+   "ok": true,
+   "result_chars": 3215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q215084\\\",\\\"id\\\":\\\"cell:Q215084\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q215084\\\",\\\"anchor\\\":\\\"Q215084\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Analytic/Basic\\\"],\\\"f\\\":36056,\\\"xy\\\":[-274.3,-232.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q215084\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"function that is locally given by a convergent power series\\\",\\\"slug\\\":\\\"Analytic_function\\\",\\\"article_annotations\\\":{\\\"total\\\":48,\\\"formalized\\\":25,\\\"partial\\\":8,\\\"not_formalized\\\":15},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:AnalyticAt\\\",\\\"label\\\":\\\"AnalyticAt\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Analysis.Analytic.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def AnalyticAt (f : E → F) (x : E) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Analytic.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:AnalyticFunction\\\",\\\"label\\\":\\\"Analytic Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/AnalyticFunction.html\\\",\\\"qid\\\":\\\"Q215084\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:analytic function\\\",\\\"label\\\":\\\"analytic function\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/analytic+function\\\",\\\"qid\\\":\\\"Q215084\\\",\\\"snippet\\\":\\\"An _analytic function_ is a function that is locally given by a converging power series.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Analytic_function\\\",\\\"label\\\":\\\"Analytic function\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":48,\\\"formalized\\\":25,\\\"partial\\\":8,\\\"not_formalized\\\":15}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"label\\\":\\\"Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":164,\\\"links\\\":15,\\\"mentions\\\":27,\\\"relates\\\":2,\\\"cites\\\":3,\\\"co-statement\\\":2,\\\"invocation\\\":24},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q131187\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q628007\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"path:Mathlib/Analysis/Complex\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}}],\\\"counts\\\":{\\\"syn\\\":190,\\\"organs\\\":5},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q425432\"}",
+   "ok": true,
+   "result_chars": 1974,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q425432\\\",\\\"id\\\":\\\"cell:Q425432\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Laurent series\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q425432\\\",\\\"anchor\\\":\\\"Q425432\\\",\\\"label\\\":\\\"Laurent series\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/LaurentSeries\\\"],\\\"f\\\":160,\\\"xy\\\":[-360,-305.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q425432\\\",\\\"label\\\":\\\"Laurent series\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"power series generalized to allow negative powers\\\",\\\"slug\\\":\\\"Laurent_series\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:LaurentSeries\\\",\\\"label\\\":\\\"LaurentSeries\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.RingTheory.LaurentSeries\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"`LaurentSeries R` is the type of formal Laurent series with coefficients in `R`, denoted `R⸨X⸩`.\\\\n\\\\nIt is implemented as a `HahnSeries` with value group `ℤ`.\\\\n\\\",\\\"code\\\":\\\"abbrev LaurentSeries (R : Type u) [Zero R] := R⟦ℤ⟧\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.LaurentSeries\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/LaurentSeries\\\",\\\"label\\\":\\\"LaurentSeries\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":4,\\\"co-statement\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q131187\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Margulis.huang_shi_theorem_1_2\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:Mathlib:ae_eq_zero_of_integral_contDiff_smul_eq_zero\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"co-statement\\\":1}}],\\\"counts\\\":{\\\"syn\\\":5,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order zero of function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order zero of function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"singularity pole removable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"singularity pole removable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Riemann removable singularity theorem\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Riemann removable singularity theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"complex analysis singularity\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complex analysis singularity\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"neighborhood nhds punctured\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"neighborhood nhds punctured\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"EvenFun OddFun\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EvenFun OddFun\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"meromorphic\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2025,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphic\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q899731\\\",\\\"label\\\":\\\"Zeros and poles\\\",\\\"aka\\\":[\\\"Definition:Isolated Singularity/Pole\\\",\\\"Pole\\\",\\\"Pole (of a function)\\\",\\\"meromorphicOrderAt\\\",\\\"pole\\\",\\\"Quadrilateral Mesh Generation II : Meromorphic Quartic Differentials and Abel-Jacobi Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicOn\\\",\\\"label\\\":\\\"MeromorphicOn\\\",\\\"aka\\\":[\\\"Weierstrass points of superelliptic curves\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicOn.circleAverage_log_norm\\\",\\\"label\\\":\\\"MeromorphicOn.circleAverage_log_norm\\\",\\\"aka\\\":[\\\"Quotient Problem For Entire Functions with Moving Targets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/JensenFormula\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Meromorphic.Gamma\\\",\\\"label\\\":\\\"Meromorphic.Gamma\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Complex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt\\\",\\\"label\\\":\\\"MeromorphicAt\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero\\\",\\\"label\\\":\\\"MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.inv_iff\\\",\\\"label\\\":\\\"MeromorphicAt.inv_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.order\\\",\\\"label\\\":\\\"MeromorphicAt.order\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicOn.divisor\\\",\\\"label\\\":\\\"MeromorphicOn.divisor\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Divisor\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"label\\\":\\\"meromorphicOrderAt_eq_int_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:MeromorphicAt\"}",
+   "ok": true,
+   "result_chars": 2366,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MeromorphicAt\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MeromorphicAt\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt\\\",\\\"anchor\\\":\\\"decl:Mathlib:MeromorphicAt\\\",\\\"label\\\":\\\"MeromorphicAt\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"],\\\"xy\\\":[-948.7,-528.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeromorphicAt\\\",\\\"label\\\":\\\"MeromorphicAt\\\",\\\"module\\\":\\\"Mathlib.Analysis.Meromorphic.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def MeromorphicAt (f : 𝕜 → E) (x : 𝕜) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Meromorphic.Basic\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic\\\",\\\"label\\\":\\\"Meromorphic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2,\\\"invocation\\\":39},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q131187\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.ConditionB.pow_unit_tangent_eq_of_coeff_ne_zero\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.PolarPartDecomposition.coeff_eq_meromorphicPolarCoeffAt\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.PolarPartDecomposition.ofMeromorphic\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.eventuallyEq_meromorphicAnalyticPartAt_add_meromorphicPolarPartAt\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_analyticAt_eventuallyEq_zpow_smul\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_analyticAt_sub_polarPartTotal\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_laurent_data_of_meromorphicAt\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.hasCauchyPV_half_residue\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":41,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:MeromorphicAt.order\"}",
+   "ok": true,
+   "result_chars": 1361,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MeromorphicAt.order\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.order\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MeromorphicAt.order\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.order\\\",\\\"anchor\\\":\\\"decl:Mathlib:MeromorphicAt.order\\\",\\\"label\\\":\\\"MeromorphicAt.order\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"],\\\"xy\\\":[-33.6,-1101]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeromorphicAt.order\\\",\\\"label\\\":\\\"MeromorphicAt.order\\\",\\\"module\\\":\\\"Mathlib.Analysis.Meromorphic.Order\\\",\\\"code\\\":\\\"noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜) : WithTop ℤ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"renamed_to\\\":\\\"meromorphicOrderAt\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Meromorphic.Order\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic\\\",\\\"label\\\":\\\"Meromorphic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"label\\\":\\\"Order\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q328998\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:meromorphicOrderAt_eq_int_iff\"}",
+   "ok": true,
+   "result_chars": 1758,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"id\\\":\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"meromorphicOrderAt_eq_int_iff\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"anchor\\\":\\\"decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"label\\\":\\\"meromorphicOrderAt_eq_int_iff\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"],\\\"xy\\\":[-1252.5,-285.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"label\\\":\\\"meromorphicOrderAt_eq_int_iff\\\",\\\"module\\\":\\\"Mathlib.Analysis.Meromorphic.Order\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"The order of a meromorphic function `f` at `z₀` equals an integer `n` iff `f` can locally be\\\\nwritten as `f z = (z - z₀) ^ n • g z`, where `g` is analytic and does not vanish at `z₀`. \\\",\\\"code\\\":\\\"lemma meromorphicOrderAt_eq_int_iff {n : ℤ} (hf : MeromorphicAt f x) : meromorphicOrderAt f x = n ↔\\\\n    ∃ g : 𝕜 → E, AnalyticAt 𝕜 g x ∧ g x ≠ 0 ∧ ∀ᶠ z in 𝓝[≠] x, f z = (z - x) ^ n • g z := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Meromorphic.Order\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic\\\",\\\"label\\\":\\\"Meromorphic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"label\\\":\\\"Order\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q899731\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:meromorphicOrderAt_eq_int_iff\"}",
+   "ok": true,
+   "result_chars": 971,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"label\\\":\\\"meromorphicOrderAt_eq_int_iff\\\",\\\"snippet\\\":\\\"The order of a meromorphic function `f` at `z₀` equals an integer `n` iff `f` can locally be\\\\nwritten as `f z = (z - z₀) ^ n • g z`, where `g` is analytic and does not vanish at `z₀`. \\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"lemma meromorphicOrderAt_eq_int_iff {n : ℤ} (hf : MeromorphicAt f x) : meromorphicOrderAt f x = n ↔\\\\n    ∃ g : 𝕜 → E, AnalyticAt 𝕜 g x ∧ g x ≠ 0 ∧ ∀ᶠ z in 𝓝[≠] x, f z = (z - x) ^ n • g z := by\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Meromorphic/Order.html#meromorphicOrderAt_eq_int_iff\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AnalyticAt neighborhood\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AnalyticAt neighborhood\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eventually_eq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1722,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eventually_eq\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1050230\\\",\\\"label\\\":\\\"maximum modulus principle\\\",\\\"aka\\\":[\\\"Complex.eqOn_of_isPreconnected_of_isMaxOn_norm\\\",\\\"Complex.norm_eventually_eq_of_isLocalMax\\\",\\\"Complex.norm_le_of_forall_mem_frontier_norm_le\\\",\\\"Maximum Modulus Principle\\\",\\\"Maximum-modulus principle\\\",\\\"On the numerical approximation of the distance to singularity for matrix-valued functions\\\",\\\"Some Simplifications in Basic Complex Analysis\\\",\\\"The Bergmann-Shilov boundary of a bounded symmetric domain\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/AbsMax\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero\\\",\\\"label\\\":\\\"MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.dixonFunction_eventually_eq_dixonH2\\\",\\\"label\\\":\\\"TauCeti.Contour.dixonFunction_eventually_eq_dixonH2\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Dixon\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.finite_compl_fixedBy_eventually_eq_self\\\",\\\"label\\\":\\\"TauCeti.finite_compl_fixedBy_eventually_eq_self\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/GroupAction\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.finite_compl_fixedBy_iff_eventually_eq_self\\\",\\\"label\\\":\\\"TauCeti.finite_compl_fixedBy_iff_eventually_eq_self\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/GroupAction\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.finite_compl_fixedBy_of_eventually_eq_self\\\",\\\"label\\\":\\\"TauCeti.finite_compl_fixedBy_of_eventually_eq_self\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/GroupAction\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WithTop ℤ nonneg\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WithTop ℤ nonneg\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"zero or ne top\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"zero or ne top\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Int order valuation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Int order valuation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:MeromorphicAt.order\"}",
+   "ok": true,
+   "result_chars": 570,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MeromorphicAt.order\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:MeromorphicAt.order\\\",\\\"label\\\":\\\"MeromorphicAt.order\\\",\\\"code\\\":\\\"noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜) : WithTop ℤ :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Meromorphic/Order.html#MeromorphicAt.order\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:meromorphicOrderAt_eq_int_iff\", \"kinds\": \"depends,relates\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 455,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"relates\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"punctured neighborhood nhds[ne]\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"punctured neighborhood nhds[ne]\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Analysis/Meromorphic/Order\"}",
+   "ok": true,
+   "result_chars": 882,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Order\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Meromorphic\\\",\\\"cells\\\":[\\\"cell:Q899731\\\",\\\"cell:decl:Mathlib:MeromorphicAt.order\\\",\\\"cell:decl:Mathlib:meromorphicOrderAt_eq_int_iff\\\"],\\\"fa\\\":39128},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic\\\",\\\"label\\\":\\\"Meromorphic\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"path:Mathlib/Analysis/Meromorphic/Order\", \"kinds\": \"depends\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 379,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\",\\\"kind\\\":\\\"supercell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"withheld_by_shard\\\":0,\\\"traces_hydrated\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"theorem analytic extends removable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"theorem analytic extends removable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AnalyticOn AnalyticAt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AnalyticOn AnalyticAt\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q215084\", \"kinds\": \"depends\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 15110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q215084\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q206925\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":20,\\\"w_types\\\":{\\\"sig\\\":17,\\\"def\\\":1,\\\"proof\\\":14},\\\"witnesses\\\":[[\\\"HasFPowerSeriesOnBall.add\\\",\\\"HasFPowerSeriesOnBall\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q206925\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":20,\\\"w_types\\\":{\\\"sig\\\":12,\\\"def\\\":6,\\\"proof\\\":11},\\\"witnesses\\\":[[\\\"Complex.analyticAt_sin\\\",\\\"AnalyticAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11348\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q11348\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":11,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":2,\\\"proof\\\":8},\\\"witnesses\\\":[[\\\"Differentiable.apply_eq_apply_of_bounded\\\",\\\"Set.range\\\"]]}}]},{\\\"id\\\":\\\"cell:Q131187\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q131187\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":6,\\\"def\\\":2,\\\"proof\\\":6},\\\"witnesses\\\":[[\\\"HasFPowerSeriesAt.comp\\\",\\\"HasFPowerSeriesAt\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q131187\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":11,\\\"w_types\\\":{\\\"sig\\\":9,\\\"def\\\":1,\\\"proof\\\":8},\\\"witnesses\\\":[[\\\"Complex.analyticAt_sin\\\",\\\"AnalyticAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q1000660\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"AnalyticAt.aeval_polynomial\\\",\\\"AlgHom\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q577835\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"AnalyticAt.aeval_polynomial\\\",\\\"Algebra\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q837414\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"AnalyticAt.aeval_polynomial\\\",\\\"Algebra\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1137206\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":6,\\\"def\\\":1,\\\"proof\\\":5},\\\"witnesses\\\":[[\\\"DifferentiableOn.contDiffOn\\\",\\\"DifferentiableOn.analyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q1137206\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":1,\\\"proof\\\":6},\\\"witnesses\\\":[[\\\"Complex.analyticAt_sin\\\",\\\"AnalyticAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q170058\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ContDiff\\\",\\\"AnalyticOnNhd\\\"]]}}]},{\\\"id\\\":\\\"cell:Q628007\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q628007\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":8,\\\"w_types\\\":{\\\"sig\\\":7,\\\"def\\\":1,\\\"proof\\\":5},\\\"witnesses\\\":[[\\\"Complex.analyticAt_sin\\\",\\\"AnalyticAt\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q628007\\\",\\\"dst\\\":\\\"Q215084\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"AnalyticAt\\\",\\\"HasFPowerSeriesAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q215084\\\",\\\"dst\\\":\\\"Q854531\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":32,\\\"w_types\\\":{\\\"sig\\\":27,\\\"def\\\":1,\\\"proof\\\":13},\\\"witn"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"meromorphicOrderAt_nonneg\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 640,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"meromorphicOrderAt_nonneg\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.circleIntegral_eq_zero_of_meromorphicOrderAt_nonneg\\\",\\\"label\\\":\\\"TauCeti.Contour.circleIntegral_eq_zero_of_meromorphicOrderAt_nonneg\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Cauchy\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.residue_eq_zero_of_meromorphicOrderAt_nonneg\\\",\\\"label\\\":\\\"TauCeti.Contour.residue_eq_zero_of_meromorphicOrderAt_nonneg\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Residue\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order nonneg analytic near\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order nonneg analytic near\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q899731\", \"kinds\": \"depends\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 12091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q899731\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q825857\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q825857\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":3,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"OnePoint.instGLAction\\\",\\\"OnePoint\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q825857\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"MeromorphicOn.divisor\\\",\\\"MeromorphicOn\\\"]]}}]},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q23937546\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":1,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"OnePoint.smul_infty_eq_self_iff\\\",\\\"OnePoint\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q2597317\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"OnePoint.equivProjectivization\\\",\\\"OnePoint\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q877775\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"OnePoint.instGLAction\\\",\\\"OnePoint\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11348\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q11348\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":2,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero\\\",\\\"id\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1137206\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"DifferentiableOn.analyticOnNhd\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q1137206\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":2,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"AnalyticOnNhd\\\",\\\"AnalyticAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11567\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q11567\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":2,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"MeromorphicAt.inv_iff\\\",\\\"MeromorphicAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q170058\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"ContDiff\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q170058\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"MeromorphicOn.divisor\\\",\\\"instTopologicalSpaceSubtype\\\"]]}}]},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q206925\\\",\\\"dst\\\":\\\"Q899731\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"FormalMultilinearSeries.analyticOnNhd\\\",\\\"AnalyticOnNhd\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q899731\\\",\\\"dst\\\":\\\"Q206925\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":2,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"AnalyticOnNhd\\\",\\\"AnalyticAt\\\"]]}}]},{\\\"id\\\":\\\"cell:Q215084\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q2"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"nhdsWithin eventually_eq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"nhdsWithin eventually_eq\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WithTop Nat Int\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WithTop Nat Int\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem meromorphic_nonneg_order_iff_analytic_extension\n  {f : ℂ → ℂ} {x : ℂ} (hf : MeromorphicAt f x) :\n  (∃ (n : ℤ), 0 ≤ n ∧ meromorphicOrderAt f x = ↑n) ↔\n  ∃ (g : ℂ → ℂ), AnalyticAt ℂ g x ∧ ∀ᶠ z in 𝓝[≠] x, f z = g z := sorry"
+}

@@ -1,0 +1,395 @@
+{
+ "task_id": "fresh_081",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:19:32Z",
+ "wall_s": 123.7,
+ "transcript_stats": {
+  "turns": 44,
+  "assistant_turns": 24,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_search": 30,
+   "mcp__wikibrain__brain_cell": 4,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__decl_exists": 5,
+   "mcp__wikibrain__brain_snippets": 1
+  },
+  "tokens_in": 196,
+  "tokens_out": 9802,
+  "cost_usd": 0.13484635
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"multivariate power series partial derivative power rule\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 6904,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"multivariate power series partial derivative power rule\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1503239\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"symmetry of second derivatives\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus/FDeriv\\\",\\\"label\\\":\\\"FDeriv\\\"}]},{\\\"id\\\":\\\"cell:Q919459\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Gateaux derivative\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus/LineDeriv\\\",\\\"label\\\":\\\"LineDeriv\\\"}]},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries\\\",\\\"label\\\":\\\"PowerSeries\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"label\\\":\\\"Taylor's theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207455\\\",\\\"label\\\":\\\"Chain rule\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q120812\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q131251\\\",\\\"label\\\":\\\"Tangent\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q176623\\\",\\\"label\\\":\\\"Random variable\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q200802\\\",\\\"label\\\":\\\"Vector calculus\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q2071054\\\",\\\"label\\\":\\\"Linear approximation\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":26,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"HasLineDerivAt\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.Calculus.LineDeriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.LineDeriv.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"code\\\":\\\"def HasLineDerivAt (f : E → F) (f' : F) (x : E) (v : E) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/LineDeriv/Basic.html#HasLineDerivAt\\\",\\\"via_cell\\\":\\\"cell:Q919459\\\",\\\"cell_label\\\":\\\"Gateaux derivative\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus/LineDeriv\\\",\\\"label\\\":\\\"LineDeriv\\\"}]},{\\\"decl\\\":\\\"PowerSeries\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev PowerSeries (R : Type*) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheor"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MvPowerSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 596,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries.instIsLocalRing\\\",\\\"label\\\":\\\"MvPowerSeries.instIsLocalRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries/Inverse\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MvPowerSeries\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"partial derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 961,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partial derivative\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q919459\\\",\\\"label\\\":\\\"Gateaux derivative\\\",\\\"aka\\\":[\\\"HasLineDerivAt\\\",\\\"Partial Derivative\\\",\\\"Partial derivative\\\",\\\"lineDeriv\\\",\\\"Nonconvex Optimization via MM Algorithms: Convergence Theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/LineDeriv\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1503239\\\",\\\"label\\\":\\\"symmetry of second derivatives\\\",\\\"aka\\\":[\\\"Partial derivative\\\",\\\"second_derivative_symmetric\\\",\\\"An alternative approach to Fr\\\\\\\\'echet derivatives\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/FDeriv\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Language.leftQuotient\\\",\\\"label\\\":\\\"Language.leftQuotient\\\",\\\"aka\\\":[\\\"On The Space Complexity of Partial Derivatives of Regular Expressions with Shuffle\\\"],\\\"supercell\\\":\\\"path:Mathlib/Computability/MyhillNerode\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 1302,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"anchor\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/MvPowerSeries/Basic\\\"],\\\"xy\\\":[269.3,-1265.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def MvPowerSeries (σ : Type*) (R : Type*) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/MvPowerSeries/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"power rule derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power rule derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MvPowerSeries derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pow derivative theorem\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pow derivative theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"derivative of powers\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"derivative of powers\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"partial derivative monomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partial derivative monomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:MvPowerSeries\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 690,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q206925\\\",\\\"dst\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"c0517b7c6a0e\\\",\\\"label\\\":\\\"Power series in several variables\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fderiv chain rule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fderiv chain rule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Polynomial derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"C diff\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1472,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"C diff\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q899731\\\",\\\"label\\\":\\\"Zeros and poles\\\",\\\"aka\\\":[\\\"Definition:Isolated Singularity/Pole\\\",\\\"Pole\\\",\\\"Pole (of a function)\\\",\\\"meromorphicOrderAt\\\",\\\"pole\\\",\\\"Quadrilateral Mesh Generation II : Meromorphic Quartic Differentials and Abel-Jacobi Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Meromorphic/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.IsTightMeasureSet\\\",\\\"label\\\":\\\"MeasureTheory.IsTightMeasureSet\\\",\\\"aka\\\":[\\\"Similarity Between Two Stochastic Differential Systems\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Tight\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MulAut.conj\\\",\\\"label\\\":\\\"MulAut.conj\\\",\\\"aka\\\":[\\\"On partially hyperbolic diffeomorphisms in dimension three via a notion of autonomous dynamics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/End\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SemidirectProduct\\\",\\\"label\\\":\\\"SemidirectProduct\\\",\\\"aka\\\":[\\\"On the Symmetric Difference Property in Difference Sets under Product Construction\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/SemidirectProduct\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:inner_gradient_left\\\",\\\"label\\\":\\\"inner_gradient_left\\\",\\\"aka\\\":[\\\"Automatic Differentiation: Theory and Practice\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Gradient\\\"},{\\\"id\\\":\\\"cell:Q4723995\\\",\\\"label\\\":\\\"algebraic differential equation\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"deriv\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 3326,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q29175\\\",\\\"label\\\":\\\"Derivative\\\",\\\"aka\\\":[\\\"deriv\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"label\\\":\\\"Derivative (multivariable calculus)\\\",\\\"aka\\\":[\\\"Differential\\\",\\\"Differential of a function\\\",\\\"Jacobian\\\",\\\"Jacobian matrix\\\",\\\"Total Derivative\\\",\\\"fderiv\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/FDeriv\\\"},{\\\"id\\\":\\\"cell:Q207455\\\",\\\"label\\\":\\\"Chain rule\\\",\\\"aka\\\":[\\\"Chain Rule\\\",\\\"Derivative of Composite Function\\\",\\\"HasFDerivAt.comp\\\",\\\"chain rule\\\",\\\"Quasiregular mappings on sub-Riemannian manifolds\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/FDeriv\\\"},{\\\"id\\\":\\\"cell:Q190557\\\",\\\"label\\\":\\\"L'Hôpital's rule\\\",\\\"aka\\\":[\\\"L Hospitals Rule\\\",\\\"L'Hospital rule\\\",\\\"LHopitals rule\\\",\\\"deriv.lhopital_zero_nhds\\\",\\\"l'Hôpital's rule\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/LHopital\\\"},{\\\"id\\\":\\\"cell:Q5262626\\\",\\\"label\\\":\\\"Derived category\\\",\\\"aka\\\":[\\\"DerivedCategory\\\",\\\"derived category\\\",\\\"Notes on noncommutative geometry\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Homology/DerivedCategory\\\"},{\\\"id\\\":\\\"cell:Q2997772\\\",\\\"label\\\":\\\"Differential algebra\\\",\\\"aka\\\":[\\\"Derivation Algebra\\\",\\\"DifferentialAlgebra\\\",\\\"From algebra to analysis: new proofs of theorems by Ritt and Seidenberg\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Derivation/DifferentialRing\\\"},{\\\"id\\\":\\\"cell:Q466720\\\",\\\"label\\\":\\\"Product rule\\\",\\\"aka\\\":[\\\"Product Rule\\\",\\\"deriv_mul\\\",\\\"product law\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"},{\\\"id\\\":\\\"cell:Q531392\\\",\\\"label\\\":\\\"quotient rule\\\",\\\"aka\\\":[\\\"HasDerivAt.div\\\",\\\"Quotient Rule\\\",\\\"deriv_div\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"},{\\\"id\\\":\\\"cell:Q1367447\\\",\\\"label\\\":\\\"constant factor rule in differentiation\\\",\\\"aka\\\":[\\\"HasDerivAt.const_smul\\\",\\\"deriv_const_mul\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"},{\\\"id\\\":\\\"cell:Q898560\\\",\\\"label\\\":\\\"derivative test\\\",\\\"aka\\\":[\\\"First Derivative Test\\\",\\\"isLocalMin_of_deriv_Ioo\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/DerivativeTest\\\"},{\\\"id\\\":\\\"cell:Q1246553\\\",\\\"label\\\":\\\"reciprocal rule\\\",\\\"aka\\\":[\\\"HasDerivAt.inv\\\",\\\"deriv_fun_inv''\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Limits.IsZero\\\",\\\"label\\\":\\\"CategoryTheory.Limits.IsZero\\\",\\\"aka\\\":[\\\"Derived Categories\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Limits/Shapes/ZeroObjects\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.ObjectProperty.extensionProduct_assoc\\\",\\\"label\\\":\\\"CategoryTheory.ObjectProperty.extensionProduct_assoc\\\",\\\"aka\\\":[\\\"derived-lemma-associativity-star\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Triangulated/Subcategory\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Pretriangulated\\\",\\\"label\\\":\\\"CategoryTheory.Pretriangulated\\\",\\\"aka\\\":[\\\"derived-definition-triangulated-category\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Triangulated/Pretriangulated\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Derivation\\\",\\\"label\\\":\\\"Derivation\\\",\\\"aka\\\":[\\\"Normal hyperplane sections of normal schemes in mixed characteristic\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Derivation/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finsupp support derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp support derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q29175\"}",
+   "ok": true,
+   "result_chars": 3086,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q29175\\\",\\\"id\\\":\\\"cell:Q29175\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Derivative\\\",\\\"f\\\":2264,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q29175\\\",\\\"anchor\\\":\\\"Q29175\\\",\\\"label\\\":\\\"Derivative\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"],\\\"f\\\":2264,\\\"xy\\\":[56.4,-264]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q29175\\\",\\\"label\\\":\\\"Derivative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"instantaneous rate of change (mathematics)\\\",\\\"slug\\\":\\\"Derivative\\\",\\\"article_annotations\\\":{\\\"total\\\":53,\\\"formalized\\\":34,\\\"partial\\\":4,\\\"not_formalized\\\":15},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:deriv\\\",\\\"label\\\":\\\"deriv\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def deriv (f : 𝕜 → F) (x : 𝕜) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Derivative\\\",\\\"label\\\":\\\"Derivative\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Derivative\\\",\\\"qid\\\":\\\"Q29175\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Derivative\\\",\\\"label\\\":\\\"Derivative\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Derivative.html\\\",\\\"qid\\\":\\\"Q29175\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Derivative\\\",\\\"label\\\":\\\"Derivative\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":53,\\\"formalized\\\":34,\\\"partial\\\":4,\\\"not_formalized\\\":15}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"label\\\":\\\"Calculus\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\",\\\"label\\\":\\\"Deriv\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":219,\\\"links\\\":141,\\\"mentions\\\":30,\\\"relates\\\":7,\\\"invocation\\\":2,\\\"cites\\\":6,\\\"generalization\\\":1,\\\"co-page\\\":11},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q919459\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":2,\\\"mentions\\\":1,\\\"relates\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Analysis/Calculus\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":5,\\\"invocation\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1217677\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q173582\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q636889\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":3,\\\"generalization\\\":1,\\\"links\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}}],\\\"counts\\\":{\\\"syn\\\":316,\\\"organs\\\":5},\\\"truncated\\\":{\\\"syn\\\":116},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"deriv pow power\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv pow power\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pderiv partial\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pderiv partial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Polynomial.derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial.derivative\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1955819\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"aka\\\":[\\\"Polynomial.derivative\\\",\\\"A Concise Course in Galois Theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Polynomial/Derivative\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q1090038\\\",\\\"label\\\":\\\"Appell sequence\\\",\\\"aka\\\":[\\\"Appell Sequence\\\",\\\"Polynomial.derivative_bernoulli\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/BernoulliPolynomials\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:Polynomial.derivative_hermite\\\",\\\"label\\\":\\\"Polynomial.derivative_hermite\\\",\\\"supercell\\\":\\\"path:TauCeti/RingTheory/Polynomial/Hermite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:Polynomial.derivative_hermite_succ\\\",\\\"label\\\":\\\"Polynomial.derivative_hermite_succ\\\",\\\"supercell\\\":\\\"path:TauCeti/RingTheory/Polynomial/Hermite\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:bernsteinPolynomial.derivative_succ\\\",\\\"label\\\":\\\"bernsteinPolynomial.derivative_succ\\\",\\\"aka\\\":[\\\"Functional equations from generating functions: a novel approach to deriving identities for the Bernstein basis functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Polynomial/Bernstein\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1955819\"}",
+   "ok": true,
+   "result_chars": 2024,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1955819\\\",\\\"id\\\":\\\"cell:Q1955819\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1955819\\\",\\\"anchor\\\":\\\"Q1955819\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/Polynomial/Derivative\\\"],\\\"f\\\":160,\\\"xy\\\":[-15.6,252.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1955819\\\",\\\"label\\\":\\\"formal derivative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"operation on elements of a polynomial ring which mimics the form of the derivative from calculus\\\",\\\"slug\\\":\\\"Formal_derivative\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Polynomial.derivative\\\",\\\"label\\\":\\\"Polynomial.derivative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Derivative\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def derivative : R[X] →ₗ[R] R[X] where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Derivative\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2601.01876#1.4.3\\\",\\\"label\\\":\\\"A Concise Course in Galois Theory\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2601.01876\\\",\\\"ref\\\":\\\"1.4.3\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Derivative\\\",\\\"label\\\":\\\"Derivative\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":3,\\\"mentions\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q830340\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MvPolynomial derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPolynomial derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PowerSeries coeff\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PowerSeries coeff\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"hasDerivAt power mul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"hasDerivAt power mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MvPowerSeries\", \"Nat\", \"Polynomial.derivative\", \"PowerSeries\", \"HPow.hPow\"]}",
+   "ok": true,
+   "result_chars": 1618,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries\\\"},{\\\"decl\\\":\\\"Nat\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Nat\\\"},{\\\"decl\\\":\\\"Polynomial.derivative\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Derivative\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Derivative\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Derivative.html#Polynomial.derivative\\\"},{\\\"decl\\\":\\\"PowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries\\\"},{\\\"decl\\\":\\\"HPow.hPow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#HPow.hPow\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MvPowerSeries restrict variable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPowerSeries restrict variable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FormalMultilinearSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2285,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FormalMultilinearSeries\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries\\\",\\\"label\\\":\\\"FormalMultilinearSeries\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/FormalMultilinearSeries\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q859122\\\",\\\"label\\\":\\\"Cauchy–Hadamard theorem\\\",\\\"aka\\\":[\\\"Cauchy-Hadamard Theorem\\\",\\\"Cauchy-Hadamard theorem\\\",\\\"FormalMultilinearSeries.radius_eq_liminf\\\",\\\"FormalMultilinearSeries.radius_inv_eq_limsup\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/RadiusLiminf\\\"},{\\\"id\\\":\\\"cell:Q1428097\\\",\\\"label\\\":\\\"Radius of convergence\\\",\\\"aka\\\":[\\\"FormalMultilinearSeries.radius\\\",\\\"Radiusof Convergence\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/ConvergenceRadius\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.ofScalars_radius_eq_inv_of_tendsto\\\",\\\"label\\\":\\\"FormalMultilinearSeries.ofScalars_radius_eq_inv_of_tendsto\\\",\\\"aka\\\":[\\\"Justifying Definitions in Mathematics---Going Beyond Lakatos\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/OfScalars\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.analyticOnNhd\\\",\\\"label\\\":\\\"FormalMultilinearSeries.analyticOnNhd\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/ChangeOrigin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.hasFPowerSeriesOnBall\\\",\\\"label\\\":\\\"FormalMultilinearSeries.hasFPowerSeriesOnBall\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.leftInv\\\",\\\"label\\\":\\\"FormalMultilinearSeries.leftInv\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/Inverse\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.min_radius_le_radius_add\\\",\\\"label\\\":\\\"FormalMultilinearSeries.min_radius_le_radius_add\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/ConvergenceRadius\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.ofScalars\\\",\\\"label\\\":\\\"FormalMultilinearSeries.ofScalars\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/OfScalars\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FormalMultilinearSeries.radius_le_radius_derivSeries\\\",\\\"label\\\":\\\"FormalMultilinearSeries.radius_le_radius_derivSeries\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Analytic/ChangeOrigin\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"deriv_pow\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 651,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv_pow\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:deriv_pow\\\",\\\"label\\\":\\\"deriv_pow\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:deriv_pow_field\\\",\\\"label\\\":\\\"deriv_pow_field\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/Deriv\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.iteratedDeriv_pow_sub_mul_div_factorial\\\",\\\"label\\\":\\\"TauCeti.Contour.iteratedDeriv_pow_sub_mul_div_factorial\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Residue\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"HasDerivAt pow\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"HasDerivAt pow\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"deriv_pow exact theorem statement\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv_pow exact theorem statement\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"deriv_pow\", \"deriv_pow_field\"]}",
+   "ok": true,
+   "result_chars": 826,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"deriv_pow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Pow\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Pow\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Pow.html#deriv_pow\\\"},{\\\"decl\\\":\\\"deriv_pow_field\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Pow\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Pow\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Pow.html#deriv_pow_field\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:MvPowerSeries\\\",\\\"label\\\":\\\"MvPowerSeries\\\",\\\"code\\\":\\\"def MvPowerSeries (σ : Type*) (R : Type*) :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:MvPowerSeries\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 344,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:MvPowerSeries\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"coeff MvPowerSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"coeff MvPowerSeries\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finsupp derivative\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp derivative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MvPolynomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2666,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MvPolynomial\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial\\\",\\\"label\\\":\\\"MvPolynomial\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/MvPolynomial/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q1749812\\\",\\\"label\\\":\\\"Newton's identities\\\",\\\"aka\\\":[\\\"MvPolynomial.mul_esymm_eq_sum\\\",\\\"MvPolynomial.psum_eq_mul_esymm_sub_sum\\\",\\\"Newton-Girard Formulas\\\",\\\"Laplacian Canonization: A Minimalist Approach to Sign and Basis Invariant Spectral Embedding\\\",\\\"Shifted multiplicative subgroups are not ratio sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPolynomial/Symmetric\\\"},{\\\"id\\\":\\\"cell:Q243723\\\",\\\"label\\\":\\\"monomial\\\",\\\"aka\\\":[\\\"Definition:Monomial\\\",\\\"Monomial\\\",\\\"MvPolynomial.monomial\\\",\\\"Polynomial.monomial\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/MvPolynomial/Basic\\\"},{\\\"id\\\":\\\"cell:Q1068976\\\",\\\"label\\\":\\\"Hilbert's Nullstellensatz\\\",\\\"aka\\\":[\\\"Hilberts Nullstellensatz\\\",\\\"MvPolynomial.vanishingIdeal_zeroLocus_eq_radical\\\",\\\"Projective Nullstellensatz for not necessarily algebraically closed fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.IsHomogeneous\\\",\\\"label\\\":\\\"MvPolynomial.IsHomogeneous\\\",\\\"aka\\\":[\\\"Certifying the Existence of Epipolar Matrices\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPolynomial/Homogeneous\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.IsSymmetric\\\",\\\"label\\\":\\\"MvPolynomial.IsSymmetric\\\",\\\"aka\\\":[\\\"Deterministic Algorithms to Solve the $(n,k)$-Complete Hidden Subset Sum Problem\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPolynomial/Symmetric\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.esymm_isSymmetric\\\",\\\"label\\\":\\\"MvPolynomial.esymm_isSymmetric\\\",\\\"aka\\\":[\\\"Invariants of structures\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/MvPolynomial/Symmetric\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton\\\",\\\"label\\\":\\\"MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton\\\",\\\"aka\\\":[\\\"General affine adjunctions, Nullstellens\\\\\\\\\\\\\\\"atze, and dualities\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Nullstellensatz\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.isNoetherianRing\\\",\\\"label\\\":\\\"MvPolynomial.isNoetherianRing\\\",\\\"aka\\\":[\\\"A bottom-up approach to Hilbert's Basis Theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Polynomial/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MvPolynomial.schwartz_zippel_sup_sum\\\",\\\"label\\\":\\\"MvPolynomial.schwartz_zippel_sup_sum\\\",\\\"aka\\\":[\\\"Phases of active matter in two dimensions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/MvPolynomial/SchwartzZippel\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"pderiv MvPolynomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pderiv MvPolynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MvPolynomial\"]}",
+   "ok": true,
+   "result_chars": 517,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPolynomial\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MvPolynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MvPolynomial.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MvPolynomial/Basic.html#MvPolynomial\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Derivation ring algebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Derivation ring algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Derivation\"]}",
+   "ok": true,
+   "result_chars": 516,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Derivation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Derivation.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Derivation.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Derivation/Basic.html#Derivation\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Derivation\"}",
+   "ok": true,
+   "result_chars": 1998,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Derivation\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Derivation\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Derivation\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Derivation\\\",\\\"anchor\\\":\\\"decl:Mathlib:Derivation\\\",\\\"label\\\":\\\"Derivation\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Derivation/Basic\\\"],\\\"f\\\":128,\\\"xy\\\":[-69.6,-543.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Derivation\\\",\\\"label\\\":\\\"Derivation\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Derivation.Basic\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Derivation (R : Type*) (A : Type*) (M : Type*)\\\\n    [CommSemiring R] [CommSemiring A] [AddCommMonoid M] [Algebra R A] [Module A M] [Module R M]\\\\n    extends A →ₗ[R] M where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Derivation.Basic\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1708.05877#4.2\\\",\\\"label\\\":\\\"Normal hyperplane sections of normal schemes in mixed characteristic\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1708.05877\\\",\\\"ref\\\":\\\"4.2\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Derivation\\\",\\\"label\\\":\\\"Derivation\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Derivation/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":4,\\\"mentions\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q29175\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q466720\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q909601\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Galois\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q664495\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":5,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Derivation pow power rule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Derivation pow power rule\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"deriv_pow Derivation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"deriv_pow Derivation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MvPowerSeries\", \"Derivation\", \"Nat.cast\", \"Algebra\", \"CommRing\"]}",
+   "ok": true,
+   "result_chars": 1611,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MvPowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.MvPowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/MvPowerSeries/Basic.html#MvPowerSeries\\\"},{\\\"decl\\\":\\\"Derivation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Derivation.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Derivation.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Derivation/Basic.html#Derivation\\\"},{\\\"decl\\\":\\\"Nat.cast\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Cast\\\",\\\"import_line\\\":\\\"import Init.Data.Cast\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Cast.html#Nat.cast\\\"},{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\"},{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem mv_power_series_pow_deriv\n    {σ R : Type*} [CommRing R]\n    (g : MvPowerSeries σ R)\n    (n : ℕ)\n    (D : Derivation R (MvPowerSeries σ R) (MvPowerSeries σ R)) :\n  D (g ^ n) = ↑n * g ^ (n - 1) * D g := sorry"
+}

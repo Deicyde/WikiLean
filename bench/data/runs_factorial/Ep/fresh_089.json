@@ -1,0 +1,292 @@
+{
+ "task_id": "fresh_089",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:08:57Z",
+ "wall_s": 142.3,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 17,
+   "mcp__formal__decl_grep": 12,
+   "mcp__formal__decl_read": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 7924,
+  "cost_usd": 0.1170778
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddVariationOn\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'BddVariationOn': unknown identifier 'BddVariationOn'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"HasBddVariationOn\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'HasBddVariationOn': unknown identifier 'HasBddVariationOn'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"variation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"289 match(es) for 'variation' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:60\\n    /-- Sign variations of a monomial are always zero. -/\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:338\\n    decreases the sign variations of the eraseLead by at least one, and of the product by at\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:359\\n    becomes [+,...] and [+,...]. So the sign variations on P are unchanged when we induct, while\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:378\\n    variations. -/\\n- Mathlib/Algebra/Polynomial/RuleOfSigns.lean:389\\n    -- P has at least num_roots sign variations\\n- Mathlib/Computability/StateTransition.lean:60\\n    /-- A variation on `Reaches`. `Reaches₀ f a b` holds if whenever `Reaches₁ f b c` then\\n- Mathlib/Algebra/Lie/CartanCriterion.lean:201\\n    /-- A convenience variation of `LieAlgebra.isSolvable_of_forall_derived_killingForm_eq_zero` for\\n- Mathlib/Algebra/Order/Ring/Interval.lean:14\\n    These statements could perhaps be generalized, or there could be other variations provided (e.g.,\\n- Mathlib/Algebra/Ring/Divisibility/Lemmas.lean:20\\n    `x ^ m ∣ (x + y) ^ p` for sufficiently large `p` (together with many variations for convenience).\\n- Mathlib/Algebra/Module/Submodule/Union.lean:104\\n    /-- A convenience variation of `Module.Dual.exists_forall_ne_zero_of_forall_exists` where we are\\n- Mathlib/SetTheory/Cardinal/Arithmetic.lean:20\\n    cardinals is just their maximum. Several variations around this fact are also given.\\n- Mathlib/SetTheory/Cardinal/EventuallyConst.lean:14\\n    This file proves variations of the following theorem: if `α` is a linear order and `β` is a partial\\n- Mathlib/SetTheory/Ordinal/Basic.lean:1130\\n    A variation on `Cardinal.lt_ord` using `≤`: If `o` is no greater than the\\n- Mathlib/CategoryTheory/Opposites.lean:23\\n    there are quite a few variations that are needed in practice.\\n- Mathlib/LinearAlgebra/Matrix/ToLin.lean:33\\n    is sometimes enough), `M` and its variations are `R`-modules, `ι`, `κ`, `n` and `m` are finite\\n- Mathlib/Logic/Equiv/Prod.lean:294\\n    /-- A variation on `Equiv.prodCongr` where the equivalence in the second component can depend\\n- Mathlib/Analysis/CStarAlgebra/Spectrum.lean:55\\n    + prove a variation of spectral permanence using `StarAlgHom` instead of `StarSubalgebra`.\\n- Mathlib/Analysis/CStarAlgebra/Spectrum.lean:56\\n    + prove a variation of spectral permanence for `quasispectrum`.\\n- Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Note.lean:109\\n    This determines whether you should use the unital or `NonUnital` variation, and whether your\\n- Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Note.lean:114\\n    This determines whether you should use the standard version or the `Isometric` variation.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*Bdd.*Var\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma|def).*Bdd.*Var' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Var\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3748,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2590 match(es) for 'Var' (via ripgrep):\\n- Mathlib/Computability/TuringMachine/StackTuringMachine.lean:416\\n    def stVar {k : K} (v : σ) (l : List (Γ k)) : StAct K Γ σ k → σ\\n- Mathlib/Computability/TuringMachine/StackTuringMachine.lean:491\\n    TM2.stepAux (stRun s q) v S = TM2.stepAux q (stVar v (S k) s) (update S k (stWrite v (S k) s))\\n- Mathlib/Computability/TuringMachine/StackTuringMachine.lean:534\\n    let v' := stVar v (S k) o\\n- Mathlib/Computability/TuringMachine/StackTuringMachine.lean:542\\n    simp only [Function.update_self]; cases o with simp only [stWrite, stVar, trStAct, TM1.stepAux]\\n- Mathlib/Algebra/Homology/Homotopy.lean:252\\n    /-- Variant of `nullHomotopicMap` where the input consists only of the\\n- Mathlib/Computability/TuringMachine/PostTuringMachine.lean:489\\n    set_option linter.unusedVariables false in\\n- Mathlib/Algebra/Category/Ring/Under/Limits.lean:128\\n    /-- Variant of `Under.equalizerFork'` for algebra maps. This is definitionally equal to\\n- Mathlib/Algebra/Category/Ring/Under/Limits.lean:148\\n    /-- Variant of `Under.equalizerForkIsLimit` for algebra maps. -/\\n- Mathlib/Algebra/Homology/HomotopyCategory/HomComplex.lean:844\\n    /-- Variant of `single_v_eq_zero` where the assumption is `q' ≠ q` rather than `p' ≠ p`. -/\\n- Mathlib/Algebra/GroupWithZero/Basic.lean:29\\n    Various lemmas about `GroupWithZero` and `CommGroupWithZero`.\\n- Mathlib/Algebra/Lie/Sl2.lean:151\\n    set_option linter.unusedVariables false in\\n- Mathlib/Control/Bitraversable/Instances.lean:66\\n    set_option linter.unusedVariables false in\\n- Mathlib/Algebra/Lie/Abelian.lean:377\\n    set_option linter.unusedVariables false in\\n- Mathlib/RingTheory/Localization/AtPrime/Extension.lean:163\\n    set_option linter.unusedSectionVars false in\\n- Mathlib/Algebra/Module/Presentation/Basic.lean:235\\n    /-- Variant of `ofπ` where the vanishing condition is expressed in terms\\n- Mathlib/Algebra/Homology/ShortComplex/Linear.lean:15\\n    `ShortComplex C` is an `R`-linear category. Various homological notions\\n- Mathlib/CategoryTheory/LiftingProperties/PushoutProduct.lean:14\\n    Various equivalent lifting properties involving pushout-products and pullback-homs. For\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:1034\\n    set_option linter.unusedVariables false in\\n- Mathlib/Geometry/Manifold/IsManifold/ExtChartAt.lean:113\\n    /-- Variant of `f.extend_left_inv I`, stated in terms of images. -/\\n- Mathlib/SetTheory/Ordinal/Notation.lean:25\\n    Various operations (addition, subtraction, multiplication, exponentiation)\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:333\\n    /-- Variant of the stereographic projection, for the sphere in an `n + 1`-dimensional inner product\\n- Mathlib/SetTheory/Ordinal/Arithmetic.lean:44\\n    Various other basic arithmetic results are given in `Principal.lean` instead.\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:293\\n    section Variable\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:340\\n    end Variable\\n- Mathlib/Data/Vector/Basic.lean:617\\n    /-- Variant of `List.Vector.prod_set` that multiplies by the inverse of the replaced element -/\\n- Mathlib/Data/Vector/Basic.lean:619\\n    /-- Variant of `List.Vector.sum_set` that subtracts the inverse of the replaced element -/]\\n- Mathlib/SetTheory/Ordinal/Family.lean:15\\n    Various other basic arithmetic results are given in `Principal.lean` instead.\\n- Mathlib/Geometry/Manifold/Notation.lean:116\\n    let type ← whnfR <| ← instantiateMVars <| ← inferType inst.fvar\\n- Mathlib/Geometry/Manifold/Notation.lean:126\\n    let type ← whnfR <| ← instantiateMVars decl.type\\n- Mathlib/Geometry/Manifold/Notation.lean:183\\n    let etype ← whnf <| ← instantiateMVars <| ← inferType e\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?α → ?β → ℝ\"}",
+   "ok": true,
+   "result_chars": 1657,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27169 declarations mentioning Real.\\n- AddGroupSeminorm.toFun   [Mathlib.Analysis.Normed.Group.Seminorm]\\n    The bare function of an `AddGroupSeminorm`.\\n- GroupSeminorm.toFun   [Mathlib.Analysis.Normed.Group.Seminorm]\\n    The bare function of a `GroupSeminorm`.\\n- Dist.dist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Distance between two points\\n- Dist.mk   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Dist.ext   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Dist.ext_iff   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- swap_dist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Bornology.ofDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Construct a bornology from a distance function and metric space axioms.\\n- PseudoEMetricSpace.toPseudoMetricSpaceOfDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    One gets a pseudometric space from an emetric space if the edistance is everywhere finite, by pushing the edistance to reals. We set it up so that the edist and\\n- UniformSpace.ofDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Construct a uniform structure from a distance function and metric space axioms\\n- PseudoMetricSpace.ofDistTopology   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Construct a pseudo-metric space structure whose underlying topological space structure (definitionally) agrees which a pre-existing topology which is compatible\\n- MetricSpace.ofDistTopology   [Mathlib.Topology.MetricSpace.Defs]\\n    Construct a metric space structure whose underlying topological space structure (definitionally) agrees which a pre-existing topology which is compatible with a\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def|structure|class).*[Ff]inite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1459,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5260 match(es) for '(theorem|lemma|def|structure|class).*[Ff]inite' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:326\\n    /-- This lemma follows from the finite correctness proof, the determinant equality, and\\n- Mathlib/Computability/MyhillNerode.lean:58\\n    theorem IsRegular.finite_range_leftQuotient (h : L.IsRegular) :\\n- Mathlib/Computability/MyhillNerode.lean:97\\n    theorem IsRegular.of_finite_range_leftQuotient (h : Set.Finite (Set.range L.leftQuotient)) :\\n- Mathlib/Computability/MyhillNerode.lean:102\\n    **Myhill–Nerode theorem**. A language is regular if and only if the set of left quotients is finite.\\n- Mathlib/Computability/MyhillNerode.lean:104\\n    theorem isRegular_iff_finite_range_leftQuotient :\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:24\\n    lemma mulSupport_along_fiber_finite_of_finite (f : α × β → γ) (a : α) (h : HasFiniteMulSupport f) :\\n- Mathlib/Algebra/Algebra/Epi.lean:79\\n    lemma isEpi_iff_surjective_algebraMap_of_finite [Module.Finite R A] :\\n- Mathlib/Computability/TuringMachine/Computable.lean:15\\n    This file contains the definition of a Turing machine with some finiteness conditions\\n- Mathlib/Computability/TuringMachine/PostTuringMachine.lean:634\\n    theorem exists_enc_dec [Inhabited Γ] [Finite Γ] :\\n- Mathlib/Algebra/MonoidAlgebra/Cardinal.lean:37\\n    lemma cardinalMk_eq_max_lift_of_infinite [Infinite M'] [Nontrivial R] :\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset ?α → ?β\"}",
+   "ok": true,
+   "result_chars": 804,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 12908 declarations mentioning Finset.\\n- Finset.val   [Mathlib.Data.Finset.Defs]\\n    The underlying multiset\\n- Finset.nodup   [Mathlib.Data.Finset.Defs]\\n    `val` contains no duplicates\\n- Finset.Subset.refl   [Mathlib.Data.Finset.Defs]\\n- Finset.Subset.rfl   [Mathlib.Data.Finset.Defs]\\n- Finset.decidableMem   [Mathlib.Data.Finset.Defs]\\n- Finset.eq_of_veq   [Mathlib.Data.Finset.Defs]\\n- Finset.val_inj   [Mathlib.Data.Finset.Defs]\\n- Finset.decidableMem'   [Mathlib.Data.Finset.Defs]\\n- Finset.subset_of_eq   [Mathlib.Data.Finset.Defs]\\n- Finset.decidableEqPiFinset   [Mathlib.Data.Finset.Defs]\\n    decidable equality for functions whose domain is bounded by finsets\\n- Finset.mem_def   [Mathlib.Data.Finset.Defs]\\n- Finset.coe_inj   [Mathlib.Data.Finset.Defs]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finite.*variation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2643,
+   "result_head": "[{\"type\": \"text\", \"text\": \"25 match(es) for 'Finite.*variation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:331\\n    theorem setIntegral_const [CompleteSpace G] [IsFiniteMeasure (μ.variation.restrict s)]\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:334\\n    · have : IsFiniteMeasure (μ.restrict s).variation := by\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:341\\n    (e : E) ⦃s : Set X⦄ [IsFiniteMeasure (μ.variation.restrict s)]\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:376\\n    have : IsFiniteMeasure (μ.variation.restrict s) := ⟨by simpa⟩\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:394\\n    have : IsFiniteMeasure (μ.variation.restrict s) := ⟨by simpa⟩\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:436\\n    [h : IsFiniteMeasure (μ.variation.restrict s)]\\n- Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean:452\\n    [h : IsFiniteMeasure (μ.variation.restrict s)]\\n- Mathlib/MeasureTheory/VectorMeasure/WithDensityVec.lean:221\\n    have : IsFiniteMeasure ((μ.restrict s).variation.restrict p) := by\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:247\\n    instance [IsFiniteMeasure μ.variation] : IsFiniteMeasure (μ.restrict s).variation :=\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:248\\n    isFiniteMeasure_of_le _ variation_restrict_le\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:258\\n    instance [IsFiniteMeasure μ.variation] : IsFiniteMeasure (μ.map φ).variation :=\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:259\\n    isFiniteMeasure_of_le _ variation_map_le\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:325\\n    instance {𝕜 : Type*} [NormedField 𝕜] [NormedSpace 𝕜 V] {c : 𝕜} [IsFiniteMeasure μ.variation] :\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:326\\n    IsFiniteMeasure (c • μ).variation := by\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:330\\n    instance [Finite X] : IsFiniteMeasure μ.variation where\\n- Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean:338\\n    instance {x : X} {v : V} : IsFiniteMeasure (VectorMeasure.dirac x v).variation := by\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:184\\n    instance [IsFiniteMeasure μ.variation] :\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:185\\n    IsFiniteMeasure (μ.transpose B).variation :=\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:186\\n    isFiniteMeasure_of_le _ (variation_transpose_le μ B)\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:448\\n    theorem integral_const [CompleteSpace G] [IsFiniteMeasure μ.variation] (c : E) :\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2302,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Variation/Basic.lean  (lines 1–50 of 444):\\n     1  /-\\n     2  Copyright (c) 2025 Oliver Butterley. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Oliver Butterley, Yoh Tanimoto\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Normed.Module.Basic\\n     9  public import Mathlib.MeasureTheory.Measure.Dirac\\n    10  public import Mathlib.MeasureTheory.VectorMeasure.Variation.Defs\\n    11  \\n    12  /-!\\n    13  # Properties of variation\\n    14  \\n    15  We prove basic properties of `variation` for `μ : VectorMeasure X V` in `ENormedAddCommMonoid V` on\\n    16  `MeasurableSpace X`. It is defined as the supremum over partitions `{Eᵢ}` of `E`, of the quantity\\n    17  `∑ᵢ, ‖μ(Eᵢ)‖`. This definition allows one to define the integral against\\n    18  such vector-valued measures.\\n    19  \\n    20  ## Main results\\n    21  \\n    22  * `enorm_measure_le_variation`: `‖μ E‖ₑ ≤ variation μ E`.\\n    23  * `variation_zero`: `(0 : VectorMeasure X V).variation = 0`.\\n    24  * `variation_neg`: `(-μ).variation = μ.variation`.\\n    25  * `absolutelyContinuous`: `μ ≪ᵥ μ.variation`.\\n    26  * `ennrealVariation_eq_self`: if `μ : VectorMeasure X ℝ≥0∞` then `μ.ennrealVariation = μ`.\\n    27  \\n    28  ## References\\n    29  \\n    30  * [Walter Rudin, Real and Complex Analysis.][Rud87]\\n    31  \\n    32  -/\\n    33  \\n    34  public section\\n    35  \\n    36  open Finset Set\\n    37  open scoped ENNReal NNReal\\n    38  \\n    39  namespace MeasureTheory.VectorMeasure\\n    40  \\n    41  variable {X V : Type*} {mX : MeasurableSpace X}\\n    42  \\n    43  /-- The sum of a vector measure `μ` on a `Finpartition` of `Subtype MeasurableSet` equals `μ s`. -/\\n    44  lemma sum_finpartition [AddCommMonoid V] [TopologicalSpace V] [T2Space V]\\n    45      (μ : VectorMeasure X V) {s : Set X} {hs : MeasurableSet s}\\n    46      (P : Finpartition (⟨s, hs⟩ : Subtype MeasurableSet)) : ∑ p ∈ P.parts, μ p.val = μ s := by\\n    47    rw [← μ.of_biUnion_finset (P.pairwiseDisjoint_apply (fun _ _ => rfl) rfl) (fun p _ => p.prop),\\n    48        ← Finset.sup_set_eq_biUnion, P.sup_parts_apply (fun _ _ => rfl) rfl]\\n    49  \\n    50  section Basic\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : ?α → ?β\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ?α → ?β': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Lipschitz\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Lipschitz': unknown identifier 'Lipschitz'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*Finite.*sum\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1790,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for '(theorem|lemma).*Finite.*sum' (via ripgrep):\\n- Mathlib/Algebra/BigOperators/Finsupp/Basic.lean:450\\n    theorem equivFunOnFinite_symm_eq_sum [Fintype α] [AddCommMonoid M] (f : α → M) :\\n- Mathlib/Algebra/BigOperators/Finsupp/Basic.lean:458\\n    theorem equivFunOnFinite_symm_sum [Fintype α] [AddCommMonoid M] (f : α → M) :\\n- Mathlib/Algebra/BigOperators/Finprod.lean:422\\n    theorem hasFiniteSupport_of_finsum_eq_one {R : Type*} [NonAssocSemiring R] {f : α → R}\\n- Mathlib/Topology/LocallyFinite.lean:200\\n    theorem locallyFinite_sum {f : ι ⊕ ι' → Set X} :\\n- Mathlib/Topology/LocallyFinite.lean:205\\n    theorem LocallyFinite.sumElim {g : ι' → Set X} (hf : LocallyFinite f) (hg : LocallyFinite g) :\\n- Mathlib/Topology/Algebra/InfiniteSum/Order.lean:321\\n    theorem Finite.of_summable_const [AddCommGroup α] [LinearOrder α] [IsOrderedAddMonoid α]\\n- Mathlib/Topology/Algebra/InfiniteSum/Order.lean:333\\n    theorem Set.Finite.of_summable_const [AddCommGroup α] [LinearOrder α] [IsOrderedAddMonoid α]\\n- Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean:42\\n    lemma sum_sfiniteSeq (μ : Measure α) [h : SFinite μ] : sum (sfiniteSeq μ) = μ :=\\n- Mathlib/Topology/Algebra/Module/Multilinear/Bounded.lean:27\\n    proving theorems without a `[Finite ι]` assumption saves us some typeclass searches here and there.\\n- Mathlib/Probability/Kernel/Defs.lean:368\\n    theorem kernel_sum_seq (κ : Kernel α β) [h : IsSFiniteKernel κ] : Kernel.sum (seq κ) = κ :=\\n- Mathlib/Probability/Kernel/Defs.lean:401\\n    theorem isSFiniteKernel_sum_of_denumerable [Denumerable ι] {κs : ι → Kernel α β}\\n- Mathlib/Analysis/Analytic/CPolynomialDef.lean:318\\n    theorem HasFiniteFPowerSeriesOnBall.sum (h : HasFiniteFPowerSeriesOnBall f p x n r) {y : E}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*Finite.*metric\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*Finite.*metric' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LipschitzWith\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2585,
+   "result_head": "[{\"type\": \"text\", \"text\": \"346 match(es) for 'LipschitzWith' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean:103\\n    LipschitzWith.integrable_comp_iff_of_antilipschitz L.lipschitz hL L.map_zero]\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:609\\n    LipschitzWith (Real.toNNReal C) (setToL1 hT) :=\\n- Mathlib/MeasureTheory/Integral/CircleIntegral.lean:139\\n    theorem lipschitzWith_circleMap (c : ℂ) (R : ℝ) : LipschitzWith (Real.nnabs R) (circleMap c R) :=\\n- Mathlib/MeasureTheory/Measure/MeasuredSets.lean:57\\n    We cannot state this in terms of `LipschitzWith`, because `ℝ≥0∞` is not a `PseudoEMetricSpace`. -/\\n- Mathlib/MeasureTheory/Measure/MeasuredSets.lean:80\\n    LipschitzWith 1 (fun s : MeasuredSets μ ↦ μ.real s) :=\\n- Mathlib/MeasureTheory/Measure/Hausdorff.lean:731\\n    namespace LipschitzWith\\n- Mathlib/MeasureTheory/Measure/Hausdorff.lean:737\\n    theorem hausdorffMeasure_image_le (h : LipschitzWith K f) {d : ℝ} (hd : 0 ≤ d) (s : Set X) :\\n- Mathlib/MeasureTheory/Measure/Hausdorff.lean:741\\n    end LipschitzWith\\n- Mathlib/MeasureTheory/Measure/FiniteMeasure.lean:470\\n    LipschitzWith μ.mass fun f : Ω →ᵇ ℝ≥0 ↦ μ.testAgainstNN f := by\\n- Mathlib/MeasureTheory/Measure/FiniteMeasure.lean:710\\n    have lip : LipschitzWith 1 ((↑) : ℝ≥0 → ℝ) := NNReal.isometry_coe.lipschitz\\n- Mathlib/MeasureTheory/Measure/Portmanteau.lean:692\\n    ∀ f : Ω → ℝ, (∃ (C : ℝ), ∀ x y, dist (f x) (f y) ≤ C) → (∃ L, LipschitzWith L f) →\\n- Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean:282\\n    LipschitzWith 1 fun f : Ω →ᵇ ℝ≥0 ↦ μ.toFiniteMeasure.testAgainstNN f :=\\n- Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean:303\\n    (Finset.prod_le_prod' fun i _ => (LipschitzWith.eval i).ediam_image_le s)\\n- Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean:186\\n    (hF_lip : ∃ L, LipschitzWith L F),\\n- Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean:193\\n    · simp only [LipschitzWith.zero_iff] at hF_lip\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean:151\\n    have hlip : LipschitzWith 1 (RingHom.comp ψ ι.symm.toRingHom) := by\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean:152\\n    change LipschitzWith 1 (ψ ∘ ι.symm)\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Basic.lean:153\\n    apply LipschitzWith.of_dist_le_mul\\n- Mathlib/Analysis/Normed/Algebra/Unitization.lean:153\\n    LipschitzWith 2 (Unitization.addEquiv 𝕜 A) := by\\n- Mathlib/MeasureTheory/Function/LpSpace/Basic.lean:654\\n    theorem LipschitzWith.comp_memLp {α E F} {K} [MeasurableSpace α] {μ : Measure α}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"analysis.*Bdd\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'analysis.*Bdd' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"totalVariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2847,
+   "result_head": "[{\"type\": \"text\", \"text\": \"28 match(es) for 'totalVariation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singularPart_totalVariation (s : SignedMeasure α) (μ : Measure α) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:131\\n    (s.singularPart μ).totalVariation =\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:140\\n    rw [totalVariation, this]\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:144\\n    rw [mutuallySingular_ennreal_iff, singularPart_totalVariation,\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:215\\n    rw [mutuallySingular_ennreal_iff, totalVariation_mutuallySingular_iff,\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:253\\n    rw [VectorMeasure.equivMeasure.right_inv, totalVariation_mutuallySingular_iff] at htμ\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:277\\n    rw [mutuallySingular_ennreal_iff, totalVariation_mutuallySingular_iff,\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/RadonNikodym.lean:32\\n    totalVariation_absolutelyContinuous_iff] at h\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:460\\n    def totalVariation (s : SignedMeasure α) : Measure α :=\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:463\\n    theorem totalVariation_zero : (0 : SignedMeasure α).totalVariation = 0 := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:464\\n    simp [totalVariation, toJordanDecomposition_zero]\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:466\\n    theorem totalVariation_neg (s : SignedMeasure α) : (-s).totalVariation = s.totalVariation := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:467\\n    simp [totalVariation, toJordanDecomposition_neg, add_comm]\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:469\\n    theorem null_of_totalVariation_zero (s : SignedMeasure α) {i : Set α}\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:470\\n    (hs : s.totalVariation i = 0) : s i = 0 := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:471\\n    rw [totalVariation, Measure.coe_add, Pi.add_apply, add_eq_zero] at hs\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:478\\n    s ≪ᵥ μ ↔ s.totalVariation ≪ μ.ennrealToMeasure := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:482\\n    rw [totalVariation, Measure.add_apply, hpos, hneg, toMeasureOfZeroLE_apply _ _ _ hS₁,\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:489\\n    exact null_of_totalVariation_zero s (h hS₂)\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:491\\n    theorem totalVariation_absolutelyContinuous_iff (s : SignedMeasure α) (μ : Measure α) :\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.sum ?s dist\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Finset.sum ?s dist'.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Var.*function\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*Var.*function' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAboveWithValueAt\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'BddAboveWithValueAt': unknown identifier 'BddAboveWithValueAt'\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove (Set.range ?f)\"}",
+   "ok": true,
+   "result_chars": 946,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 187 declarations mentioning BddAbove and Set.range.\\n- BddAbove.range_comp_right   [Mathlib.Order.Bounds.Basic]\\n    If the range of a function `g` is bounded above, then `g ∘ f` is bounded above for all functions `f`.\\n- bbdAbove_range_left_of_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_right_of_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_sup   [Mathlib.Order.Bounds.Basic]\\n- bbdAbove_range_sup_iff   [Mathlib.Order.Bounds.Basic]\\n- BddAbove.range_mono   [Mathlib.Order.Bounds.Image]\\n- BddAbove.range_comp   [Mathlib.Order.Bounds.Image]\\n    **Alias** of `BddAbove.range_comp_left`.\\n- BddAbove.range_comp_left   [Mathlib.Order.Bounds.Image]\\n- bddAbove_range_pi   [Mathlib.Order.Bounds.Image]\\n- bddAbove_range_prod   [Mathlib.Order.Bounds.Image]\\n- StrictMono.not_bddAbove_range_of_wellFoundedLT   [Mathlib.Order.WellFounded]\\n- Set.nonempty_iInter_Ici_iff   [Mathlib.Data.Set.Lattice]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Finset.*sum.*dist\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Finset.*sum.*dist' under Mathlib/.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.sort\"}",
+   "ok": true,
+   "result_chars": 774,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 33 declarations mentioning Finset.sort.\\n- Finset.sort   [Mathlib.Data.Finset.Sort]\\n    `sort s` constructs a sorted list from the unordered set `s`. (Uses merge sort algorithm.)\\n- Finset.sort_range   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_nodup   [Mathlib.Data.Finset.Sort]\\n- Finset.pairwise_sort   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_perm_toList   [Mathlib.Data.Finset.Sort]\\n- Finset.length_sort   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_empty   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_eq   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_toFinset   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_singleton   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_val   [Mathlib.Data.Finset.Sort]\\n- Finset.sort_mk   [Mathlib.Data.Finset.Sort]\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.sum\"}",
+   "ok": true,
+   "result_chars": 738,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 354 declarations mentioning List.sum.\\n- List.sum   [Init.Data.List.Basic]\\n    Computes the sum of the elements of a list.  Examples: * `[a, b, c].sum = a + (b + (c + 0))` * `[1, 2, 5].sum = 8`\\n- List.sum_nil   [Init.Data.List.Basic]\\n- List.sum_cons   [Init.Data.List.Basic]\\n- List.sum_eq_foldr   [Init.Data.List.Basic]\\n- List.length_flatten   [Init.Data.List.Lemmas]\\n- List.length_flatMap   [Init.Data.List.Lemmas]\\n- List.sum_singleton   [Init.Data.List.Lemmas]\\n- List.sum_eq_foldl   [Init.Data.List.Lemmas]\\n- List.sum_reverse   [Init.Data.List.Lemmas]\\n- List.sum_append   [Init.Data.List.Lemmas]\\n- List.countP_flatten   [Init.Data.List.Count]\\n- List.count_flatten   [Init.Data.List.Count]\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.zipWith\"}",
+   "ok": true,
+   "result_chars": 946,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 75 declarations mentioning List.zipWith.\\n- List.zipWith   [Init.Data.List.Basic]\\n    Applies a function to the corresponding elements of two lists, stopping at the end of the shorter list.  `O(min |xs| |ys|)`.  Examples: * `[1, 2].zipWith (· + ·\\n- List.zipWith_nil_left   [Init.Data.List.Basic]\\n- List.zipWith_nil_right   [Init.Data.List.Basic]\\n- List.zipWith_cons_cons   [Init.Data.List.Basic]\\n- Lean.Omega.IntList.mul_def   [Init.Omega.IntList]\\n- List.zipWithM'_eq_mapM_id_zipWith   [Init.Data.List.Monadic]\\n- List.zipWith_eq_zipWithTR   [Init.Data.List.Impl]\\n- List.zipWith_self   [Init.Data.List.Zip]\\n- List.zip_eq_zipWith   [Init.Data.List.Zip]\\n- List.zipWith_comm   [Init.Data.List.Zip]\\n- List.zipWith_replicate'   [Init.Data.List.Zip]\\n    See also `List.zipWith_replicate` in `Init.Data.List.TakeDrop` for a generalization with different lengths.\\n- List.tail_zipWith   [Init.Data.List.Zip]\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.get\"}",
+   "ok": true,
+   "result_chars": 941,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 93 declarations mentioning List.get.\\n- List.get   [Init.Prelude]\\n    Returns the element at the provided index, counting from `0`.  In other words, for `i : Fin as.length`, `as.get i` returns the `i`'th element of the list `as`. \\n- List.sizeOf_get   [Init.Data.List.BasicAux]\\n- List.get_mem   [Init.Data.List.Lemmas]\\n- List.get_cons_succ'   [Init.Data.List.Lemmas]\\n- List.get_of_mem   [Init.Data.List.Lemmas]\\n- List.mem_iff_get   [Init.Data.List.Lemmas]\\n- List.get_eq_getElem   [Init.Data.List.Lemmas]\\n- List.ext_get   [Init.Data.List.Lemmas]\\n- List.get_mk_zero   [Init.Data.List.Lemmas]\\n- List.get_of_eq   [Init.Data.List.Lemmas]\\n    If one has `l.get i` in an expression (with `i : Fin l.length`) and `h : l = l'`, `rw [h]` will give a \\\"motive is not type correct\\\" error, as it cannot rewrite \\n- List.get_cons_zero   [Init.Data.List.Lemmas]\\n- List.get_cons_succ   [Init.Data.List.Lemmas]\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.card\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1676 declarations mentioning Finset.card.\\n- Finset.card   [Mathlib.Data.Finset.Card]\\n    `s.card` is the number of elements of `s`, aka its cardinality.  The notation `#s` can be accessed in the `Finset` locale.\\n- Finset.card_range   [Mathlib.Data.Finset.Card]\\n- Finset.card_def   [Mathlib.Data.Finset.Card]\\n- Finset.card_mono   [Mathlib.Data.Finset.Card]\\n- Finset.card_strictMono   [Mathlib.Data.Finset.Card]\\n- Finset.card_val   [Mathlib.Data.Finset.Card]\\n- Finset.length_toList   [Mathlib.Data.Finset.Card]\\n- Finset.card_empty   [Mathlib.Data.Finset.Card]\\n- Finset.card_le_one_of_subsingleton   [Mathlib.Data.Finset.Card]\\n    A `Finset` of a subsingleton type has cardinality at most one.\\n- Finset.Nonempty.card_ne_zero   [Mathlib.Data.Finset.Card]\\n    **Alias** of the reverse direction of `Finset.card_ne_zero`.\\n- Finset.card_mk   [Mathlib.Data.Finset.Card]\\n- Finset.card_ne_zero   [Mathlib.Data.Finset.Card]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.length\"}",
+   "ok": true,
+   "result_chars": 1442,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 2231 declarations mentioning List.length.\\n- List.length   [Init.Prelude]\\n    The length of a list.  This function is overridden in the compiler to `lengthTR`, which uses constant stack space.  Examples: * `([] : List String).length = 0` \\n- List.get   [Init.Prelude]\\n    Returns the element at the provided index, counting from `0`.  In other words, for `i : Fin as.length`, `as.get i` returns the `i`'th element of the list `as`. \\n- List.length_eq_lengthTR   [Init.Data.List.Basic]\\n- List.findFinIdx?   [Init.Data.List.Basic]\\n    Returns the index of the first element for which `p` returns `true`, or `none` if there is no such element. The index is returned as a `Fin`, which guarantees t\\n- List.finIdxOf?   [Init.Data.List.Basic]\\n    Returns the index of the first element equal to `a`, or the length of the list if no element is equal to `a`. The index is returned as a `Fin`, which guarantees\\n- List.length_nil   [Init.Data.List.Basic]\\n- List.length_replicate   [Init.Data.List.Basic]\\n- List.length_singleton   [Init.Data.List.Basic]\\n- List.extract   [Init.Data.List.Basic]\\n    Returns the slice of `l` from indices `start` (inclusive) to `stop` (exclusive).  Examples: * [0, 1, 2, 3, 4, 5].extract 1 2 = [1] * [0, 1, 2, 3, 4, 5].extract \\n- List.length_dropLast_cons   [Init.Data.List.Basic]\\n- List.length_set   [Init.Data.List.Basic]\\n- List.drop_eq_nil_of_le   [Init.Data.List.Basic]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.Nodup\"}",
+   "ok": true,
+   "result_chars": 817,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 320 declarations mentioning List.Nodup.\\n- List.Nodup   [Init.Data.List.Basic]\\n    The list has no duplicates: it contains every element at most once.  It is defined as `Pairwise (· ≠ ·)`: each element is unequal to all other elements.\\n- List.nodupDecidable   [Init.Data.List.Basic]\\n- List.nodup_nil   [Init.Data.List.Pairwise]\\n- List.Nodup.sublist   [Init.Data.List.Pairwise]\\n- List.Sublist.nodup   [Init.Data.List.Pairwise]\\n- List.nodup_iff_pairwise_ne   [Init.Data.List.Pairwise]\\n- List.nodup_replicate   [Init.Data.List.Pairwise]\\n- List.nodup_cons   [Init.Data.List.Pairwise]\\n- List.nodup_iff_count   [Init.Data.List.Pairwise]\\n- List.getD_inj   [Init.Data.List.Pairwise]\\n- List.Nodup.count   [Init.Data.List.Pairwise]\\n- List.nodup_append   [Init.Data.List.Pairwise]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

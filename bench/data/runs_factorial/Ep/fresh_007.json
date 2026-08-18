@@ -1,0 +1,130 @@
+{
+ "task_id": "fresh_007",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:15:23Z",
+ "wall_s": 63.2,
+ "transcript_stats": {
+  "turns": 11,
+  "assistant_turns": 9,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 3,
+   "mcp__formal__decl_grep": 3,
+   "mcp__formal__decl_read": 4
+  },
+  "tokens_in": 74,
+  "tokens_out": 5114,
+  "cost_usd": 0.0454099
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 650 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- strictMono_id   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.strictMono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.strictMono_coe   [Mathlib.Order.Monotone.Defs]\\n- Function.const_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- strictMonoOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.monotone   [Mathlib.Order.Monotone.Defs]\\n- Monotone.strictMono_of_injective   [Mathlib.Order.Monotone.Defs]\\n- Function.update_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.imp   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono ?f → StrictMono (fun x => ?a * ?f x)\"}",
+   "ok": true,
+   "result_chars": 546,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 35 declarations mentioning HMul.hMul and StrictMono.\\n- StrictMono.const_mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n- Monotone.mul_strictMono'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of a monotone function and a strictly monotone function is strictly monotone.\\n- StrictMono.mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of two strictly monotone functions is strictly monotone.\\n- StrictMono.const_mul   [Mathlib.Algebra.Order.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) StrictMono\\\\.const_mul\"}",
+   "ok": true,
+   "result_chars": 535,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma) StrictMono\\\\\\\\.const_mul' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:271\\n    theorem StrictMono.const_mul_of_neg [ExistsAddOfLE R] [PosMulStrictMono R]\\n- Mathlib/Algebra/Order/GroupWithZero/Basic.lean:611\\n    lemma StrictMono.const_mul [PosMulStrictMono M₀] (hf : StrictMono f) (ha : 0 < a) :\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1227\\n    theorem StrictMono.const_mul' (hf : StrictMono f) (c : α) : StrictMono fun x => c * f x :=\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 611, \"n\": 10}",
+   "ok": true,
+   "result_chars": 782,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 611–620 of 1480):\\n   611  lemma StrictMono.const_mul [PosMulStrictMono M₀] (hf : StrictMono f) (ha : 0 < a) :\\n   612      StrictMono fun x ↦ a * f x := (strictMono_mul_left_of_pos ha).comp hf\\n   613  \\n   614  lemma StrictAnti.mul_const [MulPosStrictMono M₀] (hf : StrictAnti f) (ha : 0 < a) :\\n   615      StrictAnti fun x ↦ f x * a := (strictMono_mul_right_of_pos ha).comp_strictAnti hf\\n   616  \\n   617  lemma StrictAnti.const_mul [PosMulStrictMono M₀] (hf : StrictAnti f) (ha : 0 < a) :\\n   618      StrictAnti fun x ↦ a * f x := (strictMono_mul_left_of_pos ha).comp_strictAnti hf\\n   619  \\n   620  lemma StrictMono.mul_monotone [PosMulMono M₀] [MulPosStrictMono M₀] (hf : StrictMono f)\\n\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean\", \"line\": 1227, \"n\": 5}",
+   "ok": true,
+   "result_chars": 380,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean  (lines 1227–1231 of 1477):\\n  1227  theorem StrictMono.const_mul' (hf : StrictMono f) (c : α) : StrictMono fun x => c * f x :=\\n  1228    fun _ _ ab => mul_lt_mul_right (hf ab) c\\n  1229  \\n  1230  @[to_additive const_add]\\n  1231  theorem StrictMonoOn.const_mul' (hf : StrictMonoOn f s) (c : α) :\\n\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PosMulStrictMono\"}",
+   "ok": true,
+   "result_chars": 1299,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 167 declarations mentioning PosMulStrictMono.\\n- PosMulStrictMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    Typeclass for strict monotonicity of multiplication by positive elements on the left, namely `a₁ < a₂ → b * a₁ < b * a₂` if `0 < b`.  You should usually not use\\n- MulLeftStrictMono.toPosMulStrictMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulStrictMono.toMulPosStrictMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- posMulStrictMono_iff_mulPosStrictMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulReflectLE.toPosMulStrictMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulStrictMono.toPosMulReflectLE   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- posMulStrictMono_iff_posMulReflectLE   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- mul_lt_mul_of_pos_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulStrictMono.mk   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulStrictMono.mul_lt_mul_of_pos_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    Do not use this. Use `_root_.mul_lt_mul_of_pos_left` instead.\\n- posMulStrictMono_iff   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- mul_lt_mul_iff_of_pos_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    **Alias** of `mul_lt_mul_iff_right₀`.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) StrictMono\"}",
+   "ok": true,
+   "result_chars": 401,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(def|structure) StrictMono' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:86\\n    def StrictMono (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:99\\n    def StrictMonoOn (f : α → β) (s : Set α) : Prop :=\\n- Mathlib/Order/Hom/Set.lean:118\\n    protected noncomputable def StrictMonoOn.orderIso {α β} [LinearOrder α] [Preorder β] (f : α → β)\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 86, \"n\": 8}",
+   "ok": true,
+   "result_chars": 417,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 86–93 of 583):\\n    86  def StrictMono (f : α → β) : Prop :=\\n    87    ∀ ⦃a b⦄, a < b → f a < f b\\n    88  \\n    89  to_dual_insert_cast StrictMono := forall_comm.eq\\n    90  \\n    91  /-- A function `f` is strictly antitone if `a < b` implies `f b < f a`. -/\\n    92  def StrictAnti (f : α → β) : Prop :=\\n    93    ∀ ⦃a b⦄, a < b → f b < f a\\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class PosMulStrictMono\"}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class PosMulStrictMono' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Defs.lean:108\\n    @[mk_iff] class PosMulStrictMono : Prop where\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean\", \"line\": 108, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1053,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean  (lines 108–122 of 472):\\n   108  @[mk_iff] class PosMulStrictMono : Prop where\\n   109    /-- Do not use this. Use `_root_.mul_lt_mul_of_pos_left` instead. -/\\n   110    protected mul_lt_mul_of_pos_left ⦃a : α⦄ (ha : 0 < a) ⦃b c : α⦄ (hbc : b < c) : a * b < a * c\\n   111  \\n   112  /-- Typeclass for strict reverse monotonicity of multiplication by nonnegative elements on\\n   113  the left, namely `b * a₁ < b * a₂ → a₁ < a₂` if `0 ≤ b`.\\n   114  \\n   115  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n   116  `IsStrictOrderedRing`. -/\\n   117  @[mk_iff] class PosMulReflectLT : Prop extends ContravariantClass α≥0 α (fun x y => x * y) (· < ·)\\n   118  \\n   119  /-- Typeclass for reverse monotonicity of multiplication by positive elements on the left,\\n   120  namely `b * a₁ ≤ b * a₂ → a₁ ≤ a₂` if `0 < b`.\\n   121  \\n   122  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem strictMono_const_mul_left {M : Type*} [PosMulStrictMono M] {α : Type*} [Preorder α]\n    {f : α → M} (hf : StrictMono f) {a : M} (ha : 0 < a) :\n    StrictMono fun x => a * f x := sorry"
+}

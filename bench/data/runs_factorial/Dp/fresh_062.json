@@ -1,0 +1,236 @@
+{
+ "task_id": "fresh_062",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:28:52Z",
+ "wall_s": 96.0,
+ "transcript_stats": {
+  "turns": 24,
+  "assistant_turns": 12,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__brain_search": 9,
+   "mcp__wikibrain__brain_transfer": 2,
+   "decl_exists": 1,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_snippets": 2
+  },
+  "tokens_in": 98,
+  "tokens_out": 8222,
+  "cost_usd": 0.09018364999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Eisenstein series modular form\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 5331,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Eisenstein series modular form\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\",\\\"label\\\":\\\"EisensteinSeries\\\"}]},{\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"modular form\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q170198\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Series (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1211071\\\",\\\"label\\\":\\\"Equivalence class\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"label\\\":\\\"Discrete mathematics\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"label\\\":\\\"Sequence\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q172891\\\",\\\"label\\\":\\\"Euclid's Elements\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q185264\\\",\\\"label\\\":\\\"History of mathematics\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q200227\\\",\\\"label\\\":\\\"Negative number\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":36,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\",\\\"via_cell\\\":\\\"cell:Q170198\\\",\\\"cell_label\\\":\\\"Series (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]},{\\\"decl\\\":\\\"ModularForm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"structure\\\",\\\"code\\\":\\\"structure ModularForm extends SlashInvariantForm Γ k where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/Basic.html#ModularFo"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"upper half-plane\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3009,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half-plane\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q632814\\\",\\\"label\\\":\\\"Riemannian manifold\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q11518\\\",\\\"label\\\":\\\"Pythagorean theorem\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q838611\\\",\\\"label\\\":\\\"Ball (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q134787\\\",\\\"label\\\":\\\"Analytic geometry\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q62912\\\",\\\"label\\\":\\\"Cartesian coordinate system\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q11476\\\",\\\"label\\\":\\\"Kinematics\\\",\\\"w\\\":6}],\\\"returned\\\":12,\\\"total\\\":100,\\\"withheld_by_shard\\\":403,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"EuclideanSpace\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev EuclideanSpace (𝕜 : Type*) (n : Type*) : Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/PiL2.html#EuclideanSpace\\\",\\\"via_cell\\\":\\\"cell:Q17295\\\",\\\"cell_label\\\":\\\"Euclidean space\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace\\\",\\\"label\\\":\\\"InnerProductSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/PiL2\\\",\\\"label\\\":\\\"PiL2\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"bounded at cusp modular form\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2975,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded at cusp modular form\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"modular form\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"label\\\":\\\"General linear group\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"label\\\":\\\"Real number\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"label\\\":\\\"String theory\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"label\\\":\\\"Matrix multiplication\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"label\\\":\\\"Scheme (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":40,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"ModularForm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"structure\\\",\\\"code\\\":\\\"structure ModularForm extends SlashInvariantForm Γ k where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/Basic.html#ModularForm\\\",\\\"via_cell\\\":\\\"cell:Q870797\\\",\\\"cell_label\\\":\\\"modular form\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1313257\"}",
+   "ok": true,
+   "result_chars": 2711,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1313257\\\",\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"f\\\":33816,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1313257\\\",\\\"anchor\\\":\\\"Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\"],\\\"f\\\":33816,\\\"xy\\\":[116.5,105.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"series representing modular forms\\\",\\\"slug\\\":\\\"Eisenstein_series\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:eisensteinSeries\\\",\\\"label\\\":\\\"eisensteinSeries\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.EisensteinSeries.Defs\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"An Eisenstein series of weight `k` and level `Γ(N)`, with congruence condition `a`. \\\",\\\"code\\\":\\\"def _root_.eisensteinSeries (k : ℤ) (z : ℍ) : ℂ := ∑' x : gammaSet N 1 a, eisSummand k x z\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Defs\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/Eisenstein+series\\\",\\\"qid\\\":\\\"Q1313257\\\",\\\"snippet\\\":\\\"The _Eisenstein series_ $G_{2k}$ for $k \\\\\\\\geq 2$ are series expressions for certain modular forms.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/EisensteinSeries\\\",\\\"label\\\":\\\"EisensteinSeries\\\"}],\\\"synapses_summary\\\":{\\\"links\\\":4,\\\"depends\\\":36},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q287419\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q694114\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1211071\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"upper half plane Lean\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper half plane Lean\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ℍ upper half plane\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ℍ upper half plane\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"E2 Eisenstein series weight\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"E2 Eisenstein series weight\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded cusp infinity\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6f47fff38c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6f47fff38c9b\",\"timestamp\":\"2026-08-08T03:29:05Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"weight 2 cusp form at infinity\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6f577a7e8c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6f577a7e8c9b\",\"timestamp\":\"2026-08-08T03:29:07Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"UpperHalfPlane\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1896,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"UpperHalfPlane\\\",\\\"decl\\\":\\\"UpperHalfPlane\\\",\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q209306\\\",\\\"label\\\":\\\"Hyperbolic geometry\\\",\\\"aka\\\":[\\\"Gauss-Bolyai-Lobachevsky Space\\\",\\\"Hyperbolic Geometry\\\",\\\"Lobachevskii geometry\\\",\\\"UpperHalfPlane.dist_eq\\\",\\\"hyperbolic geometry\\\",\\\"Recognition and constructive membership for discrete subgroups of $\\\\\\\\mathrm{SL}_2(\\\\\\\\mathbb{R})$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"},{\\\"id\\\":\\\"cell:Q595742\\\",\\\"label\\\":\\\"Möbius transformation\\\",\\\"aka\\\":[\\\"Definition:Möbius Transformation\\\",\\\"Linear Fractional Transformation\\\",\\\"Mobius transformation\\\",\\\"UpperHalfPlane.smulAux'\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"},{\\\"id\\\":\\\"cell:Q233858\\\",\\\"label\\\":\\\"Non-Euclidean geometry\\\",\\\"aka\\\":[\\\"Definition:Non-Euclidean Geometry\\\",\\\"Non-Euclidean Geometry\\\",\\\"UpperHalfPlane.instMetricSpace\\\",\\\"A method to construct exponential families by representation theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"aka\\\":[\\\"Structure and bases of modular space sequences $(M_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$ and $(S_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$. Part I : Strong modular units\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane.SLAction\\\",\\\"label\\\":\\\"UpperHalfPlane.SLAction\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:UpperHalfPlane\"}",
+   "ok": true,
+   "result_chars": 1973,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:UpperHalfPlane\\\",\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"anchor\\\":\\\"decl:Mathlib:UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"supercells\\\":[\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\"],\\\"f\\\":128,\\\"xy\\\":[57.7,-496.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"The open upper half plane, denoted as `ℍ` within the `UpperHalfPlane` namespace \\\",\\\"code\\\":\\\"structure UpperHalfPlane where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1808.10357#1.1\\\",\\\"label\\\":\\\"Structure and bases of modular space sequences $(M_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$ and $(S_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$. Part I : Strong modular units\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1808.10357\\\",\\\"ref\\\":\\\"1.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Complex\\\",\\\"label\\\":\\\"Complex\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Complex/UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":2,\\\"invocation\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q185264\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q209306\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:Q233858\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"BddAbove bounded\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6f735c6b8c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6f735c6b8c9b\",\"timestamp\":\"2026-08-08T03:29:12Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 12,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"UpperHalfPlane\\\", \\\"eisensteinSeries\\\", \\\"BddAbove\\\", \\\"BddAtTop\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Filter atTop tendsto infinity\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6f8c3ed68c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6f8c3ed68c9b\",\"timestamp\":\"2026-08-08T03:29:16Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Bornology bddAboveFilter\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Bornology bddAboveFilter\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"modular form cusp condition\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2974,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"modular form cusp condition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q870797\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"modular form\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q524607\\\",\\\"label\\\":\\\"General linear group\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"label\\\":\\\"Real number\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"label\\\":\\\"String theory\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1049914\\\",\\\"label\\\":\\\"Matrix multiplication\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"label\\\":\\\"Scheme (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":40,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"ModularForm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ModularForms.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"structure\\\",\\\"code\\\":\\\"structure ModularForm extends SlashInvariantForm Γ k where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/Basic.html#ModularForm\\\",\\\"via_cell\\\":\\\"cell:Q870797\\\",\\\"cell_label\\\":\\\"modular form\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms\\\",\\\"label\\\":\\\"ModularForms\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/ModularForms/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"holomorphic function bounded Limsup\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6fb04ff08c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6fb04ff08c9b\",\"timestamp\":\"2026-08-08T03:29:21Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"UpperHalfPlane im imaginary part\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b6ff89e5a8c9b\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b6ff89e5a8c9b\",\"timestamp\":\"2026-08-08T03:29:33Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.Bounded eventually\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.Bounded eventually\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q1313257\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 5979,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q287419\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"links\\\",\\\"src\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"dst\\\":\\\"xref:nlab:j-invariant\\\",\\\"prov\\\":38,\\\"evidence\\\":{\\\"context\\\":\\\"body\\\"}},{\\\"kind\\\":\\\"links\\\",\\\"src\\\":\\\"xref:nlab:j-invariant\\\",\\\"dst\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"prov\\\":38,\\\"evidence\\\":{\\\"context\\\":\\\"body\\\"}}]},{\\\"id\\\":\\\"cell:Q694114\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"links\\\",\\\"src\\\":\\\"xref:nlab:Bernoulli number\\\",\\\"dst\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"prov\\\":38,\\\"evidence\\\":{\\\"context\\\":\\\"body\\\"}},{\\\"kind\\\":\\\"links\\\",\\\"src\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"dst\\\":\\\"xref:nlab:Bernoulli number\\\",\\\"prov\\\":38,\\\"evidence\\\":{\\\"context\\\":\\\"body\\\"}}]},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q203066\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Set\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q11205\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Int\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q11563\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Int\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q11567\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Complex\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1211071\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q1211071\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"ZMod\\\"]]}}]},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q121416\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Set\\\"]]}}]},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q12503\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Int\\\"]]}}]},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q133250\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"tsum\\\"]]}}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q161172\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"ZMod\\\"]]}}]},{\\\"id\\\":\\\"cell:Q172891\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q172891\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"Nat\\\"]]}}]},{\\\"id\\\":\\\"cell:Q185264\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q185264\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eisensteinSeries\\\",\\\"UpperHalfPlane\\\"]]}}]},{\\\"id\\\":\\\"cell:Q200227\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1313257\\\",\\\"dst\\\":\\\"Q200227\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:eisensteinSeries\"}",
+   "ok": true,
+   "result_chars": 1255,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"snippet\\\":\\\"series representing modular forms\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1313257\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:eisensteinSeries\\\",\\\"label\\\":\\\"eisensteinSeries\\\",\\\"snippet\\\":\\\"An Eisenstein series of weight `k` and level `Γ(N)`, with congruence condition `a`. \\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"def _root_.eisensteinSeries (k : ℤ) (z : ℍ) : ℂ := ∑' x : gammaSet N 1 a, eisSummand k x z\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ModularForms/EisensteinSeries/Defs.html#eisensteinSeries\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:Eisenstein series\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"snippet\\\":\\\"The _Eisenstein series_ $G_{2k}$ for $k \\\\\\\\geq 2$ are series expressions for certain modular forms.\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/Eisenstein+series\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:UpperHalfPlane\"}",
+   "ok": true,
+   "result_chars": 980,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:UpperHalfPlane\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:UpperHalfPlane\\\",\\\"label\\\":\\\"UpperHalfPlane\\\",\\\"snippet\\\":\\\"The open upper half plane, denoted as `ℍ` within the `UpperHalfPlane` namespace \\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"structure UpperHalfPlane where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/UpperHalfPlane/Basic.html#UpperHalfPlane\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:1808.10357#1.1\\\",\\\"label\\\":\\\"Structure and bases of modular space sequences $(M_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$ and $(S_{2k}(\\\\\\\\Gamma_0(N)))_{k\\\\\\\\in \\\\\\\\mathbb{N}^*}$. Part I : Strong modular units\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/1808.10357\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"eisensteinSeries\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 607,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"eisensteinSeries\\\",\\\"decl\\\":\\\"eisensteinSeries\\\",\\\"id\\\":\\\"cell:Q1313257\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q1313257\\\",\\\"label\\\":\\\"Eisenstein series\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Eisenstein_series\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Eisenstein_series\\\",\\\"description\\\":\\\"series representing modular forms\\\",\\\"snippet_sources\\\":[\\\"nlab\\\"],\\\"via_cell\\\":\\\"cell:Q1313257\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem eisensteinSeries_E2_bounded_at_cusp :\n  ∃ (C : ℝ), ∀ (z : ℍ), (eisensteinSeries 2 z).abs ≤ C := sorry"
+}

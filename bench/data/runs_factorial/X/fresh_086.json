@@ -1,0 +1,330 @@
+{
+ "task_id": "fresh_086",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:49:03Z",
+ "wall_s": 91.1,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 16,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 4,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 242,
+  "tokens_out": 5023,
+  "cost_usd": 0.10813890000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPathConnected\"}",
+   "ok": true,
+   "result_chars": 1298,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 56 declarations mentioning IsPathConnected.\\n- IsPathConnected   [Mathlib.Topology.Connected.PathConnected]\\n    A set `F` is path connected if it contains a point that can be joined to all other in `F`.\\n- isPathConnected_pathComponent   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_univ   [Mathlib.Topology.Connected.PathConnected]\\n- pathConnectedSpace_iff_univ   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.nonempty   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.isConnected   [Mathlib.Topology.Connected.PathConnected]\\n    A path-connected set is connected.  (See `Counterexamples.TopologistsSineCurve` for the standard counterexample showing that the converse is false.)\\n- isPathConnected_singleton   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_pathComponentIn   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_range   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_iff_pathConnectedSpace   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.image   [Mathlib.Topology.Connected.PathConnected]\\n    If `f` is continuous and `F` is path-connected, so is `f(F)`.\\n- IsPathConnected.subset_pathComponent   [Mathlib.Topology.Connected.PathConnected]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Path.Connected\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Path.Connected': unknown identifier 'Path.Connected'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → ?b → IsPathConnected (?a × ?b)\"}",
+   "ok": true,
+   "result_chars": 1144,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 56 declarations mentioning IsPathConnected.\\n- isPathConnected_pathComponent   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_univ   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_singleton   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_pathComponentIn   [Mathlib.Topology.Connected.PathConnected]\\n- isPathConnected_range   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.image   [Mathlib.Topology.Connected.PathConnected]\\n    If `f` is continuous and `F` is path-connected, so is `f(F)`.\\n- IsPathConnected.image'   [Mathlib.Topology.Connected.PathConnected]\\n    If `f` is continuous on `F` and `F` is path-connected, so is `f(F)`.\\n- IsPathConnected.inv   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.neg   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.pi   [Mathlib.Topology.Connected.PathConnected]\\n    The product of a family of path-connected sets is path-connected.\\n- IsPathConnected.union   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.add   [Mathlib.Topology.Connected.PathConnected]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPathConnected.prod\"}",
+   "ok": true,
+   "result_chars": 216,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning IsPathConnected.prod.\\n- IsPathConnected.prod   [Mathlib.Topology.Connected.PathConnected]\\n    The product of two path-connected sets is path-connected.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsPathConnected.*prod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'IsPathConnected.*prod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Connected/PathConnected.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1468,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Connected/PathConnected.lean  (lines 1–30 of 650):\\n     1  /-\\n     2  Copyright (c) 2020 Patrick Massot. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Patrick Massot\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Topology.Path\\n     9  \\n    10  /-!\\n    11  # Path connectedness\\n    12  \\n    13  Continuing from `Mathlib/Topology/Path.lean`, this file defines path components and path-connected\\n    14  spaces.\\n    15  \\n    16  ## Main definitions\\n    17  \\n    18  In the file the unit interval `[0, 1]` in `ℝ` is denoted by `I`, and `X` is a topological space.\\n    19  \\n    20  * `Joined (x y : X)` means there is a path between `x` and `y`.\\n    21  * `Joined.somePath (h : Joined x y)` selects some path between two points `x` and `y`.\\n    22  * `pathComponent (x : X)` is the set of points joined to `x`.\\n    23  * `PathConnectedSpace X` is a predicate class asserting that `X` is non-empty and every two\\n    24    points of `X` are joined.\\n    25  \\n    26  Then there are corresponding relative notions for `F : Set X`.\\n    27  \\n    28  * `JoinedIn F (x y : X)` means there is a path `γ` joining `x` to `y` with values in `F`.\\n    29  * `JoinedIn.somePath (h : JoinedIn F x y)` selects a path from `x` to `y` inside `F`.\\n    30  * `pathComponentIn F (x : X)` is the set of points joined to `x` in `F`.\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*prod.*IsPathConnected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*prod.*IsPathConnected' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^\\\\s*(theorem|lemma|def).*prod\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2821,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4424 match(es) for '^\\\\\\\\s*(theorem|lemma|def).*prod' (via ripgrep):\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:373\\n    def prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : A →ₙₐ[R] B × C where\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:380\\n    theorem coe_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : ⇑(f.prod g) = Function.prod f g :=\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:384\\n    theorem fst_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : (fst R B C).comp (prod f g) = f := by\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:388\\n    theorem snd_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : (snd R B C).comp (prod f g) = g := by\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:392\\n    theorem prod_fst_snd : prod (fst R A B) (snd R A B) = 1 :=\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:398\\n    def prodEquiv : (A →ₙₐ[R] B) × (A →ₙₐ[R] C) ≃ (A →ₙₐ[R] B × C) where\\n- Mathlib/Algebra/Algebra/Spectrum/Pi.lean:62\\n    lemma isQuasiregular_prod_iff [NonUnitalSemiring A] [NonUnitalSemiring B] (a : A) (b : B) :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:894\\n    def prod : NonUnitalSubalgebra R (A × B) :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:900\\n    theorem coe_prod : (prod S S₁ : Set (A × B)) = (S : Set A) ×ˢ S₁ :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:903\\n    theorem prod_toSubmodule : (S.prod S₁).toSubmodule = S.toSubmodule.prod S₁.toSubmodule :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:907\\n    theorem mem_prod {S : NonUnitalSubalgebra R A} {S₁ : NonUnitalSubalgebra R B} {x : A × B} :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:911\\n    theorem prod_mono {S T : NonUnitalSubalgebra R A} {S₁ T₁ : NonUnitalSubalgebra R B} :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:918\\n    theorem prod_top : (prod ⊤ ⊤ : NonUnitalSubalgebra R (A × B)) = ⊤ := by ext; simp\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:921\\n    theorem prod_inf_prod {S T : NonUnitalSubalgebra R A} {S₁ T₁ : NonUnitalSubalgebra R B} :\\n- Mathlib/Algebra/Algebra/Basic.lean:625\\n    theorem coe_prod (a : ι → R) : (↑(∏ i ∈ s, a i : R) : A) = ∏ i ∈ s, (↑(a i) : A) :=\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:627\\n    theorem fst_list_prod [Monoid R] [AddMonoid M] [DistribMulAction R M] [DistribMulAction Rᵐᵒᵖ M]\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:636\\n    theorem snd_list_prod [Monoid R] [AddCommMonoid M] [DistribMulAction R M] [DistribMulAction Rᵐᵒᵖ M]\\n- Mathlib/Algebra/Algebra/Prod.lean:82\\n    def prod (f : A →ₐ[R] B) (g : A →ₐ[R] C) : A →ₐ[R] B × C :=\\n- Mathlib/Algebra/Algebra/Prod.lean:88\\n    theorem coe_prod (f : A →ₐ[R] B) (g : A →ₐ[R] C) : ⇑(f.prod g) = Function.prod f g :=\\n- Mathlib/Algebra/Algebra/Prod.lean:92\\n    theorem fst_prod (f : A →ₐ[R] B) (g : A →ₐ[R] C) : (fst R B C).comp (prod f g) = f := by ext; rfl\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsPathConnected\\\\.prod\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'IsPathConnected\\\\\\\\.prod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"prod.*:.*IsPathConnected\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'prod.*:.*IsPathConnected' under Mathlib/.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"IsPathConnected.prod\"}",
+   "ok": true,
+   "result_chars": 376,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"IsPathConnected.prod\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPathConnected ?a → IsPathConnected ?b → IsPathConnected (?a × ?b)\"}",
+   "ok": true,
+   "result_chars": 417,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 56 declarations mentioning IsPathConnected.\\n- IsPathConnected.union   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.add   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.mul   [Mathlib.Topology.Connected.PathConnected]\\n- IsPathConnected.prod   [Mathlib.Topology.Connected.PathConnected]\\n    The product of two path-connected sets is path-connected.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPathConnected.pi\"}",
+   "ok": true,
+   "result_chars": 220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning IsPathConnected.pi.\\n- IsPathConnected.pi   [Mathlib.Topology.Connected.PathConnected]\\n    The product of a family of path-connected sets is path-connected.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Connected/PathConnected.lean\", \"line\": 300, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Connected/PathConnected.lean  (lines 300–419 of 650):\\n   300      exact (h.trans h').symm\\n   301    · intro h'\\n   302      rw [pathComponent_symm] at h' ⊢\\n   303      exact h'.trans h\\n   304  \\n   305  theorem pathComponent_subset_component (x : X) : pathComponent x ⊆ connectedComponent x :=\\n   306    fun y h =>\\n   307    (isConnected_range h.somePath.continuous).subset_connectedComponent ⟨0, by simp⟩ ⟨1, by simp⟩\\n   308  \\n   309  /-- Every connected component is a union of path connected components -/\\n   310  theorem biUnion_connectedComponent_pathComponent_eq (x : X) :\\n   311      (⋃ y ∈ connectedComponent x, pathComponent y) = connectedComponent x := by\\n   312    simp only [Set.ext_iff, mem_iUnion₂]\\n   313    exact fun z ↦ ⟨fun ⟨y, hy, hz⟩ ↦ connectedComponent_eq hy ▸ pathComponent_subset_component _ hz,\\n   314      (⟨z, ·, mem_pathComponent_self z⟩)⟩\\n   315  \\n   316  /-- The canonical map which sends a path component of `X` (as a term of `ZerothHomotopy X`) to the\\n   317  connected component containing it (as a term of `ConnectedComponents X`). -/\\n   318  def ZerothHomotopy.toConnectedComponents : ZerothHomotopy X → ConnectedComponents X :=\\n   319    Quotient.map id fun x _ h ↦ connectedComponent_eq <| pathComponent_subset_component x h\\n   320  \\n   321  @[simp]\\n   322  theorem ZerothHomotopy.toConnectedComponents_apply (x : X) :\\n   323      toConnectedComponents (.mk x) = ⟦x⟧ := rfl\\n   324  \\n   325  /-- There are at least as many path connected components as there are connected components -/\\n   326  theorem ZerothHomotopy.toConnectedComponents_surjective :\\n   327      toConnectedComponents (X := X) |>.Surjective :=\\n   328    Quotient.map_surjective _ surjective_id\\n   329  \\n   330  /-- The path component of `x` in `F` is the set of points that can be joined to `x` in `F`. -/\\n   331  def pathComponentIn (F : Set X) (x : X) :=\\n   332    { y | JoinedIn F x y }\\n   333  \\n   334  @[simp]\\n   335  theorem pathComponentIn_univ (x : X) : pathComponentIn univ x = pathComponent x := by\\n   336    simp [pathComponentIn, pathComponent, JoinedIn, Joined, exists_true_iff_nonempty]\\n   337  \\n   338  theorem Joined.mem_pathComponent (hyz : Joined y z) (hxy : y ∈ pathComponent x) :\\n   339      z ∈ pathComponent x :=\\n   340    hxy.trans hyz\\n   341  \\n   342  theorem mem_pathComponentIn_self (h : x ∈ F) : x ∈ pathComponentIn F x :=\\n   343    JoinedIn.refl h\\n   344  \\n   345  theorem pathComponentIn_subset : pathComponentIn F x ⊆ F :=\\n   346    fun _ hy ↦ hy.target_mem\\n   347  \\n   348  theorem pathComponentIn_nonempty_iff : (pathComponentIn F x).Nonempty ↔ x ∈ F :=\\n   349    ⟨fun ⟨_, ⟨γ, hγ⟩⟩ ↦ γ.source ▸ hγ 0, fun hx ↦ ⟨x, mem_pathComponentIn_self hx⟩⟩\\n   350  \\n   351  theorem pathComponentIn_congr (h : x ∈ pathComponentIn F y) :\\n   352      pathComponentIn F x = pathComponentIn F y := by\\n   353    ext; exact ⟨h.trans, h.symm.trans⟩\\n   354  \\n   355  @[gcongr]\\n   356  theorem pathComponentIn_mono {G : Set X} (h : F ⊆ G) :\\n   357      pathComponentIn F x ⊆ pathComponentIn G x :=\\n   358    fun _ ⟨γ, hγ⟩ ↦ ⟨γ, fun t ↦ h (hγ t)⟩\\n   359  \\n   360  /-! ### Path component of the identity in a group -/\\n   361  \\n   362  /-- The path component of the identity in a topological monoid, as a submonoid. -/\\n   363  @[to_additive (attr := simps) /-- The path component of the identity in an additive topological\\n   364  monoid, as an additive submonoid. -/]\\n   365  def Submonoid.pathComponentOne (M : Type*) [Monoid M] [TopologicalSpace M] [ContinuousMul M] :\\n   366      Submonoid M where\\n   367    carrier := pathComponent (1 : M)\\n   368    mul_mem' {m₁ m₂} hm₁ hm₂ := by simpa using! hm₁.mul hm₂\\n   369    one_mem' := mem_pathComponent_self 1\\n   370  \\n   371  /-- The path component of the identity in a topological group, as a subgroup. -/\\n   372  @[to_additive (attr := simps!) /-- The path component of the identity in an additive topological\\n   373  group"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Connected/PathConnected.lean\", \"line\": 450, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5433,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Connected/PathConnected.lean  (lines 450–549 of 650):\\n   450  theorem Homeomorph.isPathConnected_image {s : Set X} (h : X ≃ₜ Y) :\\n   451      IsPathConnected (h '' s) ↔ IsPathConnected s :=\\n   452    h.isInducing.isPathConnected_iff.symm\\n   453  \\n   454  /-- If `h : X → Y` is a homeomorphism, `h⁻¹(s)` is path-connected iff `s` is. -/\\n   455  @[simp]\\n   456  theorem Homeomorph.isPathConnected_preimage {s : Set Y} (h : X ≃ₜ Y) :\\n   457      IsPathConnected (h ⁻¹' s) ↔ IsPathConnected s := by\\n   458    rw [← Homeomorph.image_symm]; exact h.symm.isPathConnected_image\\n   459  \\n   460  theorem IsPathConnected.mem_pathComponent (h : IsPathConnected F) (x_in : x ∈ F) (y_in : y ∈ F) :\\n   461      y ∈ pathComponent x :=\\n   462    (h.joinedIn x x_in y y_in).joined\\n   463  \\n   464  theorem IsPathConnected.subset_pathComponent (h : IsPathConnected F) (x_in : x ∈ F) :\\n   465      F ⊆ pathComponent x := fun _y y_in => h.mem_pathComponent x_in y_in\\n   466  \\n   467  theorem IsPathConnected.subset_pathComponentIn {s : Set X} (hs : IsPathConnected s)\\n   468      (hxs : x ∈ s) (hsF : s ⊆ F) : s ⊆ pathComponentIn F x :=\\n   469    fun y hys ↦ (hs.joinedIn x hxs y hys).mono hsF\\n   470  \\n   471  theorem isPathConnected_singleton (x : X) : IsPathConnected ({x} : Set X) := by\\n   472    refine ⟨x, rfl, ?_⟩\\n   473    rintro y rfl\\n   474    exact JoinedIn.refl rfl\\n   475  \\n   476  theorem isPathConnected_pathComponentIn (h : x ∈ F) : IsPathConnected (pathComponentIn F x) :=\\n   477    ⟨x, mem_pathComponentIn_self h, fun _ ⟨γ, hγ⟩ ↦ by\\n   478      refine ⟨γ, fun t ↦\\n   479        ⟨(γ.truncateOfLE t.2.1).cast (γ.extend_zero.symm) (γ.extend_extends' t).symm, fun t' ↦ ?_⟩⟩\\n   480      dsimp [Path.truncateOfLE, Path.truncate]\\n   481      exact γ.extend_extends' ⟨min (max t'.1 0) t.1, by simp [t.2.1, t.2.2]⟩ ▸ hγ _⟩\\n   482  \\n   483  theorem isPathConnected_pathComponent : IsPathConnected (pathComponent x) := by\\n   484    rw [← pathComponentIn_univ]\\n   485    exact isPathConnected_pathComponentIn (mem_univ x)\\n   486  \\n   487  theorem IsPathConnected.union {U V : Set X} (hU : IsPathConnected U) (hV : IsPathConnected V)\\n   488      (hUV : (U ∩ V).Nonempty) : IsPathConnected (U ∪ V) := by\\n   489    rcases hUV with ⟨x, xU, xV⟩\\n   490    use x, Or.inl xU\\n   491    rintro y (yU | yV)\\n   492    · exact (hU.joinedIn x xU y yU).mono subset_union_left\\n   493    · exact (hV.joinedIn x xV y yV).mono subset_union_right\\n   494  \\n   495  /-- If a set `W` is path-connected, then it is also path-connected when seen as a set in a smaller\\n   496  ambient type `U` (when `U` contains `W`). -/\\n   497  theorem IsPathConnected.preimage_coe {U W : Set X} (hW : IsPathConnected W) (hWU : W ⊆ U) :\\n   498      IsPathConnected (((↑) : U → X) ⁻¹' W) := by\\n   499    rwa [IsInducing.subtypeVal.isPathConnected_iff, Subtype.image_preimage_val, inter_eq_right.2 hWU]\\n   500  \\n   501  set_option backward.isDefEq.respectTransparency false in\\n   502  theorem IsPathConnected.exists_path_through_family {n : ℕ}\\n   503      {s : Set X} (h : IsPathConnected s) (p : Fin (n + 1) → X) (hp : ∀ i, p i ∈ s) :\\n   504      ∃ γ : Path (p 0) (p (last n)), range γ ⊆ s ∧ ∀ i, p i ∈ range γ := by\\n   505    cases p using snocCases with | _ p x => ?_\\n   506    simp only [forall_fin_succ', snoc_castSucc, snoc_last, Path.cast_coe,\\n   507      Path.target_mem_range, and_true] at hp ⊢\\n   508    obtain ⟨hp, hx⟩ := hp\\n   509    induction p using snocInduction generalizing x with\\n   510    | elim0 =>\\n   511      simp only [snoc_zero]\\n   512      use Path.refl x\\n   513      simp [hx]\\n   514    | @snoc n p y hp₂ =>\\n   515      simp only [forall_fin_succ', snoc_castSucc, snoc_last, snoc_apply_zero, Path.cast_coe] at hp ⊢\\n   516      obtain ⟨hp, hy⟩ := hp\\n   517      specialize hp₂ y hp hy\\n   518      obtain ⟨γ₀, hγ₀s, hγ₀p⟩ := hp₂\\n   519      obtain ⟨γ₁, hγ₁⟩ := h.joinedIn y hy x hx\\n   520      rw [← range_subset_iff] "
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Connected/PathConnected.lean\", \"line\": 550, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Connected/PathConnected.lean  (lines 550–649 of 650):\\n   550    letI := pathSetoid X\\n   551    constructor\\n   552    · intro h\\n   553      refine ⟨(nonempty_quotient_iff _).mpr h.1, ⟨?_⟩⟩\\n   554      rintro ⟨x⟩ ⟨y⟩\\n   555      exact Quotient.sound (PathConnectedSpace.joined x y)\\n   556    · unfold ZerothHomotopy\\n   557      rintro ⟨h, h'⟩\\n   558      exact ⟨(nonempty_quotient_iff _).mp h, fun x y => Quotient.exact <| Subsingleton.elim ⟦x⟧ ⟦y⟧⟩\\n   559  \\n   560  namespace PathConnectedSpace\\n   561  \\n   562  variable [PathConnectedSpace X]\\n   563  \\n   564  /-- Use path-connectedness to build a path between two points. -/\\n   565  def somePath (x y : X) : Path x y :=\\n   566    Nonempty.some (joined x y)\\n   567  \\n   568  instance : Subsingleton (ZerothHomotopy X) :=\\n   569    (pathConnectedSpace_iff_zerothHomotopy.1 inferInstance).2\\n   570  \\n   571  end PathConnectedSpace\\n   572  \\n   573  theorem pathConnectedSpace_iff_univ : PathConnectedSpace X ↔ IsPathConnected (univ : Set X) := by\\n   574    simp [pathConnectedSpace_iff, isPathConnected_iff, nonempty_iff_univ_nonempty]\\n   575  \\n   576  theorem isPathConnected_iff_pathConnectedSpace : IsPathConnected F ↔ PathConnectedSpace F := by\\n   577    rw [pathConnectedSpace_iff_univ, IsInducing.subtypeVal.isPathConnected_iff, image_univ,\\n   578      Subtype.range_val_subtype, setOf_mem_eq]\\n   579  \\n   580  theorem isPathConnected_univ [PathConnectedSpace X] : IsPathConnected (univ : Set X) :=\\n   581    pathConnectedSpace_iff_univ.mp inferInstance\\n   582  \\n   583  theorem isPathConnected_range [PathConnectedSpace X] {f : X → Y} (hf : Continuous f) :\\n   584      IsPathConnected (range f) := by\\n   585    rw [← image_univ]\\n   586    exact isPathConnected_univ.image hf\\n   587  \\n   588  theorem Function.Surjective.pathConnectedSpace [PathConnectedSpace X]\\n   589      {f : X → Y} (hf : Surjective f) (hf' : Continuous f) : PathConnectedSpace Y := by\\n   590    rw [pathConnectedSpace_iff_univ, ← hf.range_eq]\\n   591    exact isPathConnected_range hf'\\n   592  \\n   593  instance Quotient.instPathConnectedSpace {s : Setoid X} [PathConnectedSpace X] :\\n   594      PathConnectedSpace (Quotient s) :=\\n   595    Quotient.mk'_surjective.pathConnectedSpace continuous_coinduced_rng\\n   596  \\n   597  /-- This is a special case of `NormedSpace.instPathConnectedSpace` (and\\n   598  `IsTopologicalAddGroup.pathConnectedSpace`). It exists only to simplify dependencies. -/\\n   599  instance Real.instPathConnectedSpace : PathConnectedSpace ℝ where\\n   600    joined x y := ⟨⟨⟨fun (t : I) ↦ (1 - t) * x + t * y, by fun_prop⟩, by simp, by simp⟩⟩\\n   601    nonempty := inferInstance\\n   602  \\n   603  theorem pathConnectedSpace_iff_eq : PathConnectedSpace X ↔ ∃ x : X, pathComponent x = univ := by\\n   604    simp [pathConnectedSpace_iff_univ, isPathConnected_iff_eq]\\n   605  \\n   606  -- see Note [lower instance priority]\\n   607  instance (priority := 100) PathConnectedSpace.connectedSpace [PathConnectedSpace X] :\\n   608      ConnectedSpace X := by\\n   609    rw [connectedSpace_iff_connectedComponent]\\n   610    rcases isPathConnected_iff_eq.mp (pathConnectedSpace_iff_univ.mp ‹_›) with ⟨x, _x_in, hx⟩\\n   611    use x\\n   612    rw [← univ_subset_iff]\\n   613    exact (by simpa using hx : pathComponent x = univ) ▸ pathComponent_subset_component x\\n   614  \\n   615  /-- A path-connected set is connected.\\n   616  \\n   617  (See `Counterexamples.TopologistsSineCurve` for the standard counterexample showing that the\\n   618  converse is false.) -/\\n   619  theorem IsPathConnected.isConnected (hF : IsPathConnected F) : IsConnected F := by\\n   620    rw [isConnected_iff_connectedSpace]\\n   621    rw [isPathConnected_iff_pathConnectedSpace] at hF\\n   622    exact @PathConnectedSpace.connectedSpace _ _ hF\\n   623  \\n   624  namespace PathConnectedSpace\\n   625  \\n   626  variable [PathConnectedSpace X]\\n   627  \\n   628  theorem exists_path_thro"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*\\\\bprod\\\\b\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2688,
+   "result_head": "[{\"type\": \"text\", \"text\": \"535 match(es) for 'theorem.*\\\\\\\\bprod\\\\\\\\b' (via ripgrep):\\n- Mathlib/GroupTheory/Finiteness.lean:114\\n    theorem Submonoid.FG.prod (hP : P.FG) (hQ : Q.FG) : (P.prod Q).FG := by\\n- Mathlib/GroupTheory/Finiteness.lean:376\\n    theorem Subgroup.FG.prod {G' : Type*} [Group G'] {P : Subgroup G} {Q : Subgroup G'}\\n- Mathlib/GroupTheory/Subsemigroup/Lemmas.lean:24\\n    protected theorem center_prod : center (M × N) = prod (center M) (center N) :=\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:380\\n    theorem coe_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : ⇑(f.prod g) = Function.prod f g :=\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:384\\n    theorem fst_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : (fst R B C).comp (prod f g) = f := by\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:388\\n    theorem snd_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : (snd R B C).comp (prod f g) = g := by\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:392\\n    theorem prod_fst_snd : prod (fst R A B) (snd R A B) = 1 :=\\n- Mathlib/GroupTheory/PushoutI.lean:305\\n    theorem prod_empty : (empty : NormalWord d).prod = 1 := by\\n- Mathlib/GroupTheory/PushoutI.lean:546\\n    theorem prod_smul_empty (w : NormalWord d) : w.prod • empty = w := by\\n- Mathlib/GroupTheory/Subgroup/Center.lean:102\\n    protected theorem center_prod {H : Type*} [Group H] : center (G × H) = prod (center G) (center H) :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:45\\n    theorem prod_repr_inl (x) (i) : (b.prod b').repr x (Sum.inl i) = b.repr x.1 i :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:49\\n    theorem prod_repr_inr (x) (i) : (b.prod b').repr x (Sum.inr i) = b'.repr x.2 i :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:52\\n    theorem prod_apply_inl_fst (i) : (b.prod b' (Sum.inl i)).1 = b i :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:60\\n    theorem prod_apply_inr_fst (i) : (b.prod b' (Sum.inr i)).1 = 0 :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:69\\n    theorem prod_apply_inl_snd (i) : (b.prod b' (Sum.inl i)).2 = 0 :=\\n- Mathlib/LinearAlgebra/Basis/Prod.lean:78\\n    theorem prod_apply_inr_snd (i) : (b.prod b' (Sum.inr i)).2 = b' i :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:900\\n    theorem coe_prod : (prod S S₁ : Set (A × B)) = (S : Set A) ×ˢ S₁ :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:903\\n    theorem prod_toSubmodule : (S.prod S₁).toSubmodule = S.toSubmodule.prod S₁.toSubmodule :=\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:918\\n    theorem prod_top : (prod ⊤ ⊤ : NonUnitalSubalgebra R (A × B)) = ⊤ := by ext; simp\\n- Mathlib/GroupTheory/FreeGroup/Basic.lean:688\\n    theorem lift_mk : lift f (mk L) = List.prod (L.map fun x => cond x.2 (f x.1) (f x.1)⁻¹) :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pathConnectedSpace_prod\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pathConnectedSpace_prod': unknown identifier 'pathConnectedSpace_prod'\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsConnected.prod\"}",
+   "ok": true,
+   "result_chars": 137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning IsConnected.prod.\\n- IsConnected.prod   [Mathlib.Topology.Connected.Basic]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(IsPathConnected ?s) → (IsPathConnected ?t) → IsPathConnected (?s ×ˢ ?t)\"}",
+   "ok": true,
+   "result_chars": 254,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Set.instSProd, IsPathConnected, SProd.sprod, Prod, and Set.\\n- IsPathConnected.prod   [Mathlib.Topology.Connected.PathConnected]\\n    The product of two path-connected sets is path-connected.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsPathConnected.prod\", \"IsPathConnected.pi\", \"PathConnectedSpace\"]}",
+   "ok": true,
+   "result_chars": 1033,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsPathConnected.prod\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IsPathConnected.pi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"PathConnectedSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Connected.PathConnected\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Connected.PathConnected\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Connected/PathConnected.html#PathConnectedSpace\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Pp]athConnected.*[Pp]rod|theorem.*[Pp]rod.*[Pp]athConnected\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 140,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*[Pp]athConnected.*[Pp]rod|theorem.*[Pp]rod.*[Pp]athConnected' under Mathlib/.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PathConnectedSpace (?a × ?b)\"}",
+   "ok": true,
+   "result_chars": 167,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Prod and PathConnectedSpace.\\n- Prod.instPathConnectedSpace   [Mathlib.Topology.Connected.PathConnected]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"Prod.instPathConnectedSpace\"}",
+   "ok": true,
+   "result_chars": 383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"Prod.instPathConnectedSpace\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Prod.*instPathConnectedSpace|instPathConnectedSpace.*Prod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Prod.*instPathConnectedSpace|instPathConnectedSpace.*Prod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*PathConnectedSpace.*Prod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*PathConnectedSpace.*Prod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*PathConnected\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2780,
+   "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'instance.*PathConnected' (via ripgrep):\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:1084\\n    deriving instance PathConnectedSpace for TangentSpace I x\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:108\\n    instance EuclideanQuadrant.pathConnectedSpace : PathConnectedSpace (EuclideanQuadrant n) :=\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:111\\n    instance [NeZero n] : LocallyPathConnectedSpace (EuclideanHalfSpace n) :=\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:114\\n    instance : LocallyPathConnectedSpace (EuclideanQuadrant n) :=\\n- Mathlib/Analysis/Normed/Module/Convex.lean:168\\n    instance (priority := 100) NormedSpace.instPathConnectedSpace : PathConnectedSpace E :=\\n- Mathlib/Analysis/Convex/StdSimplex.lean:219\\n    instance [Nonempty ι] : PathConnectedSpace (stdSimplex ℝ ι) :=\\n- Mathlib/Analysis/CStarAlgebra/Unitary/Connected.lean:330\\n    instance Unitary.instLocallyPathConnectedSpace : LocallyPathConnectedSpace (unitary A) :=\\n- Mathlib/Analysis/Calculus/MeanValue.lean:417\\n    instance (priority := 100) : PathConnectedSpace 𝕜 := by\\n- Mathlib/Analysis/SpecialFunctions/Complex/Circle.lean:169\\n    instance : PathConnectedSpace Circle := exp_surjective.pathConnectedSpace exp.continuous\\n- Mathlib/Analysis/Complex/Convex.lean:98\\n    instance : PathConnectedSpace ℂˣ :=\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Topology.lean:72\\n    instance : LocallyPathConnectedSpace ℍ := isOpenEmbedding_coe.locallyPathConnectedSpace\\n- Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected.lean:73\\n    instance (priority := 100) : PathConnectedSpace X :=\\n- Mathlib/AlgebraicTopology/TopologicalSimplex.lean:53\\n    instance (n : SimplexCategory) : PathConnectedSpace (toTop₀.obj n) := by dsimp; infer_instance\\n- Mathlib/AlgebraicTopology/TopologicalSimplex.lean:55\\n    instance (n : SimplexCategory) : PathConnectedSpace (toTop.{u}.obj n) :=\\n- Mathlib/AlgebraicTopology/SingularHomology/HomologyZero.lean:53\\n    instance [PathConnectedSpace X] : IsIso (X.singularHomology₀ε R) :=\\n- Mathlib/Topology/Connected/PathConnected.lean:593\\n    instance Quotient.instPathConnectedSpace {s : Setoid X} [PathConnectedSpace X] :\\n- Mathlib/Topology/Connected/PathConnected.lean:599\\n    instance Real.instPathConnectedSpace : PathConnectedSpace ℝ where\\n- Mathlib/Topology/Connected/PathConnected.lean:607\\n    instance (priority := 100) PathConnectedSpace.connectedSpace [PathConnectedSpace X] :\\n- Mathlib/Topology/Connected/PathComponentOne.lean:39\\n    instance [Group G] [IsTopologicalGroup G] [LocallyPathConnectedSpace G] :\\n- Mathlib/Topology/Homotopy/LocallyContractible.lean:125\\n    instance (priority := 100) instLocallyPathConnectedSpace : LocallyPathConnectedSpace X where\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ConnectedSpace ?a → ConnectedSpace ?b → ConnectedSpace (?a × ?b)\"}",
+   "ok": true,
+   "result_chars": 150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Prod and ConnectedSpace.\\n- instConnectedSpaceProd   [Mathlib.Topology.Connected.Basic]\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"instance instPathConnectedSpace\"}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'instance instPathConnectedSpace': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PathConnectedSpace (?a × ?b)\"}",
+   "ok": true,
+   "result_chars": 167,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Prod and PathConnectedSpace.\\n- Prod.instPathConnectedSpace   [Mathlib.Topology.Connected.PathConnected]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?s ×ˢ ?t\"}",
+   "ok": true,
+   "result_chars": 685,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1303 declarations mentioning SProd.sprod.\\n- Set.prod_eq   [Mathlib.Data.Set.Operations]\\n- Set.mk_mem_prod   [Mathlib.Data.Set.Operations]\\n- Set.prodMk_mem_set_prod_eq   [Mathlib.Data.Set.Operations]\\n- Set.mem_prod   [Mathlib.Data.Set.Operations]\\n- Set.mem_prod_eq   [Mathlib.Data.Set.Operations]\\n- Set.prod_image_left   [Mathlib.Data.Set.Operations]\\n- Set.prod_image_right   [Mathlib.Data.Set.Operations]\\n- Set.univ_prod_univ   [Mathlib.Data.Set.Prod]\\n- Set.Nonempty.fst   [Mathlib.Data.Set.Prod]\\n- Set.Nonempty.snd   [Mathlib.Data.Set.Prod]\\n- Set.mapsTo_fst_prod   [Mathlib.Data.Set.Prod]\\n- Set.mapsTo_snd_prod   [Mathlib.Data.Set.Prod]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"isPathConnected_prod\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isPathConnected_prod': unknown identifier 'isPathConnected_prod'\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsPathConnected.prod IsPathConnected\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'IsPathConnected.prod IsPathConnected'.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*IsPathConnected|theorem.*isPathConnected\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 5924,
+   "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for 'theorem.*IsPathConnected|theorem.*isPathConnected' (via ripgrep):\\n- Mathlib/Topology/Connected/PathConnected.lean:392\\n    theorem isPathConnected_iff_eq : IsPathConnected F ↔ ∃ x ∈ F, pathComponentIn F x = F := by\\n- Mathlib/Topology/Connected/PathConnected.lean:399\\n    theorem IsPathConnected.joinedIn (h : IsPathConnected F) :\\n- Mathlib/Topology/Connected/PathConnected.lean:404\\n    theorem isPathConnected_iff :\\n- Mathlib/Topology/Connected/PathConnected.lean:410\\n    theorem IsPathConnected.nonempty (h : IsPathConnected F) : F.Nonempty :=\\n- Mathlib/Topology/Connected/PathConnected.lean:414\\n    theorem IsPathConnected.image' (hF : IsPathConnected F)\\n- Mathlib/Topology/Connected/PathConnected.lean:423\\n    theorem IsPathConnected.image (hF : IsPathConnected F) {f : X → Y} (hf : Continuous f) :\\n- Mathlib/Topology/Connected/PathConnected.lean:428\\n    theorem IsPathConnected.mul {M : Type*} [Mul M] [TopologicalSpace M] [ContinuousMul M]\\n- Mathlib/Topology/Connected/PathConnected.lean:435\\n    theorem IsPathConnected.inv {G : Type*} [InvolutiveInv G] [TopologicalSpace G] [ContinuousInv G]\\n- Mathlib/Topology/Connected/PathConnected.lean:442\\n    nonrec theorem Topology.IsInducing.isPathConnected_iff {f : X → Y} (hf : IsInducing f) :\\n- Mathlib/Topology/Connected/PathConnected.lean:450\\n    theorem Homeomorph.isPathConnected_image {s : Set X} (h : X ≃ₜ Y) :\\n- Mathlib/Topology/Connected/PathConnected.lean:456\\n    theorem Homeomorph.isPathConnected_preimage {s : Set Y} (h : X ≃ₜ Y) :\\n- Mathlib/Topology/Connected/PathConnected.lean:460\\n    theorem IsPathConnected.mem_pathComponent (h : IsPathConnected F) (x_in : x ∈ F) (y_in : y ∈ F) :\\n- Mathlib/Topology/Connected/PathConnected.lean:464\\n    theorem IsPathConnected.subset_pathComponent (h : IsPathConnected F) (x_in : x ∈ F) :\\n- Mathlib/Topology/Connected/PathConnected.lean:467\\n    theorem IsPathConnected.subset_pathComponentIn {s : Set X} (hs : IsPathConnected s)\\n- Mathlib/Topology/Connected/PathConnected.lean:471\\n    theorem isPathConnected_singleton (x : X) : IsPathConnected ({x} : Set X) := by\\n- Mathlib/Topology/Connected/PathConnected.lean:476\\n    theorem isPathConnected_pathComponentIn (h : x ∈ F) : IsPathConnected (pathComponentIn F x) :=\\n- Mathlib/Topology/Connected/PathConnected.lean:483\\n    theorem isPathConnected_pathComponent : IsPathConnected (pathComponent x) := by\\n- Mathlib/Topology/Connected/PathConnected.lean:487\\n    theorem IsPathConnected.union {U V : Set X} (hU : IsPathConnected U) (hV : IsPathConnected V)\\n- Mathlib/Topology/Connected/PathConnected.lean:497\\n    theorem IsPathConnected.preimage_coe {U W : Set X} (hW : IsPathConnected W) (hWU : W ⊆ U) :\\n- Mathlib/Topology/Connected/PathConnected.lean:502\\n    theorem IsPathConnected.exists_path_through_family {n : ℕ}\\n- Mathlib/Topology/Connected/PathConnected.lean:526\\n    theorem IsPathConnected.exists_path_through_family' {n : ℕ}\\n- Mathlib/Topology/Connected/PathConnected.lean:573\\n    theorem pathConnectedSpace_iff_univ : PathConnectedSpace X ↔ IsPathConnected (univ : Set X) := by\\n- Mathlib/Topology/Connected/PathConnected.lean:576\\n    theorem isPathConnected_iff_pathConnectedSpace : IsPathConnected F ↔ PathConnectedSpace F := by\\n- Mathlib/Topology/Connected/PathConnected.lean:580\\n    theorem isPathConnected_univ [PathConnectedSpace X] : IsPathConnected (univ : Set X) :=\\n- Mathlib/Topology/Connected/PathConnected.lean:583\\n    theorem isPathConnected_range [PathConnectedSpace X] {f : X → Y} (hf : Continuous f) :\\n- Mathlib/Topology/Connected/PathConnected.lean:619\\n    theorem IsPathConnected.isConnected (hF : IsPathConnected F) : IsConnected F := by\\n- Mathlib/Topology/Connected/LocallyPathConnected.lean:40\\n    a theorem in `isOpen_isPathConnected_basis`.\\n- Mathlib/Topology/Connected/LocallyPathConnected.lean:156\\n    theorem isOpen_isPathConnected_basis (x : X) :\\n- Mathlib/Topology/Connected/LocallyPathConnected.lean:181\\n    theo"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

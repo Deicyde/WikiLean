@@ -1,0 +1,448 @@
+{
+ "task_id": "fresh_071",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:29:51Z",
+ "wall_s": 170.9,
+ "transcript_stats": {
+  "turns": 50,
+  "assistant_turns": 29,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 21,
+   "mcp__formal__decl_grep": 15,
+   "mcp__formal__decl_read": 11,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 236,
+  "tokens_out": 11829,
+  "cost_usd": 0.18076895
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"interval lattice\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'interval lattice': Unknown identifier `interval`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"EqvGen equivalence relation generated\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'EqvGen equivalence relation generated': Unknown identifier `EqvGen`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"second isomorphism theorem lattice\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'second isomorphism theorem lattice': <input>:1:19: expected end of input\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc interval lower upper\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc interval lower upper': Unknown identifier `Icc`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Equivalence relation\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Equivalence relation': Unknown identifier `relation`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"isomorphism lattice\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'isomorphism lattice': Unknown identifier `isomorphism`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a → ?a → Prop) → Prop\"}",
+   "ok": true,
+   "result_chars": 138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a → ?a → Prop) → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Equivalence\"}",
+   "ok": true,
+   "result_chars": 977,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 87 declarations mentioning Equivalence.\\n- Equivalence   [Init.Core]\\n    An equivalence relation `r : α → α → Prop` is a relation that is  * reflexive: `r x x`, * symmetric: `r x y` implies `r y x`, and * transitive: `r x y` and `r y\\n- equivalence_true   [Init.Core]\\n- Setoid.iseqv   [Init.Core]\\n    The relation `x ≈ y` is an equivalence relation.\\n- Setoid.mk   [Init.Core]\\n- Equivalence.refl   [Init.Core]\\n    An equivalence relation is reflexive: `r x x`\\n- Equivalence.symm   [Init.Core]\\n    An equivalence relation is symmetric: `r x y` implies `r y x`\\n- Equivalence.trans   [Init.Core]\\n    An equivalence relation is transitive: `r x y` and `r y z` implies `r x z`\\n- Equivalence.mk   [Init.Core]\\n- List.Perm.eqv   [Init.Data.List.Perm]\\n- Char.beqCaseInsensitiveAsciiOnly.eqv   [Batteries.Data.Char.AsciiCasing]\\n- Equivalence.isEquiv   [Mathlib.Order.Defs.Unbundled]\\n- Equivalence.isTrans   [Mathlib.Order.Defs.Unbundled]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"lattice\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'lattice': unknown identifier 'lattice'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Lattice\"}",
+   "ok": true,
+   "result_chars": 801,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1167 declarations mentioning Lattice.\\n- Lattice   [Mathlib.Order.Lattice]\\n    A lattice is a join-semilattice which is also a meet-semilattice.\\n- instLatticeInt   [Mathlib.Order.Lattice]\\n- DistribLattice.toLattice   [Mathlib.Order.Lattice]\\n- Lattice.toSemilatticeInf   [Mathlib.Order.Lattice]\\n- Lattice.toSemilatticeSup   [Mathlib.Order.Lattice]\\n- LinearOrder.toLattice   [Mathlib.Order.Lattice]\\n- Lattice.inf   [Mathlib.Order.Lattice]\\n    The binary infimum, used to derive `Min α`\\n- OrderDual.instLattice   [Mathlib.Order.Lattice]\\n- ULift.instLattice   [Mathlib.Order.Lattice]\\n- Equiv.lattice   [Mathlib.Order.Lattice]\\n    Transfer `Lattice` across an `Equiv`.\\n- Prod.instLattice   [Mathlib.Order.Lattice]\\n- Pi.instLattice   [Mathlib.Order.Lattice]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc': unknown identifier 'Icc'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"upclosed interval\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'upclosed interval': Unknown identifier `upclosed`\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"interval\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'interval': unknown identifier 'interval'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"generated equivalence closure\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'generated equivalence closure': Unknown identifier `generated`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc Ico Ioc Ioo\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc Ico Ioc Ioo': Unknown identifier `Icc`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?α → Set (?α → ?α → Prop)\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '?α → Set (?α → ?α → Prop)'.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"minimal finest\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'minimal finest': Unknown identifier `minimal`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"second isomorphism\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'second isomorphism': Unknown identifier `second`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*interval\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3044,
+   "result_head": "[{\"type\": \"text\", \"text\": \"190 match(es) for '(def|theorem|lemma) .*interval' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean:80\\n    theorem sum_trapezoidal_integral_adjacent_intervals {f : ℝ → ℝ} {N : ℕ} {a h : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean:101\\n    theorem sum_trapezoidal_error_adjacent_intervals {f : ℝ → ℝ} {N : ℕ} {a h : ℝ} (N_nonzero : 0 < N)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:12\\n    # First mean value theorem for interval integrals\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:14\\n    We prove versions of the first mean value theorem for interval integrals.\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:42\\n    /-- **First mean value theorem for interval integrals (arbitrary measure, a.e. nonnegativity).**\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:47\\n    theorem exists_eq_const_mul_intervalIntegral_of_ae_nonneg\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:72\\n    /-- **First mean value theorem for interval integrals (arbitrary measure, nonnegativity).**\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/MeanValue.lean:76\\n    theorem exists_eq_const_mul_intervalIntegral_of_nonneg\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:203\\n    protected theorem intervalIntegral_preimage (t : ℝ) (f : AddCircle T → E) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:210\\n    lemma integral_liftIoc_eq_intervalIntegral {t : ℝ} {f : ℝ → E} :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:259\\n    protected theorem intervalIntegral_preimage (t : ℝ) (f : UnitAddCircle → E) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:280\\n    theorem intervalIntegrable {t : ℝ} (h₁f : Function.Periodic f T)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:320\\n    theorem intervalIntegrable_iff {t₁ t₂ : ℝ} (hf : Periodic f T) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:330\\n    theorem intervalIntegrable₀ (h₁f : Function.Periodic f T) (hT : T ≠ 0)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:344\\n    theorem intervalIntegral_add_eq (hf : Periodic f T) (t s : ℝ) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:360\\n    theorem intervalIntegral_add_eq_add (hf : Periodic f T) (t s : ℝ)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:367\\n    theorem intervalIntegral_add_zsmul_eq (hf : Periodic f T) (n : ℤ) (t : ℝ)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:433\\n    theorem tendsto_atTop_intervalIntegral_of_pos (h₀ : 0 < ∫ x in 0..T, g x) (hT : 0 < T) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:443\\n    theorem tendsto_atBot_intervalIntegral_of_pos (h₀ : 0 < ∫ x in 0..T, g x) (hT : 0 < T) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Periodic.lean:453\\n    theorem tendsto_atTop_intervalIntegral_of_pos'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*EqvGen\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"24 match(es) for '(def|theorem|lemma) .*EqvGen' (via ripgrep):\\n- Mathlib/Algebra/RingQuot.lean:101\\n    theorem eqvGen_rel_eq (r : R → R → Prop) : Relation.EqvGen (Rel r) = RingConGen.Rel r := by\\n- Mathlib/Data/Setoid/Basic.lean:271\\n    theorem sup_def {r s : Setoid α} : r ⊔ s = EqvGen.setoid (⇑r ⊔ ⇑s) := by\\n- Mathlib/Data/Setoid/Basic.lean:286\\n    theorem sSup_def {s : Set (Setoid α)} : sSup s = EqvGen.setoid (sSup ((⇑) '' s)) := by\\n- Mathlib/Data/Setoid/Basic.lean:293\\n    theorem eqvGen_of_setoid (r : Setoid α) : EqvGen.setoid r.r = r :=\\n- Mathlib/Data/Setoid/Basic.lean:297\\n    theorem eqvGen_idem (r : α → α → Prop) : EqvGen.setoid (EqvGen.setoid r) = EqvGen.setoid r :=\\n- Mathlib/Data/Setoid/Basic.lean:312\\n    def gi : @GaloisInsertion (α → α → Prop) (Setoid α) _ _ EqvGen.setoid (⇑) where\\n- Mathlib/GroupTheory/FreeGroup/Basic.lean:372\\n    theorem eqvGen_step_iff_join_red : EqvGen Red.Step L₁ L₂ ↔ Join Red L₁ L₂ :=\\n- Mathlib/Logic/Relation.lean:798\\n    theorem is_equivalence : Equivalence (@EqvGen α r) :=\\n- Mathlib/Logic/Relation.lean:811\\n    theorem mono {r p : α → α → Prop} (hrp : r ≤ p) : EqvGen r ≤ EqvGen p := by\\n- Mathlib/Logic/Relation.lean:826\\n    lemma eqvGen_mono {r r' : α → α → Prop} (h : Subrelation r r') : Subrelation (EqvGen r) (EqvGen r')\\n- Mathlib/Logic/Relation.lean:832\\n    lemma reflGen_le_eqvGen : Subrelation (ReflGen r) (EqvGen r)\\n- Mathlib/Logic/Relation.lean:836\\n    lemma symmGen_le_eqvGen : Subrelation (SymmGen r) (EqvGen r)\\n- Mathlib/Logic/Relation.lean:840\\n    lemma transGen_le_eqvGen : Subrelation (TransGen r) (EqvGen r) := by\\n- Mathlib/Logic/Relation.lean:846\\n    lemma reflTransGen_le_eqvGen : Subrelation (ReflTransGen r) (EqvGen r) := by\\n- Mathlib/Logic/Relation.lean:854\\n    lemma eqvGen_reflGen : EqvGen (ReflGen r) = EqvGen r :=\\n- Mathlib/Logic/Relation.lean:859\\n    lemma eqvGen_transGen : EqvGen (TransGen r) = EqvGen r :=\\n- Mathlib/Logic/Relation.lean:864\\n    lemma eqvGen_symmGen : EqvGen (SymmGen r) = EqvGen r :=\\n- Mathlib/Logic/Relation.lean:869\\n    lemma eqvGen_reflTransGen : EqvGen (ReflTransGen r) = EqvGen r :=\\n- Mathlib/Logic/Relation.lean:874\\n    lemma eqvGen_eq_reflTransGen [Std.Symm r] : EqvGen r = ReflTransGen r :=\\n- Mathlib/Logic/Relation.lean:878\\n    lemma reflTransGen_symmGen : ReflTransGen (SymmGen r) = EqvGen r := by\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*isomorphism.*theorem\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(def|theorem|lemma) .*isomorphism.*theorem' under Mathlib/.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*Icc|Ico|Ioc|Ioo\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2488,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5143 match(es) for '(def|theorem|lemma) .*Icc|Ico|Ioc|Ioo' (via ripgrep):\\n- Mathlib/Probability/Process/HittingTime.lean:171\\n    theorem le_hittingBtwn_of_exists {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :\\n- Mathlib/Probability/Process/HittingTime.lean:178\\n    theorem hittingBtwn_mem_Icc {m : ι} (hnm : n ≤ m) (ω : Ω) : hittingBtwn u s n m ω ∈ Set.Icc n m :=\\n- Mathlib/Probability/Process/HittingTime.lean:181\\n    theorem hittingBtwn_mem_set [WellFoundedLT ι] {m : ι} (h_exists : ∃ j ∈ Set.Icc n m, u j ω ∈ s) :\\n- Mathlib/Probability/Process/HittingTime.lean:262\\n    hittingBtwn u s n m ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by\\n- Mathlib/Probability/Process/HittingTime.lean:282\\n    hittingAfter u s n ω < i ↔ ∃ j ∈ Set.Ico n i, u j ω ∈ s := by\\n- Mathlib/Probability/Process/Stopping.lean:1285\\n    (∑ i ∈ Finset.Ico (τ ω).untopA (π ω).untopA, (u (i + 1) - u i)) ω := by\\n- Mathlib/Probability/Process/Stopping.lean:1288\\n    rw [Finset.sum_Ico_eq_sub _ h_le', Finset.sum_range_sub, Finset.sum_range_sub]\\n- Mathlib/Probability/Process/Stopping.lean:1302\\n    simp only [Finset.mem_filter, Set.mem_setOf_eq, Finset.mem_range, Finset.mem_Ico]\\n- Mathlib/Probability/Process/Filtration.lean:313\\n    (hi : ∃ j > i, Set.Ioo i j = ∅) :\\n- Mathlib/Probability/Process/Filtration.lean:316\\n    obtain ⟨j, hij, hIoo⟩ := hi\\n- Mathlib/Probability/Process/Filtration.lean:317\\n    have hcov : i ⋖ j := covBy_iff_Ioo_eq.mpr ⟨hij, hIoo⟩\\n- Mathlib/Probability/Process/Filtration.lean:359\\n    have hiou : Set.Ioo i u ∈ 𝓝[>] i := by\\n- Mathlib/Probability/Process/Predictable.lean:71\\n    lemma measurableSet_predictable_Ioc_prod [LinearOrder ι] [OrderBot ι]\\n- Mathlib/Probability/Process/Predictable.lean:73\\n    MeasurableSet[𝓕.predictable] <| Set.Ioc i j ×ˢ s := by\\n- Mathlib/Probability/Process/Predictable.lean:84\\n    rw [(_ : {n + 1} = Set.Ioc n (n + 1))]\\n- Mathlib/Probability/Process/Predictable.lean:85\\n    · exact measurableSet_predictable_Ioc_prod _ _ hs\\n- Mathlib/Probability/Process/Predictable.lean:87\\n    simp only [Set.mem_singleton_iff, Set.mem_Ioc]\\n- Mathlib/Probability/Process/Predictable.lean:153\\n    = (Subtype.val ⁻¹' (Set.Ioc j i)) ×ˢ A)]\\n- Mathlib/Probability/Process/Predictable.lean:154\\n    exact (measurable_subtype_coe measurableSet_Ioc).prod (𝓕.mono hji _ hA)\\n- Mathlib/Probability/Distributions/Beta.lean:80\\n    ∫⁻ (x : ℝ) in Ioo 0 1, ENNReal.ofReal (1 / beta α β * x ^ (α - 1) * (1 - x) ^ (β - 1)) := by\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*minimal|coarsest|finest\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2769,
+   "result_head": "[{\"type\": \"text\", \"text\": \"272 match(es) for '(def|theorem|lemma) .*minimal|coarsest|finest' (via ripgrep):\\n- Mathlib/Logic/Relation.lean:608\\n    lemma reflGen_minimal {r' : α → α → Prop} [Std.Refl r'] (h : r ≤ r') : ReflGen r ≤ r' := by\\n- Mathlib/Logic/Relation.lean:681\\n    lemma transGen_minimal {r' : α → α → Prop} [IsTrans α r'] (h : r ≤ r') : TransGen r ≤ r' := by\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean:257\\n    noncomputable def minimal (W : WeierstrassCurve K) : WeierstrassCurve K :=\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:14\\n    We define the finest (largest) Grothendieck topology for which a given presheaf `P` is a sheaf.\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:17\\n    A sieve `S` on `X` is covering for `finestTopologySingle P` iff\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:22\\n    This generalises to a set of presheaves, giving the topology `finestTopology Ps` which is the\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:23\\n    finest topology for which every presheaf in `Ps` is a sheaf.\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:24\\n    Using `Ps` as the set of representable presheaves defines the `canonicalTopology`: the finest\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:56\\n    /-- Construct the finest (largest) Grothendieck topology for which the given presheaf is a sheaf. -/\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:59\\n    def finestTopologySingle (P : Cᵒᵖ ⥤ Type w) : GrothendieckTopology C where\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:79\\n    /-- Construct the finest (largest) Grothendieck topology for which all the given presheaves are\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:82\\n    def finestTopology (Ps : Set (Cᵒᵖ ⥤ Type w)) : GrothendieckTopology C :=\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:83\\n    sInf (finestTopologySingle '' Ps)\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:85\\n    /-- Check that if `P ∈ Ps`, then `P` is indeed a sheaf for the finest topology on `Ps`. -/\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:86\\n    theorem sheaf_for_finestTopology (Ps : Set (Cᵒᵖ ⥤ Type w)) (h : P ∈ Ps) :\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:87\\n    Presieve.IsSheaf (finestTopology Ps) P := fun X S hS => by\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:90\\n    lemma mem_finestTopology_of_forall_isSheafFor {Ps : Set (Cᵒᵖ ⥤ Type w)} {X : C} {S : Sieve X}\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:92\\n    S ∈ finestTopology Ps X := by\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:97\\n    Check that if each `P ∈ Ps` is a sheaf for `J`, then `J` is a subtopology of `finestTopology Ps`.\\n- Mathlib/CategoryTheory/Sites/Canonical.lean:99\\n    theorem le_finestTopology (Ps : Set (Cᵒᵖ ⥤ Type w)) (J : GrothendieckTopology C)\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Relation\\\\.EqvGen\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2083,
+   "result_head": "[{\"type\": \"text\", \"text\": \"48 match(es) for 'Relation\\\\\\\\.EqvGen' (via ripgrep):\\n- Mathlib/Algebra/RingQuot.lean:66\\n    r := Relation.EqvGen (Rel r)\\n- Mathlib/Algebra/RingQuot.lean:67\\n    iseqv := Relation.EqvGen.is_equivalence _\\n- Mathlib/Algebra/RingQuot.lean:71\\n    refine (Relation.EqvGen.rel _ _ hab.add_left).trans _ _ _ ?_\\n- Mathlib/Algebra/RingQuot.lean:73\\n    | rel _ _ hcd => exact Relation.EqvGen.rel _ _ hcd.add_right\\n- Mathlib/Algebra/RingQuot.lean:74\\n    | refl => exact Relation.EqvGen.refl _\\n- Mathlib/Algebra/RingQuot.lean:78\\n    | rel _ _ hcd => exact Relation.EqvGen.rel _ _ hcd.add_right\\n- Mathlib/Algebra/RingQuot.lean:79\\n    | refl => exact Relation.EqvGen.refl _\\n- Mathlib/Algebra/RingQuot.lean:83\\n    | trans x y z _ _ h h' => exact (h hcd).trans _ _ _ (h' <| Relation.EqvGen.refl _)\\n- Mathlib/Algebra/RingQuot.lean:87\\n    refine (Relation.EqvGen.rel _ _ hab.mul_left).trans _ _ _ ?_\\n- Mathlib/Algebra/RingQuot.lean:89\\n    | rel _ _ hcd => exact Relation.EqvGen.rel _ _ hcd.mul_right\\n- Mathlib/Algebra/RingQuot.lean:90\\n    | refl => exact Relation.EqvGen.refl _\\n- Mathlib/Algebra/RingQuot.lean:94\\n    | rel _ _ hcd => exact Relation.EqvGen.rel _ _ hcd.mul_right\\n- Mathlib/Algebra/RingQuot.lean:95\\n    | refl => exact Relation.EqvGen.refl _\\n- Mathlib/Algebra/RingQuot.lean:99\\n    | trans x y z _ _ h h' => exact (h hcd).trans _ _ _ (h' <| Relation.EqvGen.refl _)\\n- Mathlib/Algebra/RingQuot.lean:101\\n    theorem eqvGen_rel_eq (r : R → R → Prop) : Relation.EqvGen (Rel r) = RingConGen.Rel r := by\\n- Mathlib/Algebra/RingQuot.lean:116\\n    | of => exact Relation.EqvGen.rel _ _ (Rel.of ‹_›)\\n- Mathlib/Logic/Relation.lean:40\\n    * `Relation.EqvGen`: Equivalence closure. `EqvGen r` relates everything `ReflTransGen r` relates,\\n- Mathlib/AlgebraicTopology/SimplicialSet/PiZero.lean:67\\n    π₀.mk x₀ = π₀.mk x₁ ↔ Relation.EqvGen π₀Rel x₀ x₁ :=\\n- Mathlib/Data/Quot.lean:276\\n    Quot.mk r x = Quot.mk r y ↔ Relation.EqvGen r x y :=\\n- Mathlib/Data/PFunctor/Multivariate/M.lean:281\\n    have := M.bisim₀ P (Relation.EqvGen R) ?_ ?_\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"interval.*lattice|lattice.*interval\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 852,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'interval.*lattice|lattice.*interval' (via ripgrep):\\n- Mathlib/Order/LatticeIntervals.lean:13\\n    In this file, we provide instances of lattice structures on intervals within lattices.\\n- Mathlib/Order/CompactlyGenerated/Intervals.lean:12\\n    # Results about compactness properties for intervals in complete lattices\\n- Mathlib/CategoryTheory/Subobject/Lattice.lean:728\\n    /-- The subobject lattice of a subobject `Y` is order isomorphic to the interval `Set.Iic Y`. -/\\n- Mathlib/Order/BooleanAlgebra/Defs.lean:30\\n    not yet have relative complements for arbitrary intervals, as we do not even have lattice\\n- Mathlib/Order/Hom/Set.lean:196\\n    interval sublattices. -/\\n- Mathlib/Order/Hom/Set.lean:206\\n    interval sublattices. -/\\n- Mathlib/Order/Hom/Set.lean:216\\n    interval sublattices. -/\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Logic/Relation.lean\", \"line\": 798, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1608,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Logic/Relation.lean  (lines 798–827 of 1012):\\n   798  theorem is_equivalence : Equivalence (@EqvGen α r) :=\\n   799    Equivalence.mk EqvGen.refl (EqvGen.symm _ _) (EqvGen.trans _ _ _)\\n   800  \\n   801  instance : IsEquiv α (EqvGen r) := is_equivalence _ |>.isEquiv\\n   802  \\n   803  /-- `EqvGen.setoid r` is the setoid generated by a relation `r`.\\n   804  \\n   805  The motivation for this definition is that `Quot r` behaves like `Quotient (EqvGen.setoid r)`,\\n   806  see for example `Quot.eqvGen_exact` and `Quot.eqvGen_sound`. -/\\n   807  @[implicit_reducible]\\n   808  def setoid : Setoid α :=\\n   809    Setoid.mk _ (EqvGen.is_equivalence r)\\n   810  \\n   811  theorem mono {r p : α → α → Prop} (hrp : r ≤ p) : EqvGen r ≤ EqvGen p := by\\n   812    intro _ _ h\\n   813    induction h with\\n   814    | rel a b h => exact EqvGen.rel _ _ (hrp _ _ h)\\n   815    | refl => exact EqvGen.refl _\\n   816    | symm a b _ ih => exact EqvGen.symm _ _ ih\\n   817    | trans a b c _ _ hab hbc => exact EqvGen.trans _ _ _ hab hbc\\n   818  \\n   819  lemma eqvGen_le {r r' : α → α → Prop} [IsEquiv α r'] (h : Subrelation r r') :\\n   820      Subrelation (EqvGen r) r'\\n   821    | _, _, .refl _ => _root_.refl _\\n   822    | _, _, .symm _ _ hxy => _root_.symm (eqvGen_le h hxy :)\\n   823    | _, _, .trans _ _ _ hxy hyz => _root_.trans (eqvGen_le h hxy :) (eqvGen_le h hyz :)\\n   824    | _, _, .rel _ _ hab => h hab\\n   825  \\n   826  lemma eqvGen_mono {r r' : α → α → Prop} (h : Subrelation r r') : Subrelation (EqvGen r) (EqvGen r')\\n   827    | _, _, .refl _ => .refl _\\n\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/LatticeIntervals.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/LatticeIntervals.lean  (lines 1–80 of 283):\\n     1  /-\\n     2  Copyright (c) 2020 Aaron Anderson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Aaron Anderson\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Bounds.Basic\\n     9  \\n    10  /-!\\n    11  # Intervals in Lattices\\n    12  \\n    13  In this file, we provide instances of lattice structures on intervals within lattices.\\n    14  Some of them depend on the order of the endpoints of the interval, and thus are not made\\n    15  global instances. These are probably not all of the lattice instances that could be placed on these\\n    16  intervals, but more can be added easily along the same lines when needed.\\n    17  \\n    18  ## Main definitions\\n    19  \\n    20  In the following, `*` can represent either `c`, `o`, or `i`.\\n    21    * `Set.Ic*.orderBot`\\n    22    * `Set.Ii*.semilatticeInf`\\n    23    * `Set.I*c.orderTop`\\n    24    * `Set.I*c.semilatticeInf`\\n    25    * `Set.I**.lattice`\\n    26    * `Set.Iic.boundedOrder`, within an `OrderBot`\\n    27    * `Set.Ici.boundedOrder`, within an `OrderTop`\\n    28  -/\\n    29  \\n    30  public section\\n    31  \\n    32  \\n    33  variable {α : Type*}\\n    34  \\n    35  namespace Set\\n    36  \\n    37  namespace Ico\\n    38  \\n    39  instance semilatticeInf [SemilatticeInf α] {a b : α} : SemilatticeInf (Ico a b) :=\\n    40    Subtype.semilatticeInf fun _ _ hx hy => ⟨le_inf hx.1 hy.1, lt_of_le_of_lt inf_le_left hx.2⟩\\n    41  \\n    42  @[simp, norm_cast]\\n    43  protected lemma coe_inf [SemilatticeInf α] {a b : α} {x y : Ico a b} :\\n    44      ↑(x ⊓ y) = (↑x ⊓ ↑y : α) :=\\n    45    rfl\\n    46  \\n    47  /-- `Ico a b` has a bottom element whenever `a < b`. -/\\n    48  instance orderBot [PartialOrder α] {a b : α} [Fact (a < b)] : OrderBot (Ico a b) :=\\n    49    (isLeast_Ico Fact.out).orderBot\\n    50  \\n    51  @[simp, norm_cast]\\n    52  protected lemma coe_bot [PartialOrder α] (a b : α) [Fact (a < b)] : ↑(⊥ : Ico a b) = a := rfl\\n    53  \\n    54  protected lemma disjoint_iff [SemilatticeInf α] {a b : α} [Fact (a < b)] {x y : Ico a b} :\\n    55      Disjoint x y ↔ ↑x ⊓ ↑y = a := by\\n    56    simp [_root_.disjoint_iff, Subtype.ext_iff]\\n    57  \\n    58  end Ico\\n    59  \\n    60  namespace Iio\\n    61  \\n    62  instance semilatticeInf [SemilatticeInf α] {a : α} : SemilatticeInf (Iio a) :=\\n    63    Subtype.semilatticeInf fun _ _ hx _ => lt_of_le_of_lt inf_le_left hx\\n    64  \\n    65  @[simp, norm_cast]\\n    66  protected lemma coe_inf [SemilatticeInf α] {a : α} {x y : Iio a} :\\n    67      ↑(x ⊓ y) = (↑x ⊓ ↑y : α) :=\\n    68    rfl\\n    69  \\n    70  end Iio\\n    71  \\n    72  namespace Ioc\\n    73  \\n    74  instance semilatticeSup [SemilatticeSup α] {a b : α} : SemilatticeSup (Ioc a b) :=\\n    75    Subtype.semilatticeSup fun _ _ hx hy => ⟨lt_of_lt_of_le hx.1 le_sup_left, sup_le hx.2 hy.2⟩\\n    76  \\n    77  @[simp, norm_cast]\\n    78  protected lemma coe_sup [SemilatticeSup α] {a b : α} {x y : Ioc a b} :\\n    79      ↑(x ⊔ y) = (↑x ⊔ ↑y : α) :=\\n    80    rfl\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*second.*iso|iso.*second\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1426,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for '(def|theorem|lemma) .*second.*iso|iso.*second' (via ripgrep):\\n- Mathlib/Algebra/Ring/Equiv.lean:962\\n    /-- If two rings are isomorphic, and the second doesn't have zero divisors,\\n- Mathlib/Algebra/Ring/Equiv.lean:968\\n    /-- If two rings are isomorphic, and the second is a domain, then so is the first. -/\\n- Mathlib/Algebra/GCDMonoid/Basic.lean:315\\n    /-- The GCD is a divisor of the second element. -/\\n- Mathlib/CategoryTheory/Triangulated/Pretriangulated.lean:473\\n    isomorphisms, the second component is as well. This can be thought of as a\\n- Mathlib/CategoryTheory/Galois/Prorepresentability.lean:281\\n    Where the first isomorphism is induced from the pro-representability of `F` and the second one\\n- Mathlib/LinearAlgebra/QuadraticForm/Prod.lean:82\\n    /-- `LinearMap.fst` as an isometry, when the second space has the zero quadratic form. -/\\n- Mathlib/CategoryTheory/Monoidal/Rigid/Basic.lean:623\\n    /-- Transport an exact pairing across an isomorphism in the second argument. -/\\n- Mathlib/RingTheory/OrderOfVanishing/Basic.lean:122\\n    zero divisor rather than the second.\\n- Mathlib/Order/JordanHolder.lean:115\\n    theorem second_iso_of_eq {x y a b : X} (hm : IsMaximal x a) (ha : x ⊔ y = a) (hb : x ⊓ y = b) :\\n- Mathlib/Order/InitialSeg.lean:500\\n    /-- An initial segment can be extended to an isomorphism by joining a second well order to the\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Relation\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Relation': unknown identifier 'Relation'\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/JordanHolder.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6162,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/JordanHolder.lean  (lines 1–120 of 454):\\n     1  /-\\n     2  Copyright (c) 2021 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Hughes\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Lattice\\n     9  public import Mathlib.Data.List.Sort\\n    10  public import Mathlib.Logic.Equiv.Fin.Basic\\n    11  public import Mathlib.Logic.Equiv.Functor\\n    12  public import Mathlib.Data.Fintype.Pigeonhole\\n    13  public import Mathlib.Order.RelSeries\\n    14  \\n    15  /-!\\n    16  # Jordan-Hölder Theorem\\n    17  \\n    18  This file proves the Jordan Hölder theorem for a `JordanHolderLattice`, a class also defined in\\n    19  this file. Examples of `JordanHolderLattice` include `Subgroup G` if `G` is a group, and\\n    20  `Submodule R M` if `M` is an `R`-module. Using this approach the theorem need not be proved\\n    21  separately for both groups and modules, the proof in this file can be applied to both.\\n    22  \\n    23  ## Main definitions\\n    24  The main definitions in this file are `JordanHolderLattice` and `CompositionSeries`,\\n    25  and the relation `Equivalent` on `CompositionSeries`\\n    26  \\n    27  A `JordanHolderLattice` is the class for which the Jordan Hölder theorem is proved. A\\n    28  Jordan Hölder lattice is a lattice equipped with a notion of maximality, `IsMaximal`, and a notion\\n    29  of isomorphism of pairs `Iso`. In the example of subgroups of a group, `IsMaximal H K` means that\\n    30  `H` is a maximal normal subgroup of `K`, and `Iso (H₁, K₁) (H₂, K₂)` means that the quotient\\n    31  `H₁ / K₁` is isomorphic to the quotient `H₂ / K₂`. `Iso` must be symmetric and transitive and must\\n    32  satisfy the second isomorphism theorem `Iso (H, H ⊔ K) (H ⊓ K, K)`.\\n    33  \\n    34  A `CompositionSeries X` is a finite nonempty series of elements of the lattice `X` such that\\n    35  each element is maximal inside the next. The length of a `CompositionSeries X` is\\n    36  one less than the number of elements in the series. Note that there is no stipulation\\n    37  that a series start from the bottom of the lattice and finish at the top.\\n    38  For a composition series `s`, `s.last` is the largest element of the series,\\n    39  and `s.head` is the least element.\\n    40  \\n    41  Two `CompositionSeries X`, `s₁` and `s₂` are equivalent if there is a bijection\\n    42  `e : Fin s₁.length ≃ Fin s₂.length` such that for any `i`,\\n    43  `Iso (s₁ i, s₁ i.succ) (s₂ (e i), s₂ (e i.succ))`\\n    44  \\n    45  ## Main theorems\\n    46  \\n    47  The main theorem is `CompositionSeries.jordan_holder`, which says that if two composition\\n    48  series have the same least element and the same largest element,\\n    49  then they are `Equivalent`.\\n    50  \\n    51  ## TODO\\n    52  \\n    53  Provide instances of `JordanHolderLattice` for subgroups, and potentially for modular lattices.\\n    54  \\n    55  It is not entirely clear how this should be done. Possibly there should be no global instances\\n    56  of `JordanHolderLattice`, and the instances should only be defined locally in order to prove\\n    57  the Jordan-Hölder theorem for modules/groups and the API should be transferred because many of the\\n    58  theorems in this file will have stronger versions for modules. There will also need to be an API for\\n    59  mapping composition series across homomorphisms. It is also probably possible to\\n    60  provide an instance of `JordanHolderLattice` for any `ModularLattice`, and in this case the\\n    61  Jordan-Hölder theorem will say that there is a well-defined notion of length of a modular lattice.\\n    62  However an instance of `JordanHolderLattice` for a modular lattice will not be able to contain\\n    63  the correct notion of isomorphism for modules, so a separate instance for modules will still be\\n    64  required and this will clash with the instance"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/JordanHolder.lean\", \"line\": 110, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5037,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/JordanHolder.lean  (lines 110–209 of 454):\\n   110      (hyb : IsMaximal y b) : IsMaximal a y := by\\n   111    have hb : x ⊔ y = b := sup_eq_of_isMaximal hxb hyb hxy\\n   112    subst a b\\n   113    exact isMaximal_inf_right_of_isMaximal_sup hxb hyb\\n   114  \\n   115  theorem second_iso_of_eq {x y a b : X} (hm : IsMaximal x a) (ha : x ⊔ y = a) (hb : x ⊓ y = b) :\\n   116      Iso (x, a) (b, y) := by subst a b; exact second_iso hm\\n   117  \\n   118  theorem IsMaximal.iso_refl {x y : X} (h : IsMaximal x y) : Iso (x, y) (x, y) :=\\n   119    second_iso_of_eq h (sup_eq_right.2 (le_of_lt (lt_of_isMaximal h)))\\n   120      (inf_eq_left.2 (le_of_lt (lt_of_isMaximal h)))\\n   121  \\n   122  end JordanHolderLattice\\n   123  \\n   124  open JordanHolderLattice\\n   125  \\n   126  attribute [symm] iso_symm\\n   127  \\n   128  attribute [trans] iso_trans\\n   129  \\n   130  /-- A `CompositionSeries X` is a finite nonempty series of elements of a\\n   131  `JordanHolderLattice` such that each element is maximal inside the next. The length of a\\n   132  `CompositionSeries X` is one less than the number of elements in the series.\\n   133  Note that there is no stipulation that a series start from the bottom of the lattice and finish at\\n   134  the top. For a composition series `s`, `s.last` is the largest element of the series,\\n   135  and `s.head` is the least element.\\n   136  -/\\n   137  abbrev CompositionSeries (X : Type u) [Lattice X] [JordanHolderLattice X] : Type u :=\\n   138    RelSeries {(x, y) : X × X | IsMaximal x y}\\n   139  \\n   140  namespace CompositionSeries\\n   141  \\n   142  variable {X : Type u} [Lattice X] [JordanHolderLattice X]\\n   143  \\n   144  theorem lt_succ (s : CompositionSeries X) (i : Fin s.length) :\\n   145      s (Fin.castSucc i) < s (Fin.succ i) :=\\n   146    lt_of_isMaximal (s.step _)\\n   147  \\n   148  protected theorem strictMono (s : CompositionSeries X) : StrictMono s :=\\n   149    Fin.strictMono_iff_lt_succ.2 s.lt_succ\\n   150  \\n   151  protected theorem injective (s : CompositionSeries X) : Function.Injective s :=\\n   152    s.strictMono.injective\\n   153  \\n   154  @[simp]\\n   155  protected theorem inj (s : CompositionSeries X) {i j : Fin s.length.succ} : s i = s j ↔ i = j :=\\n   156    s.injective.eq_iff\\n   157  \\n   158  theorem total {s : CompositionSeries X} {x y : X} (hx : x ∈ s) (hy : y ∈ s) : x ≤ y ∨ y ≤ x := by\\n   159    rcases Set.mem_range.1 hx with ⟨i, rfl⟩\\n   160    rcases Set.mem_range.1 hy with ⟨j, rfl⟩\\n   161    rw [s.strictMono.le_iff_le, s.strictMono.le_iff_le]\\n   162    exact le_total i j\\n   163  \\n   164  theorem toList_sorted (s : CompositionSeries X) : s.toList.SortedLT :=\\n   165    List.IsChain.sortedLT <| by\\n   166      simp_rw [List.isChain_iff_getElem, s.toList_getElem]\\n   167      exact fun _ _ => s.strictMono (Nat.lt_succ_self _)\\n   168  \\n   169  theorem toList_nodup (s : CompositionSeries X) : s.toList.Nodup :=\\n   170    s.toList_sorted.nodup\\n   171  \\n   172  /-- Two `CompositionSeries` are equal if they have the same elements. See also `ext_fun`. -/\\n   173  @[ext]\\n   174  theorem ext {s₁ s₂ : CompositionSeries X} (h : ∀ x, x ∈ s₁ ↔ x ∈ s₂) : s₁ = s₂ := by\\n   175    classical\\n   176    apply toList_injective <|\\n   177      (List.perm_of_nodup_nodup_toFinset_eq s₁.toList_nodup s₂.toList_nodup _).eq_of_pairwise'\\n   178      s₁.toList_sorted.pairwise s₂.toList_sorted.pairwise\\n   179    simpa only [Finset.ext_iff, List.mem_toFinset, RelSeries.mem_toList]\\n   180  \\n   181  @[simp]\\n   182  theorem le_last {s : CompositionSeries X} (i : Fin (s.length + 1)) : s i ≤ s.last :=\\n   183    s.strictMono.monotone (Fin.le_last _)\\n   184  \\n   185  theorem le_last_of_mem {s : CompositionSeries X} {x : X} (hx : x ∈ s) : x ≤ s.last :=\\n   186    let ⟨_i, hi⟩ := Set.mem_range.2 hx\\n   187    hi ▸ le_last _\\n   188  \\n   189  @[simp]\\n   190  theorem head_le {s : CompositionSeries X} (i : Fin (s.length + 1)) : s.head ≤ s i :=\\n   191 "
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma) .*Equivalent.*CompositionSeries|CompositionSeries.*Equivalent\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 764,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|theorem|lemma) .*Equivalent.*CompositionSeries|CompositionSeries.*Equivalent' (via ripgrep):\\n- Mathlib/Order/JordanHolder.lean:247\\n    def Equivalent (s₁ s₂ : CompositionSeries X) : Prop :=\\n- Mathlib/Order/JordanHolder.lean:255\\n    theorem refl (s : CompositionSeries X) : Equivalent s s :=\\n- Mathlib/Order/JordanHolder.lean:259\\n    theorem symm {s₁ s₂ : CompositionSeries X} (h : Equivalent s₁ s₂) : Equivalent s₂ s₁ :=\\n- Mathlib/Order/JordanHolder.lean:263\\n    theorem trans {s₁ s₂ s₃ : CompositionSeries X} (h₁ : Equivalent s₁ s₂) (h₂ : Equivalent s₂ s₃) :\\n- Mathlib/Order/JordanHolder.lean:333\\n    theorem length_eq {s₁ s₂ : CompositionSeries X} (h : Equivalent s₁ s₂) : s₁.length = s₂.length := by\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/JordanHolder.lean\", \"line\": 247, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2554,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/JordanHolder.lean  (lines 247–296 of 454):\\n   247  def Equivalent (s₁ s₂ : CompositionSeries X) : Prop :=\\n   248    ∃ f : Fin s₁.length ≃ Fin s₂.length,\\n   249      ∀ i : Fin s₁.length, Iso (s₁ (Fin.castSucc i), s₁ i.succ)\\n   250        (s₂ (Fin.castSucc (f i)), s₂ (Fin.succ (f i)))\\n   251  \\n   252  namespace Equivalent\\n   253  \\n   254  @[refl]\\n   255  theorem refl (s : CompositionSeries X) : Equivalent s s :=\\n   256    ⟨Equiv.refl _, fun _ => (s.step _).iso_refl⟩\\n   257  \\n   258  @[symm]\\n   259  theorem symm {s₁ s₂ : CompositionSeries X} (h : Equivalent s₁ s₂) : Equivalent s₂ s₁ :=\\n   260    ⟨h.choose.symm, fun i => iso_symm (by simpa using h.choose_spec (h.choose.symm i))⟩\\n   261  \\n   262  @[trans]\\n   263  theorem trans {s₁ s₂ s₃ : CompositionSeries X} (h₁ : Equivalent s₁ s₂) (h₂ : Equivalent s₂ s₃) :\\n   264      Equivalent s₁ s₃ :=\\n   265    ⟨h₁.choose.trans h₂.choose,\\n   266      fun i => iso_trans (h₁.choose_spec i) (h₂.choose_spec (h₁.choose i))⟩\\n   267  \\n   268  set_option backward.defeqAttrib.useBackward true in\\n   269  set_option backward.isDefEq.respectTransparency false in\\n   270  protected theorem smash {s₁ s₂ t₁ t₂ : CompositionSeries X}\\n   271      (hs : s₁.last = s₂.head) (ht : t₁.last = t₂.head)\\n   272      (h₁ : Equivalent s₁ t₁) (h₂ : Equivalent s₂ t₂) :\\n   273      Equivalent (smash s₁ s₂ hs) (smash t₁ t₂ ht) :=\\n   274    let e : Fin (s₁.length + s₂.length) ≃ Fin (t₁.length + t₂.length) :=\\n   275      calc\\n   276        Fin (s₁.length + s₂.length) ≃ (Fin s₁.length) ⊕ (Fin s₂.length) := finSumFinEquiv.symm\\n   277        _ ≃ (Fin t₁.length) ⊕ (Fin t₂.length) := Equiv.sumCongr h₁.choose h₂.choose\\n   278        _ ≃ Fin (t₁.length + t₂.length) := finSumFinEquiv\\n   279    ⟨e, by\\n   280      intro i\\n   281      refine Fin.addCases ?_ ?_ i\\n   282      · intro i\\n   283        simpa [e, smash_castAdd, smash_succ_castAdd] using h₁.choose_spec i\\n   284      · intro i\\n   285        simpa [e, -Fin.castSucc_natAdd, smash_natAdd, smash_succ_natAdd] using h₂.choose_spec i⟩\\n   286  \\n   287  #adaptation_note /-- Proof repaired after leanprover/lean4#13492.\\n   288  The proof body used to be a single term\\n   289  ```\\n   290  ⟨e, fun i => by\\n   291    refine Fin.lastCases ?_ ?_ i\\n   292    · simpa [e, apply_last] using hlast\\n   293    · intro i\\n   294      simpa [e, ← Fin.castSucc_succ] using hequiv.choose_spec i⟩\\n   295  ```\\n   296  (where `e` was defined via the same `calc` block; the signature had `: ... :=` rather\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Logic/Relation.lean\", \"line\": 815, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Logic/Relation.lean  (lines 815–834 of 1012):\\n   815    | refl => exact EqvGen.refl _\\n   816    | symm a b _ ih => exact EqvGen.symm _ _ ih\\n   817    | trans a b c _ _ hab hbc => exact EqvGen.trans _ _ _ hab hbc\\n   818  \\n   819  lemma eqvGen_le {r r' : α → α → Prop} [IsEquiv α r'] (h : Subrelation r r') :\\n   820      Subrelation (EqvGen r) r'\\n   821    | _, _, .refl _ => _root_.refl _\\n   822    | _, _, .symm _ _ hxy => _root_.symm (eqvGen_le h hxy :)\\n   823    | _, _, .trans _ _ _ hxy hyz => _root_.trans (eqvGen_le h hxy :) (eqvGen_le h hyz :)\\n   824    | _, _, .rel _ _ hab => h hab\\n   825  \\n   826  lemma eqvGen_mono {r r' : α → α → Prop} (h : Subrelation r r') : Subrelation (EqvGen r) (EqvGen r')\\n   827    | _, _, .refl _ => .refl _\\n   828    | _, _, .symm _ _ hxy => .symm _ _ (eqvGen_mono h hxy)\\n   829    | _, _, .trans _ _ _ hxy hyz => .trans _ _ _ (eqvGen_mono h hxy) (eqvGen_mono h hyz)\\n   830    | _, _, .rel _ _ hab => .rel _ _ (h hab)\\n   831  \\n   832  lemma reflGen_le_eqvGen : Subrelation (ReflGen r) (EqvGen r)\\n   833    |  _, _, .refl => .refl _\\n   834    |  _, _, .single h => .rel _ _ h\\n\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen\", \"JordanHolderLattice\", \"Equivalence\", \"IsMaximal\"]}",
+   "ok": true,
+   "result_chars": 1239,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Relation\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Relation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Relation.html#Relation.EqvGen\\\"},{\\\"decl\\\":\\\"JordanHolderLattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.JordanHolder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.JordanHolder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/JordanHolder.html#JordanHolderLattice\\\"},{\\\"decl\\\":\\\"Equivalence\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Equivalence\\\"},{\\\"decl\\\":\\\"IsMaximal\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsMaximal.*:.*Prop\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 431,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'IsMaximal.*:.*Prop' (via ripgrep):\\n- Mathlib/Order/Ideal.lean:189\\n    class IsMaximal (I : Ideal P) : Prop extends IsProper I where\\n- Mathlib/Order/JordanHolder.lean:89\\n    IsMaximal : X → X → Prop\\n- Mathlib/RingTheory/Ideal/Maximal.lean:47\\n    class IsMaximal (I : Ideal α) : Prop where\\n- Mathlib/ModelTheory/Satisfiability.lean:458\\n    def IsMaximal (T : L.Theory) : Prop :=\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Equivalence.*IsEquiv|IsEquiv.*Equivalence\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2766,
+   "result_head": "[{\"type\": \"text\", \"text\": \"103 match(es) for 'Equivalence.*IsEquiv|IsEquiv.*Equivalence' (via ripgrep):\\n- Mathlib/AlgebraicTopology/SimplexCategory/Rev.lean:87\\n    instance : rev.IsEquivalence := revEquivalence.isEquivalence_functor\\n- Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:572\\n    noncomputable instance isEquivalence : skeletalFunctor.IsEquivalence where\\n- Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:838\\n    skeletalEquivalence.inverse.splitEpiCategoryImpOfIsEquivalence\\n- Mathlib/AlgebraicTopology/ModelCategory/CofibrantObjectHomotopy.lean:318\\n    have : F.IsEquivalence := E.isEquivalence_functor\\n- Mathlib/AlgebraicTopology/ModelCategory/FibrantObjectHomotopy.lean:316\\n    have : F.IsEquivalence := E.isEquivalence_functor\\n- Mathlib/Algebra/Homology/Opposite.lean:166\\n    instance : (opFunctor V c).IsEquivalence := (opEquivalence V c).isEquivalence_functor\\n- Mathlib/Algebra/Homology/Opposite.lean:167\\n    instance : (opInverse V c).IsEquivalence := (opEquivalence V c).isEquivalence_inverse\\n- Mathlib/Algebra/Homology/Opposite.lean:222\\n    instance : (unopFunctor V c).IsEquivalence := (unopEquivalence V c).isEquivalence_functor\\n- Mathlib/Algebra/Homology/Opposite.lean:223\\n    instance : (unopInverse V c).IsEquivalence := (unopEquivalence V c).isEquivalence_inverse\\n- Mathlib/AlgebraicGeometry/AffineScheme.lean:220\\n    instance : Γ.{u}.rightOp.IsEquivalence := equivCommRingCat.isEquivalence_functor\\n- Mathlib/AlgebraicGeometry/AffineScheme.lean:222\\n    instance : Γ.{u}.rightOp.op.IsEquivalence := equivCommRingCat.op.isEquivalence_functor\\n- Mathlib/AlgebraicGeometry/AffineScheme.lean:224\\n    instance ΓIsEquiv : Γ.{u}.IsEquivalence :=\\n- Mathlib/AlgebraicGeometry/AffineScheme.lean:225\\n    inferInstanceAs (Γ.{u}.rightOp.op ⋙ (opOpEquivalence _).functor).IsEquivalence\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:56\\n    isEquivalence : IsEquivalence (Localization.Construction.lift L inverts)\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:120\\n    isEquivalence := IsEquivalence.mk' (h₂.lift W.Q W.Q_inverts)\\n- Mathlib/CategoryTheory/Localization/Resolution.lean:405\\n    [R.functor.IsEquivalence] [R.IsInduced] [L.functor.IsEquivalence] [W₂'.RespectsIso]\\n- Mathlib/CategoryTheory/Localization/Resolution.lean:413\\n    [R.functor.IsEquivalence] [R.IsInduced] [L.functor.IsEquivalence] [W₂'.RespectsIso]\\n- Mathlib/CategoryTheory/Localization/Equivalence.lean:62\\n    lemma isEquivalence : G'.IsEquivalence :=\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:120\\n    lemma isEquivalence_imp [G.IsEquivalence] : G'.IsEquivalence :=\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:137\\n    lemma isEquivalence_iff : G.IsEquivalence ↔ G'.IsEquivalence :=\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Logic/Relation.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4307,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Logic/Relation.lean  (lines 1–80 of 1012):\\n     1  /-\\n     2  Copyright (c) 2018 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Logic.Relator\\n     9  public import Mathlib.Tactic.Use\\n    10  public import Mathlib.Tactic.MkIffOfInductiveProp\\n    11  public import Mathlib.Tactic.SimpRw\\n    12  public import Mathlib.Order.Defs.Prop\\n    13  public import Mathlib.Order.Defs.Unbundled\\n    14  public import Batteries.Logic\\n    15  public import Batteries.Tactic.Trans\\n    16  \\n    17  /-!\\n    18  # Relation closures\\n    19  \\n    20  This file defines the reflexive, symmetric, transitive, reflexive transitive and equivalence\\n    21  closures of relations and proves some basic results on them.\\n    22  \\n    23  Note that this is about unbundled relations, that is terms of types of the form `α → β → Prop`. For\\n    24  the bundled version, see `Rel`.\\n    25  \\n    26  ## Definitions\\n    27  \\n    28  * `Relation.ReflGen`: Reflexive closure. `ReflGen r` relates everything `r` related, plus for all\\n    29    `a` it relates `a` with itself. So `ReflGen r a b ↔ r a b ∨ a = b`.\\n    30  * `Relation.SymmGen`: Symmetric closure. This is also the comparability relation,\\n    31    such that `SymmGen r a b` means that either `r a b` or `r b a` (see `Mathlib.Order.Comparable`)\\n    32  * `Relation.TransGen`: Transitive closure. `TransGen r` relates everything `r` related\\n    33    transitively. So `TransGen r a b ↔ ∃ x₀ ... xₙ, r a x₀ ∧ r x₀ x₁ ∧ ... ∧ r xₙ b`.\\n    34  * `Relation.ReflTransGen`: Reflexive transitive closure. `ReflTransGen r` relates everything\\n    35    `r` related transitively, plus for all `a` it relates `a` with itself. So\\n    36    `ReflTransGen r a b ↔ (∃ x₀ ... xₙ, r a x₀ ∧ r x₀ x₁ ∧ ... ∧ r xₙ b) ∨ a = b`. It is the same as\\n    37    the reflexive closure of the transitive closure, or the transitive closure of the reflexive\\n    38    closure. In terms of rewriting systems, this means that `a` can be rewritten to `b` in a number of\\n    39    rewrites.\\n    40  * `Relation.EqvGen`: Equivalence closure. `EqvGen r` relates everything `ReflTransGen r` relates,\\n    41    plus for all related pairs it relates them in the opposite order.\\n    42  * `Relation.Comp`:  Relation composition. We provide notation `∘r`. For `r : α → β → Prop` and\\n    43    `s : β → γ → Prop`, `r ∘r s` relates `a : α` and `c : γ` iff there exists `b : β` that's related\\n    44    to both.\\n    45  * `Relation.Map`: Image of a relation under a pair of maps. For `r : α → β → Prop`, `f : α → γ`,\\n    46    `g : β → δ`, `Map r f g` is the relation `γ → δ → Prop` relating `f a` and `g b` for all `a`, `b`\\n    47    related by `r`.\\n    48  * `Relation.Join`: Join of a relation. For `r : α → α → Prop`, `Join r a b ↔ ∃ c, r a c ∧ r b c`. In\\n    49    terms of rewriting systems, this means that `a` and `b` can be rewritten to the same term.\\n    50  -/\\n    51  \\n    52  @[expose] public section\\n    53  \\n    54  \\n    55  open Function\\n    56  \\n    57  variable {α β γ δ ε ζ : Type*}\\n    58  \\n    59  theorem Subrelation.antisymm {r r' : α → α → Prop} (h1 : Subrelation r r') (h2 : Subrelation r' r) :\\n    60      r = r' :=\\n    61    funext₂ fun _ _ => propext ⟨h1, h2⟩\\n    62  \\n    63  section NeImp\\n    64  \\n    65  variable {r : α → α → Prop}\\n    66  \\n    67  @[deprecated (since := \\\"2026-03-27\\\")] alias Std.Refl.reflexive := refl\\n    68  \\n    69  @[deprecated (since := \\\"2026-01-09\\\")] alias IsRefl.reflexive := refl\\n    70  \\n    71  /-- To show a reflexive relation `r : α → α → Prop` holds over `x y : α`,\\n    72  it suffices to show it holds when `x ≠ y`. -/\\n    73  theorem Std.Refl.rel_of_ne_imp [Std.Refl r] {x y : α} (hr : x ≠ y → r x y) : r x y := by\\n    74    grind [Std.Refl]\\n    75  \\n    76  @[deprecated (sinc"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def) IsEquiv\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for '(class|def) IsEquiv' (via ripgrep):\\n- Mathlib/RingTheory/Valuation/Basic.lean:259\\n    def IsEquiv (v₁ : Valuation R Γ₀) (v₂ : Valuation R Γ'₀) : Prop :=\\n- Mathlib/RingTheory/Valuation/Basic.lean:1219\\n    def IsEquiv (v₁ : AddValuation R Γ₀) (v₂ : AddValuation R Γ'₀) : Prop :=\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:33\\n    def IsEquiv : Prop := ∀ x y, v x ≤ v y ↔ w x ≤ w y\\n- Mathlib/Order/Defs/Unbundled.lean:79\\n    class IsEquiv (α : Sort*) (r : α → α → Prop) : Prop extends IsPreorder α r, Std.Symm r\\n- Mathlib/Topology/Algebra/Valued/WithVal.lean:517\\n    def IsEquiv.orderRingIso (h : v.IsEquiv w) :\\n- Mathlib/Topology/Algebra/Valued/WithVal.lean:620\\n    def IsEquiv.uniformEquiv (h : v.IsEquiv w) : WithVal v ≃ᵤ WithVal w where\\n- Mathlib/Analysis/Asymptotics/Defs.lean:223\\n    def IsEquivalent (l : Filter α) (u v : α → E') :=\\n- Mathlib/CategoryTheory/EquivalenceRelation.lean:98\\n    class IsEquivalenceRelation {R X : C} (p₁ p₂ : R ⟶ X) : Prop where\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Logic/Relation.lean\", \"line\": 799, \"n\": 5}",
+   "ok": true,
+   "result_chars": 328,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Logic/Relation.lean  (lines 799–803 of 1012):\\n   799    Equivalence.mk EqvGen.refl (EqvGen.symm _ _) (EqvGen.trans _ _ _)\\n   800  \\n   801  instance : IsEquiv α (EqvGen r) := is_equivalence _ |>.isEquiv\\n   802  \\n   803  /-- `EqvGen.setoid r` is the setoid generated by a relation `r`.\\n\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|structure) Equivalence\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 496,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(class|structure) Equivalence' (via ripgrep):\\n- Mathlib/CategoryTheory/Equivalence.lean:87\\n    structure Equivalence (C : Type u₁) (D : Type u₂) [Category.{v₁} C] [Category.{v₂} D] where mk' ::\\n- Mathlib/CategoryTheory/EquivalenceRelation.lean:85\\n    structure EquivalenceRelation {R X : C} (p₁ p₂ : R ⟶ X) extends ReflexiveRelation p₁ p₂,\\n- Mathlib/CategoryTheory/Bicategory/Adjunction/Basic.lean:244\\n    structure Equivalence (a b : B) where\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Defs/Unbundled.lean\", \"line\": 79, \"n\": 10}",
+   "ok": true,
+   "result_chars": 864,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Defs/Unbundled.lean  (lines 79–88 of 476):\\n    79  class IsEquiv (α : Sort*) (r : α → α → Prop) : Prop extends IsPreorder α r, Std.Symm r\\n    80  \\n    81  /-- `IsStrictOrder X r` means that the binary relation `r` on `X` is a strict order, that is,\\n    82  `Std.Irrefl r` and `IsTrans X r`. -/\\n    83  class IsStrictOrder (α : Sort*) (r : α → α → Prop) : Prop extends Std.Irrefl r, IsTrans α r\\n    84  \\n    85  /-- `IsStrictWeakOrder X lt` means that the binary relation `lt` on `X` is a strict weak order,\\n    86  that is, `IsStrictOrder X lt` and `¬lt a b ∧ ¬lt b a → ¬lt b c ∧ ¬lt c b → ¬lt a c ∧ ¬lt c a`. -/\\n    87  class IsStrictWeakOrder (α : Sort*) (lt : α → α → Prop) : Prop extends IsStrictOrder α lt where\\n    88    incomp_trans : ∀ a b c, ¬lt a b ∧ ¬lt b a → ¬lt b c ∧ ¬lt c b → ¬lt a c ∧ ¬lt c a\\n\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"\\\\.isEquiv\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1279,
+   "result_head": "[{\"type\": \"text\", \"text\": \"149 match(es) for '\\\\\\\\.isEquiv' (via ripgrep):\\n- Mathlib/CategoryTheory/FintypeCat.lean:304\\n    uSwitchEquivalence.isEquivalence_functor\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:175\\n    (inferInstance : L.IsLocalization W).isEquivalence\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:231\\n    exact Functor.isEquivalence_of_iso iso\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:402\\n    isEquivalence := Functor.isEquivalence_of_iso (liftNatIso W.Q W L₁ L₂ F₁ F₂ e) }\\n- Mathlib/CategoryTheory/Localization/Predicate.lean:416\\n    isEquivalence := Functor.isEquivalence_of_iso e' }\\n- Mathlib/CategoryTheory/Localization/Equivalence.lean:21\\n    `Localization.isEquivalence` which provide a sufficient condition in order to show\\n- Mathlib/CategoryTheory/Localization/Equivalence.lean:63\\n    (equivalence L₁ W₁ L₂ W₂ G G' F F' α β).isEquivalence_functor\\n- Mathlib/CategoryTheory/Localization/Equivalence.lean:85\\n    Localization.isEquivalence W₂.Q W₂ L₁ W₁ L₂ (Construction.lift L₂ hW₂)\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:133\\n    have := Functor.isEquivalence_of_iso\\n- Mathlib/CategoryTheory/Localization/LocalizerMorphism.lean:135\\n    Functor.isEquivalence_of_comp_left E₁.functor G'\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Equivalence.isEquiv\"}",
+   "ok": true,
+   "result_chars": 139,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Equivalence.isEquiv.\\n- Equivalence.isEquiv   [Mathlib.Order.Defs.Unbundled]\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem) .*Equivalence\\\\.isEquiv\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|theorem) .*Equivalence\\\\\\\\.isEquiv' (via ripgrep):\\n- Mathlib/Order/Defs/Unbundled.lean:256\\n    theorem Equivalence.isEquiv (h : Equivalence r) : IsEquiv α r :=\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Defs/Unbundled.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Defs/Unbundled.lean  (lines 1–120 of 476):\\n     1  /-\\n     2  Copyright (c) 2016 Microsoft Corporation. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Leonardo de Moura\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Defs\\n     9  public import Batteries.Tactic.Alias\\n    10  public import Mathlib.Tactic.ExtendDoc\\n    11  \\n    12  import Mathlib.Tactic.ToDual\\n    13  \\n    14  /-!\\n    15  # Orders\\n    16  \\n    17  Defines classes for preorders, partial orders, and linear orders\\n    18  and proves some basic lemmas about them.\\n    19  -/\\n    20  \\n    21  @[expose] public section\\n    22  \\n    23  /-! ### Unbundled classes -/\\n    24  \\n    25  /-- An empty relation does not relate any elements. -/\\n    26  @[deprecated (since := \\\"2025-12-22\\\")] alias EmptyRelation := emptyRelation\\n    27  \\n    28  /-- `IsIrrefl X r` means the binary relation `r` on `X` is irreflexive (that is, `r x x` never\\n    29  holds). -/\\n    30  @[deprecated Std.Irrefl (since := \\\"2026-01-07\\\")]\\n    31  abbrev IsIrrefl (α : Sort*) (r : α → α → Prop) : Prop := Std.Irrefl r\\n    32  \\n    33  /-- `IsRefl X r` means the binary relation `r` on `X` is reflexive. -/\\n    34  @[deprecated Std.Refl (since := \\\"2026-01-08\\\")]\\n    35  abbrev IsRefl (α : Sort*) (r : α → α → Prop) : Prop := Std.Refl r\\n    36  \\n    37  /-- `IsSymm X r` means the binary relation `r` on `X` is symmetric. -/\\n    38  @[deprecated Std.Symm (since := \\\"2025-12-26\\\")]\\n    39  abbrev IsSymm (α : Sort*) (r : α → α → Prop) : Prop := Std.Symm r\\n    40  \\n    41  /-- `IsAsymm X r` means that the binary relation `r` on `X` is asymmetric, that is,\\n    42  `r a b → ¬ r b a`. -/\\n    43  @[deprecated Std.Asymm (since := \\\"2026-01-03\\\")]\\n    44  abbrev IsAsymm (α : Sort*) (r : α → α → Prop) : Prop := Std.Asymm r\\n    45  \\n    46  /-- `IsAntisymm X r` means the binary relation `r` on `X` is antisymmetric. -/\\n    47  @[deprecated Std.Antisymm (since := \\\"2026-01-06\\\")]\\n    48  abbrev IsAntisymm (α : Sort*) (r : α → α → Prop) : Prop := Std.Antisymm r\\n    49  \\n    50  /-- `IsTrans X r` means the binary relation `r` on `X` is transitive. -/\\n    51  class IsTrans (α : Sort*) (r : α → α → Prop) : Prop where\\n    52    trans : ∀ a b c, r a b → r b c → r a c\\n    53  \\n    54  instance {α : Sort*} {r : α → α → Prop} [IsTrans α r] : Trans r r r :=\\n    55    ⟨IsTrans.trans _ _ _⟩\\n    56  \\n    57  instance (priority := 100) {α : Sort*} {r : α → α → Prop} [Trans r r r] : IsTrans α r :=\\n    58    ⟨fun _ _ _ => Trans.trans⟩\\n    59  \\n    60  /-- `IsTotal X r` means that the binary relation `r` on `X` is total, that is, that for any\\n    61  `x y : X` we have `r x y` or `r y x`. -/\\n    62  @[deprecated Std.Total (since := \\\"2026-01-09\\\")]\\n    63  abbrev IsTotal (α : Sort*) (r : α → α → Prop) : Prop := Std.Total r\\n    64  \\n    65  /-- `IsPreorder X r` means that the binary relation `r` on `X` is a pre-order, that is, reflexive\\n    66  and transitive. -/\\n    67  class IsPreorder (α : Sort*) (r : α → α → Prop) : Prop extends Std.Refl r, IsTrans α r\\n    68  \\n    69  /-- `IsPartialOrder X r` means that the binary relation `r` on `X` is a partial order, that is,\\n    70  `IsPreorder X r` and `Std.Antisymm r`. -/\\n    71  class IsPartialOrder (α : Sort*) (r : α → α → Prop) : Prop extends IsPreorder α r, Std.Antisymm r\\n    72  \\n    73  /-- `IsLinearOrder X r` means that the binary relation `r` on `X` is a linear order, that is,\\n    74  `IsPartialOrder X r` and `Std.Total r`. -/\\n    75  class IsLinearOrder (α : Sort*) (r : α → α → Prop) : Prop extends IsPartialOrder α r, Std.Total r\\n    76  \\n    77  /-- `IsEquiv X r` means that the binary relation `r` on `X` is an equivalence relation, that\\n    78  is, `IsPreorder X r` and `Std.Symm r`. -/\\n    79  class IsEquiv (α : Sort*) (r : α → α → Prop) : Prop extends IsPreorder α r, Std.Symm r\\n  "
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Defs/Unbundled.lean\", \"line\": 250, \"n\": 20}",
+   "ok": true,
+   "result_chars": 889,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Defs/Unbundled.lean  (lines 250–269 of 476):\\n   250  \\n   251  theorem Equivalence.isTrans (h : Equivalence r) : IsTrans α r :=\\n   252    ⟨fun _ _ _ ↦ h.trans⟩\\n   253  \\n   254  @[deprecated (since := \\\"2026-02-20\\\")] alias Equivalence.transitive := Equivalence.isTrans\\n   255  \\n   256  theorem Equivalence.isEquiv (h : Equivalence r) : IsEquiv α r :=\\n   257    have := h.stdRefl\\n   258    have := h.stdSymm\\n   259    have := h.isTrans\\n   260    {}\\n   261  \\n   262  variable {β : Sort*} (r : β → β → Prop) (f : α → β)\\n   263  \\n   264  instance InvImage.isTrans [IsTrans β r] : IsTrans α (InvImage r f) :=\\n   265    ⟨fun _ _ _ ↦ trans_of r⟩\\n   266  \\n   267  @[deprecated (since := \\\"2026-02-20\\\")] alias InvImage.trans := InvImage.isTrans\\n   268  \\n   269  instance InvImage.irrefl [Std.Irrefl r] : Std.Irrefl (InvImage r f) :=\\n\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Relation.EqvGen.eqvGen_le\", \"Equivalence.isEquiv\", \"Subrelation\"]}",
+   "ok": true,
+   "result_chars": 988,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Relation.EqvGen.eqvGen_le\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Equivalence.isEquiv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.Unbundled\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.Unbundled\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/Unbundled.html#Equivalence.isEquiv\\\"},{\\\"decl\\\":\\\"Subrelation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Core\\\",\\\"import_line\\\":\\\"import Init.Core\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Core.html#Subrelation\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"EqvGen\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'EqvGen': unknown identifier 'EqvGen'\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem finest_eqv_rel_of_second_iso {X : Type u} [Lattice X] [JordanHolderLattice X] :\n    let moves : (X × X) → (X × X) → Prop := fun p q =>\n      ∃ x y, p = (x, x ⊔ y) ∧ q = (x ⊓ y, y) ∧ IsMaximal x (x ⊔ y)\n    ∀ (r : (X × X) → (X × X) → Prop),\n      Equivalence r →\n      (∀ p q, moves p q → r p q) →\n      (∀ p q, Relation.EqvGen moves p q → r p q) := sorry"
+}

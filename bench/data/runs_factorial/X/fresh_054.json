@@ -1,0 +1,192 @@
+{
+ "task_id": "fresh_054",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:35:18Z",
+ "wall_s": 74.4,
+ "transcript_stats": {
+  "turns": 18,
+  "assistant_turns": 17,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 5,
+   "mcp__formal__decl_grep": 5,
+   "mcp__formal__decl_read": 4,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 138,
+  "tokens_out": 5582,
+  "cost_usd": 0.08284919999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"semiring set\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'semiring set': Unknown identifier `semiring`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SemiringOfSets\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SemiringOfSets': unknown identifier 'SemiringOfSets'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"semiring.*set|set.*ring\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2959,
+   "result_head": "[{\"type\": \"text\", \"text\": \"511 match(es) for 'semiring.*set|set.*ring' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Spectrum/Basic.lean:33\\n    * `spectrum.left_add_coset_eq`: elements of the scalar ring commute (addition) with the spectrum.\\n- Mathlib/Algebra/Algebra/Spectrum/Basic.lean:287\\n    theorem subset_subalgebra {S R A : Type*} [CommSemiring R] [Ring A] [Algebra R A]\\n- Mathlib/Algebra/Algebra/Spectrum/Quasispectrum.lean:311\\n    lemma spectrum_subset_quasispectrum (R : Type*) {A : Type*} [CommSemiring R] [Ring A] [Algebra R A]\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:558\\n    (hy : y ∈ NonUnitalSubsemiring.closure s) => Submodule.subset_span (mul_mem hy hx)\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:573\\n    NonUnitalSubsemiring.subset_closure.trans Submodule.subset_span\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:586\\n    ⟨fun H => (NonUnitalSubsemiring.subset_closure.trans Submodule.subset_span).trans H,\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:730\\n    S.toNonUnitalSubsemiring = ⊤ ↔ S = ⊤ := by simp [← SetLike.coe_set_eq]\\n- Mathlib/Computability/TuringMachine/ToPartrec.lean:994\\n    /-- The (finite!) set of machine states visited during the course of evaluation of `c`,\\n- Mathlib/Computability/TuringMachine/ToPartrec.lean:1022\\n    /-- The (finite!) set of machine states visited during the course of evaluation of a continuation\\n- Mathlib/Computability/TuringMachine/ToPartrec.lean:1036\\n    /-- The (finite!) set of machine states visited during the course of evaluation of `c` in\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:34\\n    algebraMap_mem' := fun r => Subsemiring.subset_closure <| Or.inl ⟨r, rfl⟩ }\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:39\\n    ⟨fun H => le_trans (le_trans Set.subset_union_right Subsemiring.subset_closure) H,\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:41\\n    Subsemiring.closure_le.2 <| Set.union_subset S.range_subset H⟩\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:837\\n    Subsemiring.closure_induction Subring.subset_closure (Subring.zero_mem _) (Subring.one_mem _)\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:909\\n    le_antisymm (adjoin_le Subsemiring.subset_closure)\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:910\\n    (Subsemiring.closure_le.2 subset_adjoin : Subsemiring.closure s ≤ (adjoin ℕ s).toSubsemiring)\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:915\\n    (Subring.closure_le.2 subset_adjoin : Subring.closure s ≤ (adjoin ℤ s).toSubring)\\n- Mathlib/Computability/TuringMachine/PostTuringMachine.lean:405\\n    /-- The set of all statements in a Turing machine, plus one extra value `none` representing the\\n- Mathlib/Algebra/Algebra/Operations.lean:722\\n    /-- `span` is a semiring homomorphism (recall multiplication is pointwise multiplication of subsets\\n- Mathlib/Algebra/Algebra/Operations.lean:837\\n    theorem setSemiring_smul_def (s : SetSemiring A) (P : Submodule R A) :\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class.*Semiring|structure.*Semiring\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4155,
+   "result_head": "[{\"type\": \"text\", \"text\": \"164 match(es) for 'class.*Semiring|structure.*Semiring' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Hom.lean:30\\n    structure AlgHom (R : Type u) (A : Type v) (B : Type w) [CommSemiring R] [Semiring A] [Semiring B]\\n- Mathlib/Algebra/Algebra/Spectrum/Quasispectrum.lean:390\\n    class NonnegSpectrumClass (𝕜 A : Type*) [CommSemiring 𝕜] [PartialOrder 𝕜]\\n- Mathlib/Algebra/Algebra/Equiv.lean:31\\n    structure AlgEquiv (R : Type u) (A : Type v) (B : Type w) [CommSemiring R] [Semiring A] [Semiring B]\\n- Mathlib/Algebra/Algebra/Equiv.lean:46\\n    class AlgEquivClass (F : Type*) (R A B : outParam Type*) [CommSemiring R] [Semiring A]\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:56\\n    structure NonUnitalSubalgebra (R : Type u) (A : Type v) [CommSemiring R]\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:207\\n    /-! `NonUnitalSubalgebra`s inherit structure from their `NonUnitalSubsemiring` / `Semiring`\\n- Mathlib/Algebra/Algebra/Defs.lean:95\\n    class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\n- Mathlib/Algebra/Algebra/Defs.lean:246\\n    /-- To prove two algebra structures on a fixed `[CommSemiring R] [Semiring A]` agree,\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:29\\n    structure Subalgebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] [Algebra R A] : Type v\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:269\\n    /-! `Subalgebra`s inherit structure from their `Subsemiring` / `Semiring` coercions. -/\\n- Mathlib/Algebra/Algebra/Basic.lean:186\\n    /-- The `CommRing` structure on a `CommSemiring` induced by a ring morphism from a `CommRing`. -/\\n- Mathlib/Algebra/Polynomial/Basic.lean:74\\n    structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\n- Mathlib/Algebra/Polynomial/Sequence.lean:45\\n    structure Sequence [Semiring R] where\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:63\\n    This decision was made because we use the type class `MulSemiringAction` to specify the properties\\n- Mathlib/Algebra/Star/StarRingHom.lean:43\\n    structure NonUnitalStarRingHom (A B : Type*) [NonUnitalNonAssocSemiring A]\\n- Mathlib/Algebra/Star/NonUnitalSubalgebra.lean:101\\n    structure NonUnitalStarSubalgebra (R : Type u) (A : Type v) [CommSemiring R]\\n- Mathlib/Algebra/Star/NonUnitalSubsemiring.lean:41\\n    structure NonUnitalStarSubsemiring (R : Type v) [NonUnitalNonAssocSemiring R] [Star R] : Type v\\n- Mathlib/Algebra/Module/LinearMap/Defs.lean:70\\n    structure IsLinearMap (R : Type u) {M : Type v} {M₂ : Type w} [Semiring R] [AddCommMonoid M]\\n- Mathlib/Algebra/Module/LinearMap/Defs.lean:85\\n    structure LinearMap {R S : Type*} [Semiring R] [Semiring S] (σ : R →+* S) (M : Type*)\\n- Mathlib/Algebra/Module/LinearMap/Defs.lean:108\\n    class SemilinearMapClass (F : Type*) {R S : outParam Type*} [Semiring R] [Semiring S]\\n- Mathlib/Algebra/Module/LinearMap/Defs.lean:353\\n    class CompatibleSMul (R S : Type*) [Semiring S] [SMul R M] [Module S M] [SMul R M₂]\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:64\\n    structure AddMonoidAlgebra (R M : Type*) [Semiring R] where\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:76\\n    structure MonoidAlgebra (R M : Type*) [Semiring R] where\\n- Mathlib/Algebra/Star/Subsemiring.lean:23\\n    structure StarSubsemiring (R : Type v) [NonAssocSemiring R] [Star R] : Type v\\n- Mathlib/Algebra/Star/Basic.lean:292\\n    class StarRing (R : Type u) [NonUnitalNonAssocSemiring R] extends StarMul R where\\n- Mathlib/Algebra/Star/StarAlgHom.lean:55\\n    structure NonUnitalStarAlgHom (R A B : Type*) [Monoid R] [NonUnitalNonAssocSemiring A]\\n- Mathlib/Algebra/Star/StarAlgHom.lean:286\\n    structure StarAlgHom (R A B : Type*) [CommSemiring R] [Semiring A] [Algebra R A] [Star A]\\n- Mathlib/Algebra/Module/Projective.lean:71\\n    class Module.Projective (R : Type*) [Semiring R] (P : Type*) [AddCommMonoid P] [Module R P] :\\n- Mathlib/Algebra/Star/Subalgebra.lean:26\\n    structure StarSubalgebra (R : Type u) (A : Type v) [CommSemirin"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SetSemiring\"}",
+   "ok": true,
+   "result_chars": 1019,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 56 declarations mentioning SetSemiring.\\n- SetSemiring   [Mathlib.Data.Set.Semiring]\\n    An alias for `Set α`, which has a semiring structure given by `∪` as \\\"addition\\\" and pointwise multiplication `*` as \\\"multiplication\\\".\\n- instInhabitedSetSemiring   [Mathlib.Data.Set.Semiring]\\n- instPartialOrderSetSemiring   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instAdd   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instAddCommMonoid   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instCompleteBooleanAlgebra   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instZero   [Mathlib.Data.Set.Semiring]\\n- Set.up   [Mathlib.Data.Set.Semiring]\\n    The identity function `Set α → SetSemiring α`.\\n- SetSemiring.down   [Mathlib.Data.Set.Semiring]\\n    The identity function `SetSemiring α → Set α`.\\n- SetSemiring.instCommMonoid   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instCommSemigroup   [Mathlib.Data.Set.Semiring]\\n- SetSemiring.instIdemCommSemiringOfCommMonoid   [Mathlib.Data.Set.Semiring]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"semiring.*sets|SetFamily|semiring_of_sets\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2511,
+   "result_head": "[{\"type\": \"text\", \"text\": \"32 match(es) for 'semiring.*sets|SetFamily|semiring_of_sets' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Operations.lean:722\\n    /-- `span` is a semiring homomorphism (recall multiplication is pointwise multiplication of subsets\\n- Mathlib/MeasureTheory/SetSemiring.lean:224\\n    /-- In a semiring of sets `C`, for all set `s ∈ C` and finite set of sets `I ⊆ C`, there is a\\n- Mathlib/MeasureTheory/SetSemiring.lean:293\\n    /-- In a semiring of sets `C`, for all set `s ∈ C` and finite set of sets `I ⊆ C`,\\n- Mathlib/MeasureTheory/Measure/MeasuredSets.lean:164\\n    /-- Given a semiring of sets `C` covering the space modulo `0` and generating the measurable space\\n- Mathlib/MeasureTheory/Measure/MeasuredSets.lean:192\\n    /-- Given a semiring of sets `C` covering the space modulo `0` and generating the measurable space\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:58\\n    We define a specific example of `AddContent`, called `AddContent.onIoc`, on the semiring of sets\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:467\\n    /-- An additive content obtained from another one on the same semiring of sets by setting the value\\n- Mathlib/Algebra/Ring/Subsemiring/Defs.lean:55\\n    /-- `SubsemiringClass S R` states that `S` is a type of subsets `s ⊆ R` that\\n- Mathlib/Data/Set/Sups.lean:24\\n    We define the following notation in scope `SetFamily`:\\n- Mathlib/Data/Set/Sups.lean:69\\n    scoped[SetFamily] attribute [instance] Set.hasSups\\n- Mathlib/Data/Set/Sups.lean:71\\n    open SetFamily\\n- Mathlib/Data/Set/Sups.lean:199\\n    scoped[SetFamily] attribute [instance] Set.hasInfs\\n- Mathlib/Data/Set/Sups.lean:201\\n    open SetFamily\\n- Mathlib/Data/Set/Sups.lean:319\\n    open SetFamily\\n- Mathlib/Data/Set/Sups.lean:341\\n    open SetFamily\\n- Mathlib/NumberTheory/MaricaSchoenheim.lean:8\\n    public import Mathlib.Combinatorics.SetFamily.FourFunctions\\n- Mathlib/RingTheory/FilteredAlgebra/Basic.lean:91\\n    /-- For `F` satisfying `IsRingFiltration F F_lt` in a semiring `R` and `σM` a family of subsets of\\n- Mathlib/MeasureTheory/VectorMeasure/AddContent.lean:16\\n    Consider a content defined on a semiring of sets. We investigate in this file\\n- Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean:14\\n    Let `C` be a semiring of sets and `m` an additive content on `C`, which is sigma-subadditive.\\n- Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean:29\\n    a sigma-subadditive content on a semiring is equal to the content on the sets of the semiring.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/SetSemiring.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/SetSemiring.lean  (lines 1–100 of 625):\\n     1  /-\\n     2  Copyright (c) 2023 Rémy Degenne. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Rémy Degenne, Peter Pfaffelhuber\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.PiSystem\\n     9  public import Mathlib.Order.Partition.Finpartition\\n    10  public import Mathlib.Order.SupClosed\\n    11  \\n    12  /-! # Semirings and rings of sets\\n    13  \\n    14  A semi-ring of sets `C` (in the sense of measure theory) is a family of sets containing `∅`,\\n    15  stable by intersection and such that for all `s, t ∈ C`, `t \\\\ s` is equal to a disjoint union of\\n    16  finitely many sets in `C`. Note that a semi-ring of sets may not contain unions.\\n    17  \\n    18  An important example of a semi-ring of sets is intervals in `ℝ`. The intersection of two intervals\\n    19  is an interval (possibly empty). The union of two intervals may not be an interval.\\n    20  The set difference of two intervals may not be an interval, but it will be a disjoint union of\\n    21  two intervals.\\n    22  \\n    23  A ring of sets is a set of sets containing `∅`, stable by union, set difference and intersection.\\n    24  \\n    25  ## Main definitions\\n    26  \\n    27  * `MeasureTheory.IsSetSemiring C`: property of being a semi-ring of sets.\\n    28  * `MeasureTheory.IsSetSemiring.disjointOfDiff hs ht`: for `s, t` in a semi-ring `C`\\n    29    (with `hC : IsSetSemiring C`) with `hs : s ∈ C`, `ht : t ∈ C`, this is a `Finset` of\\n    30    pairwise disjoint sets such that `s \\\\ t = ⋃₀ hC.disjointOfDiff hs ht`.\\n    31  * `MeasureTheory.IsSetSemiring.disjointOfDiffUnion hs hI`: for `hs : s ∈ C` and a finset\\n    32    `I` of sets in `C` (with `hI : ↑I ⊆ C`), this is a `Finset` of pairwise disjoint sets such that\\n    33    `s \\\\ ⋃₀ I = ⋃₀ hC.disjointOfDiffUnion hs hI`.\\n    34  * `MeasureTheory.IsSetSemiring.disjointOfUnion hJ`: for `hJ ⊆ C`, this is a\\n    35    `Finset` of pairwise disjoint sets such that `⋃₀ J = ⋃₀ hC.disjointOfUnion hJ`.\\n    36  \\n    37  * `MeasureTheory.IsSetRing`: property of being a ring of sets.\\n    38  \\n    39  ## Main statements\\n    40  \\n    41  * `MeasureTheory.IsSetSemiring.exists_disjoint_finset_sdiff_eq`: the existence of the `Finset` given\\n    42    by the definition `IsSetSemiring.disjointOfDiffUnion` (see above).\\n    43  * `MeasureTheory.IsSetSemiring.disjointOfUnion_props`: In a `hC : IsSetSemiring C`,\\n    44    for a `J : Finset (Set α)` with `J ⊆ C`, there is\\n    45    for every `x in J` some `K x ⊆ C` finite, such that\\n    46    * `⋃ x ∈ J, K x` are pairwise disjoint and do not contain ∅,\\n    47    * `⋃ s ∈ K x, s ⊆ x`,\\n    48    * `⋃ x ∈ J, x = ⋃ x ∈ J, ⋃ s ∈ K x, s`.\\n    49  \\n    50  -/\\n    51  \\n    52  @[expose] public section\\n    53  \\n    54  open Finset Set\\n    55  \\n    56  namespace MeasureTheory\\n    57  \\n    58  variable {α : Type*} {C : Set (Set α)} {s t : Set α}\\n    59  \\n    60  /-- A semi-ring of sets `C` is a family of sets containing `∅`, stable by intersection and such that\\n    61  for all `s, t ∈ C`, `s \\\\ t` is equal to a disjoint union of finitely many sets in `C`. -/\\n    62  structure IsSetSemiring (C : Set (Set α)) : Prop where\\n    63    empty_mem : ∅ ∈ C\\n    64    inter_mem : ∀ s ∈ C, ∀ t ∈ C, s ∩ t ∈ C\\n    65    sdiff_eq_sUnion' : ∀ s ∈ C, ∀ t ∈ C,\\n    66      ∃ I : Finset (Set α), ↑I ⊆ C ∧ PairwiseDisjoint (I : Set (Set α)) id ∧ s \\\\ t = ⋃₀ I\\n    67  \\n    68  /-- A ring of sets `C` is a family of sets containing `∅`, stable by union and set difference.\\n    69  It is then also stable by intersection (see `IsSetRing.inter_mem`). -/\\n    70  structure IsSetRing (C : Set (Set α)) : Prop where\\n    71    empty_mem : ∅ ∈ C\\n    72    union_mem ⦃s t : Set α⦄ : s ∈ C → t ∈ C → s ∪ t ∈ C\\n    73    sdiff_mem ⦃s t : Set α⦄ : s ∈ C → t ∈ C → s \\\\ t ∈ C\\n    74  \\n    75  na"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/SetSemiring.lean\", \"line\": 200, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/SetSemiring.lean  (lines 200–319 of 625):\\n   200      ⋃₀ insert t (hC.disjointOfDiff hs ht) = s := by\\n   201    conv_rhs => rw [← union_sdiff_cancel hst, ← hC.sUnion_disjointOfDiff hs ht]\\n   202    simp only [sUnion_insert]\\n   203  \\n   204  lemma disjoint_sUnion_disjointOfDiff (hC : IsSetSemiring C) (hs : s ∈ C) (ht : t ∈ C) :\\n   205      Disjoint t (⋃₀ hC.disjointOfDiff hs ht) := by\\n   206    rw [hC.sUnion_disjointOfDiff]\\n   207    exact disjoint_sdiff_right\\n   208  \\n   209  lemma pairwiseDisjoint_insert_disjointOfDiff (hC : IsSetSemiring C) (hs : s ∈ C)\\n   210      (ht : t ∈ C) :\\n   211      PairwiseDisjoint (insert t (hC.disjointOfDiff hs ht) : Set (Set α)) id := by\\n   212    have h := hC.pairwiseDisjoint_disjointOfDiff hs ht\\n   213    refine PairwiseDisjoint.insert_of_notMem h (hC.notMem_disjointOfDiff hs ht) fun u hu ↦ ?_\\n   214    simp_rw [id]\\n   215    refine Disjoint.mono_right ?_ (hC.disjoint_sUnion_disjointOfDiff hs ht)\\n   216    exact subset_sUnion_of_mem hu\\n   217  \\n   218  end disjointOfDiff\\n   219  \\n   220  section disjointOfDiffUnion\\n   221  \\n   222  variable {I : Finset (Set α)}\\n   223  \\n   224  /-- In a semiring of sets `C`, for all set `s ∈ C` and finite set of sets `I ⊆ C`, there is a\\n   225  finite set of sets in `C` whose union is `s \\\\ ⋃₀ I`.\\n   226  See `IsSetSemiring.disjointOfDiffUnion` for a definition that gives such a set. -/\\n   227  lemma exists_disjoint_finset_sdiff_eq (hC : IsSetSemiring C) (hs : s ∈ C) (hI : ↑I ⊆ C) :\\n   228      ∃ J : Finset (Set α), ↑J ⊆ C ∧ PairwiseDisjoint (J : Set (Set α)) id ∧\\n   229        s \\\\ ⋃₀ I = ⋃₀ J := by\\n   230    classical\\n   231    induction I using Finset.induction with\\n   232    | empty =>\\n   233      simp only [coe_empty, sUnion_empty, sdiff_empty]\\n   234      refine ⟨{s}, singleton_subset_set_iff.mpr hs, ?_⟩\\n   235      simp only [coe_singleton, pairwiseDisjoint_singleton, sUnion_singleton,\\n   236        and_self_iff]\\n   237    | insert t I' _ h => ?_\\n   238    rw [coe_insert] at hI\\n   239    have ht : t ∈ C := hI (Set.mem_insert _ _)\\n   240    obtain ⟨J, h_ss, h_dis, h_eq⟩ := h ((Set.subset_insert _ _).trans hI)\\n   241    let Ju : ∀ u ∈ C, Finset (Set α) := fun u hu ↦ hC.disjointOfDiff hu ht\\n   242    have hJu_subset : ∀ (u) (hu : u ∈ C), ↑(Ju u hu) ⊆ C := by\\n   243      intro u hu x hx\\n   244      exact hC.subset_disjointOfDiff hu ht hx\\n   245    have hJu_disj : ∀ (u) (hu : u ∈ C), (Ju u hu : Set (Set α)).PairwiseDisjoint id := fun u hu ↦\\n   246      hC.pairwiseDisjoint_disjointOfDiff hu ht\\n   247    have hJu_sUnion : ∀ (u) (hu : u ∈ C), ⋃₀ (Ju u hu : Set (Set α)) = u \\\\ t :=\\n   248      fun u hu ↦ hC.sUnion_disjointOfDiff hu ht\\n   249    have hJu_disj' : ∀ (u) (hu : u ∈ C) (v) (hv : v ∈ C) (_h_dis : Disjoint u v),\\n   250        Disjoint (⋃₀ (Ju u hu : Set (Set α))) (⋃₀ ↑(Ju v hv)) := by\\n   251      intro u hu v hv huv_disj\\n   252      rw [hJu_sUnion, hJu_sUnion]\\n   253      exact disjoint_of_subset Set.sdiff_subset Set.sdiff_subset huv_disj\\n   254    let J' : Finset (Set α) := Finset.biUnion (Finset.univ : Finset J) fun u ↦ Ju u (h_ss u.prop)\\n   255    have hJ'_subset : ↑J' ⊆ C := by\\n   256      intro u\\n   257      simp only [J', univ_eq_attach, coe_biUnion, mem_coe, mem_attach, iUnion_true,\\n   258        mem_iUnion, Finset.exists_coe, exists₂_imp]\\n   259      intro v hv huvt\\n   260      exact hJu_subset v (h_ss hv) huvt\\n   261    refine ⟨J', hJ'_subset, ?_, ?_⟩\\n   262    · rw [Finset.coe_biUnion]\\n   263      refine PairwiseDisjoint.biUnion ?_ ?_\\n   264      · simp only [univ_eq_attach, mem_coe, id, iSup_eq_iUnion]\\n   265        simp_rw [PairwiseDisjoint, Set.Pairwise]\\n   266        intro x _ y _ hxy\\n   267        have hxy_disj : Disjoint (x : Set α) y := by\\n   268          by_contra h_contra\\n   269          refine hxy ?_\\n   270          refine Subtype.ext ?_\\n   271          exact h_dis.elim x.prop y.prop h_contra\\n   272        convert"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.IsSetSemiring\", \"Set.sUnion\", \"Finset\", \"PairwiseDisjoint\", \"Set.pairwiseDisjoint\"]}",
+   "ok": true,
+   "result_chars": 1561,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.IsSetSemiring\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.SetSemiring\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.SetSemiring\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/SetSemiring.html#MeasureTheory.IsSetSemiring\\\"},{\\\"decl\\\":\\\"Set.sUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.sUnion\\\"},{\\\"decl\\\":\\\"Finset\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Defs.html#Finset\\\"},{\\\"decl\\\":\\\"PairwiseDisjoint\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.pairwiseDisjoint\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^.*PairwiseDisjoint\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2669,
+   "result_head": "[{\"type\": \"text\", \"text\": \"285 match(es) for '^.*PairwiseDisjoint' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Action/Pointwise/Finset.lean:116\\n    s.PairwiseDisjoint (· • t) ↔ (s ×ˢ t : Set (α × β)).InjOn fun p => p.1 • p.2 := by\\n- Mathlib/Algebra/GroupWithZero/Action/Pointwise/Finset.lean:159\\n    ((· • t) '' (s : Set α)).PairwiseDisjoint id → t.card ∣ (s • t).card :=\\n- Mathlib/GroupTheory/OrderOfElement.lean:943\\n    · simp +contextual [Set.PairwiseDisjoint, Set.Pairwise, disjoint_iff, Finset.ext_iff]\\n- Mathlib/GroupTheory/Perm/Cycle/Basic.lean:902\\n    (range #s : Set ℕ).PairwiseDisjoint fun k =>\\n- Mathlib/GroupTheory/Complement.lean:164\\n    S.PairwiseDisjoint (· • T) := fun a ha b hb hab ↦ disjoint_iff_forall_ne.2 <| by\\n- Mathlib/Algebra/BigOperators/Field.lean:41\\n    lemma dens_biUnion [DecidableEq β] (h : (s : Set α).PairwiseDisjoint t) :\\n- Mathlib/GroupTheory/CosetCover.lean:106\\n    Set.PairwiseDisjoint s (g · • (H : Set G)) := by\\n- Mathlib/GroupTheory/CosetCover.lean:218\\n    (∑ i ∈ s, ((H i).index : ℚ)⁻¹ = 1 → Set.PairwiseDisjoint\\n- Mathlib/GroupTheory/CosetCover.lean:332\\n    Set.PairwiseDisjoint (s.filter (fun i => (H i).FiniteIndex))\\n- Mathlib/GroupTheory/GroupAction/Blocks.lean:72\\n    (Set.range fun x : X => orbit G x).PairwiseDisjoint id := by\\n- Mathlib/GroupTheory/GroupAction/Blocks.lean:182\\n    IsBlock G B ↔ (range fun g : G ↦ g • B).PairwiseDisjoint id := pairwiseDisjoint_range_iff.symm\\n- Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean:222\\n    (hs : Set.PairwiseDisjoint (↑s) t) : ∏ x ∈ s.biUnion t, f x = ∏ x ∈ s, ∏ i ∈ t x, f i := by\\n- Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean:841\\n    (hg_bot : g ⊥ = 1) {I : Finset κ} (hf_disj : (I : Set κ).PairwiseDisjoint f) :\\n- Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean:967\\n    theorem card_biUnion [DecidableEq M] {t : ι → Finset M} (h : (s : Set ι).PairwiseDisjoint t) :\\n- Mathlib/Algebra/BigOperators/Group/Finset/Indicator.lean:69\\n    (hs : (s : Set ι).PairwiseDisjoint t) :\\n- Mathlib/Algebra/BigOperators/Group/Finset/Indicator.lean:82\\n    (h : (s : Set ι).PairwiseDisjoint t) (x : κ) :\\n- Mathlib/Algebra/BigOperators/Finprod.lean:1066\\n    theorem finprod_mem_biUnion {I : Set ι} {t : ι → Set α} (h : I.PairwiseDisjoint t) (hI : I.Finite)\\n- Mathlib/Algebra/BigOperators/Finprod.lean:1077\\n    theorem finprod_mem_sUnion {t : Set (Set α)} (h : t.PairwiseDisjoint id) (ht₀ : t.Finite)\\n- Mathlib/MeasureTheory/Covering/VitaliFamily.lean:83\\n    ∃ t : Set (X × Set X), (∀ p ∈ t, p.1 ∈ s) ∧ (t.PairwiseDisjoint fun p ↦ p.2) ∧\\n- Mathlib/MeasureTheory/Covering/VitaliFamily.lean:113\\n    (t.PairwiseDisjoint fun p => p.2) ∧\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.PairwiseDisjoint\"]}",
+   "ok": true,
+   "result_chars": 524,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.PairwiseDisjoint\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Pairwise.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Pairwise.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Pairwise/Basic.html#Set.PairwiseDisjoint\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def PairwiseDisjoint|^structure PairwiseDisjoint|^class PairwiseDisjoint\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 240,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def PairwiseDisjoint|^structure PairwiseDisjoint|^class PairwiseDisjoint' (via ripgrep):\\n- Mathlib/Data/Set/Pairwise/Basic.lean:243\\n    def PairwiseDisjoint (s : Set ι) (f : ι → α) : Prop :=\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Pairwise/Basic.lean\", \"line\": 240, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Pairwise/Basic.lean  (lines 240–259 of 457):\\n   240  `s.Pairwise Disjoint` is (definitionally) the same as `s.PairwiseDisjoint id`. We prefer the latter\\n   241  in order to allow dot notation on `Set.PairwiseDisjoint`, even though the former unfolds more\\n   242  nicely. -/\\n   243  def PairwiseDisjoint (s : Set ι) (f : ι → α) : Prop :=\\n   244    s.Pairwise (Disjoint on f)\\n   245  \\n   246  theorem PairwiseDisjoint.subset (ht : t.PairwiseDisjoint f) (h : s ⊆ t) : s.PairwiseDisjoint f :=\\n   247    Pairwise.mono h ht\\n   248  \\n   249  theorem PairwiseDisjoint.mono_on (hs : s.PairwiseDisjoint f) (h : ∀ ⦃i⦄, i ∈ s → g i ≤ f i) :\\n   250      s.PairwiseDisjoint g := fun _a ha _b hb hab => (hs ha hb hab).mono (h ha) (h hb)\\n   251  \\n   252  theorem PairwiseDisjoint.mono (hs : s.PairwiseDisjoint f) (h : g ≤ f) : s.PairwiseDisjoint g :=\\n   253    hs.mono_on fun i _ => h i\\n   254  \\n   255  @[simp]\\n   256  theorem pairwiseDisjoint_empty : (∅ : Set ι).PairwiseDisjoint f :=\\n   257    pairwise_empty _\\n   258  \\n   259  @[simp]\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exists_disjoint_finset_sdiff_eq\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exists_disjoint_finset_sdiff_eq': unknown identifier 'exists_disjoint_finset_sdiff_eq'\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.IsSetSemiring.exists_disjoint_finset_sdiff_eq\", \"Set.sUnion\", \"Set.PairwiseDisjoint\", \"Set.sdiff\"]}",
+   "ok": true,
+   "result_chars": 1423,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.IsSetSemiring.exists_disjoint_finset_sdiff_eq\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.SetSemiring\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.SetSemiring\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/SetSemiring.html#MeasureTheory.IsSetSemiring.exists_disjoint_finset_sdiff_eq\\\"},{\\\"decl\\\":\\\"Set.sUnion\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#Set.sUnion\\\"},{\\\"decl\\\":\\\"Set.PairwiseDisjoint\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Pairwise.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Pairwise.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Pairwise/Basic.html#Set.PairwiseDisjoint\\\"},{\\\"decl\\\":\\\"Set.sdiff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/SetSemiring.lean\", \"line\": 50, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/SetSemiring.lean  (lines 50–69 of 625):\\n    50  -/\\n    51  \\n    52  @[expose] public section\\n    53  \\n    54  open Finset Set\\n    55  \\n    56  namespace MeasureTheory\\n    57  \\n    58  variable {α : Type*} {C : Set (Set α)} {s t : Set α}\\n    59  \\n    60  /-- A semi-ring of sets `C` is a family of sets containing `∅`, stable by intersection and such that\\n    61  for all `s, t ∈ C`, `s \\\\ t` is equal to a disjoint union of finitely many sets in `C`. -/\\n    62  structure IsSetSemiring (C : Set (Set α)) : Prop where\\n    63    empty_mem : ∅ ∈ C\\n    64    inter_mem : ∀ s ∈ C, ∀ t ∈ C, s ∩ t ∈ C\\n    65    sdiff_eq_sUnion' : ∀ s ∈ C, ∀ t ∈ C,\\n    66      ∃ I : Finset (Set α), ↑I ⊆ C ∧ PairwiseDisjoint (I : Set (Set α)) id ∧ s \\\\ t = ⋃₀ I\\n    67  \\n    68  /-- A ring of sets `C` is a family of sets containing `∅`, stable by union and set difference.\\n    69  It is then also stable by intersection (see `IsSetRing.inter_mem`). -/\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"⋃₀\"}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '⋃₀': <input>:1:2: unexpected end of input\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem semiring_sdiff_equals_union_disjoint {α : Type*} {C : Set (Set α)} \n    (hC : MeasureTheory.IsSetSemiring C) {s : Set α} (hs : s ∈ C) \n    {I : Finset (Set α)} (hI : ↑I ⊆ C) :\n    ∃ J : Finset (Set α), ↑J ⊆ C ∧ Set.PairwiseDisjoint (J : Set (Set α)) id ∧ \n      s \\ Set.sUnion I = Set.sUnion J := sorry"
+}

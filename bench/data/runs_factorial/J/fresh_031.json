@@ -1,0 +1,290 @@
+{
+ "task_id": "fresh_031",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:00:37Z",
+ "wall_s": 148.7,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 16,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_search": 16,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__brain_transfer": 1
+  },
+  "tokens_in": 130,
+  "tokens_out": 13005,
+  "cost_usd": 0.1286869
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"pentagonal number theorem Euler partition\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"pentagonal number theorem Euler partition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q282649\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"pentagonal number theorem\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q674928\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Enumerative\\\",\\\"label\\\":\\\"Enumerative\\\"}]},{\\\"id\\\":\\\"cell:Q65943\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Theorem\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"pentagonal\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"import_line\\\":\\\"import Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"bond\\\":\\\"exact\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Enumerative/Pentagonal.html#pentagonal\\\",\\\"via_cell\\\":\\\"cell:Q674928\\\",\\\"cell_label\\\":\\\"pentagonal number\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Enumerative\\\",\\\"label\\\":\\\"Enumerative\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"formal power series\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 509,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"formal power series\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"aka\\\":[\\\"Formal Power Series\\\",\\\"Formal power series\\\",\\\"Generating Function\\\",\\\"Generating function\\\",\\\"Power Series\\\",\\\"PowerSeries\\\",\\\"PowerSeries.mk\\\",\\\"generating function\\\",\\\"power series\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/PowerSeries/Basic\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q282649\"}",
+   "ok": true,
+   "result_chars": 1203,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q282649\\\",\\\"id\\\":\\\"cell:Q282649\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"pentagonal number theorem\\\",\\\"f\\\":2088,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q282649\\\",\\\"anchor\\\":\\\"Q282649\\\",\\\"label\\\":\\\"pentagonal number theorem\\\",\\\"f\\\":2088,\\\"xy\\\":[-1208.5,-629.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q282649\\\",\\\"label\\\":\\\"pentagonal number theorem\\\",\\\"description\\\":\\\"theorem\\\",\\\"slug\\\":\\\"Pentagonal_number_theorem\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:PentagonalNumberTheorem\\\",\\\"label\\\":\\\"Pentagonal Number Theorem\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/PentagonalNumberTheorem.html\\\",\\\"qid\\\":\\\"Q282649\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"page\\\":1},\\\"synapses_summary\\\":{\\\"relates\\\":2,\\\"invocation\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q65943\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q674928\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"relates\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q674928\"}",
+   "ok": true,
+   "result_chars": 1521,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q674928\\\",\\\"id\\\":\\\"cell:Q674928\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q674928\\\",\\\"anchor\\\":\\\"Q674928\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"supercells\\\":[\\\"path:Mathlib/Combinatorics/Enumerative\\\"],\\\"f\\\":32,\\\"xy\\\":[-1240.5,-247.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q674928\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"polygonal number\\\",\\\"slug\\\":\\\"Pentagonal_number\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:pentagonal\\\",\\\"label\\\":\\\"pentagonal\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Combinatorics.Enumerative.Pentagonal\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Enumerative\\\",\\\"label\\\":\\\"Enumerative\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2,\\\"invocation\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1154787\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q282649\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OeisA287616.conjecture\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q206925\"}",
+   "ok": true,
+   "result_chars": 5916,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q206925\\\",\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q206925\\\",\\\"anchor\\\":\\\"Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/PowerSeries/Basic\\\"],\\\"f\\\":36057,\\\"xy\\\":[56.1,-366.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1003025\\\",\\\"label\\\":\\\"Formal power series\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"generalization of a polynomial, where the number of terms is allowed to be infinite, defined algebraically without consideration of convergence (so that e.g. evaluation is not always defined)\\\",\\\"slug\\\":\\\"Formal_power_series\\\",\\\"article_annotations\\\":{\\\"total\\\":82,\\\"formalized\\\":42,\\\"partial\\\":14,\\\"not_formalized\\\":26},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"infinite sum of monomials\\\",\\\"slug\\\":\\\"Power_series\\\",\\\"article_annotations\\\":{\\\"total\\\":52,\\\"formalized\\\":32,\\\"partial\\\":10,\\\"not_formalized\\\":10},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q860609\\\",\\\"label\\\":\\\"Generating function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"formal power series with coefficients that encode information about a sequence\\\",\\\"slug\\\":\\\"Generating_function\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:PowerSeries\\\",\\\"label\\\":\\\"PowerSeries\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev PowerSeries (R : Type*) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:PowerSeries.mk\\\",\\\"label\\\":\\\"PowerSeries.mk\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def mk {R} (f : ℕ → R) : R⟦X⟧ := fun s => f (s ())\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Generating_function\\\",\\\"label\\\":\\\"Generating function\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Generating_function\\\",\\\"qid\\\":\\\"Q860609\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Power_series\\\",\\\"label\\\":\\\"Power series\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Power_series\\\",\\\"qid\\\":\\\"Q206925\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:FormalPowerSeries\\\",\\\"label\\\":\\\"Formal Power Series\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/FormalPowerSeries.html\\\",\\\"qid\\\":\\\"Q1003025\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:GeneratingFunction\\\",\\\"label\\\":\\\"Generating Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/GeneratingFunction.html\\\",\\\"qid\\\":\\\"Q860609\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:PowerSeries\\\",\\\"label\\\":\\\"Power Series\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/PowerSeries.html\\\",\\\"qid\\\":\\\"Q206925\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:generating function\\\",\\\"label\\\":\\\"generating function\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/generating+function\\\",\\\"qid\\\":\\\"Q860609\\\",\\\"snippet\\\":\\\"When $R = \\\\\\\\mathbb{N},$ we can think of the coefficients on $z^n$ as counting the number of ways to put a particular structure on the finite set $n$. (You get structure types if you take this literally.)\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:power series\\\",\\\"label\\\":\\\"power series\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/power+series\\\",\\\"qid\\\":\\\"Q206925\\\",\\\"snippet\\\":\\\"A power series in a variable $X$ and with coefficients in a ring $R$ is a series of the form\\\",\\\"snip"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:pentagonal\"}",
+   "ok": true,
+   "result_chars": 595,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q674928\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q674928\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"snippet\\\":\\\"polygonal number\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q674928\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:pentagonal\\\",\\\"label\\\":\\\"pentagonal\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Enumerative/Pentagonal.html#pentagonal\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:PowerSeries\"}",
+   "ok": true,
+   "result_chars": 3492,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1003025\\\",\\\"label\\\":\\\"Formal power series\\\",\\\"snippet\\\":\\\"generalization of a polynomial, where the number of terms is allowed to be infinite, defined algebraically without consideration of convergence (so that e.g. evaluation is not always defined)\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1003025\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"snippet\\\":\\\"infinite sum of monomials\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q206925\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q860609\\\",\\\"label\\\":\\\"Generating function\\\",\\\"snippet\\\":\\\"formal power series with coefficients that encode information about a sequence\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q860609\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:PowerSeries\\\",\\\"label\\\":\\\"PowerSeries\\\",\\\"code\\\":\\\"abbrev PowerSeries (R : Type*) :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:PowerSeries.mk\\\",\\\"label\\\":\\\"PowerSeries.mk\\\",\\\"code\\\":\\\"def mk {R} (f : ℕ → R) : R⟦X⟧ := fun s => f (s ())\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries.mk\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Generating_function\\\",\\\"label\\\":\\\"Generating function\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Generating_function\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Power_series\\\",\\\"label\\\":\\\"Power series\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Power_series\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:FormalPowerSeries\\\",\\\"label\\\":\\\"Formal Power Series\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/FormalPowerSeries.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:GeneratingFunction\\\",\\\"label\\\":\\\"Generating Function\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/GeneratingFunction.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:PowerSeries\\\",\\\"label\\\":\\\"Power Series\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/PowerSeries.html\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:generating function\\\",\\\"label\\\":\\\"generating function\\\",\\\"snippet\\\":\\\"When $R = \\\\\\\\mathbb{N},$ we can think of the coefficients on $z^n$ as counting the number of ways to put a particular structure on the finite set $n$. (You get structure types if you take this literally.)\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/generating+function\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:power series\\\",\\\"label\\\":\\\"power series\\\",\\\"snippet\\\":\\\"A power series in a variable $X$ and with coefficients in a ring $R$ is a series of the form\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/power+series\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Formal_power_series\\\",\\\"label\\\":\\\"Formal power series\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Formal_power_series\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Power_series\\\",\\\"label\\\":\\\"Power series\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Power_series\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q674928\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2021,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q674928\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1154787\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q1154787\\\",\\\"dst\\\":\\\"decl:Mathlib:pentagonal\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":2,\\\"statuses\\\":{\\\"partial\\\":1,\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"5f716f8eb67e\\\",\\\"label\\\":\\\"Pentagonal number theorem\\\",\\\"status\\\":\\\"partial\\\"},{\\\"id\\\":\\\"628abd164101\\\",\\\"label\\\":\\\"Pentagonal and card house numbers\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q282649\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"Q282649\\\",\\\"dst\\\":\\\"decl:Mathlib:pentagonal\\\",\\\"prov\\\":0,\\\"evidence\\\":{\\\"match_kind\\\":\\\"invocation\\\",\\\"module\\\":\\\"Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"grounding_note\\\":\\\"oracle EXISTS (confirmed). Read the full source file: def pentagonal (k : ℤ) := (k*(3k-1)/2).toNat plus injectivity/monotonicity lemmas. The file's own header comment has an explicit '## TODO: Show the relation between pentagonal numbers and partitions, including the pentagonal number theorem' — Mathlib's authors confirm the theorem itself is unproved.\\\",\\\"verified_by\\\":\\\"build_graph_v2 oracle+checkout\\\"}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OeisA287616.conjecture\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q674928\\\",\\\"dst\\\":\\\"decl:FormalConjectures:OeisA287616.conjecture\\\",\\\"prov\\\":3,\\\"evidence\\\":{\\\"note\\\":\\\"Docstring names the generalized pentagonal number y(3y+1)/2 as one of the three summands.\\\",\\\"wikipedia_slug\\\":\\\"Pentagonal_number\\\",\\\"file\\\":\\\"FormalConjectures/OEIS/287616.lean\\\",\\\"proposer\\\":\\\"fc-tagger-66\\\",\\\"skeptic\\\":\\\"accept\\\",\\\"shard\\\":\\\"fc_links_batch_66.jsonl\\\",\\\"role\\\":\\\"citation\\\"}}]}],\\\"returned\\\":3,\\\"matched\\\":3,\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"generalized pentagonal number\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"generalized pentagonal number\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Euler product partition function generating\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 200,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Euler product partition function generating\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"infinite product series Lean\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infinite product series Lean\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finsupp Finset sum product\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finsupp Finset sum product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"power series coefficient formal\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4732,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"power series coefficient formal\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q206925\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Power series\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries\\\",\\\"label\\\":\\\"PowerSeries\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q170198\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Series (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q207455\\\",\\\"label\\\":\\\"Chain rule\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1137206\\\",\\\"label\\\":\\\"Taylor's theorem\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1428097\\\",\\\"label\\\":\\\"Radius of convergence\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q168698\\\",\\\"label\\\":\\\"Exponential function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q29175\\\",\\\"label\\\":\\\"Derivative\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1191722\\\",\\\"label\\\":\\\"Matrix exponential\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q13471665\\\",\\\"label\\\":\\\"Vector (mathematics and physics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1437653\\\",\\\"label\\\":\\\"Faà di Bruno's formula\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q173582\\\",\\\"label\\\":\\\"Gradient\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":88,\\\"withheld_by_shard\\\":100,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\",\\\"via_cell\\\":\\\"cell:Q170198\\\",\\\"cell_label\\\":\\\"Series (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]},{\\\"decl\\\":\\\"PowerSeries\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev PowerSeries (R : Type*) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries\\\",\\\"via_cell\\\":\\\"cell:Q206925\\\",\\\"cell_label\\\":\\\"Power series\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries\\\",\\\"label\\\":\\\"PowerSeries\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/PowerSeries/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"PowerSeries.mk\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\""
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset.prod infinite product\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset.prod infinite product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"prime factorization Euler infinite product\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4990,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime factorization Euler infinite product\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q4846249\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integer factorization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Factors\\\",\\\"label\\\":\\\"Factors\\\"}]},{\\\"id\\\":\\\"cell:Q205\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Infinity\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q670235\\\",\\\"label\\\":\\\"Fundamental theorem of arithmetic\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q49008\\\",\\\"label\\\":\\\"Prime number\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q395\\\",\\\"label\\\":\\\"Mathematics\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q940334\\\",\\\"label\\\":\\\"Shor's algorithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q172891\\\",\\\"label\\\":\\\"Euclid's Elements\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":140,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Nat.primeFactorsList\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Nat.Factors\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Factors\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def primeFactorsList : ℕ → List ℕ\\\\n  | 0 => []\\\\n  | 1 => []\\\\n  | k + 2 =>\\\\n    let m := minFac (k + 2)\\\\n    m :: primeFactorsList ((k + 2) / m)\\\\ndecreasing_by exact factors_lemma\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Factors.html#Nat.primeFactorsList\\\",\\\"via_cell\\\":\\\"cell:Q4846249\\\",\\\"cell_label\\"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Euler function involution partition combinatorics\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3477,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Euler function involution partition combinatorics\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q190026\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euler's totient function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Totient\\\",\\\"label\\\":\\\"Totient\\\"}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q205243\\\",\\\"label\\\":\\\"Möbius function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q140744\\\",\\\"label\\\":\\\"Arithmetic function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q193910\\\",\\\"label\\\":\\\"Euler's theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q205966\\\",\\\"label\\\":\\\"Riemann hypothesis\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q37413\\\",\\\"label\\\":\\\"100\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q104752\\\",\\\"label\\\":\\\"Coprime integers\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q319400\\\",\\\"label\\\":\\\"Modular arithmetic\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q603880\\\",\\\"label\\\":\\\"Finite field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q728415\\\",\\\"label\\\":\\\"On-Line Encyclopedia of Integer Sequences\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1072771\\\",\\\"label\\\":\\\"Möbius inversion formula\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":85,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Nat.totient\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Nat.Totient\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Totient\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def totient (n : ℕ) : ℕ := #{a ∈ range n | n.Coprime a}\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Totient.html#Nat.totient\\\",\\\"via_cell\\\":\\\"cell:Q190026\\\",\\\"cell_label\\\":\\\"Euler's totient function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Totient\\\",\\\"label\\\":\\\"Totient\\\"}]},{\\\"decl\\\":\\\"Function\\\",\\\"exists\\\":false,\\\"module\\\":null,\\\"bond\\\":null,\\\"docs_url\\\":\\\"https://wikilean.jackmccarthy.org/decl/Function\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"cell_label\\\":\\\"Function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"pentagonal\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 567,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"pentagonal\\\",\\\"decl\\\":\\\"pentagonal\\\",\\\"id\\\":\\\"cell:Q674928\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q674928\\\",\\\"label\\\":\\\"pentagonal number\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Pentagonal_number\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Pentagonal_number\\\",\\\"description\\\":\\\"polygonal number\\\",\\\"snippet_sources\\\":[],\\\"via_cell\\\":\\\"cell:Q674928\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"coefficient power series X variable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"coefficient power series X variable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"partition function combinatorial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partition function combinatorial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sum over integers zeta function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sum over integers zeta function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"tprod infinite product Fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"tprod infinite product Fintype\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"sum finsupp support Fintype\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 260,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"sum finsupp support Fintype\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PowerSeries.mk coeff coeffs constructor\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 196,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PowerSeries.mk coeff coeffs constructor\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"X variable polynomial power series\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"X variable polynomial power series\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"natAbs Integer absolute value\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"natAbs Integer absolute value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset.sum notation ∑\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset.sum notation ∑\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"tsum infinite series convergence Summable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"tsum infinite series convergence Summable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Ring Semiring CommRing algebraic structure Mathlib\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ring Semiring CommRing algebraic structure Mathlib\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1333055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"semiring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CommRing\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class CommRing (α : Type u) extends Ring α, CommMonoid α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#CommRing\\\",\\\"via_cell\\\":\\\"cell:Q858656\\\",\\\"cell_label\\\":\\\"Commutative ring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Ring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Ring (R : Type u) extends Semiring R, AddCommGroup R, AddGroupWithOne R\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Ring\\\",\\\"via_cell\\\":\\\"cell:Q161172\\\",\\\"cell_label\\\":\\\"Ring (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Semiring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Semiring (α : Type u) extends AddCommMonoid α, MonoidWithZero α, NonUnitalSemiring α,\\\\n  NonAssocSemiring α\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Semiring\\\",\\\"via_cell\\\":\\\"cell:Q1333055\\\",\\\"cell_label\\\":\\\"semiring\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Alge"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q282649\", \"limit\": 20, \"kinds\": \"invocation,depends,links\"}",
+   "ok": true,
+   "result_chars": 1052,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q282649\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"invocation\\\",\\\"depends\\\",\\\"links\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q674928\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"Q282649\\\",\\\"dst\\\":\\\"decl:Mathlib:pentagonal\\\",\\\"prov\\\":0,\\\"evidence\\\":{\\\"match_kind\\\":\\\"invocation\\\",\\\"module\\\":\\\"Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"grounding_note\\\":\\\"oracle EXISTS (confirmed). Read the full source file: def pentagonal (k : ℤ) := (k*(3k-1)/2).toNat plus injectivity/monotonicity lemmas. The file's own header comment has an explicit '## TODO: Show the relation between pentagonal numbers and partitions, including the pentagonal number theorem' — Mathlib's authors confirm the theorem itself is unproved.\\\",\\\"verified_by\\\":\\\"build_graph_v2 oracle+checkout\\\"}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"coeff PowerSeries evaluation function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"coeff PowerSeries evaluation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "import Mathlib.Combinatorics.Enumerative.Pentagonal\nimport Mathlib.RingTheory.PowerSeries.Basic\n\ntheorem pentagonal_number_theorem :\n    (PowerSeries.mk fun n =>\n      ∑ k : ℤ,\n      if (pentagonal k : ℕ) = n then ((-1 : ℚ) ^ k.natAbs) else 0) =\n    (PowerSeries.mk fun n =>\n      ∏ j in Finset.range n, (1 - (1 : ℚ))) := sorry"
+}

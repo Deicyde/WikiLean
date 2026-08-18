@@ -1,0 +1,280 @@
+{
+ "task_id": "fresh_016",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T01:57:02Z",
+ "wall_s": 119.1,
+ "transcript_stats": {
+  "turns": 29,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 9,
+   "mcp__formal__decl_read": 9,
+   "mcp__wikibrain__decl_exists": 4
+  },
+  "tokens_in": 202,
+  "tokens_out": 7905,
+  "cost_usd": 0.13844455
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫ ?a..?b ?f = ?c\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ ?a..?b ?f = ?c': <input>:1:2: expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.log\"}",
+   "ok": true,
+   "result_chars": 1132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 649 declarations mentioning Real.log.\\n- Real.log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function, equal to the inverse of the exponential for `x > 0`, to `log |x|` for `x < 0`, and to `0` for `0`. We use this unconventional exten\\n- Real.log_surjective   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_exp   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.le_exp_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.range_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_neg_eq_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.tendsto_log_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function tends to `+∞` at `+∞`.\\n- Real.log_abs   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_comp_exp   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.isLittleO_log_id_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.isLittleO_const_log_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_injOn_pos   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"intervalIntegral\"}",
+   "ok": true,
+   "result_chars": 1503,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 441 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f x ∂μ` is defined as `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`. If `a ≤ b`, then it equals `∫ x in Ioc a b, f x ∂μ`\\n- intervalIntegral.integral_same   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_ofReal   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_comp_neg   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_congr   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    If two functions are equal in the relevant interval, their interval integrals are also equal.\\n- intervalIntegral.integral_nonneg_of_forall   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_of_le   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_symm   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_congr_uIoo   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_integral_eq_norm_integral_uIoc   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_integral_min_max   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_intervalIntegral_eq   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(a b : ℝ) → (ha : a > 1) → (hb : b > 1) → ∫ x in a..b\"}",
+   "ok": true,
+   "result_chars": 155,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(a b : ℝ) → (ha : a > 1) → (hb : b > 1) → ∫ x in a..b': <input>:1:53: unexpected end of input; expected ','\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*log.*log\"}",
+   "ok": true,
+   "result_chars": 2667,
+   "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for 'integral.*log.*log' (via ripgrep):\\n- Mathlib/FieldTheory/KrullTopology.lean:38\\n    - `krullTopology_t2 K L`. For an integral field extension `L/K`, the topology `krullTopology K L`\\n- Mathlib/Analysis/Complex/JensenFormula.lean:405\\n    have integral_bound : circleAverage (fun x ↦ Real.log ‖f x‖) c R ≤ Real.log M := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:25\\n    Helper lemma for `integral_log_sin_zero_pi_div_two`: The integral of `log ∘ sin` on `0 … π` is\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:28\\n    private lemma integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:41\\n    The integral of `log ∘ sin` on `0 … π/2` equals `-log 2 * π / 2`.\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:43\\n    theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = -log 2 * π / 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:75\\n    integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two, smul_eq_mul, ne_eq,\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:80\\n    The integral of `log ∘ sin` on `0 … π` equals `-log 2 * π`.\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:82\\n    theorem integral_log_sin_zero_pi : ∫ x in 0..π, log (sin x) = -log 2 * π := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:83\\n    rw [integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two,\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:214\\n    rw [integral_deriv_eq_sub' _ deriv_log' (fun x hx => differentiableAt_log (h' x hx))\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:278\\n    lemma integral_log_from_zero_of_pos (ht : 0 < b) : ∫ s in 0..b, log s = b * log b - b := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:292\\n    lemma integral_log_from_zero {b : ℝ} : ∫ s in 0..b, log s = b * log b - b := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:297\\n    integral_log_from_zero_of_pos (Left.neg_pos_iff.mpr h), log_neg_eq_log]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:303\\n    theorem integral_log : ∫ s in a..b, log s = b * log b - a * log a - b + a := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:305\\n    · rw [intervalIntegral.integral_symm, integral_log_from_zero, integral_log_from_zero]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:374\\n    rw [← intervalIntegral.integral_congr (fun _ _ ↦ deriv_log_log_apply)]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2163,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 1–50 of 656):\\n     1  /-\\n     2  Copyright (c) 2021 Benjamin Davidson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Benjamin Davidson\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog\\n     9  public import Mathlib.Analysis.SpecialFunctions.NonIntegrable\\n    10  public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv\\n    11  public import Mathlib.Analysis.SpecialFunctions.Integrability.Basic\\n    12  public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc\\n    13  public import Mathlib.Analysis.SpecialFunctions.Log.InvLog\\n    14  public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts\\n    15  \\n    16  /-!\\n    17  # Integration of specific interval integrals\\n    18  \\n    19  This file contains proofs of the integrals of various specific functions. This includes:\\n    20  * Integrals of simple functions, such as `id`, `pow`, `inv`, `exp`, `log`\\n    21  * Integrals of some trigonometric functions, such as `sin`, `cos`, `1 / (1 + x^2)`\\n    22  * The integral of `cos x ^ 2 - sin x ^ 2`\\n    23  * Reduction formulae for the integrals of `sin x ^ n` and `cos x ^ n` for `n ≥ 2`\\n    24  * The computation of `∫ x in 0..π, sin x ^ n` as a product for even and odd `n` (used in proving the\\n    25    Wallis product for pi)\\n    26  * Integrals of the form `sin x ^ m * cos x ^ n`\\n    27  \\n    28  With these lemmas, many simple integrals can be computed by `simp` or `norm_num`.\\n    29  \\n    30  This file is still being developed.\\n    31  \\n    32  ## Tags\\n    33  \\n    34  integrate, integration, integrable\\n    35  -/\\n    36  \\n    37  public section\\n    38  \\n    39  \\n    40  open Real Set Finset\\n    41  \\n    42  open scoped Real Interval\\n    43  \\n    44  variable {a b : ℝ} (n : ℕ)\\n    45  \\n    46  namespace intervalIntegral\\n    47  \\n    48  open MeasureTheory\\n    49  \\n    50  variable {f : ℝ → ℝ} {μ : Measure ℝ} [IsLocallyFiniteMeasure μ] (c d : ℝ)\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 280, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5319,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 280–379 of 656):\\n   280    -- right. The following lines were suggested by Gareth Ma on Zulip.\\n   281    rw [integral_eq_sub_of_hasDerivAt_of_tendsto (f := fun x ↦ x * log x - x)\\n   282      (fa := 0) (fb := b * log b - b) (hint := intervalIntegrable_log')]\\n   283    · abel\\n   284    · exact ht\\n   285    · intro s ⟨hs, _ ⟩\\n   286      simpa using! (hasDerivAt_mul_log hs.ne.symm).sub (hasDerivAt_id s)\\n   287    · simpa [mul_comm] using! ((tendsto_log_mul_rpow_nhdsGT_zero zero_lt_one).sub\\n   288        (tendsto_nhdsWithin_of_tendsto_nhds Filter.tendsto_id))\\n   289    · exact tendsto_nhdsWithin_of_tendsto_nhds (ContinuousAt.tendsto (by fun_prop))\\n   290  \\n   291  /-- Helper lemma for `integral_log`: case where `a = 0`. -/\\n   292  lemma integral_log_from_zero {b : ℝ} : ∫ s in 0..b, log s = b * log b - b := by\\n   293    rcases lt_trichotomy b 0 with h | h | h\\n   294    · -- If t is negative, use that log is an even function to reduce to the positive case.\\n   295      conv => arg 1; arg 1; intro t; rw [← log_neg_eq_log]\\n   296      rw [intervalIntegral.integral_comp_neg, intervalIntegral.integral_symm, neg_zero,\\n   297        integral_log_from_zero_of_pos (Left.neg_pos_iff.mpr h), log_neg_eq_log]\\n   298      ring\\n   299    · simp [h]\\n   300    · exact integral_log_from_zero_of_pos h\\n   301  \\n   302  @[simp]\\n   303  theorem integral_log : ∫ s in a..b, log s = b * log b - a * log a - b + a := by\\n   304    rw [← intervalIntegral.integral_add_adjacent_intervals (b := 0)]\\n   305    · rw [intervalIntegral.integral_symm, integral_log_from_zero, integral_log_from_zero]\\n   306      ring\\n   307    all_goals exact intervalIntegrable_log'\\n   308  \\n   309  @[simp]\\n   310  theorem integral_sin : ∫ x in a..b, sin x = cos a - cos b := by\\n   311    rw [integral_deriv_eq_sub' fun x => -cos x]\\n   312    · ring\\n   313    · simp\\n   314    · simp\\n   315    · exact continuousOn_sin\\n   316  \\n   317  @[simp]\\n   318  theorem integral_cos : ∫ x in a..b, cos x = sin b - sin a := by\\n   319    rw [integral_deriv_eq_sub']\\n   320    · simp\\n   321    · simp only [differentiableAt_sin, implies_true]\\n   322    · exact continuousOn_cos\\n   323  \\n   324  theorem integral_cos_mul_complex {z : ℂ} (hz : z ≠ 0) (a b : ℝ) :\\n   325      (∫ x in a..b, Complex.cos (z * x)) = Complex.sin (z * b) / z - Complex.sin (z * a) / z := by\\n   326    apply integral_eq_sub_of_hasDerivAt\\n   327    swap\\n   328    · apply Continuous.intervalIntegrable <| by fun_prop\\n   329    intro x _\\n   330    have a := Complex.hasDerivAt_sin (↑x * z)\\n   331    have b : HasDerivAt (fun y => y * z : ℂ → ℂ) z ↑x := hasDerivAt_mul_const _\\n   332    have c : HasDerivAt (Complex.sin ∘ fun y : ℂ => (y * z)) _ ↑x := HasDerivAt.comp (𝕜 := ℂ) x a b\\n   333    have d := HasDerivAt.comp_ofReal (c.div_const z)\\n   334    grind\\n   335  \\n   336  theorem integral_cos_sq_sub_sin_sq :\\n   337      ∫ x in a..b, cos x ^ 2 - sin x ^ 2 = sin b * cos b - sin a * cos a := by\\n   338    simpa only [sq, sub_eq_add_neg, neg_mul_eq_mul_neg] using\\n   339      integral_deriv_mul_eq_sub (fun x _ => hasDerivAt_sin x) (fun x _ => hasDerivAt_cos x)\\n   340        continuousOn_cos.intervalIntegrable continuousOn_sin.neg.intervalIntegrable\\n   341  \\n   342  theorem integral_one_div_one_add_sq :\\n   343      (∫ x : ℝ in a..b, ↑1 / (↑1 + x ^ 2)) = arctan b - arctan a := by\\n   344    refine integral_deriv_eq_sub' _ Real.deriv_arctan (fun _ _ => differentiableAt_arctan _)\\n   345      (continuous_const.div ?_ fun x => ?_).continuousOn\\n   346    · fun_prop\\n   347    · nlinarith\\n   348  \\n   349  @[simp]\\n   350  theorem integral_inv_one_add_sq : (∫ x : ℝ in a..b, (↑1 + x ^ 2)⁻¹) = arctan b - arctan a := by\\n   351    simp only [← one_div, integral_one_div_one_add_sq]\\n   352  \\n   353  @[simp]\\n   354  theorem integral_inv_sq_add_sq {c : ℝ} (hc : c ≠ 0) :\\n   355      ∫ x : ℝ in a..b, (c ^ 2 + x ^ "
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"log.*sq|log.*2\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2669,
+   "result_head": "[{\"type\": \"text\", \"text\": \"891 match(es) for 'log.*sq|log.*2' (via ripgrep):\\n- Mathlib/Algebra/Homology/ModelCategory/Injective.lean:137\\n    (asIso (kernelComparison p (HomologicalComplex.eval _ _ n))).symm (hp n).2\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:16\\n    a function such that `‖r_i(n) - b_i n‖ ∈ o(n / (log n)^2)` for every `i`, the coefficients `a_i`\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:46\\n    * Relax the assumption described in the introduction from `o(n / (log n)^2)` to\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:84\\n    =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 - ε z) + z ^ (p - 1) / (log z ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:91\\n    _ =ᶠ[atTop] fun x => p * x ^ (p - 1) * (1 - ε x) + x ^ p * (x⁻¹ / (log x ^ 2)) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:95\\n    _ =ᶠ[atTop] fun x => p * x ^ (p - 1) * (1 - ε x) + x ^ (p - 1) / (log x ^ 2) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:101\\n    =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 + ε z) - z ^ (p - 1) / (log z ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:108\\n    _ =ᶠ[atTop] fun x => p * x ^ (p - 1) * (1 + ε x) - x ^ p * (x⁻¹ / (log x ^ 2)) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:112\\n    _ =ᶠ[atTop] fun x => p * x ^ (p - 1) * (1 + ε x) - x ^ (p - 1) / (log x ^ 2) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:119\\n    _ =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 - ε z) + z ^ (p - 1) / (log z ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:128\\n    (fun z => z ^ (p - 1) / (log z ^ 2)) =o[atTop] fun z => z ^ (p - 1) / 1 := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:142\\n    _ =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 + ε z) - z ^ (p - 1) / (log z ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:151\\n    (fun z => -(z ^ (p - 1) / (log z ^ 2))) =o[atTop] fun z => z ^ (p - 1) / 1 := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:181\\n    =ᶠ[atTop] fun z => z⁻¹ / (log z ^ 2) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:183\\n    have : 0 ≤ x⁻¹ / (log x ^ 2) := by positivity\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:200\\n    =ᶠ[atTop] fun z => z⁻¹ / (log z ^ 2) := by\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:202\\n    have : 0 ≤ x⁻¹ / (log x ^ 2) := by positivity\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:290\\n    _ =o[atTop] fun n => (deriv q n) * (n / log n ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:292\\n    _ =O[atTop] fun n => n ^ ((p a b) - 1) * (n / log n ^ 2) :=\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:294\\n    _ =ᶠ[atTop] fun n => n ^ (p a b) / (log n) ^ 2 := by\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv log\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'deriv log': Unknown identifier `log`\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*deriv.*log.*log\"}",
+   "ok": true,
+   "result_chars": 1153,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'theorem.*deriv.*log.*log' (via ripgrep):\\n- Mathlib/RingTheory/PowerSeries/Log.lean:67\\n    theorem deriv_log : d⁄dX A (log A) = mk fun n ↦ algebraMap ℚ A ((-1 : ℚ) ^ n) := by\\n- Mathlib/Analysis/SpecialFunctions/Log/Deriv.lean:65\\n    theorem deriv_log (x : ℝ) : deriv log x = x⁻¹ :=\\n- Mathlib/Analysis/SpecialFunctions/Log/Deriv.lean:71\\n    theorem deriv_log' : deriv log = Inv.inv :=\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:53\\n    theorem deriv_inv_log_apply {x : ℝ} : deriv (fun x ↦ (log x)⁻¹) x = -x⁻¹ / log x ^ 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:63\\n    theorem deriv_inv_log : deriv (fun x ↦ (log x)⁻¹) = fun x ↦ -x⁻¹ / log x ^ 2 :=\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:103\\n    theorem deriv_log_log_apply {x : ℝ} : deriv (fun x ↦ log (log x)) x = x⁻¹ / log x := by\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:113\\n    theorem deriv_log_log : deriv (fun x ↦ log (log x)) = fun x ↦ x⁻¹ / log x :=\\n- Mathlib/Analysis/SpecialFunctions/Complex/LogDeriv.lean:53\\n    theorem deriv_log {x : ℂ} (h : x ∈ slitPlane) : deriv log x = x⁻¹ :=\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean  (lines 1–120 of 134):\\n     1  /-\\n     2  Copyright (c) 2025 Alastair Irving. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Alastair Irving, Michael Stoll, Terence Tao\\n     5  -/\\n     6  \\n     7  module\\n     8  \\n     9  public import Mathlib.Analysis.SpecialFunctions.Log.Deriv\\n    10  public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics\\n    11  \\n    12  /-!\\n    13  # Multiplicative inverse and iteration of real logarithm\\n    14  \\n    15  We prove properties of the functions `x ↦ (log x)⁻¹` and `x ↦ log (log x)`.\\n    16  \\n    17  ## Main results\\n    18  \\n    19  - `deriv_inv_log` gives a formula for the derivative of `x ↦ (log x)⁻¹` which holds for all values.\\n    20  - `deriv_log_log` gives a formula for the derivative of `x ↦ log (log x)` which holds for all\\n    21    values.\\n    22  -/\\n    23  \\n    24  public section\\n    25  \\n    26  namespace Real\\n    27  \\n    28  open Filter Asymptotics Bornology Metric IsOrderBornology DifferentiableAt\\n    29  \\n    30  /- ## Derivative of the inverse logarithm -/\\n    31  \\n    32  lemma not_differentiableAt_inv_log_zero : ¬ DifferentiableAt ℝ (fun x ↦ (log x)⁻¹) 0 := by\\n    33    simp only [← hasDerivAt_deriv_iff, hasDerivAt_iff_tendsto_slope_zero, zero_add, log_zero,\\n    34      inv_zero, sub_zero, smul_eq_mul, ← mul_inv, mul_comm _ (log _)]\\n    35    refine fun H ↦ (tendsto_nhdsWithin_mono_left (by grind : Set.Iio (0 : ℝ) ⊆ _) H).not_tendsto\\n    36      (by simp) (tendsto_inv_nhdsGT_zero.comp ?_)\\n    37    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _\\n    38      tendsto_log_mul_self_nhdsLT_zero ?_\\n    39    simp only [← nhdsWithin_Ioo_eq_nhdsLT neg_one_lt_zero, Set.mem_Ioi]\\n    40    refine eventually_nhdsWithin_of_forall fun x ⟨hx₁, hx₂⟩ ↦ mul_pos_of_neg_of_neg ?_ hx₂\\n    41    apply log_neg_eq_log x ▸ log_neg <;> grind\\n    42  \\n    43  lemma not_continuousAt_inv_log_one : ¬ ContinuousAt (fun x ↦ (log x)⁻¹) 1 := by\\n    44    suffices Tendsto (fun x ↦ (log x)⁻¹) (nhdsWithin 1 {1}ᶜ) (cobounded ℝ) from\\n    45      not_continuousAt_of_tendsto this nhdsWithin_le_nhds (disjoint_nhds_cobounded _)\\n    46    exact tendsto_inv₀_nhdsNE_zero.comp <| log_one ▸\\n    47      HasDerivAt.tendsto_nhdsNE (by simpa using hasDerivAt_log one_ne_zero) one_ne_zero\\n    48  \\n    49  lemma not_continuousAt_inv_log_neg_one : ¬ ContinuousAt (fun x ↦ (log x)⁻¹) (-1) :=\\n    50    fun H ↦ not_continuousAt_inv_log_one\\n    51      (by simpa only [log_neg_eq_log] using H.comp' continuousAt_neg)\\n    52  \\n    53  theorem deriv_inv_log_apply {x : ℝ} : deriv (fun x ↦ (log x)⁻¹) x = -x⁻¹ / log x ^ 2 := by\\n    54    have := mt (continuousAt (𝕜 := ℝ)) not_continuousAt_inv_log_neg_one\\n    55    have := mt (continuousAt (𝕜 := ℝ)) not_continuousAt_inv_log_one\\n    56    have := not_differentiableAt_inv_log_zero\\n    57    obtain (⟨_, _, _⟩ | rfl | rfl | rfl) :\\n    58        (x ≠ -1 ∧ x ≠ 0 ∧ x ≠ 1) ∨ x = -1 ∨ x = 0 ∨ x = 1 := by tauto\\n    59    · simp_all\\n    60    all_goals rw [deriv_zero_of_not_differentiableAt ‹_›]; simp\\n    61  \\n    62  @[simp]\\n    63  theorem deriv_inv_log : deriv (fun x ↦ (log x)⁻¹) = fun x ↦ -x⁻¹ / log x ^ 2 :=\\n    64    funext fun _ ↦ deriv_inv_log_apply\\n    65  \\n    66  theorem differentiableAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n    67      DifferentiableAt ℝ (fun x ↦ (log x)⁻¹) x := by\\n    68    fun_prop (disch := grind [log_ne_zero])\\n    69  \\n    70  theorem hasDerivAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n    71      HasDerivAt (fun x ↦ (log x)⁻¹) (-x⁻¹ / (log x ^ 2)) x := by\\n    72    simpa using (differentiableAt_inv_log hx₀ hx₁ hx₂).hasDerivAt\\n    73  \\n    74  theorem differentiableOn_inv_log' : DifferentiableOn ℝ (fun x ↦ (log x)⁻¹) {-1,0,1}ᶜ :=\\n    75    (differentiableOn_log.mono (by grind)).inv (by simp;"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral_deriv_eq_sub\"}",
+   "ok": true,
+   "result_chars": 2867,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'integral_deriv_eq_sub' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:16\\n    * `AbsolutelyContinuousOnInterval.integral_deriv_eq_sub`: If `f` is absolutely continuous on\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:225\\n    theorem AbsolutelyContinuousOnInterval.integral_deriv_eq_sub {f : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:249\\n    rw [← (hf.fun_mul hg).integral_deriv_eq_sub]\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:93\\n    * `intervalIntegral.integral_deriv_eq_sub'` - version that is easiest to use when computing the\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1176\\n    theorem integral_deriv_eq_sub (hderiv : ∀ x ∈ [[a, b]], DifferentiableAt ℝ f x)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1180\\n    theorem integral_deriv_eq_sub' (f) (hderiv : deriv f = f')\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1183\\n    rw [← hderiv, integral_deriv_eq_sub hdiff]\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1189\\n    theorem integral_deriv_eq_sub_uIoo\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1199\\n    /-- A variant of `intervalIntegral.integral_deriv_eq_sub`, the Fundamental theorem\\n- Mathlib/NumberTheory/AbelSummation.lean:72\\n    rw [← integral_deriv_eq_sub (fun t ht ↦ hf_diff t (h_inc₂ ht)),\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:214\\n    rw [integral_deriv_eq_sub' _ deriv_log' (fun x hx => differentiableAt_log (h' x hx))\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:237\\n    rw [integral_deriv_eq_sub']\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:250\\n    rw [integral_deriv_eq_sub' _ (funext fun x => (D x).deriv) fun x _ => (D x).differentiableAt]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:311\\n    rw [integral_deriv_eq_sub' fun x => -cos x]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:319\\n    rw [integral_deriv_eq_sub']\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:344\\n    refine integral_deriv_eq_sub' _ Real.deriv_arctan (fun _ _ => differentiableAt_arctan _)\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:375\\n    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) ?_\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:387\\n    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) (ContinuousOn.intervalIntegrable ?_)\\n- Mathlib/Analysis/SpecialFunctions/NonIntegrable.lean:91\\n    _ = ‖∫ x in c..d, deriv f x‖ := congr_arg _ (integral_deriv_eq_sub hfd hfi).symm\\n- Mathlib/Analysis/Calculus/TaylorIntegral.lean:98\\n    simpa using intervalIntegral.integral_deriv_eq_sub hf' hint\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean\", \"line\": 1170, \"n\": 40}",
+   "ok": true,
+   "result_chars": 3003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean  (lines 1170–1209 of 1276):\\n  1170    simpa [F, hab.ne, hab.ne'] using integral_eq_sub_of_hasDerivAt_of_le hab.le hcont Fderiv hint\\n  1171  \\n  1172  /-- Fundamental theorem of calculus-2: If `f : ℝ → E` is differentiable at every `x` in `[a, b]` and\\n  1173  its derivative is integrable on `[a, b]`, then `∫ y in a..b, deriv f y` equals `f b - f a`.\\n  1174  \\n  1175  See also `integral_deriv_of_contDiffOn_Icc` for a similar theorem assuming that `f` is `C^1`. -/\\n  1176  theorem integral_deriv_eq_sub (hderiv : ∀ x ∈ [[a, b]], DifferentiableAt ℝ f x)\\n  1177      (hint : IntervalIntegrable (deriv f) volume a b) : ∫ y in a..b, deriv f y = f b - f a :=\\n  1178    integral_eq_sub_of_hasDerivAt (fun x hx => (hderiv x hx).hasDerivAt) hint\\n  1179  \\n  1180  theorem integral_deriv_eq_sub' (f) (hderiv : deriv f = f')\\n  1181      (hdiff : ∀ x ∈ uIcc a b, DifferentiableAt ℝ f x) (hcont : ContinuousOn f' (uIcc a b)) :\\n  1182      ∫ y in a..b, f' y = f b - f a := by\\n  1183    rw [← hderiv, integral_deriv_eq_sub hdiff]\\n  1184    rw [hderiv]\\n  1185    exact hcont.intervalIntegrable\\n  1186  \\n  1187  /-- Fundamental theorem of calculus-2: If `f : ℝ → E` is differentiable at every `x` in `(a, b)` and\\n  1188  its derivative is integrable on `[a, b]`, then `∫ y in a..b, deriv f y` equals `f b - f a`. -/\\n  1189  theorem integral_deriv_eq_sub_uIoo\\n  1190      (hcont : ContinuousOn f [[a, b]]) (hderiv : ∀ x ∈ uIoo a b, DifferentiableAt ℝ f x)\\n  1191      (hint : IntervalIntegrable (deriv f) volume a b) : ∫ y in a..b, deriv f y = f b - f a := by\\n  1192    rcases le_total a b with hab | hab\\n  1193    · simp only [uIcc_of_le, hab, uIoo_of_le] at hcont hderiv\\n  1194      rw [integral_eq_sub_of_hasDerivAt_of_le hab hcont (fun x hx => (hderiv x hx).hasDerivAt) hint]\\n  1195    · simp only [uIcc_of_ge, hab, uIoo_of_ge] at hcont hderiv\\n  1196      rw [integral_symm, integral_eq_sub_of_hasDerivAt_of_le hab hcont\\n  1197          (fun x hx => (hderiv x hx).hasDerivAt) hint.symm, neg_sub]\\n  1198  \\n  1199  /-- A variant of `intervalIntegral.integral_deriv_eq_sub`, the Fundamental theorem\\n  1200  of calculus, involving integrating over the unit interval. -/\\n  1201  lemma integral_unitInterval_deriv_eq_sub [RCLike 𝕜] [NormedSpace 𝕜 E] [IsScalarTower ℝ 𝕜 E]\\n  1202      {f f' : 𝕜 → E} {z₀ z₁ : 𝕜}\\n  1203      (hcont : ContinuousOn (fun t : ℝ ↦ f' (z₀ + t • z₁)) (Set.Icc 0 1))\\n  1204      (hderiv : ∀ t ∈ Set.Icc (0 : ℝ) 1, HasDerivAt f (f' (z₀ + t • z₁)) (z₀ + t • z₁)) :\\n  1205      z₁ • ∫ t in (0 : ℝ)..1, f' (z₀ + t • z₁) = f (z₀ + z₁) - f z₀ := by\\n  1206    let γ (t : ℝ) : 𝕜 := z₀ + t • z₁\\n  1207    have hint : IntervalIntegrable (z₁ • (f' ∘ γ)) MeasureTheory.volume 0 1 :=\\n  1208      (ContinuousOn.const_smul hcont z₁).intervalIntegrable_of_Icc zero_le_one\\n  1209    have hderiv' (t) (ht : t ∈ Set.uIcc (0 : ℝ) 1) : HasDerivAt (f ∘ γ) (z₁ • (f' ∘ γ) t) t := by\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.log\", \"deriv_inv_log_apply\", \"intervalIntegral.integral_deriv_eq_sub'\", \"differentiableOn_inv_log\", \"DifferentiableAt\"]}",
+   "ok": true,
+   "result_chars": 1791,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.log\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SpecialFunctions.Log.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.SpecialFunctions.Log.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/SpecialFunctions/Log/Basic.html#Real.log\\\"},{\\\"decl\\\":\\\"deriv_inv_log_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"intervalIntegral.integral_deriv_eq_sub'\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.html#intervalIntegral.integral_deriv_eq_sub'\\\"},{\\\"decl\\\":\\\"differentiableOn_inv_log\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"DifferentiableAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.FDeriv.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.FDeriv.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/FDeriv/Defs.html#DifferentiableAt\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem deriv_inv_log\"}",
+   "ok": true,
+   "result_chars": 377,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem deriv_inv_log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:53\\n    theorem deriv_inv_log_apply {x : ℝ} : deriv (fun x ↦ (log x)⁻¹) x = -x⁻¹ / log x ^ 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:63\\n    theorem deriv_inv_log : deriv (fun x ↦ (log x)⁻¹) = fun x ↦ -x⁻¹ / log x ^ 2 :=\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.deriv_inv_log_apply\", \"Real.deriv_inv_log\", \"Real.differentiableOn_inv_log\", \"ContinuousOn\"]}",
+   "ok": true,
+   "result_chars": 1345,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.deriv_inv_log_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.deriv_inv_log\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SpecialFunctions.Log.InvLog\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.SpecialFunctions.Log.InvLog\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/SpecialFunctions/Log/InvLog.html#Real.deriv_inv_log\\\"},{\\\"decl\\\":\\\"Real.differentiableOn_inv_log\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean\", \"line\": 50, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1735,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean  (lines 50–79 of 134):\\n    50    fun H ↦ not_continuousAt_inv_log_one\\n    51      (by simpa only [log_neg_eq_log] using H.comp' continuousAt_neg)\\n    52  \\n    53  theorem deriv_inv_log_apply {x : ℝ} : deriv (fun x ↦ (log x)⁻¹) x = -x⁻¹ / log x ^ 2 := by\\n    54    have := mt (continuousAt (𝕜 := ℝ)) not_continuousAt_inv_log_neg_one\\n    55    have := mt (continuousAt (𝕜 := ℝ)) not_continuousAt_inv_log_one\\n    56    have := not_differentiableAt_inv_log_zero\\n    57    obtain (⟨_, _, _⟩ | rfl | rfl | rfl) :\\n    58        (x ≠ -1 ∧ x ≠ 0 ∧ x ≠ 1) ∨ x = -1 ∨ x = 0 ∨ x = 1 := by tauto\\n    59    · simp_all\\n    60    all_goals rw [deriv_zero_of_not_differentiableAt ‹_›]; simp\\n    61  \\n    62  @[simp]\\n    63  theorem deriv_inv_log : deriv (fun x ↦ (log x)⁻¹) = fun x ↦ -x⁻¹ / log x ^ 2 :=\\n    64    funext fun _ ↦ deriv_inv_log_apply\\n    65  \\n    66  theorem differentiableAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n    67      DifferentiableAt ℝ (fun x ↦ (log x)⁻¹) x := by\\n    68    fun_prop (disch := grind [log_ne_zero])\\n    69  \\n    70  theorem hasDerivAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n    71      HasDerivAt (fun x ↦ (log x)⁻¹) (-x⁻¹ / (log x ^ 2)) x := by\\n    72    simpa using (differentiableAt_inv_log hx₀ hx₁ hx₂).hasDerivAt\\n    73  \\n    74  theorem differentiableOn_inv_log' : DifferentiableOn ℝ (fun x ↦ (log x)⁻¹) {-1,0,1}ᶜ :=\\n    75    (differentiableOn_log.mono (by grind)).inv (by simp; tauto)\\n    76  \\n    77  theorem differentiableOn_inv_log : DifferentiableOn ℝ (fun x ↦ (log x)⁻¹) (.Ioi 1) :=\\n    78    differentiableOn_inv_log'.mono (by grind)\\n    79  \\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.deriv_inv_log_apply\", \"Real.differentiableAt_inv_log\", \"Real.differentiableOn_inv_log\", \"Real.differentiableOn_log\"]}",
+   "ok": true,
+   "result_chars": 1324,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.deriv_inv_log_apply\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.differentiableAt_inv_log\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.differentiableOn_inv_log\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.differentiableOn_log\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SpecialFunctions.Log.Deriv\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.SpecialFunctions.Log.Deriv\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/SpecialFunctions/Log/Deriv.html#Real.differentiableOn_log\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv_inv_log_apply\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'deriv_inv_log_apply': unknown identifier 'deriv_inv_log_apply'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*inv_log\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1507,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'theorem.*inv_log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Log/Base.lean:96\\n    theorem inv_logb (a b : ℝ) : (logb a b)⁻¹ = logb b a := by simp_rw [logb, inv_div]\\n- Mathlib/Analysis/SpecialFunctions/Log/Base.lean:98\\n    theorem inv_logb_mul_base {a b : ℝ} (h₁ : a ≠ 0) (h₂ : b ≠ 0) (c : ℝ) :\\n- Mathlib/Analysis/SpecialFunctions/Log/Base.lean:102\\n    theorem inv_logb_div_base {a b : ℝ} (h₁ : a ≠ 0) (h₂ : b ≠ 0) (c : ℝ) :\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:53\\n    theorem deriv_inv_log_apply {x : ℝ} : deriv (fun x ↦ (log x)⁻¹) x = -x⁻¹ / log x ^ 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:63\\n    theorem deriv_inv_log : deriv (fun x ↦ (log x)⁻¹) = fun x ↦ -x⁻¹ / log x ^ 2 :=\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:66\\n    theorem differentiableAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:70\\n    theorem hasDerivAt_inv_log {x : ℝ} (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) (hx₂ : x ≠ -1) :\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:74\\n    theorem differentiableOn_inv_log' : DifferentiableOn ℝ (fun x ↦ (log x)⁻¹) {-1,0,1}ᶜ :=\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:77\\n    theorem differentiableOn_inv_log : DifferentiableOn ℝ (fun x ↦ (log x)⁻¹) (.Ioi 1) :=\\n- Mathlib/Analysis/SpecialFunctions/Log/InvLog.lean:80\\n    theorem inv_log_isLittleO_one : (fun x ↦ (log x)⁻¹) =o[atTop] fun _ ↦ (1 : ℝ) := by\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*log.*log|integral.*inv.*log\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'integral.*log.*log|integral.*inv.*log' (via ripgrep):\\n- Mathlib/FieldTheory/KrullTopology.lean:38\\n    - `krullTopology_t2 K L`. For an integral field extension `L/K`, the topology `krullTopology K L`\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:304\\n    theorem integral_inv_div_log_sq_Ioi {c : ℝ} (hc : 1 < c) :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:25\\n    Helper lemma for `integral_log_sin_zero_pi_div_two`: The integral of `log ∘ sin` on `0 … π` is\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:28\\n    private lemma integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:41\\n    The integral of `log ∘ sin` on `0 … π/2` equals `-log 2 * π / 2`.\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:43\\n    theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = -log 2 * π / 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:75\\n    integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two, smul_eq_mul, ne_eq,\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:80\\n    The integral of `log ∘ sin` on `0 … π` equals `-log 2 * π`.\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:82\\n    theorem integral_log_sin_zero_pi : ∫ x in 0..π, log (sin x) = -log 2 * π := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:83\\n    rw [integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_two,\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:212\\n    theorem integral_inv (h : (0 : ℝ) ∉ [[a, b]]) : ∫ x in a..b, x⁻¹ = log (b / a) := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:214\\n    rw [integral_deriv_eq_sub' _ deriv_log' (fun x hx => differentiableAt_log (h' x hx))\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:219\\n    theorem integral_inv_of_pos (ha : 0 < a) (hb : 0 < b) : ∫ x in a..b, x⁻¹ = log (b / a) :=\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:223\\n    theorem integral_inv_of_neg (ha : a < 0) (hb : b < 0) : ∫ x in a..b, x⁻¹ = log (b / a) :=\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:278\\n    lemma integral_log_from_zero_of_pos (ht : 0 < b) : ∫ s in 0..b, log s = b * log b - b := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:292\\n    lemma integral_log_from_zero {b : ℝ} : ∫ s in 0..b, log s = b * log b - b := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:297\\n    integral_log_from_zero_of_pos (Left.neg_pos_iff.mpr h), log_neg_eq_log]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:303\\n    theorem integral_log : ∫ s in a..b, log s = b * log b - a * log a - b + a := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:305\\n    · rw [intervalIntegral.integral_symm, integral_log_from_zero, integral_log_from_zero]\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:372\\n    theorem integral_inv_div_log (ha : 1 < a) (hb : 1 < b) :\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean\", \"line\": 300, \"n\": 20}",
+   "ok": true,
+   "result_chars": 738,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean  (lines 300–313 of 313):\\n   300      have : 0 < t := by grind\\n   301      positivity\\n   302  \\n   303  @[simp]\\n   304  theorem integral_inv_div_log_sq_Ioi {c : ℝ} (hc : 1 < c) :\\n   305      ∫ (t : ℝ) in .Ioi c, t⁻¹ / (log t) ^ 2 = (log c)⁻¹ := by\\n   306    convert! integral_Ioi_of_hasDerivAt_of_tendsto' (m := 0) (f := fun t ↦ -(log t)⁻¹) ?_\\n   307      (integrableOn_inv_div_log_sq_Ioi hc) ?_ using 1\\n   308    · simp\\n   309    · intro t _\\n   310      convert! (hasDerivAt_inv_log (by grind : t ≠ 0) (by grind) (by grind)).neg using 1\\n   311      field\\n   312    convert! tendsto_log_atTop.inv_tendsto_atTop.neg using 1\\n   313    simp\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*log_sq|integral.*log.*2\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1795,
+   "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'integral.*log_sq|integral.*log.*2' (via ripgrep):\\n- Mathlib/NumberTheory/Chebyshev.lean:707\\n    private theorem integral_1_div_log_sq_le {a b : ℝ} (hab : a ≤ b) (one_lt : 1 < a) :\\n- Mathlib/NumberTheory/Chebyshev.lean:717\\n    private theorem integral_one_div_log_sq_le_explicit {x : ℝ} (hx : 4 ≤ x) :\\n- Mathlib/NumberTheory/Chebyshev.lean:722\\n    · grw [integral_1_div_log_sq_le two_le_sqrt (by linarith),\\n- Mathlib/NumberTheory/Chebyshev.lean:723\\n    integral_1_div_log_sq_le sqrt_le_x (by linarith)]\\n- Mathlib/NumberTheory/Chebyshev.lean:741\\n    theorem integral_one_div_log_sq_isBigO :\\n- Mathlib/NumberTheory/Chebyshev.lean:747\\n    rw [intervalIntegral.integral_congr (g := (fun t ↦ 1 / log t ^ 2))]\\n- Mathlib/NumberTheory/Chebyshev.lean:748\\n    · grw [integral_one_div_log_sq_le_explicit hx, norm_of_nonneg]\\n- Mathlib/NumberTheory/Chebyshev.lean:759\\n    theorem integral_theta_div_log_sq_isBigO :\\n- Mathlib/NumberTheory/Chebyshev.lean:761\\n    refine (IsBigO.of_bound (log 4) ?_).trans integral_one_div_log_sq_isBigO\\n- Mathlib/NumberTheory/Chebyshev.lean:784\\n    theorem integral_theta_div_log_sq_isLittleO :\\n- Mathlib/NumberTheory/Chebyshev.lean:786\\n    refine integral_theta_div_log_sq_isBigO.trans_isLittleO ?_\\n- Mathlib/NumberTheory/Chebyshev.lean:794\\n    apply integral_theta_div_log_sq_isBigO.congr' _ (by rfl)\\n- Mathlib/NumberTheory/Chebyshev.lean:802\\n    have := integral_theta_div_log_sq_isLittleO.bound εpos\\n- Mathlib/Probability/Distributions/Fernique.lean:30\\n    the integral `∫⁻ x, exp (logRatio c * a⁻¹ ^ 2 * ‖x‖ ^ 2) ∂μ` is bounded by a finite quantity\\n- Mathlib/Probability/Distributions/Fernique.lean:59\\n    `2⁻¹ < c ≤ μ {x | ‖x‖ ≤ a}`, the integral `∫⁻ x, exp (logRatio c * a⁻¹ ^ 2 * ‖x‖ ^ 2) ∂μ`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/Chebyshev.lean\", \"line\": 700, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1910,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/Chebyshev.lean  (lines 700–729 of 882):\\n   700    rw [Set.mem_uIcc] at hx\\n   701    have : x ≠ 0 := by grind\\n   702    have : log x ^ 2 ≠ 0 := pow_ne_zero _ (log_ne_zero.mpr (by grind))\\n   703    fun_prop\\n   704  \\n   705  /-- Simple bound on the integral from monotonicity.\\n   706  We will bound the integral on 2..x by splitting into two intervals and using this result on both. -/\\n   707  private theorem integral_1_div_log_sq_le {a b : ℝ} (hab : a ≤ b) (one_lt : 1 < a) :\\n   708      ∫ x in a..b, 1 / log x ^ 2 ≤ (b - a) / log a ^ 2 := by\\n   709    calc\\n   710    _ ≤ ∫ x in a..b, 1 / log a ^ 2 := by\\n   711        refine intervalIntegral.integral_mono_on hab ?_ (by simp) fun x ⟨_, _⟩ ↦ by gcongr <;> bound\\n   712        apply intervalIntegrable_one_div_log_sq <;> linarith\\n   713    _ ≤ _ := by simp [field]\\n   714  \\n   715  /-- Explicit integral bound, we expose a BigO version below since the constants and lower order term\\n   716  aren't very convenient. -/\\n   717  private theorem integral_one_div_log_sq_le_explicit {x : ℝ} (hx : 4 ≤ x) :\\n   718      ∫ t in 2..x, 1 / log t ^ 2 ≤ 4 * x / (log x) ^ 2 + x.sqrt / log 2 ^ 2 := by\\n   719    have two_le_sqrt : 2 ≤ x.sqrt := le_sqrt_of_sq_le <| by norm_num [hx]\\n   720    have sqrt_le_x : x.sqrt ≤ x := sqrt_le_left (by linarith) |>.mpr (by bound)\\n   721    rw [← intervalIntegral.integral_add_adjacent_intervals (b := x.sqrt)]\\n   722    · grw [integral_1_div_log_sq_le two_le_sqrt (by linarith),\\n   723        integral_1_div_log_sq_le sqrt_le_x (by linarith)]\\n   724      rw [log_sqrt (by linarith), add_comm, div_pow, ← div_mul, mul_comm, mul_div_assoc]\\n   725      norm_num\\n   726      gcongr <;> linarith\\n   727    all_goals apply intervalIntegrable_one_div_log_sq <;> linarith\\n   728  \\n   729  /-- Somewhat arbitrary bound which we use to estimate the second term. -/\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 368, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1332,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 368–387 of 656):\\n   368        field_simp\\n   369  \\n   370  /-- The integrand is chosen to match the conclusion of `Real.deriv_log_log`. -/\\n   371  @[simp]\\n   372  theorem integral_inv_div_log (ha : 1 < a) (hb : 1 < b) :\\n   373      ∫ t in a..b, t⁻¹ / log t = log (log b) - log (log a) := by\\n   374    rw [← intervalIntegral.integral_congr (fun _ _ ↦ deriv_log_log_apply)]\\n   375    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) ?_\\n   376    · exact differentiableOn_log_log.differentiableAt (Ioi_mem_nhds (by grind [Set.uIcc]))\\n   377    refine (?_ : ContinuousOn _ _).congr (fun _ _ ↦ deriv_log_log_apply) |>.intervalIntegrable\\n   378    fun_prop (disch := grind [log_pos, Set.uIcc])\\n   379  \\n   380  /-- The integrand is chosen to match the conclusion of `Real.deriv_inv_log`. -/\\n   381  @[simp]\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n   384    suffices ∫ t in a..b, deriv (fun t ↦ (log t)⁻¹) t = (log b)⁻¹ - (log a)⁻¹ by\\n   385      simp_rw [deriv_inv_log, neg_div, intervalIntegral.integral_neg] at this\\n   386      linarith\\n   387    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) (ContinuousOn.intervalIntegrable ?_)\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"integral_inv_div_log_sq\", \"intervalIntegral.integral_inv_div_log_sq\"]}",
+   "ok": true,
+   "result_chars": 725,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"integral_inv_div_log_sq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"intervalIntegral.integral_inv_div_log_sq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 380, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1749,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 380–409 of 656):\\n   380  /-- The integrand is chosen to match the conclusion of `Real.deriv_inv_log`. -/\\n   381  @[simp]\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n   384    suffices ∫ t in a..b, deriv (fun t ↦ (log t)⁻¹) t = (log b)⁻¹ - (log a)⁻¹ by\\n   385      simp_rw [deriv_inv_log, neg_div, intervalIntegral.integral_neg] at this\\n   386      linarith\\n   387    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) (ContinuousOn.intervalIntegrable ?_)\\n   388    · exact differentiableOn_inv_log.differentiableAt (Ioi_mem_nhds (by grind [Set.uIcc]))\\n   389    suffices ContinuousOn (fun x ↦ (-x⁻¹) * ((log x)⁻¹) ^ 2) (.uIcc a b) by\\n   390      convert this using 2 with x\\n   391      simp [field]\\n   392    fun_prop (disch := grind [log_pos, Set.uIcc])\\n   393  \\n   394  section RpowCpow\\n   395  \\n   396  open Complex\\n   397  \\n   398  theorem integral_mul_cpow_one_add_sq {t : ℂ} (ht : t ≠ -1) :\\n   399      (∫ x : ℝ in a..b, (x : ℂ) * ((1 : ℂ) + ↑x ^ 2) ^ t) =\\n   400        ((1 : ℂ) + (b : ℂ) ^ 2) ^ (t + 1) / (2 * (t + ↑1)) -\\n   401        ((1 : ℂ) + (a : ℂ) ^ 2) ^ (t + 1) / (2 * (t + ↑1)) := by\\n   402    have : t + 1 ≠ 0 := by contrapose ht; rwa [add_eq_zero_iff_eq_neg] at ht\\n   403    apply integral_eq_sub_of_hasDerivAt\\n   404    · intro x _\\n   405      have f : HasDerivAt (fun y : ℂ => 1 + y ^ 2) (2 * x : ℂ) x := by\\n   406        convert! (hasDerivAt_pow 2 (x : ℂ)).const_add 1\\n   407        simp\\n   408      have g :\\n   409        ∀ {z : ℂ}, 0 < z.re → HasDerivAt (fun z => z ^ (t + 1) / (2 * (t + 1))) (z ^ t / 2) z := by\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_inv_div_log_sq\"}",
+   "ok": true,
+   "result_chars": 349,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem integral_inv_div_log_sq' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:304\\n    theorem integral_inv_div_log_sq_Ioi {c : ℝ} (hc : 1 < c) :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:382\\n    theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\n    ∫ t in a..b, 1 / (t * (log t) ^ 2) = 1 / log a - 1 / log b := sorry"
+}

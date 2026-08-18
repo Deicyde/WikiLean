@@ -1,0 +1,354 @@
+{
+ "task_id": "fresh_022",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:48:26Z",
+ "wall_s": 143.6,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 18,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 23,
+   "mcp__formal__decl_grep": 9,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 148,
+  "tokens_out": 11235,
+  "cost_usd": 0.1208049
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Antitone\"}",
+   "ok": true,
+   "result_chars": 798,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 545 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone'   [Mathlib.Order.Monotone.Defs]\\n- antitoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Antitone.antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.antitone   [Mathlib.Order.Monotone.Defs]\\n- Antitone.strictAnti_of_injective   [Mathlib.Order.Monotone.Defs]\\n- antitone_lam   [Mathlib.Order.Monotone.Defs]\\n- Antitone.imp   [Mathlib.Order.Monotone.Defs]\\n- antitone_app   [Mathlib.Order.Monotone.Defs]\\n- instDecidableAntitoneOfForallForallForallLe   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.sum\"}",
+   "ok": true,
+   "result_chars": 1194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3741 declarations mentioning Finset.sum.\\n- Finset.sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `∑ x ∈ s, f x` is the sum of `f x` as `x` ranges over the elements of the finite set `s`.  When the index type is a `Fintype`, the notation `∑ x, f x`, is a sho\\n- Finset.sum_val   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_multiset_singleton   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_eq_multiset_sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_map_val   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_mk   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_empty'   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.op_sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    Moving to the opposite additive commutative monoid commutes with summing.\\n- Finset.sum_empty   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_of_isEmpty   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_range_zero   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.unop_sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫': <input>:1:1: unexpected end of input; expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeasureTheory.integral\"}",
+   "ok": true,
+   "result_chars": 1195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1420 declarations mentioning MeasureTheory.integral.\\n- MeasureTheory.integral   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n    The Bochner integral\\n- MeasureTheory.integral_coe_le_of_lintegral_coe_le   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.abs_integral_le_integral_abs   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integral_dirac   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integral_of_isEmpty   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.norm_integral_le_lintegral_norm   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integrable_of_integral_eq_one   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.norm_integral_le_integral_norm   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integral_dirac'   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integral_zero_measure   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasurableEmbedding.integral_map   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\\n- MeasureTheory.integral_of_not_completeSpace   [Mathlib.MeasureTheory.Integral.Bochner.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"partial sums series\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'partial sums series': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?f : ℕ → ℝ) → Antitone f\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?f : ℕ → ℝ) → Antitone f': type expected, got\\n  (?f : ℕ → ℝ)\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.range\"}",
+   "ok": true,
+   "result_chars": 869,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 817 declarations mentioning Finset.range.\\n- Finset.range   [Mathlib.Data.Finset.Range]\\n    `range n` is the set of natural numbers less than `n`.\\n- Finset.range_val   [Mathlib.Data.Finset.Range]\\n- Finset.range_mono   [Mathlib.Data.Finset.Range]\\n- Finset.strictMono_range   [Mathlib.Data.Finset.Range]\\n- Multiset.toFinset_range   [Mathlib.Data.Finset.Range]\\n- Finset.Aesop.range_nonempty   [Mathlib.Data.Finset.Range]\\n    **Alias** of the reverse direction of `Finset.nonempty_range_iff`.\\n- Finset.nonempty_range_iff   [Mathlib.Data.Finset.Range]\\n- Finset.range_nontrivial   [Mathlib.Data.Finset.Range]\\n- Finset.range_zero   [Mathlib.Data.Finset.Range]\\n- Finset.notMem_range_self   [Mathlib.Data.Finset.Range]\\n- Finset.coe_range   [Mathlib.Data.Finset.Range]\\n- Finset.nonempty_range_add_one   [Mathlib.Data.Finset.Range]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*antitone.*integral\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*antitone.*integral' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*sum.*integral\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1553,
+   "result_head": "[{\"type\": \"text\", \"text\": \"34 match(es) for '(theorem|lemma).*sum.*integral' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:911\\n    theorem integrableOn_iUnion_of_summable_integral_norm {f : X → E} {s : ι → Set X}\\n- Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean:67\\n    lemma Integrable.summable_integral (hf : Integrable f (Measure.sum μ)) :\\n- Mathlib/MeasureTheory/Integral/CircleIntegral.lean:679\\n    theorem sum_cauchyPowerSeries_eq_integral {f : ℂ → E} {c : ℂ} {R : ℝ} {w : ℂ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean:80\\n    theorem sum_trapezoidal_integral_adjacent_intervals {f : ℝ → ℝ} {N : ℕ} {a h : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1099\\n    theorem sum_integral_adjacent_intervals_Ico {a : ℕ → ℝ} {m n : ℕ} (hmn : m ≤ n)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1114\\n    theorem sum_integral_adjacent_intervals {a : ℕ → ℝ} {n : ℕ}\\n- Mathlib/MeasureTheory/Integral/DominatedConvergence.lean:96\\n    lemma hasSum_integral_of_summable_integral_norm {ι} [Countable ι] {F : ι → α → E}\\n- Mathlib/MeasureTheory/Integral/DominatedConvergence.lean:111\\n    lemma integral_tsum_of_summable_integral_norm {ι} [Countable ι] {F : ι → α → E}\\n- Mathlib/Geometry/Manifold/IntegralCurve/ExistUnique.lean:29\\n    For the existence and uniqueness theorems, we assume that the image of the integral curve lies in\\n- Mathlib/NumberTheory/AbelSummation.lean:129\\n    theorem _root_.sum_mul_eq_sub_sub_integral_mul (ha : 0 ≤ a) (hab : a ≤ b)\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.sum_le\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finset.sum_le': unknown identifier 'Finset.sum_le'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 1114, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1121,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 1114–1128 of 1467):\\n  1114  theorem sum_integral_adjacent_intervals {a : ℕ → ℝ} {n : ℕ}\\n  1115      (hint : ∀ k < n, IntervalIntegrable f μ (a k) (a <| k + 1)) :\\n  1116      ∑ k ∈ Finset.range n, ∫ x in a k..a <| k + 1, f x ∂μ = ∫ x in (a 0)..(a n), f x ∂μ := by\\n  1117    rw [← Nat.Ico_zero_eq_range]\\n  1118    exact sum_integral_adjacent_intervals_Ico zero_le fun k hk => hint k hk.2\\n  1119  \\n  1120  theorem integral_interval_sub_left (hab : IntervalIntegrable f μ a b)\\n  1121      (hac : IntervalIntegrable f μ a c) :\\n  1122      ((∫ x in a..b, f x ∂μ) - ∫ x in a..c, f x ∂μ) = ∫ x in c..b, f x ∂μ :=\\n  1123    sub_eq_of_eq_add' <| Eq.symm <| integral_add_adjacent_intervals hac (hac.symm.trans hab)\\n  1124  \\n  1125  theorem integral_interval_add_interval_comm (hab : IntervalIntegrable f μ a b)\\n  1126      (hcd : IntervalIntegrable f μ c d) (hac : IntervalIntegrable f μ a c) :\\n  1127      ((∫ x in a..b, f x ∂μ) + ∫ x in c..d, f x ∂μ) =\\n  1128        (∫ x in a..d, f x ∂μ) + ∫ x in c..b, f x ∂μ := by\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a ≤ ?b → BddAbove\"}",
+   "ok": true,
+   "result_chars": 119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a ≤ ?b → BddAbove': type expected, got\\n  (BddAbove : Set ?m.7 → Prop)\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*bounded.*sum\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*bounded.*sum' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable\"}",
+   "ok": true,
+   "result_chars": 1165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 671 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the value.\\n- summable_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.mono_filter   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- summable_of_ne_finset_zero   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- summable_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*antitone\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2411,
+   "result_head": "[{\"type\": \"text\", \"text\": \"326 match(es) for '(theorem|lemma).*antitone' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:148\\n    theorem antitone_mul_left [ExistsAddOfLE R] [PosMulMono R]\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:153\\n    theorem antitone_mul_right [ExistsAddOfLE R] [MulPosMono R]\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:184\\n    theorem Monotone.mul_antitone [ExistsAddOfLE R] [PosMulMono R] [MulPosMono R]\\n- Mathlib/Data/EReal/Inv.lean:418\\n    lemma antitone_div_right_of_nonpos (h : b ≤ 0) : Antitone fun a ↦ a / b := by\\n- Mathlib/Combinatorics/Additive/FreimanHom.lean:329\\n    lemma isMulFreimanHom_antitone : Antitone (IsMulFreimanHom · A B f) :=\\n- Mathlib/Algebra/Order/Sub/Defs.lean:121\\n    theorem antitone_const_tsub : Antitone fun x => c - x := fun _ _ hxy => tsub_le_tsub rfl.le hxy\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:299\\n    theorem tendsto_setIntegral_of_antitone\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:653\\n    lemma integral_antitoneOn_of_integrand_ae {β : Type*} [Preorder β] {f : α → β → E}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:805\\n    lemma integral_tendsto_of_tendsto_of_antitone {μ : Measure α} {f : ℕ → α → ℝ} {F : α → ℝ}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:878\\n    lemma tendsto_of_integral_tendsto_of_antitone {μ : Measure α} {f : ℕ → α → ℝ} {F : α → ℝ}\\n- Mathlib/Algebra/Order/Field/Basic.lean:404\\n    theorem sub_inv_antitoneOn_Ioi :\\n- Mathlib/Algebra/Order/Field/Basic.lean:409\\n    theorem sub_inv_antitoneOn_Iio :\\n- Mathlib/Algebra/Order/Field/Basic.lean:414\\n    theorem sub_inv_antitoneOn_Icc_right (ha : c < a) :\\n- Mathlib/Algebra/Order/Field/Basic.lean:420\\n    theorem sub_inv_antitoneOn_Icc_left (ha : b < c) :\\n- Mathlib/Algebra/Order/Field/Basic.lean:426\\n    theorem inv_antitoneOn_Ioi :\\n- Mathlib/Algebra/Order/Field/Basic.lean:431\\n    theorem inv_antitoneOn_Iio :\\n- Mathlib/Algebra/Order/Field/Basic.lean:436\\n    theorem inv_antitoneOn_Icc_right (ha : 0 < a) :\\n- Mathlib/Algebra/Order/Field/Basic.lean:441\\n    theorem inv_antitoneOn_Icc_left (hb : b < 0) :\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:46\\n    lemma antitoneOn_extremalNumber_div_choose_two (H : SimpleGraph W) :\\n- Mathlib/Algebra/Order/GroupWithZero/Basic.lean:1235\\n    lemma antitoneOn_inv_pos : AntitoneOn (fun x : G₀ ↦ x⁻¹) {r | 0 < r} :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IntervalIntegrable\"}",
+   "ok": true,
+   "result_chars": 1655,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 272 declarations mentioning IntervalIntegrable.\\n- IntervalIntegrable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    A function `f` is called *interval integrable* with respect to a measure `μ` on an unordered interval `a..b` if it is integrable on both intervals `(a, b]` and \\n- IntervalIntegrable.refl   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.symm   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.symm_iff   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- MeasureTheory.Integrable.intervalIntegrable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    If a function is integrable with respect to a given measure `μ` then it is interval integrable with respect to `μ` on `uIcc a b`.\\n- IntervalIntegrable.aestronglyMeasurable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.aestronglyMeasurable'   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.aestronglyMeasurable_restrict_uIoc   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegrable_const   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- MeasureTheory.IntegrableOn.intervalIntegrable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.trans   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- IntervalIntegrable.def'   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    If a function is interval integrable with respect to a given measure `μ` on `a..b` then it is integrable on `uIoc a b` with respect to `μ`.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum\"}",
+   "ok": true,
+   "result_chars": 1354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 825 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    If the summation filter is the trivial filter `⊥`, then the topological sum is equal to the finite sum (which is taken to be 1 if the support of `f` is infinite\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.tsum_eq   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_fintype   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_comp_neg   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tendsto_nhds\"}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning tendsto_nhds.\\n- tendsto_nhds   [Mathlib.Topology.Neighborhoods]\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2418,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 1–50 of 583):\\n     1  /-\\n     2  Copyright (c) 2014 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jeremy Avigad, Mario Carneiro, Yaël Dillies\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Operations\\n     9  public import Mathlib.Logic.Function.Iterate\\n    10  public import Mathlib.Order.Basic\\n    11  public import Mathlib.Tactic.Coe\\n    12  \\n    13  /-!\\n    14  # Monotonicity\\n    15  \\n    16  This file defines (strictly) monotone/antitone functions. Contrary to standard mathematical usage,\\n    17  \\\"monotone\\\"/\\\"mono\\\" here means \\\"increasing\\\", not \\\"increasing or decreasing\\\". We use \\\"antitone\\\"/\\\"anti\\\"\\n    18  to mean \\\"decreasing\\\".\\n    19  \\n    20  ## Definitions\\n    21  \\n    22  * `Monotone f`: A function `f` between two preorders is monotone if `a ≤ b` implies `f a ≤ f b`.\\n    23  * `Antitone f`: A function `f` between two preorders is antitone if `a ≤ b` implies `f b ≤ f a`.\\n    24  * `MonotoneOn f s`: Same as `Monotone f`, but for all `a, b ∈ s`.\\n    25  * `AntitoneOn f s`: Same as `Antitone f`, but for all `a, b ∈ s`.\\n    26  * `StrictMono f` : A function `f` between two preorders is strictly monotone if `a < b` implies\\n    27    `f a < f b`.\\n    28  * `StrictAnti f` : A function `f` between two preorders is strictly antitone if `a < b` implies\\n    29    `f b < f a`.\\n    30  * `StrictMonoOn f s`: Same as `StrictMono f`, but for all `a, b ∈ s`.\\n    31  * `StrictAntiOn f s`: Same as `StrictAnti f`, but for all `a, b ∈ s`.\\n    32  \\n    33  ## Implementation notes\\n    34  \\n    35  Some of these definitions used to only require `LE α` or `LT α`. The advantage of this is\\n    36  unclear and it led to slight elaboration issues. Now, everything requires `Preorder α` and seems to\\n    37  work fine. Related Zulip discussion:\\n    38  https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/Order.20diamond/near/254353352.\\n    39  \\n    40  ## Tags\\n    41  \\n    42  monotone, strictly monotone, antitone, strictly antitone, increasing, strictly increasing,\\n    43  decreasing, strictly decreasing\\n    44  -/\\n    45  \\n    46  @[expose] public section\\n    47  \\n    48  assert_not_exists Nat.instLinearOrder Int.instLinearOrder\\n    49  \\n    50  \\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*ray\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1300,
+   "result_head": "[{\"type\": \"text\", \"text\": \"31 match(es) for '(theorem|lemma).*ray' (via ripgrep):\\n- Mathlib/LinearAlgebra/Ray.lean:243\\n    theorem Module.Ray.ind {C : Module.Ray R M → Prop} (h : ∀ (v) (hv : v ≠ 0), C (rayOfNeZero R v hv))\\n- Mathlib/LinearAlgebra/Ray.lean:254\\n    theorem ray_eq_iff {v₁ v₂ : M} (hv₁ : v₁ ≠ 0) (hv₂ : v₂ ≠ 0) :\\n- Mathlib/LinearAlgebra/Ray.lean:260\\n    theorem ray_pos_smul {v : M} (h : v ≠ 0) {r : R} (hr : 0 < r) (hrv : r • v ≠ 0) :\\n- Mathlib/LinearAlgebra/Ray.lean:312\\n    theorem smul_rayOfNeZero (g : G) (v : M) (hv) :\\n- Mathlib/LinearAlgebra/Ray.lean:332\\n    theorem someRayVector_ray (x : Module.Ray R M) : (⟦x.someRayVector⟧ : Module.Ray R M) = x :=\\n- Mathlib/LinearAlgebra/Ray.lean:346\\n    theorem someVector_ray (x : Module.Ray R M) : rayOfNeZero R _ x.someVector_ne_zero = x :=\\n- Mathlib/LinearAlgebra/Ray.lean:412\\n    theorem neg_rayOfNeZero (v : M) (h : v ≠ 0) :\\n- Mathlib/LinearAlgebra/Matrix/Determinant/Bird.lean:114\\n    theorem iter_zero (n : ℕ) (A : Array R) (F : ℕ → ℕ → R) (i j : ℕ) :\\n- Mathlib/LinearAlgebra/Matrix/Determinant/Bird.lean:117\\n    theorem iter_succ (n : ℕ) (A : Array R) (t : ℕ) (F : ℕ → ℕ → R) (i j : ℕ) :\\n- Mathlib/LinearAlgebra/Matrix/Determinant/Bird.lean:122\\n    theorem birdDet_zero (A : Array R) : birdDet 0 A = 1 := rfl\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.Ici\"}",
+   "ok": true,
+   "result_chars": 847,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 847 declarations mentioning Set.Ici.\\n- Set.Ici   [Mathlib.Order.Interval.Set.Defs]\\n    `Ici a` is the left-closed right-infinite interval $[a, ∞)$.\\n- Set.Ici_def   [Mathlib.Order.Interval.Set.Defs]\\n- Set.mem_Ici   [Mathlib.Order.Interval.Set.Defs]\\n- Nat.preimage_Ici   [Mathlib.Algebra.Order.Floor.Semiring]\\n- Set.nonempty_Ici   [Mathlib.Order.Interval.Set.Basic]\\n- Set.Ici_False   [Mathlib.Order.Interval.Set.Basic]\\n- Set.nonempty_Ici_subtype   [Mathlib.Order.Interval.Set.Basic]\\n    An interval `Ici a` is nonempty.\\n- Set.Ici_injective   [Mathlib.Order.Interval.Set.Basic]\\n- Set.self_mem_Ici   [Mathlib.Order.Interval.Set.Basic]\\n- Set.Ici_True   [Mathlib.Order.Interval.Set.Basic]\\n- Set.Ioi_subset_Ici_self   [Mathlib.Order.Interval.Set.Basic]\\n- IsBot.Ici_eq   [Mathlib.Order.Interval.Set.Basic]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype.sum\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype.sum': unknown identifier 'Fintype.sum'\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*integral.*test\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*integral.*test' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"series integral comparison\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'series integral comparison': Unknown identifier `series`\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3718,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 1–80 of 1467):\\n     1  /-\\n     2  Copyright (c) 2020 Yury Kudryashov. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yury Kudryashov, Patrick Massot, Sébastien Gouëzel\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap\\n     9  public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic\\n    10  public import Mathlib.MeasureTheory.Topology\\n    11  import Mathlib.Algebra.Order.Interval.Set.Group\\n    12  \\n    13  /-!\\n    14  # Integral over an interval\\n    15  \\n    16  In this file we define `∫ x in a..b, f x ∂μ` to be `∫ x in Ioc a b, f x ∂μ` if `a ≤ b` and\\n    17  `-∫ x in Ioc b a, f x ∂μ` if `b ≤ a`.\\n    18  \\n    19  ## Implementation notes\\n    20  \\n    21  ### Avoiding `if`, `min`, and `max`\\n    22  \\n    23  In order to avoid `if`s in the definition, we define `IntervalIntegrable f μ a b` as\\n    24  `IntegrableOn f (Ioc a b) μ ∧ IntegrableOn f (Ioc b a) μ`. For any `a`, `b` one of these\\n    25  intervals is empty and the other coincides with `Set.uIoc a b = Set.Ioc (min a b) (max a b)`.\\n    26  \\n    27  Similarly, we define `∫ x in a..b, f x ∂μ` to be `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`.\\n    28  Again, for any `a`, `b` one of these integrals is zero, and the other gives the expected result.\\n    29  \\n    30  This way some properties can be translated from integrals over sets without dealing with\\n    31  the cases `a ≤ b` and `b ≤ a` separately.\\n    32  \\n    33  ### Choice of the interval\\n    34  \\n    35  We use integral over `Set.uIoc a b = Set.Ioc (min a b) (max a b)` instead of one of the other\\n    36  three possible intervals with the same endpoints for two reasons:\\n    37  \\n    38  * this way `∫ x in a..b, f x ∂μ + ∫ x in b..c, f x ∂μ = ∫ x in a..c, f x ∂μ` holds whenever\\n    39    `f` is integrable on each interval; in particular, it works even if the measure `μ` has an atom\\n    40    at `b`; this rules out `Set.Ioo` and `Set.Icc` intervals;\\n    41  * with this definition for a probability measure `μ`, the integral `∫ x in a..b, 1 ∂μ` equals\\n    42    the difference $F_μ(b)-F_μ(a)$, where $F_μ(a)=μ(-∞, a]$ is the\\n    43    [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function)\\n    44    of `μ`.\\n    45  \\n    46  ## Tags\\n    47  \\n    48  integral\\n    49  -/\\n    50  \\n    51  @[expose] public section\\n    52  \\n    53  \\n    54  noncomputable section\\n    55  \\n    56  open MeasureTheory Set Filter Function TopologicalSpace\\n    57  \\n    58  open scoped Topology Filter ENNReal Interval NNReal\\n    59  \\n    60  variable {ι 𝕜 ε ε' E F A : Type*} [NormedAddCommGroup E]\\n    61    [TopologicalSpace ε] [ENormedAddMonoid ε] [TopologicalSpace ε'] [ENormedAddMonoid ε']\\n    62  \\n    63  /-!\\n    64  ### Integrability on an interval\\n    65  -/\\n    66  \\n    67  \\n    68  /-- A function `f` is called *interval integrable* with respect to a measure `μ` on an unordered\\n    69  interval `a..b` if it is integrable on both intervals `(a, b]` and `(b, a]`. One of these\\n    70  intervals is always empty, so this property is equivalent to `f` being integrable on\\n    71  `(min a b, max a b]`. -/\\n    72  def IntervalIntegrable (f : ℝ → ε) (μ : Measure ℝ) (a b : ℝ) : Prop :=\\n    73    IntegrableOn f (Ioc a b) μ ∧ IntegrableOn f (Ioc b a) μ\\n    74  \\n    75  /-!\\n    76  ## Basic iff's for `IntervalIntegrable`\\n    77  -/\\n    78  section\\n    79  \\n    80  variable [PseudoMetrizableSpace ε] {f : ℝ → ε} {a b : ℝ} {μ : Measure ℝ}\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"volume\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'volume': unknown identifier 'volume'\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AntitoneOn\"}",
+   "ok": true,
+   "result_chars": 884,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 264 declarations mentioning AntitoneOn.\\n- AntitoneOn   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f b ≤ f a`.\\n- antitoneOn_const   [Mathlib.Order.Monotone.Defs]\\n- antitoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Antitone.antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- StrictAntiOn.antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- Antitone.comp_antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- Antitone.comp_monotoneOn   [Mathlib.Order.Monotone.Defs]\\n- Monotone.comp_antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- AntitoneOn.comp   [Mathlib.Order.Monotone.Defs]\\n- AntitoneOn.comp_MonotoneOn   [Mathlib.Order.Monotone.Defs]\\n- MonotoneOn.comp_AntitoneOn   [Mathlib.Order.Monotone.Defs]\\n- instDecidableAntitoneOnOfForallForallMemSetForallForallForallLe   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.volume\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.volume': unknown identifier 'Real.volume'\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*partial.*sum\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 862,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for '(theorem|lemma).*partial.*sum' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/EisensteinSeries/E2/Summable.lean:56\\n    private lemma G2_partial_sum_eq (N : ℕ) : ∑ m ∈ Icc (-N : ℤ) N, e2Summand m z =\\n- Mathlib/Combinatorics/Enumerative/Composition.lean:916\\n    theorem blocks_partial_sum {i : ℕ} (h : i < c.boundaries.card) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:561\\n    theorem dist_partial_sum_le_of_le_geometric (hf : ∀ n, ‖f n‖ ≤ C * r ^ n) (n : ℕ) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:583\\n    theorem dist_partial_sum (u : ℕ → α) (n : ℕ) :\\n- Mathlib/Analysis/SpecificLimits/Normed.lean:588\\n    theorem dist_partial_sum' (u : ℕ → α) (n : ℕ) :\\n- Mathlib/Analysis/PSeries.lean:38\\n    into a series of lemmas with explicit estimates of partial sums of each series in terms of the\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecificLimits/Normed.lean\", \"line\": 561, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1121,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecificLimits/Normed.lean  (lines 561–575 of 976):\\n   561  theorem dist_partial_sum_le_of_le_geometric (hf : ∀ n, ‖f n‖ ≤ C * r ^ n) (n : ℕ) :\\n   562      dist (∑ i ∈ range n, f i) (∑ i ∈ range (n + 1), f i) ≤ C * r ^ n := by\\n   563    rw [sum_range_succ, dist_eq_norm, ← norm_neg, neg_sub, add_sub_cancel_left]\\n   564    exact hf n\\n   565  \\n   566  /-- If `‖f n‖ ≤ C * r ^ n` for all `n : ℕ` and some `r < 1`, then the partial sums of `f` form a\\n   567  Cauchy sequence. This lemma does not assume `0 ≤ r` or `0 ≤ C`. -/\\n   568  theorem cauchySeq_finset_of_geometric_bound (hr : r < 1) (hf : ∀ n, ‖f n‖ ≤ C * r ^ n) :\\n   569      CauchySeq fun s : Finset ℕ ↦ ∑ x ∈ s, f x :=\\n   570    cauchySeq_finset_of_norm_bounded\\n   571      (aux_hasSum_of_le_geometric hr (dist_partial_sum_le_of_le_geometric hf)).summable hf\\n   572  \\n   573  /-- If `‖f n‖ ≤ C * r ^ n` for all `n : ℕ` and some `r < 1`, then the partial sums of `f` are within\\n   574  distance `C * r ^ n / (1 - r)` of the sum of the series. This lemma does not assume `0 ≤ r` or\\n   575  `0 ≤ C`. -/\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"volumeOn\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 79,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'volumeOn' under Mathlib/.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 100, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1915,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 100–129 of 1467):\\n   100    rw [uIoc, ← restrict_Ioo_eq_restrict_Ioc]\\n   101    apply ae_restrict_of_forall_mem measurableSet_Ioo h\\n   102  \\n   103  theorem IntervalIntegrable.congr_ae {g : ℝ → ε} (hf : IntervalIntegrable f μ a b)\\n   104      (h : f =ᵐ[μ.restrict (Ι a b)] g) :\\n   105      IntervalIntegrable g μ a b := by\\n   106    rwa [← intervalIntegrable_congr_ae h]\\n   107  \\n   108  theorem IntervalIntegrable.congr_uIoo [NullSingletonClass μ] {g : ℝ → ε}\\n   109      (hf : IntervalIntegrable f μ a b) (h : EqOn f g (uIoo a b)) : IntervalIntegrable g μ a b :=\\n   110    intervalIntegrable_congr_uIoo h |>.mp hf\\n   111  \\n   112  theorem intervalIntegrable_congr {g : ℝ → ε} (h : EqOn f g (Ι a b)) :\\n   113      IntervalIntegrable f μ a b ↔ IntervalIntegrable g μ a b :=\\n   114    intervalIntegrable_congr_ae <| (ae_restrict_mem measurableSet_uIoc).mono h\\n   115  \\n   116  alias ⟨IntervalIntegrable.congr, _⟩ := intervalIntegrable_congr\\n   117  \\n   118  /-- Interval integrability is invariant when functions change along discrete sets. -/\\n   119  theorem IntervalIntegrable.congr_codiscreteWithin {g : ℝ → ε} [NullSingletonClass μ]\\n   120      (h : f =ᶠ[codiscreteWithin (Ι a b)] g) (hf : IntervalIntegrable f μ a b) :\\n   121      IntervalIntegrable g μ a b :=\\n   122    hf.congr_ae (ae_restrict_le_codiscreteWithin measurableSet_Ioc h)\\n   123  \\n   124  /-- Interval integrability is invariant when functions change along discrete sets. -/\\n   125  theorem intervalIntegrable_congr_codiscreteWithin {g : ℝ → ε} [NullSingletonClass μ]\\n   126      (h : f =ᶠ[codiscreteWithin (Ι a b)] g) :\\n   127      IntervalIntegrable f μ a b ↔ IntervalIntegrable g μ a b :=\\n   128    ⟨(IntervalIntegrable.congr_codiscreteWithin h ·),\\n   129      (IntervalIntegrable.congr_codiscreteWithin h.symm ·)⟩\\n\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def integral_Icc\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def integral_Icc' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(∫ ?x in ?s, ?f x ∂?μ) ≤ ?y\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(∫ ?x in ?s, ?f x ∂?μ) ≤ ?y': <input>:1:3: expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a ≤ ∫\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a ≤ ∫': <input>:1:6: unexpected end of input; expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 150, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1320,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 150–169 of 1467):\\n   150  theorem intervalIntegrable_iff_integrableOn_Ioo_of_le [NullSingletonClass μ]\\n   151      (hab : a ≤ b) (ha : ‖f a‖ₑ ≠ ∞ := by finiteness) (hb : ‖f b‖ₑ ≠ ∞ := by finiteness) :\\n   152      IntervalIntegrable f μ a b ↔ IntegrableOn f (Ioo a b) μ := by\\n   153    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hab ha,\\n   154      integrableOn_Icc_iff_integrableOn_Ioo ha hb]\\n   155  \\n   156  omit [PseudoMetrizableSpace ε] in\\n   157  /-- If a function is integrable with respect to a given measure `μ` then it is interval integrable\\n   158    with respect to `μ` on `uIcc a b`. -/\\n   159  theorem MeasureTheory.Integrable.intervalIntegrable (hf : Integrable f μ) :\\n   160      IntervalIntegrable f μ a b :=\\n   161    ⟨hf.integrableOn, hf.integrableOn⟩\\n   162  \\n   163  omit [PseudoMetrizableSpace ε] in\\n   164  theorem MeasureTheory.IntegrableOn.intervalIntegrable (hf : IntegrableOn f [[a, b]] μ) :\\n   165      IntervalIntegrable f μ a b :=\\n   166    ⟨hf.mono_set (Ioc_subset_Icc_self.trans Icc_subset_uIcc),\\n   167      hf.mono_set (Ioc_subset_Icc_self.trans Icc_subset_uIcc')⟩\\n   168  \\n   169  theorem intervalIntegrable_const_iff {c : ε} (hc : ‖c‖ₑ ≠ ⊤ := by finiteness) :\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem partial_sums_bounded_by_integral_ray {f : ℝ → ℝ} (μ : Measure ℝ)\n    (h_nonneg : ∀ x, 0 ≤ x → 0 ≤ f x)\n    (h_antitone : AntitoneOn f (Set.Ici 0))\n    (h_integral_finite : HasFiniteIntegral (fun x ↦ f x) (μ.restrict (Set.Ici 0)))\n    : ∀ n : ℕ, ∑ k in Finset.range n, f k ≤ ∫ x in Set.Ici 0, f x ∂μ := sorry"
+}

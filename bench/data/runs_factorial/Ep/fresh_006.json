@@ -1,0 +1,170 @@
+{
+ "task_id": "fresh_006",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:31:02Z",
+ "wall_s": 55.3,
+ "transcript_stats": {
+  "turns": 16,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 5,
+   "mcp__formal__decl_grep": 4,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 122,
+  "tokens_out": 5042,
+  "cost_usd": 0.05599815
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f → Monotone fun x => ?a * ?f x\"}",
+   "ok": true,
+   "result_chars": 348,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 44 declarations mentioning HMul.hMul and Monotone.\\n- Monotone.const_mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n- Monotone.mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of two monotone functions is monotone.\\n- Monotone.const_mul   [Mathlib.Algebra.Order.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f → Monotone ((?a : ?R) • ?f)\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Monotone ?f → Monotone ((?a : ?R) • ?f)'.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) `?Monotone\\\\.const_mul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 529,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma) `?Monotone\\\\\\\\.const_mul' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:158\\n    theorem Monotone.const_mul_of_nonpos [ExistsAddOfLE R] [PosMulMono R]\\n- Mathlib/Algebra/Order/GroupWithZero/Basic.lean:492\\n    lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1165\\n    theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monotone fun x ↦ a * f x :=\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 492, \"n\": 5}",
+   "ok": true,
+   "result_chars": 454,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 492–496 of 1480):\\n   492  lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   493      Monotone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp hf\\n   494  \\n   495  lemma Antitone.mul_const [MulPosMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   496      Antitone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp_antitone hf\\n\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PosMulMono\"}",
+   "ok": true,
+   "result_chars": 1224,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 187 declarations mentioning PosMulMono.\\n- PosMulMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    Typeclass for monotonicity of multiplication by nonnegative elements on the left, namely `a₁ ≤ a₂ → b * a₁ ≤ b * a₂` if `0 ≤ b`.  You should usually not use thi\\n- MulLeftMono.toPosMulMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulMono.toMulPosMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- posMulMono_iff_mulPosMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulMono.toPosMulReflectLT   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulReflectLT.toPosMulMono   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- posMulMono_iff_posMulReflectLT   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- mul_le_mul_of_nonneg_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulMono.mk   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- PosMulMono.mul_le_mul_of_nonneg_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    Do not use this. Use `_root_.mul_le_mul_of_nonneg_left` instead.\\n- posMulMono_iff   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n- mul_le_mul_iff_of_pos_left   [Mathlib.Algebra.Order.GroupWithZero.Defs]\\n    **Alias** of `mul_le_mul_iff_right₀`.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2802,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean  (lines 1–50 of 472):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Damiano Testa, Yuyang Zhao\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.Monoid.Unbundled.Defs\\n     9  public import Mathlib.Tactic.MkIffOfInductiveProp\\n    10  public import Mathlib.Util.Notation3\\n    11  \\n    12  /-!\\n    13  # (Strict) monotonicity of multiplication by nonnegative (positive) elements\\n    14  \\n    15  This file defines eight typeclasses expressing monotonicity (strict monotonicity)\\n    16  of multiplication on the left or right by nonnegative (positive) elements in a preorder.\\n    17  \\n    18  For left multiplication (`a ↦ b * a`) we define the following typeclasses:\\n    19  * `PosMulMono`: If `b ≥ 0`, then `a₁ ≤ a₂ → b * a₁ ≤ b * a₂`.\\n    20  * `PosMulStrictMono`: If `b > 0`, then `a₁ < a₂ → b * a₁ < b * a₂`.\\n    21  * `PosMulReflectLT`: If `b ≥ 0`, then `b * a₁ < b * a₂ → a₁ < a₂`.\\n    22  * `PosMulReflectLE`: If `b > 0`, then `b * a₁ ≤ b * a₂ → a₁ ≤ a₂`.\\n    23  \\n    24  For right multiplication (`a ↦ a * b`) we define the following typeclasses:\\n    25  * `MulPosMono`: If `b ≥ 0`, then `a₁ ≤ a₂ → a₁ * b ≤ a₂ * b`.\\n    26  * `MulPosStrictMono`: If `b > 0`, then `a₁ < a₂ → a₁ * b < a₂ * b`.\\n    27  * `MulPosReflectLT`: If `b ≥ 0`, then `a₁ * b < a₂ * b → a₁ < a₂`.\\n    28  * `MulPosReflectLE`: If `b > 0`, then `a₁ * b ≤ a₂ * b → a₁ ≤ a₂`.\\n    29  \\n    30  We then provide statements and instances about these typeclasses not requiring `MulZeroClass`\\n    31  or higher on the underlying type – those that do can be found in\\n    32  `Mathlib/Algebra/Order/GroupWithZero/Unbundled/Basic.lean`.\\n    33  \\n    34  Less granular typeclasses like `IsOrderedAddMonoid` and `IsOrderedRing` should be enough for\\n    35  most purposes, and the system is set up so that they imply the correct granular typeclasses here.\\n    36  \\n    37  ## Implications\\n    38  \\n    39  As the underlying type `α` gets more structured, some of the above typeclasses become equivalent.\\n    40  The commonly used implications are:\\n    41  * When `α` is a partial order (in `Mathlib/Algebra/Order/GroupWithZero/Unbundled/Basic.lean`):\\n    42    * `PosMulStrictMono.toPosMulMono`\\n    43    * `MulPosStrictMono.toMulPosMono`\\n    44    * `PosMulReflectLE.toPosMulReflectLT`\\n    45    * `MulPosReflectLE.toMulPosReflectLT`\\n    46  * When `α` is a linear order:\\n    47    * `PosMulStrictMono.toPosMulReflectLE`\\n    48    * `MulPosStrictMono.toMulPosReflectLE`\\n    49  * When multiplication on `α` is commutative:\\n    50    * `posMulMono_iff_mulPosMono`\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^class PosMulMono\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^class PosMulMono' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class PosMulMono\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class PosMulMono' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Defs.lean:99\\n    @[mk_iff] class PosMulMono : Prop where\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean\", \"line\": 99, \"n\": 10}",
+   "ok": true,
+   "result_chars": 709,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean  (lines 99–108 of 472):\\n    99  @[mk_iff] class PosMulMono : Prop where\\n   100    /-- Do not use this. Use `_root_.mul_le_mul_of_nonneg_left` instead. -/\\n   101    protected mul_le_mul_of_nonneg_left ⦃a : α⦄ (ha : 0 ≤ a) ⦃b c : α⦄ (hbc : b ≤ c) : a * b ≤ a * c\\n   102  \\n   103  /-- Typeclass for strict monotonicity of multiplication by positive elements on the left,\\n   104  namely `a₁ < a₂ → b * a₁ < b * a₂` if `0 < b`.\\n   105  \\n   106  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n   107  `IsStrictOrderedRing`. -/\\n   108  @[mk_iff] class PosMulStrictMono : Prop where\\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 480, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1210,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 480–499 of 1480):\\n   480  \\n   481  variable [Preorder α] {f g : α → M₀}\\n   482  \\n   483  lemma monotone_mul_left_of_nonneg [PosMulMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ a * x :=\\n   484    fun _ _ h ↦ mul_le_mul_of_nonneg_left h ha\\n   485  \\n   486  lemma monotone_mul_right_of_nonneg [MulPosMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ x * a :=\\n   487    fun _ _ h ↦ mul_le_mul_of_nonneg_right h ha\\n   488  \\n   489  lemma Monotone.mul_const [MulPosMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   490      Monotone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp hf\\n   491  \\n   492  lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   493      Monotone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp hf\\n   494  \\n   495  lemma Antitone.mul_const [MulPosMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   496      Antitone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp_antitone hf\\n   497  \\n   498  lemma Antitone.const_mul [PosMulMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   499      Antitone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp_antitone hf\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean\", \"line\": 90, \"n\": 15}",
+   "ok": true,
+   "result_chars": 898,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Defs.lean  (lines 90–104 of 472):\\n    90  section Abbreviations\\n    91  \\n    92  variable [Mul α] [Zero α] [Preorder α]\\n    93  \\n    94  /-- Typeclass for monotonicity of multiplication by nonnegative elements on the left,\\n    95  namely `a₁ ≤ a₂ → b * a₁ ≤ b * a₂` if `0 ≤ b`.\\n    96  \\n    97  You should usually not use this very granular typeclass directly, but rather a typeclass like\\n    98  `IsOrderedRing`. -/\\n    99  @[mk_iff] class PosMulMono : Prop where\\n   100    /-- Do not use this. Use `_root_.mul_le_mul_of_nonneg_left` instead. -/\\n   101    protected mul_le_mul_of_nonneg_left ⦃a : α⦄ (ha : 0 ≤ a) ⦃b c : α⦄ (hbc : b ≤ c) : a * b ≤ a * c\\n   102  \\n   103  /-- Typeclass for strict monotonicity of multiplication by positive elements on the left,\\n   104  namely `a₁ < a₂ → b * a₁ < b * a₂` if `0 < b`.\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"def Monotone\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'def Monotone': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f\"}",
+   "ok": true,
+   "result_chars": 705,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1307 declarations mentioning Monotone.\\n- monotone_id   [Mathlib.Order.Monotone.Defs]\\n- monotone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.monotone'   [Mathlib.Order.Monotone.Defs]\\n- Function.const_mono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.mono_coe   [Mathlib.Order.Monotone.Defs]\\n- monotone_fst   [Mathlib.Order.Monotone.Defs]\\n- monotone_snd   [Mathlib.Order.Monotone.Defs]\\n- Monotone.iterate   [Mathlib.Order.Monotone.Defs]\\n- monotoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Monotone.monotoneOn   [Mathlib.Order.Monotone.Defs]\\n- Function.monotone_eval   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Monotone\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '^def Monotone' (via ripgrep):\\n- Mathlib/CategoryTheory/Category/Preorder.lean:159\\n    def Monotone.functor {f : X → Y} (h : Monotone f) : X ⥤ Y where\\n- Mathlib/Order/Monotone/Defs.lean:62\\n    def Monotone (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:74\\n    def MonotoneOn (f : α → β) (s : Set α) : Prop :=\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 62, \"n\": 10}",
+   "ok": true,
+   "result_chars": 468,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 62–71 of 583):\\n    62  def Monotone (f : α → β) : Prop :=\\n    63    ∀ ⦃a b⦄, a ≤ b → f a ≤ f b\\n    64  \\n    65  to_dual_insert_cast Monotone := forall_comm.eq\\n    66  \\n    67  /-- A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`. -/\\n    68  def Antitone (f : α → β) : Prop :=\\n    69    ∀ ⦃a b⦄, a ≤ b → f b ≤ f a\\n    70  \\n    71  to_dual_insert_cast Antitone := forall_comm.eq\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem scalar_mul_left_preserves_monotone\n    {α M₀ : Type*} [Preorder α] [Mul M₀] [Zero M₀] [Preorder M₀] [PosMulMono M₀]\n    {f : α → M₀} (hf : Monotone f)\n    {a : M₀} (ha : 0 ≤ a) :\n    Monotone fun x ↦ a * f x := sorry"
+}
