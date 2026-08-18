@@ -8,6 +8,8 @@ Arms (tools are the ONLY difference; model fixed per Jack 2026-07-25):
   WF — W ∪ F union tools + the evidence-based manual (MANUAL_ARMS)
   U — W ∪ F union tools, NO manual (the bare-union ablation: WF − U
       isolates the manual's contribution on the identical toolset)
+  WP — W + brain_premises (9 explicit tool names, same mcp-D server): the
+      one-shot held-out MPR evaluation of brain_premises vs the frozen W rows
 
 ARM-IDENTITY WARNING (tranche #18, brain_premises): the W arm's allowedTools
 is PINNED to the 8 explicit tool names below — the server-level
@@ -106,6 +108,12 @@ ARM_CFG["WF"]["tools"] = sorted(set(ARM_CFG["W"]["tools"] + ARM_CFG["F"]["tools"
 # MANUAL_ARMS — so WF − U is the manual's marginal effect and U − {W,F} is the
 # union's marginal effect without the manual.
 ARM_CFG["U"] = {"mcp": "WF", "tools": list(ARM_CFG["WF"]["tools"])}
+# WP = W + brain_premises (tool #9): THE measured one-shot evaluation of
+# brain_premises against the frozen W rows (ARM-IDENTITY WARNING above).
+# Same server (mcp-D), same prompt/model/budget, no manual; the ONLY delta vs
+# W is the 9th explicit allowedTools entry. Explicit names, never server-level.
+ARM_CFG["WP"] = {"mcp": "D", "tools": ARM_CFG["W"]["tools"] + [
+    "mcp__wikibrain__brain_premises"]}
 MANUAL_ARMS = {"WF"}
 MANUAL = (HERE / "AGENT_MANUAL.md").read_text()
 
