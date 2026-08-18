@@ -1,0 +1,18 @@
+{
+ "pipeline": "BRIDGE-FACTORIAL scoring/judging/analysis/addendum (post-run phase)",
+ "prereg": "docs/research/BRIDGE-FACTORIAL.md @ 3658bd58",
+ "data": "bench/data/runs_factorial/{Ep,X,J,Dp} @ ba35fe7f (400 rows)",
+ "stages": {
+  "stage1_mechanical_scoring": "COMPLETE (retc-arm Dp repair applied; 48 healthy verdicts reproduced, 23 poisoned verdicts flipped; final table Ep31/X41/J39/Dp39)",
+  "stage2_judge": "blocked_auth",
+  "stage3_analysis": "COMPLETE except judge secondaries (JOIN +0.030 [-0.093,+0.139] p=0.645 NULL; VERIFIER +0.050 [-0.029,+0.121] p=0.230 NULL; interaction -0.100 [-0.245,+0.047] p=0.196 exploratory null; det2 subset corrected to both-annotator n=74)",
+  "stage4_addendum": "pending",
+  "stage5_publish": "pending"
+ },
+ "notes": [
+  "2026-08-18: Stage 2 judge blocked at first attempt \u2014 child `claude` CLI OAuth session expired ('could not be refreshed'; both homebrew 2.1.153 and desktop 2.1.229 binaries, scrubbed and unscrubbed env). 27 judge_error verdicts deleted; 47 no-output pre-decided verdicts kept. Will retry after Stage 1/3; needs interactive /login if it persists.",
+  "Early no-typecheck descriptives: produced Ep82/X78/J100/Dp93; capped Ep18/X22/J0/Dp6; any-halluc-repaired Ep9/X5/J11/Dp10; decl_exists X213/Dp536 calls; informal touches Ep2/X4 runs. LaTeX baseline builds clean.",
+  "2026-08-18 ~16:20: REPL server DIED mid-scoring at Dp/fresh_053; rows fresh_053..099 of Dp silently fell back to single-shot bare-env checks (sub-second unknown-identifier failures) \u2014 v3 s3.4 defect-4 class. Ep/X/J verified clean (min elapsed >=3s). Server restarted; retc-arm Dp re-typechecking all Dp rows with healthy-window reproduction assertion.",
+  "Judge (Stage 2) definitively blocked: child-CLI Max OAuth refresh token dead (last successful child auth = run phase 2026-08-08). Needs interactive `claude /login` by Jack, then: python3 bench/analysis/judge_factorial_run.py (resumable, skips existing); then --consistency; then factorial_scored.py judge-summary; then factorial_analysis.py; then fold judge numbers into the addendum + typeset + publish."
+ ]
+}
