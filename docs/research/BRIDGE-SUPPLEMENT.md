@@ -842,7 +842,7 @@ reading and v1's error-inflated headline p=2.4e-5.
   p=0.645, verifier +0.050 p=0.230), exploratory interaction −0.100
   (redundancy, not synergy); abstract, §1, §7, and §8 updated to the
   causal answer. One scoring-phase infrastructure incident (REPL
-  server death mid-D′; 47 rows re-typechecked, §S15.1) documented with
+  server death mid-D′; the whole arm re-typechecked, §S15.1) documented with
   full cell provenance. Judge-graded secondaries staged but pending
   re-authentication (§S15.4); still open alongside them: the 36-task
   human queue and judge calibration.
@@ -960,15 +960,17 @@ mechanical cap (E′ 18, X 22, J 0, D′ 6) — valid terminal rows scored on
 their extracted output per prereg §4.2.
 
 **Scoring-phase incident (defect-4 class, repaired).** The fresh-pin
-REPL server died mid-pass while typechecking arm D′ (at `fresh_053`);
-the 47 remaining rows silently fell back to single-shot
+REPL server died mid-pass while typechecking arm D′ — during
+`fresh_052`'s check, whose first verdict recorded the REPL dying — and
+the 44 subsequent produced rows silently fell back to single-shot
 bare-environment checks (sub-second failures citing unknown
 identifiers) — the exact silent-fallback mode the v3 report's §3.4
 defect 4 documents. Caught by an elapsed-time audit (all legitimate
 server verdicts take ≥3 s; the other three arms' minima are 3.0–9.8 s),
 repaired by re-typechecking every produced D′ row against a restarted,
 identity-gated server: all 48 healthy-window verdicts reproduced
-exactly; 23 poisoned verdicts flipped. Full cell-level provenance:
+exactly; 23 of the 45 affected verdicts flipped, all False→True
+(`fresh_052` among them). Full cell-level provenance:
 `factorial_scored.json` → `retc_provenance`.
 
 ### S15.2 Primary endpoint: grounded typecheck (repaired oracle)

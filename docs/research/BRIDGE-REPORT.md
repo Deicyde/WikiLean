@@ -589,7 +589,7 @@ condition hashes uniform, one interleaved order, $40.91, 2.9 h.
 The preregistration file is byte-unchanged since commit `3658bd58` and
 its deviations log is empty. Scoring was a separate later phase (prereg
 §4.9); its one infrastructure incident — the typecheck REPL server died
-mid-pass and 47 D′ rows silently fell back to bare-environment checks
+mid-pass and 44 D′ rows silently fell back to bare-environment checks
 (§3.4's defect-4 class, caught by an elapsed-time audit) — was repaired
 by re-typechecking the whole arm against a restarted identity-gated
 server, with all 48 healthy-window verdicts reproducing exactly

@@ -313,7 +313,8 @@ def retc_arm(arm: str) -> None:
     """Re-typecheck EVERY row of one arm against a healthy server.
 
     Exists because the REPL server died mid-pass while scoring arm Dp
-    (rows fresh_053.. fell back to single-shot bare-env checks at ~0.2 s —
+    (during fresh_052's check; fresh_053.. fell back to single-shot
+    bare-env checks at ~0.2 s —
     the v3 report's s3.4 defect-4 failure mode). Verdicts from the healthy
     window are asserted to reproduce; every changed cell is recorded in
     retc_provenance and the aggregates are rebuilt.
@@ -363,8 +364,8 @@ def retc_arm(arm: str) -> None:
         cur["per_arm"][a]["cost_usd_total"] for a in ARMS), 2)
     prov = cur.setdefault("retc_provenance", [])
     prov.append({"what": f"arm {arm} fully re-typechecked against a restarted "
-                         "healthy server: the REPL server died mid-pass at "
-                         f"{arm}/fresh_053 and later rows silently fell back "
+                         "healthy server: the REPL server died mid-pass during "
+                         f"{arm}/fresh_052's check and later rows silently fell back "
                          "to single-shot bare-env checks (v3 s3.4 defect-4 "
                          "class; sub-second failures with unknown-identifier "
                          "errors)",
