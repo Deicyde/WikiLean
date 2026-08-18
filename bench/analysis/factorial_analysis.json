@@ -1,0 +1,761 @@
+{
+ "generated_by": "bench/analysis/factorial_analysis.py",
+ "prereg": "docs/research/BRIDGE-FACTORIAL.md @ 3658bd58 (section 5 followed exactly; alpha=0.05 two-sided; the two main effects are the only confirmatory tests)",
+ "outcome_source": "/Users/jack/Desktop/LEAN/WikiLean/bench/analysis/factorial_scored.json",
+ "seed": 20260803,
+ "B": 10000,
+ "n_clusters": 44,
+ "machinery": "fresh_clustered.cluster_boot_rd (verbatim import)",
+ "PRIMARY_grounded_tc_repaired": {
+  "four_arm_table_wilson95": {
+   "Ep": {
+    "k": 31,
+    "n": 100,
+    "rate": 0.31,
+    "wilson95": [
+     0.2278,
+     0.4063
+    ]
+   },
+   "X": {
+    "k": 41,
+    "n": 100,
+    "rate": 0.41,
+    "wilson95": [
+     0.3187,
+     0.508
+    ]
+   },
+   "J": {
+    "k": 39,
+    "n": 100,
+    "rate": 0.39,
+    "wilson95": [
+     0.3002,
+     0.488
+    ]
+   },
+   "Dp": {
+    "k": 39,
+    "n": 100,
+    "rate": 0.39,
+    "wilson95": [
+     0.3002,
+     0.488
+    ]
+   }
+  },
+  "effects": {
+   "join": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.03,
+    "ci95_percentile": [
+     -0.093407,
+     0.139175
+    ],
+    "p_two_sided_percentile_inversion": 0.645335,
+    "boot_se": 0.058385,
+    "cluster_robust_se_analytic": 0.058359
+   },
+   "verifier": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.05,
+    "ci95_percentile": [
+     -0.028736,
+     0.120968
+    ],
+    "p_two_sided_percentile_inversion": 0.230377,
+    "boot_se": 0.038114,
+    "cluster_robust_se_analytic": 0.038546
+   },
+   "interaction": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.1,
+    "ci95_percentile": [
+     -0.244898,
+     0.04717
+    ],
+    "p_two_sided_percentile_inversion": 0.19638,
+    "boot_se": 0.074268,
+    "cluster_robust_se_analytic": 0.074389
+   }
+  },
+  "verdicts": {
+   "H_JOIN": "NULL at this sample size (p >= 0.05); the CI is the precision statement",
+   "H_VERIFIER": "NULL at this sample size (p >= 0.05); the CI is the precision statement",
+   "interaction": "exploratory: no detectable interaction at this sample size"
+  },
+  "pairwise_clustered_RDs_supporting": {
+   "Dp_vs_Ep": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.08,
+    "ci95_percentile": [
+     -0.070707,
+     0.207323
+    ],
+    "p_two_sided_percentile_inversion": 0.309569,
+    "boot_se": 0.070856,
+    "cluster_robust_se_analytic": 0.071232
+   },
+   "Dp_vs_X": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.02,
+    "ci95_percentile": [
+     -0.171717,
+     0.119568
+    ],
+    "p_two_sided_percentile_inversion": 0.839916,
+    "boot_se": 0.073083,
+    "cluster_robust_se_analytic": 0.073238
+   },
+   "Dp_vs_J": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.0,
+    "ci95_percentile": [
+     -0.098904,
+     0.079646
+    ],
+    "p_two_sided_percentile_inversion": 1.0,
+    "boot_se": 0.045192,
+    "cluster_robust_se_analytic": 0.045238
+   },
+   "X_vs_Ep": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.1,
+    "ci95_percentile": [
+     -0.021984,
+     0.214953
+    ],
+    "p_two_sided_percentile_inversion": 0.127387,
+    "boot_se": 0.060174,
+    "cluster_robust_se_analytic": 0.060761
+   },
+   "J_vs_Ep": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.08,
+    "ci95_percentile": [
+     -0.053206,
+     0.201923
+    ],
+    "p_two_sided_percentile_inversion": 0.258774,
+    "boot_se": 0.065072,
+    "cluster_robust_se_analytic": 0.064919
+   },
+   "J_vs_X": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.02,
+    "ci95_percentile": [
+     -0.154776,
+     0.116279
+    ],
+    "p_two_sided_percentile_inversion": 0.821118,
+    "boot_se": 0.068575,
+    "cluster_robust_se_analytic": 0.068622
+   }
+  }
+ },
+ "sensitivity_raw_oracle": {
+  "four_arm_table_wilson95": {
+   "Ep": {
+    "k": 26,
+    "n": 100,
+    "rate": 0.26,
+    "wilson95": [
+     0.184,
+     0.3537
+    ]
+   },
+   "X": {
+    "k": 31,
+    "n": 100,
+    "rate": 0.31,
+    "wilson95": [
+     0.2278,
+     0.4063
+    ]
+   },
+   "J": {
+    "k": 36,
+    "n": 100,
+    "rate": 0.36,
+    "wilson95": [
+     0.2727,
+     0.4576
+    ]
+   },
+   "Dp": {
+    "k": 39,
+    "n": 100,
+    "rate": 0.39,
+    "wilson95": [
+     0.3002,
+     0.488
+    ]
+   }
+  },
+  "effects": {
+   "join": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.09,
+    "ci95_percentile": [
+     -0.006464,
+     0.182613
+    ],
+    "p_two_sided_percentile_inversion": 0.076392,
+    "boot_se": 0.048052,
+    "cluster_robust_se_analytic": 0.048342
+   },
+   "verifier": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.04,
+    "ci95_percentile": [
+     -0.030491,
+     0.103266
+    ],
+    "p_two_sided_percentile_inversion": 0.29837,
+    "boot_se": 0.03422,
+    "cluster_robust_se_analytic": 0.034773
+   },
+   "interaction": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.02,
+    "ci95_percentile": [
+     -0.155963,
+     0.134458
+    ],
+    "p_two_sided_percentile_inversion": 0.832317,
+    "boot_se": 0.073557,
+    "cluster_robust_se_analytic": 0.073878
+   }
+  }
+ },
+ "secondary_hallucination_repaired": {
+  "note": "run cites >=1 repaired-oracle hallucinated name; LOWER is better, so a negative JOIN/VERIFIER effect favors the factor",
+  "four_arm_table_wilson95": {
+   "Ep": {
+    "k": 9,
+    "n": 100,
+    "rate": 0.09,
+    "wilson95": [
+     0.0481,
+     0.1623
+    ]
+   },
+   "X": {
+    "k": 5,
+    "n": 100,
+    "rate": 0.05,
+    "wilson95": [
+     0.0215,
+     0.1118
+    ]
+   },
+   "J": {
+    "k": 11,
+    "n": 100,
+    "rate": 0.11,
+    "wilson95": [
+     0.0625,
+     0.1863
+    ]
+   },
+   "Dp": {
+    "k": 10,
+    "n": 100,
+    "rate": 0.1,
+    "wilson95": [
+     0.0552,
+     0.1744
+    ]
+   }
+  },
+  "effects": {
+   "join": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.035,
+    "ci95_percentile": [
+     -0.025773,
+     0.1
+    ],
+    "p_two_sided_percentile_inversion": 0.289171,
+    "boot_se": 0.031839,
+    "cluster_robust_se_analytic": 0.031709
+   },
+   "verifier": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.025,
+    "ci95_percentile": [
+     -0.080645,
+     0.025
+    ],
+    "p_two_sided_percentile_inversion": 0.381162,
+    "boot_se": 0.026844,
+    "cluster_robust_se_analytic": 0.026509
+   },
+   "interaction": {
+    "n_clusters": 44,
+    "n_tasks": 100,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.03,
+    "ci95_percentile": [
+     -0.082474,
+     0.141509
+    ],
+    "p_two_sided_percentile_inversion": 0.666333,
+    "boot_se": 0.056745,
+    "cluster_robust_se_analytic": 0.055731
+   }
+  }
+ },
+ "secondary_judge_evaluated": "PENDING Stage 2",
+ "secondary_conjunction_grounded_and_evaluated": "PENDING Stage 2",
+ "secondary_descriptives": {
+  "Ep": {
+   "mean_assistant_turns": 20.43,
+   "mean_tool_calls": 30.36,
+   "capped_k": 18,
+   "produced": 82,
+   "typecheck_ok_k": 33,
+   "cost_usd_total": 9.91,
+   "decl_exists_calls_total": 0,
+   "runs_using_decl_exists": 0,
+   "runs_touching_informal": 2
+  },
+  "X": {
+   "mean_assistant_turns": 21.39,
+   "mean_tool_calls": 30.32,
+   "capped_k": 22,
+   "produced": 78,
+   "typecheck_ok_k": 42,
+   "cost_usd_total": 10.76,
+   "decl_exists_calls_total": 213,
+   "runs_using_decl_exists": 94,
+   "runs_touching_informal": 4
+  },
+  "J": {
+   "mean_assistant_turns": 17.06,
+   "mean_tool_calls": 26.76,
+   "capped_k": 0,
+   "produced": 100,
+   "typecheck_ok_k": 39,
+   "cost_usd_total": 10.32,
+   "decl_exists_calls_total": 0,
+   "runs_using_decl_exists": 0,
+   "runs_touching_informal": 0
+  },
+  "Dp": {
+   "mean_assistant_turns": 17.42,
+   "mean_tool_calls": 26.65,
+   "capped_k": 6,
+   "produced": 93,
+   "typecheck_ok_k": 40,
+   "cost_usd_total": 9.92,
+   "decl_exists_calls_total": 536,
+   "runs_using_decl_exists": 92,
+   "runs_touching_informal": 0
+  }
+ },
+ "manipulation_checks": {
+  "verifier_usage": {
+   "X": {
+    "decl_exists_calls": 213,
+    "runs_using": 94
+   },
+   "Dp": {
+    "decl_exists_calls": 536,
+    "runs_using": 92
+   }
+  },
+  "informal_touches": {
+   "Ep": 2,
+   "X": 4
+  }
+ },
+ "secondary_exposure_and_leak": {
+  "own_module_exposed_51": {
+   "four_arm_table_wilson95": {
+    "Ep": {
+     "k": 17,
+     "n": 51,
+     "rate": 0.3333,
+     "wilson95": [
+      0.2197,
+      0.4703
+     ]
+    },
+    "X": {
+     "k": 25,
+     "n": 51,
+     "rate": 0.4902,
+     "wilson95": [
+      0.3586,
+      0.6232
+     ]
+    },
+    "J": {
+     "k": 20,
+     "n": 51,
+     "rate": 0.3922,
+     "wilson95": [
+      0.2703,
+      0.5291
+     ]
+    },
+    "Dp": {
+     "k": 18,
+     "n": 51,
+     "rate": 0.3529,
+     "wilson95": [
+      0.2363,
+      0.4901
+     ]
+    }
+   },
+   "effects": {
+    "join": {
+     "n_clusters": 22,
+     "n_tasks": 51,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": -0.039216,
+     "ci95_percentile": [
+      -0.204545,
+      0.108114
+     ],
+     "p_two_sided_percentile_inversion": 0.652535,
+     "boot_se": 0.078866,
+     "cluster_robust_se_analytic": 0.077855
+    },
+    "verifier": {
+     "n_clusters": 22,
+     "n_tasks": 51,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.058824,
+     "ci95_percentile": [
+      -0.060009,
+      0.169811
+     ],
+     "p_two_sided_percentile_inversion": 0.391361,
+     "boot_se": 0.059165,
+     "cluster_robust_se_analytic": 0.061547
+    },
+    "interaction": {
+     "n_clusters": 22,
+     "n_tasks": 51,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": -0.196078,
+     "ci95_percentile": [
+      -0.431818,
+      0.040816
+     ],
+     "p_two_sided_percentile_inversion": 0.119388,
+     "boot_se": 0.119617,
+     "cluster_robust_se_analytic": 0.120767
+    }
+   }
+  },
+  "unexposed_49": {
+   "four_arm_table_wilson95": {
+    "Ep": {
+     "k": 14,
+     "n": 49,
+     "rate": 0.2857,
+     "wilson95": [
+      0.1785,
+      0.4241
+     ]
+    },
+    "X": {
+     "k": 16,
+     "n": 49,
+     "rate": 0.3265,
+     "wilson95": [
+      0.2121,
+      0.4662
+     ]
+    },
+    "J": {
+     "k": 19,
+     "n": 49,
+     "rate": 0.3878,
+     "wilson95": [
+      0.2643,
+      0.5275
+     ]
+    },
+    "Dp": {
+     "k": 21,
+     "n": 49,
+     "rate": 0.4286,
+     "wilson95": [
+      0.3002,
+      0.5673
+     ]
+    }
+   },
+   "effects": {
+    "join": {
+     "n_clusters": 23,
+     "n_tasks": 49,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.102041,
+     "ci95_percentile": [
+      -0.076087,
+      0.243243
+     ],
+     "p_two_sided_percentile_inversion": 0.270973,
+     "boot_se": 0.081542,
+     "cluster_robust_se_analytic": 0.08167
+    },
+    "verifier": {
+     "n_clusters": 23,
+     "n_tasks": 49,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.040816,
+     "ci95_percentile": [
+      -0.054348,
+      0.130435
+     ],
+     "p_two_sided_percentile_inversion": 0.437556,
+     "boot_se": 0.046678,
+     "cluster_robust_se_analytic": 0.046595
+    },
+    "interaction": {
+     "n_clusters": 23,
+     "n_tasks": 49,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.0,
+     "ci95_percentile": [
+      -0.156863,
+      0.152174
+     ],
+     "p_two_sided_percentile_inversion": 1.0,
+     "boot_se": 0.078141,
+     "cluster_robust_se_analytic": 0.078077
+    }
+   }
+  },
+  "drop_3_live_index_leaks": {
+   "dropped": [
+    "fresh_037",
+    "fresh_054",
+    "fresh_095"
+   ],
+   "four_arm_table_wilson95": {
+    "Ep": {
+     "k": 31,
+     "n": 97,
+     "rate": 0.3196,
+     "wilson95": [
+      0.2352,
+      0.4177
+     ]
+    },
+    "X": {
+     "k": 39,
+     "n": 97,
+     "rate": 0.4021,
+     "wilson95": [
+      0.31,
+      0.5016
+     ]
+    },
+    "J": {
+     "k": 38,
+     "n": 97,
+     "rate": 0.3918,
+     "wilson95": [
+      0.3005,
+      0.4912
+     ]
+    },
+    "Dp": {
+     "k": 38,
+     "n": 97,
+     "rate": 0.3918,
+     "wilson95": [
+      0.3005,
+      0.4912
+     ]
+    }
+   },
+   "effects": {
+    "join": {
+     "n_clusters": 42,
+     "n_tasks": 97,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.030928,
+     "ci95_percentile": [
+      -0.092789,
+      0.142157
+     ],
+     "p_two_sided_percentile_inversion": 0.632137,
+     "boot_se": 0.059748,
+     "cluster_robust_se_analytic": 0.05971
+    },
+    "verifier": {
+     "n_clusters": 42,
+     "n_tasks": 97,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": 0.041237,
+     "ci95_percentile": [
+      -0.038891,
+      0.114286
+     ],
+     "p_two_sided_percentile_inversion": 0.352565,
+     "boot_se": 0.039213,
+     "cluster_robust_se_analytic": 0.039469
+    },
+    "interaction": {
+     "n_clusters": 42,
+     "n_tasks": 97,
+     "B": 10000,
+     "seed": 20260803,
+     "rd": -0.082474,
+     "ci95_percentile": [
+      -0.226196,
+      0.065433
+     ],
+     "p_two_sided_percentile_inversion": 0.30277,
+     "boot_se": 0.074924,
+     "cluster_robust_se_analytic": 0.075627
+    }
+   }
+  }
+ },
+ "secondary_det2_subset": {
+  "n": 74,
+  "four_arm_table_wilson95": {
+   "Ep": {
+    "k": 25,
+    "n": 74,
+    "rate": 0.3378,
+    "wilson95": [
+     0.2405,
+     0.4512
+    ]
+   },
+   "X": {
+    "k": 35,
+    "n": 74,
+    "rate": 0.473,
+    "wilson95": [
+     0.3634,
+     0.5852
+    ]
+   },
+   "J": {
+    "k": 30,
+    "n": 74,
+    "rate": 0.4054,
+    "wilson95": [
+     0.3009,
+     0.5192
+    ]
+   },
+   "Dp": {
+    "k": 30,
+    "n": 74,
+    "rate": 0.4054,
+    "wilson95": [
+     0.3009,
+     0.5192
+    ]
+   }
+  },
+  "effects": {
+   "join": {
+    "n_clusters": 36,
+    "n_tasks": 74,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.0,
+    "ci95_percentile": [
+     -0.15625,
+     0.138554
+    ],
+    "p_two_sided_percentile_inversion": 1.0,
+    "boot_se": 0.075037,
+    "cluster_robust_se_analytic": 0.075066
+   },
+   "verifier": {
+    "n_clusters": 36,
+    "n_tasks": 74,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": 0.067568,
+    "ci95_percentile": [
+     -0.013158,
+     0.151163
+    ],
+    "p_two_sided_percentile_inversion": 0.110389,
+    "boot_se": 0.04175,
+    "cluster_robust_se_analytic": 0.042071
+   },
+   "interaction": {
+    "n_clusters": 36,
+    "n_tasks": 74,
+    "B": 10000,
+    "seed": 20260803,
+    "rd": -0.135135,
+    "ci95_percentile": [
+     -0.303381,
+     0.010762
+    ],
+    "p_two_sided_percentile_inversion": 0.080992,
+    "boot_se": 0.078946,
+    "cluster_robust_se_analytic": 0.079551
+   }
+  }
+ }
+}
