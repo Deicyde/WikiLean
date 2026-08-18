@@ -1,0 +1,1021 @@
+{
+ "header": {
+  "one_shot": "WP run once post-deploy (2026-08-18); MathlibMPR held out from brain_premises development (LeanDojo Benchmark-4 premise split only); no tuning, no reruns for a better number",
+  "gold": "bench/v2/data/MathlibMPR.json pinned frenzymath/LeanSearch-v2@94f4888cbaf9 (CC BY 4.0)",
+  "rows": "bench/v2/runs/agent/mpr/{N,F,W,WF,U,WP}/claude-sonnet-5",
+  "scorer": "bench/v2/score_retrieval.py (exact full-name match)",
+  "arm_identity": "W pinned to 8 explicit allowedTools; WP = W + mcp__wikibrain__brain_premises (9th explicit entry); same mcp-D remote server, prompt, model claude-sonnet-5, turn budget; no manual"
+ },
+ "n_tasks": 69,
+ "arms": {
+  "N": {
+   "group_recall@10_per_task_mean": 0.2025,
+   "per_task_mean_boot_ci95": [
+    0.129,
+    0.2832
+   ],
+   "pooled_groups_covered": 31,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.152,
+   "pooled_wilson_ci95": [
+    0.1092,
+    0.2076
+   ]
+  },
+  "F": {
+   "group_recall@10_per_task_mean": 0.5468,
+   "per_task_mean_boot_ci95": [
+    0.461,
+    0.6317
+   ],
+   "pooled_groups_covered": 98,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.4804,
+   "pooled_wilson_ci95": [
+    0.4128,
+    0.5487
+   ]
+  },
+  "W": {
+   "group_recall@10_per_task_mean": 0.2721,
+   "per_task_mean_boot_ci95": [
+    0.1943,
+    0.3539
+   ],
+   "pooled_groups_covered": 48,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.2353,
+   "pooled_wilson_ci95": [
+    0.1823,
+    0.2981
+   ]
+  },
+  "WF": {
+   "group_recall@10_per_task_mean": 0.5569,
+   "per_task_mean_boot_ci95": [
+    0.4693,
+    0.6425
+   ],
+   "pooled_groups_covered": 103,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.5049,
+   "pooled_wilson_ci95": [
+    0.4368,
+    0.5728
+   ]
+  },
+  "U": {
+   "group_recall@10_per_task_mean": 0.5485,
+   "per_task_mean_boot_ci95": [
+    0.4633,
+    0.6345
+   ],
+   "pooled_groups_covered": 100,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.4902,
+   "pooled_wilson_ci95": [
+    0.4224,
+    0.5583
+   ]
+  },
+  "WP": {
+   "group_recall@10_per_task_mean": 0.3191,
+   "per_task_mean_boot_ci95": [
+    0.2412,
+    0.4006
+   ],
+   "pooled_groups_covered": 55,
+   "pooled_groups_total": 204,
+   "pooled_proportion": 0.2696,
+   "pooled_wilson_ci95": [
+    0.2134,
+    0.3343
+   ]
+  }
+ },
+ "paired_tests": {
+  "WP_vs_W": {
+   "metric": "per-task group-recall@10",
+   "mean_diff": 0.047,
+   "diff_boot_ci95": [
+    -0.0033,
+    0.0998
+   ],
+   "excludes_zero": false,
+   "sign_test": {
+    "n_pos": 15,
+    "n_neg": 8,
+    "n_nonzero": 23,
+    "p": 0.21003961563110352
+   },
+   "wilcoxon": {
+    "n_nonzero": 23,
+    "W": 79.5,
+    "p": 0.07313945014796394
+   }
+  },
+  "WP_vs_F": {
+   "metric": "per-task group-recall@10",
+   "mean_diff": -0.2277,
+   "diff_boot_ci95": [
+    -0.32,
+    -0.1387
+   ],
+   "excludes_zero": true,
+   "sign_test": {
+    "n_pos": 6,
+    "n_neg": 30,
+    "n_nonzero": 36,
+    "p": 6.960169412195683e-05
+   },
+   "wilcoxon": {
+    "n_nonzero": 36,
+    "W": 70.0,
+    "p": 3.3732464287706596e-05
+   }
+  },
+  "WP_vs_U": {
+   "metric": "per-task group-recall@10",
+   "mean_diff": -0.2294,
+   "diff_boot_ci95": [
+    -0.3189,
+    -0.1449
+   ],
+   "excludes_zero": true,
+   "sign_test": {
+    "n_pos": 4,
+    "n_neg": 31,
+    "n_nonzero": 35,
+    "p": 3.4654513001441956e-06
+   },
+   "wilcoxon": {
+    "n_nonzero": 35,
+    "W": 52.5,
+    "p": 1.6372536131869187e-05
+   }
+  },
+  "WP_vs_WF": {
+   "metric": "per-task group-recall@10",
+   "mean_diff": -0.2379,
+   "diff_boot_ci95": [
+    -0.3327,
+    -0.1431
+   ],
+   "excludes_zero": true,
+   "sign_test": {
+    "n_pos": 6,
+    "n_neg": 35,
+    "n_nonzero": 41,
+    "p": 4.873598300036974e-06
+   },
+   "wilcoxon": {
+    "n_nonzero": 41,
+    "W": 110.0,
+    "p": 3.1331436057112655e-05
+   }
+  }
+ },
+ "premises_usage": {
+  "n_runs": 69,
+  "calls_per_run": {
+   "mean": 1.4058,
+   "median": 1.0,
+   "min": 0,
+   "max": 4,
+   "total": 97,
+   "runs_with_>=1_call": 65,
+   "runs_with_0_calls": [
+    "mathlibmpr_033",
+    "mathlibmpr_044",
+    "mathlibmpr_052",
+    "mathlibmpr_055"
+   ]
+  },
+  "results_containing_gold": {
+   "premises_calls_total": 97,
+   "premises_calls_with_>=1_gold_member": 31,
+   "tasks_where_premises_result_contained_gold": 28
+  },
+  "tool_calls_total_by_name": {
+   "mcp__wikibrain__decl_exists": 225,
+   "mcp__wikibrain__brain_search": 126,
+   "mcp__wikibrain__brain_bridge": 125,
+   "mcp__wikibrain__brain_cell": 123,
+   "mcp__wikibrain__brain_premises": 97,
+   "mcp__wikibrain__brain_snippets": 43,
+   "mcp__wikibrain__brain_neighborhood": 28,
+   "mcp__wikibrain__brain_filter": 7,
+   "Bash": 2,
+   "mcp__wikibrain__brain_transfer": 1
+  },
+  "cost": {
+   "total_usd": 31.5954,
+   "mean_usd_per_task": 0.4579,
+   "mean_wall_s": 52.1725
+  }
+ },
+ "hit_provenance_resolved": {
+  "WP": {
+   "n_covered_group_hits": 55,
+   "by_class": {
+    "guessed_verified": {
+     "n": 41,
+     "frac": 0.7455
+    },
+    "surfaced": {
+     "n": 14,
+     "frac": 0.2545
+    }
+   },
+   "surfaced_by_tool": {
+    "brain_premises": 6,
+    "decl_exists": 6,
+    "brain_neighborhood": 2
+   }
+  },
+  "W": {
+   "n_covered_group_hits": 48,
+   "by_class": {
+    "guessed_verified": {
+     "n": 44,
+     "frac": 0.9167
+    },
+    "surfaced": {
+     "n": 4,
+     "frac": 0.0833
+    }
+   },
+   "surfaced_by_tool": {
+    "brain_bridge": 2,
+    "brain_search": 1,
+    "decl_exists": 1
+   }
+  }
+ },
+ "bootstrap": {
+  "B": 10000,
+  "seed": 20260727,
+  "unit": "task"
+ },
+ "per_task": [
+  {
+   "qid": "mathlibmpr_003",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_005",
+   "n_groups": 2,
+   "N": 1.0,
+   "F": 0.5,
+   "W": 1.0,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_006",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.3333,
+   "W": 0.0,
+   "WF": 0.3333,
+   "U": 0.6667,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_008",
+   "n_groups": 1,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_009",
+   "n_groups": 3,
+   "N": 0.3333,
+   "F": 0.6667,
+   "W": 0.6667,
+   "WF": 0.6667,
+   "U": 0.6667,
+   "WP": 0.3333,
+   "WP_minus_W": -0.3333
+  },
+  {
+   "qid": "mathlibmpr_010",
+   "n_groups": 1,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_011",
+   "n_groups": 5,
+   "N": 0.2,
+   "F": 0.6,
+   "W": 0.2,
+   "WF": 0.6,
+   "U": 0.6,
+   "WP": 0.6,
+   "WP_minus_W": 0.4
+  },
+  {
+   "qid": "mathlibmpr_012",
+   "n_groups": 1,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 1.0
+  },
+  {
+   "qid": "mathlibmpr_014",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.3333,
+   "W": 0.3333,
+   "WF": 0.3333,
+   "U": 0.3333,
+   "WP": 0.3333,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_015",
+   "n_groups": 2,
+   "N": 0.5,
+   "F": 1.0,
+   "W": 0.5,
+   "WF": 0.5,
+   "U": 1.0,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_016",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.3333,
+   "W": 0.3333,
+   "WF": 0.3333,
+   "U": 0.3333,
+   "WP": 0.6667,
+   "WP_minus_W": 0.3333
+  },
+  {
+   "qid": "mathlibmpr_017",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_018",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_019",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.5,
+   "WF": 0.0,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_020",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_021",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_022",
+   "n_groups": 7,
+   "N": 0.0,
+   "F": 0.2857,
+   "W": 0.0,
+   "WF": 0.2857,
+   "U": 0.2857,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_023",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.25,
+   "W": 0.5,
+   "WF": 0.25,
+   "U": 0.25,
+   "WP": 0.25,
+   "WP_minus_W": -0.25
+  },
+  {
+   "qid": "mathlibmpr_024",
+   "n_groups": 2,
+   "N": 0.5,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 0.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_025",
+   "n_groups": 3,
+   "N": 0.6667,
+   "F": 0.6667,
+   "W": 0.3333,
+   "WF": 0.6667,
+   "U": 0.6667,
+   "WP": 0.6667,
+   "WP_minus_W": 0.3333
+  },
+  {
+   "qid": "mathlibmpr_027",
+   "n_groups": 3,
+   "N": 0.6667,
+   "F": 0.6667,
+   "W": 0.6667,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.6667,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_028",
+   "n_groups": 2,
+   "N": 0.5,
+   "F": 1.0,
+   "W": 0.5,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_029",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.3333,
+   "WF": 0.6667,
+   "U": 0.3333,
+   "WP": 0.3333,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_030",
+   "n_groups": 2,
+   "N": 0.5,
+   "F": 0.5,
+   "W": 0.0,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": 0.5
+  },
+  {
+   "qid": "mathlibmpr_031",
+   "n_groups": 2,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_032",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.5,
+   "WF": 0.5,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": -0.5
+  },
+  {
+   "qid": "mathlibmpr_033",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.3333,
+   "W": 0.0,
+   "WF": 0.3333,
+   "U": 0.3333,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_034",
+   "n_groups": 6,
+   "N": 0.0,
+   "F": 0.6667,
+   "W": 0.1667,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.1667,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_035",
+   "n_groups": 5,
+   "N": 0.4,
+   "F": 0.2,
+   "W": 0.2,
+   "WF": 0.4,
+   "U": 0.4,
+   "WP": 0.0,
+   "WP_minus_W": -0.2
+  },
+  {
+   "qid": "mathlibmpr_036",
+   "n_groups": 4,
+   "N": 0.5,
+   "F": 0.5,
+   "W": 0.5,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_037",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.3333,
+   "U": 0.3333,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_038",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.3333,
+   "W": 0.0,
+   "WF": 0.3333,
+   "U": 0.3333,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_039",
+   "n_groups": 3,
+   "N": 0.3333,
+   "F": 0.3333,
+   "W": 0.3333,
+   "WF": 0.6667,
+   "U": 0.6667,
+   "WP": 0.6667,
+   "WP_minus_W": 0.3333
+  },
+  {
+   "qid": "mathlibmpr_040",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_042",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_043",
+   "n_groups": 4,
+   "N": 0.25,
+   "F": 0.75,
+   "W": 0.5,
+   "WF": 0.75,
+   "U": 1.0,
+   "WP": 0.25,
+   "WP_minus_W": -0.25
+  },
+  {
+   "qid": "mathlibmpr_044",
+   "n_groups": 1,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_045",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 0.3333,
+   "WP": 0.3333,
+   "WP_minus_W": 0.3333
+  },
+  {
+   "qid": "mathlibmpr_046",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.3333,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.3333,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_048",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_049",
+   "n_groups": 4,
+   "N": 0.25,
+   "F": 0.5,
+   "W": 0.5,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_050",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.25,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_051",
+   "n_groups": 8,
+   "N": 0.125,
+   "F": 0.5,
+   "W": 0.0,
+   "WF": 0.25,
+   "U": 0.25,
+   "WP": 0.125,
+   "WP_minus_W": 0.125
+  },
+  {
+   "qid": "mathlibmpr_052",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_053",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_055",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_056",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.75,
+   "W": 0.0,
+   "WF": 0.75,
+   "U": 0.75,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_057",
+   "n_groups": 3,
+   "N": 0.3333,
+   "F": 0.6667,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 0.6667,
+   "WP": 0.3333,
+   "WP_minus_W": 0.3333
+  },
+  {
+   "qid": "mathlibmpr_058",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.25,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.25,
+   "WP_minus_W": 0.25
+  },
+  {
+   "qid": "mathlibmpr_060",
+   "n_groups": 3,
+   "N": 0.3333,
+   "F": 0.3333,
+   "W": 0.3333,
+   "WF": 0.0,
+   "U": 0.3333,
+   "WP": 0.3333,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_062",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_063",
+   "n_groups": 7,
+   "N": 0.0,
+   "F": 0.1429,
+   "W": 0.0,
+   "WF": 0.1429,
+   "U": 0.1429,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_064",
+   "n_groups": 3,
+   "N": 0.3333,
+   "F": 0.3333,
+   "W": 0.3333,
+   "WF": 1.0,
+   "U": 0.3333,
+   "WP": 0.3333,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_065",
+   "n_groups": 3,
+   "N": 0.0,
+   "F": 0.6667,
+   "W": 0.3333,
+   "WF": 0.0,
+   "U": 0.6667,
+   "WP": 0.0,
+   "WP_minus_W": -0.3333
+  },
+  {
+   "qid": "mathlibmpr_066",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.0,
+   "U": 0.0,
+   "WP": 0.25,
+   "WP_minus_W": 0.25
+  },
+  {
+   "qid": "mathlibmpr_068",
+   "n_groups": 4,
+   "N": 0.25,
+   "F": 0.5,
+   "W": 0.25,
+   "WF": 0.5,
+   "U": 0.25,
+   "WP": 0.25,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_069",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.0,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_070",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_071",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.75,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": -0.25
+  },
+  {
+   "qid": "mathlibmpr_072",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.0,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.5,
+   "WP_minus_W": 0.5
+  },
+  {
+   "qid": "mathlibmpr_073",
+   "n_groups": 8,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.375,
+   "WF": 0.5,
+   "U": 0.5,
+   "WP": 0.125,
+   "WP_minus_W": -0.25
+  },
+  {
+   "qid": "mathlibmpr_075",
+   "n_groups": 6,
+   "N": 0.0,
+   "F": 0.8333,
+   "W": 0.0,
+   "WF": 0.8333,
+   "U": 0.6667,
+   "WP": 0.1667,
+   "WP_minus_W": 0.1667
+  },
+  {
+   "qid": "mathlibmpr_076",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.25,
+   "W": 0.0,
+   "WF": 0.25,
+   "U": 0.25,
+   "WP": 0.25,
+   "WP_minus_W": 0.25
+  },
+  {
+   "qid": "mathlibmpr_077",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 1.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 1.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_078",
+   "n_groups": 2,
+   "N": 0.0,
+   "F": 0.5,
+   "W": 0.0,
+   "WF": 0.5,
+   "U": 0.0,
+   "WP": 0.5,
+   "WP_minus_W": 0.5
+  },
+  {
+   "qid": "mathlibmpr_079",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.75,
+   "W": 0.0,
+   "WF": 0.75,
+   "U": 0.25,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_080",
+   "n_groups": 4,
+   "N": 0.0,
+   "F": 0.0,
+   "W": 0.5,
+   "WF": 0.75,
+   "U": 0.75,
+   "WP": 0.5,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_081",
+   "n_groups": 1,
+   "N": 0.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 0.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  },
+  {
+   "qid": "mathlibmpr_082",
+   "n_groups": 1,
+   "N": 1.0,
+   "F": 1.0,
+   "W": 0.0,
+   "WF": 1.0,
+   "U": 1.0,
+   "WP": 0.0,
+   "WP_minus_W": 0.0
+  }
+ ]
+}
