@@ -1,10 +1,12 @@
 # Grounding Lean agents with a curated informal–formal join: a preregistered study with corrective reanalysis
 
-**Report, version 3 (paper structure) — 2026-08-02.**
+**Report, version 3.1 (v3 paper structure + the preregistered factorial,
+§4.4) — 2026-08-18.**
 Jack McCarthy (WikiLean). Experiments and analyses were executed by Claude
 Code agents under the author's direction (disclosure in §7).
-Preregistration: `docs/research/BRIDGE-EXPERIMENT.md`, commit `0d36f266`
-(2026-07-16). Versions 1 (2026-07-25) and 2 (2026-07-31) remain in git
+Preregistrations: `docs/research/BRIDGE-EXPERIMENT.md`, commit `0d36f266`
+(2026-07-16), and the 2×2 factorial `docs/research/BRIDGE-FACTORIAL.md`,
+commit `3658bd58` (2026-08-07, before any factorial row ran). Versions 1 (2026-07-25) and 2 (2026-07-31) remain in git
 history, and the external reviews of both are preserved verbatim in
 `docs/research/review/`. Everything moved out of the main text lives in
 `docs/research/BRIDGE-SUPPLEMENT.md`, cited below as "Supplement §Sn".
@@ -18,8 +20,10 @@ We test whether a curated join of informal concepts and Mathlib
 declarations — the WikiLean Brain, served to agents as tools — improves
 language-model Lean performance, in a preregistered five-arm study
 with controls holding the same corpora accessible but unjoined. No
-preregistered confirmatory endpoint was graded (§3.3); everything is
-exploratory or corrective. A blinded audit found the hallucination
+Tier-1 preregistered confirmatory endpoint was graded (§3.3);
+everything there is exploratory or corrective; the later 2×2 factorial
+(§4.4) is the study's one preregistered-confirmatory analysis. A
+blinded audit found the hallucination
 oracle 13.3% precise on flags and biased against the controls; a
 five-rule repair validated at 90% held-out; inference moved to a
 commit-clustered bootstrap. Tools versus none is robust: on 100
@@ -27,9 +31,14 @@ post-Brain-index tasks Brain-arm grounded typecheck is 48% over a
 21% floor (+0.27, 95% CI [+0.13, +0.40], p=0.0004), and formal tools
 collapse oracle-flagged hallucination — an upper bound on truth —
 to 6–11% of runs versus 30–37% (clustered p=0.0002). Between packages
-nothing favors the join: Brain minus unjoined is +0.11 (p=0.30), and
-the one decisive contrast, premise retrieval, favors formal search by
-27 points (p=2.3e-6, exploratory). The join's measured value is
+nothing favors the join, and the preregistered factorial (join ×
+verifier, 400 interleaved capped runs on the same tasks) now says so
+causally: both main effects are null (join +0.03, 95% CI
+[−0.09, +0.14], p=0.65; verifier +0.05, [−0.03, +0.12], p=0.23), with
+an exploratory negative interaction — the verifier's +10-point pairwise
+gain appears only without the join, whose outputs arrive already
+verified. The one decisive contrast, premise retrieval, favors formal
+search by 27 points (p=2.3e-6, exploratory). The join's measured value is
 verification and routing, not content: 88% of Brain-arm hits are
 generated names its oracle verified, 10% graph-surfaced, and the
 graph holds 38% of golds. The proving phase was uninformative: the union arm sent
@@ -63,10 +72,12 @@ Mathlib, not just the joined subset.
 This paper is the corrected report of that experiment, restructured
 after two external reviews. Its contributions are five.
 
-1. **The only causal-control design we could verify.** Among the
-   2025–26 concept-grounding systems, this is the only evaluation whose
-   control arms hold the same informal and formal corpora accessible but
-   unjoined (§2, §3) — the design that isolates joining itself.
+1. **The only causal-control design we could verify — carried to its
+   factorial completion.** Among the 2025–26 concept-grounding systems,
+   this is the only evaluation whose control arms hold the same informal
+   and formal corpora accessible but unjoined (§2, §3) — the design that
+   isolates joining itself — and §4.4 finishes it with the preregistered
+   2×2 join × verifier factorial (both main effects null).
 2. **A robust tools-versus-none effect on grounded output** (§4). The
    Brain arm exceeds the no-tools floor by 27 points of grounded
    typecheck rate under commit-clustered inference (p=0.0004), the
@@ -93,8 +104,9 @@ Equally plainly, **between-tool-package superiority is not established
 at this sample size.** The Brain-versus-unjoined contrast is +0.11
 (p=0.30) and Brain-versus-formal-search +0.15 (p=0.10); the
 preregistered semantic endpoint was graded only by an uncalibrated LLM
-judge; and the Brain arm bundles the join with the verifier, so
-attribution between them awaits a factorial ablation (§8).
+judge; and the Brain arm bundles the join with the verifier — the
+preregistered factorial (§4.4) now estimates both factors directly and
+finds neither detectable on its own (both main effects null).
 
 ## 2. Related work
 
@@ -506,6 +518,91 @@ sample came from the arms without formal tools (A/B); none from C, D,
 or E — and the held-out sample replicates this: all three of its
 confirmed fabrications sit in A/B as well (§S3).
 
+### 4.4 The preregistered factorial (join × verifier)
+
+This subsection is the paper's one preregistered-confirmatory analysis —
+the experiment both reviews demanded. We crossed the **join** (the
+Wikibrain tool surface) with the explicit **existence verifier**
+(`decl_exists`) over the same 100 fresh tasks and model, preregistering
+design, endpoints, and analysis before any row ran
+(`docs/research/BRIDGE-FACTORIAL.md`, commit `3658bd58`, 2026-08-07;
+runs 2026-08-08, committed `ba35fe7f`). The four arms are E′ (neither;
+arm E's exact toolset), X (verifier only), J (join only), and D′ (both;
+arm D's exact toolset), with yoked interfaces — identical prompt, model,
+and budget, empty built-in toolset, per-row tool-manifest validation
+from the stream-json init event — one interleaved execution order, and
+a mechanical 30-turn cap. Primary endpoint: grounded typecheck under
+the repaired oracle (§4.1). Primary analysis: the same commit-clustered
+paired bootstrap (44 clusters, B=10,000, preregistered seed), α=0.05
+two-sided; the two main effects are the only confirmatory tests, the
+interaction and all secondaries are preregistered-exploratory.
+
+| arm | cell | grounded typecheck (repaired) | Wilson 95% CI |
+|---|---|---|---|
+| E′ | join−, verifier− | 31/100 = 31.0% | [22.8, 40.6] |
+| X | join−, verifier+ | 41/100 = 41.0% | [31.9, 50.8] |
+| J | join+, verifier− | 39/100 = 39.0% | [30.0, 48.8] |
+| D′ | join+, verifier+ | 39/100 = 39.0% | [30.0, 48.8] |
+
+**Both preregistered hypotheses are unsupported — the main effects are
+null.** The JOIN main effect is **+0.030** (95% CI [−0.093, +0.139],
+p=0.65): at this sample size the joined surface does not detectably
+improve grounded typecheck beyond what explicit verification provides.
+The VERIFIER main effect is **+0.050** ([−0.029, +0.121], p=0.23):
+explicit generate-then-verify existence checking likewise shows no
+detectable main effect. The interaction (exploratory) is **−0.100**
+([−0.245, +0.047], p=0.20): the factors look redundant, not synergistic
+— the verifier's pairwise gain appears only without the join (X−E′
++0.100, p=0.13) and vanishes on top of it (D′−J +0.000, p=1.0), exactly
+the pattern the preregistered factor-purity caveat anticipated (the
+join's outputs arrive already existence-verified, so J never lacked
+verified names — what it lacked, checking model-written names, appears
+to add nothing once the join is present). All six pairwise contrasts
+are null (largest X−E′ +0.100, p=0.13; full grid Supplement §S15).
+
+Secondaries agree. Run-level repaired hallucination is low and
+indistinguishable everywhere (E′ 9, X 5, J 11, D′ 10 per 100; both
+factor effects null) — with formal tools of any kind, flagged citations
+are no longer where arms differ. Where the arms do differ sharply is
+*production*: the join arms finished within budget (J 100/100 produced,
+0 capped; D′ 93/100, 6 capped) while the unjoined arms burned their 30
+turns (E′ 82/100 produced, 18 capped; X 78/100, 22 capped) — an
+efficiency signature, not an accuracy one, and the reason the
+factorial's rates are not directly comparable to §4.1's softer-budget
+Tier-1 table (D′ 39% here vs D's 48% there; E′ 31% vs E's 37%).
+Manipulation checks pass: X and D′ actually used the verifier (213
+calls in 94/100 runs; 536 in 92/100), and the informal tools went
+essentially untouched in E′/X (2 and 4 runs) — the same informal-arm
+manipulation failure as Tier-1. Preregistered sensitivity cuts (raw
+oracle, own-module exposure strata, dropping the 3 live-index-leaked
+tasks, the 74-task both-annotator determinacy subset) all preserve the
+nulls (§S15). The two judge-dependent secondaries (evaluated
+equivalence and the conjunction) are staged — blinding scan green over
+all 353 gradeable outputs — but not yet graded in this revision (the
+judging CLI's authentication expired; §S15.4); nothing confirmatory
+rests on them.
+
+Execution fidelity: 400/400 rows terminal and attach-clean — 0 errors,
+0 zero-tool rows, 0 turn-cap violations (46 capped rows are valid
+per-prereg terminal rows scored on their extracted output), per-arm
+condition hashes uniform, one interleaved order, $40.91, 2.9 h.
+The preregistration file is byte-unchanged since commit `3658bd58` and
+its deviations log is empty. Scoring was a separate later phase (prereg
+§4.9); its one infrastructure incident — the typecheck REPL server died
+mid-pass and 47 D′ rows silently fell back to bare-environment checks
+(§3.4's defect-4 class, caught by an elapsed-time audit) — was repaired
+by re-typechecking the whole arm against a restarted identity-gated
+server, with all 48 healthy-window verdicts reproducing exactly
+(`factorial_scored.json` `retc_provenance`).
+
+What the factorial settles: arm D's Tier-1 margin cannot be attributed
+to either bundled ingredient — under a yoked interface neither the
+curated join nor the explicit verifier moves grounded typecheck
+detectably on its own, and D′ does not separate from the strongest
+single-factor arms. The tools-versus-none result (§4.1) stands;
+between tool packages, the causal decomposition now confirms what the
+observational contrasts suggested: nothing here favors the join.
+
 ## 5. Retrieval scope and ablations (claude-sonnet-5, exploratory)
 
 The v2 phase uses graders that predate the arms: third-party expert gold
@@ -700,9 +797,15 @@ hallucination rates are upper bounds on true rates.
 
 **Attribution.** D bundles the join, the verifier, curated metadata, and
 a distinct interface; the E repair ran later than D, so a time confound
-remains on that contrast; E failed its manipulation check. Attribution
-of D's tools-versus-none effect between join and verifier awaits the
-2×2 factorial.
+remains on that contrast; E failed its manipulation check. The 2×2
+factorial (§4.4) has since decomposed the bundle under a yoked
+interface: neither the join nor the verifier shows a detectable main
+effect, D′ does not reproduce D's 48% (39% under the stricter
+interface), and the join's remaining measurable signature is
+within-budget production efficiency, not grounded accuracy. What the
+factorial cannot separate is content from interface (its own
+preregistered limit), and its judge-graded secondaries remain
+pending (§S15.4).
 
 **A warning for the field.** The contamination-by-endpoint interaction
 (§4.2) generalizes: a contaminated task set does not merely inflate
@@ -737,9 +840,17 @@ favors plain formal search; the bare-union ablation shows the union
 itself inert and the WF gain manual-driven; and the join's retrieval
 value measured here is verification and routing rather than curated
 content.
-The decisive next experiment is the 2×2 factorial {join, no join} ×
-{verifier, none} on a frozen post-cutoff set with human-calibrated
-equivalence grading and frozen-snapshot search infrastructure.
+The decisive experiment both reviews demanded — the preregistered 2×2
+factorial {join, no join} × {verifier, none} on the same frozen
+post-cutoff set — has now been run (§4.4), and it closes the
+attribution question in the negative: at n=100 tasks per cell, neither
+the curated join (+0.03, p=0.65) nor explicit existence verification
+(+0.05, p=0.23) detectably raises grounded typecheck on its own, the
+two are redundant rather than synergistic, and no arm combination
+separates from the strongest single factor. What remains open is what
+this study could never grade: human-calibrated semantic equivalence —
+the judge calibration and the 36-task human queue are the outstanding
+work.
 
 ## References
 

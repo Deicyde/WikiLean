@@ -1,6 +1,6 @@
-# Bridge study — supplement (v3)
+# Bridge study — supplement (v3.1)
 
-**Companion to `docs/research/BRIDGE-REPORT.md` (version 3, 2026-08-02).**
+**Companion to `docs/research/BRIDGE-REPORT.md` (version 3.1, 2026-08-18).**
 Everything the main paper's structure moved out lives here: the complete
 preregistration execution inventory, raw-instrument tables and outage
 bases, instrument-validation detail, exposure strata, sensitivity
@@ -776,7 +776,7 @@ reading and v1's error-inflated headline p=2.4e-5.
 | # | Concern | Action |
 |---|---|---|
 | 1 | "Success" measures no semantic correctness | renamed grounded typecheck rate; judge pass; calibration owed |
-| 2 | D vs E does not isolate the join | "join carries the effect" retired; bundled-condition language; 2×2 factorial on the roadmap |
+| 2 | D vs E does not isolate the join | "join carries the effect" retired; bundled-condition language; the 2×2 factorial has since been run (v3.1, §4.4/§S15): both main effects null |
 | 3 | Arm E failed its manipulation check | disclosed; yoked control on the roadmap |
 | 4 | Fresh set not isolated from formal-search sources | renamed post-Brain-index; exposure strata; frozen snapshots on the roadmap |
 | 5 | WF is test-set tuned | labeled post-hoc, benchmark-informed everywhere; provenance + timeline (§S8); bare-union arm launched |
@@ -791,7 +791,7 @@ reading and v1's error-inflated headline p=2.4e-5.
 | 1 | Lead with repaired full-100; one coherent paired inference | commit-clustered paired bootstrap is the only main-text framework; completed-69 and Wald/McNemar mismatch moved here (§S2) |
 | 2 | Cluster the fresh set by commit/family | done (`fresh_clustered.py`): 44 commits, 57 files, 59 families; all levels + collapses (§S2.3); D−E widens exactly as predicted |
 | 3 | Human semantic evaluation | full 500-row blind judge complete with self-consistency; 36-task discordant queue defined; **human grading and calibration still pending** — main §4.2 stays exploratory |
-| 4 | Factorial ablation | 2×2 factorial not yet run; the bare-union U ablation is complete (main §5): the union is inert (U−F null everywhere), the WF gain is manual-driven on QR, and formal tools carry MPR; paper reframed around the bundled intervention and the tools-vs-none result per the review's conditional |
+| 4 | Factorial ablation | DONE in v3.1: the preregistered 2×2 (prereg `3658bd58`, before any row) is run and analyzed (§4.4/§S15) — join +0.030 p=0.645, verifier +0.050 p=0.230, interaction −0.100 (redundancy); the bare-union U ablation had already shown the union inert (U−F null everywhere), the WF gain manual-driven on QR, and formal tools carrying MPR |
 | 5 | Characterize the Brain; retrieval provenance decomposition | done (`brain_artifact.py`, main §3.1; `retrieval_provenance.py`, main §5) |
 | 6 | Real related work (CRAMF, Aria, +) | done; every citation verified against arXiv on 2026-08-01 (`docs/research/review/related_work_notes.md`); comparison table in main §2 |
 | 7 | Correct two overclaims (memorization; "clean verifier finding") | memorization → benchmark-familiarity language (main §4.1); verifier finding restated after blinded oracle validation — between-tool contrast dissolves under the repaired instrument (main §4.3), DDR cited as convergent evidence |
@@ -835,6 +835,17 @@ reading and v1's error-inflated headline p=2.4e-5.
   provenance paragraph; five-arm judge Layer 1; census bases
   relabeled; assorted number and wording corrections (681, S6 fresh
   rates, SorryDB verdict categories, anchor provenance).
+- **v3.1 (2026-08-18).** The preregistered 2×2 join × verifier
+  factorial, run and analyzed exactly per `BRIDGE-FACTORIAL.md`
+  (prereg `3658bd58` 2026-08-07; 400 rows `ba35fe7f`; new main-text
+  §4.4 + §S15): both preregistered main effects null (join +0.030
+  p=0.645, verifier +0.050 p=0.230), exploratory interaction −0.100
+  (redundancy, not synergy); abstract, §1, §7, and §8 updated to the
+  causal answer. One scoring-phase infrastructure incident (REPL
+  server death mid-D′; 47 rows re-typechecked, §S15.1) documented with
+  full cell provenance. Judge-graded secondaries staged but pending
+  re-authentication (§S15.4); still open alongside them: the 36-task
+  human queue and judge calibration.
 
 ## S14. Data availability and file map
 
@@ -882,8 +893,17 @@ routing fix ("honest labels").
 | `bench/analysis/union_ablation.*`, `grid_repaired.*` | U-arm bare-union ablation; race-repaired grid, before/after tables + final contrast set |
 | `bench/v2/runs/agent/race_condemned_archive/` | the 194 original cold-start-race rows, byte-preserved with qid manifest |
 | `bench/v2/` + `bench/v2/data/` + `bench/v2/runs/` | v2 harness, AGENT_MANUAL.md, MathlibQR/MPR (CC BY 4.0), SorryDB freeze, all v2 run rows (repaired grid) with gzipped stream transcripts, verify.jsonl (203 verdicts) |
+| `docs/research/BRIDGE-FACTORIAL.md` | the 2×2 factorial preregistration (commit `3658bd58`, byte-unchanged; empty deviations log) |
+| `bench/factorial/` | factorial runner (`run_factorial.py`) + prereg-time live-index census |
+| `bench/arms/mcp-{Ep,X,J,Dp}.json` | the four factorial arm MCP configs |
+| `bench/data/runs_factorial/` | all 400 factorial rows + gzipped stream transcripts + `conditions.json` (commit `ba35fe7f`) |
+| `bench/analysis/factorial_scored.{py,json,md}` | Stage-1 mechanical scoring (repaired+raw oracle, fresh-pin typecheck, integrity gate, `retc_provenance`) |
+| `bench/analysis/judge_factorial_run.py` + `judge_factorial/` | Stage-2 blinded-judge driver (staged; §S15.4) + verdicts |
+| `bench/analysis/factorial_analysis.{py,json,md}` | Stage-3 preregistered analysis (effects, pairwise grid, sensitivity cuts) |
 
-**Recomputation entry points.** Tier-1 grading `bench/score_bridge.py`;
+**Recomputation entry points.** Factorial
+`bench/analysis/factorial_scored.py` + `factorial_analysis.py`
+(runner `bench/factorial/run_factorial.py`); Tier-1 grading `bench/score_bridge.py`;
 repaired instrument `bench/analysis/halluc_validation.py` (`adjusted`)
 + `success_repaired.py` + held-out revalidation `halluc_holdout.py`;
 post-gate analyses `v3_gate_fixes.py`; clustered inference
@@ -906,3 +926,139 @@ arXiv:2406.07222 · benchmark-faults survey arXiv:2606.29493 · CRAMF
 arXiv:2508.06931 · Aria arXiv:2510.04520 · DRIFT arXiv:2510.10815 ·
 DDR arXiv:2511.11990 (the last four verified 2026-08-01,
 `related_work_notes.md`).
+
+## S15. The preregistered 2×2 factorial (join × verifier): full detail
+
+Preregistration `docs/research/BRIDGE-FACTORIAL.md`, commit `3658bd58`
+(2026-08-07) — committed before the harness was built and before any row
+ran; the file is byte-unchanged since, and its §9 deviations log is
+empty. Harness commit `cbdcf3b7`; the 400 run rows (+ gzipped stream
+transcripts + `conditions.json`) commit `ba35fe7f`. Scoring, judging,
+and analysis are a separate later phase (prereg §4.9), by a different
+agent from the runner. Artifacts: `bench/analysis/factorial_scored.*`
+(Stage 1), `bench/analysis/judge_factorial_run.py` + `judge_factorial/`
+(Stage 2), `bench/analysis/factorial_analysis.*` (Stage 3).
+
+### S15.1 Arms, execution, and integrity
+
+2×2 over JOIN (Wikibrain joined surface replaces the unjoined
+wiki+formal stack) × VERIFIER (`decl_exists` present): E′ = arm E's 6
+tools; X = E′ + `decl_exists` (7); J = the 7 Wikibrain graph/content
+tools; D′ = all 8 (arm D exactly). All arms: `--tools ""` (empty
+built-in set), per-row allowed/disallowed manifests, model
+claude-haiku-4-5-20251001, CLI 2.1.153, prompt byte-identical to
+Tier-1, `--max-turns 30` (mechanical), formal-search reads pinned to
+the 61a5e4f338 tree, one interleaved order (seed 20260803 shuffle of
+all 400 pairs), concurrency 4 with staggered first wave, per-row
+attach-signature + manifest validation with auto-condemn/retry.
+
+Run 2026-08-08 00:51–03:45 UTC, $40.91. Integrity gate (re-verified at
+scoring): 400/400 terminal rows, 0 errors, 0 attach-dirty, 0 manifest
+mismatches, 0 zero-tool rows, 0 turn-cap violations; per-arm condition
+hashes uniform and equal to `conditions.json`. 46 rows hit the
+mechanical cap (E′ 18, X 22, J 0, D′ 6) — valid terminal rows scored on
+their extracted output per prereg §4.2.
+
+**Scoring-phase incident (defect-4 class, repaired).** The fresh-pin
+REPL server died mid-pass while typechecking arm D′ (at `fresh_053`);
+the 47 remaining rows silently fell back to single-shot
+bare-environment checks (sub-second failures citing unknown
+identifiers) — the exact silent-fallback mode the v3 report's §3.4
+defect 4 documents. Caught by an elapsed-time audit (all legitimate
+server verdicts take ≥3 s; the other three arms' minima are 3.0–9.8 s),
+repaired by re-typechecking every produced D′ row against a restarted,
+identity-gated server: all 48 healthy-window verdicts reproduced
+exactly; 23 poisoned verdicts flipped. Full cell-level provenance:
+`factorial_scored.json` → `retc_provenance`.
+
+### S15.2 Primary endpoint: grounded typecheck (repaired oracle)
+
+| arm | cell | k/100 | rate | Wilson 95% | raw oracle | typecheck ok | produced |
+|---|---|---|---|---|---|---|---|
+| E′ | join−, ver− | 31 | .310 | [.228, .406] | 26 | 33 | 82 |
+| X | join−, ver+ | 41 | .410 | [.319, .508] | 31 | 42 | 78 |
+| J | join+, ver− | 39 | .390 | [.300, .488] | 36 | 39 | 100 |
+| D′ | join+, ver+ | 39 | .390 | [.300, .488] | 39 | 40 | 93 |
+
+Preregistered effects (commit-clustered paired bootstrap, 44 clusters,
+B=10,000, seed 20260803, `cluster_boot_rd` verbatim; α=.05 two-sided):
+
+| effect | register | RD | 95% CI | p | verdict |
+|---|---|---|---|---|---|
+| JOIN main | confirmatory | +0.030 | [−0.093, +0.139] | 0.645 | null |
+| VERIFIER main | confirmatory | +0.050 | [−0.029, +0.121] | 0.230 | null |
+| interaction | exploratory | −0.100 | [−0.245, +0.047] | 0.196 | no detectable interaction |
+
+Six pairwise clustered RDs (supporting descriptives): D′−E′ +0.080
+[−0.071, +0.207] p=0.310 · D′−X −0.020 [−0.172, +0.120] p=0.840 ·
+D′−J +0.000 [−0.099, +0.080] p=1.000 · X−E′ +0.100 [−0.022, +0.215]
+p=0.127 · J−E′ +0.080 [−0.053, +0.202] p=0.259 · J−X −0.020
+[−0.155, +0.116] p=0.821.
+
+Raw-oracle sensitivity: rates E′ 26 / X 31 / J 36 / D′ 39; join +0.090
+[−0.006, +0.183] p=0.076; verifier +0.040 [−0.030, +0.103] p=0.298;
+interaction −0.020 [−0.156, +0.134] p=0.832. The raw instrument
+flatters the join arms (they copy fully-qualified names from tool
+payloads; §4.3's citation-style artifact), and the repair removes
+exactly that artifact — the preregistered primary is the repaired row.
+
+### S15.3 Secondary: run-level repaired hallucination (lower better)
+
+Rates: E′ 9/100 · X 5/100 · J 11/100 · D′ 10/100. Effects: join +0.035
+[−0.026, +0.100] p=0.289; verifier −0.025 [−0.081, +0.025] p=0.381;
+interaction +0.030 [−0.082, +0.142] p=0.666. With formal tools of any
+kind present, flagged citations no longer separate arms.
+
+### S15.4 Secondaries pending: judge and conjunction
+
+The blinded-judge secondaries (evaluated equivalence; conjunction =
+grounded typecheck ∧ evaluated) are staged but ungraded in v3.1: the
+protocol is `bench/analysis/judge_factorial_run.py`, identical to the
+v3 fresh-set judge pass (verbatim `judge_bridge.PROMPT`, gold with
+binders, arm-substring blinding scan — green over all 353 gradeable
+outputs — no-tools claude-sonnet-5 from an empty scratch cwd,
+`--max-turns 1`, concurrency 3, 429 wait-retry, 40-item seeded
+self-consistency re-grade), and the 47 no-output rows are pre-decided
+not-equivalent by definition. Grading could not run in this pass: the
+judging CLI's Max OAuth session had expired (idle since the run phase)
+and re-authentication is interactive. Both endpoints are
+preregistered-exploratory; nothing confirmatory rests on them. Verdicts
+will fold into `factorial_scored.json` (`judge-summary` subcommand) and
+`factorial_analysis.*` when graded, with a changelog entry here.
+
+### S15.5 Manipulation checks, descriptives, sensitivity cuts
+
+Verifier usage: X 213 `decl_exists` calls across 94/100 runs; D′ 536
+across 92/100. Informal-tool touches: E′ 2/100 runs, X 4/100 — the
+unjoined arms again barely open the informal corpus (Tier-1's E
+manipulation failure, reproduced). Mean assistant turns: E′ 20.4 /
+X 21.4 / J 17.1 / D′ 17.4; mean tool calls 30.4 / 30.3 / 26.8 / 26.7.
+Production: E′ 82 / X 78 / J 100 / D′ 93 of 100 — the join arms finish
+inside the 30-turn budget; the unjoined arms cap out (18 and 22 capped
+rows). The factorial's rates are therefore not comparable to the
+Tier-1 five-arm table (§4.1): the yoked interface (empty built-ins +
+mechanical cap + interleaving) is stricter, and D′ lands at 39% where
+Tier-1's D scored 48%.
+
+Sensitivity cuts (primary outcome, exploratory; same machinery):
+
+| cut | E′ | X | J | D′ | join RD [CI] p | verifier RD [CI] p |
+|---|---|---|---|---|---|---|
+| own-module exposed (n=51) | 17 | 25 | 20 | 18 | −0.039 [−0.205, +0.108] 0.653 | +0.059 [−0.060, +0.170] 0.391 |
+| unexposed (n=49) | 14 | 16 | 19 | 21 | +0.102 [−0.076, +0.243] 0.271 | +0.041 [−0.054, +0.130] 0.438 |
+| drop 3 live-index leaks (n=97) | 31 | 39 | 38 | 38 | +0.031 [−0.093, +0.142] 0.632 | +0.041 [−0.039, +0.114] 0.353 |
+| both-annotator determinate (n=74) | 25 | 35 | 30 | 30 | +0.000 [−0.156, +0.139] 1.000 | +0.068 [−0.013, +0.151] 0.110 |
+
+Every cut preserves both nulls. The exposed/unexposed join reversal
+(−0.04 vs +0.10, both null) is the direction §4.2's contamination
+analysis predicts — the unjoined arms benefit where golds are
+retrievable — but neither stratum reaches significance.
+
+### S15.6 Recomputation
+
+`python3 bench/analysis/factorial_scored.py` (score → retc-arm Dp →
+judge-summary) then `python3 bench/analysis/factorial_analysis.py`;
+runner `bench/factorial/run_factorial.py`; prereg-time live-index
+census `bench/factorial/live_declexists_census.json` (3/100 golds
+resolvable in the live Brain index at prereg time — the drop-3
+sensitivity row above).
