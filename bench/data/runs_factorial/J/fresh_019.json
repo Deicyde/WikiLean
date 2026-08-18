@@ -1,0 +1,152 @@
+{
+ "task_id": "fresh_019",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:10:14Z",
+ "wall_s": 37.2,
+ "transcript_stats": {
+  "turns": 14,
+  "assistant_turns": 8,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_cell": 1,
+   "mcp__wikibrain__brain_search": 3,
+   "mcp__wikibrain__brain_transfer": 6
+  },
+  "tokens_in": 68,
+  "tokens_out": 2720,
+  "cost_usd": 0.039256700000000005
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"sum of non-negative antitone function bounded by integral\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3212,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sum of non-negative antitone function bounded by integral\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q200227\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Negative number\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integral\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral\\\",\\\"label\\\":\\\"Integral\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral/Bochner\\\",\\\"label\\\":\\\"Bochner\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"MeasureTheory.integral\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/Bochner/Basic.html#MeasureTheory.integral\\\",\\\"via_cell\\\":\\\"cell:Q80091\\\",\\\"cell_label\\\":\\\"Integral\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral\\\",\\\"label\\\":\\\"Integral\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral/Bochner\\\",\\\"label\\\":\\\"Bochner\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"antitone monotone decreasing function\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3563,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"antitone monotone decreasing function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Antitone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Antitone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"infinite series sum integral comparison\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4986,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infinite series sum integral comparison\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q205\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Infinity\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Integral\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral\\\",\\\"label\\\":\\\"Integral\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Integral/Bochner\\\",\\\"label\\\":\\\"Bochner\\\"}]},{\\\"id\\\":\\\"cell:Q170198\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Series (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q36161\\\",\\\"label\\\":\\\"Set (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q66707394\\\",\\\"label\\\":\\\"Countable set\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1059182\\\",\\\"label\\\":\\\"König's lemma\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1068283\\\",\\\"label\\\":\\\"Löwenheim–Skolem theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q10843274\\\",\\\"label\\\":\\\"Analytic number theory\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"label\\\":\\\"Discrete mathematics\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1630588\\\",\\\"label\\\":\\\"Hurwitz's theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q163875\\\",\\\"label\\\":\\\"Cardinal number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"label\\\":\\\"Axiom of choice\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q185264\\\",\\\"label\\\":\\\"History of mathematics\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":33,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"HasSum\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#HasSum\\\",\\\"via_cell\\\":\\\"cell:Q170198\\\",\\\"cell_label\\\":\\\"Series (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\",\\\"label\\\":\\\"InfiniteSum\\\"}]},{\\\"decl\\\":\\\"MeasureTheory.integral\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/Bochner/Basic.html#MeasureTheory.integral\\\",\\\"via_cell\\\":\\\"cell:Q80091\\\",\\\"cell_label\\\":\\\"Integral\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"p"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Antitone\"}",
+   "ok": true,
+   "result_chars": 2241,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Antitone\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Antitone\\\",\\\"anchor\\\":\\\"decl:Mathlib:Antitone\\\",\\\"label\\\":\\\"Antitone\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"xy\\\":[1348.2,-254.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Antitone\\\",\\\"label\\\":\\\"Antitone\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Antitone (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1,\\\"invocation\\\":18},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.ae_upcrossings_condExp_lt_top\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.condExp_iInf_ae_eq_of_tendsto_ae_of_tendsto_eLpNorm\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.exists_integrable_tendsto_ae_condExp_of_antitone\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.exists_lintegral_upcrossings_condExp_le\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.lintegral_upcrossings_revCEFinite_bdd\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.revCEFinite_martingale\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.revFiltration\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.revFiltration_apply\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.tendsto_ae_and_eLpNorm_condExp_iInf\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":19,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"integral bounds monotone function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integral bounds monotone function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sum partial finset range\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sum partial finset range\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"integrable function measurable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"integrable function measurable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"formal_to_informal\", \"q\": \"Finset.sum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 565,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Finset.sum\\\",\\\"decl\\\":\\\"Finset.sum\\\",\\\"id\\\":\\\"cell:Q218005\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Summation\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q218005\\\",\\\"label\\\":\\\"Summation\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Summation\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Summation\\\",\\\"description\\\":\\\"addition of a sequence of numbers\\\",\\\"snippet_sources\\\":[\\\"mathworld\\\"],\\\"via_cell\\\":\\\"cell:Q218005\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"formal_to_informal\", \"q\": \"Set.Ioo\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1527,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Set.Ioo\\\",\\\"decl\\\":\\\"Set.Ioo\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Set.Ioo\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Set.Ioo\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q898560\\\",\\\"label\\\":\\\"derivative test\\\",\\\"aka\\\":[\\\"First Derivative Test\\\",\\\"isLocalMin_of_deriv_Ioo\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/DerivativeTest\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt\\\",\\\"label\\\":\\\"ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt\\\",\\\"aka\\\":[\\\"Multiibjective optimization : an inertial dynamical approach to Pareto optima\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/ODE/PicardLindelof\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.ball_eq_Ioo\\\",\\\"label\\\":\\\"Real.ball_eq_Ioo\\\",\\\"aka\\\":[\\\"Carleson operators on doubling metric measure spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Pseudo\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:closure_Ioo\\\",\\\"label\\\":\\\"closure_Ioo\\\",\\\"aka\\\":[\\\"On the Preference Relations with Negatively Transitive Asymmetric Part. I\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/DenselyOrdered\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Cardinal.mk_Ioo_real\\\",\\\"label\\\":\\\"Cardinal.mk_Ioo_real\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Real/Cardinality\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"formal_to_informal\", \"q\": \"tsum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1343,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"tsum\\\",\\\"decl\\\":\\\"tsum\\\",\\\"id\\\":\\\"cell:decl:Mathlib:tsum\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"tsum\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q1051404\\\",\\\"label\\\":\\\"Cauchy product\\\",\\\"aka\\\":[\\\"Cauchy Product\\\",\\\"PowerSeries.coeff_mul\\\",\\\"tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm\\\",\\\"Existence of affine realizations for L\\\\\\\\'evy term structure models\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Ring\\\"},{\\\"id\\\":\\\"cell:Q1577138\\\",\\\"label\\\":\\\"Lambert series\\\",\\\"aka\\\":[\\\"Lambert Series\\\",\\\"tsum_pow_div_one_sub_eq_tsum_sigma\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/TsumDivisorsAntidiagonal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:tsum\\\",\\\"label\\\":\\\"tsum\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/InfiniteSum\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:tsum_geometric_of_lt_one\\\",\\\"label\\\":\\\"tsum_geometric_of_lt_one\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecificLimits/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:tsum_geometric_of_norm_lt_one\\\",\\\"label\\\":\\\"tsum_geometric_of_norm_lt_one\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecificLimits/Normed\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"formal_to_informal\", \"q\": \"Integrable\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1303,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Integrable\\\",\\\"decl\\\":\\\"Integrable\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q1957758\\\",\\\"label\\\":\\\"Integrable system\\\",\\\"aka\\\":[\\\"integrable system\\\"]},{\\\"id\\\":\\\"cell:decl:Mathlib:integrableOn_Ioi_rpow_iff\\\",\\\"label\\\":\\\"integrableOn_Ioi_rpow_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/ImproperIntegrals\\\"},{\\\"id\\\":\\\"cell:Q1530275\\\",\\\"label\\\":\\\"uniform integrability\\\",\\\"aka\\\":[\\\"De la Vallée-Poussin theorem\\\",\\\"MeasureTheory.UnifIntegrable\\\",\\\"uniformly integrable\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Function/UniformIntegrable\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:minpoly\\\",\\\"label\\\":\\\"minpoly\\\",\\\"aka\\\":[\\\"fields-definition-minimal-polynomial\\\",\\\"On separably integrable symmetric convex bodies\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Minpoly/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ENNReal.HolderConjugate\\\",\\\"label\\\":\\\"ENNReal.HolderConjugate\\\",\\\"aka\\\":[\\\"Non-absolute integrable function spaces on metric measure spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/ENNReal/Holder\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"formal_to_informal\", \"q\": \"abs absolute value\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 377,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"abs absolute value\\\",\\\"decl\\\":\\\"abs absolute value\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"direction\": \"informal_to_formal\", \"q\": \"Integral on an interval\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 219,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Integral on an interval\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem sum_tail_le_integral_of_antitone_nonneg_integrable\n    {f : ℝ → ℝ} {N : ℕ} (hN : 0 < N)\n    (hf_nonneg : ∀ x, 0 ≤ f x)\n    (hf_antitone : Antitone f)\n    (hf_int : IntegrableOn f (Set.Ioo (N - 1 : ℝ) ∞)) :\n    |tsum f - ∑ n in Finset.range N, f n| ≤ ∫ x in Set.Ioo (N - 1 : ℝ) ∞, f x := sorry"
+}

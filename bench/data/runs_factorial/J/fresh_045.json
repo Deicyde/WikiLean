@@ -1,0 +1,394 @@
+{
+ "task_id": "fresh_045",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:12:24Z",
+ "wall_s": 87.9,
+ "transcript_stats": {
+  "turns": 44,
+  "assistant_turns": 21,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 22,
+   "mcp__wikibrain__brain_cell": 9,
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_transfer": 3,
+   "mcp__wikibrain__brain_filter": 1
+  },
+  "tokens_in": 172,
+  "tokens_out": 6993,
+  "cost_usd": 0.12093005
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"semisimple endomorphism\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple endomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"diagonalizable endomorphism\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable endomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"generalized eigenspace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"generalized eigenspace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"diagonalizable matrix\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable matrix\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eigenvalue eigenspace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenvalue eigenspace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Jordan normal form\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 291,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan normal form\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q838495\\\",\\\"label\\\":\\\"Jordan normal form\\\",\\\"aka\\\":[\\\"Jordan Canonical Form\\\"],\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"triangularizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 308,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Triangularizable\\\",\\\"n_cells\\\":2}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\"}",
+   "ok": true,
+   "result_chars": 944,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Triangularizable\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\"]},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q838495\"}",
+   "ok": true,
+   "result_chars": 2034,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q838495\\\",\\\"id\\\":\\\"cell:Q838495\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Jordan normal form\\\",\\\"f\\\":2248,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q838495\\\",\\\"anchor\\\":\\\"Q838495\\\",\\\"label\\\":\\\"Jordan normal form\\\",\\\"f\\\":2248,\\\"xy\\\":[-112.2,-23]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q838495\\\",\\\"label\\\":\\\"Jordan normal form\\\",\\\"description\\\":\\\"form of a matrix indicating its eigenvalues and their algebraic multiplicities\\\",\\\"slug\\\":\\\"Jordan_normal_form\\\",\\\"article_annotations\\\":{\\\"total\\\":60,\\\"formalized\\\":10,\\\"partial\\\":14,\\\"not_formalized\\\":36},\\\"status\\\":\\\"not_formalized\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:JordanCanonicalForm\\\",\\\"label\\\":\\\"Jordan Canonical Form\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/JordanCanonicalForm.html\\\",\\\"qid\\\":\\\"Q838495\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Jordan_normal_form\\\",\\\"label\\\":\\\"Jordan normal form\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":60,\\\"formalized\\\":10,\\\"partial\\\":14,\\\"not_formalized\\\":36}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"page\\\":1,\\\"article\\\":1},\\\"synapses_summary\\\":{\\\"depends\\\":197,\\\"cites\\\":8,\\\"mentions\\\":17},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q1631086\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q970767\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q1589600\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}}],\\\"counts\\\":{\\\"syn\\\":179,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"diagonalizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2647,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"diagonalizable\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q943246\\\",\\\"label\\\":\\\"Wedderburn's little theorem\\\",\\\"aka\\\":[\\\"Wedderburn's Theorem\\\",\\\"Wedderburn's theorem\\\",\\\"Wedderburns Theorem\\\",\\\"littleWedderburn\\\",\\\"origins of Wedderburn's theorem\\\",\\\"On sums and products of diagonalizable matrices over division rings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/LittleWedderburn\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply_coe\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply_coe\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_mapDomain\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_mapDomain\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_symm_apply_single_one\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_symm_apply_single_one\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_symm_apply_tmul_single\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_symm_apply_tmul_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.charOfPoint\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.charOfPoint\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.charOfPoint_apply_coe\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.charOfPoint_apply_coe\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.charOfPoint_apply_inv_coe\\\",\\\"label\\\":\\\"TauCeti.DiagonalizableGroup.charOfPoint_apply_inv_coe\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/DiagonalizableGroup\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"a linear endomorphism is diagonalizable if and only if generalized eigenspaces equal eigenspaces\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2932,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"a linear endomorphism is diagonalizable if and only if generalized eigenspaces equal eigenspaces\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1340800\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Endomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1055807\\\",\\\"label\\\":\\\"Group representation\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1144780\\\",\\\"label\\\":\\\"Homology (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1259814\\\",\\\"label\\\":\\\"Nielsen–Schreier theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1626416\\\",\\\"label\\\":\\\"Homotopy group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"label\\\":\\\"Axiom of choice\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q226843\\\",\\\"label\\\":\\\"Möbius strip\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q576728\\\",\\\"label\\\":\\\"Winding number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q662830\\\",\\\"label\\\":\\\"Fundamental group\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":18,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.End\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Endomorphism\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Endomorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Endomorphism.html#CategoryTheory.End\\\",\\\"via_cell\\\":\\\"cell:Q1340800\\\",\\\"cell_label\\\":\\\"Endomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\"}",
+   "ok": true,
+   "result_chars": 1885,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\"],\\\"xy\\\":[-470.8,-417.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Triangularizable\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"In finite dimensions, over an algebraically closed field, the generalized eigenspaces of any\\\\nlinear endomorphism span the whole space. \\\",\\\"code\\\":\\\"theorem iSup_maxGenEigenspace_eq_top [IsAlgClosed K] [FiniteDimensional K V] (f : End K V) :\\\\n    ⨆ (μ : K), f.maxGenEigenspace μ = ⊤ := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Eigenspace.Triangularizable\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"label\\\":\\\"Triangularizable\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q838495\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eigenvalue\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2535,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenvalue\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"aka\\\":[\\\"Eigen vector\\\",\\\"Module.End.HasEigenvalue\\\",\\\"Root vector\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:Q978688\\\",\\\"label\\\":\\\"Gershgorin circle theorem\\\",\\\"aka\\\":[\\\"Gershgorin Circle Theorem\\\",\\\"eigenvalue_mem_ball\\\",\\\"Permutation-invariant quantum codes\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Gershgorin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Asymptotics.isBigO_iff\\\",\\\"label\\\":\\\"Asymptotics.isBigO_iff\\\",\\\"aka\\\":[\\\"Eigenvalues of Dirichlet Laplacian within the class of open sets with constant diameter\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Asymptotics/Defs\\\"},{\\\"id\\\":\\\"cell:Q5348914\\\",\\\"label\\\":\\\"Eigenvalue perturbation\\\"},{\\\"id\\\":\\\"cell:Q657820\\\",\\\"label\\\":\\\"Fredholm alternative\\\",\\\"aka\\\":[\\\"Fredholm Alternative\\\",\\\"IsCompactOperator.hasEigenvalue_or_mem_resolventSet\\\",\\\"A simple proof of the Fredholm Alternative\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operator\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot\\\",\\\"label\\\":\\\"ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot\\\",\\\"aka\\\":[\\\"Interlacing inequalities for eigenvalues of discrete Laplace operators\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.rayleighQuotient\\\",\\\"label\\\":\\\"ContinuousLinearMap.rayleighQuotient\\\",\\\"aka\\\":[\\\"Rayleigh quotient and left eigenvalues of quaternionic matrices\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Rayleigh\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsCompactOperator.hasEigenvalue_iff_mem_spectrum\\\",\\\"label\\\":\\\"IsCompactOperator.hasEigenvalue_iff_mem_spectrum\\\",\\\"aka\\\":[\\\"Entropy for compact operators and results on entropy and specification\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operator\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsCyclic.exists_generator\\\",\\\"label\\\":\\\"IsCyclic.exists_generator\\\",\\\"aka\\\":[\\\"On Distribution of Laplacian Eigenvalues of Graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/SpecificGroups/Cyclic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.IsSymmetric.conj_eigenvalue_eq_self\\\",\\\"label\\\":\\\"LinearMap.IsSymmetric.conj_eigenvalue_eq_self\\\",\\\"aka\\\":[\\\"An Exposition on Wigner's Semicircular Law\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q190524\"}",
+   "ok": true,
+   "result_chars": 3171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q190524\\\",\\\"id\\\":\\\"cell:Q190524\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"f\\\":216,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q190524\\\",\\\"anchor\\\":\\\"Q190524\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"],\\\"f\\\":216,\\\"xy\\\":[-21.7,-353.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q190524\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"vectors that map to their scalar multiples, and the associated scalars\\\",\\\"slug\\\":\\\"Eigenvalues_and_eigenvectors\\\",\\\"article_annotations\\\":{\\\"total\\\":92,\\\"formalized\\\":42,\\\"partial\\\":20,\\\"not_formalized\\\":30},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.HasEigenvalue\\\",\\\"label\\\":\\\"Module.End.HasEigenvalue\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev HasEigenvalue (f : End R M) (a : R) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Eigenspace.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Eigen_vector\\\",\\\"label\\\":\\\"Eigen vector\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Eigen_vector\\\",\\\"qid\\\":\\\"Q190524\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Root_vector\\\",\\\"label\\\":\\\"Root vector\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Root_vector\\\",\\\"qid\\\":\\\"Q190524\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Eigenvalues_and_eigenvectors\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":92,\\\"formalized\\\":42,\\\"partial\\\":20,\\\"not_formalized\\\":30}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":139,\\\"co-page\\\":9,\\\"links\\\":137,\\\"cites\\\":9,\\\"mentions\\\":43,\\\"relates\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q181365\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":1,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Spectrum\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q11210\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":2}}],\\\"counts\\\":{\\\"syn\\\":301,\\\"organs\\\":5},\\\"truncated\\\":{\\\"syn\\\":101},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"semisimple module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"semisimple module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"LinearMap diagonalizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearMap diagonalizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"End K V triangularizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"End K V triangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"triangularizable endomorphism\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2865,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"triangularizable endomorphism\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1340800\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Endomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1055807\\\",\\\"label\\\":\\\"Group representation\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1144780\\\",\\\"label\\\":\\\"Homology (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1259814\\\",\\\"label\\\":\\\"Nielsen–Schreier theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1626416\\\",\\\"label\\\":\\\"Homotopy group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"label\\\":\\\"Axiom of choice\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q226843\\\",\\\"label\\\":\\\"Möbius strip\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q576728\\\",\\\"label\\\":\\\"Winding number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q662830\\\",\\\"label\\\":\\\"Fundamental group\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":18,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.End\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Endomorphism\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Endomorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Endomorphism.html#CategoryTheory.End\\\",\\\"via_cell\\\":\\\"cell:Q1340800\\\",\\\"cell_label\\\":\\\"Endomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsSplittingField\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 832,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsSplittingField\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Normal.of_isSplittingField\\\",\\\"label\\\":\\\"Normal.of_isSplittingField\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Normal/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Polynomial.IsSplittingField\\\",\\\"label\\\":\\\"Polynomial.IsSplittingField\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/SplittingField/IsSplittingField\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Multiquadratic.isSplittingField\\\",\\\"label\\\":\\\"TauCeti.Multiquadratic.isSplittingField\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/Multiquadratic/Galois\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/SplittingField/IsSplittingField\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"IsSplittingField\\\",\\\"n_cells\\\":1}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"maxGenEigenspace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 821,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"maxGenEigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"label\\\":\\\"LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"aka\\\":[\\\"Singularity of the $n$-th eigenvalue of high dimensional Sturm-Liouville problems\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.maxGenEigenspaceIndex\\\",\\\"label\\\":\\\"Module.End.maxGenEigenspaceIndex\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"an endomorphism is semisimple if its minimal polynomial has no repeated roots\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 4088,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"an endomorphism is semisimple if its minimal polynomial has no repeated roots\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1340800\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Endomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1055807\\\",\\\"label\\\":\\\"Group representation\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1144780\\\",\\\"label\\\":\\\"Homology (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1259814\\\",\\\"label\\\":\\\"Nielsen–Schreier theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1626416\\\",\\\"label\\\":\\\"Homotopy group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"label\\\":\\\"Axiom of choice\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q226843\\\",\\\"label\\\":\\\"Möbius strip\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q576728\\\",\\\"label\\\":\\\"Winding number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q662830\\\",\\\"label\\\":\\\"Fundamental group\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":18,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.End\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Endomorphism\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Endomorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Endomorphism.html#CategoryTheory.End\\\",\\\"via_cell\\\":\\\"cell:Q1340800\\\",\\\"cell_label\\\":\\\"Endomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"decl\\\":\\\"Polynomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial\\\",\\\"via_cell\\\":\\\"cell:Q43260\\\",\\\"cell_label\\\":\\\"Polynomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snap"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace\"}",
+   "ok": true,
+   "result_chars": 1166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Eigenspace\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"children\\\":[\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Charpoly\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/ContinuousLinearMap\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Matrix\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Minpoly\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Pi\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"],\\\"fa\\\":2296},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eigenspace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2448,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q970767\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"aka\\\":[\\\"Generalized Eigenvector\\\",\\\"Module.End.genEigenspace\\\",\\\"Canonical forms of Self-Adjoint Operators in Minkowski Space-time\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot\\\",\\\"label\\\":\\\"ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot\\\",\\\"aka\\\":[\\\"Interlacing inequalities for eigenvalues of discrete Laplace operators\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.IsSymmetric.orthogonalFamily_eigenspaces\\\",\\\"label\\\":\\\"LinearMap.IsSymmetric.orthogonalFamily_eigenspaces\\\",\\\"aka\\\":[\\\"A Physical Quantum Model in a Smooth Topos\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_eigenspace_le\\\",\\\"label\\\":\\\"LinearMap.finrank_eigenspace_le\\\",\\\"aka\\\":[\\\"Independence and orthogonality of algebraic eigenvectors over the max-plus algebra\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"label\\\":\\\"LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"aka\\\":[\\\"Singularity of the $n$-th eigenvalue of high dimensional Sturm-Liouville problems\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace\\\",\\\"label\\\":\\\"Module.End.eigenspace\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace_def\\\",\\\"label\\\":\\\"Module.End.eigenspace_def\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace_mem_invtSubmodule\\\",\\\"label\\\":\\\"Module.End.eigenspace_mem_invtSubmodule\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspaces_iSupIndep\\\",\\\"label\\\":\\\"Module.End.eigenspaces_iSupIndep\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\"}",
+   "ok": true,
+   "result_chars": 876,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Semisimple\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\"]},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\"}",
+   "ok": true,
+   "result_chars": 1720,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\"],\\\"xy\\\":[-531.8,-459.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Semisimple\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"code\\\":\\\"lemma IsSemisimple.iSup_eigenspace_eq_top (hf : f.IsSemisimple) :\\\\n    ⨆ μ : K, f.eigenspace μ = ⊤ := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Eigenspace.Semisimple\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\",\\\"label\\\":\\\"Semisimple\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q838495\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.End.IsSemisimple\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 760,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.End.IsSemisimple\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Semisimple\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.isSemisimple_of_squarefree_aeval_eq_zero\\\",\\\"label\\\":\\\"Module.End.isSemisimple_of_squarefree_aeval_eq_zero\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Semisimple\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"a linear map is semisimple if its generalized eigenspaces equal its eigenspaces\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 3133,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"a linear map is semisimple if its generalized eigenspaces equal its eigenspaces\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q207643\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Linear map\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/LinearMap\\\",\\\"label\\\":\\\"LinearMap\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q15854269\\\",\\\"label\\\":\\\"Linear function\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1753188\\\",\\\"label\\\":\\\"Linearity\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"label\\\":\\\"Orthogonal matrix\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q524607\\\",\\\"label\\\":\\\"General linear group\\\",\\\"w\\\":7}],\\\"returned\\\":12,\\\"total\\\":145,\\\"withheld_by_shard\\\":291,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"LinearMap\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure LinearMap {R S : Type*} [Semiring R] [Semiring S] (σ : R →+* S) (M : Type*)\\\\n    (M₂ : Type*) [AddCommMonoid M] [AddCommMonoid M₂] [Module R M] [Module S M₂] extends\\\\n    AddHom M M₂, MulActionHom σ M M₂\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html#LinearMap\\\",\\\"via_cell\\\":\\\"cell:Q207643\\\",\\\"cell_label\\\":\\\"Linear map\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/LinearMap\\\",\\\"label\\\":\\\"LinearMap\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Module.End.IsSemisimple\"}",
+   "ok": true,
+   "result_chars": 1676,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.End.IsSemisimple\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Semisimple\\\"],\\\"xy\\\":[-193.8,-1157.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.IsSemisimple\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Semisimple\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"A linear endomorphism of an `R`-module `M` is called *semisimple* if the induced `R[X]`-module\\\\nstructure on `M` is semisimple. This is equivalent to saying that every `f`-invariant `R`-submodule\\\\nof `M` has an `f`-invariant complement: see `Module.End.isSemisimple_iff`. \\\",\\\"code\\\":\\\"def IsSemisimple := IsSemisimpleModule R[X] (AEval' f)\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Semisimple\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Semisimple\\\",\\\"label\\\":\\\"Semisimple\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsTriangularizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTriangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"isSplittingField triangularizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isSplittingField triangularizable\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"an endomorphism over an algebraically closed field whose minimal polynomial splits is triangularizable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 5228,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"an endomorphism over an algebraically closed field whose minimal polynomial splits is triangularizable\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1047547\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraically closed field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory\\\",\\\"label\\\":\\\"FieldTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/IsAlgClosed\\\",\\\"label\\\":\\\"IsAlgClosed\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/IsAlgClosed/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q1340800\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Endomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q168817\\\",\\\"label\\\":\\\"Algebraic number\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1155772\\\",\\\"label\\\":\\\"Scheme (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q33456\\\",\\\"label\\\":\\\"Exponentiation\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q382698\\\",\\\"label\\\":\\\"Affine space\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/Analysis/Complex\\\",\\\"label\\\":\\\"Complex\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":42,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.End\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Endomorphism\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Endomorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Endomorphism.html#CategoryTheory.End\\\",\\\"via_cell\\\":\\\"cell:Q1340800\\\",\\\"cell_label\\\":\\\"Endomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"decl\\\":\\\"IsAlgClosed\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.FieldTheory.IsAlgClosed.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.FieldTheory.IsAlgClosed.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class IsAlgClosed : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/IsAlgClosed/Basic.html#IsAlgClosed\\\",\\\"via_cell\\\":\\\"cell:Q1047547\\\",\\\"cell_l"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\"}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"kind\\\":\\\"supercell\\\",\\\"rows\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Module.End.exists_eigenvalue\"}",
+   "ok": true,
+   "result_chars": 1756,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.exists_eigenvalue\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"label\\\":\\\"Module.End.exists_eigenvalue\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\"],\\\"xy\\\":[-70.8,-644]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"label\\\":\\\"Module.End.exists_eigenvalue\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Eigenspace.Triangularizable\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"In finite dimensions, over an algebraically closed field, every linear endomorphism has an\\\\neigenvalue. \\\",\\\"code\\\":\\\"theorem exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V) :\\\\n    ∃ c : K, f.HasEigenvalue c := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Eigenspace.Triangularizable\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"label\\\":\\\"Eigenspace\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\",\\\"label\\\":\\\"Triangularizable\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q11567\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q192760\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Matrix.toEuclideanLin diagonal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Matrix.toEuclideanLin diagonal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"a matrix or endomorphism is diagonalizable if it can be put in diagonal form\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 4025,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"a matrix or endomorphism is diagonalizable if it can be put in diagonal form\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1340800\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Endomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1055807\\\",\\\"label\\\":\\\"Group representation\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1144780\\\",\\\"label\\\":\\\"Homology (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1259814\\\",\\\"label\\\":\\\"Nielsen–Schreier theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1626416\\\",\\\"label\\\":\\\"Homotopy group\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"label\\\":\\\"Axiom of choice\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q226843\\\",\\\"label\\\":\\\"Möbius strip\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q576728\\\",\\\"label\\\":\\\"Winding number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q662830\\\",\\\"label\\\":\\\"Fundamental group\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":18,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.End\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Endomorphism\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Endomorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Endomorphism.html#CategoryTheory.End\\\",\\\"via_cell\\\":\\\"cell:Q1340800\\\",\\\"cell_label\\\":\\\"Endomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Endomorphism\\\",\\\"label\\\":\\\"Endomorphism\\\"}]},{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Matrix (m : Type u) (n : Type u') (α : Type v) : Type max u u' v :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix\\\",\\\"via_cell\\\":\\\"cell:Q44337\\\",\\\"cell_label\\\":\\\"Matrix (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"iSup_eigenspace diagonalizable semisimple\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"iSup_eigenspace diagonalizable semisimple\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"IsSemisimple\", \"direction\": \"formal_to_informal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1429,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"IsSemisimple\\\",\\\"decl\\\":\\\"IsSemisimple\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q776578\\\",\\\"label\\\":\\\"Artin–Wedderburn theorem\\\",\\\"aka\\\":[\\\"IsSemisimpleRing.exists_algEquiv_pi_matrix_divisionRing\\\",\\\"IsSemisimpleRing.exists_ringEquiv_pi_matrix_divisionRing\\\",\\\"Wedderburn-Artin theorem\\\",\\\"Representation Theory of Finite Groups\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/SimpleModule/WedderburnArtin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsSemisimpleModule\\\",\\\"label\\\":\\\"IsSemisimpleModule\\\",\\\"aka\\\":[\\\"On the Structure Theorem of Clifford Algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/SimpleModule/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsSemisimpleRing\\\",\\\"label\\\":\\\"IsSemisimpleRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/SimpleModule/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsSemisimpleRing.isSemisimpleModule\\\",\\\"label\\\":\\\"IsSemisimpleRing.isSemisimpleModule\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/SimpleModule/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:isSemisimpleRing_iff_pi_matrix_divisionRing\\\",\\\"label\\\":\\\"isSemisimpleRing_iff_pi_matrix_divisionRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/SimpleModule/WedderburnArtin\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 0, \"under\": \"path:Mathlib/LinearAlgebra/Eigenspace\", \"type\": \"cell\", \"limit\": 50}",
+   "ok": true,
+   "result_chars": 5025,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q190524\\\",\\\"label\\\":\\\"Eigenvalues and eigenvectors\\\",\\\"f\\\":216,\\\"aka\\\":[\\\"Eigen vector\\\",\\\"Module.End.HasEigenvalue\\\",\\\"Root vector\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:Q970767\\\",\\\"label\\\":\\\"Generalized eigenvector\\\",\\\"f\\\":2200,\\\"aka\\\":[\\\"Generalized Eigenvector\\\",\\\"Module.End.genEigenspace\\\",\\\"Canonical forms of Self-Adjoint Operators in Minkowski Space-time\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:Q1307821\\\",\\\"label\\\":\\\"eigenfunction\\\",\\\"f\\\":2088,\\\"aka\\\":[\\\"Eigenfunction\\\",\\\"Module.End.HasEigenvector\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_eigenspace_le\\\",\\\"label\\\":\\\"LinearMap.finrank_eigenspace_le\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"Independence and orthogonality of algebraic eigenvectors over the max-plus algebra\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"label\\\":\\\"LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"Singularity of the $n$-th eigenvalue of high dimensional Sturm-Liouville problems\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.HasEigenvalue.pow\\\",\\\"label\\\":\\\"Module.End.HasEigenvalue.pow\\\",\\\"f\\\":128,\\\"aka\\\":[\\\"The Word is Mightier than the Label: Learning without Pointillistic Labels using Data Programming\\\"],\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.hasEigenvalue_zero_tfae\\\",\\\"label\\\":\\\"LinearMap.hasEigenvalue_zero_tfae\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.spectrum_toMatrix\\\",\\\"label\\\":\\\"LinearMap.spectrum_toMatrix\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Matrix\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.hasEigenvalue_toLin'_diagonal_iff\\\",\\\"label\\\":\\\"Matrix.hasEigenvalue_toLin'_diagonal_iff\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Matrix\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.HasEigenvalue.mem_spectrum\\\",\\\"label\\\":\\\"Module.End.HasEigenvalue.mem_spectrum\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.det_eq_prod_roots_charpoly_of_splits\\\",\\\"label\\\":\\\"Module.End.det_eq_prod_roots_charpoly_of_splits\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Charpoly\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace\\\",\\\"label\\\":\\\"Module.End.eigenspace\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace_def\\\",\\\"label\\\":\\\"Module.End.eigenspace_def\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspace_mem_invtSubmodule\\\",\\\"label\\\":\\\"Module.End.eigenspace_mem_invtSubmodule\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenspaces_iSupIndep\\\",\\\"label\\\":\\\"Module.End.eigenspaces_iSupIndep\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.eigenvectors_linearIndependent\\\",\\\"label\\\":\\\"Module.End.eigenvectors_linearIndependent\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.exists_eigenvalue\\\",\\\"label\\\":\\\"Module.End.exists_eigenvalue\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.hasEigenvalue_iff_isRoot_charpoly\\\",\\\"label\\\":\\\"Module.End.hasEigenvalue_iff_isRoot_charpoly\\\",\\\"p\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Charpoly\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"p\\\":\\\"path:Ma"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Module.End.iSup_eigenspace_eq_top\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 612,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.End.iSup_eigenspace_eq_top\\\",\\\"decl\\\":\\\"Module.End.iSup_eigenspace_eq_top\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.IsSemisimple.iSup_eigenspace_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Semisimple\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Module.End.iSup_maxGenEigenspace_eq_top\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 754,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"decl\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"label\\\":\\\"Module.End.iSup_maxGenEigenspace_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Triangularizable\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"End K V HasEigenvalue\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"End K V HasEigenvalue\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:Module.End.IsSemisimple\"}",
+   "ok": true,
+   "result_chars": 895,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.End.IsSemisimple\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.End.IsSemisimple\\\",\\\"label\\\":\\\"Module.End.IsSemisimple\\\",\\\"snippet\\\":\\\"A linear endomorphism of an `R`-module `M` is called *semisimple* if the induced `R[X]`-module\\\\nstructure on `M` is semisimple. This is equivalent to saying that every `f`-invariant `R`-submodule\\\\nof `M` has an `f`-invariant complement: see `Module.End.isSemisimple_iff`. \\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"def IsSemisimple := IsSemisimpleModule R[X] (AEval' f)\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Semisimple.html#Module.End.IsSemisimple\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"genEigenspace eigenspace semisimple equal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 198,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"genEigenspace eigenspace semisimple equal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem semisimple_endomorphism_eigenspaces_equiv [IsAlgClosed K] [FiniteDimensional K V]\n    (f : End K V) (hf : f.IsSemisimple) :\n    (⨆ μ : K, f.eigenspace μ = ⊤) ↔ (⨆ μ : K, f.maxGenEigenspace μ = ⊤) := by\n  sorry"
+}

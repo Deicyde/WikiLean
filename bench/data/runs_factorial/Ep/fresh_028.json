@@ -1,0 +1,266 @@
+{
+ "task_id": "fresh_028",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:55:38Z",
+ "wall_s": 109.5,
+ "transcript_stats": {
+  "turns": 28,
+  "assistant_turns": 17,
+  "tool_calls_by_name": {
+   "mcp__formal__decl_grep": 15,
+   "mcp__formal__loogle": 8,
+   "mcp__formal__decl_read": 4
+  },
+  "tokens_in": 138,
+  "tokens_out": 9527,
+  "cost_usd": 0.09588125
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*[Cc]ube\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2451,
+   "result_head": "[{\"type\": \"text\", \"text\": \"43 match(es) for '(theorem|lemma|def).*[Cc]ube' (via ripgrep):\\n- Mathlib/Combinatorics/HalesJewett.lean:80\\n    defines a function `(η → α) → ι → α` from `η → α` to the hypercube, such that for each coordinate\\n- Mathlib/Combinatorics/SimpleGraph/Triangle/Removal.lean:52\\n    lemma triangleRemovalBound_mul_cube_lt (hε : 0 < ε) :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Three.lean:45\\n    lemma _root_.IsPrimitiveRoot.toInteger_cube_eq_one : hζ.toInteger ^ 3 = 1 :=\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Three.lean:158\\n    lemma cube_sub_one_eq_mul : x ^ 3 - 1 = (x - 1) * (x - η) * (x - η ^ 2) := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Three.lean:177\\n    lemma lambda_pow_four_dvd_cube_sub_one_of_dvd_sub_one {x : 𝓞 K} (h : λ ∣ x - 1) :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Three.lean:188\\n    lemma lambda_pow_four_dvd_cube_add_one_of_dvd_add_one {x : 𝓞 K} (h : λ ∣ x + 1) :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Three.lean:197\\n    lemma lambda_pow_four_dvd_cube_sub_one_or_add_one_of_lambda_not_dvd {x : 𝓞 K} (h : ¬ λ ∣ x) :\\n- Mathlib/NumberTheory/FLT/Three.lean:58\\n    lemma cube_of_castHom_ne_zero {n : ZMod 9} :\\n- Mathlib/NumberTheory/FLT/Three.lean:62\\n    lemma cube_of_not_dvd {n : ℤ} (h : ¬ 3 ∣ n) :\\n- Mathlib/NumberTheory/FLT/Three.lean:241\\n    lemma a_cube_b_cube_congr_one_or_neg_one :\\n- Mathlib/NumberTheory/FLT/Three.lean:268\\n    lemma lambda_pow_four_dvd_c_cube : λ ^ 4 ∣ S'.c ^ 3 := by\\n- Mathlib/NumberTheory/FLT/Three.lean:301\\n    lemma a_cube_add_b_cube_eq_mul :\\n- Mathlib/NumberTheory/FLT/Three.lean:341\\n    lemma ex_cube_add_cube_eq_and_isCoprime_and_not_dvd_and_dvd :\\n- Mathlib/NumberTheory/FLT/Three.lean:550\\n    lemma x_mul_y_mul_z_eq_u_mul_w_cube : S.x * S.y * S.z = S.u * S.w ^ 3 := by\\n- Mathlib/NumberTheory/FLT/Three.lean:567\\n    lemma exists_cube_associated :\\n- Mathlib/NumberTheory/FLT/Three.lean:580\\n    noncomputable def X := (exists_cube_associated S).1.choose\\n- Mathlib/NumberTheory/FLT/Three.lean:581\\n    noncomputable def u₁ := (exists_cube_associated S).1.choose_spec.choose\\n- Mathlib/NumberTheory/FLT/Three.lean:587\\n    noncomputable def Y := (exists_cube_associated S).2.1.choose\\n- Mathlib/NumberTheory/FLT/Three.lean:588\\n    noncomputable def u₂ := (exists_cube_associated S).2.1.choose_spec.choose\\n- Mathlib/NumberTheory/FLT/Three.lean:594\\n    noncomputable def Z := (exists_cube_associated S).2.2.choose\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"commutative cube diagram\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'commutative cube diagram': Unknown identifier `commutative`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*[Cc]ommutative.*[Dd]iagram\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma).*[Cc]ommutative.*[Dd]iagram' (via ripgrep):\\n- Mathlib/CategoryTheory/Limits/Shapes/Pullback/IsPullback/Basic.lean:384\\n    The main objects in this lemma fit in the following commutative diagram:\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Epimorphism\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epimorphism': unknown identifier 'Epimorphism'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Epi|class Epi|def Mono|class Mono\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"78 match(es) for 'def Epi|class Epi|def Mono|class Mono' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:62\\n    def Monotone (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:74\\n    def MonotoneOn (f : α → β) (s : Set α) : Prop :=\\n- Mathlib/Order/Monotone/MonovaryOrder.lean:30\\n    def MonovaryOrder (i j : ι) : Prop :=\\n- Mathlib/Order/Monotone/Monovary.lean:42\\n    def Monovary (f : ι → α) (g : ι → β) : Prop :=\\n- Mathlib/Order/Monotone/Monovary.lean:50\\n    def MonovaryOn (f : ι → α) (g : ι → β) (s : Set ι) : Prop :=\\n- Mathlib/GroupTheory/Finiteness.lean:160\\n    class Monoid.FG : Prop where\\n- Mathlib/Algebra/Homology/Monoidal.lean:298\\n    noncomputable def Monoidal.inducingFunctorData :\\n- Mathlib/GroupTheory/Coprod/Basic.lean:89\\n    def Monoid.Coprod M N := Monoid.CoprodI ![M, N]\\n- Mathlib/GroupTheory/Coprod/Basic.lean:95\\n    def Monoid.Coprod M N := Monoid.CoprodI (fun b : Bool => cond b M N)\\n- Mathlib/GroupTheory/CoprodI.lean:98\\n    def Monoid.CoprodI : Type _ := (conGen (Monoid.CoprodI.Rel M)).Quotient\\n- Mathlib/Algebra/Group/TypeTags/Hom.lean:47\\n    def MonoidHom.toAdditive [MulOneClass α] [MulOneClass β] :\\n- Mathlib/Algebra/Group/TypeTags/Hom.lean:87\\n    def MonoidHom.toAdditiveLeft [MulOneClass α] [AddZeroClass β] :\\n- Mathlib/Algebra/Group/TypeTags/Hom.lean:116\\n    def MonoidHom.toAdditiveRight [AddZeroClass α] [MulOneClass β] :\\n- Mathlib/Algebra/Group/TypeTags/Hom.lean:164\\n    def MonoidHom.toAdditiveLeftMulEquiv [Monoid M] [AddCommMonoid N] :\\n- Mathlib/Algebra/Group/TypeTags/Hom.lean:170\\n    def MonoidHom.toAdditiveRightMulEquiv [AddMonoid M] [CommMonoid N] :\\n- Mathlib/Algebra/MonoidAlgebra/Basic.lean:690\\n    def MonoidAlgebra.toAdditiveAlgEquiv [Monoid M] :\\n- Mathlib/Algebra/Group/Hom/Defs.lean:378\\n    class MonoidHomClass (F : Type*) (M N : outParam Type*) [MulOne M] [MulOne N]\\n- Mathlib/Algebra/Group/Hom/Defs.lean:406\\n    def MonoidHomClass.toMonoidHom [MonoidHomClass F M N] (f : F) : M →* N :=\\n- Mathlib/Algebra/Group/Hom/Defs.lean:655\\n    protected def MonoidHom.copy [MulOne M] [MulOne N] (f : M →* N) (f' : M → N)\\n- Mathlib/Algebra/Group/Hom/Defs.lean:753\\n    def MonoidHom.id (M : Type*) [MulOne M] : M →* M where\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Epi\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Epi': unknown identifier 'Epi'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure Epi|abbrev Epi\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'structure Epi|abbrev Epi' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → ?b → Prop\"}",
+   "ok": true,
+   "result_chars": 129,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a → ?b → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev Epi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 81,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'abbrev Epi' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def epi|abbrev epi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 995,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'def epi|abbrev epi' (via ripgrep):\\n- Mathlib/AlgebraicTopology/SimplicialObject/Split.lean:169\\n    def epiComp {Δ₁ Δ₂ : SimplexCategoryᵒᵖ} (A : IndexSet Δ₁) (p : Δ₁ ⟶ Δ₂) [Epi p.unop] :\\n- Mathlib/CategoryTheory/Abelian/NonPreadditive.lean:193\\n    def epiIsCokernelOfKernel [Epi f] (s : Fork f 0) (h : IsLimit s) :\\n- Mathlib/CategoryTheory/Abelian/EpiWithInjectiveKernel.lean:37\\n    def epiWithInjectiveKernel : MorphismProperty C :=\\n- Mathlib/CategoryTheory/MorphismProperty/Basic.lean:439\\n    abbrev epimorphisms : MorphismProperty C := fun _ _ f => Epi f\\n- Mathlib/CategoryTheory/Abelian/SerreClass/MorphismProperty.lean:59\\n    def epiModSerre [P.IsSerreClass] : MorphismProperty C :=\\n- Mathlib/CategoryTheory/Abelian/Basic.lean:477\\n    def epiIsCokernelOfKernel [Epi f] (s : Fork f 0) (h : IsLimit s) :\\n- Mathlib/CategoryTheory/Abelian/Basic.lean:492\\n    def epiDesc [Epi f] {T : C} (g : X ⟶ T) (hg : kernel.ι f ≫ g = 0) : Y ⟶ T :=\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/MorphismProperty/Basic.lean\", \"line\": 439, \"n\": 5}",
+   "ok": true,
+   "result_chars": 299,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/MorphismProperty/Basic.lean  (lines 439–443 of 768):\\n   439  abbrev epimorphisms : MorphismProperty C := fun _ _ f => Epi f\\n   440  \\n   441  @[simp]\\n   442  lemma op_isomorphisms : (isomorphisms C).op = isomorphisms Cᵒᵖ := by\\n   443    ext\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class Epi|def Epi\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class Epi|def Epi' (via ripgrep):\\n- Mathlib/CategoryTheory/Category/Basic.lean:321\\n    class Epi (f : X ⟶ Y) : Prop where\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/Category/Basic.lean\", \"line\": 321, \"n\": 10}",
+   "ok": true,
+   "result_chars": 719,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/Category/Basic.lean  (lines 321–330 of 412):\\n   321  class Epi (f : X ⟶ Y) : Prop where\\n   322    /-- A morphism `f` is an epimorphism if it can be cancelled when precomposed. -/\\n   323    left_cancellation : ∀ {Z : C} (g h : Y ⟶ Z), f ≫ g = f ≫ h → g = h\\n   324  \\n   325  /-- A morphism `f` is a monomorphism if it can be cancelled when postcomposed:\\n   326  `g ≫ f = h ≫ f` implies `g = h`. -/\\n   327  @[to_dual (attr := stacks 003B) Epi]\\n   328  class Mono (f : X ⟶ Y) : Prop where\\n   329    /-- A morphism `f` is a monomorphism if it can be cancelled when postcomposed. -/\\n   330    right_cancellation : ∀ {Z : C} (g h : Z ⟶ X), g ≫ f = h ≫ f → g = h\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Square|lemma.*Square.*commut\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1905,
+   "result_head": "[{\"type\": \"text\", \"text\": \"77 match(es) for 'def.*Square|lemma.*Square.*commut' (via ripgrep):\\n- Mathlib/Data/Matrix/Block.lean:177\\n    def toSquareBlockProp (M : Matrix m m α) (p : m → Prop) : Matrix { a // p a } { a // p a } α :=\\n- Mathlib/Data/Matrix/Block.lean:186\\n    def toSquareBlock (M : Matrix m m α) (b : m → β) (k : β) :\\n- Mathlib/Algebra/Squarefree/Basic.lean:42\\n    def Squarefree [Monoid R] (r : R) : Prop :=\\n- Mathlib/Data/Nat/Squarefree.lean:426\\n    def SquarefreeHelper (n k : ℕ) : Prop :=\\n- Mathlib/Topology/Sheaves/MayerVietoris.lean:38\\n    noncomputable def mayerVietorisSquare' (sq : Square (Opens T))\\n- Mathlib/Topology/Sheaves/MayerVietoris.lean:59\\n    noncomputable def mayerVietorisSquare (U V : Opens T) :\\n- Mathlib/NumberTheory/SelbergSieve.lean:236\\n    def lambdaSquared (weights : ℕ → ℝ) : ℕ → ℝ := fun d =>\\n- Mathlib/Algebra/Group/Even.lean:57\\n    def IsSquare (a : α) : Prop := ∃ r, a = r * r\\n- Mathlib/Tactic/Linarith/Preprocessing.lean:250\\n    partial def findSquares (s : TreeSet (Nat × Bool) lexOrd.compare) (e : Expr) :\\n- Mathlib/Tactic/Linarith/Preprocessing.lean:276\\n    private def nlinarithGetSquareProofs (ls : List Expr) : MetaM (List Expr) :=\\n- Mathlib/LinearAlgebra/QuadraticForm/Real.lean:34\\n    noncomputable def isometryEquivSignWeightedSumSquares (w : ι → ℝ) :\\n- Mathlib/LinearAlgebra/QuadraticForm/IsometryEquiv.lean:151\\n    noncomputable def isometryEquivWeightedSumSquares (Q : QuadraticForm K V)\\n- Mathlib/LinearAlgebra/QuadraticForm/IsometryEquiv.lean:183\\n    def weightedSumSquaresCongr (h : w = w') :\\n- Mathlib/LinearAlgebra/QuadraticForm/IsometryEquiv.lean:190\\n    def isometryEquivWeightedSumSquaresWeightedSumSquares (u : ι → Sˣ) (h : ∀ i, w' i * u i ^ 2 = w i) :\\n- Mathlib/LinearAlgebra/QuadraticForm/Basic.lean:1455\\n    def weightedSumSquares [Monoid S] [DistribMulAction S R] [SMulCommClass S R R] (w : ι → S) :\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CommSq\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'CommSq': unknown identifier 'CommSq'\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*CommutativeSquare|structure.*CommutativeSquare\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*CommutativeSquare|structure.*CommutativeSquare' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"commutative square category theory\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'commutative square category theory': Unknown identifier `commutative`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"CommRing|IsCommutative\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 581,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3764 match(es) for 'CommRing|IsCommutative' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:294\\n    instance {S : Type*} [CommRing S] : Ring (FreeAlgebra S X) :=\\n- Mathlib/Algebra/FreeAlgebra.lean:299\\n    variable (S : Type) [CommRing S] in\\n- Mathlib/Algebra/FreeAlgebra.lean:471\\n    instance instIsDomain {R X} [CommRing R] [IsDomain R] : IsDomain (FreeAlgebra R X) :=\\n- Mathlib/Algebra/Algebra/Spectrum/Basic.lean:281\\n    variable [CommRing R] [Ring A] [Algebra R A]\\n- Mathlib/Algebra/Algebra/Spectrum/Basic.lean:410\\n    section CommRing\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*commute|theorem.*commute\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1958,
+   "result_head": "[{\"type\": \"text\", \"text\": \"239 match(es) for 'def.*commute|theorem.*commute' (via ripgrep):\\n- Mathlib/Algebra/DualNumber.lean:95\\n    theorem commute_eps_left [Semiring R] (x : DualNumber R) : Commute ε x := by\\n- Mathlib/Algebra/DualNumber.lean:99\\n    theorem commute_eps_right [Semiring R] (x : DualNumber R) : Commute x ε := (commute_eps_left x).symm\\n- Mathlib/Algebra/Algebra/Hom.lean:64\\n    simp only [Algebra.smul_def, map_mul, commutes, RingHom.id_apply] }\\n- Mathlib/Algebra/Algebra/Hom.lean:203\\n    theorem commutes (r : R) : φ (algebraMap R A r) = algebraMap R B r :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:122\\n    theorem coe_mk {toEquiv map_mul map_add commutes} :\\n- Mathlib/Algebra/Algebra/Equiv.lean:203\\n    theorem coe_ringHom_commutes : ((e : A₁ →ₐ[R] A₂) : A₁ →+* A₂) = ((e : A₁ ≃+* A₂) : A₁ →+* A₂) :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:207\\n    theorem commutes : ∀ r : R, e (algebraMap R A₁ r) = algebraMap R A₂ r :=\\n- Mathlib/Algebra/Algebra/Defs.lean:288\\n    theorem commutes (r : R) (x : A) : algebraMap R A r * x = x * algebraMap R A r :=\\n- Mathlib/Algebra/Algebra/Operations.lean:275\\n    theorem mul_comm_of_commute (h : ∀ m ∈ M, ∀ n ∈ N, Commute m n) : M * N = N * M :=\\n- Mathlib/Algebra/Algebra/Basic.lean:163\\n    theorem mul_sub_algebraMap_commutes [Ring A] [Algebra R A] (x : A) (r : R) :\\n- Mathlib/Algebra/Algebra/Basic.lean:166\\n    theorem mul_sub_algebraMap_pow_commutes [Ring A] [Algebra R A] (x : A) (r : R) (n : ℕ) :\\n- Mathlib/Algebra/Lie/AdjointAction/Basic.lean:34\\n    theorem LieAlgebra.commute_ad_of_commute {a b : A} (h : Commute a b) :\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:1057\\n    fun r x => by simp [Algebra.smul_def, Algebra.ofId_apply, Algebra.commutes]⟩\\n- Mathlib/Algebra/Algebra/Bilinear.lean:91\\n    theorem commute_mulLeft_right (a b : A) : Commute (mulLeft R a) (mulRight R b) := by\\n- Mathlib/Algebra/Algebra/Opposite.lean:48\\n    Algebra.smul_def, Algebra.commutes, unop_op]\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Cone|limit\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1018,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6658 match(es) for 'Cone|limit' (via ripgrep):\\n- Mathlib/Algebra/Homology/CommSq.lean:61\\n    noncomputable def CommSq.isColimitEquivIsColimitCokernelCofork (sq : CommSq f g inl inr) :\\n- Mathlib/Algebra/Homology/CommSq.lean:62\\n    IsColimit (PushoutCocone.mk _ _ sq.w) ≃ IsColimit sq.cokernelCofork where\\n- Mathlib/Algebra/Homology/CommSq.lean:64\\n    Cofork.IsColimit.mk _\\n- Mathlib/Algebra/Homology/CommSq.lean:65\\n    (fun s ↦ PushoutCocone.IsColimit.desc h\\n- Mathlib/Algebra/Homology/CommSq.lean:73\\n    apply PushoutCocone.IsColimit.inl_desc h\\n- Mathlib/Algebra/Homology/CommSq.lean:75\\n    apply PushoutCocone.IsColimit.inr_desc h)\\n- Mathlib/Algebra/Homology/CommSq.lean:77\\n    apply PushoutCocone.IsColimit.hom_ext h\\n- Mathlib/Algebra/Homology/CommSq.lean:83\\n    apply PushoutCocone.IsColimit.inl_desc h\\n- Mathlib/Algebra/Homology/CommSq.lean:89\\n    apply PushoutCocone.IsColimit.inr_desc h)\\n- Mathlib/Algebra/Homology/CommSq.lean:91\\n    PushoutCocone.IsColimit.mk _\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a ≫ ?b = ?c ≫ ?d\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a ≫ ?b = ?c ≫ ?d': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/CommSq.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4454,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/CommSq.lean  (lines 1–100 of 201):\\n     1  /-\\n     2  Copyright (c) 2024 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.Basic\\n     9  public import Mathlib.CategoryTheory.Preadditive.Biproducts\\n    10  public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs\\n    11  \\n    12  /-!\\n    13  # Relation between pullback/pushout squares and kernel/cokernel sequences\\n    14  \\n    15  Consider a commutative square in a preadditive category:\\n    16  \\n    17  ```\\n    18  X₁ ⟶ X₂\\n    19  |    |\\n    20  v    v\\n    21  X₃ ⟶ X₄\\n    22  ```\\n    23  \\n    24  In this file, we show that this is a pushout square iff the object `X₄`\\n    25  identifies to the cokernel of the difference map `X₁ ⟶ X₂ ⊞ X₃`\\n    26  via the obvious map `X₂ ⊞ X₃ ⟶ X₄`.\\n    27  \\n    28  Similarly, it is a pullback square iff the object `X₁`\\n    29  identifies to the kernel of the difference map `X₂ ⊞ X₃ ⟶ X₄`\\n    30  via the obvious map `X₁ ⟶ X₂ ⊞ X₃`.\\n    31  \\n    32  -/\\n    33  \\n    34  @[expose] public section\\n    35  \\n    36  namespace CategoryTheory\\n    37  \\n    38  open Category Limits\\n    39  \\n    40  variable {C : Type*} [Category* C] [Preadditive C]\\n    41    {X₁ X₂ X₃ X₄ : C} [HasBinaryBiproduct X₂ X₃]\\n    42  \\n    43  section Pushout\\n    44  \\n    45  variable {f : X₁ ⟶ X₂} {g : X₁ ⟶ X₃} {inl : X₂ ⟶ X₄} {inr : X₃ ⟶ X₄}\\n    46  /-- The cokernel cofork attached to a commutative square in a preadditive category. -/\\n    47  noncomputable abbrev CommSq.cokernelCofork (sq : CommSq f g inl inr) :\\n    48      CokernelCofork (biprod.lift f (-g)) :=\\n    49    CokernelCofork.ofπ (biprod.desc inl inr) (by simp [sq.w])\\n    50  \\n    51  /-- The short complex attached to the cokernel cofork of a commutative square. -/\\n    52  @[simps]\\n    53  noncomputable def CommSq.shortComplex (sq : CommSq f g inl inr) : ShortComplex C where\\n    54    f := biprod.lift f (-g)\\n    55    g := biprod.desc inl inr\\n    56    zero := by simp [sq.w]\\n    57  \\n    58  set_option backward.defeqAttrib.useBackward true in\\n    59  /-- A commutative square in a preadditive category is a pushout square iff\\n    60  the corresponding diagram `X₁ ⟶ X₂ ⊞ X₃ ⟶ X₄ ⟶ 0` makes `X₄` a cokernel. -/\\n    61  noncomputable def CommSq.isColimitEquivIsColimitCokernelCofork (sq : CommSq f g inl inr) :\\n    62      IsColimit (PushoutCocone.mk _ _ sq.w) ≃ IsColimit sq.cokernelCofork where\\n    63    toFun h :=\\n    64      Cofork.IsColimit.mk _\\n    65        (fun s ↦ PushoutCocone.IsColimit.desc h\\n    66          (biprod.inl ≫ s.π) (biprod.inr ≫ s.π) (by\\n    67            rw [← sub_eq_zero, ← assoc, ← assoc, ← Preadditive.sub_comp]\\n    68            convert! s.condition <;> cat_disch))\\n    69        (fun s ↦ by\\n    70          dsimp\\n    71          ext\\n    72          · simp only [biprod.inl_desc_assoc]\\n    73            apply PushoutCocone.IsColimit.inl_desc h\\n    74          · simp only [biprod.inr_desc_assoc]\\n    75            apply PushoutCocone.IsColimit.inr_desc h)\\n    76        (fun s m hm ↦ by\\n    77          apply PushoutCocone.IsColimit.hom_ext h\\n    78          · replace hm := biprod.inl ≫= hm\\n    79            dsimp at hm ⊢\\n    80            simp only [biprod.inl_desc_assoc] at hm\\n    81            rw [hm]\\n    82            symm\\n    83            apply PushoutCocone.IsColimit.inl_desc h\\n    84          · replace hm := biprod.inr ≫= hm\\n    85            dsimp at hm ⊢\\n    86            simp only [biprod.inr_desc_assoc] at hm\\n    87            rw [hm]\\n    88            symm\\n    89            apply PushoutCocone.IsColimit.inr_desc h)\\n    90    invFun h :=\\n    91      PushoutCocone.IsColimit.mk _\\n    92        (fun s ↦ h.desc (CokernelCofork.ofπ (biprod.desc s.inl s.inr)\\n    93 "
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure CommSq|def CommSq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 771,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'structure CommSq|def CommSq' (via ripgrep):\\n- Mathlib/Algebra/Homology/CommSq.lean:53\\n    noncomputable def CommSq.shortComplex (sq : CommSq f g inl inr) : ShortComplex C where\\n- Mathlib/Algebra/Homology/CommSq.lean:61\\n    noncomputable def CommSq.isColimitEquivIsColimitCokernelCofork (sq : CommSq f g inl inr) :\\n- Mathlib/Algebra/Homology/CommSq.lean:134\\n    noncomputable def CommSq.shortComplex' (sq : CommSq fst snd f g) : ShortComplex C where\\n- Mathlib/Algebra/Homology/CommSq.lean:142\\n    noncomputable def CommSq.isLimitEquivIsLimitKernelFork (sq : CommSq fst snd f g) :\\n- Mathlib/CategoryTheory/CommSq.lean:49\\n    structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) : Prop where\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/CategoryTheory/CommSq.lean\", \"line\": 49, \"n\": 20}",
+   "ok": true,
+   "result_chars": 874,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/CategoryTheory/CommSq.lean  (lines 49–68 of 292):\\n    49  structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) : Prop where\\n    50    /-- The square commutes. -/\\n    51    w : f ≫ h = g ≫ i := by cat_disch\\n    52  \\n    53  attribute [simp] CommSq.mk\\n    54  \\n    55  namespace CommSq\\n    56  \\n    57  variable {W X Y Z : C} {f : W ⟶ X} {g : W ⟶ Y} {h : X ⟶ Z} {i : Y ⟶ Z}\\n    58  \\n    59  @[to_dual existing w]\\n    60  lemma w' (self : CommSq f g h i) : g ≫ i = f ≫ h := self.w.symm\\n    61  \\n    62  /-- `CommSq.mk'` is the dual of `CommSq.mk`, which we need for `to_dual`.\\n    63  Please avoid using this directly. -/\\n    64  @[to_dual existing mk]\\n    65  lemma mk' (w : g ≫ i = f ≫ h := by cat_disch) : CommSq f g h i :=\\n    66    ⟨w.symm⟩\\n    67  \\n    68  attribute [reassoc] CommSq.w\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"CommCube|Cube.*theorem|Cube.*lemma\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'CommCube|Cube.*theorem|Cube.*lemma' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*six|theorem.*six\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1389,
+   "result_head": "[{\"type\": \"text\", \"text\": \"21 match(es) for 'lemma.*six|theorem.*six' (via ripgrep):\\n- Mathlib/NumberTheory/ADEInequality.lean:176\\n    theorem lt_six {r : ℕ+} (H : 1 < sumInv {2, 3, r}) : r < 6 := by\\n- Mathlib/Algebra/Exact/Sequence.lean:70\\n    lemma en route to `Module.sum_neg_one_pow_finrank_eq_zero_of_exact_six`. -/\\n- Mathlib/Algebra/Exact/Sequence.lean:71\\n    private lemma sum_neg_one_pow_finrank_eq_zero_of_exact_six_aux {V₀ V₁ V₂ V₃ V₄ V₅ : Type u₀}\\n- Mathlib/Algebra/Exact/Sequence.lean:105\\n    public lemma sum_neg_one_pow_finrank_eq_zero_of_exact_six\\n- Mathlib/Algebra/BigOperators/Fin.lean:134\\n    theorem prod_univ_six (f : Fin 6 → M) : ∏ i, f i = f 0 * f 1 * f 2 * f 3 * f 4 * f 5 := by\\n- Mathlib/NumberTheory/ModularForms/LevelOne/DimensionFormula.lean:197\\n    lemma levelOne_weight_six_rank_one : Module.rank ℂ (ModularForm 𝒮ℒ 6) = 1 :=\\n- Mathlib/NumberTheory/Harmonic/EulerMascheroni.lean:65\\n    lemma one_half_lt_eulerMascheroniSeq_six : 1 / 2 < eulerMascheroniSeq 6 := by\\n- Mathlib/NumberTheory/Harmonic/EulerMascheroni.lean:100\\n    lemma eulerMascheroniSeq'_six_lt_two_thirds : eulerMascheroniSeq' 6 < 2 / 3 := by\\n- Mathlib/RingTheory/Polynomial/Cyclotomic/Expand.lean:76\\n    lemma cyclotomic_six (R : Type*) [Ring R] : cyclotomic 6 R = X ^ 2 - X + 1 := by\\n- Mathlib/Data/Finset/Card.lean:126\\n    theorem card_le_six : #{a, b, c, d, e, f} ≤ 6 :=\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"morphism cancellation Epi\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'morphism cancellation Epi': Unknown identifier `morphism`\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem commutative_cube_six_faces\n  {C : Type*} [CategoryTheory.Category C]\n  -- Eight vertices of the cube\n  {v₀₀₀ v₀₀₁ v₀₁₀ v₀₁₁ v₁₀₀ v₁₀₁ v₁₁₀ v₁₁₁ : C}\n  -- Edges in the x-direction (first coordinate)\n  {fx₀₀₀ : v₀₀₀ ⟶ v₁₀₀} {fx₀₀₁ : v₀₀₁ ⟶ v₁₀₁}\n  {fx₀₁₀ : v₀₁₀ ⟶ v₁₁₀} {fx₀₁₁ : v₀₁₁ ⟶ v₁₁₁}\n  -- Edges in the y-direction (second coordinate)\n  {fy₀₀₀ : v₀₀₀ ⟶ v₀₁₀} {fy₀₀₁ : v₀₀₁ ⟶ v₀₁₁}\n  {fy₁₀₀ : v₁₀₀ ⟶ v₁₁₀} {fy₁₀₁ : v₁₀₁ ⟶ v₁₁₁}\n  -- Edges in the z-direction (third coordinate)\n  {fz₀₀₀ : v₀₀₀ ⟶ v₀₀₁} {fz₀₁₀ : v₀₁₀ ⟶ v₀₁₁}\n  {fz₁₀₀ : v₁₀₀ ⟶ v₁₀₁} {fz₁₁₀ : v₁₁₀ ⟶ v₁₁₁}\n  -- Five of the six faces commute\n  (h1 : CommSq fx₀₀₀ fy₀₀₀ fy₁₀₀ fx₀₁₀)  -- z=0 face\n  (h2 : CommSq fx₀₀₁ fy₀₀₁ fy₁₀₁ fx₀₁₁)  -- z=1 face\n  (h3 : CommSq fx₀₀₀ fz₀₀₀ fz₁₀₀ fx₀₀₁)  -- y=0 face\n  (h4 : CommSq fx₀₁₀ fz₀₁₀ fz₁₁₀ fx₀₁₁)  -- y=1 face\n  (h5 : CommSq fy₀₀₀ fz₀₀₀ fz₀₁₀ fy₀₀₁)  -- x=0 face\n  -- One edge into the target of the sixth face is an epimorphism\n  [CategoryTheory.Epi fy₁₀₁]\n  -- Then the sixth face (x=1) commutes\n  : CommSq fy₁₀₀ fz₁₀₀ fz₁₁₀ fy₁₀₁ := sorry"
+}

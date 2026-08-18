@@ -1,0 +1,353 @@
+{
+ "task_id": "fresh_058",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:14:59Z",
+ "wall_s": 87.3,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 8,
+   "mcp__wikibrain__brain_search": 19,
+   "mcp__wikibrain__brain_transfer": 3,
+   "mcp__wikibrain__brain_cell": 7,
+   "mcp__wikibrain__brain_neighborhood": 1
+  },
+  "tokens_in": 186,
+  "tokens_out": 6226,
+  "cost_usd": 0.1075675
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"signed measure\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 247,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation of a signed measure\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 268,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"total variation of a signed measure\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"signed measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"total variation measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measure theory\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 567,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure theory\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MeasureTheory\\\",\\\"aka\\\":[\\\"measure theory\\\"],\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q2709287\\\",\\\"label\\\":\\\"Support (measure theory)\\\",\\\"aka\\\":[\\\"MeasureTheory.Measure.support\\\",\\\"Ergodicity of the 2D Navier-Stokes Equations with Degenerate Stochastic Forcing\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Support\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2516,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"aka\\\":[\\\"A mixing tree-valued process arising under neutral evolution with recombination\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"aka\\\":[\\\"Arc Length\\\",\\\"Arc length\\\",\\\"Curve Length\\\",\\\"eVariationOn\\\",\\\"Brownian motion project\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"},{\\\"id\\\":\\\"cell:Q1067156\\\",\\\"label\\\":\\\"Dominated convergence theorem\\\",\\\"aka\\\":[\\\"Lebesgue's Dominated Convergence Theorem\\\",\\\"Lebesgues Dominated Convergence Theorem\\\",\\\"MeasureTheory.tendsto_integral_of_dominated_convergence\\\",\\\"Last Iterate Convergence of Popov Method for Non-monotone Stochastic Variational Inequalities\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Integral/DominatedConvergence\\\"},{\\\"id\\\":\\\"cell:Q1379344\\\",\\\"label\\\":\\\"Descartes' rule of signs\\\",\\\"aka\\\":[\\\"Descartes Sign Rule\\\",\\\"Polynomial.roots_countP_pos_le_signVariations\\\",\\\"Global dynamics and unfolding of planar piecewise smooth quadratic quasi-homogeneous differential systems\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Polynomial/RuleOfSigns\\\"},{\\\"id\\\":\\\"cell:Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"aka\\\":[\\\"Bounded Variation\\\",\\\"BoundedVariationOn\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"},{\\\"id\\\":\\\"cell:Q216861\\\",\\\"label\\\":\\\"Calculus of variations\\\",\\\"aka\\\":[\\\"Calculusof Variations\\\",\\\"calculus of variations\\\"]},{\\\"id\\\":\\\"cell:Q214561\\\",\\\"label\\\":\\\"Catenary\\\",\\\"aka\\\":[\\\"catenary\\\",\\\"equation of catenary via calculus of variations\\\"]},{\\\"id\\\":\\\"cell:Q385019\\\",\\\"label\\\":\\\"Liouville function\\\",\\\"aka\\\":[\\\"ArithmeticFunction.liouville\\\",\\\"On the variation of the root number in families of elliptic curves\\\"],\\\"supercell\\\":\\\"path:PrimeNumberTheoremAnd/IwaniecKowalskiCh1\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContDiffBump.convolution_tendsto_right_of_continuous\\\",\\\"label\\\":\\\"ContDiffBump.convolution_tendsto_right_of_continuous\\\",\\\"aka\\\":[\\\"The classical theory of calculus of variations for generalized functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Calculus/BumpFunction\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Int.log\\\",\\\"label\\\":\\\"Int.log\\\",\\\"aka\\\":[\\\"Tree Structures: A Variational Approach to Shannon--Wiener Information\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Int/Log\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"aka\\\":[\\\"Hahn decomposition\\\",\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"SignedMeasure\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 827,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"SignedMeasure\\\",\\\"decl\\\":\\\"SignedMeasure\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"aka\\\":[\\\"Hahn decomposition\\\",\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1568811\"}",
+   "ok": true,
+   "result_chars": 4003,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1568811\\\",\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"f\\\":152,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1568811\\\",\\\"anchor\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"supercells\\\":[\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\"],\\\"f\\\":152,\\\"xy\\\":[170.5,-1]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1568811\\\",\\\"label\\\":\\\"Hahn decomposition theorem\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"theorem\\\",\\\"slug\\\":\\\"Hahn_decomposition_theorem\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"Alternative formulation of `MeasureTheory.SignedMeasure.exists_isCompl_positive_negative`\\\\n(the Hahn decomposition theorem) using set complements. \\\",\\\"code\\\":\\\"theorem exists_compl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ s ≤[iᶜ] 0 := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"label\\\":\\\"MeasureTheory.SignedMeasure.exists_isCompl_positive_negative\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"**The Hahn decomposition theorem**: Given a signed measure `s`, there exist\\\\ncomplement measurable sets `i` and `j` such that `i` is positive, `j` is negative. \\\",\\\"code\\\":\\\"theorem exists_isCompl_positive_negative (s : SignedMeasure α) :\\\\n    ∃ i j : Set α, MeasurableSet i ∧ 0 ≤[i] s ∧ MeasurableSet j ∧ s ≤[j] 0 ∧ IsCompl i j :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Hahn_decomposition\\\",\\\"label\\\":\\\"Hahn decomposition\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Hahn_decomposition\\\",\\\"qid\\\":\\\"Q1568811\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1206.5449#1\\\",\\\"label\\\":\\\"Existence, uniqueness, and minimality of the Jordan measure decomposition\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1206.5449\\\",\\\"ref\\\":\\\"1\\\",\\\"license_open\\\":false},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1403.3341#2.1\\\",\\\"label\\\":\\\"On the coincidence of zeroth Milnor-Thurston homology with singular homology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1403.3341\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2,\\\"page\\\":1,\\\"statement\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"label\\\":\\\"Decomposition\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":46,\\\"relates\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q10290214\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1076611\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":43,\\\"organs\\\":6},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"total variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"totalVariation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q1568811\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 7775,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1568811\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q177239\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Filter.Tendsto\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q33540\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Filter.Tendsto\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q847204\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Filter.Tendsto\\\"]]}}]},{\\\"id\\\":\\\"cell:Q3352804\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q211548\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"setOf\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q3352804\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"setOf\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q5862903\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasurableSet\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q9492\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasurableSet\\\"]]}}]},{\\\"id\\\":\\\"cell:Q10290214\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q10290214\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"MeasurableSet\\\"]]}}]},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q203066\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Set\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1076611\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q1076611\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Filter.atTop\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q11205\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Real\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q11348\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"id\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1568811\\\",\\\"dst\\\":\\\"Q11563\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"MeasureTheory.SignedMeasure.exists_compl_positive_negative\\\",\\\"Real.instConditionallyCompleteLinearO"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"VectorMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 274,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"VectorMeasure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"norm of measure is bounded by total variation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2917,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm of measure is bounded by total variation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q956437\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Norm (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q120812\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1572357\\\",\\\"label\\\":\\\"Locally convex topological vector space\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":172,\\\"withheld_by_shard\\\":309,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Norm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Analysis.Normed.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Norm (E : Type*) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Group/Defs.html#Norm\\\",\\\"via_cell\\\":\\\"cell:Q956437\\\",\\\"cell_label\\\":\\\"Norm (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed\\\",\\\"label\\\":\\\"Normed\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\",\\\"label\\\":\\\"Group\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Jordan decomposition\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Jordan decomposition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"norm measure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"norm measure\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure\"}",
+   "ok": true,
+   "result_chars": 1053,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"VectorMeasure\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"children\\\":[\\\"path:Mathlib/MeasureTheory/VectorMeasure/AddContent\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Basic\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/BoundedVariation\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure/WithDensity\\\"],\\\"fa\\\":152},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measure apply set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure apply set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Variation\"}",
+   "ok": true,
+   "result_chars": 809,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Variation\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Variation\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"signed measure apply\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"signed measure apply\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"absolute value of measure applied to set\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3754,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value of measure applied to set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":158,\\\"withheld_by_shard\\\":276,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\\\n    extends R →ₙ* S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]},{\\\"decl\\\":\\\"AbsoluteValue.abs\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def abs : AbsoluteValue S S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.abs\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"for a signed measure the value of the measure on a set\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 287,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"for a signed measure the value of the measure on a set\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Measure.apply\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Measure.apply\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ennreal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1461,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ennreal\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:ENNReal\\\",\\\"label\\\":\\\"ENNReal\\\",\\\"aka\\\":[\\\"Supermartingales for Unique Fixed Points: A Unified Approach to Lower Bound Verification\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/ENNReal/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q755092\\\",\\\"label\\\":\\\"Minkowski inequality\\\",\\\"aka\\\":[\\\"ENNReal.lintegral_Lp_add_le\\\",\\\"Minkowskis Inequalities\\\",\\\"NNReal.Lp_add_le_tsum'\\\",\\\"Real.Lp_add_le\\\",\\\"Power Mean Estimation in Stochastic Monte-Carlo Tree_Search\\\",\\\"Real Analytic Methods in the Formulations of some Combinatorial Inequalities\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/MeanInequalities\\\"},{\\\"id\\\":\\\"cell:Q731894\\\",\\\"label\\\":\\\"Hölder's inequality\\\",\\\"aka\\\":[\\\"ENNReal.lintegral_mul_le_Lp_mul_Lq\\\",\\\"Hoelders Inequalities\\\",\\\"Holders inequality\\\",\\\"Hölder inequality\\\",\\\"Hölder's Inequality\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Integral/MeanInequalities\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ENNReal.HolderConjugate\\\",\\\"label\\\":\\\"ENNReal.HolderConjugate\\\",\\\"aka\\\":[\\\"Non-absolute integrable function spaces on metric measure spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/ENNReal/Holder\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ENNReal.limsup_const_mul\\\",\\\"label\\\":\\\"ENNReal.limsup_const_mul\\\",\\\"aka\\\":[\\\"Effective Banach spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Filter/ENNReal\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"SignedMeasure.apply\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 2062,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"SignedMeasure.apply\\\",\\\"decl\\\":\\\"SignedMeasure.apply\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q431078\\\",\\\"label\\\":\\\"Free group\\\",\\\"aka\\\":[\\\"Definition:Free Group\\\",\\\"FreeGroup\\\",\\\"free group\\\",\\\"Applying language models to algebraic topology: generating simplicial cycles using multi-labeling in Wu's formula\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/FreeGroup/Basic\\\"},{\\\"id\\\":\\\"cell:Q190546\\\",\\\"label\\\":\\\"Cauchy–Schwarz inequality\\\",\\\"aka\\\":[\\\"Cauchy Schwarz inequality\\\",\\\"Cauchy-Bunyakovsky-Schwarz Inequality\\\",\\\"Cauchy-Schwarz inequality\\\",\\\"LinearMap.BilinForm.apply_mul_apply_le_of_forall_zero_le\\\",\\\"Schwarzs Inequality\\\",\\\"inner_mul_inner_self_le\\\",\\\"norm_inner_le_norm\\\",\\\"A Parallel Repetition Theorem for the GHZ Game\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"},{\\\"id\\\":\\\"cell:Q322666\\\",\\\"label\\\":\\\"Cramer's rule\\\",\\\"aka\\\":[\\\"Cramer rule\\\",\\\"Cramers Rule\\\",\\\"Matrix.cramer\\\",\\\"Matrix.cramer_apply\\\",\\\"Matrix.mulVec_cramer\\\",\\\"The explicit formula for Gauss-Jordan elimination and error analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Adjugate\\\"},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"label\\\":\\\"Spectral theorem\\\",\\\"aka\\\":[\\\"LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply\\\",\\\"Matrix.IsHermitian.spectral_theorem\\\",\\\"Spectral Theorem\\\",\\\"spectral theorem\\\",\\\"An Exposition on Wigner's Semicircular Law\\\",\\\"Elements of Linear Algebra. Lecture Notes\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Spectrum\\\"},{\\\"id\\\":\\\"cell:Q576478\\\",\\\"label\\\":\\\"Liouville's theorem (complex analysis)\\\",\\\"aka\\\":[\\\"Differentiable.apply_eq_apply_of_bounded\\\",\\\"Liouville theorems\\\",\\\"Liouvilles Boundedness Theorem\\\",\\\"Schottky's theorem in $\\\\\\\\mathbb{C}^n$\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/Liouville\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"measure theory Mathlib\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"measure theory Mathlib\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory\"}",
+   "ok": true,
+   "result_chars": 1374,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MeasureTheory\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"parent\\\":\\\"path:Mathlib\\\",\\\"children\\\":[\\\"path:Mathlib/MeasureTheory/Category\\\",\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"path:Mathlib/MeasureTheory/Covering\\\",\\\"path:Mathlib/MeasureTheory/Function\\\",\\\"path:Mathlib/MeasureTheory/Group\\\",\\\"path:Mathlib/MeasureTheory/Integral\\\",\\\"path:Mathlib/MeasureTheory/MeasurableSpace\\\",\\\"path:Mathlib/MeasureTheory/Measure\\\",\\\"path:Mathlib/MeasureTheory/Order\\\",\\\"path:Mathlib/MeasureTheory/OuterMeasure\\\",\\\"path:Mathlib/MeasureTheory/PiSystem\\\",\\\"path:Mathlib/MeasureTheory/SetAlgebra\\\",\\\"path:Mathlib/MeasureTheory/SetSemiring\\\",\\\"path:Mathlib/MeasureTheory/SpecificCodomains\\\",\\\"path:Mathlib/MeasureTheory/Topology\\\",\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\"],\\\"fa\\\":40185},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q15614122\\\",\\\"label\\\":\\\"measure theory\\\",\\\"bond\\\":\\\"field\\\",\\\"prov\\\":9}],\\\"organs_by_kind\\\":{\\\"concept\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/Measure\"}",
+   "ok": true,
+   "result_chars": 3679,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/Measure\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Measure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Measure\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/Measure\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"children\\\":[\\\"path:Mathlib/MeasureTheory/Measure/AEDisjoint\\\",\\\"path:Mathlib/MeasureTheory/Measure/AEMeasurable\\\",\\\"path:Mathlib/MeasureTheory/Measure/AbsolutelyContinuous\\\",\\\"path:Mathlib/MeasureTheory/Measure/AddContent\\\",\\\"path:Mathlib/MeasureTheory/Measure/CharacteristicFunction\\\",\\\"path:Mathlib/MeasureTheory/Measure/Comap\\\",\\\"path:Mathlib/MeasureTheory/Measure/Complex\\\",\\\"path:Mathlib/MeasureTheory/Measure/Content\\\",\\\"path:Mathlib/MeasureTheory/Measure/ContinuousPreimage\\\",\\\"path:Mathlib/MeasureTheory/Measure/Count\\\",\\\"path:Mathlib/MeasureTheory/Measure/Decomposition\\\",\\\"path:Mathlib/MeasureTheory/Measure/Dirac\\\",\\\"path:Mathlib/MeasureTheory/Measure/DiracProba\\\",\\\"path:Mathlib/MeasureTheory/Measure/Doubling\\\",\\\"path:Mathlib/MeasureTheory/Measure/EverywherePos\\\",\\\"path:Mathlib/MeasureTheory/Measure/FiniteMeasure\\\",\\\"path:Mathlib/MeasureTheory/Measure/FiniteMeasureExt\\\",\\\"path:Mathlib/MeasureTheory/Measure/FiniteMeasurePi\\\",\\\"path:Mathlib/MeasureTheory/Measure/FiniteMeasureProd\\\",\\\"path:Mathlib/MeasureTheory/Measure/GiryMonad\\\",\\\"path:Mathlib/MeasureTheory/Measure/Haar\\\",\\\"path:Mathlib/MeasureTheory/Measure/HasOuterApproxClosed\\\",\\\"path:Mathlib/MeasureTheory/Measure/HasOuterApproxClosedProd\\\",\\\"path:Mathlib/MeasureTheory/Measure/Hausdorff\\\",\\\"path:Mathlib/MeasureTheory/Measure/IntegralCharFun\\\",\\\"path:Mathlib/MeasureTheory/Measure/Lebesgue\\\",\\\"path:Mathlib/MeasureTheory/Measure/LevyConvergence\\\",\\\"path:Mathlib/MeasureTheory/Measure/LevyProkhorovMetric\\\",\\\"path:Mathlib/MeasureTheory/Measure/LogLikelihoodRatio\\\",\\\"path:Mathlib/MeasureTheory/Measure/Map\\\",\\\"path:Mathlib/MeasureTheory/Measure/MeasureSpace\\\",\\\"path:Mathlib/MeasureTheory/Measure/MeasureSpaceDef\\\",\\\"path:Mathlib/MeasureTheory/Measure/MeasuredSets\\\",\\\"path:Mathlib/MeasureTheory/Measure/MutuallySingular\\\",\\\"path:Mathlib/MeasureTheory/Measure/NullMeasurable\\\",\\\"path:Mathlib/MeasureTheory/Measure/OpenPos\\\",\\\"path:Mathlib/MeasureTheory/Measure/Portmanteau\\\",\\\"path:Mathlib/MeasureTheory/Measure/PreVariation\\\",\\\"path:Mathlib/MeasureTheory/Measure/ProbabilityMeasure\\\",\\\"path:Mathlib/MeasureTheory/Measure/Prod\\\",\\\"path:Mathlib/MeasureTheory/Measure/Prokhorov\\\",\\\"path:Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving\\\",\\\"path:Mathlib/MeasureTheory/Measure/Real\\\",\\\"path:Mathlib/MeasureTheory/Measure/Regular\\\",\\\"path:Mathlib/MeasureTheory/Measure/RegularityCompacts\\\",\\\"path:Mathlib/MeasureTheory/Measure/Restrict\\\",\\\"path:Mathlib/MeasureTheory/Measure/SeparableMeasure\\\",\\\"path:Mathlib/MeasureTheory/Measure/Stieltjes\\\",\\\"path:Mathlib/MeasureTheory/Measure/Sub\\\",\\\"path:Mathlib/MeasureTheory/Measure/SubFinite\\\",\\\"path:Mathlib/MeasureTheory/Measure/Support\\\",\\\"path:Mathlib/MeasureTheory/Measure/Tight\\\",\\\"path:Mathlib/MeasureTheory/Measure/TightNormed\\\",\\\"path:Mathlib/MeasureTheory/Measure/Tilted\\\",\\\"path:Mathlib/MeasureTheory/Measure/Trim\\\",\\\"path:Mathlib/MeasureTheory/Measure/Typeclasses\\\",\\\"path:Mathlib/MeasureTheory/Measure/WithDensity\\\",\\\"path:Mathlib/MeasureTheory/Measure/WithDensityFinite\\\"],\\\"fa\\\":40184},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Basic\"}",
+   "ok": true,
+   "result_chars": 793,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Basic\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Basic\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Basic\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Basic\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"signed measure total variation property\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 272,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"signed measure total variation property\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"le_total_variation\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"le_total_variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\"}",
+   "ok": true,
+   "result_chars": 866,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Decomposition\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure/Decomposition\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"cells\\\":[\\\"cell:Q1568811\\\"],\\\"fa\\\":152},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/VectorMeasure\\\",\\\"label\\\":\\\"VectorMeasure\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"abs apply\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"abs apply\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"measure value bounded\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 254,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"measure value bounded\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SignedMeasure norm bound\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SignedMeasure norm bound\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"total variation\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 211,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"total variation\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"apply_le\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2662,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"apply_le\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q190546\\\",\\\"label\\\":\\\"Cauchy–Schwarz inequality\\\",\\\"aka\\\":[\\\"Cauchy Schwarz inequality\\\",\\\"Cauchy-Bunyakovsky-Schwarz Inequality\\\",\\\"Cauchy-Schwarz inequality\\\",\\\"LinearMap.BilinForm.apply_mul_apply_le_of_forall_zero_le\\\",\\\"Schwarzs Inequality\\\",\\\"inner_mul_inner_self_le\\\",\\\"norm_inner_le_norm\\\",\\\"A Parallel Repetition Theorem for the GHZ Game\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsPicardLindelof.FunSpace.dist_iterate_next_apply_le\\\",\\\"label\\\":\\\"IsPicardLindelof.FunSpace.dist_iterate_next_apply_le\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/ODE/PicardLindelof\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NonUnitalStarAlgHom.norm_apply_le\\\",\\\"label\\\":\\\"NonUnitalStarAlgHom.norm_apply_le\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/CStarAlgebra/Spectrum\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.norm_apply_le_map_zero_re_of_add_star_eq_zero\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.norm_apply_le_map_zero_re_of_add_star_eq_zero\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.norm_apply_le_map_zero_re_of_star_eq_neg\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.norm_apply_le_map_zero_re_of_star_eq_neg\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_add_star_eq_zero\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_add_star_eq_zero\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_forall_star_eq_neg\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_forall_star_eq_neg\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_star_eq_neg\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.norm_normalize_apply_le_one_of_star_eq_neg\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsSemigroupGroupPD.normSq_apply_le\\\",\\\"label\\\":\\\"TauCeti.IsSemigroupGroupPD.normSq_apply_le\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite/SemigroupGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsSemigroupGroupPD.norm_apply_le_one_of_diagonal_eq_one\\\",\\\"label\\\":\\\"TauCeti.IsSemigroupGroupPD.norm_apply_le_one_of_diagonal_eq_one\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite/SemigroupGroup\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"absolute value\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3724,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"resolved_from\\\":\\\"label\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":158,\\\"withheld_by_shard\\\":276,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\\\n    extends R →ₙ* S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]},{\\\"decl\\\":\\\"AbsoluteValue.abs\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def abs : AbsoluteValue S S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.abs\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem signed_measure_apply_le_totalVariation {α : Type*} [MeasurableSpace α] (μ : SignedMeasure α) {s : Set α} (hs : MeasurableSet s) : |μ s| ≤ (μ.totalVariation s : ℝ) := sorry"
+}

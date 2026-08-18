@@ -1,0 +1,364 @@
+{
+ "task_id": "fresh_084",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:41:26Z",
+ "wall_s": 104.0,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 27,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 242,
+  "tokens_out": 6082,
+  "cost_usd": 0.11181474999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap topological\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap topological': Unknown identifier `topological`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"closed range linear map\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'closed range linear map': Unknown identifier `closed`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finite codimension\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finite codimension': Unknown identifier `finite`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsClosed (range ?f)\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsClosed (range ?f)': Unknown identifier `range`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"closed.*range\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"61 match(es) for 'closed.*range' (via ripgrep):\\n- Mathlib/Geometry/Manifold/IsManifold/InteriorBoundary.lean:377\\n    a closed convex set with nonempty interior (`I'.range`), it must send `x` to that interior. -/\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:69\\n    closedBall_subset : closedBall (extChartAt I c c) rOut ∩ range I ⊆ (extChartAt I c).target\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:142\\n    closedBall (extChartAt I c c) f.rOut ∩ range I ∩ (extChartAt I c).symm ⁻¹' s := by\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:190\\n    IsCompact ((extChartAt I c).symm '' (closedBall (extChartAt I c c) f.rOut ∩ range I)) :=\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:191\\n    ((isCompact_closedBall _ _).inter_right I.isClosed_range).image_of_continuousOn <|\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:201\\n    closedBall (extChartAt I c c) f.rOut ∩ range I := by\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:216\\n    exact IsClosed.inter isClosed_closedBall I.isClosed_range\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:245\\n    IsClosed ((extChartAt I c).symm '' (closedBall (extChartAt I c c) f.rOut ∩ range I)) :=\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:249\\n    tsupport f ⊆ (extChartAt I c).symm '' (closedBall (extChartAt I c c) f.rOut ∩ range I) := by\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:256\\n    tsupport f ⊆ (extChartAt I c).symm '' (closedBall (extChartAt I c c) f.rOut ∩ range I) :=\\n- Mathlib/Geometry/Manifold/BumpFunction.lean:276\\n    (extChartAt I c).symm '' (closedBall (extChartAt I c c) f.rOut ∩ range I) := by\\n- Mathlib/Analysis/Seminorm.lean:888\\n    theorem closedBall_iSup {ι : Sort*} {p : ι → Seminorm 𝕜 E} (hp : BddAbove (range p)) (e : E)\\n- Mathlib/Analysis/Normed/Operator/Banach.lean:344\\n    /-- An injective continuous linear map with a closed range defines a continuous linear equivalence\\n- Mathlib/Analysis/Normed/Operator/Banach.lean:380\\n    /-- If `f : E →L[𝕜] F` is injective with closed range (and `E` and `F` are Banach spaces),\\n- Mathlib/Analysis/Normed/Operator/Banach.lean:386\\n    /-- A choice of anti-Lipschitz constant for `f : E →L[𝕜] F` injective with closed range\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*closed.*range.*corank|codimension\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2874,
+   "result_head": "[{\"type\": \"text\", \"text\": \"30 match(es) for '(theorem|lemma).*closed.*range.*corank|codimension' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/AlgebraicCycle/Basic.lean:62\\n    applications these will be some notions of dimension or codimension. The most common notion of\\n- Mathlib/AlgebraicGeometry/AlgebraicCycle/Basic.lean:63\\n    dimension is `Order.height`, and the most common notion of codimension is `Order.coheight`, though\\n- Mathlib/AlgebraicGeometry/OrderOfVanishing.lean:16\\n    Noetherian integral scheme at a point of codimension `1`.\\n- Mathlib/Algebra/Quandle.lean:34\\n    used by Fenn and Rourke for framed codimension-2 knots and\\n- Mathlib/Analysis/Convex/AmpleSet.lean:26\\n    - `AmpleSet.of_one_lt_codim`: a linear subspace of codimension at least two has an ample complement.\\n- Mathlib/Analysis/Convex/AmpleSet.lean:28\\n    to the theory of immersions in positive codimension.\\n- Mathlib/Analysis/Convex/AmpleSet.lean:120\\n    /-! ## Subspaces of codimension at least two have ample complement -/\\n- Mathlib/Analysis/Convex/AmpleSet.lean:124\\n    If `E` has codimension at least two, its complement is ample. -/\\n- Mathlib/Analysis/Normed/Module/Connected.lean:24\\n    of codimension `> 1` is path-connected.\\n- Mathlib/Analysis/Normed/Module/Connected.lean:258\\n    If `E` has codimension at least two, its complement is path-connected. -/\\n- Mathlib/Analysis/Normed/Module/Connected.lean:267\\n    If `E` has codimension at least two, its complement is connected. -/\\n- Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean:43\\n    sometimes understood to mean specifically reflection in a codimension-one subspace, and sometimes\\n- Mathlib/Geometry/Euclidean/Projection.lean:402\\n    specifically reflection in a codimension-one subspace, and sometimes\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:72\\n    is uniquely a `1`-codimensional face of the corresponding (I)\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/UnionProd.lean:250\\n    /-- the dimension of the 1-codimensional face -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/Horn.lean:287\\n    /-- The `j`th face of codimension `1` of the `i`-th horn. -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:11\\n    # Simplices that are uniquely codimensional one faces\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:14\\n    we say that `x` is uniquely a `1`-codimensional face of `y` if there\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:36\\n    /-- The property that a simplex is uniquely a `1`-codimensional face of another simplex -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:73\\n    /-- When a `d`-dimensional simplex `x` is a `1`-codimensional face of `y`, this is\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Submodule.*codimension|Submodule.*corank\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Submodule.*codimension|Submodule.*corank' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*codimension|def.*codimension\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*codimension|def.*codimension' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"finrank.*Submodule|Submodule.*finrank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1943,
+   "result_head": "[{\"type\": \"text\", \"text\": \"179 match(es) for 'finrank.*Submodule|Submodule.*finrank' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:32\\n    Algebra.toSubmodule_eq_top.1 (eq_top_of_finrank_eq <| K.finrank_toSubmodule.trans h) }\\n- Mathlib/Algebra/Lie/CartanCriterion.lean:111\\n    replace hν : ν ∈ E := Submodule.subset_span ⟨⟨ν, ⟨0, finrank_pos⟩⟩, rfl⟩\\n- Mathlib/Algebra/Lie/CartanExists.lean:161\\n    obtain hr | hr : r = finrank K L ∨ r < finrank K L := (Submodule.finrank_le _).eq_or_lt\\n- Mathlib/Algebra/Lie/CartanExists.lean:165\\n    apply Submodule.eq_top_of_finrank_eq hr\\n- Mathlib/Algebra/Lie/CartanExists.lean:279\\n    apply Submodule.finrank_quotient_add_finrank\\n- Mathlib/Algebra/Lie/CartanExists.lean:372\\n    exact Submodule.eq_of_le_of_finrank_le hyx this\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:612\\n    convert_to! finrank K (rootSpace H α).toSubmodule ≠ 0\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:715\\n    (by rwa [ne_eq, LieSubmodule.mk_eq_zero])).mp (finrank_rootSpace_eq_one β hβ) ⟨y, hy⟩\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:758\\n    · have ha := Submodule.isAtom_iff_finrank_eq_one.mpr (finrank_rootSpace_eq_one α hα)\\n- Mathlib/Algebra/Lie/Weights/Linear.lean:135\\n    rwa [← LieSubmodule.nontrivial_iff_ne_bot, ← rank_pos_iff_nontrivial (R := R), ← finrank_eq_rank,\\n- Mathlib/Algebra/Lie/LieTheorem.lean:229\\n    apply Submodule.finrank_lt_finrank_of_lt\\n- Mathlib/Analysis/Convex/Radon.lean:111\\n    · exact (Submodule.finrank_le (vectorSpan 𝕜 (range a))).trans (Nat.le_pred_of_lt h_card)\\n- Mathlib/Algebra/Exact/Sequence.lean:59\\n    congrArg (fun S : Submodule k (V i.succ.castSucc) => finrank k ↥S)\\n- Mathlib/Algebra/Module/Lattice.lean:190\\n    lemma finrank_of_pi {ι : Type*} [Fintype ι] [IsFractionRing R K] (M : Submodule R (ι → K))\\n- Mathlib/Algebra/Module/SpanRankOperations.lean:76\\n    lemma spanFinrank_eq_finrank_quotient (N : Submodule R M) (fg : N.FG) :\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LinearMap.*TopologicalSpace|ContinuousLinearMap\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2057,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2000 match(es) for 'LinearMap.*TopologicalSpace|ContinuousLinearMap' (via ripgrep):\\n- Mathlib/Algebra/Module/LinearMap/End.lean:396\\n    See `ContinuousLinearMap.smulRightL` for the continuous version of this, and see\\n- Mathlib/Geometry/Manifold/IsManifold/ExtChartAt.lean:400\\n    ContinuousLinearMap.IsInvertible <|\\n- Mathlib/Geometry/Manifold/IsManifold/InteriorBoundary.lean:246\\n    rw [fderiv_comp _ (by fun_prop) hf, ContinuousLinearMap.fderiv] at h\\n- Mathlib/Geometry/Manifold/IsManifold/InteriorBoundary.lean:285\\n    rw [← ContinuousLinearMap.coe_restrictScalars' (R := ℝ),\\n- Mathlib/Geometry/Manifold/IsManifold/InteriorBoundary.lean:372\\n    rwa [hf''.fderiv_restrictScalars (𝕜 := ℝ), ContinuousLinearMap.coe_restrictScalars']\\n- Mathlib/Geometry/Manifold/Instances/UnitsOfNormedAlgebra.lean:21\\n    `ContinuousLinearMap.toNormedAlgebra`), so this construction provides a Lie group structure on\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:141\\n    HasFDerivAt (stereoInvFunAux v) (ContinuousLinearMap.id ℝ E) 0 := by\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:148\\n    ((4 : ℝ) • ContinuousLinearMap.id ℝ E) 0 := by\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:160\\n    have : HasFDerivAt (stereoInvFunAux v) (ContinuousLinearMap.id ℝ E) ((ℝ ∙ v)ᗮ.subtypeL 0) :=\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:162\\n    refine this.comp (0 : (ℝ ∙ v)ᗮ) (by apply ContinuousLinearMap.hasFDerivAt)\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:541\\n    rw [ContinuousLinearMap.coe_comp, ContinuousLinearEquiv.coe_coe]\\n- Mathlib/Geometry/Manifold/Instances/Icc.lean:189\\n    simp only [Function.comp_apply, ContinuousLinearMap.comp_apply]\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:403\\n    apply ContinuousLinearMap.leftInverse_of_comp\\n- Mathlib/Geometry/Manifold/LocalDiffeomorph.lean:407\\n    apply ContinuousLinearMap.rightInverse_of_comp\\n- Mathlib/Geometry/Manifold/Diffeomorph.lean:409\\n    let eR : E →L[ℝ] E' := ContinuousLinearMap.restrictScalars ℝ (e : E →L[𝕜] E')\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsClosed.*image|image.*IsClosed\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1805,
+   "result_head": "[{\"type\": \"text\", \"text\": \"97 match(es) for 'IsClosed.*image|image.*IsClosed' (via ripgrep):\\n- Mathlib/Topology/DiscreteQuotient.lean:135\\n    theorem isClosed_preimage (A : Set S) : IsClosed (S.proj ⁻¹' A) :=\\n- Mathlib/Topology/LocalAtTarget.lean:60\\n    theorem Set.restrictPreimage_isClosedEmbedding (s : Set β) (h : IsClosedEmbedding f) :\\n- Mathlib/Topology/LocalAtTarget.lean:61\\n    IsClosedEmbedding (s.restrictPreimage f) :=\\n- Mathlib/Topology/LocalAtTarget.lean:65\\n    alias Topology.IsClosedEmbedding.restrictPreimage := Set.restrictPreimage_isClosedEmbedding\\n- Mathlib/Topology/LocalAtTarget.lean:67\\n    theorem IsClosedMap.restrictPreimage (H : IsClosedMap f) (s : Set β) :\\n- Mathlib/Topology/LocalAtTarget.lean:68\\n    IsClosedMap (s.restrictPreimage f) := by\\n- Mathlib/Topology/LocalAtTarget.lean:71\\n    ∃ v, IsClosed v ∧ Subtype.val ⁻¹' v = s.restrictPreimage f '' t by\\n- Mathlib/Topology/LocalAtTarget.lean:141\\n    IsClosedMap f ↔ ∀ i, IsClosedMap ((U i).1.restrictPreimage f) := by\\n- Mathlib/Topology/LocalAtTarget.lean:176\\n    IsClosedEmbedding f ↔ ∀ i, IsClosedEmbedding ((U i).1.restrictPreimage f) := by\\n- Mathlib/Topology/Sober.lean:263\\n    exact IsClosed.preimage_val hV\\n- Mathlib/Topology/Defs/Basic.lean:56\\n    * `IsClosedMap f`: a map is a *closed map*, if the image of any closed set is a closed set.\\n- Mathlib/Topology/Convenient/OpenClosed.lean:69\\n    ⟨a.2 ⁻¹' F, IsClosed.preimage a.2.continuous hF⟩\\n- Mathlib/Topology/Convenient/OpenClosed.lean:75\\n    exact fun _ hV ↦ this _ (fun a ↦ IsClosed.preimage\\n- Mathlib/Topology/Convenient/OpenClosed.lean:80\\n    refine IsClosed.preimage continuous_subtype_val ?_\\n- Mathlib/Topology/Homeomorph/Defs.lean:282\\n    theorem isClosed_preimage (h : X ≃ₜ Y) {s : Set Y} : IsClosed (h ⁻¹' s) ↔ IsClosed s := by\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*range.*closed|lemma.*range.*closed\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*range.*closed|lemma.*range.*closed' (via ripgrep):\\n- Mathlib/Order/Closure.lean:403\\n    theorem closed_eq_range_close : l.closed = Set.range (u ∘ l) :=\\n- Mathlib/Analysis/Normed/Module/ContinuousInverse.lean:252\\n    lemma of_injective_of_isClosed_range_of_closedComplement_range {f : E →L[R] F}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Normed/Module/ContinuousInverse.lean\", \"line\": 250, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1676,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Normed/Module/ContinuousInverse.lean  (lines 250–279 of 365):\\n   250  /-- A continuous linear map between Banach spaces has a continuous left inverse if it is injective,\\n   251  has closed range and its range has a closed complement. -/\\n   252  lemma of_injective_of_isClosed_range_of_closedComplement_range {f : E →L[R] F}\\n   253      (hf : Injective f) (hf' : IsClosed (range f)) (hf'' : Submodule.ClosedComplemented f.range) :\\n   254      f.HasLeftInverse := by\\n   255    have : (f.rangeRestrict).ker = ⊥ := by\\n   256      rw [ker_codRestrict]; exact LinearMap.ker_eq_bot.mpr hf\\n   257    -- We compose the continuous inverse of `f : E → range f` with the projection `p : F → range f`.\\n   258    obtain ⟨p, hp⟩ := hf''\\n   259    refine ⟨(f.leftInverse_of_injective_of_isClosed_range hf hf').comp p, fun x ↦ ?_⟩\\n   260    simpa [hp ⟨f x, by simp⟩] using! f.rangeRestrict.leftInverse_apply_of_inj this x\\n   261  \\n   262  end\\n   263  \\n   264  end HasLeftInverse\\n   265  \\n   266  namespace HasRightInverse\\n   267  \\n   268  variable {f : E →L[R] F}\\n   269  \\n   270  /-- Choice of continuous right inverse for `f : F →L[R] E`, given that such an inverse exists. -/\\n   271  def rightInverse (h : f.HasRightInverse) : F →L[R] E := Classical.choose h\\n   272  \\n   273  lemma rightInverse_rightInverse (h : f.HasRightInverse) : RightInverse h.rightInverse f :=\\n   274    Classical.choose_spec h\\n   275  \\n   276  lemma surjective (h : f.HasRightInverse) : Surjective f :=\\n   277    h.rightInverse_rightInverse.surjective\\n   278  \\n   279  lemma congr {g : E →L[R] F} (hf : f.HasRightInverse) (hfg : g = f) :\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finrank.*image|lemma.*finite.*codim.*range\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 420,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*finrank.*image|lemma.*finite.*codim.*range' (via ripgrep):\\n- Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean:130\\n    theorem AffineIndependent.finrank_vectorSpan_image_finset [DecidableEq P]\\n- Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean:175\\n    theorem finrank_vectorSpan_image_finset_le [DecidableEq P] (p : ι → P) (s : Finset ι) {n : ℕ}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"isClosed.*image.*finrank|closed.*image.*codim\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'isClosed.*image.*finrank|closed.*image.*codim' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?f : ?E →L[?𝕜] ?F) (S : Submodule) IsClosed\"}",
+   "ok": true,
+   "result_chars": 246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?f : ?E →L[?𝕜] ?F) (S : Submodule) IsClosed': type expected, got\\n  (Submodule : (R : Type ?u.10) →\\n  (M : Type ?u.9) → [inst : Semiring R] → [inst_1 : AddCommMonoid M] → [Module R M] → Type ?u.9)\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Submodule.*image|map.*Submodule\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1951,
+   "result_head": "[{\"type\": \"text\", \"text\": \"761 match(es) for 'Submodule.*image|map.*Submodule' (via ripgrep):\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:237\\n    /-- The forgetful map from `NonUnitalSubalgebra` to `Submodule` as an `OrderEmbedding` -/\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:369\\n    theorem map_toSubmodule {S : NonUnitalSubalgebra R A} {f : F} :\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:371\\n    (map f S).toSubmodule = Submodule.map (LinearMapClass.linearMap f) S.toSubmodule :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:269\\n    simpa only [Subalgebra.map_toSubmodule, toSubmodule_bot] using Submodule.map_one _\\n- Mathlib/Algebra/Algebra/Tower.lean:395\\n    /-- A variant of `Submodule.span_image` for `algebraMap`. -/\\n- Mathlib/Algebra/Algebra/Tower.lean:398\\n    (Submodule.span_image <| Algebra.linearMap R S).trans rfl\\n- Mathlib/Algebra/Algebra/Tower.lean:404\\n    (Submodule.span_image <| (Algebra.linearMap S T).restrictScalars R).trans rfl\\n- Mathlib/Algebra/Algebra/Operations.lean:409\\n    map f.toLinearMap (1 : Submodule R A) = 1 := by\\n- Mathlib/Algebra/Algebra/Operations.lean:415\\n    map (↑(opLinearEquiv R : A ≃ₗ[R] Aᵐᵒᵖ) : A →ₗ[R] Aᵐᵒᵖ) (1 : Submodule R A) = 1 := by\\n- Mathlib/Algebra/Algebra/Operations.lean:422\\n    comap (↑(opLinearEquiv R : A ≃ₗ[R] Aᵐᵒᵖ) : A →ₗ[R] Aᵐᵒᵖ) (1 : Submodule R Aᵐᵒᵖ) = 1 := by\\n- Mathlib/Algebra/Algebra/Operations.lean:428\\n    map (↑(opLinearEquiv R : A ≃ₗ[R] Aᵐᵒᵖ).symm : Aᵐᵒᵖ →ₗ[R] A) (1 : Submodule R Aᵐᵒᵖ) = 1 := by\\n- Mathlib/Algebra/Algebra/Operations.lean:433\\n    comap (↑(opLinearEquiv R : A ≃ₗ[R] Aᵐᵒᵖ).symm : Aᵐᵒᵖ →ₗ[R] A) (1 : Submodule R A) = 1 := by\\n- Mathlib/Algebra/Algebra/Operations.lean:495\\n    theorem map_unop_mul (M N : Submodule R Aᵐᵒᵖ) :\\n- Mathlib/Algebra/Algebra/Operations.lean:505\\n    theorem comap_op_mul (M N : Submodule R Aᵐᵒᵖ) :\\n- Mathlib/Algebra/Algebra/Operations.lean:680\\n    map_zero' := Submodule.map_bot _\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Submodule.map|theorem Submodule.map\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 367,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def Submodule.map|theorem Submodule.map' (via ripgrep):\\n- Mathlib/Topology/Algebra/Module/Basic.lean:144\\n    theorem Submodule.mapsTo_smul_closure (s : Submodule R M) (c : R) :\\n- Mathlib/RingTheory/SimpleModule/Isotypic.lean:311\\n    theorem Submodule.map_le_isotypicComponent (S : Submodule R M) [IsSimpleModule R S]\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Submodule\\\\.map\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def Submodule\\\\\\\\.map' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"codimension|corank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2280,
+   "result_head": "[{\"type\": \"text\", \"text\": \"30 match(es) for 'codimension|corank' (via ripgrep):\\n- Mathlib/Geometry/Euclidean/Projection.lean:402\\n    specifically reflection in a codimension-one subspace, and sometimes\\n- Mathlib/AlgebraicGeometry/AlgebraicCycle/Basic.lean:62\\n    applications these will be some notions of dimension or codimension. The most common notion of\\n- Mathlib/AlgebraicGeometry/AlgebraicCycle/Basic.lean:63\\n    dimension is `Order.height`, and the most common notion of codimension is `Order.coheight`, though\\n- Mathlib/AlgebraicGeometry/OrderOfVanishing.lean:16\\n    Noetherian integral scheme at a point of codimension `1`.\\n- Mathlib/Algebra/Quandle.lean:34\\n    used by Fenn and Rourke for framed codimension-2 knots and\\n- Mathlib/LinearAlgebra/Dual/Lemmas.lean:64\\n    finite-codimensional subspaces of `V` and finite-dimensional subspaces of `Dual K V`.\\n- Mathlib/LinearAlgebra/Dual/Lemmas.lean:1002\\n    isomorphism between the finite-codimensional subspaces in the vector space and the\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:72\\n    is uniquely a `1`-codimensional face of the corresponding (I)\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/UnionProd.lean:250\\n    /-- the dimension of the 1-codimensional face -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:11\\n    # Simplices that are uniquely codimensional one faces\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:14\\n    we say that `x` is uniquely a `1`-codimensional face of `y` if there\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:36\\n    /-- The property that a simplex is uniquely a `1`-codimensional face of another simplex -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/IsUniquelyCodimOneFace.lean:73\\n    /-- When a `d`-dimensional simplex `x` is a `1`-codimensional face of `y`, this is\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/PairingCore.lean:45\\n    /-- the corresponding type (II) simplex is the `1`-codimensional\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/PairingCore.lean:176\\n    the type (II) simplex `h.type₂ s` is uniquely a `1`-codimensional\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"finite.codimension|FiniteDimensional\\\\.codimension\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 713,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'finite.codimension|FiniteDimensional\\\\\\\\.codimension' (via ripgrep):\\n- Mathlib/Topology/Algebra/Module/FiniteDimension.lean:541\\n    /-- If `s` is a closed subspace with finite codimension, any subspace containing `s` is closed. -/\\n- Mathlib/Topology/Algebra/Module/FiniteDimension.lean:713\\n    /-- If `p` is a closed subspace with finite codimension, then any algebraic complement `q` to `p`\\n- Mathlib/LinearAlgebra/Dual/Lemmas.lean:64\\n    finite-codimensional subspaces of `V` and finite-dimensional subspaces of `Dual K V`.\\n- Mathlib/LinearAlgebra/Dual/Lemmas.lean:1002\\n    isomorphism between the finite-codimensional subspaces in the vector space and the\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/Module/FiniteDimension.lean\", \"line\": 540, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1420,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/Module/FiniteDimension.lean  (lines 540–559 of 765):\\n   540  \\n   541  /-- If `s` is a closed subspace with finite codimension, any subspace containing `s` is closed. -/\\n   542  theorem Submodule.isClosed_mono_of_finiteDimensional_quotient\\n   543      {s t : Submodule 𝕜 E} [FiniteDimensional 𝕜 (E ⧸ s)] (s_closed : IsClosed (s : Set E))\\n   544      (s_le_t : s ≤ t) :\\n   545      IsClosed (t : Set E) := by\\n   546    rw [show t = comap s.mkQ (map s.mkQ t) by simpa]\\n   547    exact (map s.mkQ t).closed_of_finiteDimensional.preimage continuous_quot_mk\\n   548  \\n   549  /-- The supremum of a closed subspace and a finite dimensional subspace is closed. -/\\n   550  theorem Submodule.isClosed_sup_finiteDimensional\\n   551      (s t : Submodule 𝕜 E) (hs : IsClosed (s : Set E)) [ht : FiniteDimensional 𝕜 t] :\\n   552      IsClosed ((s ⊔ t : Submodule 𝕜 E) : Set E) := by\\n   553    rw [← comap_map_mkQ]\\n   554    exact (map s.mkQ t).closed_of_finiteDimensional.preimage continuous_quot_mk\\n   555  \\n   556  /-- An injective linear map with finite-dimensional domain is a closed embedding. -/\\n   557  theorem LinearMap.isClosedEmbedding_of_injective [T2Space E] [FiniteDimensional 𝕜 E] [T2Space F]\\n   558      {f : E →ₗ[𝕜] F} (hf : LinearMap.ker f = ⊥) : IsClosedEmbedding f :=\\n   559    let g := LinearEquiv.ofInjective f (LinearMap.ker_eq_bot.mp hf)\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Submodule.*isClosed.*image|isClosed.*image.*Submodule\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 264,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'Submodule.*isClosed.*image|isClosed.*image.*Submodule' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/LinearPMap.lean:336\\n    exact (Submodule.isClosed_orthogonal _).preimage (WithLp.prod_continuous_toLp _ _ _)\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*range.*subspace|range.*Submodule.*closed\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*range.*subspace|range.*Submodule.*closed' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"set.*image.*Submodule\\\\.carrier|image.*carrier.*Submodule\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 130,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'set.*image.*Submodule\\\\\\\\.carrier|image.*carrier.*Submodule' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.image (?f : ?E →ₗ[?𝕜] ?F)\"}",
+   "ok": true,
+   "result_chars": 1313,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 70 declarations mentioning LinearMap.instFunLike, LinearMap, Set.image, RingHom.id, Semiring.toNonAssocSemiring, and DFunLike.coe.\\n- LinearIndepOn.id_imageₛ   [Mathlib.LinearAlgebra.LinearIndependent.Basic]\\n- LinearIndepOn.image   [Mathlib.LinearAlgebra.LinearIndependent.Basic]\\n- LinearMap.span_inl_union_inr   [Mathlib.LinearAlgebra.Prod]\\n- LinearIndependent.inl_union_inr   [Mathlib.LinearAlgebra.LinearIndependent.Lemmas]\\n- Algebra.mem_adjoin_of_map_mul   [Mathlib.Algebra.Algebra.Subalgebra.Lattice]\\n- Submodule.baseChange_span   [Mathlib.LinearAlgebra.TensorProduct.Tower]\\n- Algebra.adjoin_inl_union_inr_eq_prod   [Mathlib.RingTheory.Adjoin.Basic]\\n- span_eq_top_of_isLocalizedModule   [Mathlib.RingTheory.Localization.Module]\\n- Submodule.localized'_span   [Mathlib.Algebra.Module.LocalizedModule.Submodule]\\n- Submodule.localized'_eq_span   [Mathlib.Algebra.Module.LocalizedModule.Submodule]\\n- Submodule.exists_injOn_mkQ_image_span_eq_of_span_eq_map_mkQ_of_le_jacobson_bot   [Mathlib.RingTheory.Nakayama]\\n    **Nakayama's Lemma** - Statement (8) in [Stacks 00DV](https://stacks.math.columbia.edu/tag/00DV).  If `N` is a finitely generated `R`-submodule of `M`, `I` is a\\n- IsLocalRing.CotangentSpace.span_image_eq_top_iff   [Mathlib.RingTheory.Ideal.Cotangent]\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FiniteDimensional.*image|image.*FiniteDimensional\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 419,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'FiniteDimensional.*image|image.*FiniteDimensional' (via ripgrep):\\n- Mathlib/LinearAlgebra/AffineSpace/FiniteDimensional.lean:318\\n    [FiniteDimensional k sp.direction] (hle : affineSpan k (s.image p : Set P) ≤ sp)\\n- Mathlib/Topology/MetricSpace/HausdorffDimension.lean:563\\n    theorem ContDiffOn.dense_compl_image_of_dimH_lt_finrank [FiniteDimensional ℝ F] {f : E → F}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*isClosed.*closure|lemma.*isClosed.*closure.*range\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1426,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'theorem.*isClosed.*closure|lemma.*isClosed.*closure.*range' (via ripgrep):\\n- Mathlib/Topology/Maps/Basic.lean:593\\n    theorem isClosedMap_iff_closure_image :\\n- Mathlib/Topology/Order.lean:318\\n    theorem closure_discrete (s : Set α) : closure s = s := (isClosed_discrete _).closure_eq\\n- Mathlib/Topology/Closure.lean:190\\n    theorem isClosed_closure : IsClosed (closure s) :=\\n- Mathlib/Topology/Closure.lean:250\\n    theorem isClosed_of_closure_subset (h : closure s ⊆ s) : IsClosed s := by\\n- Mathlib/Topology/Closure.lean:253\\n    theorem closure_eq_iff_isClosed : closure s = s ↔ IsClosed s :=\\n- Mathlib/Topology/Closure.lean:256\\n    theorem closure_subset_iff_isClosed : closure s ⊆ s ↔ IsClosed s :=\\n- Mathlib/Topology/Algebra/Module/LinearPMap.lean:128\\n    theorem IsClosable.closure_isClosed {f : E →ₗ.[R] F} (hf : f.IsClosable) : f.closure.IsClosed := by\\n- Mathlib/Topology/Algebra/Ring/Ideal.lean:45\\n    theorem Ideal.closure_eq_of_isClosed (I : Ideal R) (hI : IsClosed (I : Set R)) : I.closure = I :=\\n- Mathlib/Analysis/Convex/Hull.lean:53\\n    theorem convex_convexHull : Convex 𝕜 (convexHull 𝕜 s) := (convexHull 𝕜).isClosed_closure s\\n- Mathlib/Order/Closure.lean:152\\n    theorem setOf_isClosed_eq_range_closure : {x | c.IsClosed x} = Set.range c := by\\n- Mathlib/Order/Closure.lean:202\\n    theorem isClosed_iff_closure_le : c.IsClosed x ↔ c x ≤ x :=\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Maps/Basic.lean\", \"line\": 590, \"n\": 10}",
+   "ok": true,
+   "result_chars": 530,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Maps/Basic.lean  (lines 590–599 of 875):\\n   590    rw [image_preimage_eq_inter_range]\\n   591    exact ht.inter h\\n   592  \\n   593  theorem isClosedMap_iff_closure_image :\\n   594      IsClosedMap f ↔ ∀ s, closure (f '' s) ⊆ f '' closure s :=\\n   595    ⟨IsClosedMap.closure_image_subset, fun hs c hc =>\\n   596      isClosed_of_closure_subset <|\\n   597        calc\\n   598          closure (f '' c) ⊆ f '' closure c := hs c\\n   599          _ = f '' c := by rw [hc.closure_eq]⟩\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure ContinuousLinearMap|class.*topological.*vector|TopologicalAddMonoid\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 619,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'structure ContinuousLinearMap|class.*topological.*vector|TopologicalAddMonoid' (via ripgrep):\\n- Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean:61\\n    structure ContinuousLinearMap {R : Type*} {S : Type*} [Semiring R] [Semiring S] (σ : R →+* S)\\n- Mathlib/Topology/Algebra/Module/Basic.lean:20\\n    We use the class `ContinuousSMul` for topological (semi) modules and topological vector spaces.\\n- Mathlib/Analysis/LocallyConvex/WeakOperatorTopology.lean:59\\n    structure ContinuousLinearMapWOT {𝕜₁ 𝕜₂ : Type*} [Semiring 𝕜₁] [Semiring 𝕜₂] (σ : 𝕜₁ →+* 𝕜₂)\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean\", \"line\": 60, \"n\": 15}",
+   "ok": true,
+   "result_chars": 863,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean  (lines 60–74 of 1132):\\n    60  ring `R`. -/\\n    61  structure ContinuousLinearMap {R : Type*} {S : Type*} [Semiring R] [Semiring S] (σ : R →+* S)\\n    62      (M : Type*) [TopologicalSpace M] [AddCommMonoid M] (M₂ : Type*) [TopologicalSpace M₂]\\n    63      [AddCommMonoid M₂] [Module R M] [Module S M₂] extends M →ₛₗ[σ] M₂ where\\n    64    cont : Continuous toFun := by\\n    65      first | fun_prop | eta_expand; dsimp; fun_prop | skip\\n    66  \\n    67  attribute [inherit_doc ContinuousLinearMap] ContinuousLinearMap.cont\\n    68  \\n    69  @[inherit_doc]\\n    70  notation:25 M \\\" →SL[\\\" σ \\\"] \\\" M₂ => ContinuousLinearMap σ M M₂\\n    71  \\n    72  @[inherit_doc]\\n    73  notation:25 M \\\" →L[\\\" R \\\"] \\\" M₂ => ContinuousLinearMap (RingHom.id R) M M₂\\n    74  \\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*⧸.*Submodule|notation.*Quotient.*module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*⧸.*Submodule|notation.*Quotient.*module' under Mathlib/.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Submodule.Quotient|notation.*quotient\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1884,
+   "result_head": "[{\"type\": \"text\", \"text\": \"343 match(es) for 'Submodule.Quotient|notation.*quotient' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:84\\n    · rwa [Submodule.Quotient.subsingleton_iff, LinearMap.range_eq_top] at h\\n- Mathlib/Algebra/Algebra/Epi.lean:98\\n    have : R'.mkQ 1 = 0 := (Submodule.Quotient.mk_eq_zero R').mpr ⟨1, map_one (algebraMap R A)⟩\\n- Mathlib/CategoryTheory/Action/Concrete.lean:130\\n    /-- Shorthand notation for the quotient of `G` by `H` as a finite `G`-set. -/\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:289\\n    quotientEquiv b (Submodule.Quotient.mk x) = fractRestrict b x := rfl\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:293\\n    (quotientEquiv b).symm x = Submodule.Quotient.mk ↑x := by\\n- Mathlib/Algebra/Module/Presentation/Basic.lean:97\\n    rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:102\\n    ⟨_, inferInstance, inferInstance, _, e ≪≫ₗ Submodule.Quotient.equiv _ _ (es ..).symm rfl,\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:52\\n    * `Submodule.QuotientTorsion.torsion_eq_bot` : quotienting by the torsion submodule makes the\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:54\\n    `Submodule.QuotientTorsion.noZeroSMulDivisors : Module.IsTorsionFree R (M ⧸ torsion R M)`.\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:158\\n    quotTorsionOfEquivSpanSingleton R M x (Submodule.Quotient.mk a) =\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:618\\n    Submodule.Quotient.mk_eq_zero N\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:628\\n    Submodule.Quotient.mk_eq_zero N\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:653\\n    Submodule.Quotient.mk (p := (I • ⊤ : Submodule R M)) m =\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:654\\n    Submodule.Quotient.mk (p := (I • ⊤ : Submodule R M)) (r • m) :=\\n- Mathlib/Algebra/Module/CharacterModule.lean:182\\n    Submodule.Quotient.mk 1 :=\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Torsion/Basic.lean\", \"line\": 50, \"n\": 10}",
+   "ok": true,
+   "result_chars": 751,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Torsion/Basic.lean  (lines 50–59 of 1031):\\n    50    `Module.IsTorsionFree` (that is, there is no non-zero `a`, `x` such that `a • x = 0`)\\n    51    iff its torsion submodule is trivial.\\n    52  * `Submodule.QuotientTorsion.torsion_eq_bot` : quotienting by the torsion submodule makes the\\n    53    torsion submodule of the new module trivial. If `R` is a domain, we can derive an instance\\n    54    `Submodule.QuotientTorsion.noZeroSMulDivisors : Module.IsTorsionFree R (M ⧸ torsion R M)`.\\n    55  \\n    56  ## Notation\\n    57  \\n    58  * The notions are defined for a `CommSemiring R` and a `Module R M`. Some additional hypotheses on\\n    59    `R` and `M` are required by some lemmas.\\n\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation:30.*⧸|@\\\\[inherit_doc\\\\].*⧸\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation:30.*⧸|@\\\\\\\\[inherit_doc\\\\\\\\].*⧸' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Submodule.Quotient|instance.*Submodule.Quotient\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 952,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'def Submodule.Quotient|instance.*Submodule.Quotient' (via ripgrep):\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:36\\n    this instance in `Submodule.Quotient.completeSpace` so that it applies to these other quotients.\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:426\\n    instance Submodule.Quotient.seminormedAddCommGroup : SeminormedAddCommGroup (M ⧸ S) :=\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:429\\n    instance Submodule.Quotient.normedAddCommGroup [hS : IsClosed (S : Set M)] :\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:433\\n    instance Submodule.Quotient.completeSpace [CompleteSpace M] : CompleteSpace (M ⧸ S) :=\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:445\\n    instance Submodule.Quotient.instIsBoundedSMul (𝕜 : Type*)\\n- Mathlib/Analysis/Normed/Group/Quotient.lean:462\\n    instance Submodule.Quotient.normedSpace (𝕜 : Type*) [NormedField 𝕜] [NormedSpace 𝕜 M] [SMul 𝕜 R]\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class.*TopologicalModule|class.*topological.*add.*monoid\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class.*TopologicalModule|class.*topological.*add.*monoid' under Mathlib/.\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class TopologicalAddMonoid|class ContinuousSMul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 251,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class TopologicalAddMonoid|class ContinuousSMul' (via ripgrep):\\n- Mathlib/Topology/Algebra/MulAction.lean:46\\n    class ContinuousSMul (M X : Type*) [SMul M X] [TopologicalSpace M] [TopologicalSpace X] :\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/Module/FiniteDimension.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2749,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/Module/FiniteDimension.lean  (lines 1–50 of 765):\\n     1  /-\\n     2  Copyright (c) 2022 Anatole Dedecker. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Sébastien Gouëzel, Anatole Dedecker\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.LocallyConvex.BalancedCoreHull\\n     9  public import Mathlib.Analysis.LocallyConvex.Bounded\\n    10  public import Mathlib.Analysis.Normed.Module.Basic\\n    11  public import Mathlib.Analysis.SpecificLimits.Normed\\n    12  public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\n    13  public import Mathlib.RingTheory.Finiteness.Cofinite\\n    14  public import Mathlib.RingTheory.LocalRing.Basic\\n    15  public import Mathlib.Topology.Algebra.Module.Determinant\\n    16  public import Mathlib.Topology.Algebra.Module.ModuleTopology\\n    17  public import Mathlib.Topology.Algebra.Module.Simple\\n    18  public import Mathlib.Topology.Algebra.Module.Complement\\n    19  public import Mathlib.Topology.Algebra.SeparationQuotient.FiniteDimensional\\n    20  public import Mathlib.Topology.Maps.Strict.Basic\\n    21  \\n    22  /-!\\n    23  # Finite-dimensional topological vector spaces over complete fields\\n    24  \\n    25  Let `𝕜` be a complete nontrivially normed field, and `E` a topological vector space (TVS) over\\n    26  `𝕜` (i.e we have `[AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [IsTopologicalAddGroup E]`\\n    27  and `[ContinuousSMul 𝕜 E]`).\\n    28  \\n    29  If `E` is finite dimensional and Hausdorff, then all linear maps from `E` to any other TVS are\\n    30  continuous.\\n    31  \\n    32  When `E` is a normed space, this gets us the equivalence of norms in finite dimension.\\n    33  \\n    34  ## Main results :\\n    35  \\n    36  * `LinearMap.continuous_iff_isClosed_ker` : a linear form is continuous if and only if its kernel\\n    37    is closed.\\n    38  * `LinearMap.continuous_of_finiteDimensional` : a linear map on a finite-dimensional Hausdorff\\n    39    space over a complete field is continuous.\\n    40  \\n    41  ## TODO\\n    42  \\n    43  Generalize more of `Mathlib/Analysis/Normed/Module/FiniteDimension.lean` to general TVSs.\\n    44  \\n    45  ## Implementation detail\\n    46  \\n    47  The main result from which everything follows is the fact that, if `ξ : ι → E` is a finite basis,\\n    48  then `ξ.equivFun : E →ₗ (ι → 𝕜)` is continuous. However, for technical reasons, it is easier to\\n    49  prove this when `ι` and `E` live in the same universe. So we start by doing that as a private\\n    50  lemma, then we deduce `LinearMap.continuous_of_finiteDimensional` from it, and then the general\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

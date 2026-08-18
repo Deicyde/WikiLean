@@ -1,0 +1,240 @@
+{
+ "task_id": "fresh_012",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:37:26Z",
+ "wall_s": 61.2,
+ "transcript_stats": {
+  "turns": 24,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 8,
+   "mcp__formal__decl_read": 5,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 122,
+  "tokens_out": 4131,
+  "cost_usd": 0.06140280000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Gram matrix\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Gram matrix': Unknown identifier `Gram`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"orthonormal basis\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'orthonormal basis': Unknown identifier `orthonormal`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap.det\"}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 100 declarations mentioning LinearMap.det.\\n- LinearMap.det   [Mathlib.LinearAlgebra.Determinant]\\n    The determinant of an endomorphism independent of basis.  If there is no finite basis on `M`, the result is `1` instead.\\n- LinearMap.det_id   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_subsingleton   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.finite_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the space is finite-dimensional.\\n- LinearMap.free_of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map has determinant different from `1`, then the module is free.\\n- Module.Free.of_det_ne_one   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.det_eq_one_of_not_module_finite   [Mathlib.LinearAlgebra.Determinant]\\n- LinearMap.isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n    If a linear map is invertible, so is its determinant.\\n- LinearMap.isUnit_iff_isUnit_det   [Mathlib.LinearAlgebra.Determinant]\\n- LinearEquiv.isUnit_det'   [Mathlib.LinearAlgebra.Determinant]\\n    Specialization of `LinearEquiv.isUnit_det`\\n- LinearMap.equivOfIsUnitDet   [Mathlib.LinearAlgebra.Determinant]\\n    Builds a linear equivalence from an endomorphism whose determinant is a unit.\\n- LinearMap.det_zero'   [Mathlib.LinearAlgebra.Determinant]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.gramian\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.gramian': unknown identifier 'Matrix.gramian'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Basis.isOrthonormal\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Basis.isOrthonormal': unknown identifier 'Basis.isOrthonormal'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inner product space linear algebra\"}",
+   "ok": true,
+   "result_chars": 113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'inner product space linear algebra': Unknown identifier `product`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Orthonormal\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2751,
+   "result_head": "[{\"type\": \"text\", \"text\": \"312 match(es) for 'Orthonormal' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:175\\n    (stdOrthonormalBasis ℝ E).repr.toContinuousLinearEquiv.symm\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:176\\n    have hf : MeasurePreserving f := (stdOrthonormalBasis ℝ E).measurePreserving_repr_symm.comp\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:202\\n    ((stdOrthonormalBasis ℝ E).reindex e).repr.toContinuousLinearEquiv.symm\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:204\\n    ((stdOrthonormalBasis ℝ E).reindex e).measurePreserving_repr_symm.comp\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:63\\n    The definition uses `stdOrthonormalBasis ℝ E` but does not actually depend on the\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:68\\n    (fun x ↦ ∑ i, x i • stdOrthonormalBasis ℝ E i)\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:85\\n    have : L ∘ (fun x : Fin (Module.finrank ℝ E) → ℝ ↦ ∑ i, x i • stdOrthonormalBasis ℝ E i) =\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:86\\n    ∑ i, (fun x : Fin (Module.finrank ℝ E) → ℝ ↦ L (stdOrthonormalBasis ℝ E i) * x i) := by\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:90\\n    simp_rw [variance_const_mul, variance_id_gaussianReal, (stdOrthonormalBasis ℝ E).norm_dual]\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:99\\n    integral_fintype_prod_eq_prod (f := fun i x ↦ exp (⟪x • stdOrthonormalBasis ℝ E i, t⟫ * I)),\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:105\\n    ← ofReal_sum, (stdOrthonormalBasis ℝ E).sum_sq_inner_right, neg_div]\\n- Mathlib/Probability/Distributions/Gaussian/Multivariate.lean:146\\n    lemma stdGaussian_eq_map_pi_orthonormalBasis (b : OrthonormalBasis ι ℝ E) :\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:340\\n    (OrthonormalBasis.fromOrthogonalSpanSingleton n\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:378\\n    (OrthonormalBasis.fromOrthogonalSpanSingleton n (ne_zero_of_mem_unit_sphere v)).repr\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:395\\n    OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ)\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:399\\n    OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ)\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:431\\n    OrthonormalBasis.fromOrthogonalSpanSingleton\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:451\\n    OrthonormalBasis.fromOrthogonalSpanSingleton\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:495\\n    let U := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) n\\n- Mathlib/Geometry/Manifold/Instances/Sphere.lean:530\\n    let U := (OrthonormalBasis.fromOrthogonalSpanSingleton\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"gramian\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'gramian' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def OrthonormalBasis|structure OrthonormalBasis|class OrthonormalBasis\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 537,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def OrthonormalBasis|structure OrthonormalBasis|class OrthonormalBasis' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean:100\\n    noncomputable def OrthonormalBasis.measurableEquiv (b : OrthonormalBasis ι ℝ F) :\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:392\\n    structure OrthonormalBasis where ofRepr ::\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1162\\n    def OrthonormalBasis.fromOrthogonalSpanSingleton (n : ℕ) [Fact (finrank 𝕜 E = n + 1)] {v : E}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"InnerProductSpace\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"880 match(es) for 'InnerProductSpace' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:10\\n    public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:36\\n    See also `ZLattice.covolume.tendsto_card_div_pow'` for a version for `InnerProductSpace ℝ E` and\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:43\\n    See also `ZLattice.covolume.tendsto_card_le_div'` for a version for `InnerProductSpace ℝ E` and\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:49\\n    pi-space `ι → ℝ` and in the case where it is an `InnerProductSpace`. We use the following\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:51\\n    the same result in the `InnerProductSpace` case, we add a `prime`, for e.g.\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:170\\n    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:194\\n    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:342\\n    section InnerProductSpace\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:346\\n    variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:350\\n    /-- A version of `ZLattice.covolume.tendsto_card_div_pow` for the `InnerProductSpace` case;\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:365\\n    /-- A version of `ZLattice.covolume.tendsto_card_le_div` for the `InnerProductSpace` case;\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:386\\n    end InnerProductSpace\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/Basic.lean:9\\n    public import Mathlib.Analysis.InnerProductSpace.ProdL2\\n- Mathlib/Combinatorics/Additive/AP/Three/Behrend.lean:9\\n    public import Mathlib.Analysis.InnerProductSpace.Convex\\n- Mathlib/Combinatorics/Additive/AP/Three/Behrend.lean:10\\n    public import Mathlib.Analysis.InnerProductSpace.PiL2\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/PiL2.lean\", \"line\": 392, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1638,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/PiL2.lean  (lines 392–421 of 1356):\\n   392  structure OrthonormalBasis where ofRepr ::\\n   393    /-- Linear isometry between `E` and `EuclideanSpace 𝕜 ι` representing the orthonormal basis. -/\\n   394    repr : E ≃ₗᵢ[𝕜] EuclideanSpace 𝕜 ι\\n   395  \\n   396  variable {ι 𝕜 E}\\n   397  \\n   398  namespace OrthonormalBasis\\n   399  \\n   400  theorem repr_injective :\\n   401      Injective (repr : OrthonormalBasis ι 𝕜 E → E ≃ₗᵢ[𝕜] EuclideanSpace 𝕜 ι) := fun f g h => by\\n   402    cases f\\n   403    cases g\\n   404    congr\\n   405  \\n   406  /-- `b i` is the `i`th basis vector. -/\\n   407  instance instFunLike : FunLike (OrthonormalBasis ι 𝕜 E) ι E where\\n   408    coe b i := by classical exact b.repr.symm (EuclideanSpace.single i (1 : 𝕜))\\n   409    coe_injective b b' h := repr_injective <| LinearIsometryEquiv.toLinearEquiv_injective <|\\n   410      LinearEquiv.symm_bijective.injective <| LinearEquiv.toLinearMap_injective <| by\\n   411        classical\\n   412          rw [← LinearMap.cancel_right (WithLp.linearEquiv 2 𝕜 (_ → 𝕜)).symm.surjective]\\n   413          simp +instances only\\n   414          refine LinearMap.pi_ext fun i k => ?_\\n   415          have : k = k • (1 : 𝕜) := by rw [smul_eq_mul, mul_one]\\n   416          rw [this, Pi.single_smul]\\n   417          replace h := congr_fun h i\\n   418          simp only [LinearEquiv.comp_coe, map_smul, LinearEquiv.coe_coe, LinearEquiv.trans_apply,\\n   419            coe_symm_linearEquiv, PiLp.toLp_single,\\n   420            LinearIsometryEquiv.coe_symm_toLinearEquiv] at h ⊢\\n   421          rw [h]\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Matrix.det inner product\"}",
+   "ok": true,
+   "result_chars": 237,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Matrix.det inner product': Function expected at\\n  Matrix.det ?m.6\\nbut this term has type\\n  ?m.4\\n\\nNote: Expected a function because this term is being applied to the argument\\n  product\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"sq_abs_det\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'sq_abs_det': unknown identifier 'sq_abs_det'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Matrix.inner|innerAuto\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 590,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'Matrix.inner|innerAuto' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1298\\n    theorem LinearMap.toMatrix_innerₛₗ_apply [Fintype n] [DecidableEq n] [Fintype m]\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1303\\n    @[deprecated (since := \\\"2026-01-03\\\")] alias toMatrix_innerSL_apply :=\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1304\\n    LinearMap.toMatrix_innerₛₗ_apply\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:1317\\n    toLinearMap_innerSL_apply, toMatrix_innerₛₗ_apply, OrthonormalBasis.toBasis_singleton,\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"det Matrix finrank toMatrix\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'det Matrix finrank toMatrix': Unknown identifier `det`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"det_eq.*basis|det.*inner\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 806,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'det_eq.*basis|det.*inner' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:32\\n    (See `LinearMap.normDet_eq_norm_det`). We also construct this on linear maps between inner product\\n- Mathlib/RingTheory/Norm/Transitivity.lean:193\\n    det_eq_one_of_not_module_finite (Module.not_finite_of_infinite_basis (bS.smulTower bA))]\\n- Mathlib/RingTheory/Norm/Transitivity.lean:195\\n    · rw [det_eq_one_of_not_module_finite (Module.not_finite_of_infinite_basis bA), map_one,\\n- Mathlib/RingTheory/Norm/Transitivity.lean:196\\n    det_eq_one_of_not_module_finite (Module.not_finite_of_infinite_basis (bS.smulTower bA))]\\n- Mathlib/RingTheory/Ideal/Norm/AbsNorm.lean:306\\n    rw [← natAbs_det_equiv _ (b.equiv (basisSpanSingleton b hr) (Equiv.refl _))]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 1–100 of 441):\\n     1  /-\\n     2  Copyright (c) 2026 Weiyi Wang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Weiyi Wang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.InnerProductSpace.Adjoint\\n     9  public import Mathlib.Analysis.InnerProductSpace.GramMatrix\\n    10  public import Mathlib.Analysis.InnerProductSpace.SingularValues\\n    11  public import Mathlib.Geometry.Euclidean.Volume.Measure\\n    12  \\n    13  import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar\\n    14  import Mathlib.Topology.MetricSpace.HausdorffDimension\\n    15  \\n    16  /-!\\n    17  # Norm determinant of a linear map\\n    18  \\n    19  Given a rectangular matrix $T$, it is common to talk about $\\\\sqrt{det(T^{H}T)}$, where $T^{H}$ is\\n    20  the conjugate transpose of $T$, as a generalization to the determinant of a square matrix. It is the\\n    21  $m$-dimensional volume factor for linear maps $\\\\mathbb{R}^m \\\\to \\\\mathbb{R}^n$. It is given various\\n    22  names in the literature:\\n    23  * \\\"Jacobian\\\" (definition 3.4 of [lawrenceronald2025]), in the context of volume factor\\n    24    for a non-linear map. However, we choose to reserve this name for the matrix consisting of\\n    25    derivatives.\\n    26  * \\\"Gram determinant\\\", which is already used by `Matrix.gram`, and it is often referring to\\n    27    $det(T^{H}T)$ without the square root.\\n    28  * \\\"Nonnegative determinant\\\" (definition 1 of [haruoyoshiohidetoki2006]).\\n    29  \\n    30  Without a standardized name, we give a descriptive name `LinearMap.normDet` to reflect its\\n    31  definition and show that it is a generalization of `‖(f : LinearMap 𝕜 U U).det‖`\\n    32  (See `LinearMap.normDet_eq_norm_det`). We also construct this on linear maps between inner product\\n    33  spaces instead of matrices, and allow the codomain to have infinite dimension.\\n    34  \\n    35  ## Main definition\\n    36  * `LinearMap.normDet` : the norm determinant of a linear map.\\n    37  \\n    38  ## Main result\\n    39  * `ContinuousLinearMap.normDet_sq` and `LinearMap.normDet_sq`: The square of `f.normDet`\\n    40    equals to the determinant of `f.adjoint ∘ₗ f`.\\n    41  * `LinearMap.normDet_sq_eq_det_gram`: The square of `LinearMap.normDet` equals to the determinant of\\n    42    the Gram matrix formed by vectors mapped from an orthonormal basis.\\n    43  * `LinearMap.normDet_eq_prod_singularValues`: `LinearMap.normDet` equals to the product of singular\\n    44    values.\\n    45  * `LinearMap.hausdorffMeasure_image`: `LinearMap.normDet` is the volume factor for Hausdorff\\n    46    measure.\\n    47  \\n    48  -/\\n    49  \\n    50  public section\\n    51  \\n    52  open Module\\n    53  \\n    54  namespace LinearMap\\n    55  \\n    56  variable {𝕜 U V W : Type*} [RCLike 𝕜] [NormedAddCommGroup U] [InnerProductSpace 𝕜 U]\\n    57    [FiniteDimensional 𝕜 U] [NormedAddCommGroup V] [InnerProductSpace 𝕜 V] [NormedAddCommGroup W]\\n    58    [InnerProductSpace 𝕜 W]\\n    59  \\n    60  open Classical in\\n    61  /--\\n    62  The norm determinant of a linear map `f : U →ₗ[𝕜] V` is defined as the norm of the determinant of\\n    63  the square matrix representing the linear map `U →ₗ[𝕜] f.range` over a pair of orthonormal basis of\\n    64  equal dimensions.\\n    65  (See `LinearMap.normDet_eq_norm_det_toMatrix_rangeRestrict` for using arbitrary orthonormal basis)\\n    66  \\n    67  If such basis doesn't exist (e.g. the map is not injective), the norm determinant is zero.\\n    68  (See `LinearMap.normDet_eq_zero_iff_ker_ne_bot`)\\n    69  -/\\n    70  noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\\n    71    if h : Nonempty (OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 f.range) then\\n    72      ‖(f.rangeRestrict.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis h.some.toBasis).det‖\\n    73    else\\n    74      0\\n    75  \\n    76  theorem"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"normDet_sq_eq_det_gram\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'normDet_sq_eq_det_gram' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:41\\n    * `LinearMap.normDet_sq_eq_det_gram`: The square of `LinearMap.normDet` equals to the determinant of\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:304\\n    theorem normDet_sq_eq_det_gram {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 304, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1844,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 304–333 of 441):\\n   304  theorem normDet_sq_eq_det_gram {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\\n   305      (b : OrthonormalBasis ι 𝕜 U) :\\n   306      ↑(f.normDet ^ 2) = (Matrix.gram 𝕜 (f <| b ·)).det := by\\n   307    suffices ↑(f.normDet ^ 2) = (Matrix.gram 𝕜 (f.rangeRestrict <| b ·)).det by\\n   308      simpa\\n   309    by_cases h : f.ker = ⊥\\n   310    · let bv := orthonormalBasis_range h b\\n   311      rw [Matrix.gram_eq_conjTranspose_mul bv, Matrix.det_mul, Matrix.det_conjTranspose]\\n   312      rw [RCLike.star_def, RCLike.conj_mul, f.normDet_eq_norm_det_toMatrix_rangeRestrict b bv]\\n   313      simp only [map_pow]\\n   314      congr\\n   315      ext i j\\n   316      simp [LinearMap.toMatrix_apply]\\n   317    · trans 0\\n   318      · simp [show f.normDet = 0 from (f.normDet_eq_zero_tfae.out 1 0).mp h]\\n   319      have hrank := (f.normDet_eq_zero_tfae.out 1 3).mp h\\n   320      symm\\n   321      contrapose! hrank with h0\\n   322      rw [finrank_eq_card_basis b.toBasis]\\n   323      exact (Matrix.linearIndependent_of_det_gram_ne_zero h0).fintype_card_le_finrank\\n   324  \\n   325  theorem normDet_comp (f : U →ₗ[𝕜] V) (g : V →ₗ[𝕜] W) :\\n   326      (g ∘ₗ f).normDet = (g.domRestrict f.range).normDet * f.normDet := by\\n   327    by_cases hf : f.ker = ⊥\\n   328    · let bu : OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 U := stdOrthonormalBasis 𝕜 U\\n   329      obtain ⟨bv⟩ := (f.normDet_ne_zero_tfae.out 1 3).mp hf\\n   330      by_cases hgf : (g ∘ₗ f).ker = ⊥\\n   331      · obtain ⟨bw⟩ := ((g ∘ₗ f).normDet_ne_zero_tfae.out 1 3).mp hgf\\n   332        let bw' : OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 (g.domRestrict f.range).range :=\\n   333          bw.map (LinearIsometryEquiv.ofEq _ _ (by simp [LinearMap.range_comp]))\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearMap.normDet\", \"LinearMap.normDet_sq_eq_det_gram\", \"OrthonormalBasis\", \"Matrix.gram\", \"InnerProductSpace\"]}",
+   "ok": true,
+   "result_chars": 1699,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearMap.normDet\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LinearMap.normDet_sq_eq_det_gram\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"OrthonormalBasis\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.PiL2\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/PiL2.html#OrthonormalBasis\\\"},{\\\"decl\\\":\\\"Matrix.gram\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.GramMatrix\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.GramMatrix\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/GramMatrix.html#Matrix.gram\\\"},{\\\"decl\\\":\\\"InnerProductSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.InnerProductSpace.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Defs.html#InnerProductSpace\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^noncomputable def normDet|^theorem normDet_sq_eq_det_gram\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 376,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^noncomputable def normDet|^theorem normDet_sq_eq_det_gram' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:70\\n    noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\\n- Mathlib/Analysis/InnerProductSpace/NormDet.lean:304\\n    theorem normDet_sq_eq_det_gram {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 50, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1286,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 50–74 of 441):\\n    50  public section\\n    51  \\n    52  open Module\\n    53  \\n    54  namespace LinearMap\\n    55  \\n    56  variable {𝕜 U V W : Type*} [RCLike 𝕜] [NormedAddCommGroup U] [InnerProductSpace 𝕜 U]\\n    57    [FiniteDimensional 𝕜 U] [NormedAddCommGroup V] [InnerProductSpace 𝕜 V] [NormedAddCommGroup W]\\n    58    [InnerProductSpace 𝕜 W]\\n    59  \\n    60  open Classical in\\n    61  /--\\n    62  The norm determinant of a linear map `f : U →ₗ[𝕜] V` is defined as the norm of the determinant of\\n    63  the square matrix representing the linear map `U →ₗ[𝕜] f.range` over a pair of orthonormal basis of\\n    64  equal dimensions.\\n    65  (See `LinearMap.normDet_eq_norm_det_toMatrix_rangeRestrict` for using arbitrary orthonormal basis)\\n    66  \\n    67  If such basis doesn't exist (e.g. the map is not injective), the norm determinant is zero.\\n    68  (See `LinearMap.normDet_eq_zero_iff_ker_ne_bot`)\\n    69  -/\\n    70  noncomputable def normDet (f : U →ₗ[𝕜] V) : ℝ :=\\n    71    if h : Nonempty (OrthonormalBasis (Fin (finrank 𝕜 U)) 𝕜 f.range) then\\n    72      ‖(f.rangeRestrict.toMatrix (stdOrthonormalBasis 𝕜 U).toBasis h.some.toBasis).det‖\\n    73    else\\n    74      0\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean\", \"line\": 304, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/InnerProductSpace/NormDet.lean  (lines 304–323 of 441):\\n   304  theorem normDet_sq_eq_det_gram {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\\n   305      (b : OrthonormalBasis ι 𝕜 U) :\\n   306      ↑(f.normDet ^ 2) = (Matrix.gram 𝕜 (f <| b ·)).det := by\\n   307    suffices ↑(f.normDet ^ 2) = (Matrix.gram 𝕜 (f.rangeRestrict <| b ·)).det by\\n   308      simpa\\n   309    by_cases h : f.ker = ⊥\\n   310    · let bv := orthonormalBasis_range h b\\n   311      rw [Matrix.gram_eq_conjTranspose_mul bv, Matrix.det_mul, Matrix.det_conjTranspose]\\n   312      rw [RCLike.star_def, RCLike.conj_mul, f.normDet_eq_norm_det_toMatrix_rangeRestrict b bv]\\n   313      simp only [map_pow]\\n   314      congr\\n   315      ext i j\\n   316      simp [LinearMap.toMatrix_apply]\\n   317    · trans 0\\n   318      · simp [show f.normDet = 0 from (f.normDet_eq_zero_tfae.out 1 0).mp h]\\n   319      have hrank := (f.normDet_eq_zero_tfae.out 1 3).mp h\\n   320      symm\\n   321      contrapose! hrank with h0\\n   322      rw [finrank_eq_card_basis b.toBasis]\\n   323      exact (Matrix.linearIndependent_of_det_gram_ne_zero h0).fintype_card_le_finrank\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem LinearMap.normDet_sq_eq_det_gram {𝕜 U V : Type*} [RCLike 𝕜] [NormedAddCommGroup U]\n    [InnerProductSpace 𝕜 U] [FiniteDimensional 𝕜 U] [NormedAddCommGroup V]\n    [InnerProductSpace 𝕜 V] {ι : Type*} [Fintype ι] [DecidableEq ι] (f : U →ₗ[𝕜] V)\n    (b : OrthonormalBasis ι 𝕜 U) :\n    ↑(f.normDet ^ 2) = (Matrix.gram 𝕜 (f <| b ·)).det := sorry"
+}

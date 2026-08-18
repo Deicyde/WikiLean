@@ -1,0 +1,394 @@
+{
+ "task_id": "fresh_014",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:12:02Z",
+ "wall_s": 135.7,
+ "transcript_stats": {
+  "turns": 44,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 19,
+   "mcp__formal__decl_grep": 16,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 188,
+  "tokens_out": 10686,
+  "cost_usd": 0.14038825000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"meromorphic\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'meromorphic': unknown identifier 'meromorphic'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"analytic\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'analytic': unknown identifier 'analytic'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"order function pole\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'order function pole': Unknown identifier `order`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"holomorphic\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'holomorphic': unknown identifier 'holomorphic'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"DifferentiableAt\"}",
+   "ok": true,
+   "result_chars": 1161,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 552 declarations mentioning DifferentiableAt.\\n- DifferentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Defs]\\n    A function `f` is differentiable at a point `x` if it admits a derivative there (possibly non-unique).\\n- differentiableAt_fun_id   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n    Eta-expanded form of `differentiableAt_id`\\n- differentiableAt_id   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- Differentiable.differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- differentiableWithinAt_univ   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- DifferentiableAt.differentiableWithinAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- DifferentiableAt.hasFDerivAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- DifferentiableOn.differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- DifferentiableWithinAt.differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- DifferentiableOn.eventually_differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- HasFDerivAt.differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\\n- HasStrictFDerivAt.differentiableAt   [Mathlib.Analysis.Calculus.FDeriv.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Laurent series\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Laurent series': Unknown identifier `Laurent`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"complex.*order\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1487,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'complex.*order' (via ripgrep):\\n- Mathlib/AlgebraicTopology/SimplicialSet/NonDegenerateSimplices.lean:210\\n    the subcomplex it generates is an order embedding. -/\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:151\\n    I := Subcomplex.N.orderIsoOfIso e hA ⁻¹' P.I\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:152\\n    II := Subcomplex.N.orderIsoOfIso e hA ⁻¹' P.II\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:155\\n    p := ((Subcomplex.N.orderIsoOfIso e hA).subtypeEquiv (by simp)).trans\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:156\\n    (P.p.trans ((Subcomplex.N.orderIsoOfIso e hA).symm.subtypeEquiv (by simp)))\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:171\\n    dsimp% (P.ofIso e hA).p ⟨(Subcomplex.N.orderIsoOfIso e hA).symm x, by simp⟩ =\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:172\\n    ⟨(Subcomplex.N.orderIsoOfIso e hA).symm (P.p x), by simp⟩ := by\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:173\\n    let e' := Subcomplex.N.orderIsoOfIso e hA\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:181\\n    ⟨(Subcomplex.N.orderIsoOfIso e hA).symm x, by simp⟩\\n- Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/Pairing.lean:182\\n    ⟨(Subcomplex.N.orderIsoOfIso e hA).symm y, by simp⟩ ↔\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pole\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pole': unknown identifier 'pole'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"residue\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'residue': unknown identifier 'residue'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*analytic|lemma.*analytic\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2055,
+   "result_head": "[{\"type\": \"text\", \"text\": \"265 match(es) for 'theorem.*analytic|lemma.*analytic' (via ripgrep):\\n- Mathlib/Probability/Moments/ComplexMGF.lean:184\\n    theorem analyticOnNhd_complexMGF :\\n- Mathlib/Probability/Moments/ComplexMGF.lean:190\\n    theorem analyticOn_complexMGF :\\n- Mathlib/Probability/Moments/ComplexMGF.lean:195\\n    lemma analyticAt_complexMGF (hz : z.re ∈ interior (integrableExpSet X μ)) :\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:110\\n    lemma analyticAt_mgf (ht : t ∈ interior (integrableExpSet X μ)) :\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:115\\n    lemma analyticOnNhd_mgf : AnalyticOnNhd ℝ (mgf X μ) (interior (integrableExpSet X μ)) :=\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:120\\n    lemma analyticOn_mgf : AnalyticOn ℝ (mgf X μ) (interior (integrableExpSet X μ)) :=\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:149\\n    lemma analyticOnNhd_iteratedDeriv_mgf (n : ℕ) :\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:154\\n    lemma analyticOn_iteratedDeriv_mgf (n : ℕ) :\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:158\\n    lemma analyticAt_iteratedDeriv_mgf (hv : v ∈ interior (integrableExpSet X μ)) (n : ℕ) :\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:170\\n    lemma analyticAt_cgf (h : v ∈ interior (integrableExpSet X μ)) : AnalyticAt ℝ (cgf X μ) v := by\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:176\\n    lemma analyticOnNhd_cgf : AnalyticOnNhd ℝ (cgf X μ) (interior (integrableExpSet X μ)) :=\\n- Mathlib/Probability/Moments/MGFAnalytic.lean:181\\n    lemma analyticOn_cgf : AnalyticOn ℝ (cgf X μ) (interior (integrableExpSet X μ)) :=\\n- Mathlib/Analysis/Analytic/IsolatedZeros.lean:27\\n    * `AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq` is the identity theorem for analytic\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:422\\n    theorem negPart_divisor_add_of_analyticNhdOn_right {f₁ f₂ : 𝕜 → E} (hf₁ : MeromorphicOn f₁ U)\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:444\\n    theorem negPart_divisor_add_of_analyticNhdOn_left {f₁ f₂ : 𝕜 → E} (hf₁ : AnalyticOnNhd 𝕜 f₁ U)\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeromorphicOn\"}",
+   "ok": true,
+   "result_chars": 1044,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 134 declarations mentioning MeromorphicOn.\\n- MeromorphicOn   [Mathlib.Analysis.Meromorphic.Basic]\\n    Meromorphy of a function on a set.\\n- MeromorphicOn.const   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicOn.id   [Mathlib.Analysis.Meromorphic.Basic]\\n- meromorphicOn_univ   [Mathlib.Analysis.Meromorphic.Basic]\\n    A function is meromorphic iff it is meromorphic on Set.univ.\\n- Meromorphic.meromorphicOn   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicOn.mono_set   [Mathlib.Analysis.Meromorphic.Basic]\\n- AnalyticOnNhd.meromorphicOn   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicOn.fun_neg   [Mathlib.Analysis.Meromorphic.Basic]\\n    Eta-expanded form of `MeromorphicOn.neg`\\n- MeromorphicOn.fun_sum   [Mathlib.Analysis.Meromorphic.Basic]\\n    Finite sums of meromorphic functions are meromorphic.\\n- MeromorphicOn.neg   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicOn.neg_iff   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicOn.congr   [Mathlib.Analysis.Meromorphic.Basic]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AnalyticOnNhd\"}",
+   "ok": true,
+   "result_chars": 962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 181 declarations mentioning AnalyticOnNhd.\\n- AnalyticOnNhd   [Mathlib.Analysis.Analytic.Basic]\\n    Given a function `f : E → F`, we say that `f` is analytic on a set `s` if it is analytic around every point of `s`.\\n- analyticOnNhd_empty   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.analyticOn   [Mathlib.Analysis.Analytic.Basic]\\n- analyticOn_univ   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.mono   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.continuous   [Mathlib.Analysis.Analytic.Basic]\\n    Analytic everywhere implies continuous\\n- AnalyticOnNhd.continuousOn   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.congr'   [Mathlib.Analysis.Analytic.Basic]\\n- analyticOnNhd_congr'   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.congr   [Mathlib.Analysis.Analytic.Basic]\\n- analyticOnNhd_congr   [Mathlib.Analysis.Analytic.Basic]\\n- AnalyticOnNhd.comp_sub   [Mathlib.Analysis.Analytic.Basic]\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*MeromorphicOn|structure.*Meromorphic\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def.*MeromorphicOn|structure.*Meromorphic' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Basic.lean:475\\n    def MeromorphicOn (f : 𝕜 → E) (U : Set 𝕜) : Prop := ∀ x ∈ U, MeromorphicAt f x\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeromorphicAt\"}",
+   "ok": true,
+   "result_chars": 1197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 133 declarations mentioning MeromorphicAt.\\n- MeromorphicAt   [Mathlib.Analysis.Meromorphic.Basic]\\n    Meromorphy of `f` at `x` (more precisely, on a punctured neighbourhood of `x`; the value at `x` itself is irrelevant).\\n- MeromorphicAt.const   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.id   [Mathlib.Analysis.Meromorphic.Basic]\\n- Meromorphic.meromorphicAt   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.update   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.update_iff   [Mathlib.Analysis.Meromorphic.Basic]\\n- AnalyticAt.meromorphicAt   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.fun_neg   [Mathlib.Analysis.Meromorphic.Basic]\\n    Eta-expanded form of `MeromorphicAt.neg`\\n- MeromorphicAt.neg   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.neg_iff   [Mathlib.Analysis.Meromorphic.Basic]\\n- MeromorphicAt.fun_sub   [Mathlib.Analysis.Meromorphic.Basic]\\n    Eta-expanded form of `MeromorphicAt.sub`\\n- MeromorphicAt.meromorphicAt_fun_sub_iff_meromorphicAt₁   [Mathlib.Analysis.Meromorphic.Basic]\\n    If `f` is meromorphic at `x`, then `f - g` is meromorphic at `x` if and only if `g` is meromorphic at `x`.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*MeromorphicAt|structure.*MeromorphicAt\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 582,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def.*MeromorphicAt|structure.*MeromorphicAt' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Basic.lean:37\\n    def MeromorphicAt (f : 𝕜 → E) (x : 𝕜) :=\\n- Mathlib/Analysis/Meromorphic/Basic.lean:250\\n    /-- With our definitions, `MeromorphicAt f x` depends only on the values of `f` on a punctured\\n- Mathlib/Analysis/Meromorphic/Basic.lean:475\\n    def MeromorphicOn (f : 𝕜 → E) (U : Set 𝕜) : Prop := ∀ x ∈ U, MeromorphicAt f x\\n- Mathlib/Analysis/Meromorphic/Basic.lean:663\\n    def Meromorphic (f : 𝕜 → E) := ∀ x, MeromorphicAt f x\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"orderAt|order.*point\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1298,
+   "result_head": "[{\"type\": \"text\", \"text\": \"73 match(es) for 'orderAt|order.*point' (via ripgrep):\\n- Mathlib/CategoryTheory/Localization/DerivabilityStructure/PointwiseRightDerived.lean:17\\n    order to construct (pointwise) right derived functors.\\n- Mathlib/Analysis/Analytic/Order.lean:16\\n    This file defines the order of vanishing of an analytic function `f` at a point `z₀`, as an element\\n- Mathlib/Analysis/Analytic/Order.lean:613\\n    `f` has finite order at every point. -/\\n- Mathlib/Analysis/Analytic/Order.lean:622\\n    /-- On a preconnected set, a meromorphic function has finite order at one point if it has finite\\n- Mathlib/Analysis/Analytic/Order.lean:623\\n    order at another point. -/\\n- Mathlib/ModelTheory/Order.lean:28\\n    - `FirstOrder.Language.dlo` defines the theory of dense linear orders without endpoints, a\\n- Mathlib/ModelTheory/Order.lean:39\\n    linear orders, and dense linear orders without endpoints model `Language.dlo`.\\n- Mathlib/ModelTheory/Order.lean:187\\n    /-- The theory of dense linear orders without endpoints. -/\\n- Mathlib/ModelTheory/Order.lean:564\\n    dense, nonempty linear orders without endpoints are order isomorphic. -/\\n- Mathlib/Order/PiLex.lean:17\\n    * In the lexicographic order, `a` is less than `b` if `a i = b i` for all `i` up to some point\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Analytic/Order.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Analytic/Order.lean  (lines 1–50 of 695):\\n     1  /-\\n     2  Copyright (c) 2022 Vincent Beffara. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Vincent Beffara, Stefan Kebekus\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Analytic.IsolatedZeros\\n     9  public import Mathlib.Analysis.Calculus.Deriv.Pow\\n    10  public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Analytic\\n    11  public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas\\n    12  \\n    13  /-!\\n    14  # Vanishing Order of Analytic Functions\\n    15  \\n    16  This file defines the order of vanishing of an analytic function `f` at a point `z₀`, as an element\\n    17  of `ℕ∞`.\\n    18  \\n    19  ## TODO\\n    20  \\n    21  Uniformize API between analytic and meromorphic functions\\n    22  -/\\n    23  \\n    24  @[expose] public section\\n    25  \\n    26  open Filter Set\\n    27  open scoped Topology\\n    28  \\n    29  variable {𝕜 E : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n    30  \\n    31  /-!\\n    32  ## Vanishing Order at a Point: Definition and Characterization\\n    33  -/\\n    34  \\n    35  section NormedSpace\\n    36  variable {f g : 𝕜 → E} {n : ℕ} {z₀ : 𝕜}\\n    37  \\n    38  open scoped Classical in\\n    39  /-- The order of vanishing of `f` at `z₀`, as an element of `ℕ∞`.\\n    40  \\n    41  The order is defined to be `∞` if `f` is identically 0 on a neighbourhood of `z₀`, and otherwise the\\n    42  unique `n` such that `f` can locally be written as `f z = (z - z₀) ^ n • g z`, where `g` is analytic\\n    43  and does not vanish at `z₀`. See `AnalyticAt.analyticOrderAt_eq_top` and\\n    44  `AnalyticAt.analyticOrderAt_eq_natCast` for these equivalences.\\n    45  \\n    46  If `f` isn't analytic at `z₀`, then `analyticOrderAt f z₀` returns a junk value of `0`. -/\\n    47  noncomputable def analyticOrderAt (f : 𝕜 → E) (z₀ : 𝕜) : ℕ∞ :=\\n    48    if hf : AnalyticAt 𝕜 f z₀ then\\n    49      if h : ∀ᶠ z in 𝓝 z₀, f z = 0 then ⊤\\n    50      else ↑(hf.exists_eventuallyEq_pow_smul_nonzero_iff.mpr h).choose\\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*meromorphicOrderAt|meromorphicOrderAt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1314,
+   "result_head": "[{\"type\": \"text\", \"text\": \"113 match(es) for 'def.*meromorphicOrderAt|meromorphicOrderAt' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/IsolatedZeros.lean:72\\n    (h₂f : ∀ u ∈ U, meromorphicOrderAt f u ≠ ⊤) :\\n- Mathlib/Analysis/Meromorphic/IsolatedZeros.lean:75\\n    h₁f.codiscreteWithin_setOf_meromorphicOrderAt_eq_zero_or_top h₂f] with x h₁x h₂x\\n- Mathlib/Analysis/Meromorphic/IsolatedZeros.lean:77\\n    simp_all [← h₁x.analyticOrderAt_eq_zero, h₁x.meromorphicOrderAt_eq]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:41\\n    toFun := fun z ↦ if MeromorphicOn f U ∧ z ∈ U then (meromorphicOrderAt f z).untop₀ else 0\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:51\\n    hf.codiscrete_setOf_meromorphicOrderAt_eq_zero_or_top]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:60\\n    divisor f U z = if MeromorphicOn f U ∧ z ∈ U then (meromorphicOrderAt f z).untop₀ else 0 :=\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:69\\n    divisor f U z = (meromorphicOrderAt f z).untop₀ := by simp_all [MeromorphicOn.divisor_def]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:73\\n    rw [hf.meromorphicOn.divisor_apply hz, (hf z hz).meromorphicOrderAt_eq]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:124\\n    apply meromorphicOrderAt_congr\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:145\\n    apply meromorphicOrderAt_congr\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"meromorphicOrderAt\"}",
+   "ok": true,
+   "result_chars": 1722,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 145 declarations mentioning meromorphicOrderAt.\\n- meromorphicOrderAt   [Mathlib.Analysis.Meromorphic.Order]\\n    The order of a meromorphic function `f` at `z₀`, as an element of `ℤ ∪ {∞}`.  The order is defined to be `∞` if `f` is identically 0 on a neighbourhood of `z₀`,\\n- meromorphicAt_of_meromorphicOrderAt_ne_zero   [Mathlib.Analysis.Meromorphic.Order]\\n- meromorphicOrderAt_of_not_meromorphicAt   [Mathlib.Analysis.Meromorphic.Order]\\n- meromorphicOrderAt_fun_neg   [Mathlib.Analysis.Meromorphic.Order]\\n    The order of a function `f` equals the order of `-f`.\\n- meromorphicOrderAt_neg   [Mathlib.Analysis.Meromorphic.Order]\\n    The order of a function `f` equals the order of `-f`.\\n- meromorphicOrderAt_id   [Mathlib.Analysis.Meromorphic.Order]\\n- AnalyticAt.meromorphicOrderAt_eq   [Mathlib.Analysis.Meromorphic.Order]\\n    Compatibility of notions of `order` for analytic and meromorphic functions.\\n- meromorphicOrderAt_id_sub_const   [Mathlib.Analysis.Meromorphic.Order]\\n    The order of `· - x` at `x` is `1`.\\n- meromorphicOrderAt_congr   [Mathlib.Analysis.Meromorphic.Order]\\n    Meromorphic functions that agree in a punctured neighborhood of `z₀` have the same order at `z₀`.\\n- fun_meromorphicOrderAt_zpow_id_sub_const   [Mathlib.Analysis.Meromorphic.Order]\\n    Eta-expanded form of `meromorphicOrderAt_zpow_id_sub_const`  ---  The order of `(· - x) ^ n` at `x` is `n`.\\n- meromorphicOrderAt_add_of_top_left   [Mathlib.Analysis.Meromorphic.Order]\\n    Adding a locally vanishing function does not change the order.\\n- meromorphicOrderAt_add_of_top_right   [Mathlib.Analysis.Meromorphic.Order]\\n    Adding a locally vanishing function does not change the order.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def meromorphicOrderAt\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def meromorphicOrderAt' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f → ?g → Prop\"}",
+   "ok": true,
+   "result_chars": 129,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f → ?g → Prop': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3820,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 1–80 of 950):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler, Stefan Kebekus\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Meromorphic.Basic\\n     9  public import Mathlib.Algebra.Order.WithTop.Untop0\\n    10  \\n    11  /-!\\n    12  # Orders of Meromorphic Functions\\n    13  \\n    14  This file defines the order of a meromorphic function `f` at a point `z₀`, as an element of\\n    15  `ℤ ∪ {∞}`.\\n    16  \\n    17  We characterize the order being `< 0`, or `= 0`, or `> 0`, as the convergence of the function\\n    18  to infinity, resp. a nonzero constant, resp. zero.\\n    19  \\n    20  ## TODO\\n    21  \\n    22  Uniformize API between analytic and meromorphic functions\\n    23  -/\\n    24  \\n    25  @[expose] public section\\n    26  \\n    27  open Filter Set WithTop.LinearOrderedAddCommGroup\\n    28  open scoped Topology\\n    29  \\n    30  variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]\\n    31    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n    32    {R : Type*} [NormedRing R] [NoZeroDivisors R]\\n    33    [Module R E] [IsBoundedSMul R E] [Module.IsTorsionFree R E]\\n    34    {𝕜' : Type*} [NontriviallyNormedField 𝕜'] [NormedAlgebra 𝕜 𝕜']\\n    35    {f f₁ f₂ : 𝕜 → E} {x : 𝕜}\\n    36  \\n    37  /-!\\n    38  ## Order at a Point: Definition and Characterization\\n    39  -/\\n    40  \\n    41  open scoped Classical in\\n    42  /-- The order of a meromorphic function `f` at `z₀`, as an element of `ℤ ∪ {∞}`.\\n    43  \\n    44  The order is defined to be `∞` if `f` is identically 0 on a neighbourhood of `z₀`, and otherwise the\\n    45  unique `n` such that `f` can locally be written as `f z = (z - z₀) ^ n • g z`, where `g` is analytic\\n    46  and does not vanish at `z₀`. See `MeromorphicAt.meromorphicOrderAt_eq_top_iff` and\\n    47  `MeromorphicAt.meromorphicOrderAt_eq_int_iff` for these equivalences.\\n    48  \\n    49  If the function is not meromorphic at `x`, we use the junk value `0`. -/\\n    50  noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜) : WithTop ℤ :=\\n    51    if hf : MeromorphicAt f x then\\n    52      ((analyticOrderAt (fun z ↦ (z - x) ^ hf.choose • f z) x).map (↑· : ℕ → ℤ)) - hf.choose\\n    53    else 0\\n    54  \\n    55  @[simp]\\n    56  lemma meromorphicOrderAt_of_not_meromorphicAt (hf : ¬ MeromorphicAt f x) :\\n    57      meromorphicOrderAt f x = 0 :=\\n    58    dif_neg hf\\n    59  \\n    60  lemma meromorphicAt_of_meromorphicOrderAt_ne_zero (hf : meromorphicOrderAt f x ≠ 0) :\\n    61      MeromorphicAt f x := by\\n    62    contrapose hf\\n    63    simp [hf]\\n    64  \\n    65  /-- The order of a meromorphic function `f` at a `z₀` is infinity iff `f` vanishes locally around\\n    66  `z₀`. -/\\n    67  lemma meromorphicOrderAt_eq_top_iff :\\n    68      meromorphicOrderAt f x = ⊤ ↔ ∀ᶠ z in 𝓝[≠] x, f z = 0 := by\\n    69    by_cases hf : MeromorphicAt f x; swap\\n    70    · simp only [hf, not_false_eq_true, meromorphicOrderAt_of_not_meromorphicAt, WithTop.zero_ne_top,\\n    71        false_iff]\\n    72      contrapose hf\\n    73      exact (MeromorphicAt.const 0 x).congr (EventuallyEq.symm hf)\\n    74    simp only [meromorphicOrderAt, hf, ↓reduceDIte, sub_eq_top_iff, ENat.map_eq_top_iff,\\n    75      WithTop.natCast_ne_top, or_false]\\n    76    by_cases h : analyticOrderAt (fun z ↦ (z - x) ^ hf.choose • f z) x = ⊤\\n    77    · simp only [h, eventually_nhdsWithin_iff, mem_compl_iff, mem_singleton_iff, true_iff]\\n    78      rw [analyticOrderAt_eq_top] at h\\n    79      filter_upwards [h] with z hf hz\\n    80      rwa [smul_eq_zero_iff_right <| pow_ne_zero _ (sub_ne_zero.mpr hz)] at hf\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*meromorphicOrderAt.*analytic|theorem.*order.*analytic\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 276,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*meromorphicOrderAt.*analytic|theorem.*order.*analytic' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:115\\n    theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"nonneg WithTop\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'nonneg WithTop': Unknown identifier `nonneg`\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean\", \"line\": 115, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1461,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean  (lines 115–144 of 807):\\n   115  theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\\n   116      0 ≤ meromorphicOrderAt f x ↔ AnalyticAt 𝕜 f x := by\\n   117    constructor <;> intro h₂f\\n   118    · rw [meromorphicNFAt_iff_analyticAt_or] at hf\\n   119      rcases hf with h | ⟨_, h₃f, _⟩\\n   120      · exact h\\n   121      · by_contra h'\\n   122        exact lt_irrefl 0 (lt_of_le_of_lt h₂f h₃f)\\n   123    · rw [h₂f.meromorphicOrderAt_eq]\\n   124      simp\\n   125  \\n   126  /-- Analytic functions are meromorphic in normal form. -/\\n   127  theorem AnalyticAt.meromorphicNFAt (hf : AnalyticAt 𝕜 f x) :\\n   128      MeromorphicNFAt f x := by\\n   129    simp [meromorphicNFAt_iff_analyticAt_or, hf]\\n   130  \\n   131  /-- Meromorphic functions have normal form outside of a discrete subset in the domain of\\n   132  meromorphicity. -/\\n   133  theorem MeromorphicOn.meromorphicNFAt_mem_codiscreteWithin {U : Set 𝕜}\\n   134      (hf : MeromorphicOn f U) :\\n   135      { x | MeromorphicNFAt f x } ∈ Filter.codiscreteWithin U := by\\n   136    filter_upwards [hf.analyticAt_mem_codiscreteWithin] with _ ha\\n   137    exact ha.meromorphicNFAt\\n   138  \\n   139  /-!\\n   140  ### Vanishing and order\\n   141  -/\\n   142  \\n   143  /-- If `f` is meromorphic in normal form at `x`, then `f` has order zero iff it does not vanish at\\n   144  `x`.\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def MeromorphicNFAt|structure MeromorphicNFAt\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def MeromorphicNFAt|structure MeromorphicNFAt' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:48\\n    def MeromorphicNFAt :=\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4566,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/NormalForm.lean  (lines 1–100 of 807):\\n     1  /-\\n     2  Copyright (c) 2025 Stefan Kebekus. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Stefan Kebekus\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Meromorphic.Divisor\\n     9  \\n    10  /-!\\n    11  # Normal form of meromorphic functions and continuous extension\\n    12  \\n    13  If a function `f` is meromorphic on `U` and if `g` differs from `f` only along a set that is\\n    14  codiscrete within `U`, then `g` is likewise meromorphic. The set of meromorphic functions is\\n    15  therefore huge, and `=ᶠ[codiscreteWithin U]` defines an equivalence relation.\\n    16  \\n    17  This file implements continuous extension to provide an API that allows picking the 'unique best'\\n    18  representative of any given equivalence class, where 'best' means that the representative can\\n    19  locally near any point `x` be written 'in normal form', as `f =ᶠ[𝓝 x] fun z ↦ (z - x) ^ n • g`\\n    20  where `g` is analytic and does not vanish at `x`.\\n    21  \\n    22  The relevant notions are `MeromorphicNFAt` and `MeromorphicNFOn`; these guarantee normal\\n    23  form at a single point and along a set, respectively.\\n    24  -/\\n    25  \\n    26  @[expose] public section\\n    27  \\n    28  open Topology WithTop\\n    29  \\n    30  variable\\n    31    {𝕜 : Type*} [NontriviallyNormedField 𝕜]\\n    32    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n    33    {f : 𝕜 → E} {g : 𝕜 → 𝕜}\\n    34    {x : 𝕜}\\n    35    {U : Set 𝕜}\\n    36  \\n    37  /-!\\n    38  ## Normal form of meromorphic functions at a given point\\n    39  \\n    40  ### Definition and characterizations\\n    41  -/\\n    42  \\n    43  variable (f x) in\\n    44  /-- A function is 'meromorphic in normal form' at `x` if it vanishes around `x`\\n    45  or if it can locally be written as `fun z ↦ (z - x) ^ n • g` where `g` is\\n    46  analytic and does not vanish at `x`. -/\\n    47  @[fun_prop]\\n    48  def MeromorphicNFAt :=\\n    49    f =ᶠ[𝓝 x] 0 ∨\\n    50      ∃ (n : ℤ) (g : 𝕜 → E), AnalyticAt 𝕜 g x ∧ g x ≠ 0 ∧ f =ᶠ[𝓝 x] (· - x) ^ n • g\\n    51  \\n    52  /-- A meromorphic function has normal form at `x` iff it is either analytic\\n    53  there, or if it has a pole at `x` and takes the default value `0`. -/\\n    54  theorem meromorphicNFAt_iff_analyticAt_or :\\n    55      MeromorphicNFAt f x ↔\\n    56        AnalyticAt 𝕜 f x ∨ (MeromorphicAt f x ∧ meromorphicOrderAt f x < 0 ∧ f x = 0) := by\\n    57    constructor\\n    58    · rintro (h | ⟨n, g, h₁g, h₂g, h₃g⟩)\\n    59      · simp [(analyticAt_congr h).2 analyticAt_const]\\n    60      · have hf : MeromorphicAt f x := by\\n    61          apply MeromorphicAt.congr _ (h₃g.filter_mono nhdsWithin_le_nhds).symm\\n    62          fun_prop\\n    63        have : meromorphicOrderAt f x = n := by\\n    64          rw [meromorphicOrderAt_eq_int_iff hf]\\n    65          use g, h₁g, h₂g\\n    66          exact eventually_nhdsWithin_of_eventually_nhds h₃g\\n    67        by_cases! hn : 0 ≤ n\\n    68        · left\\n    69          rw [analyticAt_congr h₃g]\\n    70          apply (AnalyticAt.zpow_nonneg (by fun_prop) hn).smul h₁g\\n    71        · right\\n    72          use hf\\n    73          simp [this, WithTop.coe_lt_zero.2 hn, h₃g.eq_of_nhds,\\n    74            zero_zpow n hn.ne]\\n    75    · rintro (h | ⟨h₁, h₂, h₃⟩)\\n    76      · by_cases h₂f : analyticOrderAt f x = ⊤\\n    77        · rw [analyticOrderAt_eq_top] at h₂f\\n    78          tauto\\n    79        · right\\n    80          use analyticOrderNatAt f x\\n    81          have : analyticOrderAt f x ≠ ⊤ := h₂f\\n    82          rw [← ENat.coe_toNat_eq_self, eq_comm, h.analyticOrderAt_eq_natCast] at this\\n    83          obtain ⟨g, h₁g, h₂g, h₃g⟩ := this\\n    84          use g, h₁g, h₂g\\n    85          simpa\\n    86      · right\\n    87        lift meromorphicOrderAt f x to ℤ using LT.l"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*nonneg.*meromorphic|theorem.*AnalyticAt.*meromorphic.*order\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 139,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*nonneg.*meromorphic|theorem.*AnalyticAt.*meromorphic.*order' under Mathlib/.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeromorphicAt AnalyticAt order\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MeromorphicAt AnalyticAt order': Unknown identifier `order`\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"meromorphicOrderAt_eq_int_iff|meromorphicOrderAt_nonneg\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2046,
+   "result_head": "[{\"type\": \"text\", \"text\": \"42 match(es) for 'meromorphicOrderAt_eq_int_iff|meromorphicOrderAt_nonneg' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:181\\n    · simp [hf.meromorphicOn, hx, (hf x hx).meromorphicOrderAt_nonneg]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:433\\n    le_inf h (hf₂ x hx).meromorphicOrderAt_nonneg\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:440\\n    _ ≤ meromorphicOrderAt f₂ x := (hf₂ x hx).meromorphicOrderAt_nonneg\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:457\\n    exact (meromorphicOrderAt_eq_int_iff (by fun_prop)).mpr\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:466\\n    exact (meromorphicOrderAt_eq_int_iff (by fun_prop)).mpr ⟨fun _ ↦ 1, analyticAt_const, by simp⟩\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:97\\n    simp only [meromorphicOrderAt_eq_int_iff h₄, ne_eq]\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:243\\n    obtain ⟨g₂, h₁g₂, h₂g₂, h₃g₂⟩ := (meromorphicOrderAt_eq_int_iff hf₂).1 hn₂.symm\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:245\\n    obtain ⟨g₁, h₁g₁, h₂g₁, h₃g₁⟩ := (meromorphicOrderAt_eq_int_iff hf₁).1 hn₁.symm\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:310\\n    obtain ⟨g₁, h₁g₁, h₂g₁, h₃g₁⟩ := (meromorphicOrderAt_eq_int_iff hf₁).1 hn₁.symm\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:312\\n    obtain ⟨g₂, h₁g₂, h₂g₂, h₃g₂⟩ := (meromorphicOrderAt_eq_int_iff hf₂).1 hn₂.symm\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:64\\n    rw [meromorphicOrderAt_eq_int_iff hf]\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:88\\n    obtain ⟨g, h₁g, h₂g, h₃g⟩ := (meromorphicOrderAt_eq_int_iff h₁).1 hn.symm\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:115\\n    theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:151\\n    have h₂f := hf.meromorphicOrderAt_nonneg_iff_analyticAt.1 (le_of_eq h₁f.symm)\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:164\\n    apply (meromorphicOrderAt_eq_int_iff hf.meromorphicAt).2\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem meromorphicOrderAt_eq_int_iff|lemma meromorphicOrderAt_eq_int_iff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 287,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem meromorphicOrderAt_eq_int_iff|lemma meromorphicOrderAt_eq_int_iff' (via ripgrep):\\n- Mathlib/Analysis/Meromorphic/Order.lean:97\\n    lemma meromorphicOrderAt_eq_int_iff {n : ℤ} (hf : MeromorphicAt f x) : meromorphicOrderAt f x = n ↔\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 200, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3267,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 200–249 of 950):\\n   200      apply this.continuousWithinAt.tendsto.congr'\\n   201      filter_upwards [hg] with y hy using by simp [hy]\\n   202  \\n   203  /-- If the order of a meromorphic function is nonnegative, then this function converges\\n   204  at this point. See also the iff version `tendsto_nhds_iff_meromorphicOrderAt_nonneg`. -/\\n   205  lemma tendsto_nhds_of_meromorphicOrderAt_nonneg\\n   206      (hf : MeromorphicAt f x) (ho : 0 ≤ meromorphicOrderAt f x) :\\n   207      ∃ c, Tendsto f (𝓝[≠] x) (𝓝 c) := by\\n   208    rcases ho.eq_or_lt with ho | ho\\n   209    · rcases tendsto_ne_zero_of_meromorphicOrderAt_eq_zero hf ho.symm with ⟨c, -, hc⟩\\n   210      exact ⟨c, hc⟩\\n   211    · exact ⟨0, tendsto_zero_of_meromorphicOrderAt_pos ho⟩\\n   212  \\n   213  /-- A meromorphic function converges to infinity iff its order is negative. -/\\n   214  lemma tendsto_cobounded_iff_meromorphicOrderAt_neg (hf : MeromorphicAt f x) :\\n   215      Tendsto f (𝓝[≠] x) (Bornology.cobounded E) ↔ meromorphicOrderAt f x < 0 := by\\n   216    rcases lt_or_ge (meromorphicOrderAt f x) 0 with ho | ho\\n   217    · simp [ho, tendsto_cobounded_of_meromorphicOrderAt_neg]\\n   218    · simp only [lt_iff_not_ge, ho, not_true_eq_false, iff_false, ← tendsto_norm_atTop_iff_cobounded]\\n   219      obtain ⟨c, hc⟩ := tendsto_nhds_of_meromorphicOrderAt_nonneg hf ho\\n   220      exact not_tendsto_atTop_of_tendsto_nhds hc.norm\\n   221  \\n   222  /-- A meromorphic function converges to a limit iff its order is nonnegative. -/\\n   223  lemma tendsto_nhds_iff_meromorphicOrderAt_nonneg (hf : MeromorphicAt f x) :\\n   224      (∃ c, Tendsto f (𝓝[≠] x) (𝓝 c)) ↔ 0 ≤ meromorphicOrderAt f x := by\\n   225    rcases lt_or_ge (meromorphicOrderAt f x) 0 with ho | ho\\n   226    · simp only [← not_lt, ho, not_true_eq_false, iff_false, not_exists]\\n   227      intro c hc\\n   228      apply not_tendsto_atTop_of_tendsto_nhds hc.norm\\n   229      rw [tendsto_norm_atTop_iff_cobounded]\\n   230      exact tendsto_cobounded_of_meromorphicOrderAt_neg ho\\n   231    · simp [ho, tendsto_nhds_of_meromorphicOrderAt_nonneg hf ho]\\n   232  \\n   233  /-- A meromorphic function converges to a nonzero limit iff its order is zero. -/\\n   234  lemma tendsto_ne_zero_iff_meromorphicOrderAt_eq_zero (hf : MeromorphicAt f x) :\\n   235      (∃ c ≠ 0, Tendsto f (𝓝[≠] x) (𝓝 c)) ↔ meromorphicOrderAt f x = 0 := by\\n   236    rcases eq_or_ne (meromorphicOrderAt f x) 0 with ho | ho\\n   237    · simp [ho, tendsto_ne_zero_of_meromorphicOrderAt_eq_zero hf ho]\\n   238    simp only [ne_eq, ho, iff_false, not_exists, not_and]\\n   239    intro c c_ne hc\\n   240    rcases ho.lt_or_gt with ho | ho\\n   241    · apply not_tendsto_atTop_of_tendsto_nhds hc.norm\\n   242      rw [tendsto_norm_atTop_iff_cobounded]\\n   243      exact tendsto_cobounded_of_meromorphicOrderAt_neg ho\\n   244    · apply c_ne\\n   245      exact tendsto_nhds_unique hc (tendsto_zero_of_meromorphicOrderAt_pos ho)\\n   246  \\n   247  /-- A meromorphic function converges to zero iff its order is positive. -/\\n   248  lemma tendsto_zero_iff_meromorphicOrderAt_pos (hf : MeromorphicAt f x) :\\n   249      (Tendsto f (𝓝[≠] x) (𝓝 0)) ↔ 0 < meromorphicOrderAt f x := by\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 97, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 97–126 of 950):\\n    97  lemma meromorphicOrderAt_eq_int_iff {n : ℤ} (hf : MeromorphicAt f x) : meromorphicOrderAt f x = n ↔\\n    98      ∃ g : 𝕜 → E, AnalyticAt 𝕜 g x ∧ g x ≠ 0 ∧ ∀ᶠ z in 𝓝[≠] x, f z = (z - x) ^ n • g z := by\\n    99    simp only [meromorphicOrderAt, hf, ↓reduceDIte]\\n   100    by_cases h : analyticOrderAt (fun z ↦ (z - x) ^ hf.choose • f z) x = ⊤\\n   101    · rw [h, ENat.map_top, ← WithTop.coe_natCast, top_sub,\\n   102        eq_false_intro WithTop.top_ne_coe, false_iff]\\n   103      rw [analyticOrderAt_eq_top] at h\\n   104      refine fun ⟨g, hg_an, hg_ne, hg_eq⟩ ↦ hg_ne ?_\\n   105      apply EventuallyEq.eq_of_nhds\\n   106      rw [EventuallyEq, ← AnalyticAt.frequently_eq_iff_eventually_eq hg_an analyticAt_const]\\n   107      apply Eventually.frequently\\n   108      rw [eventually_nhdsWithin_iff] at hg_eq ⊢\\n   109      filter_upwards [h, hg_eq] with z hfz hfz_eq hz\\n   110      rwa [hfz_eq hz, ← mul_smul, smul_eq_zero_iff_right] at hfz\\n   111      exact mul_ne_zero (pow_ne_zero _ (sub_ne_zero.mpr hz)) (zpow_ne_zero _ (sub_ne_zero.mpr hz))\\n   112    · obtain ⟨m, h⟩ := ENat.ne_top_iff_exists.mp h\\n   113      rw [← h, ENat.map_coe, ← WithTop.coe_natCast, ← coe_sub, WithTop.coe_inj]\\n   114      obtain ⟨g, hg_an, hg_ne, hg_eq⟩ := hf.choose_spec.analyticOrderAt_eq_natCast.mp h.symm\\n   115      replace hg_eq : ∀ᶠ (z : 𝕜) in 𝓝[≠] x, f z = (z - x) ^ (↑m - ↑hf.choose : ℤ) • g z := by\\n   116        rw [eventually_nhdsWithin_iff]\\n   117        filter_upwards [hg_eq] with z hg_eq hz\\n   118        rwa [← smul_right_inj <| zpow_ne_zero _ (sub_ne_zero.mpr hz), ← mul_smul,\\n   119          ← zpow_add₀ (sub_ne_zero.mpr hz), ← add_sub_assoc, add_sub_cancel_left, zpow_natCast,\\n   120          zpow_natCast]\\n   121      exact ⟨fun h ↦ ⟨g, hg_an, hg_ne, h ▸ hg_eq⟩,\\n   122        AnalyticAt.unique_eventuallyEq_zpow_smul_nonzero ⟨g, hg_an, hg_ne, hg_eq⟩⟩\\n   123  \\n   124  /--\\n   125  The order of a meromorphic function `f` at `z₀` is finite iff `f` can locally be\\n   126  written as `f z = (z - z₀) ^ order • g z`, where `g` is analytic and does not\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"removable singularity\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'removable singularity': Unknown identifier `removable`\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*nonneg.*exists.*AnalyticAt|theorem.*AnalyticAt.*agreement\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*nonneg.*exists.*AnalyticAt|theorem.*AnalyticAt.*agreement' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"variable.*ℂ|NontriviallyNormedField|Complex\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2410,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7163 match(es) for 'variable.*ℂ|NontriviallyNormedField|Complex' (via ripgrep):\\n- Mathlib/Algebra/DualNumber.lean:145\\n    This isomorphism is named to match the similar `Complex.lift`.\\n- Mathlib/Algebra/TrivSqZeroExt/Basic.lean:1032\\n    This isomorphism is named to match the very similar `Complex.lift`. -/\\n- Mathlib/Algebra/Algebra/Spectrum/Quasispectrum.lean:428\\n    For example, when `f = Complex.re` (so `S := ℂ` and `R := ℝ`), `SpectrumRestricts a f` means that\\n- Mathlib/Algebra/Homology/SingleHomology.lean:9\\n    public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex\\n- Mathlib/Algebra/Homology/SingleHomology.lean:13\\n    The main definition in this file is `HomologicalComplex.homologyFunctorSingleIso`\\n- Mathlib/Algebra/Homology/SingleHomology.lean:25\\n    {ι : Type*} [DecidableEq ι] (c : ComplexShape ι) (j : ι)\\n- Mathlib/Algebra/Homology/SingleHomology.lean:27\\n    namespace HomologicalComplex\\n- Mathlib/Algebra/Homology/SingleHomology.lean:32\\n    apply ShortComplex.hasHomology_of_zeros\\n- Mathlib/Algebra/Homology/SingleHomology.lean:36\\n    ShortComplex.exact_of_isZero_X₂ _ (isZero_single_obj_X c _ _ _ hi)\\n- Mathlib/Algebra/Homology/SingleHomology.lean:127\\n    ← HomologicalComplex.homology_π_ι_assoc, homologyι_singleObjOpcyclesSelfIso_inv,\\n- Mathlib/Algebra/Homology/SingleHomology.lean:191\\n    end HomologicalComplex\\n- Mathlib/Algebra/Homology/SingleHomology.lean:193\\n    open HomologicalComplex\\n- Mathlib/Algebra/Homology/SingleHomology.lean:195\\n    lemma ChainComplex.exactAt_succ_single_obj (A : C) (n : ℕ) :\\n- Mathlib/Algebra/Homology/SingleHomology.lean:199\\n    lemma CochainComplex.exactAt_succ_single_obj (A : C) (n : ℕ) :\\n- Mathlib/Algebra/Homology/CommSq.lean:8\\n    public import Mathlib.Algebra.Homology.ShortComplex.Basic\\n- Mathlib/Algebra/Homology/CommSq.lean:53\\n    noncomputable def CommSq.shortComplex (sq : CommSq f g inl inr) : ShortComplex C where\\n- Mathlib/Algebra/Homology/CommSq.lean:114\\n    lemma IsPushout.epi_shortComplex_g (h : IsPushout f g inl inr) :\\n- Mathlib/Algebra/Homology/CommSq.lean:115\\n    Epi h.shortComplex.g := by\\n- Mathlib/Algebra/Homology/CommSq.lean:132\\n    (This is similar to `CommSq.shortComplex`, but with different signs.) -/\\n- Mathlib/Algebra/Homology/CommSq.lean:134\\n    noncomputable def CommSq.shortComplex' (sq : CommSq fst snd f g) : ShortComplex C where\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MeromorphicAt 𝕜\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MeromorphicAt 𝕜': Unknown identifier `𝕜`\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3636,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Basic.lean  (lines 1–80 of 789):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler, Stefan Kebekus\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Analytic.Order\\n     9  public import Mathlib.Analysis.Analytic.IsolatedZeros\\n    10  public import Mathlib.Analysis.Calculus.Deriv.ZPow\\n    11  public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic\\n    12  \\n    13  /-!\\n    14  # Meromorphic functions\\n    15  \\n    16  Main statements:\\n    17  \\n    18  * `MeromorphicAt`: definition of meromorphy at a point\\n    19  * `MeromorphicAt.iff_eventuallyEq_zpow_smul_analyticAt`: `f` is meromorphic at `z₀` iff we have\\n    20    `f z = (z - z₀) ^ n • g z` on a punctured neighborhood of `z₀`, for some `n : ℤ`\\n    21    and `g` analytic at `z₀`.\\n    22  -/\\n    23  \\n    24  @[expose] public section\\n    25  \\n    26  open Filter Set\\n    27  \\n    28  open scoped Topology\\n    29  \\n    30  variable {𝕜 𝕜' : Type*} [NontriviallyNormedField 𝕜] [NontriviallyNormedField 𝕜']\\n    31    [NormedAlgebra 𝕜 𝕜'] {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n    32  variable {R : Type*} [NormedRing R] [Module R E] [IsBoundedSMul R E]\\n    33  \\n    34  /-- Meromorphy of `f` at `x` (more precisely, on a punctured neighbourhood of `x`; the value at\\n    35  `x` itself is irrelevant). -/\\n    36  @[fun_prop]\\n    37  def MeromorphicAt (f : 𝕜 → E) (x : 𝕜) :=\\n    38    ∃ (n : ℕ), AnalyticAt 𝕜 (fun z ↦ (z - x) ^ n • f z) x\\n    39  \\n    40  @[fun_prop]\\n    41  lemma AnalyticAt.meromorphicAt {f : 𝕜 → E} {x : 𝕜} (hf : AnalyticAt 𝕜 f x) :\\n    42      MeromorphicAt f x :=\\n    43    ⟨0, by simpa only [pow_zero, one_smul]⟩\\n    44  \\n    45  /-- Analogue of the principle of isolated zeros for an analytic function: if a function is\\n    46  meromorphic at `z₀`, then either it is identically zero in a punctured neighborhood of `z₀`, or it\\n    47  does not vanish there at all. -/\\n    48  theorem MeromorphicAt.eventually_eq_zero_or_eventually_ne_zero {f : 𝕜 → E} {z₀ : 𝕜}\\n    49      (hf : MeromorphicAt f z₀) :\\n    50      (∀ᶠ z in 𝓝[≠] z₀, f z = 0) ∨ (∀ᶠ z in 𝓝[≠] z₀, f z ≠ 0) := by\\n    51    obtain ⟨n, h⟩ := hf\\n    52    rcases h.eventually_eq_zero_or_eventually_ne_zero with h₁ | h₂\\n    53    · left\\n    54      filter_upwards [nhdsWithin_le_nhds h₁, self_mem_nhdsWithin] with y h₁y h₂y\\n    55      rw [Set.mem_compl_iff, Set.mem_singleton_iff, ← sub_eq_zero] at h₂y\\n    56      exact smul_eq_zero_iff_right (pow_ne_zero n h₂y) |>.mp h₁y\\n    57    · right\\n    58      filter_upwards [h₂, self_mem_nhdsWithin] with y h₁y h₂y\\n    59      exact (smul_ne_zero_iff.1 h₁y).2\\n    60  \\n    61  namespace MeromorphicAt\\n    62  \\n    63  variable {ι : Type*} {s : Finset ι} {F : ι → 𝕜 → 𝕜'} {G : ι → 𝕜 → E}\\n    64  \\n    65  @[fun_prop]\\n    66  lemma id (x : 𝕜) : MeromorphicAt id x := analyticAt_id.meromorphicAt\\n    67  \\n    68  @[fun_prop, simp]\\n    69  lemma const (e : E) (x : 𝕜) : MeromorphicAt (fun _ ↦ e) x :=\\n    70    analyticAt_const.meromorphicAt\\n    71  \\n    72  variable {x : 𝕜}\\n    73  \\n    74  @[to_fun (attr := fun_prop)]\\n    75  lemma add {f g : 𝕜 → E} (hf : MeromorphicAt f x) (hg : MeromorphicAt g x) :\\n    76      MeromorphicAt (f + g) x := by\\n    77    rcases hf with ⟨m, hf⟩\\n    78    rcases hg with ⟨n, hg⟩\\n    79    refine ⟨max m n, ?_⟩\\n    80    have : (fun z ↦ (z - x) ^ max m n • (f + g) z) = fun z ↦ (z - x) ^ (max m n - m) •\\n\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"pole.*order|meromorphicOrderAt.*neg|meromorphicOrderAt.*lt.*zero\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2699,
+   "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for 'pole.*order|meromorphicOrderAt.*neg|meromorphicOrderAt.*lt.*zero' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Elliptic/Weierstrass.lean:41\\n    - `PeriodPair.order_weierstrassP`: `℘` has a pole of order 2 at each of the lattice points.\\n- Mathlib/Analysis/Complex/ValueDistribution/Cartan.lean:79\\n    rcases lt_trichotomy (meromorphicOrderAt f 0) 0 with hneg | hzero | hpos\\n- Mathlib/Analysis/Complex/ValueDistribution/Cartan.lean:121\\n    theorem circleAverage_log_norm_meromorphicTrailingCoeffAt_of_meromorphicOrderAt_lt_zero\\n- Mathlib/Analysis/Complex/CanonicalDecomposition.lean:122\\n    simpa [meromorphicOrderAt_canonicalFactor h] using WithTop.coe_lt_zero.mpr (by lia : -1 < 0)\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:181\\n    · simp [hf.meromorphicOn, hx, (hf x hx).meromorphicOrderAt_nonneg]\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:433\\n    le_inf h (hf₂ x hx).meromorphicOrderAt_nonneg\\n- Mathlib/Analysis/Meromorphic/Divisor.lean:440\\n    _ ≤ meromorphicOrderAt f₂ x := (hf₂ x hx).meromorphicOrderAt_nonneg\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:208\\n    · simp_all [← meromorphicOrderAt_neg]\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:215\\n    simp [ha, ← meromorphicOrderAt_neg]\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:281\\n    rwa [← meromorphicOrderAt_neg]\\n- Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean:345\\n    · rwa [← meromorphicOrderAt_neg]\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:115\\n    theorem MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt (hf : MeromorphicNFAt f x) :\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:151\\n    have h₂f := hf.meromorphicOrderAt_nonneg_iff_analyticAt.1 (le_of_eq h₁f.symm)\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:187\\n    have Z := (hf.meromorphicOrderAt_nonneg_iff_analyticAt.1 (le_of_eq cs.symm)).continuousAt\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:188\\n    have W := (hg.meromorphicOrderAt_nonneg_iff_analyticAt.1 (le_of_eq t₀)).continuousAt\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:275\\n    rw [← (h₁f τ h₁τ).meromorphicOrderAt_nonneg_iff_analyticAt]\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:555\\n    rw [← (h₁f hx).meromorphicOrderAt_nonneg_iff_analyticAt]\\n- Mathlib/Analysis/Meromorphic/NormalForm.lean:563\\n    exact (h₁f hx).meromorphicOrderAt_nonneg_iff_analyticAt.2 (h x hx)\\n- Mathlib/Analysis/Meromorphic/Order.lean:151\\n    at this point. See also the iff version `tendsto_cobounded_iff_meromorphicOrderAt_neg`. -/\\n- Mathlib/Analysis/Meromorphic/Order.lean:152\\n    lemma tendsto_cobounded_of_meromorphicOrderAt_neg (ho : meromorphicOrderAt f x < 0) :\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tendsto_cobounded meromorphicOrderAt\"}",
+   "ok": true,
+   "result_chars": 125,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'tendsto_cobounded meromorphicOrderAt': Unknown identifier `tendsto_cobounded`\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"analytic.*extend|extend.*analytic|continuation|AnalyticOnNhd.*agree\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2146,
+   "result_head": "[{\"type\": \"text\", \"text\": \"72 match(es) for 'analytic.*extend|extend.*analytic|continuation|AnalyticOnNhd.*agree' (via ripgrep):\\n- Mathlib/Computability/TuringMachine/Config.lean:386\\n    deterministic evaluation order. In order to do this, we introduce the notion of a *continuation*,\\n- Mathlib/Computability/TuringMachine/Config.lean:392\\n    The continuations are:\\n- Mathlib/Computability/TuringMachine/Config.lean:394\\n    * `halt`: the empty continuation: the hole is the whole program, whatever is returned is the\\n- Mathlib/Computability/TuringMachine/Config.lean:397\\n    outer continuation.\\n- Mathlib/Computability/TuringMachine/Config.lean:407\\n    * `ret k v`: we have received a result, and are now evaluating the continuation `k` with result\\n- Mathlib/Computability/TuringMachine/Config.lean:416\\n    /-- The type of continuations, built up during evaluation of a `Code` expression. -/\\n- Mathlib/Computability/TuringMachine/Config.lean:425\\n    /-- The semantics of a continuation. -/\\n- Mathlib/Computability/TuringMachine/Config.lean:438\\n    * `ret k v`: The machine is about to pass `v : List ℕ` to continuation `k : Cont`.\\n- Mathlib/Computability/TuringMachine/Config.lean:447\\n    /-- Evaluating `c : Code` in a continuation `k : Cont` and input `v : List ℕ`. This goes by\\n- Mathlib/Computability/TuringMachine/Config.lean:448\\n    recursion on `c`, building an augmented continuation and a value to pass to it.\\n- Mathlib/Computability/TuringMachine/Config.lean:450\\n    * `zero' v = 0 :: v` evaluates immediately, so we return it to the parent continuation\\n- Mathlib/Computability/TuringMachine/Config.lean:451\\n    * `succ v = [v.headI.succ]` evaluates immediately, so we return it to the parent continuation\\n- Mathlib/Computability/TuringMachine/Config.lean:452\\n    * `tail v = v.tail` evaluates immediately, so we return it to the parent continuation\\n- Mathlib/Computability/TuringMachine/Config.lean:454\\n    `f v` in the continuation `k (_.headI :: fs v)` (called `Cont.cons₁ fs v k`)\\n- Mathlib/Computability/TuringMachine/Config.lean:456\\n    `g v` in the continuation `k (f _)` (called `Cont.comp f k`)\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AnalyticAt frequently_eq_iff\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AnalyticAt frequently_eq_iff': Unknown identifier `frequently_eq_iff`\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Meromorphic/Order.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2698,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Meromorphic/Order.lean  (lines 1–60 of 950):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler, Stefan Kebekus\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Meromorphic.Basic\\n     9  public import Mathlib.Algebra.Order.WithTop.Untop0\\n    10  \\n    11  /-!\\n    12  # Orders of Meromorphic Functions\\n    13  \\n    14  This file defines the order of a meromorphic function `f` at a point `z₀`, as an element of\\n    15  `ℤ ∪ {∞}`.\\n    16  \\n    17  We characterize the order being `< 0`, or `= 0`, or `> 0`, as the convergence of the function\\n    18  to infinity, resp. a nonzero constant, resp. zero.\\n    19  \\n    20  ## TODO\\n    21  \\n    22  Uniformize API between analytic and meromorphic functions\\n    23  -/\\n    24  \\n    25  @[expose] public section\\n    26  \\n    27  open Filter Set WithTop.LinearOrderedAddCommGroup\\n    28  open scoped Topology\\n    29  \\n    30  variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]\\n    31    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\\n    32    {R : Type*} [NormedRing R] [NoZeroDivisors R]\\n    33    [Module R E] [IsBoundedSMul R E] [Module.IsTorsionFree R E]\\n    34    {𝕜' : Type*} [NontriviallyNormedField 𝕜'] [NormedAlgebra 𝕜 𝕜']\\n    35    {f f₁ f₂ : 𝕜 → E} {x : 𝕜}\\n    36  \\n    37  /-!\\n    38  ## Order at a Point: Definition and Characterization\\n    39  -/\\n    40  \\n    41  open scoped Classical in\\n    42  /-- The order of a meromorphic function `f` at `z₀`, as an element of `ℤ ∪ {∞}`.\\n    43  \\n    44  The order is defined to be `∞` if `f` is identically 0 on a neighbourhood of `z₀`, and otherwise the\\n    45  unique `n` such that `f` can locally be written as `f z = (z - z₀) ^ n • g z`, where `g` is analytic\\n    46  and does not vanish at `z₀`. See `MeromorphicAt.meromorphicOrderAt_eq_top_iff` and\\n    47  `MeromorphicAt.meromorphicOrderAt_eq_int_iff` for these equivalences.\\n    48  \\n    49  If the function is not meromorphic at `x`, we use the junk value `0`. -/\\n    50  noncomputable def meromorphicOrderAt (f : 𝕜 → E) (x : 𝕜) : WithTop ℤ :=\\n    51    if hf : MeromorphicAt f x then\\n    52      ((analyticOrderAt (fun z ↦ (z - x) ^ hf.choose • f z) x).map (↑· : ℕ → ℤ)) - hf.choose\\n    53    else 0\\n    54  \\n    55  @[simp]\\n    56  lemma meromorphicOrderAt_of_not_meromorphicAt (hf : ¬ MeromorphicAt f x) :\\n    57      meromorphicOrderAt f x = 0 :=\\n    58    dif_neg hf\\n    59  \\n    60  lemma meromorphicAt_of_meromorphicOrderAt_ne_zero (hf : meromorphicOrderAt f x ≠ 0) :\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem meromorphic_nonneg_order_iff_exists_analytic_agreement\n    {𝕜 : Type*} [NontriviallyNormedField 𝕜]\n    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]\n    (f : 𝕜 → E) (x : 𝕜) (hf : MeromorphicAt f x) :\n    0 ≤ meromorphicOrderAt f x ↔ ∃ g, AnalyticAt 𝕜 g x ∧ ∀ᶠ z in 𝓝[≠] x, f z = g z := sorry"
+}

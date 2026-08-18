@@ -1,0 +1,94 @@
+{
+ "task_id": "fresh_073",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:39:36Z",
+ "wall_s": 25.8,
+ "transcript_stats": {
+  "turns": 6,
+  "assistant_turns": 5,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 4,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 42,
+  "tokens_out": 1669,
+  "cost_usd": 0.01940035
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearOrder\"}",
+   "ok": true,
+   "result_chars": 1244,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 9532 declarations mentioning LinearOrder.\\n- LinearOrder   [Mathlib.Order.Defs.LinearOrder]\\n    A linear order is reflexive, transitive, antisymmetric and total relation `≤`. We assume that every linear ordered type has decidable `(≤)`, `(<)`, and `(=)`.\\n- LinOrd.of   [Mathlib.Order.Defs.LinearOrder]\\n    Construct a bundled `LinOrd` from the underlying type and typeclass.\\n- LinOrd.str   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toDecidableEq   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- LinearOrder.toMax   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toMin   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toOrd   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toPartialOrder   [Mathlib.Order.Defs.LinearOrder]\\n- instIsLinearOrder_mathlib   [Mathlib.Order.Defs.LinearOrder]\\n- LinearOrder.toDecidableLE   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- LinearOrder.toDecidableLT   [Mathlib.Order.Defs.LinearOrder]\\n    In a linearly ordered type, we assume the order relations are all decidable.\\n- max_self   [Mathlib.Order.Defs.LinearOrder]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Infinite\"}",
+   "ok": true,
+   "result_chars": 1013,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 335 declarations mentioning Infinite.\\n- Infinite   [Mathlib.Data.Finite.Defs]\\n    A type is said to be infinite if it is not finite. Note that `Infinite α` is equivalent to `IsEmpty (Fintype α)` or `IsEmpty (Finite α)`.\\n- finite_or_infinite   [Mathlib.Data.Finite.Defs]\\n- instInfinitePLift   [Mathlib.Data.Finite.Defs]\\n- instInfiniteULift   [Mathlib.Data.Finite.Defs]\\n- not_finite   [Mathlib.Data.Finite.Defs]\\n    `Infinite α` is not `Finite`\\n- Finite.false   [Mathlib.Data.Finite.Defs]\\n- Finite.not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the reverse direction of `not_infinite_iff_finite`.\\n- Finite.of_not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the forward direction of `not_infinite_iff_finite`.\\n- Infinite.false   [Mathlib.Data.Finite.Defs]\\n- Infinite.mk   [Mathlib.Data.Finite.Defs]\\n- Infinite.not_finite   [Mathlib.Data.Finite.Defs]\\n    assertion that `α` is `¬Finite`\\n- not_finite_iff_infinite   [Mathlib.Data.Finite.Defs]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 650 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- strictMono_id   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.strictMono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.strictMono_coe   [Mathlib.Order.Monotone.Defs]\\n- Function.const_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- strictMonoOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.monotone   [Mathlib.Order.Monotone.Defs]\\n- Monotone.strictMono_of_injective   [Mathlib.Order.Monotone.Defs]\\n- Function.update_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.imp   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictAnti\"}",
+   "ok": true,
+   "result_chars": 853,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 174 declarations mentioning StrictAnti.\\n- StrictAnti   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly antitone if `a < b` implies `f b < f a`.\\n- Subsingleton.strictAnti   [Mathlib.Order.Monotone.Defs]\\n- strictAntiOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.strictAntiOn   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.antitone   [Mathlib.Order.Monotone.Defs]\\n- Antitone.strictAnti_of_injective   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.imp   [Mathlib.Order.Monotone.Defs]\\n- strictAnti_of_le_iff_le   [Mathlib.Order.Monotone.Defs]\\n- instDecidableStrictAntiOfForallForallForallLt   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.comp   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.comp_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.comp_strictAnti   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LinearOrder\", \"Infinite\", \"StrictMono\", \"StrictAnti\"]}",
+   "ok": true,
+   "result_chars": 1324,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Defs/LinearOrder.html#LinearOrder\\\"},{\\\"decl\\\":\\\"Infinite\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Infinite\\\"},{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"decl\\\":\\\"StrictAnti\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictAnti\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem infinite_linear_order_has_monotone_sequence (α : Type*) [LinearOrder α] [Infinite α] :\n  ∃ (f : ℕ → α), StrictMono f ∨ StrictAnti f := sorry"
+}

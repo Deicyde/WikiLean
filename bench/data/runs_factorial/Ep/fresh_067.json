@@ -1,0 +1,404 @@
+{
+ "task_id": "fresh_067",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:56:19Z",
+ "wall_s": 122.4,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 27,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 242,
+  "tokens_out": 7931,
+  "cost_usd": 0.13886735
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"number field\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'number field': Unknown identifier `number`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ramified prime\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ramified prime': Unknown identifier `ramified`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) NumberField\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 210,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) NumberField' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Embeddings.lean:154\\n    def NumberField.place : AbsoluteValue K ℝ :=\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"NumberField\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1849,
+   "result_head": "[{\"type\": \"text\", \"text\": \"498 match(es) for 'NumberField' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Hom.lean:51\\n    -- The file `Mathlib/NumberTheory/NumberField/CanonicalEmbedding/FundamentalCone.lean` slows down by\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:405\\n    `NumberField.InfinitePlace.denseRange_algebraMap_pi` for the number-field special case.\\n- Mathlib/RingTheory/DedekindDomain/Ideal/Lemmas.lean:38\\n    * In Mathlib.NumberTheory.NumberField.Ideal.KummerDedekind:\\n- Mathlib/RingTheory/DedekindDomain/Ideal/Lemmas.lean:47\\n    * In Mathlib.NumberTheory.NumberField.ClassNumber:\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:12\\n    public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:62\\n    section NumberField\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:64\\n    open ArithmeticFunction IsDedekindDomain NumberField\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:66\\n    variable {K : Type*} [Field K] [NumberField K] (W : WeierstrassCurve K)\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:87\\n    end NumberField\\n- Mathlib/RingTheory/IsAdjoinRoot.lean:25\\n    rings of this form in many ways, such as `NumberField.ringOfIntegers ℚ(√-5)`,\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:9\\n    public import Mathlib.NumberTheory.NumberField.Basic\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:45\\n    open NumberField\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:47\\n    instance (K L : Type*) [Field K] [Field L] [NumberField K] [NumberField L] [Algebra K L]\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:52\\n    instance (L : Type*) [Field L] [NumberField L]\\n- Mathlib/NumberTheory/NumberField/AdeleRing.lean:8\\n    public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ramif\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2199,
+   "result_head": "[{\"type\": \"text\", \"text\": \"480 match(es) for 'ramif' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Morphisms/LocalFlatDescent.lean:22\\n    - formally unramified\\n- Mathlib/AlgebraicGeometry/Morphisms/LocalFlatDescent.lean:44\\n    instance : DescendsAlong @FormallyUnramified (@Surjective ⊓ @Flat ⊓ @QuasiCompact) :=\\n- Mathlib/AlgebraicGeometry/Morphisms/LocalFlatDescent.lean:45\\n    HasRingHomProperty.descendsAlong_flat RingHom.FormallyUnramified.codescendsAlong_faithfullyFlat\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:10\\n    public import Mathlib.RingTheory.RingHom.Unramified\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:11\\n    public import Mathlib.RingTheory.Unramified.LocalRing\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:14\\n    # Formally unramified morphisms\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:16\\n    A morphism of schemes `f : X ⟶ Y` is formally unramified if for each affine `U ⊆ Y` and\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:17\\n    `V ⊆ f ⁻¹' U`, the induced map `Γ(Y, U) ⟶ Γ(X, V)` is formally unramified.\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:34\\n    /-- If `S` is a formally unramified `R`-algebra, essentially of finite type, the diagonal is an\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:36\\n    instance Algebra.FormallyUnramified.isOpenImmersion_SpecMap_lmul {R S : Type u} [CommRing R]\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:37\\n    [CommRing S] [Algebra R S] [Algebra.FormallyUnramified R S] [Algebra.EssFiniteType R S] :\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:48\\n    /-- A morphism of schemes `f : X ⟶ Y` is formally unramified if for each affine `U ⊆ Y` and\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:49\\n    `V ⊆ f ⁻¹' U`, The induced map `Γ(Y, U) ⟶ Γ(X, V)` is formally unramified.\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:51\\n    See `FormallyUnramified.hom_ext` and `FormallyUnramified.of_hom_ext`\\n- Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified.lean:54\\n    class FormallyUnramified (f : X ⟶ Y) : Prop where\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class NumberField\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class NumberField' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Basic.lean:43\\n    class NumberField (K : Type*) [Field K] : Prop where\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem).*ramified\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2363,
+   "result_head": "[{\"type\": \"text\", \"text\": \"54 match(es) for '(def|theorem).*ramified' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:184\\n    def IsUnramified : Prop := mult (w.comap (algebraMap k K)) = mult w\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:299\\n    theorem isUnramified_mk_iff_isUnmixed {φ : K →+* ℂ} :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:444\\n    def IsUnramifiedIn (w : InfinitePlace k) : Prop :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:640\\n    theorem IsUnramified.liesOver_isReal_over (hw : w.IsUnramified K) (hv : v.IsReal) : w.IsReal :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:654\\n    def unramifiedPlacesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 ∧ w.IsUnramified K }\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:657\\n    def ramifiedPlacesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 ∧ w.IsRamified K }\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:661\\n    theorem mk_mem_unramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ unmixedEmbeddingsOver L (v.embedding)) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:666\\n    theorem liesOver_embedding_of_mem_ramifiedPlacesOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:670\\n    theorem liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:675\\n    theorem mk_mem_ramifiedPlacesOver {φ : L →+* ℂ} (h : φ ∈ mixedEmbeddingsOver L (v.embedding)) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:681\\n    theorem embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:685\\n    theorem conjugate_embedding_mem_mixedEmbeddingsOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:691\\n    theorem disjoint_ramifiedPlacesOver_unramifiedPlacesOver :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:695\\n    theorem union_ramifiedPlacesOver_unramifiedPlacesOver :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:711\\n    theorem ramifiedPlacesOver_ncard :\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Basic.lean\", \"line\": 43, \"n\": 20}",
+   "ok": true,
+   "result_chars": 887,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Basic.lean  (lines 43–62 of 447):\\n    43  class NumberField (K : Type*) [Field K] : Prop where\\n    44    [to_charZero : CharZero K]\\n    45    [to_finiteDimensional : FiniteDimensional ℚ K]\\n    46  \\n    47  open Function Module\\n    48  \\n    49  open scoped nonZeroDivisors\\n    50  \\n    51  namespace NumberField\\n    52  \\n    53  variable (K L : Type*) [Field K] [Field L]\\n    54  \\n    55  -- See note [lower instance priority]\\n    56  attribute [instance] NumberField.to_charZero NumberField.to_finiteDimensional\\n    57  \\n    58  protected theorem isAlgebraic [NumberField K] : Algebra.IsAlgebraic ℚ K :=\\n    59    Algebra.IsAlgebraic.of_finite _ _\\n    60  \\n    61  instance [NumberField K] [NumberField L] [Algebra K L] : FiniteDimensional K L :=\\n    62    Module.Finite.of_restrictScalars_finite ℚ K L\\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FinitePlace.*ramif\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'FinitePlace.*ramif' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def).*IsRamified\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1210,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for '(theorem|def).*IsRamified' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:242\\n    theorem isRamified_iff : w.IsRamified k ↔ w.IsComplex ∧ (w.comap (algebraMap k K)).IsReal :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:245\\n    theorem IsRamified.isComplex (h : w.IsRamified k) : w.IsComplex := (isRamified_iff.1 h).1\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:247\\n    theorem IsRamified.isReal (h : w.IsRamified k) : (w.comap (algebraMap k K)).IsReal :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:250\\n    theorem IsRamified.ne_conjugate {w₁ w₂ : InfinitePlace K} (h : w₂.IsRamified k) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:637\\n    theorem IsRamified.liesOver_isReal_under (hw : w.IsRamified K) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:657\\n    def ramifiedPlacesOver : Set (InfinitePlace L) := { w | w.1.LiesOver v.1 ∧ w.IsRamified K }\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:48\\n    theorem finrank_eq_two_of_isRamified [w.1.LiesOver v.1] (h : w.IsRamified K) :\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Ideal.*ramified\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2046,
+   "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'Ideal.*ramified' (via ripgrep):\\n- Mathlib/RingTheory/DedekindDomain/Different.lean:28\\n    - `not_dvd_differentIdeal_iff`: A prime does not divide the different ideal iff it is unramified\\n- Mathlib/RingTheory/DedekindDomain/Different.lean:911\\n    ¬ P ∣ differentIdeal A B ↔ Algebra.IsUnramifiedAt A P := by\\n- Mathlib/RingTheory/DedekindDomain/Different.lean:950\\n    Ideal.ramificationIdx_eq_one_of_isUnramifiedAt, pow_one] at h₂\\n- Mathlib/RingTheory/DedekindDomain/Different.lean:958\\n    P ∣ differentIdeal A B ↔ ¬ Algebra.IsUnramifiedAt A P :=\\n- Mathlib/RingTheory/Smooth/Fiber.lean:255\\n    [Algebra.FinitePresentation R S] (q : Ideal S) [q.IsPrime] [IsUnramifiedAt R q] :\\n- Mathlib/RingTheory/Etale/Field.lean:174\\n    attribute [local instance] Ideal.Quotient.field FormallyUnramified.finite_of_free in\\n- Mathlib/RingTheory/Unramified/Field.lean:227\\n    (Q : Ideal A) [Q.IsPrime] [Algebra.IsUnramifiedAt K Q] (x : A) (p : K[X])\\n- Mathlib/RingTheory/Unramified/Locus.lean:66\\n    instance (p : Ideal R) [p.IsPrime] (q : Ideal A) [q.IsPrime] [q.LiesOver p] [IsUnramifiedAt R q]\\n- Mathlib/RingTheory/Unramified/Locus.lean:99\\n    ∀ (𝔓 : Ideal A) (_ : 𝔓.IsPrime), 𝔓.LiesOver 𝔭 → Algebra.IsUnramifiedAt R 𝔓\\n- Mathlib/RingTheory/Unramified/LocalStructure.lean:134\\n    (Q : Ideal S) [Q.IsPrime] [IsUnramifiedAt R Q] :\\n- Mathlib/RingTheory/Unramified/LocalStructure.lean:209\\n    (Q : Ideal S) [Q.IsPrime] [Module.Finite R S] [IsUnramifiedAt R Q]\\n- Mathlib/RingTheory/Unramified/LocalStructure.lean:278\\n    (Q : Ideal S) [Q.IsPrime] [Module.Finite R S] [Algebra.IsUnramifiedAt R Q] :\\n- Mathlib/RingTheory/Unramified/LocalStructure.lean:306\\n    (Q : Ideal S) [Q.IsPrime] [Module.Finite R S] [IsUnramifiedAt R Q] :\\n- Mathlib/RingTheory/Unramified/LocalStructure.lean:337\\n    (Q : Ideal S) [Q.IsPrime] [FiniteType R S] [IsUnramifiedAt R Q] :\\n- Mathlib/RingTheory/Unramified/LocalRing.lean:68\\n    lemma FormallyUnramified.isField_quotient_map_maximalIdeal [FormallyUnramified R S] :\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem) IsUnramifiedAt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|theorem) IsUnramifiedAt' (via ripgrep):\\n- Mathlib/RingTheory/Unramified/Locus.lean:75\\n    theorem IsUnramifiedAt.residueField\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Algebra.IsUnramifiedAt\"}",
+   "ok": true,
+   "result_chars": 1562,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 37 declarations mentioning Algebra.IsUnramifiedAt.\\n- Algebra.IsUnramifiedAt   [Mathlib.RingTheory.Unramified.Locus]\\n    We say that an `R`-algebra `A` is unramified at a prime `q` of `A` if `A_q` is formally unramified over `R`.  If `A` is of finite type over `R` and `q` is lying\\n- Algebra.formallyUnramified_iff_forall   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.unramified_iff_forall   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.IsUnramifiedAt.of_restrictScalars   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.IsUnramifiedAt.comp   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.exists_formallyUnramified_of_isUnramifiedAt   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.exists_unramified_of_isUnramifiedAt   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.instFormallyUnramifiedAtPrimeOfIsUnramifiedAtOfIsLiesOverAlgebra   [Mathlib.RingTheory.Unramified.Locus]\\n- Algebra.IsUnramifiedAt.residueField   [Mathlib.RingTheory.Unramified.Locus]\\n    If `A` is an `R`-algebra unramified at `Q`, `P` is the prime of `R` lying under `Q`, then `κ(P) ⊗ A` is unramified at `Q'` (the prime corresponding to `Q`) over\\n- Algebra.IsUnramifiedAt.not_minpoly_sq_dvd   [Mathlib.RingTheory.Unramified.Field]\\n    If `A = K[X]/⟨p⟩` is unramified at some prime `Q`, then the minpoly of `X` in `κ(Q)` only divides `p` once.\\n- Algebra.instIsSeparableResidueFieldOfIsUnramifiedAt   [Mathlib.RingTheory.Unramified.LocalRing]\\n- Algebra.instFiniteResidueFieldOfIsUnramifiedAt   [Mathlib.RingTheory.Unramified.LocalRing]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ringOfIntegers\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2221,
+   "result_head": "[{\"type\": \"text\", \"text\": \"58 match(es) for 'ringOfIntegers' (via ripgrep):\\n- Mathlib/Topology/Algebra/Valued/WithVal.lean:694\\n    def Rat.ringOfIntegersWithValEquiv (v : Valuation ℚ Γ₀) : 𝓞 (WithVal v) ≃+* ℤ :=\\n- Mathlib/RingTheory/IsAdjoinRoot.lean:25\\n    rings of this form in many ways, such as `NumberField.ringOfIntegers ℚ(√-5)`,\\n- Mathlib/RingTheory/Valuation/AlgebraInstances.lean:42\\n    theorem isIntegral_of_mem_ringOfIntegers {x : L} (hx : x ∈ integralClosure v.valuationSubring L) :\\n- Mathlib/RingTheory/Valuation/AlgebraInstances.lean:46\\n    theorem isIntegral_of_mem_ringOfIntegers' {x : integralClosure v.valuationSubring L} :\\n- Mathlib/RingTheory/Valuation/AlgebraInstances.lean:48\\n    apply isIntegral_of_mem_ringOfIntegers\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:120\\n    `exists_ne_zero_mem_ringOfIntegers_lt`. -/\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:509\\n    theorem exists_ne_zero_mem_ringOfIntegers_lt (h : minkowskiBound K ↑1 < volume (convexBodyLT K f)) :\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:517\\n    theorem exists_ne_zero_mem_ringOfIntegers_lt' (w₀ : {w : InfinitePlace K // IsComplex w})\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:536\\n    obtain ⟨a, h_nz, h_le⟩ := exists_ne_zero_mem_ringOfIntegers_lt K this\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:555\\n    obtain ⟨a, h_nz, h_le, h_le₀⟩ := exists_ne_zero_mem_ringOfIntegers_lt' K ⟨w₀, hw₀⟩ this\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/ConvexBody.lean:613\\n    theorem exists_ne_zero_mem_ringOfIntegers_of_norm_le {B : ℝ}\\n- Mathlib/NumberTheory/ClassNumber/FunctionField.lean:41\\n    noncomputable instance : Fintype (ClassGroup (ringOfIntegers Fq F)) :=\\n- Mathlib/NumberTheory/ClassNumber/FunctionField.lean:50\\n    Fintype.card (ClassGroup (ringOfIntegers Fq F))\\n- Mathlib/NumberTheory/ClassNumber/FunctionField.lean:54\\n    classNumber Fq F = 1 ↔ IsPrincipalIdealRing (ringOfIntegers Fq F) :=\\n- Mathlib/NumberTheory/NumberField/Discriminant/Defs.lean:77\\n    Basis.map (Basis.singleton (Fin 1) ℤ) ringOfIntegersEquiv.toAddEquiv.toIntLinearEquiv.symm\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ringOfIntegers K\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ringOfIntegers K': Unknown identifier `ringOfIntegers`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"NumberField.ringOfIntegers\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 331,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'NumberField.ringOfIntegers' (via ripgrep):\\n- Mathlib/NumberTheory/FunctionField.lean:89\\n    /-- The function field analogue of `NumberField.ringOfIntegers`:\\n- Mathlib/RingTheory/IsAdjoinRoot.lean:25\\n    rings of this form in many ways, such as `NumberField.ringOfIntegers ℚ(√-5)`,\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) RingOfIntegers\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) RingOfIntegers' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Basic.lean:101\\n    def RingOfIntegers : Type _ :=\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Basic.lean\", \"line\": 101, \"n\": 15}",
+   "ok": true,
+   "result_chars": 686,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Basic.lean  (lines 101–115 of 447):\\n   101  def RingOfIntegers : Type _ :=\\n   102    integralClosure ℤ K\\n   103  deriving CommRing, IsDomain, Nontrivial\\n   104  \\n   105  @[inherit_doc] scoped notation \\\"𝓞\\\" => NumberField.RingOfIntegers\\n   106  \\n   107  namespace RingOfIntegers\\n   108  \\n   109  instance [NumberField K] : CharZero (𝓞 K) :=\\n   110    inferInstanceAs (CharZero (integralClosure _ _))\\n   111  \\n   112  instance {L : Type*} [Ring L] [Algebra K L] : Algebra (𝓞 K) L :=\\n   113    inferInstanceAs (Algebra (integralClosure _ _) L)\\n   114  \\n   115  instance : Algebra (𝓞 K) K := inferInstanceAs _\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.liesOver\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ideal.liesOver': unknown identifier 'Ideal.liesOver'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"liesOver\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2249,
+   "result_head": "[{\"type\": \"text\", \"text\": \"196 match(es) for 'liesOver' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/ZariskisMainTheorem.lean:71\\n    Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:175\\n    lemma not_dvd_discr_iff_forall_liesOver [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:199\\n    Also see `not_dvd_discr_iff_forall_liesOver` and `not_dvd_discr_iff_forall_mem` for variants\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:206\\n    rw [not_dvd_discr_iff_forall_liesOver K 𝒪 hp]\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:210\\n    /-- Also see `not_dvd_discr_iff_forall_liesOver` for a slightly easier to prove RHS. -/\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:217\\n    rw [NumberField.not_dvd_discr_iff_forall_liesOver K 𝒪 hp]\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:219\\n    ((Ideal.liesOver_span_iff hP.ne_top hp).mpr h),\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:637\\n    theorem IsRamified.liesOver_isReal_under (hw : w.IsRamified K) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:640\\n    theorem IsUnramified.liesOver_isReal_over (hw : w.IsUnramified K) (hv : v.IsReal) : w.IsReal :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:666\\n    theorem liesOver_embedding_of_mem_ramifiedPlacesOver (hw : w ∈ ramifiedPlacesOver L v) :\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:670\\n    theorem liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:683\\n    ⟨liesOver_embedding_of_mem_ramifiedPlacesOver hw, hw.2.isMixed_embedding⟩\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:687\\n    ⟨liesOver_conjugate_embedding_of_mem_ramifiedPlacesOver hw, hw.2.isMixed_conjugate_embedding⟩\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:740\\n    (liesOver_iff.not.1 h)⟩, hw.isUnmixed_conjugate⟩\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Embeddings.lean:316\\n    theorem liesOver_iff {φ : L →+* ℂ} {ψ : K →+* ℂ} :\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem) .*liesOver.*:=\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1335,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for '(def|theorem) .*liesOver.*:=' (via ripgrep):\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:514\\n    theorem isPrime_map_of_liesOver [P.IsPrime] [P.LiesOver p] : (P.map (algebraMap S Sₚ)).IsPrime :=\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:640\\n    theorem IsUnramified.liesOver_isReal_over (hw : w.IsUnramified K) (hv : v.IsReal) : w.IsReal :=\\n- Mathlib/RingTheory/Ideal/Over.lean:132\\n    theorem mem_of_liesOver [P.LiesOver p] (x : A) : x ∈ p ↔ algebraMap A B x ∈ P := by\\n- Mathlib/RingTheory/Ideal/Over.lean:140\\n    theorem eq_top_iff_of_liesOver [P.LiesOver p] : P = ⊤ ↔ p = ⊤ := by\\n- Mathlib/RingTheory/Ideal/Over.lean:270\\n    theorem ne_bot_of_liesOver_of_ne_bot (hp : p ≠ ⊥) (P : Ideal B) [P.LiesOver p] : P ≠ ⊥ := by\\n- Mathlib/RingTheory/Ideal/Over.lean:307\\n    theorem nontrivial_of_liesOver_of_ne_top (hp : p ≠ ⊤) : Nontrivial (B ⧸ P) := by\\n- Mathlib/RingTheory/Ideal/Over.lean:310\\n    theorem nontrivial_of_liesOver_of_isPrime [hp : p.IsPrime] : Nontrivial (B ⧸ P) :=\\n- Mathlib/RingTheory/Ideal/GoingUp.lean:408\\n    theorem IsMaximal.of_liesOver_isMaximal [hpm : p.IsMaximal] [P.IsPrime] : P.IsMaximal := by\\n- Mathlib/RingTheory/Ideal/GoingUp.lean:412\\n    theorem IsMaximal.of_isMaximal_liesOver [P.IsMaximal] : p.IsMaximal := by\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : Ideal ?b) → (?c : Ideal ?d) → Prop\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(?a : Ideal ?b) → (?c : Ideal ?d) → Prop'.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def) LiesOver\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 439,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(class|def) LiesOver' (via ripgrep):\\n- Mathlib/Analysis/Normed/Ring/WithAbs.lean:318\\n    class LiesOver (w : AbsoluteValue L S) (v : AbsoluteValue K S) : Prop where\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Embeddings.lean:310\\n    protected class LiesOver (φ : L →+* ℂ) (ψ : K →+* ℂ) : Prop where\\n- Mathlib/RingTheory/Ideal/Over.lean:125\\n    @[mk_iff] class LiesOver : Prop where\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Ideal/Over.lean\", \"line\": 125, \"n\": 20}",
+   "ok": true,
+   "result_chars": 908,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Ideal/Over.lean  (lines 125–144 of 398):\\n   125  @[mk_iff] class LiesOver : Prop where\\n   126    over : p = P.under A\\n   127  \\n   128  instance over_under : P.LiesOver (P.under A) where over := rfl\\n   129  \\n   130  theorem over_def [P.LiesOver p] : p = P.under A := LiesOver.over\\n   131  \\n   132  theorem mem_of_liesOver [P.LiesOver p] (x : A) : x ∈ p ↔ algebraMap A B x ∈ P := by\\n   133    rw [P.over_def p]\\n   134    rfl\\n   135  \\n   136  variable (A B) in\\n   137  instance top_liesOver_top : (⊤ : Ideal B).LiesOver (⊤ : Ideal A) where\\n   138    over := (under_top A B).symm\\n   139  \\n   140  theorem eq_top_iff_of_liesOver [P.LiesOver p] : P = ⊤ ↔ p = ⊤ := by\\n   141    rw [P.over_def p]\\n   142    exact comap_eq_top_iff.symm\\n   143  \\n   144  lemma ne_top_iff_of_liesOver [P.LiesOver p] : P ≠ ⊤ ↔ p ≠ ⊤ := (eq_top_iff_of_liesOver ..).ne\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ramificationIdx\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2255,
+   "result_head": "[{\"type\": \"text\", \"text\": \"144 match(es) for 'ramificationIdx' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:43\\n    * `NumberField.Ideal.ramificationIdx_primesOverSpanEquivMonicFactorsMod_symm_apply`: The\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:238\\n    theorem ramificationIdx_primesOverSpanEquivMonicFactorsMod_symm_apply (hp : ¬ p ∣ exponent θ)\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:240\\n    ramificationIdx\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:245\\n    rw [ramificationIdx_eq_multiplicity (span {↑p}) _ (map_ne_bot_of_ne_bot (by simp [NeZero.ne p]))]\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:256\\n    theorem ramificationIdx_primesOverSpanEquivMonicFactorsMod_symm_apply' (hp : ¬ p ∣ exponent θ)\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:258\\n    ramificationIdx\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:262\\n    rw [ramificationIdx_primesOverSpanEquivMonicFactorsMod_symm_apply]\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:26\\n    * `IsCyclotomicExtension.Rat.ramificationIdxIn_eq_of_prime_pow`: the ramification index of the prime\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:32\\n    * `IsCyclotomicExtension.Rat.ramificationIdxIn_eq_of_not_dvd`: if the prime `p` does not divide `m`,\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:38\\n    * `IsCyclotomicExtension.Rat.ramificationIdxIn_eq`: write `n = p ^ (k + 1) * m` where the prime `p`\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:124\\n    theorem ramificationIdx_span_zeta_sub_one :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:125\\n    ramificationIdx (span {hζ.toInteger - 1}) ℤ = p ^ k * (p - 1) := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:129\\n    IsDedekindDomain.ramificationIdx_eq_multiplicity 𝒑, map_eq_span_zeta_sub_one_pow p k hζ,\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:139\\n    have h_main := ncard_primesOver_mul_ramificationIdxIn_mul_inertiaDegIn 𝒑 (𝓞 K) Gal(K/ℚ)\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:142\\n    rwa [ramificationIdxIn_eq_ramificationIdx 𝒑 (span {hζ.toInteger - 1}) Gal(K/ℚ),\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem) ramificationIdx\\\\b\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2303,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for '(def|theorem) ramificationIdx\\\\\\\\b' (via ripgrep):\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:67\\n    noncomputable def ramificationIdx' : ℕ := sSup {n | map f p ≤ P ^ n}\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:71\\n    theorem ramificationIdx'_eq_find [DecidablePred fun n ↦ ∀ (k : ℕ), map f p ≤ P ^ k → k ≤ n]\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:78\\n    theorem ramificationIdx'_eq_zero (h : ∀ n : ℕ, ∃ k, map f p ≤ P ^ k ∧ n < k) :\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:84\\n    theorem ramificationIdx'_spec {n : ℕ} (hle : map f p ≤ P ^ n) (hgt : ¬map f p ≤ P ^ (n + 1)) :\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:99\\n    theorem ramificationIdx'_lt {n : ℕ} (hgt : ¬map f p ≤ P ^ n) : ramificationIdx' p P < n := by\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:113\\n    theorem ramificationIdx'_bot : ramificationIdx' (⊥ : Ideal R) P = 0 :=\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:119\\n    theorem ramificationIdx'_of_not_le (h : ¬map f p ≤ P) : ramificationIdx' p P = 0 :=\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:124\\n    theorem ramificationIdx'_bot' (hp : p ≠ ⊥) (hf : Function.Injective f) :\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:130\\n    theorem ramificationIdx'_ne_zero {e : ℕ} (he : e ≠ 0) (hle : map f p ≤ P ^ e)\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:229\\n    theorem ramificationIdx'_map_self_eq_one [IsDedekindDomain S]\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:242\\n    theorem ramificationIdx'_le_ramificationIdx' {T : Type*} [CommRing T] [Algebra R T]\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:257\\n    theorem ramificationIdx'_eq_normalizedFactors_count\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:267\\n    theorem ramificationIdx'_eq_multiplicity (hp : map f p ≠ ⊥) (hP : P.IsPrime) :\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:278\\n    theorem ramificationIdx'_eq_factors_count\\n- Mathlib/NumberTheory/RamificationInertia/Ramification.lean:284\\n    theorem ramificationIdx'_ne_zero (hp0 : map f p ≠ ⊥) (hP : P.IsPrime) (le : map f p ≤ P) :\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/RamificationInertia/Ramification.lean\", \"line\": 67, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1308,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/RamificationInertia/Ramification.lean  (lines 67–91 of 444):\\n    67  noncomputable def ramificationIdx' : ℕ := sSup {n | map f p ≤ P ^ n}\\n    68  \\n    69  variable {p P}\\n    70  \\n    71  theorem ramificationIdx'_eq_find [DecidablePred fun n ↦ ∀ (k : ℕ), map f p ≤ P ^ k → k ≤ n]\\n    72      (h : ∃ n, ∀ k, map f p ≤ P ^ k → k ≤ n) :\\n    73      ramificationIdx' p P = Nat.find h := by\\n    74    convert! Nat.sSup_def h\\n    75  \\n    76  @[deprecated (since := \\\"2026-07-01\\\")] alias ramificationIdx_eq_find := ramificationIdx'_eq_find\\n    77  \\n    78  theorem ramificationIdx'_eq_zero (h : ∀ n : ℕ, ∃ k, map f p ≤ P ^ k ∧ n < k) :\\n    79      ramificationIdx' p P = 0 :=\\n    80    dif_neg (by push Not; exact h)\\n    81  \\n    82  @[deprecated (since := \\\"2026-07-01\\\")] alias ramificationIdx_eq_zero := ramificationIdx'_eq_zero\\n    83  \\n    84  theorem ramificationIdx'_spec {n : ℕ} (hle : map f p ≤ P ^ n) (hgt : ¬map f p ≤ P ^ (n + 1)) :\\n    85      ramificationIdx' p P = n := by\\n    86    classical\\n    87    let Q : ℕ → Prop := fun m => ∀ k : ℕ, map f p ≤ P ^ k → k ≤ m\\n    88    have : Q n := by\\n    89      intro k hk\\n    90      refine le_of_not_gt fun hnk => ?_\\n    91      exact hgt (hk.trans (Ideal.pow_le_pow_right hnk))\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*ramified.*prime\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*ramified.*prime' under Mathlib/.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def).*discr\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2736,
+   "result_head": "[{\"type\": \"text\", \"text\": \"361 match(es) for '(theorem|def).*discr' (via ripgrep):\\n- Mathlib/Algebra/CubicDiscriminant.lean:14\\n    This file defines cubic polynomials over a semiring and their discriminants over a splitting field.\\n- Mathlib/Algebra/CubicDiscriminant.lean:461\\n    def discr {R : Type*} [Ring R] (P : Cubic R) : R :=\\n- Mathlib/Algebra/CubicDiscriminant.lean:465\\n    theorem discr_eq_prod_three_roots (ha : P.a ≠ 0) (h3 : (map φ P).roots = {x, y, z}) :\\n- Mathlib/Algebra/CubicDiscriminant.lean:471\\n    theorem discr_ne_zero_iff_roots_ne (ha : P.a ≠ 0) (h3 : (map φ P).roots = {x, y, z}) :\\n- Mathlib/Algebra/CubicDiscriminant.lean:477\\n    theorem discr_ne_zero_iff_roots_nodup (ha : P.a ≠ 0) (hP : (P.toPoly.map φ).Splits) :\\n- Mathlib/Algebra/CubicDiscriminant.lean:486\\n    theorem card_roots_of_discr_ne_zero [DecidableEq K] (ha : P.a ≠ 0) (h3 : (P.toPoly.map φ).Splits)\\n- Mathlib/Combinatorics/Tiling/Tile.lean:16\\n    This file defines some basic concepts related to individual tiles for tilings in a discrete context\\n- Mathlib/Geometry/Manifold/IsManifold/Basic.lean:922\\n    theorem of_discreteTopology [DiscreteTopology M] [Unique E] :\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:17\\n    Let `L` be a `ℤ`-lattice `L` defined as a discrete `ℤ`-submodule of `E` that spans `E` over `ℝ`.\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:301\\n    theorem discreteTopology_pi_basisFun [Finite ι] :\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:662\\n    theorem Real.finrank_eq_int_finrank_of_discrete {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:709\\n    theorem ZLattice.comap_discreteTopology [hL : DiscreteTopology L] {e : F →ₗ[K] E}\\n- Mathlib/RingTheory/Localization/NormTrace.lean:116\\n    theorem Algebra.discr_localizationLocalization (b : Basis ι R S) :\\n- Mathlib/RingTheory/Localization/NormTrace.lean:119\\n    rw [Algebra.discr_def, Algebra.discr_def, RingHom.map_det,\\n- Mathlib/CategoryTheory/IsConnected.lean:467\\n    def discreteIsConnectedEquivPUnit {α : Type u₁} [IsConnected (Discrete α)] : α ≃ PUnit :=\\n- Mathlib/Geometry/Manifold/ChartedSpace.lean:316\\n    theorem ChartedSpace.discreteTopology [DiscreteTopology H] : DiscreteTopology M := by\\n- Mathlib/Geometry/Manifold/ChartedSpace.lean:362\\n    def ChartedSpace.of_discreteTopology [TopologicalSpace M] [TopologicalSpace H]\\n- Mathlib/RingTheory/Polynomial/Resultant/Basic.lean:930\\n    noncomputable def discr (f : R[X]) : R :=\\n- Mathlib/AlgebraicGeometry/Artinian.lean:76\\n    theorem IsLocallyArtinian.of_isLocallyNoetherian_of_discreteTopology\\n- Mathlib/AlgebraicGeometry/Artinian.lean:108\\n    theorem IsLocallyArtinian.iff_isLocallyNoetherian_and_discreteTopology :\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"dvd_discr\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1824,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'dvd_discr' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:124\\n    theorem discr_dvd_discr [Algebra K L] :\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:148\\n    exact h.isUnit_of_dvd' (NumberField.discr_dvd_discr _ _) (NumberField.discr_dvd_discr _ _)\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:174\\n    /-- Also see `not_dvd_discr_iff_forall_mem` for a slightly easier to use RHS. -/\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:175\\n    lemma not_dvd_discr_iff_forall_liesOver [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:199\\n    Also see `not_dvd_discr_iff_forall_liesOver` and `not_dvd_discr_iff_forall_mem` for variants\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:201\\n    lemma not_dvd_discr_iff_isUnramifiedIn [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:206\\n    rw [not_dvd_discr_iff_forall_liesOver K 𝒪 hp]\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:210\\n    /-- Also see `not_dvd_discr_iff_forall_liesOver` for a slightly easier to prove RHS. -/\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:211\\n    lemma not_dvd_discr_iff_forall_mem [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:217\\n    rw [NumberField.not_dvd_discr_iff_forall_liesOver K 𝒪 hp]\\n- Mathlib/NumberTheory/NumberField/ExistsRamified.lean:19\\n    This is a trivial corollary of `NumberField.not_dvd_discr_iff_forall_mem` and\\n- Mathlib/NumberTheory/NumberField/ExistsRamified.lean:37\\n    simpa [← not_dvd_discr_iff_isUnramifiedIn K 𝒪 hp1]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/ExistsRamified.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 5907,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/ExistsRamified.lean  (lines 1–95 of 95):\\n     1  /-\\n     2  Copyright (c) 2025 Andrew Yang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.NumberField.Discriminant.Basic\\n     9  public import Mathlib.NumberTheory.NumberField.Discriminant.Different\\n    10  public import Mathlib.NumberTheory.RamificationInertia.Galois\\n    11  public import Mathlib.RingTheory.Ideal.Quotient.HasFiniteQuotients\\n    12  public import Mathlib.RingTheory.Unramified.Dedekind\\n    13  \\n    14  /-!\\n    15  # Every number field has a ramified prime over `ℚ`\\n    16  \\n    17  ...except `ℚ` itself.\\n    18  \\n    19  This is a trivial corollary of `NumberField.not_dvd_discr_iff_forall_mem` and\\n    20  `NumberField.abs_discr_gt_two` but is placed in a separate file to avoid large imports.\\n    21  \\n    22  -/\\n    23  @[expose] public section\\n    24  \\n    25  open scoped NumberField nonZeroDivisors\\n    26  \\n    27  variable {K 𝒪 : Type*} [Field K] [NumberField K] [CommRing 𝒪] [Algebra 𝒪 K]\\n    28  variable [IsIntegralClosure 𝒪 ℤ K]\\n    29  \\n    30  /-- If `K` is a number field with positive rank, then some prime is ramified in `K`. -/\\n    31  lemma NumberField.exists_not_isUnramifiedIn (H : Module.finrank ℚ K ≠ 1) :\\n    32      ∃ p : ℕ, p.Prime ∧ ¬ Algebra.IsUnramifiedIn 𝒪 (Ideal.span {(p : ℤ)}) := by\\n    33    have : 0 < Module.finrank ℚ K := Module.finrank_pos\\n    34    have : 2 < |discr K| := abs_discr_gt_two (by lia)\\n    35    obtain ⟨p, hp1, hp2⟩ := (discr K).exists_prime_and_dvd (by linarith)\\n    36    use p.natAbs, p.prime_iff_natAbs_prime.mp hp1\\n    37    simpa [← not_dvd_discr_iff_isUnramifiedIn K 𝒪 hp1]\\n    38  \\n    39  /-- If `K` is a number field with positive rank, then there exists some maximal ideal of `𝓞 K`\\n    40  that is ramified over `ℤ`. -/\\n    41  lemma NumberField.exists_not_isUnramifiedAt_int (H : Module.finrank ℚ K ≠ 1) :\\n    42      ∃ (P : Ideal 𝒪) (_ : P.IsMaximal), ¬ Algebra.IsUnramifiedAt ℤ P := by\\n    43    obtain ⟨p, hp1, hp2⟩ := NumberField.exists_not_isUnramifiedIn (𝒪 := 𝒪) H\\n    44    have := (IsIntegralClosure.algebraMap_injective 𝒪 ℤ K).isDomain\\n    45    have := IsIntegralClosure.isDedekindDomain ℤ ℚ K 𝒪\\n    46    have := IsIntegralClosure.isTorsionFree ℤ (A := 𝒪) K\\n    47    have := IsIntegralClosure.isIntegral_algebra ℤ (A := 𝒪) K\\n    48    grind [Algebra.isUnramifiedIn_iff_forall_of_isDedekindDomain]\\n    49  \\n    50  /-- Any number field that is unramified over `ℚ` has rank `1`. -/\\n    51  lemma NumberField.finrank_eq_one_of_unramified [Algebra.Unramified ℤ 𝒪] :\\n    52      Module.finrank ℚ K = 1 := by\\n    53    by_contra H\\n    54    obtain ⟨P, _, H⟩ := NumberField.exists_not_isUnramifiedAt_int (𝒪 := 𝒪) H\\n    55    exact H inferInstance\\n    56  \\n    57  /-- If `𝒪` is a domain that is a finite and unramified extension of `ℤ`, then `𝒪 = ℤ`. -/\\n    58  lemma bijective_algebraMap_int_of_finite_of_unramified\\n    59      [Module.Finite ℤ 𝒪] [Algebra.Unramified ℤ 𝒪] [IsDomain 𝒪] [FaithfulSMul ℤ 𝒪] :\\n    60      Function.Bijective (algebraMap ℤ 𝒪) := by\\n    61    have := isDedekindDomain.of_formallyUnramified ℤ 𝒪\\n    62    let K := FractionRing 𝒪\\n    63    let : Algebra ℤ K := Ring.toIntAlgebra K\\n    64    have : CharZero 𝒪 := Algebra.charZero_of_charZero ℤ _\\n    65    have : NumberField K := { to_finiteDimensional := Module.Finite.of_isLocalization ℤ 𝒪 ℤ⁰ }\\n    66    have := NumberField.finrank_eq_one_of_unramified (K := K) (𝒪 := 𝒪)\\n    67    have : IsIntegralClosure ℤ ℤ K := .of_algEquiv _ (.ofBijective (IsScalarTower.toAlgHom _ _ _)\\n    68      (Algebra.finrank_eq_one_iff_bijective_algebraMap.mp this)) (by simp)\\n    69    exact bijective_algebraMap_of_linearEquiv (IsIntegralClosure.equiv ℤ ℤ K 𝒪).toLinearEquiv\\n    70  \\n    71  /-- If `K` is a numbe"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem) not_dvd_discr_iff_isUnramifiedIn\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 274,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(lemma|theorem) not_dvd_discr_iff_isUnramifiedIn' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:201\\n    lemma not_dvd_discr_iff_isUnramifiedIn [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Discriminant/Different.lean\", \"line\": 201, \"n\": 10}",
+   "ok": true,
+   "result_chars": 784,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Discriminant/Different.lean  (lines 201–210 of 222):\\n   201  lemma not_dvd_discr_iff_isUnramifiedIn [IsIntegralClosure 𝒪 ℤ K] {p : ℤ} (hp : Prime p) :\\n   202      ¬ p ∣ discr K ↔ Algebra.IsUnramifiedIn 𝒪 (Ideal.span {p}) := by\\n   203    have := (IsIntegralClosure.algebraMap_injective 𝒪 ℤ K).isDomain\\n   204    have := IsIntegralClosure.isDedekindDomain ℤ ℚ K 𝒪\\n   205    have := CharZero.of_module (R := 𝒪) K\\n   206    rw [not_dvd_discr_iff_forall_liesOver K 𝒪 hp]\\n   207    exact (Algebra.isUnramifiedIn_iff_forall_of_isDedekindDomain'\\n   208      (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)).symm\\n   209  \\n   210  /-- Also see `not_dvd_discr_iff_forall_liesOver` for a slightly easier to prove RHS. -/\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|class) IsUnramifiedIn\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 351,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|class) IsUnramifiedIn' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/InfinitePlace/Ramification.lean:444\\n    def IsUnramifiedIn (w : InfinitePlace k) : Prop :=\\n- Mathlib/RingTheory/Unramified/Locus.lean:98\\n    def IsUnramifiedIn (A : Type*) [CommRing A] [Algebra R A] (𝔭 : Ideal R) : Prop :=\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.finrank ℚ K\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.finrank ℚ K': Unknown identifier `K`\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsIntegralClosure.*RingOfIntegers\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 226,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'IsIntegralClosure.*RingOfIntegers' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:60\\n    let e := IsIntegralClosure.equiv ℤ (RingOfIntegers K) K 𝒪\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*RingOfIntegers.*IsIntegralClosure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*RingOfIntegers.*IsIntegralClosure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Basic.lean\", \"line\": 100, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1715,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Basic.lean  (lines 100–139 of 447):\\n   100  -/\\n   101  def RingOfIntegers : Type _ :=\\n   102    integralClosure ℤ K\\n   103  deriving CommRing, IsDomain, Nontrivial\\n   104  \\n   105  @[inherit_doc] scoped notation \\\"𝓞\\\" => NumberField.RingOfIntegers\\n   106  \\n   107  namespace RingOfIntegers\\n   108  \\n   109  instance [NumberField K] : CharZero (𝓞 K) :=\\n   110    inferInstanceAs (CharZero (integralClosure _ _))\\n   111  \\n   112  instance {L : Type*} [Ring L] [Algebra K L] : Algebra (𝓞 K) L :=\\n   113    inferInstanceAs (Algebra (integralClosure _ _) L)\\n   114  \\n   115  instance : Algebra (𝓞 K) K := inferInstanceAs _\\n   116  \\n   117  instance : IsTorsionFree (𝓞 K) K :=\\n   118    inferInstanceAs (IsTorsionFree (integralClosure _ _) _)\\n   119  \\n   120  \\n   121  instance {L : Type*} [Ring L] [Algebra K L] : IsScalarTower (𝓞 K) K L :=\\n   122    inferInstanceAs (IsScalarTower (integralClosure _ _) K L)\\n   123  \\n   124  instance {G : Type*} [Group G] [MulSemiringAction G K] : MulSemiringAction G (𝓞 K) :=\\n   125    inferInstanceAs (MulSemiringAction G (integralClosure ℤ K))\\n   126  \\n   127  instance {G : Type*} [Group G] [MulSemiringAction G K] : SMulDistribClass G (𝓞 K) K :=\\n   128    inferInstanceAs (SMulDistribClass G (integralClosure ℤ K) K)\\n   129  \\n   130  -- verify that the two algebra instances agree\\n   131  example : instAlgebra (L := K) (K := K) = instAlgebra_1 (K := K) := by\\n   132    with_reducible_and_instances rfl\\n   133  \\n   134  variable {K}\\n   135  \\n   136  /-- The canonical coercion from `𝓞 K` to `K`. -/\\n   137  @[coe]\\n   138  abbrev val (x : 𝓞 K) : K := algebraMap _ _ x\\n   139  \\n\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*integralClosure.*IsIntegralClosure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*integralClosure.*IsIntegralClosure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integralClosure R S ℚ ?a\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integralClosure R S ℚ ?a': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|class) integralClosure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 199,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|class) integralClosure' (via ripgrep):\\n- Mathlib/RingTheory/IntegralClosure/Algebra/Basic.lean:215\\n    def integralClosure : Subalgebra R A where\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsIntegralClosure ℤ ?A ℚ\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'IsIntegralClosure ℤ ?A ℚ'.\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*RingOfIntegers\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 227,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'instance.*RingOfIntegers' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Basic.lean:96\\n    looking for instances of the form `SMul (RingOfIntegers _) (RingOfIntegers _)` makes\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/NumberField/Basic.lean\", \"line\": 140, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2389,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/NumberField/Basic.lean  (lines 140–189 of 447):\\n   140  /-- This instance has to be `CoeHead` because we only want to apply it from `𝓞 K` to `K`. -/\\n   141  instance : CoeHead (𝓞 K) K := ⟨val⟩\\n   142  \\n   143  lemma coe_eq_algebraMap (x : 𝓞 K) : (x : K) = algebraMap _ _ x := rfl\\n   144  \\n   145  @[ext] theorem ext {x y : 𝓞 K} (h : (x : K) = (y : K)) : x = y :=\\n   146    Subtype.ext h\\n   147  \\n   148  @[norm_cast]\\n   149  theorem eq_iff {x y : 𝓞 K} : (x : K) = (y : K) ↔ x = y :=\\n   150    NumberField.RingOfIntegers.ext_iff.symm\\n   151  \\n   152  @[simp] lemma map_mk (x : K) (hx) : algebraMap (𝓞 K) K ⟨x, hx⟩ = x := rfl\\n   153  \\n   154  lemma coe_mk {x : K} (hx) : ((⟨x, hx⟩ : 𝓞 K) : K) = x := rfl\\n   155  \\n   156  lemma mk_eq_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) = ⟨y, hy⟩ ↔ x = y := by simp\\n   157  \\n   158  @[simp] lemma mk_one : (⟨1, one_mem _⟩ : 𝓞 K) = 1 :=\\n   159    rfl\\n   160  \\n   161  @[simp] lemma mk_zero : (⟨0, zero_mem _⟩ : 𝓞 K) = 0 :=\\n   162    rfl\\n   163  -- TODO: these lemmas don't seem to fire?\\n   164  @[simp] lemma mk_add_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) + ⟨y, hy⟩ = ⟨x + y, add_mem hx hy⟩ :=\\n   165    rfl\\n   166  \\n   167  @[simp] lemma mk_mul_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) * ⟨y, hy⟩ = ⟨x * y, mul_mem hx hy⟩ :=\\n   168    rfl\\n   169  \\n   170  @[simp] lemma mk_sub_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) - ⟨y, hy⟩ = ⟨x - y, sub_mem hx hy⟩ :=\\n   171    rfl\\n   172  \\n   173  @[simp] lemma neg_mk (x : K) (hx) : (-⟨x, hx⟩ : 𝓞 K) = ⟨-x, neg_mem hx⟩ :=\\n   174    rfl\\n   175  \\n   176  /-- The ring homomorphism `(𝓞 K) →+* (𝓞 L)` given by restricting a ring homomorphism\\n   177    `f : K →+* L` to `𝓞 K`. -/\\n   178  def mapRingHom {K L : Type*} [Field K] [Field L] (f : K →+* L) : (𝓞 K) →+* (𝓞 L) where\\n   179    toFun k := ⟨f k.val, map_isIntegral_int f k.2⟩\\n   180    map_zero' := by ext; simp only [map_mk, map_zero]\\n   181    map_one' := by ext; simp only [map_mk, map_one]\\n   182    map_add' x y := by ext; simp only [map_mk, map_add]\\n   183    map_mul' x y := by ext; simp only [map_mk, map_mul]\\n   184  \\n   185  @[simp]\\n   186  theorem mapRingHom_apply {K L : Type*} [Field K] [Field L] (f : K →+* L) (x : 𝓞 K) :\\n   187      (mapRingHom f x : L) = f (x : K) := rfl\\n   188  \\n   189  /-- The ring isomorphism `(𝓞 K) ≃+* (𝓞 L)` given by restricting\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

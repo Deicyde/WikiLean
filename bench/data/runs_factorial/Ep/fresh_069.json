@@ -1,0 +1,106 @@
+{
+ "task_id": "fresh_069",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:10:46Z",
+ "wall_s": 75.9,
+ "transcript_stats": {
+  "turns": 8,
+  "assistant_turns": 7,
+  "tool_calls_by_name": {
+   "mcp__formal__decl_grep": 3,
+   "mcp__formal__loogle": 2,
+   "mcp__formal__decl_read": 2
+  },
+  "tokens_in": 58,
+  "tokens_out": 6938,
+  "cost_usd": 0.062411799999999996
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"inertia\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2971,
+   "result_head": "[{\"type\": \"text\", \"text\": \"267 match(es) for 'inertia' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:192\\n    rw [absNorm_differentIdeal K, ← Ideal.natAbs_pow_inertiaDeg p,\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:194\\n    exact (dvd_pow_self _ (Ideal.inertiaDeg_pos ..).ne').trans this\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:18\\n    - `NumberField.InfinitePlace.inertiaDeg` : the inertia degree of a place `w` of `L` over a\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:24\\n    - `NumberField.InfinitePlace.sum_inertiaDeg_eq_finrank` : the degree of `L` over `K` is equal to\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:25\\n    the sum of the inertia degrees of the places of `L` over `v`.\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:87\\n    /-- The inertia degree of `w` over `v`. -/\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:88\\n    protected noncomputable def inertiaDeg : ℕ :=\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:89\\n    if _ : w.1.LiesOver v.1 then (⊥ : Ideal w.Completion).inertiaDeg v.Completion else 0\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:91\\n    theorem inertiaDeg_of_liesOver [w.1.LiesOver v.1] :\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:92\\n    v.inertiaDeg w = (⊥ : Ideal w.Completion).inertiaDeg v.Completion := by\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:93\\n    simp only [InfinitePlace.inertiaDeg, dif_pos]\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:95\\n    theorem inertiaDeg_eq_finrank [w.1.LiesOver v.1] :\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:96\\n    v.inertiaDeg w = Module.finrank v.Completion w.Completion := by\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:97\\n    rw [inertiaDeg_of_liesOver, Ideal.inertiaDeg_eq_of_isMaximal ⊥]\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:102\\n    theorem inertiaDeg_eq_one (hw : w ∈ unramifiedPlacesOver L v) : v.inertiaDeg w = 1 :=\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:103\\n    have := (Set.mem_setOf.1 hw).1; finrank_eq_one_of_isUnramified v hw.2 ▸ inertiaDeg_eq_finrank v w\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:106\\n    theorem inertiaDeg_eq_two (hw : w ∈ ramifiedPlacesOver L v) : v.inertiaDeg w = 2 :=\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:107\\n    have := (Set.mem_setOf.1 hw).1; finrank_eq_two_of_isRamified v hw.2 ▸ inertiaDeg_eq_finrank v w\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:112\\n    /-- The degree of `L` over `K` is equal to the sum of the inertia degrees of the places over `v`. -/\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:113\\n    theorem sum_inertiaDeg_eq_finrank [NumberField K] [NumberField L] :\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"inertia degree prime ideal\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'inertia degree prime ideal': Unknown identifier `inertia`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Ideal\\\\.inertiaDeg\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"14 match(es) for 'Ideal\\\\\\\\.inertiaDeg' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:194\\n    exact (dvd_pow_self _ (Ideal.inertiaDeg_pos ..).ne').trans this\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:97\\n    rw [inertiaDeg_of_liesOver, Ideal.inertiaDeg_eq_of_isMaximal ⊥]\\n- Mathlib/NumberTheory/NumberField/Ideal/KummerDedekind.lean:39\\n    * `NumberField.Ideal.inertiaDeg_primesOverSpanEquivMonicFactorsMod_symm_apply`: The residual degree\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:19\\n    * `Ideal.inertiaDeg q R`: The inertia degree of `q` over `R`.\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:42\\n    This will eventually replace the existing definition of `Ideal.inertiaDeg'`. -/\\n- Mathlib/NumberTheory/RamificationInertia/Inertia.lean:16\\n    the **inertia degree** `Ideal.inertiaDeg' p P` is the degree of the field extension\\n- Mathlib/NumberTheory/RamificationInertia/Inertia.lean:67\\n    Note: This definition of inertia degree will eventually be replaced by `Ideal.inertiaDeg`.\\n- Mathlib/NumberTheory/RamificationInertia/Basic.lean:19\\n    and the **inertia degree** `Ideal.inertiaDeg f p P` is the degree of the field extension\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:26\\n    * `Ideal.inertiaDegIn`: It can be seen from\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:27\\n    the theorem `Ideal.inertiaDeg_eq_of_isGaloisGroup` that all `Ideal.inertiaDeg` over a fixed\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:28\\n    maximal ideal `p` of `A` are the same, which we define as `Ideal.inertiaDegIn`.\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:66\\n    the theorem `Ideal.inertiaDeg_eq_of_isGaloisGroup` that all `Ideal.inertiaDeg` over a fixed\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:67\\n    maximal ideal `p` of `A` are the same, which we define as `Ideal.inertiaDegIn`. -/\\n- Mathlib/NumberTheory/RamificationInertia/Galois.lean:146\\n    /-- All the `Ideal.inertiaDeg` over a fixed maximal ideal are the same. -/\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/RamificationInertia/Inertia.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4703,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/RamificationInertia/Inertia.lean  (lines 1–100 of 217):\\n     1  /-\\n     2  Copyright (c) 2026 Thomas Browning. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Thomas Browning\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.RamificationInertia.Inertia\\n     9  public import Mathlib.RingTheory.QuasiFinite.Basic\\n    10  \\n    11  /-!\\n    12  # Inertia degree\\n    13  \\n    14  Given a prime ideal `q` of an `R`-algebra `S`, the inertia degree of `q` over `R` is defined\\n    15  to be the degree of the residue field of `q` over the residue field of its preimage `p` in `R`.\\n    16  \\n    17  ## Main definitions\\n    18  \\n    19  * `Ideal.inertiaDeg q R`: The inertia degree of `q` over `R`.\\n    20  \\n    21  ## Main statements\\n    22  \\n    23  * `inertiaDeg'_eq_inertiaDeg`: The inertia degree agrees with the usual definition in the case of\\n    24    maximal ideals.\\n    25  * `inertiaDeg_tower`: Inertia degree is multiplicative in towers.\\n    26  -/\\n    27  \\n    28  @[expose] public section\\n    29  \\n    30  namespace Ideal\\n    31  \\n    32  section\\n    33  \\n    34  variable {S : Type*} [CommRing S] (q : Ideal S) (R : Type*) [CommRing R] [Algebra R S]\\n    35  \\n    36  open scoped Classical in\\n    37  /-- Given a prime ideal `q` of an `R`-algebra `S`, the inertia degree of `q` over `R` is defined\\n    38  to be the degree of the residue field of `q` over the residue field of its preimage `p` in `R`.\\n    39  \\n    40  When `q` is not prime, we use a junk value of `0`.\\n    41  \\n    42  This will eventually replace the existing definition of `Ideal.inertiaDeg'`. -/\\n    43  noncomputable def inertiaDeg : ℕ :=\\n    44    if _ : q.IsPrime then\\n    45      letI := Localization.AtPrime.algebraOfLiesOver (q.under R) q\\n    46      Module.finrank (q.under R).ResidueField q.ResidueField else 0\\n    47  \\n    48  theorem inertiaDeg_def [hq : q.IsPrime]\\n    49      [Algebra (Localization.AtPrime (q.under R)) (Localization.AtPrime q)]\\n    50      [Localization.AtPrime.IsLiesOverAlgebra (q.under R) q] :\\n    51      q.inertiaDeg R = Module.finrank (q.under R).ResidueField q.ResidueField := by\\n    52    convert! dif_pos hq\\n    53    simp [Algebra.algebra_ext_iff, Localization.AtPrime.IsLiesOverAlgebra.algebraMap_eq]\\n    54  \\n    55  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_def := inertiaDeg_def\\n    56  \\n    57  theorem inertiaDeg_of_not_isPrime (hq : ¬ q.IsPrime) : q.inertiaDeg R = 0 :=\\n    58    dif_neg hq\\n    59  \\n    60  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_of_not_isPrime :=\\n    61    inertiaDeg_of_not_isPrime\\n    62  \\n    63  theorem inertiaDeg_pos [hq : q.IsPrime] [Module.Finite R S] : 0 < q.inertiaDeg R := by\\n    64    let := Localization.AtPrime.algebraOfLiesOver (q.under R) q\\n    65    rw [inertiaDeg_def]\\n    66    apply Module.finrank_pos\\n    67  \\n    68  end\\n    69  \\n    70  section\\n    71  \\n    72  variable {R S T : Type*} [CommRing R] [CommRing S] [CommRing T]\\n    73    [Algebra R S] [Algebra R T] [Algebra S T] [IsScalarTower R S T]\\n    74    (p : Ideal R) (q : Ideal S) (r : Ideal T)\\n    75  \\n    76  theorem inertiaDeg_eq [q.LiesOver p] [q.IsPrime] [p.IsPrime]\\n    77      [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]\\n    78      [Localization.AtPrime.IsLiesOverAlgebra p q] :\\n    79      q.inertiaDeg R = Module.finrank p.ResidueField q.ResidueField := by\\n    80    have := Ideal.over_def q p\\n    81    subst this\\n    82    exact inertiaDeg_def q R\\n    83  \\n    84  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_eq := inertiaDeg_eq\\n    85  \\n    86  theorem inertiaDeg_eq_of_isFractionRing [q.LiesOver p] [p.IsPrime] [q.IsPrime]\\n    87      (K L : Type*) [Field K] [Field L]\\n    88      [Algebra (R ⧸ p) K] [IsFractionRing (R ⧸ p) K]\\n    89      [Algebra (S ⧸ q) L] [IsFractionR"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/RamificationInertia/Inertia.lean\", \"line\": 100, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/RamificationInertia/Inertia.lean  (lines 100–217 of 217):\\n   100    apply IsFractionRing.ringHom_ext (A := R ⧸ p)\\n   101    intro x\\n   102    obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x\\n   103    simp [← IsScalarTower.algebraMap_apply R p.ResidueField q.ResidueField,\\n   104      IsScalarTower.algebraMap_apply R S q.ResidueField,\\n   105      ← IsScalarTower.algebraMap_apply R K L, ← IsScalarTower.algebraMap_apply R S L]\\n   106  \\n   107  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_eq_of_isFractionRing :=\\n   108  inertiaDeg_eq_of_isFractionRing\\n   109  \\n   110  theorem inertiaDeg_eq_of_isMaximal [q.LiesOver p] [p.IsMaximal] [q.IsMaximal] :\\n   111      q.inertiaDeg R = Module.finrank (R ⧸ p) (S ⧸ q) := by\\n   112    let : Field (R ⧸ p) := Quotient.field p\\n   113    let : Field (S ⧸ q) := Quotient.field q\\n   114    exact inertiaDeg_eq_of_isFractionRing p q (R ⧸ p) (S ⧸ q)\\n   115  \\n   116  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_eq_of_isMaximal :=\\n   117    inertiaDeg_eq_of_isMaximal\\n   118  \\n   119  theorem inertiaDeg'_eq_inertiaDeg [q.LiesOver p] [p.IsMaximal] [q.IsMaximal] :\\n   120      p.inertiaDeg' q = q.inertiaDeg R := by\\n   121    rw [inertiaDeg'_algebraMap, inertiaDeg_eq_of_isMaximal p q]\\n   122  \\n   123  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg_eq_inertiaDeg' := inertiaDeg'_eq_inertiaDeg\\n   124  \\n   125  theorem inertiaDeg_tower [r.LiesOver q] :\\n   126      r.inertiaDeg R = q.inertiaDeg R * r.inertiaDeg S := by\\n   127    by_cases hr : r.IsPrime\\n   128    · have : q.IsPrime := isPrime_of_liesOver r q\\n   129      have : q.LiesOver (r.under R) := LiesOver.tower_bot r q (r.under R)\\n   130      let := Localization.AtPrime.algebraOfLiesOver (r.under R) r\\n   131      let := Localization.AtPrime.algebraOfLiesOver (r.under R) q\\n   132      let := Localization.AtPrime.algebraOfLiesOver q r\\n   133      rw [inertiaDeg_def, inertiaDeg_eq (r.under R), inertiaDeg_eq q, eq_comm]\\n   134      apply Module.finrank_mul_finrank\\n   135    · rw [inertiaDeg_of_not_isPrime r R hr, inertiaDeg_of_not_isPrime r S hr, mul_zero]\\n   136  \\n   137  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_tower := inertiaDeg_tower\\n   138  \\n   139  theorem inertiaDeg_below_dvd [r.LiesOver q] :\\n   140      q.inertiaDeg R ∣ r.inertiaDeg R := by\\n   141    use r.inertiaDeg S\\n   142    rw [← inertiaDeg_tower]\\n   143  \\n   144  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_below_dvd := inertiaDeg_below_dvd\\n   145  \\n   146  theorem inertiaDeg_above_dvd [r.LiesOver q] :\\n   147      r.inertiaDeg S ∣ r.inertiaDeg R := by\\n   148    use q.inertiaDeg R\\n   149    rw [mul_comm, ← inertiaDeg_tower]\\n   150  \\n   151  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_above_dvd := inertiaDeg_above_dvd\\n   152  \\n   153  theorem inertiaDeg_below_le [r.IsPrime] [r.LiesOver q] [Module.Finite R T] :\\n   154      q.inertiaDeg R ≤ r.inertiaDeg R :=\\n   155    Nat.le_of_dvd (r.inertiaDeg_pos R) (q.inertiaDeg_below_dvd r)\\n   156  \\n   157  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_below_le := inertiaDeg_below_le\\n   158  \\n   159  theorem inertiaDeg_above_le [r.IsPrime] [r.LiesOver q] [Module.Finite R T] :\\n   160      r.inertiaDeg S ≤ r.inertiaDeg R :=\\n   161    Nat.le_of_dvd (r.inertiaDeg_pos R) (q.inertiaDeg_above_dvd r)\\n   162  \\n   163  @[deprecated (since := \\\"2026-07-03\\\")] alias inertiaDeg'_above_le := inertiaDeg_above_le\\n   164  \\n   165  variable (R) in\\n   166  open Pointwise in\\n   167  @[simp]\\n   168  theorem inertiaDeg_smul {G : Type*} [Group G] [MulSemiringAction G S] [SMulCommClass G R S]\\n   169      (g : G) : (g • q).inertiaDeg R = q.inertiaDeg R := by\\n   170    by_cases hq : q.IsPrime; swap\\n   171    · rw [inertiaDeg_of_not_isPrime, inertiaDeg_of_not_isPrime] <;> simpa\\n   172    · let p := q.under R\\n   173      let f₀ := MulSemiringAction.toAlgAut G R S g\\n   174      let :="
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"inertiaDeg.*pos\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1316,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'inertiaDeg.*pos' (via ripgrep):\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:63\\n    theorem inertiaDeg_pos [hq : q.IsPrime] [Module.Finite R S] : 0 < q.inertiaDeg R := by\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:155\\n    Nat.le_of_dvd (r.inertiaDeg_pos R) (q.inertiaDeg_below_dvd r)\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:161\\n    Nat.le_of_dvd (r.inertiaDeg_pos R) (q.inertiaDeg_above_dvd r)\\n- Mathlib/RingTheory/RamificationInertia/Inertia.lean:195\\n    simpa [eq_bot_of_liesOver_bot R q] using (inertiaDeg_pos q R).ne'\\n- Mathlib/RingTheory/Ideal/Norm/RelNorm.lean:407\\n    · have h : P.inertiaDeg R ≠ 0 := (inertiaDeg_pos P R).ne'\\n- Mathlib/RingTheory/Ideal/Norm/RelNorm.lean:446\\n    inertiaDeg_tower (R := R) P Q, pow_mul, pow_left_inj (inertiaDeg_pos Q S).ne'] at h\\n- Mathlib/NumberTheory/NumberField/Discriminant/Different.lean:194\\n    exact (dvd_pow_self _ (Ideal.inertiaDeg_pos ..).ne').trans this\\n- Mathlib/NumberTheory/NumberField/Completion/Ramification.lean:93\\n    simp only [InfinitePlace.inertiaDeg, dif_pos]\\n- Mathlib/NumberTheory/NumberField/ClassNumber.lean:171\\n    exact inertiaDeg_pos ..\\n- Mathlib/NumberTheory/RamificationInertia/Inertia.lean:89\\n    rw [inertiaDeg', dif_pos (over_def P p).symm]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ideal.inertiaDeg\"}",
+   "ok": true,
+   "result_chars": 1464,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 54 declarations mentioning Ideal.inertiaDeg.\\n- Ideal.inertiaDeg   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    Given a prime ideal `q` of an `R`-algebra `S`, the inertia degree of `q` over `R` is defined to be the degree of the residue field of `q` over the residue field\\n- Ideal.inertiaDeg'_of_not_isPrime   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    **Alias** of `Ideal.inertiaDeg_of_not_isPrime`.\\n- Ideal.inertiaDeg_of_not_isPrime   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n- Ideal.inertiaDeg_pos   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n- Ideal.inertiaDeg'_eq_inertiaDeg   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n- Ideal.inertiaDeg_eq_inertiaDeg'   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    **Alias** of `Ideal.inertiaDeg'_eq_inertiaDeg`.\\n- Ideal.inertiaDeg'_above_dvd   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    **Alias** of `Ideal.inertiaDeg_above_dvd`.\\n- Ideal.inertiaDeg'_below_dvd   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    **Alias** of `Ideal.inertiaDeg_below_dvd`.\\n- Ideal.inertiaDeg_above_dvd   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n- Ideal.inertiaDeg_below_dvd   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n- Ideal.inertiaDeg'_tower   [Mathlib.RingTheory.RamificationInertia.Inertia]\\n    **Alias** of `Ideal.inertiaDeg_tower`.\\n- Ideal.inertiaDeg_tower   [Mathlib.RingTheory.RamificationInertia.Inertia]\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem inertiaDeg_pos {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]\n    (q : Ideal S) [q.IsPrime] [Module.Finite R S] : 0 < q.inertiaDeg R := sorry"
+}

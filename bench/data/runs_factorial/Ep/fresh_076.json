@@ -1,0 +1,242 @@
+{
+ "task_id": "fresh_076",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:51:24Z",
+ "wall_s": 175.1,
+ "transcript_stats": {
+  "turns": 25,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 10,
+   "mcp__formal__decl_read": 5
+  },
+  "tokens_in": 122,
+  "tokens_out": 14570,
+  "cost_usd": 0.13420125000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Representation\"}",
+   "ok": true,
+   "result_chars": 1839,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 552 declarations mentioning Representation.\\n- Representation   [Mathlib.RepresentationTheory.Basic]\\n    A representation of `G` on the `k`-module `V` is a homomorphism `G →* (V →ₗ[k] V)`.\\n- Representation.trivial   [Mathlib.RepresentationTheory.Basic]\\n    The trivial representation of `G` on a `k`-module V.\\n- Representation.IsTrivial   [Mathlib.RepresentationTheory.Basic]\\n    A predicate for representations that fix every element.\\n- Representation.asModule   [Mathlib.RepresentationTheory.Basic]\\n    If `ρ : Representation k G V`, then `ρ.asModule` is a type synonym for `V`, which we equip with an instance `Module k[G] ρ.asModule`.  You should use `asModuleE\\n- Representation.leftRegular   [Mathlib.RepresentationTheory.Basic]\\n    The natural `k`-linear `G`-representation on `k[G]` induced by left multiplication in `G`.\\n- Representation.instAddCommMonoidAsModule   [Mathlib.RepresentationTheory.Basic]\\n- Representation.instInhabitedAsModule   [Mathlib.RepresentationTheory.Basic]\\n- Representation.ofMulAction   [Mathlib.RepresentationTheory.Basic]\\n    A `G`-action on `H` induces a representation `G →* End(k[H])` in the natural way.\\n- Representation.norm   [Mathlib.RepresentationTheory.Basic]\\n    Given a representation `(V, ρ)` of a finite group `G`, `norm ρ` is the linear map `V →ₗ[k] V` defined by `x ↦ ∑ ρ g x` for `g` in `G`.\\n- Representation.diagonal   [Mathlib.RepresentationTheory.Basic]\\n    The natural `k`-linear `G`-representation on `k[Gⁿ]` induced by left multiplication in `G`.\\n- Representation.ofMulDistribMulAction   [Mathlib.RepresentationTheory.Basic]\\n    Turns a `CommGroup` `G` with a `MulDistribMulAction` of a monoid `M` into a `ℤ`-linear `M`-representation on `Additive G`.\\n- Representation.instModuleAsModule   [Mathlib.RepresentationTheory.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"short_exact\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'short_exact': unknown identifier 'short_exact'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exact_seq\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exact_seq': unknown identifier 'exact_seq'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Exact\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Exact': unknown identifier 'Exact'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ShortExact\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ShortExact': unknown identifier 'ShortExact'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"restriction functor\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restriction functor': Unknown identifier `restriction`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exact_fun\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exact_fun': unknown identifier 'exact_fun'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"short exact sequence\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'short exact sequence': Unknown identifier `short`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"restrict_scalars\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'restrict_scalars': unknown identifier 'restrict_scalars'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem) .*exact\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3890,
+   "result_head": "[{\"type\": \"text\", \"text\": \"420 match(es) for '(lemma|theorem) .*exact' (via ripgrep):\\n- Mathlib/Algebra/Colimit/Ring.lean:199\\n    theorem of.zero_exact {i x} (hix : of G (f' · · ·) i x = 0) :\\n- Mathlib/Algebra/Colimit/Module.lean:272\\n    theorem of.zero_exact {i x} (H : of R ι G f i x = 0) :\\n- Mathlib/Algebra/Colimit/Module.lean:324\\n    theorem of.zero_exact [IsDirectedOrder ι] [DirectedSystem G fun i j h ↦ f i j h] (i x)\\n- Mathlib/Algebra/Homology/SingleHomology.lean:34\\n    lemma exactAt_single_obj (A : C) (i : ι) (hi : i ≠ j) :\\n- Mathlib/Algebra/Homology/SingleHomology.lean:195\\n    lemma ChainComplex.exactAt_succ_single_obj (A : C) (n : ℕ) :\\n- Mathlib/Algebra/Homology/SingleHomology.lean:199\\n    lemma CochainComplex.exactAt_succ_single_obj (A : C) (n : ℕ) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:68\\n    lemma composableArrows₂_exact (hS₁ : S₁.ShortExact) (i : ι) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:80\\n    lemma composableArrows₅_exact (i j : ι) (hij : c.Rel i j) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:187\\n    lemma exactAt_X₁ (hS : S.ShortExact) (j : ι)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:206\\n    lemma exactAt_X₂ (hS : S.ShortExact) (i : ι) (h₁ : S.X₁.ExactAt i) (h₃ : S.X₃.ExactAt i) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:211\\n    lemma exactAt_X₃ (hS : S.ShortExact) (i : ι)\\n- Mathlib/Algebra/Lie/Submodule.lean:503\\n    nonrec theorem eq_bot_iff : N = ⊥ ↔ ∀ m : M, m ∈ N → m = 0 := by rw [eq_bot_iff]; exact Iff.rfl\\n- Mathlib/Algebra/Lie/Submodule.lean:894\\n    theorem comp_ker_incl : f.comp f.ker.incl = 0 := by ext ⟨m, hm⟩; exact mem_ker.mp hm\\n- Mathlib/RingTheory/LocalProperties/Exactness.lean:77\\n    theorem exact_of_isLocalized_maximal (H : ∀ (J : Ideal R) [J.IsMaximal],\\n- Mathlib/RingTheory/LocalProperties/Exactness.lean:119\\n    theorem exact_of_localized_maximal\\n- Mathlib/RingTheory/LocalProperties/Exactness.lean:172\\n    lemma exact_of_isLocalized_span (H : ∀ r : s, Function.Exact\\n- Mathlib/RingTheory/LocalProperties/Exactness.lean:210\\n    lemma exact_of_localized_span\\n- Mathlib/Algebra/Homology/HomotopyCategory/Acyclic.lean:54\\n    lemma quotient_obj_mem_subcategoryAcyclic_iff_exactAt (K : CochainComplex C ℤ) :\\n- Mathlib/NumberTheory/MulChar/Basic.lean:257\\n    theorem one_apply_coe (a : Rˣ) : (1 : MulChar R R') a = 1 := by classical exact dif_pos a.isUnit\\n- Mathlib/Algebra/Homology/Factorizations/CM5a.lean:329\\n    lemma exact_homologyShortComplex [Mono f] :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:171\\n    lemma exact₂ :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:177\\n    lemma exact₃ (h : n₀ + 1 = n₁ := by lia) :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:181\\n    lemma exact₁ (h : n₀ + 1 = n₁ := by lia) :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:271\\n    lemma homologyMap_exact₁_of_distTriang (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁ := by lia) :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:281\\n    lemma homologyMap_exact₂_of_distTriang (n : ℤ) :\\n- Mathlib/Algebra/Homology/DerivedCategory/HomologySequence.lean:291\\n    lemma homologyMap_exact₃_of_distTriang (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁ := by lia) :\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:162\\n    theorem degree_one_le : degree (1 : R[X]) ≤ (0 : WithBot ℕ) := by rw [← C_1]; exact degree_C_le\\n- Mathlib/Algebra/Lie/IdealOperations.lean:140\\n    theorem lie_le_left : ⁅I, J⁆ ≤ I := by rw [lie_comm]; exact lie_le_right I J\\n- Mathlib/Algebra/Lie/IdealOperations.lean:142\\n    theorem lie_le_inf : ⁅I, J⁆ ≤ I ⊓ J := by rw [le_inf_iff]; exact ⟨lie_le_left I J, lie_le_right J I⟩\\n- Mathlib/RingTheory/TensorProduct/IsBaseChangeRightExact.lean:51\\n    lemma IsBaseChange.of_right_exact (comm₁ : h₂.comp f = (f'.restrictScalars R).comp h₁)\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"short.*exact\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2755,
+   "result_head": "[{\"type\": \"text\", \"text\": \"198 match(es) for 'short.*exact' (via ripgrep):\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:15\\n    Given a morphism `φ : S₁ ⟶ S₂` between two short exact sequences\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:46\\n    are short exact (`hS₁ : S₁.ShortExact` and `hS₂ : S₁.ShortExact`). -/\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:74\\n    and `S` is a short exact short complex of homological complexes in an abelian category. -/\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:100\\n    sequences induced by a morphism `φ : S₁ ⟶ S₂` between short exact short complexes of\\n- Mathlib/Algebra/Homology/ConcreteCategory.lean:74\\n    In the short exact sequence of complexes\\n- Mathlib/Topology/Sheaves/Flasque.lean:24\\n    * `TopCat.Sheaf.IsFlasque.epi_of_shortExact`: Given a short exact sequence of sheaves,\\n- Mathlib/Topology/Sheaves/Flasque.lean:27\\n    * `TopCat.Sheaf.IsFlasque.of_shortExact_of_isFlasque₁₂ `: Given a short exact sequence of\\n- Mathlib/Topology/Sheaves/Flasque.lean:110\\n    /-- Given a short exact sequence of sheaves, `0 ⟶ 𝓕 ⟶ 𝓖 ⟶ 𝓗 ⟶ 0`, if `𝓕` is flasque then\\n- Mathlib/Topology/Sheaves/Flasque.lean:178\\n    /-- Given a short exact sequence of sheaves, `0 ⟶ 𝓕 ⟶ 𝓖 ⟶ 𝓗 ⟶ 0`, if `𝓕` and `𝓖` are flasque,\\n- Mathlib/Algebra/Homology/HomotopyCategory/Pretriangulated.lean:23\\n    triangles were defined using degreewise-split short exact sequences of cochain\\n- Mathlib/Algebra/Homology/HomologicalComplexAbelian.lean:19\\n    is exact (resp. short exact) iff degreewise it is so.\\n- Mathlib/Algebra/Homology/HomotopyCategory/ShortExact.lean:16\\n    If `S` is a short exact short complex of cochain complexes in an abelian category,\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:71\\n    (X.shortComplex f₁ f₂ f₃ n₀ n₁ n₂).exact_iff_isZero_homology.1\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:865\\n    /-- The short exact sequence\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:893\\n    lemma shortComplexOpcyclesThreeδ₂Toδ₁_exact\\n- Mathlib/Algebra/Homology/SpectralObject/Page.lean:910\\n    exact := X.shortComplexOpcyclesThreeδ₂Toδ₁_exact ..\\n- Mathlib/Algebra/Homology/HomotopyCategory/DegreewiseSplit.lean:17\\n    degreewise split short exact sequence of cochain complexes.\\n- Mathlib/Algebra/Homology/HomotopyCategory/DegreewiseSplit.lean:42\\n    /-- The `1`-cocycle attached to a degreewise split short exact sequence of cochain complexes. -/\\n- Mathlib/Algebra/Homology/HomotopyCategory/DegreewiseSplit.lean:62\\n    short exact sequence of cochain complexes. -/\\n- Mathlib/Algebra/Homology/HomotopyCategory/DegreewiseSplit.lean:73\\n    /-- The triangle in `CochainComplex C ℤ` attached to a degreewise split short exact sequence\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ShortExact\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2465,
+   "result_head": "[{\"type\": \"text\", \"text\": \"187 match(es) for 'ShortExact' (via ripgrep):\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:37\\n    (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:46\\n    are short exact (`hS₁ : S₁.ShortExact` and `hS₂ : S₁.ShortExact`). -/\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:68\\n    lemma composableArrows₂_exact (hS₁ : S₁.ShortExact) (i : ι) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:183\\n    namespace CategoryTheory.ShortComplex.ShortExact\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:187\\n    lemma exactAt_X₁ (hS : S.ShortExact) (j : ι)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:206\\n    lemma exactAt_X₂ (hS : S.ShortExact) (i : ι) (h₁ : S.X₁.ExactAt i) (h₃ : S.X₃.ExactAt i) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:211\\n    lemma exactAt_X₃ (hS : S.ShortExact) (i : ι)\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:230\\n    lemma acyclic_X₁ (hS : S.ShortExact) (hg : _root_.QuasiIso S.g) : S.X₁.Acyclic :=\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:233\\n    lemma acyclic_X₂ (hS : S.ShortExact) (h₁ : S.X₁.Acyclic) (h₃ : S.X₃.Acyclic) :\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:237\\n    lemma acyclic_X₃ (hS : S.ShortExact) (h : _root_.QuasiIso S.f) : S.X₃.Acyclic :=\\n- Mathlib/Algebra/Homology/HomologySequenceLemmas.lean:240\\n    end CategoryTheory.ShortComplex.ShortExact\\n- Mathlib/Algebra/Homology/ConcreteCategory.lean:57\\n    namespace ShortExact\\n- Mathlib/Algebra/Homology/ConcreteCategory.lean:60\\n    (hS : S.ShortExact) (i j : ι) (hij : c.Rel i j)\\n- Mathlib/Algebra/Homology/ConcreteCategory.lean:126\\n    end ShortExact\\n- Mathlib/Algebra/Homology/HomologicalComplexAbelian.lean:11\\n    public import Mathlib.Algebra.Homology.ShortComplex.ShortExact\\n- Mathlib/Algebra/Homology/HomologicalComplexAbelian.lean:57\\n    (hS : ∀ (i : ι), (S.map (eval C c i)).ShortExact) :\\n- Mathlib/Algebra/Homology/HomologicalComplexAbelian.lean:58\\n    S.ShortExact where\\n- Mathlib/Algebra/Homology/HomologicalComplexAbelian.lean:71\\n    S.ShortExact ↔ ∀ (i : ι), (S.map (eval C c i)).ShortExact := by\\n- Mathlib/Algebra/Homology/DerivedCategory/ShortExact.lean:8\\n    public import Mathlib.Algebra.Homology.HomotopyCategory.ShortExact\\n- Mathlib/Algebra/Homology/DerivedCategory/ShortExact.lean:33\\n    {S : ShortComplex (CochainComplex C ℤ)} (hS : S.ShortExact)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def ShortExact\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 401,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def ShortExact' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:162\\n    noncomputable def ShortExact.fIsKernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:169\\n    noncomputable def ShortExact.gIsCokernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1795,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean  (lines 1–50 of 225):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.Exact\\n     9  public import Mathlib.CategoryTheory.Preadditive.Injective.Basic\\n    10  \\n    11  /-!\\n    12  # Short exact short complexes\\n    13  \\n    14  A short complex `S : ShortComplex C` is short exact (`S.ShortExact`) when it is exact,\\n    15  `S.f` is a mono and `S.g` is an epi.\\n    16  \\n    17  -/\\n    18  \\n    19  @[expose] public section\\n    20  \\n    21  namespace CategoryTheory\\n    22  \\n    23  open Category Limits ZeroObject\\n    24  \\n    25  variable {C D : Type*} [Category* C] [Category* D]\\n    26  \\n    27  namespace ShortComplex\\n    28  \\n    29  section\\n    30  \\n    31  variable [HasZeroMorphisms C] [HasZeroMorphisms D]\\n    32    (S : ShortComplex C) {S₁ S₂ : ShortComplex C}\\n    33  \\n    34  /-- A short complex `S` is short exact if it is exact, `S.f` is a mono and `S.g` is an epi. -/\\n    35  structure ShortExact : Prop where\\n    36    exact : S.Exact\\n    37    [mono_f : Mono S.f]\\n    38    [epi_g : Epi S.g]\\n    39  \\n    40  variable {S}\\n    41  \\n    42  lemma ShortExact.mk' (h : S.Exact) (_ : Mono S.f) (_ : Epi S.g) : S.ShortExact where\\n    43    exact := h\\n    44  \\n    45  lemma shortExact_of_iso (e : S₁ ≅ S₂) (h : S₁.ShortExact) : S₂.ShortExact where\\n    46    exact := exact_of_iso e h.exact\\n    47    mono_f := by\\n    48      suffices Mono (S₂.f ≫ e.inv.τ₂) by\\n    49        exact mono_of_mono _ e.inv.τ₂\\n    50      have := h.mono_f\\n\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem|def).*restrict.*representation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(lemma|theorem|def).*restrict.*representation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"restriction.*functor\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2781,
+   "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for 'restriction.*functor' (via ripgrep):\\n- Mathlib/Algebra/Homology/Embedding/Basic.lean:34\\n    - assuming `e.IsRelIff`, the restriction functor\\n- Mathlib/Algebra/Homology/Embedding/Restriction.lean:12\\n    # The restriction functor of an embedding of complex shapes\\n- Mathlib/Algebra/Homology/Embedding/Restriction.lean:15\\n    (satisfying `[e.IsRelIff]`), we define the restriction functor\\n- Mathlib/Condensed/Discrete/Colimit.lean:94\\n    restriction to finite sets along the inclusion functor of finite sets into `Profinite`.\\n- Mathlib/Condensed/Discrete/Colimit.lean:391\\n    restriction to finite sets along the inclusion functor of finite sets into `Profinite`.\\n- Mathlib/CategoryTheory/Adjunction/Basic.lean:66\\n    * The file `Restrict` defines the restriction of an adjunction along fully faithful functors.\\n- Mathlib/RepresentationTheory/Induced.lean:21\\n    We also prove that the restriction functor `Rep k H ⥤ Rep k G` along `φ` is right adjoint to the\\n- Mathlib/RepresentationTheory/Induced.lean:35\\n    between the induction functor along `φ` and the restriction functor `Rep k H ⥤ Rep k G`\\n- Mathlib/RepresentationTheory/Induced.lean:156\\n    adjoint to the restriction functor along `φ`. -/\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:19\\n    coinduction functor `TopRep.coind₁Functor`, the restriction functor `TopRep.resFunctor` along a\\n- Mathlib/RepresentationTheory/FiniteIndex.lean:191\\n    /-- Given a finite index subgroup `S ≤ G`, `Ind_S^G` is right adjoint to the restriction functor\\n- Mathlib/RepresentationTheory/FiniteIndex.lean:232\\n    /-- Given a finite index subgroup `S ≤ G`, `Coind_S^G` is left adjoint to the restriction functor\\n- Mathlib/RepresentationTheory/Rep/Res.lean:13\\n    Given a group homomorphism `f : H →* G`, we have the restriction functor\\n- Mathlib/RepresentationTheory/Rep/Res.lean:36\\n    /-- The restriction functor `Rep R G ⥤ Rep R H` for a subgroup `H` of `G`. -/\\n- Mathlib/RepresentationTheory/Rep/Res.lean:114\\n    The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n- Mathlib/CategoryTheory/Action/Continuous.lean:95\\n    /-- The \\\"restriction\\\" functor along a monoid homomorphism `f : G →* H`,\\n- Mathlib/CategoryTheory/Action/Basic.lean:24\\n    and construct the restriction functors\\n- Mathlib/CategoryTheory/Action/Basic.lean:321\\n    /-- The \\\"restriction\\\" functor along a monoid homomorphism `f : G →* H`,\\n- Mathlib/CategoryTheory/ConcreteCategory/Forget.lean:18\\n    We impose no restrictions on the category `C`, so `Type` has the identity forgetful functor.\\n- Mathlib/RepresentationTheory/Coinduced.lean:29\\n    We also prove that the restriction functor `Rep k H ⥤ Rep k G` along `φ` is left adjoint to the\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3481,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 1–80 of 159):\\n     1  /-\\n     2  Copyright (c) 2026 Yunzhou Xie. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Edison Xie\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.ShortExact\\n     9  public import Mathlib.RepresentationTheory.Rep.Iso\\n    10  /-!\\n    11  # Restriction of representations\\n    12  \\n    13  Given a group homomorphism `f : H →* G`, we have the restriction functor\\n    14  `resFunctor f : Rep k G ⥤ Rep k H` which sends a `G`-representation `ρ` to the\\n    15  `H`-representation `ρ.comp f`.\\n    16  \\n    17  -/\\n    18  \\n    19  public section\\n    20  \\n    21  universe t w u v v1 v2\\n    22  \\n    23  variable {k : Type u} [Semiring k] {G : Type v1} {H : Type v2} [Monoid G] [Monoid H]\\n    24  \\n    25  open CategoryTheory\\n    26  \\n    27  namespace Rep\\n    28  \\n    29  /-- The map induced by a monoid homomorphism `f : H →* G` on morphisms between\\n    30  `G`-representations. -/\\n    31  @[expose, implicit_reducible]\\n    32  def resMap {X Y : Rep k G} (f : H →* G) (p : X ⟶ Y) :\\n    33      of (X := X.V) (X.ρ.comp f) ⟶ of (X := Y.V) (Y.ρ.comp f) :=\\n    34    ofHom ⟨p.hom, fun h ↦ by simpa using p.hom.2 (f h)⟩\\n    35  \\n    36  /-- The restriction functor `Rep R G ⥤ Rep R H` for a subgroup `H` of `G`. -/\\n    37  abbrev resFunctor (f : H →* G) : Rep.{t} k G ⥤ Rep k H where\\n    38    obj A := of (X := A.V) (A.ρ.comp f)\\n    39    map f' := resMap f f'\\n    40  \\n    41  /-- The restriction of `X : Rep k G` associated to a monoid homomorphism `f : H →* G` -/\\n    42  abbrev res (f : H →* G) (M : Rep k G) := (resFunctor f).obj M\\n    43  \\n    44  variable (f : H →* G) (M : Rep k G)\\n    45  \\n    46  lemma res_id : res (MonoidHom.id G) M = M := rfl\\n    47  \\n    48  @[simp] lemma res_obj_ρ : (res f M).ρ = (M.ρ.comp f) := rfl\\n    49  \\n    50  lemma coe_res_obj_ρ' (h : H) : (res f M).ρ h = M.ρ (f h) := rfl\\n    51  \\n    52  lemma res_obj_V : (res f M).V = M.V := rfl\\n    53  \\n    54  @[simp]\\n    55  lemma resMap_hom_toLinearMap {M N : Rep k G} (p : M ⟶ N) :\\n    56      (resMap f p).hom.toLinearMap = p.hom.toLinearMap := rfl\\n    57  \\n    58  @[deprecated (since := \\\"26/06/2026\\\")]\\n    59  alias res_map_hom_toLinearMap := resMap_hom_toLinearMap\\n    60  \\n    61  @[simp]\\n    62  lemma resMap_hom_apply {M N : Rep k G} (p : M ⟶ N) (x : M.V) :\\n    63      @DFunLike.coe (Representation.IntertwiningMap (M.ρ.comp f) (N.ρ.comp f)) _ _ _\\n    64        (resMap f p).hom x = p.hom x := rfl\\n    65  \\n    66  section\\n    67  \\n    68  instance : (resFunctor (k := k) f).Faithful where\\n    69    map_injective h := by\\n    70      simpa [Rep.hom_ext_iff, Representation.IntertwiningMap.ext_iff] using h\\n    71  \\n    72  /-- Morphism between `X Y : Rep k G` can be lifted from restrictions associated with `f : H →* G`\\n    73    when `f` is surjective. -/\\n    74  abbrev liftHomOfSurj {X Y : Rep k G} (hf : Function.Surjective f) (f' : res f X ⟶ res f Y) :\\n    75      X ⟶ Y := ofHom ⟨f'.hom.toLinearMap, fun g ↦ by obtain ⟨h, rfl⟩ := hf g; simpa using f'.hom.2 h⟩\\n    76  \\n    77  @[simp]\\n    78  lemma liftHomOfSurj_toLinearMap {X Y : Rep k G} (hf : Function.Surjective f)\\n    79      (f' : res f X ⟶ res f Y) : (liftHomOfSurj f hf f').hom.toLinearMap =\\n    80        f'.hom.toLinearMap := rfl\\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 80, \"n\": 79}",
+   "ok": true,
+   "result_chars": 3891,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 80–158 of 159):\\n    80        f'.hom.toLinearMap := rfl\\n    81  \\n    82  lemma full_res (hf : (⇑f).Surjective) : (resFunctor (k := k) f).Full where\\n    83    map_surjective {X Y} f' := ⟨liftHomOfSurj f hf f', by ext; simp⟩\\n    84  \\n    85  instance : (resFunctor (k := k) f).Additive where\\n    86    map_add {_ _} _ _ := by ext : 2; simp [add_hom]\\n    87  \\n    88  instance {k : Type u} [CommSemiring k] : (resFunctor (k := k) f).Linear k where\\n    89    map_smul {_ _} _ _ := by ext : 2; simp [smul_hom]\\n    90  \\n    91  section ShortComplex\\n    92  \\n    93  open Limits\\n    94  \\n    95  variable {k : Type u} [Ring k]\\n    96  \\n    97  instance : PreservesLimits (resFunctor.{w} (k := k) f) :=\\n    98    have : PreservesLimitsOfSize.{w, w} (resFunctor f ⋙ forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n    99      inferInstanceAs (PreservesLimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   100    preservesLimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   101  \\n   102  instance : Limits.PreservesColimits (resFunctor.{w} (k := k) f) :=\\n   103    have : PreservesColimitsOfSize.{w, w} (resFunctor (k := k) f ⋙\\n   104        forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n   105      inferInstanceAs (PreservesColimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   106    preservesColimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   107  \\n   108  /-- An object of `Rep k G` is zero iff its restriction to `H` is zero. -/\\n   109  lemma isZero_res_iff (M : Rep k G) :\\n   110      IsZero (res f M) ↔ IsZero M := by\\n   111    rw [isZero_iff, isZero_iff, Rep.res_obj_V]\\n   112  \\n   113  /--\\n   114  The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n   115  preserves and reflects exactness. -/\\n   116  lemma res_map_exact {k : Type u} [CommRing k]\\n   117      (S : ShortComplex (Rep.{w} k G)) :\\n   118      (S.map (resFunctor f)).Exact ↔ S.Exact := by\\n   119    rw [ShortComplex.exact_map_iff_of_faithful]\\n   120  \\n   121  lemma shortExact_res {k : Type u} [CommRing k] (φ : H →* G) {S : ShortComplex (Rep.{w} k G)} :\\n   122      (S.map (resFunctor φ)).ShortExact ↔ S.ShortExact := by\\n   123    constructor\\n   124    · intro h\\n   125      have h₁ := h.1\\n   126      have h₂ := h.2\\n   127      have h₃ := h.3\\n   128      rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n   129      simp only [ShortComplex.map_f, mono_iff_injective, ShortComplex.map_g,\\n   130        epi_iff_surjective] at h₂ h₃\\n   131      exact {exact := h₁, mono_f := mono_iff_injective _|>.2 h₂, epi_g := epi_iff_surjective _|>.2 h₃}\\n   132    · rintro @⟨_, mono_f, epi_g⟩\\n   133      exact {\\n   134        exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\\n   135        mono_f := by simpa [mono_iff_injective] using! mono_f\\n   136        epi_g := by simpa [epi_iff_surjective] using! epi_g\\n   137      }\\n   138  \\n   139  end ShortComplex\\n   140  \\n   141  noncomputable section\\n   142  \\n   143  variable {G : Type v} [Group G] (A : Rep k G) (S : Subgroup G)\\n   144    [S.Normal] [Representation.IsTrivial (A.ρ.comp S.subtype)]\\n   145  \\n   146  /-- Given a normal subgroup `S ≤ G`, a `G`-representation `ρ` which is trivial on `S` factors\\n   147  through `G ⧸ S`. -/\\n   148  abbrev ofQuotient : Rep k (G ⧸ S) := Rep.of (A.ρ.ofQuotient S)\\n   149  \\n   150  /-- A `G`-representation `A` on which a normal subgroup `S ≤ G` acts trivially induces a\\n   151  `G ⧸ S`-representation on `A`, and composing this with the quotient map `G → G ⧸ S` gives the\\n   152  original representation by definition. Useful for typechecking. -/\\n   153  abbrev resOfQuotientIso : (res (QuotientGroup.mk' S) (A.ofQuotient S)) ≅ A := Iso.refl _\\n   154  \\n   155  end\\n   156  \\n   157  end\\n   158  \\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Exact.*ShortComplex\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 716,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def.*Exact.*ShortComplex' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:1003\\n    noncomputable def ofExactOfSection (S : ShortComplex C) (hS : S.Exact) (s : S.X₃ ⟶ S.X₂)\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:1014\\n    noncomputable def ofExactOfRetraction (S : ShortComplex C) (hS : S.Exact) (r : S.X₂ ⟶ S.X₁)\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:162\\n    noncomputable def ShortExact.fIsKernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:169\\n    noncomputable def ShortExact.gIsCokernel [Balanced C] {S : ShortComplex C} (hS : S.ShortExact) :\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2426,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Homology/ShortComplex/Exact.lean  (lines 1–60 of 1028):\\n     1  /-\\n     2  Copyright (c) 2023 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Homology.ShortComplex.PreservesHomology\\n     9  public import Mathlib.Algebra.Homology.ShortComplex.Abelian\\n    10  public import Mathlib.Algebra.Homology.ShortComplex.QuasiIso\\n    11  public import Mathlib.CategoryTheory.Abelian.Opposite\\n    12  public import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor\\n    13  public import Mathlib.CategoryTheory.Preadditive.Injective.Basic\\n    14  \\n    15  /-!\\n    16  # Exact short complexes\\n    17  \\n    18  When `S : ShortComplex C`, this file defines a structure\\n    19  `S.Exact` which expresses the exactness of `S`, i.e. there\\n    20  exists a homology data `h : S.HomologyData` such that\\n    21  `h.left.H` is zero. When `[S.HasHomology]`, it is equivalent\\n    22  to the assertion `IsZero S.homology`.\\n    23  \\n    24  Almost by construction, this notion of exactness is self dual,\\n    25  see `Exact.op` and `Exact.unop`.\\n    26  \\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  namespace CategoryTheory\\n    32  \\n    33  open Category Limits ZeroObject Preadditive\\n    34  \\n    35  variable {C D : Type*} [Category* C] [Category* D]\\n    36  \\n    37  namespace ShortComplex\\n    38  \\n    39  section\\n    40  \\n    41  variable\\n    42    [HasZeroMorphisms C] [HasZeroMorphisms D] (S : ShortComplex C) {S₁ S₂ : ShortComplex C}\\n    43  \\n    44  /-- The assertion that the short complex `S : ShortComplex C` is exact. -/\\n    45  structure Exact : Prop where\\n    46    /-- the condition that there exists a homology data whose `left.H` field is zero -/\\n    47    condition : ∃ (h : S.HomologyData), IsZero h.left.H\\n    48  \\n    49  variable {S}\\n    50  \\n    51  lemma Exact.hasHomology (h : S.Exact) : S.HasHomology :=\\n    52    HasHomology.mk' h.condition.choose\\n    53  \\n    54  lemma Exact.hasZeroObject (h : S.Exact) : HasZeroObject C :=\\n    55    ⟨h.condition.choose.left.H, h.condition.choose_spec⟩\\n    56  \\n    57  variable (S)\\n    58  \\n    59  lemma exact_iff_isZero_homology [S.HasHomology] :\\n    60      S.Exact ↔ IsZero S.homology := by\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RepresentationTheory/Rep/Res.lean\", \"line\": 91, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2544,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RepresentationTheory/Rep/Res.lean  (lines 91–140 of 159):\\n    91  section ShortComplex\\n    92  \\n    93  open Limits\\n    94  \\n    95  variable {k : Type u} [Ring k]\\n    96  \\n    97  instance : PreservesLimits (resFunctor.{w} (k := k) f) :=\\n    98    have : PreservesLimitsOfSize.{w, w} (resFunctor f ⋙ forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n    99      inferInstanceAs (PreservesLimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   100    preservesLimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   101  \\n   102  instance : Limits.PreservesColimits (resFunctor.{w} (k := k) f) :=\\n   103    have : PreservesColimitsOfSize.{w, w} (resFunctor (k := k) f ⋙\\n   104        forget₂ (Rep.{w} k H) (ModuleCat k)) :=\\n   105      inferInstanceAs (PreservesColimitsOfSize.{w, w} (forget₂ (Rep.{w} k G) (ModuleCat k)))\\n   106    preservesColimits_of_reflects_of_preserves _ (forget₂ (Rep.{w} k H) (ModuleCat k))\\n   107  \\n   108  /-- An object of `Rep k G` is zero iff its restriction to `H` is zero. -/\\n   109  lemma isZero_res_iff (M : Rep k G) :\\n   110      IsZero (res f M) ↔ IsZero M := by\\n   111    rw [isZero_iff, isZero_iff, Rep.res_obj_V]\\n   112  \\n   113  /--\\n   114  The instances above show that the restriction functor `res φ : Rep R G ⥤ Rep R H`\\n   115  preserves and reflects exactness. -/\\n   116  lemma res_map_exact {k : Type u} [CommRing k]\\n   117      (S : ShortComplex (Rep.{w} k G)) :\\n   118      (S.map (resFunctor f)).Exact ↔ S.Exact := by\\n   119    rw [ShortComplex.exact_map_iff_of_faithful]\\n   120  \\n   121  lemma shortExact_res {k : Type u} [CommRing k] (φ : H →* G) {S : ShortComplex (Rep.{w} k G)} :\\n   122      (S.map (resFunctor φ)).ShortExact ↔ S.ShortExact := by\\n   123    constructor\\n   124    · intro h\\n   125      have h₁ := h.1\\n   126      have h₂ := h.2\\n   127      have h₃ := h.3\\n   128      rw [ShortComplex.exact_map_iff_of_faithful] at h₁\\n   129      simp only [ShortComplex.map_f, mono_iff_injective, ShortComplex.map_g,\\n   130        epi_iff_surjective] at h₂ h₃\\n   131      exact {exact := h₁, mono_f := mono_iff_injective _|>.2 h₂, epi_g := epi_iff_surjective _|>.2 h₃}\\n   132    · rintro @⟨_, mono_f, epi_g⟩\\n   133      exact {\\n   134        exact := by rwa [ShortComplex.exact_map_iff_of_faithful]\\n   135        mono_f := by simpa [mono_iff_injective] using! mono_f\\n   136        epi_g := by simpa [epi_iff_surjective] using! epi_g\\n   137      }\\n   138  \\n   139  end ShortComplex\\n   140  \\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def resFunctor\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def resFunctor' under Mathlib/.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure.*Exact\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 801,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'structure.*Exact' (via ripgrep):\\n- Mathlib/Algebra/Homology/ExactSequence.lean:128\\n    structure Exact : Prop extends S.IsComplex where\\n- Mathlib/Algebra/Homology/ShortComplex/Exact.lean:45\\n    structure Exact : Prop where\\n- Mathlib/Algebra/Homology/ShortComplex/ShortExact.lean:35\\n    structure ShortExact : Prop where\\n- Mathlib/Algebra/Category/ModuleCat/Kernels.lean:47\\n    /-- Construct an `IsLimit` structure of kernels given `Function.Exact`. -/\\n- Mathlib/Algebra/Category/ModuleCat/Kernels.lean:72\\n    /-- Construct an `IsColimit` structure of cokernels given `Function.Exact`. -/\\n- Mathlib/CategoryTheory/GuitartExact/Basic.lean:216\\n    `CostructuredArrow L X₃ ⥤ CostructuredArrow R (B.obj X₃)` is final (see `guitartExact_iff_final`)\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev resFunctor\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 314,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'abbrev resFunctor' (via ripgrep):\\n- Mathlib/RepresentationTheory/Continuous/TopRep.lean:269\\n    abbrev resFunctor {H : Type*} [Monoid H] (φ : H →* G) :\\n- Mathlib/RepresentationTheory/Rep/Res.lean:37\\n    abbrev resFunctor (f : H →* G) : Rep.{t} k G ⥤ Rep k H where\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "lemma res_map_exact {k : Type*} {G : Type*} {H : Type*} [CommRing k] [Monoid G] [Monoid H]\n    (f : H →* G) (S : ShortComplex (Rep k G)) :\n    (S.map (Rep.resFunctor f)).Exact ↔ S.Exact := sorry"
+}

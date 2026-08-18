@@ -1,0 +1,336 @@
+{
+ "task_id": "fresh_060",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T01:31:55Z",
+ "wall_s": 122.1,
+ "transcript_stats": {
+  "turns": 36,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 13,
+   "mcp__formal__decl_read": 12,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 186,
+  "tokens_out": 8851,
+  "cost_usd": 0.13985660000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Riemann zeta function\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Riemann zeta function': Unknown identifier `Riemann`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"von Mangoldt\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'von Mangoldt': Unknown identifier `von`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*zeta|theorem.*zeta\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"85 match(es) for 'def.*zeta|theorem.*zeta' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:64\\n    theorem associated_norm_zeta_sub_one : Associated (Algebra.norm ℤ (hζ.toInteger - 1)) (p : ℤ) := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:77\\n    theorem zeta_sub_one_dvd_intCast_iff {n : ℤ} :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:83\\n    theorem absNorm_span_zeta_sub_one : absNorm (span {hζ.toInteger - 1}) = p := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:87\\n    theorem p_mem_span_zeta_sub_one : (p : 𝓞 K) ∈ span {hζ.toInteger - 1} := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:91\\n    theorem span_zeta_sub_one_ne_bot : span {hζ.toInteger - 1} ≠ ⊥ :=\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:100\\n    theorem inertiaDeg_span_zeta_sub_one : inertiaDeg (span {hζ.toInteger - 1}) ℤ = 1 := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:106\\n    theorem map_eq_span_zeta_sub_one_pow :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:124\\n    theorem ramificationIdx_span_zeta_sub_one :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:149\\n    theorem eq_span_zeta_sub_one_of_liesOver (P : Ideal (𝓞 K)) [hP₁ : P.IsPrime] [hP₂ : P.LiesOver 𝒑] :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:193\\n    theorem two_not_mem_span_zeta_sub_one' (h : 2 < p) : (2 : 𝓞 K) ∉ span {hζ.toInteger - 1} := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:209\\n    theorem associated_zeta_sub_one_pow_prime :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:223\\n    theorem isCoprime_of_not_zeta_sub_one_dvd {x : 𝓞 K} (hx : ¬ hζ.toInteger - 1 ∣ x) :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:231\\n    theorem inertiaDeg_span_zeta_sub_one' : inertiaDeg (span {hζ.toInteger - 1}) ℤ = 1 := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:235\\n    theorem ramificationIdx_span_zeta_sub_one' :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean:242\\n    theorem zeta_sub_one_dvd_intCast_iff' {n : ℤ} :\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Riemann|theorem.*RiemannZeta\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1555,
+   "result_head": "[{\"type\": \"text\", \"text\": \"24 match(es) for 'def.*Riemann|theorem.*RiemannZeta' (via ripgrep):\\n- Mathlib/Geometry/Manifold/VectorBundle/CovariantDerivative/Metric.lean:14\\n    This file defines connections on a Riemannian vector bundle which are compatible with the ambient\\n- Mathlib/Geometry/Manifold/VectorBundle/Riemannian.lean:253\\n    /-- A smooth Riemannian metric defines in particular a continuous Riemannian metric. -/\\n- Mathlib/Geometry/Manifold/VectorBundle/Riemannian.lean:254\\n    def ContMDiffRiemannianMetric.toContinuousRiemannianMetric\\n- Mathlib/Geometry/Manifold/VectorBundle/Riemannian.lean:258\\n    /-- A smooth Riemannian metric defines in particular a Riemannian metric. -/\\n- Mathlib/Geometry/Manifold/VectorBundle/Riemannian.lean:259\\n    def ContMDiffRiemannianMetric.toRiemannianMetric\\n- Mathlib/Geometry/Manifold/Riemannian/Basic.lean:29\\n    By definition, it then satisfies the predicate `IsRiemannianManifold I M`.\\n- Mathlib/Geometry/Manifold/Riemannian/Basic.lean:219\\n    Should not be a global instance, as it does not coincide definitionally with the Riemannian\\n- Mathlib/Geometry/Manifold/Riemannian/Basic.lean:231\\n    Should not be a global instance, as it does not coincide definitionally with the Riemannian\\n- Mathlib/Geometry/Manifold/Riemannian/Basic.lean:514\\n    @[reducible] def PseudoEMetricSpace.ofRiemannianMetric [RegularSpace M] : PseudoEMetricSpace M :=\\n- Mathlib/Geometry/Manifold/Riemannian/Basic.lean:542\\n    @[reducible] def EMetricSpace.ofRiemannianMetric [T3Space M] : EMetricSpace M :=\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → ℂ zeta\"}",
+   "ok": true,
+   "result_chars": 207,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a → ℂ zeta': Function expected at\\n  ℂ\\nbut this term has type\\n  Type\\n\\nNote: Expected a function because this term is being applied to the argument\\n  zeta\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def zeta|theorem.*zeta.*log\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1236,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'def zeta|theorem.*zeta.*log' (via ripgrep):\\n- Mathlib/NumberTheory/ArithmeticFunction/Moebius.lean:193\\n    def zetaUnit : (ArithmeticFunction R)ˣ :=\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:119\\n    theorem vonMangoldt_mul_zeta : Λ * ζ = log := by\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:123\\n    theorem zeta_mul_vonMangoldt : (ζ : ArithmeticFunction ℝ) * Λ = log := by rw [mul_comm]; simp\\n- Mathlib/NumberTheory/ArithmeticFunction/Zeta.lean:38\\n    def zeta : ArithmeticFunction ℕ :=\\n- Mathlib/NumberTheory/LSeries/Nonvanishing.lean:75\\n    noncomputable def zetaMul (χ : DirichletCharacter ℂ N) : ArithmeticFunction ℂ :=\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:152\\n    theorem ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/Cyclotomic/PrimitiveRoots.lean:87\\n    noncomputable def zeta : B :=\\n- Mathlib/Combinatorics/Enumerative/IncidenceAlgebra.lean:330\\n    def zeta : IncidenceAlgebra 𝕜 α := ⟨fun a b ↦ if a ≤ b then 1 else 0, fun _a _b h ↦ if_neg h⟩\\n- Mathlib/Tactic/DepRewrite.lean:170\\n    def zetaDelta (e : Expr) (fvars : Std.HashSet FVarId) : MetaM Expr :=\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MangoldtFunction\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MangoldtFunction': unknown identifier 'MangoldtFunction'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2146,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean  (lines 1–50 of 174):\\n     1  /-\\n     2  Copyright (c) 2022 Bhavik Mehta. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Bhavik Mehta\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.Log.Basic\\n     9  public import Mathlib.Data.Nat.Cast.Field\\n    10  public import Mathlib.NumberTheory.ArithmeticFunction.Moebius\\n    11  \\n    12  /-!\\n    13  # The von Mangoldt Function\\n    14  \\n    15  In this file we define the von Mangoldt function: the function on natural numbers that returns\\n    16  `log p` if the input can be expressed as `p^k` for a prime `p`.\\n    17  \\n    18  ## Main Results\\n    19  \\n    20  The main definition for this file is\\n    21  \\n    22  - `ArithmeticFunction.vonMangoldt`: The von Mangoldt function `Λ`.\\n    23  \\n    24  We then prove the classical summation property of the von Mangoldt function in\\n    25  `ArithmeticFunction.vonMangoldt_sum`, that `∑ i ∈ n.divisors, Λ i = Real.log n`, and use this\\n    26  to deduce alternative expressions for the von Mangoldt function via Möbius inversion, see\\n    27  `ArithmeticFunction.sum_moebius_mul_log_eq`.\\n    28  \\n    29  ## Notation\\n    30  \\n    31  We use the standard notation `Λ` to represent the von Mangoldt function.\\n    32  It is accessible in the locales `ArithmeticFunction` (like the notations for other arithmetic\\n    33  functions) and also in the scope `ArithmeticFunction.vonMangoldt`.\\n    34  \\n    35  -/\\n    36  \\n    37  @[expose] public section\\n    38  \\n    39  namespace ArithmeticFunction\\n    40  \\n    41  open Finset Nat\\n    42  \\n    43  open scoped ArithmeticFunction\\n    44  \\n    45  /-- `log` as an arithmetic function `ℕ → ℝ`. Note this is in the `ArithmeticFunction`\\n    46  namespace to indicate that it is bundled as an `ArithmeticFunction` rather than being the usual\\n    47  real logarithm. -/\\n    48  noncomputable def log : ArithmeticFunction ℝ :=\\n    49    ⟨fun n => Real.log n, by simp⟩\\n    50  \\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*LSeries|theorem.*LogDerivative\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1294,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'def.*LSeries|theorem.*LogDerivative' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:84\\n    protected noncomputable def LSeries (W : WeierstrassCurve K) (s : ℂ) :=\\n- Mathlib/NumberTheory/LSeries/Convergence.lean:14\\n    We define `LSeries.abscissaOfAbsConv f` (as an `EReal`) to be the infimum\\n- Mathlib/NumberTheory/LSeries/Convergence.lean:30\\n    noncomputable def LSeries.abscissaOfAbsConv (f : ℕ → ℂ) : EReal :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:153\\n    We define `LSeries f s` of `f : ℕ → ℂ` as the sum over `LSeries.term f s`.\\n- Mathlib/NumberTheory/LSeries/Basic.lean:164\\n    def LSeries (f : ℕ → ℂ) (s : ℂ) : ℂ :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:173\\n    def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:212\\n    def LSeriesHasSum (f : ℕ → ℂ) (s a : ℂ) : Prop :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:245\\n    def LSeries.delta (n : ℕ) : ℂ :=\\n- Mathlib/NumberTheory/LSeries/Convolution.lean:19\\n    see `LSeries.convolution`. We show that these definitions agree (`LSeries.convolution_def`).\\n- Mathlib/NumberTheory/LSeries/Convolution.lean:62\\n    noncomputable def LSeries.convolution {R : Type*} [Semiring R] (f g : ℕ → R) : ℕ → R :=\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LSeries Real delta\"}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LSeries Real delta': Application type mismatch: The argument\\n  ℝ\\nhas type\\n  Type\\nof sort `Type 1` but is expected to have type\\n  ℕ → ℂ\\nof sort `Type` in the application\\n  LSeries ℝ\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Dirichlet|LSeries.*zeta\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1584,
+   "result_head": "[{\"type\": \"text\", \"text\": \"42 match(es) for 'def.*Dirichlet|LSeries.*zeta' (via ripgrep):\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:46\\n    def dirichletSummandHom {n : ℕ} (χ : DirichletCharacter ℂ n) (hs : s ≠ 0) : ℕ →*₀ ℂ where\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:152\\n    theorem ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:162\\n    LSeries_one_eq_riemannZeta hs ▸ ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log hs\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:130\\n    def χ₀ {d : ℕ} (h : FactorsThrough χ d) : DirichletCharacter R d := Classical.choose h.2\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:307\\n    noncomputable def primitiveCharacter : DirichletCharacter R χ.conductor :=\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:325\\n    (isPrimitive_def _).1 (1 : DirichletCharacter R n).primitiveCharacter_isPrimitive,\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:414\\n    noncomputable def mul {m : ℕ} (χ₁ : DirichletCharacter R n) (χ₂ : DirichletCharacter R m) :\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:420\\n    noncomputable def primitive_mul {m : ℕ} (χ₁ : DirichletCharacter R n)\\n- Mathlib/NumberTheory/DirichletCharacter/Basic.lean:424\\n    lemma mul_def {n m : ℕ} {χ : DirichletCharacter R n} {ψ : DirichletCharacter R m} :\\n- Mathlib/NumberTheory/ArithmeticFunction/Defs.lean:27\\n    * Multiplication and power instances on `ArithmeticFunction R`, are defined using Dirichlet\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean\", \"line\": 150, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1262,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean  (lines 150–169 of 207):\\n   150  \\n   151  /-- A variant of the Euler product for the L-series of `ζ`. -/\\n   152  theorem ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n   153      exp (∑' p : Nat.Primes, -Complex.log (1 - p ^ (-s))) = L 1 s := by\\n   154    convert!\\n   155      modOne_eq_one (R := ℂ) ▸\\n   156        DirichletCharacter.LSeries_eulerProduct_exp_log (1 : DirichletCharacter ℂ 1) hs using 7\\n   157    rw [MulChar.one_apply <| isUnit_of_subsingleton _, one_mul]\\n   158  \\n   159  /-- A variant of the Euler product for the Riemann zeta function. -/\\n   160  theorem riemannZeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n   161      exp (∑' p : Nat.Primes, -Complex.log (1 - p ^ (-s))) = riemannZeta s :=\\n   162    LSeries_one_eq_riemannZeta hs ▸ ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log hs\\n   163  \\n   164  /-!\\n   165  ### Changing the level of a Dirichlet `L`-series\\n   166  -/\\n   167  \\n   168  /-- If `χ` is a Dirichlet character and its level `M` divides `N`, then we obtain the L-series\\n   169  of `χ` considered as a Dirichlet character of level `N` from the L-series of `χ` by multiplying\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*riemannZeta|theorem.*riemannZeta\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1955,
+   "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'def.*riemannZeta|theorem.*riemannZeta' (via ripgrep):\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:35\\n    def riemannZetaSummandHom (hs : s ≠ 0) : ℕ →*₀ ℂ where\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:89\\n    theorem riemannZeta_eulerProduct_hasProd (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:96\\n    theorem riemannZeta_eulerProduct_tprod (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:102\\n    theorem riemannZeta_eulerProduct (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:160\\n    theorem riemannZeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/LSeries/ZetaZeros.lean:33\\n    def riemannZetaZeros : Set ℂ := riemannZeta ⁻¹' {0}\\n- Mathlib/NumberTheory/LSeries/RiemannZeta.lean:121\\n    def riemannZeta := hurwitzZetaEven 0\\n- Mathlib/NumberTheory/LSeries/RiemannZeta.lean:139\\n    theorem differentiableAt_riemannZeta {s : ℂ} (hs' : s ≠ 1) : DifferentiableAt ℂ riemannZeta s :=\\n- Mathlib/NumberTheory/LSeries/RiemannZeta.lean:151\\n    theorem riemannZeta_zero : riemannZeta 0 = -1 / 2 := by\\n- Mathlib/NumberTheory/LSeries/RiemannZeta.lean:173\\n    theorem riemannZeta_neg_two_mul_nat_add_one (n : ℕ) : riemannZeta (-2 * (n + 1)) = 0 :=\\n- Mathlib/NumberTheory/LSeries/RiemannZeta.lean:178\\n    theorem riemannZeta_one_sub {s : ℂ} (hs : ∀ n : ℕ, s ≠ -n) (hs' : s ≠ 1) :\\n- Mathlib/NumberTheory/LSeries/HurwitzZetaValues.lean:206\\n    theorem riemannZeta_two_mul_nat {k : ℕ} (hk : k ≠ 0) :\\n- Mathlib/NumberTheory/LSeries/HurwitzZetaValues.lean:217\\n    theorem riemannZeta_two_mul_nat' {k : ℕ} :\\n- Mathlib/NumberTheory/LSeries/HurwitzZetaValues.lean:226\\n    theorem riemannZeta_two : riemannZeta 2 = (π : ℂ) ^ 2 / 6 := by\\n- Mathlib/NumberTheory/LSeries/HurwitzZetaValues.lean:232\\n    theorem riemannZeta_four : riemannZeta 4 = π ^ 4 / 90 := by\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/RiemannZeta.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 6110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/RiemannZeta.lean  (lines 1–120 of 262):\\n     1  /-\\n     2  Copyright (c) 2023 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.LSeries.HurwitzZeta\\n     9  public import Mathlib.Analysis.PSeriesComplex\\n    10  public import Mathlib.Tactic.CrossRefAttribute\\n    11  \\n    12  /-!\\n    13  # Definition of the Riemann zeta function\\n    14  \\n    15  ## Main definitions:\\n    16  \\n    17  * `riemannZeta`: the Riemann zeta function `ζ : ℂ → ℂ`.\\n    18  * `completedRiemannZeta`: the completed zeta function `Λ : ℂ → ℂ`, which satisfies\\n    19    `Λ(s) = π ^ (-s / 2) Γ(s / 2) ζ(s)` (away from the poles of `Γ(s / 2)`).\\n    20  * `completedRiemannZeta₀`: the entire function `Λ₀` satisfying\\n    21    `Λ₀(s) = Λ(s) + 1 / (s - 1) - 1 / s` wherever the RHS is defined.\\n    22  \\n    23  Note that mathematically `ζ(s)` is undefined at `s = 1`, while `Λ(s)` is undefined at both `s = 0`\\n    24  and `s = 1`. Our construction assigns some values at these points; exact formulae involving the\\n    25  Euler-Mascheroni constant will follow in a subsequent PR.\\n    26  \\n    27  ## Main results:\\n    28  \\n    29  * `differentiable_completedZeta₀` : the function `Λ₀(s)` is entire.\\n    30  * `differentiableAt_completedZeta` : the function `Λ(s)` is differentiable away from `s = 0` and\\n    31    `s = 1`.\\n    32  * `differentiableAt_riemannZeta` : the function `ζ(s)` is differentiable away from `s = 1`.\\n    33  * `zeta_eq_tsum_one_div_nat_add_one_cpow` : for `1 < re s`, we have\\n    34    `ζ(s) = ∑' (n : ℕ), 1 / (n + 1) ^ s`.\\n    35  * `completedRiemannZeta₀_one_sub`, `completedRiemannZeta_one_sub`, and `riemannZeta_one_sub` :\\n    36    functional equation relating values at `s` and `1 - s`\\n    37  \\n    38  For special-value formulae expressing `ζ (2 * k)` and `ζ (1 - 2 * k)` in terms of Bernoulli numbers\\n    39  see `Mathlib/NumberTheory/LSeries/HurwitzZetaValues.lean`. For computation of the constant term as\\n    40  `s → 1`, see `Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean`.\\n    41  \\n    42  ## Outline of proofs:\\n    43  \\n    44  These results are mostly special cases of more general results for even Hurwitz zeta functions\\n    45  proved in `Mathlib/NumberTheory/LSeries/HurwitzZetaEven.lean`.\\n    46  -/\\n    47  \\n    48  @[expose] public section\\n    49  \\n    50  \\n    51  open CharZero Set Filter HurwitzZeta\\n    52  \\n    53  open Complex hiding exp continuous_exp\\n    54  \\n    55  open scoped Topology Real\\n    56  \\n    57  noncomputable section\\n    58  \\n    59  /-!\\n    60  ## Definition of the completed Riemann zeta\\n    61  -/\\n    62  \\n    63  /-- The completed Riemann zeta function with its poles removed, `Λ(s) + 1 / s - 1 / (s - 1)`. -/\\n    64  def completedRiemannZeta₀ (s : ℂ) : ℂ := completedHurwitzZetaEven₀ 0 s\\n    65  \\n    66  /-- The completed Riemann zeta function, `Λ(s)`, which satisfies\\n    67  `Λ(s) = π ^ (-s / 2) Γ(s / 2) ζ(s)` (up to a minor correction at `s = 0`). -/\\n    68  def completedRiemannZeta (s : ℂ) : ℂ := completedHurwitzZetaEven 0 s\\n    69  \\n    70  lemma HurwitzZeta.completedHurwitzZetaEven_zero (s : ℂ) :\\n    71      completedHurwitzZetaEven 0 s = completedRiemannZeta s := rfl\\n    72  \\n    73  lemma HurwitzZeta.completedHurwitzZetaEven₀_zero (s : ℂ) :\\n    74      completedHurwitzZetaEven₀ 0 s = completedRiemannZeta₀ s := rfl\\n    75  \\n    76  lemma HurwitzZeta.completedCosZeta_zero (s : ℂ) :\\n    77      completedCosZeta 0 s = completedRiemannZeta s := by\\n    78    rw [completedRiemannZeta, completedHurwitzZetaEven, completedCosZeta, hurwitzEvenFEPair_zero_symm]\\n    79  \\n    80  lemma HurwitzZeta.completedCosZeta₀_zero (s : ℂ) :\\n    81      completedCosZeta₀ 0 s = completedRiemannZeta₀ s := by\\n    82    rw [completedRiemannZeta₀, complet"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/RiemannZeta.lean\", \"line\": 120, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3434,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/RiemannZeta.lean  (lines 120–179 of 262):\\n   120  @[wikidata Q187235]\\n   121  def riemannZeta := hurwitzZetaEven 0\\n   122  \\n   123  lemma HurwitzZeta.hurwitzZetaEven_zero : hurwitzZetaEven 0 = riemannZeta := rfl\\n   124  \\n   125  lemma HurwitzZeta.cosZeta_zero : cosZeta 0 = riemannZeta := by\\n   126    simp_rw [cosZeta, riemannZeta, hurwitzZetaEven, if_true, completedHurwitzZetaEven_zero,\\n   127      completedCosZeta_zero]\\n   128  \\n   129  lemma HurwitzZeta.hurwitzZeta_zero : hurwitzZeta 0 = riemannZeta := by\\n   130    ext1 s\\n   131    simpa [hurwitzZeta, hurwitzZetaEven_zero] using hurwitzZetaOdd_neg 0 s\\n   132  \\n   133  lemma HurwitzZeta.expZeta_zero : expZeta 0 = riemannZeta := by\\n   134    ext1 s\\n   135    rw [expZeta, cosZeta_zero, add_eq_left, mul_eq_zero, eq_false_intro I_ne_zero, false_or,\\n   136      ← eq_neg_self_iff, ← sinZeta_neg, neg_zero]\\n   137  \\n   138  /-- The Riemann zeta function is differentiable away from `s = 1`. -/\\n   139  theorem differentiableAt_riemannZeta {s : ℂ} (hs' : s ≠ 1) : DifferentiableAt ℂ riemannZeta s :=\\n   140    differentiableAt_hurwitzZetaEven _ hs'\\n   141  \\n   142  lemma differentiableOn_riemannZeta :\\n   143      DifferentiableOn ℂ riemannZeta {1}ᶜ :=\\n   144    fun _ hs ↦ (differentiableAt_riemannZeta hs).differentiableWithinAt\\n   145  \\n   146  lemma analyticOn_riemannZeta :\\n   147      AnalyticOnNhd ℂ riemannZeta {1}ᶜ :=\\n   148    differentiableOn_riemannZeta.analyticOnNhd isOpen_compl_singleton\\n   149  \\n   150  /-- We have `ζ(0) = -1 / 2`. -/\\n   151  theorem riemannZeta_zero : riemannZeta 0 = -1 / 2 := by\\n   152    simp_rw [riemannZeta, hurwitzZetaEven, Function.update_self, if_true]\\n   153  \\n   154  lemma riemannZeta_def_of_ne_zero {s : ℂ} (hs : s ≠ 0) :\\n   155      riemannZeta s = completedRiemannZeta s / Gammaℝ s := by\\n   156    rw [riemannZeta, hurwitzZetaEven, Function.update_of_ne hs, completedHurwitzZetaEven_zero]\\n   157  \\n   158  /-- Definition of the zeta function in terms of `completedRiemannZeta₀`. -/\\n   159  lemma riemannZeta_eq_completedRiemannZeta₀ {s : ℂ} (hs : s ≠ 0) : riemannZeta s =\\n   160      (completedRiemannZeta₀ s - 1 / s - 1 / (1 - s)) / (π ^ (-s / 2) * Gamma (s / 2)) := by\\n   161    rw [riemannZeta_def_of_ne_zero hs, completedRiemannZeta_eq, Gammaℝ]\\n   162  \\n   163  /-- Version of `completedRiemannZeta₀` that avoids `s ≠ 0` -/\\n   164  lemma riemannZeta_eq_mul_completedRiemannZeta₀ (s : ℂ) :\\n   165      riemannZeta s = (s * completedRiemannZeta₀ s - 1 - s / (1 - s)) /\\n   166        (2 * π ^ (-s / 2) * Gamma (s / 2 + 1)) := by\\n   167    rcases eq_or_ne s 0 with rfl | hs\\n   168    · simp [riemannZeta_zero]\\n   169    · rw [riemannZeta_eq_completedRiemannZeta₀ hs, Gamma_add_one (s / 2) (by grind)]\\n   170      field\\n   171  \\n   172  /-- The trivial zeroes of the zeta function. -/\\n   173  theorem riemannZeta_neg_two_mul_nat_add_one (n : ℕ) : riemannZeta (-2 * (n + 1)) = 0 :=\\n   174    hurwitzZetaEven_neg_two_mul_nat_add_one 0 n\\n   175  \\n   176  /-- Riemann zeta functional equation, formulated for `ζ`: if `1 - s ∉ ℕ`, then we have\\n   177  `ζ (1 - s) = 2 ^ (1 - s) * π ^ (-s) * Γ s * sin (π * (1 - s) / 2) * ζ s`. -/\\n   178  theorem riemannZeta_one_sub {s : ℂ} (hs : ∀ n : ℕ, s ≠ -n) (hs' : s ≠ 1) :\\n   179      riemannZeta (1 - s) = 2 * (2 * π) ^ (-s) * Gamma s * cos (π * s / 2) * riemannZeta s := by\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ArithmeticFunction.LSeries ArithmeticFunction.zeta\"}",
+   "ok": true,
+   "result_chars": 146,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ArithmeticFunction.LSeries ArithmeticFunction.zeta': Unknown constant `ArithmeticFunction.LSeries`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LSeries zeta ℂ\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LSeries zeta ℂ': Unknown identifier `zeta`\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LSeries_one_eq_riemannZeta|LSeries.*arithmetic\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1415,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'LSeries_one_eq_riemannZeta|LSeries.*arithmetic' (via ripgrep):\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:162\\n    LSeries_one_eq_riemannZeta hs ▸ ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log hs\\n- Mathlib/NumberTheory/LSeries/Basic.lean:41\\n    both scoped to `LSeries.notation`. The latter makes it convenient to use arithmetic functions\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:261\\n    /-- The `LSeries` of the arithmetic function `ζ` is the same as the `LSeries` associated\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:267\\n    /-- The `LSeries` associated to the arithmetic function `ζ` converges at `s` if and only if\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:307\\n    lemma LSeries_one_eq_riemannZeta {s : ℂ} (hs : 1 < s.re) : L 1 s = riemannZeta s :=\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:313\\n    LSeries_one_eq_riemannZeta hs ▸ (LSeriesSummable_one_iff.mpr hs).LSeriesHasSum\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:327\\n    LSeries_one_eq_riemannZeta hs ▸ LSeries_one_ne_zero_of_one_lt_re hs\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:338\\n    rw [← LSeries_one_eq_riemannZeta hx']\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:437\\n    rw [LSeries_vonMangoldt_eq hs, ← LSeries_one_eq_riemannZeta hs, this]\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:440\\n    fun _ ↦ LSeries_one_eq_riemannZeta⟩\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean\", \"line\": 260, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5632,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean  (lines 260–359 of 444):\\n   260  \\n   261  /-- The `LSeries` of the arithmetic function `ζ` is the same as the `LSeries` associated\\n   262  to the constant sequence `1`. -/\\n   263  lemma LSeries_zeta_eq : L ↗ζ = L 1 := by\\n   264    ext s\\n   265    exact (LSeries_congr const_one_eq_zeta s).symm\\n   266  \\n   267  /-- The `LSeries` associated to the arithmetic function `ζ` converges at `s` if and only if\\n   268  `re s > 1`. -/\\n   269  theorem LSeriesSummable_zeta_iff {s : ℂ} : LSeriesSummable (ζ ·) s ↔ 1 < s.re :=\\n   270    (LSeriesSummable_congr s const_one_eq_zeta).symm.trans <| LSeriesSummable_one_iff\\n   271  \\n   272  /-- The abscissa of (absolute) convergence of the arithmetic function `ζ` is `1`. -/\\n   273  lemma abscissaOfAbsConv_zeta : abscissaOfAbsConv ↗ζ = 1 := by\\n   274    rw [abscissaOfAbsConv_congr (g := 1) fun hn ↦ by simp [hn], abscissaOfAbsConv_one]\\n   275  \\n   276  /-- The L-series of the arithmetic function `ζ` equals the Riemann Zeta Function on its\\n   277  domain of convergence `1 < re s`. -/\\n   278  lemma LSeries_zeta_eq_riemannZeta {s : ℂ} (hs : 1 < s.re) : L ↗ζ s = riemannZeta s := by\\n   279    suffices ∑' n, term (fun n ↦ if n = 0 then 0 else 1) s n = ∑' n : ℕ, 1 / (n : ℂ) ^ s by\\n   280      simpa [LSeries, zeta_eq_tsum_one_div_nat_cpow hs]\\n   281    refine tsum_congr fun n ↦ ?_\\n   282    rcases eq_or_ne n 0 with hn | hn <;>\\n   283    simp [hn, ne_zero_of_one_lt_re hs]\\n   284  \\n   285  /-- The L-series of the arithmetic function `ζ` equals the Riemann Zeta Function on its\\n   286  domain of convergence `1 < re s`. -/\\n   287  lemma LSeriesHasSum_zeta {s : ℂ} (hs : 1 < s.re) : LSeriesHasSum ↗ζ s (riemannZeta s) :=\\n   288    LSeries_zeta_eq_riemannZeta hs ▸ (LSeriesSummable_zeta_iff.mpr hs).LSeriesHasSum\\n   289  \\n   290  /-- The L-series of the arithmetic function `ζ` and of the Möbius function are inverses. -/\\n   291  lemma LSeries_zeta_mul_Lseries_moebius {s : ℂ} (hs : 1 < s.re) : L ↗ζ s * L ↗μ s = 1 := by\\n   292    rw [← LSeries_convolution' (LSeriesSummable_zeta_iff.mpr hs)\\n   293      (LSeriesSummable_moebius_iff.mpr hs)]\\n   294    simp [← natCoe_apply, ← intCoe_apply, coe_mul, one_eq_delta, LSeries_delta, -zeta_apply]\\n   295  \\n   296  /-- The L-series of the arithmetic function `ζ` does not vanish on the right half-plane\\n   297  `re s > 1`. -/\\n   298  lemma LSeries_zeta_ne_zero_of_one_lt_re {s : ℂ} (hs : 1 < s.re) : L ↗ζ s ≠ 0 :=\\n   299    fun h ↦ by simpa [h, -zeta_apply] using LSeries_zeta_mul_Lseries_moebius hs\\n   300  \\n   301  end ArithmeticFunction\\n   302  \\n   303  open ArithmeticFunction\\n   304  \\n   305  /-- The L-series of the constant sequence `1` equals the Riemann Zeta Function on its\\n   306  domain of convergence `1 < re s`. -/\\n   307  lemma LSeries_one_eq_riemannZeta {s : ℂ} (hs : 1 < s.re) : L 1 s = riemannZeta s :=\\n   308    LSeries_zeta_eq ▸ LSeries_zeta_eq_riemannZeta hs\\n   309  \\n   310  /-- The L-series of the constant sequence `1` equals the Riemann zeta function on its\\n   311  domain of convergence `1 < re s`. -/\\n   312  lemma LSeriesHasSum_one {s : ℂ} (hs : 1 < s.re) : LSeriesHasSum 1 s (riemannZeta s) :=\\n   313    LSeries_one_eq_riemannZeta hs ▸ (LSeriesSummable_one_iff.mpr hs).LSeriesHasSum\\n   314  \\n   315  open scoped Moebius in -- access notation `μ`\\n   316  /-- The L-series of the constant sequence `1` and of the Möbius function are inverses. -/\\n   317  lemma LSeries_one_mul_Lseries_moebius {s : ℂ} (hs : 1 < s.re) : L 1 s * L ↗μ s = 1 :=\\n   318    LSeries_zeta_eq ▸ LSeries_zeta_mul_Lseries_moebius hs\\n   319  \\n   320  /-- The L-series of the constant sequence `1` does not vanish on the right half-plane\\n   321  `re s > 1`. -/\\n   322  lemma LSeries_one_ne_zero_of_one_lt_re {s : ℂ} (hs : 1 < s.re) : L 1 s ≠ 0 :=\\n   323    LSeries_zeta_eq ▸ LSeries_zeta_ne_zero_of_one_lt_re hs\\n   324  \\n   325  /-- The Riemann Zeta Function does not vanish on the half-pl"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean\", \"line\": 355, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4479,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean  (lines 355–434 of 444):\\n   355  section vonMangoldt\\n   356  \\n   357  /-!\\n   358  ### The L-series of the von Mangoldt function\\n   359  -/\\n   360  \\n   361  open LSeries Nat Complex ArithmeticFunction\\n   362  \\n   363  namespace ArithmeticFunction\\n   364  \\n   365  -- access notation `ζ`\\n   366  open scoped zeta\\n   367  \\n   368  /-- A translation of the relation `Λ * ↑ζ = log` of (real-valued) arithmetic functions\\n   369  to an equality of complex sequences. -/\\n   370  lemma convolution_vonMangoldt_zeta : ↗Λ ⍟ ↗ζ = ↗Complex.log := by\\n   371    ext n\\n   372    simpa [apply_ite, LSeries.convolution_def, -vonMangoldt_mul_zeta]\\n   373      using congr_arg (ofReal <| · n) vonMangoldt_mul_zeta\\n   374  \\n   375  lemma convolution_vonMangoldt_const_one : ↗Λ ⍟ 1 = ↗Complex.log :=\\n   376    (convolution_one_eq_convolution_zeta _).trans convolution_vonMangoldt_zeta\\n   377  \\n   378  /-- The L-series of the von Mangoldt function `Λ` converges at `s` when `re s > 1`. -/\\n   379  lemma LSeriesSummable_vonMangoldt {s : ℂ} (hs : 1 < s.re) : LSeriesSummable ↗Λ s := by\\n   380    have hf := LSeriesSummable_logMul_of_lt_re\\n   381      (show abscissaOfAbsConv 1 < s.re by rw [abscissaOfAbsConv_one]; exact_mod_cast hs)\\n   382    rw [LSeriesSummable, ← summable_norm_iff] at hf ⊢\\n   383    refine hf.of_nonneg_of_le (fun _ ↦ norm_nonneg _) (fun n ↦ norm_term_le s ?_)\\n   384    have hΛ : ‖↗Λ n‖ ≤ ‖Complex.log n‖ := by\\n   385      simpa [abs_of_nonneg, vonMangoldt_nonneg, ← natCast_log, Real.log_natCast_nonneg]\\n   386        using vonMangoldt_le_log\\n   387    exact hΛ.trans <| by simp\\n   388  \\n   389  end ArithmeticFunction\\n   390  \\n   391  namespace DirichletCharacter\\n   392  \\n   393  /-- A twisted version of the relation `Λ * ↑ζ = log` in terms of complex sequences. -/\\n   394  lemma convolution_twist_vonMangoldt {N : ℕ} (χ : DirichletCharacter ℂ N) :\\n   395      (↗χ * ↗Λ) ⍟ ↗χ = ↗χ * ↗Complex.log := by\\n   396    rw [← convolution_vonMangoldt_const_one, ← χ.mul_convolution_distrib, mul_one]\\n   397  \\n   398  /-- The L-series of the twist of the von Mangoldt function `Λ` by a Dirichlet character `χ`\\n   399  converges at `s` when `re s > 1`. -/\\n   400  lemma LSeriesSummable_twist_vonMangoldt {N : ℕ} (χ : DirichletCharacter ℂ N) {s : ℂ}\\n   401      (hs : 1 < s.re) :\\n   402      LSeriesSummable (↗χ * ↗Λ) s :=\\n   403    LSeriesSummable_mul χ <| LSeriesSummable_vonMangoldt hs\\n   404  \\n   405  /-- The L-series of the twist of the von Mangoldt function `Λ` by a Dirichlet character `χ` at `s`\\n   406  equals the negative logarithmic derivative of the L-series of `χ` when `re s > 1`. -/\\n   407  lemma LSeries_twist_vonMangoldt_eq {N : ℕ} (χ : DirichletCharacter ℂ N) {s : ℂ} (hs : 1 < s.re) :\\n   408      L (↗χ * ↗Λ) s = -deriv (L ↗χ) s / L ↗χ s := by\\n   409    rcases eq_or_ne N 0 with rfl | hN\\n   410    · simp [modZero_eq_delta, delta_mul_eq_smul_delta, LSeries_delta]\\n   411    -- now `N ≠ 0`\\n   412    have hχ : LSeriesSummable ↗χ s := (LSeriesSummable_iff hN χ).mpr hs\\n   413    have hs' : abscissaOfAbsConv ↗χ < s.re := by\\n   414      rwa [absicssaOfAbsConv_eq_one hN, ← EReal.coe_one, EReal.coe_lt_coe_iff]\\n   415    have hΛ : LSeriesSummable (↗χ * ↗Λ) s := LSeriesSummable_twist_vonMangoldt χ hs\\n   416    rw [eq_div_iff <| LSeries_ne_zero_of_one_lt_re χ hs, ← LSeries_convolution' hΛ hχ,\\n   417      convolution_twist_vonMangoldt, LSeries_deriv hs', neg_neg]\\n   418    exact LSeries_congr (fun _ ↦ by simp [mul_comm, logMul]) s\\n   419  \\n   420  end DirichletCharacter\\n   421  \\n   422  namespace ArithmeticFunction\\n   423  \\n   424  open DirichletCharacter in\\n   425  /-- The L-series of the von Mangoldt function `Λ` equals the negative logarithmic derivative\\n   426  of the L-series of the constant sequence `1` on its domain of convergence `re s > 1`. -/\\n   427  lemma LSeries_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) : L ↗Λ s = - deriv (L 1) s "
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean\", \"line\": 432, \"n\": 15}",
+   "ok": true,
+   "result_chars": 886,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean  (lines 432–444 of 444):\\n   432  /-- The L-series of the von Mangoldt function `Λ` equals the negative logarithmic derivative\\n   433  of the Riemann zeta function on its domain of convergence `re s > 1`. -/\\n   434  lemma LSeries_vonMangoldt_eq_deriv_riemannZeta_div {s : ℂ} (hs : 1 < s.re) :\\n   435      L ↗Λ s = - deriv riemannZeta s / riemannZeta s := by\\n   436    suffices deriv (L 1) s = deriv riemannZeta s by\\n   437      rw [LSeries_vonMangoldt_eq hs, ← LSeries_one_eq_riemannZeta hs, this]\\n   438    refine Filter.EventuallyEq.deriv_eq <| Filter.eventuallyEq_iff_exists_mem.mpr ?_\\n   439    exact ⟨{z | 1 < z.re}, (isOpen_lt continuous_const continuous_re).mem_nhds hs,\\n   440      fun _ ↦ LSeries_one_eq_riemannZeta⟩\\n   441  \\n   442  end ArithmeticFunction\\n   443  \\n   444  end vonMangoldt\\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"vonMangoldt log\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'vonMangoldt log': Unknown identifier `vonMangoldt`\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*log.*Mangoldt|log.*sum.*vonMangoldt\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 388,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*log.*Mangoldt|log.*sum.*vonMangoldt' (via ripgrep):\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:126\\n    theorem log_mul_moebius_eq_vonMangoldt : log * μ = Λ := by\\n- Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean:130\\n    theorem moebius_mul_log_eq_vonMangoldt : (μ : ArithmeticFunction ℝ) * log = Λ := by\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"log.*riemannZeta|riemannZeta.*log|logDerivative\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2070,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for 'log.*riemannZeta|riemannZeta.*log|logDerivative' (via ripgrep):\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:160\\n    theorem riemannZeta_eulerProduct_exp_log {s : ℂ} (hs : 1 < s.re) :\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:161\\n    exp (∑' p : Nat.Primes, -Complex.log (1 - p ^ (-s))) = riemannZeta s :=\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:162\\n    LSeries_one_eq_riemannZeta hs ▸ ArithmeticFunction.LSeries_zeta_eulerProduct_exp_log hs\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:24\\n    * `deriv_riemannZeta_zero`: `ζ'(0) = -log(2π) / 2`, which derives from the above.\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:29\\n    * Asymptotics for `deriv riemannZeta s`, `log (riemannZeta s)`,\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:418\\n    lemma riemannZeta_one : riemannZeta 1 = (γ - log (4 * π)) / 2 := by\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:444\\n    simpa only [riemannZeta_one, ← ofReal_ne_zero, ofReal_log (by positivity : 0 ≤ 4 * π),\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:460\\n    · have h : riemannZeta 1 = ((γ - Real.log (4 * π)) / 2 : ℝ) := by\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:461\\n    rw [riemannZeta_one, ofReal_div, ofReal_sub, ofReal_log (by positivity : (0 : ℝ) ≤ 4 * π)]\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:492\\n    /-- The derivative of `riemannZeta` at `s = 0` equals `-log(2π) / 2`. -/\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:494\\n    deriv riemannZeta 0 = -log (2 * π) / 2 := by\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:597\\n    lemma log_riemannZeta_eq_neg_log_sub_add_ofReal {s : ℝ} (hs : s > 1) :\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:598\\n    (riemannZeta s).re.log = - (s - 1).log + (riemannZeta₁ s).re.log := by\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:604\\n    lemma log_riemannZeta_add_log_sub_isBigO_ofReal :\\n- Mathlib/NumberTheory/Harmonic/ZetaAsymp.lean:605\\n    (fun (s : ℝ) ↦ (riemannZeta s).re.log + (s - 1).log) =O[𝓝[>] 1] (· - 1) := by\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*term|LSeries.*term\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1502,
+   "result_head": "[{\"type\": \"text\", \"text\": \"365 match(es) for 'def.*term|LSeries.*term' (via ripgrep):\\n- Mathlib/Algebra/QuadraticAlgebra/NormDeterminant.lean:15\\n    the endomorphism defined by left multiplication by that element and taking its determinant.\\n- Mathlib/Algebra/GroupWithZero/Range.lean:43\\n    `MonoidWithZeroHom.valueMonoid` is defined explicitly in terms of its carrier, by proving the\\n- Mathlib/Computability/TuringMachine/ToPartrec.lean:91\\n    without having to define too many different kinds of intermediate states. (We must nevertheless\\n- Mathlib/Computability/TuringMachine/ToPartrec.lean:441\\n    /-- Because we use binary encoding, we define `trNat` in terms of `trNum`, using `Num`, which are\\n- Mathlib/Algebra/Algebra/Spectrum/Quasispectrum.lean:30\\n    The *quasispectrum* of `a : A` (with respect to `R`) is defined in terms of quasiregularity, and\\n- Mathlib/Combinatorics/SimpleGraph/Basic.lean:61\\n    (config := { introsTransparency? := some .default, terminal := true })\\n- Mathlib/Combinatorics/SimpleGraph/Basic.lean:70\\n    (config := { introsTransparency? := some .default, terminal := true })\\n- Mathlib/Combinatorics/SimpleGraph/Basic.lean:80\\n    (config := { introsTransparency? := some .default, warnOnNonterminal := false })\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:294\\n    which is defined in terms of `MonoidAlgebra`.\\n- Mathlib/Combinatorics/Matroid/Minor/Contract.lean:22\\n    We can also define contraction much more tersely in terms of deletion and duality\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Basic.lean\", \"line\": 140, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1837,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Basic.lean  (lines 140–179 of 397):\\n   140    split_ifs with hn\\n   141    exacts [le_rfl, mul_nonneg h (inv_natCast_cpow_ofReal_pos hn x).le]\\n   142  \\n   143  lemma term_pos {a : ℕ → ℂ} {n : ℕ} (hn : n ≠ 0) (h : 0 < a n) (x : ℝ) : 0 < term a x n := by\\n   144    simpa only [term_of_ne_zero hn] using! mul_pos h <| inv_natCast_cpow_ofReal_pos hn x\\n   145  \\n   146  end positivity\\n   147  \\n   148  end LSeries\\n   149  \\n   150  /-!\\n   151  ### Definition of the L-series and related statements\\n   152  \\n   153  We define `LSeries f s` of `f : ℕ → ℂ` as the sum over `LSeries.term f s`.\\n   154  We also provide predicates `LSeriesSummable f s` stating that `LSeries f s` is summable\\n   155  and `LSeriesHasSum f s a` stating that the L-series of `f` is summable at `s` and converges\\n   156  to `a : ℂ`.\\n   157  -/\\n   158  \\n   159  open LSeries\\n   160  \\n   161  /-- The value of the L-series of the sequence `f` at the point `s`\\n   162  if it converges absolutely there, and `0` otherwise. -/\\n   163  noncomputable\\n   164  def LSeries (f : ℕ → ℂ) (s : ℂ) : ℂ :=\\n   165    ∑' n, term f s n\\n   166  \\n   167  /-- Congruence for `LSeries` with the evaluation variable `s`. -/\\n   168  lemma LSeries_congr {f g : ℕ → ℂ} (h : ∀ {n}, n ≠ 0 → f n = g n) (s : ℂ) :\\n   169      LSeries f s = LSeries g s :=\\n   170    tsum_congr <| term_congr h s\\n   171  \\n   172  /-- `LSeriesSummable f s` indicates that the L-series of `f` converges absolutely at `s`. -/\\n   173  def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n   174    Summable (term f s)\\n   175  \\n   176  lemma LSeriesSummable_congr {f g : ℕ → ℂ} (s : ℂ) (h : ∀ {n}, n ≠ 0 → f n = g n) :\\n   177      LSeriesSummable f s ↔ LSeriesSummable g s :=\\n   178    summable_congr <| term_congr h s\\n   179  \\n\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"riemannZeta\", \"ArithmeticFunction.vonMangoldt\", \"LSeries\", \"deriv\", \"Complex.log\", \"LSeries_vonMangoldt_eq_deriv_riemannZeta_div\", \"ArithmeticFunction.vonMangoldt\"]}",
+   "ok": true,
+   "result_chars": 2506,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"riemannZeta\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.RiemannZeta\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.LSeries.RiemannZeta\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/RiemannZeta.html#riemannZeta\\\"},{\\\"decl\\\":\\\"ArithmeticFunction.vonMangoldt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.html#ArithmeticFunction.vonMangoldt\\\"},{\\\"decl\\\":\\\"LSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.LSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/Basic.html#LSeries\\\"},{\\\"decl\\\":\\\"deriv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Basic.html#deriv\\\"},{\\\"decl\\\":\\\"Complex.log\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.SpecialFunctions.Complex.Log\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.SpecialFunctions.Complex.Log\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/SpecialFunctions/Complex/Log.html#Complex.log\\\"},{\\\"decl\\\":\\\"LSeries_vonMangoldt_eq_deriv_riemannZeta_div\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ArithmeticFunction.vonMangoldt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.html#ArithmeticFunction.vonMangoldt\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"vonMangoldt_eq_deriv_riemannZeta\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'vonMangoldt_eq_deriv_riemannZeta' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:22\\n    on `re s > 1`; see `LSeries_vonMangoldt_eq_deriv_riemannZeta_div`.\\n- Mathlib/NumberTheory/LSeries/Dirichlet.lean:434\\n    lemma LSeries_vonMangoldt_eq_deriv_riemannZeta_div {s : ℂ} (hs : 1 < s.re) :\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean\", \"line\": 420, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1506,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean  (lines 420–444 of 444):\\n   420  end DirichletCharacter\\n   421  \\n   422  namespace ArithmeticFunction\\n   423  \\n   424  open DirichletCharacter in\\n   425  /-- The L-series of the von Mangoldt function `Λ` equals the negative logarithmic derivative\\n   426  of the L-series of the constant sequence `1` on its domain of convergence `re s > 1`. -/\\n   427  lemma LSeries_vonMangoldt_eq {s : ℂ} (hs : 1 < s.re) : L ↗Λ s = - deriv (L 1) s / L 1 s := by\\n   428    refine (LSeries_congr (fun {n} _ ↦ ?_) s).trans <|\\n   429      LSeries_modOne_eq ▸ LSeries_twist_vonMangoldt_eq χ₁ hs\\n   430    simp [Subsingleton.eq_one (n : ZMod 1)]\\n   431  \\n   432  /-- The L-series of the von Mangoldt function `Λ` equals the negative logarithmic derivative\\n   433  of the Riemann zeta function on its domain of convergence `re s > 1`. -/\\n   434  lemma LSeries_vonMangoldt_eq_deriv_riemannZeta_div {s : ℂ} (hs : 1 < s.re) :\\n   435      L ↗Λ s = - deriv riemannZeta s / riemannZeta s := by\\n   436    suffices deriv (L 1) s = deriv riemannZeta s by\\n   437      rw [LSeries_vonMangoldt_eq hs, ← LSeries_one_eq_riemannZeta hs, this]\\n   438    refine Filter.EventuallyEq.deriv_eq <| Filter.eventuallyEq_iff_exists_mem.mpr ?_\\n   439    exact ⟨{z | 1 < z.re}, (isOpen_lt continuous_const continuous_re).mem_nhds hs,\\n   440      fun _ ↦ LSeries_one_eq_riemannZeta⟩\\n   441  \\n   442  end ArithmeticFunction\\n   443  \\n   444  end vonMangoldt\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?s : ℝ → ℂ\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?s : ℝ → ℂ': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ofReal.*riemannZeta|coe.*riemannZeta\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'ofReal.*riemannZeta|coe.*riemannZeta' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/ZetaZeros.lean:72\\n    isClosed_riemannZetaZeros.tendsto_coe_cofinite_of_isDiscrete isDiscrete_riemannZetaZeros\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2351,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Dirichlet.lean  (lines 1–50 of 444):\\n     1  /-\\n     2  Copyright (c) 2024 Michael Stoll. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Michael Stoll\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.DirichletCharacter.Bounds\\n     9  public import Mathlib.NumberTheory.LSeries.Convolution\\n    10  public import Mathlib.NumberTheory.LSeries.Deriv\\n    11  public import Mathlib.NumberTheory.LSeries.Positivity\\n    12  public import Mathlib.NumberTheory.LSeries.RiemannZeta\\n    13  public import Mathlib.NumberTheory.SumPrimeReciprocals\\n    14  public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt\\n    15  \\n    16  /-!\\n    17  # L-series of Dirichlet characters and arithmetic functions\\n    18  \\n    19  We collect some results on L-series of specific (arithmetic) functions, for example,\\n    20  the Möbius function `μ` or the von Mangoldt function `Λ`. In particular, we show that\\n    21  `L ↗Λ` is the negative of the logarithmic derivative of the Riemann zeta function\\n    22  on `re s > 1`; see `LSeries_vonMangoldt_eq_deriv_riemannZeta_div`.\\n    23  \\n    24  We also prove some general results on L-series associated to Dirichlet characters\\n    25  (i.e., Dirichlet L-series). For example, we show that the abscissa of absolute convergence\\n    26  equals `1` (see `DirichletCharacter.absicssaOfAbsConv_eq_one`) and that the L-series does not\\n    27  vanish on the open half-plane `re s > 1` (see `DirichletCharacter.LSeries_ne_zero_of_one_lt_re`).\\n    28  \\n    29  We deduce results on the Riemann zeta function (which is `L 1` or `L ↗ζ` on `re s > 1`)\\n    30  as special cases.\\n    31  \\n    32  ## Tags\\n    33  \\n    34  Dirichlet L-series, Möbius function, von Mangoldt function, Riemann zeta function\\n    35  -/\\n    36  \\n    37  public section\\n    38  \\n    39  open scoped LSeries.notation\\n    40  \\n    41  /-- `δ` is the function underlying the arithmetic function `1`. -/\\n    42  lemma ArithmeticFunction.one_eq_delta : ↗(1 : ArithmeticFunction ℂ) = δ := by\\n    43    ext\\n    44    simp [one_apply, LSeries.delta]\\n    45  \\n    46  \\n    47  section Moebius\\n    48  \\n    49  /-!\\n    50  ### The L-series of the Möbius function\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean\", \"line\": 50, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1919,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ArithmeticFunction/VonMangoldt.lean  (lines 50–89 of 174):\\n    50  \\n    51  @[simp]\\n    52  theorem log_apply {n : ℕ} : log n = Real.log n :=\\n    53    rfl\\n    54  \\n    55  /--\\n    56  The `vonMangoldt` function is the function on natural numbers that returns `log p` if the input can\\n    57  be expressed as `p^k` for a prime `p`.\\n    58  In the case when `n` is a prime power, `Nat.minFac` will give the appropriate prime, as it is the\\n    59  smallest prime factor.\\n    60  \\n    61  In the `ArithmeticFunction` locale, we have the notation `Λ` for this function.\\n    62  This is also available in the `ArithmeticFunction.vonMangoldt` locale, allowing for selective\\n    63  access to the notation.\\n    64  -/\\n    65  noncomputable def vonMangoldt : ArithmeticFunction ℝ :=\\n    66    ⟨fun n => if IsPrimePow n then Real.log (minFac n) else 0, if_neg not_isPrimePow_zero⟩\\n    67  \\n    68  @[inherit_doc] scoped[ArithmeticFunction] notation \\\"Λ\\\" => ArithmeticFunction.vonMangoldt\\n    69  \\n    70  @[inherit_doc] scoped[ArithmeticFunction.vonMangoldt] notation \\\"Λ\\\" =>\\n    71    ArithmeticFunction.vonMangoldt\\n    72  \\n    73  theorem vonMangoldt_apply {n : ℕ} : Λ n = if IsPrimePow n then Real.log (minFac n) else 0 :=\\n    74    rfl\\n    75  \\n    76  @[simp]\\n    77  theorem vonMangoldt_apply_one : Λ 1 = 0 := by simp [vonMangoldt_apply]\\n    78  \\n    79  @[simp]\\n    80  theorem vonMangoldt_nonneg {n : ℕ} : 0 ≤ Λ n := by\\n    81    rw [vonMangoldt_apply]\\n    82    split_ifs\\n    83    · exact Real.log_nonneg (one_le_cast.2 (Nat.minFac_pos n))\\n    84    rfl\\n    85  \\n    86  theorem vonMangoldt_apply_pow {n k : ℕ} (hk : k ≠ 0) : Λ (n ^ k) = Λ n := by\\n    87    simp only [vonMangoldt_apply, isPrimePow_pow_iff hk, pow_minFac hk]\\n    88  \\n    89  theorem vonMangoldt_apply_prime {p : ℕ} (hp : p.Prime) : Λ p = Real.log p := by\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"coe_arithmetic|ArithmeticFunction.*coe\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 738,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'coe_arithmetic|ArithmeticFunction.*coe' (via ripgrep):\\n- Mathlib/NumberTheory/ArithmeticFunction/LFunction.lean:255\\n    rw [ArithmeticFunction.range_coe]\\n- Mathlib/NumberTheory/LSeries/Nonvanishing.lean:86\\n    simpa only [toArithmeticFunction, coe_mk, hn, ↓reduceIte]\\n- Mathlib/NumberTheory/LSeries/Nonvanishing.lean:92\\n    simp only [zetaMul, toArithmeticFunction, coe_zeta_mul_apply, coe_mk,\\n- Mathlib/NumberTheory/LSeries/Basic.lean:258\\n    or `↗f` when `f : ArithmeticFunction R` or simply `f : N → R` with a coercion from `ℕ` to `N`\\n- Mathlib/NumberTheory/LSeries/Convolution.lean:75\\n    lemma ArithmeticFunction.coe_mul {R : Type*} [Semiring R] (f g : ArithmeticFunction R) :\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Basic.lean\", \"line\": 250, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1098,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Basic.lean  (lines 250–279 of 397):\\n   250  -/\\n   251  \\n   252  @[inherit_doc]\\n   253  scoped[LSeries.notation] notation \\\"L\\\" => LSeries\\n   254  \\n   255  /-- We introduce notation `↗f` for `f` interpreted as a function `ℕ → ℂ`.\\n   256  \\n   257  Let `R` be a ring with a coercion to `ℂ`. Then we can write `↗χ` when `χ : DirichletCharacter R`\\n   258  or `↗f` when `f : ArithmeticFunction R` or simply `f : N → R` with a coercion from `ℕ` to `N`\\n   259  as an argument to `LSeries`, `LSeriesHasSum`, `LSeriesSummable` etc. -/\\n   260  scoped[LSeries.notation] notation:max \\\"↗\\\" f:max => fun n : ℕ ↦ (f n : ℂ)\\n   261  \\n   262  @[inherit_doc]\\n   263  scoped[LSeries.notation] notation \\\"δ\\\" => delta\\n   264  \\n   265  /-!\\n   266  ### LSeries of 0 and δ\\n   267  -/\\n   268  \\n   269  @[simp]\\n   270  lemma LSeries_zero : LSeries 0 = 0 := by\\n   271    ext\\n   272    simp [LSeries, LSeries.term]\\n   273  \\n   274  section delta\\n   275  \\n   276  open scoped LSeries.notation\\n   277  \\n   278  namespace LSeries\\n   279  \\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem riemann_zeta_log_derivative_vonMangoldt {s : ℂ} (hs : 1 < s.re) :\n    L (fun n : ℕ ↦ (vonMangoldt n : ℂ)) s = -deriv riemannZeta s / riemannZeta s := sorry"
+}

@@ -1,0 +1,200 @@
+{
+ "task_id": "fresh_018",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:40:02Z",
+ "wall_s": 73.7,
+ "transcript_stats": {
+  "turns": 19,
+  "assistant_turns": 18,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 5,
+   "mcp__formal__decl_grep": 5,
+   "mcp__formal__decl_read": 6,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 146,
+  "tokens_out": 5644,
+  "cost_usd": 0.068851
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.sin\"}",
+   "ok": true,
+   "result_chars": 923,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 326 declarations mentioning Real.sin.\\n- Real.sin   [Mathlib.Analysis.Complex.Trigonometric]\\n    The real sine function, defined as the real part of the complex sine\\n- Complex.ofReal_sin   [Mathlib.Analysis.Complex.Trigonometric]\\n- Complex.sin_ofReal_re   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sin_le_one   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sin_neg   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.neg_one_le_sin   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.sin_zero   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.abs_sin_le_one   [Mathlib.Analysis.Complex.Trigonometric]\\n- Complex.exp_ofReal_mul_I_im   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.cot_eq_cos_div_sin   [Mathlib.Analysis.Complex.Trigonometric]\\n- Real.tan_eq_sin_div_cos   [Mathlib.Analysis.Complex.Trigonometric]\\n- Complex.exp_im   [Mathlib.Analysis.Complex.Trigonometric]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∀ (x : ℝ), 0 ≤ x → ?a ≤ sin x\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∀ (x : ℝ), 0 ≤ x → ?a ≤ sin x': Unknown identifier `sin`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∀ (x : ℝ), 0 ≤ x → ?a ≤ Real.sin x\"}",
+   "ok": true,
+   "result_chars": 374,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 18 declarations mentioning Real.instLE, Real, Real.instZero, LE.le, Zero.toOfNat0, OfNat.ofNat, and Real.sin.\\n- Real.mul_le_sin   [Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds]\\n    One half of **Jordan's inequality**.  In the range `[0, π / 2]`, we have a linear lower bound on `sin`. The other half is given by `Real.sin_le`.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.sin x ≤ ?a\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.sin x ≤ ?a': Unknown identifier `x`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*(sin.*bound|bound.*sin)\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2240,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for '(theorem|lemma) .*(sin.*bound|bound.*sin)' (via ripgrep):\\n- Mathlib/SetTheory/Ordinal/Arithmetic.lean:241\\n    theorem bounded_singleton {r : α → α → Prop} [IsWellOrder α r] (hr : IsSuccLimit (type r)) (x) :\\n- Mathlib/Algebra/Order/CauSeq/BigOperators.lean:147\\n    lemma of_decreasing_bounded (f : ℕ → α) {a : α} {m : ℕ} (ham : ∀ n ≥ m, |f n| ≤ a)\\n- Mathlib/AlgebraicTopology/SimplicialSet/Boundary.lean:60\\n    lemma face_singleton_compl_le_boundary {n : ℕ} (i : Fin (n + 1)) :\\n- Mathlib/Probability/Martingale/Upcrossing.lean:297\\n    theorem upperCrossingTime_bound_eq (f : ℕ → Ω → ℝ) (N : ℕ) (ω : Ω) (hab : a < b) :\\n- Mathlib/Probability/Martingale/Upcrossing.lean:310\\n    theorem upperCrossingTime_eq_of_bound_le (hab : a < b) (hn : N ≤ n) :\\n- Mathlib/Tactic/Bound/Attribute.lean:95\\n    A lemma is appropriate for `bound` if it proves an inequality using structurally simpler\\n- Mathlib/Topology/Instances/ENNReal/Lemmas.lean:518\\n    theorem exists_upcrossings_of_not_bounded_under {ι : Type*} {l : Filter ι} {x : ι → ℝ}\\n- Mathlib/Analysis/Normed/Affine/AsymptoticCone.lean:37\\n    theorem asymptoticCone_subset_singleton_of_bounded {s : Set P} (hs : IsBounded s) :\\n- Mathlib/Analysis/Complex/Trigonometric.lean:561\\n    theorem sin_bound {x : ℂ} (hx : ‖x‖ ≤ 1) : ‖sin x - (x - x ^ 3 / 6)‖ ≤ ‖x‖ ^ 5 / 100 :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:876\\n    theorem sin_bound {x : ℝ} (hx : |x| ≤ 1) : |sin x - (x - x ^ 3 / 6)| ≤ |x| ^ 5 / 100 := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean:105\\n    private lemma sineTerm_bound_aux (hZ : IsCompact Z) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:432\\n    theorem single_one_mem_boundaries₁ (a : A) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:437\\n    theorem single_ρ_self_add_single_inv_mem_boundaries₁ (g : G) (a : A) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:442\\n    theorem single_inv_ρ_self_add_single_mem_boundaries₁ (g : G) (a : A) :\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:469\\n    lemma single_one_fst_sub_single_one_fst_mem_boundaries₂ (g h : G) (a : A) :\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Trigonometric.lean\", \"line\": 876, \"n\": 5}",
+   "ok": true,
+   "result_chars": 445,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Trigonometric.lean  (lines 876–880 of 990):\\n   876  theorem sin_bound {x : ℝ} (hx : |x| ≤ 1) : |sin x - (x - x ^ 3 / 6)| ≤ |x| ^ 5 / 100 := by\\n   877    simpa [← ofReal_sin, ← norm_eq_abs, ← norm_real] using Complex.sin_bound (x := x) (by simpa)\\n   878  \\n   879  theorem cos_pos_of_le_one {x : ℝ} (hx : |x| ≤ 1) : 0 < cos x :=\\n   880    calc 0 < 1 - x ^ 2 / 2 - |x| ^ 4 * (5 / 96) :=\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"x - x ^ 3 / 6 ≤ Real.sin x\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'x - x ^ 3 / 6 ≤ Real.sin x': Unknown identifier `x`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*sin.*le.*x.*div\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*sin.*le.*x.*div' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*(taylor|approx|poly).*sin\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma.*(taylor|approx|poly).*sin' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"sin_le\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2587,
+   "result_head": "[{\"type\": \"text\", \"text\": \"48 match(es) for 'sin_le' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/HurwitzZetaOdd.lean:291\\n    exact mul_le_of_le_one_right (Nat.cast_nonneg _) (abs_sin_le_one _)\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:513\\n    let H x h := pow_le_pow_of_le_one (sin_nonneg_of_mem_Icc h) (sin_le_one x) (n.le_add_right 1)\\n- Mathlib/Analysis/Complex/Trigonometric.lean:674\\n    theorem abs_sin_le_one : |sin x| ≤ 1 :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:680\\n    theorem sin_le_one : sin x ≤ 1 :=\\n- Mathlib/Analysis/Complex/Trigonometric.lean:681\\n    (abs_le.1 (abs_sin_le_one _)).2\\n- Mathlib/Analysis/Complex/Trigonometric.lean:687\\n    (abs_le.1 (abs_sin_le_one _)).1\\n- Mathlib/Analysis/SpecialFunctions/Complex/Arg.lean:351\\n    · simp only [hre, arg_of_re_nonneg hre, Real.arcsin_le_pi_div_two, true_or]\\n- Mathlib/Analysis/SpecialFunctions/Complex/Arg.lean:361\\n    exact (sub_le_self _ Real.pi_pos.le).trans (Real.arcsin_le_pi_div_two _)\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:44\\n    · exact (sin_le_one x).trans_lt h'\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:54\\n    lemma sin_le (hx : 0 ≤ x) : sin x ≤ x := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:60\\n    lemma le_sin (hx : x ≤ 0) : x ≤ sin x := by simpa using sin_le <| neg_nonneg.2 hx\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:80\\n    `Real.sin_le`.\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:89\\n    lemma sin_le_mul (hx : -(π / 2) ≤ x) (hx₀ : x ≤ 0) : sin x ≤ 2 / π * x := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:116\\n    lemma abs_sin_le_abs : |sin x| ≤ |x| := sq_le_sq.1 sin_sq_le_sq\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:169\\n    theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:172\\n    · grind [Real.sin_le, abs_of_nonneg, sin_ge_sub_cube]\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:252\\n    lipschitzWith_of_nnnorm_deriv_le differentiable_cos <| by simpa using! abs_sin_le_one\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:254\\n    theorem abs_sin_sub_sin_le (x y : ℝ) : |sin x - sin y| ≤ |x - y| := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:264\\n    _ ≤ 2 * |x / 2| := (mul_le_mul_iff_of_pos_left zero_lt_two).mpr Real.abs_sin_le_abs\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean:254\\n    · linarith only [arcsin_le_pi_div_two x, pi_pos]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 169, \"n\": 5}",
+   "ok": true,
+   "result_chars": 326,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 169–173 of 274):\\n   169  theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := by\\n   170    wlog hx : 0 ≤ x\\n   171    · grind [sin_neg]\\n   172    · grind [Real.sin_le, abs_of_nonneg, sin_ge_sub_cube]\\n   173  \\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"sin_ge_sub_cube\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 356,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'sin_ge_sub_cube' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:163\\n    theorem sin_ge_sub_cube {x : ℝ} (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := by\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean:172\\n    · grind [Real.sin_le, abs_of_nonneg, sin_ge_sub_cube]\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 163, \"n\": 5}",
+   "ok": true,
+   "result_chars": 316,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 163–167 of 274):\\n   163  theorem sin_ge_sub_cube {x : ℝ} (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := by\\n   164    obtain rfl | hx := hx.eq_or_lt\\n   165    · simp\\n   166    exact (sin_gt_sub_cube hx).le\\n   167  \\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.sin\", \"sin_ge_sub_cube\"]}",
+   "ok": true,
+   "result_chars": 760,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.sin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Trigonometric\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Trigonometric\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Trigonometric.html#Real.sin\\\"},{\\\"decl\\\":\\\"sin_ge_sub_cube\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"Real.sin_ge_sub_cube\"}",
+   "ok": true,
+   "result_chars": 376,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"Real.sin_ge_sub_cube\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1473,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 1–30 of 274):\\n     1  /-\\n     2  Copyright (c) 2022 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler, Yaël Dillies, Bhavik Mehta\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Convex.SpecificFunctions.Deriv\\n     9  public import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv\\n    10  \\n    11  /-!\\n    12  # Polynomial bounds for trigonometric functions\\n    13  \\n    14  ## Main statements\\n    15  \\n    16  This file contains upper and lower bounds for real trigonometric functions in terms\\n    17  of polynomials. See `Trigonometric.Basic` for more elementary inequalities, establishing\\n    18  the ranges of these functions, and their monotonicity in suitable intervals.\\n    19  \\n    20  Here we prove the following:\\n    21  \\n    22  * `sin_lt`: for `x > 0` we have `sin x < x`.\\n    23  * `sin_gt_sub_cube`: For `0 < x` we have `x - x ^ 3 / 6 < sin x`.\\n    24  * `lt_tan`: for `0 < x < π/2` we have `x < tan x`.\\n    25  * `cos_le_one_div_sqrt_sq_add_one` and `cos_lt_one_div_sqrt_sq_add_one`: for\\n    26    `-3 * π / 2 ≤ x ≤ 3 * π / 2`, we have `cos x ≤ 1 / sqrt (x ^ 2 + 1)`, with strict inequality if\\n    27    `x ≠ 0`. (This bound is not quite optimal, but not far off)\\n    28  \\n    29  ## Tags\\n    30  \\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 30, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2337,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 30–79 of 274):\\n    30  \\n    31  sin, cos, tan, angle\\n    32  -/\\n    33  \\n    34  public section\\n    35  \\n    36  open Set\\n    37  \\n    38  namespace Real\\n    39  variable {x : ℝ}\\n    40  \\n    41  /-- For 0 < x, we have sin x < x. -/\\n    42  theorem sin_lt (h : 0 < x) : sin x < x := by\\n    43    rcases lt_or_ge 1 x with h' | h'\\n    44    · exact (sin_le_one x).trans_lt h'\\n    45    have hx : |x| = x := abs_of_nonneg h.le\\n    46    have := le_of_abs_le (sin_bound <| show |x| ≤ 1 by rwa [hx])\\n    47    rw [sub_le_iff_le_add', hx] at this\\n    48    apply this.trans_lt\\n    49    rw [sub_add, sub_lt_self_iff, sub_pos, div_eq_mul_inv (x ^ 3)]\\n    50    refine mul_lt_mul' ?_ (by norm_num) (by norm_num) (pow_pos h 3)\\n    51    apply pow_le_pow_of_le_one h.le h'\\n    52    simp\\n    53  \\n    54  lemma sin_le (hx : 0 ≤ x) : sin x ≤ x := by\\n    55    obtain rfl | hx := hx.eq_or_lt\\n    56    · simp\\n    57    · exact (sin_lt hx).le\\n    58  \\n    59  lemma lt_sin (hx : x < 0) : x < sin x := by simpa using sin_lt <| neg_pos.2 hx\\n    60  lemma le_sin (hx : x ≤ 0) : x ≤ sin x := by simpa using sin_le <| neg_nonneg.2 hx\\n    61  \\n    62  theorem lt_sin_mul {x : ℝ} (hx : 0 < x) (hx' : x < 1) : x < sin (π / 2 * x) := by\\n    63    simpa [mul_comm x] using\\n    64      strictConcaveOn_sin_Icc.2 ⟨le_rfl, pi_pos.le⟩ ⟨pi_div_two_pos.le, half_le_self pi_pos.le⟩\\n    65        pi_div_two_pos.ne (sub_pos.2 hx') hx\\n    66  \\n    67  theorem le_sin_mul {x : ℝ} (hx : 0 ≤ x) (hx' : x ≤ 1) : x ≤ sin (π / 2 * x) := by\\n    68    simpa [mul_comm x] using\\n    69      strictConcaveOn_sin_Icc.concaveOn.2 ⟨le_rfl, pi_pos.le⟩\\n    70        ⟨pi_div_two_pos.le, half_le_self pi_pos.le⟩ (sub_nonneg.2 hx') hx\\n    71  \\n    72  theorem mul_lt_sin {x : ℝ} (hx : 0 < x) (hx' : x < π / 2) : 2 / π * x < sin x := by\\n    73    rw [← inv_div]\\n    74    simpa [-inv_div, mul_inv_cancel_left₀ pi_div_two_pos.ne'] using @lt_sin_mul ((π / 2)⁻¹ * x)\\n    75      (mul_pos (inv_pos.2 pi_div_two_pos) hx) (by rwa [← div_eq_inv_mul, div_lt_one pi_div_two_pos])\\n    76  \\n    77  /-- One half of **Jordan's inequality**.\\n    78  \\n    79  In the range `[0, π / 2]`, we have a linear lower bound on `sin`. The other half is given by\\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean\", \"line\": 155, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1063,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean  (lines 155–174 of 274):\\n   155      apply strictMonoOn_of_deriv_pos (convex_Ici 0) (by fun_prop)\\n   156      grind [one_sub_sq_div_two_lt_cos, interior_Ici]\\n   157    have h0 : f 0 < f x := hmono (by simp) hx.le hx\\n   158    grind [Real.sin_zero]\\n   159  \\n   160  /-- For 0 ≤ x we have x - x ^ 3 / 6 ≤ sin x.\\n   161  \\n   162  This inequality is tight, in that the constant 6 is best possible. -/\\n   163  theorem sin_ge_sub_cube {x : ℝ} (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := by\\n   164    obtain rfl | hx := hx.eq_or_lt\\n   165    · simp\\n   166    exact (sin_gt_sub_cube hx).le\\n   167  \\n   168  /-- `|x - sin x| ≤ |x|³ / 6` for every real `x`. -/\\n   169  theorem abs_sub_sin_le (x : ℝ) : |x - Real.sin x| ≤ |x| ^ 3 / 6 := by\\n   170    wlog hx : 0 ≤ x\\n   171    · grind [sin_neg]\\n   172    · grind [Real.sin_le, abs_of_nonneg, sin_ge_sub_cube]\\n   173  \\n   174  /-- The derivative of `tan x - x` is `1/(cos x)^2 - 1` away from the zeroes of cos. -/\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem polynomial_lower_bound_sine (x : ℝ) (hx : 0 ≤ x) : x - x ^ 3 / 6 ≤ Real.sin x := sorry"
+}

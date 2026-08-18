@@ -1,0 +1,240 @@
+{
+ "task_id": "fresh_021",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T01:18:33Z",
+ "wall_s": 64.4,
+ "transcript_stats": {
+  "turns": 24,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 15,
+   "mcp__formal__decl_grep": 3,
+   "mcp__formal__decl_read": 3,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 116,
+  "tokens_out": 4559,
+  "cost_usd": 0.06174765000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Antitone\"}",
+   "ok": true,
+   "result_chars": 798,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 545 declarations mentioning Antitone.\\n- Antitone   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is antitone if `a ≤ b` implies `f b ≤ f a`.\\n- antitone_const   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.antitone'   [Mathlib.Order.Monotone.Defs]\\n- antitoneOn_univ   [Mathlib.Order.Monotone.Defs]\\n- Antitone.antitoneOn   [Mathlib.Order.Monotone.Defs]\\n- StrictAnti.antitone   [Mathlib.Order.Monotone.Defs]\\n- Antitone.strictAnti_of_injective   [Mathlib.Order.Monotone.Defs]\\n- antitone_lam   [Mathlib.Order.Monotone.Defs]\\n- Antitone.imp   [Mathlib.Order.Monotone.Defs]\\n- antitone_app   [Mathlib.Order.Monotone.Defs]\\n- instDecidableAntitoneOfForallForallForallLe   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable\"}",
+   "ok": true,
+   "result_chars": 1165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 671 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the value.\\n- summable_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.mono_filter   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- summable_of_ne_finset_zero   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- summable_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integrable ℝ\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable ℝ': Unknown identifier `integrable`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral real functions\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral real functions': Unknown identifier `integral`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum infinite sum\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'tsum infinite sum': Unknown identifier `infinite`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IntervalIntegral\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntervalIntegral': unknown identifier 'IntervalIntegral'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum\"}",
+   "ok": true,
+   "result_chars": 1354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 825 declarations mentioning tsum.\\n- tsum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    If the summation filter is the trivial filter `⊥`, then the topological sum is equal to the finite sum (which is taken to be 1 if the support of `f` is infinite\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.tsum_eq   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- tsum_fintype   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_comp_neg   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral convergence\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral convergence': Unknown identifier `integral`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫ measure\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ measure': <input>:1:9: unexpected end of input; expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"lintegral\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'lintegral': unknown identifier 'lintegral'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral_Ioi\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral_Ioi': unknown identifier 'integral_Ioi'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : ℝ) → (?b : ℝ)\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℝ) → (?b : ℝ)': type expected, got\\n  (?a : ℝ)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral test\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral test': Unknown identifier `integral`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone Summable Nat\"}",
+   "ok": true,
+   "result_chars": 243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Monotone Summable Nat': Function expected at\\n  Monotone fun f => Summable f\\nbut this term has type\\n  Prop\\n\\nNote: Expected a function because this term is being applied to the argument\\n  Nat\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral_Ioc Real\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral_Ioc Real': Unknown identifier `integral_Ioc`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*test\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 846,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'integral.*test' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/FiniteMeasure.lean:670\\n    tend pointwise to a limit, then their integrals (`MeasureTheory.FiniteMeasure.testAgainstNN`)\\n- Mathlib/Analysis/SumIntegralComparisons.lean:23\\n    These are used to prove a version of the integral test for antitone functions.\\n- Mathlib/Analysis/SumIntegralComparisons.lean:40\\n    integral test for antitone functions.\\n- Mathlib/Analysis/SumIntegralComparisons.lean:44\\n    the integral test.\\n- Mathlib/Analysis/SumIntegralComparisons.lean:262\\n    /-- Converse to the integral test: a nonnegative, integrable, summable function is integrable. -/\\n- Mathlib/Analysis/SumIntegralComparisons.lean:280\\n    /-- Converse to the integral test: a nonnegative, integrable, summable function is integrable. -/\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"antitone.*summable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 229,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'antitone.*summable' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralComparisons.lean:214\\n    /-- **Integral test**: a nonnegative antitone function is summable if it is integrable. -/\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 6162,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–120 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kevin H. Wilson, Alastair Irving\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic\\n     9  public import Mathlib.Data.Set.Function\\n    10  \\n    11  import Mathlib.MeasureTheory.Integral.IntegralEqImproper\\n    12  \\n    13  /-!\\n    14  # Comparing sums and integrals\\n    15  \\n    16  ## Summary\\n    17  \\n    18  It is often the case that error terms in analysis can be computed by comparing\\n    19  an infinite sum to the improper integral of an antitone function.\\n    20  \\n    21  It contains several lemmas in this direction, for antitone or monotone functions\\n    22  (or products of antitone and monotone functions), formulated for sums on `range i` or `Ico a b`.\\n    23  These are used to prove a version of the integral test for antitone functions.\\n    24  \\n    25  ## Main Results\\n    26  \\n    27  * `AntitoneOn.integral_le_sum`: The integral of an antitone function is at most the sum of its\\n    28    values at integer steps aligning with the left-hand side of the interval.\\n    29  * `AntitoneOn.sum_le_integral`: The sum of an antitone function along integer steps aligning with\\n    30    the right-hand side of the interval is at most the integral of the function along that interval\\n    31  * `MonotoneOn.integral_le_sum`: The integral of a monotone function is at most the sum of its\\n    32    values at integer steps aligning with the right-hand side of the interval.\\n    33  * `MonotoneOn.sum_le_integral`: The sum of a monotone function along integer steps aligning with\\n    34    the left-hand side of the interval is at most the integral of the function along that interval\\n    35  * `sum_mul_Ico_le_integral_of_monotone_antitone`: the sum of `f i * g i` on an interval is bounded\\n    36    by the integral of `f x * g (x - 1)` if `f` is monotone and `g` is antitone.\\n    37  * `integral_le_sum_mul_Ico_of_antitone_monotone`: the sum of `f i * g i` on an interval is bounded\\n    38    below by the integral of `f x * g (x - 1)` if `f` is antitone and `g` is monotone.\\n    39  * `AntitoneOn.summable_of_integrableOn_Ioi_zero` and `AntitoneOn.tsum_le_integral`, the\\n    40    integral test for antitone functions.\\n    41  * `AntitoneOn.abs_tsum_sub_sum_range_le_integral`: an error estimate for the difference\\n    42    between a sum and its partial sums in terms of an integral.\\n    43  * `AntitoneOn.integrableOn_Ioi_zero_of_summable` and `AntitoneOn.integral_le_tsum`, the converse to\\n    44    the integral test.\\n    45  ## Tags\\n    46  \\n    47  analysis, comparison, asymptotics\\n    48  -/\\n    49  \\n    50  public section\\n    51  \\n    52  open Set MeasureTheory MeasureSpace intervalIntegral\\n    53  \\n    54  variable {x₀ : ℝ} {a b : ℕ} {f g : ℝ → ℝ}\\n    55  \\n    56  lemma sum_Ico_le_integral_of_le (hab : a ≤ b)\\n    57      (h : ∀ i ∈ Ico a b, ∀ x ∈ Ico (i : ℝ) ↑(i + 1), f i ≤ g x)\\n    58      (hg : IntegrableOn g (Ico a b)) : ∑ i ∈ .Ico a b, f i ≤ ∫ x in a..b, g x := by\\n    59    have A i (hi : i ∈ Finset.Ico a b) : IntervalIntegrable g volume i ↑(i + 1) := by\\n    60      rw [intervalIntegrable_iff_integrableOn_Ico_of_le (by simp)]\\n    61      simp only [Finset.mem_Ico, ← Nat.add_one_le_iff] at hi\\n    62      rify at hi\\n    63      exact hg.mono (by grind) le_rfl\\n    64    calc\\n    65    _ = ∑ i ∈ .Ico a b, (∫ x in (i : ℝ)..↑(i + 1), f i) := by simp\\n    66    _ ≤ ∑ i ∈ .Ico a b, (∫ x in (i : ℝ)..↑(i + 1), g x) := by\\n    67      gcongr with i hi\\n    68      apply integral_mono_on_of_le_Ioo (by simp) (by simp) (A _ hi) (fun x hx ↦ ?_)\\n    69      exact h _ (by simpa using hi) _ (Ioo_subset_Ico_self hx)\\n    70    _ = _ := by rw [sum_integral_adjacent_intervals_Ico (a :"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 200, \"n\": 110}",
+   "ok": true,
+   "result_chars": 6145,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 200–309 of 309):\\n   200    exact_mod_cast AntitoneOn.sum_Ico_le_integral (a := 0) (mod_cast anti)\\n   201      (mod_cast integrable) (mod_cast nonneg)\\n   202  \\n   203  /-- **Integral test**: A function which is nonnegative, integrable and antitone\\n   204  for sufficiently large `n` is summable. -/\\n   205  theorem AntitoneOn.summable_of_integrableOn_Ioi {N : ℕ} (anti : AntitoneOn f (Ici (N : ℝ)))\\n   206      (integrable : IntegrableOn f (Ioi (N : ℝ))) (nonneg : ∀ t ∈ Ioi (N : ℝ), 0 ≤ f t) :\\n   207      Summable (fun (n : ℕ) ↦ f n) := by\\n   208    rw [← summable_nat_add_iff (N + 1)]\\n   209    refine summable_of_sum_range_le (c := ∫ t in Ioi (N : ℝ), f t) (by grind) fun M ↦ ?_\\n   210    calc\\n   211      _ = ∑ n ∈ Finset.Ico N (N + M), f (n + 1 : ℕ) := by rw [Finset.sum_Ico_eq_sum_range]; grind\\n   212      _ ≤ _ := (anti.mono Icc_subset_Ici_self).sum_Ico_le_integral integrable nonneg\\n   213  \\n   214  /-- **Integral test**: a nonnegative antitone function is summable if it is integrable. -/\\n   215  theorem AntitoneOn.summable_of_integrableOn_Ioi_zero (anti : AntitoneOn f (Ici 0))\\n   216      (integrable : IntegrableOn f (Ioi 0)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   217      Summable (fun (n : ℕ) ↦ f n) :=\\n   218    summable_of_integrableOn_Ioi (N := 0) (mod_cast anti) (mod_cast integrable) (mod_cast nonneg)\\n   219  \\n   220  open Filter Finset in\\n   221  theorem AntitoneOn.tsum_comp_add_le_integral (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n   222      (integrable : IntegrableOn f (Ioi (N : ℝ))) (nonneg : ∀ t ∈ Ioi (N : ℝ), 0 ≤ f t) :\\n   223      ∑' (n : ℕ),  f (n + N + 1 : ℕ) ≤ ∫ x in Ioi (N : ℝ), f x := by\\n   224    refine tsum_le_of_sum_le' (integral_nonneg_of_ae ?_) fun s ↦ ?_\\n   225    · filter_upwards [ae_restrict_mem measurableSet_Ioi] using nonneg\\n   226    · obtain ⟨t, ht⟩ := tendsto_finset_range.eventually (Ici_mem_atTop s) |>.exists\\n   227      calc\\n   228        ∑ i ∈ s, f ↑(i + N + 1) ≤ ∑ i ∈ range t, f ↑(i + N + 1) :=\\n   229          sum_le_sum_of_subset_of_nonneg ht <| by grind\\n   230        _ = ∑ i ∈ Ico N (N + t), f ↑(i + 1) := by rw [Finset.sum_Ico_eq_sum_range]; grind\\n   231        _ ≤ ∫ (x : ℝ) in Set.Ioi (N : ℝ), f x :=\\n   232          (anti.mono <| by grind).sum_Ico_le_integral integrable nonneg\\n   233  \\n   234  /-- **Integral test**: bounds the sum from 1 by an integral. -/\\n   235  theorem AntitoneOn.tsum_add_one_le_integral (anti : AntitoneOn f (Ici 0))\\n   236      (integrable : IntegrableOn f (Ioi 0)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   237      ∑' (n : ℕ),  f (n + 1 : ℕ) ≤ ∫ x in Ioi 0, f x  := by\\n   238    exact_mod_cast AntitoneOn.tsum_comp_add_le_integral 0 (mod_cast anti) (mod_cast integrable)\\n   239      (mod_cast nonneg)\\n   240  \\n   241  /-- **Integral test**: bounds the sum of a nonnegative antitone function by an integral. -/\\n   242  theorem AntitoneOn.tsum_le_integral (anti : AntitoneOn f (Ici 0))\\n   243      (integrable : IntegrableOn f (Ioi 0)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   244      ∑' (n : ℕ),  f n ≤ f 0 + ∫ x in Ioi 0, f x  := by\\n   245    grind [(anti.summable_of_integrableOn_Ioi_zero integrable nonneg).tsum_eq_zero_add,\\n   246      anti.tsum_add_one_le_integral integrable nonneg]\\n   247  \\n   248  /-- Bounds the difference between a sum and its partial sums by an integral. -/\\n   249  theorem AntitoneOn.abs_tsum_sub_sum_range_le_integral {N : ℕ} (hN : 1 ≤ N)\\n   250      (anti : AntitoneOn f (Ici (N - 1 : ℝ)))\\n   251      (integrable : IntegrableOn f (Ioi (N - 1 : ℝ))) (nonneg : ∀ t ∈ Ioi (N - 1 : ℝ), 0 ≤ f t) :\\n   252      |(∑' (n : ℕ), f n) - ∑ n ∈ Finset.range N, f n| ≤ ∫ x in Ioi (N - 1 : ℝ), f x := by\\n   253    rw [← (AntitoneOn.summable_of_integrableOn_Ioi (mod_cast anti) (mod_cast integrable)\\n   254      (mod_cast nonneg)).sum_add_tsum_nat_add N, add_sub_cancel_left,\\n   255      abs_of_nonneg (tsum_nonneg <| by grind)]\\n   256    convert! Antitone"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 287, \"n\": 22}",
+   "ok": true,
+   "result_chars": 1488,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 287–308 of 309):\\n   287  open Filter in\\n   288  /-- The sum of a nonnegative, antitone function is bounded below by its integral. -/\\n   289  theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n   290      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi (N : ℝ), 0 ≤ f t) :\\n   291      ∫ x in Ioi (N : ℝ), f x ≤ ∑' (n : ℕ),  f (n + N : ℕ) := by\\n   292    rw [← summable_nat_add_iff N] at summable\\n   293    have lim := summable.tendsto_sum_tsum_nat\\n   294    have  := tendsto_atTop_add_const_right atTop (N : ℝ) tendsto_natCast_atTop_atTop\\n   295    have integrable := anti.integrableOn_Ioi_of_summable_comp_add summable nonneg\\n   296    refine le_of_tendsto_of_tendsto (intervalIntegral_tendsto_integral_Ioi N integrable this) lim ?_\\n   297    filter_upwards with M\\n   298    calc\\n   299      _ ≤ ∑ n ∈ Finset.Ico N (N + M), f n := by\\n   300        convert!  AntitoneOn.integral_le_sum_Ico _ _ using 2 <;> grind [anti.mono]\\n   301      _ = _ := by\\n   302        rw [Finset.sum_Ico_eq_sum_range]\\n   303        grind\\n   304  \\n   305  /-- The sum of a nonnegative, antitone function is bounded below by its integral. -/\\n   306  theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\\n   307      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   308      ∫ x in Ioi 0, f x ≤ ∑' (n : ℕ),  f n :=\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"AntitoneOn\", \"Summable\", \"Set.Ioi\", \"Set.Ici\", \"integral\"]}",
+   "ok": true,
+   "result_chars": 1608,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AntitoneOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#AntitoneOn\\\"},{\\\"decl\\\":\\\"Summable\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#Summable\\\"},{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ioi\\\"},{\\\"decl\\\":\\\"Set.Ici\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ici\\\"},{\\\"decl\\\":\\\"integral\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"name\": \"AntitoneOn.integral_le_tsum\"}",
+   "ok": true,
+   "result_chars": 383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"decl\\\":\\\"AntitoneOn.integral_le_tsum\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^theorem AntitoneOn.integral_le_tsum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 368,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^theorem AntitoneOn.integral_le_tsum' (via ripgrep):\\n- Mathlib/Analysis/SumIntegralComparisons.lean:289\\n    theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n- Mathlib/Analysis/SumIntegralComparisons.lean:306\\n    theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem integral_le_tsum_of_antitone_summable (f : ℝ → ℝ)\n    (anti : AntitoneOn f (Set.Ici 0))\n    (nonneg : ∀ t ∈ Set.Ioi 0, 0 ≤ f t)\n    (summable : Summable fun (n : ℕ) ↦ f n) :\n    ∫ x in Set.Ioi 0, f x ≤ ∑' (n : ℕ), f n := sorry"
+}

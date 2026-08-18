@@ -1,0 +1,272 @@
+{
+ "task_id": "fresh_075",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:23:01Z",
+ "wall_s": 61.1,
+ "transcript_stats": {
+  "turns": 29,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_search": 22,
+   "mcp__wikibrain__brain_cell": 4,
+   "mcp__wikibrain__brain_snippets": 1
+  },
+  "tokens_in": 122,
+  "tokens_out": 4668,
+  "cost_usd": 0.07022385
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"strictly monotone function on finite linear order\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3575,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"strictly monotone function on finite linear order\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"StrictMono\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2097,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"aka\\\":[\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono.orderIsoOfSurjective\\\",\\\"label\\\":\\\"StrictMono.orderIsoOfSurjective\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMonoOn.orderIso\\\",\\\"label\\\":\\\"StrictMonoOn.orderIso\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Hom/Set\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PosSMulStrictMono\\\",\\\"label\\\":\\\"PosSMulStrictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.exp_strictMono\\\",\\\"label\\\":\\\"Real.exp_strictMono\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Complex/Exponential\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_degree\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_degree\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/Degree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_weightedDegree\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.strictMono_weightedDegree\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/Degree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_strictMonoOn_norm_sub_right\\\",\\\"label\\\":\\\"TauCeti.Contour.exists_strictMonoOn_norm_sub_right\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Crossing\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Probability.ContractableLaw.map_prefixProj_of_strictMono\\\",\\\"label\\\":\\\"TauCeti.Probability.ContractableLaw.map_prefixProj_of_strictMono\\\",\\\"supercell\\\":\\\"path:TauCeti/Probability/Exchangeability/PathSpace\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Probability.blockLaw_strictMono_eq_lintegral_prod_directingMeasure\\\",\\\"label\\\":\\\"TauCeti.Probability.blockLaw_strictMono_eq_lintegral_prod_directingMeasure\\\",\\\"supercell\\\":\\\"path:TauCeti/Probability/DeFinetti\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"linear order\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 418,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"linear order\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Order.iso_of_countable_dense\\\",\\\"label\\\":\\\"Order.iso_of_countable_dense\\\",\\\"aka\\\":[\\\"Every linear order isomorphic to its cube is isomorphic to its square\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/CountableDenseLinearOrder\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:StrictMono\"}",
+   "ok": true,
+   "result_chars": 2426,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"anchor\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[407.6,980.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2301.09904#2.8\\\",\\\"label\\\":\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2301.09904\\\",\\\"ref\\\":\\\"2.8\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":83},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190667\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_1\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Bugeaud06.problem_10_6_variant_2\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Equidistribution.isAccumulationPoint_iff_exists_subsequence_tendsto\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1051.erdos_1051.variants.rapid_growth\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1056.erdos_1056.variants.noll_simmons\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":86,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finite order type\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite order type\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"LinearOrder\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1937,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LinearOrder\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"aka\\\":[\\\"Definition:Inequality\\\",\\\"Inequality\\\",\\\"Inequality (mathematics)\\\",\\\"LinearOrder\\\",\\\"Total Order\\\",\\\"total order\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.lift\\\",\\\"label\\\":\\\"LinearOrder.lift\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.toBiheytingAlgebra\\\",\\\"label\\\":\\\"LinearOrder.toBiheytingAlgebra\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Heyting/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearOrder.toLattice\\\",\\\"label\\\":\\\"LinearOrder.toLattice\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/Lattice\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Prod.Lex.instLinearOrder\\\",\\\"label\\\":\\\"Prod.Lex.instLinearOrder\\\",\\\"aka\\\":[\\\"Generalized echelon subgroups\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Prod/Lex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"Real.instConditionallyCompleteLinearOrder\\\",\\\"aka\\\":[\\\"A new approach to the real numbers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Archimedean\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.linearOrder\\\",\\\"label\\\":\\\"Real.linearOrder\\\",\\\"aka\\\":[\\\"The reals as rational Cauchy filters\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Cardinal.linearOrder\\\",\\\"label\\\":\\\"Cardinal.linearOrder\\\",\\\"supercell\\\":\\\"path:Mathlib/SetTheory/Cardinal/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/BigOperators\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_injective\\\",\\\"label\\\":\\\"Fintype.card_le_of_injective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_surjective\\\",\\\"label\\\":\\\"Fintype.card_le_of_surjective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"label\\\":\\\"Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"aka\\\":[\\\"Constructions and nonexistence results for suitable sets of permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Pigeonhole\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.nonempty_field_iff\\\",\\\"label\\\":\\\"Fintype.nonempty_field_iff\\\",\\\"aka\\\":[\\\"Clique number of Xor products of Kneser graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Cardinality\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq_of_infinite\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq_of_infinite\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_eq\\\",\\\"label\\\":\\\"Fintype.card_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/EquivFin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_finset\\\",\\\"label\\\":\\\"Fintype.card_finset\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Powerset\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"endomorphism self-map\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"endomorphism self-map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype.bijective injective surjective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype.bijective injective surjective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order embedding order isomorphism\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order embedding order isomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"injective surjective bijective finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"injective surjective bijective finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ordinal strictly increasing sequence\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ordinal strictly increasing sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.Injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1297,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.Injective\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"aka\\\":[\\\"Bijection injection and surjection\\\",\\\"Bijection, injection and surjection\\\",\\\"Function.Bijective\\\",\\\"Function.Injective\\\",\\\"Function.Surjective\\\",\\\"Surjection\\\",\\\"Surjective\\\",\\\"Surjective function\\\",\\\"bijection\\\",\\\"Gravity and its wonders: braneworlds and holography\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Init:Function.Injective.comp\\\",\\\"label\\\":\\\"Function.Injective.comp\\\",\\\"aka\\\":[\\\"IoUCert: Robustness Verification for Anchor-based Object Detectors\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.Injective.countable\\\",\\\"label\\\":\\\"Function.Injective.countable\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Countable/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.injective_comp_right_iff_surjective\\\",\\\"label\\\":\\\"Function.injective_comp_right_iff_surjective\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.injective_iff_hasLeftInverse\\\",\\\"label\\\":\\\"Function.injective_iff_hasLeftInverse\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Equiv bijection isomorphism\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Equiv bijection isomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"StrictMono injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"StrictMono injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.Bijective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1278,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.Bijective\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"aka\\\":[\\\"Bijection injection and surjection\\\",\\\"Bijection, injection and surjection\\\",\\\"Function.Bijective\\\",\\\"Function.Injective\\\",\\\"Function.Surjective\\\",\\\"Surjection\\\",\\\"Surjective\\\",\\\"Surjective function\\\",\\\"bijection\\\",\\\"Gravity and its wonders: braneworlds and holography\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.bijective_iff_has_inverse\\\",\\\"label\\\":\\\"Function.bijective_iff_has_inverse\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.Bijective.comp\\\",\\\"label\\\":\\\"Function.Bijective.comp\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.Bijective.of_comp_iff\\\",\\\"label\\\":\\\"Function.Bijective.of_comp_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.bijective_id\\\",\\\"label\\\":\\\"Function.bijective_id\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Defs\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q180907\"}",
+   "ok": true,
+   "result_chars": 6184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q180907\\\",\\\"id\\\":\\\"cell:Q180907\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bijection\\\",\\\"f\\\":36568,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q180907\\\",\\\"anchor\\\":\\\"Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"supercells\\\":[\\\"path:Init/Data/Function\\\",\\\"path:Mathlib/Logic/Function/Defs\\\"],\\\"f\\\":36568,\\\"xy\\\":[72.8,398.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"mathematical function which is a one-to-one mapping of sets\\\",\\\"slug\\\":\\\"Bijection\\\",\\\"article_annotations\\\":{\\\"total\\\":36,\\\"formalized\\\":20,\\\"partial\\\":5,\\\"not_formalized\\\":11},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q229102\\\",\\\"label\\\":\\\"Surjective function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"function such that every element of the codomain has a preimage\\\",\\\"slug\\\":\\\"Surjective_function\\\",\\\"article_annotations\\\":{\\\"total\\\":29,\\\"formalized\\\":18,\\\"partial\\\":3,\\\"not_formalized\\\":8},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q4907197\\\",\\\"label\\\":\\\"Bijection, injection and surjection\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"Injection: one to one, surjection: onto, bijection: both one to one and onto.\\\",\\\"slug\\\":\\\"Bijection_injection_and_surjection\\\",\\\"article_annotations\\\":{\\\"total\\\":24,\\\"formalized\\\":22,\\\"partial\\\":1,\\\"not_formalized\\\":1},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Function.Bijective\\\",\\\"label\\\":\\\"Function.Bijective\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Logic.Function.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Bijective (f : α → β) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Function.Defs\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Function.Injective\\\",\\\"label\\\":\\\"Function.Injective\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Init.Data.Function\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"A function `f : α → β` is called injective if `f x = f y` implies `x = y`. \\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Init.Data.Function\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Function.Surjective\\\",\\\"label\\\":\\\"Function.Surjective\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Init.Data.Function\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"A function `f : α → β` is called surjective if every `b : β` is equal to `f a`\\\\nfor some `a : α`. \\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Init.Data.Function\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Bijection\\\",\\\"label\\\":\\\"Bijection\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Bijection\\\",\\\"qid\\\":\\\"Q180907\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:lmfdb_knowl:modlgal.surjective\\\",\\\"label\\\":\\\"Surjective\\\",\\\"db\\\":\\\"lmfdb_knowl\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":14,\\\"url\\\":\\\"https://www.lmfdb.org/knowledge/show/modlgal.surjective\\\",\\\"kind_hint\\\":\\\"knowl\\\",\\\"qid\\\":\\\"Q229102\\\",\\\"snippet\\\":\\\"A mod-$\\\\\\\\ell$ Galois representation $\\\\\\\\rho: \\\\\\\\Gal_K\\\\\\\\to G(\\\\\\\\F_{\\\\\\\\ell})$ is **surjective** if the image is equal to all of the codomain; that is, if $\\\\\\\\rho(\\\\\\\\Gal_K)=G(\\\\\\\\F_{\\\\\\\\ell})$.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-4.0 (LMFDB)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Bijection\\\",\\\"label\\\":\\\"Bijection\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Bijection.html\\\",\\\"qid\\\":\\\"Q180907\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Surjection\\\",\\\"label\\\":\\\"Surjection\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Surjection.html\\\",\\\"qid\\\":\\\"Q229102\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:bijection\\\",\\\"label\\\":\\\"bijection\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/bijection\\\",\\\"qid\\\":\\\"Q180907\\\",\\\"snippet\\\":\\\"A **bijection** is an isomorphism in Set.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Bijection\\\",\\\"label\\\":\\\"Bijection\\\",\\\"bond\\\":\\\"articl"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.Surjective.bijective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.Surjective.bijective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype bijective injective implies\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype bijective injective implies\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Nat.card injective surjective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat.card injective surjective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"id identity function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"id identity function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order preserving permutation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order preserving permutation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype.bijective_iff_injective_and_card\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype.bijective_iff_injective_and_card\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:LinearOrder\"}",
+   "ok": false,
+   "result_chars": 386,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"cell:decl:Mathlib:LinearOrder\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q369377\"}",
+   "ok": true,
+   "result_chars": 4404,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q369377\\\",\\\"id\\\":\\\"cell:Q369377\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Total order\\\",\\\"f\\\":40184,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q369377\\\",\\\"anchor\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Defs/LinearOrder\\\"],\\\"f\\\":40184,\\\"xy\\\":[55,-181]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q28113351\\\",\\\"label\\\":\\\"Inequality (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":8,\\\"description\\\":\\\"mathematical relation comparing two different values\\\",\\\"slug\\\":\\\"Inequality_mathematics\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q369377\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"partial order where all elements can be compared\\\",\\\"slug\\\":\\\"Total_order\\\",\\\"article_annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Order.Defs.LinearOrder\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class LinearOrder (α : Type*) extends PartialOrder α, Min α, Max α, Ord α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Defs.LinearOrder\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Inequality\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Inequality\\\",\\\"label\\\":\\\"Inequality\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Inequality.html\\\",\\\"qid\\\":\\\"Q28113351\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:TotalOrder\\\",\\\"label\\\":\\\"Total Order\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/TotalOrder.html\\\",\\\"qid\\\":\\\"Q369377\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:total order\\\",\\\"label\\\":\\\"total order\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/total+order\\\",\\\"qid\\\":\\\"Q369377\\\",\\\"snippet\\\":\\\"A *total order* or *linear order* or *chain order* on a set is a way of ordering its elements to say that some elements precede others, with the understanding that any two elements can be compared one way or the other.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Inequality\\\",\\\"label\\\":\\\"Definition:Inequality\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Inequality\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q28113351\\\",\\\"snippet\\\":\\\"An inequality is a mathematical statement that two expressions relate in one of several conventional ways: $a b$ $a \\\\\\\\ge b$\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Total_order\\\",\\\"label\\\":\\\"Total order\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":50,\\\"formalized\\\":38,\\\"partial\\\":10,\\\"not_formalized\\\":2}}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":5,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Defs/LinearOrder\\\",\\\"label\\\":\\\"LinearOrder\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":225,\\\"links\\\":148,\\\"mentions\\\":40,\\\"relates\\\":27,\\\"cites\\\":11,\\\"co-page\\\":2,\\\"invocation\\\":8,\\\"co-statement\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"links\\\":5}},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q41299\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.ext funext\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.ext funext\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype card\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 169,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype card\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:decl:Mathlib:StrictMono\"}",
+   "ok": true,
+   "result_chars": 680,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"code\\\":\\\"def StrictMono (f : α → β) : Prop :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2301.09904#2.8\\\",\\\"label\\\":\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2301.09904\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem strictly_mono_endo_eq_id (α : Type*) [LinearOrder α] [Fintype α]\n    (f : α → α) (hf : StrictMono f) : f = id := sorry"
+}

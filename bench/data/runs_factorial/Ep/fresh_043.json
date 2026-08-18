@@ -1,0 +1,242 @@
+{
+ "task_id": "fresh_043",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:20:16Z",
+ "wall_s": 67.9,
+ "transcript_stats": {
+  "turns": 25,
+  "assistant_turns": 13,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 10,
+   "mcp__formal__decl_read": 5
+  },
+  "tokens_in": 108,
+  "tokens_out": 4851,
+  "cost_usd": 0.07112765
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"torsion module\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'torsion module': Unknown identifier `torsion`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 425 declarations mentioning Module.rank.\\n- Module.rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    The rank of a module, defined as a term of type `Cardinal`.  We define this as the supremum of the cardinalities of linearly independent subsets. The supremum m\\n- rank_le_card   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_subsingleton   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- CommSemiring.rank_self   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    TODO: prove that nontrivial commutative semirings satisfy the strong rank condition, following *Free sets and free subsemimodules in a semimodule* by Yi-Jia Tan\\n- LinearIndependent.cardinal_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.aleph0_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_lift_le_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- LinearIndependent.cardinal_le_rank'   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.exists_set_linearIndependent_of_lt_lift_rank   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- Module.le_rank_iff_exists_finset   [Mathlib.LinearAlgebra.Dimension.Basic]\\n    Note: if the rank of a module is infinite, it may not contain a linear independent subset with cardinality equal to the rank, see https://mathoverflow.net/quest\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsTorsion\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsTorsion': unknown identifier 'IsTorsion'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"torsion\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'torsion': unknown identifier 'torsion'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsTorsionFree\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsTorsionFree': unknown identifier 'IsTorsionFree'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"torsion\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2652,
+   "result_head": "[{\"type\": \"text\", \"text\": \"459 match(es) for 'torsion' (via ripgrep):\\n- Mathlib/Algebra/NoZeroSMulDivisors/Defs.lean:30\\n    This is a version of saying that `M` is torsion free, without assuming `R` is zero-divisor free.\\n- Mathlib/Algebra/CharP/LinearMaps.lean:21\\n    endomorphisms of `M` when `M` contains a non-torsion element `x`.\\n- Mathlib/Algebra/CharP/LinearMaps.lean:43\\n    element `x` that is not torsion, then the characteristic of `R` is equal to the\\n- Mathlib/Algebra/CharP/LinearMaps.lean:46\\n    (htorsion : ∃ x : M, Ideal.torsionOf R M x = ⊥) : CharP (M →ₗ[R] M) p where\\n- Mathlib/Algebra/CharP/LinearMaps.lean:51\\n    exact ⟨fun h ↦ htorsion.casesOn fun x hx ↦ by simpa [← Ideal.mem_torsionOf_iff, hx] using h x,\\n- Mathlib/Algebra/Module/Lattice.lean:174\\n    -- any torsion free finite module over a PID is free\\n- Mathlib/Algebra/Module/ZMod.lean:51\\n    `n`-torsion group. -/\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:17\\n    $$M(I) := \\\\bigcup_{i : \\\\mathbb{N}} \\\\text{torsionBySet A  M }  I ^ i.$$\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:50\\n    def primaryComponent : Submodule A M := ⨆ i : ℕ, torsionBySet A M ↑(I ^ i)\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:53\\n    x ∈ primaryComponent M I ↔ ∃ n, x ∈ torsionBySet A M ↑(I ^ n) := by\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:54\\n    simp only [primaryComponent, mem_torsionBySet_iff, SetLike.coe_sort_coe, Subtype.forall]\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:61\\n    simp [torsionBySet_le_torsionBySet_pow]\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:67\\n    simp only [primaryComponent_mem, mem_torsionBySet_iff, SetLike.coe_sort_coe, Subtype.forall,\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:85\\n    theorem primaryComponent_torsionBySet_eq_inf (I : Ideal A) :\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:86\\n    (primaryComponent (torsionBySet A M ↑I) I).map (Submodule.subtype _) =\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:87\\n    primaryComponent M I ⊓ torsionBySet A M ↑I := by\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:91\\n    theorem primaryComponent_torsionBySet_of_isCoprime (J : Ideal A) (hD : IsCoprime I J) :\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:92\\n    primaryComponent (torsionBySet A M J) I = ⊥ := by\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:93\\n    have (n : ℕ) : Disjoint (torsionBySet A M ↑(I ^ n)) (torsionBySet A M ↑J) :=\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:94\\n    Submodule.disjoint_torsionBySet_ideal (M := M) (Ideal.pow_sup_eq_top hD.sup_eq)\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma).*torsionBySet\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for '(def|theorem|lemma).*torsionBySet' (via ripgrep):\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:50\\n    def primaryComponent : Submodule A M := ⨆ i : ℕ, torsionBySet A M ↑(I ^ i)\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:85\\n    theorem primaryComponent_torsionBySet_eq_inf (I : Ideal A) :\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:91\\n    theorem primaryComponent_torsionBySet_of_isCoprime (J : Ideal A) (hD : IsCoprime I J) :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:183\\n    def torsionBySet (s : Set R) : Submodule R M :=\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:269\\n    theorem mem_torsionBySet_iff (x : M) : x ∈ torsionBySet R M s ↔ ∀ a : s, (a : R) • x = 0 := by\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:274\\n    theorem torsionBySet_singleton_eq : torsionBySet R M {a} = torsionBy R M a := by\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:279\\n    theorem torsionBySet_le_torsionBySet_of_subset {s t : Set R} (st : s ⊆ t) :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:283\\n    theorem torsionBySet_le_torsionBySet_pow (i j : ℕ) (h : i ≤ j) (I : Ideal R) :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:288\\n    theorem torsionBySet_eq_torsionBySet_span :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:298\\n    theorem torsionBySet_span_singleton_eq : torsionBySet R M (R ∙ a) = torsionBy R M a :=\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:302\\n    theorem torsionBySet_ideal_span_singleton_eq :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:319\\n    theorem torsionBySet_univ : torsionBySet R M Set.univ = ⊥ := by\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:353\\n    theorem isTorsionBySet_iff_torsionBySet_eq_top :\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:381\\n    theorem torsionBySet_isTorsionBySet : IsTorsionBySet R (torsionBySet R M s) s :=\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:391\\n    theorem torsionBySet_ideal_isTorsion_of_noZeroDivisors [NoZeroDivisors R] [Nontrivial R]\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem|lemma).*IsTorsion\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"160 match(es) for '(def|theorem|lemma).*IsTorsion' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Basic.lean:469\\n    lemma Module.IsTorsionFree.of_faithfulSMul [Semiring S] [Module S R] [Module S A]\\n- Mathlib/Algebra/Algebra/Basic.lean:474\\n    lemma Module.IsTorsionFree.trans_faithfulSMul [Nontrivial R] [IsCancelMulZero A] [AddCommMonoid M]\\n- Mathlib/Algebra/Algebra/Basic.lean:493\\n    lemma isTorsionFree_iff_faithfulSMul : IsTorsionFree R A ↔ FaithfulSMul R A :=\\n- Mathlib/Algebra/Algebra/Basic.lean:496\\n    lemma isTorsionFree_iff_algebraMap_injective : IsTorsionFree R A ↔ Injective (algebraMap R A) := by\\n- Mathlib/Algebra/Algebra/Tower.lean:426\\n    theorem lsmul_injective [Module.IsTorsionFree A M] {x : A} (hx : x ≠ 0) :\\n- Mathlib/Algebra/Lie/Sl2.lean:186\\n    lemma exists_nat [IsNoetherian R M] [IsTorsionFree R M] [IsDomain R] [CharZero R] :\\n- Mathlib/Algebra/Lie/Sl2.lean:203\\n    lemma pow_toEnd_f_ne_zero_of_eq_nat [CharZero R] [IsDomain R] [IsTorsionFree R M]\\n- Mathlib/Algebra/Lie/Sl2.lean:217\\n    lemma pow_toEnd_f_eq_zero_of_eq_nat [IsDomain R] [CharZero R] [IsNoetherian R M] [IsTorsionFree R M]\\n- Mathlib/Algebra/Lie/Weights/Basic.lean:290\\n    lemma apply_eq_zero_of_isNilpotent [IsDomain R] [Module.IsTorsionFree R M] [IsReduced R]\\n- Mathlib/Algebra/Module/Torsion/PrimaryComponent.lean:140\\n    theorem iSup_primaryComponent_eq_top (h : IsTorsion A M) :\\n- Mathlib/Algebra/Module/Torsion/Free.lean:54\\n    lemma Function.Injective.moduleIsTorsionFree [IsTorsionFree R N] (f : M → N) (hf : f.Injective)\\n- Mathlib/Algebra/Module/Torsion/Free.lean:60\\n    lemma Module.IsTorsionFree.comap [IsTorsionFree S M] (f : R → S)\\n- Mathlib/Algebra/Module/Torsion/Free.lean:87\\n    lemma Module.IsTorsionFree.trans [Module S R] [IsTorsionFree S R] [IsScalarTower S R R]\\n- Mathlib/Algebra/Module/Torsion/Free.lean:134\\n    lemma Module.isTorsionFree_nat_iff_isAddTorsionFree : IsTorsionFree ℕ M ↔ IsAddTorsionFree M where\\n- Mathlib/Algebra/Module/Torsion/Free.lean:147\\n    lemma Module.isTorsionFree_int_iff_isAddTorsionFree : IsTorsionFree ℤ M ↔ IsAddTorsionFree M where\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|class).*IsTorsion\\\\b\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 586,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|class).*IsTorsion\\\\\\\\b' (via ripgrep):\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:887\\n    def pOrder {p : R} (hM : IsTorsion' M <| Submonoid.powers p) (x : M)\\n- Mathlib/GroupTheory/Torsion.lean:56\\n    def IsTorsion :=\\n- Mathlib/GroupTheory/Torsion.lean:72\\n    noncomputable def IsTorsion.group [Monoid G] (tG : IsTorsion G) : Group G :=\\n- Mathlib/GroupTheory/Torsion.lean:275\\n    def torsionMulEquiv (tG : IsTorsion G) : torsion G ≃* G :=\\n- Mathlib/RingTheory/IdealFilter/Basic.lean:90\\n    def IsTorsion (F : IdealFilter A)\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Torsion/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2976,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Torsion/Basic.lean  (lines 1–50 of 1031):\\n     1  /-\\n     2  Copyright (c) 2022 Pierre-Alexandre Bazin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Pierre-Alexandre Bazin\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.DirectSum.Module\\n     9  public import Mathlib.Algebra.Module.ZMod\\n    10  public import Mathlib.Algebra.Regular.Opposite\\n    11  public import Mathlib.GroupTheory.Torsion\\n    12  public import Mathlib.LinearAlgebra.Isomorphisms\\n    13  public import Mathlib.RingTheory.Coprime.Ideal\\n    14  public import Mathlib.RingTheory.Finiteness.Defs\\n    15  public import Mathlib.RingTheory.Ideal.Maps\\n    16  public import Mathlib.RingTheory.Ideal.Quotient.Defs\\n    17  public import Mathlib.RingTheory.SimpleModule.Basic\\n    18  \\n    19  /-!\\n    20  # Torsion submodules\\n    21  \\n    22  ## Main definitions\\n    23  \\n    24  * `torsionOf R M x` : the torsion ideal of `x`, containing all `a` such that `a • x = 0`.\\n    25  * `Submodule.torsionBy R M a` : the `a`-torsion submodule, containing all elements `x` of `M` such\\n    26    that `a • x = 0`.\\n    27  * `Submodule.torsionBySet R M s` : the submodule containing all elements `x` of `M` such that\\n    28    `a • x = 0` for all `a` in `s`.\\n    29  * `Submodule.torsion' R M S` : the `S`-torsion submodule, containing all elements `x` of `M` such\\n    30    that `a • x = 0` for some `a` in `S`.\\n    31  * `Submodule.torsion R M` : the torsion submodule, containing all elements `x` of `M` such that\\n    32    `a • x = 0` for some non-zero-divisor `a` in `R`.\\n    33  * `Module.IsTorsionBy R M a` : the property that defines an `a`-torsion module. Similarly,\\n    34    `IsTorsionBySet`, `IsTorsion'` and `IsTorsion`.\\n    35  * `Module.IsTorsionBySet.module` : Creates an `R ⧸ I`-module from an `R`-module that\\n    36    `IsTorsionBySet R _ I`.\\n    37  \\n    38  ## Main statements\\n    39  \\n    40  * `quot_torsionOf_equiv_span_singleton` : isomorphism between the span of an element of `M` and\\n    41    the quotient by its torsion ideal.\\n    42  * `torsion' R M S` and `torsion R M` are submodules.\\n    43  * `torsionBySet_eq_torsionBySet_span` : torsion by a set is torsion by the ideal generated by it.\\n    44  * `Submodule.torsionBy_is_torsionBy` : the `a`-torsion submodule is an `a`-torsion module.\\n    45    Similar lemmas for `torsion'` and `torsion`.\\n    46  * `Submodule.torsionBy_isInternal` : a `∏ i, p i`-torsion module is the internal direct sum of its\\n    47    `p i`-torsion submodules when the `p i` are pairwise coprime. A more general version with coprime\\n    48    ideals is `Submodule.torsionBySet_isInternal`.\\n    49  * `Submodule.noZeroSMulDivisors_iff_torsion_bot` : a module over a domain has\\n    50    `Module.IsTorsionFree` (that is, there is no non-zero `a`, `x` such that `a • x = 0`)\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def).*Module.IsTorsion\\\\b\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(class|def).*Module.IsTorsion\\\\\\\\b' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Torsion/Basic.lean\", \"line\": 50, \"n\": 150}",
+   "ok": true,
+   "result_chars": 5116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Torsion/Basic.lean  (lines 50–169 of 1031):\\n    50    `Module.IsTorsionFree` (that is, there is no non-zero `a`, `x` such that `a • x = 0`)\\n    51    iff its torsion submodule is trivial.\\n    52  * `Submodule.QuotientTorsion.torsion_eq_bot` : quotienting by the torsion submodule makes the\\n    53    torsion submodule of the new module trivial. If `R` is a domain, we can derive an instance\\n    54    `Submodule.QuotientTorsion.noZeroSMulDivisors : Module.IsTorsionFree R (M ⧸ torsion R M)`.\\n    55  \\n    56  ## Notation\\n    57  \\n    58  * The notions are defined for a `CommSemiring R` and a `Module R M`. Some additional hypotheses on\\n    59    `R` and `M` are required by some lemmas.\\n    60  * The letters `a`, `b`, ... are used for scalars (in `R`), while `x`, `y`, ... are used for vectors\\n    61    (in `M`).\\n    62  \\n    63  ## TODO\\n    64  \\n    65  * Move the advanced material to a new file `RingTheory.Torsion`.\\n    66  * Replace `Module.IsTorsionFree` with `Module.IsTorsionFree`\\n    67  \\n    68  ## Tags\\n    69  \\n    70  Torsion, submodule, module, quotient\\n    71  -/\\n    72  \\n    73  @[expose] public section\\n    74  \\n    75  open Module\\n    76  \\n    77  namespace Ideal\\n    78  \\n    79  section TorsionOf\\n    80  \\n    81  variable (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M]\\n    82  \\n    83  /-- The torsion ideal of `x`, containing all `a` such that `a • x = 0`. -/\\n    84  @[simps!]\\n    85  def torsionOf (x : M) : Ideal R :=\\n    86    (LinearMap.toSpanSingleton R M x).ker\\n    87  \\n    88  @[simp]\\n    89  theorem torsionOf_zero : torsionOf R M (0 : M) = ⊤ := by simp [torsionOf]\\n    90  \\n    91  variable {R M}\\n    92  \\n    93  @[simp]\\n    94  theorem mem_torsionOf_iff (x : M) (a : R) : a ∈ torsionOf R M x ↔ a • x = 0 :=\\n    95    Iff.rfl\\n    96  \\n    97  variable (R)\\n    98  \\n    99  @[simp]\\n   100  theorem torsionOf_eq_top_iff (m : M) : torsionOf R M m = ⊤ ↔ m = 0 := by\\n   101    refine ⟨fun h => ?_, fun h => by simp [h]⟩\\n   102    rw [← one_smul R m, ← mem_torsionOf_iff m (1 : R), h]\\n   103    exact Submodule.mem_top\\n   104  \\n   105  @[simp]\\n   106  theorem torsionOf_eq_bot_iff_of_noZeroSMulDivisors [IsDomain R] [Module.IsTorsionFree R M] (m : M) :\\n   107      torsionOf R M m = ⊥ ↔ m ≠ 0 := by\\n   108    refine ⟨fun h contra => ?_, fun h => (Submodule.eq_bot_iff _).mpr fun r hr => ?_⟩\\n   109    · rw [contra, torsionOf_zero] at h\\n   110      exact bot_ne_top.symm h\\n   111    · rw [mem_torsionOf_iff, smul_eq_zero] at hr\\n   112      tauto\\n   113  \\n   114  @[simp]\\n   115  theorem annihilator_span_singleton_eq_torsionOf\\n   116      {R M : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M] (x : M) :\\n   117      (R ∙ x).annihilator = torsionOf R M x := by\\n   118    simpa [torsionOf] using Submodule.annihilator_span_singleton x\\n   119  \\n   120  /-- The annihilator of a module is the intersection of the torsion ideals of its elements. -/\\n   121  theorem _root_.Module.annihilator_eq_iInf_torsionOf :\\n   122      Module.annihilator R M = ⨅ x : M, torsionOf R M x := by\\n   123    ext r\\n   124    simp [Module.mem_annihilator]\\n   125  \\n   126  /-- See also `iSupIndep.linearIndependent` which provides the same conclusion\\n   127  but requires the stronger hypothesis `Module.IsTorsionFree R M`. -/\\n   128  theorem iSupIndep.linearIndependent' {ι R M : Type*} {v : ι → M} [Ring R]\\n   129      [AddCommGroup M] [Module R M] (hv : iSupIndep fun i => R ∙ v i)\\n   130      (h_ne_zero : ∀ i, Ideal.torsionOf R M (v i) = ⊥) : LinearIndependent R v := by\\n   131    refine linearIndependent_iff_eq_zero_of_smul_mem_span.mpr fun i r hi => ?_\\n   132    replace hv := iSupIndep_def.mp hv i\\n   133    simp only [iSup_subtype', ← Submodule.span_range_eq_iSup (ι := Subtype _), disjoint_iff] at hv\\n   134    have : r • v i ∈ (⊥ : Submodule R M) := by\\n   135      rw [← hv, Submodule.mem_inf]\\n   136      refine ⟨Submodule.mem_"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Torsion/Basic.lean\", \"line\": 166, \"n\": 200}",
+   "ok": true,
+   "result_chars": 5111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Torsion/Basic.lean  (lines 166–285 of 1031):\\n   166  open nonZeroDivisors\\n   167  \\n   168  section Defs\\n   169  \\n   170  namespace Submodule\\n   171  \\n   172  variable (R M : Type*) [CommSemiring R] [AddCommMonoid M] [Module R M]\\n   173  \\n   174  -- TODO: generalize to `Submodule S M` with `SMulCommClass R S M`.\\n   175  /-- The `a`-torsion submodule for `a` in `R`, containing all elements `x` of `M` such that\\n   176    `a • x = 0`. -/\\n   177  @[simps!]\\n   178  def torsionBy (a : R) : Submodule R M :=\\n   179    (DistribSMul.toLinearMap R M a).ker\\n   180  \\n   181  /-- The submodule containing all elements `x` of `M` such that `a • x = 0` for all `a` in `s`. -/\\n   182  @[simps!]\\n   183  def torsionBySet (s : Set R) : Submodule R M :=\\n   184    sInf (torsionBy R M '' s)\\n   185  \\n   186  /-- The `S`-torsion submodule, containing all elements `x` of `M` such that `a • x = 0` for some\\n   187  `a` in `S`. -/\\n   188  @[simps!]\\n   189  def torsion' (S : Type*) [CommMonoid S] [DistribMulAction S M] [SMulCommClass S R M] :\\n   190      Submodule R M where\\n   191    carrier := { x | ∃ a : S, a • x = 0 }\\n   192    add_mem' := by\\n   193      intro x y ⟨a,hx⟩ ⟨b,hy⟩\\n   194      use b * a\\n   195      rw [smul_add, mul_smul, mul_comm, mul_smul, hx, hy, smul_zero, smul_zero, add_zero]\\n   196    zero_mem' := ⟨1, smul_zero 1⟩\\n   197    smul_mem' := fun a x ⟨b, h⟩ => ⟨b, by rw [smul_comm, h, smul_zero]⟩\\n   198  \\n   199  /-- The torsion submodule, containing all elements `x` of `M` such that `a • x = 0` for some\\n   200    non-zero-divisor `a` in `R`. -/\\n   201  abbrev torsion :=\\n   202    torsion' R M R⁰\\n   203  \\n   204  end Submodule\\n   205  \\n   206  namespace Module\\n   207  \\n   208  variable (R M : Type*) [Semiring R] [AddCommMonoid M] [Module R M]\\n   209  \\n   210  /-- An `a`-torsion module is a module where every element is `a`-torsion. -/\\n   211  abbrev IsTorsionBy (a : R) :=\\n   212    ∀ ⦃x : M⦄, a • x = 0\\n   213  \\n   214  /-- A module where every element is `a`-torsion for all `a` in `s`. -/\\n   215  abbrev IsTorsionBySet (s : Set R) :=\\n   216    ∀ ⦃x : M⦄ ⦃a : s⦄, (a : R) • x = 0\\n   217  \\n   218  /-- An `S`-torsion module is a module where every element is `a`-torsion for some `a` in `S`. -/\\n   219  abbrev IsTorsion' (S : Type*) [SMul S M] :=\\n   220    ∀ ⦃x : M⦄, ∃ a : S, a • x = 0\\n   221  \\n   222  /-- A torsion module is a module where every element is `a`-torsion for some non-zero-divisor `a`.\\n   223  -/\\n   224  abbrev IsTorsion :=\\n   225    ∀ ⦃x : M⦄, ∃ a : R⁰, a • x = 0\\n   226  \\n   227  theorem isTorsionBySet_annihilator : IsTorsionBySet R M (annihilator R M) :=\\n   228    fun _ r ↦ Module.mem_annihilator.mp r.2 _\\n   229  \\n   230  theorem isTorsionBy_iff_mem_annihilator {a : R} :\\n   231      IsTorsionBy R M a ↔ a ∈ annihilator R M := by\\n   232    rw [IsTorsionBy, mem_annihilator]\\n   233  \\n   234  theorem isTorsionBySet_iff_subset_annihilator {s : Set R} :\\n   235      IsTorsionBySet R M s ↔ s ⊆ annihilator R M := by\\n   236    simp_rw [IsTorsionBySet, Set.subset_def, SetLike.mem_coe, mem_annihilator]\\n   237    rw [forall_comm, SetCoe.forall]\\n   238  \\n   239  end Module\\n   240  \\n   241  end Defs\\n   242  \\n   243  lemma isSMulRegular_iff_torsionBy_eq_bot {R} (M : Type*)\\n   244      [CommRing R] [AddCommGroup M] [Module R M] (r : R) :\\n   245      IsSMulRegular M r ↔ Submodule.torsionBy R M r = ⊥ :=\\n   246    (DistribSMul.toLinearMap R M r).ker_eq_bot.symm\\n   247  \\n   248  variable {R M : Type*}\\n   249  \\n   250  section\\n   251  \\n   252  namespace Submodule\\n   253  \\n   254  variable [CommSemiring R] [AddCommMonoid M] [Module R M] (s : Set R) (a : R)\\n   255  \\n   256  @[simp]\\n   257  theorem smul_torsionBy (x : torsionBy R M a) : a • x = 0 :=\\n   258    Subtype.ext x.prop\\n   259  \\n   260  @[simp]\\n   261  theorem smul_coe_torsionBy (x : torsionBy R M a) : a • (x : M) = 0 :=\\n   262    x.prop\\n   263  \\n   264  @"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank_eq_zero\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'rank_eq_zero': unknown identifier 'rank_eq_zero'\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*IsTorsion.*rank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*IsTorsion.*rank' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"rank.*torsion\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2905,
+   "result_head": "[{\"type\": \"text\", \"text\": \"22 match(es) for 'rank.*torsion' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:17\\n    - `rank_quotient_eq_of_le_torsion` : `rank M/N = rank M` if `N ≤ torsion M`.\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:18\\n    - `finrank_quotient_eq_of_le_torsion` : `finrank M/N = finrank M` if `N ≤ torsion M`.\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:19\\n    - `finrank_quotient_torsion_eq` : `finrank ℤ (M / torsion M) = finrank ℤ M` for an additive\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:27\\n    theorem rank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:40\\n    theorem finrank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:43\\n    congr_arg Cardinal.toNat (rank_quotient_eq_of_le_torsion hN)\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:47\\n    theorem finrank_quotient_torsion_eq {M : Type*} [AddCommGroup M] :\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:48\\n    Module.finrank ℤ (M ⧸ (AddCommGroup.torsion M).toIntSubmodule) = Module.finrank ℤ M :=\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:49\\n    finrank_quotient_eq_of_le_torsion <| le_of_eq <| by\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean:12\\n    # Results relating rank and torsion.\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:382\\n    /-- A finite rank torsion-free module has positive `finrank` iff it has a nonzero element. -/\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:31\\n    * `NumberField.Units.rank_modTorsion`: the `ℤ`-rank of `(𝓞 K)ˣ ⧸ (torsion K)` is equal to\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:454\\n    theorem finrank_modTorsion : finrank ℤ (Additive ((𝓞 K)ˣ ⧸ (torsion K))) = rank K := by\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:460\\n    simpa [← finrank_modTorsion] using! finrank_quotient_torsion_eq.symm\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:463\\n    def basisModTorsion : Basis (Fin (rank K)) ℤ (Additive ((𝓞 K)ˣ ⧸ (torsion K))) :=\\n- Mathlib/NumberTheory/NumberField/Units/DirichletTheorem.lean:488\\n    theorem fun_eq_repr {x ζ : (𝓞 K)ˣ} {f : Fin (rank K) → ℤ} (hζ : ζ ∈ torsion K)\\n- Mathlib/NumberTheory/NumberField/Units/Basic.lean:239\\n    (h : Odd (Module.finrank ℚ K)) (x : torsion K) : (x : (𝓞 K)ˣ) = 1 ∨ (x : (𝓞 K)ˣ) = -1 := by\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Basic.lean:941\\n    (IsCyclotomicExtension.Rat.finrank (n.lcm (torsionOrder K)) K)\\n- Mathlib/GroupTheory/Torsion.lean:405\\n    noncomputable def freeRank [Group.FG G] : ℕ := Group.rank (G ⧸ torsion G)\\n- Mathlib/GroupTheory/Torsion.lean:408\\n    theorem freeRank_def [Group.FG G] : freeRank G = Group.rank (G ⧸ torsion G) := rfl\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsTorsion\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsTorsion': unknown identifier 'IsTorsion'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*rank.*= 0\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2735,
+   "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'theorem.*rank.*= 0' (via ripgrep):\\n- Mathlib/SetTheory/ZFC/Rank.lean:71\\n    theorem rank_empty : rank ∅ = 0 := by simp [empty_def, rank]\\n- Mathlib/SetTheory/ZFC/Rank.lean:161\\n    theorem rank_empty : rank ∅ = 0 := PSet.rank_empty\\n- Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean:174\\n    theorem finrank_of_infinite_dimensional (h : ¬FiniteDimensional K V) : finrank K V = 0 :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:172\\n    theorem FiniteDimensional.of_rank_eq_zero (h : Module.rank K V = 0) : FiniteDimensional K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:493\\n    theorem finrank_zero_iff_forall_zero [FiniteDimensional K V] : finrank K V = 0 ↔ ∀ x : V, x = 0 :=\\n- Mathlib/LinearAlgebra/Dimension/Free.lean:244\\n    theorem finrank_of_not_finite (h : ¬Module.Finite R M) : finrank R M = 0 := by\\n- Mathlib/LinearAlgebra/Dimension/Subsingleton.lean:23\\n    @[simp, nontriviality] theorem rank_subsingleton' [Subsingleton M] : Module.rank R M = 0 := by\\n- Mathlib/LinearAlgebra/Dimension/Subsingleton.lean:27\\n    theorem rank_punit : Module.rank R PUnit = 0 := rank_subsingleton' _ _\\n- Mathlib/LinearAlgebra/Dimension/Subsingleton.lean:29\\n    theorem rank_bot : Module.rank R (⊥ : Submodule R M) = 0 := rank_subsingleton' _ _\\n- Mathlib/LinearAlgebra/Dimension/LinearMap.lean:48\\n    theorem rank_zero [Nontrivial K] : rank (0 : V →ₗ[K] V') = 0 := by\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:92\\n    theorem rank_zero_iff : Module.rank R M = 0 ↔ Subsingleton M :=\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:104\\n    theorem Module.finite_of_rank_eq_zero (h : Module.rank R M = 0) : Module.Finite R M := by\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:372\\n    theorem finrank_bot : finrank R (⊥ : Submodule R M) = 0 :=\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:422\\n    theorem Module.finrank_eq_zero_of_rank_eq_zero (h : Module.rank R M = 0) :\\n- Mathlib/LinearAlgebra/Dimension/Finite.lean:438\\n    theorem Submodule.rank_eq_zero {S : Submodule R M} : Module.rank R S = 0 ↔ S = ⊥ :=\\n- Mathlib/NumberTheory/ModularForms/LevelOne/DimensionFormula.lean:243\\n    theorem levelOne_weight_two_rank_zero : Module.rank ℂ (ModularForm 𝒮ℒ 2) = 0 := by\\n- Mathlib/GroupTheory/Rank.lean:46\\n    theorem rank_eq_zero [Subsingleton G] : rank G = 0 := by\\n- Mathlib/GroupTheory/Rank.lean:51\\n    theorem rank_eq_zero_iff [FG G] : rank G = 0 ↔ Subsingleton G := by\\n- Mathlib/LinearAlgebra/Matrix/Rank.lean:158\\n    theorem rank_zero [CommSemiring R] [Nontrivial R] : rank (0 : Matrix m n R) = 0 := by\\n- Mathlib/MeasureTheory/Constructions/HaarToSphere.lean:95\\n    theorem toSphere_eq_zero_iff_finrank : μ.toSphere = 0 ↔ dim E = 0 := by\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 2585,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean  (lines 1–50 of 50):\\n     1  /-\\n     2  Copyright (c) 2018 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Torsion.Basic\\n     9  public import Mathlib.LinearAlgebra.Dimension.Constructions\\n    10  public import Mathlib.LinearAlgebra.Dimension.Subsingleton\\n    11  \\n    12  /-!\\n    13  # Rank and torsion\\n    14  \\n    15  ## Main statements\\n    16  \\n    17  - `rank_quotient_eq_of_le_torsion` : `rank M/N = rank M` if `N ≤ torsion M`.\\n    18  - `finrank_quotient_eq_of_le_torsion` : `finrank M/N = finrank M` if `N ≤ torsion M`.\\n    19  - `finrank_quotient_torsion_eq` : `finrank ℤ (M / torsion M) = finrank ℤ M` for an additive\\n    20    commutative group `M`.\\n    21  -/\\n    22  \\n    23  public section\\n    24  \\n    25  open Submodule\\n    26  \\n    27  theorem rank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n    28      {M' : Submodule R M} (hN : M' ≤ torsion R M) : Module.rank R (M ⧸ M') = Module.rank R M :=\\n    29    (rank_quotient_le M').antisymm <| by\\n    30      nontriviality R\\n    31      rw [Module.rank]\\n    32      refine ciSup_le fun ⟨s, hs⟩ ↦ LinearIndependent.cardinal_le_rank (v := (M'.mkQ ·)) ?_\\n    33      rw [LinearIndepOn, linearIndependent_iff'] at hs\\n    34      simp_rw [linearIndependent_iff', ← map_smul, ← map_sum, mkQ_apply, Quotient.mk_eq_zero]\\n    35      intro t g hg i hi\\n    36      obtain ⟨r, hg⟩ := hN hg\\n    37      simp_rw [Finset.smul_sum, Submonoid.smul_def, smul_smul] at hg\\n    38      exact r.prop.2 _ (mul_comm (g i) r ▸ hs t _ hg i hi)\\n    39  \\n    40  theorem finrank_quotient_eq_of_le_torsion {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]\\n    41      {M' : Submodule R M} (hN : M' ≤ torsion R M) :\\n    42      Module.finrank R (M ⧸ M') = Module.finrank R M :=\\n    43    congr_arg Cardinal.toNat (rank_quotient_eq_of_le_torsion hN)\\n    44  \\n    45  /-- Quotienting an additive commutative group by its torsion subgroup does not change its\\n    46  `ℤ`-`finrank`. -/\\n    47  theorem finrank_quotient_torsion_eq {M : Type*} [AddCommGroup M] :\\n    48      Module.finrank ℤ (M ⧸ (AddCommGroup.torsion M).toIntSubmodule) = Module.finrank ℤ M :=\\n    49    finrank_quotient_eq_of_le_torsion <| le_of_eq <| by\\n    50      rw [← Submodule.torsion_int, Submodule.toAddSubgroup_toIntSubmodule]\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsTorsion.*rank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 311,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'IsTorsion.*rank' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean:21\\n    rw [Module.IsTorsion, rank_eq_zero_iff]\\n- Mathlib/LinearAlgebra/Dimension/RankNullity.lean:183\\n    [IsTorsionFree R M] (h : 1 < Module.rank R M) {x : M} (hx : x ≠ 0) :\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.rank (?R : Type*) (?M : Type*) = 0\"}",
+   "ok": true,
+   "result_chars": 1362,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 23 declarations mentioning Cardinal, Zero.toOfNat0, Module.rank, OfNat.ofNat, Eq, and Cardinal.instZero.\\n- Module.rank_eq_zero_of_not_faithfulSMul   [Mathlib.LinearAlgebra.Dimension.Basic]\\n- rank_punit   [Mathlib.LinearAlgebra.Dimension.Subsingleton]\\n- rank_subsingleton'   [Mathlib.LinearAlgebra.Dimension.Subsingleton]\\n    See `rank_subsingleton` that assumes `Subsingleton R` instead.\\n- rank_bot   [Mathlib.LinearAlgebra.Dimension.Subsingleton]\\n- Module.rank_zero_iff_of_free   [Mathlib.LinearAlgebra.Dimension.StrongRankCondition]\\n- Module.subsingleton_of_rank_zero   [Mathlib.LinearAlgebra.Dimension.Free]\\n    A free module of rank zero is trivial.\\n- Module.finrank_eq_zero_of_rank_eq_zero   [Mathlib.LinearAlgebra.Dimension.Finite]\\n- rank_zero_iff   [Mathlib.LinearAlgebra.Dimension.Finite]\\n    See `rank_subsingleton` for the reason that `Nontrivial R` is needed. Also see `rank_eq_zero_iff` for the version without `NoZeroSMulDivisor R M`.\\n- Module.finite_of_rank_eq_zero   [Mathlib.LinearAlgebra.Dimension.Finite]\\n- rank_zero_iff_forall_zero   [Mathlib.LinearAlgebra.Dimension.Finite]\\n- Submodule.bot_eq_top_of_rank_eq_zero   [Mathlib.LinearAlgebra.Dimension.Finite]\\n- rank_eq_zero_iff   [Mathlib.LinearAlgebra.Dimension.Finite]\\n    See `rank_zero_iff` for a stronger version with `IsTorsionFree R M`.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 1277,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean  (lines 1–28 of 28):\\n     1  /-\\n     2  Copyright (c) 2018 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Mario Carneiro, Johannes Hölzl, Sander Dahmen, Kim Morrison\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Module.Torsion.Basic\\n     9  public import Mathlib.LinearAlgebra.Dimension.Finite\\n    10  \\n    11  /-!\\n    12  # Results relating rank and torsion.\\n    13  \\n    14  -/\\n    15  \\n    16  public section\\n    17  \\n    18  variable {R M : Type*} [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M]\\n    19  \\n    20  lemma rank_eq_zero_iff_isTorsion : Module.rank R M = 0 ↔ Module.IsTorsion R M := by\\n    21    rw [Module.IsTorsion, rank_eq_zero_iff]\\n    22    simp [mem_nonZeroDivisors_iff_ne_zero]\\n    23  \\n    24  /-- The `StrongRankCondition` is automatic. See `commRing_strongRankCondition`. -/\\n    25  theorem Module.finrank_eq_zero_iff_isTorsion [StrongRankCondition R] [Module.Finite R M] :\\n    26      finrank R M = 0 ↔ Module.IsTorsion R M := by\\n    27    rw [← rank_eq_zero_iff_isTorsion (R := R), ← finrank_eq_rank]\\n    28    norm_cast\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"rank_eq_zero_iff_isTorsion\"}",
+   "ok": true,
+   "result_chars": 226,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning rank_eq_zero_iff_isTorsion.\\n- rank_eq_zero_iff_isTorsion   [Mathlib.LinearAlgebra.Dimension.Torsion.Finite]\\n    **Alias** of `Module.rank_eq_zero_iff_isTorsion`.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem).*rank_eq_zero.*isTorsion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 404,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(lemma|theorem).*rank_eq_zero.*isTorsion' (via ripgrep):\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean:20\\n    lemma rank_eq_zero_iff_isTorsion : Module.rank R M = 0 ↔ Module.IsTorsion R M := by\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Finite.lean:25\\n    theorem Module.finrank_eq_zero_iff_isTorsion [StrongRankCondition R] [Module.Finite R M] :\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem torsion_module_rank_zero {R M : Type*} [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M]\n    (h : Module.IsTorsion R M) : Module.rank R M = 0 := sorry"
+}

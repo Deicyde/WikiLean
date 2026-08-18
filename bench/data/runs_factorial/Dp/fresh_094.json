@@ -1,0 +1,250 @@
+{
+ "task_id": "fresh_094",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:27:46Z",
+ "wall_s": 124.1,
+ "transcript_stats": {
+  "turns": 26,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 5,
+   "mcp__wikibrain__decl_exists": 14,
+   "mcp__wikibrain__brain_cell": 1,
+   "mcp__wikibrain__brain_filter": 2
+  },
+  "tokens_in": 202,
+  "tokens_out": 8671,
+  "cost_usd": 0.11718730000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation of a function\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2755,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"identity function on closed interval\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3604,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"identity function on closed interval\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q321119\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Identity function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q185148\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q632814\\\",\\\"label\\\":\\\"Riemannian manifold\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12485\\\",\\\"label\\\":\\\"Symmetry\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"label\\\":\\\"Mean\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":180,\\\"withheld_by_shard\\\":582,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\",\\\"via_cell\\\":\\\"cell:Q185148\\\",\\\"cell_label\\\":\\\"Interval (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"decl\\\":\\\"id\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#id\\\",\\\"via_cell\\\":\\\"cell:Q321119\\\",\\\"cell_label\\\":\\\"Identity function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"total variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded variation function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"variation\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b15cf7c53b394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b15cf7c53b394\",\"timestamp\":\"2026-08-08T02:28:00Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"arclength\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b15ddeaa4b394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b15ddeaa4b394\",\"timestamp\":\"2026-08-08T02:28:02Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.Icc\", \"id\", \"BddVarOn\", \"totalVariation\", \"Function.id\"]}",
+   "ok": true,
+   "result_chars": 1420,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\"},{\\\"decl\\\":\\\"id\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#id\\\"},{\\\"decl\\\":\\\"BddVarOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"totalVariation\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Function.id\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Function.totalVar\", \"MeasureTheory.totalVar\", \"BddVar\", \"BV\", \"Monotone\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b160f5c5eb394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b160f5c5eb394\",\"timestamp\":\"2026-08-08T02:28:10Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"bounded variation function identity\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b16291d13b394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b16291d13b394\",\"timestamp\":\"2026-08-08T02:28:14Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real\", \"lipschitzWith\", \"Lipschitz\", \"isLocalMinOn\"]}",
+   "ok": true,
+   "result_chars": 1174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Real.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Real.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html#Real\\\"},{\\\"decl\\\":\\\"lipschitzWith\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Lipschitz\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"isLocalMinOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsLipschitzWith\", \"HasBoundedVariationOn\", \"BddVarOn.id\"]}",
+   "ok": true,
+   "result_chars": 933,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsLipschitzWith\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"HasBoundedVariationOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"BddVarOn.id\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Int\", \"Finset\", \"Finset.sum\", \"Nat\", \"monotoneOn\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b16666a80b394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b16666a80b394\",\"timestamp\":\"2026-08-08T02:28:24Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q11348\"}",
+   "ok": true,
+   "result_chars": 2945,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q11348\\\",\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"f\\\":36040,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q11348\\\",\\\"anchor\\\":\\\"Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"f\\\":36040,\\\"xy\\\":[82.7,-49.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"description\\\":\\\"association of a single output to each input\\\",\\\"slug\\\":\\\"Function_mathematics\\\",\\\"article_annotations\\\":{\\\"total\\\":89,\\\"formalized\\\":61,\\\"partial\\\":9,\\\"not_formalized\\\":19},\\\"status\\\":\\\"not_formalized\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Function\\\",\\\"label\\\":\\\"Function\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Function\\\",\\\"qid\\\":\\\"Q11348\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Function\\\",\\\"label\\\":\\\"Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Function.html\\\",\\\"qid\\\":\\\"Q11348\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:function\\\",\\\"label\\\":\\\"function\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/function\\\",\\\"qid\\\":\\\"Q11348\\\",\\\"snippet\\\":\\\"A *function* $f \\\\\\\\colon S \\\\\\\\to T$ from a set $S$ (the *domain*) to a set $T$ (the *codomain*) is a prescription which takes any element $s \\\\\\\\in S$ to a unique element $f(s) \\\\\\\\in T$. One also says that:\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Function_mathematics\\\",\\\"label\\\":\\\"Function mathematics\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":89,\\\"formalized\\\":61,\\\"partial\\\":9,\\\"not_formalized\\\":19}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"page\\\":3,\\\"article\\\":1},\\\"synapses_summary\\\":{\\\"cites\\\":9,\\\"depends\\\":272,\\\"links\\\":90,\\\"mentions\\\":48,\\\"relates\\\":54},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":13,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":6,\\\"links\\\":2,\\\"mentions\\\":3,\\\"relates\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":3}},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1,\\\"relates\\\":2}}],\\\"counts\\\":{\\\"syn\\\":917,\\\"organs\\\":5},\\\"truncated\\\":{\\\"syn\\\":717},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LE.le\", \"LT.lt\", \"OfNat.ofNat\", \"sub_le_self\", \"dist\"]}",
+   "ok": true,
+   "result_chars": 1580,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LE.le\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#LE.le\\\"},{\\\"decl\\\":\\\"LT.lt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#LT.lt\\\"},{\\\"decl\\\":\\\"OfNat.ofNat\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#OfNat.ofNat\\\"},{\\\"decl\\\":\\\"sub_le_self\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Basic.html#sub_le_self\\\"},{\\\"decl\\\":\\\"dist\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Dist.dist\\\",\\\"suggestion_basis\\\":\\\"verified-rename\\\",\\\"module\\\":\\\"Mathlib.Topology.MetricSpace.Pseudo.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.MetricSpace.Pseudo.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Pseudo/Defs.html#Dist.dist\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"sSup\", \"iSup\", \"Dist.dist\", \"abs\", \"Abs.abs\"]}",
+   "ok": true,
+   "result_chars": 1554,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"sSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"iSup\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/SetNotation.html#iSup\\\"},{\\\"decl\\\":\\\"Dist.dist\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.MetricSpace.Pseudo.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.MetricSpace.Pseudo.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Pseudo/Defs.html#Dist.dist\\\"},{\\\"decl\\\":\\\"abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Abs.html#abs\\\"},{\\\"decl\\\":\\\"Abs.abs\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finset.sum\", \"Fintype.sum\", \"Sum\", \"sSup\", \"ciSup\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b16d2482ab394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b16d2482ab394\",\"timestamp\":\"2026-08-08T02:28:42Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"monotoneOn\", \"MonotoneOn\", \"StrictMono\", \"BddAbove\"]}",
+   "ok": true,
+   "result_chars": 1272,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"monotoneOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonotoneOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#MonotoneOn\\\"},{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"},{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"BddVarOn.totalVar\", \"BddVarOn\", \"Finset.prod\", \"Real.sqrt\"]}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1708291fb394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1708291fb394\",\"timestamp\":\"2026-08-08T02:28:50Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"identity function Lipschitz\", \"limit\": 5}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b1734aa28b394\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b1734aa28b394\",\"timestamp\":\"2026-08-08T02:28:57Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Lipschitz\", \"LipschitzWith\", \"AEStrongMonoOn\", \"Monotone\"]}",
+   "ok": true,
+   "result_chars": 1279,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Lipschitz\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LipschitzWith\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.Lipschitz\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.Lipschitz\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/EMetricSpace/Lipschitz.html#LipschitzWith\\\"},{\\\"decl\\\":\\\"AEStrongMonoOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"NNReal\", \"ENNReal\", \"Continuous\", \"Set.nointerleavings\"]}",
+   "ok": true,
+   "result_chars": 1265,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NNReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.NNReal.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.NNReal.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/NNReal/Defs.html#NNReal\\\"},{\\\"decl\\\":\\\"ENNReal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.ENNReal.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.ENNReal.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/ENNReal/Basic.html#ENNReal\\\"},{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"},{\\\"decl\\\":\\\"Set.nointerleavings\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"FunLike\", \"DFunLike\", \"Map\", \"restrictedTo\"]}",
+   "ok": true,
+   "result_chars": 1217,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FunLike\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.FunLike.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.FunLike.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/FunLike/Basic.html#FunLike\\\"},{\\\"decl\\\":\\\"DFunLike\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.FunLike.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.FunLike.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/FunLike/Basic.html#DFunLike\\\"},{\\\"decl\\\":\\\"Map\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"restrictedTo\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"sup\", \"Sup\", \"sSup_eq_top\", \"CompleteLinearOrder\"]}",
+   "ok": true,
+   "result_chars": 1286,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"sup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Sup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"sSup_eq_top\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Defs.html#sSup_eq_top\\\"},{\\\"decl\\\":\\\"CompleteLinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Defs.html#CompleteLinearOrder\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 0, \"type\": \"supercell\", \"under\": \"path:Mathlib/Analysis\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3007,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"supercell\\\",\\\"under\\\":\\\"path:Mathlib/Analysis\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/Analysis\\\",\\\"label\\\":\\\"Analysis\\\",\\\"fa\\\":57081,\\\"parent\\\":\\\"path:Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/AbsoluteValue/Equivalence\\\",\\\"label\\\":\\\"Equivalence\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/AbsoluteValue\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"label\\\":\\\"Analytic\\\",\\\"fa\\\":36056,\\\"parent\\\":\\\"path:Mathlib/Analysis\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Basic\\\",\\\"label\\\":\\\"Basic\\\",\\\"fa\\\":36056,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":7},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Binomial\\\",\\\"label\\\":\\\"Binomial\\\",\\\"fa\\\":2264,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":8},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/CPolynomial\\\",\\\"label\\\":\\\"CPolynomial\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/CPolynomialDef\\\",\\\"label\\\":\\\"CPolynomialDef\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/ChangeOrigin\\\",\\\"label\\\":\\\"ChangeOrigin\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":2},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Composition\\\",\\\"label\\\":\\\"Composition\\\",\\\"fa\\\":128,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Constructions\\\",\\\"label\\\":\\\"Constructions\\\",\\\"fa\\\":128,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":6},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/ConvergenceRadius\\\",\\\"label\\\":\\\"ConvergenceRadius\\\",\\\"fa\\\":2200,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":3},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Inverse\\\",\\\"label\\\":\\\"Inverse\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/IsolatedZeros\\\",\\\"label\\\":\\\"IsolatedZeros\\\",\\\"fa\\\":144,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/IteratedFDeriv\\\",\\\"label\\\":\\\"IteratedFDeriv\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Linear\\\",\\\"label\\\":\\\"Linear\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/OfScalars\\\",\\\"label\\\":\\\"OfScalars\\\",\\\"fa\\\":128,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":2},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Order\\\",\\\"label\\\":\\\"Order\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\"},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/Analysis/Analytic/RadiusLiminf\\\",\\\"label\\\":\\\"RadiusLiminf\\\",\\\"fa\\\":2200,\\\"parent\\\":\\\"path:Mathlib/Analysis/Analytic\\\",\\\"n_cells\\\":1}],\\\"returned\\\":20,\\\"cursor\\\":0,\\\"next_cursor\\\":3036,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 0, \"type\": \"supercell\", \"under\": \"path:Mathlib/MeasureTheory\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"supercell\\\",\\\"under\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/MeasureTheory\\\",\\\"label\\\":\\\"MeasureTheory\\\",\\\"fa\\\":40185,\\\"parent\\\":\\\"path:Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Category\\\",\\\"label\\\":\\\"Category\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Category/MeasCat\\\",\\\"label\\\":\\\"MeasCat\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Category\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"label\\\":\\\"Constructions\\\",\\\"fa\\\":36088,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/AddChar\\\",\\\"label\\\":\\\"AddChar\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/BorelSpace\\\",\\\"label\\\":\\\"BorelSpace\\\",\\\"fa\\\":35992,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"n_cells\\\":8},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/ClosedCompactCylinders\\\",\\\"label\\\":\\\"ClosedCompactCylinders\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/Cylinders\\\",\\\"label\\\":\\\"Cylinders\\\",\\\"fa\\\":128,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/HaarToSphere\\\",\\\"label\\\":\\\"HaarToSphere\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"n_cells\\\":2},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/Pi\\\",\\\"label\\\":\\\"Pi\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/Polish\\\",\\\"label\\\":\\\"Polish\\\",\\\"fa\\\":232,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\",\\\"n_cells\\\":6},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/Projective\\\",\\\"label\\\":\\\"Projective\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/ProjectiveFamilyContent\\\",\\\"label\\\":\\\"ProjectiveFamilyContent\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/SimpleGraph\\\",\\\"label\\\":\\\"SimpleGraph\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/SubmoduleQuotient\\\",\\\"label\\\":\\\"SubmoduleQuotient\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Constructions/UnitInterval\\\",\\\"label\\\":\\\"UnitInterval\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Constructions\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Covering\\\",\\\"label\\\":\\\"Covering\\\",\\\"fa\\\":184,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Covering/Besicovitch\\\",\\\"label\\\":\\\"Besicovitch\\\",\\\"fa\\\":144,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Covering\\\",\\\"n_cells\\\":2},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace\\\",\\\"label\\\":\\\"BesicovitchVectorSpace\\\",\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Covering\\\"},{\\\"id\\\":\\\"path:Mathlib/MeasureTheory/Covering/DensityTheorem\\\",\\\"label\\\":\\\"DensityTheorem\\\",\\\"fa\\\":144,\\\"parent\\\":\\\"path:Mathlib/MeasureTheory/Covering\\\",\\\"n_cells\\\":1}],\\\"returned\\\":20,\\\"cursor\\\":0,\\\"next_cursor\\\":5861,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem identity_totalVariation (a b : ℝ) (hab : a ≤ b) : \n  totalVariation id (Set.Icc a b) = b - a := sorry"
+}

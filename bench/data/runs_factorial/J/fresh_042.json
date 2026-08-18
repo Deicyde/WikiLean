@@ -1,0 +1,355 @@
+{
+ "task_id": "fresh_042",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:57:59Z",
+ "wall_s": 91.1,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 21,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_search": 25,
+   "mcp__wikibrain__brain_cell": 4,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__brain_filter": 1
+  },
+  "tokens_in": 172,
+  "tokens_out": 6788,
+  "cost_usd": 0.10418630000000004
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"fraction field of a ring\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fraction field of a ring\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q66055\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Fraction\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q11203\\\",\\\"label\\\":\\\"System of linear equations\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1420905\\\",\\\"label\\\":\\\"Hilbert's Theorem 90\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q165474\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q168817\\\",\\\"label\\\":\\\"Algebraic number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q180345\\\",\\\"label\\\":\\\"rational root theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q187959\\\",\\\"label\\\":\\\"Distributive property\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":23,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Field (K : Type u) extends CommRing K, DivisionRing K\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\",\\\"via_cell\\\":\\\"cell:Q190109\\\",\\\"cell_label\\\":\\\"Field (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Ring\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Ring.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Ring.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Ring (R : Type u) extends Semiring R, AddCommGroup R, AddGroupWithOne R\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Ring/Defs.html#Ring\\\",\\\"via_cell\\\":\\\"cell:Q161172\\\",\\\"cell_label\\\":\\\"Ring (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring\\\",\\\"label\\\":\\\"Ring\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Ring/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pi"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"rank of a module\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2930,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank of a module\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":17},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":14},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":13},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":10}],\\\"returned\\\":12,\\\"total\\\":128,\\\"withheld_by_shard\\\":615,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Module (R : Type u) (M : Type v) [Semiring R] [AddCommMonoid M] extends\\\\n  DistribMulAction R M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\",\\\"via_cell\\\":\\\"cell:Q18848\\\",\\\"cell_label\\\":\\\"Module (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Frac fraction field\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Frac fraction field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 4078,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28402100\\\",\\\"label\\\":\\\"Rank of an elliptic curve\\\",\\\"aka\\\":[\\\"EllipticCurveRank.RatEllipticCurve._02062_le_density_rank_zero\\\",\\\"EllipticCurveRank.RatEllipticCurve._08375_le_density_rank_zero_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.avg_rank_lt_0885\\\",\\\"EllipticCurveRank.RatEllipticCurve.finite_twentyone_lt_finrank\\\",\\\"EllipticCurveRank.RatEllipticCurve.half_rank_zero_and_half_rank_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.twentyone_le_rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.unbounded_rank_conjecture\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkiesKlagsbrun29\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentyeight_le_rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentynine_le_rank_elkiesKlagsbrun29\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:Q318737\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"aka\\\":[\\\"Abelian Category\\\",\\\"CategoryTheory.Abelian\\\",\\\"Definition:Abelian Category\\\",\\\"abelian category\\\",\\\"Rank-based persistence\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Basic\\\"},{\\\"id\\\":\\\"cell:Q303402\\\",\\\"label\\\":\\\"Rank–nullity theorem\\\",\\\"aka\\\":[\\\"LinearMap.rank_range_add_rank_ker\\\",\\\"Rank-Nullity Theorem\\\",\\\"Rank-nullity theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/RankNullity\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Limits.kernel\\\",\\\"label\\\":\\\"CategoryTheory.Limits.kernel\\\",\\\"aka\\\":[\\\"Rank-based persistence\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Limits/Shapes/Kernels\\\"},{\\\"id\\\":\\\"cell:Q3526981\\\",\\\"label\\\":\\\"Erdős–Kaplansky theorem\\\",\\\"aka\\\":[\\\"rank_dual_eq_card_dual_of_aleph0_le_rank\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.choose_symm\\\",\\\"label\\\":\\\"Nat.choose_symm\\\",\\\"aka\\\":[\\\"Rank and fooling set size\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Nat/Choose\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:derangements\\\",\\\"label\\\":\\\"derangements\\\",\\\"aka\\\":[\\\"Ranking and Unranking Restricted Permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Derangements/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:rank_mul_rank\\\",\\\"label\\\":\\\"rank_mul_rank\\\",\\\"aka\\\":[\\\"fields-lemma-multiplicativity-degrees\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Free\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:rank_dual_eq_card_dual_of_aleph0_le_rank'\\\",\\\"label\\\":\\\"rank_dual_eq_card_dual_of_aleph0_le_rank'\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:rank_subsingleton'\\\",\\\"label\\\":\\\"rank_subsingleton'\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Subsingleton\\\"},{\\\"id\\\":\\\"cell:Q1252145\\\",\\\"label\\\":\\\"integer lattice\\\",\\\"aka\\\":[\\\"IsZLattice\\\",\\\"Lattice (discrete subgroup)\\\",\\\"Stabilizer Ranks, Barnes Wall Lattices and Magic Monotones\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/ZLattice\\\"},{\\\"id\\\":\\\"cell:Q1227702\\\",\\\"label\\\":\\\"Dirichlet's unit theorem\\\",\\\"aka\\\":[\\\"NumberField.Units.unitLattice_rank\\\",\\\"A characterization of Oeljeklaus-Toma manifolds in locally conformally K\\\\\\\\\\\\\\\"{a}hler geometry\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Units\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"label\\\":\\\"AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"aka\\\":[\\\"morphisms-definition-finite-locally-free\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Limits.Cone\\\",\\\"label\\\":\\\"CategoryTheory.Limits.Cone\\\",\\\"aka\\\":[\\\"Computing Generalized Ranks of Persistence Modules via Unfolding to Zigzag Modules\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Limits/Cones\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.finrank_real_complex\\\",\\\"label\\\":\\\"Complex.finrank_real_complex\\\",\\\"aka\\\":[\\\"fields-example-C-over-R\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Complex/FiniteDimensional\\\"}],\\\"snapshot\\\":{\\\""
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization field of fractions\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization field of fractions\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 884,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"aka\\\":[\\\"fields-definition-degree\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rankAtStalk\\\",\\\"label\\\":\\\"Module.rankAtStalk\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"label\\\":\\\"Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsLocalization localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsLocalization localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2445,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime\\\",\\\"label\\\":\\\"Localization.AtPrime\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"label\\\":\\\"Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"aka\\\":[\\\"algebra-lemma-produce-finite\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Etale/QuasiFinite\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime.isLocalRing\\\",\\\"label\\\":\\\"Localization.AtPrime.isLocalRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:Q1047749\\\",\\\"label\\\":\\\"Turán's theorem\\\",\\\"aka\\\":[\\\"SimpleGraph.CliqueFree.card_edgeFinset_le\\\",\\\"Vertex-Based Localization of Tur\\\\\\\\'{a}n's Theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Extremal\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Adjunction.rightAdjointUniq\\\",\\\"label\\\":\\\"CategoryTheory.Adjunction.rightAdjointUniq\\\",\\\"aka\\\":[\\\"On monads of exact reflective localizations of Abelian categories\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Adjunction/Unique\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.ObjectProperty.SerreClassLocalization.abelian\\\",\\\"label\\\":\\\"CategoryTheory.ObjectProperty.SerreClassLocalization.abelian\\\",\\\"aka\\\":[\\\"homology-lemma-serre-subcategory-is-kernel\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/SerreClass\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CommRingCat.epi_iff_epi\\\",\\\"label\\\":\\\"CommRingCat.epi_iff_epi\\\",\\\"aka\\\":[\\\"Gabriel localization theory and its applications\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/Ring\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:HomologicalComplex₂\\\",\\\"label\\\":\\\"HomologicalComplex₂\\\",\\\"aka\\\":[\\\"Trace theories and localization\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Homology/HomologicalBicomplex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MaximalSpectrum.toPiLocalizationEquiv\\\",\\\"label\\\":\\\"MaximalSpectrum.toPiLocalizationEquiv\\\",\\\"aka\\\":[\\\"algebra-lemma-product-local\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsFractionRing\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1368,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsFractionRing\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"aka\\\":[\\\"Homological invariants of Pauli stabilizer codes\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing.toField\\\",\\\"label\\\":\\\"IsFractionRing.toField\\\",\\\"aka\\\":[\\\"fields-example-quotient-field\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing.isAlgebraic_iff\\\",\\\"label\\\":\\\"IsFractionRing.isAlgebraic_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/Integral\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Rat.isFractionRing\\\",\\\"label\\\":\\\"Rat.isFractionRing\\\",\\\"aka\\\":[\\\"On the Nature of Reality\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow507128.exists_isFractionRing_self_ideal_ne_top_invertible\\\",\\\"label\\\":\\\"Mathoverflow507128.exists_isFractionRing_self_ideal_ne_top_invertible\\\",\\\"supercell\\\":\\\"path:FormalConjectures/Mathoverflow\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PadicInt.isFractionRing\\\",\\\"label\\\":\\\"PadicInt.isFractionRing\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/Padics/PadicIntegers\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Module.rank\"}",
+   "ok": true,
+   "result_chars": 1925,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":40970,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\"],\\\"f\\\":40970,\\\"xy\\\":[536.2,-207.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:09G3\\\",\\\"label\\\":\\\"fields-definition-degree\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09G3\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"Let $F/E$ be an extension of fields. The dimension of $F$ considered as an $E$-vector space is called the {\\\\\\\\it degree} of the extension and is denoted $[F : E]$. If $[F : E] < \\\\\\\\infty$ then $F$ is said to be a {\\\\\\\\it finite} extension of $E$.\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"label\\\":\\\"Dimension\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":3,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q6059532\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"invocation\\\":3}},{\\\"id\\\":\\\"cell:Q181296\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q44946\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:IsFractionRing\"}",
+   "ok": true,
+   "result_chars": 2168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:IsFractionRing\\\",\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"anchor\\\":\\\"decl:Mathlib:IsFractionRing\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"],\\\"f\\\":128,\\\"xy\\\":[-398.5,438.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:IsFractionRing\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.FractionRing\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev IsFractionRing (R : Type*) [CommSemiring R] (K : Type*) [CommSemiring K] [Algebra R K] :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.FractionRing\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2204.06023#6\\\",\\\"label\\\":\\\"Homological invariants of Pauli stabilizer codes\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2204.06023\\\",\\\"ref\\\":\\\"6\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Localization\\\",\\\"label\\\":\\\"Localization\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\",\\\"label\\\":\\\"FractionRing\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"related\\\":1,\\\"mentions\\\":2,\\\"invocation\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q66055\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"related\\\":1}},{\\\"id\\\":\\\"cell:Q357858\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow507128.exists_isFractionRing_self_ideal_ne_top_invertible\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:ClassGroup.canonicalEquiv_eq_ringEquivOfRingEquiv\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:ClassGroup.mulEquiv_mk\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":6,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Module.rank\"}",
+   "ok": true,
+   "result_chars": 865,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"source_db\\\":\\\"stacks\\\",\\\"id\\\":\\\"xref:stacks:09G3\\\",\\\"label\\\":\\\"fields-definition-degree\\\",\\\"snippet\\\":\\\"Let $F/E$ be an extension of fields. The dimension of $F$ considered as an $E$-vector space is called the {\\\\\\\\it degree} of the extension and is denoted $[F : E]$. If $[F : E] < \\\\\\\\infty$ then $F$ is said to be a {\\\\\\\\it finite} extension of $E$.\\\",\\\"license\\\":\\\"GFDL (Stacks Project)\\\",\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09G3\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:IsFractionRing\"}",
+   "ok": true,
+   "result_chars": 770,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:IsFractionRing\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"code\\\":\\\"abbrev IsFractionRing (R : Type*) [CommSemiring R] (K : Type*) [CommSemiring K] [Algebra R K] :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/FractionRing.html#IsFractionRing\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2204.06023#6\\\",\\\"label\\\":\\\"Homological invariants of Pauli stabilizer codes\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2204.06023\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank tower base field extension\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank tower base field extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank_eq\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 346,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank_eq\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"restrictScalars scalarRestriction\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"restrictScalars scalarRestriction\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"algebraMap fraction localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebraMap fraction localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:Module.rank\", \"limit\": 20, \"kinds\": \"depends,links\"}",
+   "ok": true,
+   "result_chars": 417,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"links\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:IsFractionRing\", \"limit\": 20, \"kinds\": \"depends,links\"}",
+   "ok": true,
+   "result_chars": 423,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:IsFractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"links\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":6,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank finrank dimension\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank finrank dimension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module finrank_eq_rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module finrank_eq_rank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"scalarRestriction\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"scalarRestriction\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"algebraMap\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebraMap\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:PrimeSpectrum.isOpenMap_comap_algebraMap_tensorProduct_of_field\\\",\\\"label\\\":\\\"PrimeSpectrum.isOpenMap_comap_algebraMap_tensorProduct_of_field\\\",\\\"aka\\\":[\\\"algebra-lemma-map-into-tensor-algebra-open\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Derivation.map_algebraMap\\\",\\\"label\\\":\\\"Derivation.map_algebraMap\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Derivation/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ExteriorAlgebra.algebraMapInv\\\",\\\"label\\\":\\\"ExteriorAlgebra.algebraMapInv\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/ExteriorAlgebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FaithfulSMul.algebraMap_injective\\\",\\\"label\\\":\\\"FaithfulSMul.algebraMap_injective\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Algebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:RatFunc.algebraMap_eq_C\\\",\\\"label\\\":\\\"RatFunc.algebraMap_eq_C\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/RatFunc/AsPolynomial\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Algebra.discr_one_elem_eq_of_sq_algebraMap\\\",\\\"label\\\":\\\"TauCeti.Algebra.discr_one_elem_eq_of_sq_algebraMap\\\",\\\"supercell\\\":\\\"path:TauCeti/FieldTheory\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Algebra.trace_eq_zero_of_sq_algebraMap_of_not_mem_range\\\",\\\"label\\\":\\\"TauCeti.Algebra.trace_eq_zero_of_sq_algebraMap_of_not_mem_range\\\",\\\"supercell\\\":\\\"path:TauCeti/FieldTheory\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.CommAlgCat.algebraMap_restrictScalarsObj\\\",\\\"label\\\":\\\"TauCeti.CommAlgCat.algebraMap_restrictScalarsObj\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Category/CommAlgCat\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.NumberField.algebraMap_four_mul_mem_conductor\\\",\\\"label\\\":\\\"TauCeti.NumberField.algebraMap_four_mul_mem_conductor\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/NumberField\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.NumberField.algebraMap_integralSqrt\\\",\\\"label\\\":\\\"TauCeti.NumberField.algebraMap_integralSqrt\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/NumberField\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"isFractionRing rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"isFractionRing rank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization rank torsionFree\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization rank torsionFree\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank equals dimension vector space\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank equals dimension vector space\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank field extension\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank field extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.Rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 885,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.Rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"aka\\\":[\\\"fields-definition-degree\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rankAtStalk\\\",\\\"label\\\":\\\"Module.rankAtStalk\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"label\\\":\\\"Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Module.rank\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 2258,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.rank\\\",\\\"decl\\\":\\\"Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q28402100\\\",\\\"label\\\":\\\"Rank of an elliptic curve\\\",\\\"aka\\\":[\\\"EllipticCurveRank.RatEllipticCurve._02062_le_density_rank_zero\\\",\\\"EllipticCurveRank.RatEllipticCurve._08375_le_density_rank_zero_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.avg_rank_lt_0885\\\",\\\"EllipticCurveRank.RatEllipticCurve.finite_twentyone_lt_finrank\\\",\\\"EllipticCurveRank.RatEllipticCurve.half_rank_zero_and_half_rank_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.twentyone_le_rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.unbounded_rank_conjecture\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkiesKlagsbrun29\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentyeight_le_rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentynine_le_rank_elkiesKlagsbrun29\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:Q318737\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"aka\\\":[\\\"Abelian Category\\\",\\\"CategoryTheory.Abelian\\\",\\\"Definition:Abelian Category\\\",\\\"abelian category\\\",\\\"Rank-based persistence\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Basic\\\"},{\\\"id\\\":\\\"cell:Q303402\\\",\\\"label\\\":\\\"Rank–nullity theorem\\\",\\\"aka\\\":[\\\"LinearMap.rank_range_add_rank_ker\\\",\\\"Rank-Nullity Theorem\\\",\\\"Rank-nullity theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/RankNullity\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Limits.kernel\\\",\\\"label\\\":\\\"CategoryTheory.Limits.kernel\\\",\\\"aka\\\":[\\\"Rank-based persistence\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Limits/Shapes/Kernels\\\"},{\\\"id\\\":\\\"cell:Q3526981\\\",\\\"label\\\":\\\"Erdős–Kaplansky theorem\\\",\\\"aka\\\":[\\\"rank_dual_eq_card_dual_of_aleph0_le_rank\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank_lt_aleph0\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank_lt_aleph0\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Dimension\"}",
+   "ok": true,
+   "result_chars": 1500,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Dimension\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"children\\\":[\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Constructions\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/DivisionRing\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Finite\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Finrank\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Free\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/FreeAndStrongRankCondition\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/LinearMap\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Localization\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/OrzechProperty\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/RankNullity\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/StrongRankCondition\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Subsingleton\\\",\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"],\\\"fa\\\":43258},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Dimension/Localization\"}",
+   "ok": true,
+   "result_chars": 797,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Localization\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Localization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Localization\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"label\\\":\\\"Dimension\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 4, \"under\": \"path:Mathlib/LinearAlgebra/Dimension/Localization\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 285,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":4,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Localization\\\",\\\"hits\\\":[],\\\"returned\\\":0,\\\"cursor\\\":0,\\\"next_cursor\\\":null,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank_eq rank_mul\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank_eq rank_mul\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"restrictScalars rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"restrictScalars rank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"IsFractionRing\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"IsFractionRing\\\",\\\"decl\\\":\\\"IsFractionRing\\\",\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing\\\",\\\"label\\\":\\\"IsFractionRing\\\",\\\"aka\\\":[\\\"Homological invariants of Pauli stabilizer codes\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing.toField\\\",\\\"label\\\":\\\"IsFractionRing.toField\\\",\\\"aka\\\":[\\\"fields-example-quotient-field\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsFractionRing.isAlgebraic_iff\\\",\\\"label\\\":\\\"IsFractionRing.isAlgebraic_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/Integral\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Rat.isFractionRing\\\",\\\"label\\\":\\\"Rat.isFractionRing\\\",\\\"aka\\\":[\\\"On the Nature of Reality\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow507128.exists_isFractionRing_self_ideal_ne_top_invertible\\\",\\\"label\\\":\\\"Mathoverflow507128.exists_isFractionRing_self_ideal_ne_top_invertible\\\",\\\"supercell\\\":\\\"path:FormalConjectures/Mathoverflow\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"DivisionRing Field CommRing\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"DivisionRing Field CommRing\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem module_rank_eq_of_isFractionRing {R K : Type*} [CommRing R] [CommRing K] \n    [Algebra R K] (h : IsFractionRing R K) {M : Type*} [AddCommGroup M] [Module K M] :\n    Module.rank K M = Module.rank R M := sorry"
+}

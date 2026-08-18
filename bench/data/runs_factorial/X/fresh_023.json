@@ -1,0 +1,360 @@
+{
+ "task_id": "fresh_023",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:07:39Z",
+ "wall_s": 206.1,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 8,
+   "mcp__formal__decl_grep": 16,
+   "mcp__formal__decl_read": 11,
+   "mcp__wikibrain__decl_exists": 3
+  },
+  "tokens_in": 202,
+  "tokens_out": 17323,
+  "cost_usd": 0.20010879999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"antitone\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'antitone': unknown identifier 'antitone'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integrable\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable': unknown identifier 'integrable'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral test series\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral test series': Unknown identifier `integral`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"antitone\"}",
+   "ok": true,
+   "result_chars": 2620,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1065 match(es) for 'antitone' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/TerminatesIffRat.lean:248\\n    antitone. -/\\n- Mathlib/SetTheory/Cardinal/EventuallyConst.lean:46\\n    theorem of_antitone_of_lt_cof (hf : Antitone f) (hα : lift.{u} #β < lift.{v} (cof α)) :\\n- Mathlib/SetTheory/Cardinal/EventuallyConst.lean:59\\n    theorem eventuallyConst_of_antitone (hf : Antitone f) : atTop.EventuallyConst f :=\\n- Mathlib/SetTheory/Cardinal/EventuallyConst.lean:71\\n    theorem eventuallyConst_of_antitone (hf : Antitone f) : atTop.EventuallyConst f :=\\n- Mathlib/Data/EReal/Inv.lean:418\\n    lemma antitone_div_right_of_nonpos (h : b ≤ 0) : Antitone fun a ↦ a / b := by\\n- Mathlib/Data/EReal/Inv.lean:427\\n    antitone_div_right_of_nonpos h h'\\n- Mathlib/Combinatorics/Additive/FreimanHom.lean:329\\n    lemma isMulFreimanHom_antitone : Antitone (IsMulFreimanHom · A B f) :=\\n- Mathlib/Combinatorics/Additive/FreimanHom.lean:330\\n    antitone_nat_of_succ_le fun n hf =>\\n- Mathlib/Combinatorics/Additive/FreimanHom.lean:341\\n    isMulFreimanHom_antitone hmn hf\\n- Mathlib/Algebra/AddConstMap/Basic.lean:292\\n    theorem antitone_iff_Icc [AddCommGroup G] [LinearOrder G] [IsOrderedAddMonoid G] [Archimedean G]\\n- Mathlib/SetTheory/Ordinal/FixedPointApproximants.lean:220\\n    @[deprecated (since := \\\"2026-03-30\\\")] alias gfpApprox_antitone := gfpApprox_anti_right\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:46\\n    lemma antitoneOn_extremalNumber_div_choose_two (H : SimpleGraph W) :\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:48\\n    apply antitoneOn_nat_Ici_of_succ_le\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:89\\n    refine Real.isGLB_of_tendsto_antitoneOn_bddBelow_nat_Ici ?_\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:90\\n    (antitoneOn_extremalNumber_div_choose_two H) h_bdd\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:91\\n    have h_tto := Real.tendsto_atTop_csInf_of_antitoneOn_bddBelow_nat_Ici\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:92\\n    (antitoneOn_extremalNumber_div_choose_two H) h_bdd\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:103\\n    have h_tendsto := Real.tendsto_atTop_csInf_of_antitoneOn_bddBelow_nat_Ici\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:104\\n    (antitoneOn_extremalNumber_div_choose_two H) (isGLB_turanDensity H).bddBelow\\n- Mathlib/Combinatorics/SimpleGraph/Extremal/TuranDensity.lean:141\\n    · exact antitoneOn_extremalNumber_div_choose_two H hm (hm.trans hn) hn\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Integrable\"}",
+   "ok": true,
+   "result_chars": 2654,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2359 match(es) for 'Integrable' (via ripgrep):\\n- Mathlib/Probability/Process/Stopping.lean:1180\\n    (hu : ∀ n, Integrable (u n) μ) {s : Finset ι} (hbdd : ∀ ω, τ ω ∈ WithTop.some '' s) :\\n- Mathlib/Probability/Process/Stopping.lean:1181\\n    Integrable (stoppedValue u τ) μ := by\\n- Mathlib/Probability/Process/Stopping.lean:1188\\n    (hu : ∀ n, Integrable (u n) μ) {N : ι} (hbdd : ∀ ω, τ ω ≤ N) :\\n- Mathlib/Probability/Process/Stopping.lean:1189\\n    Integrable (stoppedValue u τ) μ := by\\n- Mathlib/Probability/Process/Stopping.lean:1225\\n    (hu : ∀ n, Integrable (u n) μ) (n : ι) {s : Finset ι}\\n- Mathlib/Probability/Process/Stopping.lean:1227\\n    Integrable (stoppedProcess u τ n) μ := by\\n- Mathlib/Probability/Process/Stopping.lean:1232\\n    (hu : ∀ n, Integrable (u n) μ) (n : ι) : Integrable (stoppedProcess u τ n) μ := by\\n- Mathlib/Probability/Process/Filtration.lean:214\\n    theorem Integrable.uniformIntegrable_condExp_filtration [Preorder ι] {μ : Measure Ω}\\n- Mathlib/Probability/Process/Filtration.lean:215\\n    [IsFiniteMeasure μ] {f : Filtration ι m} {g : Ω → ℝ} (hg : Integrable g μ) :\\n- Mathlib/Probability/Process/Filtration.lean:216\\n    UniformIntegrable (fun i => μ[g | f i]) 1 μ :=\\n- Mathlib/Probability/Process/Filtration.lean:217\\n    hg.uniformIntegrable_condExp f.le\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:82\\n    (h2s : (κ ⊗ₖ η) a s ≠ ∞) : Integrable (fun b => (η (a, b)).real (Prod.mk b ⁻¹' s)) (κ a) := by\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:136\\n    Integrable f ((κ ⊗ₖ η) a) ↔\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:137\\n    (∀ᵐ x ∂κ a, Integrable (fun y => f (x, y)) (η (a, x))) ∧\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:138\\n    Integrable (fun x => ∫ y, ‖f (x, y)‖ ∂η (a, x)) (κ a) := by\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:139\\n    simp only [Integrable, hasFiniteIntegral_compProd_iff' hf, hf.norm.integral_kernel_compProd,\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:142\\n    theorem _root_.MeasureTheory.Integrable.ae_of_compProd ⦃f : β × γ → E⦄\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:143\\n    (hf : Integrable f ((κ ⊗ₖ η) a)) : ∀ᵐ x ∂κ a, Integrable (fun y => f (x, y)) (η (a, x)) :=\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:146\\n    theorem _root_.MeasureTheory.Integrable.integral_norm_compProd ⦃f : β × γ → E⦄\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:147\\n    (hf : Integrable f ((κ ⊗ₖ η) a)) : Integrable (fun x => ∫ y, ‖f (x, y)‖ ∂η (a, x)) (κ a) :=\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*integral.*sum\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2213,
+   "result_head": "[{\"type\": \"text\", \"text\": \"48 match(es) for '(theorem|lemma).*integral.*sum' (via ripgrep):\\n- Mathlib/NumberTheory/AbelSummation.lean:64\\n    private theorem integralmulsum (hf_diff : ∀ t ∈ Set.Icc a b, DifferentiableAt ℝ f t)\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:40\\n    Note that the original version of the Akra–Bazzi theorem uses an integral rather than the sum in\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:51\\n    * Add the original version of the theorem with an integral instead of a sum.\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Chebyshev/ChebyshevGauss.lean:110\\n    theorem integral_eq_sumZeroes {n : ℕ} {P : ℝ[X]} (hn : n ≠ 0) (hP : P.degree < 2 * n) :\\n- Mathlib/Analysis/SpecialFunctions/Gaussian/FourierTransform.lean:282\\n    theorem integral_cexp_neg_sum_mul_add {ι : Type*} [Fintype ι] {b : ι → ℂ}\\n- Mathlib/Analysis/SpecialFunctions/Gaussian/FourierTransform.lean:292\\n    theorem integral_cexp_neg_mul_sum_add {ι : Type*} [Fintype ι] (hb : 0 < b.re) (c : ι → ℂ) :\\n- Mathlib/Probability/ProbabilityMassFunction/Integrals.lean:32\\n    theorem integral_eq_tsum (p : PMF α) (f : α → E) (hf : Integrable f p.toMeasure) :\\n- Mathlib/Probability/ProbabilityMassFunction/Integrals.lean:47\\n    theorem integral_eq_sum [Fintype α] (p : PMF α) (f : α → E) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:72\\n    lemma integral_le_sum_Ico_of_le (hab : a ≤ b)\\n- Mathlib/Analysis/SumIntegralComparisons.lean:84\\n    theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:97\\n    theorem AntitoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : AntitoneOn f (Set.Icc a b)) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:134\\n    theorem MonotoneOn.integral_le_sum (hf : MonotoneOn f (Icc x₀ (x₀ + a))) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:139\\n    theorem MonotoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : MonotoneOn f (Set.Icc a b)) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:163\\n    lemma integral_le_sum_mul_Ico_of_antitone_monotone\\n- Mathlib/Analysis/SumIntegralComparisons.lean:289\\n    theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → ℝ → Prop\"}",
+   "ok": true,
+   "result_chars": 2831,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27169 declarations mentioning Real.\\n- NormedAddGroupHom.SurjectiveOnWith   [Mathlib.Analysis.Normed.Group.Hom]\\n    A normed group hom is surjective on the subgroup `K` with constant `C` if every element `x` of `K` has a preimage whose norm is bounded above by `C*‖x‖`. This i\\n- Asymptotics.IsBigOWith   [Mathlib.Analysis.Asymptotics.Defs]\\n    This version of the Landau notation `IsBigOWith C l f g` where `f` and `g` are two functions on a type `α` and `l` is a filter on `α`, means that eventually for\\n- Real.HolderConjugate   [Mathlib.Data.Real.ConjExponents]\\n    Real numbers `p q : ℝ` are **Hölder conjugate** if they are positive and satisfy the equality `p⁻¹ + q⁻¹ = 1`. This is an abbreviation for `Real.HolderTriple p \\n- Real.HolderTriple   [Mathlib.Data.Real.ConjExponents]\\n    Real numbers `p q r : ℝ` are said to be a **Hölder triple** if `p` and `q` are positive and `p⁻¹ + q⁻¹ = r⁻¹`.\\n- MeasureTheory.DominatedFinMeasAdditive   [Mathlib.MeasureTheory.Integral.FinMeasAdditive]\\n    A `FinMeasAdditive` set function whose norm on every set is less than the measure of the set (up to a multiplicative constant).\\n- IntervalIntegrable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    A function `f` is called *interval integrable* with respect to a measure `μ` on an unordered interval `a..b` if it is integrable on both intervals `(a, b]` and \\n- CircleIntegrable   [Mathlib.MeasureTheory.Integral.CircleIntegral]\\n    We say that a function `f : ℂ → E` is integrable on the circle with center `c` and radius `R` if the function `f ∘ circleMap c R` is integrable on `[0, 2π]`.  N\\n- AbsolutelyContinuousOnInterval   [Mathlib.MeasureTheory.Function.AbsolutelyContinuous]\\n    `AbsolutelyContinuousOnInterval f a b`: A function `f` is *absolutely continuous* on `uIcc a b` if the function which (intuitively) maps `uIoc (a i) (b i)`, `i \\n- Complex.CanonicalDecomp   [Mathlib.Analysis.Complex.CanonicalDecomposition]\\n    Given functions `f`, `g` and a real number `R`, the following convenience structure packs the information relevant in the canonical decomposition.  The conditio\\n- Complex.ECanonicalDecomp   [Mathlib.Analysis.Complex.CanonicalDecomposition]\\n    Given functions `f`, `g` and a real number `R`, the following convenience structure packs the information relevant in the extended canonical decomposition.\\n- StrongConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly concave if is strongly concave with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this is \\n- StrongConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly convex if it is uniformly convex with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this i\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 72, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2587,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 72–111 of 309):\\n    72  lemma integral_le_sum_Ico_of_le (hab : a ≤ b)\\n    73      (h : ∀ i ∈ Ico a b, ∀ x ∈ Ico (i : ℝ) ↑(i + 1), g x ≤ f i)\\n    74      (hg : IntegrableOn g (Ico a b)) : ∫ x in a..b, g x ≤ ∑ i ∈ .Ico a b, f i := by\\n    75    convert! neg_le_neg (sum_Ico_le_integral_of_le (f := -f) (g := -g) hab\\n    76      (fun i hi x hx ↦ neg_le_neg (h i hi x hx)) hg.neg) <;> simp\\n    77  \\n    78  private theorem AntitoneOn.intervalIntegrable_subset (hf : AntitoneOn f (Icc x₀ (x₀ + a)))\\n    79      (k : ℕ) (hk : k + 1 ≤ a) : IntervalIntegrable f volume (x₀ + k) (x₀ + ↑(k + 1)) := by\\n    80    refine (hf.mono ?_).intervalIntegrable\\n    81    rw [uIcc_of_le (by simp)]\\n    82    apply Icc_subset_Icc <;> simp [-Nat.cast_add, hk]\\n    83  \\n    84  theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n    85      ∫ x in x₀..x₀ + a, f x ≤ ∑ i ∈ .range a, f (x₀ + i) := calc\\n    86    _ = ∑ i ∈ .range a, ∫ x in x₀ + i..x₀ + ↑(i + 1), f x := by\\n    87      convert! (sum_integral_adjacent_intervals hf.intervalIntegrable_subset).symm\\n    88      simp\\n    89    _ ≤ ∑ i ∈ .range a, ∫ _ in x₀ + i..x₀ + ↑(i + 1), f (x₀ + i) := by\\n    90      gcongr with i hi\\n    91      rw [Finset.mem_range, ← Nat.add_one_le_iff] at hi\\n    92      have := hf.intervalIntegrable_subset _ hi\\n    93      rify at hi this ⊢\\n    94      refine integral_mono_on (by simp) this (by simp) fun _ _ ↦ by apply hf <;> grind\\n    95    _ = _ := by simp\\n    96  \\n    97  theorem AntitoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : AntitoneOn f (Set.Icc a b)) :\\n    98      ∫ x in a..b, f x ≤ ∑ x ∈ .Ico a b, f x := by\\n    99    suffices ∫ x in a..a + ↑(b - a), f x ≤ ∑ x ∈ .Ico (0 + a) (b - a + a), f x by simp_all\\n   100    rw [← Finset.sum_Ico_add, Nat.Ico_zero_eq_range]\\n   101    suffices ∫ x in a..a + ↑(b - a), f x ≤ ∑ x ∈ .range (b - a), f (a + x) by simp_all\\n   102    exact AntitoneOn.integral_le_sum (by simp only [hf, hab, Nat.cast_sub, add_sub_cancel])\\n   103  \\n   104  theorem AntitoneOn.sum_le_integral (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n   105      ∑ i ∈ .range a, f (x₀ + ↑(i + 1)) ≤ ∫ x in x₀..x₀ + a, f x := calc\\n   106    _ = ∑ i ∈ .range a, ∫ _ in x₀ + i..x₀ + ↑(i + 1), f (x₀ + ↑(i + 1)) := by simp\\n   107    _ ≤ ∑ i ∈ .range a, ∫ x in x₀ + i..x₀ + ↑(i + 1), f x := by\\n   108      gcongr with i hi\\n   109      rw [Finset.mem_range, ← Nat.add_one_le_iff] at hi\\n   110      have := hf.intervalIntegrable_subset _ hi\\n   111      rify at hi this ⊢\\n\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 289, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1472,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 289–309 of 309):\\n   289  theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n   290      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi (N : ℝ), 0 ≤ f t) :\\n   291      ∫ x in Ioi (N : ℝ), f x ≤ ∑' (n : ℕ),  f (n + N : ℕ) := by\\n   292    rw [← summable_nat_add_iff N] at summable\\n   293    have lim := summable.tendsto_sum_tsum_nat\\n   294    have  := tendsto_atTop_add_const_right atTop (N : ℝ) tendsto_natCast_atTop_atTop\\n   295    have integrable := anti.integrableOn_Ioi_of_summable_comp_add summable nonneg\\n   296    refine le_of_tendsto_of_tendsto (intervalIntegral_tendsto_integral_Ioi N integrable this) lim ?_\\n   297    filter_upwards with M\\n   298    calc\\n   299      _ ≤ ∑ n ∈ Finset.Ico N (N + M), f n := by\\n   300        convert!  AntitoneOn.integral_le_sum_Ico _ _ using 2 <;> grind [anti.mono]\\n   301      _ = _ := by\\n   302        rw [Finset.sum_Ico_eq_sum_range]\\n   303        grind\\n   304  \\n   305  /-- The sum of a nonnegative, antitone function is bounded below by its integral. -/\\n   306  theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\\n   307      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   308      ∫ x in Ioi 0, f x ≤ ∑' (n : ℕ),  f n :=\\n   309    mod_cast AntitoneOn.integral_le_tsum_comp_add 0 (mod_cast anti) summable (mod_cast nonneg)\\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) Antitone\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(def|structure) Antitone' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:68\\n    def Antitone (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\\n- Mathlib/Topology/MetricSpace/CantorScheme.lean:61\\n    protected def Antitone : Prop :=\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|structure) AntitoneOn\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|structure) AntitoneOn' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 68, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1017,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 68–87 of 583):\\n    68  def Antitone (f : α → β) : Prop :=\\n    69    ∀ ⦃a b⦄, a ≤ b → f b ≤ f a\\n    70  \\n    71  to_dual_insert_cast Antitone := forall_comm.eq\\n    72  \\n    73  /-- A function `f` is monotone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f a ≤ f b`. -/\\n    74  def MonotoneOn (f : α → β) (s : Set α) : Prop :=\\n    75    ∀ ⦃a⦄ (_ : a ∈ s) ⦃b⦄ (_ : b ∈ s), a ≤ b → f a ≤ f b\\n    76  \\n    77  to_dual_insert_cast MonotoneOn := by grind only\\n    78  \\n    79  /-- A function `f` is antitone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f b ≤ f a`. -/\\n    80  def AntitoneOn (f : α → β) (s : Set α) : Prop :=\\n    81    ∀ ⦃a⦄ (_ : a ∈ s) ⦃b⦄ (_ : b ∈ s), a ≤ b → f b ≤ f a\\n    82  \\n    83  to_dual_insert_cast AntitoneOn := by grind only\\n    84  \\n    85  /-- A function `f` is strictly monotone if `a < b` implies `f a < f b`. -/\\n    86  def StrictMono (f : α → β) : Prop :=\\n    87    ∀ ⦃a b⦄, a < b → f a < f b\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IntegrableOn\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ioi\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ioi': unknown identifier 'Ioi'\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev) IntegrableOn\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 324,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(def|abbrev) IntegrableOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:239\\n    protected abbrev IntegrableOn\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev) Ioi\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 343,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(def|abbrev) Ioi' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:47\\n    def Ioi (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Multiset.lean:80\\n    def Ioi (a : α) : Multiset α := (Finset.Ioi a).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:363\\n    def Ioi (a : α) : Finset α :=\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev) Ici\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 354,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for '(def|abbrev) Ici' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:154\\n    def IciExtend (f : Ici a → β) : α → β :=\\n- Mathlib/Order/Interval/Multiset.lean:77\\n    def Ici (a : α) : Multiset α := (Finset.Ici a).val\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|abbrev) (range|sum)\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 746,
+   "result_head": "[{\"type\": \"text\", \"text\": \"194 match(es) for '(def|abbrev) (range|sum)' (via ripgrep):\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:141\\n    def sum {S : Type*} [AddCommMonoid S] (p : SkewPolynomial R) (f : ℕ → R → S) : S :=\\n- Mathlib/Control/Random.lean:81\\n    def range {g : Type} [RandomGen g] [Monad m] : RandGT g m (Nat × Nat) := do\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:455\\n    protected def range (φ : F) : NonUnitalSubalgebra R B where\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:504\\n    abbrev rangeRestrict (f : F) : A →ₙₐ[R] (NonUnitalAlgHom.range f : NonUnitalSubalgebra R B) :=\\n- Mathlib/Computability/AkraBazzi/SumTransform.lean:554\\n    noncomputable def sumTransform (p : ℝ) (g : ℝ → ℝ) (n₀ n : ℕ) :=\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1552,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 1–30 of 309):\\n     1  /-\\n     2  Copyright (c) 2022 Kevin H. Wilson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kevin H. Wilson, Alastair Irving\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic\\n     9  public import Mathlib.Data.Set.Function\\n    10  \\n    11  import Mathlib.MeasureTheory.Integral.IntegralEqImproper\\n    12  \\n    13  /-!\\n    14  # Comparing sums and integrals\\n    15  \\n    16  ## Summary\\n    17  \\n    18  It is often the case that error terms in analysis can be computed by comparing\\n    19  an infinite sum to the improper integral of an antitone function.\\n    20  \\n    21  It contains several lemmas in this direction, for antitone or monotone functions\\n    22  (or products of antitone and monotone functions), formulated for sums on `range i` or `Ico a b`.\\n    23  These are used to prove a version of the integral test for antitone functions.\\n    24  \\n    25  ## Main Results\\n    26  \\n    27  * `AntitoneOn.integral_le_sum`: The integral of an antitone function is at most the sum of its\\n    28    values at integer steps aligning with the left-hand side of the interval.\\n    29  * `AntitoneOn.sum_le_integral`: The sum of an antitone function along integer steps aligning with\\n    30    the right-hand side of the interval is at most the integral of the function along that interval\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*integral.*sum\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3010,
+   "result_head": "[{\"type\": \"text\", \"text\": \"38 match(es) for 'theorem.*integral.*sum' (via ripgrep):\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:40\\n    Note that the original version of the Akra–Bazzi theorem uses an integral rather than the sum in\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:51\\n    * Add the original version of the theorem with an integral instead of a sum.\\n- Mathlib/NumberTheory/AbelSummation.lean:64\\n    private theorem integralmulsum (hf_diff : ∀ t ∈ Set.Icc a b, DifferentiableAt ℝ f t)\\n- Mathlib/Probability/ProbabilityMassFunction/Integrals.lean:32\\n    theorem integral_eq_tsum (p : PMF α) (f : α → E) (hf : Integrable f p.toMeasure) :\\n- Mathlib/Probability/ProbabilityMassFunction/Integrals.lean:47\\n    theorem integral_eq_sum [Fintype α] (p : PMF α) (f : α → E) :\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Chebyshev/ChebyshevGauss.lean:110\\n    theorem integral_eq_sumZeroes {n : ℕ} {P : ℝ[X]} (hn : n ≠ 0) (hP : P.degree < 2 * n) :\\n- Mathlib/Analysis/SpecialFunctions/Gaussian/FourierTransform.lean:282\\n    theorem integral_cexp_neg_sum_mul_add {ι : Type*} [Fintype ι] {b : ι → ℂ}\\n- Mathlib/Analysis/SpecialFunctions/Gaussian/FourierTransform.lean:292\\n    theorem integral_cexp_neg_mul_sum_add {ι : Type*} [Fintype ι] (hb : 0 < b.re) (c : ι → ℂ) :\\n- Mathlib/Analysis/BoxIntegral/UnitPartition.lean:384\\n    theorem integralSum_eq_tsum_div {B : Box ι} (hB : hasIntegralVertices B) (hs₀ : s ≤ B) :\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:518\\n    theorem dist_integralSum_sum_integral_le_of_memBaseSet_of_iUnion_eq (h : Integrable I l f vol)\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:576\\n    theorem dist_integralSum_sum_integral_le_of_memBaseSet (h : Integrable I l f vol) (h0 : 0 < ε)\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:583\\n    theorem tendsto_integralSum_sum_integral (h : Integrable I l f vol) (π₀ : Prepartition I) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:84\\n    theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:97\\n    theorem AntitoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : AntitoneOn f (Set.Icc a b)) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:134\\n    theorem MonotoneOn.integral_le_sum (hf : MonotoneOn f (Icc x₀ (x₀ + a))) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:139\\n    theorem MonotoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : MonotoneOn f (Set.Icc a b)) :\\n- Mathlib/Analysis/SumIntegralComparisons.lean:289\\n    theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n- Mathlib/Analysis/SumIntegralComparisons.lean:306\\n    theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:204\\n    theorem integral_eq_sum_filter [DecidablePred fun x : F => x ≠ 0] {m : MeasurableSpace α}\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:210\\n    theorem integral_eq_sum_of_subset [DecidablePred fun x : F => x ≠ 0] {f : α →ₛ F} {s : Finset F}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 84, \"n\": 15}",
+   "ok": true,
+   "result_chars": 980,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 84–98 of 309):\\n    84  theorem AntitoneOn.integral_le_sum (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n    85      ∫ x in x₀..x₀ + a, f x ≤ ∑ i ∈ .range a, f (x₀ + i) := calc\\n    86    _ = ∑ i ∈ .range a, ∫ x in x₀ + i..x₀ + ↑(i + 1), f x := by\\n    87      convert! (sum_integral_adjacent_intervals hf.intervalIntegrable_subset).symm\\n    88      simp\\n    89    _ ≤ ∑ i ∈ .range a, ∫ _ in x₀ + i..x₀ + ↑(i + 1), f (x₀ + i) := by\\n    90      gcongr with i hi\\n    91      rw [Finset.mem_range, ← Nat.add_one_le_iff] at hi\\n    92      have := hf.intervalIntegrable_subset _ hi\\n    93      rify at hi this ⊢\\n    94      refine integral_mono_on (by simp) this (by simp) fun _ _ ↦ by apply hf <;> grind\\n    95    _ = _ := by simp\\n    96  \\n    97  theorem AntitoneOn.integral_le_sum_Ico (hab : a ≤ b) (hf : AntitoneOn f (Set.Icc a b)) :\\n    98      ∫ x in a..b, f x ≤ ∑ x ∈ .Ico a b, f x := by\\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 104, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1007,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 104–118 of 309):\\n   104  theorem AntitoneOn.sum_le_integral (hf : AntitoneOn f (Icc x₀ (x₀ + a))) :\\n   105      ∑ i ∈ .range a, f (x₀ + ↑(i + 1)) ≤ ∫ x in x₀..x₀ + a, f x := calc\\n   106    _ = ∑ i ∈ .range a, ∫ _ in x₀ + i..x₀ + ↑(i + 1), f (x₀ + ↑(i + 1)) := by simp\\n   107    _ ≤ ∑ i ∈ .range a, ∫ x in x₀ + i..x₀ + ↑(i + 1), f x := by\\n   108      gcongr with i hi\\n   109      rw [Finset.mem_range, ← Nat.add_one_le_iff] at hi\\n   110      have := hf.intervalIntegrable_subset _ hi\\n   111      rify at hi this ⊢\\n   112      exact integral_mono_on (by simp) (by simp) this fun _ _ ↦ by apply hf <;> grind\\n   113    _ = _ := by\\n   114      convert! sum_integral_adjacent_intervals hf.intervalIntegrable_subset\\n   115      simp [-Nat.cast_add]\\n   116  \\n   117  theorem AntitoneOn.sum_le_integral_Ico (hab : a ≤ b) (hf : AntitoneOn f (Icc a b)) :\\n   118      ∑ i ∈ .Ico a b, f ↑(i + 1) ≤ ∫ x in a..b, f x := by\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫ (?a in Ioi ?b)\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ (?a in Ioi ?b)': <input>:1:3: expected '_' or identifier\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"∫.*Ioi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1366,
+   "result_head": "[{\"type\": \"text\", \"text\": \"138 match(es) for '∫.*Ioi' (via ripgrep):\\n- Mathlib/Probability/Kernel/Disintegration/CDFToKernel.lean:345\\n    ∫ t in A, ⨅ r : Ioi q, f (a, t) r ∂(ν a) = (κ a).real (A ×ˢ Iic (q : ℝ)) := by\\n- Mathlib/Probability/Kernel/Disintegration/CDFToKernel.lean:347\\n    · have h : ∀ r : Ioi q, ∫ t in A, ⨅ r' : Ioi q, f (a, t) r' ∂(ν a)\\n- Mathlib/Probability/Kernel/Disintegration/CDFToKernel.lean:355\\n    calc ∫ t in A, ⨅ r : Ioi q, f (a, t) r ∂(ν a)\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:701\\n    ∫ t in Ici x, f t ∂μ = ∫ t in Ioi x, f t ∂μ :=\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:727\\n    theorem integral_Ici_eq_integral_Ioi : ∫ t in Ici x, f t ∂μ = ∫ t in Ioi x, f t ∂μ :=\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:113\\n    ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (g t) := by\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:200\\n    ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (g t) := by\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:213\\n    have B : ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (g t) = 0 := by\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:226\\n    have A : ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (g t) = ∞ := by\\n- Mathlib/MeasureTheory/Integral/Layercake.lean:241\\n    _ ≤ ∫⁻ t in Ioi 0, μ {a : α | t ≤ f a} * ENNReal.ofReal (g t) :=\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*partial|finite\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1282,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11501 match(es) for 'theorem.*partial|finite' (via ripgrep):\\n- Mathlib/Algebra/FreeMonoid/Symbols.lean:12\\n    # The finite set of symbols in a FreeMonoid element\\n- Mathlib/Algebra/FreeMonoid/Symbols.lean:14\\n    This is separated from the main FreeMonoid file, as it imports the finiteness hierarchy\\n- Mathlib/Algebra/Pointwise/Stabilizer.lean:120\\n    lemma stabilizer_finite (hs₀ : s.Nonempty) (hs : s.Finite) : (stabilizer G s : Set G).Finite := by\\n- Mathlib/Algebra/Pointwise/Stabilizer.lean:122\\n    exact (hs.div <| finite_singleton _).subset <| stabilizer_subset_div_right ha\\n- Mathlib/Algebra/Pointwise/Stabilizer.lean:209\\n    /-! ### Stabilizer of a finite set -/\\n- Mathlib/CategoryTheory/FintypeCat.lean:14\\n    # The category of finite types.\\n- Mathlib/CategoryTheory/FintypeCat.lean:16\\n    We define the category of finite types, denoted `FintypeCat` as\\n- Mathlib/CategoryTheory/FintypeCat.lean:30\\n    /-- The category of finite types. -/\\n- Mathlib/CategoryTheory/FintypeCat.lean:128\\n    /-- Equivalences between finite types are the same as isomorphisms in `FintypeCat`. -/\\n- Mathlib/Combinatorics/Schnirelmann.lean:35\\n    Further, we use `Finset.Ioc` rather than a set intersection since the set is finite by construction,\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 250, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2718,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 250–289 of 309):\\n   250      (anti : AntitoneOn f (Ici (N - 1 : ℝ)))\\n   251      (integrable : IntegrableOn f (Ioi (N - 1 : ℝ))) (nonneg : ∀ t ∈ Ioi (N - 1 : ℝ), 0 ≤ f t) :\\n   252      |(∑' (n : ℕ), f n) - ∑ n ∈ Finset.range N, f n| ≤ ∫ x in Ioi (N - 1 : ℝ), f x := by\\n   253    rw [← (AntitoneOn.summable_of_integrableOn_Ioi (mod_cast anti) (mod_cast integrable)\\n   254      (mod_cast nonneg)).sum_add_tsum_nat_add N, add_sub_cancel_left,\\n   255      abs_of_nonneg (tsum_nonneg <| by grind)]\\n   256    convert! AntitoneOn.tsum_comp_add_le_integral (N - 1) (mod_cast anti) (mod_cast integrable)\\n   257        (mod_cast nonneg) using 1\\n   258    · congr; ext; congr 2; grind\\n   259    · norm_cast\\n   260  \\n   261  open Filter in\\n   262  /-- Converse to the integral test: a nonnegative, integrable, summable function is integrable. -/\\n   263  theorem AntitoneOn.integrableOn_Ioi_of_summable_comp_add {N : ℕ} (anti : AntitoneOn f (Ici (N : ℝ)))\\n   264      (summable : Summable (fun n ↦ f (n + N : ℕ))) (nonneg : ∀ t ∈ Ioi (N : ℝ), 0 ≤ f t) :\\n   265      IntegrableOn f (Ioi (N : ℝ)) := by\\n   266    refine integrableOn_Ioi_of_intervalIntegral_norm_bounded (∑' (n : ℕ), f (n + N : ℕ)) _ ?_\\n   267      (tendsto_atTop_add_const_right atTop (N : ℝ) tendsto_natCast_atTop_atTop) ?_\\n   268    · intro n\\n   269      rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le (by grind)]\\n   270      exact (anti.mono <| by grind [uIcc_of_le]).intervalIntegrable\\n   271    · filter_upwards [eventually_gt_atTop 0] with M hM\\n   272      calc\\n   273        _ = ∫ x in N..M+N, f x := by\\n   274          refine intervalIntegral.integral_congr_uIoo fun x ↦ ?_\\n   275          grind [Real.norm_of_nonneg, uIoo_of_le]\\n   276        _ ≤ ∑ n ∈ Finset.range M, f (n + N : ℕ) := by\\n   277          convert! AntitoneOn.integral_le_sum (anti.mono _) using 2 <;> grind\\n   278        _ ≤ _ := by grind [summable.sum_le_tsum, Nat.cast_pos]\\n   279  \\n   280  /-- Converse to the integral test: a nonnegative, integrable, summable function is integrable. -/\\n   281  theorem AntitoneOn.integrableOn_Ioi_zero_of_summable (anti : AntitoneOn f (Ici 0))\\n   282      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   283      IntegrableOn f (Ioi 0) :=\\n   284    mod_cast AntitoneOn.integrableOn_Ioi_of_summable_comp_add (N := 0) (mod_cast anti) summable\\n   285      (mod_cast nonneg)\\n   286  \\n   287  open Filter in\\n   288  /-- The sum of a nonnegative, antitone function is bounded below by its integral. -/\\n   289  theorem AntitoneOn.integral_le_tsum_comp_add (N : ℕ) (anti : AntitoneOn f (Ici (N : ℝ)))\\n\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(∫ ?a in ?b, ?c) ≤ (∫ ?a in ?d, ?c)\"}",
+   "ok": true,
+   "result_chars": 119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(∫ ?a in ?b, ?c) ≤ (∫ ?a in ?d, ?c)': <input>:1:3: expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*mono\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"333 match(es) for 'integral.*mono' (via ripgrep):\\n- Mathlib/Dynamics/Ergodic/Extreme.lean:78\\n    _ = ∫⁻ _ in s, c ∂μ := lintegral_congr_ae <| hc.filter_mono <| ae_mono restrict_le_self\\n- Mathlib/Geometry/Manifold/Riemannian/PathELength.lean:103\\n    simpa [pathELength_eq_lintegral_mfderiv_Icc] using lintegral_mono_set (Icc_subset_Icc h h')\\n- Mathlib/Geometry/Manifold/Riemannian/PathELength.lean:147\\n    rw [lintegral_image_eq_lintegral_deriv_mul_of_monotoneOn measurableSet_Icc B hf]\\n- Mathlib/NumberTheory/Chebyshev.lean:705\\n    /-- Simple bound on the integral from monotonicity.\\n- Mathlib/NumberTheory/Chebyshev.lean:711\\n    refine intervalIntegral.integral_mono_on hab ?_ (by simp) fun x ⟨_, _⟩ ↦ by gcongr <;> bound\\n- Mathlib/NumberTheory/Chebyshev.lean:768\\n    intervalIntegral.integral_mono_on (by linarith) ?hf ?hg fun t ⟨ht, _⟩ ↦ ?hh\\n- Mathlib/AlgebraicGeometry/OrderOfVanishing.lean:32\\n    Order of vanishing on a locally Noetherian integral scheme as a monoid with zero hom to `ℤᵐ⁰`.\\n- Mathlib/NumberTheory/ModularForms/Bounds.lean:282\\n    refine (intervalIntegral.integral_mono (by positivity) ?_ ?_ this).trans (le_of_eq ?_)\\n- Mathlib/Probability/Kernel/Proper.lean:108\\n    rw [lintegral_iSup (by measurability), lintegral_iSup hf'_meas hf'_mono, ENNReal.mul_iSup]\\n- Mathlib/Probability/Kernel/Proper.lean:138\\n    rw [lintegral_iSup (fun n ↦ ((hg'_meas _).mono h𝓑𝓧 le_rfl).fun_mul hf)\\n- Mathlib/Probability/Kernel/WithDensity.lean:189\\n    ∫⁻ b in Set.univ, f a b ∂κ a ≤ ∫⁻ _ in Set.univ, B ∂κ a := lintegral_mono (hf_B a)\\n- Mathlib/Probability/Kernel/Composition/CompProd.lean:125\\n    lintegral_mono fun _ => measure_mono fun _ h_mem => subset_toMeasurable _ _ h_mem\\n- Mathlib/Probability/Kernel/Composition/CompProd.lean:323\\n    rw [lintegral_iSup (fun n => (F n).measurable) h_mono]\\n- Mathlib/Probability/Kernel/Composition/CompProd.lean:342\\n    · exact fun i j hij b => lintegral_mono fun c => h_mono hij _\\n- Mathlib/Probability/Kernel/Composition/CompProd.lean:451\\n    lintegral_mono fun b => measure_le_bound η (a, b) Set.univ\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*integral.*Ioc|Ioi.*mono\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2155,
+   "result_head": "[{\"type\": \"text\", \"text\": \"62 match(es) for '(theorem|lemma).*integral.*Ioc|Ioi.*mono' (via ripgrep):\\n- Mathlib/Algebra/Order/Field/Basic.lean:417\\n    · exact sub_inv_antitoneOn_Ioi.mono <| (Set.Icc_subset_Ioi_iff hab).mpr ha\\n- Mathlib/Algebra/Order/Archimedean/Class.lean:692\\n    exact subgroup_antitone <| (UpperSet.Ioi_strictMono _).monotone h\\n- Mathlib/Analysis/Calculus/TangentCone/Real.lean:133\\n    (uniqueDiffWithinAt_Ioi x).mono Set.Ioi_subset_Ici_self\\n- Mathlib/Analysis/Calculus/DerivativeTest.lean:139\\n    refine isMaxOn_Ioi_of_mono_anti ?_ ?_\\n- Mathlib/Analysis/Calculus/DerivativeTest.lean:238\\n    refine isMinOn_Ioi_of_anti_mono ?_ ?_\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:166\\n    · have : IntegrableOn (fun x ↦ x ^ s) (Ioi (1 : ℝ)) := h.mono (Ioi_subset_Ioi zero_le_one) le_rfl\\n- Mathlib/Analysis/SpecialFunctions/Gamma/BohrMollerup.lean:364\\n    differentiableOn_Gamma_Ioi.continuousOn.mono <| by grind\\n- Mathlib/Analysis/SpecialFunctions/JapaneseBracket.lean:116\\n    ∫⁻ t in Ioi 0, f t ≤ ∫⁻ t in Ioc 0 1 ∪ Ioi 1, f t := lintegral_mono_set Ioi_subset_Ioc_union_Ioi\\n- Mathlib/Analysis/Convex/SpecificFunctions/Basic.lean:113\\n    convert! strictConcaveOn_log_Ioi.secant_strict_mono (zero_lt_one' ℝ) hs2 hs1 hs4 hs3 _ using 1\\n- Mathlib/Analysis/Convex/SpecificFunctions/Basic.lean:119\\n    convert! strictConcaveOn_log_Ioi.secant_strict_mono (zero_lt_one' ℝ) hs1 hs2 hs3 hs4 _ using 1\\n- Mathlib/Analysis/Convex/SpecificFunctions/Basic.lean:154\\n    convert! strictConcaveOn_log_Ioi.secant_strict_mono (zero_lt_one' ℝ) hs1 hs2 hs3 hs4 _ using 1\\n- Mathlib/Analysis/Convex/SpecificFunctions/Basic.lean:160\\n    convert! strictConcaveOn_log_Ioi.secant_strict_mono (zero_lt_one' ℝ) hs2 hs1 hs4 hs3 _ using 1\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:178\\n    theorem integral_pow_abs_sub_uIoc : ∫ x in Ι a b, |x - a| ^ n = |b - a| ^ (n + 1) / (n + 1) := by\\n- Mathlib/Analysis/MellinTransform.lean:217\\n    refine (ae_restrict_mem measurableSet_Ioi).mono fun t ht => ?_\\n- Mathlib/Analysis/MellinTransform.lean:350\\n    refine (ae_restrict_mem measurableSet_Ioi).mono fun t ht z hz => ?_\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Antitone\", \"AntitoneOn\", \"Finset.range\", \"Finset.sum\", \"IntegrableOn\", \"Ioi\", \"MeasureTheory.integral\"]}",
+   "ok": true,
+   "result_chars": 2193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Antitone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Antitone\\\"},{\\\"decl\\\":\\\"AntitoneOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#AntitoneOn\\\"},{\\\"decl\\\":\\\"Finset.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Range\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Range\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Range.html#Finset.range\\\"},{\\\"decl\\\":\\\"Finset.sum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.BigOperators.Group.Finset.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.BigOperators.Group.Finset.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/BigOperators/Group/Finset/Defs.html#Finset.sum\\\"},{\\\"decl\\\":\\\"IntegrableOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Ioi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MeasureTheory.integral\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.Bochner.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/Bochner/Basic.html#MeasureTheory.integral\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 5}",
+   "ok": true,
+   "result_chars": 357,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–96 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93    Integrable f (μ.restrict s)\\n    94  \\n    95  theorem IntegrableOn.integrable (h : IntegrableOn f s μ) : Integrable f (μ.restrict s) :=\\n    96    h\\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/Basic.lean  (lines 1–50 of 773):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Patrick Massot, Yury Kudryashov, Rémy Degenne\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.IsBotOne\\n     9  public import Mathlib.Data.Set.Subsingleton\\n    10  public import Mathlib.Order.BooleanAlgebra.Set\\n    11  public import Mathlib.Order.Interval.Set.Defs\\n    12  \\n    13  /-!\\n    14  # Intervals\\n    15  \\n    16  In any preorder, we define intervals (which on each side can be either infinite, open or closed)\\n    17  using the following naming conventions:\\n    18  \\n    19  - `i`: infinite\\n    20  - `o`: open\\n    21  - `c`: closed\\n    22  \\n    23  Each interval has the name `I` + letter for left side + letter for right side.\\n    24  For instance, `Ioc a b` denotes the interval `(a, b]`.\\n    25  The definitions can be found in `Mathlib/Order/Interval/Set/Defs.lean`.\\n    26  \\n    27  This file contains basic facts on inclusion of and set operations on intervals\\n    28  (where the precise statements depend on the order's properties;\\n    29  statements requiring `LinearOrder` are in `Mathlib/Order/Interval/Set/LinearOrder.lean`).\\n    30  \\n    31  A conscious decision was made not to list all possible inclusion relations.\\n    32  Monotonicity results and \\\"self\\\" results *are* included.\\n    33  Most use cases can suffice with a transitive combination of those, for example:\\n    34  ```\\n    35  theorem Ico_subset_Ici (h : a₂ ≤ a₁) : Ico a₁ b₁ ⊆ Ici a₂ :=\\n    36    (Ico_subset_Ico_left h).trans Ico_subset_Ici_self\\n    37  ```\\n    38  Logical equivalences, such as `Icc_subset_Ici_iff`, are however stated.\\n    39  -/\\n    40  \\n    41  public section\\n    42  \\n    43  assert_not_exists RelIso\\n    44  \\n    45  open Function\\n    46  \\n    47  open OrderDual (toDual ofDual)\\n    48  \\n    49  variable {α : Type*}\\n    50  \\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Ioi|^abbrev Ioi\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 347,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '^def Ioi|^abbrev Ioi' (via ripgrep):\\n- Mathlib/Order/Interval/Multiset.lean:80\\n    def Ioi (a : α) : Multiset α := (Finset.Ioi a).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:363\\n    def Ioi (a : α) : Finset α :=\\n- Mathlib/Order/UpperLower/Principal.lean:47\\n    def Ioi (a : α) : UpperSet α :=\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|notation).*Ioi.*Set\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(def|notation).*Ioi.*Set' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:47\\n    def Ioi (a : α) : UpperSet α :=\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/Defs.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3678,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/Defs.lean  (lines 1–80 of 94):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Defs\\n     9  public import Mathlib.Order.Defs.PartialOrder\\n    10  public import Mathlib.Tactic.Push.Attr\\n    11  \\n    12  /-!\\n    13  # Intervals\\n    14  \\n    15  In any preorder `α`, we define intervals\\n    16  (which on each side can be either infinite, open, or closed)\\n    17  using the following naming conventions:\\n    18  - `i`: infinite\\n    19  - `o`: open\\n    20  - `c`: closed\\n    21  \\n    22  Each interval has the name `I` + letter for left side + letter for right side.\\n    23  For instance, `Ioc a b` denotes the interval `(a, b]`.\\n    24  \\n    25  We also define a typeclass `Set.OrdConnected`\\n    26  saying that a set includes `Set.Icc a b` whenever it contains both `a` and `b`.\\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  namespace Set\\n    32  \\n    33  variable {α : Type*} [Preorder α] {a b x : α}\\n    34  \\n    35  /-- `Iio b` is the left-infinite right-open interval $(-∞, b)$. -/\\n    36  @[to_dual /-- `Ioi a` is the left-open right-infinite interval $(a, ∞)$. -/]\\n    37  def Iio (b : α) := { x | x < b }\\n    38  \\n    39  @[to_dual (attr := simp, grind =, push)] theorem mem_Iio : x ∈ Iio b ↔ x < b := .rfl\\n    40  @[to_dual] theorem Iio_def (a : α) : { x | x < a } = Iio a := rfl\\n    41  \\n    42  /-- `Iic b` is the left-infinite right-closed interval $(-∞, b]$. -/\\n    43  @[to_dual /-- `Ici a` is the left-closed right-infinite interval $[a, ∞)$. -/]\\n    44  def Iic (b : α) := { x | x ≤ b }\\n    45  \\n    46  @[to_dual (attr := simp, grind =, push)] theorem mem_Iic : x ∈ Iic b ↔ x ≤ b := .rfl\\n    47  @[to_dual] theorem Iic_def (b : α) : { x | x ≤ b } = Iic b := rfl\\n    48  \\n    49  /-- `Ioo a b` is the left-open right-open interval $(a, b)$. -/\\n    50  @[to_dual self (reorder := a b)]\\n    51  def Ioo (a b : α) := { x | a < x ∧ x < b }\\n    52  \\n    53  to_dual_insert_cast Ioo := by simp only [and_comm]\\n    54  \\n    55  @[simp, grind =, push, to_dual none] theorem mem_Ioo : x ∈ Ioo a b ↔ a < x ∧ x < b := .rfl\\n    56  @[to_dual none] theorem Ioo_def (a b : α) : { x | a < x ∧ x < b } = Ioo a b := rfl\\n    57  \\n    58  /-- `Ico a b` is the left-closed right-open interval $[a, b)$. -/\\n    59  def Ico (a b : α) := { x | a ≤ x ∧ x < b }\\n    60  \\n    61  /-- `Ioc a b` is the left-open right-closed interval $(a, b]$. -/\\n    62  @[to_dual existing (reorder := a b)]\\n    63  def Ioc (a b : α) := { x | a < x ∧ x ≤ b }\\n    64  \\n    65  to_dual_insert_cast Ico := by simp only [and_comm]\\n    66  to_dual_insert_cast Ioc := by simp only [and_comm]\\n    67  \\n    68  @[simp, grind =, push, to_dual none] theorem mem_Ico : x ∈ Ico a b ↔ a ≤ x ∧ x < b := .rfl\\n    69  @[to_dual none] theorem Ico_def (a b : α) : { x | a ≤ x ∧ x < b } = Ico a b := rfl\\n    70  \\n    71  @[simp, grind =, push, to_dual none] theorem mem_Ioc : x ∈ Ioc a b ↔ a < x ∧ x ≤ b := .rfl\\n    72  @[to_dual none] theorem Ioc_def (a b : α) : { x | a < x ∧ x ≤ b } = Ioc a b := rfl\\n    73  \\n    74  /-- `Icc a b` is the left-closed right-closed interval $[a, b]$. -/\\n    75  @[to_dual self (reorder := a b)]\\n    76  def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\n    77  \\n    78  to_dual_insert_cast Icc := by simp only [and_comm]\\n    79  \\n    80  @[simp, grind =, push, to_dual none] theorem mem_Icc : x ∈ Icc a b ↔ a ≤ x ∧ x ≤ b := .rfl\\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SumIntegralComparisons.lean\", \"line\": 306, \"n\": 5}",
+   "ok": true,
+   "result_chars": 420,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SumIntegralComparisons.lean  (lines 306–309 of 309):\\n   306  theorem AntitoneOn.integral_le_tsum (anti : AntitoneOn f (Ici 0))\\n   307      (summable : Summable (fun (n : ℕ) ↦ f n)) (nonneg : ∀ t ∈ Ioi 0, 0 ≤ f t) :\\n   308      ∫ x in Ioi 0, f x ≤ ∑' (n : ℕ),  f n :=\\n   309    mod_cast AntitoneOn.integral_le_tsum_comp_add 0 (mod_cast anti) summable (mod_cast nonneg)\\n\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.Ioi\", \"Set.Ici\", \"MeasureTheory.IntegrableOn\"]}",
+   "ok": true,
+   "result_chars": 1140,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ioi\\\"},{\\\"decl\\\":\\\"Set.Ici\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ici\\\"},{\\\"decl\\\":\\\"MeasureTheory.IntegrableOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntegrableOn.html#MeasureTheory.IntegrableOn\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"AntitoneOn\", \"Ici\", \"IntegrableOn\", \"Ioi\", \"Finset.range\", \"Real\"]}",
+   "ok": true,
+   "result_chars": 1712,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AntitoneOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#AntitoneOn\\\"},{\\\"decl\\\":\\\"Ici\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IntegrableOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Ioi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finset.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finset.Range\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finset.Range\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finset/Range.html#Finset.range\\\"},{\\\"decl\\\":\\\"Real\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Real.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Real.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Real/Basic.html#Real\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem sum_le_integral_of_antitone (f : ℝ → ℝ) (N : ℕ)\n    (h_anti : AntitoneOn f (Ici (0 : ℝ)))\n    (h_nonneg : ∀ x, 0 ≤ f x)\n    (h_integ : IntegrableOn f (Ioi (0 : ℝ)))\n    : ∑ i in Finset.range N, f (i + 1) ≤ ∫ x in Ioi (0 : ℝ), f x := sorry"
+}

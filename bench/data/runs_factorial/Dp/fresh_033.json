@@ -1,0 +1,220 @@
+{
+ "task_id": "fresh_033",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:02:49Z",
+ "wall_s": 60.6,
+ "transcript_stats": {
+  "turns": 22,
+  "assistant_turns": 13,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_search": 4,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "decl_exists": 1,
+   "mcp__wikibrain__decl_exists": 4,
+   "mcp__wikibrain__brain_snippets": 2
+  },
+  "tokens_in": 106,
+  "tokens_out": 4467,
+  "cost_usd": 0.07702490000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"list find first element satisfying predicate\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2443,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"list find first element satisfying predicate\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q82990\\\",\\\"label\\\":\\\"Numerical digit\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"label\\\":\\\"Sequence\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q846354\\\",\\\"label\\\":\\\"P (complexity)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q102761\\\",\\\"label\\\":\\\"Least common multiple\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1140902\\\",\\\"label\\\":\\\"confluence\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11538\\\",\\\"label\\\":\\\"Mathematical proof\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1188392\\\",\\\"label\\\":\\\"Zeckendorf's theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12806\\\",\\\"label\\\":\\\"Abacus\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":61,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\",\\\"via_cell\\\":\\\"cell:Q12139612\\\",\\\"cell_label\\\":\\\"List\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"list permutation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3423,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"list permutation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q161519\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Permutation\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv\\\",\\\"label\\\":\\\"Equiv\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q849512\\\",\\\"label\\\":\\\"Symmetric group\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1057968\\\",\\\"label\\\":\\\"Finite group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q120976\\\",\\\"label\\\":\\\"Factorial\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q2431134\\\",\\\"label\\\":\\\"Symmetry in mathematics\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"label\\\":\\\"Orthogonal matrix\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q130998\\\",\\\"label\\\":\\\"Equivalence relation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":83,\\\"withheld_by_shard\\\":163,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Equiv.Perm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Logic.Equiv.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Equiv.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Equiv.Perm (α : Sort*) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Equiv/Defs.html#Equiv.Perm\\\",\\\"via_cell\\\":\\\"cell:Q161519\\\",\\\"cell_label\\\":\\\"Permutation\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv\\\",\\\"label\\\":\\\"Equiv\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\",\\\"via_cell\\\":\\\"cell:Q12139612\\\",\\\"cell_label\\\":\\\"List\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"at most one element satisfies predicate\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 272,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"at most one element satisfies predicate\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"List.Perm list permutation relation\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4280,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List.Perm list permutation relation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q161519\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Permutation\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv\\\",\\\"label\\\":\\\"Equiv\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Relation (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Rel\\\",\\\"label\\\":\\\"Rel\\\"}]},{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q849512\\\",\\\"label\\\":\\\"Symmetric group\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1057968\\\",\\\"label\\\":\\\"Finite group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q120976\\\",\\\"label\\\":\\\"Factorial\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q2431134\\\",\\\"label\\\":\\\"Symmetry in mathematics\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"label\\\":\\\"Orthogonal matrix\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q130998\\\",\\\"label\\\":\\\"Equivalence relation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":83,\\\"withheld_by_shard\\\":163,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Equiv.Perm\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Logic.Equiv.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Equiv.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Equiv.Perm (α : Sort*) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Equiv/Defs.html#Equiv.Perm\\\",\\\"via_cell\\\":\\\"cell:Q161519\\\",\\\"cell_label\\\":\\\"Permutation\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic\\\",\\\"label\\\":\\\"Logic\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv\\\",\\\"label\\\":\\\"Equiv\\\"},{\\\"id\\\":\\\"path:Mathlib/Logic/Equiv/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\",\\\"via_cell\\\":\\\"cell:Q12139612\\\",\\\"cell_label\\\":\\\"List\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"Rel\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Rel\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Rel\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Rel (α β : Type*) : Type _ := α → β → Prop\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Rel.html#Rel\\\",\\\"via_cell\\\":\\\"cell:Q107223533\\\",\\\"cell_label\\\":\\\"Relation "
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"List.find search predicate\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2425,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List.find search predicate\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q82990\\\",\\\"label\\\":\\\"Numerical digit\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"label\\\":\\\"Sequence\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q846354\\\",\\\"label\\\":\\\"P (complexity)\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q102761\\\",\\\"label\\\":\\\"Least common multiple\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1140902\\\",\\\"label\\\":\\\"confluence\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11538\\\",\\\"label\\\":\\\"Mathematical proof\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"label\\\":\\\"Number\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q1188392\\\",\\\"label\\\":\\\"Zeckendorf's theorem\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"label\\\":\\\"Integer\\\",\\\"w\\\":1},{\\\"id\\\":\\\"cell:Q12806\\\",\\\"label\\\":\\\"Abacus\\\",\\\"w\\\":1}],\\\"returned\\\":12,\\\"total\\\":61,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\",\\\"via_cell\\\":\\\"cell:Q12139612\\\",\\\"cell_label\\\":\\\"List\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"filter list elements predicate count\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3602,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"filter list elements predicate count\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q172891\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euclid's Elements\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Filter\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Filter\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Filter\\\",\\\"label\\\":\\\"Filter\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Filter/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1052451\\\",\\\"label\\\":\\\"orientation\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11518\\\",\\\"label\\\":\\\"Pythagorean theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q170043\\\",\\\"label\\\":\\\"Perfect number\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q37555\\\",\\\"label\\\":\\\"Polygon\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q49008\\\",\\\"label\\\":\\\"Prime number\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Probability\\\",\\\"label\\\":\\\"Probability\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":188,\\\"withheld_by_shard\\\":475,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\",\\\"via_cell\\\":\\\"cell:Q12139612\\\",\\\"cell_label\\\":\\\"List\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]},{\\\"decl\\\":\\\"Filter\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Filter (α : Type*) where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Filter\\\",\\\"cell_label\\\":\\\"Filter\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Filter\\\",\\\"label\\\":\\\"Filter\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Filter/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"List.Perm\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 292,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List.Perm\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:List.permutations\\\",\\\"label\\\":\\\"List.permutations\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/List/Defs\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"List.find\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List.find\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"List.getElem first match\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"List.getElem first match\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q12139612\"}",
+   "ok": true,
+   "result_chars": 2048,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q12139612\\\",\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"List\\\",\\\"f\\\":16,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q12139612\\\",\\\"anchor\\\":\\\"Q12139612\\\",\\\"label\\\":\\\"List\\\",\\\"supercells\\\":[\\\"path:Init/Prelude\\\"],\\\"f\\\":16,\\\"xy\\\":[53.3,539.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q12139612\\\",\\\"label\\\":\\\"List\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"set of discrete items of information\\\",\\\"slug\\\":\\\"List\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:List\\\",\\\"label\\\":\\\"List\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Init.Prelude\\\",\\\"decl_kind\\\":\\\"inductive\\\",\\\"docstring\\\":\\\"Linked lists: ordered lists, in which each element has a reference to the next element.\\\\n\\\\nMost operations on linked lists take time proportional to the length of the list, because each\\\\nelement must be traversed to find the next element.\\\\n\\\\n`List α` is isomorphic to `Array α`, but th\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":64,\\\"mentions\\\":1,\\\"invocation\\\":42},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q82990\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q7662204\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"invocation\\\":2}},{\\\"id\\\":\\\"cell:Q846354\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q102761\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q1140902\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11538\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":102,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q12139612\", \"limit\": 50, \"kinds\": \"depends\"}",
+   "ok": true,
+   "result_chars": 14874,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q12139612\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q82990\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q3059346\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.digits\\\",\\\"List\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q82828\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.ofDigits\\\",\\\"List\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q82990\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.digits_lt_base\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q133250\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"List.length\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q846354\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q5157286\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Turing.TM2ComputableInPolyTime\\\",\\\"List\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q846354\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Turing.TM2ComputableInPolyTime\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q102761\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q102761\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.primeFactorsList_unique\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11205\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.primeFactorsList_unique\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11348\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Turing.PartrecToTM2.tr_eval\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1140902\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1140902\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"FreeGroup.reduce.churchRosser\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11538\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11538\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"List.TFAE\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11563\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.digits\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1188392\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1188392\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.zeckendorfEquiv\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q12503\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q12503\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Nat.primeFactorsList_unique\\\",\\\"List\\\"]]}}]},{\\\"id\\\":\\\"cell:Q12806\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q12806\\\",\\\"dst\\\":\\\"Q12139612\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Perm permutation relation\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Perm permutation relation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"List.Perm\\\", \\\"List.find\\\", \\\"List.findIdx\\\", \\\"Nat.count\\\", \\\"List.count\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.Perm\", \"List.find\", \"List.findIdx\", \"Nat.count\", \"List.count\"]}",
+   "ok": true,
+   "result_chars": 1481,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.Perm\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.Perm\\\"},{\\\"decl\\\":\\\"List.find\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"List.findIdx\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.findIdx\\\"},{\\\"decl\\\":\\\"Nat.count\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Count\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Count\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Count.html#Nat.count\\\"},{\\\"decl\\\":\\\"List.count\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.count\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.findP\", \"List.getElem\", \"List.get\", \"Option.map\", \"List.nthLe\"]}",
+   "ok": true,
+   "result_chars": 1380,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.findP\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"List.getElem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"List.get\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List.get\\\"},{\\\"decl\\\":\\\"Option.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Option.map\\\"},{\\\"decl\\\":\\\"List.nthLe\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.filter\", \"List.head\", \"List.headD\", \"List.length\"]}",
+   "ok": true,
+   "result_chars": 1220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.filter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.filter\\\"},{\\\"decl\\\":\\\"List.head\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.head\\\"},{\\\"decl\\\":\\\"List.headD\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.headD\\\"},{\\\"decl\\\":\\\"List.length\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List.length\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.Perm.filter\", \"List.Perm.count\", \"Nat.le_one\", \"List.Perm\"]}",
+   "ok": true,
+   "result_chars": 1233,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.Perm.filter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Perm\\\",\\\"import_line\\\":\\\"import Init.Data.List.Perm\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Perm.html#List.Perm.filter\\\"},{\\\"decl\\\":\\\"List.Perm.count\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Perm\\\",\\\"import_line\\\":\\\"import Init.Data.List.Perm\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Perm.html#List.Perm.count\\\"},{\\\"decl\\\":\\\"Nat.le_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"List.Perm\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.Perm\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:List.Perm\"}",
+   "ok": false,
+   "result_chars": 379,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:List.Perm\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:List.filter\"}",
+   "ok": false,
+   "result_chars": 381,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:List.filter\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"List.Perm\"}",
+   "ok": false,
+   "result_chars": 364,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"List.Perm\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"List.filter\"}",
+   "ok": false,
+   "result_chars": 366,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"List.filter\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem list_find_perm_eq {α : Type*} (p : α → Bool) (l l' : List α) \n  (h_perm : List.Perm l l') (h_count : List.count p l ≤ 1) : \n  List.head (List.filter p l) = List.head (List.filter p l') := sorry"
+}

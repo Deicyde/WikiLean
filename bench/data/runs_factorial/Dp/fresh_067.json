@@ -1,0 +1,500 @@
+{
+ "task_id": "fresh_067",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:45:19Z",
+ "wall_s": 99.1,
+ "transcript_stats": {
+  "turns": 57,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 29,
+   "mcp__wikibrain__brain_cell": 6,
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__decl_exists": 13,
+   "mcp__wikibrain__brain_neighborhood": 3
+  },
+  "tokens_in": 202,
+  "tokens_out": 7435,
+  "cost_usd": 0.13716850000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"number field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1442,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"number field\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"aka\\\":[\\\"Definition:Algebraic Number Field\\\",\\\"Number Field\\\",\\\"NumberField\\\",\\\"fields-definition-number-field\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1182160\\\",\\\"label\\\":\\\"Dedekind zeta function\\\",\\\"aka\\\":[\\\"NumberField.dedekindZeta\\\",\\\"A Brief Introduction To Splitting Of Primes Over Number Fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/DedekindZeta\\\"},{\\\"id\\\":\\\"cell:Q2997826\\\",\\\"label\\\":\\\"totally real number field\\\",\\\"aka\\\":[\\\"NumberField.IsTotallyReal\\\",\\\"On Variants of Inverse Cluster Size Problem & General Magnification\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ModuleCat.free_shortExact_finrank_add\\\",\\\"label\\\":\\\"ModuleCat.free_shortExact_finrank_add\\\",\\\"aka\\\":[\\\"On the modularity of supersingular elliptic curves over certain totally real number fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/ModuleCat\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Polynomial.IsEisensteinAt\\\",\\\"label\\\":\\\"Polynomial.IsEisensteinAt\\\",\\\"aka\\\":[\\\"Local to global principle over number fields for higher moments\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Polynomial/Eisenstein\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ramified prime\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramified prime\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ring of integers number field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ring of integers number field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q616608\"}",
+   "ok": true,
+   "result_chars": 3776,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q616608\\\",\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"f\\\":47323,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q616608\\\",\\\"anchor\\\":\\\"Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\"],\\\"f\\\":47323,\\\"xy\\\":[3.4,44.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"a finite degree (and hence algebraic) field extension of the field of rational numbers\\\",\\\"slug\\\":\\\"Algebraic_number_field\\\",\\\"article_annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":50,\\\"partial\\\":12,\\\"not_formalized\\\":15},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:NumberField\\\",\\\"label\\\":\\\"NumberField\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class NumberField (K : Type*) [Field K] : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:NumberField\\\",\\\"label\\\":\\\"Number Field\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/NumberField.html\\\",\\\"qid\\\":\\\"Q616608\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Algebraic_Number_Field\\\",\\\"label\\\":\\\"Definition:Algebraic Number Field\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Algebraic_Number_Field\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q616608\\\",\\\"snippet\\\":\\\"An algebraic number field is a finite extension of the field of rational numbers $\\\\\\\\Q$.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:09GA\\\",\\\"label\\\":\\\"fields-definition-number-field\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09GA\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"A field $K$ is said to be a {\\\\\\\\it number field} if it has characteristic $0$ and the extension $K/\\\\\\\\mathbf{Q}$ is finite.\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Algebraic_number_field\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":50,\\\"partial\\\":12,\\\"not_formalized\\\":15}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":11,\\\"depends\\\":193,\\\"mentions\\\":54,\\\"relates\\\":2,\\\"invocation\\\":66},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":2,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"invocation\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q1182160\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}}],\\\"counts\\\":{\\\"syn\\\":444,\\\"organs\\\":6},\\\"truncated\\\":{\\\"syn\\\":244},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ramification\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 988,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramification\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.RamificationInertia.ncard_primesOver_eq_natCard_iff_of_isGaloisGroup\\\",\\\"label\\\":\\\"TauCeti.RamificationInertia.ncard_primesOver_eq_natCard_iff_of_isGaloisGroup\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/RamificationInertia\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/IsNonarchimedeanLocalField/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Ramification\\\",\\\"n_cells\\\":1}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"degree extension\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"degree extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Ideal.ramificationIdx\"}",
+   "ok": true,
+   "result_chars": 1392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"anchor\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\"],\\\"xy\\\":[493.9,-368.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.RamificationInertia.Ramification\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"label\\\":\\\"Ramification\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"field extension degree\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"field extension degree\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"absolutely unramified\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolutely unramified\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ring of integers\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 423,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ring of integers\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Nat.ModEq.cancel_left_div_gcd\\\",\\\"label\\\":\\\"Nat.ModEq.cancel_left_div_gcd\\\",\\\"aka\\\":[\\\"Cut edges and Central vertices of zero divisor graph of the ring of integers modulo n\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Nat/ModEq\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"prime ideal extends\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime ideal extends\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"prime rational unramified\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"prime rational unramified\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/NumberTheory/RamificationInertia\"}",
+   "ok": true,
+   "result_chars": 1079,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"parent\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"children\\\":[\\\"path:Mathlib/NumberTheory/RamificationInertia/Basic\\\",\\\"path:Mathlib/NumberTheory/RamificationInertia/Galois\\\",\\\"path:Mathlib/NumberTheory/RamificationInertia/HilbertTheory\\\",\\\"path:Mathlib/NumberTheory/RamificationInertia/Inertia\\\",\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"path:Mathlib/NumberTheory/RamificationInertia/Unramified\\\"]},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"discriminant number field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"discriminant number field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"algebraic integer\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 400,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebraic integer\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1548483\\\",\\\"label\\\":\\\"Kummer theory\\\",\\\"aka\\\":[\\\"Definition:Kummer Theory\\\",\\\"isCyclic_tfae\\\",\\\"The order of the reductions of an algebraic integer\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/KummerExtension\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"there exists a prime number that is ramified in a number field extension\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 5065,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"there exists a prime number that is ramified in a number field extension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q49008\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Prime number\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Prime\\\",\\\"label\\\":\\\"Prime\\\"}]},{\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":19},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":12},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q674689\\\",\\\"label\\\":\\\"Clifford algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":7}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":235,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Nat.Prime\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Prime (p : ℕ) :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime\\\",\\\"via_cell\\\":\\\"cell:Q49008\\\",\\\"cell_label\\\":\\\"Prime number\\\",\\\"breadcrumb\\\":"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/NumberTheory/RamificationInertia/Ramification\"}",
+   "ok": true,
+   "result_chars": 906,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Ramification\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"parent\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\"]},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"label\\\":\\\"RamificationInertia\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:Q616608\"}",
+   "ok": true,
+   "result_chars": 1790,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"snippet\\\":\\\"a finite degree (and hence algebraic) field extension of the field of rational numbers\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q616608\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:NumberField\\\",\\\"label\\\":\\\"NumberField\\\",\\\"code\\\":\\\"class NumberField (K : Type*) [Field K] : Prop where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:NumberField\\\",\\\"label\\\":\\\"Number Field\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/NumberField.html\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Algebraic_Number_Field\\\",\\\"label\\\":\\\"Definition:Algebraic Number Field\\\",\\\"snippet\\\":\\\"An algebraic number field is a finite extension of the field of rational numbers $\\\\\\\\Q$.\\\",\\\"license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Algebraic_Number_Field\\\"},{\\\"source_db\\\":\\\"stacks\\\",\\\"id\\\":\\\"xref:stacks:09GA\\\",\\\"label\\\":\\\"fields-definition-number-field\\\",\\\"snippet\\\":\\\"A field $K$ is said to be a {\\\\\\\\it number field} if it has characteristic $0$ and the extension $K/\\\\\\\\mathbf{Q}$ is finite.\\\",\\\"license\\\":\\\"GFDL (Stacks Project)\\\",\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09GA\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Algebraic_number_field\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Algebraic_number_field\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Ideal.ramificationIdx\"}",
+   "ok": true,
+   "result_chars": 470,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/RamificationInertia/Ramification.html#Ideal.ramificationIdx\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"finrank\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 2156,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"finrank\\\",\\\"decl\\\":\\\"finrank\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:finrank_range_add_finrank_ker\\\",\\\"label\\\":\\\"finrank_range_add_finrank_ker\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/FiniteDimensional/Lemmas\\\"},{\\\"id\\\":\\\"cell:Q28402100\\\",\\\"label\\\":\\\"Rank of an elliptic curve\\\",\\\"aka\\\":[\\\"EllipticCurveRank.RatEllipticCurve._02062_le_density_rank_zero\\\",\\\"EllipticCurveRank.RatEllipticCurve._08375_le_density_rank_zero_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.avg_rank_lt_0885\\\",\\\"EllipticCurveRank.RatEllipticCurve.finite_twentyone_lt_finrank\\\",\\\"EllipticCurveRank.RatEllipticCurve.half_rank_zero_and_half_rank_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.twentyone_le_rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.unbounded_rank_conjecture\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkiesKlagsbrun29\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentyeight_le_rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentynine_le_rank_elkiesKlagsbrun29\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"label\\\":\\\"AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"aka\\\":[\\\"morphisms-definition-finite-locally-free\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.finrank_real_complex\\\",\\\"label\\\":\\\"Complex.finrank_real_complex\\\",\\\"aka\\\":[\\\"fields-example-C-over-R\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Complex/FiniteDimensional\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FDRep.finrank_hom_simple_simple\\\",\\\"label\\\":\\\"FDRep.finrank_hom_simple_simple\\\",\\\"aka\\\":[\\\"Dynamical Zeta Functions, Nielsen theory and Reidemeister torsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/FDRep\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank extension\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ramified ideal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramified ideal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"NumberField\", \"Ideal.ramificationIdx\", \"FiniteDimensional.finrank\", \"Nat.Prime\"]}",
+   "ok": true,
+   "result_chars": 1430,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField\\\"},{\\\"decl\\\":\\\"Ideal.ramificationIdx\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/RamificationInertia/Ramification.html#Ideal.ramificationIdx\\\"},{\\\"decl\\\":\\\"FiniteDimensional.finrank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.Prime\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Polynomial discriminant\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial discriminant\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank dimension\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank dimension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IntegralClosure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1063,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IntegralClosure\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:integralClosure\\\",\\\"label\\\":\\\"integralClosure\\\",\\\"aka\\\":[\\\"Blocks and families for cyclotomic Hecke algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/IntegralClosure/Algebra\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:mem_adjoin_map_integralClosure_of_isStandardEtale\\\",\\\"label\\\":\\\"mem_adjoin_map_integralClosure_of_isStandardEtale\\\",\\\"aka\\\":[\\\"algebra-lemma-integral-closure-commutes-etale\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Smooth/IntegralClosure\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:completeIntegralClosure\\\",\\\"label\\\":\\\"completeIntegralClosure\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/IntegralClosure/IsIntegral\\\"},{\\\"id\\\":\\\"path:FLT/DedekindDomain/IntegralClosure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"IntegralClosure\\\"},{\\\"id\\\":\\\"path:FLT/Deformations/RepresentationTheory/IntegralClosure\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"IntegralClosure\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"FiniteDimensional.finrank_lt_aleph0\", \"Module.rank\", \"Nat.Prime.exists_infinite\"]}",
+   "ok": true,
+   "result_chars": 1032,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional.finrank_lt_aleph0\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"Nat.Prime.exists_infinite\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Nat.Prime.exists\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat.Prime.exists\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Nat.exists_prime_and_dvd\", \"Ideal.ramified\", \"Nat.Prime.two_le\"]}",
+   "ok": true,
+   "result_chars": 1048,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.exists_prime_and_dvd\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.exists_prime_and_dvd\\\"},{\\\"decl\\\":\\\"Ideal.ramified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.Prime.two_le\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime.two_le\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"NumberField degree one\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"NumberField degree one\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q616608\", \"kinds\": \"relates,cites\", \"limit\": 20, \"min_w\": 2}",
+   "ok": true,
+   "result_chars": 4522,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"relates\\\",\\\"cites\\\"],\\\"min_w\\\":2,\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":2,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:0903.5044#2.1.23\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Field\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.878,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"relates\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q190109\\\",\\\"prov\\\":30,\\\"evidence\\\":{\\\"properties\\\":[{\\\"p\\\":\\\"P279\\\",\\\"label\\\":\\\"subclass of\\\"}]}}]},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"invocation\\\":1,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"relates\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q613048\\\",\\\"prov\\\":30,\\\"evidence\\\":{\\\"properties\\\":[{\\\"p\\\":\\\"P2579\\\",\\\"label\\\":\\\"studied by\\\"}]}}]},{\\\"id\\\":\\\"cell:Q2093886\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2107.10988#1\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Field.exists_primitive_element\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.959,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q254347\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2302.02271#2.20\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"IsDedekindDomain\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.91,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q766522\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2207.09486#2.4\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"IsGalois.intermediateFieldEquivSubgroup\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.961,\\\"primary\\\":false,\\\"license_open\\\":true}}]},{\\\"id\\\":\\\"cell:Q2919401\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:1901.04021\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Rat.AbsoluteValue.equiv_real_or_padic\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.953,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q2997826\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2511.11841#5.1\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"NumberField.IsTotallyReal\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.918,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q3099696\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:1002.4678#1.2\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Polynomial.Monic\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.903,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q550402\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:0910.2223#4.1\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"Nat.infinite_setOf_prime_and_eq_mod\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.932,\\\"primary\\\":false,\\\"license_open\\\":false}}]},{\\\"id\\\":\\\"cell:Q724975\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2510.15255\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"GaussianInt\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.821,\\\"primary\\\":false,\\\"license_open\\\":true}}]},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"lit:2405.19270#def:place\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"NumberField.InfinitePlace\\\"],\\\"gpt54\\\":\\\"exact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.856,\\\"primary\\\":false,\\\"license_open\\\":true}}]},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfInte"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"unique factorization domain\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 414,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unique factorization domain\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"aka\\\":[\\\"UniqueFactorizationMonoid\\\",\\\"Arithmetical Semirings\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"NumberField.RingOfIntegers\", \"IsDedekindDomain\", \"Ideal.ramificationIdx\", \"Nat.Prime\"]}",
+   "ok": true,
+   "result_chars": 1537,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField.RingOfIntegers\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField.RingOfIntegers\\\"},{\\\"decl\\\":\\\"IsDedekindDomain\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.DedekindDomain.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.DedekindDomain.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/DedekindDomain/Basic.html#IsDedekindDomain\\\"},{\\\"decl\\\":\\\"Ideal.ramificationIdx\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/RamificationInertia/Ramification.html#Ideal.ramificationIdx\\\"},{\\\"decl\\\":\\\"Nat.Prime\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:NumberField.RingOfIntegers\"}",
+   "ok": true,
+   "result_chars": 1784,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"anchor\\\":\\\"decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\"],\\\"f\\\":128,\\\"xy\\\":[-106.5,383.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def RingOfIntegers : Type _ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2101.12296#2.1.3\\\",\\\"label\\\":\\\"Asymptotics of $p$-torsion subgroup sizes in class groups of monogenized cubic fields\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2101.12296\\\",\\\"ref\\\":\\\"2.1.3\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q168817\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q616608\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank K Q\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank K Q\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"FiniteDimensional.finrank\", \"Ideal.ramified_iff\", \"Nat.Prime.dvd_mul\"]}",
+   "ok": true,
+   "result_chars": 997,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional.finrank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Ideal.ramified_iff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.Prime.dvd_mul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime.dvd_mul\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"minimal polynomial degree\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"minimal polynomial degree\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:Ideal.ramificationIdx\", \"limit\": 15, \"min_w\": 1}",
+   "ok": true,
+   "result_chars": 873,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"min_w\\\":1,\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":3,\\\"statuses\\\":{\\\"partial\\\":2,\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"3c054a44d4bf\\\",\\\"label\\\":\\\"Ramification\\\",\\\"status\\\":\\\"partial\\\"},{\\\"id\\\":\\\"930552fd660c\\\",\\\"label\\\":\\\"Ramification indices\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"be91ac2d2445\\\",\\\"label\\\":\\\"Ramified prime\\\",\\\"status\\\":\\\"partial\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"if K/Q is a number field with [K:Q] > 1 then some prime is ramified\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 263,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"if K/Q is a number field with [K:Q] > 1 then some prime is ramified\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 39,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank_pos\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank_pos\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"finrank_pos\", \"LinearMap.finrank_ker_le_finrank\", \"Submodule.finrank_lt_finrank_of_lt\"]}",
+   "ok": true,
+   "result_chars": 1088,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"finrank_pos\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LinearMap.finrank_ker_le_finrank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Submodule.finrank_lt_finrank_of_lt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.html#Submodule.finrank_lt_finrank_of_lt\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q616608\", \"kinds\": \"depends\", \"limit\": 25, \"min_w\": 3}",
+   "ok": true,
+   "result_chars": 14247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"min_w\\\":3,\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":2,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q190109\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":37,\\\"w_types\\\":{\\\"sig\\\":35,\\\"def\\\":3,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"GaloisField.algEquivGaloisFieldOfFintype\\\",\\\"Field\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q190109\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":77,\\\"w_types\\\":{\\\"sig\\\":75,\\\"def\\\":1,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"CommRing\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q577835\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":22,\\\"w_types\\\":{\\\"sig\\\":21,\\\"def\\\":1,\\\"proof\\\":4},\\\"witnesses\\\":[[\\\"Field.exists_primitive_element\\\",\\\"FiniteDimensional\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q1000660\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":34,\\\"w_types\\\":{\\\"sig\\\":28,\\\"def\\\":7,\\\"proof\\\":4},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"Algebra\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q577835\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":39,\\\"w_types\\\":{\\\"sig\\\":35,\\\"def\\\":4,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"Algebra\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q837414\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":19,\\\"w_types\\\":{\\\"sig\\\":19,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"Algebra\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q159943\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"IntermediateField\\\",\\\"Field\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q3968\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"quadratic_eq_zero_iff\\\",\\\"Field\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q159943\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":46,\\\"w_types\\\":{\\\"sig\\\":45,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"Algebra\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q205464\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":66,\\\"w_types\\\":{\\\"sig\\\":65,\\\"def\\\":1,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"CommRing\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q3968\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":74,\\\"w_types\\\":{\\\"sig\\\":72,\\\"def\\\":1,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"PowerBasis\\\",\\\"CommRing\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"invocation\\\":1,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q613048\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":57,\\\"w_types\\\":{\\\"sig\\\":39,\\\"def\\\":14,\\\"proof\\\":8},\\\"witnesses\\\":[[\\\"IsDedekindDomain.HeightOneSpectrum.adicCompletion\\\",\\\"IsDedekindDomain\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q613048\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":31,\\\"w_types\\\":{\\\"sig\\\":19,\\\"def\\\":6,\\\"proof\\\":13},\\\"witnesses\\\":[[\\\"IsDedekindDomain.HeightOneSpectrum.intValuation_le_one\\\",\\\"Ideal\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1163016\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Algebra.IsAlgebraic.tensorProduct\\\",\\\"Algebra.IsAlgebraic\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q188524\\\",\\\"dst\\\":\\\"Q616608\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"LinearMap.BilinForm.toDual\\\",\\\"FiniteDimensional\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q616608\\\",\\\"dst\\\":\\\"Q188524\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Algebra.traceForm\\\",\\\"LinearMap.BilinForm\\\"]]}}]},{\\\"id\\\":\\\""
+  },
+  {
+   "i": 42,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Nat.exists_prime\", \"Nat.Prime.infinite_prime_sequence\", \"exists_prime\"]}",
+   "ok": true,
+   "result_chars": 947,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.exists_prime\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.Prime.infinite_prime_sequence\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"exists_prime\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Module.rank\", \"Nat.Prime.infinite\", \"RatCast.rat_cast\"]}",
+   "ok": true,
+   "result_chars": 1006,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.rank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"decl\\\":\\\"Nat.Prime.infinite\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"RatCast.rat_cast\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"number field extension finiteExtension\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"number field extension finiteExtension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Unramified extension field\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Unramified extension field\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Ideal.IsRamified\", \"Nat.Prime.ne_one\", \"Nat.Prime.pos\"]}",
+   "ok": true,
+   "result_chars": 1028,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Ideal.IsRamified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.Prime.ne_one\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime.ne_one\\\"},{\\\"decl\\\":\\\"Nat.Prime.pos\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime.pos\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/NumberTheory/RamificationInertia/Basic\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Basic\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Basic\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Basic\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Basic\\\",\\\"parent\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"label\\\":\\\"RamificationInertia\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Polynomial.splits\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 525,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial.splits\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Polynomial.Splits.eq_prod_roots\\\",\\\"label\\\":\\\"Polynomial.Splits.eq_prod_roots\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Polynomial/Splits\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Polynomial.Splits.natDegree_eq_card_roots\\\",\\\"label\\\":\\\"Polynomial.Splits.natDegree_eq_card_roots\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Polynomial/Splits\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"totally unramified extension\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"totally unramified extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"IsUnramified\", \"Unramified\", \"IsRamified\", \"ramified\"]}",
+   "ok": true,
+   "result_chars": 1286,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"IsUnramified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Unramified\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Algebra.Unramified\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Unramified.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Unramified.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Unramified/Basic.html#Algebra.Unramified\\\"},{\\\"decl\\\":\\\"IsRamified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ramified\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Algebra.Unramified\"]}",
+   "ok": true,
+   "result_chars": 532,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Algebra.Unramified\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Unramified.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Unramified.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Unramified/Basic.html#Algebra.Unramified\\\"}],\\\"counts\\\":{\\\"total\\\":1,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 52,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Algebra.Unramified\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Algebra.Unramified\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.Unramified\\\",\\\"label\\\":\\\"Algebra.Unramified\\\",\\\"aka\\\":[\\\"algebra-definition-unramified\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Unramified/Basic\\\",\\\"matched\\\":\\\"decl\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"FiniteDimensional.finrank\", \"Module.finrank\", \"FiniteDimensional.finrank_pos\"]}",
+   "ok": true,
+   "result_chars": 1038,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FiniteDimensional.finrank\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Module.finrank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Finrank\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Finrank\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Finrank.html#Module.finrank\\\"},{\\\"decl\\\":\\\"FiniteDimensional.finrank_pos\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 54,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank positive\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank positive\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 55,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"NumberField\", \"Module.finrank\", \"Algebra.Unramified\", \"Nat.Prime\"]}",
+   "ok": true,
+   "result_chars": 1443,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"NumberField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField\\\"},{\\\"decl\\\":\\\"Module.finrank\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Finrank\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Finrank\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Finrank.html#Module.finrank\\\"},{\\\"decl\\\":\\\"Algebra.Unramified\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Unramified.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Unramified.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Unramified/Basic.html#Algebra.Unramified\\\"},{\\\"decl\\\":\\\"Nat.Prime\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Nat.Prime.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Prime.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Prime/Defs.html#Nat.Prime\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem exists_ramified_prime (K : Type*) [Field K] [NumberField K] \n    (h : 1 < Module.finrank ℚ K) : ¬Algebra.Unramified ℚ K := sorry"
+}

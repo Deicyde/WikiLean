@@ -1,0 +1,412 @@
+{
+ "task_id": "fresh_064",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:39:30Z",
+ "wall_s": 116.1,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 17,
+   "mcp__formal__decl_grep": 20,
+   "mcp__formal__decl_read": 8
+  },
+  "tokens_in": 242,
+  "tokens_out": 6360,
+  "cost_usd": 0.1251087
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"upper half plane\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'upper half plane': Unknown identifier `upper`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"q-expansion modular\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'q-expansion modular': Unknown identifier `q`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exp 2 * π * I\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exp 2 * π * I': Unknown identifier `exp`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Tendsto atTop\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Tendsto atTop': Unknown identifier `Tendsto`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*[Bb]ounded\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"742 match(es) for '(theorem|def|lemma) .*[Bb]ounded' (via ripgrep):\\n- Mathlib/SetTheory/Cardinal/Cofinality/Ordinal.lean:557\\n    theorem mk_bounded_subset {α : Type*} (h : IsStrongPrelimit #α) {r : α → α → Prop}\\n- Mathlib/Computability/Primrec/Basic.lean:691\\n    def PrimrecBounded (f : α → β) : Prop :=\\n- Mathlib/Computability/Primrec/Basic.lean:703\\n    theorem of_graph {f : α → ℕ} (h₁ : PrimrecBounded f)\\n- Mathlib/Computability/Primrec/List.lean:455\\n    /-- A helper lemma for proofs about bounded quantifiers on decidable relations. -/\\n- Mathlib/SetTheory/Cardinal/Arithmetic.lean:763\\n    theorem mk_bounded_set_le_of_infinite (α : Type u) [Infinite α] (c : Cardinal) :\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable series convergent\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Summable series convergent': Unknown identifier `series`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def) .*Series\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1257,
+   "result_head": "[{\"type\": \"text\", \"text\": \"598 match(es) for '(theorem|def) .*Series' (via ripgrep):\\n- Mathlib/Algebra/Lie/CartanCriterion.lean:75\\n    theorem isNilpotent_derivedSeries_of_traceForm_eq_zero_aux {K : Type*}\\n- Mathlib/Algebra/Lie/CartanCriterion.lean:176\\n    public theorem isNilpotent_derivedSeries_of_traceForm_eq_zero\\n- Mathlib/Algebra/Lie/Solvable.lean:57\\n    def derivedSeriesOfIdeal (k : ℕ) : LieIdeal R L → LieIdeal R L :=\\n- Mathlib/Algebra/Lie/Solvable.lean:61\\n    theorem derivedSeriesOfIdeal_zero : derivedSeriesOfIdeal R L 0 I = I :=\\n- Mathlib/Algebra/Lie/Solvable.lean:65\\n    theorem derivedSeriesOfIdeal_succ (k : ℕ) :\\n- Mathlib/Algebra/Lie/Solvable.lean:74\\n    theorem derivedSeries_def (k : ℕ) : derivedSeries R L k = derivedSeriesOfIdeal R L k ⊤ :=\\n- Mathlib/Algebra/Lie/Solvable.lean:88\\n    theorem derivedSeriesOfIdeal_add (k l : ℕ) : D (k + l) I = D k (D l I) := by\\n- Mathlib/Algebra/Lie/Solvable.lean:94\\n    theorem derivedSeriesOfIdeal_le {I J : LieIdeal R L} {k l : ℕ} (h₁ : I ≤ J) (h₂ : l ≤ k) :\\n- Mathlib/Algebra/Lie/Solvable.lean:105\\n    theorem derivedSeriesOfIdeal_succ_le (k : ℕ) : D (k + 1) I ≤ D k I :=\\n- Mathlib/Algebra/Lie/Solvable.lean:108\\n    theorem derivedSeriesOfIdeal_le_self (k : ℕ) : D k I ≤ I :=\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?α → ℝ → Prop\"}",
+   "ok": true,
+   "result_chars": 2831,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27169 declarations mentioning Real.\\n- NormedAddGroupHom.SurjectiveOnWith   [Mathlib.Analysis.Normed.Group.Hom]\\n    A normed group hom is surjective on the subgroup `K` with constant `C` if every element `x` of `K` has a preimage whose norm is bounded above by `C*‖x‖`. This i\\n- Asymptotics.IsBigOWith   [Mathlib.Analysis.Asymptotics.Defs]\\n    This version of the Landau notation `IsBigOWith C l f g` where `f` and `g` are two functions on a type `α` and `l` is a filter on `α`, means that eventually for\\n- Real.HolderConjugate   [Mathlib.Data.Real.ConjExponents]\\n    Real numbers `p q : ℝ` are **Hölder conjugate** if they are positive and satisfy the equality `p⁻¹ + q⁻¹ = 1`. This is an abbreviation for `Real.HolderTriple p \\n- Real.HolderTriple   [Mathlib.Data.Real.ConjExponents]\\n    Real numbers `p q r : ℝ` are said to be a **Hölder triple** if `p` and `q` are positive and `p⁻¹ + q⁻¹ = r⁻¹`.\\n- MeasureTheory.DominatedFinMeasAdditive   [Mathlib.MeasureTheory.Integral.FinMeasAdditive]\\n    A `FinMeasAdditive` set function whose norm on every set is less than the measure of the set (up to a multiplicative constant).\\n- IntervalIntegrable   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    A function `f` is called *interval integrable* with respect to a measure `μ` on an unordered interval `a..b` if it is integrable on both intervals `(a, b]` and \\n- CircleIntegrable   [Mathlib.MeasureTheory.Integral.CircleIntegral]\\n    We say that a function `f : ℂ → E` is integrable on the circle with center `c` and radius `R` if the function `f ∘ circleMap c R` is integrable on `[0, 2π]`.  N\\n- AbsolutelyContinuousOnInterval   [Mathlib.MeasureTheory.Function.AbsolutelyContinuous]\\n    `AbsolutelyContinuousOnInterval f a b`: A function `f` is *absolutely continuous* on `uIcc a b` if the function which (intuitively) maps `uIoc (a i) (b i)`, `i \\n- Complex.CanonicalDecomp   [Mathlib.Analysis.Complex.CanonicalDecomposition]\\n    Given functions `f`, `g` and a real number `R`, the following convenience structure packs the information relevant in the canonical decomposition.  The conditio\\n- Complex.ECanonicalDecomp   [Mathlib.Analysis.Complex.CanonicalDecomposition]\\n    Given functions `f`, `g` and a real number `R`, the following convenience structure packs the information relevant in the extended canonical decomposition.\\n- StrongConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly concave if is strongly concave with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this is \\n- StrongConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly convex if it is uniformly convex with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this i\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Summable\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"509 match(es) for 'Summable' (via ripgrep):\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:35\\n    namespace SummableFamily\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:43\\n    SummableFamily Γ A ℕ :=\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:78\\n    (r : R) : (0 : WithTop Γ) < (SummableFamily.hsum (binomialFamily x r) - 1).orderTop := by\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:95\\n    end SummableFamily\\n- Mathlib/RingTheory/HahnSeries/Binomial.lean:97\\n    open SummableFamily\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"BddOn\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 76,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'BddOn' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Complex\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 958,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'def Complex' (via ripgrep):\\n- Mathlib/Algebra/Homology/Localization.lean:255\\n    def ComplexShape.strictUniversalPropertyFixedTargetQuotient (E : Type*) [Category* E] :\\n- Mathlib/Analysis/MellinTransform.lean:86\\n    def Complex.VerticalIntegrable (f : ℂ → E) (σ : ℝ) (μ : Measure ℝ := by volume_tac) : Prop :=\\n- Mathlib/LinearAlgebra/Complex/Module.lean:531\\n    def Complex.selfAdjointEquiv : selfAdjoint ℂ ≃ₗ[ℝ] ℝ where\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:878\\n    def Complex.orthonormalBasisOneI : OrthonormalBasis (Fin 2) ℝ ℂ :=\\n- Mathlib/Analysis/InnerProductSpace/PiL2.lean:905\\n    def Complex.isometryOfOrthonormal (v : OrthonormalBasis (Fin 2) ℝ F) : ℂ ≃ₗᵢ[ℝ] F :=\\n- Mathlib/Analysis/Complex/IntegerCompl.lean:23\\n    def Complex.integerComplement := (Set.range ((↑) : ℤ → ℂ))ᶜ\\n- Mathlib/Analysis/RCLike/Sqrt.lean:26\\n    noncomputable def Complex.sqrt (a : ℂ) : ℂ := a ^ (2⁻¹ : ℂ)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Complex → ℂ\"}",
+   "ok": true,
+   "result_chars": 1384,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 5970 declarations mentioning Complex.\\n- Complex.mulAux   [Mathlib.Data.Complex.Basic]\\n    `mulAux` is an auxiliary definition for defining multiplication and scalar multiplication on `ℂ` in such a way that `real_smul {x : ℝ} {z : ℂ} : x • z = x * z` \\n- Complex.star_def   [Mathlib.Data.Complex.Basic]\\n- Complex.conjAe_coe   [Mathlib.LinearAlgebra.Complex.Module]\\n- Complex.isBigO_comp_ofReal_nhds   [Mathlib.Analysis.Complex.Asymptotics]\\n- Complex.isBigO_comp_ofReal_nhds_ne   [Mathlib.Analysis.Complex.Asymptotics]\\n- Complex.exp   [Mathlib.Analysis.Complex.Exponential]\\n    The complex exponential function, defined via its Taylor series\\n- Complex.cos   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex cosine function, defined via `exp`\\n- Complex.cosh   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex hyperbolic cosine function, defined via `exp`\\n- Complex.cot   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex cotangent function, defined as `cos z / sin z`\\n- Complex.sin   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex sine function, defined via `exp`\\n- Complex.sinh   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex hyperbolic sine function, defined via `exp`\\n- Complex.tan   [Mathlib.Analysis.Complex.Trigonometric]\\n    The complex tangent function, defined as `sin z / cos z`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"upperHalfPlane\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 740,
+   "result_head": "[{\"type\": \"text\", \"text\": \"42 match(es) for 'upperHalfPlane' (via ripgrep):\\n- Mathlib/Analysis/Complex/Convex.lean:72\\n    lemma isConnected_of_upperHalfPlane {r} {s : Set ℂ} (hs₁ : {z | r < z.im} ⊆ s)\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:83\\n    <| isOpen_upperHalfPlaneSet.mem_nhds hz⟩\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:125\\n    have := hf.analyticOnNhd isOpen_upperHalfPlaneSet\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:129\\n    · exact (Complex.isConnected_of_upperHalfPlane subset_rfl (by grind)).isPreconnected\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:200\\n    refine DifferentiableOn.analyticAt (fun z hz ↦ ?_) (isOpen_upperHalfPlaneSet.mem_nhds τ.im_pos)\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def upperHalfPlaneSet\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def upperHalfPlaneSet' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"isOpen_upperHalfPlaneSet\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 504,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'isOpen_upperHalfPlaneSet' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean:283\\n    isOpen_upperHalfPlaneSet (isOpen_compl_range_intCast))\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean:322\\n    apply SummableLocallyUniformlyOn_of_locally_bounded isOpen_upperHalfPlaneSet\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean:359\\n    rw [iteratedDerivWithin_tsum k isOpen_upperHalfPlaneSet hz\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2330,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean  (lines 1–50 of 411):\\n     1  /-\\n     2  Copyright (c) 2024 Chris Birkbeck. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Birkbeck\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Calculus.IteratedDeriv.WithinZpow\\n     9  public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp\\n    10  public import Mathlib.Analysis.Complex.IntegerCompl\\n    11  public import Mathlib.Analysis.Complex.LocallyUniformLimit\\n    12  public import Mathlib.Analysis.PSeries\\n    13  public import Mathlib.Analysis.SpecialFunctions.Trigonometric.EulerSineProd\\n    14  public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn\\n    15  public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Summable\\n    16  public import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn\\n    17  \\n    18  /-!\\n    19  # Cotangent\\n    20  \\n    21  This file contains lemmas about the cotangent function, including useful series expansions.\\n    22  In particular, we prove that\\n    23  `π * cot (π * z) = π * I - 2 * π * I * ∑' n : ℕ, Complex.exp (2 * π * I * z) ^ n`\\n    24  as well as the infinite sum representation of cotangent (also known as the Mittag-Leffler\\n    25  expansion): `π * cot (π * z) = 1 / z + ∑' n : ℕ+, (1 / (z - n) + 1 / (z + n))`.\\n    26  -/\\n    27  \\n    28  public section\\n    29  \\n    30  open Real Complex\\n    31  \\n    32  open scoped UpperHalfPlane\\n    33  \\n    34  local notation \\\"ℂ_ℤ\\\" => integerComplement\\n    35  \\n    36  local notation \\\"ℍₒ\\\" => UpperHalfPlane.upperHalfPlaneSet\\n    37  \\n    38  lemma Complex.cot_eq_exp_ratio (z : ℂ) :\\n    39      cot z = (Complex.exp (2 * I * z) + 1) / (I * (1 - Complex.exp (2 * I * z))) := by\\n    40    rw [Complex.cot, Complex.sin, Complex.cos]\\n    41    have h1 : exp (z * I) + exp (-z * I) = exp (-(z * I)) * (exp (2 * I * z) + 1) := by\\n    42      rw [mul_add, ← Complex.exp_add]\\n    43      ring_nf\\n    44    have h2 : (exp (-z * I) - exp (z * I)) = exp (-(z * I)) * ((1 - exp (2 * I * z))) := by\\n    45      ring_nf\\n    46      rw [mul_assoc, ← Complex.exp_add]\\n    47      ring_nf\\n    48    rw [h1, h2]\\n    49    field\\n    50  \\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace UpperHalfPlane\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1007,
+   "result_head": "[{\"type\": \"text\", \"text\": \"17 match(es) for 'namespace UpperHalfPlane' (via ripgrep):\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Manifold.lean:36\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/FixedPoints.lean:38\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/MoebiusAction.lean:27\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Measure.lean:31\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/FunctionsBoundedAtInfty.lean:28\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean:34\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean:171\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/ProperAction.lean:27\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Topology.lean:31\\n    namespace UpperHalfPlane\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Metric.lean:37\\n    namespace UpperHalfPlane\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3242,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean  (lines 1–80 of 276):\\n     1  /-\\n     2  Copyright (c) 2021 Alex Kontorovich and Heather Macbeth and Marc Masdeu. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Alex Kontorovich, Heather Macbeth, Marc Masdeu\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Complex.Basic\\n     9  \\n    10  /-!\\n    11  # The upper half plane\\n    12  \\n    13  This file defines `UpperHalfPlane` to be the upper half plane in `ℂ`.\\n    14  \\n    15  We define the notation `ℍ` for the upper half plane available in the locale\\n    16  `UpperHalfPlane` so as not to conflict with the quaternions.\\n    17  -/\\n    18  \\n    19  @[expose] public section\\n    20  \\n    21  noncomputable section\\n    22  \\n    23  /-- The open upper half plane, denoted as `ℍ` within the `UpperHalfPlane` namespace -/\\n    24  @[ext]\\n    25  structure UpperHalfPlane where\\n    26    /-- Canonical embedding of the upper half-plane into `ℂ`. -/\\n    27    protected coe : ℂ\\n    28    coe_im_pos : 0 < coe.im\\n    29  \\n    30  @[inherit_doc] scoped[UpperHalfPlane] notation \\\"ℍ\\\" => UpperHalfPlane\\n    31  \\n    32  open UpperHalfPlane Complex\\n    33  \\n    34  namespace UpperHalfPlane\\n    35  \\n    36  attribute [coe] UpperHalfPlane.coe\\n    37  \\n    38  instance : CoeOut ℍ ℂ := ⟨UpperHalfPlane.coe⟩\\n    39  \\n    40  /-- Define `I := √-1` as an element of the upper half plane. -/\\n    41  def I : ℍ := ⟨Complex.I, by simp⟩\\n    42  \\n    43  /-- Define the cube root of unity `ρ := (-1 + √-3) / 2` as an element of the upper half plane. -/\\n    44  def ρ : ℍ := ⟨⟨-1 / 2, Real.sqrt 3 / 2⟩, by positivity⟩\\n    45  \\n    46  lemma ρ_sq : (ρ : ℂ) ^ 2 = -ρ - 1 := by\\n    47    simp [Complex.ext_iff, pow_two, ρ]\\n    48    grind\\n    49  \\n    50  lemma norm_ρ : ‖(ρ : ℂ)‖ = 1 := by norm_num [norm_def, normSq, ← pow_two, ρ, div_pow]\\n    51  \\n    52  instance : Inhabited ℍ := ⟨.I⟩\\n    53  \\n    54  @[simp, norm_cast] theorem coe_inj {a b : ℍ} : (a : ℂ) = b ↔ a = b := UpperHalfPlane.ext_iff.symm\\n    55  \\n    56  @[deprecated (since := \\\"2026-01-31\\\")] alias ext_iff' := coe_inj\\n    57  \\n    58  theorem coe_injective : Function.Injective UpperHalfPlane.coe := fun _ _ ↦ UpperHalfPlane.ext\\n    59  \\n    60  instance canLift : CanLift ℂ ℍ ((↑) : ℍ → ℂ) fun z => 0 < z.im where\\n    61    prf z hz := ⟨⟨z, hz⟩, rfl⟩\\n    62  \\n    63  protected theorem «forall» {P : ℍ → Prop} : (∀ z, P z) ↔ ∀ z hz, P ⟨z, hz⟩ :=\\n    64    ⟨fun h z hz ↦ h ⟨z, hz⟩, fun h z ↦ h z.1 z.2⟩\\n    65  \\n    66  protected theorem «exists» {P : ℍ → Prop} : (∃ z, P z) ↔ ∃ z hz, P ⟨z, hz⟩ :=\\n    67    ⟨fun ⟨⟨z, hz⟩, hP⟩ ↦ ⟨z, hz, hP⟩, fun ⟨z, hz, hP⟩ ↦ ⟨⟨z, hz⟩, hP⟩⟩\\n    68  \\n    69  /-- Imaginary part -/\\n    70  def im (z : ℍ) :=\\n    71    (z : ℂ).im\\n    72  \\n    73  /-- Real part -/\\n    74  def re (z : ℍ) :=\\n    75    (z : ℂ).re\\n    76  \\n    77  /-- Extensionality lemma in terms of `UpperHalfPlane.re` and `UpperHalfPlane.im`. -/\\n    78  theorem ext_re_im {a b : ℍ} (hre : a.re = b.re) (him : a.im = b.im) : a = b :=\\n    79    UpperHalfPlane.ext <| Complex.ext hre him\\n    80  \\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"upperHalfPlaneSet\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 748,
+   "result_head": "[{\"type\": \"text\", \"text\": \"37 match(es) for 'upperHalfPlaneSet' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/DedekindEta.lean:38\\n    local notation \\\"ℍₒ\\\" => upperHalfPlaneSet\\n- Mathlib/NumberTheory/ModularForms/DedekindEta.lean:151\\n    theorem differentiableAt_eta_of_mem_upperHalfPlaneSet {z : ℂ} (hz : z ∈ ℍₒ) :\\n- Mathlib/NumberTheory/ModularForms/DedekindEta.lean:173\\n    have HG := logDeriv_tprod_eq_tsum isOpen_upperHalfPlaneSet z.2\\n- Mathlib/NumberTheory/ModularForms/Derivative.lean:52\\n    have hDeriv : DifferentiableOn ℂ (fun z ↦ c * deriv (F ∘ ofComplex) z) upperHalfPlaneSet := by\\n- Mathlib/NumberTheory/ModularForms/Derivative.lean:53\\n    simpa [c] using (hF.deriv isOpen_upperHalfPlaneSet).const_mul ((2 * π * I)⁻¹)\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def upperHalfPlaneSet|upperHalfPlaneSet =\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def upperHalfPlaneSet|upperHalfPlaneSet =' under Mathlib/.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean\", \"line\": 160, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean  (lines 160–189 of 276):\\n   160  @[positivity UpperHalfPlane.coe _]\\n   161  meta def evalUpperHalfPlaneCoe : PositivityExt where eval {u α} _zα pα? e :=\\n   162    match pα? with | none => pure .none | some _ => do\\n   163    match u, α, e with\\n   164    | 0, ~q(ℂ), ~q(UpperHalfPlane.coe $a) =>\\n   165      assertInstancesCommute\\n   166      pure (.nonzero q(@UpperHalfPlane.ne_zero $a))\\n   167    | _, _, _ => throwError \\\"not UpperHalfPlane.coe\\\"\\n   168  \\n   169  end Mathlib.Meta.Positivity\\n   170  \\n   171  namespace UpperHalfPlane\\n   172  \\n   173  theorem normSq_pos (z : ℍ) : 0 < Complex.normSq (z : ℂ) := by\\n   174    rw [Complex.normSq_pos]; exact z.ne_zero\\n   175  \\n   176  theorem normSq_ne_zero (z : ℍ) : Complex.normSq (z : ℂ) ≠ 0 :=\\n   177    (normSq_pos z).ne'\\n   178  \\n   179  theorem im_inv_neg_coe_pos (z : ℍ) : 0 < (-z : ℂ)⁻¹.im := by\\n   180    simpa [neg_div] using div_pos z.im_pos (normSq_pos z)\\n   181  \\n   182  lemma im_pnat_div_pos (n : ℕ) [NeZero n] (z : ℍ) : 0 < (-(n : ℂ) / z).im := by\\n   183    suffices 0 < n * z.im / Complex.normSq z by simpa [Complex.div_im, neg_div]\\n   184    positivity [NeZero.ne n, z.normSq_pos]\\n   185  \\n   186  lemma ne_ofReal (z : ℍ) (x : ℝ) : (z : ℂ) ≠ x :=\\n   187    ne_of_apply_ne Complex.im <| by simp [im_ne_zero]\\n   188  \\n   189  lemma ne_intCast (z : ℍ) (n : ℤ) : (z : ℂ) ≠ n := mod_cast ne_ofReal z n\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \":= {z|\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 944,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for ':= {z|' (via python-fallback):\\n- Mathlib/Init.lean:1\\n    module  -- shake: keep-all, shake: keep-downstream\\n- Mathlib/Init.lean:2\\n    \\n- Mathlib/Init.lean:3\\n    public import Lean.Linter.Sets -- for the definition of linter sets\\n- Mathlib/Init.lean:4\\n    public import Lean.LibrarySuggestions.Default -- for `+suggestions` modes in tactics\\n- Mathlib/Init.lean:5\\n    public import Mathlib.Lean.Linter -- linter utilities; will be transitively imported in #31134\\n- Mathlib/Init.lean:6\\n    public import Mathlib.Tactic.AdaptationNote -- make #adaptation_note available everywhere\\n- Mathlib/Init.lean:7\\n    public import Mathlib.Tactic.Lemma\\n- Mathlib/Init.lean:8\\n    public import Mathlib.Tactic.Linter.AuxLemma\\n- Mathlib/Init.lean:9\\n    public import Mathlib.Tactic.Linter.DeprecatedSyntaxLinter\\n- Mathlib/Init.lean:10\\n    public import Mathlib.Tactic.Linter.DirectoryDependency\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/ModularForms/DedekindEta.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2322,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/ModularForms/DedekindEta.lean  (lines 1–50 of 184):\\n     1  /-\\n     2  Copyright (c) 2024 Chris Birkbeck. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Birkbeck, David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Calculus.LogDerivUniformlyOn\\n     9  public import Mathlib.Analysis.Complex.LocallyUniformLimit\\n    10  public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp\\n    11  public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn\\n    12  public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Summable\\n    13  public import Mathlib.NumberTheory.TsumDivisorsAntidiagonal\\n    14  \\n    15  /-!\\n    16  # Dedekind eta function\\n    17  \\n    18  ## Main definitions\\n    19  \\n    20  * We define the Dedekind eta function as the infinite product\\n    21    `η(z) = q ^ 1/24 * ∏' (1 - q ^ (n + 1))` where `q = e ^ (2πiz)` and `z` is in the upper\\n    22    half-plane. The product is taken over all non-negative integers `n`. We then show it is\\n    23    non-vanishing and differentiable on the upper half-plane. Lastly, we compute its logarithmic\\n    24    derivative and show that it is a multiple of the Eisenstein series `E2`.\\n    25  \\n    26  ## References\\n    27  * [F. Diamond and J. Shurman, *A First Course in Modular Forms*][diamondshurman2005], section 1.2\\n    28  -/\\n    29  \\n    30  @[expose] public section\\n    31  \\n    32  open Set Function Complex\\n    33  open UpperHalfPlane hiding I\\n    34  open scoped Real\\n    35  \\n    36  local notation \\\"𝕢\\\" => Periodic.qParam\\n    37  \\n    38  local notation \\\"ℍₒ\\\" => upperHalfPlaneSet\\n    39  \\n    40  namespace ModularForm\\n    41  \\n    42  /-- The q term inside the product defining the eta function. It is defined as\\n    43  `eta_q n z = e ^ (2 π i (n + 1) z)`. -/\\n    44  noncomputable abbrev eta_q (n : ℕ) (z : ℂ) := (𝕢 1 z) ^ (n + 1)\\n    45  \\n    46  lemma eta_q_eq_cexp (n : ℕ) (z : ℂ) : eta_q n z = cexp (2 * π * I * (n + 1) * z) := by\\n    47    simp [eta_q, Periodic.qParam, ← Complex.exp_nsmul]\\n    48    ring_nf\\n    49  \\n    50  lemma eta_q_eq_pow (n : ℕ) (z : ℂ) : eta_q n z = cexp (2 * π * I * z) ^ (n + 1) := by\\n\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Exp.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2289,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/UpperHalfPlane/Exp.lean  (lines 1–45 of 45):\\n     1  /-\\n     2  Copyright (c) 2024 Chris Birkbeck. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Birkbeck\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\\n     9  public import Mathlib.Analysis.Complex.Periodic\\n    10  public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic\\n    11  \\n    12  /-!\\n    13  # Exp on the upper half plane\\n    14  \\n    15  This file contains lemmas about the exponential function on the upper half plane. Useful for\\n    16  q-expansions of modular forms.\\n    17  -/\\n    18  \\n    19  public section\\n    20  \\n    21  open Real Complex UpperHalfPlane Function\\n    22  \\n    23  local notation \\\"𝕢\\\" => Periodic.qParam\\n    24  \\n    25  theorem Function.Periodic.im_invQParam_pos_of_norm_lt_one\\n    26      {h : ℝ} (hh : 0 < h) {q : ℂ} (hq : ‖q‖ < 1) (hq_ne : q ≠ 0) :\\n    27      0 < im (Periodic.invQParam h q) :=\\n    28    im_invQParam .. ▸ mul_pos_of_neg_of_neg\\n    29      (div_neg_of_neg_of_pos (neg_lt_zero.mpr hh) Real.two_pi_pos)\\n    30      ((Real.log_neg_iff (norm_pos_iff.mpr hq_ne)).mpr hq)\\n    31  \\n    32  lemma Function.Periodic.norm_qParam_le_of_one_half_le_im {ξ : ℂ} (hξ : 1 / 2 ≤ ξ.im) :\\n    33      ‖𝕢 1 ξ‖ ≤ rexp (-π) := by\\n    34    rwa [Periodic.qParam, ofReal_one, div_one, Complex.norm_exp, Real.exp_le_exp,\\n    35      mul_right_comm, mul_I_re, neg_le_neg_iff, ← ofReal_ofNat, ← ofReal_mul, im_ofReal_mul,\\n    36      mul_comm _ π, mul_assoc, le_mul_iff_one_le_right Real.pi_pos, ← div_le_iff₀' two_pos]\\n    37  \\n    38  theorem UpperHalfPlane.norm_qParam_lt_one (n : ℕ) [NeZero n] (τ : ℍ) : ‖𝕢 n τ‖ < 1 := by\\n    39    rw [Periodic.norm_qParam, Real.exp_lt_one_iff, neg_mul, coe_im, neg_mul, neg_div, neg_lt_zero,\\n    40      div_pos_iff_of_pos_right (mod_cast Nat.pos_of_ne_zero <| NeZero.ne _)]\\n    41    positivity\\n    42  \\n    43  theorem UpperHalfPlane.norm_exp_two_pi_I_lt_one (τ : ℍ) :\\n    44      ‖(Complex.exp (2 * π * Complex.I * τ))‖ < 1 := by\\n    45    simpa [Function.Periodic.norm_qParam, Complex.norm_exp] using τ.norm_qParam_lt_one 1\\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"upperHalfPlaneSet.*:=\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 661,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'upperHalfPlaneSet.*:=' (via ripgrep):\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean:264\\n    abbrev upperHalfPlaneSet := {z : ℂ | 0 < z.im}\\n- Mathlib/Analysis/Complex/UpperHalfPlane/Basic.lean:268\\n    lemma isOpen_upperHalfPlaneSet : IsOpen ℍₒ := isOpen_lt continuous_const Complex.continuous_im\\n- Mathlib/NumberTheory/ModularForms/Derivative.lean:52\\n    have hDeriv : DifferentiableOn ℂ (fun z ↦ c * deriv (F ∘ ofComplex) z) upperHalfPlaneSet := by\\n- Mathlib/NumberTheory/ModularForms/Discriminant.lean:95\\n    ∃ c : ℂ, c ≠ 0 ∧ upperHalfPlaneSet.EqOn (η ∘ (fun z : ℂ ↦ -1 / z)) (c • (sqrt * η)) := by\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable ?f\"}",
+   "ok": true,
+   "result_chars": 1022,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 564 declarations mentioning Summable and SummationFilter.unconditional.\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Set.Finite.summable   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Equiv.summable_iff   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- summable_extend_zero   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Function.Surjective.summable_iff_of_hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- summable_subtype_iff_indicator   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Finset.summable   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Function.Injective.summable_iff   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Summable.add_compl   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Summable.compl_add   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Summable.tsum_add_tsum_compl   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Summable.tsum_union_disjoint   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Summable\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Summable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f → ℂ → Summable\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f → ℂ → Summable': type expected, got\\n  (fun f => Summable f : (?m.3 → ?m.2) → Prop)\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAboveOn\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'BddAboveOn': unknown identifier 'BddAboveOn'\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.Norms.IsBoundedOn\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.Norms.IsBoundedOn': unknown identifier 'Set.Norms.IsBoundedOn'\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class.*Bounded|def.*Bounded\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1525,
+   "result_head": "[{\"type\": \"text\", \"text\": \"157 match(es) for 'class.*Bounded|def.*Bounded' (via ripgrep):\\n- Mathlib/Computability/Primrec/Basic.lean:691\\n    def PrimrecBounded (f : α → β) : Prop :=\\n- Mathlib/Analysis/Normed/Algebra/GelfandMazur.lean:340\\n    · rw [← isCobounded_def, ← isBounded_compl_iff] at hs\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:99\\n    def toLinearMap (f : E → F) (h : IsBoundedLinearMap 𝕜 f) : E →ₗ[𝕜] F :=\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:103\\n    def toContinuousLinearMap (f : E → F) (hf : IsBoundedLinearMap 𝕜 f) : E →L[𝕜] F :=\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:361\\n    def IsBoundedBilinearMap.toContinuousLinearMap (hf : IsBoundedBilinearMap 𝕜 f) :\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:409\\n    We define this function here as a linear map `E × F →ₗ[𝕜] G`, then `IsBoundedBilinearMap.deriv`\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:412\\n    def IsBoundedBilinearMap.linearDeriv (h : IsBoundedBilinearMap 𝕜 f) (p : E × F) : E × F →ₗ[𝕜] G :=\\n- Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean:418\\n    def IsBoundedBilinearMap.deriv (h : IsBoundedBilinearMap 𝕜 f) (p : E × F) : E × F →L[𝕜] G :=\\n- Mathlib/Analysis/Normed/Operator/Completeness.lean:44\\n    def ofMemClosureImageCoeBounded (f : E' → F) {s : Set (E' →SL[σ₁₂] F)} (hs : IsBounded s)\\n- Mathlib/Analysis/Normed/Operator/Completeness.lean:62\\n    def ofTendstoOfBoundedRange {α : Type*} {l : Filter α} [l.NeBot] (f : E' → F)\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(Set ?s) → (?α → ℝ) → Prop\"}",
+   "ok": true,
+   "result_chars": 1197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 7026 declarations mentioning Real and Set.\\n- AbsolutelyMonotoneOn   [Mathlib.Analysis.Calculus.AbsolutelyMonotone]\\n    A function `f : ℝ → ℝ` is **absolutely monotone on a set `s`** if, heuristically, all iterated derivatives of `f` on `s` are nonnegative. For technical reasons \\n- StrongConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly concave if is strongly concave with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this is \\n- StrongConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly convex if it is uniformly convex with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this i\\n- UniformConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is uniformly concave with modulus `φ` if `t • f x + (1 - t) • f y + t * (1 - t) * φ ‖x - y‖ ≤ f (t • x + (1 - t) • y)` f\\n- UniformConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is uniformly convex with modulus `φ` if `f (t • x + (1 - t) • y) ≤ t • f x + (1 - t) • f y - t * (1 - t) * φ ‖x - y‖` fo\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsBounded\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsBounded': unknown identifier 'IsBounded'\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Metric.Bounded\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Metric.Bounded': unknown identifier 'Metric.Bounded'\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Bornology.IsBounded\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 752,
+   "result_head": "[{\"type\": \"text\", \"text\": \"86 match(es) for 'Bornology.IsBounded' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Covolume.lean:95\\n    · exact Bornology.IsBounded.measure_lt_top (fundamentalDomain_isBounded _)\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:331\\n    theorem setFinite_inter [ProperSpace E] [Finite ι] {s : Set E} (hs : Bornology.IsBounded s) :\\n- Mathlib/Analysis/Distribution/Support.lean:164\\n    (dsupport f)ᶜ = ⋃₀ { a | IsVanishingOn f a ∧ IsOpen a ∧ Bornology.IsBounded a } := by\\n- Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean:660\\n    (hs : Bornology.IsBounded s) :\\n- Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean:709\\n    {p : ℝ≥0} (hp : 1 ≤ p) (h2p : p < finrank ℝ E) (hs : Bornology.IsBounded s) :\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"query\": \"Periodic.qParam\"}",
+   "ok": false,
+   "result_chars": 22,
+   "result_head": "error: 'q' is required"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"qParam\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 670,
+   "result_head": "[{\"type\": \"text\", \"text\": \"36 match(es) for 'qParam' (via ripgrep):\\n- Mathlib/NumberTheory/ModularForms/Bounds.lean:247\\n    local notation \\\"𝕢\\\" => Function.Periodic.qParam\\n- Mathlib/NumberTheory/ModularForms/Bounds.lean:277\\n    rw [Real.norm_of_nonneg hh.le, Function.Periodic.norm_qParam, ← Real.exp_nat_mul]\\n- Mathlib/NumberTheory/ModularForms/Bounds.lean:284\\n    fun_prop (disch := simp [Function.Periodic.qParam_ne_zero])\\n- Mathlib/NumberTheory/ModularForms/Discriminant.lean:54\\n    local notation \\\"𝕢\\\" => Periodic.qParam\\n- Mathlib/NumberTheory/ModularForms/Discriminant.lean:118\\n    · simp [Periodic.qParam, ← exp_nsmul, nsmul_eq_mul, Nat.cast_ofNat]\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*qParam\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 433,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def.*qParam' (via ripgrep):\\n- Mathlib/Analysis/Complex/Periodic.lean:40\\n    def qParam (z : ℂ) : ℂ := exp (2 * π * I * z / h)\\n- Mathlib/Analysis/Complex/Periodic.lean:231\\n    simpa only [Function.comp_def, eq_cuspFunction hh.ne' hf] using this.comp (qParam_tendsto hh)\\n- Mathlib/Analysis/Complex/Periodic.lean:242\\n    simpa [comp_def, eq_cuspFunction hh.ne' hf, norm_qParam] using\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Periodic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4708,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Periodic.lean  (lines 1–100 of 290):\\n     1  /-\\n     2  Copyright (c) 2024 David Loeffler. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: David Loeffler\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.Complex.RemovableSingularity\\n     9  public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv\\n    10  public import Mathlib.Order.Filter.ZeroAndBoundedAtFilter\\n    11  \\n    12  /-!\\n    13  # Periodic holomorphic functions\\n    14  \\n    15  We show that if `f : ℂ → ℂ` satisfies `f (z + h) = f z`, for some nonzero real `h`, then there is a\\n    16  function `F` such that `f z = F (exp (2 * π * I * z / h))` for all `z`; and if `f` is holomorphic\\n    17  at some `z`, then `F` is holomorphic at `exp (2 * π * I * z / h)`.\\n    18  \\n    19  We also show (using Riemann's removable singularity theorem) that if `f` is holomorphic and bounded\\n    20  for all sufficiently large `im z`, then `F` extends to a holomorphic function on a neighbourhood of\\n    21  `0`. As a consequence, if `f` tends to zero as `im z → ∞`, then in fact it decays *exponentially*\\n    22  to zero. These results are important in the theory of modular forms.\\n    23  -/\\n    24  \\n    25  @[expose] public section\\n    26  \\n    27  open Complex Filter Asymptotics\\n    28  \\n    29  open scoped Real Topology\\n    30  \\n    31  noncomputable section\\n    32  \\n    33  local notation \\\"I∞\\\" => comap im atTop\\n    34  \\n    35  variable (h : ℝ)\\n    36  \\n    37  namespace Function.Periodic\\n    38  \\n    39  /-- Parameter for q-expansions, `qParam h z = exp (2 * π * I * z / h)` -/\\n    40  def qParam (z : ℂ) : ℂ := exp (2 * π * I * z / h)\\n    41  \\n    42  /-- One-sided inverse of `qParam h`. -/\\n    43  def invQParam (q : ℂ) : ℂ := h / (2 * π * I) * log q\\n    44  \\n    45  local notation \\\"𝕢\\\" => qParam\\n    46  \\n    47  section qParam\\n    48  \\n    49  theorem norm_qParam (z : ℂ) : ‖𝕢 h z‖ = Real.exp (-2 * π * im z / h) := by\\n    50    simp only [qParam, norm_exp, div_ofReal_re, mul_re, re_ofNat, ofReal_re, im_ofNat, ofReal_im,\\n    51      mul_zero, sub_zero, I_re, mul_im, zero_mul, add_zero, I_im, mul_one, sub_self, zero_sub,\\n    52      neg_mul]\\n    53  \\n    54  theorem im_invQParam (q : ℂ) : im (invQParam h q) = -h / (2 * π) * Real.log ‖q‖ := by\\n    55    simp only [invQParam, ← div_div, div_I, neg_mul, neg_im, mul_im, mul_re, div_ofReal_re,\\n    56      div_ofNat_re, ofReal_re, I_re, mul_zero, div_ofReal_im, div_ofNat_im, ofReal_im, zero_div, I_im,\\n    57      mul_one, sub_self, zero_mul, add_zero, log_re, zero_add, neg_div]\\n    58  \\n    59  variable {h} -- next few theorems all assume h ≠ 0 or 0 < h\\n    60  \\n    61  theorem qParam_right_inv (hh : h ≠ 0) {q : ℂ} (hq : q ≠ 0) : 𝕢 h (invQParam h q) = q := by\\n    62    simp only [qParam, invQParam, ← mul_assoc, mul_div_cancel₀ _ two_pi_I_ne_zero,\\n    63      mul_div_cancel_left₀ _ (ofReal_ne_zero.mpr hh), exp_log hq]\\n    64  \\n    65  theorem qParam_left_inv_mod_period (hh : h ≠ 0) (z : ℂ) :\\n    66      ∃ m : ℤ, invQParam h (𝕢 h z) = z + m * h := by\\n    67    dsimp only [qParam, invQParam]\\n    68    obtain ⟨m, hm⟩ := log_exp_exists (2 * ↑π * I * z / ↑h)\\n    69    refine ⟨m, by rw [hm, mul_div_assoc, mul_comm (m : ℂ), ← mul_add, ← mul_assoc,\\n    70      div_mul_cancel₀ _ two_pi_I_ne_zero, mul_add, mul_div_cancel₀ _ (mod_cast hh), mul_comm]⟩\\n    71  \\n    72  theorem norm_qParam_lt_iff (hh : 0 < h) (A : ℝ) (z : ℂ) :\\n    73      ‖qParam h z‖ < Real.exp (-2 * π * A / h) ↔ A < im z := by\\n    74    rw [norm_qParam, Real.exp_lt_exp, div_lt_div_iff_of_pos_right hh, mul_lt_mul_left_of_neg]\\n    75    simpa using Real.pi_pos\\n    76  \\n    77  theorem norm_qParam_lt_one (hh : 0 < h) {z : ℂ} (hz : 0 < im z) : ‖𝕢 h z‖ < 1 := by\\n    78    simpa using (norm_qParam_lt_iff hh 0 z).mpr hz\\n    79  \\n    80  lemma qParam_ne_zero (z : ℂ) : "
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Periodic.lean\", \"line\": 200, \"n\": 90}",
+   "ok": true,
+   "result_chars": 5245,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Periodic.lean  (lines 200–289 of 290):\\n   200  \\n   201  theorem cuspFunction_zero_of_zero_at_inf (hh : 0 < h) (h_zer : ZeroAtFilter I∞ f) :\\n   202      cuspFunction h f 0 = 0 := by\\n   203    simpa only [cuspFunction, update_self] using (h_zer.comp (invQParam_tendsto hh)).limUnder_eq\\n   204  \\n   205  theorem differentiableAt_cuspFunction_zero (hh : 0 < h) (hf : Periodic f h)\\n   206      (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_bd : BoundedAtFilter I∞ f) :\\n   207      DifferentiableAt ℂ (cuspFunction h f) 0 := by\\n   208    obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound\\n   209    replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t\\n   210    simp only [norm_one, Pi.one_apply, mul_one] at t\\n   211    obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)\\n   212    have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \\\\ {0}) :=\\n   213      fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt\\n   214    have hF_bd : BddAbove (norm ∘ cuspFunction h f '' (S \\\\ {0})) := by\\n   215      use c\\n   216      simp only [mem_upperBounds, Set.mem_image, Set.mem_sdiff, forall_exists_index, and_imp]\\n   217      intro y q hq hq2 hy\\n   218      simpa only [← hy, norm_one, mul_one] using! (hS1 q hq hq2).2\\n   219    have := differentiableOn_update_limUnder_of_bddAbove (IsOpen.mem_nhds hS2 hS3) h_diff hF_bd\\n   220    rw [← cuspFunction_zero_eq_limUnder_nhds_ne, update_eq_self] at this\\n   221    exact this.differentiableAt (IsOpen.mem_nhds hS2 hS3)\\n   222  \\n   223  /--\\n   224  If `f` is periodic, and holomorphic and bounded near `I∞`, then it tends to a limit at `I∞`,\\n   225  and this limit is the value of its cusp function at 0.\\n   226  -/\\n   227  theorem tendsto_at_I_inf (hh : 0 < h) (hf : Periodic f h)\\n   228      (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_bd : BoundedAtFilter I∞ f) :\\n   229      Tendsto f I∞ (𝓝 <| cuspFunction h f 0) := by\\n   230    suffices Tendsto (cuspFunction h f) (𝓝[≠] 0) (𝓝 <| cuspFunction h f 0) by\\n   231      simpa only [Function.comp_def, eq_cuspFunction hh.ne' hf] using this.comp (qParam_tendsto hh)\\n   232    exact tendsto_nhdsWithin_of_tendsto_nhds\\n   233      (differentiableAt_cuspFunction_zero hh hf h_hol h_bd).continuousAt.tendsto\\n   234  \\n   235  /--\\n   236  If `f` is periodic, and holomorphic and bounded at `I∞`, then it has the form (constant) +\\n   237  (exponentially decaying term) as `z → I∞`.\\n   238  -/\\n   239  theorem exp_decay_sub_of_bounded_at_inf (hh : 0 < h) (hf : Periodic f h)\\n   240      (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_bd : BoundedAtFilter I∞ f) :\\n   241      (fun z ↦ f z - cuspFunction h f 0) =O[I∞] (fun z ↦ Real.exp (-2 * π * im z / h)) := by\\n   242    simpa [comp_def, eq_cuspFunction hh.ne' hf, norm_qParam] using\\n   243      differentiableAt_cuspFunction_zero hh hf h_hol h_bd |>.isBigO_sub.mono\\n   244        nhdsWithin_le_nhds |>.comp_tendsto (qParam_tendsto hh) |>.norm_right\\n   245  \\n   246  /--\\n   247  If `f` is periodic, holomorphic near `I∞`, and tends to zero at `I∞`, then in fact it tends to zero\\n   248  exponentially fast.\\n   249  -/\\n   250  theorem exp_decay_of_zero_at_inf (hh : 0 < h) (hf : Periodic f h)\\n   251      (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_zer : ZeroAtFilter I∞ f) :\\n   252      f =O[I∞] fun z ↦ Real.exp (-2 * π * im z / h) := by\\n   253    simpa [cuspFunction_zero_of_zero_at_inf hh h_zer, sub_zero] using\\n   254      exp_decay_sub_of_bounded_at_inf hh hf h_hol h_zer.boundedAtFilter\\n   255  \\n   256  end HoloAtInfC\\n   257  \\n   258  section arithmetic\\n   259  \\n   260  lemma cuspFunction_smul {h} {f : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0) (a : ℂ) :\\n   261      cuspFunction h (a • f) = a • cuspFunction h f := by\\n   262    simp only [cuspFunction] at *\\n   263    ext y\\n   264    obtain rfl | hy := eq_or_ne y 0\\n   265    · simpa using! (Tendsto"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Complex/Periodic.lean\", \"line\": 120, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2734,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Complex/Periodic.lean  (lines 120–169 of 290):\\n   120    update (f ∘ invQParam h) 0 (limUnder (𝓝[≠] 0) (f ∘ invQParam h))\\n   121  \\n   122  theorem cuspFunction_eq_of_nonzero {q : ℂ} (hq : q ≠ 0) :\\n   123      cuspFunction h f q = f (invQParam h q) :=\\n   124    update_of_ne hq ..\\n   125  \\n   126  theorem cuspFunction_zero_eq_limUnder_nhds_ne :\\n   127      cuspFunction h f 0 = limUnder (𝓝[≠] 0) (cuspFunction h f) := by\\n   128    conv_lhs => simp only [cuspFunction, update_self]\\n   129    refine congr_arg lim (Filter.map_congr <| eventuallyEq_nhdsWithin_of_eqOn fun r hr ↦ ?_)\\n   130    rw [cuspFunction, update_of_ne hr]\\n   131  \\n   132  variable {f h}\\n   133  \\n   134  theorem eq_cuspFunction (hh : h ≠ 0) (hf : Periodic f h) (z : ℂ) :\\n   135      (cuspFunction h f) (𝕢 h z) = f z := by\\n   136    have : (cuspFunction h f) (𝕢 h z) = f (invQParam h (𝕢 h z)) := by\\n   137      rw [cuspFunction, update_of_ne, comp_apply]\\n   138      exact exp_ne_zero _\\n   139    obtain ⟨m, hm⟩ := qParam_left_inv_mod_period hh z\\n   140    simpa only [this, hm] using hf.int_mul m z\\n   141  \\n   142  lemma tendsto_nhds_zero {f : ℂ → ℂ} (hcts : ContinuousAt (cuspFunction h f) 0) :\\n   143      Tendsto (fun x ↦ f (invQParam h x)) (𝓝[≠] 0) (𝓝 (cuspFunction h f 0)) := by\\n   144    apply (tendsto_nhdsWithin_of_tendsto_nhds hcts.tendsto).congr'\\n   145    filter_upwards [self_mem_nhdsWithin] with a using cuspFunction_eq_of_nonzero h f\\n   146  \\n   147  end PeriodicOnℂ\\n   148  \\n   149  section HoloOnC\\n   150  \\n   151  variable {h : ℝ} {f : ℂ → ℂ}\\n   152  \\n   153  /--\\n   154  Key technical lemma: the function `cuspFunction h f` is differentiable at the images of\\n   155  differentiability points of `f` (even if `invQParam` is not differentiable there).\\n   156  -/\\n   157  theorem differentiableAt_cuspFunction (hh : h ≠ 0) (hf : Periodic f h)\\n   158      {z : ℂ} (hol_z : DifferentiableAt ℂ f z) :\\n   159      DifferentiableAt ℂ (cuspFunction h f) (𝕢 h z) := by\\n   160    let q := 𝕢 h z\\n   161    have qdiff : HasStrictDerivAt (𝕢 h) (q * (2 * π * I / h)) z := by\\n   162      simpa only [id_eq, mul_one] using! (((hasStrictDerivAt_id z).const_mul _).div_const _).cexp\\n   163    -- Now show that the q-map has a differentiable local inverse at z, say L : ℂ → ℂ with L q = z.\\n   164    have diff_ne : q * (2 * π * I / h) ≠ 0 :=\\n   165      mul_ne_zero (exp_ne_zero _) (div_ne_zero two_pi_I_ne_zero <| mod_cast hh)\\n   166    let L := (qdiff.localInverse (𝕢 h) _ z) diff_ne\\n   167    have diff_L : DifferentiableAt ℂ L q :=\\n   168      (qdiff.to_localInverse diff_ne).hasStrictFDerivAt.differentiableAt\\n   169    have hL : 𝕢 h ∘ L =ᶠ[𝓝 q] (id : ℂ → ℂ) :=\\n\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable\"}",
+   "ok": true,
+   "result_chars": 1165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 671 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the value.\\n- summable_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.mono_filter   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- summable_of_ne_finset_zero   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- summable_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"I∞|atTop|Filter\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 751,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4642 match(es) for 'I∞|atTop|Filter' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/ApproximationCorollaries.lean:119\\n    Filter.Tendsto (of v).convs Filter.atTop <| 𝓝 v := by\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:11\\n    public import Mathlib.Order.Filter.AtTopBot.Basic\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:230\\n    open Filter\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:233\\n    theorem of_correctness_atTop_of_terminates (terminates : (of v).Terminates) :\\n- Mathlib/Algebra/ContinuedFractions/Computation/CorrectnessTerminating.lean:234\\n    ∀ᶠ n in atTop, v = (of v).convs n := by\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*qParam|theorem.*qExpansion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 715,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'theorem.*qParam|theorem.*qExpansion' (via ripgrep):\\n- Mathlib/Analysis/Complex/Periodic.lean:49\\n    theorem norm_qParam (z : ℂ) : ‖𝕢 h z‖ = Real.exp (-2 * π * im z / h) := by\\n- Mathlib/Analysis/Complex/Periodic.lean:61\\n    theorem qParam_right_inv (hh : h ≠ 0) {q : ℂ} (hq : q ≠ 0) : 𝕢 h (invQParam h q) = q := by\\n- Mathlib/Analysis/Complex/Periodic.lean:65\\n    theorem qParam_left_inv_mod_period (hh : h ≠ 0) (z : ℂ) :\\n- Mathlib/Analysis/Complex/Periodic.lean:72\\n    theorem norm_qParam_lt_iff (hh : 0 < h) (A : ℝ) (z : ℂ) :\\n- Mathlib/Analysis/Complex/Periodic.lean:77\\n    theorem norm_qParam_lt_one (hh : 0 < h) {z : ℂ} (hz : 0 < im z) : ‖𝕢 h z‖ < 1 := by\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

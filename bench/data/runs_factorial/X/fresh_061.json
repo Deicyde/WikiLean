@@ -1,0 +1,378 @@
+{
+ "task_id": "fresh_061",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:16:42Z",
+ "wall_s": 143.8,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 20,
+   "mcp__formal__decl_grep": 12,
+   "mcp__formal__decl_read": 6,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 242,
+  "tokens_out": 10407,
+  "cost_usd": 0.15306874999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"DirichletSeries\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'DirichletSeries': unknown identifier 'DirichletSeries'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"dirichlet\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'dirichlet': unknown identifier 'dirichlet'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : ℕ → ℂ\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : ℕ → ℂ': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*series\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1395,
+   "result_head": "[{\"type\": \"text\", \"text\": \"74 match(es) for 'theorem.*series' (via ripgrep):\\n- Mathlib/NumberTheory/ZetaValues.lean:268\\n    polynomials, together with the theorem `has_pointwise_sum_fourier_series_of_summable` from Fourier\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:1318\\n    /-- Lebesgue dominated convergence theorem for series. -/\\n- Mathlib/MeasureTheory/Integral/DominatedConvergence.lean:21\\n    the Lebesgue dominated convergence theorem for series\\n- Mathlib/MeasureTheory/Integral/DominatedConvergence.lean:76\\n    /-- Lebesgue dominated convergence theorem for series. -/\\n- Mathlib/Analysis/Analytic/IsolatedZeros.lean:78\\n    theorem has_fpower_series_dslope_fslope (hp : HasFPowerSeriesAt f p z₀) :\\n- Mathlib/Analysis/Analytic/IsolatedZeros.lean:91\\n    theorem has_fpower_series_iterate_dslope_fslope (n : ℕ) (hp : HasFPowerSeriesAt f p z₀) :\\n- Mathlib/GroupTheory/Nilpotent.lean:306\\n    theorem ascending_central_series_le_upper (H : ℕ → Subgroup G) (hH : IsAscendingCentralSeries H) :\\n- Mathlib/GroupTheory/Nilpotent.lean:333\\n    theorem nilpotent_iff_finite_ascending_central_series :\\n- Mathlib/GroupTheory/Nilpotent.lean:344\\n    theorem is_descending_rev_series_of_is_ascending {H : ℕ → Subgroup G} {n : ℕ} (hn : H n = ⊤)\\n- Mathlib/GroupTheory/Nilpotent.lean:359\\n    theorem is_ascending_rev_series_of_is_descending {H : ℕ → Subgroup G} {n : ℕ} (hn : H n = ⊥)\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum ?f\"}",
+   "ok": true,
+   "result_chars": 924,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 733 declarations mentioning tsum and SummationFilter.unconditional.\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_comp_neg   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_bool   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_univ   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Equiv.tsum_eq   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_eq_tsum_of_hasSum_iff_hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_mem   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- Function.Injective.tsum_eq   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_subtype   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_extend_zero   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_indicator_of_notMem   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tsum_singleton   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(fun n => ?f n / ?g n) → ℂ\"}",
+   "ok": true,
+   "result_chars": 144,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(fun n => ?f n / ?g n) → ℂ': type expected, got\\n  (fun n => ?m.3 / ?m.5 : (n : ?m.1) → ?m.12 n)\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"zpow ?x ?n\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'zpow ?x ?n': Unknown identifier `zpow`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Complex\"}",
+   "ok": true,
+   "result_chars": 1105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 5970 declarations mentioning Complex.\\n- Complex   [Mathlib.Data.Complex.Basic]\\n    Complex numbers consist of two `Real`s: a real part `re` and an imaginary part `im`.\\n- Complex.I   [Mathlib.Data.Complex.Basic]\\n    The imaginary unit.\\n- Complex.addCommGroup   [Mathlib.Data.Complex.Basic]\\n- Complex.addGroupWithOne   [Mathlib.Data.Complex.Basic]\\n- Complex.commRing   [Mathlib.Data.Complex.Basic]\\n- Complex.im   [Mathlib.Data.Complex.Basic]\\n    The imaginary part of a complex number.\\n- Complex.instAdd   [Mathlib.Data.Complex.Basic]\\n- Complex.instAddCommMonoid   [Mathlib.Data.Complex.Basic]\\n    This shortcut instance ensures we do not find `AddCommMonoid` via the noncomputable `Complex.instNormedField` instance.\\n- Complex.instCommSemiring   [Mathlib.Data.Complex.Basic]\\n    This shortcut instance ensures we do not find `CommSemiring` via the noncomputable `Complex.field` instance.\\n- Complex.instDecidableEq   [Mathlib.Data.Complex.Basic]\\n- Complex.instDivInvMonoid   [Mathlib.Data.Complex.Basic]\\n- Complex.instField   [Mathlib.Data.Complex.Basic]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?x : ?G) ^ (?n : ℤ)\"}",
+   "ok": true,
+   "result_chars": 682,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1914 declarations mentioning Int and HPow.hPow.\\n- Rat.zpow_one   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_zero   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_natCast   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_nonneg   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_pos   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_neg   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_add_one   [Init.Data.Rat.Lemmas]\\n- Rat.ofScientific_def'   [Init.Data.Rat.Lemmas]\\n    Alternative statement of `ofScientific_def`.\\n- Rat.zpow_sub_one   [Init.Data.Rat.Lemmas]\\n- Rat.zpow_add   [Init.Data.Rat.Lemmas]\\n- Lean.Grind.Field.zpow_one   [Init.Grind.Ring.Field]\\n- Lean.Grind.Field.zpow_neg_one   [Init.Grind.Ring.Field]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pow ?x ?n\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pow ?x ?n': Unknown identifier `pow`\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?x : ℂ) ^ (?y : ℂ)\"}",
+   "ok": true,
+   "result_chars": 1002,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 299 declarations mentioning Complex.instPow, HPow.hPow, instHPow, and Complex.\\n- Complex.cpow_eq_pow   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_one   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_zero   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.one_cpow   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_neg_one   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_neg   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_intCast   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_natCast   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.zero_cpow   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.cpow_def_of_ne_zero   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.inv_cpow   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\\n- Complex.natCast_add_one_cpow_ne_zero   [Mathlib.Analysis.SpecialFunctions.Pow.Complex]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Pow/Complex.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2000,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Pow/Complex.lean  (lines 1–50 of 293):\\n     1  /-\\n     2  Copyright (c) 2018 Chris Hughes. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Chris Hughes, Abhimanyu Pallavi Sudhir, Jean Lo, Calle Sönne, Sébastien Gouëzel,\\n     5    Rémy Degenne, David Loeffler\\n     6  -/\\n     7  module\\n     8  \\n     9  public import Mathlib.Analysis.SpecialFunctions.Complex.Log\\n    10  \\n    11  /-! # Power function on `ℂ`\\n    12  \\n    13  We construct the power functions `x ^ y`, where `x` and `y` are complex numbers.\\n    14  -/\\n    15  \\n    16  @[expose] public section\\n    17  \\n    18  open Real Topology Filter ComplexConjugate Finset Set\\n    19  \\n    20  namespace Complex\\n    21  \\n    22  /-- The complex power function `x ^ y`, given by `x ^ y = exp(y log x)` (where `log` is the\\n    23  principal determination of the logarithm), unless `x = 0` where one sets `0 ^ 0 = 1` and\\n    24  `0 ^ y = 0` for `y ≠ 0`. -/\\n    25  noncomputable def cpow (x y : ℂ) : ℂ :=\\n    26    if x = 0 then if y = 0 then 1 else 0 else exp (log x * y)\\n    27  \\n    28  noncomputable instance : Pow ℂ ℂ :=\\n    29    ⟨cpow⟩\\n    30  \\n    31  @[simp]\\n    32  theorem cpow_eq_pow (x y : ℂ) : cpow x y = x ^ y :=\\n    33    rfl\\n    34  \\n    35  theorem cpow_def (x y : ℂ) : x ^ y = if x = 0 then if y = 0 then 1 else 0 else exp (log x * y) :=\\n    36    rfl\\n    37  \\n    38  theorem cpow_def_of_ne_zero {x : ℂ} (hx : x ≠ 0) (y : ℂ) : x ^ y = exp (log x * y) :=\\n    39    if_neg hx\\n    40  \\n    41  @[simp]\\n    42  theorem cpow_zero (x : ℂ) : x ^ (0 : ℂ) = 1 := by simp [cpow_def]\\n    43  \\n    44  @[simp]\\n    45  theorem cpow_eq_zero_iff (x y : ℂ) : x ^ y = 0 ↔ x = 0 ∧ y ≠ 0 := by\\n    46    simp only [cpow_def]\\n    47    split_ifs <;> simp [*, exp_ne_zero]\\n    48  \\n    49  theorem cpow_ne_zero_iff {x y : ℂ} :\\n    50      x ^ y ≠ 0 ↔ x ≠ 0 ∨ y = 0 := by\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable (?f : ℕ → ℂ)\"}",
+   "ok": true,
+   "result_chars": 765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 6 declarations mentioning NormedCommRing.toSeminormedCommRing, PseudoMetricSpace.toUniformSpace, CommCStarAlgebra.toNormedCommRing, Nat, SeminormedCommRing.toSeminormedRing, SeminormedRing.toPseudoMetricSpace, instCommCStarAlgebraComplex, Summable, Complex, UniformSpace.toTopologicalSpace, Complex.instAddCommMonoid, and SummationFilter.unconditional.\\n- summable_pow_mul_cexp   [Mathlib.NumberTheory.ModularForms.EisensteinSeries.QExpansion]\\n- EisensteinSeries.summable_sigma_mul_cexp_pow   [Mathlib.NumberTheory.ModularForms.EisensteinSeries.QExpansion]\\n    Summability of the divisor-sum q-expansion series `∑ σ_{k-1}(n) q^n`.\\n- ModularForm.summable_logDeriv_one_sub_eta_q   [Mathlib.NumberTheory.ModularForms.DedekindEta]\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∑ ?n, ?f ?n\"}",
+   "ok": true,
+   "result_chars": 1671,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 978 declarations mentioning Finset.univ and Finset.sum.\\n- Fintype.sum_empty   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Function.Bijective.sum_comp   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Fintype.sum_bijective   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `Fintype.sum_bijective` is a variant of `Finset.sum_bij` that accepts `Function.Bijective`.  See `Function.Bijective.sum_comp` for a version without `h`.\\n- Function.Bijective.finsetSum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    **Alias** of `Fintype.sum_bijective`.  ---  `Fintype.sum_bijective` is a variant of `Finset.sum_bij` that accepts `Function.Bijective`.  See `Function.Bijective\\n- Function.Bijective.finset_sum   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    **Alias** of `Function.Bijective.finsetSum`.  ---  **Alias** of `Fintype.sum_bijective`.  ---  `Fintype.sum_bijective` is a variant of `Finset.sum_bij` that acc\\n- Equiv.sum_comp   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Fintype.sum_equiv   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n    `Fintype.sum_equiv` is a specialization of `Finset.sum_bij` that automatically fills in most arguments.  See `Equiv.sum_comp` for a version without `h`.\\n- Finset.sum_attach_univ   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_mem_multiset   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Finset.sum_coe_sort_eq_attach   [Mathlib.Algebra.BigOperators.Group.Finset.Defs]\\n- Fintype.sum_subsingleton   [Mathlib.Algebra.BigOperators.Group.Finset.Basic]\\n- Fintype.sum_unique   [Mathlib.Algebra.BigOperators.Group.Finset.Basic]\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"L-function\"}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'L-function': Unknown identifier `L`\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*[Dd]irichlet\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 757,
+   "result_head": "[{\"type\": \"text\", \"text\": \"21 match(es) for 'def.*[Dd]irichlet' (via ripgrep):\\n- Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean:46\\n    def dirichletSummandHom {n : ℕ} (χ : DirichletCharacter ℂ n) (hs : s ≠ 0) : ℕ →*₀ ℂ where\\n- Mathlib/NumberTheory/ArithmeticFunction/Defs.lean:27\\n    * Multiplication and power instances on `ArithmeticFunction R`, are defined using Dirichlet\\n- Mathlib/NumberTheory/ArithmeticFunction/Defs.lean:354\\n    def dirichletInverseFun (n : ℕ) : R :=\\n- Mathlib/NumberTheory/ArithmeticFunction/Defs.lean:378\\n    def dirichletInverse : ArithmeticFunction R :=\\n- Mathlib/NumberTheory/ArithmeticFunction/Zeta.lean:13\\n    We define `ζ` to be the arithmetic function with `ζ n = 1` for `0 < n` (whose Dirichlet series\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5524,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/EulerProduct/DirichletLSeries.lean  (lines 1–100 of 207):\\n     1  /-\\n     2  Copyright (c) 2023 Michael Stoll. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Michael Stoll\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.NumberTheory.EulerProduct.ExpLog\\n     9  public import Mathlib.NumberTheory.LSeries.Dirichlet\\n    10  \\n    11  /-!\\n    12  # The Euler Product for the Riemann Zeta Function and Dirichlet L-Series\\n    13  \\n    14  The first main result of this file is the Euler Product formula for the Riemann ζ function\\n    15  $$\\\\prod_p \\\\frac{1}{1 - p^{-s}}\\n    16     = \\\\lim_{n \\\\to \\\\infty} \\\\prod_{p < n} \\\\frac{1}{1 - p^{-s}} = \\\\zeta(s)$$\\n    17  for $s$ with real part $> 1$ ($p$ runs through the primes).\\n    18  `riemannZeta_eulerProduct` is the second equality above. There are versions\\n    19  `riemannZeta_eulerProduct_hasProd` and `riemannZeta_eulerProduct_tprod` in terms of `HasProd`\\n    20  and `tprod`, respectively.\\n    21  \\n    22  The second result is `dirichletLSeries_eulerProduct` (with variants\\n    23  `dirichletLSeries_eulerProduct_hasProd` and `dirichletLSeries_eulerProduct_tprod`),\\n    24  which is the analogous statement for Dirichlet L-series.\\n    25  -/\\n    26  \\n    27  @[expose] public section\\n    28  \\n    29  open Complex\\n    30  \\n    31  variable {s : ℂ}\\n    32  \\n    33  /-- When `s ≠ 0`, the map `n ↦ n^(-s)` is completely multiplicative and vanishes at zero. -/\\n    34  noncomputable\\n    35  def riemannZetaSummandHom (hs : s ≠ 0) : ℕ →*₀ ℂ where\\n    36    toFun n := (n : ℂ) ^ (-s)\\n    37    map_zero' := by simp [hs]\\n    38    map_one' := by simp\\n    39    map_mul' m n := by\\n    40      simpa only [Nat.cast_mul, ofReal_natCast]\\n    41        using mul_cpow_ofReal_nonneg m.cast_nonneg n.cast_nonneg _\\n    42  \\n    43  /-- When `χ` is a Dirichlet character and `s ≠ 0`, the map `n ↦ χ n * n^(-s)` is completely\\n    44  multiplicative and vanishes at zero. -/\\n    45  noncomputable\\n    46  def dirichletSummandHom {n : ℕ} (χ : DirichletCharacter ℂ n) (hs : s ≠ 0) : ℕ →*₀ ℂ where\\n    47    toFun n := χ n * (n : ℂ) ^ (-s)\\n    48    map_zero' := by simp [hs]\\n    49    map_one' := by simp\\n    50    map_mul' m n := by\\n    51      simp_rw [← ofReal_natCast]\\n    52      simpa only [Nat.cast_mul, IsUnit.mul_iff, not_and, map_mul, ofReal_mul,\\n    53        mul_cpow_ofReal_nonneg m.cast_nonneg n.cast_nonneg _]\\n    54        using mul_mul_mul_comm ..\\n    55  \\n    56  /-- When `s.re > 1`, the map `n ↦ n^(-s)` is norm-summable. -/\\n    57  lemma summable_riemannZetaSummand (hs : 1 < s.re) :\\n    58      Summable (fun n ↦ ‖riemannZetaSummandHom (ne_zero_of_one_lt_re hs) n‖) := by\\n    59    simp only [riemannZetaSummandHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk]\\n    60    convert! Real.summable_nat_rpow_inv.mpr hs with n\\n    61    rw [← ofReal_natCast,\\n    62      norm_cpow_eq_rpow_re_of_nonneg (Nat.cast_nonneg n) <| re_neg_ne_zero_of_one_lt_re hs,\\n    63      neg_re, Real.rpow_neg <| Nat.cast_nonneg n]\\n    64  \\n    65  lemma tsum_riemannZetaSummand (hs : 1 < s.re) :\\n    66      ∑' (n : ℕ), riemannZetaSummandHom (ne_zero_of_one_lt_re hs) n = riemannZeta s := by\\n    67    have hsum := summable_riemannZetaSummand hs\\n    68    rw [zeta_eq_tsum_one_div_nat_add_one_cpow hs, hsum.of_norm.tsum_eq_zero_add, map_zero, zero_add]\\n    69    simp only [riemannZetaSummandHom, cpow_neg, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk,\\n    70      Nat.cast_add, Nat.cast_one, one_div]\\n    71  \\n    72  /-- When `s.re > 1`, the map `n ↦ χ(n) * n^(-s)` is norm-summable. -/\\n    73  lemma summable_dirichletSummand {N : ℕ} (χ : DirichletCharacter ℂ N) (hs : 1 < s.re) :\\n    74      Summable (fun n ↦ ‖dirichletSummandHom χ (ne_zero_of_one_lt_re hs) n‖) := by\\n    75    simp only [dirichletSummandHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, norm_mul]\\n "
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def LSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 861,
+   "result_head": "[{\"type\": \"text\", \"text\": \"7 match(es) for 'def LSeries' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Convergence.lean:30\\n    noncomputable def LSeries.abscissaOfAbsConv (f : ℕ → ℂ) : EReal :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:164\\n    def LSeries (f : ℕ → ℂ) (s : ℂ) : ℂ :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:173\\n    def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:212\\n    def LSeriesHasSum (f : ℕ → ℂ) (s a : ℂ) : Prop :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:245\\n    def LSeries.delta (n : ℕ) : ℂ :=\\n- Mathlib/NumberTheory/LSeries/Convolution.lean:62\\n    noncomputable def LSeries.convolution {R : Type*} [Semiring R] (f g : ℕ → R) : ℕ → R :=\\n- Mathlib/AlgebraicGeometry/EllipticCurve/LFunction.lean:84\\n    protected noncomputable def LSeries (W : WeierstrassCurve K) (s : ℂ) :=\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LSeries ?f ?s\"}",
+   "ok": true,
+   "result_chars": 2012,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 74 declarations mentioning LSeries.\\n- LSeriesSummable.LSeriesHasSum   [Mathlib.NumberTheory.LSeries.Basic]\\n- LSeriesHasSum.LSeries_eq   [Mathlib.NumberTheory.LSeries.Basic]\\n- LSeries.eq_zero_of_not_LSeriesSummable   [Mathlib.NumberTheory.LSeries.Basic]\\n- LSeriesHasSum_iff   [Mathlib.NumberTheory.LSeries.Basic]\\n- LSeries_congr   [Mathlib.NumberTheory.LSeries.Basic]\\n    Congruence for `LSeries` with the evaluation variable `s`.\\n- LSeries_def₀   [Mathlib.NumberTheory.LSeries.Basic]\\n    An alternate spelling of `LSeries` as `∑' n, f n / n ^ s` for the case `f 0 = 0`.\\n- LSeries_convolution'   [Mathlib.NumberTheory.LSeries.Convolution]\\n    The L-series of the convolution product `f ⍟ g` of two sequences `f` and `g` equals the product of their L-series, assuming both L-series converge.\\n- LSeries_convolution   [Mathlib.NumberTheory.LSeries.Convolution]\\n    The L-series of the convolution product `f ⍟ g` of two sequences `f` and `g` equals the product of their L-series in their common half-plane of absolute converg\\n- ArithmeticFunction.LSeries_mul'   [Mathlib.NumberTheory.LSeries.Convolution]\\n    The L-series of the (convolution) product of two `ℂ`-valued arithmetic functions `f` and `g` equals the product of their L-series, assuming both L-series conver\\n- ArithmeticFunction.LSeries_mul   [Mathlib.NumberTheory.LSeries.Convolution]\\n    The L-series of the (convolution) product of two `ℂ`-valued arithmetic functions `f` and `g` equals the product of their L-series in their common half-plane of \\n- LSeries_deriv   [Mathlib.NumberTheory.LSeries.Deriv]\\n    If `re s` is greater than the abscissa of absolute convergence of `f`, then the derivative of this L-series at `s` is the negative of the L-series of `log * f`.\\n- LSeries_iteratedDeriv   [Mathlib.NumberTheory.LSeries.Deriv]\\n    If `re s` is greater than the abscissa of absolute convergence of `f`, then the `m`th derivative of this L-series is `(-1)^m` times the L-series of `log^m * f`.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Basic.lean\", \"line\": 160, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Basic.lean  (lines 160–239 of 397):\\n   160  \\n   161  /-- The value of the L-series of the sequence `f` at the point `s`\\n   162  if it converges absolutely there, and `0` otherwise. -/\\n   163  noncomputable\\n   164  def LSeries (f : ℕ → ℂ) (s : ℂ) : ℂ :=\\n   165    ∑' n, term f s n\\n   166  \\n   167  /-- Congruence for `LSeries` with the evaluation variable `s`. -/\\n   168  lemma LSeries_congr {f g : ℕ → ℂ} (h : ∀ {n}, n ≠ 0 → f n = g n) (s : ℂ) :\\n   169      LSeries f s = LSeries g s :=\\n   170    tsum_congr <| term_congr h s\\n   171  \\n   172  /-- `LSeriesSummable f s` indicates that the L-series of `f` converges absolutely at `s`. -/\\n   173  def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n   174    Summable (term f s)\\n   175  \\n   176  lemma LSeriesSummable_congr {f g : ℕ → ℂ} (s : ℂ) (h : ∀ {n}, n ≠ 0 → f n = g n) :\\n   177      LSeriesSummable f s ↔ LSeriesSummable g s :=\\n   178    summable_congr <| term_congr h s\\n   179  \\n   180  open Filter in\\n   181  /-- If `f` and `g` agree on large `n : ℕ` and the `LSeries` of `f` converges at `s`,\\n   182  then so does that of `g`. -/\\n   183  lemma LSeriesSummable.congr' {f g : ℕ → ℂ} (s : ℂ) (h : f =ᶠ[atTop] g) (hf : LSeriesSummable f s) :\\n   184      LSeriesSummable g s := by\\n   185    rw [← Nat.cofinite_eq_atTop] at h\\n   186    refine (summable_norm_iff.mpr hf).of_norm_bounded_eventually ?_\\n   187    have : term f s =ᶠ[cofinite] term g s := by\\n   188      rw [eventuallyEq_iff_exists_mem] at h ⊢\\n   189      obtain ⟨S, hS, hS'⟩ := h\\n   190      refine ⟨S \\\\ {0}, sdiff_mem hS <| (Set.finite_singleton 0).compl_mem_cofinite, fun n hn ↦ ?_⟩\\n   191      rw [Set.mem_sdiff, Set.mem_singleton_iff] at hn\\n   192      simp [hn.2, hS' hn.1]\\n   193    exact this.symm.mono fun n hn ↦ by simp [hn]\\n   194  \\n   195  open Filter in\\n   196  /-- If `f` and `g` agree on large `n : ℕ`, then the `LSeries` of `f` converges at `s`\\n   197  if and only if that of `g` does. -/\\n   198  lemma LSeriesSummable_congr' {f g : ℕ → ℂ} (s : ℂ) (h : f =ᶠ[atTop] g) :\\n   199      LSeriesSummable f s ↔ LSeriesSummable g s :=\\n   200    ⟨fun H ↦ H.congr' s h, fun H ↦ H.congr' s h.symm⟩\\n   201  \\n   202  theorem LSeries.eq_zero_of_not_LSeriesSummable (f : ℕ → ℂ) (s : ℂ) :\\n   203      ¬ LSeriesSummable f s → LSeries f s = 0 :=\\n   204    tsum_eq_zero_of_not_summable\\n   205  \\n   206  @[simp]\\n   207  theorem LSeriesSummable_zero {s : ℂ} : LSeriesSummable 0 s := by\\n   208    simp [LSeriesSummable, funext (term_def 0 s), summable_zero]\\n   209  \\n   210  /-- This states that the L-series of the sequence `f` converges absolutely at `s` and that\\n   211  the value there is `a`. -/\\n   212  def LSeriesHasSum (f : ℕ → ℂ) (s a : ℂ) : Prop :=\\n   213    HasSum (term f s) a\\n   214  \\n   215  lemma LSeriesHasSum.LSeriesSummable {f : ℕ → ℂ} {s a : ℂ}\\n   216      (h : LSeriesHasSum f s a) : LSeriesSummable f s :=\\n   217    h.summable\\n   218  \\n   219  lemma LSeriesHasSum.LSeries_eq {f : ℕ → ℂ} {s a : ℂ}\\n   220      (h : LSeriesHasSum f s a) : LSeries f s = a :=\\n   221    h.tsum_eq\\n   222  \\n   223  lemma LSeriesSummable.LSeriesHasSum {f : ℕ → ℂ} {s : ℂ} (h : LSeriesSummable f s) :\\n   224      LSeriesHasSum f s (LSeries f s) :=\\n   225    h.hasSum\\n   226  \\n   227  lemma LSeriesHasSum_iff {f : ℕ → ℂ} {s a : ℂ} :\\n   228      LSeriesHasSum f s a ↔ LSeriesSummable f s ∧ LSeries f s = a :=\\n   229    ⟨fun H ↦ ⟨H.LSeriesSummable, H.LSeries_eq⟩, fun ⟨H₁, H₂⟩ ↦ H₂ ▸ H₁.LSeriesHasSum⟩\\n   230  \\n   231  lemma LSeriesHasSum_congr {f g : ℕ → ℂ} (s a : ℂ) (h : ∀ {n}, n ≠ 0 → f n = g n) :\\n   232      LSeriesHasSum f s a ↔ LSeriesHasSum g s a := by\\n   233    simp [LSeriesHasSum_iff, LSeriesSummable_congr s h, LSeries_congr h s]\\n   234  \\n   235  lemma LSeriesSummable.of_re_le_re {f : ℕ → ℂ} {s s' : ℂ} (h : s.re ≤ s'.re)\\n   236      (hf : LSeriesSummable f s) : LSeriesSummable f s' := by\\n   237    rw [LSeriesSummable, ← summable_norm_iff] at hf ⊢\\n"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Basic.lean\", \"line\": 1, \"n\": 160}",
+   "ok": true,
+   "result_chars": 5240,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Basic.lean  (lines 1–120 of 397):\\n     1  /-\\n     2  Copyright (c) 2021 Aaron Anderson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Aaron Anderson, Michael Stoll\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.PSeries\\n     9  public import Mathlib.Analysis.Normed.Module.FiniteDimension\\n    10  public import Mathlib.LinearAlgebra.Complex.FiniteDimensional\\n    11  \\n    12  /-!\\n    13  # L-series\\n    14  \\n    15  Given a sequence `f: ℕ → ℂ`, we define the corresponding L-series.\\n    16  \\n    17  ## Main Definitions\\n    18  \\n    19  * `LSeries.term f s n` is the `n`th term of the L-series of the sequence `f` at `s : ℂ`.\\n    20    We define it to be zero when `n = 0`.\\n    21  \\n    22  * `LSeries f` is the L-series with a given sequence `f` as its coefficients. This is not the\\n    23    analytic continuation (which does not necessarily exist), just the sum of the infinite series if\\n    24    it exists and zero otherwise.\\n    25  \\n    26  * `LSeriesSummable f s` indicates that the L-series of `f` converges at `s : ℂ`.\\n    27  \\n    28  * `LSeriesHasSum f s a` expresses that the L-series of `f` converges (absolutely) at `s : ℂ` to\\n    29    `a : ℂ`.\\n    30  \\n    31  ## Main Results\\n    32  \\n    33  * `LSeriesSummable_of_isBigO_rpow`: the `LSeries` of a sequence `f` such that `f = O(n^(x-1))`\\n    34    converges at `s` when `x < s.re`.\\n    35  \\n    36  * `LSeriesSummable.isBigO_rpow`: if the `LSeries` of `f` is summable at `s`, then `f = O(n^(re s))`.\\n    37  \\n    38  ## Notation\\n    39  \\n    40  We introduce `L` as notation for `LSeries` and `↗f` as notation for `fun n : ℕ ↦ (f n : ℂ)`,\\n    41  both scoped to `LSeries.notation`. The latter makes it convenient to use arithmetic functions\\n    42  or Dirichlet characters (or anything that coerces to a function `N → R`, where `ℕ` coerces\\n    43  to `N` and `R` coerces to `ℂ`) as arguments to `LSeries` etc.\\n    44  \\n    45  ## Reference\\n    46  \\n    47  For some background on the design decisions made when implementing L-series in Mathlib\\n    48  (and applications motivating the development), see the paper\\n    49  [Formalizing zeta and L-functions in Lean](https://arxiv.org/abs/2503.00959)\\n    50  by David Loeffler and Michael Stoll.\\n    51  \\n    52  ## Tags\\n    53  \\n    54  L-series\\n    55  -/\\n    56  \\n    57  @[expose] public section\\n    58  \\n    59  open Complex\\n    60  \\n    61  /-!\\n    62  ### The terms of an L-series\\n    63  \\n    64  We define the `n`th term evaluated at a complex number `s` of the L-series associated\\n    65  to a sequence `f : ℕ → ℂ`, `LSeries.term f s n`, and provide some basic API.\\n    66  \\n    67  We set `LSeries.term f s 0 = 0`, and for positive `n`, `LSeries.term f s n = f n / n ^ s`.\\n    68  -/\\n    69  \\n    70  namespace LSeries\\n    71  \\n    72  /-- The `n`th term of the L-series of `f` evaluated at `s`. We set it to zero when `n = 0`. -/\\n    73  noncomputable\\n    74  def term (f : ℕ → ℂ) (s : ℂ) (n : ℕ) : ℂ :=\\n    75    if n = 0 then 0 else f n / n ^ s\\n    76  \\n    77  lemma term_def (f : ℕ → ℂ) (s : ℂ) (n : ℕ) :\\n    78      term f s n = if n = 0 then 0 else f n / n ^ s :=\\n    79    rfl\\n    80  \\n    81  /-- An alternate spelling of `term_def` for the case `f 0 = 0`. -/\\n    82  lemma term_def₀ {f : ℕ → ℂ} (hf : f 0 = 0) (s : ℂ) (n : ℕ) :\\n    83      LSeries.term f s n = f n * (n : ℂ) ^ (-s) := by\\n    84    rw [LSeries.term]\\n    85    split_ifs with h <;> simp [h, hf, cpow_neg, div_eq_inv_mul, mul_comm]\\n    86  \\n    87  @[simp]\\n    88  lemma term_zero (f : ℕ → ℂ) (s : ℂ) : term f s 0 = 0 := rfl\\n    89  \\n    90  -- We put `hn` first for convenience, so that we can write `rw [LSeries.term_of_ne_zero hn]` etc.\\n    91  @[simp]\\n    92  lemma term_of_ne_zero {n : ℕ} (hn : n ≠ 0) (f : ℕ → ℂ) (s : ℂ) :\\n    93      term f s n = f n"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LSeries_def₀\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LSeries_def₀' under Mathlib/.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/Basic.lean\", \"line\": 240, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1526,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/Basic.lean  (lines 240–279 of 397):\\n   240  theorem LSeriesSummable_iff_of_re_eq_re {f : ℕ → ℂ} {s s' : ℂ} (h : s.re = s'.re) :\\n   241      LSeriesSummable f s ↔ LSeriesSummable f s' :=\\n   242    ⟨fun H ↦ H.of_re_le_re h.le, fun H ↦ H.of_re_le_re h.symm.le⟩\\n   243  \\n   244  /-- The indicator function of `{1} ⊆ ℕ` with values in `ℂ`. -/\\n   245  def LSeries.delta (n : ℕ) : ℂ :=\\n   246    if n = 1 then 1 else 0\\n   247  \\n   248  /-!\\n   249  ### Notation\\n   250  -/\\n   251  \\n   252  @[inherit_doc]\\n   253  scoped[LSeries.notation] notation \\\"L\\\" => LSeries\\n   254  \\n   255  /-- We introduce notation `↗f` for `f` interpreted as a function `ℕ → ℂ`.\\n   256  \\n   257  Let `R` be a ring with a coercion to `ℂ`. Then we can write `↗χ` when `χ : DirichletCharacter R`\\n   258  or `↗f` when `f : ArithmeticFunction R` or simply `f : N → R` with a coercion from `ℕ` to `N`\\n   259  as an argument to `LSeries`, `LSeriesHasSum`, `LSeriesSummable` etc. -/\\n   260  scoped[LSeries.notation] notation:max \\\"↗\\\" f:max => fun n : ℕ ↦ (f n : ℂ)\\n   261  \\n   262  @[inherit_doc]\\n   263  scoped[LSeries.notation] notation \\\"δ\\\" => delta\\n   264  \\n   265  /-!\\n   266  ### LSeries of 0 and δ\\n   267  -/\\n   268  \\n   269  @[simp]\\n   270  lemma LSeries_zero : LSeries 0 = 0 := by\\n   271    ext\\n   272    simp [LSeries, LSeries.term]\\n   273  \\n   274  section delta\\n   275  \\n   276  open scoped LSeries.notation\\n   277  \\n   278  namespace LSeries\\n   279  \\n\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LSeries_def₀\"}",
+   "ok": true,
+   "result_chars": 218,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning LSeries_def₀.\\n- LSeries_def₀   [Mathlib.NumberTheory.LSeries.Basic]\\n    An alternate spelling of `LSeries` as `∑' n, f n / n ^ s` for the case `f 0 = 0`.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem LSeries_def₀\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem LSeries_def₀' under Mathlib/.\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def₀\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 438,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def₀' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/SumCoeff.lean:60\\n    simp_rw [LSeriesSummable, funext (LSeries.term_def₀ hf s), mul_comm (f _)]\\n- Mathlib/NumberTheory/LSeries/SumCoeff.lean:112\\n    simp_rw [Nat.range_succ_eq_Icc_zero, LSeries.term_def₀ hf, mul_comm (f _)]\\n- Mathlib/NumberTheory/LSeries/Basic.lean:82\\n    lemma term_def₀ {f : ℕ → ℂ} (hf : f 0 = 0) (s : ℂ) (n : ℕ) :\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LSeries_def\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'LSeries_def' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tsum_succ ?f\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'tsum_succ ?f': Unknown identifier `tsum_succ`\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LSeries.*succ\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'LSeries.*succ' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Injectivity.lean:170\\n    simpa using! LSeries.tendsto_cpow_mul_atTop (fun m hm ↦ ih m <| lt_succ_of_le hm) <|\\n- Mathlib/NumberTheory/LSeries/Deriv.lean:144\\n    LSeries_deriv <| absicssaOfAbsConv_logPowMul.symm ▸ h, -Function.iterate_succ]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*LSeries.*f 0 = 0\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 364,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem.*LSeries.*f 0 = 0' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/SumCoeff.lean:45\\n    private theorem LSeriesSummable_of_sum_norm_bigO_aux (hf : f 0 = 0)\\n- Mathlib/NumberTheory/LSeries/SumCoeff.lean:98\\n    private theorem LSeries_eq_mul_integral_aux {f : ℕ → ℂ} (hf : f 0 = 0) {r : ℝ} (hr : 0 ≤ r) {s : ℂ}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/NumberTheory/LSeries/SumCoeff.lean\", \"line\": 45, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2273,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/NumberTheory/LSeries/SumCoeff.lean  (lines 45–74 of 374):\\n    45  private theorem LSeriesSummable_of_sum_norm_bigO_aux (hf : f 0 = 0)\\n    46      (hO : (fun n ↦ ∑ k ∈ Icc 1 n, ‖f k‖) =O[atTop] fun n ↦ (n : ℝ) ^ r)\\n    47      (hr : 0 ≤ r) (hs : r < s.re) :\\n    48      LSeriesSummable f s := by\\n    49    have h₁ : -s ≠ 0 := neg_ne_zero.mpr <| ne_zero_of_re_pos (hr.trans_lt hs)\\n    50    have h₂ : (-s).re + r ≤ 0 := by\\n    51      rw [neg_re, neg_add_nonpos_iff]\\n    52      exact hs.le\\n    53    have h₃ (t : ℝ) (ht : t ∈ Set.Ici 1) : DifferentiableAt ℝ (fun x : ℝ ↦ ‖(x : ℂ) ^ (-s)‖) t :=\\n    54      have ht' : t ≠ 0 := (zero_lt_one.trans_le ht).ne'\\n    55      (differentiableAt_id.ofReal_cpow_const ht' h₁).norm ℝ <|\\n    56        (cpow_ne_zero_iff_of_exponent_ne_zero h₁).mpr <| ofReal_ne_zero.mpr ht'\\n    57    have h₄ : (deriv fun t : ℝ ↦ ‖(t : ℂ) ^ (-s)‖) =ᶠ[atTop] fun t ↦ -s.re * t ^ (-(s.re + 1)) := by\\n    58      filter_upwards [eventually_gt_atTop 0] with t ht\\n    59      rw [deriv_norm_ofReal_cpow _ ht, neg_re, neg_add']\\n    60    simp_rw [LSeriesSummable, funext (LSeries.term_def₀ hf s), mul_comm (f _)]\\n    61    refine summable_mul_of_bigO_atTop' (f := fun t ↦ (t : ℂ) ^ (-s))\\n    62      (g := fun t ↦ t ^ (-(s.re + 1) + r)) _ h₃ ?_ ?_ ?_ ?_\\n    63    · refine (Iff.mpr integrableOn_Ici_iff_integrableOn_Ioi\\n    64        (integrableOn_Ioi_deriv_norm_ofReal_cpow zero_lt_one ?_)).locallyIntegrableOn\\n    65      exact neg_re _ ▸ neg_nonpos.mpr <| hr.trans hs.le\\n    66    · refine (IsBigO.mul_atTop_rpow_natCast_of_isBigO_rpow _ _ _ ?_ hO h₂).congr_right (by simp)\\n    67      exact (norm_ofReal_cpow_eventually_eq_atTop _).isBigO.natCast_atTop\\n    68    · refine h₄.isBigO.of_const_mul_right.mul_atTop_rpow_of_isBigO_rpow _ r _ ?_ le_rfl\\n    69      exact (hO.comp_tendsto tendsto_nat_floor_atTop).trans <|\\n    70        isEquivalent_nat_floor.isBigO.rpow hr (eventually_ge_atTop 0)\\n    71    · rwa [integrableAtFilter_rpow_atTop_iff, neg_add_lt_iff_lt_add, add_neg_cancel_right]\\n    72  \\n    73  /-- If the partial sums `∑ k ∈ Icc 1 n, ‖f k‖` are `O(n ^ r)` for some real `0 ≤ r`, then the\\n    74  L-series `LSeries f` converges at `s : ℂ` for all `s` such that `r < s.re`. -/\\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(LSeries ?f ?s) = (∑' ?n, ?a)\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for \\\"(LSeries ?f ?s) = (∑' ?n, ?a)\\\": <input>:1:22: expected ','\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LSeries = tsum\"}",
+   "ok": true,
+   "result_chars": 81,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'LSeries = tsum'.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"div_zero (?a : ℂ)\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'div_zero (?a : ℂ)'.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"div_zero\"}",
+   "ok": true,
+   "result_chars": 124,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning div_zero.\\n- div_zero   [Mathlib.Algebra.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LSeries\", \"tsum\", \"Complex\", \"Div.div\"]}",
+   "ok": true,
+   "result_chars": 1311,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.LSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/Basic.html#LSeries\\\"},{\\\"decl\\\":\\\"tsum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#tsum\\\"},{\\\"decl\\\":\\\"Complex\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Complex.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Complex.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Complex/Basic.html#Complex\\\"},{\\\"decl\\\":\\\"Div.div\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Div.div\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*LSeries.*=.*∑'\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern \\\"theorem.*LSeries.*=.*∑'\\\" under Mathlib/.\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*LSeries f s =\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*LSeries f s =' under Mathlib/.\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LSeries.term\", \"LSeries.term_of_ne_zero\", \"instPow\"]}",
+   "ok": true,
+   "result_chars": 1209,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LSeries.term\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.LSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/Basic.html#LSeries.term\\\"},{\\\"decl\\\":\\\"LSeries.term_of_ne_zero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.LSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.LSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/Basic.html#LSeries.term_of_ne_zero\\\"},{\\\"decl\\\":\\\"instPow\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Ordinal.instPow\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.SetTheory.Ordinal.Exponential\\\",\\\"import_line\\\":\\\"import Mathlib.SetTheory.Ordinal.Exponential\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/SetTheory/Ordinal/Exponential.html#Ordinal.instPow\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":1,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LSeries.*:.*Prop\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 283,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'LSeries.*:.*Prop' (via ripgrep):\\n- Mathlib/NumberTheory/LSeries/Basic.lean:173\\n    def LSeriesSummable (f : ℕ → ℂ) (s : ℂ) : Prop :=\\n- Mathlib/NumberTheory/LSeries/Basic.lean:212\\n    def LSeriesHasSum (f : ℕ → ℂ) (s a : ℂ) : Prop :=\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

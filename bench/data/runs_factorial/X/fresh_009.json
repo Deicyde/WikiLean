@@ -1,0 +1,488 @@
+{
+ "task_id": "fresh_009",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:31:58Z",
+ "wall_s": 180.2,
+ "transcript_stats": {
+  "turns": 55,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 30,
+   "mcp__formal__decl_grep": 17,
+   "mcp__formal__decl_read": 5,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 242,
+  "tokens_out": 12951,
+  "cost_usd": 0.16724555
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AbsoluteValue\"}",
+   "ok": true,
+   "result_chars": 1621,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 417 declarations mentioning AbsoluteValue.\\n- AbsoluteValue   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`: the maps that preserve `*`, are nonnegative, positive definite and satisfy the triangl\\n- AbsoluteValue.IsNontrivial   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    An absolute value on a semiring `R` without zero divisors is *nontrivial* if it takes a value `≠ 1` on a nonzero element.  This has the advantage over `v ≠ .tri\\n- AbsoluteValue.Simps.apply   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    See Note [custom simps projection].\\n- AbsoluteValue.funLike   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- IsAbsoluteValue.toAbsoluteValue   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Convert an unbundled `IsAbsoluteValue` to a bundled `AbsoluteValue`.\\n- AbsoluteValue.toMulHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.toMonoidWithZeroHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Absolute values from a nontrivial `R` to a linear ordered ring preserve `*`, `0` and `1`.\\n- AbsoluteValue.mulHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.nonnegHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.zeroHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.monoidWithZeroHomClass   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.toMonoidHom   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    Absolute values from a nontrivial `R` to a linear ordered ring preserve `*` and `1`.\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"DenseRange\"}",
+   "ok": true,
+   "result_chars": 1045,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 158 declarations mentioning DenseRange.\\n- DenseRange   [Mathlib.Topology.Defs.Basic]\\n    `f : α → X` has dense range if its range (image) is a dense subset of `X`.\\n- DenseRange.of_comp   [Mathlib.Topology.Closure]\\n- denseRange_id   [Mathlib.Topology.Continuous]\\n- DenseRange.some   [Mathlib.Topology.Continuous]\\n    Given a function `f : X → Y` with dense range and `y : Y`, returns some `x : X`.\\n- DenseRange.nonempty   [Mathlib.Topology.Continuous]\\n- Function.Surjective.denseRange   [Mathlib.Topology.Continuous]\\n    A surjective map has dense range.\\n- DenseRange.nonempty_iff   [Mathlib.Topology.Continuous]\\n- denseRange_subtype_val   [Mathlib.Topology.Continuous]\\n- DenseRange.closure_range   [Mathlib.Topology.Continuous]\\n- denseRange_iff_closure_range   [Mathlib.Topology.Continuous]\\n- DenseRange.exists_mem_open   [Mathlib.Topology.Continuous]\\n- DenseRange.dense_image   [Mathlib.Topology.Continuous]\\n    The image of a dense set under a continuous map with dense range is a dense set.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Prod.diagonal\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Prod.diagonal': unknown identifier 'Prod.diagonal'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"diagonal embedding\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'diagonal embedding': Unknown identifier `diagonal`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Function.diagonal\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Function.diagonal': unknown identifier 'Function.diagonal'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype absolute value inequivalent\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype absolute value inequivalent': Unknown identifier `absolute`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?x → Pi ?f\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?x → Pi ?f': Unknown identifier `Pi`\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pi.prod_map\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pi.prod_map': unknown identifier 'Pi.prod_map'\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Filter.NeighborhoodBasis\"}",
+   "ok": true,
+   "result_chars": 120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Filter.NeighborhoodBasis': unknown identifier 'Filter.NeighborhoodBasis'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pi.diag\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pi.diag': unknown identifier 'Pi.diag'\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"dense subset field\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'dense subset field': Unknown identifier `dense`\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"diagonal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1228,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1636 match(es) for 'diagonal' (via ripgrep):\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:8\\n    public import Mathlib.Data.Finset.NatAntidiagonal\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:12\\n    # Big operators for `NatAntidiagonal`\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:14\\n    This file contains theorems relevant to big operators over `Finset.NatAntidiagonal`.\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:23\\n    open HasAntidiagonal\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:27\\n    theorem prod_antidiagonal_succ {n : ℕ} {f : ℕ × ℕ → M} :\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:28\\n    (∏ p ∈ antidiagonal (n + 1), f p)\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:29\\n    = f (0, n + 1) * ∏ p ∈ antidiagonal n, f (p.1 + 1, p.2) := by\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:30\\n    rw [antidiagonal_succ, prod_cons, prod_map]; rfl\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:32\\n    theorem sum_antidiagonal_succ {n : ℕ} {f : ℕ × ℕ → N} :\\n- Mathlib/Algebra/BigOperators/NatAntidiagonal.lean:33\\n    (∑ p ∈ antidiagonal (n + 1), f p) = f (0, n + 1) + ∑ p ∈ antidiagonal n, f (p.1 + 1, p.2) :=\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem).*diag.*embed\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 227,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(lemma|theorem).*diag.*embed' (via ripgrep):\\n- Mathlib/Data/Matrix/Diagonal.lean:411\\n    theorem submatrix_diagonal_embedding [Zero α] [DecidableEq m] [DecidableEq l] (d : m → α)\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(α → β) → α → β × β\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(α → β) → α → β × β': Unknown identifier `α`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Metric.ball\"}",
+   "ok": true,
+   "result_chars": 1001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 570 declarations mentioning Metric.ball.\\n- Metric.ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    `ball x ε` is the set of all points `y` with `dist y x < ε`\\n- Metric.isOpen_ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.ball_subset_closedBall   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.iUnion_ball_nat   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.ball_zero   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Real.ball_zero_eq_Ioo   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.nonempty_ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.ball_subset_ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.closedBall_subset_ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.sphere_subset_ball   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.ball_subset_interior_closedBall   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.mem_ball_self   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"topology.*AbsoluteValue\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'topology.*AbsoluteValue' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"instTopology\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'instTopology': unknown identifier 'instTopology'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PseudoMetricSpace\"}",
+   "ok": true,
+   "result_chars": 1361,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1764 declarations mentioning PseudoMetricSpace.\\n- PseudoMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    A pseudometric space is a type endowed with a `ℝ`-valued distance `dist` satisfying reflexivity `dist x x = 0`, commutativity `dist x y = dist y x`, and the tri\\n- Real.pseudoMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Instantiate the reals as a pseudometric space.\\n- PseudoMetricSpace.toBornology   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toEDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.toNNDist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Distance as a nonnegative real number.\\n- PseudoMetricSpace.toPseudoEMetricSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    A pseudometric space induces a pseudoemetric space\\n- PseudoMetricSpace.toUniformSpace   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceAdditive   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceMultiplicative   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- instPseudoMetricSpaceOrderDual   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- PseudoMetricSpace.edist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n    Extended distance between two points\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem).*weak.*approx\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(lemma|theorem).*weak.*approx' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pi.embedding diagonal\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Pi.embedding diagonal': Unknown identifier `Pi.embedding`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(lemma|theorem).*dense.*range\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for '(lemma|theorem).*dense.*range' (via ripgrep):\\n- Mathlib/Analysis/Normed/Operator/Banach.lean:626\\n    lemma bijective_iff_dense_range_and_antilipschitz (f : E →SL[σ] F) :\\n- Mathlib/Order/Hom/Basic.lean:1302\\n    lemma StrictMono.denselyOrdered_range {X Y : Type*} [LinearOrder X] [DenselyOrdered X] [Preorder Y]\\n- Mathlib/Topology/Continuous.lean:269\\n    theorem denseRange_iff_closure_range : DenseRange f ↔ closure (range f) = univ :=\\n- Mathlib/Topology/DenseEmbedding.lean:218\\n    theorem mk' (i : α → β) (c : Continuous i) (dense : ∀ x, x ∈ closure (range i))\\n- Mathlib/Topology/MetricSpace/HausdorffDimension.lean:571\\n    theorem ContDiff.dense_compl_range_of_finrank_lt_finrank [FiniteDimensional ℝ F] {f : E → F}\\n- Mathlib/Topology/MetricSpace/Gluing.lean:633\\n    theorem dense_iUnion_range_toInductiveLimit\\n- Mathlib/RingTheory/Valuation/Archimedean.lean:69\\n    lemma isPrincipalIdealRing_iff_not_denselyOrdered [MulArchimedean (MonoidHom.mrange v)]\\n- Mathlib/RingTheory/Valuation/Archimedean.lean:83\\n    lemma isPrincipalIdealRing_iff_not_denselyOrdered_mrange [MulArchimedean (MonoidHom.mrange v)]\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"fun x => fun i => x\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'fun x => fun i => x': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pi.map\"}",
+   "ok": true,
+   "result_chars": 837,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 51 declarations mentioning Pi.map.\\n- Pi.map   [Mathlib.Logic.Function.Defs]\\n    Sends a dependent function `a : ∀ i, α i` to a dependent function `Pi.map f a : ∀ i, β i` by applying `f i` to `i`-th component.\\n- Pi.map_apply   [Mathlib.Logic.Function.Defs]\\n- Pi.map_id   [Mathlib.Logic.Function.Basic]\\n- Pi.map_id'   [Mathlib.Logic.Function.Basic]\\n- Function.Bijective.piMap   [Mathlib.Logic.Function.Basic]\\n- Function.Injective.piMap   [Mathlib.Logic.Function.Basic]\\n- Function.Surjective.piMap   [Mathlib.Logic.Function.Basic]\\n- Pi.map_injective   [Mathlib.Logic.Function.Basic]\\n- Pi.map_update   [Mathlib.Logic.Function.Basic]\\n- Pi.map_comp_map   [Mathlib.Logic.Function.Basic]\\n- Pi.map_iterate   [Mathlib.Logic.Function.Iterate]\\n- Equiv.piCongrRight_apply   [Mathlib.Logic.Equiv.Basic]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"fun x i => x\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'fun x i => x' (via ripgrep):\\n- Mathlib/Analysis/Fourier/AddCircleMulti.lean:161\\n    ⇑(measurableEquivPiIoc b).symm = fun x i => x.1 i := rfl\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"diag\"}",
+   "ok": true,
+   "result_chars": 80,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'diag': unknown identifier 'diag'\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*diag|lemma.*diag\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2210,
+   "result_head": "[{\"type\": \"text\", \"text\": \"425 match(es) for 'def.*diag|lemma.*diag' (via ripgrep):\\n- Mathlib/Data/Sym/Sym2.lean:501\\n    def diag (x : α) : Sym2 α := s(x, x)\\n- Mathlib/Data/Sym/Sym2.lean:531\\n    def diagElem : z.IsDiag → α :=\\n- Mathlib/Data/Sym/Sym2.lean:545\\n    def diagElemEquiv : { a : Sym2 α // a.IsDiag } ≃ α where\\n- Mathlib/Data/Sym/Sym2.lean:552\\n    def diagSet : Set (Sym2 α) := {z | z.IsDiag}\\n- Mathlib/Data/Sym/Sym2.lean:554\\n    @[simp] lemma mem_diagSet : z ∈ diagSet ↔ z.IsDiag := .rfl\\n- Mathlib/Data/Sym/Sym2.lean:559\\n    @[simp] lemma range_diag : .range (diag : α → Sym2 α) = diagSet := by\\n- Mathlib/Data/Sym/Sym2.lean:635\\n    lemma diagSet_eq_fromRel_eq : diagSet = fromRel (α := α) eq_equivalence.stdSymm := by\\n- Mathlib/Data/Sym/Sym2.lean:638\\n    lemma diagSet_compl_eq_fromRel_ne : diagSetᶜ = fromRel (α := α) (r := Ne) inferInstance := by\\n- Mathlib/Data/Sym/Sym2.lean:641\\n    @[simp] lemma diagSet_subset_fromRel (hr : Std.Symm r) : diagSet ⊆ fromRel hr ↔ Std.Refl r := by\\n- Mathlib/Data/Sym/Sym2.lean:644\\n    @[simp] lemma disjoint_diagSet_fromRel (hr : Std.Symm r) :\\n- Mathlib/Data/Sym/Sym2.lean:648\\n    @[simp] lemma fromRel_subset_compl_diagSet (hr : Std.Symm r) :\\n- Mathlib/Data/Sym/NatCard.lean:70\\n    lemma ncard_diagSet : (diagSet : Set (Sym2 α)).ncard = Nat.card α :=\\n- Mathlib/Data/Sym/NatCard.lean:73\\n    lemma ncard_diagSet_compl : (diagSetᶜ : Set (Sym2 α)).ncard = (Nat.card α).choose 2 :=\\n- Mathlib/Data/Sym/Card.lean:158\\n    lemma card_diagSet_compl [Fintype α] : card (diagSetᶜ : Set (Sym2 α)) = (card α).choose 2 :=\\n- Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:132\\n    def diag (n : ℕ) : ⦋1⦌ ⟶ ⦋n⦌ :=\\n- Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:197\\n    lemma diag_subinterval_eq {n} (j l : ℕ) (hjl : j + l ≤ n) :\\n- Mathlib/Data/Matrix/Basis.lean:148\\n    lemma sum_single_eq_diagonal [AddCommMonoid α] [Fintype m] (f : m → α) :\\n- Mathlib/Data/Matrix/Basis.lean:293\\n    -- This simp lemma should take priority over `diag_apply`\\n- Mathlib/Data/Matrix/Basis.lean:298\\n    -- This simp lemma should take priority over `diag_apply`\\n- Mathlib/Data/Matrix/Block.lean:273\\n    lemma toBlocks₁₁_diagonal (v : l ⊕ m → α) :\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype Pi topological\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Fintype Pi topological': Unknown identifier `Pi`\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"continuous.*pi.*prod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'continuous.*pi.*prod' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/FiniteMeasurePi.lean:26\\n    `MeasureTheory.ProbabilityMeasure.continuous_pi`: the product probability measure depends\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/AbsoluteValue/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3622,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/AbsoluteValue/Basic.lean  (lines 1–80 of 568):\\n     1  /-\\n     2  Copyright (c) 2021 Anne Baanen. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Mario Carneiro, Anne Baanen\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.GroupWithZero.Regular\\n     9  public import Mathlib.Algebra.GroupWithZero.Units.Lemmas\\n    10  public import Mathlib.Algebra.Order.Hom.Basic\\n    11  public import Mathlib.Algebra.Order.Ring.Abs\\n    12  public import Mathlib.Tactic.Positivity.Core\\n    13  \\n    14  /-!\\n    15  # Absolute values\\n    16  \\n    17  This file defines a bundled type of absolute values `AbsoluteValue R S`.\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  * `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`.\\n    22  * `AbsoluteValue.abs` is the \\\"standard\\\" absolute value on `S`, mapping negative `x` to `-x`.\\n    23  * `AbsoluteValue.toMonoidWithZeroHom`: absolute values mapping to a\\n    24    linear ordered field preserve `0`, `*` and `1`\\n    25  * `IsAbsoluteValue`: a type class stating that `f : β → α` satisfies the axioms of an absolute\\n    26    value\\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  variable {ι α R S : Type*}\\n    32  \\n    33  /-- `AbsoluteValue R S` is the type of absolute values on `R` mapping to `S`:\\n    34  the maps that preserve `*`, are nonnegative, positive definite and satisfy\\n    35  the triangle inequality. -/\\n    36  structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\n    37      extends R →ₙ* S where\\n    38    /-- The absolute value is nonnegative -/\\n    39    nonneg' : ∀ x, 0 ≤ toFun x\\n    40    /-- The absolute value is positive definitive -/\\n    41    eq_zero' : ∀ x, toFun x = 0 ↔ x = 0\\n    42    /-- The absolute value satisfies the triangle inequality -/\\n    43    add_le' : ∀ x y, toFun (x + y) ≤ toFun x + toFun y\\n    44  \\n    45  namespace AbsoluteValue\\n    46  \\n    47  attribute [nolint docBlame] AbsoluteValue.toMulHom\\n    48  \\n    49  section OrderedSemiring\\n    50  \\n    51  section Semiring\\n    52  \\n    53  variable {R S : Type*} [Semiring R] [Semiring S] [PartialOrder S] (abv : AbsoluteValue R S)\\n    54  \\n    55  instance funLike : FunLike (AbsoluteValue R S) R S where\\n    56    coe f := f.toFun\\n    57    coe_injective f g h := by obtain ⟨⟨_, _⟩, _⟩ := f; obtain ⟨⟨_, _⟩, _⟩ := g; congr\\n    58  \\n    59  instance zeroHomClass : ZeroHomClass (AbsoluteValue R S) R S where\\n    60    map_zero f := (f.eq_zero' _).2 rfl\\n    61  \\n    62  instance mulHomClass : MulHomClass (AbsoluteValue R S) R S :=\\n    63    { AbsoluteValue.zeroHomClass (R := R) (S := S) with map_mul := fun f => f.map_mul' }\\n    64  \\n    65  instance nonnegHomClass : NonnegHomClass (AbsoluteValue R S) R S :=\\n    66    { AbsoluteValue.zeroHomClass (R := R) (S := S) with apply_nonneg := fun f => f.nonneg' }\\n    67  \\n    68  instance subadditiveHomClass : SubadditiveHomClass (AbsoluteValue R S) R S :=\\n    69    { AbsoluteValue.zeroHomClass (R := R) (S := S) with map_add_le_add := fun f => f.add_le' }\\n    70  \\n    71  @[simp]\\n    72  theorem coe_mk (f : R →ₙ* S) {h₁ h₂ h₃} : (AbsoluteValue.mk f h₁ h₂ h₃ : R → S) = f :=\\n    73    rfl\\n    74  \\n    75  @[ext]\\n    76  theorem ext ⦃f g : AbsoluteValue R S⦄ : (∀ x, f x = g x) → f = g :=\\n    77    DFunLike.ext _ _\\n    78  \\n    79  /-- See Note [custom simps projection]. -/\\n    80  def Simps.apply (f : AbsoluteValue R S) : R → S :=\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"AbsoluteValue.*metric|AbsoluteValue.*topology|AbsoluteValue.*dist\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 280,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'AbsoluteValue.*metric|AbsoluteValue.*topology|AbsoluteValue.*dist' (via ripgrep):\\n- Mathlib/Topology/UniformSpace/CompareReals.lean:64\\n    rw [(AbsoluteValue.hasBasis_uniformity _).mem_iff, Metric.uniformity_basis_dist_rat.mem_iff]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Valuation topology\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Valuation topology': Unknown identifier `topology`\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Valuation\"}",
+   "ok": true,
+   "result_chars": 1580,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 992 declarations mentioning Valuation.\\n- Valuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The type of `Γ₀`-valued valuations on `R`.  When you extend this structure, make sure to extend `ValuationClass`.\\n- Valuation.IsNontrivial   [Mathlib.RingTheory.Valuation.Basic]\\n    A valuation on a ring is nontrivial if there exists an element with valuation not equal to `0` or `1`.\\n- Valuation.toPreorder   [Mathlib.RingTheory.Valuation.Basic]\\n    A valuation gives a preorder on the underlying ring.\\n- Valuation.instFunLike   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.IsNontrivial.nontrivial_codomain   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.IsEquiv   [Mathlib.RingTheory.Valuation.Basic]\\n    Two valuations on `R` are defined to be equivalent if they induce the same preorder on `R`.\\n- Valuation.supp   [Mathlib.RingTheory.Valuation.Basic]\\n    The support of a valuation `v : R → Γ₀` is the ideal of `R` where `v` vanishes.\\n- Valuation.IsEquiv.refl   [Mathlib.RingTheory.Valuation.Basic]\\n- AddValuation.ofValuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The `AddValuation` associated to a `Valuation`.\\n- AddValuation.toValuation   [Mathlib.RingTheory.Valuation.Basic]\\n    The `Valuation` associated to an `AddValuation` (useful if the latter is constructed using `AddValuation.of`).\\n- Valuation.instValuationClass   [Mathlib.RingTheory.Valuation.Basic]\\n- Valuation.leAddSubgroup   [Mathlib.RingTheory.Valuation.Basic]\\n    The subgroup of elements whose valuation is less than or equal to a certain value.\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*ArithmeticWhaples|theorem.*weak.*approximation\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*ArithmeticWhaples|theorem.*weak.*approximation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"dist AbsoluteValue\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'dist AbsoluteValue'.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*absValueDist|Dist.*AbsoluteValue\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*absValueDist|Dist.*AbsoluteValue' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Norm Field\"}",
+   "ok": true,
+   "result_chars": 221,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Norm Field': Application type mismatch: The argument\\n  Field\\nhas type\\n  Type ?u.1 → Type ?u.1\\nbut is expected to have type\\n  Type ?u.1\\nin the application\\n  Norm Field\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SeminormedField\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SeminormedField': unknown identifier 'SeminormedField'\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Norm\"}",
+   "ok": true,
+   "result_chars": 1015,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 546 declarations mentioning Norm.\\n- Norm   [Mathlib.Analysis.Normed.Group.Defs]\\n    Auxiliary class, endowing a type `E` with a function `norm : E → ℝ` with notation `‖x‖`. This class is designed to be extended in more interesting classes speci\\n- Norm.mk   [Mathlib.Analysis.Normed.Group.Defs]\\n- Norm.norm   [Mathlib.Analysis.Normed.Group.Defs]\\n    the `ℝ`-valued norm function.\\n- NormedAddCommGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedCommGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- SeminormedAddCommGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- SeminormedAddGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- SeminormedCommGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- SeminormedGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- SeminormedAddGroup.mk   [Mathlib.Analysis.Normed.Group.Defs]\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"NormedField\"}",
+   "ok": true,
+   "result_chars": 1160,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1505 declarations mentioning NormedField.\\n- NormedField   [Mathlib.Analysis.Normed.Field.Basic]\\n    A normed field is a field with a norm satisfying ‖x y‖ = ‖x‖ ‖y‖.\\n- Real.normedField   [Mathlib.Analysis.Normed.Field.Basic]\\n- DenselyNormedField.toNormedField   [Mathlib.Analysis.Normed.Field.Basic]\\n- NontriviallyNormedField.toNormedField   [Mathlib.Analysis.Normed.Field.Basic]\\n- NormedField.toField   [Mathlib.Analysis.Normed.Field.Basic]\\n- NormedField.toMetricSpace   [Mathlib.Analysis.Normed.Field.Basic]\\n- NormedField.toNorm   [Mathlib.Analysis.Normed.Field.Basic]\\n- NormedField.toNormedCommRing   [Mathlib.Analysis.Normed.Field.Basic]\\n- NormedField.toNormedDivisionRing   [Mathlib.Analysis.Normed.Field.Basic]\\n- AbsoluteValue.toNormedField   [Mathlib.Analysis.Normed.Field.Basic]\\n    A real absolute value on a field determines a `NormedField` structure.\\n- NontriviallyNormedField.mk   [Mathlib.Analysis.Normed.Field.Basic]\\n- SubfieldClass.toNormedField   [Mathlib.Analysis.Normed.Field.Basic]\\n    If `s` is a subfield of a normed field `F`, then `s` is equipped with an induced normed field structure.\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Normed/Field/Basic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4400,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Normed/Field/Basic.lean  (lines 1–100 of 370):\\n     1  /-\\n     2  Copyright (c) 2018 Patrick Massot. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Patrick Massot, Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Field.Subfield.Defs\\n     9  public import Mathlib.Algebra.Order.Group.Pointwise.Interval\\n    10  public import Mathlib.Analysis.Normed.Ring.Basic\\n    11  \\n    12  /-!\\n    13  # Normed division rings and fields\\n    14  \\n    15  In this file we define normed fields, and (more generally) normed division rings. We also prove\\n    16  some theorems about these definitions.\\n    17  \\n    18  Some useful results that relate the topology of the normed field to the discrete topology include:\\n    19  * `norm_eq_one_iff_ne_zero_of_discrete`\\n    20  \\n    21  Methods for constructing a normed field instance from a given real absolute value on a field are\\n    22  given in:\\n    23  * AbsoluteValue.toNormedField\\n    24  -/\\n    25  \\n    26  @[expose] public section\\n    27  \\n    28  -- Guard against import creep.\\n    29  assert_not_exists AddChar comap_norm_atTop DilationEquiv Finset.sup_mul_le_mul_sup_of_nonneg\\n    30    IsOfFinOrder Isometry.norm_map_of_map_one NNReal.isOpen_Ico_zero Rat.norm_cast_real\\n    31    RestrictScalars\\n    32  \\n    33  variable {G α β ι : Type*}\\n    34  \\n    35  open Filter\\n    36  open scoped Topology NNReal ENNReal\\n    37  \\n    38  /-- A normed division ring is a division ring endowed with a seminorm which satisfies the equality\\n    39  `‖x y‖ = ‖x‖ ‖y‖`. -/\\n    40  class NormedDivisionRing (α : Type*) extends Norm α, DivisionRing α, MetricSpace α where\\n    41    /-- The distance is induced by the norm. -/\\n    42    dist_eq : ∀ x y, dist x y = norm (-x + y)\\n    43    /-- The norm is multiplicative. -/\\n    44    protected norm_mul : ∀ a b, norm (a * b) = norm a * norm b\\n    45  \\n    46  -- see Note [lower instance priority]\\n    47  attribute [instance 10] NormedDivisionRing.toDivisionRing\\n    48  \\n    49  -- see Note [lower instance priority]\\n    50  /-- A normed division ring is a normed ring. -/\\n    51  instance (priority := 100) NormedDivisionRing.toNormedRing [β : NormedDivisionRing α] :\\n    52      NormedRing α :=\\n    53    { β with norm_mul_le a b := (NormedDivisionRing.norm_mul a b).le }\\n    54  \\n    55  -- see Note [lower instance priority]\\n    56  /-- The norm on a normed division ring is strictly multiplicative. -/\\n    57  instance (priority := 100) NormedDivisionRing.toNormMulClass [NormedDivisionRing α] :\\n    58      NormMulClass α where\\n    59    norm_mul := NormedDivisionRing.norm_mul\\n    60  \\n    61  section NormedDivisionRing\\n    62  \\n    63  variable [NormedDivisionRing α] {a b : α}\\n    64  \\n    65  instance (priority := 900) NormedDivisionRing.to_normOneClass : NormOneClass α :=\\n    66    ⟨mul_left_cancel₀ (mt norm_eq_zero.1 (one_ne_zero' α)) <| by rw [← norm_mul, mul_one, mul_one]⟩\\n    67  \\n    68  @[simp]\\n    69  theorem norm_div (a b : α) : ‖a / b‖ = ‖a‖ / ‖b‖ :=\\n    70    map_div₀ (normHom : α →*₀ ℝ) a b\\n    71  \\n    72  @[simp]\\n    73  theorem nnnorm_div (a b : α) : ‖a / b‖₊ = ‖a‖₊ / ‖b‖₊ :=\\n    74    map_div₀ (nnnormHom : α →*₀ ℝ≥0) a b\\n    75  \\n    76  @[simp]\\n    77  theorem norm_inv (a : α) : ‖a⁻¹‖ = ‖a‖⁻¹ :=\\n    78    map_inv₀ (normHom : α →*₀ ℝ) a\\n    79  \\n    80  @[simp]\\n    81  theorem nnnorm_inv (a : α) : ‖a⁻¹‖₊ = ‖a‖₊⁻¹ :=\\n    82    NNReal.eq <| by simp\\n    83  \\n    84  @[simp]\\n    85  lemma enorm_inv {a : α} (ha : a ≠ 0) : ‖a⁻¹‖ₑ = ‖a‖ₑ⁻¹ := by simp [enorm, ENNReal.coe_inv, ha]\\n    86  \\n    87  @[simp]\\n    88  theorem norm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖ = ‖a‖ ^ n :=\\n    89    map_zpow₀ (normHom : α →*₀ ℝ)\\n    90  \\n    91  @[simp]\\n    92  theorem nnnorm_zpow : ∀ (a : α) (n : ℤ), ‖a ^ n‖₊ = ‖a‖₊ ^ n :=\\n    93    map_zpow₀ (nnnormHom : α"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*toNormedField|instance.*toNormedField\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 615,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def.*toNormedField|instance.*toNormedField' (via ripgrep):\\n- Mathlib/Analysis/Normed/Field/Basic.lean:356\\n    instance toNormedField [NormedField F] [SubfieldClass S F] (s : S) : NormedField s :=\\n- Mathlib/Analysis/Normed/Field/Basic.lean:365\\n    noncomputable def toNormedField {K : Type*} [Field K] (v : AbsoluteValue K ℝ) : NormedField K where\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:149\\n    def toNormedField : NormedField L :=\\n- Mathlib/Topology/Algebra/Valued/NormedValued.lean:201\\n    scoped[Valued] attribute [instance] Valued.toNormedField\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/Normed/Field/Basic.lean\", \"line\": 365, \"n\": 30}",
+   "ok": true,
+   "result_chars": 356,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/Normed/Field/Basic.lean  (lines 365–370 of 370):\\n   365  noncomputable def toNormedField {K : Type*} [Field K] (v : AbsoluteValue K ℝ) : NormedField K where\\n   366    toField := inferInstanceAs (Field K)\\n   367    __ := v.toNormedRing\\n   368    norm_mul := v.map_mul\\n   369  \\n   370  end AbsoluteValue\\n\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Pi.topologicalSpace\"}",
+   "ok": true,
+   "result_chars": 1001,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1490 declarations mentioning Pi.topologicalSpace.\\n- Pi.topologicalSpace   [Mathlib.Topology.Constructions]\\n- Pi.indiscreteTopology   [Mathlib.Topology.Constructions]\\n- Pi.discreteTopology   [Mathlib.Topology.Constructions]\\n    A finite product of discrete spaces is discrete.\\n- continuous_apply   [Mathlib.Topology.Constructions]\\n- continuousAt_apply   [Mathlib.Topology.Constructions]\\n- Pi.continuous_precomp   [Mathlib.Topology.Constructions]\\n- continuous_mulSingle   [Mathlib.Topology.Constructions]\\n    `Pi.mulSingle i x` is continuous in `x`.\\n- continuous_single   [Mathlib.Topology.Constructions]\\n    `Pi.single i x` is continuous in `x`.\\n- nhds_pi   [Mathlib.Topology.Constructions]\\n- Function.Surjective.isEmbedding_comp   [Mathlib.Topology.Constructions]\\n- continuous_pi   [Mathlib.Topology.Constructions]\\n- Homeomorph.piCurry   [Mathlib.Topology.Constructions]\\n    Homeomorphism between `X → Y → Z` and `X × Y → Z` with product topologies.\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*Pi.*topology\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instance.*Pi.*topology' under Mathlib/.\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"AbsoluteValue\", \"DenseRange\", \"Fintype\", \"Field\", \"NormedField\"]}",
+   "ok": true,
+   "result_chars": 1653,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\"},{\\\"decl\\\":\\\"DenseRange\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#DenseRange\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\"},{\\\"decl\\\":\\\"NormedField\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Normed.Field.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Normed.Field.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Normed/Field/Basic.html#NormedField\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Sigma topological space\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Sigma topological space': Unknown identifier `topological`\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Sigma.topologicalSpace|SigmaTopology\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Sigma.topologicalSpace|SigmaTopology' under Mathlib/.\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AbsoluteValue.IsNontrivial\"}",
+   "ok": true,
+   "result_chars": 1879,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 17 declarations mentioning AbsoluteValue.IsNontrivial.\\n- AbsoluteValue.IsNontrivial   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n    An absolute value on a semiring `R` without zero divisors is *nontrivial* if it takes a value `≠ 1` on a nonzero element.  This has the advantage over `v ≠ .tri\\n- AbsoluteValue.not_isNontrivial_apply   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.not_isNontrivial_iff   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.isNontrivial_iff_ne_trivial   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.IsNontrivial.exists_abv_gt_one   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.IsNontrivial.exists_abv_lt_one   [Mathlib.Algebra.Order.AbsoluteValue.Basic]\\n- AbsoluteValue.IsEquiv.isNontrivial   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n    **Alias** of the forward direction of `AbsoluteValue.IsEquiv.isNontrivial_congr`.\\n- AbsoluteValue.IsEquiv.isNontrivial_congr   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n- AbsoluteValue.isEquiv_of_lt_one_imp   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n- AbsoluteValue.exists_lt_one_one_le_of_not_isEquiv   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n    If `v` and `w` are inequivalent absolute values and `v` is non-trivial, then we can find an `a : R` such that `v a < 1` while `1 ≤ w a`.\\n- AbsoluteValue.exists_one_lt_lt_one_pi_of_not_isEquiv   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n    If `v : ι → AbsoluteValue R S` is a finite collection of non-trivial and pairwise inequivalent absolute values, then for any `i` there is some `a : R` such that\\n- AbsoluteValue.exists_one_lt_lt_one_of_not_isEquiv   [Mathlib.Analysis.AbsoluteValue.Equivalence]\\n    If `v` and `w` are two non-trivial and inequivalent absolute values then we can find an `a : R` such that `1 < v a` while `w a < 1`.\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsEquiv.*AbsoluteValue|inequivalent\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1517,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'IsEquiv.*AbsoluteValue|inequivalent' (via ripgrep):\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:43\\n    theorem IsEquiv.trans {u : AbsoluteValue R S} (h₁ : v.IsEquiv w)\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:83\\n    theorem IsEquiv.isNontrivial_congr {w : AbsoluteValue R S} (h : v.IsEquiv w) :\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:131\\n    If `v` and `w` are inequivalent absolute values and `v` is non-trivial, then we can find an `a : R`\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:140\\n    If `v` and `w` are two non-trivial and inequivalent absolute values then we can find an `a : R`\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:166\\n    - `v i` is inequivalent to `v j` for all `j ≠ i` via the divergent point `a : R`.\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:167\\n    - `v i` is inequivalent to `w` via the divergent point `b : R`.\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:170\\n    Then there is a common divergent point `k` causing both `v i` and `w` to be inequivalent to\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:195\\n    - `v i` is inequivalent to `v j` for all `j ≠ i` via the divergent point `a : R`.\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:196\\n    - `v i` is inequivalent to `w` via the divergent point `b : R`.\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:199\\n    Then there is a common divergent point `k : R` causing both `v i` and `w` to be inequivalent to\"}]"
+  },
+  {
+   "i": 49,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/AbsoluteValue/Equivalence.lean\", \"line\": 145, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3516,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/AbsoluteValue/Equivalence.lean  (lines 145–204 of 439):\\n   145      ∃ a : R, 1 < v a ∧ w a < 1 := by\\n   146    let ⟨a, hva, hwa⟩ := exists_lt_one_one_le_of_not_isEquiv hv h\\n   147    let ⟨b, hwb, hvb⟩ := exists_lt_one_one_le_of_not_isEquiv hw (mt .symm h)\\n   148    exact ⟨b / a, by simp [w.pos_iff.1 (lt_of_lt_of_le zero_lt_one hwa), one_lt_div, div_lt_one,\\n   149      lt_of_le_of_lt' hvb hva, lt_of_le_of_lt' hwa hwb]⟩\\n   150  \\n   151  end LinearOrderedSemifield\\n   152  \\n   153  section LinearOrderedField\\n   154  \\n   155  open Filter\\n   156  open scoped Topology\\n   157  \\n   158  variable {R S : Type*} [Field R] [Field S] [LinearOrder S] {v w : AbsoluteValue R S}\\n   159    [TopologicalSpace S] [IsStrictOrderedRing S] [Archimedean S] [OrderTopology S]\\n   160    {ι : Type*} [Finite ι] {v : ι → AbsoluteValue R S} {w : AbsoluteValue R S}\\n   161    {a b : R} {i : ι}\\n   162  \\n   163  /--\\n   164  Suppose that\\n   165  - `v i` and `w` are absolute values on a field `R`.\\n   166  - `v i` is inequivalent to `v j` for all `j ≠ i` via the divergent point `a : R`.\\n   167  - `v i` is inequivalent to `w` via the divergent point `b : R`.\\n   168  - `w a = 1`.\\n   169  \\n   170  Then there is a common divergent point `k` causing both `v i` and `w` to be inequivalent to\\n   171  each `v j` for `j ≠ i`.\\n   172  -/\\n   173  private theorem exists_one_lt_lt_one_pi_of_eq_one (ha : 1 < v i a) (haj : ∀ j ≠ i, v j a < 1)\\n   174      (haw : w a = 1) (hb : 1 < v i b) (hbw : w b < 1) :\\n   175      ∃ k : R, 1 < v i k ∧ (∀ j ≠ i, v j k < 1) ∧ w k < 1 := by\\n   176    classical\\n   177    let c : ℕ → R := fun n ↦ a ^ n * b\\n   178    have hcᵢ : Tendsto (fun n ↦ (v i) (c n)) atTop atTop := by\\n   179      simpa [c] using Tendsto.atTop_mul_const (by linarith) (tendsto_pow_atTop_atTop_of_one_lt ha)\\n   180    have hcⱼ (j : ι) (hj : j ≠ i) : Tendsto (fun n ↦ (v j) (c n)) atTop (𝓝 0) := by\\n   181      simpa [c] using (tendsto_pow_atTop_nhds_zero_of_lt_one ((v j).nonneg _) (haj j hj)).mul_const _\\n   182    simp_rw +instances [OrderTopology.topology_eq_generate_intervals,\\n   183      TopologicalSpace.tendsto_nhds_generateFrom_iff, mem_atTop_sets, Set.mem_preimage] at hcⱼ\\n   184    choose r₁ hr₁ using tendsto_atTop_atTop.1 hcᵢ 2\\n   185    choose rₙ hrₙ using fun j hj ↦ hcⱼ j hj (.Iio 1) (by simpa using ⟨1, .inr rfl⟩) (by simp)\\n   186    have := Fintype.ofFinite ι\\n   187    let r := Finset.univ.sup fun j ↦ if h : j = i then r₁ else rₙ j h\\n   188    refine ⟨c r, lt_of_lt_of_le (by linarith) (hr₁ r ?_), fun j hj ↦ ?_, by simpa [c, haw]⟩\\n   189    · exact Finset.le_sup_dite_pos (p := fun j ↦ j = i) (f := fun _ _ ↦ r₁) (Finset.mem_univ _) rfl\\n   190    · simpa using hrₙ j hj _ <| Finset.le_sup_dite_neg (fun j ↦ j = i) (Finset.mem_univ j) _\\n   191  \\n   192  /--\\n   193  Suppose that\\n   194  - `v i` and `w` are absolute values on a field `R`.\\n   195  - `v i` is inequivalent to `v j` for all `j ≠ i` via the divergent point `a : R`.\\n   196  - `v i` is inequivalent to `w` via the divergent point `b : R`.\\n   197  - `1 < w a`.\\n   198  \\n   199  Then there is a common divergent point `k : R` causing both `v i` and `w` to be inequivalent to\\n   200  each `v j` for `j ≠ i`.\\n   201  -/\\n   202  private theorem exists_one_lt_lt_one_pi_of_one_lt (ha : 1 < v i a) (haj : ∀ j ≠ i, v j a < 1)\\n   203      (haw : 1 < w a) (hb : 1 < v i b) (hbw : w b < 1) :\\n   204      ∃ k : R, 1 < v i k ∧ (∀ j ≠ i, v j k < 1) ∧ w k < 1 := by\\n\"}]"
+  },
+  {
+   "i": 50,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*exists_one_lt_lt_one_pi_of_not_isEquiv\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*exists_one_lt_lt_one_pi_of_not_isEquiv' (via ripgrep):\\n- Mathlib/Analysis/AbsoluteValue/Equivalence.lean:237\\n    theorem exists_one_lt_lt_one_pi_of_not_isEquiv (h : ∀ i, (v i).IsNontrivial)\"}]"
+  },
+  {
+   "i": 51,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/AbsoluteValue/Equivalence.lean\", \"line\": 237, \"n\": 40}",
+   "ok": true,
+   "result_chars": 3085,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/AbsoluteValue/Equivalence.lean  (lines 237–276 of 439):\\n   237  theorem exists_one_lt_lt_one_pi_of_not_isEquiv (h : ∀ i, (v i).IsNontrivial)\\n   238      (hv : Pairwise fun i j ↦ ¬(v i).IsEquiv (v j)) :\\n   239      ∀ i, ∃ (a : R), 1 < v i a ∧ ∀ j ≠ i, v j a < 1 := by\\n   240    classical\\n   241    have := Fintype.ofFinite ι\\n   242    let P (ι : Type _) [Fintype ι] : Prop :=\\n   243      ∀ v : ι → AbsoluteValue R S, (∀ i, (v i).IsNontrivial) →\\n   244        (Pairwise fun i j ↦ ¬(v i).IsEquiv (v j)) → ∀ i, ∃ (a : R), 1 < v i a ∧ ∀ j ≠ i, v j a < 1\\n   245    -- Use strong induction on the index.\\n   246    revert hv h; refine induction_subsingleton_or_nontrivial (P := P) ι (fun ι _ _ v h hv i ↦ ?_)\\n   247      (fun ι _ _ ih v h hv i ↦ ?_) v\\n   248    · -- If `ι` is trivial this follows immediately from `(v i).IsNontrivial`.\\n   249      let ⟨a, ha⟩ := (h i).exists_abv_gt_one\\n   250      exact ⟨a, ha, fun j hij ↦ absurd (Subsingleton.elim i j) hij.symm⟩\\n   251    · rcases eq_or_ne (card ι) 2 with (hc | hc)\\n   252      · -- If `ι` has two elements this is `exists_one_lt_lt_one_of_not_isEquiv`.\\n   253        let ⟨j, hj⟩ := (Nat.card_eq_two_iff' i).1 <| card_eq_nat_card ▸ hc\\n   254        let ⟨a, ha⟩ := (v i).exists_one_lt_lt_one_of_not_isEquiv (h i) (h j) (hv hj.1.symm)\\n   255        exact ⟨a, ha.1, fun _ h ↦ hj.2 _ h ▸ ha.2⟩\\n   256      have hlt : 2 < card ι := Nat.lt_of_le_of_ne (one_lt_card_iff_nontrivial.2 ‹_›) hc.symm\\n   257      -- Otherwise, choose another distinguished index `j ≠ i`.\\n   258      let ⟨j, hj⟩ := exists_ne i\\n   259      -- Apply induction first on the subcollection `v i` for `i ≠ j` to get `a : K`\\n   260      let ⟨a, ha⟩ := ih {k : ι // k ≠ j} (card_subtype_lt fun a ↦ a rfl) (restrict _ v)\\n   261        (fun i ↦ h _) (hv.comp_of_injective val_injective) ⟨i, hj.symm⟩\\n   262      -- Then apply induction next to the subcollection `{v i, v j}` to get `b : K`.\\n   263      let ⟨b, hb⟩ := ih {k : ι // k = i ∨ k = j} (by linarith [card_subtype_eq_or_eq_of_ne hj.symm])\\n   264        (restrict _ v) (fun _ ↦ h _) (hv.comp_of_injective val_injective) ⟨i, .inl rfl⟩\\n   265      rcases eq_or_ne (v j a) 1 with (ha₁ | ha₁)\\n   266      · -- If `v j a = 1` then take a large enough value from the sequence `a ^ n * b`.\\n   267        let ⟨c, hc⟩ := exists_one_lt_lt_one_pi_of_eq_one ha.1 ha.2 ha₁ hb.1 (hb.2 ⟨j, .inr rfl⟩\\n   268          (by grind))\\n   269        refine ⟨c, hc.1, fun k hk ↦ ?_⟩\\n   270        rcases eq_or_ne k j with (rfl | h); try exact hc.2.2; exact hc.2.1 ⟨k, h⟩ (by grind)\\n   271      rcases ha₁.lt_or_gt with (ha_lt | ha_gt)\\n   272      · -- If `v j a < 1` then `a` works as the divergent point.\\n   273        refine ⟨a, ha.1, fun k hk ↦ ?_⟩\\n   274        rcases eq_or_ne k j with (rfl | h); try exact ha_lt; exact ha.2 ⟨k, h⟩ (by grind)\\n   275      · -- If `1 < v j a` then take a large enough value from the sequence `b / (1 + a ^ (-n))`.\\n   276        let ⟨c, hc⟩ := exists_one_lt_lt_one_pi_of_one_lt ha.1 ha.2 ha_gt hb.1 (hb.2 ⟨j, .inr rfl⟩\\n\"}]"
+  },
+  {
+   "i": 52,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ArithmeticWhaples|Whaples|weak_approx\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'ArithmeticWhaples|Whaples|weak_approx' under Mathlib/.\"}]"
+  },
+  {
+   "i": 53,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pairwise\", \"Fintype\", \"AbsoluteValue.IsNontrivial\", \"AbsoluteValue.IsEquiv\", \"TopologicalSpace\"]}",
+   "ok": true,
+   "result_chars": 1726,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pairwise\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Pairwise\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Pairwise\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Pairwise.html#Pairwise\\\"},{\\\"decl\\\":\\\"Fintype\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Fintype.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Fintype.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Fintype/Defs.html#Fintype\\\"},{\\\"decl\\\":\\\"AbsoluteValue.IsNontrivial\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.IsNontrivial\\\"},{\\\"decl\\\":\\\"AbsoluteValue.IsEquiv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.AbsoluteValue.Equivalence\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.AbsoluteValue.Equivalence\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/AbsoluteValue/Equivalence.html#AbsoluteValue.IsEquiv\\\"},{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#TopologicalSpace\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem artin_whaples_weak_approximation {F : Type*} [Field F] [TopologicalSpace F] \n    (ι : Type*) [Fintype ι]\n    (v : ι → AbsoluteValue F ℝ)\n    (hv_nontrivial : ∀ i, AbsoluteValue.IsNontrivial (v i))\n    (hv_inequivalent : Pairwise fun i j ↦ ¬(v i).IsEquiv (v j)) :\n    DenseRange (fun (x : F) (i : ι) => x : F → ι → F) := sorry"
+}

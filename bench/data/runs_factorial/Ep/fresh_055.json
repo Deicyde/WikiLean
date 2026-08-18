@@ -1,0 +1,315 @@
+{
+ "task_id": "fresh_055",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:54:23Z",
+ "wall_s": 107.6,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__decl_grep": 21,
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 242,
+  "tokens_out": 6945,
+  "cost_usd": 0.14751905
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def|class).*Content\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2887,
+   "result_head": "[{\"type\": \"text\", \"text\": \"91 match(es) for '(theorem|lemma|def|class).*Content' (via ripgrep):\\n- Mathlib/Probability/ProductMeasure.lean:77\\n    noncomputable def piContent : AddContent ℝ≥0∞ (measurableCylinders X) :=\\n- Mathlib/Probability/ProductMeasure.lean:80\\n    lemma piContent_cylinder {I : Finset ι} {S : Set (Π i : I, X i)} (hS : MeasurableSet S) :\\n- Mathlib/Probability/ProductMeasure.lean:84\\n    theorem piContent_eq_measure_pi [Fintype ι] {s : Set (Π i, X i)} (hs : MeasurableSet s) :\\n- Mathlib/Probability/ProductMeasure.lean:223\\n    theorem piContent_eq_infinitePiNat {A : Set (Π n, X n)} (hA : A ∈ measurableCylinders X) :\\n- Mathlib/Probability/ProductMeasure.lean:265\\n    theorem piContent_tendsto_zero {A : ℕ → Set (Π i, X i)} (A_mem : ∀ n, A n ∈ measurableCylinders X)\\n- Mathlib/Probability/ProductMeasure.lean:340\\n    theorem isSigmaSubadditive_piContent : (piContent μ).IsSigmaSubadditive := by\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:230\\n    noncomputable def trajContent {a : ℕ} (x₀ : Π i : Iic a, X i) :\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:237\\n    theorem trajContent_cylinder {a b : ℕ} {S : Set (Π i : Iic b, X i)} (mS : MeasurableSet S)\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:244\\n    theorem trajContent_eq_lmarginalPartialTraj {b : ℕ} {S : Set (Π i : Iic b, X i)}\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:255\\n    lemma trajContent_ne_top {a : ℕ} {x : Π i : Iic a, X i} {s : Set (Π n, X n)} :\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:346\\n    theorem trajContent_tendsto_zero {A : ℕ → Set (Π n, X n)}\\n- Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean:461\\n    theorem isSigmaSubadditive_trajContent {a : ℕ} (x₀ : Π i : Iic a, X i) :\\n- Mathlib/Data/PFunctor/Multivariate/M.lean:121\\n    def M.corecContents {α : TypeVec.{u} n}\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:33\\n    The measure is defined through `rieszContent` which is for `NNReal` using the `toNNRealLinear`\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:64\\n    noncomputable def rieszMeasure := (rieszContent (toNNRealLinear Λ)).measure\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:156\\n    lemma exists_open_approx (f : C_c(X, ℝ)) {ε : ℝ} (hε : 0 < ε) (E : Set X) {μ : Content X}\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Basic.lean:60\\n    def rieszContentAux : Compacts X → ℝ≥0 := fun K =>\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Basic.lean:69\\n    theorem rieszContentAux_image_nonempty (K : Compacts X) :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Basic.lean:92\\n    theorem rieszContentAux_mono {K₁ K₂ : Compacts X} (h : K₁ ≤ K₂) :\\n- Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Basic.lean:104\\n    theorem rieszContentAux_le {K : Compacts X} {f : C_c(X, ℝ≥0)} (h : ∀ x ∈ K, (1 : ℝ≥0) ≤ f x) :\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Content\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Content': unknown identifier 'Content'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def|class) AddContent\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2438,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for '(theorem|lemma|def|class) AddContent' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:98\\n    @[ext] protected lemma AddContent.ext (h : ∀ s, m s = m' s) : m = m' :=\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:150\\n    def AddContent.IsSigmaSubadditive (m : AddContent ℝ≥0∞ C) : Prop :=\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:224\\n    private noncomputable def AddContent.supClosureFun (m : AddContent G C) (s : Set α) : G :=\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:229\\n    private lemma AddContent.supClosureFun_apply (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:240\\n    private lemma AddContent.supClosureFun_apply_of_mem (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:248\\n    @[no_expose] noncomputable def AddContent.supClosure (m : AddContent G C) (hC : IsSetSemiring C) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:262\\n    lemma AddContent.supClosure_apply (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:268\\n    lemma AddContent.supClosure_apply_finpartition (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:275\\n    lemma AddContent.supClosure_apply_of_mem (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:374\\n    noncomputable def AddContent.onIocAux (f : α → G) (s : Set α) : G :=\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:378\\n    lemma AddContent.onIocAux_apply {f : α → G} {u v : α} (h : u ≤ v) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:390\\n    lemma AddContent.onIocAux_empty (f : α → G) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:398\\n    noncomputable def AddContent.onIoc (f : α → G) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:459\\n    lemma AddContent.onIoc_apply {f : α → G} {u v : α} (h : u ≤ v) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:470\\n    def AddContent.extend (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) : AddContent ℝ≥0∞ C where\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:481\\n    protected theorem AddContent.extend_eq_extend (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:484\\n    protected theorem AddContent.extend_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) (hs : s ∈ C) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:488\\n    protected theorem AddContent.extend_eq_top\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddContent\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddContent': unknown identifier 'AddContent'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Measure/AddContent.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 5805,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Measure/AddContent.lean  (lines 1–120 of 681):\\n     1  /-\\n     2  Copyright (c) 2024 Rémy Degenne. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Rémy Degenne, Peter Pfaffelhuber\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.SetSemiring\\n     9  public import Mathlib.MeasureTheory.OuterMeasure.Induced\\n    10  public import Mathlib.Tactic.FinCases\\n    11  \\n    12  /-!\\n    13  # Additive Contents\\n    14  \\n    15  An additive content `m` on a set of sets `C` is a set function with value 0 at the empty set which\\n    16  is finitely additive on `C`. That means that for any finset `I` of pairwise disjoint sets in `C`\\n    17  such that `⋃₀ I ∈ C`, `m (⋃₀ I) = ∑ s ∈ I, m s`.\\n    18  \\n    19  Mathlib also has a definition of contents over compact sets: see `MeasureTheory.Content`.\\n    20  A `Content` is in particular an `AddContent` on the set of compact sets.\\n    21  \\n    22  ## Main definitions\\n    23  \\n    24  * `MeasureTheory.AddContent G C`: additive contents over the set of sets `C` taking values in the\\n    25    additive monoid `G`.\\n    26  * `MeasureTheory.AddContent.IsSigmaSubadditive`: an `AddContent` with values in `ℝ≥0∞` is\\n    27    σ-subadditive if `m (⋃ i, f i) ≤ ∑' i, m (f i)` for any sequence of sets `f` in `C`\\n    28    such that `⋃ i, f i ∈ C`.\\n    29  \\n    30  ## Main statements\\n    31  \\n    32  Let `m` be an `AddContent C` with values in `ℝ≥0∞`. If `C` is a set semi-ring (`IsSetSemiring C`)\\n    33  we have the properties\\n    34  \\n    35  * `MeasureTheory.sum_addContent_le_of_subset`: if `I` is a finset of pairwise disjoint sets in `C`\\n    36    and `⋃₀ I ⊆ t` for `t ∈ C`, then `∑ s ∈ I, m s ≤ m t`.\\n    37  * `MeasureTheory.addContent_mono`: if `s ⊆ t` for two sets in `C`, then `m s ≤ m t`.\\n    38  * `MeasureTheory.addContent_sUnion_le_sum`: an `AddContent C` on a `SetSemiring C` is\\n    39    sub-additive.\\n    40  * `MeasureTheory.addContent_iUnion_eq_tsum_of_disjoint_of_addContent_iUnion_le`: if an\\n    41    `AddContent` is σ-subadditive on a semi-ring of sets, then it is σ-additive.\\n    42  * `MeasureTheory.addContent_union'`: if `s, t ∈ C` are disjoint and `s ∪ t ∈ C`,\\n    43    then `m (s ∪ t) = m s + m t`.\\n    44    If `C` is a set ring (`IsSetRing`), then `addContent_union` gives the same conclusion without the\\n    45    hypothesis `s ∪ t ∈ C` (since it is a consequence of `IsSetRing C`).\\n    46  \\n    47  If `C` is a set ring (`MeasureTheory.IsSetRing C`), we have\\n    48  \\n    49  * `MeasureTheory.addContent_union_le`: for `s, t ∈ C`, `m (s ∪ t) ≤ m s + m t`\\n    50  * `MeasureTheory.addContent_le_sdiff`: for `s, t ∈ C`, `m s - m t ≤ m (s \\\\ t)`\\n    51  * `IsSetRing.addContent_of_union`: a function on a ring of sets which is additive on pairs of\\n    52    disjoint sets defines an additive content\\n    53  * `addContent_iUnion_eq_sum_of_tendsto_zero`: if an additive content is continuous at `∅`, then\\n    54    its value on a countable disjoint union is the sum of the values\\n    55  * `MeasureTheory.isSigmaSubadditive_of_addContent_iUnion_eq_tsum`: if an `AddContent` is\\n    56    σ-additive on a set ring, then it is σ-subadditive.\\n    57  \\n    58  We define a specific example of `AddContent`, called `AddContent.onIoc`, on the semiring of sets\\n    59  made of open-closed intervals, mapping `(a, b]` to `f b - f a`.\\n    60  -/\\n    61  \\n    62  @[expose] public section\\n    63  \\n    64  open Set Finset Function Filter\\n    65  \\n    66  open scoped ENNReal Topology Function\\n    67  \\n    68  namespace MeasureTheory\\n    69  \\n    70  variable {α : Type*} {C : Set (Set α)} {s t : Set α} {I : Finset (Set α)}\\n    71    {G : Type*} [AddCommMonoid G]\\n    72  \\n    73  variable (G) in\\n    74  /-- An additive content is a set function with value 0 at the empty set which is finitely additive\\n    75  on a given set"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def|class).*[Vv]ector[Mm]easure\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"76 match(es) for '(theorem|lemma|def|class).*[Vv]ector[Mm]easure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:293\\n    theorem eq_singularPart (t : SignedMeasure α) (f : α → ℝ) (htμ : t ⟂ᵥ μ.toENNRealVectorMeasure)\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:477\\n    theorem absolutelyContinuous_ennreal_iff (s : SignedMeasure α) (μ : VectorMeasure α ℝ≥0∞) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:524\\n    theorem mutuallySingular_ennreal_iff (s : SignedMeasure α) (μ : VectorMeasure α ℝ≥0∞) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:76\\n    private lemma exists_vectorMeasure_le_measureAux (hf : BoundedVariationOn f univ) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:114\\n    @[no_expose] noncomputable def vectorMeasure (hf : BoundedVariationOn f univ) : VectorMeasure α E :=\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:118\\n    lemma vectorMeasure_Ioc (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:134\\n    lemma vectorMeasure_singleton (hf : BoundedVariationOn f univ) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:173\\n    lemma vectorMeasure_Icc (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:180\\n    theorem vectorMeasure_Ioo (hf : BoundedVariationOn f univ) (h : a < b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:187\\n    theorem vectorMeasure_Ico (hf : BoundedVariationOn f univ) (h : a ≤ b) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:195\\n    theorem vectorMeasure_Ici (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:223\\n    theorem vectorMeasure_Ioi (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:230\\n    theorem vectorMeasure_Iic (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:258\\n    theorem vectorMeasure_Iio (hf : BoundedVariationOn f univ) (a : α) :\\n- Mathlib/MeasureTheory/VectorMeasure/BoundedVariation.lean:265\\n    theorem vectorMeasure_univ (hf : BoundedVariationOn f univ) :\\n- Mathlib/MeasureTheory/VectorMeasure/WithDensity.lean:45\\n    def Measure.withDensityᵥ {m : MeasurableSpace α} (μ : Measure α) (f : α → E) : VectorMeasure α E :=\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:90\\n    theorem coe_mk (v : Set α → M) (h₁) (h₂) (h₃) : (mk v h₁ h₂ h₃ : VectorMeasure α M) = v := rfl\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:95\\n    theorem empty (v : VectorMeasure α M) : v ∅ = 0 :=\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:99\\n    theorem not_measurable (v : VectorMeasure α M) {i : Set α} (hi : ¬MeasurableSet i) : v i = 0 :=\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:102\\n    theorem m_iUnion (v : VectorMeasure α M) {f : ℕ → Set α} (hf₁ : ∀ i, MeasurableSet (f i))\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 5122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean  (lines 1–120 of 1464):\\n     1  /-\\n     2  Copyright (c) 2021 Kexing Ying. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kexing Ying\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.Measure.Real\\n     9  public import Mathlib.Topology.Algebra.InfiniteSum.Module\\n    10  \\n    11  /-!\\n    12  \\n    13  # Vector-valued measures\\n    14  \\n    15  This file defines vector-valued measures, which are σ-additive functions from a set to an\\n    16  additive monoid `M` such that it maps the empty set and non-measurable sets to zero. In the case\\n    17  that `M = ℝ`, we called the vector measure a signed measure and write `SignedMeasure α`.\\n    18  Similarly, when `M = ℂ`, we call the measure a complex measure and write `ComplexMeasure α`\\n    19  (defined in `MeasureTheory/Measure/Complex`).\\n    20  \\n    21  ## Main definitions\\n    22  \\n    23  * `MeasureTheory.VectorMeasure` is a vector-valued, σ-additive function that maps the empty\\n    24    and non-measurable sets to zero.\\n    25  * `MeasureTheory.VectorMeasure.map` is the pushforward of a vector measure along a function.\\n    26  * `MeasureTheory.VectorMeasure.restrict` is the restriction of a vector measure on some set.\\n    27  \\n    28  ## Notation\\n    29  \\n    30  * `v ≤[i] w` means that the vector measure `v` restricted on the set `i` is less than or equal\\n    31    to the vector measure `w` restricted on `i`, i.e. `v.restrict i ≤ w.restrict i`.\\n    32  \\n    33  ## Implementation notes\\n    34  \\n    35  We require all non-measurable sets to be mapped to zero in order for the extensionality lemma\\n    36  to only compare the underlying functions for measurable sets.\\n    37  \\n    38  We use `HasSum` instead of `tsum` in the definition of vector measures in comparison to `Measure`\\n    39  since this provides summability.\\n    40  \\n    41  ## Tags\\n    42  \\n    43  vector measure, signed measure, complex measure\\n    44  -/\\n    45  \\n    46  @[expose] public section\\n    47  \\n    48  \\n    49  noncomputable section\\n    50  \\n    51  open NNReal ENNReal Filter\\n    52  \\n    53  open scoped Topology Function -- required for scoped `on` notation\\n    54  namespace MeasureTheory\\n    55  \\n    56  variable {α β : Type*} {m : MeasurableSpace α}\\n    57  \\n    58  /-- A vector measure on a measurable space `α` is a σ-additive `M`-valued function (for some `M`\\n    59  an additive monoid) such that the empty set and non-measurable sets are mapped to zero. -/\\n    60  structure VectorMeasure (α : Type*) [MeasurableSpace α] (M : Type*) [AddCommMonoid M]\\n    61      [TopologicalSpace M] where\\n    62    /-- The measure of sets -/\\n    63    measureOf' : Set α → M\\n    64    /-- The empty set has measure zero -/\\n    65    empty' : measureOf' ∅ = 0\\n    66    /-- Non-measurable sets have measure zero -/\\n    67    not_measurable' ⦃i : Set α⦄ : ¬MeasurableSet i → measureOf' i = 0\\n    68    /-- The measure is σ-additive -/\\n    69    m_iUnion' ⦃f : ℕ → Set α⦄ : (∀ i, MeasurableSet (f i)) → Pairwise (Disjoint on f) →\\n    70      HasSum (fun i => measureOf' (f i)) (measureOf' (⋃ i, f i))\\n    71  \\n    72  /-- A `SignedMeasure` is an `ℝ`-vector measure. -/\\n    73  abbrev SignedMeasure (α : Type*) [MeasurableSpace α] :=\\n    74    VectorMeasure α ℝ\\n    75  \\n    76  open Set\\n    77  \\n    78  namespace VectorMeasure\\n    79  \\n    80  section\\n    81  \\n    82  variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]\\n    83  \\n    84  instance : FunLike (VectorMeasure α M) (Set α) M where\\n    85    coe := VectorMeasure.measureOf'\\n    86    coe_injective v w h := by\\n    87      cases v; cases w; congr\\n    88  \\n    89  @[simp]\\n    90  theorem coe_mk (v : Set α → M) (h₁) (h₂) (h₃) : (mk v h₁ h₂ h₃ : VectorMeasure α M) = v := rfl\\n    91  \\n    92  initialize_simps_projections Vecto"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*[Dd]ominated\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2978,
+   "result_head": "[{\"type\": \"text\", \"text\": \"79 match(es) for '(theorem|lemma|def).*[Dd]ominated' (via ripgrep):\\n- Mathlib/Analysis/Normed/Ring/InfiniteProd.lean:33\\n    public theorem tendsto_tprod_one_add_of_dominated_convergence {𝓕 : Filter α} {f : α → β → R}\\n- Mathlib/LinearAlgebra/LinearIndependent/BaseChange.lean:26\\n    /-- This is an auxiliary lemma dominated by `linearIndependent_algebraMap_comp_iff`. -/\\n- Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean:34\\n    nonrec theorem hasFDerivAt_integral_of_dominated_loc_of_lip\\n- Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean:56\\n    nonrec theorem hasFDerivAt_integral_of_dominated_of_fderiv_le\\n- Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean:75\\n    nonrec theorem hasDerivAt_integral_of_dominated_loc_of_lip {F : 𝕜 → ℝ → E} {F' : ℝ → E} {x₀ : 𝕜}\\n- Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean:97\\n    nonrec theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le\\n- Mathlib/Analysis/Complex/JensenFormula.lean:119\\n    -- Auxiliary lemma for `circleAverage_re_herglotzRieszKernel_mul_log`. Dominated convergence\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:78\\n    theorem hasFDerivAt_integral_of_dominated_loc_of_lip' {F' : α → H →L[𝕜] E} (hs : s ∈ 𝓝 x₀)\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:165\\n    theorem hasFDerivAt_integral_of_dominated_loc_of_lip {F' : α → H →L[𝕜] E}\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:185\\n    theorem hasFDerivAt_integral_of_dominated_loc_of_lip_interval [NormedSpace ℝ H] {μ : Measure ℝ}\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:210\\n    theorem hasFDerivAt_integral_of_dominated_of_fderiv_le {F' : H → α → H →L[𝕜] E} (hs : s ∈ 𝓝 x₀)\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:237\\n    theorem hasFDerivAt_integral_of_dominated_of_fderiv_le'' [NormedSpace ℝ H] {μ : Measure ℝ}\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:262\\n    theorem hasDerivAt_integral_of_dominated_loc_of_lip {F' : α → E} (hs : s ∈ 𝓝 x₀)\\n- Mathlib/Analysis/Calculus/ParametricIntegral.lean:288\\n    theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le (hs : s ∈ 𝓝 x₀)\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:136\\n    theorem dominatedFinMeasAdditive_weightedSMul {_ : MeasurableSpace α} (μ : Measure α) :\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:204\\n    exact setToFun_undef (dominatedFinMeasAdditive_weightedSMul μ) h\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:417\\n    theorem continuousWithinAt_of_dominated {F : X → α → G} {x₀ : X} {bound : α → ℝ} {s : Set X}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:426\\n    theorem continuousAt_of_dominated {F : X → α → G} {x₀ : X} {bound : α → ℝ}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:435\\n    theorem continuousOn_of_dominated {F : X → α → G} {bound : α → ℝ} {s : Set X}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:444\\n    theorem continuous_of_dominated {F : X → α → G} {bound : α → ℝ}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*[Bb]ounded.*[Vv]ariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2959,
+   "result_head": "[{\"type\": \"text\", \"text\": \"58 match(es) for '(theorem|lemma|def).*[Bb]ounded.*[Vv]ariation' (via ripgrep):\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:64\\n    def BoundedVariationOn (f : α → E) (s : Set α) :=\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:69\\n    def LocallyBoundedVariationOn (f : α → E) (s : Set α) :=\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:174\\n    theorem _root_.BoundedVariationOn.mono {f : α → E} {s : Set α} (h : BoundedVariationOn f s)\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:178\\n    theorem _root_.BoundedVariationOn.locallyBoundedVariationOn {f : α → E} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:254\\n    theorem _root_.BoundedVariationOn.dist_le {E : Type*} [PseudoMetricSpace E] {f : α → E}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:260\\n    theorem _root_.BoundedVariationOn.sub_le {f : α → ℝ} {s : Set α} (h : BoundedVariationOn f s)\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:508\\n    protected lemma _root_.BoundedVariationOn.ofDual\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:513\\n    @[simp] lemma boundedVariation_ofDual {f : α → E} {s : Set α} :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:517\\n    protected lemma _root_.LocallyBoundedVariationOn.ofDual {f : α → E} {s : Set α}\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:524\\n    @[simp] lemma locallyBoundedVariation_ofDual {f : α → E} {s : Set α} :\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:689\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ici_zero_of_filter\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:743\\n    theorem _root_.BoundedVariationOn.exists_tendsto_left_of_filter [CompleteSpace E]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:765\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ico_zero\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:782\\n    theorem _root_.BoundedVariationOn.tendsto_eVariationOn_Ioc_zero [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:793\\n    theorem _root_.BoundedVariationOn.exists_tendsto_left [CompleteSpace E] [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:803\\n    theorem _root_.BoundedVariationOn.exists_tendsto_right [CompleteSpace E] [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:809\\n    theorem _root_.BoundedVariationOn.tendsto_leftLim [CompleteSpace E] [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:817\\n    theorem _root_.BoundedVariationOn.tendsto_rightLim [CompleteSpace E] [TopologicalSpace α]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:822\\n    theorem _root_.BoundedVariationOn.eVariationOn_Iic_eq_Iio_add_edist [CompleteSpace E]\\n- Mathlib/Topology/EMetricSpace/BoundedVariation.lean:838\\n    theorem _root_.BoundedVariationOn.eVariationOn_Ici_eq_Ioi_add_edist [CompleteSpace E]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*extend.*AddContent\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 567,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma|def).*extend.*AddContent' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:470\\n    def AddContent.extend (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) : AddContent ℝ≥0∞ C where\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:481\\n    protected theorem AddContent.extend_eq_extend (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:484\\n    protected theorem AddContent.extend_eq (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C) (hs : s ∈ C) :\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*toVector\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma|def).*toVector' (via ripgrep):\\n- Mathlib/Topology/VectorBundle/Basic.lean:919\\n    theorem toVectorBundle : @VectorBundle R _ F E _ _ _ _ _ _ a.totalSpaceTopology _ a.toFiberBundle :=\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddContent ℝ≥0∞ → VectorMeasure\"}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddContent ℝ≥0∞ → VectorMeasure': <input>:1:14: expected end of input\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddContent\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddContent': unknown identifier 'AddContent'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*measure.*AddContent\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 561,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*measure.*AddContent' (via ripgrep):\\n- Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean:152\\n    theorem measureCaratheodory_eq_inducedOuterMeasure (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)\\n- Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean:157\\n    theorem measureCaratheodory_eq (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)\\n- Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean:172\\n    theorem measure_eq [mα : MeasurableSpace α] (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean\", \"line\": 150, \"n\": 30}",
+   "ok": true,
+   "result_chars": 2142,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/OuterMeasure/OfAddContent.lean  (lines 150–179 of 181):\\n   150  /-- The measure `MeasureTheory.AddContent.measureCaratheodory` generated from an\\n   151  `m : AddContent C` on a `IsSetSemiring C` coincides with the `MeasureTheory.inducedOuterMeasure`. -/\\n   152  theorem measureCaratheodory_eq_inducedOuterMeasure (hC : IsSetSemiring C) (m : AddContent ℝ≥0∞ C)\\n   153      (m_sigma_subadd : m.IsSigmaSubadditive) :\\n   154      m.measureCaratheodory hC m_sigma_subadd s\\n   155        = inducedOuterMeasure (fun x _ ↦ m x) hC.empty_mem addContent_empty s := rfl\\n   156  \\n   157  theorem measureCaratheodory_eq (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)\\n   158      (m_sigma_subadd : m.IsSigmaSubadditive) (hs : s ∈ C) :\\n   159      m.measureCaratheodory hC m_sigma_subadd s = m s :=\\n   160    m.inducedOuterMeasure_eq hC m_sigma_subadd hs\\n   161  \\n   162  /-- Construct a measure from a sigma-subadditive content on a semiring, assuming the semiring\\n   163  generates a given measurable structure. The measure is defined on this measurable structure. -/\\n   164  noncomputable def measure [mα : MeasurableSpace α] (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)\\n   165      (hC_gen : mα ≤ MeasurableSpace.generateFrom C) (m_sigma_subadd : m.IsSigmaSubadditive) :\\n   166      Measure α :=\\n   167    (m.measureCaratheodory hC m_sigma_subadd).trim <|\\n   168      fun s a ↦ isCaratheodory_inducedOuterMeasure hC m s (hC_gen s a)\\n   169  \\n   170  /-- The measure defined through a sigma-subadditive\\n   171    content on a semiring coincides with the content on the semiring. -/\\n   172  theorem measure_eq [mα : MeasurableSpace α] (m : AddContent ℝ≥0∞ C) (hC : IsSetSemiring C)\\n   173      (hC_gen : mα = MeasurableSpace.generateFrom C) (m_sigma_subadd : m.IsSigmaSubadditive)\\n   174      (hs : s ∈ C) :\\n   175      m.measure hC hC_gen.le m_sigma_subadd s = m s := by\\n   176    rw [measure, trim_measurableSet_eq]\\n   177    · exact m.measureCaratheodory_eq hC m_sigma_subadd hs\\n   178    · rw [hC_gen]\\n   179      apply MeasurableSpace.measurableSet_generateFrom hs\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*AbsolutelyContinuous\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3135,
+   "result_head": "[{\"type\": \"text\", \"text\": \"33 match(es) for '(theorem|lemma).*AbsolutelyContinuous' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean:160\\n    theorem AbsolutelyContinuousOnInterval.intervalIntegrable_deriv {f : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:103\\n    lemma AbsolutelyContinuousOnInterval.dist_le_of_pairwiseDisjoint_hasSum {f : ℝ → X} {d b y : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:169\\n    theorem AbsolutelyContinuousOnInterval.const_of_ae_hasDerivAt_zero {f : ℝ → F} {a b : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:225\\n    theorem AbsolutelyContinuousOnInterval.integral_deriv_eq_sub {f : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:245\\n    theorem AbsolutelyContinuousOnInterval.integral_deriv_mul_eq_sub\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:257\\n    theorem AbsolutelyContinuousOnInterval.integral_mul_deriv_eq_deriv_mul {f g : ℝ → ℝ} {a b : ℝ}\\n- Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean:240\\n    lemma AbsolutelyContinuous.withDensity_rnDeriv {ξ : Measure α} [μ.HaveLebesgueDecomposition ν]\\n- Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean:165\\n    lemma AbsolutelyContinuous.smul_right (hμν : μ ≪ ν) {c : ℝ≥0∞} (hc : c ≠ 0) : μ ≪ c • ν :=\\n- Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean:178\\n    theorem AbsolutelyContinuous.ae_eq (h : μ ≪ ν) {f g : α → δ} (h' : f =ᵐ[ν] g) : f =ᵐ[μ] g :=\\n- Mathlib/MeasureTheory/Measure/Restrict.lean:513\\n    lemma AbsolutelyContinuous.restrict (h : μ ≪ ν) (s : Set α) : μ.restrict s ≪ ν.restrict s := by\\n- Mathlib/MeasureTheory/Measure/Prod.lean:415\\n    theorem AbsolutelyContinuous.prod [SFinite ν'] (h1 : μ ≪ μ') (h2 : ν ≪ ν') :\\n- Mathlib/MeasureTheory/Measure/OpenPos.lean:71\\n    protected theorem AbsolutelyContinuous.isOpenPosMeasure (h : μ ≪ ν) : IsOpenPosMeasure ν :=\\n- Mathlib/MeasureTheory/Measure/Support.lean:77\\n    lemma AbsolutelyContinuous.support_mono {μ ν : Measure X} (hμν : μ ≪ ν) :\\n- Mathlib/MeasureTheory/Measure/Trim.lean:149\\n    lemma Measure.AbsolutelyContinuous.trim {ν : Measure α} (hμν : μ ≪ ν) (hm : m ≤ m0) :\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:174\\n    theorem symm (hf : AbsolutelyContinuousOnInterval f a b) :\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:178\\n    theorem mono (hf : AbsolutelyContinuousOnInterval f a b) (habcd : uIcc c d ⊆ uIcc a b) :\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:187\\n    theorem add (hf : AbsolutelyContinuousOnInterval f a b)\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:197\\n    theorem neg (hf : AbsolutelyContinuousOnInterval f a b) :\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:204\\n    theorem sub (hf : AbsolutelyContinuousOnInterval f a b)\\n- Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean:216\\n    theorem const_mul {f : ℝ → ℝ} (α : ℝ) (hf : AbsolutelyContinuousOnInterval f a b) :\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*VectorMeasure.*extend\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*VectorMeasure.*extend' under Mathlib/.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*BoundedVariation.*measure\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma|def).*BoundedVariation.*measure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*content.*measure\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*content.*measure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Measure/AddContent.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3508,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Measure/AddContent.lean  (lines 1–60 of 681):\\n     1  /-\\n     2  Copyright (c) 2024 Rémy Degenne. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Rémy Degenne, Peter Pfaffelhuber\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.SetSemiring\\n     9  public import Mathlib.MeasureTheory.OuterMeasure.Induced\\n    10  public import Mathlib.Tactic.FinCases\\n    11  \\n    12  /-!\\n    13  # Additive Contents\\n    14  \\n    15  An additive content `m` on a set of sets `C` is a set function with value 0 at the empty set which\\n    16  is finitely additive on `C`. That means that for any finset `I` of pairwise disjoint sets in `C`\\n    17  such that `⋃₀ I ∈ C`, `m (⋃₀ I) = ∑ s ∈ I, m s`.\\n    18  \\n    19  Mathlib also has a definition of contents over compact sets: see `MeasureTheory.Content`.\\n    20  A `Content` is in particular an `AddContent` on the set of compact sets.\\n    21  \\n    22  ## Main definitions\\n    23  \\n    24  * `MeasureTheory.AddContent G C`: additive contents over the set of sets `C` taking values in the\\n    25    additive monoid `G`.\\n    26  * `MeasureTheory.AddContent.IsSigmaSubadditive`: an `AddContent` with values in `ℝ≥0∞` is\\n    27    σ-subadditive if `m (⋃ i, f i) ≤ ∑' i, m (f i)` for any sequence of sets `f` in `C`\\n    28    such that `⋃ i, f i ∈ C`.\\n    29  \\n    30  ## Main statements\\n    31  \\n    32  Let `m` be an `AddContent C` with values in `ℝ≥0∞`. If `C` is a set semi-ring (`IsSetSemiring C`)\\n    33  we have the properties\\n    34  \\n    35  * `MeasureTheory.sum_addContent_le_of_subset`: if `I` is a finset of pairwise disjoint sets in `C`\\n    36    and `⋃₀ I ⊆ t` for `t ∈ C`, then `∑ s ∈ I, m s ≤ m t`.\\n    37  * `MeasureTheory.addContent_mono`: if `s ⊆ t` for two sets in `C`, then `m s ≤ m t`.\\n    38  * `MeasureTheory.addContent_sUnion_le_sum`: an `AddContent C` on a `SetSemiring C` is\\n    39    sub-additive.\\n    40  * `MeasureTheory.addContent_iUnion_eq_tsum_of_disjoint_of_addContent_iUnion_le`: if an\\n    41    `AddContent` is σ-subadditive on a semi-ring of sets, then it is σ-additive.\\n    42  * `MeasureTheory.addContent_union'`: if `s, t ∈ C` are disjoint and `s ∪ t ∈ C`,\\n    43    then `m (s ∪ t) = m s + m t`.\\n    44    If `C` is a set ring (`IsSetRing`), then `addContent_union` gives the same conclusion without the\\n    45    hypothesis `s ∪ t ∈ C` (since it is a consequence of `IsSetRing C`).\\n    46  \\n    47  If `C` is a set ring (`MeasureTheory.IsSetRing C`), we have\\n    48  \\n    49  * `MeasureTheory.addContent_union_le`: for `s, t ∈ C`, `m (s ∪ t) ≤ m s + m t`\\n    50  * `MeasureTheory.addContent_le_sdiff`: for `s, t ∈ C`, `m s - m t ≤ m (s \\\\ t)`\\n    51  * `IsSetRing.addContent_of_union`: a function on a ring of sets which is additive on pairs of\\n    52    disjoint sets defines an additive content\\n    53  * `addContent_iUnion_eq_sum_of_tendsto_zero`: if an additive content is continuous at `∅`, then\\n    54    its value on a countable disjoint union is the sum of the values\\n    55  * `MeasureTheory.isSigmaSubadditive_of_addContent_iUnion_eq_tsum`: if an `AddContent` is\\n    56    σ-additive on a set ring, then it is σ-subadditive.\\n    57  \\n    58  We define a specific example of `AddContent`, called `AddContent.onIoc`, on the semiring of sets\\n    59  made of open-closed intervals, mapping `(a, b]` to `f b - f a`.\\n    60  -/\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*le_finiteRange\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma|def).*le_finiteRange' under Mathlib/.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*IsFiniteMeasure\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 3011,
+   "result_head": "[{\"type\": \"text\", \"text\": \"445 match(es) for '(theorem|lemma|def).*IsFiniteMeasure' (via ripgrep):\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:86\\n    lemma klDiv_zero_left [IsFiniteMeasure ν] : klDiv 0 ν = ν univ := by\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:240\\n    lemma klDiv_smul_right_eq_smul_left [IsFiniteMeasure μ] [IsFiniteMeasure ν] {c : ℝ≥0} (hc : c ≠ 0) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:286\\n    lemma klDiv_smul_same [IsFiniteMeasure μ] [IsFiniteMeasure ν] (c : ℝ≥0) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:360\\n    lemma mul_log_le_klDiv (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν] :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:377\\n    lemma klDiv_eq_zero_iff [IsFiniteMeasure μ] [IsFiniteMeasure ν] :\\n- Mathlib/Probability/Process/FiniteDimensionalLaws.lean:61\\n    lemma map_eq_iff_forall_finset_map_restrict_eq [IsFiniteMeasure P]\\n- Mathlib/Probability/Process/FiniteDimensionalLaws.lean:77\\n    lemma identDistrib_iff_forall_finset_identDistrib [IsFiniteMeasure P]\\n- Mathlib/Probability/Process/FiniteDimensionalLaws.lean:99\\n    lemma map_eq_of_forall_ae_eq [IsFiniteMeasure P]\\n- Mathlib/Probability/Kernel/Posterior.lean:70\\n    def posterior (κ : Kernel Ω 𝓧) (μ : Measure Ω) [IsFiniteMeasure μ] [IsFiniteKernel κ] :\\n- Mathlib/Probability/Kernel/Posterior.lean:130\\n    lemma posterior_id (μ : Measure Ω) [IsFiniteMeasure μ] : Kernel.id†μ =ᵐ[μ] Kernel.id := by\\n- Mathlib/Probability/Kernel/Posterior.lean:313\\n    lemma posterior_boolKernel_apply_false (μ ν : Measure 𝓧) [IsFiniteMeasure μ] [IsFiniteMeasure ν]\\n- Mathlib/Probability/Kernel/Posterior.lean:321\\n    lemma posterior_boolKernel_apply_true (μ ν : Measure 𝓧) [IsFiniteMeasure μ] [IsFiniteMeasure ν]\\n- Mathlib/Probability/Kernel/CompProdEqIff.lean:55\\n    lemma ae_eq_of_compProd_eq [IsFiniteMeasure μ] [IsFiniteKernel κ] [IsFiniteKernel η]\\n- Mathlib/Probability/Kernel/CompProdEqIff.lean:75\\n    lemma compProd_eq_iff [IsFiniteMeasure μ] [IsFiniteKernel κ] [IsFiniteKernel η] :\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:361\\n    irreducible_def _root_.MeasureTheory.Measure.condKernel (ρ : Measure (α × Ω)) [IsFiniteMeasure ρ] :\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:365\\n    lemma _root_.MeasureTheory.Measure.condKernel_apply (ρ : Measure (α × Ω)) [IsFiniteMeasure ρ]\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:74\\n    theorem IsFiniteMeasure.IicSnd {ρ : Measure (α × ℝ)} [IsFiniteMeasure ρ] (r : ℝ) :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:78\\n    theorem iInf_IicSnd_gt (t : ℚ) {s : Set α} (hs : MeasurableSet s) [IsFiniteMeasure ρ] :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:89\\n    theorem tendsto_IicSnd_atBot [IsFiniteMeasure ρ] {s : Set α} (hs : MeasurableSet s) :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:145\\n    theorem withDensity_preCDF (ρ : Measure (α × ℝ)) (r : ℚ) [IsFiniteMeasure ρ] :\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Measure/AddContent.lean\", \"line\": 600, \"n\": 81}",
+   "ok": true,
+   "result_chars": 5381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Measure/AddContent.lean  (lines 600–680 of 681):\\n   600      (hm_tendsto : ∀ ⦃s : ℕ → Set α⦄ (_ : ∀ n, s n ∈ C),\\n   601        Antitone s → (⋂ n, s n) = ∅ → Tendsto (fun n ↦ m (s n)) atTop (𝓝 0))\\n   602      ⦃f : ℕ → Set α⦄ (hf : ∀ i, f i ∈ C) (hUf : (⋃ i, f i) ∈ C)\\n   603      (h_disj : Pairwise (Disjoint on f)) :\\n   604      m (⋃ i, f i) = ∑' i, m (f i) := by\\n   605    -- We use the continuity of `m` at `∅` on the sequence `n ↦ (⋃ i, f i) \\\\ (Set.accumulate f n)`\\n   606    let s : ℕ → Set α := fun n ↦ (⋃ i, f i) \\\\ Set.accumulate f n\\n   607    have hCs n : s n ∈ C := hC.sdiff_mem hUf (hC.accumulate_mem hf n)\\n   608    have h_tendsto : Tendsto (fun n ↦ m (s n)) atTop (𝓝 0) := by\\n   609      refine hm_tendsto hCs ?_ ?_\\n   610      · intro i j hij x hxj\\n   611        rw [Set.mem_sdiff] at hxj ⊢\\n   612        exact ⟨hxj.1, fun hxi ↦ hxj.2 (Set.monotone_accumulate hij hxi)⟩\\n   613      · simp_rw [s, Set.sdiff_eq]\\n   614        rw [Set.iInter_inter_distrib, Set.iInter_const, ← Set.compl_iUnion, Set.iUnion_accumulate]\\n   615        exact Set.inter_compl_self _\\n   616    have hmsn n : m (s n) = m (⋃ i, f i) - ∑ i ∈ Finset.range (n + 1), m (f i) := by\\n   617      rw [addContent_sdiff_of_ne_top m hC hm_ne_top hUf (hC.accumulate_mem hf n)\\n   618        (Set.accumulate_subset_iUnion _), addContent_accumulate m hC h_disj hf n]\\n   619    simp_rw [hmsn] at h_tendsto\\n   620    refine tendsto_nhds_unique ?_ (ENNReal.tendsto_nat_tsum fun i ↦ m (f i))\\n   621    refine (Filter.tendsto_add_atTop_iff_nat 1).mp ?_\\n   622    rwa [ENNReal.tendsto_const_sub_nhds_zero_iff (hm_ne_top _ hUf) (fun n ↦ ?_)] at h_tendsto\\n   623    rw [← addContent_accumulate m hC h_disj hf]\\n   624    exact addContent_mono hC.isSetSemiring (hC.accumulate_mem hf n) hUf\\n   625      (Set.accumulate_subset_iUnion _)\\n   626  \\n   627  /-- If an additive content is σ-additive on a set ring, then the content of a monotone sequence of\\n   628  sets tends to the content of the union. -/\\n   629  theorem tendsto_atTop_addContent_iUnion_of_addContent_iUnion_eq_tsum\\n   630      {m : AddContent ℝ≥0∞ C} (hC : IsSetRing C)\\n   631      (m_iUnion : ∀ (f : ℕ → Set α) (_ : ∀ i, f i ∈ C) (_ : (⋃ i, f i) ∈ C)\\n   632        (_hf_disj : Pairwise (Disjoint on f)), m (⋃ i, f i) = ∑' i, m (f i))\\n   633      ⦃f : ℕ → Set α⦄ (hf_mono : Monotone f) (hf : ∀ i, f i ∈ C) (hf_Union : ⋃ i, f i ∈ C) :\\n   634      Tendsto (fun n ↦ m (f n)) atTop (𝓝 (m (⋃ i, f i))) := by\\n   635    rw [← iUnion_disjointed, m_iUnion _ (hC.disjointed_mem hf) (by rwa [iUnion_disjointed])\\n   636        (disjoint_disjointed f)]\\n   637    have h n : m (f n) = ∑ i ∈ range (n + 1), m (disjointed f i) := by\\n   638      nth_rw 1 [← addContent_accumulate _ hC (disjoint_disjointed f) (hC.disjointed_mem hf),\\n   639      ← hf_mono.partialSups_eq, ← partialSups_disjointed, partialSups_eq_biSup, accumulate]\\n   640      rfl\\n   641    simp_rw [h]\\n   642    refine (tendsto_add_atTop_iff_nat (f := (fun k ↦ ∑ i ∈ range k, m (disjointed f i))) 1).2 ?_\\n   643    exact ENNReal.tendsto_nat_tsum _\\n   644  \\n   645  /-- If an additive content is σ-additive on a set ring, then it is σ-subadditive. -/\\n   646  theorem isSigmaSubadditive_of_addContent_iUnion_eq_tsum {m : AddContent ℝ≥0∞ C} (hC : IsSetRing C)\\n   647      (m_iUnion : ∀ (f : ℕ → Set α) (_ : ∀ i, f i ∈ C) (_ : (⋃ i, f i) ∈ C)\\n   648        (_hf_disj : Pairwise (Disjoint on f)), m (⋃ i, f i) = ∑' i, m (f i)) :\\n   649      m.IsSigmaSubadditive := by\\n   650    intro f hf hf_Union\\n   651    have h_tendsto : Tendsto (fun n ↦ m (partialSups f n)) atTop (𝓝 (m (⋃ i, f i))) := by\\n   652      rw [← iSup_eq_iUnion, ← iSup_partialSups_eq]\\n   653      refine tendsto_atTop_addContent_iUnion_of_addContent_iUnion_eq_tsum hC m_iUnion\\n   654        (partialSups_monotone f) (hC.partialSups_mem hf) ?_\\n   655      rwa [← iSup_eq_iUnion, iSup_partialSups_eq]\\n   656    have h_tendsto' : Tendsto (fun n ↦ ∑ i ∈ range (n"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*le.*Measure\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4430,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1042 match(es) for '(theorem|lemma|def).*le.*Measure' (via ripgrep):\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:86\\n    lemma klDiv_zero_left [IsFiniteMeasure ν] : klDiv 0 ν = ν univ := by\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:240\\n    lemma klDiv_smul_right_eq_smul_left [IsFiniteMeasure μ] [IsFiniteMeasure ν] {c : ℝ≥0} (hc : c ≠ 0) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:360\\n    lemma mul_log_le_klDiv (μ ν : Measure α) [IsFiniteMeasure μ] [IsFiniteMeasure ν] :\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:372\\n    theorem measure_fundamentalDomain [Fintype ι] [DecidableEq ι] [MeasurableSpace E] (μ : Measure E)\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:400\\n    theorem fundamentalDomain_ae_parallelepiped [Fintype ι] [MeasurableSpace E] (μ : Measure E)\\n- Mathlib/Probability/Process/Filtration.lean:24\\n    notion `adapted` is not defined yet in this file. See `MeasureTheory.adapted`.\\n- Mathlib/Probability/Process/Filtration.lean:214\\n    theorem Integrable.uniformIntegrable_condExp_filtration [Preorder ι] {μ : Measure Ω}\\n- Mathlib/Probability/Kernel/Invariance.lean:60\\n    def IsReversible (κ : Kernel α α) (π : Measure α) : Prop :=\\n- Mathlib/Probability/Kernel/Irreducible.lean:74\\n    lemma isIrreducible_of_le_measure {φ₁ φ₂ : Measure α} (hφ : φ₁ ≤ φ₂)\\n- Mathlib/Probability/Kernel/Representation.lean:124\\n    theorem MeasureTheory.Measure.exists_measurable_map_eq (μ : Measure Y) [IsProbabilityMeasure μ] :\\n- Mathlib/Probability/Kernel/Defs.lean:83\\n    lemma aemeasurable (κ : Kernel α β) {μ : Measure α} : AEMeasurable κ μ := κ.measurable.aemeasurable\\n- Mathlib/Probability/Kernel/Composition/MeasureComp.lean:169\\n    lemma AbsolutelyContinuous.comp_left (μ : Measure α) (hκη : ∀ᵐ a ∂μ, κ a ≪ η a) :\\n- Mathlib/Probability/Kernel/Composition/MeasureComp.lean:210\\n    lemma absolutelyContinuous_boolKernel_comp_left (μ ν : Measure α) (hπ : π {false} ≠ 0) :\\n- Mathlib/Probability/Kernel/Composition/IntegralCompProd.lean:329\\n    protected lemma _root_.MeasureTheory.Measure.integrable_comp_iff {μ : Measure α} {f : β → E}\\n- Mathlib/Probability/Kernel/Composition/RadonNikodym.lean:92\\n    lemma rnDeriv_measure_compProd_left (μ ν : Measure α) (κ : Kernel α β)\\n- Mathlib/Probability/Kernel/Composition/MeasureCompProd.lean:81\\n    @[simp] lemma compProd_zero_left (κ : Kernel α β) : (0 : Measure α) ⊗ₘ κ = 0 := by simp [compProd]\\n- Mathlib/Probability/Kernel/Composition/MeasureCompProd.lean:146\\n    lemma compProd_add_left (μ ν : Measure α) [SFinite μ] [SFinite ν] (κ : Kernel α β) :\\n- Mathlib/Probability/Kernel/Composition/MeasureCompProd.lean:159\\n    lemma compProd_sum_left {ι : Type*} [Countable ι] {μ : ι → Measure α} [∀ i, SFinite (μ i)] :\\n- Mathlib/Probability/Kernel/Basic.lean:178\\n    def const (α : Type*) {β : Type*} [MeasurableSpace α] {_ : MeasurableSpace β} (μβ : Measure β) :\\n- Mathlib/Probability/Kernel/Basic.lean:191\\n    lemma const_add (β : Type*) [MeasurableSpace β] (μ ν : Measure α) :\\n- Mathlib/Probability/Kernel/Basic.lean:194\\n    lemma sum_const [Countable ι] (μ : ι → Measure β) :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:78\\n    theorem iInf_IicSnd_gt (t : ℚ) {s : Set α} (hs : MeasurableSet s) [IsFiniteMeasure ρ] :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:137\\n    theorem measurable_preCDF {ρ : Measure (α × ℝ)} {r : ℚ} : Measurable (preCDF ρ r) :=\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:140\\n    lemma measurable_preCDF' {ρ : Measure (α × ℝ)} :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:171\\n    theorem preCDF_le_one (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:193\\n    lemma integrable_preCDF (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] (x : ℚ) :\\n- Mathlib/Probability/Kernel/Disintegration/CondCDF.lean:243\\n    lemma condCDF_eq_stieltjesOfMeasurableRat_unit_prod (ρ : Measure (α × ℝ)) (a : α) :\\n- Mathlib/Probabil"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*measure_le.*measure\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1531,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for '(theorem|lemma|def).*measure_le.*measure' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/LevyProkhorovMetric.lean:188\\n    lemma measure_le_measure_closure_of_levyProkhorovEDist_eq_zero {μ ν : Measure Ω}\\n- Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean:196\\n    theorem measure_le_measure_union_left : μ s ≤ μ (s ∪ t) := μ.mono subset_union_left\\n- Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean:199\\n    theorem measure_le_measure_union_right : μ t ≤ μ (s ∪ t) := μ.mono subset_union_right\\n- Mathlib/MeasureTheory/Measure/Portmanteau.lean:158\\n    theorem limsup_measure_le_of_le_liminf_measure_compl {ι : Type*} {L : Filter ι} {μ : Measure Ω}\\n- Mathlib/MeasureTheory/Measure/Portmanteau.lean:499\\n    lemma lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure\\n- Mathlib/MeasureTheory/Measure/Portmanteau.lean:514\\n    lemma integral_le_liminf_integral_of_forall_isOpen_measure_le_liminf_measure\\n- Mathlib/MeasureTheory/Measure/MeasureSpace.lean:429\\n    theorem sum_measure_le_measure_univ {s : Finset ι} {t : ι → Set α}\\n- Mathlib/MeasureTheory/Measure/MeasureSpace.lean:435\\n    theorem tsum_measure_le_measure_univ {s : ι → Set α} (hs : ∀ i, NullMeasurableSet (s i) μ)\\n- Mathlib/Probability/Distributions/Fernique.lean:117\\n    lemma measure_le_mul_measure_gt_le_of_map_rotation_eq_self [SFinite μ]\\n- Mathlib/Probability/Distributions/Fernique.lean:179\\n    lemma measure_le_mul_measure_gt_normThreshold_le_of_map_rotation_eq_self [SFinite μ]\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*sigma.*additive\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*sigma.*additive' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*countable.*additive\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*countable.*additive' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"NormedAddCommGroup\"}",
+   "ok": true,
+   "result_chars": 1615,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 17178 declarations mentioning NormedAddCommGroup.\\n- NormedAddCommGroup   [Mathlib.Analysis.Normed.Group.Defs]\\n    A normed group is an additive group endowed with a norm for which `dist x y = ‖-x + y‖` defines a metric space structure.\\n- NormedAddCommGroup.toAddCommGroup   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddCommGroup.toMetricSpace   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddCommGroup.toNorm   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddCommGroup.toNormedAddGroup   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddCommGroup.toSeminormedAddCommGroup   [Mathlib.Analysis.Normed.Group.Defs]\\n- AddGroupNorm.toNormedAddCommGroup   [Mathlib.Analysis.Normed.Group.Defs]\\n    Construct a normed group from a norm, i.e., registering the distance and the metric space structure from the norm properties. Note that in most cases this insta\\n- NormedAddCommGroup.ofSeparation   [Mathlib.Analysis.Normed.Group.Defs]\\n    Construct a `NormedAddCommGroup` from a `SeminormedAddCommGroup` satisfying `∀ x, ‖x‖ = 0 → x = 0`. This avoids having to go back to the `(Pseudo)MetricSpace` l\\n- NormedAddCommGroup.dist_eq   [Mathlib.Analysis.Normed.Group.Defs]\\n    The distance function is induced by the norm.\\n- NormedAddCommGroup.mk   [Mathlib.Analysis.Normed.Group.Defs]\\n- NormedAddCommGroup.ofAddDist   [Mathlib.Analysis.Normed.Group.Defs]\\n    Construct a normed group from a translation-invariant pseudodistance.\\n- NormedAddCommGroup.ofAddDist'   [Mathlib.Analysis.Normed.Group.Defs]\\n    Construct a normed group from a translation-invariant pseudodistance.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def).*IsSigmaSubadditive\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1537,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for '(theorem|lemma|def).*IsSigmaSubadditive' (via ripgrep):\\n- Mathlib/Probability/ProductMeasure.lean:340\\n    theorem isSigmaSubadditive_piContent : (piContent μ).IsSigmaSubadditive := by\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:195\\n    def IsSigmaSubadditiveSetFun (f : Set X → ℝ≥0∞) : Prop :=\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:199\\n    lemma isSigmaSubadditiveSetFun_zero : IsSigmaSubadditiveSetFun (0 : Set X → ℝ≥0∞) := by intro; simp\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:206\\n    lemma iUnion (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) (s : ℕ → Set X)\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:247\\n    noncomputable def ennrealPreVariation (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:254\\n    lemma ennrealPreVariation_apply (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) (s : Set X) :\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:263\\n    noncomputable def preVariation (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) : Measure X :=\\n- Mathlib/MeasureTheory/Measure/PreVariation.lean:266\\n    lemma preVariation_apply (hf : IsSigmaSubadditiveSetFun f) (hf' : f ∅ = 0) (s : Set X) :\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:150\\n    def AddContent.IsSigmaSubadditive (m : AddContent ℝ≥0∞ C) : Prop :=\\n- Mathlib/MeasureTheory/Measure/AddContent.lean:357\\n    theorem addContent_iUnion_eq_tsum_of_disjoint_of_IsSigmaSubadditive {m : AddContent ℝ≥0∞ C}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Measure/AddContent.lean\", \"line\": 357, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Measure/AddContent.lean  (lines 357–396 of 681):\\n   357  theorem addContent_iUnion_eq_tsum_of_disjoint_of_IsSigmaSubadditive {m : AddContent ℝ≥0∞ C}\\n   358      (hC : IsSetSemiring C) (m_subadd : m.IsSigmaSubadditive)\\n   359      (f : ℕ → Set α) (hf : ∀ i, f i ∈ C) (hf_Union : (⋃ i, f i) ∈ C)\\n   360      (hf_disj : Pairwise (Disjoint on f)) :\\n   361      m (⋃ i, f i) = ∑' i, m (f i) :=\\n   362    addContent_iUnion_eq_tsum_of_disjoint_of_addContent_iUnion_le hC\\n   363      (fun _ hf hf_Union _ ↦ m_subadd hf hf_Union) f hf hf_Union hf_disj\\n   364  \\n   365  end IsSetSemiring\\n   366  \\n   367  section OnIoc\\n   368  \\n   369  variable [LinearOrder α] {G : Type*} [AddCommGroup G]\\n   370  \\n   371  open scoped Classical in\\n   372  /-- The function associating to an interval `Ioc u v` the difference `f v - f u`.\\n   373  Use instead `AddContent.ofIoc` which upgrades this function to an additive content. -/\\n   374  noncomputable def AddContent.onIocAux (f : α → G) (s : Set α) : G :=\\n   375    if h : ∃ (p : α × α), p.1 ≤ p.2 ∧ s = Set.Ioc p.1 p.2\\n   376      then f h.choose.2 - f h.choose.1 else 0\\n   377  \\n   378  lemma AddContent.onIocAux_apply {f : α → G} {u v : α} (h : u ≤ v) :\\n   379      AddContent.onIocAux f (Ioc u v) = f v - f u := by\\n   380    have h' : ∃ (p : α × α), p.1 ≤ p.2 ∧ Ioc u v = Ioc p.1 p.2 := ⟨(u, v), h, rfl⟩\\n   381    simp only [onIocAux, h', ↓reduceDIte]\\n   382    set u' := h'.choose.1\\n   383    set v' := h'.choose.2\\n   384    have hu'v' : u' ≤ v' ∧ Ioc u v = Ioc u' v' := h'.choose_spec\\n   385    rcases h.eq_or_lt with rfl | huv\\n   386    · grind [Set.Ioc_eq_empty_iff]\\n   387    rw [Ioc_eq_Ioc_iff (Or.inl huv)] at hu'v'\\n   388    grind\\n   389  \\n   390  lemma AddContent.onIocAux_empty (f : α → G) :\\n   391      AddContent.onIocAux f ∅ = 0 := by\\n   392    classical\\n   393    rw [onIocAux, dite_eq_right_iff]\\n   394    grind [Set.Ioc_eq_empty_iff]\\n   395  \\n   396  /-- The additive content on the set of open-closed intervals, associating to an interval `Ioc u v`\\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*extend.*dom\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 477,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma).*extend.*dom' (via ripgrep):\\n- Mathlib/Algebra/Order/Module/HahnEmbedding.lean:849\\n    theorem lt_extend [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx : x ∉ f.val.domain) :\\n- Mathlib/GroupTheory/Perm/Support.lean:532\\n    theorem support_extend_domain (f : α ≃ Subtype p) {g : Perm α} :\\n- Mathlib/GroupTheory/Perm/Support.lean:545\\n    theorem card_support_extend_domain (f : α ≃ Subtype p) {g : Perm α} :\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsFiniteMeasure\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsFiniteMeasure': unknown identifier 'IsFiniteMeasure'\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class IsFiniteMeasure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 348,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'class IsFiniteMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean:35\\n    class IsFiniteMeasure (μ : Measure α) : Prop where\\n- Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean:332\\n    class IsFiniteMeasureOnCompacts [TopologicalSpace α] (μ : Measure α) : Prop where\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "assistant_text_fallback",
+ "output_lean": "theorem AddContent.extend_to_vector_measure_of_dominated_by_finite_measure\n  {α : Type*} [MeasurableSpace α]\n  {E : Type*} [AddCommMonoid E] [TopologicalSpace E] [NormedAddCommGroup E]\n  {C : Set (Set α)} (hC : IsSetSemiring C)\n  (m : AddContent E C)\n  (μ : Measure α) [IsFiniteMeasure μ]\n  (h_dom : ∀ s ∈ C, ‖m s‖ ≤ μ s) :\n  ∃ (v : VectorMeasure α E),\n    (∀ s ∈ C, v s = m s) ∧\n    ∀ s, MeasurableSet s → ‖v s‖ ≤ μ s := sorry"
+}

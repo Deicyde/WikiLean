@@ -1,0 +1,284 @@
+{
+ "task_id": "fresh_001",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T00:59:53Z",
+ "wall_s": 116.9,
+ "transcript_stats": {
+  "turns": 30,
+  "assistant_turns": 22,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_search": 9,
+   "mcp__wikibrain__brain_cell": 1,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__decl_exists": 13,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_snippets": 2
+  },
+  "tokens_in": 178,
+  "tokens_out": 9730,
+  "cost_usd": 0.12300749999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"monoid algebra homomorphism extensionality basis elements\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra homomorphism extensionality basis elements\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q215111\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Hom\\\",\\\"label\\\":\\\"Hom\\\"}]},{\\\"id\\\":\\\"cell:Q172891\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Euclid's Elements\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q1194212\\\",\\\"label\\\":\\\"Ring homomorphism\\\",\\\"w\\\":9},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":8},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1065966\\\",\\\"label\\\":\\\"Isomorphism theorems\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"label\\\":\\\"Morphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":135,\\\"withheld_by_shard\\\":204,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"MonoidHom\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure MonoidHom (M : Type*) (N : Type*) [MulOne M] [MulOne N]\\\\n  extends OneHom M N, M →ₙ* N\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#MonoidHom\\\",\\\"via_cell\\\":\\\"cell:Q215111\\\",\\\"cell_label\\\":\\\"Homomorphism\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/G"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra\"}",
+   "ok": true,
+   "result_chars": 4917,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"aka\\\":[\\\"MonoidAlgebra\\\",\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q656198\\\",\\\"label\\\":\\\"Maschke's theorem\\\",\\\"aka\\\":[\\\"Maschkes Theorem\\\",\\\"MonoidAlgebra.Submodule.exists_isCompl\\\",\\\"Halidon Rings and their Applications\\\"],\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/Maschke\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MonoidAlgebra.exists_leftInverse_of_injective\\\",\\\"label\\\":\\\"MonoidAlgebra.exists_leftInverse_of_injective\\\",\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/Maschke\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MonoidAlgebra.liftMagma\\\",\\\"label\\\":\\\"MonoidAlgebra.liftMagma\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.commute_mapDomainAlgHom_inl_inr\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.commute_mapDomainAlgHom_inl_inr\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodGroupLike\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodGroupLike\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodGroupLike_apply\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodGroupLike_apply\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_fst_ofConv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_fst_ofConv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_mapValue\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_mapValue\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_snd_ofConv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_snd_ofConv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_symm_ofConv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_symm_ofConv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorAlgEquiv\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorAlgEquiv\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorAlgEquiv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorAlgEquiv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorAlgEquiv_symm_tmul_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorAlgEquiv_symm_tmul_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorAlgHom\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorAlgHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorAlgHom_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorAlgHom_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorBialgEquiv\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorBialgEquiv\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorBialgEquiv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorBialgEquiv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodTensorBialgEquiv_symm_tmul_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodTensorBialgEquiv_symm_tmul_"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddMonoidHom\"}",
+   "ok": true,
+   "result_chars": 2029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidHom\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q680611\\\",\\\"label\\\":\\\"Cauchy's functional equation\\\",\\\"aka\\\":[\\\"AddMonoidHom.toRealLinearMap\\\",\\\"Real linear operators and numerical ranges\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Instances/RealVectorSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddMonoidHom.add\\\",\\\"label\\\":\\\"AddMonoidHom.add\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Hom\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddMonoidHom.toRatLinearMap\\\",\\\"label\\\":\\\"AddMonoidHom.toRatLinearMap\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/LinearMap\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Comodule.Hom.toLinearMapAddMonoidHom\\\",\\\"label\\\":\\\"TauCeti.Comodule.Hom.toLinearMapAddMonoidHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Coalgebra/Comodule\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.comp_addMonoidHom\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.comp_addMonoidHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.comp_addMonoidHom_iff_of_surjective\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.comp_addMonoidHom_iff_of_surjective\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsSemigroupGroupPD.comp_spatial_addMonoidHom\\\",\\\"label\\\":\\\"TauCeti.IsSemigroupGroupPD.comp_spatial_addMonoidHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite/SemigroupGroup\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsSemigroupGroupPD.comp_spatial_addMonoidHom_iff_of_surjective\\\",\\\"label\\\":\\\"TauCeti.IsSemigroupGroupPD.comp_spatial_addMonoidHom_iff_of_surjective\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite/SemigroupGroup\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:convexHullAddMonoidHom\\\",\\\"label\\\":\\\"convexHullAddMonoidHom\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/Combination\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/CharZero/AddMonoidHom\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"AddMonoidHom\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q2602722\"}",
+   "ok": true,
+   "result_chars": 2688,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q2602722\\\",\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"group ring\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q2602722\\\",\\\"anchor\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\"],\\\"f\\\":160,\\\"xy\\\":[1435.7,393.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"bond\\\":\\\"generalization\\\",\\\"prov\\\":2,\\\"description\\\":\\\"free module and at the same time a ring\\\",\\\"slug\\\":\\\"Group_ring\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"structure MonoidAlgebra (R M : Type*) [Semiring R] where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2508.19360#0\\\",\\\"label\\\":\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2508.19360\\\",\\\"ref\\\":\\\"0\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":84,\\\"mentions\\\":5,\\\"cites\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q6366842\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"invocation\\\":6,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q864145\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/RepresentationTheory\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.IsTrivialUnit\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.IsTrivialUnit.isUnit\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply_coe\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":83,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monoid algebra single basis element\"}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra single basis element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.single\"}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.single\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddMonoidHom ext\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidHom ext\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"AddMonoidHom\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 1259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"AddMonoidHom\\\",\\\"decl\\\":\\\"AddMonoidHom\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q680611\\\",\\\"label\\\":\\\"Cauchy's functional equation\\\",\\\"aka\\\":[\\\"AddMonoidHom.toRealLinearMap\\\",\\\"Real linear operators and numerical ranges\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Instances/RealVectorSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddMonoidHom.add\\\",\\\"label\\\":\\\"AddMonoidHom.add\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Hom\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddMonoidHom.toRatLinearMap\\\",\\\"label\\\":\\\"AddMonoidHom.toRatLinearMap\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/LinearMap\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Comodule.Hom.toLinearMapAddMonoidHom\\\",\\\"label\\\":\\\"TauCeti.Comodule.Hom.toLinearMapAddMonoidHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Coalgebra/Comodule\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsPositiveDefinite.comp_addMonoidHom\\\",\\\"label\\\":\\\"TauCeti.IsPositiveDefinite.comp_addMonoidHom\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/PositiveDefinite\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"MonoidAlgebra\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 580,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"group ring\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"bond\\\":\\\"generalization\\\",\\\"slug\\\":\\\"Group_ring\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Group_ring\\\",\\\"description\\\":\\\"free module and at the same time a ring\\\",\\\"snippet_sources\\\":[],\\\"via_cell\\\":\\\"cell:Q2602722\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"AddMonoidHom\", \"MonoidAlgebra\", \"DFinsupp\", \"FunLike.coe_fn_injective\"]}",
+   "ok": true,
+   "result_chars": 1329,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddMonoidHom\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom\\\"},{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\"},{\\\"decl\\\":\\\"DFinsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.DFinsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/DFinsupp/Defs.html#DFinsupp\\\"},{\\\"decl\\\":\\\"FunLike.coe_fn_injective\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FunLike ext injective\"}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FunLike ext injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"DFinsupp.single\"}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"DFinsupp.single\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"FunLike.ext\", \"AddMonoidHom.ext_iff\", \"AddMonoidHom.ext\", \"MonoidAlgebra.memSupport_iff\"]}",
+   "ok": true,
+   "result_chars": 1307,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"FunLike.ext\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"AddMonoidHom.ext_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom.ext_iff\\\"},{\\\"decl\\\":\\\"AddMonoidHom.ext\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom.ext\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.memSupport_iff\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q2602722\", \"limit\": 20, \"kinds\": \"depends\"}",
+   "ok": true,
+   "result_chars": 327,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":83,\\\"organs\\\":3},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.single\", \"MonoidAlgebra.of\", \"MonoidAlgebra.ofMulSingle\", \"AddMonoidHom.congr_fun\"]}",
+   "ok": true,
+   "result_chars": 1306,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.single\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.single\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.of\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra.of\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.ofMulSingle\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"AddMonoidHom.congr_fun\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MonoidAlgebra.ofMulSmulMap\", \"MonoidAlgebra.basis\", \"MonoidAlgebra.Finsupp.singleAddMonoidHom\"]}",
+   "ok": true,
+   "result_chars": 1051,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.ofMulSmulMap\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.basis\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Module\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Module\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Module.html#MonoidAlgebra.basis\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.Finsupp.singleAddMonoidHom\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:MonoidAlgebra.basis\"}",
+   "ok": false,
+   "result_chars": 387,
+   "result_head": "{\"ok\":false,\"error\":\"unknown atom id\",\"id\":\"decl:Mathlib:MonoidAlgebra.basis\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Basis.ext_elem\", \"Basis.apply_eq_zero\", \"Function.Injective\"]}",
+   "ok": true,
+   "result_chars": 962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Basis.ext_elem\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Basis.apply_eq_zero\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Function.Injective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Function\\\",\\\"import_line\\\":\\\"import Init.Data.Function\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Function.html#Function.Injective\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra basis\"}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra basis\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Module.Basis\", \"Basis.mk_eq_one\"]}",
+   "ok": true,
+   "result_chars": 750,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.Basis\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Basis.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Basis/Defs.html#Module.Basis\\\"},{\\\"decl\\\":\\\"Basis.mk_eq_one\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.ext_iff\", \"Finsupp.single_eq_single_iff\", \"AddMonoidHom.ext_iff\"]}",
+   "ok": true,
+   "result_chars": 1117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.ext_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp.ext_iff\\\"},{\\\"decl\\\":\\\"Finsupp.single_eq_single_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.single_eq_single_iff\\\"},{\\\"decl\\\":\\\"AddMonoidHom.ext_iff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom.ext_iff\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"AddMonoidHom.ext\", \"Finsupp.mem_supported\", \"MonoidAlgebra.of_mul_single\"]}",
+   "ok": true,
+   "result_chars": 1100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"AddMonoidHom.ext\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom.ext\\\"},{\\\"decl\\\":\\\"Finsupp.mem_supported\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.Supported\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Finsupp.Supported\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Finsupp/Supported.html#Finsupp.mem_supported\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.of_mul_single\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MonoidAlgebra.toAddMonoidAlgebra\", \"MonoidAlgebra.equiv_finsupp\", \"MonoidAlgebra.ofSingle\"]}",
+   "ok": true,
+   "result_chars": 967,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.toAddMonoidAlgebra\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.equiv_finsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.ofSingle\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"Q2602722\"}",
+   "ok": true,
+   "result_chars": 935,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"snippet\\\":\\\"free module and at the same time a ring\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q2602722\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\",\\\"code\\\":\\\"structure MonoidAlgebra (R M : Type*) [Semiring R] where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2508.19360#0\\\",\\\"label\\\":\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2508.19360\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"DFinsupp\", \"Finsupp\", \"MonoidAlgebra.toFinsupp\", \"MonoidAlgebra.ofFinsupp\"]}",
+   "ok": true,
+   "result_chars": 1245,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"DFinsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.DFinsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/DFinsupp/Defs.html#DFinsupp\\\"},{\\\"decl\\\":\\\"Finsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.toFinsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.ofFinsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.lsum\", \"Finsupp.sum\", \"Finsupp.total\", \"AddMonoidHom.of_map_finsupp\"]}",
+   "ok": true,
+   "result_chars": 1330,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.lsum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.LSum\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Finsupp.LSum\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Finsupp/LSum.html#Finsupp.lsum\\\"},{\\\"decl\\\":\\\"Finsupp.sum\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.BigOperators.Finsupp.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.BigOperators.Finsupp.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/BigOperators/Finsupp/Basic.html#Finsupp.sum\\\"},{\\\"decl\\\":\\\"Finsupp.total\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"AddMonoidHom.of_map_finsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MonoidAlgebra.liftOn\", \"MonoidAlgebra.lift\", \"DFinsupp.liftAddHom\"]}",
+   "ok": true,
+   "result_chars": 1093,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MonoidAlgebra.liftOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"MonoidAlgebra.lift\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Basic.html#MonoidAlgebra.lift\\\"},{\\\"decl\\\":\\\"DFinsupp.liftAddHom\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.BigOperators\\\",\\\"import_line\\\":\\\"import Mathlib.Data.DFinsupp.BigOperators\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/DFinsupp/BigOperators.html#DFinsupp.liftAddHom\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddMonoidHom ext_iff injective\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidHom ext_iff injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.single\", \"AddMonoidHom.ext\", \"MonoidAlgebra\"]}",
+   "ok": true,
+   "result_chars": 1104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.single\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.single\\\"},{\\\"decl\\\":\\\"AddMonoidHom.ext\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Hom.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Hom.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Hom/Defs.html#AddMonoidHom.ext\\\"},{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem monoid_algebra_add_hom_ext\n  {R M G : Type*}\n  [Semiring R] [Monoid M] [AddMonoid G]\n  (f g : AddMonoidHom (MonoidAlgebra R M) G)\n  (h : ∀ (m : M) (r : R), f (Finsupp.single m r : MonoidAlgebra R M) = g (Finsupp.single m r : MonoidAlgebra R M))\n  : f = g := sorry"
+}

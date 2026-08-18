@@ -1,0 +1,226 @@
+{
+ "task_id": "fresh_016",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:08:06Z",
+ "wall_s": 109.5,
+ "transcript_stats": {
+  "turns": 23,
+  "assistant_turns": 19,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 13,
+   "mcp__formal__decl_grep": 3,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 154,
+  "tokens_out": 5733,
+  "cost_usd": 0.06663255
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"interval integral ?a ?b\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'interval integral ?a ?b': Unknown identifier `interval`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.log\"}",
+   "ok": true,
+   "result_chars": 1132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 649 declarations mentioning Real.log.\\n- Real.log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function, equal to the inverse of the exponential for `x > 0`, to `log |x|` for `x < 0`, and to `0` for `0`. We use this unconventional exten\\n- Real.log_surjective   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_exp   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.le_exp_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.range_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_neg_eq_log   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.tendsto_log_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n    The real logarithm function tends to `+∞` at `+∞`.\\n- Real.log_abs   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_comp_exp   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.isLittleO_log_id_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.isLittleO_const_log_atTop   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\\n- Real.log_injOn_pos   [Mathlib.Analysis.SpecialFunctions.Log.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral_Ioc\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral_Ioc': unknown identifier 'integral_Ioc'\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫ _ in _ .. _, _\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∫ _ in _ .. _, _': unexpected '..'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"intervalIntegral\"}",
+   "ok": true,
+   "result_chars": 1503,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 441 declarations mentioning intervalIntegral.\\n- intervalIntegral   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    The interval integral `∫ x in a..b, f x ∂μ` is defined as `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`. If `a ≤ b`, then it equals `∫ x in Ioc a b, f x ∂μ`\\n- intervalIntegral.integral_same   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_ofReal   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_comp_neg   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_congr   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n    If two functions are equal in the relevant interval, their interval integrals are also equal.\\n- intervalIntegral.integral_nonneg_of_forall   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_of_le   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_symm   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.integral_congr_uIoo   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_integral_eq_norm_integral_uIoc   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_integral_min_max   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\\n- intervalIntegral.norm_intervalIntegral_eq   [Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∫ x, 1 / x\"}",
+   "ok": true,
+   "result_chars": 77,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '∫ x, 1 / x'.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral_inv_log\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral_inv_log': unknown identifier 'integral_inv_log'\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(a b : ℝ) → (ha : 0 < a) → ∫ x, ?f x = ?g\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '(a b : ℝ) → (ha : 0 < a) → ∫ x, ?f x = ?g'.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"theorem integral_deriv\"}",
+   "ok": true,
+   "result_chars": 107,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'theorem integral_deriv': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"intervalIntegral eq_sub\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'intervalIntegral eq_sub': Unknown identifier `eq_sub`\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def intervalIntegral\"}",
+   "ok": true,
+   "result_chars": 220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def intervalIntegral' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:656\\n    def intervalIntegral (f : ℝ → E) (a b : ℝ) (μ : Measure ℝ) : E :=\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 656, \"n\": 10}",
+   "ok": true,
+   "result_chars": 756,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 656–665 of 1467):\\n   656  def intervalIntegral (f : ℝ → E) (a b : ℝ) (μ : Measure ℝ) : E :=\\n   657    (∫ x in Ioc a b, f x ∂μ) - ∫ x in Ioc b a, f x ∂μ\\n   658  \\n   659  @[inherit_doc intervalIntegral]\\n   660  notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => intervalIntegral r a b μ\\n   661  \\n   662  /-- The interval integral `∫ x in a..b, f x` is defined\\n   663  as `∫ x in Ioc a b, f x - ∫ x in Ioc b a, f x`. If `a ≤ b`, then it equals\\n   664  `∫ x in Ioc a b, f x`, otherwise it equals `-∫ x in Ioc b a, f x`. -/\\n   665  notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => intervalIntegral f a b volume) => r\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Real.log continuous\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Real.log continuous': Unknown identifier `continuous`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∀ (a b : ℝ), ?P a b\"}",
+   "ok": true,
+   "result_chars": 269,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∀ (a b : ℝ), ?P a b': (deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached\\n\\nNote: Use `set_option maxHeartbeats <num>` to set the limit.(invalid MessageData.lazy, missing context)\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*integral.*log\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1570,
+   "result_head": "[{\"type\": \"text\", \"text\": \"22 match(es) for 'theorem.*integral.*log' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:304\\n    theorem integral_inv_div_log_sq_Ioi {c : ℝ} (hc : 1 < c) :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:43\\n    theorem integral_log_sin_zero_pi_div_two : ∫ x in 0..(π / 2), log (sin x) = -log 2 * π / 2 := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/LogTrigonometric.lean:82\\n    theorem integral_log_sin_zero_pi : ∫ x in 0..π, log (sin x) = -log 2 * π := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:212\\n    theorem integral_inv (h : (0 : ℝ) ∉ [[a, b]]) : ∫ x in a..b, x⁻¹ = log (b / a) := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:219\\n    theorem integral_inv_of_pos (ha : 0 < a) (hb : 0 < b) : ∫ x in a..b, x⁻¹ = log (b / a) :=\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:223\\n    theorem integral_inv_of_neg (ha : a < 0) (hb : b < 0) : ∫ x in a..b, x⁻¹ = log (b / a) :=\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:226\\n    theorem integral_one_div (h : (0 : ℝ) ∉ [[a, b]]) : ∫ x : ℝ in a..b, 1 / x = log (b / a) := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:303\\n    theorem integral_log : ∫ s in a..b, log s = b * log b - a * log a - b + a := by\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:372\\n    theorem integral_inv_div_log (ha : 1 < a) (hb : 1 < b) :\\n- Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean:382\\n    theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 372, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1098,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 372–386 of 656):\\n   372  theorem integral_inv_div_log (ha : 1 < a) (hb : 1 < b) :\\n   373      ∫ t in a..b, t⁻¹ / log t = log (log b) - log (log a) := by\\n   374    rw [← intervalIntegral.integral_congr (fun _ _ ↦ deriv_log_log_apply)]\\n   375    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) ?_\\n   376    · exact differentiableOn_log_log.differentiableAt (Ioi_mem_nhds (by grind [Set.uIcc]))\\n   377    refine (?_ : ContinuousOn _ _).congr (fun _ _ ↦ deriv_log_log_apply) |>.intervalIntegrable\\n   378    fun_prop (disch := grind [log_pos, Set.uIcc])\\n   379  \\n   380  /-- The integrand is chosen to match the conclusion of `Real.deriv_inv_log`. -/\\n   381  @[simp]\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n   384    suffices ∫ t in a..b, deriv (fun t ↦ (log t)⁻¹) t = (log b)⁻¹ - (log a)⁻¹ by\\n   385      simp_rw [deriv_inv_log, neg_div, intervalIntegral.integral_neg] at this\\n   386      linarith\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 360, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1500,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 360–384 of 656):\\n   360  \\n   361  theorem integral_div_sq_add_sq {c : ℝ} :\\n   362      ∫ x : ℝ in a..b, c / (c ^ 2 + x ^ 2) = arctan (b / c) - arctan (a / c) := calc\\n   363    _ = ∫ x : ℝ in a..b, c * (c ^ 2 + x ^ 2)⁻¹ := by ring_nf\\n   364    _ = _ := by\\n   365      by_cases hc : c = 0\\n   366      · simp [hc]\\n   367      · rw [integral_const_mul, integral_inv_sq_add_sq hc]\\n   368        field_simp\\n   369  \\n   370  /-- The integrand is chosen to match the conclusion of `Real.deriv_log_log`. -/\\n   371  @[simp]\\n   372  theorem integral_inv_div_log (ha : 1 < a) (hb : 1 < b) :\\n   373      ∫ t in a..b, t⁻¹ / log t = log (log b) - log (log a) := by\\n   374    rw [← intervalIntegral.integral_congr (fun _ _ ↦ deriv_log_log_apply)]\\n   375    refine integral_deriv_eq_sub (fun _ _ ↦ ?_) ?_\\n   376    · exact differentiableOn_log_log.differentiableAt (Ioi_mem_nhds (by grind [Set.uIcc]))\\n   377    refine (?_ : ContinuousOn _ _).congr (fun _ _ ↦ deriv_log_log_apply) |>.intervalIntegrable\\n   378    fun_prop (disch := grind [log_pos, Set.uIcc])\\n   379  \\n   380  /-- The integrand is chosen to match the conclusion of `Real.deriv_inv_log`. -/\\n   381  @[simp]\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n   384    suffices ∫ t in a..b, deriv (fun t ↦ (log t)⁻¹) t = (log b)⁻¹ - (log a)⁻¹ by\\n\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2163,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 1–50 of 656):\\n     1  /-\\n     2  Copyright (c) 2021 Benjamin Davidson. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Benjamin Davidson\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog\\n     9  public import Mathlib.Analysis.SpecialFunctions.NonIntegrable\\n    10  public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv\\n    11  public import Mathlib.Analysis.SpecialFunctions.Integrability.Basic\\n    12  public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc\\n    13  public import Mathlib.Analysis.SpecialFunctions.Log.InvLog\\n    14  public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts\\n    15  \\n    16  /-!\\n    17  # Integration of specific interval integrals\\n    18  \\n    19  This file contains proofs of the integrals of various specific functions. This includes:\\n    20  * Integrals of simple functions, such as `id`, `pow`, `inv`, `exp`, `log`\\n    21  * Integrals of some trigonometric functions, such as `sin`, `cos`, `1 / (1 + x^2)`\\n    22  * The integral of `cos x ^ 2 - sin x ^ 2`\\n    23  * Reduction formulae for the integrals of `sin x ^ n` and `cos x ^ n` for `n ≥ 2`\\n    24  * The computation of `∫ x in 0..π, sin x ^ n` as a product for even and odd `n` (used in proving the\\n    25    Wallis product for pi)\\n    26  * Integrals of the form `sin x ^ m * cos x ^ n`\\n    27  \\n    28  With these lemmas, many simple integrals can be computed by `simp` or `norm_num`.\\n    29  \\n    30  This file is still being developed.\\n    31  \\n    32  ## Tags\\n    33  \\n    34  integrate, integration, integrable\\n    35  -/\\n    36  \\n    37  public section\\n    38  \\n    39  \\n    40  open Real Set Finset\\n    41  \\n    42  open scoped Real Interval\\n    43  \\n    44  variable {a b : ℝ} (n : ℕ)\\n    45  \\n    46  namespace intervalIntegral\\n    47  \\n    48  open MeasureTheory\\n    49  \\n    50  variable {f : ℝ → ℝ} {μ : Measure ℝ} [IsLocallyFiniteMeasure μ] (c d : ℝ)\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"log\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'log': unknown identifier 'log'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"log t\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 737,
+   "result_head": "[{\"type\": \"text\", \"text\": \"26 match(es) for 'log t' (via ripgrep):\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:294\\n    IntegrableOn (fun t ↦ t⁻¹ / (log t) ^ 2) (.Ioi c) volume := by\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:305\\n    ∫ (t : ℝ) in .Ioi c, t⁻¹ / (log t) ^ 2 = (log c)⁻¹ := by\\n- Mathlib/Analysis/SpecialFunctions/ImproperIntegrals.lean:306\\n    convert! integral_Ioi_of_hasDerivAt_of_tendsto' (m := 0) (f := fun t ↦ -(log t)⁻¹) ?_\\n- Mathlib/Analysis/SpecialFunctions/Log/PosLog.lean:122\\n    simp [posLog_eq_log this, posLog_eq_log hx.le]\\n- Mathlib/Analysis/Polynomial/MahlerMeasure.lean:275\\n    by simp [circleAverage_def, mul_assoc, exp_log this], mahlerMeasure_def_of_ne_zero hp,\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 380, \"n\": 6}",
+   "ok": true,
+   "result_chars": 531,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 380–385 of 656):\\n   380  /-- The integrand is chosen to match the conclusion of `Real.deriv_inv_log`. -/\\n   381  @[simp]\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n   384    suffices ∫ t in a..b, deriv (fun t ↦ (log t)⁻¹) t = (log b)⁻¹ - (log a)⁻¹ by\\n   385      simp_rw [deriv_inv_log, neg_div, intervalIntegral.integral_neg] at this\\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean\", \"line\": 382, \"n\": 2}",
+   "ok": true,
+   "result_chars": 252,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean  (lines 382–383 of 656):\\n   382  theorem integral_inv_div_log_sq (ha : 1 < a) (hb : 1 < b) :\\n   383      ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := by\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem integral_inv_div_log_sq (a b : ℝ) (ha : 1 < a) (hb : 1 < b) :\n    ∫ t in a..b, t⁻¹ / log t ^ 2 = (log a)⁻¹ - (log b)⁻¹ := sorry"
+}

@@ -1,0 +1,362 @@
+{
+ "task_id": "fresh_066",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:20:57Z",
+ "wall_s": 70.4,
+ "transcript_stats": {
+  "turns": 40,
+  "assistant_turns": 16,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_search": 26,
+   "decl_exists": 1,
+   "mcp__wikibrain__brain_cell": 5,
+   "mcp__wikibrain__brain_neighborhood": 1
+  },
+  "tokens_in": 130,
+  "tokens_out": 5293,
+  "cost_usd": 0.09832885
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"infinite place in number field\"}",
+   "ok": true,
+   "result_chars": 4095,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infinite place in number field\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q205\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Infinity\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q11563\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Number\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1182160\\\",\\\"label\\\":\\\"Dedekind zeta function\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q2093886\\\",\\\"label\\\":\\\"Primitive element theorem\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q254347\\\",\\\"label\\\":\\\"Dedekind domain\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":90,\\\"withheld_by_shard\\\":244,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"NumberField\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class NumberField (K : Type*) [Field K] : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField\\\",\\\"via_cell\\\":\\\"cell:Q616608\\\",\\\"cell_label\\\":\\\"Algebraic number field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Infinite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Infinite (α : Sort*) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Infinite\\\",\\\"via_cell\\\":\\\"cell:Q205\\\",\\\"cell_label\\\":\\\"Infinity\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"unramified extension of local fields\"}",
+   "ok": false,
+   "result_chars": 269,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"unramified extension of local fields\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"completion of field with respect to valuation\"}",
+   "ok": true,
+   "result_chars": 3208,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"completion of field with respect to valuation\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Valuation\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Valuation\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Valuation\\\",\\\"label\\\":\\\"Valuation\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Valuation/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Field (K : Type u) extends CommRing K, DivisionRing K\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\",\\\"via_cell\\\":\\\"cell:Q190109\\\",\\\"cell_label\\\":\\\"Field (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Valuation\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.Valuation.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Valuation.Basic\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Valuation extends R →*₀ Γ₀ where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Valuation/Basic.html#Valuation\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Valuation\\\",\\\"cell_label\\\":\\\"Valuation\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Valuation\\\",\\\"label\\\":\\\"Valuation\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Valuation/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"absolute value place embedding\"}",
+   "ok": true,
+   "result_chars": 3744,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value place embedding\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q194397\\\",\\\"label\\\":\\\"Banach space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208216\\\",\\\"label\\\":\\\"Triangle inequality\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q847073\\\",\\\"label\\\":\\\"Euclidean distance\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":158,\\\"withheld_by_shard\\\":276,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AbsoluteValue\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure AbsoluteValue (R S : Type*) [Semiring R] [Semiring S] [PartialOrder S]\\\\n    extends R →ₙ* S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]},{\\\"decl\\\":\\\"AbsoluteValue.abs\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.AbsoluteValue.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def abs : AbsoluteValue S S where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/AbsoluteValue/Basic.html#AbsoluteValue.abs\\\",\\\"via_cell\\\":\\\"cell:Q120812\\\",\\\"cell_label\\\":\\\"Absolute value\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"label\\\":\\\"AbsoluteValue\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"ramification index local field extension\"}",
+   "ok": true,
+   "result_chars": 3958,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramification index local field extension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":19},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":12},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q674689\\\",\\\"label\\\":\\\"Clifford algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":7}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":235,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Field (K : Type u) extends CommRing K, DivisionRing K\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\",\\\"via_cell\\\":\\\"cell:Q190109\\\",\\\"cell_label\\\":\\\"Field (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"field degree finite extension\"}",
+   "ok": true,
+   "result_chars": 3114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"field degree finite extension\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q383444\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"degree\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Field\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Field.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Field.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Field (K : Type u) extends CommRing K, DivisionRing K\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Field/Defs.html#Field\\\",\\\"via_cell\\\":\\\"cell:Q190109\\\",\\\"cell_label\\\":\\\"Field (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field\\\",\\\"label\\\":\\\"Field\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Field/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"cell_label\\\":\\\"Finite\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"local field\"}",
+   "ok": true,
+   "result_chars": 641,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"local field\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1424496\\\",\\\"label\\\":\\\"Hensel's lemma\\\",\\\"aka\\\":[\\\"Hensel's Lemma\\\",\\\"Hensels Lemma\\\",\\\"hensels_lemma\\\",\\\"Chabauty limits of groups of involutions in $SL(2,F)$ for local fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/Padics/Hensel\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:continuous_iff_seqContinuous\\\",\\\"label\\\":\\\"continuous_iff_seqContinuous\\\",\\\"aka\\\":[\\\"Topology on rational points over higher local fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Sequences\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"p-adic completion\"}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"p-adic completion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"degree field extension\"}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"degree field extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Completion\"}",
+   "ok": true,
+   "result_chars": 5278,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Completion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IndiscreteTopology\\\",\\\"label\\\":\\\"IndiscreteTopology\\\",\\\"aka\\\":[\\\"Completion of Choice\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Order\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Completion.coe_isometry\\\",\\\"label\\\":\\\"Completion.coe_isometry\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Completion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Completion.extension_unique\\\",\\\"label\\\":\\\"Completion.extension_unique\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Completion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Completion.instPseudoMetricSpace\\\",\\\"label\\\":\\\"Completion.instPseudoMetricSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Completion\\\"},{\\\"id\\\":\\\"cell:Q4720939\\\",\\\"label\\\":\\\"Closure (mathematics)\\\",\\\"aka\\\":[\\\"Closure\\\",\\\"ClosureOperator\\\",\\\"Generator (mathematics)\\\",\\\"Group Generators\\\",\\\"Meet-completions and ordered domain algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Closure\\\"},{\\\"id\\\":\\\"cell:Q746550\\\",\\\"label\\\":\\\"Tangent bundle\\\",\\\"aka\\\":[\\\"Definition:Tangent Bundle\\\",\\\"Tangent Bundle\\\",\\\"TangentBundle\\\",\\\"tangent bundle\\\",\\\"Matrix Completion with Side Information using Manifold Optimization\\\"],\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/IsManifold\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AbstractCompletion.compareEquiv\\\",\\\"label\\\":\\\"AbstractCompletion.compareEquiv\\\",\\\"aka\\\":[\\\"Formalising the local compactness of the adele ring\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/AbstractCompletion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AdicCompletion\\\",\\\"label\\\":\\\"AdicCompletion\\\",\\\"aka\\\":[\\\"Almost equivalences between Tamarkin category and Novikov sheaves\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AdicCompletion/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsMoritaEquivalent\\\",\\\"label\\\":\\\"IsMoritaEquivalent\\\",\\\"aka\\\":[\\\"Condensation Completion and Defects in 2+1D Topological Orders\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Morita/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Pi.complete\\\",\\\"label\\\":\\\"Pi.complete\\\",\\\"aka\\\":[\\\"The order completion method for systems of nonlinear PDEs: Pseudo-topological perspectives\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Pi\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:UniformSpace.Completion\\\",\\\"label\\\":\\\"UniformSpace.Completion\\\",\\\"aka\\\":[\\\"The order completion method for systems of nonlinear PDEs: Pseudo-topological perspectives\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Completion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AdicCompletion.flat_of_isNoetherian\\\",\\\"label\\\":\\\"AdicCompletion.flat_of_isNoetherian\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AdicCompletion/AsTensorProduct\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AdicCompletion.isAdicComplete\\\",\\\"label\\\":\\\"AdicCompletion.isAdicComplete\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AdicCompletion/Completeness\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AdicCompletion.pow_smul_top_eq_ker_eval\\\",\\\"label\\\":\\\"AdicCompletion.pow_smul_top_eq_ker_eval\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/AdicCompletion/Completeness\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CauSeq.Completion.Cauchy\\\",\\\"label\\\":\\\"CauSeq.Completion.Cauchy\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CauSeq\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsDedekindDomain.HeightOneSpectrum.adicCompletion\\\",\\\"label\\\":\\\"IsDedekindDomain.HeightOneSpectrum.adicCompletion\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/DedekindDomain/AdicValuation\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OpenQuantumProblem35.constantCompletion\\\",\\\"label\\\":\\\"OpenQuantumProblem35.constantCompletion\\\",\\\"supercell\\\":\\\"path:FormalConjectures/OpenQuantumProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OpenQuantumProblem35.constantCompletion_eq_iff\\\",\\\"label\\\":\\\"OpenQuantumProblem35.constantCompletion_eq_iff\\\",\\\"supercell\\\":\\\"path:FormalConjectures/OpenQuantumProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:OpenQuantumProblem35.constantCompletion_injective\\\",\\\"label\\\":\\\"OpenQuantumProblem35.constantCompletion_injective\\\",\\\"supercell\\\":\\\"path:FormalConjectures/OpenQuantumProblems\\\"},{\\\"id\\\":\\\"cell:decl:Fo"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"FiniteDimensional\"}",
+   "ok": true,
+   "result_chars": 6066,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"FiniteDimensional\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional\\\",\\\"label\\\":\\\"FiniteDimensional\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/FiniteDimensional/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional.complete\\\",\\\"label\\\":\\\"FiniteDimensional.complete\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional.nonempty_linearEquiv_iff_finrank_eq\\\",\\\"label\\\":\\\"FiniteDimensional.nonempty_linearEquiv_iff_finrank_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Free\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional.of_isCompactOperator_id\\\",\\\"label\\\":\\\"FiniteDimensional.of_isCompactOperator_id\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteDimensional.of_isCompact_closedBall\\\",\\\"label\\\":\\\"FiniteDimensional.of_isCompact_closedBall\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.IsSymmetric.hasEigenvalue_iSup_of_finiteDimensional\\\",\\\"label\\\":\\\"LinearMap.IsSymmetric.hasEigenvalue_iSup_of_finiteDimensional\\\",\\\"aka\\\":[\\\"Some results involving the $A_\\\\\\\\alpha$-eigenvalues for graphs and line graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Rayleigh\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.continuous_of_finiteDimensional\\\",\\\"label\\\":\\\"LinearMap.continuous_of_finiteDimensional\\\",\\\"aka\\\":[\\\"Mathematics for theoretical physics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.exist_extension_of_finiteDimensional_range\\\",\\\"label\\\":\\\"ContinuousLinearMap.exist_extension_of_finiteDimensional_range\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IntermediateField.adjoin.finiteDimensional\\\",\\\"label\\\":\\\"IntermediateField.adjoin.finiteDimensional\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/IntermediateField/Adjoin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IntermediateField.finiteDimensional_adjoin\\\",\\\"label\\\":\\\"IntermediateField.finiteDimensional_adjoin\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/IntermediateField/Adjoin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.instFiniteDimensionalOfIsReflexive\\\",\\\"label\\\":\\\"Module.instFiniteDimensionalOfIsReflexive\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dual/Lemmas\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.ClosedComplemented.of_finiteDimensional\\\",\\\"label\\\":\\\"Submodule.ClosedComplemented.of_finiteDimensional\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.ContinuousLinearMap.index_eq_of_finiteDimensional\\\",\\\"label\\\":\\\"TauCeti.ContinuousLinearMap.index_eq_of_finiteDimensional\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Fredholm\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.ContinuousLinearMap.index_prodMap_of_finiteDimensional\\\",\\\"label\\\":\\\"TauCeti.ContinuousLinearMap.index_prodMap_of_finiteDimensional\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Fredholm\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.IsFredholm.finiteDimensional_cokerComplement\\\",\\\"label\\\":\\\"TauCeti.IsFredholm.finiteDimensional_cokerComplement\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Fredholm\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le\\\",\\\"label\\\":\\\"TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/EffectiveBounds/HermiteCount\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le_hermiteCountBound\\\",\\\"label\\\":\\\"TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le_hermiteCountBound\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/EffectiveBounds/HermiteCount\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le_of_bounds\\\",\\\"label\\\":\\\"TauCeti.NumberField.ncard_setOf_finiteDimensional_abs_discr_le_le_of_bounds\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/EffectiveBounds/HermiteCount\\\"},{\\\"id\\\":\\\"c"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"place absolute value\"}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"place absolute value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"infinite embedding real complex\"}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"infinite embedding real complex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank Module field extension\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank Module field extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"NumberField\"}",
+   "ok": true,
+   "result_chars": 5533,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"NumberField\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"aka\\\":[\\\"Definition:Algebraic Number Field\\\",\\\"Number Field\\\",\\\"NumberField\\\",\\\"fields-definition-number-field\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q1182160\\\",\\\"label\\\":\\\"Dedekind zeta function\\\",\\\"aka\\\":[\\\"NumberField.dedekindZeta\\\",\\\"A Brief Introduction To Splitting Of Primes Over Number Fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/DedekindZeta\\\"},{\\\"id\\\":\\\"cell:Q1227702\\\",\\\"label\\\":\\\"Dirichlet's unit theorem\\\",\\\"aka\\\":[\\\"NumberField.Units.unitLattice_rank\\\",\\\"A characterization of Oeljeklaus-Toma manifolds in locally conformally K\\\\\\\\\\\\\\\"{a}hler geometry\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Units\\\"},{\\\"id\\\":\\\"cell:Q91783763\\\",\\\"label\\\":\\\"class number\\\",\\\"aka\\\":[\\\"NumberField.classNumber\\\",\\\"Parity properties of Costas arrays defined via finite fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/ClassNumber\\\"},{\\\"id\\\":\\\"cell:Q2997826\\\",\\\"label\\\":\\\"totally real number field\\\",\\\"aka\\\":[\\\"NumberField.IsTotallyReal\\\",\\\"On Variants of Inverse Cluster Size Problem & General Magnification\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.AdeleRing\\\",\\\"label\\\":\\\"NumberField.AdeleRing\\\",\\\"aka\\\":[\\\"Formalising the local compactness of the adele ring\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/AdeleRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"label\\\":\\\"NumberField.InfinitePlace\\\",\\\"aka\\\":[\\\"Formalising the local compactness of the adele ring\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.IsTotallyComplex\\\",\\\"label\\\":\\\"NumberField.IsTotallyComplex\\\",\\\"aka\\\":[\\\"Lattice Coding for Downlink Multiuser Transmission\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"aka\\\":[\\\"Asymptotics of $p$-torsion subgroup sizes in class groups of monogenized cubic fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers.instFintypeClassGroup\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers.instFintypeClassGroup\\\",\\\"aka\\\":[\\\"On Alexander modules and Blanchfield forms of null-homologous knots in rational homology spheres\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/ClassNumber\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.FinitePlace\\\",\\\"label\\\":\\\"NumberField.FinitePlace\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Completion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.FinitePlace.equivHeightOneSpectrum\\\",\\\"label\\\":\\\"NumberField.FinitePlace.equivHeightOneSpectrum\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Completion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace.IsReal\\\",\\\"label\\\":\\\"NumberField.InfinitePlace.IsReal\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace.card_add_two_mul_card_eq_rank\\\",\\\"label\\\":\\\"NumberField.InfinitePlace.card_add_two_mul_card_eq_rank\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace.isReal_or_isComplex\\\",\\\"label\\\":\\\"NumberField.InfinitePlace.isReal_or_isComplex\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace.nrRealPlaces\\\",\\\"label\\\":\\\"NumberField.InfinitePlace.nrRealPlaces\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:NumberField.IsFundamentalDiscr\\\",\\\"label\\\":\\\"NumberField.IsFundamentalDiscr\\\",\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers.ba"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finrank\"}",
+   "ok": true,
+   "result_chars": 6594,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finrank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:finrank_range_add_finrank_ker\\\",\\\"label\\\":\\\"finrank_range_add_finrank_ker\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/FiniteDimensional/Lemmas\\\"},{\\\"id\\\":\\\"cell:Q28402100\\\",\\\"label\\\":\\\"Rank of an elliptic curve\\\",\\\"aka\\\":[\\\"EllipticCurveRank.RatEllipticCurve._02062_le_density_rank_zero\\\",\\\"EllipticCurveRank.RatEllipticCurve._08375_le_density_rank_zero_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.avg_rank_lt_0885\\\",\\\"EllipticCurveRank.RatEllipticCurve.finite_twentyone_lt_finrank\\\",\\\"EllipticCurveRank.RatEllipticCurve.half_rank_zero_and_half_rank_one\\\",\\\"EllipticCurveRank.RatEllipticCurve.rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.twentyone_le_rank_height_count_asymptotic\\\",\\\"EllipticCurveRank.RatEllipticCurve.unbounded_rank_conjecture\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.rank_elkiesKlagsbrun29\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentyeight_le_rank_elkies28\\\",\\\"EllipticCurveRank.WeierstrassCurve.twentynine_le_rank_elkiesKlagsbrun29\\\"],\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"label\\\":\\\"AlgebraicGeometry.Scheme.Hom.finrank\\\",\\\"aka\\\":[\\\"morphisms-definition-finite-locally-free\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Complex.finrank_real_complex\\\",\\\"label\\\":\\\"Complex.finrank_real_complex\\\",\\\"aka\\\":[\\\"fields-example-C-over-R\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Complex/FiniteDimensional\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FDRep.finrank_hom_simple_simple\\\",\\\"label\\\":\\\"FDRep.finrank_hom_simple_simple\\\",\\\"aka\\\":[\\\"Dynamical Zeta Functions, Nielsen theory and Reidemeister torsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/FDRep\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IntermediateField.adjoin.finrank\\\",\\\"label\\\":\\\"IntermediateField.adjoin.finrank\\\",\\\"aka\\\":[\\\"fields-lemma-degree-minimal-polynomial\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/IntermediateField/Adjoin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_eigenspace_le\\\",\\\"label\\\":\\\"LinearMap.finrank_eigenspace_le\\\",\\\"aka\\\":[\\\"Independence and orthogonality of algebraic eigenvectors over the max-plus algebra\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"label\\\":\\\"LinearMap.finrank_maxGenEigenspace_eq\\\",\\\"aka\\\":[\\\"Singularity of the $n$-th eigenvalue of high dimensional Sturm-Liouville problems\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Eigenspace/Zero\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.injective_iff_surjective_of_finrank_eq_finrank\\\",\\\"label\\\":\\\"LinearMap.injective_iff_surjective_of_finrank_eq_finrank\\\",\\\"aka\\\":[\\\"Introduction to Vector Spaces, Vector Algebras, and Vector Geometries\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/FiniteDimensional/Lemmas\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Dual.finrank_ker_add_one_of_ne_zero\\\",\\\"label\\\":\\\"Module.Dual.finrank_ker_add_one_of_ne_zero\\\",\\\"aka\\\":[\\\"Local and global bifurcation of electron-states\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dual/Lemmas\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.finrank_tensorProduct\\\",\\\"label\\\":\\\"Module.finrank_tensorProduct\\\",\\\"aka\\\":[\\\"Notes on a model for fuzzy computing\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Constructions\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ModuleCat.free_shortExact_finrank_add\\\",\\\"label\\\":\\\"ModuleCat.free_shortExact_finrank_add\\\",\\\"aka\\\":[\\\"On the modularity of supersingular elliptic curves over certain totally real number fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/ModuleCat\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Projectivization.card_of_finrank\\\",\\\"label\\\":\\\"Projectivization.card_of_finrank\\\",\\\"aka\\\":[\\\"Riemannian structures and point-counting\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Projectivization/Cardinality\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:RatFunc.finrank"
+  },
+  {
+   "i": 16,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"NumberField\\\", \\\"FiniteDimensional\\\", \\\"UniformSpace.Completion\\\", \\\"FiniteDimensional.finrank\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:NumberField.InfinitePlace\"}",
+   "ok": true,
+   "result_chars": 1874,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"NumberField.InfinitePlace\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"anchor\\\":\\\"decl:Mathlib:NumberField.InfinitePlace\\\",\\\"label\\\":\\\"NumberField.InfinitePlace\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"],\\\"f\\\":128,\\\"xy\\\":[-438.5,-118.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:NumberField.InfinitePlace\\\",\\\"label\\\":\\\"NumberField.InfinitePlace\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def InfinitePlace := { w : AbsoluteValue K ℝ // ∃ φ : K →+* ℂ, place φ = w }\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2405.19270#def:place\\\",\\\"label\\\":\\\"Formalising the local compactness of the adele ring\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2405.19270\\\",\\\"ref\\\":\\\"def:place\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\",\\\"label\\\":\\\"InfinitePlace\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:finrank\"}",
+   "ok": false,
+   "result_chars": 377,
+   "result_head": "{\"ok\":false,\"error\":\"unresolvable key\",\"key\":\"decl:Mathlib:finrank\",\"hint\":\"accepted key forms: cell:<anchor> | path:<Lib>/<Dir> (supercell) | QID | decl:<Lib>:<Name> | bare FQ decl name | article slug | xref:<db>:<id> | lit:<arxiv>#<ref> | exact label — for fuzzy text use /api/brain/search?q=\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Ramification\"}",
+   "ok": true,
+   "result_chars": 1238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ramification\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.RamificationInertia.ncard_primesOver_eq_natCard_iff_of_isGaloisGroup\\\",\\\"label\\\":\\\"TauCeti.RamificationInertia.ncard_primesOver_eq_natCard_iff_of_isGaloisGroup\\\",\\\"supercell\\\":\\\"path:TauCeti/NumberTheory/RamificationInertia\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/IsNonarchimedeanLocalField/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Ramification\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Valuation/RamificationGroup\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationGroup\\\"},{\\\"id\\\":\\\"path:TauCeti/NumberTheory/RamificationInertia\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"RamificationInertia\\\",\\\"n_cells\\\":1}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"LocalField\"}",
+   "ok": true,
+   "result_chars": 550,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"LocalField\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:IsNonarchimedeanLocalField\\\",\\\"label\\\":\\\"IsNonarchimedeanLocalField\\\",\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/LocalField/Basic\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/LocalField\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"LocalField\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/IsNonarchimedeanLocalField\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"IsNonarchimedeanLocalField\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ramificationIndex\"}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ramificationIndex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Ideal.ramificationIdx\"}",
+   "ok": true,
+   "result_chars": 1392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Ideal.ramificationIdx\\\",\\\"anchor\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\"],\\\"xy\\\":[493.9,-368.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Ideal.ramificationIdx\\\",\\\"label\\\":\\\"Ideal.ramificationIdx\\\",\\\"module\\\":\\\"Mathlib.NumberTheory.RamificationInertia.Ramification\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.RamificationInertia.Ramification\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"label\\\":\\\"RamificationInertia\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Ramification\\\",\\\"label\\\":\\\"Ramification\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q616608\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"unramified\"}",
+   "ok": true,
+   "result_chars": 3038,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unramified\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:CliffordAlgebra.map\\\",\\\"label\\\":\\\"CliffordAlgebra.map\\\",\\\"aka\\\":[\\\"Unramified Brauer classes on cyclic covers of the projective plane\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/CliffordAlgebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CliffordAlgebra.ι_mul_ι_comm_of_isOrtho\\\",\\\"label\\\":\\\"CliffordAlgebra.ι_mul_ι_comm_of_isOrtho\\\",\\\"aka\\\":[\\\"Unramified Brauer classes on cyclic covers of the projective plane\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/CliffordAlgebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.Etale.of_formallyUnramified_of_flat\\\",\\\"label\\\":\\\"Algebra.Etale.of_formallyUnramified_of_flat\\\",\\\"aka\\\":[\\\"algebra-lemma-etale-flat-unramified-finite-presentation\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Smooth/Fiber\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.FormallyUnramified\\\",\\\"label\\\":\\\"Algebra.FormallyUnramified\\\",\\\"aka\\\":[\\\"algebra-section-formally-unramified\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Unramified/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.FormallyUnramified.map_maximalIdeal\\\",\\\"label\\\":\\\"Algebra.FormallyUnramified.map_maximalIdeal\\\",\\\"aka\\\":[\\\"algebra-lemma-unramified-at-prime\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Unramified/LocalRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.FormallyUnramified.of_map_maximalIdeal\\\",\\\"label\\\":\\\"Algebra.FormallyUnramified.of_map_maximalIdeal\\\",\\\"aka\\\":[\\\"algebra-lemma-characterize-unramified\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Unramified/LocalRing\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Algebra.Unramified\\\",\\\"label\\\":\\\"Algebra.Unramified\\\",\\\"aka\\\":[\\\"algebra-definition-unramified\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Unramified/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.FormallyUnramified.hom_ext\\\",\\\"label\\\":\\\"AlgebraicGeometry.FormallyUnramified.hom_ext\\\",\\\"aka\\\":[\\\"more-morphisms-lemma-formally-unramified-not-affine\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/IsNonarchimedeanLocalField/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/IsNonarchimedeanLocalField/UnramifiedCohomology\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"UnramifiedCohomology\\\"},{\\\"id\\\":\\\"path:ClassFieldTheory/Mathlib/RingTheory/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:FltRegular/NumberTheory/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/RingHom/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\"},{\\\"id\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/FormallyUnramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"FormallyUnramified\\\",\\\"n_cells\\\":1}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"lies over places\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lies over places\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/NumberTheory/RamificationInertia/Unramified\"}",
+   "ok": true,
+   "result_chars": 842,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Unramified\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Unramified\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Unramified\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia/Unramified\\\",\\\"parent\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/RamificationInertia\\\",\\\"label\\\":\\\"RamificationInertia\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"place lying over extension\"}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"place lying over extension\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"completion K v valuation\"}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"completion K v valuation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"extension place embedding\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"extension place embedding\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q616608\"}",
+   "ok": true,
+   "result_chars": 3776,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q616608\\\",\\\"id\\\":\\\"cell:Q616608\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"f\\\":47323,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q616608\\\",\\\"anchor\\\":\\\"Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"supercells\\\":[\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\"],\\\"f\\\":47323,\\\"xy\\\":[3.4,44.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q616608\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"a finite degree (and hence algebraic) field extension of the field of rational numbers\\\",\\\"slug\\\":\\\"Algebraic_number_field\\\",\\\"article_annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":50,\\\"partial\\\":12,\\\"not_formalized\\\":15},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:NumberField\\\",\\\"label\\\":\\\"NumberField\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class NumberField (K : Type*) [Field K] : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:NumberField\\\",\\\"label\\\":\\\"Number Field\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/NumberField.html\\\",\\\"qid\\\":\\\"Q616608\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Algebraic_Number_Field\\\",\\\"label\\\":\\\"Definition:Algebraic Number Field\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Algebraic_Number_Field\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q616608\\\",\\\"snippet\\\":\\\"An algebraic number field is a finite extension of the field of rational numbers $\\\\\\\\Q$.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:09GA\\\",\\\"label\\\":\\\"fields-definition-number-field\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09GA\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"A field $K$ is said to be a {\\\\\\\\it number field} if it has characteristic $0$ and the extension $K/\\\\\\\\mathbf{Q}$ is finite.\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Algebraic_number_field\\\",\\\"label\\\":\\\"Algebraic number field\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":77,\\\"formalized\\\":50,\\\"partial\\\":12,\\\"not_formalized\\\":15}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":11,\\\"depends\\\":193,\\\"mentions\\\":54,\\\"relates\\\":2,\\\"invocation\\\":66},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q190109\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":2,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"invocation\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q1182160\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}}],\\\"counts\\\":{\\\"syn\\\":444,\\\"organs\\\":6},\\\"truncated\\\":{\\\"syn\\\":244},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:NumberField.InfinitePlace\", \"kinds\": \"depends\", \"limit\": 40}",
+   "ok": true,
+   "result_chars": 356,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.InfinitePlace\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"lift absolute value\"}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"lift absolute value\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"extends absolute value place\"}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"extends absolute value place\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Complex absolute value real\"}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Complex absolute value real\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"InfinitePlace.IsReal IsComplex\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"InfinitePlace.IsReal IsComplex\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"embedding K to C\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"embedding K to C\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"degree extension finrank\"}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"degree extension finrank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"WithTop\"}",
+   "ok": true,
+   "result_chars": 1068,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"WithTop\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:WithTop.lattice\\\",\\\"label\\\":\\\"WithTop.lattice\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/WithBot\\\"},{\\\"id\\\":\\\"path:BrownianMotion/Auxiliary/WithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTop\\\"},{\\\"id\\\":\\\"path:CombinatorialGames/Mathlib/WithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTop\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/BigOperators/WithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTop\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/WithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTop\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Fintype/WithTopBot\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTopBot\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Hom/WithTopBot\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTopBot\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Order/WithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"WithTop\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Order/AddGroupWithTop\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"AddGroupWithTop\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"algebraic closure completion\"}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"algebraic closure completion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem infinite_place_completion_dimension_one (K L : Type*) [Field K] [Field L]\n    [NumberField K] [NumberField L] [Algebra K L]\n    (v : NumberField.InfinitePlace K) (w : NumberField.InfinitePlace L) :\n    FiniteDimensional.finrank K L = 1 := sorry"
+}

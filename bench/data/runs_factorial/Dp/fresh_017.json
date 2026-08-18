@@ -1,0 +1,89 @@
+{
+ "task_id": "fresh_017",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:14:40Z",
+ "wall_s": 31.5,
+ "transcript_stats": {
+  "turns": 6,
+  "assistant_turns": 5,
+  "tool_calls_by_name": {
+   "decl_exists": 1,
+   "brain_bridge": 1,
+   "mcp__wikibrain__decl_exists": 2,
+   "mcp__wikibrain__brain_search": 1
+  },
+  "tokens_in": 42,
+  "tokens_out": 2502,
+  "cost_usd": 0.02361055
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"Real.sin\\\", \\\"abs\\\", \\\"LE\\\", \\\"Div\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 1,
+   "name": "brain_bridge",
+   "input": "{\"q\": \"absolute value of difference between x and sine x bounded by x cubed divided by 6\", \"limit\": \"8\"}",
+   "ok": false,
+   "result_chars": 76,
+   "result_head": "<tool_use_error>Error: No such tool available: brain_bridge</tool_use_error>"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Real.sin\", \"abs\"]}",
+   "ok": true,
+   "result_chars": 827,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Real.sin\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Trigonometric\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Trigonometric\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Trigonometric.html#Real.sin\\\"},{\\\"decl\\\":\\\"abs\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.Group.Unbundled.Abs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/Group/Unbundled/Abs.html#abs\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sine approximation Taylor series error bound\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sine approximation Taylor series error bound\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Pow.pow\", \"HDiv.hDiv\"]}",
+   "ok": true,
+   "result_chars": 672,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Pow.pow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Pow.pow\\\"},{\\\"decl\\\":\\\"HDiv.hDiv\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#HDiv.hDiv\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem abs_x_minus_sin_x_le (x : ℝ) : |x - Real.sin x| ≤ |x|^3 / 6 := sorry"
+}

@@ -1,0 +1,128 @@
+{
+ "task_id": "fresh_007",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:48:22Z",
+ "wall_s": 40.1,
+ "transcript_stats": {
+  "turns": 10,
+  "assistant_turns": 8,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 4,
+   "mcp__formal__decl_grep": 2,
+   "mcp__formal__decl_read": 2,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 68,
+  "tokens_out": 2922,
+  "cost_usd": 0.03069395
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono\"}",
+   "ok": true,
+   "result_chars": 822,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 650 declarations mentioning StrictMono.\\n- StrictMono   [Mathlib.Order.Monotone.Defs]\\n    A function `f` is strictly monotone if `a < b` implies `f a < f b`.\\n- strictMono_id   [Mathlib.Order.Monotone.Defs]\\n- Subsingleton.strictMono   [Mathlib.Order.Monotone.Defs]\\n- Subtype.strictMono_coe   [Mathlib.Order.Monotone.Defs]\\n- Function.const_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.iterate   [Mathlib.Order.Monotone.Defs]\\n- strictMonoOn_univ   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.strictMonoOn   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.monotone   [Mathlib.Order.Monotone.Defs]\\n- Monotone.strictMono_of_injective   [Mathlib.Order.Monotone.Defs]\\n- Function.update_strictMono   [Mathlib.Order.Monotone.Defs]\\n- StrictMono.imp   [Mathlib.Order.Monotone.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : ℝ) → (?a > 0) → StrictMono (?f : ℝ → ℝ) → StrictMono (fun x => ?a * ?f x)\"}",
+   "ok": true,
+   "result_chars": 160,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : ℝ) → (?a > 0) → StrictMono (?f : ℝ → ℝ) → StrictMono (fun x => ?a * ?f x)': type expected, got\\n  (?a : ℝ)\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"StrictMono (?f : ?α → ?β) → StrictMono (fun x => ?a * ?f x)\"}",
+   "ok": true,
+   "result_chars": 546,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 35 declarations mentioning HMul.hMul and StrictMono.\\n- StrictMono.const_mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n- Monotone.mul_strictMono'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of a monotone function and a strictly monotone function is strictly monotone.\\n- StrictMono.mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of two strictly monotone functions is strictly monotone.\\n- StrictMono.const_mul   [Mathlib.Algebra.Order.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"mul_strictMono\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mul_strictMono': unknown identifier 'mul_strictMono'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) StrictMono\\\\.const_mul\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 539,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(theorem|lemma|def) StrictMono\\\\\\\\.const_mul' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:271\\n    theorem StrictMono.const_mul_of_neg [ExistsAddOfLE R] [PosMulStrictMono R]\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1227\\n    theorem StrictMono.const_mul' (hf : StrictMono f) (c : α) : StrictMono fun x => c * f x :=\\n- Mathlib/Algebra/Order/GroupWithZero/Basic.lean:611\\n    lemma StrictMono.const_mul [PosMulStrictMono M₀] (hf : StrictMono f) (ha : 0 < a) :\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 611, \"n\": 5}",
+   "ok": true,
+   "result_chars": 478,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 611–615 of 1480):\\n   611  lemma StrictMono.const_mul [PosMulStrictMono M₀] (hf : StrictMono f) (ha : 0 < a) :\\n   612      StrictMono fun x ↦ a * f x := (strictMono_mul_left_of_pos ha).comp hf\\n   613  \\n   614  lemma StrictAnti.mul_const [MulPosStrictMono M₀] (hf : StrictAnti f) (ha : 0 < a) :\\n   615      StrictAnti fun x ↦ f x * a := (strictMono_mul_right_of_pos ha).comp_strictAnti hf\\n\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 1, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1251,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 1–30 of 1480):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Damiano Testa, Yuyang Zhao\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.GroupWithZero.Units.Basic\\n     9  public import Mathlib.Algebra.Notation.Pi.Defs\\n    10  public import Mathlib.Algebra.Order.GroupWithZero.Defs\\n    11  public import Mathlib.Algebra.Order.ZeroLEOne\\n    12  public import Mathlib.Tactic.Bound.Attribute\\n    13  public import Mathlib.Tactic.Monotonicity.Attr\\n    14  \\n    15  import Mathlib.Data.Set.Function\\n    16  public import Mathlib.Data.Int.Order.Basic\\n    17  public import Mathlib.Util.CompileInductive\\n    18  \\n    19  /-!\\n    20  # Lemmas on the monotone multiplication typeclasses\\n    21  \\n    22  This file builds on `Mathlib/Algebra/Order/GroupWithZero/Unbundled/Defs.lean` by proving several\\n    23  lemmas that do not immediately follow from the typeclass specifications.\\n    24  -/\\n    25  \\n    26  public section\\n    27  \\n    28  open Function\\n    29  \\n    30  variable {α M₀ G₀ : Type*}\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma|def) PosMulStrictMono\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(theorem|lemma|def) PosMulStrictMono' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Defs.lean:401\\n    theorem PosMulStrictMono.toMulPosStrictMono [PosMulStrictMono α] : MulPosStrictMono α :=\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"StrictMono.const_mul\", \"PosMulStrictMono\", \"StrictMono\"]}",
+   "ok": true,
+   "result_chars": 1161,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"StrictMono.const_mul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Basic.html#StrictMono.const_mul\\\"},{\\\"decl\\\":\\\"PosMulStrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Defs.html#PosMulStrictMono\\\"},{\\\"decl\\\":\\\"StrictMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#StrictMono\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem scalar_mul_left_preserves_strict_mono\n    {M₀ : Type*} [PosMulStrictMono M₀]\n    {f : M₀ → M₀}\n    (hf : StrictMono f)\n    (a : M₀)\n    (ha : 0 < a) :\n    StrictMono fun x => a * f x := sorry"
+}

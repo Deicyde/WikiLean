@@ -1,0 +1,360 @@
+{
+ "task_id": "fresh_000",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:59:01Z",
+ "wall_s": 144.1,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 22,
+   "mcp__formal__decl_read": 8,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 242,
+  "tokens_out": 9912,
+  "cost_usd": 0.16258525
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"FinitelyPresented\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'FinitelyPresented': unknown identifier 'FinitelyPresented'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Module.localization\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Module.localization': unknown identifier 'Module.localization'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submodule.map\"}",
+   "ok": true,
+   "result_chars": 981,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 423 declarations mentioning Submodule.map.\\n- Submodule.map_id   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map   [Mathlib.Algebra.Module.Submodule.Map]\\n    The pushforward of a submodule `p ⊆ M` by `f : M → M₂`\\n- Submodule.map_bot   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.range_map_nonempty   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map_injective_of_injective   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map_surjective_of_surjective   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.le_comap_map   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map_comap_le   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.gc_map_comap   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map_zero   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.comap_map_eq_of_injective   [Mathlib.Algebra.Module.Submodule.Map]\\n- Submodule.map_comap_eq_of_surjective   [Mathlib.Algebra.Module.Submodule.Map]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"finitely presented module\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'finitely presented module': Unknown identifier `finitely`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Submonoid localization\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Submonoid localization': Unknown identifier `localization`\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearMap lift surjective\"}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearMap lift surjective': Unknown identifier `lift`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FinitelyPresented\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1358,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'FinitelyPresented' (via ripgrep):\\n- Mathlib/RingTheory/Flat/EquationalCriterion.lean:285\\n    alias exists_factorization_of_isFinitelyPresented := exists_factorization_of_finitePresentation\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:26\\n    * `IsFinitelyPresented`: defines when a group is finitely presented.\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:31\\n    * `IsFinitelyPresented.equiv`: finitely presented groups are closed under isomorphism.\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:86\\n    class AddGroup.IsFinitelyPresented (G : Type*) [AddGroup G] : Prop where\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:93\\n    class Group.IsFinitelyPresented (G : Type*) [Group G] : Prop where\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:96\\n    namespace Group.IsFinitelyPresented\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:101\\n    theorem equiv (iso : G ≃* H) [h : IsFinitelyPresented G] : IsFinitelyPresented H := by\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:110\\n    theorem of_surjective [hG : IsFinitelyPresented G] (f : G →* H)\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:112\\n    IsFinitelyPresented H := by\\n- Mathlib/GroupTheory/FinitelyPresentedGroup.lean:122\\n    theorem quotient [hG : IsFinitelyPresented G] (N : Subgroup G) [N.Normal]\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lift.*surjective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"120 match(es) for 'lift.*surjective' (via ripgrep):\\n- Mathlib/GroupTheory/FreeGroup/Basic.lean:734\\n    theorem lift_surjective_of_surjective (hf : Function.Surjective f) :\\n- Mathlib/GroupTheory/FreeGroup/Basic.lean:876\\n    FreeGroup.lift_surjective_of_surjective Function.surjective_id\\n- Mathlib/GroupTheory/GroupExtension/Basic.lean:37\\n    QuotientGroup.liftEquiv _ S.rightHom_surjective S.range_inl_eq_ker_rightHom\\n- Mathlib/GroupTheory/MonoidLocalization/Maps.lean:226\\n    theorem lift_surjective_iff :\\n- Mathlib/Algebra/GroupWithZero/WithZero.lean:135\\n    lemma lift'_surjective {f : α →* β} (hf : Surjective f) :\\n- Mathlib/GroupTheory/OreLocalization/Cardinality.lean:71\\n    · have := lift_mk_le_lift_mk_of_surjective (oreDiv_one_surjective_of_finite_right S X)\\n- Mathlib/GroupTheory/OreLocalization/Cardinality.lean:75\\n    · have := lift_mk_le_lift_mk_of_surjective (oreDiv_one_surjective_of_finite_left S X)\\n- Mathlib/GroupTheory/OreLocalization/Cardinality.lean:93\\n    · have := lift_mk_le_lift_mk_of_surjective (oreDiv_one_surjective_of_finite_right S X)\\n- Mathlib/GroupTheory/Congruence/Hom.lean:249\\n    theorem lift_surjective_of_surjective (h : c ≤ ker f) (hf : Surjective f) :\\n- Mathlib/GroupTheory/QuotientGroup/Defs.lean:271\\n    theorem lift_surjective_of_surjective (φ : G →* M) (hφ : Function.Surjective φ) (HN : N ≤ φ.ker) :\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsLocalization.*Module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1568,
+   "result_head": "[{\"type\": \"text\", \"text\": \"27 match(es) for 'IsLocalization.*Module' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/Submodule.lean:38\\n    variable (p : Submonoid R) [IsLocalization p S] (f : M →ₗ[R] N) [IsLocalizedModule p f]\\n- Mathlib/Algebra/Module/LocalizedModule/Submodule.lean:267\\n    variable (p : Submonoid R) [IsLocalization p S] (f : M →ₗ[R] N) [IsLocalizedModule p f]\\n- Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean:49\\n    instance [IsLocalization S A] : IsLocalizedModule S (Algebra.linearMap R A) :=\\n- Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean:53\\n    /-- `IsLocalization.mk'` agrees with `IsLocalizedModule.mk'`. -/\\n- Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean:61\\n    /-- `IsLocalization.mk'` agrees with `IsLocalizedModule.mk'`. -/\\n- Mathlib/Algebra/Module/LocalizedModule/IsLocalization.lean:63\\n    IsLocalization.mk' A x s = IsLocalizedModule.mk' (Algebra.linearMap R A) x s := by\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:285\\n    noncomputable abbrev smulOfIsLocalization : SMul T (LocalizedModule S M) where\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:374\\n    noncomputable abbrev moduleOfIsLocalization : Module T (LocalizedModule S M) where\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:611\\n    lemma isLocalizedModule_id (R') [CommSemiring R'] [Algebra R R'] [IsLocalization S R'] [Module R' M]\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:1433\\n    [IsTorsionFree R M] [IsLocalization S A] [IsLocalizedModule S f] : IsTorsionFree A N where\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization.Module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 766,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'Localization.Module' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:13\\n    public import Mathlib.RingTheory.Localization.Module\\n- Mathlib/Algebra/Module/LocalizedModule/Submodule.lean:9\\n    public import Mathlib.RingTheory.Localization.Module\\n- Mathlib/Algebra/Category/ModuleCat/Localization.lean:11\\n    public import Mathlib.RingTheory.Localization.Module\\n- Mathlib/RingTheory/Localization/BaseChange.lean:11\\n    public import Mathlib.RingTheory.Localization.Module\\n- Mathlib/RingTheory/Localization/NormTrace.lean:8\\n    public import Mathlib.RingTheory.Localization.Module\\n- Mathlib/ModelTheory/Arithmetic/Presburger/Semilinear/Basic.lean:20\\n    import Mathlib.RingTheory.Localization.Module\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4006,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 1–80 of 1472):\\n     1  /-\\n     2  Copyright (c) 2022 Jujian Zhang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang, Jujian Zhang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Algebra.Tower\\n     9  public import Mathlib.Algebra.Module.TransferInstance\\n    10  public import Mathlib.RingTheory.Localization.Defs\\n    11  public import Mathlib.RingTheory.OreLocalization.Ring\\n    12  \\n    13  /-!\\n    14  # Localized Module\\n    15  \\n    16  Given a commutative semiring `R`, a multiplicative subset `S ⊆ R` and an `R`-module `M`, we can\\n    17  localize `M` by `S`. This gives us a `Localization S`-module.\\n    18  \\n    19  ## Main definitions\\n    20  \\n    21  * `LocalizedModule.r`: the equivalence relation defining this localization, namely\\n    22    `(m, s) ≈ (m', s')` if and only if there is some `u : S` such that `u • s' • m = u • s • m'`.\\n    23  * `LocalizedModule M S`: the localized module by `S`.\\n    24  * `LocalizedModule.mk`: the canonical map sending `(m, s) : M × S ↦ m/s : LocalizedModule M S`\\n    25  * `LocalizedModule.liftOn`: any well-defined function `f : M × S → α` respecting `r` descents to\\n    26    a function `LocalizedModule M S → α`\\n    27  * `LocalizedModule.liftOn₂`: any well-defined function `f : M × S → M × S → α` respecting `r`\\n    28    descents to a function `LocalizedModule M S → LocalizedModule M S`\\n    29  * `LocalizedModule.mk_add_mk`: in the localized module\\n    30    `mk m s + mk m' s' = mk (s' • m + s • m') (s * s')`\\n    31  * `LocalizedModule.mk_smul_mk` : in the localized module, for any `r : R`, `s t : S`, `m : M`,\\n    32    we have `mk r s • mk m t = mk (r • m) (s * t)` where `mk r s : Localization S` is localized ring\\n    33    by `S`.\\n    34  * `LocalizedModule.isModule` : `LocalizedModule M S` is a `Localization S`-module.\\n    35  \\n    36  ## Future work\\n    37  \\n    38  * Redefine `Localization` for monoids and rings to coincide with `LocalizedModule`.\\n    39  -/\\n    40  \\n    41  @[expose] public section\\n    42  \\n    43  open Module\\n    44  \\n    45  namespace LocalizedModule\\n    46  \\n    47  universe u v\\n    48  \\n    49  variable {R : Type u} [CommSemiring R] (S : Submonoid R)\\n    50  variable (M : Type v) [AddCommMonoid M] [Module R M]\\n    51  variable (T : Type*) [CommSemiring T] [Algebra R T] [IsLocalization S T]\\n    52  variable (T' : Type*) [CommSemiring T'] [Algebra R T'] [IsLocalization S T']\\n    53  \\n    54  /-- The equivalence relation on `M × S` where `(m1, s1) ≈ (m2, s2)` if and only if\\n    55  for some (u : S), u * (s2 • m1 - s1 • m2) = 0 -/\\n    56  def r (a b : M × S) : Prop :=\\n    57    ∃ u : S, u • b.2 • a.1 = u • a.2 • b.1\\n    58  \\n    59  lemma oreEqv_eq_r : (OreLocalization.oreEqv S M).r = r S M := by\\n    60    ext a b\\n    61    constructor\\n    62    · rintro ⟨u, v, h₁, h₂⟩\\n    63      use u\\n    64      simp only [Submonoid.smul_def, smul_smul, h₂]\\n    65      rw [mul_comm, mul_smul, ← h₁, mul_comm, mul_smul, Submonoid.smul_def]\\n    66    · rintro ⟨u, hu⟩\\n    67      use u * a.2, u * b.2\\n    68      rw [mul_smul, ← hu, mul_smul, Submonoid.coe_mul, mul_assoc, mul_assoc, mul_comm (a.2 : R)]\\n    69      simp [Submonoid.smul_def]\\n    70  \\n    71  theorem r.isEquiv : IsEquiv _ (r S M) :=\\n    72    { refl := fun ⟨m, s⟩ => ⟨1, by rw [one_smul]⟩\\n    73      trans := fun ⟨m1, s1⟩ ⟨m2, s2⟩ ⟨m3, s3⟩ ⟨u1, hu1⟩ ⟨u2, hu2⟩ => by\\n    74        use u1 * u2 * s2\\n    75        -- Put everything in the same shape, sorting the terms using `simp`\\n    76        have hu1' := congr_arg ((u2 * s3) • ·) hu1.symm\\n    77        have hu2' := congr_arg ((u1 * s1) • ·) hu2.symm\\n    78        simp only [← mul_smul, mul_comm, mul_left_comm] at hu1' hu2' ⊢\\n    79        rw [hu2', hu1']\\n    80      symm := fun ⟨_, _⟩ ⟨_, _⟩ ⟨u, hu⟩ => ⟨u, hu.symm⟩ "
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(Module|Submodule).*Finitely\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 632,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '(Module|Submodule).*Finitely' (via ripgrep):\\n- Mathlib/Analysis/InnerProductSpace/Semisimple.lean:37\\n    refine Module.End.isFinitelySemisimple_iff.mpr fun p hp₁ hp₂ q hq₁ hq₂ ↦\\n- Mathlib/LinearAlgebra/Eigenspace/Semisimple.lean:20\\n    * `Module.End.IsFinitelySemisimple.genEigenspace_eq_eigenspace`: for a semisimple endomorphism,\\n- Mathlib/LinearAlgebra/Semisimple.lean:98\\n    See also `Module.End.isFinitelySemisimple_iff`. -/\\n- Mathlib/LinearAlgebra/Semisimple.lean:104\\n    /-- A characterisation of `Module.End.IsFinitelySemisimple` using only the lattice of submodules of\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FinitePresentationMod\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'FinitePresentationMod' under Mathlib/.\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FPModule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 79,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'FPModule' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsFinitelyGenerated\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'IsFinitelyGenerated' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finitely\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3845,
+   "result_head": "[{\"type\": \"text\", \"text\": \"199 match(es) for 'Finitely' (via ripgrep):\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:338\\n    rw [apply_eq_of_mem_of_comm_of_isFinitelySemisimple_of_isNil hy hS₀ hS.isFinitelySemisimple hN]\\n- Mathlib/Algebra/Lie/Weights/Killing.lean:386\\n    h.property).isFinitelySemisimple.maxGenEigenspace_eq_eigenspace,\\n- Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean:550\\n    /-- Finitely summable non-negative functions have countable support -/\\n- Mathlib/CategoryTheory/Presentable/ColimitPresentation.lean:83\\n    [IsFiltered (I j')] [IsFinitelyPresentable.{w} ((P j).diag.obj i)] :\\n- Mathlib/CategoryTheory/Presentable/ColimitPresentation.lean:85\\n    obtain ⟨i', q, hq⟩ := IsFinitelyPresentable.exists_hom_of_isColimit (P j').isColimit\\n- Mathlib/CategoryTheory/Presentable/ColimitPresentation.lean:97\\n    [∀ j i, IsFinitelyPresentable.{w} ((P j).diag.obj i)] :\\n- Mathlib/CategoryTheory/Presentable/ColimitPresentation.lean:113\\n    obtain ⟨j, p, q, hpq⟩ := IsFinitelyPresentable.exists_eq_of_isColimit (P _).isColimit _ _ this\\n- Mathlib/CategoryTheory/Presentable/ColimitPresentation.lean:130\\n    [∀ j, IsFiltered (I j)] [∀ j i, IsFinitelyPresentable.{w} ((Q j).diag.obj i)] :\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:75\\n    namespace IsFinitelyAccessibleCategory\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:77\\n    instance [IsFinitelyAccessibleCategory.{w} C] (X : C) :\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:78\\n    IsFiltered (CostructuredArrow (ObjectProperty.isFinitelyPresentable.{w} C).ι X) := by\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:80\\n    ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:83\\n    instance [IsFinitelyAccessibleCategory.{w} C] :\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:84\\n    (ObjectProperty.isFinitelyPresentable.{w} C).ι.IsDense := by\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:85\\n    rw [ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:88\\n    instance [IsFinitelyAccessibleCategory.{w} C] :\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:89\\n    ObjectProperty.EssentiallySmall.{w} (ObjectProperty.isFinitelyPresentable.{w} C) := by\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:90\\n    rw [ObjectProperty.isFinitelyPresentable_eq_isCardinalPresentable]\\n- Mathlib/CategoryTheory/Presentable/Dense.lean:93\\n    end IsFinitelyAccessibleCategory\\n- Mathlib/CategoryTheory/Presentable/LocallyPresentable.lean:64\\n    abbrev IsLocallyFinitelyPresentable :=\\n- Mathlib/CategoryTheory/Presentable/LocallyPresentable.lean:68\\n    abbrev IsFinitelyAccessibleCategory :=\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:15\\n    # Finitely Presentable Objects\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:37\\n    See `CategoryTheory.Functor.IsFinitelyAccessible_iff_preservesFilteredColimits`. -/\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:38\\n    abbrev Functor.IsFinitelyAccessible (F : C ⥤ D) : Prop := IsCardinalAccessible.{w} F ℵ₀\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:40\\n    lemma Functor.IsFinitelyAccessible_iff_preservesFilteredColimitsOfSize {F : C ⥤ D} :\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:41\\n    IsFinitelyAccessible.{w} F ↔ PreservesFilteredColimitsOfSize.{w, w} F := by\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:46\\n    lemma Functor.isFinitelyAccessible_iff_preservesFilteredColimits {F : C ⥤ D} :\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:47\\n    IsFinitelyAccessible.{v'} F ↔ PreservesFilteredColimits F :=\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:48\\n    IsFinitelyAccessible_iff_preservesFilteredColimitsOfSize\\n- Mathlib/CategoryTheory/Presentable/Finite.lean:51\\n    abbrev IsFinitelyPresentable (X : C) : Prop :=\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LinearMap.*lift\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1990,
+   "result_head": "[{\"type\": \"text\", \"text\": \"153 match(es) for 'LinearMap.*lift' (via ripgrep):\\n- Mathlib/Algebra/Homology/ShortComplex/ModuleCat.lean:123\\n    (LinearMap.range <| ModuleCat.Hom.hom _).liftQ\\n- Mathlib/Algebra/Lie/TensorProduct.lean:105\\n    maxTrivLinearMapEquivLieModuleHom.symm ≪≫ₗ ↑(maxTrivEquiv (lift R L M N P)) ≪≫ₗ\\n- Mathlib/Algebra/Lie/TensorProduct.lean:115\\n    simp only [coe_liftLie_eq_lift_coe, LieModuleHom.coe_toLinearMap, lift_apply]\\n- Mathlib/Data/Matrix/Basis.lean:279\\n    LinearMap.ext <| liftLinear_single S f i j\\n- Mathlib/Algebra/Exact/Basic.lean:565\\n    simpa only [← LinearMap.ker_eq_bot, ker_eq_bot_range_liftQ_iff, exact_iff] using h\\n- Mathlib/Algebra/Exact/Basic.lean:582\\n    LinearEquiv.ofBijective ((LinearMap.range f).liftQ g (h · |>.mpr))\\n- Mathlib/Algebra/Exact/Basic.lean:583\\n    ⟨LinearMap.injective_range_liftQ_of_exact h, LinearMap.surjective_range_liftQ _ hg⟩\\n- Mathlib/Algebra/Module/Presentation/Cokernel.lean:105\\n    desc s := (LinearMap.range f).liftQ (pres₂.desc\\n- Mathlib/Algebra/Module/Presentation/Cokernel.lean:112\\n    rw [Set.mem_preimage, SetLike.mem_coe, LinearMap.mem_ker, ← data.π_lift,\\n- Mathlib/RepresentationTheory/Homological/GroupHomology/LowDegree.lean:972\\n    AddMonoidHom.toIntLinearMap <| AddMonoidHom.toMultiplicativeRight.symm <| Abelianization.lift {\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:933\\n    rw [LinearMap.comp_assoc, iso_symm_comp, LocalizedModule.lift_comp S g h]\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:944\\n    LinearMap.ext fun x ↦ lift_iso S f g h x\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:948\\n    lift S f g h (f x) = g x := LinearMap.congr_fun (lift_comp S f g h) x\\n- Mathlib/AlgebraicGeometry/StructureSheaf.lean:421\\n    LocalizedModule.mk_cancel, ← LocalizedModule.mkLinearMap_apply, IsLocalizedModule.lift_apply,\\n- Mathlib/AlgebraicGeometry/StructureSheaf.lean:680\\n    ← LocalizedModule.mkLinearMap_apply, IsLocalizedModule.lift_apply, ← map_smul,\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"IsLocalizedModule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1370,
+   "result_head": "[{\"type\": \"text\", \"text\": \"297 match(es) for 'IsLocalizedModule' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:176\\n    instance (f : R) : IsLocalizedModule.Away f (toOpen M (basicOpen f)).hom :=\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:193\\n    IsLocalizedModule x.asIdeal.primeCompl (toStalk M x).hom :=\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:194\\n    inferInstanceAs (IsLocalizedModule x.asIdeal.primeCompl (StructureSheaf.toStalkₗ ..))\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:212\\n    fun y ↦ DFunLike.congr_fun (IsLocalizedModule.map_comp' y.1.asIdeal.primeCompl\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:222\\n    ext x; exact Subtype.ext (funext fun y ↦ IsLocalizedModule.map_apply y.1.asIdeal.primeCompl\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:255\\n    refine (ModuleCat.ofHom (IsLocalizedModule.lift (.powers (M := R) f.unop)\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:265\\n    apply IsLocalizedModule.ext (.powers (M := R) f.unop)\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:280\\n    simp only [IsLocalizedModule.lift_apply, ← ModuleCat.comp_apply, ← Functor.map_comp]\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:297\\n    refine (IsLocalizedModule.lift_apply (.powers (M := R) 1)\\n- Mathlib/AlgebraicGeometry/Modules/Tilde.lean:312\\n    apply IsLocalizedModule.ext (.powers (M := R) r.unop)\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def) IsLocalizedModule\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 236,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '(class|def) IsLocalizedModule' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/Basic.lean:547\\n    @[mk_iff] class IsLocalizedModule (S : Submonoid R) (f : M →ₗ[R] M') : Prop where\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean\", \"line\": 547, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4727,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/LocalizedModule/Basic.lean  (lines 547–626 of 1472):\\n   547  @[mk_iff] class IsLocalizedModule (S : Submonoid R) (f : M →ₗ[R] M') : Prop where\\n   548    map_units : ∀ x : S, IsUnit (algebraMap R (Module.End R M') x)\\n   549    surj (S f) : ∀ y : M', ∃ x : M × S, x.2 • y = f x.1\\n   550    exists_of_eq : ∀ {x₁ x₂}, f x₁ = f x₂ → ∃ c : S, c • x₁ = c • x₂\\n   551  \\n   552  attribute [nolint docBlame] IsLocalizedModule.map_units IsLocalizedModule.surj\\n   553    IsLocalizedModule.exists_of_eq\\n   554  \\n   555  lemma IsLocalizedModule.eq_iff_exists [IsLocalizedModule S f] {x₁ x₂} :\\n   556      f x₁ = f x₂ ↔ ∃ c : S, c • x₁ = c • x₂ :=\\n   557    Iff.intro exists_of_eq fun ⟨c, h⟩ ↦ by\\n   558      apply_fun f at h\\n   559      simp_rw [f.map_smul_of_tower, Submonoid.smul_def, ← Module.algebraMap_end_apply R R] at h\\n   560      exact ((Module.End.isUnit_iff _).mp <| map_units f c).1 h\\n   561  \\n   562  lemma IsLocalizedModule.injective_iff_isRegular [IsLocalizedModule S f] :\\n   563      Function.Injective f ↔ ∀ c : S, IsSMulRegular M c := by\\n   564    simp_rw [IsSMulRegular, Function.Injective, eq_iff_exists S, exists_imp, forall_comm (α := S)]\\n   565  \\n   566  instance IsLocalizedModule.of_linearEquiv (e : M' ≃ₗ[R] M'') [hf : IsLocalizedModule S f] :\\n   567      IsLocalizedModule S (e ∘ₗ f : M →ₗ[R] M'') where\\n   568    map_units s := by\\n   569      rw [show algebraMap R (Module.End R M'') s = e ∘ₗ (algebraMap R (Module.End R M') s) ∘ₗ e.symm\\n   570        by ext; simp, Module.End.isUnit_iff, LinearMap.coe_comp, LinearMap.coe_comp,\\n   571        LinearEquiv.coe_coe, LinearEquiv.coe_coe, EquivLike.comp_bijective, EquivLike.bijective_comp]\\n   572      exact (Module.End.isUnit_iff _).mp <| hf.map_units s\\n   573    surj x := by\\n   574      obtain ⟨p, h⟩ := hf.surj (e.symm x)\\n   575      exact ⟨p, by rw [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, ← e.congr_arg h,\\n   576        Submonoid.smul_def, Submonoid.smul_def, map_smul, LinearEquiv.apply_symm_apply]⟩\\n   577    exists_of_eq h := by\\n   578      simp_rw [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply,\\n   579        EmbeddingLike.apply_eq_iff_eq] at h\\n   580      exact hf.exists_of_eq h\\n   581  \\n   582  instance IsLocalizedModule.of_linearEquiv_right (e : M'' ≃ₗ[R] M) [hf : IsLocalizedModule S f] :\\n   583      IsLocalizedModule S (f ∘ₗ e : M'' →ₗ[R] M') where\\n   584    map_units s := hf.map_units s\\n   585    surj x := by\\n   586      obtain ⟨⟨p, s⟩, h⟩ := hf.surj x\\n   587      exact ⟨⟨e.symm p, s⟩, by simpa using h⟩\\n   588    exists_of_eq h := by\\n   589      simp_rw [LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply] at h\\n   590      obtain ⟨c, hc⟩ := hf.exists_of_eq h\\n   591      exact ⟨c, by simpa only [Submonoid.smul_def, map_smul, e.symm_apply_apply]\\n   592        using congr(e.symm $hc)⟩\\n   593  \\n   594  lemma IsLocalizedModule.comp_iff_of_bijective_left {f : M →ₗ[R] M'} (e : M' →ₗ[R] M'')\\n   595      (he : Function.Bijective e) :\\n   596      IsLocalizedModule S (e ∘ₗ f) ↔ IsLocalizedModule S f := by\\n   597    refine ⟨fun h ↦ ?_, fun h ↦ .of_linearEquiv _ _ (.ofBijective _ he)⟩\\n   598    have : (LinearEquiv.ofBijective _ he).symm.toLinearMap ∘ₗ e ∘ₗ f = f := by ext; simp\\n   599    rw [← this]\\n   600    exact .of_linearEquiv _ _ _\\n   601  \\n   602  lemma IsLocalizedModule.comp_iff_of_bijective_right (e : M →ₗ[R] M') {f : M' →ₗ[R] M''}\\n   603      (he : Function.Bijective e) :\\n   604      IsLocalizedModule S (f ∘ₗ e) ↔ IsLocalizedModule S f := by\\n   605    refine ⟨fun h ↦ ?_, fun h ↦ .of_linearEquiv_right _ _ (.ofBijective _ he)⟩\\n   606    have : (f ∘ₗ e) ∘ₗ (LinearEquiv.ofBijective _ he).symm.toLinearMap = f := by ext; simp\\n   607    rw [← this]\\n   608    exact .of_linearEquiv_right _ _ _\\n   609  \\n   610  variable (M) in\\n   611  lemma isLocalizedModule_id (R') [CommSemiring R'] [Algebra R R'] [IsLocalization S R'] [Module R' M]\\n   612 "
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Module.*lift.*exist\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Module.*lift.*exist' under Mathlib/.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*lift.*locali\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 212,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem.*lift.*locali' (via ripgrep):\\n- Mathlib/GroupTheory/MonoidLocalization/Maps.lean:115\\n    theorem lift_localizationMap_mk' (g : S.LocalizationMap P) (x y) :\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Presentation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2395,
+   "result_head": "[{\"type\": \"text\", \"text\": \"914 match(es) for 'Presentation' (via ripgrep):\\n- Mathlib/AlgebraicTopology/SimplexCategory/GeneratorsRelations/Basic.lean:10\\n    /-! # Presentation of the simplex category by generators and relations.\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:8\\n    public import Mathlib.Algebra.Module.Presentation.Basic\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:12\\n    # Presentation of the tensor product of two modules\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:67\\n    variable {solution₁ solution₂} (h₁ : solution₁.IsPresentation) (h₂ : solution₂.IsPresentation)\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:72\\n    noncomputable def isPresentationCoreTensor :\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:73\\n    Solution.IsPresentationCore.{w} (solution₁.tensor solution₂) where\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:98\\n    lemma IsPresentation.tensor : (solution₁.tensor solution₂).IsPresentation :=\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:99\\n    (isPresentationCoreTensor h₁ h₂).isPresentation\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:105\\n    namespace Presentation\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:107\\n    variable (pres₁ : Presentation.{w₁₀, w₁₁} A M₁) (pres₂ : Presentation.{w₂₀, w₂₁} A M₂)\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:112\\n    noncomputable def tensor : Presentation A (M₁ ⊗[A] M₂) where\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:117\\n    toIsPresentation := pres₁.toIsPresentation.tensor pres₂.toIsPresentation\\n- Mathlib/Algebra/Module/Presentation/Tensor.lean:119\\n    end Presentation\\n- Mathlib/Algebra/Module/Presentation/Free.lean:8\\n    public import Mathlib.Algebra.Module.Presentation.Basic\\n- Mathlib/Algebra/Module/Presentation/Free.lean:14\\n    # Presentation of free modules\\n- Mathlib/Algebra/Module/Presentation/Free.lean:46\\n    noncomputable def solutionFinsupp.isPresentationCore :\\n- Mathlib/Algebra/Module/Presentation/Free.lean:47\\n    Solution.IsPresentationCore.{w} relations.solutionFinsupp where\\n- Mathlib/Algebra/Module/Presentation/Free.lean:52\\n    lemma solutionFinsupp_isPresentation :\\n- Mathlib/Algebra/Module/Presentation/Free.lean:53\\n    relations.solutionFinsupp.IsPresentation :=\\n- Mathlib/Algebra/Module/Presentation/Free.lean:54\\n    (solutionFinsupp.isPresentationCore relations).isPresentation\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/Presentation/Basic.lean\", \"line\": 1, \"n\": 120}",
+   "ok": true,
+   "result_chars": 5714,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/Presentation/Basic.lean  (lines 1–120 of 516):\\n     1  /-\\n     2  Copyright (c) 2024 Joël Riou. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Joël Riou\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Exact.Basic\\n     9  public import Mathlib.Algebra.Module.ULift\\n    10  public import Mathlib.LinearAlgebra.Quotient.Basic\\n    11  public import Mathlib.LinearAlgebra.Finsupp.LinearCombination\\n    12  \\n    13  /-!\\n    14  # Presentations of modules\\n    15  \\n    16  Given a ring `A`, we introduce a structure `Relations A` which\\n    17  contains the data that is necessary to define a module by generators and relations.\\n    18  A term `relations : Relations A` involves two index types: a type `G` for the\\n    19  generators and a type `R` for the relations. The relation attached to `r : R` is\\n    20  an element `G →₀ A` which expresses the coefficients of the expected linear relation.\\n    21  \\n    22  One may think of `relations : Relations A` as a particular shape for systems of\\n    23  linear equations in any `A`-module `M`. Each `g : G` can be thought of as a\\n    24  variable (in `M`) and each `r : R` specifies a linear relation that these\\n    25  variables should satisfy. This way, we get a type `relations.Solution M`.\\n    26  Then, if `solution : relations.Solution M`, we introduce the predicate\\n    27  `solution.IsPresentation` which asserts that `solution` is the universal\\n    28  solution to the given equations, i.e. `solution` gives a presentation\\n    29  of `M` by generators and relations.\\n    30  \\n    31  Given an `A`-module `M`, we also introduce the type `Presentation A M` which\\n    32  contains all the data and properties involved in a presentation of `M` by\\n    33  generators and relations.\\n    34  \\n    35  ## TODO\\n    36  * Relate this to `Module.FinitePresentation`\\n    37  * Behaviour of presentations with respect to the extension of scalars and the restriction of scalars\\n    38  \\n    39  -/\\n    40  \\n    41  @[expose] public noncomputable section\\n    42  \\n    43  assert_not_exists Cardinal\\n    44  \\n    45  universe w' w'' w₀ w₁ v'' v' v u\\n    46  \\n    47  namespace Module\\n    48  \\n    49  variable (A : Type u) [Ring A]\\n    50  \\n    51  set_option linter.checkUnivs false in\\n    52  /-- Given a ring `A`, this structure involves a family of elements (indexed by a type `R`)\\n    53  in a free module `G →₀ A`. This allows to define an `A`-module by generators and relations,\\n    54  see `Relations.Quotient`. -/\\n    55  structure Relations where\\n    56    /-- the index type for generators -/\\n    57    G : Type w₀\\n    58    /-- the index type for relations -/\\n    59    R : Type w₁\\n    60    /-- the coefficients of the linear relations that are expected between the generators -/\\n    61    relation (r : R) : G →₀ A\\n    62  \\n    63  namespace Relations\\n    64  \\n    65  variable {A} (relations : Relations.{w₀, w₁} A)\\n    66  \\n    67  /-- The module that is presented by generators and relations given by `relations : Relations A`.\\n    68  This is the quotient of the free `A`-module on `relations.G` by the submodule generated by\\n    69  the given relations. -/\\n    70  def Quotient := (relations.G →₀ A) ⧸ Submodule.span A (Set.range relations.relation)\\n    71  deriving AddCommGroup, Module A\\n    72  \\n    73  /-- The canonical (surjective) linear map `(relations.G →₀ A) →ₗ[A] relations.Quotient`. -/\\n    74  def toQuotient : (relations.G →₀ A) →ₗ[A] relations.Quotient := Submodule.mkQ _\\n    75  \\n    76  variable {relations} in\\n    77  @[ext]\\n    78  lemma Quotient.linearMap_ext {M : Type v} [AddCommGroup M] [Module A M]\\n    79      {f f' : relations.Quotient →ₗ[A] M}\\n    80      (h : ∀ (g : relations.G), f (relations.toQuotient (Finsupp.single g 1)) =\\n    81        f' (relations.toQuotient (Finsupp.single g 1))) :\\n  "
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FinitePresentation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2656,
+   "result_head": "[{\"type\": \"text\", \"text\": \"353 match(es) for 'FinitePresentation' (via ripgrep):\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:9\\n    public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:266\\n    LocallyOfFinitePresentation f := by\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:270\\n    exact Algebra.FinitePresentation.of_finiteType.mp (f.finiteType_appLE hU hV hUV)\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:272\\n    lemma LocallyOfFinitePresentation.iff_locallyOfFiniteType {X Y : Scheme} {f : X ⟶ Y}\\n- Mathlib/AlgebraicGeometry/Noetherian.lean:273\\n    [IsLocallyNoetherian Y] : LocallyOfFinitePresentation f ↔ LocallyOfFiniteType f :=\\n- Mathlib/AlgebraicGeometry/AffineSpace.lean:369\\n    instance [Finite n] : LocallyOfFinitePresentation (𝔸(n; S) ↘ S) :=\\n- Mathlib/AlgebraicGeometry/AffineSpace.lean:373\\n    MorphismProperty.cancel_right_of_respectsIso (P := @LocallyOfFinitePresentation),\\n- Mathlib/AlgebraicGeometry/AffineSpace.lean:374\\n    HasRingHomProperty.Spec_iff (P := @LocallyOfFinitePresentation), RingHom.FinitePresentation]\\n- Mathlib/AlgebraicGeometry/AffineSpace.lean:375\\n    convert! (inferInstance : Algebra.FinitePresentation (ULift ℤ) ℤ[n])\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:8\\n    public import Mathlib.Algebra.Module.FinitePresentation\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:450\\n    have : Module.FinitePresentation S (Localization.AtPrime p) :=\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:8\\n    public import Mathlib.Algebra.Category.Ring.FinitePresentation\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:11\\n    public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1156\\n    section LocallyOfFinitePresentation\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1161\\n    /-- See `Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation` for the general case. -/\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1162\\n    private nonrec lemma Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation_of_isAffine\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1163\\n    [IsCofiltered I] [LocallyOfFinitePresentation f]\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1216\\n    (HasRingHomProperty.Spec_iff.mp ‹LocallyOfFinitePresentation (Spec.map φ)›) ψ fun i ↦ by\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1230\\n    lemma Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation\\n- Mathlib/AlgebraicGeometry/AffineTransitionLimit.lean:1231\\n    [IsCofiltered I] [LocallyOfFinitePresentation f]\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(class|def) FinitePresentation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 299,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(class|def) FinitePresentation' (via ripgrep):\\n- Mathlib/RingTheory/FinitePresentation.lean:393\\n    def FinitePresentation (f : A →+* B) : Prop :=\\n- Mathlib/RingTheory/FinitePresentation.lean:517\\n    def FinitePresentation (f : A →ₐ[R] B) : Prop :=\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Module\\\\.FinitePresentation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1315,
+   "result_head": "[{\"type\": \"text\", \"text\": \"81 match(es) for 'Module\\\\\\\\.FinitePresentation' (via ripgrep):\\n- Mathlib/Algebra/Module/Presentation/Basic.lean:36\\n    * Relate this to `Module.FinitePresentation`\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:9\\n    public import Mathlib.Algebra.Module.FinitePresentation\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:14\\n    A module is finitely presented (in the sense of `Module.FinitePresentation`) iff\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:36\\n    Module.FinitePresentation A M :=\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:44\\n    Module.FinitePresentation A M ↔\\n- Mathlib/Algebra/Module/Presentation/Finite.lean:53\\n    (Module.FinitePresentation.fg_ker (Finsupp.linearCombination A var) (by\\n- Mathlib/Algebra/Module/FinitePresentation.lean:22\\n    - `Module.FinitePresentation`: A module is finitely presented if it is generated by some\\n- Mathlib/Algebra/Module/FinitePresentation.lean:33\\n    - `Module.FinitePresentation.fg_ker`: If `M` is f.g., `N` is f.p., then `K` is f.g.\\n- Mathlib/Algebra/Module/FinitePresentation.lean:37\\n    - `Module.FinitePresentation.isLocalizedModule_map`: If `M` and `N` are `R`-modules and `M` is f.p.,\\n- Mathlib/Algebra/Module/FinitePresentation.lean:69\\n    class Module.FinitePresentation : Prop where\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 1, \"n\": 150}",
+   "ok": true,
+   "result_chars": 5685,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 1–120 of 655):\\n     1  /-\\n     2  Copyright (c) 2024 Andrew Yang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Andrew Yang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.LinearAlgebra.FreeModule.Finite.Basic\\n     9  public import Mathlib.LinearAlgebra.Isomorphisms\\n    10  public import Mathlib.LinearAlgebra.TensorProduct.RightExactness\\n    11  public import Mathlib.RingTheory.Finiteness.Projective\\n    12  public import Mathlib.RingTheory.Localization.BaseChange\\n    13  public import Mathlib.RingTheory.Noetherian.Basic\\n    14  public import Mathlib.RingTheory.TensorProduct.Finite\\n    15  \\n    16  /-!\\n    17  \\n    18  # Finitely Presented Modules\\n    19  \\n    20  ## Main definition\\n    21  \\n    22  - `Module.FinitePresentation`: A module is finitely presented if it is generated by some\\n    23    finite set `s` and the kernel of the presentation `Rˢ → M` is also finitely generated.\\n    24  \\n    25  ## Main results\\n    26  \\n    27  - `Module.finitePresentation_iff_finite`: If `R` is Noetherian, then f.p. iff f.g. on `R`-modules.\\n    28  \\n    29  Suppose `0 → K → M → N → 0` is an exact sequence of `R`-modules.\\n    30  \\n    31  - `Module.finitePresentation_of_surjective`: If `M` is f.p., `K` is f.g., then `N` is f.p.\\n    32  \\n    33  - `Module.FinitePresentation.fg_ker`: If `M` is f.g., `N` is f.p., then `K` is f.g.\\n    34  \\n    35  - `Module.finitePresentation_of_ker`: If `N` and `K` is f.p., then `M` is also f.p.\\n    36  \\n    37  - `Module.FinitePresentation.isLocalizedModule_map`: If `M` and `N` are `R`-modules and `M` is f.p.,\\n    38    and `S` is a submonoid of `R`, then `Hom(Mₛ, Nₛ)` is the localization of `Hom(M, N)`.\\n    39  \\n    40  \\n    41  Also the instances finite + free => f.p. => finite are also provided\\n    42  \\n    43  ## TODO\\n    44  Suppose `S` is an `R`-algebra, `M` is an `S`-module. Then\\n    45  1. If `S` is f.p., then `M` is `R`-f.p. implies `M` is `S`-f.p.\\n    46  2. If `S` is both f.p. (as an algebra) and finite (as a module),\\n    47     then `M` is `S`-fp implies that `M` is `R`-f.p.\\n    48  3. If `S` is f.p. as a module, then `S` is f.p. as an algebra.\\n    49  \\n    50  In particular,\\n    51  4. `S` is f.p. as an `R`-module iff it is f.p. as an algebra and is finite as a module.\\n    52  \\n    53  \\n    54  For finitely presented algebras, see `Algebra.FinitePresentation`\\n    55  in file `Mathlib/RingTheory/FinitePresentation.lean`.\\n    56  -/\\n    57  \\n    58  @[expose] public section\\n    59  \\n    60  open Finsupp\\n    61  \\n    62  section Semiring\\n    63  variable (R M) [Semiring R] [AddCommMonoid M] [Module R M]\\n    64  \\n    65  /--\\n    66  A module is finitely presented if it is finitely generated by some set `s`\\n    67  and the kernel of the presentation `Rˢ → M` is also finitely generated.\\n    68  -/\\n    69  class Module.FinitePresentation : Prop where\\n    70    out : ∃ (s : Finset M), Submodule.span R (s : Set M) = ⊤ ∧\\n    71      (LinearMap.ker (Finsupp.linearCombination R ((↑) : s → M))).FG\\n    72  \\n    73  instance (priority := 100) [h : Module.FinitePresentation R M] : Module.Finite R M := by\\n    74    obtain ⟨s, hs₁, _⟩ := h\\n    75    exact ⟨s, hs₁⟩\\n    76  \\n    77  end Semiring\\n    78  \\n    79  section Ring\\n    80  \\n    81  section\\n    82  \\n    83  universe u v\\n    84  variable (R : Type u) (M : Type*) [Ring R] [AddCommGroup M] [Module R M]\\n    85  \\n    86  theorem Module.FinitePresentation.exists_fin [fp : Module.FinitePresentation R M] :\\n    87      ∃ (n : ℕ) (K : Submodule R (Fin n → R)) (_ : M ≃ₗ[R] (Fin n → R) ⧸ K), K.FG := by\\n    88    have ⟨ι, ⟨hι₁, hι₂⟩⟩ := fp\\n    89    refine ⟨_, LinearMap.ker (linearCombination R Subtype.val ∘ₗ\\n    90      (lcongr ι.equivFin (.refl ..) ≪≫ₗ linearEquivFunOnFinite R R _).symm.toLinearMap),\\n    91      (Li"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"isLocalizedModule_map\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 791,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'isLocalizedModule_map' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:37\\n    - `Module.FinitePresentation.isLocalizedModule_map`: If `M` and `N` are `R`-modules and `M` is f.p.,\\n- Mathlib/Algebra/Module/FinitePresentation.lean:546\\n    instance Module.FinitePresentation.isLocalizedModule_map [Module.FinitePresentation R M] :\\n- Mathlib/Algebra/Module/FinitePresentation.lean:569\\n    instance Module.FinitePresentation.isLocalizedModule_mapExtendScalars\\n- Mathlib/Algebra/Module/FinitePresentation.lean:578\\n    Module.FinitePresentation.isLocalizedModule_mapExtendScalars _ _ _ _\\n- Mathlib/RingTheory/Etale/Kaehler.lean:63\\n    instance KaehlerDifferential.isLocalizedModule_map (M : Submonoid S) [IsLocalization M T] :\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 546, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3039,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 546–595 of 655):\\n   546  instance Module.FinitePresentation.isLocalizedModule_map [Module.FinitePresentation R M] :\\n   547      IsLocalizedModule S (IsLocalizedModule.map S f g) := by\\n   548    constructor\\n   549    · intro s\\n   550      rw [Module.End.isUnit_iff]\\n   551      have := (Module.End.isUnit_iff _).mp (IsLocalizedModule.map_units (S := S) (f := g) s)\\n   552      constructor\\n   553      · exact fun _ _ e ↦ LinearMap.ext fun m ↦ this.left (LinearMap.congr_fun e m)\\n   554      · intro h\\n   555        use ((IsLocalizedModule.map_units (S := S) (f := g) s).unit⁻¹).1 ∘ₗ h\\n   556        ext x\\n   557        exact Module.End.isUnit_apply_inv_apply_of_isUnit\\n   558          (IsLocalizedModule.map_units (S := S) (f := g) s) (h x)\\n   559    · intro h\\n   560      obtain ⟨h', s, e⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S g (h ∘ₗ f)\\n   561      refine ⟨⟨h', s⟩, ?_⟩\\n   562      apply IsLocalizedModule.ext S f (IsLocalizedModule.map_units g)\\n   563      refine e.symm.trans (by ext; simp)\\n   564    · intro h₁ h₂ e\\n   565      apply Module.Finite.exists_smul_of_comp_eq_of_isLocalizedModule S g\\n   566      ext x\\n   567      simpa using LinearMap.congr_fun e (f x)\\n   568  \\n   569  instance Module.FinitePresentation.isLocalizedModule_mapExtendScalars\\n   570      (Rₛ) [CommRing Rₛ] [Algebra R Rₛ] [Module Rₛ M'] [Module Rₛ N']\\n   571      [IsScalarTower R Rₛ M'] [IsScalarTower R Rₛ N'] [IsLocalization S Rₛ]\\n   572      [Module.FinitePresentation R M] :\\n   573      IsLocalizedModule S (IsLocalizedModule.mapExtendScalars S f g Rₛ) :=\\n   574    IsLocalizedModule.of_linearEquiv _ _ _\\n   575  \\n   576  instance [Module.FinitePresentation R M] :\\n   577      IsLocalizedModule S (LocalizedModule.map S (M := M) (N := N)) :=\\n   578    Module.FinitePresentation.isLocalizedModule_mapExtendScalars _ _ _ _\\n   579  \\n   580  /-- If `M` is a finite `R`-module, and the localization `Mₛ` at some submonoid `S` of `R`\\n   581  is finitely presented, then `Mₛ = M[1/r]` for some `r ∈ S`. -/\\n   582  lemma IsLocalizedModule.exists_isLocalizedModule_powers_of_finitePresentation\\n   583      [Module.Finite R M] [Module.FinitePresentation R M'] :\\n   584      ∃ r ∈ S, IsLocalizedModule.Away r f := by\\n   585    have : IsLocalizedModule S (.id (R := R) (M := M')) :=\\n   586      ⟨IsLocalizedModule.map_units f, fun y ↦ ⟨⟨y, 1⟩, by simp⟩, by simpa using ⟨1, S.one_mem⟩⟩\\n   587    obtain ⟨r, hrp, H⟩ := exists_bijective_map_powers S\\n   588        f (.id (R := R) (M := M')) f <| by\\n   589      convert! show Function.Bijective LinearMap.id from Function.bijective_id\\n   590      apply IsLocalizedModule.ext S f\\n   591      · exact IsLocalizedModule.map_units f\\n   592      · simp [IsLocalizedModule.map_comp]\\n   593    have hrp' : .powers r ≤ S := by simpa [Submonoid.powers_le]\\n   594    refine ⟨r, hrp, ⟨fun x ↦ IsLocalizedModule.map_units f ⟨x, hrp' x.2⟩, ?_, ?_⟩⟩\\n   595    · intro y\\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"exists_lift_of_isLocalizedModule\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 667,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'exists_lift_of_isLocalizedModule' (via ripgrep):\\n- Mathlib/Algebra/Module/FinitePresentation.lean:361\\n    lemma Module.FinitePresentation.exists_lift_of_isLocalizedModule\\n- Mathlib/Algebra/Module/FinitePresentation.lean:434\\n    obtain ⟨l', s₀, H⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S f\\n- Mathlib/Algebra/Module/FinitePresentation.lean:514\\n    obtain ⟨l', s, H⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S g (l ∘ₗ f)\\n- Mathlib/Algebra/Module/FinitePresentation.lean:560\\n    obtain ⟨h', s, e⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S g (h ∘ₗ f)\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 361, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4707,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 361–440 of 655):\\n   361  lemma Module.FinitePresentation.exists_lift_of_isLocalizedModule\\n   362      [h : Module.FinitePresentation R M] (g : M →ₗ[R] N') :\\n   363      ∃ (h : M →ₗ[R] N) (s : S), f ∘ₗ h = s • g := by\\n   364    obtain ⟨σ, hσ, τ, hτ⟩ := h\\n   365    let π := Finsupp.linearCombination R ((↑) : σ → M)\\n   366    have hπ : Function.Surjective π :=\\n   367      LinearMap.range_eq_top.mp\\n   368        (by rw [range_linearCombination, Subtype.range_val, ← hσ])\\n   369    classical\\n   370    choose s hs using IsLocalizedModule.surj S f\\n   371    let i : σ → N :=\\n   372      fun x ↦ (∏ j ∈ σ.erase x.1, (s (g j)).2) • (s (g x)).1\\n   373    let s₀ := ∏ j ∈ σ, (s (g j)).2\\n   374    have hi : f ∘ₗ Finsupp.linearCombination R i = (s₀ • g) ∘ₗ π := by\\n   375      ext j\\n   376      simp only [LinearMap.coe_comp, Function.comp_apply, Finsupp.lsingle_apply,\\n   377        linearCombination_single, one_smul, LinearMap.map_smul_of_tower, ← hs, LinearMap.smul_apply,\\n   378        i, s₀, π]\\n   379      rw [← mul_smul, Finset.prod_erase_mul]\\n   380      exact j.prop\\n   381    have : ∀ x : τ, ∃ s : S, s • (Finsupp.linearCombination R i x) = 0 := by\\n   382      intro x\\n   383      convert_to ∃ s : S, s • (Finsupp.linearCombination R i x) = s • 0\\n   384      · simp only [smul_zero]\\n   385      apply IsLocalizedModule.exists_of_eq (S := S) (f := f)\\n   386      rw [← LinearMap.comp_apply, map_zero, hi, LinearMap.comp_apply]\\n   387      convert! map_zero (s₀ • g)\\n   388      rw [← LinearMap.mem_ker, ← hτ]\\n   389      exact Submodule.subset_span x.prop\\n   390    choose s' hs' using this\\n   391    let s₁ := ∏ i : τ, s' i\\n   392    have : LinearMap.ker π ≤ LinearMap.ker (s₁ • Finsupp.linearCombination R i) := by\\n   393      rw [← hτ, Submodule.span_le]\\n   394      intro x hxσ\\n   395      simp only [s₁]\\n   396      rw [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.smul_apply,\\n   397        ← Finset.prod_erase_mul _ _ (Finset.mem_univ ⟨x, hxσ⟩), mul_smul]\\n   398      convert! smul_zero _\\n   399      exact hs' ⟨x, hxσ⟩\\n   400    refine ⟨Submodule.liftQ _ _ this ∘ₗ\\n   401      (LinearMap.quotKerEquivOfSurjective _ hπ).symm.toLinearMap, s₁ * s₀, ?_⟩\\n   402    ext x\\n   403    obtain ⟨x, rfl⟩ := hπ x\\n   404    rw [← LinearMap.comp_apply, ← LinearMap.comp_apply, mul_smul, LinearMap.smul_comp, ← hi,\\n   405      ← LinearMap.comp_smul, LinearMap.comp_assoc, LinearMap.comp_assoc]\\n   406    simp\\n   407  \\n   408  lemma Module.Finite.exists_smul_of_comp_eq_of_isLocalizedModule\\n   409      [hM : Module.Finite R M] (g₁ g₂ : M →ₗ[R] N) (h : f.comp g₁ = f.comp g₂) :\\n   410      ∃ (s : S), s • g₁ = s • g₂ := by\\n   411    classical\\n   412    have : ∀ x, ∃ s : S, s • g₁ x = s • g₂ x := fun x ↦\\n   413      IsLocalizedModule.exists_of_eq (S := S) (f := f) (LinearMap.congr_fun h x)\\n   414    choose s hs using this\\n   415    obtain ⟨σ, hσ⟩ := hM\\n   416    use σ.prod s\\n   417    rw [← sub_eq_zero, ← LinearMap.ker_eq_top, ← top_le_iff, ← hσ, Submodule.span_le]\\n   418    intro x hx\\n   419    simp only [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply,\\n   420      sub_eq_zero, ← Finset.prod_erase_mul σ s hx, mul_smul, hs]\\n   421  \\n   422  variable {M' : Type*} [AddCommGroup M'] [Module R M'] (f : M →ₗ[R] M') [IsLocalizedModule S f]\\n   423  variable {N' : Type*} [AddCommGroup N'] [Module R N'] (g : N →ₗ[R] N') [IsLocalizedModule S g]\\n   424  \\n   425  /--\\n   426  Let `M` be a finite `R`-module, and `N` be a finitely presented `R`-module.\\n   427  If `l : M →ₗ[R] N` is a linear map whose localization at `S : Submonoid R` is bijective,\\n   428  then `l` is already bijective under the localization at some `r ∈ S`.\\n   429  -/\\n   430  lemma exists_bijective_map_powers [Module.Finite R M] [Module.FinitePresentation R N]\\n   431      (l : M →ₗ[R] N) (hf : Function.Bijective (IsLocalizedModule.map S f g l)) :\\n "
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Module/FinitePresentation.lean\", \"line\": 500, \"n\": 70}",
+   "ok": true,
+   "result_chars": 4587,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Module/FinitePresentation.lean  (lines 500–569 of 655):\\n   500  Let `M` `N` be a finitely presented `R`-modules.\\n   501  Any `Mₛ ≃ₗ[R] Nₛ` between the localizations at `S : Submonoid R` can be lifted to an\\n   502  isomorphism between `Mᵣ ≃ₗ[R] Nᵣ` for some `r ∈ S`.\\n   503  -/\\n   504  lemma Module.FinitePresentation.exists_lift_equiv_of_isLocalizedModule\\n   505      [Module.FinitePresentation R M] [Module.FinitePresentation R N]\\n   506      (l : M' ≃ₗ[R] N') :\\n   507      ∃ (r : R) (hr : r ∈ S)\\n   508        (l' : LocalizedModule.Away r M ≃ₗ[Localization (.powers r)]\\n   509          LocalizedModule.Away r N),\\n   510        (LocalizedModule.lift (.powers r) g fun s ↦ map_units g ⟨s.1, SetLike.le_def.mp\\n   511          (Submonoid.powers_le.mpr hr) s.2⟩) ∘ₗ l'.toLinearMap =\\n   512          l ∘ₗ (LocalizedModule.lift (.powers r) f fun s ↦ map_units f ⟨s.1, SetLike.le_def.mp\\n   513          (Submonoid.powers_le.mpr hr) s.2⟩) := by\\n   514    obtain ⟨l', s, H⟩ := Module.FinitePresentation.exists_lift_of_isLocalizedModule S g (l ∘ₗ f)\\n   515    have : Function.Bijective (IsLocalizedModule.map S f g l') := by\\n   516      have : IsLocalizedModule.map S f g l' = (s • LinearMap.id) ∘ₗ l := by\\n   517        apply IsLocalizedModule.ext S f (IsLocalizedModule.map_units g)\\n   518        apply LinearMap.ext fun x ↦ ?_\\n   519        simp only [LinearMap.coe_comp, Function.comp_apply, IsLocalizedModule.map_apply]\\n   520        rw [← LinearMap.comp_apply, H]\\n   521        simp\\n   522      rw [this]\\n   523      exact ((Module.End.isUnit_iff _).mp (IsLocalizedModule.map_units g s)).comp l.bijective\\n   524    obtain ⟨r, hr, hr'⟩ := exists_bijective_map_powers S f g _ this\\n   525    let rs : Submonoid R := (.powers <| r * s)\\n   526    let Rᵣₛ := Localization rs\\n   527    have hsu : IsUnit (algebraMap R Rᵣₛ s) := isUnit_of_dvd_unit\\n   528        (hu := IsLocalization.map_units (M := rs) Rᵣₛ ⟨_, Submonoid.mem_powers _⟩)\\n   529        (map_dvd (algebraMap R Rᵣₛ) ⟨r, mul_comm _ _⟩)\\n   530    have : Function.Bijective ((hsu.unit⁻¹).1 • LocalizedModule.map rs l') :=\\n   531      ((Module.End.isUnit_iff _).mp ((hsu.unit⁻¹).isUnit.map (algebraMap _ (End Rᵣₛ\\n   532        (LocalizedModule rs N))))).comp (hr' (r * s) (dvd_mul_right _ _))\\n   533    refine ⟨r * s, mul_mem hr s.2, LinearEquiv.ofBijective _ this, ?_⟩\\n   534    apply IsLocalizedModule.ext rs (LocalizedModule.mkLinearMap rs M) fun x ↦ map_units g\\n   535      ⟨x.1, SetLike.le_def.mp (Submonoid.powers_le.mpr (mul_mem hr s.2)) x.2⟩\\n   536    ext x\\n   537    apply ((Module.End.isUnit_iff _).mp (IsLocalizedModule.map_units g s)).1\\n   538    have : ∀ x, g (l' x) = s.1 • (l (f x)) := LinearMap.congr_fun H\\n   539    simp only [rs, LinearMap.coe_comp, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe,\\n   540      Function.comp_apply, LocalizedModule.mkLinearMap_apply, LinearEquiv.ofBijective_apply,\\n   541      LinearMap.smul_apply, LocalizedModule.map_mk, algebraMap_end_apply]\\n   542    rw [← map_smul, ← smul_assoc, Algebra.smul_def s.1, hsu.mul_val_inv, one_smul]\\n   543    simp only [LocalizedModule.lift_mk, OneMemClass.coe_one, map_one, IsUnit.unit_one,\\n   544      inv_one, Units.val_one, Module.End.one_apply, this]\\n   545  \\n   546  instance Module.FinitePresentation.isLocalizedModule_map [Module.FinitePresentation R M] :\\n   547      IsLocalizedModule S (IsLocalizedModule.map S f g) := by\\n   548    constructor\\n   549    · intro s\\n   550      rw [Module.End.isUnit_iff]\\n   551      have := (Module.End.isUnit_iff _).mp (IsLocalizedModule.map_units (S := S) (f := g) s)\\n   552      constructor\\n   553      · exact fun _ _ e ↦ LinearMap.ext fun m ↦ this.left (LinearMap.congr_fun e m)\\n   554      · intro h\\n   555        use ((IsLocalizedModule.map_units (S := S) (f := g) s).unit⁻¹).1 ∘ₗ h\\n   556        ext x\\n   557        exact Module.End.isUnit_apply_inv_apply_of_isUnit\\n   558          (IsLocalizedModule.map_units"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(def|theorem).*LocalizedModule\\\\.map\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 502,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for '(def|theorem).*LocalizedModule\\\\\\\\.map' (via ripgrep):\\n- Mathlib/Algebra/Module/LocalizedModule/Exact.lean:56\\n    theorem IsLocalizedModule.map_exact (g : M₀ →ₗ[R] M₁) (h : M₁ →ₗ[R] M₂) (ex : Function.Exact g h) :\\n- Mathlib/RingTheory/Localization/BaseChange.lean:226\\n    theorem IsLocalizedModule.map_linearCombination {α : Type*} {v : α → M} [IsLocalizedModule S f] :\\n- Mathlib/RingTheory/Localization/Module.lean:299\\n    def LocalizedModule.map :\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/Localization/Module.lean\", \"line\": 299, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3323,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/Localization/Module.lean  (lines 299–358 of 369):\\n   299  def LocalizedModule.map :\\n   300      (M →ₗ[R] N) →ₗ[R] (LocalizedModule S M →ₗ[Localization S] LocalizedModule S N) :=\\n   301    IsLocalizedModule.mapExtendScalars S (LocalizedModule.mkLinearMap S M)\\n   302      (LocalizedModule.mkLinearMap S N) (Localization S)\\n   303  \\n   304  @[simp]\\n   305  lemma LocalizedModule.map_mk (f : M →ₗ[R] N) (x y) :\\n   306      map S f (.mk x y) = LocalizedModule.mk (f x) y := by\\n   307    rw [IsLocalizedModule.mk_eq_mk', IsLocalizedModule.mk_eq_mk']\\n   308    exact IsLocalizedModule.map_mk' _ _ _ _ _ _\\n   309  \\n   310  @[simp]\\n   311  lemma LocalizedModule.map_id :\\n   312      LocalizedModule.map S (.id (R := R) (M := M)) = LinearMap.id :=\\n   313    LinearMap.ext fun x ↦ LinearMap.congr_fun (IsLocalizedModule.map_id S (mkLinearMap S M)) x\\n   314  \\n   315  lemma LocalizedModule.map_injective (l : M →ₗ[R] N) (hl : Function.Injective l) :\\n   316      Function.Injective (map S l) :=\\n   317    IsLocalizedModule.map_injective S (mkLinearMap S M) (mkLinearMap S N) l hl\\n   318  \\n   319  lemma LocalizedModule.map_surjective (l : M →ₗ[R] N) (hl : Function.Surjective l) :\\n   320      Function.Surjective (map S l) :=\\n   321    IsLocalizedModule.map_surjective S (mkLinearMap S M) (mkLinearMap S N) l hl\\n   322  \\n   323  lemma LocalizedModule.restrictScalars_map_eq {M' N' : Type*} [AddCommMonoid M'] [AddCommMonoid N']\\n   324      [Module R M'] [Module R N'] (g₁ : M →ₗ[R] M') (g₂ : N →ₗ[R] N')\\n   325      [IsLocalizedModule S g₁] [IsLocalizedModule S g₂]\\n   326      (l : M →ₗ[R] N) :\\n   327      (map S l).restrictScalars R = (IsLocalizedModule.iso S g₂).symm ∘ₗ\\n   328        IsLocalizedModule.map S g₁ g₂ l ∘ₗ IsLocalizedModule.iso S g₁ := by\\n   329    rw [LinearEquiv.eq_toLinearMap_symm_comp, ← LinearEquiv.comp_toLinearMap_symm_eq]\\n   330    apply IsLocalizedModule.linearMap_ext S g₁ g₂\\n   331    rw [LinearMap.comp_assoc, IsLocalizedModule.iso_symm_comp]\\n   332    ext\\n   333    simp\\n   334  \\n   335  variable {S} in\\n   336  lemma LocalizedModule.coe_map_eq {M' N' : Type*} [AddCommMonoid M'] [AddCommMonoid N']\\n   337      [Module R M'] [Module R N'] (g₁ : M →ₗ[R] M') (g₂ : N →ₗ[R] N')\\n   338      [IsLocalizedModule S g₁] [IsLocalizedModule S g₂] (l : M →ₗ[R] N) :\\n   339      ⇑(map S l) = (IsLocalizedModule.iso S g₂).symm ∘\\n   340        IsLocalizedModule.map S g₁ g₂ l ∘ IsLocalizedModule.iso S g₁ := by\\n   341    rw [← LinearMap.coe_restrictScalars R, restrictScalars_map_eq _ g₁ g₂ l]\\n   342    simp\\n   343  \\n   344  end LocalizedModule\\n   345  \\n   346  namespace IsLocalizedModule\\n   347  \\n   348  variable {R M N M' N' : Type*} [CommSemiring R] {S : Submonoid R}\\n   349    [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]\\n   350    [AddCommMonoid M'] [Module R M'] [AddCommMonoid N'] [Module R N']\\n   351    (g₁ : M →ₗ[R] M') (g₂ : N →ₗ[R] N')\\n   352    [IsLocalizedModule S g₁] [IsLocalizedModule S g₂] {l : M →ₗ[R] N}\\n   353  \\n   354  lemma map_injective_iff_localizedModuleMap_injective :\\n   355      Function.Injective (IsLocalizedModule.map S g₁ g₂ l) ↔\\n   356        Function.Injective (LocalizedModule.map S l) := by\\n   357    simp [LocalizedModule.coe_map_eq g₁ g₂]\\n   358  \\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*exists.*lift.*surj\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 228,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'lemma.*exists.*lift.*surj' (via ripgrep):\\n- Mathlib/Topology/Category/LightProfinite/Injective.lean:59\\n    lemma exists_lift_of_finite_of_injective_of_surjective {X Y S T : Type*}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Module.FinitePresentation\", \"LocalizedModule\", \"IsLocalizedModule\", \"Submonoid\", \"LinearMap\", \"Function.Surjective\", \"Module.FinitePresentation.exists_lift_of_isLocalizedModule\"]}",
+   "ok": true,
+   "result_chars": 2540,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Module.FinitePresentation\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.FinitePresentation\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.FinitePresentation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/FinitePresentation.html#Module.FinitePresentation\\\"},{\\\"decl\\\":\\\"LocalizedModule\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LocalizedModule.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.LocalizedModule.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LocalizedModule/Basic.html#LocalizedModule\\\"},{\\\"decl\\\":\\\"IsLocalizedModule\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LocalizedModule.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.LocalizedModule.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LocalizedModule/Basic.html#IsLocalizedModule\\\"},{\\\"decl\\\":\\\"Submonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Submonoid/Defs.html#Submonoid\\\"},{\\\"decl\\\":\\\"LinearMap\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.LinearMap.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/LinearMap/Defs.html#LinearMap\\\"},{\\\"decl\\\":\\\"Function.Surjective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Function\\\",\\\"import_line\\\":\\\"import Init.Data.Function\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Function.html#Function.Surjective\\\"},{\\\"decl\\\":\\\"Module.FinitePresentation.exists_lift_of_isLocalizedModule\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Module.FinitePresentation\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.FinitePresentation\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/FinitePresentation.html#Module.FinitePresentation.exists_lift_of_isLocalizedModule\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":7,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LocalizedModule.map\", \"LocalizedModule.map_surjective\"]}",
+   "ok": true,
+   "result_chars": 894,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LocalizedModule.map\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.Module\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.Module\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/Module.html#LocalizedModule.map\\\"},{\\\"decl\\\":\\\"LocalizedModule.map_surjective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.Localization.Module\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.Localization.Module\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/Localization/Module.html#LocalizedModule.map_surjective\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem finitely_presented_lift_surjective_localization\n    [CommRing R]\n    (M : Type*) [AddCommGroup M] [Module R M] [Module.FinitePresentation R M]\n    (N : Type*) [AddCommGroup N] [Module R N]\n    (S : Submonoid R)\n    (f : LocalizedModule S M →ₗ[Localization S] LocalizedModule S N)\n    (hf : Function.Surjective f) :\n    ∃ (h : M →ₗ[R] N), Function.Surjective (LocalizedModule.map S h) := sorry"
+}

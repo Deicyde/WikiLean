@@ -1,0 +1,346 @@
+{
+ "task_id": "fresh_039",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:38:17Z",
+ "wall_s": 161.5,
+ "transcript_stats": {
+  "turns": 38,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 24,
+   "mcp__formal__decl_grep": 6,
+   "mcp__formal__decl_read": 7
+  },
+  "tokens_in": 202,
+  "tokens_out": 8633,
+  "cost_usd": 0.11793019999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"CommGroup\"}",
+   "ok": true,
+   "result_chars": 1109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1227 declarations mentioning CommGroup.\\n- CommGroup   [Mathlib.Algebra.Group.Defs]\\n    A commutative group is a group with commutative `(*)`.   [Wikidata Q181296](https://www.wikidata.org/wiki/Q181296)\\n- CommGroup.toCancelCommMonoid   [Mathlib.Algebra.Group.Defs]\\n- CommGroup.toCommMonoid   [Mathlib.Algebra.Group.Defs]\\n- CommGroup.toDivisionCommMonoid   [Mathlib.Algebra.Group.Defs]\\n- CommGroup.toGroup   [Mathlib.Algebra.Group.Defs]\\n- IsMulCommutative.instCommGroup   [Mathlib.Algebra.Group.Defs]\\n    A `Group` which `IsMulCommutative` is a `CommGroup`.  This is primarily used to deduce the bundled version from the unbundled one for commutative subobjects in \\n- CommGroup.mk   [Mathlib.Algebra.Group.Defs]\\n- CommGroup.mul_comm   [Mathlib.Algebra.Group.Defs]\\n    Multiplication is commutative in a commutative multiplicative magma.\\n- inv_mul_cancel_comm   [Mathlib.Algebra.Group.Defs]\\n- inv_mul_cancel_comm_assoc   [Mathlib.Algebra.Group.Defs]\\n- mul_inv_cancel_comm   [Mathlib.Algebra.Group.Defs]\\n- mul_inv_cancel_comm_assoc   [Mathlib.Algebra.Group.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"torsion subgroup\"}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'torsion subgroup': Unknown identifier `torsion`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.Finite\"}",
+   "ok": true,
+   "result_chars": 1247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1423 declarations mentioning Set.Finite.\\n- Set.Finite   [Mathlib.Data.Finite.Defs]\\n    A set is finite if the corresponding `Subtype` is finite, i.e., if there exists a natural `n : ℕ` and an equivalence `s ≃ Fin n`.\\n- Set.finite_or_infinite   [Mathlib.Data.Finite.Defs]\\n    See also `finite_or_infinite`, `fintypeOrInfinite`.\\n- Set.infinite_or_finite   [Mathlib.Data.Finite.Defs]\\n- Set.toFinite   [Mathlib.Data.Finite.Defs]\\n    Constructor for `Set.Finite` using a `Finite` instance.\\n- Set.Finite.not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the reverse direction of `Set.not_infinite`.\\n- Set.Finite.to_subtype   [Mathlib.Data.Finite.Defs]\\n    Projection of `Set.Finite` to its `Finite` instance. This is intended to be used with dot notation. See also `Set.Finite.Fintype` and `Set.Finite.nonempty_finty\\n- Set.Infinite.not_finite   [Mathlib.Data.Finite.Defs]\\n- Set.finite_coe_iff   [Mathlib.Data.Finite.Defs]\\n- Set.not_finite   [Mathlib.Data.Finite.Defs]\\n- Set.not_infinite   [Mathlib.Data.Finite.Defs]\\n- Equiv.set_finite_iff   [Mathlib.Data.Finite.Defs]\\n- Finite.of_finite_univ   [Mathlib.Data.Set.Finite.Basic]\\n    **Alias** of the forward direction of `Set.finite_univ_iff`.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Subgroup.torsion\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Subgroup.torsion': unknown identifier 'Subgroup.torsion'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddCommGroup.torsion\"}",
+   "ok": true,
+   "result_chars": 1366,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 19 declarations mentioning AddCommGroup.torsion.\\n- AddCommGroup.torsion   [Mathlib.GroupTheory.Torsion]\\n    The torsion additive subgroup of an additive abelian group.\\n- AddCommGroup.add_torsion_eq_add_torsion_submonoid   [Mathlib.GroupTheory.Torsion]\\n    **Alias** of `AddCommGroup.torsion_eq_torsion_addSubmonoid`.  ---  The torsion additive submonoid of an abelian group equals the torsion additive subgroup as an\\n- AddCommGroup.torsion_eq_torsion_addSubmonoid   [Mathlib.GroupTheory.Torsion]\\n    The torsion additive submonoid of an abelian group equals the torsion additive subgroup as an additive submonoid.\\n- AddCommGroup.isAddTorsionFree_iff_torsion_eq_bot   [Mathlib.GroupTheory.Torsion]\\n- AddCommGroup.torsion_eq_top_iff   [Mathlib.GroupTheory.Torsion]\\n- AddCommGroup.mem_torsion   [Mathlib.GroupTheory.Torsion]\\n- AddCommGroup.torsion_sum   [Mathlib.GroupTheory.Torsion]\\n- instModuleQuotientAddSubgroupTorsion   [Mathlib.GroupTheory.Torsion]\\n- AddCommGroup.le_comap_torsion   [Mathlib.GroupTheory.Torsion]\\n- AddCommGroup.map_torsion_le   [Mathlib.GroupTheory.Torsion]\\n- QuotientAddGroup.instIsAddTorsionFree   [Mathlib.GroupTheory.Torsion]\\n    Quotienting an additive group by its torsion additive subgroup yields a torsion-free additive group.\\n- AddCommGroup.freeRank_def   [Mathlib.GroupTheory.Torsion]\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsTorsion\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IsTorsion': unknown identifier 'IsTorsion'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a → ℝ) → Prop\"}",
+   "ok": true,
+   "result_chars": 2560,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 27169 declarations mentioning Real.\\n- IsPowMul   [Mathlib.Data.Real.Basic]\\n    A function `f : R → ℝ` is power-multiplicative if for all `r ∈ R` and all positive `n ∈ ℕ`, `f (r ^ n) = (f r) ^ n`.\\n- RingHom.IsBoundedWrt   [Mathlib.Data.Real.Basic]\\n    A ring homomorphism `f : α →+* β` is bounded with respect to the functions `nα : α → ℝ` and `nβ : β → ℝ` if there exists a positive constant `C` such that for a\\n- BoxIntegral.Prepartition.forall_biUnionTagged   [Mathlib.Analysis.BoxIntegral.Partition.Tagged]\\n- BoxIntegral.TaggedPrepartition.forall_mem_single   [Mathlib.Analysis.BoxIntegral.Partition.Tagged]\\n- AbsolutelyMonotoneOn   [Mathlib.Analysis.Calculus.AbsolutelyMonotone]\\n    A function `f : ℝ → ℝ` is **absolutely monotone on a set `s`** if, heuristically, all iterated derivatives of `f` on `s` are nonnegative. For technical reasons \\n- BumpCovering.exists_isSubordinate_of_prop   [Mathlib.Topology.PartitionOfUnity]\\n    If `X` is a paracompact normal topological space and `U` is an open covering of a closed set `s`, then there exists a `BumpCovering ι X s` that is subordinate t\\n- BumpCovering.exists_isSubordinate_of_locallyFinite_of_prop   [Mathlib.Topology.PartitionOfUnity]\\n    If `X` is a normal topological space and `U i`, `i : ι`, is a locally finite open covering of a closed set `s`, then there exists a `BumpCovering ι X s` that is\\n- BumpCovering.exists_isSubordinate_of_locallyFinite_of_prop_t2space   [Mathlib.Topology.PartitionOfUnity]\\n    If `X` is a locally compact T2 topological space and `U i`, `i : ι`, is a locally finite open covering of a compact set `s`, then there exists a `BumpCovering ι\\n- StrongConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly concave if is strongly concave with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this is \\n- StrongConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is `m`-strongly convex if it is uniformly convex with modulus `φ(r) = m / 2 * r ^ 2`.  In an inner product space, this i\\n- UniformConcaveOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is uniformly concave with modulus `φ` if `t • f x + (1 - t) • f y + t * (1 - t) * φ ‖x - y‖ ≤ f (t • x + (1 - t) • y)` f\\n- UniformConvexOn   [Mathlib.Analysis.Convex.Strong]\\n    A function `f` from a real normed space is uniformly convex with modulus `φ` if `f (t • x + (1 - t) • y) ≤ t • f x + (1 - t) • f y - t * (1 - t) * φ ‖x - y‖` fo\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Int.natAbs\"}",
+   "ok": true,
+   "result_chars": 770,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 411 declarations mentioning Int.natAbs.\\n- Int.natAbs   [Init.Data.Int.Basic]\\n    The absolute value of an integer is its distance from `0`.  This function is overridden by the compiler with an efficient implementation. This definition is the\\n- Int.natAbs_negOfNat   [Init.Data.Int.Order]\\n- Int.natAbs_ofNat'   [Init.Data.Int.Order]\\n- Int.natAbs_negSucc   [Init.Data.Int.Order]\\n- Int.natAbs_cast   [Init.Data.Int.Order]\\n- Int.natAbs_natCast   [Init.Data.Int.Order]\\n- Int.le_natAbs   [Init.Data.Int.Order]\\n- Int.natAbs_neg   [Init.Data.Int.Order]\\n- Int.natAbs_one   [Init.Data.Int.Order]\\n- Int.natAbs_zero   [Init.Data.Int.Order]\\n- Int.eq_natAbs_of_nonneg   [Init.Data.Int.Order]\\n- Int.mul_sign_self   [Init.Data.Int.Order]\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.levelSet\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Set.levelSet': unknown identifier 'Set.levelSet'\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"abs : ℝ → ℝ\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'abs : ℝ → ℝ': <input>:1:4: expected end of input\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finite ?a\"}",
+   "ok": true,
+   "result_chars": 835,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3647 declarations mentioning Finite.\\n- Bool.instFinite   [Mathlib.Data.Finite.Defs]\\n- Prop.instFinite   [Mathlib.Data.Finite.Defs]\\n- finite_or_infinite   [Mathlib.Data.Finite.Defs]\\n- instFinitePLift   [Mathlib.Data.Finite.Defs]\\n- instFiniteULift   [Mathlib.Data.Finite.Defs]\\n- not_finite   [Mathlib.Data.Finite.Defs]\\n    `Infinite α` is not `Finite`\\n- Finite.false   [Mathlib.Data.Finite.Defs]\\n- Finite.nonempty_decidableEq   [Mathlib.Data.Finite.Defs]\\n- Finite.not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the reverse direction of `not_infinite_iff_finite`.\\n- Finite.of_not_infinite   [Mathlib.Data.Finite.Defs]\\n    **Alias** of the forward direction of `not_infinite_iff_finite`.\\n- Infinite.false   [Mathlib.Data.Finite.Defs]\\n- Infinite.mk   [Mathlib.Data.Finite.Defs]\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a * ?b → ?a\"}",
+   "ok": true,
+   "result_chars": 262,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a * ?b → ?a': (deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached\\n\\nNote: Use `set_option maxHeartbeats <num>` to set the limit.(invalid MessageData.lazy, missing context)\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Subgroup.Finite\"}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Subgroup.Finite': unknown identifier 'Subgroup.Finite'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*abs.*ℝ\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 775,
+   "result_head": "[{\"type\": \"text\", \"text\": \"49 match(es) for 'lemma.*abs.*ℝ' (via ripgrep):\\n- Mathlib/Probability/Distributions/Gaussian/Real.lean:254\\n    lemma gaussianReal_absolutelyContinuous (μ : ℝ) {v : ℝ≥0} (hv : v ≠ 0) :\\n- Mathlib/Probability/Distributions/Gaussian/Real.lean:259\\n    lemma gaussianReal_absolutelyContinuous' (μ : ℝ) {v : ℝ≥0} (hv : v ≠ 0) :\\n- Mathlib/Probability/Moments/IntegrableExpMul.lean:206\\n    lemma rpow_abs_le_mul_max_exp_of_pos (x : ℝ) {t p : ℝ} (hp : 0 ≤ p) (ht : 0 < t) :\\n- Mathlib/Probability/Moments/IntegrableExpMul.lean:236\\n    lemma rpow_abs_le_mul_max_exp (x : ℝ) {t p : ℝ} (hp : 0 ≤ p) (ht : t ≠ 0) :\\n- Mathlib/Probability/Moments/IntegrableExpMul.lean:245\\n    lemma rpow_abs_le_mul_exp_abs (x : ℝ) {t p : ℝ} (hp : 0 ≤ p) (ht : t ≠ 0) :\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def abs|^theorem abs|^lemma abs\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"351 match(es) for '^def abs|^theorem abs|^lemma abs' (via ripgrep):\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:399\\n    theorem abs_sub_convs_le (not_terminatedAt_n : ¬(of v).TerminatedAt n) :\\n- Mathlib/Algebra/ContinuedFractions/Computation/Approximations.lean:471\\n    theorem abs_sub_convergents_le' {b : K}\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:83\\n    lemma abs_repr_le {ι : Type*} (b : Basis ι ℤ L) (x : L) (i : ι) :\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:88\\n    lemma abs_repr_lt_of_norm_lt {ι : Type*} (b : Basis ι ℤ L) (x : L) (n : ℕ)\\n- Mathlib/Data/EReal/Inv.lean:44\\n    theorem abs_def (x : ℝ) : (x : EReal).abs = ENNReal.ofReal |x| := rfl\\n- Mathlib/Data/EReal/Inv.lean:46\\n    theorem abs_coe_lt_top (x : ℝ) : (x : EReal).abs < ⊤ :=\\n- Mathlib/Data/EReal/Inv.lean:50\\n    theorem abs_eq_zero_iff {x : EReal} : x.abs = 0 ↔ x = 0 := by\\n- Mathlib/Data/EReal/Inv.lean:57\\n    theorem abs_zero : (0 : EReal).abs = 0 := by rw [abs_eq_zero_iff]\\n- Mathlib/Data/EReal/Inv.lean:70\\n    theorem abs_mul (x y : EReal) : (x * y).abs = x.abs * y.abs := by\\n- Mathlib/Algebra/Ring/NegOnePow.lean:81\\n    theorem abs_negOnePow (n : ℤ) : |(n.negOnePow : ℤ)| = 1 := by\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Subgroup.Torsion\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Subgroup.Torsion': unknown identifier 'Subgroup.Torsion'\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"GroupHomology\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'GroupHomology': unknown identifier 'GroupHomology'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/Torsion.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2088,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/Torsion.lean  (lines 1–50 of 478):\\n     1  /-\\n     2  Copyright (c) 2022 Julian Berman. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Julian Berman\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.GroupTheory.PGroup\\n     9  public import Mathlib.GroupTheory.Rank\\n    10  public import Mathlib.LinearAlgebra.Quotient.Defs\\n    11  \\n    12  /-!\\n    13  # Torsion groups\\n    14  \\n    15  This file defines torsion groups, i.e. groups where all elements have finite order.\\n    16  \\n    17  ## Main definitions\\n    18  \\n    19  * `Monoid.IsTorsion` a predicate asserting `G` is torsion, i.e. that all\\n    20    elements are of finite order.\\n    21  * `CommGroup.torsion G`, the torsion subgroup of an abelian group `G`\\n    22  * `CommMonoid.torsion G`, the above stated for commutative monoids\\n    23  * `Monoid.IsTorsionFree`, asserting no nontrivial elements have finite order in `G`\\n    24  * `AddMonoid.IsTorsion` and `AddMonoid.IsTorsionFree` the additive versions of the above\\n    25  \\n    26  ## Implementation\\n    27  \\n    28  All torsion monoids are really groups (which is proven here as `Monoid.IsTorsion.group`), but since\\n    29  the definition can be stated on monoids it is implemented on `Monoid` to match other declarations in\\n    30  the group theory library.\\n    31  \\n    32  ## Tags\\n    33  \\n    34  periodic group, aperiodic group, torsion subgroup, torsion abelian group\\n    35  \\n    36  ## Future work\\n    37  \\n    38  * generalize to π-torsion(-free) groups for a set of primes π\\n    39  * free, free solvable and free abelian groups are torsion free\\n    40  * complete direct and free products of torsion free groups are torsion free\\n    41  * groups which are residually finite p-groups with respect to 2 distinct primes are torsion free\\n    42  -/\\n    43  \\n    44  @[expose] public section\\n    45  \\n    46  \\n    47  variable {G H : Type*}\\n    48  \\n    49  namespace Monoid\\n    50  \\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*CommGroup.torsion|def.*torsion.*Subgroup\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 388,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def.*CommGroup.torsion|def.*torsion.*Subgroup' (via ripgrep):\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:971\\n    def torsionBy : AddSubgroup A :=\\n- Mathlib/NumberTheory/NumberField/Units/Basic.lean:146\\n    def torsion : Subgroup (𝓞 K)ˣ := CommGroup.torsion (𝓞 K)ˣ\\n- Mathlib/GroupTheory/Torsion.lean:307\\n    def torsion : Subgroup G :=\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/Torsion.lean\", \"line\": 300, \"n\": 20}",
+   "ok": true,
+   "result_chars": 929,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/Torsion.lean  (lines 300–319 of 478):\\n   300  \\n   301  variable (G) [CommGroup G] [CommGroup H]\\n   302  \\n   303  namespace CommGroup\\n   304  \\n   305  /-- The torsion subgroup of an abelian group. -/\\n   306  @[to_additive /-- The torsion subgroup of an additive abelian group. -/]\\n   307  def torsion : Subgroup G :=\\n   308    { CommMonoid.torsion G with inv_mem' := fun hx ↦ IsOfFinOrder.inv hx }\\n   309  \\n   310  /-- The torsion submonoid of an abelian group equals the torsion subgroup as a submonoid. -/\\n   311  @[to_additive add_torsion_eq_add_torsion_submonoid\\n   312  /-- The additive torsion submonoid of an abelian group equals the torsion\\n   313  subgroup as a submonoid. -/]\\n   314  theorem torsion_eq_torsion_submonoid : CommMonoid.torsion G = (torsion G).toSubmonoid :=\\n   315    rfl\\n   316  \\n   317  variable {G}\\n   318  \\n   319  @[to_additive]\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finite (Subgroup ?a)\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Finite (Subgroup ?a)'.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype\"}",
+   "ok": true,
+   "result_chars": 1035,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 8573 declarations mentioning Fintype.\\n- Fintype   [Mathlib.Data.Fintype.Defs]\\n    `Fintype α` means that `α` is finite, i.e. there are only finitely many distinct elements of type `α`. The evidence of this is a finset `elems` (a list up to pe\\n- Bool.fintype   [Mathlib.Data.Fintype.Defs]\\n- Ordering.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.instFastSubsingleton   [Mathlib.Data.Fintype.Defs]\\n- Fintype.subsingleton   [Mathlib.Data.Fintype.Defs]\\n- Finset.univ   [Mathlib.Data.Fintype.Defs]\\n    `univ` is the universal finite set of type `Finset α` implied from the assumption `Fintype α`.\\n- Fintype.elems   [Mathlib.Data.Fintype.Defs]\\n    The `Finset` containing all elements of a `Fintype`\\n- Lex.fintype   [Mathlib.Data.Fintype.Defs]\\n- OrderDual.fintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEmbeddingFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableEqEquivFintype   [Mathlib.Data.Fintype.Defs]\\n- Fintype.decidableForallFintype   [Mathlib.Data.Fintype.Defs]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"card (Subgroup ?a)\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'card (Subgroup ?a)': Unknown identifier `card`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Int.natAbs ?a\"}",
+   "ok": true,
+   "result_chars": 614,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 411 declarations mentioning Int.natAbs.\\n- Int.natAbs_negOfNat   [Init.Data.Int.Order]\\n- Int.natAbs_ofNat'   [Init.Data.Int.Order]\\n- Int.natAbs_negSucc   [Init.Data.Int.Order]\\n- Int.natAbs_cast   [Init.Data.Int.Order]\\n- Int.natAbs_natCast   [Init.Data.Int.Order]\\n- Int.le_natAbs   [Init.Data.Int.Order]\\n- Int.natAbs_neg   [Init.Data.Int.Order]\\n- Int.natAbs_one   [Init.Data.Int.Order]\\n- Int.natAbs_zero   [Init.Data.Int.Order]\\n- Int.eq_natAbs_of_nonneg   [Init.Data.Int.Order]\\n- Int.mul_sign_self   [Init.Data.Int.Order]\\n- Int.natAbs_of_nonneg   [Init.Data.Int.Order]\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Real/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2087,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Real/Basic.lean  (lines 1–50 of 596):\\n     1  /-\\n     2  Copyright (c) 2018 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Mario Carneiro, Floris van Doorn\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.CauSeq.Completion\\n     9  public import Mathlib.Algebra.Order.Ring.Rat\\n    10  public import Mathlib.Data.Rat.Cast.Defs\\n    11  \\n    12  /-!\\n    13  # Real numbers from Cauchy sequences\\n    14  \\n    15  This file defines `ℝ` as the type of equivalence classes of Cauchy sequences of rational numbers.\\n    16  This choice is motivated by how easy it is to prove that `ℝ` is a commutative ring, by simply\\n    17  lifting everything to `ℚ`.\\n    18  \\n    19  The facts that the real numbers are an Archimedean floor ring,\\n    20  and a conditionally complete linear order,\\n    21  have been deferred to the file `Mathlib/Data/Real/Archimedean.lean`,\\n    22  in order to keep the imports here simple.\\n    23  \\n    24  The fact that the real numbers are a (trivial) \\\\*-ring has similarly been deferred to\\n    25  `Mathlib/Data/Real/Star.lean`.\\n    26  -/\\n    27  \\n    28  @[expose] public section\\n    29  \\n    30  \\n    31  assert_not_exists Finset Module Submonoid FloorRing\\n    32  \\n    33  /-- The type `ℝ` of real numbers constructed as equivalence classes of Cauchy sequences of rational\\n    34  numbers. -/\\n    35  @[wikidata Q12916, wikidata Q2584477]\\n    36  structure Real where ofCauchy ::\\n    37    /-- The underlying Cauchy completion -/\\n    38    cauchy : CauSeq.Completion.Cauchy (abs : ℚ → ℚ)\\n    39  \\n    40  @[inherit_doc]\\n    41  notation \\\"ℝ\\\" => Real\\n    42  \\n    43  namespace CauSeq.Completion\\n    44  \\n    45  -- this can't go in `Data.Real.CauSeqCompletion` as the structure on `ℚ` isn't available\\n    46  @[simp]\\n    47  theorem ofRat_rat {abv : ℚ → ℚ} [IsAbsoluteValue abv] (q : ℚ) :\\n    48      ofRat (q : ℚ) = (q : Cauchy abv) :=\\n    49    rfl\\n    50  \\n\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"CommGroup.torsion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 716,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 match(es) for 'CommGroup.torsion' (via ripgrep):\\n- Mathlib/NumberTheory/NumberField/Units/Basic.lean:146\\n    def torsion : Subgroup (𝓞 K)ˣ := CommGroup.torsion (𝓞 K)ˣ\\n- Mathlib/Algebra/Module/Torsion/Basic.lean:827\\n    (torsion ℤ G).toAddSubgroup = AddCommGroup.torsion G := by\\n- Mathlib/LinearAlgebra/Dimension/Torsion/Basic.lean:48\\n    Module.finrank ℤ (M ⧸ (AddCommGroup.torsion M).toIntSubmodule) = Module.finrank ℤ M :=\\n- Mathlib/GroupTheory/Torsion.lean:21\\n    * `CommGroup.torsion G`, the torsion subgroup of an abelian group `G`\\n- Mathlib/GroupTheory/Torsion.lean:327\\n    lemma isMulTorsionFree_iff_torsion_eq_bot : IsMulTorsionFree G ↔ CommGroup.torsion G = ⊥ := by\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(Subgroup ?a) → Prop\"}",
+   "ok": true,
+   "result_chars": 2018,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 4392 declarations mentioning Subgroup.\\n- Subgroup.Normal   [Mathlib.Algebra.Group.Subgroup.Defs]\\n    A subgroup `H` is normal if whenever `n ∈ H`, then `g * n * g⁻¹ ∈ H` for every `g : G`   [Wikidata Q743179](https://www.wikidata.org/wiki/Q743179)\\n- Subgroup.forall   [Mathlib.Algebra.Group.Subgroup.Ker]\\n- Subgroup.Characteristic   [Mathlib.Algebra.Group.Subgroup.Basic]\\n    A subgroup is characteristic if it is fixed by all automorphisms. Several equivalent conditions are provided by lemmas of the form `Characteristic.iff...`\\n- Subgroup.FG   [Mathlib.GroupTheory.Finiteness]\\n    A subgroup of `G` is finitely generated if it is the closure of a finite subset of `G`.\\n- MulAction.QuotientAction   [Mathlib.GroupTheory.GroupAction.Quotient]\\n    A typeclass for when a `MulAction X G` descends to the quotient `G ⧸ H`.\\n- Subgroup.FiniteIndex   [Mathlib.GroupTheory.Index]\\n    Typeclass for finite index subgroups.\\n- Subgroup.IsFiniteRelIndex   [Mathlib.GroupTheory.Index]\\n    Typeclass for a subgroup `H` to have finite index in a subgroup `K`.\\n- Subgroup.IsComplement'   [Mathlib.GroupTheory.Complement]\\n    `H` and `K` are complements if `(*) : H × K → G` is a bijection\\n- Subgroup.Commensurable   [Mathlib.GroupTheory.Commensurable]\\n    Two subgroups `H K` of `G` are commensurable if `H ⊓ K` has finite index in both `H` and `K`.\\n- Subgroup.IsFinitelyNormallyGenerated   [Mathlib.GroupTheory.FinitelyPresentedGroup]\\n    `N.IsFinitelyNormallyGenerated` says that the subgroup `N` is the normal closure of a finite set.\\n- Subgroup.IsNormalClosureFG   [Mathlib.GroupTheory.FinitelyPresentedGroup]\\n    **Alias** of `Subgroup.IsFinitelyNormallyGenerated`.  ---  `N.IsFinitelyNormallyGenerated` says that the subgroup `N` is the normal closure of a finite set.\\n- HNNExtension.NormalWord.Cancels   [Mathlib.GroupTheory.HNNExtension]\\n    `Cancels u w` is a predicate expressing whether `t^u` cancels with some occurrence of `t^-u` when we multiply `t^u` by `w`.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/Torsion.lean\", \"line\": 305, \"n\": 15}",
+   "ok": true,
+   "result_chars": 820,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/Torsion.lean  (lines 305–319 of 478):\\n   305  /-- The torsion subgroup of an abelian group. -/\\n   306  @[to_additive /-- The torsion subgroup of an additive abelian group. -/]\\n   307  def torsion : Subgroup G :=\\n   308    { CommMonoid.torsion G with inv_mem' := fun hx ↦ IsOfFinOrder.inv hx }\\n   309  \\n   310  /-- The torsion submonoid of an abelian group equals the torsion subgroup as a submonoid. -/\\n   311  @[to_additive add_torsion_eq_add_torsion_submonoid\\n   312  /-- The additive torsion submonoid of an abelian group equals the torsion\\n   313  subgroup as a submonoid. -/]\\n   314  theorem torsion_eq_torsion_submonoid : CommMonoid.torsion G = (torsion G).toSubmonoid :=\\n   315    rfl\\n   316  \\n   317  variable {G}\\n   318  \\n   319  @[to_additive]\\n\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : ℝ) / (?b : ℝ)\"}",
+   "ok": true,
+   "result_chars": 933,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1872 declarations mentioning Real, instHDiv, Real.instDivInvMonoid, HDiv.hDiv, and DivInvMonoid.toDiv.\\n- Real.ofCauchy_div   [Mathlib.Data.Real.Basic]\\n- NNReal.coe_div   [Mathlib.Data.NNReal.Defs]\\n- Real.toNNReal_div   [Mathlib.Data.NNReal.Defs]\\n- Real.toNNReal_div'   [Mathlib.Data.NNReal.Defs]\\n- ENNReal.toReal_div   [Mathlib.Data.ENNReal.Inv]\\n- ENNReal.ofReal_div_of_pos   [Mathlib.Data.ENNReal.Inv]\\n- ENNReal.ofReal_div_le   [Mathlib.Data.ENNReal.Inv]\\n- Metric.nhds_basis_ball_inv_nat_pos   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.nhds_basis_closedBall_inv_nat_pos   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.nhds_basis_ball_inv_nat_succ   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.nhds_basis_closedBall_inv_nat_succ   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Metric.uniformity_basis_dist_inv_nat_pos   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finite.*torsion|Finite.*Subgroup\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1473,
+   "result_head": "[{\"type\": \"text\", \"text\": \"125 match(es) for 'Finite.*torsion|Finite.*Subgroup' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Basic.lean:328\\n    instance [Finite ι] : DiscreteTopology (span ℤ (Set.range b)).toAddSubgroup :=\\n- Mathlib/Algebra/Module/PID.lean:265\\n    obtain ⟨n, ⟨g⟩⟩ := @Module.basisOfFiniteTypeTorsionFree' R _ (M ⧸ torsion R M) _ _ _ _ _ _\\n- Mathlib/FieldTheory/KrullTopology.lean:75\\n    def fixedByFinite (K L : Type*) [Field K] [Field L] [Algebra K L] : Set (Subgroup Gal(L/K)) :=\\n- Mathlib/FieldTheory/KrullTopology.lean:81\\n    ⟨⊥, IntermediateField.instFiniteSubtypeMemBot K, IntermediateField.fixingSubgroup_bot⟩\\n- Mathlib/FieldTheory/KrullTopology.lean:149\\n    FiniteDimensional K E ∧ (E.fixingSubgroup : Set Gal(L/K)) ⊆ s := by\\n- Mathlib/FieldTheory/KrullTopology.lean:160\\n    FiniteDimensional K E ∧ Normal K E ∧ (E.fixingSubgroup : Set Gal(L/K)) ⊆ s := by\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:326\\n    theorem fixingSubgroup_range_algebraMap [Finite G] (A B C : Type*) (H : Subgroup G)\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:380\\n    theorem quotient [Finite G] (N : Subgroup G) [N.Normal] [MulSemiringAction G C]\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:405\\n    noncomputable def quotientMulEquiv [Finite G] [Finite G'] (N : Subgroup G) [N.Normal]\\n- Mathlib/FieldTheory/Galois/IsGaloisGroup.lean:417\\n    theorem algebraMap_quotientMulEquiv_smul [Finite G] [Finite G'] (N : Subgroup G) [N.Normal]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Fintype (?a : Subgroup ?b)\"}",
+   "ok": true,
+   "result_chars": 1621,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 202 declarations mentioning Membership.mem, Subtype, Subgroup, Fintype, SetLike.instMembership, and Subgroup.instSetLike.\\n- Subgroup.fintypeBot   [Mathlib.Algebra.Group.Subgroup.Finite]\\n- Subgroup.instFintypeSubtypeMemOfDecidablePred   [Mathlib.Algebra.Group.Subgroup.Finite]\\n- MonoidHom.fintypeRange   [Mathlib.Algebra.Group.Subgroup.Finite]\\n    The range of a finite group under a group homomorphism is finite.  Note: this instance can form a diamond with `Subtype.fintype` or `Subgroup.fintype` in the pr\\n- Group.fintypeOfKerOfCodom   [Mathlib.GroupTheory.QuotientGroup.Finite]\\n    If `ker(G →* H)` and `H` are finite, then `G` is finite.\\n- MulAction.card_orbit_mul_card_stabilizer_eq_card_group   [Mathlib.GroupTheory.GroupAction.Quotient]\\n    Orbit-stabilizer theorem.\\n- ConjClasses.card_carrier   [Mathlib.GroupTheory.GroupAction.Quotient]\\n- Subgroup.independent_of_coprime_order   [Mathlib.GroupTheory.NoncommPiCoprod]\\n- Lagrange.nodal_subgroup_eq_X_pow_card_sub_one   [Mathlib.LinearAlgebra.Lagrange]\\n    The vanishing polynomial on a multiplicative subgroup is of the form X ^ n - 1.\\n- FiniteField.card_cast_subgroup_card_ne_zero   [Mathlib.FieldTheory.Finite.Basic]\\n- FiniteField.sum_subgroup_units_eq_zero   [Mathlib.FieldTheory.Finite.Basic]\\n    The sum of a nontrivial subgroup of the units of a field is zero.\\n- FiniteField.sum_subgroup_units   [Mathlib.FieldTheory.Finite.Basic]\\n    The sum of a subgroup of the units of a field is 1 if the subgroup is trivial and 1 otherwise\\n- FiniteField.sum_subgroup_pow_eq_zero   [Mathlib.FieldTheory.Finite.Basic]\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Finite/Defs.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 3350,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Finite/Defs.lean  (lines 1–60 of 246):\\n     1  /-\\n     2  Copyright (c) 2022 Kyle Miller. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kyle Miller\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.CoeSort\\n     9  public import Mathlib.Logic.Equiv.Defs\\n    10  public import Mathlib.Data.Nat.Notation\\n    11  \\n    12  /-!\\n    13  # Definition of the `Finite` typeclass\\n    14  \\n    15  This file defines a typeclass `Finite` saying that `α : Sort*` is finite. A type is `Finite` if it\\n    16  is equivalent to `Fin n` for some `n`. We also define `Infinite α` as a typeclass equivalent to\\n    17  `¬Finite α`.\\n    18  \\n    19  The `Finite` predicate has no computational relevance and, being `Prop`-valued, gets to enjoy proof\\n    20  irrelevance -- it represents the mere fact that the type is finite.  While the `Finite` class also\\n    21  represents finiteness of a type, a key difference is that a `Fintype` instance represents finiteness\\n    22  in a computable way: it gives a concrete algorithm to produce a `Finset` whose elements enumerate\\n    23  the terms of the given type. As such, one generally relies on congruence lemmas when rewriting\\n    24  expressions involving `Fintype` instances.\\n    25  \\n    26  Every `Fintype` instance automatically gives a `Finite` instance, see `Fintype.finite`, but not vice\\n    27  versa. Every `Fintype` instance should be computable since they are meant for computation. If it's\\n    28  not possible to write a computable `Fintype` instance, one should prefer writing a `Finite` instance\\n    29  instead.\\n    30  \\n    31  ## Main definitions\\n    32  \\n    33  * `Finite α` denotes that `α` is a finite type.\\n    34  * `Infinite α` denotes that `α` is an infinite type.\\n    35  * `Set.Finite : Set α → Prop`\\n    36  * `Set.Infinite : Set α → Prop`\\n    37  * `Set.toFinite` to prove `Set.Finite` for a `Set` from a `Finite` instance.\\n    38  \\n    39  ## Implementation notes\\n    40  \\n    41  This file defines both the type-level `Finite` class and the set-level `Set.Finite` definition.\\n    42  \\n    43  The definition of `Finite α` is not just `Nonempty (Fintype α)` since `Fintype` requires\\n    44  that `α : Type*`, and the definition in this module allows for `α : Sort*`. This means\\n    45  we can write the instance `Finite.prop`.\\n    46  \\n    47  A finite set is defined to be a set whose coercion to a type has a `Finite` instance.\\n    48  \\n    49  There are two components to finiteness constructions. The first is `Fintype` instances for each\\n    50  construction. This gives a way to actually compute a `Finset` that represents the set, and these\\n    51  may be accessed using `set.toFinset`. This gets the `Finset` in the correct form, since otherwise\\n    52  `Finset.univ : Finset s` is a `Finset` for the subtype for `s`. The second component is\\n    53  \\\"constructors\\\" for `Set.Finite` that give proofs that `Fintype` instances exist classically given\\n    54  other `Set.Finite` proofs. Unlike the `Fintype` instances, these *do not* use any decidability\\n    55  instances since they do not compute anything.\\n    56  \\n    57  ## Tags\\n    58  \\n    59  finite, fintype, finite sets\\n    60  -/\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/Torsion.lean\", \"line\": 301, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1146,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/Torsion.lean  (lines 301–325 of 478):\\n   301  variable (G) [CommGroup G] [CommGroup H]\\n   302  \\n   303  namespace CommGroup\\n   304  \\n   305  /-- The torsion subgroup of an abelian group. -/\\n   306  @[to_additive /-- The torsion subgroup of an additive abelian group. -/]\\n   307  def torsion : Subgroup G :=\\n   308    { CommMonoid.torsion G with inv_mem' := fun hx ↦ IsOfFinOrder.inv hx }\\n   309  \\n   310  /-- The torsion submonoid of an abelian group equals the torsion subgroup as a submonoid. -/\\n   311  @[to_additive add_torsion_eq_add_torsion_submonoid\\n   312  /-- The additive torsion submonoid of an abelian group equals the torsion\\n   313  subgroup as a submonoid. -/]\\n   314  theorem torsion_eq_torsion_submonoid : CommMonoid.torsion G = (torsion G).toSubmonoid :=\\n   315    rfl\\n   316  \\n   317  variable {G}\\n   318  \\n   319  @[to_additive]\\n   320  theorem mem_torsion (g : G) : g ∈ torsion G ↔ IsOfFinOrder g := Iff.rfl\\n   321  \\n   322  @[to_additive]\\n   323  lemma torsion_eq_top_iff : torsion G = ⊤ ↔ IsTorsion G :=\\n   324    (torsion G).eq_top_iff'\\n   325  \\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : ℝ) - (?b : ℝ)\"}",
+   "ok": true,
+   "result_chars": 783,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1435 declarations mentioning Real, Real.instSub, HSub.hSub, and instHSub.\\n- Real.mk_near_of_forall_near   [Mathlib.Data.Real.Basic]\\n- Real.cauchy_sub   [Mathlib.Data.Real.Basic]\\n- Real.ofCauchy_sub   [Mathlib.Data.Real.Basic]\\n- Real.of_near   [Mathlib.Algebra.Order.Archimedean.Real.Basic]\\n- NNReal.sub_def   [Mathlib.Data.NNReal.Defs]\\n- NNReal.coe_sub   [Mathlib.Data.NNReal.Defs]\\n- NNReal.coe_sub_def   [Mathlib.Data.NNReal.Defs]\\n- ENNReal.le_toReal_sub   [Mathlib.Data.ENNReal.Operations]\\n- ENNReal.ofReal_sub   [Mathlib.Data.ENNReal.Operations]\\n- ENNReal.toReal_sub_of_le   [Mathlib.Data.ENNReal.Operations]\\n- Real.sub_le_dist   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\\n- Real.dist_eq   [Mathlib.Topology.MetricSpace.Pseudo.Defs]\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"2 * (?a : ℝ)\"}",
+   "ok": true,
+   "result_chars": 1412,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 740 declarations mentioning Real, HMul.hMul, Nat.instAtLeastTwoHAddOfNat, instOfNatNat, Nat.instNeZeroSucc, Nat, Real.instMul, OfNat.ofNat, instOfNatAtLeastTwo, instHMul, and Real.instNatCast.\\n- norm_add_sub_norm_sub_le_two_mul   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_mul_sub_norm_div_le_two_mul   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_add_sub_norm_sub_le_two_mul_min   [Mathlib.Analysis.Normed.Group.Basic]\\n- norm_mul_sub_norm_div_le_two_mul_min   [Mathlib.Analysis.Normed.Group.Basic]\\n- Metric.diam_ball   [Mathlib.Topology.MetricSpace.Bounded]\\n    The diameter of a ball of radius `r` is at most `2 r`.\\n- Metric.diam_closedBall   [Mathlib.Topology.MetricSpace.Bounded]\\n    The diameter of a closed ball of radius `r` is at most `2 r`.\\n- Metric.diam_le_of_subset_closedBall   [Mathlib.Topology.MetricSpace.Bounded]\\n- PseudoMetricSpace.le_two_mul_dist_ofPreNNDist   [Mathlib.Topology.Metrizable.Uniformity]\\n    Consider a function `d : X → X → ℝ≥0` such that `d x x = 0` and `d x y = d y x` for all `x`, `y`. Let `dist` be the largest pseudometric distance such that `dis\\n- norm_commutator_units_sub_one_le   [Mathlib.Analysis.Normed.Ring.Basic]\\n- norm_commutator_sub_one_le   [Mathlib.Analysis.Normed.Field.Basic]\\n- Metric.diam_ball_eq   [Mathlib.Analysis.Normed.Module.Basic]\\n- Metric.diam_closedBall_eq   [Mathlib.Analysis.Normed.Module.Basic]\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^namespace CommGroup\", \"limit\": 3}",
+   "ok": true,
+   "result_chars": 303,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^namespace CommGroup' (via ripgrep):\\n- Mathlib/Algebra/GCDMonoid/Basic.lean:1353\\n    namespace CommGroupWithZero\\n- Mathlib/GroupTheory/Torsion.lean:303\\n    namespace CommGroup\\n- Mathlib/GroupTheory/FiniteAbelian/Basic.lean:167\\n    namespace CommGroup\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/Torsion.lean\", \"line\": 295, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1733,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/Torsion.lean  (lines 295–334 of 478):\\n   295    Monoid.IsTorsion.torsionMulEquiv CommMonoid.torsion.isTorsion\\n   296  \\n   297  end CommMonoid\\n   298  \\n   299  section CommGroup\\n   300  \\n   301  variable (G) [CommGroup G] [CommGroup H]\\n   302  \\n   303  namespace CommGroup\\n   304  \\n   305  /-- The torsion subgroup of an abelian group. -/\\n   306  @[to_additive /-- The torsion subgroup of an additive abelian group. -/]\\n   307  def torsion : Subgroup G :=\\n   308    { CommMonoid.torsion G with inv_mem' := fun hx ↦ IsOfFinOrder.inv hx }\\n   309  \\n   310  /-- The torsion submonoid of an abelian group equals the torsion subgroup as a submonoid. -/\\n   311  @[to_additive add_torsion_eq_add_torsion_submonoid\\n   312  /-- The additive torsion submonoid of an abelian group equals the torsion\\n   313  subgroup as a submonoid. -/]\\n   314  theorem torsion_eq_torsion_submonoid : CommMonoid.torsion G = (torsion G).toSubmonoid :=\\n   315    rfl\\n   316  \\n   317  variable {G}\\n   318  \\n   319  @[to_additive]\\n   320  theorem mem_torsion (g : G) : g ∈ torsion G ↔ IsOfFinOrder g := Iff.rfl\\n   321  \\n   322  @[to_additive]\\n   323  lemma torsion_eq_top_iff : torsion G = ⊤ ↔ IsTorsion G :=\\n   324    (torsion G).eq_top_iff'\\n   325  \\n   326  @[to_additive]\\n   327  lemma isMulTorsionFree_iff_torsion_eq_bot : IsMulTorsionFree G ↔ CommGroup.torsion G = ⊥ := by\\n   328    rw [isMulTorsionFree_iff_not_isOfFinOrder, eq_bot_iff, SetLike.le_def]\\n   329    simp [not_imp_not, CommGroup.mem_torsion]\\n   330  \\n   331  @[to_additive]\\n   332  lemma le_comap_torsion (f : G →* H) : torsion G ≤ (torsion H).comap f := by\\n   333    intro x\\n   334    exact f.isOfFinOrder\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem approximate_parallelogram_law_torsion_finite\n  (G : Type*) [CommGroup G]\n  (h : G → ℝ)\n  (h_finite_sublevel : ∀ c : ℝ, Set.Finite {g : G | h g ≤ c})\n  (h_approx_para : ∃ C : ℝ, ∀ x y : G, |h (x * y) + h (x * y⁻¹) - 2 * h x - 2 * h y| ≤ C) :\n  Finite (CommGroup.torsion G) := sorry"
+}

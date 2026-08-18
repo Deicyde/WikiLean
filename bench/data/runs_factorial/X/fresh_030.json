@@ -1,0 +1,346 @@
+{
+ "task_id": "fresh_030",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:17:36Z",
+ "wall_s": 128.6,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 23,
+   "mcp__formal__decl_grep": 7,
+   "mcp__formal__decl_read": 5,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 9022,
+  "cost_usd": 0.1277481
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries\"}",
+   "ok": true,
+   "result_chars": 1150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Formal power series over a coefficient type `R`\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pentagonal\"}",
+   "ok": true,
+   "result_chars": 1091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 20 declarations mentioning pentagonal.\\n- pentagonal   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n    Pentagonal numbers $k(3k-1)/2$ for integer $k$.\\n- pentagonal_injective   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_inj   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_lt_pentagonal_neg   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_strictAntiOn   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_strictMonoOn   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_neg_lt_pentagonal_add_one   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_def   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- natCast_pentagonal   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- two_mul_natCast_pentagonal   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- pentagonal_neg   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\\n- two_mul_natCast_pentagonal_neg   [Mathlib.Combinatorics.Enumerative.Pentagonal.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"infinite product\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'infinite product': Unknown identifier `infinite`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Nat.primorial\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Nat.primorial': unknown identifier 'Nat.primorial'\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∏ Finset.prod\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∏ Finset.prod': <input>:1:13: unexpected end of input; expected ','\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"archimedean_encoding_as_product\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'archimedean_encoding_as_product': unknown identifier 'archimedean_encoding_as_product'\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pentagonal theorem\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pentagonal theorem': <input>:1:11: expected end of input\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Product coefficients PowerSeries\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Product coefficients PowerSeries': Unknown identifier `Product`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"pentagonal.*theorem\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'pentagonal.*theorem' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Combinatorics/Enumerative/Pentagonal/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": false,
+   "result_chars": 97,
+   "result_head": "error: no such file under the checkout: 'Mathlib/Combinatorics/Enumerative/Pentagonal/Basic.lean'"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def pentagonal\"}",
+   "ok": true,
+   "result_chars": 196,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def pentagonal' (via ripgrep):\\n- Mathlib/Combinatorics/Enumerative/Pentagonal.lean:37\\n    def pentagonal (k : ℤ) : ℕ := (k * (3 * k - 1) / 2).toNat\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Combinatorics/Enumerative/Pentagonal.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 3353,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Combinatorics/Enumerative/Pentagonal.lean  (lines 1–76 of 76):\\n     1  /-\\n     2  Copyright (c) 2026 Weiyi Wang. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Weiyi Wang\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Int.SuccPred\\n     9  \\n    10  /-!\\n    11  # Pentagonal numbers\\n    12  \\n    13  This file introduces (generalized) pentagonal numbers $k(3k-1)/2$ for integer $k$.\\n    14  \\n    15  Some sources, such as A001318 in the OEIS, order generalized pentagonal numbers by indices\\n    16  $k = 0, 1, -1, 2, -2, \\\\cdots$ to form a strictly monotone sequence. This file doesn't follow this\\n    17  convention, but implicitly shows the monotonicity in `pentagonal_lt_pentagonal_neg` and\\n    18  `pentagonal_neg_lt_pentagonal_add_one`.\\n    19  \\n    20  ## Main definitions\\n    21  \\n    22  * `pentagonal`: pentagonal numbers as a function `ℤ → ℕ`.\\n    23  \\n    24  ## TODO\\n    25  \\n    26  Show the relation between pentagonal numbers and partitions, including the pentagonal number\\n    27  theorem.\\n    28  \\n    29  ## References\\n    30  \\n    31  * https://en.wikipedia.org/wiki/Pentagonal_number\\n    32  -/\\n    33  \\n    34  public section\\n    35  \\n    36  /-- Pentagonal numbers $k(3k-1)/2$ for integer $k$. -/\\n    37  def pentagonal (k : ℤ) : ℕ := (k * (3 * k - 1) / 2).toNat\\n    38  \\n    39  theorem pentagonal_def (k : ℤ) : pentagonal k = (k * (3 * k - 1) / 2).toNat := by rfl\\n    40  \\n    41  theorem pentagonal_neg (k : ℤ) : pentagonal (-k) = (k * (3 * k + 1) / 2).toNat := by\\n    42    grind [pentagonal_def]\\n    43  \\n    44  theorem natCast_pentagonal (k : ℤ) : (pentagonal k : ℤ) = k * (3 * k - 1) / 2 := by\\n    45    rcases k with (_ | _) | _ <;> grind [pentagonal_def]\\n    46  \\n    47  theorem two_mul_natCast_pentagonal (k : ℤ) : 2 * (pentagonal k : ℤ) = k * (3 * k - 1) := by\\n    48    rw [natCast_pentagonal]\\n    49    exact Int.two_mul_ediv_two_of_even (by grind)\\n    50  \\n    51  theorem two_mul_natCast_pentagonal_neg (k : ℤ) : 2 * (pentagonal (-k) : ℤ) = k * (3 * k + 1) := by\\n    52    grind [two_mul_natCast_pentagonal]\\n    53  \\n    54  theorem pentagonal_injective : Function.Injective pentagonal := by\\n    55    intro x y h\\n    56    replace h : (3 * (x + y) - 1) * (x - y) = 0 := by grind [two_mul_natCast_pentagonal]\\n    57    cases mul_eq_zero.mp h <;> grind\\n    58  \\n    59  @[simp]\\n    60  theorem pentagonal_inj {x y : ℤ} : pentagonal x = pentagonal y ↔ x = y :=\\n    61    pentagonal_injective.eq_iff\\n    62  \\n    63  theorem pentagonal_lt_pentagonal_neg {k : ℤ} (h : 0 < k) : pentagonal k < pentagonal (-k) := by\\n    64    grind [natCast_pentagonal]\\n    65  \\n    66  theorem pentagonal_neg_lt_pentagonal_add_one {k : ℤ} (h : 0 ≤ k) :\\n    67      pentagonal (-k) < pentagonal (k + 1) := by\\n    68    grind [natCast_pentagonal]\\n    69  \\n    70  theorem pentagonal_strictMonoOn : StrictMonoOn pentagonal (Set.Ici 0) := by\\n    71    apply strictMonoOn_of_lt_add_one Set.ordConnected_Ici\\n    72    grind [natCast_pentagonal]\\n    73  \\n    74  theorem pentagonal_strictAntiOn : StrictAntiOn pentagonal (Set.Iic 0) := by\\n    75    apply strictAntiOn_of_add_one_lt Set.ordConnected_Iic\\n    76    grind [natCast_pentagonal]\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries.ofNatCoeff\"}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'PowerSeries.ofNatCoeff': unknown identifier 'PowerSeries.ofNatCoeff'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"coeff PowerSeries\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'coeff PowerSeries': Unknown identifier `coeff`\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : PowerSeries ?R → Nat → ?A\"}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : PowerSeries ?R → Nat → ?A': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*PowerSeries.*product\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*PowerSeries.*product' under Mathlib/.\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/PowerSeries/Basic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/PowerSeries/Basic.lean  (lines 1–100 of 947):\\n     1  /-\\n     2  Copyright (c) 2019 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Kenny Lau, Ralf Stephan\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.CharP.Defs\\n     9  public import Mathlib.Algebra.Polynomial.AlgebraMap\\n    10  public import Mathlib.Algebra.Polynomial.Basic\\n    11  public import Mathlib.RingTheory.MvPowerSeries.Basic\\n    12  public import Mathlib.Tactic.CrossRefAttribute\\n    13  public import Mathlib.Tactic.MoveAdd\\n    14  public import Mathlib.Algebra.MvPolynomial.Equiv\\n    15  public import Mathlib.RingTheory.Ideal.Basic\\n    16  \\n    17  /-!\\n    18  # Formal power series (in one variable)\\n    19  \\n    20  This file defines (univariate) formal power series\\n    21  and develops the basic properties of these objects.\\n    22  \\n    23  A formal power series is to a polynomial like an infinite sum is to a finite sum.\\n    24  \\n    25  Formal power series in one variable are defined from multivariate\\n    26  power series as `PowerSeries R := MvPowerSeries Unit R`.\\n    27  \\n    28  The file sets up the (semi)ring structure on univariate power series.\\n    29  \\n    30  We provide the natural inclusion from polynomials to formal power series.\\n    31  \\n    32  Additional results can be found in:\\n    33  * `Mathlib/RingTheory/PowerSeries/Trunc.lean`, truncation of power series;\\n    34  * `Mathlib/RingTheory/PowerSeries/Inverse.lean`, about inverses of power series,\\n    35    and the fact that power series over a local ring form a local ring;\\n    36  * `Mathlib/RingTheory/PowerSeries/Order.lean`, the order of a power series at 0,\\n    37    and application to the fact that power series over an integral domain form an integral domain.\\n    38  \\n    39  ## Implementation notes\\n    40  \\n    41  Because of its definition,\\n    42    `PowerSeries R := MvPowerSeries Unit R`.\\n    43  a lot of proofs and properties from the multivariate case\\n    44  can be ported to the single variable case.\\n    45  However, it means that formal power series are indexed by `Unit →₀ ℕ`,\\n    46  which is of course canonically isomorphic to `ℕ`.\\n    47  We then build some glue to treat formal power series as if they were indexed by `ℕ`.\\n    48  Occasionally this leads to proofs that are uglier than expected.\\n    49  \\n    50  -/\\n    51  \\n    52  @[expose] public section\\n    53  \\n    54  noncomputable section\\n    55  \\n    56  open Finset (antidiagonal mem_antidiagonal)\\n    57  \\n    58  /-- Formal power series over a coefficient type `R` -/\\n    59  @[wikidata Q1003025]\\n    60  abbrev PowerSeries (R : Type*) :=\\n    61    MvPowerSeries Unit R\\n    62  \\n    63  namespace PowerSeries\\n    64  \\n    65  open Finsupp (single)\\n    66  \\n    67  variable {R : Type*}\\n    68  \\n    69  /--\\n    70  `R⟦X⟧` is notation for `PowerSeries R`,\\n    71  the semiring of formal power series in one variable over a semiring `R`.\\n    72  -/\\n    73  scoped notation:9000 R \\\"⟦X⟧\\\" => PowerSeries R\\n    74  \\n    75  section Semiring\\n    76  \\n    77  variable [Semiring R]\\n    78  \\n    79  /-- The `n`th coefficient of a formal power series. -/\\n    80  def coeff (n : ℕ) : R⟦X⟧ →ₗ[R] R :=\\n    81    MvPowerSeries.coeff (single () n)\\n    82  \\n    83  /-- The `n`th monomial with coefficient `a` as formal power series. -/\\n    84  def monomial (n : ℕ) : R →ₗ[R] R⟦X⟧ :=\\n    85    MvPowerSeries.monomial (single () n)\\n    86  \\n    87  theorem coeff_def {s : Unit →₀ ℕ} {n : ℕ} (h : s () = n) :\\n    88      coeff (R := R) n = MvPowerSeries.coeff s := by\\n    89    rw [coeff, ← h, ← Finsupp.unique_single s]\\n    90  \\n    91  @[simp]\\n    92  lemma coeff_coeToMvPowerSeries {f : R⟦X⟧} (n : ℕ) :\\n    93      MvPowerSeries.coeff (Finsupp.single () n) f = f.coeff n := rfl\\n    94  \\n    95  /-- Two for"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def X|theorem.*\\\\bX\\\\b\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1843,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5879 match(es) for 'def X|theorem.*\\\\\\\\bX\\\\\\\\b' (via ripgrep):\\n- Mathlib/Algebra/FreeAlgebra.lean:192\\n    private theorem mk_mul (x y : Pre R X) :\\n- Mathlib/Algebra/FreeAlgebra.lean:309\\n    theorem quot_mk_eq_ι (m : X) : Quot.mk (FreeAlgebra.Rel R X) m = ι R m := by rw [ι_def]\\n- Mathlib/Algebra/FreeAlgebra.lean:402\\n    theorem liftAux_eq (f : X → A) : liftAux R f = lift R f := by\\n- Mathlib/Algebra/FreeAlgebra.lean:407\\n    theorem lift_symm_apply (F : FreeAlgebra R X →ₐ[R] A) : (lift R).symm F = F ∘ ι R := by\\n- Mathlib/Algebra/FreeAlgebra.lean:414\\n    theorem ι_comp_lift (f : X → A) : (lift R f : FreeAlgebra R X → A) ∘ ι R = f := by\\n- Mathlib/Algebra/FreeAlgebra.lean:420\\n    theorem lift_ι_apply (f : X → A) (x) : lift R f (ι R x) = f x := by\\n- Mathlib/Algebra/FreeAlgebra.lean:425\\n    theorem lift_unique (f : X → A) (g : FreeAlgebra R X →ₐ[R] A) :\\n- Mathlib/Algebra/FreeAlgebra.lean:440\\n    theorem lift_comp_ι (g : FreeAlgebra R X →ₐ[R] A) :\\n- Mathlib/Algebra/FreeAlgebra.lean:447\\n    theorem hom_ext {f g : FreeAlgebra R X →ₐ[R] A}\\n- Mathlib/Algebra/FreeAlgebra.lean:490\\n    theorem algebraMap_eq_zero_iff (x : R) : algebraMap R (FreeAlgebra R X) x = 0 ↔ x = 0 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:494\\n    theorem algebraMap_eq_one_iff (x : R) : algebraMap R (FreeAlgebra R X) x = 1 ↔ x = 1 :=\\n- Mathlib/Algebra/FreeAlgebra.lean:498\\n    theorem ι_injective [Nontrivial R] : Function.Injective (ι R : X → FreeAlgebra R X) :=\\n- Mathlib/Algebra/FreeAlgebra.lean:509\\n    theorem ι_inj [Nontrivial R] (x y : X) : ι R x = ι R y ↔ x = y :=\\n- Mathlib/Algebra/FreeAlgebra.lean:513\\n    theorem ι_ne_algebraMap [Nontrivial R] (x : X) (r : R) : ι R x ≠ algebraMap R _ r := fun h ↦ by\\n- Mathlib/Algebra/FreeAlgebra.lean:523\\n    theorem ι_ne_zero [Nontrivial R] (x : X) : ι R x ≠ 0 :=\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def X :.*PowerSeries\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def X :.*PowerSeries' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"PowerSeries.X\"}",
+   "ok": true,
+   "result_chars": 2560,
+   "result_head": "[{\"type\": \"text\", \"text\": \"77 match(es) for 'PowerSeries.X' (via ripgrep):\\n- Mathlib/Tactic/Ring/NamePowerVars.lean:60\\n    MvPowerSeries.X (R := $R) (σ := Fin $sizeStx) $idx)\\n- Mathlib/NumberTheory/ArithmeticFunction/LFunction.lean:161\\n    ofPowerSeries (q ^ k) f = ofPowerSeries q (f.subst (PowerSeries.X ^ k)) := by\\n- Mathlib/NumberTheory/BernoulliPolynomials.lean:263\\n    PowerSeries.X * rescale t (exp A) := by\\n- Mathlib/RingTheory/HahnSeries/PowerSeries.lean:128\\n    theorem ofPowerSeries_X : ofPowerSeries Γ R PowerSeries.X = single 1 1 := by\\n- Mathlib/RingTheory/HahnSeries/PowerSeries.lean:140\\n    theorem ofPowerSeries_X_pow {R} [Semiring R] (n : ℕ) :\\n- Mathlib/RingTheory/HahnSeries/PowerSeries.lean:141\\n    ofPowerSeries Γ R (PowerSeries.X ^ n) = single (n : Γ) 1 := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:183\\n    theorem toMvPowerSeries_X : X.toMvPowerSeries i = MvPowerSeries.X i (R := R) := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:197\\n    theorem toMvPowerSeries_eq_subst : f.toMvPowerSeries i = f.subst (MvPowerSeries.X i) := by\\n- Mathlib/RingTheory/MvPowerSeries/Equiv.lean:209\\n    simp only [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, smul_eq_mul, mul_ite, mul_one,\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:28\\n    - `MvPowerSeries.X`: the indeterminates\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:46\\n    - `MvPowerSeries.X_pow_dvd_iff`, `MvPowerSeries.X_dvd_iff`: equivalent\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:560\\n    theorem map_X (s : σ) : map f (X s) = X s := by simp [MvPowerSeries.X]\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:876\\n    theorem coe_X (s : σ) : ((X s : MvPolynomial σ R) : MvPowerSeries σ R) = MvPowerSeries.X s :=\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:922\\n    e.prod fun s n ↦ (MvPowerSeries.X s) ^ n := by\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:928\\n    = MvPowerSeries.C r * e.prod fun s e => (MvPowerSeries.X s) ^ e := by\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:935\\n    = MvPowerSeries.C r * e.prod fun s e => ((MvPowerSeries.X s) ^ p) ^ e := by\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:942\\n    d.prod fun s e ↦ MvPowerSeries.X (f s) ^ e := by\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:963\\n    e.prod (fun s n ↦ ((a s • MvPowerSeries.X s) ^ n))\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:966\\n    (g2 := fun s n ↦ ((MvPowerSeries.C (algebraMap A R (a s)) * (MvPowerSeries.X s)) ^ n))]\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:977\\n    = e.prod fun s e => (r s • MvPowerSeries.X s) ^ e := by\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/PowerSeries/Basic.lean\", \"line\": 100, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3353,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/PowerSeries/Basic.lean  (lines 100–179 of 947):\\n   100      · apply h\\n   101      rfl\\n   102  \\n   103  @[simp]\\n   104  theorem forall_coeff_eq_zero (φ : R⟦X⟧) : (∀ n, coeff n φ = 0) ↔ φ = 0 :=\\n   105    ⟨fun h => ext h, fun h => by simp [h]⟩\\n   106  \\n   107  /-- Two formal power series are equal if all their coefficients are equal. -/\\n   108  add_decl_doc PowerSeries.ext_iff\\n   109  \\n   110  instance [Subsingleton R] : Subsingleton R⟦X⟧ := by\\n   111    simp only [subsingleton_iff, PowerSeries.ext_iff]\\n   112    subsingleton\\n   113  \\n   114  /-- Constructor for formal power series. -/\\n   115  def mk {R} (f : ℕ → R) : R⟦X⟧ := fun s => f (s ())\\n   116  \\n   117  @[simp]\\n   118  theorem coeff_mk (n : ℕ) (f : ℕ → R) : coeff n (mk f) = f n :=\\n   119    congr_arg f Finsupp.single_eq_same\\n   120  \\n   121  theorem coeff_monomial (m n : ℕ) (a : R) : coeff m (monomial n a) = if m = n then a else 0 :=\\n   122    calc\\n   123      coeff m (monomial n a) = _ := MvPowerSeries.coeff_monomial _ _ _\\n   124      _ = if m = n then a else 0 := by simp only [Finsupp.unique_single_eq_iff]\\n   125  \\n   126  theorem monomial_eq_mk (n : ℕ) (a : R) : monomial n a = mk fun m => if m = n then a else 0 :=\\n   127    ext fun m => by rw [coeff_monomial, coeff_mk]\\n   128  \\n   129  @[simp]\\n   130  theorem coeff_monomial_same (n : ℕ) (a : R) : coeff n (monomial n a) = a :=\\n   131    MvPowerSeries.coeff_monomial_same _ _\\n   132  \\n   133  @[simp]\\n   134  theorem coeff_comp_monomial (n : ℕ) : (coeff (R := R) n).comp (monomial n) = LinearMap.id :=\\n   135    LinearMap.ext <| coeff_monomial_same n\\n   136  \\n   137  theorem monomial_mul_monomial (m n : ℕ) (a b : R) :\\n   138      monomial m a * monomial n b = monomial (m + n) (a * b) := by\\n   139    simpa [monomial] using\\n   140      MvPowerSeries.monomial_mul_monomial (Finsupp.single () m) (Finsupp.single () n) a b\\n   141  \\n   142  /-- The constant coefficient of a formal power series. -/\\n   143  def constantCoeff : R⟦X⟧ →+* R :=\\n   144    MvPowerSeries.constantCoeff\\n   145  \\n   146  theorem constantCoeff_eq (f : R⟦X⟧) :\\n   147      constantCoeff f = MvPowerSeries.constantCoeff f := rfl\\n   148  \\n   149  /-- The constant formal power series. -/\\n   150  def C : R →+* R⟦X⟧ :=\\n   151    MvPowerSeries.C\\n   152  \\n   153  lemma C_apply {r : R} : C r = MvPowerSeries.C r := rfl\\n   154  \\n   155  @[simp] lemma algebraMap_eq {R : Type*} [CommSemiring R] : algebraMap R R⟦X⟧ = C := rfl\\n   156  \\n   157  /-- The variable of the formal power series ring. -/\\n   158  def X : R⟦X⟧ :=\\n   159    MvPowerSeries.X ()\\n   160  \\n   161  lemma X_apply : X (R := R) = MvPowerSeries.X () := rfl\\n   162  \\n   163  theorem commute_X (φ : R⟦X⟧) : Commute φ X :=\\n   164    MvPowerSeries.commute_X _ _\\n   165  \\n   166  theorem X_mul {φ : R⟦X⟧} : X * φ = φ * X :=\\n   167    MvPowerSeries.X_mul\\n   168  \\n   169  theorem commute_X_pow (φ : R⟦X⟧) (n : ℕ) : Commute φ (X ^ n) :=\\n   170    MvPowerSeries.commute_X_pow _ _ _\\n   171  \\n   172  theorem X_pow_mul {φ : R⟦X⟧} {n : ℕ} : X ^ n * φ = φ * X ^ n :=\\n   173    MvPowerSeries.X_pow_mul\\n   174  \\n   175  @[simp]\\n   176  theorem coeff_zero_eq_constantCoeff : ⇑(coeff (R := R) 0) = constantCoeff := by\\n   177    rw [coeff, Finsupp.single_zero]\\n   178    rfl\\n   179  \\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries map\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries map': Unknown identifier `map`\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"partition function Euler\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'partition function Euler': Unknown identifier `partition`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"tprod\"}",
+   "ok": true,
+   "result_chars": 1217,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 211 declarations mentioning tprod.\\n- tprod   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∏' i, f i` is the unconditional product of `f`, if it exists, or 1 otherwise.  More generally, if `L` is a `SummationFilter`, `∏'[L] i, f i` is the product of \\n- tprod_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    If the summation filter is the trivial filter `⊥`, then the topological product is equal to the finite product (which is taken to be 1 if the multiplicative sup\\n- Multipliable.hasProd   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasProd.tprod_eq   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tprod_eq_one_of_not_multipliable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Multipliable.hasProd_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tprod_eq_of_multipliable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tprod_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tprod_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tprod_fintype   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tprod_comp_neg   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\\n- tprod_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Nat → PowerSeries\"}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Nat → PowerSeries': type expected, got\\n  (PowerSeries : Type ?u.3 → Type ?u.3)\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries.mk\"}",
+   "ok": true,
+   "result_chars": 1267,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 31 declarations mentioning PowerSeries.mk.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.coe_def   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.constantCoeff_mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.coeff_mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.rescale_mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.monomial_eq_mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.eq_X_mul_shift_add_const   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Split off the constant coefficient.\\n- PowerSeries.eq_shift_mul_X_add_const   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Split off the constant coefficient.\\n- PowerSeries.eq_X_pow_mul_shift_add_trunc   [Mathlib.RingTheory.PowerSeries.Trunc]\\n    Split off the first `n` coefficients.\\n- PowerSeries.eq_shift_mul_X_pow_add_trunc   [Mathlib.RingTheory.PowerSeries.Trunc]\\n    Split off the first `n` coefficients.\\n- PowerSeries.sub_const_eq_X_mul_shift   [Mathlib.RingTheory.PowerSeries.Inverse]\\n- PowerSeries.sub_const_eq_shift_mul_X   [Mathlib.RingTheory.PowerSeries.Inverse]\\n    Two ways of removing the constant coefficient of a power series are the same.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"PowerSeries\", \"PowerSeries.X\", \"PowerSeries.mk\", \"PowerSeries.coeff\", \"pentagonal\", \"tprod\"]}",
+   "ok": true,
+   "result_chars": 2103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"PowerSeries\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries\\\"},{\\\"decl\\\":\\\"PowerSeries.X\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries.X\\\"},{\\\"decl\\\":\\\"PowerSeries.mk\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries.mk\\\"},{\\\"decl\\\":\\\"PowerSeries.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.PowerSeries.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/PowerSeries/Basic.html#PowerSeries.coeff\\\"},{\\\"decl\\\":\\\"pentagonal\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"import_line\\\":\\\"import Mathlib.Combinatorics.Enumerative.Pentagonal\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Combinatorics/Enumerative/Pentagonal.html#pentagonal\\\"},{\\\"decl\\\":\\\"tprod\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Algebra.InfiniteSum.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Algebra/InfiniteSum/Defs.html#tprod\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":6,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"natAbs\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'natAbs': unknown identifier 'natAbs'\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Int.natAbs\"}",
+   "ok": true,
+   "result_chars": 770,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 411 declarations mentioning Int.natAbs.\\n- Int.natAbs   [Init.Data.Int.Basic]\\n    The absolute value of an integer is its distance from `0`.  This function is overridden by the compiler with an efficient implementation. This definition is the\\n- Int.natAbs_negOfNat   [Init.Data.Int.Order]\\n- Int.natAbs_ofNat'   [Init.Data.Int.Order]\\n- Int.natAbs_negSucc   [Init.Data.Int.Order]\\n- Int.natAbs_cast   [Init.Data.Int.Order]\\n- Int.natAbs_natCast   [Init.Data.Int.Order]\\n- Int.le_natAbs   [Init.Data.Int.Order]\\n- Int.natAbs_neg   [Init.Data.Int.Order]\\n- Int.natAbs_one   [Init.Data.Int.Order]\\n- Int.natAbs_zero   [Init.Data.Int.Order]\\n- Int.eq_natAbs_of_nonneg   [Init.Data.Int.Order]\\n- Int.mul_sign_self   [Init.Data.Int.Order]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ZMod coeff\"}",
+   "ok": true,
+   "result_chars": 87,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ZMod coeff': Unknown identifier `coeff`\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.prod PowerSeries\"}",
+   "ok": true,
+   "result_chars": 255,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finset.prod PowerSeries': Application type mismatch: The argument\\n  PowerSeries\\nhas type\\n  Type ?u.3 → Type ?u.3\\nbut is expected to have type\\n  Finset ?m.1\\nin the application\\n  Finset.prod PowerSeries\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def tprod\"}",
+   "ok": true,
+   "result_chars": 1328,
+   "result_head": "[{\"type\": \"text\", \"text\": \"10 match(es) for 'def tprod' (via ripgrep):\\n- Mathlib/RepresentationTheory/Basic.lean:622\\n    noncomputable def tprod : Representation k G (V ⊗[k] W) where\\n- Mathlib/Topology/Algebra/InfiniteSum/Defs.lean:142\\n    noncomputable irreducible_def tprod (f : β → α) (L := unconditional β) :=\\n- Mathlib/Analysis/Normed/Module/PiTensorProduct/ProjectiveSeminorm.lean:200\\n    noncomputable def tprodL : ContinuousMultilinearMap 𝕜 E (⨂[𝕜] i, E i) :=\\n- Mathlib/LinearAlgebra/TensorPower/Symmetric.lean:115\\n    def tprod : MultilinearMap R (fun _ : ι ↦ M) Sym[R] ι M :=\\n- Mathlib/Data/Prod/TProd.lean:136\\n    protected def tprod : ∀ (l : List ι) (_t : ∀ i, Set (α i)), Set (TProd α l)\\n- Mathlib/LinearAlgebra/PiTensorProduct/Basic.lean:131\\n    def tprodCoeff (r : R) (f : Π i, s i) : ⨂[R] i, s i :=\\n- Mathlib/LinearAlgebra/PiTensorProduct/Basic.lean:278\\n    def tprod : MultilinearMap R s (⨂[R] i, s i) where\\n- Mathlib/LinearAlgebra/TensorAlgebra/Basic.lean:317\\n    def tprod (n : ℕ) : MultilinearMap R (fun _ : Fin n => M) (TensorAlgebra R M) :=\\n- Mathlib/RingTheory/PiTensorProduct.lean:116\\n    def tprodMonoidHom : (Π i, A i) →* ⨂[R] i, A i where\\n- Mathlib/MeasureTheory/Constructions/Pi.lean:136\\n    protected def tprod (l : List δ) (μ : ∀ i, Measure (X i)) : Measure (TProd X l) := by\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 1, \"n\": 200}",
+   "ok": true,
+   "result_chars": 6162,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 1–120 of 349):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.BigOperators.Finprod\\n     9  public import Mathlib.Topology.Algebra.InfiniteSum.SummationFilter\\n    10  public import Mathlib.Topology.Separation.Hausdorff\\n    11  public import Mathlib.Algebra.BigOperators.Group.Finset.Preimage\\n    12  \\n    13  /-!\\n    14  # Infinite sum and product in a topological monoid\\n    15  \\n    16  This file defines infinite products and sums for (possibly infinite) indexed families of elements\\n    17  in a commutative topological monoid (resp. add monoid).\\n    18  \\n    19  To handle convergence questions we use the formalism of *summation filters* (defined in the\\n    20  file `Mathlib/Topology/Algebra/InfiniteSum/SummationFilter.lean`). These are filters on the finite\\n    21  subsets of a given type, and we define a function to be *summable* for a summation filter `L` if\\n    22  its partial sums over finite subsets tend to a limit along `L` (and similarly for products).\\n    23  \\n    24  This simultaneously generalizes several different kinds of summation: for instance,\\n    25  *unconditional summation* (which makes sense for any index type) where we take the limit with\\n    26  respect to the `atTop` filter; but also *conditional summation* for functions on `ℕ`, where the\\n    27  limit is over the partial sums `∑ i ∈ range n, f i` as `n → ∞` (so there exist\\n    28  conditionally-summable sequences which are not unconditionally summable).\\n    29  \\n    30  ## Implementation notes\\n    31  \\n    32  We say that a function `f : β → α` has a product of `a` w.r.t. the summation filter `L` if the\\n    33  function `fun s : Finset β ↦ ∏ b ∈ s, f b` converges to `a` w.r.t. the filter `L.filter` on\\n    34  `Finset β`.\\n    35  \\n    36  In the most important case of unconditional summation, this translates to the following condition:\\n    37  for every neighborhood `U` of `a`, there exists a finite set `s : Finset β` of indices such\\n    38  that `∏ b ∈ s', f b ∈ U` for any finite set `s'` which is a superset of `s`.\\n    39  \\n    40  This may yield some unexpected results. For example, according to this definition, the product\\n    41  `∏' n : ℕ, (1 : ℝ) / 2` unconditionally exists and is equal to `0`. More strikingly,\\n    42  the product `∏' n : ℕ, (n : ℝ)` unconditionally exists and is equal to `0`, because one\\n    43  of its terms is `0` (even though the product of the remaining terms diverges). Users who would\\n    44  prefer that these products be considered not to exist can carry them out in the unit group `ℝˣ`\\n    45  rather than in `ℝ`.\\n    46  \\n    47  ## References\\n    48  \\n    49  * Bourbaki: General Topology (1995), Chapter 3 §5 (Infinite sums in commutative groups)\\n    50  \\n    51  -/\\n    52  \\n    53  @[expose] public section\\n    54  \\n    55  /- **NOTE**. This file is intended to be kept short, just enough to state the basic definitions and\\n    56  six key lemmas relating them together, namely `Summable.hasSum`, `Multipliable.hasProd`,\\n    57  `HasSum.tsum_eq`, `HasProd.tprod_eq`, `Summable.hasSum_iff`, and `Multipliable.hasProd_iff`.\\n    58  \\n    59  Do not add further lemmas here -- add them to `InfiniteSum.Basic` or (preferably) another, more\\n    60  specific file. -/\\n    61  \\n    62  noncomputable section\\n    63  \\n    64  open Filter Function SummationFilter\\n    65  \\n    66  open scoped Topology\\n    67  \\n    68  variable {α β γ : Type*}\\n    69  \\n    70  section HasProd\\n    71  \\n    72  variable [CommMonoid α] [TopologicalSpace α]\\n    73  \\n    74  /-- `HasProd f a L` means that the (potentially infinite) product of the `f b` for `b : β` converges\\n    75  to `a` along the SummationFilt"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Even\"}",
+   "ok": true,
+   "result_chars": 888,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 353 declarations mentioning Even.\\n- Even   [Mathlib.Algebra.Group.Even]\\n    An element `a` of a type `α` with addition satisfies `Even a` if `a = r + r`, for some `r : α`.\\n- Even.add_self   [Mathlib.Algebra.Group.Even]\\n- instDecidablePredAddOppositeEven   [Mathlib.Algebra.Group.Even]\\n- Additive.instDecidablePredEven   [Mathlib.Algebra.Group.Even]\\n- Multiplicative.instDecidablePredIsSquare   [Mathlib.Algebra.Group.Even]\\n- even_op_iff   [Mathlib.Algebra.Group.Even]\\n- even_unop_iff   [Mathlib.Algebra.Group.Even]\\n- Even.zero   [Mathlib.Algebra.Group.Even]\\n- Even.exists_add_self   [Mathlib.Algebra.Group.Even]\\n    **Alias** of the forward direction of `even_iff_exists_add_self`.\\n- even_iff_exists_add_self   [Mathlib.Algebra.Group.Even]\\n- Even.two_nsmul   [Mathlib.Algebra.Group.Even]\\n- Even.isSquare_pow   [Mathlib.Algebra.Group.Even]\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Int.even\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Int.even': unknown identifier 'Int.even'\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"even_iff\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'even_iff': unknown identifier 'even_iff'\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

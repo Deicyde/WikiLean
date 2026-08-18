@@ -1,0 +1,322 @@
+{
+ "task_id": "fresh_039",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:54:49Z",
+ "wall_s": 110.8,
+ "transcript_stats": {
+  "turns": 35,
+  "assistant_turns": 17,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 5,
+   "mcp__wikibrain__brain_search": 19,
+   "mcp__wikibrain__brain_cell": 6,
+   "decl_exists": 1,
+   "mcp__wikibrain__brain_transfer": 3
+  },
+  "tokens_in": 140,
+  "tokens_out": 8537,
+  "cost_usd": 0.11485230000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"commutative group\"}",
+   "ok": true,
+   "result_chars": 3865,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative group\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q165474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":7},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q181296\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":189,\\\"withheld_by_shard\\\":323,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CommMagma\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class CommMagma (G : Type u) extends Mul G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommMagma\\\",\\\"via_cell\\\":\\\"cell:Q165474\\\",\\\"cell_label\\\":\\\"Commutative property\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Group\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Group (G : Type u) extends DivInvMonoid G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group\\\",\\\"via_cell\\\":\\\"cell:Q83478\\\",\\\"cell_label\\\":\\\"Group (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"torsion subgroup finite\"}",
+   "ok": true,
+   "result_chars": 3828,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup finite\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q466109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"subgroup\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q849512\\\",\\\"label\\\":\\\"Symmetric group\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q161519\\\",\\\"label\\\":\\\"Permutation\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1057968\\\",\\\"label\\\":\\\"Finite group\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q1065966\\\",\\\"label\\\":\\\"Isomorphism theorems\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q178546\\\",\\\"label\\\":\\\"Determinant\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q2431134\\\",\\\"label\\\":\\\"Symmetry in mathematics\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q2662474\\\",\\\"label\\\":\\\"Geometric group theory\\\",\\\"w\\\":2},{\\\"id\\\":\\\"cell:Q33198\\\",\\\"label\\\":\\\"String theory\\\",\\\"w\\\":2}],\\\"returned\\\":12,\\\"total\\\":95,\\\"withheld_by_shard\\\":121,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Subgroup\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Subgroup.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Subgroup.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Subgroup (G : Type*) [Group G] extends Submonoid G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Subgroup/Defs.html#Subgroup\\\",\\\"via_cell\\\":\\\"cell:Q466109\\\",\\\"cell_label\\\":\\\"subgroup\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"}]},{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"cell_label\\\":\\\"Finite\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"finite sublevel sets real-valued function\"}",
+   "ok": true,
+   "result_chars": 3539,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finite sublevel sets real-valued function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"CommGroup\"}",
+   "ok": true,
+   "result_chars": 5054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommGroup\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q181296\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"CommGroup.fg_of_descent'\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Descent\\\",\\\"label\\\":\\\"Descent\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:CommGroup.isNilpotent\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"CommGroup.isNilpotent\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Nilpotent\\\",\\\"label\\\":\\\"Nilpotent\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q165474\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1057968\\\",\\\"label\\\":\\\"Finite group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q245462\\\",\\\"label\\\":\\\"Cyclic group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q16743426\\\",\\\"label\\\":\\\"Introduction to gauge theory\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q193878\\\",\\\"label\\\":\\\"Chinese remainder theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":107,\\\"withheld_by_shard\\\":80,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CommGroup\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class CommGroup (G : Type u) extends Group G, CommMonoid G\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommGroup\\\",\\\"via_cell\\\":\\\"cell:Q181296\\\",\\\"cell_label\\\":\\\"Abelian group\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"CommGroup.fg_of_descent'\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.GroupTheory.Descent\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.Descent\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"theorem\\\",\\\"code\\\":\\\"theorem CommGroup.fg_of_descent' {G : Type*} [CommGroup G] {h : G → ℝ} {C : ℝ}\\\\n    (H₁ : (powMonoidHom (α := G) 2).range.FiniteIndex) (H₂ : ∀ x, 0 ≤ h x)\\\\n    (H₃ : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C) [Northcott h] :\\\\n    Group.FG G := by\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/D"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"torsion subgroup\"}",
+   "ok": true,
+   "result_chars": 3338,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion subgroup\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q466109\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"subgroup\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Subgroup\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Subgroup.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Subgroup.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Subgroup (G : Type*) [Group G] extends Submonoid G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Subgroup/Defs.html#Subgroup\\\",\\\"via_cell\\\":\\\"cell:Q466109\\\",\\\"cell_label\\\":\\\"subgroup\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"}]},{\\\"decl\\\":\\\"NumberField.RingOfIntegers\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.NumberTheory.NumberField.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.NumberTheory.NumberField.Basic\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def RingOfIntegers : Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/NumberField/Basic.html#NumberField.RingOfIntegers\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"cell_label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"label\\\":\\\"NumberField\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddCommGroup\"}",
+   "ok": true,
+   "result_chars": 4135,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddCommGroup\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup\\\",\\\"label\\\":\\\"AddCommGroup\\\",\\\"aka\\\":[\\\"Relational Algebraic Approach to the Real Numbers: The Least-Upper-Bound Property\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup.equiv_directSum_zmod_of_finite\\\",\\\"label\\\":\\\"AddCommGroup.equiv_directSum_zmod_of_finite\\\",\\\"aka\\\":[\\\"The Ideal Membership Problem and Abelian Groups\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/FiniteAbelian/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup.equiv_free_prod_directSum_zmod\\\",\\\"label\\\":\\\"AddCommGroup.equiv_free_prod_directSum_zmod\\\",\\\"aka\\\":[\\\"Tension continuous maps--their structure and applications\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/FiniteAbelian/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup.toIntModule\\\",\\\"label\\\":\\\"AddCommGroup.toIntModule\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/NatInt\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup.uniqueIntModule\\\",\\\"label\\\":\\\"AddCommGroup.uniqueIntModule\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/NatInt\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:InnerProductSpace.Core.toNormedAddCommGroup\\\",\\\"label\\\":\\\"InnerProductSpace.Core.toNormedAddCommGroup\\\",\\\"aka\\\":[\\\"An Elementary Expository Study: From Metric Spaces to Hilbert Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WeierstrassCurve.Affine.Point.instAddCommGroup\\\",\\\"label\\\":\\\"WeierstrassCurve.Affine.Point.instAddCommGroup\\\",\\\"aka\\\":[\\\"The Frequency of Elliptic Curves Over $\\\\\\\\mathbb{Q}[i]$ with Fixed Torsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/EllipticCurve/Affine\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Bundle.instNormedAddCommGroup\\\",\\\"label\\\":\\\"Bundle.instNormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/VectorBundle/Riemannian\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.addCommGroup\\\",\\\"label\\\":\\\"ContinuousLinearMap.addCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ContinuousLinearMap.toNormedAddCommGroup\\\",\\\"label\\\":\\\"ContinuousLinearMap.toNormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operator\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Equiv.normedAddCommGroup\\\",\\\"label\\\":\\\"Equiv.normedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Module\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Int.instAddCommGroup\\\",\\\"label\\\":\\\"Int.instAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Int\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Matrix.frobeniusSeminormedAddCommGroup\\\",\\\"label\\\":\\\"Matrix.frobeniusSeminormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Matrix/Normed\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.Lp.instNormedAddCommGroup\\\",\\\"label\\\":\\\"MeasureTheory.Lp.instNormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Function/LpSpace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NormedAddCommGroup\\\",\\\"label\\\":\\\"NormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NormedAddCommGroup.summable_imp_tendsto_iff_completeSpace\\\",\\\"label\\\":\\\"NormedAddCommGroup.summable_imp_tendsto_iff_completeSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:PiLp.normedAddCommGroup\\\",\\\"label\\\":\\\"PiLp.normedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Lp\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SeminormedAddCommGroup\\\",\\\"label\\\":\\\"SeminormedAddCommGroup\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Group\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Comodule.Hom.instAddCommGroup\\\",\\\"label\\\":\\\"TauCeti.Comodule.Hom.instAddCommGroup\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Coalgebra/Comodule\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.ComoduleCat.homAddCommGroup\\\",\\\"label\\\":\\\"TauCeti.ComoduleCat.homAddCommGroup\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Coalgebra/Comodule\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:forget₂AddCommGroupIsEquivalence\\\",\\\"label\\\":\\\"forget₂AddCommGroupIsEquivalence\\\",\\\"supercell\\\""
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"torsion\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 3418,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q513028\\\",\\\"label\\\":\\\"Bézout's identity\\\",\\\"aka\\\":[\\\"Bezouts Identity\\\",\\\"Int.gcd_eq_gcd_ab\\\",\\\"Torsion in M2-brane theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Int/GCD\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:LinearMap.toMatrix_transpose\\\",\\\"label\\\":\\\"LinearMap.toMatrix_transpose\\\",\\\"aka\\\":[\\\"Torsion of Quasi-Isomorphisms\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Dual\\\"},{\\\"id\\\":\\\"cell:Q1551033\\\",\\\"label\\\":\\\"torsion group\\\",\\\"aka\\\":[\\\"Monoid.IsTorsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CovariantDerivative.torsion\\\",\\\"label\\\":\\\"CovariantDerivative.torsion\\\",\\\"aka\\\":[\\\"$C^{1,1}$ Pseudohermitian, Torsion-free Manifolds\\\"],\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/VectorBundle\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Cubic.discr\\\",\\\"label\\\":\\\"Cubic.discr\\\",\\\"aka\\\":[\\\"Absolutely Abelian Hilbert Class Fields and $\\\\\\\\ell-$torsion conjecture\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/CubicDiscriminant\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FDRep.finrank_hom_simple_simple\\\",\\\"label\\\":\\\"FDRep.finrank_hom_simple_simple\\\",\\\"aka\\\":[\\\"Dynamical Zeta Functions, Nielsen theory and Reidemeister torsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/FDRep\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsDedekindDomain.flat_iff_torsion_eq_bot\\\",\\\"label\\\":\\\"IsDedekindDomain.flat_iff_torsion_eq_bot\\\",\\\"aka\\\":[\\\"more-algebra-lemma-dedekind-torsion-free-flat\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Flat/TorsionFree\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Flat.flat_iff_torsion_eq_bot_of_isBezout\\\",\\\"label\\\":\\\"Module.Flat.flat_iff_torsion_eq_bot_of_isBezout\\\",\\\"aka\\\":[\\\"more-algebra-lemma-valuation-ring-torsion-free-flat\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Flat/TorsionFree\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of FI_G-modules\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:NumberField.RingOfIntegers\\\",\\\"label\\\":\\\"NumberField.RingOfIntegers\\\",\\\"aka\\\":[\\\"Asymptotics of $p$-torsion subgroup sizes in class groups of monogenized cubic fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ProfiniteGrp\\\",\\\"label\\\":\\\"ProfiniteGrp\\\",\\\"aka\\\":[\\\"Bi-orderability and generalized torsion elements from the perspective of profinite properties\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Algebra/Category\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:WeierstrassCurve.Affine.Point.instAddCommGroup\\\",\\\"label\\\":\\\"WeierstrassCurve.Affine.Point.instAddCommGroup\\\",\\\"aka\\\":[\\\"The Frequency of Elliptic Curves Over $\\\\\\\\mathbb{Q}[i]$ with Fixed Torsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/EllipticCurve/Affine\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CovariantDerivative.torsion_eq_zero_iff\\\",\\\"label\\\":\\\"CovariantDerivative.torsion_eq_zero_iff\\\",\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/VectorBundle\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.promislow_group_is_torsionfree\\\",\\\"label\\\":\\\"Kaplansky.promislow_group_is_torsionfree\\\",\\\"supercell\\\":\\\"path:FormalConjectures/Wikipedia\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Flat.isTorsionFree\\\",\\\"label\\\":\\\"Module.Flat.isTorsionFree\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Flat/TorsionFree\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Northcott height function\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Northcott height function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"Q1551033\"}",
+   "ok": true,
+   "result_chars": 1362,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"Q1551033\\\",\\\"id\\\":\\\"cell:Q1551033\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"torsion group\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1551033\\\",\\\"anchor\\\":\\\"Q1551033\\\",\\\"label\\\":\\\"torsion group\\\",\\\"supercells\\\":[\\\"path:Mathlib/GroupTheory/Torsion\\\"],\\\"f\\\":32,\\\"xy\\\":[1029.8,394.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1551033\\\",\\\"label\\\":\\\"torsion group\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"group in which each element has finite order\\\",\\\"slug\\\":\\\"Torsion_group\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Monoid.IsTorsion\\\",\\\"label\\\":\\\"Monoid.IsTorsion\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.GroupTheory.Torsion\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def IsTorsion :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.Torsion\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"label\\\":\\\"Torsion\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q181296\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Group.torsionSubgroup\"}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Group.torsionSubgroup\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Northcott\"}",
+   "ok": true,
+   "result_chars": 268,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Northcott\\\",\\\"hits\\\":[{\\\"id\\\":\\\"path:Mathlib/NumberTheory/Height/Northcott\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Northcott\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/NumberTheory/Height/Northcott\"}",
+   "ok": true,
+   "result_chars": 760,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/NumberTheory/Height/Northcott\\\",\\\"id\\\":\\\"path:Mathlib/NumberTheory/Height/Northcott\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Northcott\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/NumberTheory/Height/Northcott\\\",\\\"parent\\\":\\\"path:Mathlib/NumberTheory/Height\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory\\\",\\\"label\\\":\\\"NumberTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/Height\\\",\\\"label\\\":\\\"Height\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Northcott class\"}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Northcott class\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Group.torsion finite\"}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Group.torsion finite\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:CommGroup.fg_of_descent'\"}",
+   "ok": true,
+   "result_chars": 2081,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"id\\\":\\\"cell:decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"CommGroup.fg_of_descent'\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"anchor\\\":\\\"decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"label\\\":\\\"CommGroup.fg_of_descent'\\\",\\\"supercells\\\":[\\\"path:Mathlib/GroupTheory/Descent\\\"],\\\"f\\\":128,\\\"xy\\\":[-288.3,668.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:CommGroup.fg_of_descent'\\\",\\\"label\\\":\\\"CommGroup.fg_of_descent'\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.Descent\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"If `G` is a commutative group and `n : ℕ`, `h : G → ℝ` satisfy\\\\n* `G / G ^ 2` is finite,\\\\n* `0 ≤ h x` for all `x : G`,\\\\n* there is `C : ℝ` such that for all `x y : G`, `|h (x * y) + h(x / y) - 2 * (h x + h y)| ≤ C`,\\\\n* for all `B : ℝ`, there are only finitely many `x : G` such that `\\\",\\\"code\\\":\\\"theorem CommGroup.fg_of_descent' {G : Type*} [CommGroup G] {h : G → ℝ} {C : ℝ}\\\\n    (H₁ : (powMonoidHom (α := G) 2).range.FiniteIndex) (H₂ : ∀ x, 0 ≤ h x)\\\\n    (H₃ : ∀ x y, |h (x * y) + h (x / y) - 2 * (h x + h y)| ≤ C) [Northcott h] :\\\\n    Group.FG G := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.Descent\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:math/0311310#5.0\\\",\\\"label\\\":\\\"Higher Descent on Pell Conics III. The First 2-Descent\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"math/0311310\\\",\\\"ref\\\":\\\"5.0\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Descent\\\",\\\"label\\\":\\\"Descent\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q318751\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Subgroup.torsion\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Subgroup.torsion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"elements finite order\"}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"elements finite order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"orderOf\"}",
+   "ok": true,
+   "result_chars": 2747,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"orderOf\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"label\\\":\\\"orderOf\\\",\\\"aka\\\":[\\\"Accelerated Sampling on Discrete Spaces with Non-Reversible Markov Processes\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q518730\\\",\\\"label\\\":\\\"Order of magnitude\\\",\\\"aka\\\":[\\\"Orderof Magnitude\\\"]},{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf_dvd_natCard\\\",\\\"label\\\":\\\"orderOf_dvd_natCard\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf_dvd_card\\\",\\\"label\\\":\\\"orderOf_dvd_card\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf_eq_card_of_zpowers_eq_top\\\",\\\"label\\\":\\\"orderOf_eq_card_of_zpowers_eq_top\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/SpecificGroups/Cyclic\\\"},{\\\"id\\\":\\\"cell:Q1139041\\\",\\\"label\\\":\\\"Cauchy's theorem\\\",\\\"aka\\\":[\\\"exists_prime_orderOf_dvd_card\\\",\\\"A footnote to the KPT theorem in structural Ramsey theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/Perm/Cycle\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Equiv.Perm.IsCycle.orderOf\\\",\\\"label\\\":\\\"Equiv.Perm.IsCycle.orderOf\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/Perm/Cycle\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:IsCyclic.card_orderOf_eq_totient\\\",\\\"label\\\":\\\"IsCyclic.card_orderOf_eq_totient\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/SpecificGroups/Cyclic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:FiniteField.orderOf_frobeniusAlgEquivOfAlgebraic\\\",\\\"label\\\":\\\"FiniteField.orderOf_frobeniusAlgEquivOfAlgebraic\\\",\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Finite/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:SemiconjBy.orderOf_eq\\\",\\\"label\\\":\\\"SemiconjBy.orderOf_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ZMod.addOrderOf_coe\\\",\\\"label\\\":\\\"ZMod.addOrderOf_coe\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/ZMod/Basic\\\"},{\\\"id\\\":\\\"path:FltRegular/SmallNumbers/OrderOf\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderOf\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderOfElement\\\",\\\"n_cells\\\":6},{\\\"id\\\":\\\"path:Mathlib/RingTheory/OrderOfVanishing\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderOfVanishing\\\",\\\"aka\\\":[\\\"algebra-definition-ord\\\"],\\\"n_cells\\\":3},{\\\"id\\\":\\\"path:MiscYD/Mathlib/GroupTheory/OrderOfElement\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OrderOfElement\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "decl_exists",
+   "input": "{\"names\": \"[\\\"CommGroup\\\", \\\"Finite\\\", \\\"Northcott\\\", \\\"Group.FG\\\", \\\"Subgroup\\\"]\"}",
+   "ok": false,
+   "result_chars": 75,
+   "result_head": "<tool_use_error>Error: No such tool available: decl_exists</tool_use_error>"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:orderOf\"}",
+   "ok": true,
+   "result_chars": 1720,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:orderOf\\\",\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"orderOf\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:orderOf\\\",\\\"anchor\\\":\\\"decl:Mathlib:orderOf\\\",\\\"label\\\":\\\"orderOf\\\",\\\"supercells\\\":[\\\"path:Mathlib/GroupTheory/OrderOfElement\\\"],\\\"f\\\":128,\\\"xy\\\":[460.9,-12.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:orderOf\\\",\\\"label\\\":\\\"orderOf\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.OrderOfElement\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"noncomputable def orderOf (x : G) : ℕ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.OrderOfElement\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1912.04681#2.6\\\",\\\"label\\\":\\\"Accelerated Sampling on Discrete Spaces with Non-Reversible Markov Processes\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1912.04681\\\",\\\"ref\\\":\\\"2.6\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/OrderOfElement\\\",\\\"label\\\":\\\"OrderOfElement\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q389208\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q940334\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161519\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q33456\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":5,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddGroup.torsion Subgroup\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddGroup.torsion Subgroup\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"torsion AddCommGroup subgroup\"}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion AddCommGroup subgroup\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.Torsion\"}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.Torsion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsTorsion monoid group element\"}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTorsion monoid group element\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"comm_group height function descent\"}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"comm_group height function descent\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Fintype subtype\"}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Fintype subtype\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Set.Finite\"}",
+   "ok": true,
+   "result_chars": 828,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Set.Finite\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q272404\\\",\\\"label\\\":\\\"finite set\\\",\\\"aka\\\":[\\\"Set.Finite\\\",\\\"Fluctuation Spectra and Coarse Graining in Stochastic Dynamics\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Set.Finite.convexHull_eq_image\\\",\\\"label\\\":\\\"Set.Finite.convexHull_eq_image\\\",\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/StdSimplex\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Set.Finite.countable\\\",\\\"label\\\":\\\"Set.Finite.countable\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Set/Countable\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Set.Finite.exists_max_image\\\",\\\"label\\\":\\\"Set.Finite.exists_max_image\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Set/Finite\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"Q272404\"}",
+   "ok": true,
+   "result_chars": 2544,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"Q272404\\\",\\\"id\\\":\\\"cell:Q272404\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"finite set\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q272404\\\",\\\"anchor\\\":\\\"Q272404\\\",\\\"label\\\":\\\"finite set\\\",\\\"supercells\\\":[\\\"path:Mathlib/Data/Finite/Defs\\\"],\\\"f\\\":160,\\\"xy\\\":[-574,82.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q272404\\\",\\\"label\\\":\\\"finite set\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"set that has a finite number of elements\\\",\\\"slug\\\":\\\"Finite_set\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Set.Finite\\\",\\\"label\\\":\\\"Set.Finite\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def Finite (s : Set α) : Prop := Finite s\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1312.0115#1.1.5\\\",\\\"label\\\":\\\"Fluctuation Spectra and Coarse Graining in Stochastic Dynamics\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1312.0115\\\",\\\"ref\\\":\\\"1.1.5\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":4,\\\"invocation\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q36161\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos1108.erdos_1108.parts.i\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos288.erdos_288\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos288.erdos_288.variants.exists_k_gt_2\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos288.erdos_288.variants.i2_card_eq_1\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos288.erdos_288.variants.k_intervals\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos510.erdos_510\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos510.erdos_510.variants.bedert\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos774.erdos_774\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":9,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"descent finite torsion descent theorem\"}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"descent finite torsion descent theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Northcott property height\"}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Northcott property height\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/GroupTheory/Torsion\"}",
+   "ok": true,
+   "result_chars": 691,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Torsion\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\",\\\"parent\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"cells\\\":[\\\"cell:Q1551033\\\"],\\\"fa\\\":32},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"CommGroup\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 650,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"CommGroup\\\",\\\"decl\\\":\\\"CommGroup\\\",\\\"id\\\":\\\"cell:Q181296\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q181296\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Abelian_group\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Abelian_group\\\",\\\"description\\\":\\\"group whose group operation is commutative\\\",\\\"snippet_sources\\\":[\\\"eom\\\",\\\"lmfdb_knowl\\\",\\\"mathworld\\\",\\\"nlab\\\",\\\"planetmath\\\",\\\"proofwiki\\\"],\\\"via_cell\\\":\\\"cell:Q181296\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Northcott\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 359,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Northcott\\\",\\\"decl\\\":\\\"Northcott\\\",\\\"hits\\\":[],\\\"note\\\":\\\"decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)\\\",\\\"suggestions\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Set.Finite\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 563,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Set.Finite\\\",\\\"decl\\\":\\\"Set.Finite\\\",\\\"id\\\":\\\"cell:Q272404\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"finite set\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q272404\\\",\\\"label\\\":\\\"finite set\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Finite_set\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Finite_set\\\",\\\"description\\\":\\\"set that has a finite number of elements\\\",\\\"snippet_sources\\\":[],\\\"via_cell\\\":\\\"cell:Q272404\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem commutative_group_torsion_subgroup_finite {G : Type*} [CommGroup G] {h : G → ℝ} {C : ℝ}\n    (h_fin_sublevel : ∀ B : ℝ, Set.Finite {x : G | h x ≤ B})\n    (h_nn : ∀ x : G, 0 ≤ h x)\n    (h_approx_para : ∀ x y : G, |h (x * y) + h (x / y) - 2 * h x - 2 * h y| ≤ C)\n    [Northcott h] :\n    Finite {x : G // orderOf x ≠ 1} := sorry"
+}

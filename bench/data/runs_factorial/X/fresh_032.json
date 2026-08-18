@@ -1,0 +1,384 @@
+{
+ "task_id": "fresh_032",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:15:12Z",
+ "wall_s": 94.3,
+ "transcript_stats": {
+  "turns": 42,
+  "assistant_turns": 22,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 20,
+   "mcp__formal__decl_grep": 16,
+   "mcp__formal__decl_read": 3,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 178,
+  "tokens_out": 6371,
+  "cost_usd": 0.08452989999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.find?\"}",
+   "ok": true,
+   "result_chars": 811,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 146 declarations mentioning List.find?.\\n- List.find?   [Init.Data.List.Basic]\\n    Returns the first element of the list for which the predicate `p` returns `true`, or `none` if no such element is found.  `O(|l|)`.  Examples: * `[7, 6, 5, 8, 1\\n- List.find?_nil   [Init.Data.List.Basic]\\n- List.find?_cons   [Init.Data.List.Basic]\\n- List.idRun_findM?   [Init.Data.List.Control]\\n- List.findM?_pure   [Init.Data.List.Control]\\n- List.find?_subtype   [Init.Data.List.Attach]\\n- List.findRev?_eq_find?_reverse   [Init.Data.List.Impl]\\n- List.find?_singleton   [Init.Data.List.Impl]\\n- List.find?_append   [Init.Data.List.Impl]\\n- List.head?_filter   [Init.Data.List.Find]\\n- List.find?_eq_findSome?_guard   [Init.Data.List.Find]\\n- List.findSome?_guard   [Init.Data.List.Find]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?p ?q → (∀ x, ?p x = ?q x) → List.find? ?p = List.find? ?q\"}",
+   "ok": true,
+   "result_chars": 125,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for '?p ?q → (∀ x, ?p x = ?q x) → List.find? ?p = List.find? ?q'.\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.find? List.Forall List.All\"}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'List.find? List.Forall List.All': Unknown constant `List.All`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*find.*predicate.*agree\"}",
+   "ok": true,
+   "result_chars": 111,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*find.*predicate.*agree' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Init/Data/List/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": false,
+   "result_chars": 67,
+   "result_head": "error: no such file under the checkout: 'Init/Data/List/Basic.lean'"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"congr List.find\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'congr List.find': Unknown constant `List.find`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*find\\\\?.*\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 1517,
+   "result_head": "[{\"type\": \"text\", \"text\": \"14 match(es) for '(theorem|lemma) .*find\\\\\\\\?.*' (via ripgrep):\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1208\\n    theorem find?_eq_dite {p : Fin n → Bool} :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1212\\n    theorem find?_decide_eq_dite :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1216\\n    theorem get_find?_eq_find_of_eq_true {p : Fin n → Bool} (h : p i) :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1220\\n    theorem find?_decide_get_eq_find (h : ∃ i, p i) :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1225\\n    theorem find_mem_find?_decide (h : ∃ i, p i) :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1232\\n    theorem mem_find?_iff {p : Fin n → Bool} {i : Fin n} :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1235\\n    theorem find?_eq_some_find_of_exists {p : Fin n → Bool} (h : ∃ i, p i) :\\n- Mathlib/Data/Fin/Tuple/Basic.lean:1238\\n    theorem find?_eq_some_find_of_isSome {p : Fin n → Bool} (h : (find? p).isSome) :\\n- Mathlib/Data/List/OfFn.lean:133\\n    lemma find?_ofFn_eq_some {n} {f : Fin n → α} {p : α → Bool} {b : α} :\\n- Mathlib/Data/List/OfFn.lean:143\\n    lemma find?_ofFn_eq_some_of_injective {n} {f : Fin n → α} {p : α → Bool} {i : Fin n}\\n- Mathlib/Data/List/TakeWhile.lean:100\\n    lemma find?_eq_head?_dropWhile_not :\\n- Mathlib/Data/List/TakeWhile.lean:115\\n    lemma find?_not_eq_head?_dropWhile :\\n- Mathlib/Data/List/TakeWhile.lean:122\\n    lemma find?_eq_head_dropWhile_not (h : ∃ x ∈ l, p x) :\\n- Mathlib/Data/List/TakeWhile.lean:126\\n    lemma find?_not_eq_head_dropWhile (h : ∃ x ∈ l, ¬p x) :\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?l : List ?α → (?α → Bool) → Option ?α\"}",
+   "ok": true,
+   "result_chars": 123,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?l : List ?α → (?α → Bool) → Option ?α': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*forall.*in.*list\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*forall.*in.*list' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.Forall\"}",
+   "ok": true,
+   "result_chars": 730,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 10 declarations mentioning List.Forall.\\n- List.Forall   [Mathlib.Data.List.Defs]\\n    `l.Forall p` is equivalent to `∀ a ∈ l, p a`, but unfolds directly to a conjunction, i.e. `List.Forall p [0, 1, 2] = p 0 ∧ p 1 ∧ p 2`.\\n- List.instDecidablePredForall   [Mathlib.Data.List.Basic]\\n- List.Forall.imp   [Mathlib.Data.List.Basic]\\n- List.forall_cons   [Mathlib.Data.List.Basic]\\n- List.forall_iff_forall_mem   [Mathlib.Data.List.Basic]\\n- List.forall_map_iff   [Mathlib.Data.List.Basic]\\n- List.forall_append   [Mathlib.Data.List.Basic]\\n- List.forall_zipWith   [Mathlib.Data.List.Zip]\\n- Dioph.DiophList.forall   [Mathlib.NumberTheory.Dioph]\\n- Poly.sumsq_eq_zero   [Mathlib.NumberTheory.Dioph]\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"find\\\\? .*ext\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'find\\\\\\\\? .*ext' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"find? p l = find? q l\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'find? p l = find? q l': Unknown identifier `find?`\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.find? : {α : Type*} → (α → Bool) → List α → Option α\"}",
+   "ok": true,
+   "result_chars": 143,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'List.find? : {α : Type*} → (α → Bool) → List α → Option α': <input>:1:11: expected end of input\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def find\\\\?\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def find\\\\\\\\?' under Mathlib/.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Bool → Option\"}",
+   "ok": true,
+   "result_chars": 118,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Bool → Option': type expected, got\\n  (Option : Type ?u.3 → Type ?u.3)\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"mem List\"}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'mem List': Unknown identifier `mem`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*mem.*List\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1976,
+   "result_head": "[{\"type\": \"text\", \"text\": \"265 match(es) for '(theorem|lemma) .*mem.*List' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:172\\n    protected theorem list_prod_mem {L : List A} (h : ∀ x ∈ L, x ∈ S) : L.prod ∈ S :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Basic.lean:175\\n    protected theorem list_sum_mem {L : List A} (h : ∀ x ∈ L, x ∈ S) : L.sum ∈ S :=\\n- Mathlib/Computability/MyhillNerode.lean:48\\n    theorem mem_leftQuotient (x y : List α) : y ∈ L.leftQuotient x ↔ x ++ y ∈ L := Iff.rfl\\n- Mathlib/InformationTheory/Coding/KraftMcMillan.lean:81\\n    private lemma concatFn_length_mem_Icc {S : Finset (List α)}\\n- Mathlib/Computability/NFA.lean:160\\n    theorem mem_evalFrom_iff_exists {s : σ} {S : Set σ} {x : List α} :\\n- Mathlib/Computability/NFA.lean:170\\n    theorem mem_acceptsFrom {S : Set σ} {x : List α} :\\n- Mathlib/Computability/NFA.lean:181\\n    theorem cons_mem_acceptsFrom {S : Set σ} {a : α} {x : List α} :\\n- Mathlib/Computability/NFA.lean:193\\n    theorem append_mem_acceptsFrom {S : Set σ} {x y : List α} :\\n- Mathlib/Computability/NFA.lean:231\\n    private theorem mem_acceptsFrom_sep_fact {S : Set σ} {p : Prop} {x : List α} :\\n- Mathlib/Computability/NFA.lean:266\\n    theorem mem_accepts {x : List α} : x ∈ M.accepts ↔ ∃ S ∈ M.accept, S ∈ M.evalFrom M.start x := by\\n- Mathlib/Computability/NFA.lean:291\\n    theorem mem_evalFrom_iff_nonempty_path {s t : σ} {x : List α} :\\n- Mathlib/Computability/NFA.lean:408\\n    theorem mem_accepts_reverse {x : List α} : x ∈ M.reverse.accepts ↔ x.reverse ∈ M.accepts := by\\n- Mathlib/Computability/ContextFreeGrammar.lean:146\\n    lemma mem_language_iff (g : ContextFreeGrammar T) (w : List T) :\\n- Mathlib/Computability/ContextFreeGrammar.lean:218\\n    lemma Produces.exists_nonterminal_input_mem {u v : List (Symbol T g.NT)} (hguv : g.Produces u v) :\\n- Mathlib/Computability/Primrec/List.lean:436\\n    theorem exists_mem_list : (hf : PrimrecPred p) → PrimrecPred fun L : List α ↦ ∃ a ∈ L, p a\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.find? Option.some\"}",
+   "ok": true,
+   "result_chars": 651,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 146 declarations mentioning List.find?.\\n- List.find?_nil   [Init.Data.List.Basic]\\n- List.find?_cons   [Init.Data.List.Basic]\\n- List.idRun_findM?   [Init.Data.List.Control]\\n- List.findM?_pure   [Init.Data.List.Control]\\n- List.find?_subtype   [Init.Data.List.Attach]\\n- List.findRev?_eq_find?_reverse   [Init.Data.List.Impl]\\n- List.find?_singleton   [Init.Data.List.Impl]\\n- List.find?_append   [Init.Data.List.Impl]\\n- List.head?_filter   [Init.Data.List.Find]\\n- List.find?_eq_findSome?_guard   [Init.Data.List.Find]\\n- List.findSome?_guard   [Init.Data.List.Find]\\n- List.isSome_find?   [Init.Data.List.Find]\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma find\\\\?.*cons\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma find\\\\\\\\?.*cons' under Mathlib/.\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/List/Impl.lean\", \"line\": 1, \"n\": 100}",
+   "ok": false,
+   "result_chars": 69,
+   "result_head": "error: no such file under the checkout: 'Mathlib/Data/List/Impl.lean'"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.find?_cons\"}",
+   "ok": true,
+   "result_chars": 123,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning List.find?_cons.\\n- List.find?_cons   [Init.Data.List.Basic]\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"find\\\\?_cons\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 275,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'find\\\\\\\\?_cons' (via ripgrep):\\n- Mathlib/Data/List/TakeWhile.lean:108\\n    rw [find?_cons_of_neg phh', dropWhile_cons_of_pos]\\n- Mathlib/Data/List/TakeWhile.lean:111\\n    · rw [find?_cons_of_pos phh.symm, dropWhile_cons_of_neg]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"decide_eq\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'decide_eq': unknown identifier 'decide_eq'\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Decidable.ext\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Decidable.ext' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ext iff decide\"}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ext iff decide': Unknown identifier `ext`\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def find\\\\?.*Bool\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def find\\\\\\\\?.*Bool' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.find?\", \"List.Forall\", \"Option\", \"List\"]}",
+   "ok": true,
+   "result_chars": 1184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.find?\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.List.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.List.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/List/Basic.html#List.find%3F\\\"},{\\\"decl\\\":\\\"List.Forall\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.List.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.List.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/List/Defs.html#List.Forall\\\"},{\\\"decl\\\":\\\"Option\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Option\\\"},{\\\"decl\\\":\\\"List\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#List\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"∈\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '∈': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*congr\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2672,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1079 match(es) for 'theorem.*congr' (via ripgrep):\\n- Mathlib/Algebra/WithConv.lean:176\\n    @[simp] theorem toEquiv_congrLinearEquiv (f : A ≃ₗ[R] B) :\\n- Mathlib/Algebra/Algebra/NonUnitalHom.lean:198\\n    theorem congr_fun {f g : A →ₛₙₐ[φ] B} (h : f = g) (x : A) : f x = g x :=\\n- Mathlib/Computability/Reduce.lean:211\\n    theorem ManyOneEquiv.le_congr_left {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:215\\n    theorem ManyOneEquiv.le_congr_right {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:219\\n    theorem OneOneEquiv.le_congr_left {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:223\\n    theorem OneOneEquiv.le_congr_right {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:227\\n    theorem ManyOneEquiv.congr_left {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:232\\n    theorem ManyOneEquiv.congr_right {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:237\\n    theorem OneOneEquiv.congr_left {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Computability/Reduce.lean:242\\n    theorem OneOneEquiv.congr_right {α β γ} [Primcodable α] [Primcodable β] [Primcodable γ]\\n- Mathlib/Algebra/Algebra/Hom.lean:186\\n    protected theorem congr_fun {φ₁ φ₂ : A →ₐ[R] B} (H : φ₁ = φ₂) (x : A) : φ₁ x = φ₂ x :=\\n- Mathlib/Algebra/Algebra/Hom.lean:189\\n    protected theorem congr_arg (φ : A →ₐ[R] B) {x y : A} (h : x = y) : φ x = φ y :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:115\\n    protected theorem congr_arg {f : A₁ ≃ₐ[R] A₂} {x x' : A₁} : x = x' → f x = f x' :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:118\\n    protected theorem congr_fun {f g : A₁ ≃ₐ[R] A₂} (h : f = g) (x : A₁) : f x = g x :=\\n- Mathlib/Algebra/Homology/DifferentialObject.lean:56\\n    theorem d_squared_apply {x : β} : X.d x ≫ X.d _ = 0 := congr_fun X.d_squared _\\n- Mathlib/CategoryTheory/Functor/Basic.lean:111\\n    theorem congr_map (F : C ⥤ D) {X Y : C} {f g : X ⟶ Y}\\n- Mathlib/CategoryTheory/Functor/Category.lean:70\\n    theorem congr_app {α β : F ⟶ G} (h : α = β) (X : C) : α.app X = β.app X := by rw [h]\\n- Mathlib/Probability/Density.lean:98\\n    theorem HasPDF.congr (hXY : X =ᵐ[ℙ] Y) [hX : HasPDF X ℙ μ] : HasPDF Y ℙ μ :=\\n- Mathlib/Probability/Density.lean:102\\n    theorem HasPDF.congr_iff (hXY : X =ᵐ[ℙ] Y) : HasPDF X ℙ μ ↔ HasPDF Y ℙ μ :=\\n- Mathlib/Probability/Density.lean:175\\n    protected theorem congr {X Y : Ω → E} (hXY : X =ᵐ[ℙ] Y) : pdf X ℙ μ = pdf Y ℙ μ := by\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"find\\\\?.*eq.*pred\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'find\\\\\\\\?.*eq.*pred' under Mathlib/.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"find? decide\"}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'find? decide': Unknown identifier `find?`\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"List.*congr\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 1833,
+   "result_head": "[{\"type\": \"text\", \"text\": \"27 match(es) for 'List.*congr' (via ripgrep):\\n- Mathlib/Computability/TuringMachine/Tape.lean:381\\n    rw [List.flatMap_append, mul_comm]; congr\\n- Mathlib/Computability/PartrecCode.lean:930\\n    refine List.map_congr_left fun n => ?_\\n- Mathlib/SetTheory/Cardinal/Basic.lean:636\\n    #(List α) = #(Σ n, List.Vector α n) := mk_congr (Equiv.sigmaFiberEquiv List.length).symm\\n- Mathlib/Combinatorics/SimpleGraph/Hamiltonian.lean:97\\n    rw [← length_support, ← List.sum_toFinset_count_eq_length, Finset.sum_congr rfl fun _ _ ↦ hp _,\\n- Mathlib/Data/Multiset/MapFold.lean:55\\n    exact congr_arg _ (List.map_congr_left h)\\n- Mathlib/Data/Multiset/MapFold.lean:349\\n    rw [List.map_pmap]; exact List.pmap_congr_left _ fun _ _ _ _ => Subtype.ext rfl\\n- Mathlib/Data/Multiset/Defs.lean:271\\n    @(Quot.inductionOn s (fun l _H₁ _H₂ h => congr_arg _ <| List.pmap_congr_left l h))\\n- Mathlib/Data/Multiset/Filter.lean:55\\n    Quot.inductionOn s fun _l h => congr_arg ofList <| List.filter_congr <| by simpa using h\\n- Mathlib/Data/Multiset/Filter.lean:214\\n    Quot.inductionOn s fun l => congr_arg ofList <| congr_fun List.filterMap_eq_map l\\n- Mathlib/Data/Multiset/ZeroCons.lean:435\\n    ⟨Quot.inductionOn s fun _l h => (List.length_eq_one_iff.1 h).imp fun _a => congr_arg _,\\n- Mathlib/Data/Multiset/ZeroCons.lean:455\\n    (List.length_eq_two.mp h).imp fun _a => Exists.imp fun _b => congr_arg _,\\n- Mathlib/Data/Nat/Digits/Defs.lean:502\\n    simp only [hx, if_true, List.length, congrArg (fun l ↦ l + 1) hlen]\\n- Mathlib/Data/Nat/Digits/Defs.lean:506\\n    simp only [List.length, congrArg (fun l ↦ l + 1) hlen] at ih\\n- Mathlib/Data/Seq/Defs.lean:586\\n    fun _ _ h => List.ext_getElem? fun _ => congr_fun (Subtype.ext_iff.1 h) _\\n- Mathlib/Data/Nat/BitIndices.lean:118\\n    simp [List.map_congr_left h']\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.map\"}",
+   "ok": true,
+   "result_chars": 890,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 1898 declarations mentioning List.map.\\n- List.map   [Init.Prelude]\\n    Applies a function to each element of the list, returning the resulting list of values.  `O(|l|)`.  Examples: * `[a, b, c].map f = [f a, f b, f c]` * `[].map Na\\n- List.map_eq_mapTR   [Init.Data.List.Basic]\\n- List.map_nil   [Init.Data.List.Basic]\\n- List.map_cons   [Init.Data.List.Basic]\\n- List.nil_zipWithAll   [Init.Data.List.Basic]\\n- List.zipWithAll_nil   [Init.Data.List.Basic]\\n- List.mapTR_loop_eq   [Init.Data.List.Basic]\\n- Lean.Omega.IntList.neg_def   [Init.Omega.IntList]\\n- Lean.Omega.IntList.smul_def   [Init.Omega.IntList]\\n- Lean.Omega.IntList.get_map   [Init.Omega.IntList]\\n- List.map_id   [Init.Data.List.Lemmas]\\n- List.map_id'   [Init.Data.List.Lemmas]\\n    `map_id'` differs from `map_id` by representing the identity function as a lambda, rather than `id`.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"List.filter_congr\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning List.filter_congr.\\n- List.filter_congr   [Init.Data.List.Lemmas]\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma filter_congr\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma filter_congr' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"List.find\\\\?_nil\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'List.find\\\\\\\\?_nil' under Mathlib/.\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/List/TakeWhile.lean\", \"line\": 100, \"n\": 20}",
+   "ok": true,
+   "result_chars": 888,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/List/TakeWhile.lean  (lines 100–119 of 132):\\n   100  lemma find?_eq_head?_dropWhile_not :\\n   101      l.find? p = (l.dropWhile (fun x ↦ !(p x))).head? := by\\n   102    induction l\\n   103    case nil => simp\\n   104    case cons head tail hi =>\\n   105      set ph := p head with phh\\n   106      rcases ph with rfl | rfl\\n   107      · have phh' : ¬(p head = true) := by simp [phh.symm]\\n   108        rw [find?_cons_of_neg phh', dropWhile_cons_of_pos]\\n   109        · exact hi\\n   110        · simpa using phh\\n   111      · rw [find?_cons_of_pos phh.symm, dropWhile_cons_of_neg]\\n   112        · simp\\n   113        · simpa using phh\\n   114  \\n   115  lemma find?_not_eq_head?_dropWhile :\\n   116      l.find? (fun x ↦ !(p x)) = (l.dropWhile p).head? := by\\n   117    convert! l.find?_eq_head?_dropWhile_not ?_\\n   118    simp\\n   119  \\n\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"_of_forall\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1295,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1709 match(es) for '_of_forall' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:86\\n    refine subsingleton_of_forall_eq 0 fun y ↦ ?_\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1188\\n    lemma commute_of_mem_adjoin_of_forall_mem_commute {a b : A} {s : Set A}\\n- Mathlib/Algebra/Algebra/NonUnitalSubalgebra.lean:1197\\n    commute_of_mem_adjoin_of_forall_mem_commute hc <| by simpa\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:730\\n    eq_of_forall_ge_iff fun t ↦ by simp [Subalgebra.map_le, adjoin_le_iff]\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:734\\n    eq_of_forall_ge_iff fun t ↦ by simp [adjoin_le_iff, Set.insert_subset_iff]\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:781\\n    lemma commute_of_mem_adjoin_of_forall_mem_commute {a b : A} {s : Set A}\\n- Mathlib/Algebra/Algebra/Subalgebra/Lattice.lean:793\\n    commute_of_mem_adjoin_of_forall_mem_commute hc <| by simpa\\n- Mathlib/Algebra/Algebra/Subalgebra/Unitization.lean:68\\n    eq_of_forall_ge_iff fun c ↦ by rw [lift_range_le, Algebra.adjoin_le_iff]; rfl\\n- Mathlib/Algebra/Algebra/Subalgebra/Unitization.lean:218\\n    eq_of_forall_ge_iff fun c ↦ by\\n- Mathlib/Algebra/GroupWithZero/Divisibility.lean:154\\n    theorem eq_of_forall_dvd (h : ∀ c, a ∣ c ↔ b ∣ c) : a = b :=\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"filter_congr\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'filter_congr': unknown identifier 'filter_congr'\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"find?_cons_of_pos\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'find?_cons_of_pos': unknown identifier 'find?_cons_of_pos'\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"List.find?_congr\", \"List.find?_of_forall_eq\"]}",
+   "ok": true,
+   "result_chars": 701,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"List.find?_congr\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"List.find?_of_forall_eq\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":2,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem List.find?_congr {α : Type*} {l : List α} {p q : α → Bool}\n    (h : ∀ x ∈ l, p x = q x) : l.find? p = l.find? q := sorry"
+}

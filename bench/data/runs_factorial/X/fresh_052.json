@@ -1,0 +1,360 @@
+{
+ "task_id": "fresh_052",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:24:39Z",
+ "wall_s": 135.0,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 3,
+   "mcp__formal__decl_grep": 21,
+   "mcp__formal__decl_read": 10,
+   "mcp__wikibrain__decl_exists": 4
+  },
+  "tokens_in": 202,
+  "tokens_out": 10221,
+  "cost_usd": 0.15948425
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral\"}",
+   "ok": true,
+   "result_chars": 88,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral': unknown identifier 'integral'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"integral.*\\\\(.*ℝ\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1519,
+   "result_head": "[{\"type\": \"text\", \"text\": \"416 match(es) for 'integral.*\\\\\\\\(.*ℝ' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:300\\n    theorem norm_setToSimpleFunc_le_integral_norm (T : Set α → E →L[ℝ] F) {C : ℝ}\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:451\\n    def integralCLM : (α →₁ₛ[μ] E) →L[ℝ] E :=\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:487\\n    theorem integral_eq_norm_posPart_sub (f : α →₁ₛ[μ] ℝ) : integral f = ‖posPart f‖ - ‖negPart f‖ := by\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:533\\n    def integralCLM : (α →₁[μ] E) →L[ℝ] E :=\\n- Mathlib/MeasureTheory/Integral/Bochner/L1.lean:619\\n    theorem integral_eq_norm_posPart_sub (f : α →₁[μ] ℝ) :\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:92\\n    theorem SimpleFunc.exists_le_lowerSemicontinuous_lintegral_ge (f : α →ₛ ℝ≥0) {ε : ℝ≥0∞}\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:159\\n    theorem exists_le_lowerSemicontinuous_lintegral_ge (f : α → ℝ≥0∞) (hf : Measurable f) {ε : ℝ≥0∞}\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:196\\n    theorem exists_lt_lowerSemicontinuous_lintegral_ge [SigmaFinite μ] (f : α → ℝ≥0)\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:222\\n    theorem exists_lt_lowerSemicontinuous_lintegral_ge_of_aemeasurable [SigmaFinite μ] (f : α → ℝ≥0)\\n- Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean:259\\n    theorem exists_lt_lowerSemicontinuous_integral_gt_nnreal [SigmaFinite μ] (f : α → ℝ≥0)\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a → ?b\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a → ?b': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def|lemma) .*integral\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1486 match(es) for '(theorem|def|lemma) .*integral' (via ripgrep):\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:40\\n    Note that the original version of the Akra–Bazzi theorem uses an integral rather than the sum in\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:51\\n    * Add the original version of the theorem with an integral instead of a sum.\\n- Mathlib/RepresentationTheory/Tannaka.lean:15\\n    The theorem can be formulated as follows: for any integral domain `k`, a finite group `G` can be\\n- Mathlib/InformationTheory/KullbackLeibler/ChainRule.lean:151\\n    lemma integral_llr_compProd_eq_add (h_ac : μ ⊗ₘ κ ≪ ν ⊗ₘ η)\\n- Mathlib/InformationTheory/KullbackLeibler/KLFun.lean:178\\n    lemma integral_klFun_rnDeriv (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:25\\n    measures `μ ≪ ν`, as proved in the lemma `integral_llr_add_sub_measure_univ_nonneg`.\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:111\\n    lemma klDiv_eq_integral_klFun :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:119\\n    lemma klDiv_eq_lintegral_klFun :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:138\\n    lemma klDiv_eq_lintegral_klFun_of_ac (h_ac : μ ≪ ν) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:152\\n    lemma integral_llr_add_sub_measure_univ_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:170\\n    lemma toReal_klDiv_eq_integral_klFun (h : μ ≪ ν) :\\n- Mathlib/InformationTheory/KullbackLeibler/Basic.lean:319\\n    lemma integral_llr_add_mul_log_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean:63\\n    noncomputable def integralModel (W : WeierstrassCurve K) [hW : IsIntegral R W] :\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean:69\\n    lemma baseChange_integralModel_eq (W : WeierstrassCurve K) [hW : IsIntegral R W] :\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean:89\\n    lemma Δ_integral_of_isIntegral (W : WeierstrassCurve K) [IsIntegral R W] :\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def integral\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1530,
+   "result_head": "[{\"type\": \"text\", \"text\": \"23 match(es) for 'def integral' (via ripgrep):\\n- Mathlib/Analysis/Distribution/SchwartzSpace/Basic.lean:1137\\n    def integralCLM : 𝓢(D, V) →L[𝕜] V := by\\n- Mathlib/Analysis/Distribution/ContDiffMapSupportedIn.lean:924\\n    noncomputable def integralAgainstBilinLM (B : F₁ →L[𝕜] F₂ →L[𝕜] F₃) (μ : Measure E) (φ : E → F₂) :\\n- Mathlib/Analysis/Distribution/ContDiffMapSupportedIn.lean:976\\n    noncomputable def integralAgainstBilinCLM (B : F₁ →L[𝕜] F₂ →L[𝕜] F₃) (μ : Measure E) (φ : E → F₂) :\\n- Mathlib/Analysis/Distribution/TestFunction.lean:705\\n    noncomputable def integralAgainstBilinCLM (B : F₁ →L[𝕜] F₂ →L[𝕜] F₃) (μ : Measure E) (φ : E → F₂) :\\n- Mathlib/NumberTheory/NumberField/Basic.lean:394\\n    noncomputable def integralBasis : Basis (Free.ChooseBasisIndex ℤ (𝓞 K)) ℚ K :=\\n- Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean:63\\n    noncomputable def integralModel (W : WeierstrassCurve K) [hW : IsIntegral R W] :\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Basic.lean:179\\n    noncomputable def integralPowerBasisOfPrimePow [IsCyclotomicExtension {p ^ k} ℚ K]\\n- Mathlib/NumberTheory/NumberField/Cyclotomic/Basic.lean:852\\n    noncomputable def integralPowerBasis [IsCyclotomicExtension {n} ℚ K]\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:82\\n    def integralSum (f : ℝⁿ → E) (vol : ι →ᵇᵃ E →L[ℝ] F) (π : TaggedPrepartition I) : F :=\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:170\\n    def integral (I : Box ι) (l : IntegrationParams) (f : ℝⁿ → E) (vol : ι →ᵇᵃ E →L[ℝ] F) :=\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_comp_mul_left\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 473,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'theorem integral_comp_mul_left' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:933\\n    theorem integral_comp_mul_left (hc : c ≠ 0) :\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1160\\n    theorem integral_comp_mul_left_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\\n- Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean:152\\n    theorem integral_comp_mul_left (g : ℝ → F) (a : ℝ) :\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 933, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1019,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 933–952 of 1467):\\n   933  theorem integral_comp_mul_left (hc : c ≠ 0) :\\n   934      (∫ x in a..b, f (c * x)) = c⁻¹ • ∫ x in c * a..c * b, f x := by\\n   935    simpa only [mul_comm c] using integral_comp_mul_right f hc\\n   936  \\n   937  @[simp]\\n   938  theorem smul_integral_comp_mul_left (c) :\\n   939      (c • ∫ x in a..b, f (c * x)) = ∫ x in c * a..c * b, f x := by\\n   940    by_cases hc : c = 0 <;> simp [hc, integral_comp_mul_left]\\n   941  \\n   942  @[simp]\\n   943  theorem integral_comp_div (hc : c ≠ 0) :\\n   944      (∫ x in a..b, f (x / c)) = c • ∫ x in a / c..b / c, f x := by\\n   945    simpa only [inv_inv] using! integral_comp_mul_right f (inv_ne_zero hc)\\n   946  \\n   947  @[simp]\\n   948  theorem inv_smul_integral_comp_div (c) :\\n   949      (c⁻¹ • ∫ x in a..b, f (x / c)) = ∫ x in a / c..b / c, f x := by\\n   950    by_cases hc : c = 0 <;> simp [hc, integral_comp_div]\\n   951  \\n   952  @[simp]\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_comp.*exp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem integral_comp.*exp' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Ioi\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 334,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def Ioi' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:47\\n    def Ioi (a : α) : UpperSet α :=\\n- Mathlib/Order/Interval/Multiset.lean:80\\n    def Ioi (a : α) : Multiset α := (Finset.Ioi a).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:363\\n    def Ioi (a : α) : Finset α :=\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_Ioi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1557,
+   "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'theorem integral_Ioi' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1173\\n    theorem integral_Ioi_sub_Ioi (hf : IntegrableOn f (Ioi a) μ) (hab : a ≤ b) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1177\\n    theorem integral_Ioi_sub_Ioi' (hf : IntegrableOn f (Ioi a) μ) (hg : IntegrableOn f (Ioi b) μ) :\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:787\\n    theorem integral_Ioi_of_hasDerivAt_of_tendsto (hcont : ContinuousWithinAt f (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:813\\n    theorem integral_Ioi_of_hasDerivAt_of_tendsto' (hderiv : ∀ x ∈ Ici a, HasDerivAt f (f' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:874\\n    theorem integral_Ioi_of_hasDerivAt_of_nonneg (hcont : ContinuousWithinAt g (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:883\\n    theorem integral_Ioi_of_hasDerivAt_of_nonneg' (hderiv : ∀ x ∈ Ici a, HasDerivAt g (g' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:910\\n    theorem integral_Ioi_of_hasDerivAt_of_nonpos (hcont : ContinuousWithinAt g (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:919\\n    theorem integral_Ioi_of_hasDerivAt_of_nonpos' (hderiv : ∀ x ∈ Ici a, HasDerivAt g (g' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1329\\n    theorem integral_Ioi_deriv_mul_eq_sub\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1350\\n    theorem integral_Ioi_mul_deriv_eq_deriv_mul\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2544,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 1–50 of 1467):\\n     1  /-\\n     2  Copyright (c) 2020 Yury Kudryashov. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yury Kudryashov, Patrick Massot, Sébastien Gouëzel\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap\\n     9  public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic\\n    10  public import Mathlib.MeasureTheory.Topology\\n    11  import Mathlib.Algebra.Order.Interval.Set.Group\\n    12  \\n    13  /-!\\n    14  # Integral over an interval\\n    15  \\n    16  In this file we define `∫ x in a..b, f x ∂μ` to be `∫ x in Ioc a b, f x ∂μ` if `a ≤ b` and\\n    17  `-∫ x in Ioc b a, f x ∂μ` if `b ≤ a`.\\n    18  \\n    19  ## Implementation notes\\n    20  \\n    21  ### Avoiding `if`, `min`, and `max`\\n    22  \\n    23  In order to avoid `if`s in the definition, we define `IntervalIntegrable f μ a b` as\\n    24  `IntegrableOn f (Ioc a b) μ ∧ IntegrableOn f (Ioc b a) μ`. For any `a`, `b` one of these\\n    25  intervals is empty and the other coincides with `Set.uIoc a b = Set.Ioc (min a b) (max a b)`.\\n    26  \\n    27  Similarly, we define `∫ x in a..b, f x ∂μ` to be `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`.\\n    28  Again, for any `a`, `b` one of these integrals is zero, and the other gives the expected result.\\n    29  \\n    30  This way some properties can be translated from integrals over sets without dealing with\\n    31  the cases `a ≤ b` and `b ≤ a` separately.\\n    32  \\n    33  ### Choice of the interval\\n    34  \\n    35  We use integral over `Set.uIoc a b = Set.Ioc (min a b) (max a b)` instead of one of the other\\n    36  three possible intervals with the same endpoints for two reasons:\\n    37  \\n    38  * this way `∫ x in a..b, f x ∂μ + ∫ x in b..c, f x ∂μ = ∫ x in a..c, f x ∂μ` holds whenever\\n    39    `f` is integrable on each interval; in particular, it works even if the measure `μ` has an atom\\n    40    at `b`; this rules out `Set.Ioo` and `Set.Icc` intervals;\\n    41  * with this definition for a probability measure `μ`, the integral `∫ x in a..b, 1 ∂μ` equals\\n    42    the difference $F_μ(b)-F_μ(a)$, where $F_μ(a)=μ(-∞, a]$ is the\\n    43    [cumulative distribution function](https://en.wikipedia.org/wiki/Cumulative_distribution_function)\\n    44    of `μ`.\\n    45  \\n    46  ## Tags\\n    47  \\n    48  integral\\n    49  -/\\n    50  \\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*∫\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 776,
+   "result_head": "[{\"type\": \"text\", \"text\": \"24 match(es) for 'notation.*∫' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Set.lean:23\\n    Since `∫ x in s, f x ∂μ` is a notation, one can rewrite or apply any theorem about `∫ x, f x ∂μ`\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:54\\n    which is called `lintegral` and has the notation `∫⁻`.\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:161\\n    /-! In the notation for integrals, an expression like `∫ x, g ‖x‖ ∂μ` will not be parsed correctly,\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:166\\n    notation3 \\\"∫ \\\"(...)\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => integral μ r\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:169\\n    notation3 \\\"∫ \\\"(...)\\\", \\\"r:60:(scoped f => integral volume f) => r\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 50, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5613,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 50–149 of 1467):\\n    50  \\n    51  @[expose] public section\\n    52  \\n    53  \\n    54  noncomputable section\\n    55  \\n    56  open MeasureTheory Set Filter Function TopologicalSpace\\n    57  \\n    58  open scoped Topology Filter ENNReal Interval NNReal\\n    59  \\n    60  variable {ι 𝕜 ε ε' E F A : Type*} [NormedAddCommGroup E]\\n    61    [TopologicalSpace ε] [ENormedAddMonoid ε] [TopologicalSpace ε'] [ENormedAddMonoid ε']\\n    62  \\n    63  /-!\\n    64  ### Integrability on an interval\\n    65  -/\\n    66  \\n    67  \\n    68  /-- A function `f` is called *interval integrable* with respect to a measure `μ` on an unordered\\n    69  interval `a..b` if it is integrable on both intervals `(a, b]` and `(b, a]`. One of these\\n    70  intervals is always empty, so this property is equivalent to `f` being integrable on\\n    71  `(min a b, max a b]`. -/\\n    72  def IntervalIntegrable (f : ℝ → ε) (μ : Measure ℝ) (a b : ℝ) : Prop :=\\n    73    IntegrableOn f (Ioc a b) μ ∧ IntegrableOn f (Ioc b a) μ\\n    74  \\n    75  /-!\\n    76  ## Basic iff's for `IntervalIntegrable`\\n    77  -/\\n    78  section\\n    79  \\n    80  variable [PseudoMetrizableSpace ε] {f : ℝ → ε} {a b : ℝ} {μ : Measure ℝ}\\n    81  \\n    82  /-- A function is interval integrable with respect to a given measure `μ` on `a..b` if and\\n    83    only if it is integrable on `uIoc a b` with respect to `μ`. This is an equivalent\\n    84    definition of `IntervalIntegrable`. -/\\n    85  theorem intervalIntegrable_iff : IntervalIntegrable f μ a b ↔ IntegrableOn f (Ι a b) μ := by\\n    86    rw [uIoc_eq_union, integrableOn_union, IntervalIntegrable]\\n    87  \\n    88  /-- If a function is interval integrable with respect to a given measure `μ` on `a..b` then\\n    89    it is integrable on `uIoc a b` with respect to `μ`. -/\\n    90  theorem IntervalIntegrable.def' (h : IntervalIntegrable f μ a b) : IntegrableOn f (Ι a b) μ :=\\n    91    intervalIntegrable_iff.mp h\\n    92  \\n    93  theorem intervalIntegrable_congr_ae {g : ℝ → ε} (h : f =ᵐ[μ.restrict (Ι a b)] g) :\\n    94      IntervalIntegrable f μ a b ↔ IntervalIntegrable g μ a b := by\\n    95    rw [intervalIntegrable_iff, integrableOn_congr_fun_ae h, intervalIntegrable_iff]\\n    96  \\n    97  theorem intervalIntegrable_congr_uIoo [NullSingletonClass μ] {g : ℝ → ε} (h : EqOn f g (uIoo a b)) :\\n    98      IntervalIntegrable f μ a b ↔ IntervalIntegrable g μ a b := by\\n    99    apply intervalIntegrable_congr_ae\\n   100    rw [uIoc, ← restrict_Ioo_eq_restrict_Ioc]\\n   101    apply ae_restrict_of_forall_mem measurableSet_Ioo h\\n   102  \\n   103  theorem IntervalIntegrable.congr_ae {g : ℝ → ε} (hf : IntervalIntegrable f μ a b)\\n   104      (h : f =ᵐ[μ.restrict (Ι a b)] g) :\\n   105      IntervalIntegrable g μ a b := by\\n   106    rwa [← intervalIntegrable_congr_ae h]\\n   107  \\n   108  theorem IntervalIntegrable.congr_uIoo [NullSingletonClass μ] {g : ℝ → ε}\\n   109      (hf : IntervalIntegrable f μ a b) (h : EqOn f g (uIoo a b)) : IntervalIntegrable g μ a b :=\\n   110    intervalIntegrable_congr_uIoo h |>.mp hf\\n   111  \\n   112  theorem intervalIntegrable_congr {g : ℝ → ε} (h : EqOn f g (Ι a b)) :\\n   113      IntervalIntegrable f μ a b ↔ IntervalIntegrable g μ a b :=\\n   114    intervalIntegrable_congr_ae <| (ae_restrict_mem measurableSet_uIoc).mono h\\n   115  \\n   116  alias ⟨IntervalIntegrable.congr, _⟩ := intervalIntegrable_congr\\n   117  \\n   118  /-- Interval integrability is invariant when functions change along discrete sets. -/\\n   119  theorem IntervalIntegrable.congr_codiscreteWithin {g : ℝ → ε} [NullSingletonClass μ]\\n   120      (h : f =ᶠ[codiscreteWithin (Ι a b)] g) (hf : IntervalIntegrable f μ a b) :\\n   121      IntervalIntegrable g μ a b :=\\n   122    hf.congr_ae (ae_restrict_le_codiscreteWithin measurableSet_Ioc h)\\n   123  \\n   124  /-- Interval integrability is invariant when functions change along discrete sets. -/\\"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 150, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 150–249 of 1467):\\n   150  theorem intervalIntegrable_iff_integrableOn_Ioo_of_le [NullSingletonClass μ]\\n   151      (hab : a ≤ b) (ha : ‖f a‖ₑ ≠ ∞ := by finiteness) (hb : ‖f b‖ₑ ≠ ∞ := by finiteness) :\\n   152      IntervalIntegrable f μ a b ↔ IntegrableOn f (Ioo a b) μ := by\\n   153    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hab ha,\\n   154      integrableOn_Icc_iff_integrableOn_Ioo ha hb]\\n   155  \\n   156  omit [PseudoMetrizableSpace ε] in\\n   157  /-- If a function is integrable with respect to a given measure `μ` then it is interval integrable\\n   158    with respect to `μ` on `uIcc a b`. -/\\n   159  theorem MeasureTheory.Integrable.intervalIntegrable (hf : Integrable f μ) :\\n   160      IntervalIntegrable f μ a b :=\\n   161    ⟨hf.integrableOn, hf.integrableOn⟩\\n   162  \\n   163  omit [PseudoMetrizableSpace ε] in\\n   164  theorem MeasureTheory.IntegrableOn.intervalIntegrable (hf : IntegrableOn f [[a, b]] μ) :\\n   165      IntervalIntegrable f μ a b :=\\n   166    ⟨hf.mono_set (Ioc_subset_Icc_self.trans Icc_subset_uIcc),\\n   167      hf.mono_set (Ioc_subset_Icc_self.trans Icc_subset_uIcc')⟩\\n   168  \\n   169  theorem intervalIntegrable_const_iff {c : ε} (hc : ‖c‖ₑ ≠ ⊤ := by finiteness) :\\n   170      IntervalIntegrable (fun _ => c) μ a b ↔ c = 0 ∨ μ (Ι a b) < ∞ := by\\n   171    simp [intervalIntegrable_iff, integrableOn_const_iff hc]\\n   172  \\n   173  @[simp]\\n   174  theorem intervalIntegrable_const [IsLocallyFiniteMeasure μ] {c : E} :\\n   175      IntervalIntegrable (fun _ => c) μ a b :=\\n   176    intervalIntegrable_const_iff (by simp) |>.2 <| Or.inr measure_Ioc_lt_top\\n   177  \\n   178  protected theorem IntervalIntegrable.zero : IntervalIntegrable (0 : ℝ → E) μ a b :=\\n   179    (intervalIntegrable_const_iff <| by finiteness).mpr <| .inl rfl\\n   180  \\n   181  end\\n   182  \\n   183  /-!\\n   184  ## Basic properties of interval integrability\\n   185  - interval integrability is symmetric, reflexive, transitive\\n   186  - monotonicity and strong measurability of the interval integral\\n   187  - if `f` is interval integrable, so are its absolute value and norm\\n   188  - arithmetic properties\\n   189  -/\\n   190  namespace IntervalIntegrable\\n   191  \\n   192  section\\n   193  \\n   194  variable {f : ℝ → ε} {a b c d : ℝ} {μ ν : Measure ℝ}\\n   195  \\n   196  @[symm]\\n   197  nonrec theorem symm (h : IntervalIntegrable f μ a b) : IntervalIntegrable f μ b a :=\\n   198    h.symm\\n   199  \\n   200  theorem symm_iff : IntervalIntegrable f μ a b ↔ IntervalIntegrable f μ b a := ⟨.symm, .symm⟩\\n   201  \\n   202  @[refl, simp]\\n   203  theorem refl : IntervalIntegrable f μ a a := by constructor <;> simp\\n   204  \\n   205  variable [PseudoMetrizableSpace ε]\\n   206  \\n   207  @[trans]\\n   208  theorem trans {a b c : ℝ} (hab : IntervalIntegrable f μ a b) (hbc : IntervalIntegrable f μ b c) :\\n   209      IntervalIntegrable f μ a c :=\\n   210    ⟨(hab.1.union hbc.1).mono_set Ioc_subset_Ioc_union_Ioc,\\n   211      (hbc.2.union hab.2).mono_set Ioc_subset_Ioc_union_Ioc⟩\\n   212  \\n   213  theorem trans_iff (h : b ∈ [[a, c]]) :\\n   214      IntervalIntegrable f μ a c ↔ IntervalIntegrable f μ a b ∧ IntervalIntegrable f μ b c := by\\n   215    simp only [intervalIntegrable_iff, ← integrableOn_union, uIoc_union_uIoc h]\\n   216  \\n   217  theorem trans_iterate_Ico {a : ℕ → ℝ} {m n : ℕ} (hmn : m ≤ n)\\n   218      (hint : ∀ k ∈ Ico m n, IntervalIntegrable f μ (a k) (a <| k + 1)) :\\n   219      IntervalIntegrable f μ (a m) (a n) := by\\n   220    revert hint\\n   221    refine Nat.le_induction ?_ ?_ n hmn\\n   222    · simp\\n   223    · intro p hp IH h\\n   224      exact (IH fun k hk => h k (Ico_subset_Ico_right p.le_succ hk)).trans (h p (by simp [hp]))\\n   225  \\n   226  theorem trans_iterate {a : ℕ → ℝ} {n : ℕ}\\n   227      (hint : ∀ k < n, IntervalIntegrable f μ (a k) (a <| k + 1)) :\\n   228      IntervalIntegrable f μ (a 0) (a n) :=\\n   229 "
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def integral.*a..b\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 89,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def integral.*a..b' under Mathlib/.\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*in.*\\\\.\\\\.\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 827,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'notation.*in.*\\\\\\\\.\\\\\\\\.' (via ripgrep):\\n- Mathlib/Data/Finsupp/Notation.lean:30\\n    `fun₀ ... | i => a` is notation for `Finsupp.update (fun₀ ...) i a`.\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:660\\n    notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => intervalIntegral r a b μ\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:665\\n    notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => intervalIntegral f a b volume) => r\\n- Mathlib/Order/PiLex.lean:55\\n    notation3 (prettyPrint := false) \\\"Πₗ \\\" (...) \\\", \\\" r:(scoped p => Lex (∀ i, p i)) => r\\n- Mathlib/MeasureTheory/Integral/IntervalAverage.lean:14\\n    In this file we introduce notation `⨍ x in a..b, f x` for the average `⨍ x in Ι a b, f x` of `f`\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 250, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5474,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 250–349 of 1467):\\n   250  \\n   251  theorem abs {f : ℝ → ℝ} (h : IntervalIntegrable f μ a b) :\\n   252      IntervalIntegrable (fun x => |f x|) μ a b :=\\n   253    h.norm\\n   254  \\n   255  theorem mono (hf : IntervalIntegrable f ν a b) (h1 : [[c, d]] ⊆ [[a, b]]) (h2 : μ ≤ ν) :\\n   256      IntervalIntegrable f μ c d :=\\n   257    intervalIntegrable_iff.mpr <| hf.def'.mono (uIoc_subset_uIoc_of_uIcc_subset_uIcc h1) h2\\n   258  \\n   259  theorem mono_measure (hf : IntervalIntegrable f ν a b) (h : μ ≤ ν) : IntervalIntegrable f μ a b :=\\n   260    hf.mono Subset.rfl h\\n   261  \\n   262  theorem mono_set (hf : IntervalIntegrable f μ a b) (h : [[c, d]] ⊆ [[a, b]]) :\\n   263      IntervalIntegrable f μ c d :=\\n   264    hf.mono h le_rfl\\n   265  \\n   266  theorem mono_set_ae (hf : IntervalIntegrable f μ a b) (h : Ι c d ≤ᵐ[μ] Ι a b) :\\n   267      IntervalIntegrable f μ c d :=\\n   268    intervalIntegrable_iff.mpr <| hf.def'.mono_set_ae h\\n   269  \\n   270  theorem mono_set' (hf : IntervalIntegrable f μ a b) (hsub : Ι c d ⊆ Ι a b) :\\n   271      IntervalIntegrable f μ c d :=\\n   272    hf.mono_set_ae <| Eventually.of_forall hsub\\n   273  \\n   274  theorem mono_fun_enorm [PseudoMetrizableSpace ε'] {g : ℝ → ε'}\\n   275      (hf : IntervalIntegrable f μ a b) (hgm : AEStronglyMeasurable g (μ.restrict (Ι a b)))\\n   276      (hle : (‖g ·‖ₑ) ≤ᵐ[μ.restrict (Ι a b)] (‖f ·‖ₑ)) : IntervalIntegrable g μ a b :=\\n   277    intervalIntegrable_iff.2 <| hf.def'.integrable.mono_enorm hgm hle\\n   278  \\n   279  theorem mono_fun {f : ℝ → E} [NormedAddCommGroup F] {g : ℝ → F} (hf : IntervalIntegrable f μ a b)\\n   280      (hgm : AEStronglyMeasurable g (μ.restrict (Ι a b)))\\n   281      (hle : (fun x => ‖g x‖) ≤ᵐ[μ.restrict (Ι a b)] fun x => ‖f x‖) : IntervalIntegrable g μ a b :=\\n   282    intervalIntegrable_iff.2 <| hf.def'.integrable.mono hgm hle\\n   283  \\n   284  -- XXX: the best spelling of this lemma may look slightly different (e.gl, with different domain)\\n   285  theorem mono_fun_enorm' {f : ℝ → ε} {g : ℝ → ℝ≥0∞} (hg : IntervalIntegrable g μ a b)\\n   286      (hfm : AEStronglyMeasurable f (μ.restrict (Ι a b)))\\n   287      (hle : (fun x => ‖f x‖ₑ) ≤ᵐ[μ.restrict (Ι a b)] g) : IntervalIntegrable f μ a b :=\\n   288    intervalIntegrable_iff.2 <| hg.def'.integrable.mono_enorm hfm hle\\n   289  \\n   290  theorem mono_fun' {f : ℝ → E} {g : ℝ → ℝ} (hg : IntervalIntegrable g μ a b)\\n   291      (hfm : AEStronglyMeasurable f (μ.restrict (Ι a b)))\\n   292      (hle : (fun x => ‖f x‖) ≤ᵐ[μ.restrict (Ι a b)] g) : IntervalIntegrable f μ a b :=\\n   293    intervalIntegrable_iff.2 <| hg.def'.integrable.mono' hfm hle\\n   294  \\n   295  omit [PseudoMetrizableSpace ε] in\\n   296  protected theorem aestronglyMeasurable (h : IntervalIntegrable f μ a b) :\\n   297      AEStronglyMeasurable f (μ.restrict (Ioc a b)) :=\\n   298    h.1.aestronglyMeasurable\\n   299  \\n   300  omit [PseudoMetrizableSpace ε] in\\n   301  protected theorem aestronglyMeasurable' (h : IntervalIntegrable f μ a b) :\\n   302      AEStronglyMeasurable f (μ.restrict (Ioc b a)) :=\\n   303    h.2.aestronglyMeasurable\\n   304  \\n   305  omit [PseudoMetrizableSpace ε] in\\n   306  protected theorem aestronglyMeasurable_restrict_uIoc (h : IntervalIntegrable f μ a b) :\\n   307      AEStronglyMeasurable f (μ.restrict (uIoc a b)) := by\\n   308    by_cases hab : a ≤ b\\n   309    · rw [uIoc_of_le hab]; exact h.aestronglyMeasurable\\n   310    · rw [uIoc_of_ge (by linarith)]; exact h.aestronglyMeasurable'\\n   311  \\n   312  end\\n   313  \\n   314  variable [NormedRing A] {f g : ℝ → ε} {a b : ℝ} {μ : Measure ℝ}\\n   315  \\n   316  theorem smul {R : Type*} [NormedAddCommGroup R] [SMulZeroClass R E] [IsBoundedSMul R E] {f : ℝ → E}\\n   317      (h : IntervalIntegrable f μ a b) (r : R) :\\n   318      IntervalIntegrable (r • f) μ a b :=\\n   319    ⟨h.1.smul r, h.2.smul r⟩\\n   320  \\n   321  @[simp]\\n   322  theorem add [Continuo"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean\", \"line\": 600, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4604,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean  (lines 600–679 of 1467):\\n   600      (h₁f : ∀ x, -f x = f (-x)) (h₂f : ∀ x, 0 < x → IntervalIntegrable f volume 0 x) {a b : ℝ}\\n   601      (ha : ‖f (min 0 a)‖ₑ ≠ ∞ := by finiteness) (hb : ‖f (min 0 b)‖ₑ ≠ ∞ := by finiteness) :\\n   602      IntervalIntegrable f volume a b :=\\n   603    -- Split integral and apply lemma\\n   604    (intervalIntegrable_of_odd₀ h₁f h₂f ha).symm.trans (intervalIntegrable_of_odd₀ h₁f h₂f hb)\\n   605  \\n   606  end\\n   607  \\n   608  /-!\\n   609  ## Limits of intervals\\n   610  -/\\n   611  \\n   612  /-- Let `l'` be a measurably generated filter; let `l` be a of filter such that each `s ∈ l'`\\n   613  eventually includes `Ioc u v` as both `u` and `v` tend to `l`. Let `μ` be a measure finite at `l'`.\\n   614  \\n   615  Suppose that `f : ℝ → E` has a finite limit at `l' ⊓ ae μ`. Then `f` is interval integrable on\\n   616  `u..v` provided that both `u` and `v` tend to `l`.\\n   617  \\n   618  Typeclass instances allow Lean to find `l'` based on `l` but not vice versa, so\\n   619  `apply Tendsto.eventually_intervalIntegrable_ae` will generate goals `Filter ℝ` and\\n   620  `TendstoIxxClass Ioc ?m_1 l'`. -/\\n   621  theorem Filter.Tendsto.eventually_intervalIntegrable_ae {f : ℝ → E} {μ : Measure ℝ}\\n   622      {l l' : Filter ℝ} (hfm : StronglyMeasurableAtFilter f l' μ) [TendstoIxxClass Ioc l l']\\n   623      [IsMeasurablyGenerated l'] (hμ : μ.FiniteAtFilter l') {c : E} (hf : Tendsto f (l' ⊓ ae μ) (𝓝 c))\\n   624      {u v : ι → ℝ} {lt : Filter ι} (hu : Tendsto u lt l) (hv : Tendsto v lt l) :\\n   625      ∀ᶠ t in lt, IntervalIntegrable f μ (u t) (v t) :=\\n   626    have := (hf.integrableAtFilter_ae hfm hμ).eventually\\n   627    ((hu.Ioc hv).eventually this).and <| (hv.Ioc hu).eventually this\\n   628  \\n   629  /-- Let `l'` be a measurably generated filter; let `l` be a of filter such that each `s ∈ l'`\\n   630  eventually includes `Ioc u v` as both `u` and `v` tend to `l`. Let `μ` be a measure finite at `l'`.\\n   631  \\n   632  Suppose that `f : ℝ → E` has a finite limit at `l`. Then `f` is interval integrable on `u..v`\\n   633  provided that both `u` and `v` tend to `l`.\\n   634  \\n   635  Typeclass instances allow Lean to find `l'` based on `l` but not vice versa, so\\n   636  `apply Tendsto.eventually_intervalIntegrable` will generate goals `Filter ℝ` and\\n   637  `TendstoIxxClass Ioc ?m_1 l'`. -/\\n   638  theorem Filter.Tendsto.eventually_intervalIntegrable {f : ℝ → E} {μ : Measure ℝ} {l l' : Filter ℝ}\\n   639      (hfm : StronglyMeasurableAtFilter f l' μ) [TendstoIxxClass Ioc l l'] [IsMeasurablyGenerated l']\\n   640      (hμ : μ.FiniteAtFilter l') {c : E} (hf : Tendsto f l' (𝓝 c)) {u v : ι → ℝ} {lt : Filter ι}\\n   641      (hu : Tendsto u lt l) (hv : Tendsto v lt l) : ∀ᶠ t in lt, IntervalIntegrable f μ (u t) (v t) :=\\n   642    (hf.mono_left inf_le_left).eventually_intervalIntegrable_ae hfm hμ hu hv\\n   643  \\n   644  /-!\\n   645  ### Interval integral: definition and basic properties\\n   646  \\n   647  In this section we define `∫ x in a..b, f x ∂μ` as `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`\\n   648  and prove some basic properties.\\n   649  -/\\n   650  \\n   651  variable [NormedSpace ℝ E]\\n   652  \\n   653  /-- The interval integral `∫ x in a..b, f x ∂μ` is defined\\n   654  as `∫ x in Ioc a b, f x ∂μ - ∫ x in Ioc b a, f x ∂μ`. If `a ≤ b`, then it equals\\n   655  `∫ x in Ioc a b, f x ∂μ`, otherwise it equals `-∫ x in Ioc b a, f x ∂μ`. -/\\n   656  def intervalIntegral (f : ℝ → E) (a b : ℝ) (μ : Measure ℝ) : E :=\\n   657    (∫ x in Ioc a b, f x ∂μ) - ∫ x in Ioc b a, f x ∂μ\\n   658  \\n   659  @[inherit_doc intervalIntegral]\\n   660  notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => intervalIntegral r a b μ\\n   661  \\n   662  /-- The interval integral `∫ x in a..b, f x` is defined\\n   663  as `∫ x in Ioc a b, f x - ∫ x in Ioc b a, f x`. If `a ≤ b`, then it equals\\n   664  `∫ x in Ioc a "
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?a ≤ ?b → ∫ ?x in ?a..?b\"}",
+   "ok": true,
+   "result_chars": 109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?a ≤ ?b → ∫ ?x in ?a..?b': <input>:1:12: expected ',' or 'in'\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_comp.*mul.*exp\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem integral_comp.*mul.*exp' under Mathlib/.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_comp_mul_left_Ioi\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem integral_comp_mul_left_Ioi' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1160\\n    theorem integral_comp_mul_left_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1160, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1058,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1160–1179 of 1392):\\n  1160  theorem integral_comp_mul_left_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\\n  1161      (∫ x in Ioi a, g (b * x)) = b⁻¹ • ∫ x in Ioi (b * a), g x := by\\n  1162    have : ∀ c : ℝ, MeasurableSet (Ioi c) := fun c => measurableSet_Ioi\\n  1163    rw [← integral_indicator (this a), ← integral_indicator (this (b * a)),\\n  1164      ← abs_of_pos (inv_pos.mpr hb), ← Measure.integral_comp_mul_left]\\n  1165    congr\\n  1166    ext1 x\\n  1167    rw [← indicator_comp_right, preimage_const_mul_Ioi₀ _ hb, mul_div_cancel_left₀ _ hb.ne',\\n  1168      Function.comp_def]\\n  1169  \\n  1170  theorem integral_comp_mul_right_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\\n  1171      (∫ x in Ioi a, g (x * b)) = b⁻¹ • ∫ x in Ioi (a * b), g x := by\\n  1172    simpa only [mul_comm] using integral_comp_mul_left_Ioi g a hb\\n  1173  \\n  1174  end IoiChangeVariables\\n  1175  \\n  1176  section IoiIntegrability\\n  1177  \\n  1178  open Real\\n  1179  \\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*exp.*integral\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*exp.*integral' under Mathlib/.\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*change.*variable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*change.*variable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_map\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 797,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'theorem integral_map' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:1032\\n    theorem integral_map_of_stronglyMeasurable {β} [MeasurableSpace β] {φ : α → β} (hφ : Measurable φ)\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:1043\\n    theorem integral_map {β} [MeasurableSpace β] {φ : α → β} (hφ : AEMeasurable φ μ) {f : β → G}\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:1067\\n    theorem integral_map_equiv {β} [MeasurableSpace β] (e : α ≃ᵐ β) (f : β → G) :\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:820\\n    theorem integral_map {β : Type*} [MeasurableSpace β]\\n- Mathlib/MeasureTheory/VectorMeasure/Integral.lean:858\\n    theorem integral_map_equiv {β} [MeasurableSpace β] (e : X ≃ᵐ β) (f : β → E) :\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_comp_mul_.*\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2272,
+   "result_head": "[{\"type\": \"text\", \"text\": \"15 match(es) for 'theorem integral_comp_mul_.*' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:915\\n    theorem integral_comp_mul_right (hc : c ≠ 0) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:933\\n    theorem integral_comp_mul_left (hc : c ≠ 0) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:967\\n    theorem integral_comp_mul_add (hc : c ≠ 0) (d) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1007\\n    theorem integral_comp_mul_sub (hc : c ≠ 0) (d) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:496\\n    theorem integral_comp_mul_deriv''' {a b : ℝ} {f f' : ℝ → ℝ} {g : ℝ → ℝ}\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:509\\n    theorem integral_comp_mul_deriv'' {f f' g : ℝ → ℝ} (hf : ContinuousOn f [[a, b]])\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:521\\n    theorem integral_comp_mul_deriv' {f f' g : ℝ → ℝ} (h : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:531\\n    theorem integral_comp_mul_deriv {f f' g : ℝ → ℝ} (h : ∀ x ∈ uIcc a b, HasDerivAt f (f' x) x)\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:539\\n    theorem integral_comp_mul_deriv_of_deriv_nonneg {f f' g : ℝ → ℝ} (hf : ContinuousOn f [[a, b]])\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean:548\\n    theorem integral_comp_mul_deriv_of_deriv_nonpos {f f' g : ℝ → ℝ} (hf : ContinuousOn f [[a, b]])\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1121\\n    theorem integral_comp_mul_deriv_Ioi {f f' : ℝ → ℝ} {g : ℝ → ℝ} {a : ℝ}\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1160\\n    theorem integral_comp_mul_left_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1170\\n    theorem integral_comp_mul_right_Ioi (g : ℝ → E) (a : ℝ) {b : ℝ} (hb : 0 < b) :\\n- Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean:152\\n    theorem integral_comp_mul_left (g : ℝ → F) (a : ℝ) :\\n- Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean:160\\n    theorem integral_comp_mul_right (g : ℝ → F) (a : ℝ) :\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1121, \"n\": 35}",
+   "ok": true,
+   "result_chars": 2437,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1121–1155 of 1392):\\n  1121  theorem integral_comp_mul_deriv_Ioi {f f' : ℝ → ℝ} {g : ℝ → ℝ} {a : ℝ}\\n  1122      (hf : ContinuousOn f <| Ici a) (hft : Tendsto f atTop atTop)\\n  1123      (hff' : ∀ x ∈ Ioi a, HasDerivWithinAt f (f' x) (Ioi x) x)\\n  1124      (hg_cont : ContinuousOn g <| f '' Ioi a) (hg1 : IntegrableOn g <| f '' Ici a)\\n  1125      (hg2 : IntegrableOn (fun x => (g ∘ f) x * f' x) (Ici a)) :\\n  1126      (∫ x in Ioi a, (g ∘ f) x * f' x) = ∫ u in Ioi (f a), g u := by\\n  1127    have hg2' : IntegrableOn (fun x => f' x • (g ∘ f) x) (Ici a) := by simpa [mul_comm] using hg2\\n  1128    simpa [mul_comm] using integral_deriv_smul_comp_Ioi hf hft hff' hg_cont hg1 hg2'\\n  1129  \\n  1130  /-- Substitution `y = x ^ p` in integrals over `Ioi 0` -/\\n  1131  theorem integral_comp_rpow_Ioi (g : ℝ → E) {p : ℝ} (hp : p ≠ 0) :\\n  1132      (∫ x in Ioi 0, (|p| * x ^ (p - 1)) • g (x ^ p)) = ∫ y in Ioi 0, g y := by\\n  1133    let S := Ioi (0 : ℝ)\\n  1134    have a1 : ∀ x : ℝ, x ∈ S → HasDerivWithinAt (fun t : ℝ => t ^ p) (p * x ^ (p - 1)) S x :=\\n  1135      fun x hx => (hasDerivAt_rpow_const (Or.inl (mem_Ioi.mp hx).ne')).hasDerivWithinAt\\n  1136    have a2 : InjOn (fun x : ℝ => x ^ p) S := by\\n  1137      rcases lt_or_gt_of_ne hp with (h | h)\\n  1138      · apply StrictAntiOn.injOn\\n  1139        intro x hx y hy hxy\\n  1140        rw [← inv_lt_inv₀ (rpow_pos_of_pos hx p) (rpow_pos_of_pos hy p), ← rpow_neg (le_of_lt hx),\\n  1141          ← rpow_neg (le_of_lt hy)]\\n  1142        exact rpow_lt_rpow (le_of_lt hx) hxy (neg_pos.mpr h)\\n  1143      exact StrictMonoOn.injOn fun x hx y _ hxy => rpow_lt_rpow (mem_Ioi.mp hx).le hxy h\\n  1144    have a3 : (fun t : ℝ => t ^ p) '' S = S := by\\n  1145      ext1 x; rw [mem_image]; constructor\\n  1146      · rintro ⟨y, hy, rfl⟩; exact rpow_pos_of_pos hy p\\n  1147      · intro hx; refine ⟨x ^ (1 / p), rpow_pos_of_pos hx _, ?_⟩\\n  1148        rw [← rpow_mul (le_of_lt hx), one_div_mul_cancel hp, rpow_one]\\n  1149    have := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi a1 a2 g\\n  1150    rw [a3] at this; rw [this]\\n  1151    refine setIntegral_congr_fun measurableSet_Ioi ?_\\n  1152    intro x hx; dsimp only\\n  1153    rw [abs_mul, abs_of_nonneg (rpow_nonneg (le_of_lt hx) _)]\\n  1154  \\n  1155  theorem integral_comp_rpow_Ioi_of_pos {g : ℝ → E} {p : ℝ} (hp : 0 < p) :\\n\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"integral_comp_mul_deriv_Ioi\", \"Real.exp\", \"Ioi\", \"HasDerivWithinAt\", \"ContinuousOn\", \"IntegrableOn\", \"Tendsto\", \"atTop\"]}",
+   "ok": true,
+   "result_chars": 2513,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"integral_comp_mul_deriv_Ioi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.exp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Exponential\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Exponential\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Exponential.html#Real.exp\\\"},{\\\"decl\\\":\\\"Ioi\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"HasDerivWithinAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Basic.html#HasDerivWithinAt\\\"},{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"IntegrableOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Tendsto\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Filter.Tendsto\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter.Tendsto\\\"},{\\\"decl\\\":\\\"atTop\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Filter.atTop\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/AtTopBot/Defs.html#Filter.atTop\\\"}],\\\"counts\\\":{\\\"total\\\":8,\\\"exists\\\":3,\\\"renamed\\\":2,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"MeasureTheory.integral_comp_mul_deriv_Ioi\", \"Set.Ioi\", \"MeasureTheory.IntegrableOn\"]}",
+   "ok": true,
+   "result_chars": 1262,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"MeasureTheory.integral_comp_mul_deriv_Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegralEqImproper\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.IntegralEqImproper\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntegralEqImproper.html#MeasureTheory.integral_comp_mul_deriv_Ioi\\\"},{\\\"decl\\\":\\\"Set.Ioi\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ioi\\\"},{\\\"decl\\\":\\\"MeasureTheory.IntegrableOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntegrableOn.html#MeasureTheory.IntegrableOn\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*integrableOn\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'notation.*integrableOn' under Mathlib/.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem integral_Ioi\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1557,
+   "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'theorem integral_Ioi' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1173\\n    theorem integral_Ioi_sub_Ioi (hf : IntegrableOn f (Ioi a) μ) (hab : a ≤ b) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:1177\\n    theorem integral_Ioi_sub_Ioi' (hf : IntegrableOn f (Ioi a) μ) (hg : IntegrableOn f (Ioi b) μ) :\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:787\\n    theorem integral_Ioi_of_hasDerivAt_of_tendsto (hcont : ContinuousWithinAt f (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:813\\n    theorem integral_Ioi_of_hasDerivAt_of_tendsto' (hderiv : ∀ x ∈ Ici a, HasDerivAt f (f' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:874\\n    theorem integral_Ioi_of_hasDerivAt_of_nonneg (hcont : ContinuousWithinAt g (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:883\\n    theorem integral_Ioi_of_hasDerivAt_of_nonneg' (hderiv : ∀ x ∈ Ici a, HasDerivAt g (g' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:910\\n    theorem integral_Ioi_of_hasDerivAt_of_nonpos (hcont : ContinuousWithinAt g (Ici a) a)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:919\\n    theorem integral_Ioi_of_hasDerivAt_of_nonpos' (hderiv : ∀ x ∈ Ici a, HasDerivAt g (g' x) x)\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1329\\n    theorem integral_Ioi_deriv_mul_eq_sub\\n- Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean:1350\\n    theorem integral_Ioi_mul_deriv_eq_deriv_mul\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3361,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1–50 of 1392):\\n     1  /-\\n     2  Copyright (c) 2021 Anatole Dedecker. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Anatole Dedecker, Bhavik Mehta\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv\\n     9  public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts\\n    10  public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace\\n    11  public import Mathlib.MeasureTheory.Measure.Haar.Unique\\n    12  \\n    13  /-!\\n    14  # Links between an integral and its \\\"improper\\\" version\\n    15  \\n    16  In its current state, mathlib only knows how to talk about definite (\\\"proper\\\") integrals,\\n    17  in the sense that it treats integrals over `[x, +∞)` the same as it treats integrals over\\n    18  `[y, z]`. For example, the integral over `[1, +∞)` is **not** defined to be the limit of\\n    19  the integral over `[1, x]` as `x` tends to `+∞`, which is known as an **improper integral**.\\n    20  \\n    21  Indeed, the \\\"proper\\\" definition is stronger than the \\\"improper\\\" one. The usual counterexample\\n    22  is `x ↦ sin(x)/x`, which has an improper integral over `[1, +∞)` but no definite integral.\\n    23  \\n    24  Although definite integrals have better properties, they are hardly usable when it comes to\\n    25  computing integrals on unbounded sets, which is much easier using limits. Thus, in this file,\\n    26  we prove various ways of studying the proper integral by studying the improper one.\\n    27  \\n    28  ## Definitions\\n    29  \\n    30  The main definition of this file is `MeasureTheory.AECover`. It is a rather technical definition\\n    31  whose sole purpose is generalizing and factoring proofs. Given an index type `ι`, a countably\\n    32  generated filter `l` over `ι`, and an `ι`-indexed family `φ` of subsets of a measurable space `α`\\n    33  equipped with a measure `μ`, one should think of a hypothesis `hφ : MeasureTheory.AECover μ l φ` as\\n    34  a sufficient condition for being able to interpret `∫ x, f x ∂μ` (if it exists) as the limit of `∫ x\\n    35  in φ i, f x ∂μ` as `i` tends to `l`.\\n    36  \\n    37  When using this definition with a measure restricted to a set `s`, which happens fairly often, one\\n    38  should not try too hard to use a `MeasureTheory.AECover` of subsets of `s`, as it often makes proofs\\n    39  more complicated than necessary. See for example the proof of\\n    40  `MeasureTheory.integrableOn_Iic_of_intervalIntegral_norm_tendsto` where we use `(fun x ↦ oi x)` as a\\n    41  `MeasureTheory.AECover` w.r.t. `μ.restrict (Iic b)`, instead of using `(fun x ↦ Ioc x b)`.\\n    42  \\n    43  ## Main statements\\n    44  \\n    45  - `MeasureTheory.AECover.lintegral_tendsto_of_countably_generated` : if `φ` is a\\n    46    `MeasureTheory.AECover μ l`, where `l` is a countably generated filter, and if `f` is a measurable\\n    47    `ENNReal`-valued function, then `∫⁻ x in φ n, f x ∂μ` tends to `∫⁻ x, f x ∂μ` as `n` tends to `l`\\n    48  \\n    49  - `MeasureTheory.AECover.integrable_of_integral_norm_tendsto` : if `φ` is a\\n    50    `MeasureTheory.AECover μ l`, where `l` is a countably generated filter, if `f` is measurable and\\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation.*x in\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 557,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'notation.*x in' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/CurveIntegral/Basic.lean:37\\n    - `curveIntegral ω γ`, notation `∫ᶜ x in γ, ω x`, is the integral of a 1-form `ω` along a path `γ`.\\n- Mathlib/MeasureTheory/Integral/IntervalAverage.lean:14\\n    In this file we introduce notation `⨍ x in a..b, f x` for the average `⨍ x in Ι a b, f x` of `f`\\n- Mathlib/Analysis/InnerProductSpace/Defs.lean:49\\n    which respectively introduce the plain notation `⟪·, ·⟫` for the real and complex inner product.\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"scoped.*integral.*:=\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'scoped.*integral.*:=' under Mathlib/.\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"notation3.*∫.*in\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1554,
+   "result_head": "[{\"type\": \"text\", \"text\": \"18 match(es) for 'notation3.*∫.*in' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:166\\n    notation3 \\\"∫ \\\"(...)\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => integral μ r\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:169\\n    notation3 \\\"∫ \\\"(...)\\\", \\\"r:60:(scoped f => integral volume f) => r\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:172\\n    notation3 \\\"∫ \\\"(...)\\\" in \\\"s\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => integral (Measure.restrict μ s) r\\n- Mathlib/MeasureTheory/Integral/Bochner/Basic.lean:175\\n    notation3 \\\"∫ \\\"(...)\\\" in \\\"s\\\", \\\"r:60:(scoped f => integral (Measure.restrict volume s) f) => r\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:660\\n    notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => intervalIntegral r a b μ\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:665\\n    notation3\\\"∫ \\\"(...)\\\" in \\\"a\\\"..\\\"b\\\", \\\"r:60:(scoped f => intervalIntegral f a b volume) => r\\n- Mathlib/MeasureTheory/Integral/Marginal.lean:87\\n    notation3 \\\"∫⋯∫⁻_\\\" s \\\", \\\" f => lmarginal (fun _ ↦ volume) s f\\n- Mathlib/MeasureTheory/Integral/CurveIntegral/Basic.lean:128\\n    notation3 \\\"∫ᶜ \\\"(...)\\\" in \\\" γ \\\", \\\"r:67:(scoped ω => curveIntegral ω γ) => r\\n- Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean:56\\n    notation3 \\\"∫⁻ \\\"(...)\\\", \\\"r:60:(scoped f => f)\\\" ∂\\\"μ:70 => lintegral μ r\\n- Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean:59\\n    notation3 \\\"∫⁻ \\\"(...)\\\", \\\"r:60:(scoped f => lintegral volume f) => r\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"exp\", \"Real.exp\", \"Ici\", \"Set.Ici\"]}",
+   "ok": true,
+   "result_chars": 1253,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"exp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Real.exp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Complex.Exponential\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Complex.Exponential\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Complex/Exponential.html#Real.exp\\\"},{\\\"decl\\\":\\\"Ici\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Set.Ici\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Ici\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean\", \"line\": 1121, \"n\": 10}",
+   "ok": true,
+   "result_chars": 852,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean  (lines 1121–1130 of 1392):\\n  1121  theorem integral_comp_mul_deriv_Ioi {f f' : ℝ → ℝ} {g : ℝ → ℝ} {a : ℝ}\\n  1122      (hf : ContinuousOn f <| Ici a) (hft : Tendsto f atTop atTop)\\n  1123      (hff' : ∀ x ∈ Ioi a, HasDerivWithinAt f (f' x) (Ioi x) x)\\n  1124      (hg_cont : ContinuousOn g <| f '' Ioi a) (hg1 : IntegrableOn g <| f '' Ici a)\\n  1125      (hg2 : IntegrableOn (fun x => (g ∘ f) x * f' x) (Ici a)) :\\n  1126      (∫ x in Ioi a, (g ∘ f) x * f' x) = ∫ u in Ioi (f a), g u := by\\n  1127    have hg2' : IntegrableOn (fun x => f' x • (g ∘ f) x) (Ici a) := by simpa [mul_comm] using hg2\\n  1128    simpa [mul_comm] using integral_deriv_smul_comp_Ioi hf hft hff' hg_cont hg1 hg2'\\n  1129  \\n  1130  /-- Substitution `y = x ^ p` in integrals over `Ioi 0` -/\\n\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Filter.Tendsto\", \"Filter.atTop\", \"HasDerivWithinAt\", \"ContinuousOn\", \"MeasureTheory.IntegrableOn\"]}",
+   "ok": true,
+   "result_chars": 1760,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Filter.Tendsto\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter.Tendsto\\\"},{\\\"decl\\\":\\\"Filter.atTop\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.AtTopBot.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/AtTopBot/Defs.html#Filter.atTop\\\"},{\\\"decl\\\":\\\"HasDerivWithinAt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Analysis.Calculus.Deriv.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/Calculus/Deriv/Basic.html#HasDerivWithinAt\\\"},{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"MeasureTheory.IntegrableOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"import_line\\\":\\\"import Mathlib.MeasureTheory.Integral.IntegrableOn\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/MeasureTheory/Integral/IntegrableOn.html#MeasureTheory.IntegrableOn\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem exp_change_of_variables {g : ℝ → ℝ} (a : ℝ)\n    (hf_cont : ContinuousOn Real.exp (Set.Ici a))\n    (hf_tendsto : Filter.Tendsto Real.exp Filter.atTop Filter.atTop)\n    (hf_deriv : ∀ x ∈ Set.Ioi a, HasDerivWithinAt Real.exp (Real.exp x) (Set.Ioi x) x)\n    (hg_cont : ContinuousOn g (Real.exp '' Set.Ioi a))\n    (hg_int1 : MeasureTheory.IntegrableOn g (Real.exp '' Set.Ici a))\n    (hg_int2 : MeasureTheory.IntegrableOn (fun x => g (Real.exp x) * Real.exp x) (Set.Ici a)) :\n    (∫ x in Set.Ioi a, g (Real.exp x) * Real.exp x) = ∫ u in Set.Ioi (Real.exp a), g u := sorry"
+}

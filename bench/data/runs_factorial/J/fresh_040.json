@@ -1,0 +1,322 @@
+{
+ "task_id": "fresh_040",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:24:38Z",
+ "wall_s": 94.8,
+ "transcript_stats": {
+  "turns": 35,
+  "assistant_turns": 23,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 8,
+   "mcp__wikibrain__brain_cell": 7,
+   "mcp__wikibrain__brain_search": 14,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_transfer": 2
+  },
+  "tokens_in": 186,
+  "tokens_out": 7084,
+  "cost_usd": 0.1102862
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"unique factorization monoid\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2856,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unique factorization monoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":15},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q118084\\\",\\\"label\\\":\\\"unit\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":6}],\\\"returned\\\":12,\\\"total\\\":138,\\\"withheld_by_shard\\\":537,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"localization monoid\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3280,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization monoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Localization\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Localization := OreLocalization S M\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/MonoidLocalization/Basic.html#Localization\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"cell_label\\\":\\\"Localization\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"unique factorization domain\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3272,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"unique factorization domain\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"resolved_from\\\":\\\"label\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"label\\\":\\\"UniqueFactorizationDomain\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/PFun\\\",\\\"label\\\":\\\"PFun\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"PFun.Dom\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.PFun\\\",\\\"import_line\\\":\\\"import Mathlib.Data.PFun\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"code\\\":\\\"def Dom (f : α →. β) : Set α :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/PFun.html#PFun.Dom\\\",\\\"via_cell\\\":\\\"cell:Q192439\\\",\\\"cell_label\\\":\\\"domain of a function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/PFun\\\",\\\"label\\\":\\\"PFun\\\"}]},{\\\"decl\\\":\\\"UniqueFactorizationMonoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class UniqueFactorizationMonoid (α : Type*) [CommMonoidWithZero α] : Prop\\\\n    extends IsCancelMulZero α, IsWellFounded α DvdNotUnit where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/UniqueFactorizationDomain/Defs.html#UniqueFactorizationMonoid\\\",\\\"via_cell\\\":\\\"cell:Q1052579\\\",\\\"cell_label\\\":\\\"unique factorization domain\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"label\\\":\\\"UniqueFactorizationDomain\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"factorial monoid\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3910,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"factorial monoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q120976\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Factorial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Factorial\\\",\\\"label\\\":\\\"Factorial\\\"}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q190573\\\",\\\"label\\\":\\\"Gamma function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q470877\\\",\\\"label\\\":\\\"Stirling's approximation\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q161519\\\",\\\"label\\\":\\\"Permutation\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1279571\\\",\\\"label\\\":\\\"Indian mathematics\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1501324\\\",\\\"label\\\":\\\"Wallis product\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q202805\\\",\\\"label\\\":\\\"Combination\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q204\\\",\\\"label\\\":\\\"0\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q21028472\\\",\\\"label\\\":\\\"Hypergeometric function\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":131,\\\"withheld_by_shard\\\":83,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Nat.factorial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Nat.Factorial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Nat.Factorial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def factorial : ℕ → ℕ\\\\n  | 0 => 1\\\\n  | succ n => succ n * factorial n\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Nat/Factorial/Basic.html#Nat.factorial\\\",\\\"via_cell\\\":\\\"cell:Q120976\\\",\\\"cell_label\\\":\\\"Factorial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat\\\",\\\"label\\\":\\\"Nat\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Nat/Factorial\\\",\\\"label\\\":\\\"Factorial\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"UniqueFactorizationMonoid\"}",
+   "ok": true,
+   "result_chars": 2262,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"UniqueFactorizationMonoid\\\",\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"f\\\":161,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1052579\\\",\\\"anchor\\\":\\\"Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"supercells\\\":[\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\"],\\\"f\\\":161,\\\"xy\\\":[307.9,384.1]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":4,\\\"description\\\":\\\"integral domain where every nonzero element is uniquely expressible as a product of prime elements\\\",\\\"slug\\\":\\\"Unique_factorization_domain\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"label\\\":\\\"UniqueFactorizationMonoid\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":4,\\\"module\\\":\\\"Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class UniqueFactorizationMonoid (α : Type*) [CommMonoidWithZero α] : Prop\\\\n    extends IsCancelMulZero α, IsWellFounded α DvdNotUnit where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1605.08640#1\\\",\\\"label\\\":\\\"Arithmetical Semirings\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1605.08640\\\",\\\"ref\\\":\\\"1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"label\\\":\\\"UniqueFactorizationDomain\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q670235\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"localization unique factorization\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization unique factorization\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Localization\"}",
+   "ok": true,
+   "result_chars": 1383,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Localization\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"anchor\\\":\\\"decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercells\\\":[\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\"],\\\"xy\\\":[-70.1,400.3]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev Localization := OreLocalization S M\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.MonoidLocalization.Basic\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OreLocalization\"}",
+   "ok": true,
+   "result_chars": 547,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q986499\\\",\\\"label\\\":\\\"Ore condition\\\",\\\"aka\\\":[\\\"OreLocalization.oreCondition\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/OreLocalization/OreSet\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/OreLocalization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OreLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/OreLocalization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OreLocalization\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"UniqueFactorizationMonoid localization instance\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UniqueFactorizationMonoid localization instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q1052579\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 2166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q670235\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q670235\\\",\\\"dst\\\":\\\"lit:1605.08640#1\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"UniqueFactorizationMonoid\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"inexact\\\",\\\"sim\\\":0.817,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q670235\\\",\\\"dst\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":2,\\\"statuses\\\":{\\\"formalized\\\":2},\\\"sample\\\":[{\\\"id\\\":\\\"6c0a2c0194c0\\\",\\\"label\\\":\\\"Generalization to UFDs\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"fea76f5f0670\\\",\\\"label\\\":\\\"Unique factorization domain\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q161172\\\",\\\"dst\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"25e1f9efb89b\\\",\\\"label\\\":\\\"Unique factorization domain\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q3968\\\",\\\"dst\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"partial\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"a45b7c858860\\\",\\\"label\\\":\\\"Factorization\\\",\\\"status\\\":\\\"partial\\\"}]}}]},{\\\"id\\\":\\\"path:Mathlib/NumberTheory/NumberField\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q613048\\\",\\\"dst\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"b0199afeda40\\\",\\\"label\\\":\\\"Unique factorization domain\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":4,\\\"matched\\\":4,\\\"counts\\\":{\\\"syn\\\":4,\\\"organs\\\":3},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:UniqueFactorizationMonoid\"}",
+   "ok": true,
+   "result_chars": 1094,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"snippet\\\":\\\"integral domain where every nonzero element is uniquely expressible as a product of prime elements\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1052579\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:UniqueFactorizationMonoid\\\",\\\"label\\\":\\\"UniqueFactorizationMonoid\\\",\\\"code\\\":\\\"class UniqueFactorizationMonoid (α : Type*) [CommMonoidWithZero α] : Prop\\\\n    extends IsCancelMulZero α, IsWellFounded α DvdNotUnit where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/UniqueFactorizationDomain/Defs.html#UniqueFactorizationMonoid\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:1605.08640#1\\\",\\\"label\\\":\\\"Arithmetical Semirings\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/1605.08640\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization preserves factorization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization preserves factorization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"SubmonoidLocalization UniqueFactorizationMonoid\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"SubmonoidLocalization UniqueFactorizationMonoid\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Submonoid localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/GroupTheory/MonoidLocalization\"}",
+   "ok": true,
+   "result_chars": 1293,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MonoidLocalization\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"parent\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"children\\\":[\\\"path:Mathlib/GroupTheory/MonoidLocalization/Away\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Cardinality\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/DivPairs\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Finite\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/GrothendieckGroup\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Lemmas\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Maps\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero\\\",\\\"path:Mathlib/GroupTheory/MonoidLocalization/Order\\\"],\\\"fa\\\":33944},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"CommMonoidWithZero localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommMonoidWithZero localization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero\"}",
+   "ok": true,
+   "result_chars": 845,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero\\\",\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MonoidWithZero\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero\\\",\\\"parent\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Submonoid\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4451,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Submonoid\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Submonoid\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Submonoid\\\",\\\"label\\\":\\\"Submonoid\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Submonoid.powers\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Submonoid.powers\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Submonoid\\\",\\\"label\\\":\\\"Submonoid\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:AddSubmonoid.NSMulSaturated\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"AddSubmonoid.NSMulSaturated\\\",\\\"resolved_from\\\":\\\"search\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Subgroup/Saturated\\\",\\\"label\\\":\\\"Saturated\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"AddSubmonoid.NSMulSaturated\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.GroupTheory.Subgroup.Saturated\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.Subgroup.Saturated\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"definition\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/Subgroup/Saturated.html#AddSubmonoid.NSMulSaturated\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:AddSubmonoid.NSMulSaturated\\\",\\\"cell_label\\\":\\\"AddSubmonoid.NSMulSaturated\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Subgroup\\\",\\\"label\\\":\\\"Subgroup\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/Subgroup/Saturated\\\",\\\"label\\\":\\\"Saturated\\\"}]},{\\\"decl\\\":\\\"Submonoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Submonoid (M : Type*) [MulOneClass M] extends Subsemigroup M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Submonoid/Defs.html#Submonoid\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Submonoid\\\",\\\"cell_label\\\":\\\"Submonoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Submonoid\\\",\\\"label\\\":\\\"Submonoid\\\"}]},{\\\"decl\\\":\\\"Submonoid.powers\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Membership\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Submonoid.Membership\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def powers (n : M) : Submonoid M :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Submonoid/Membership.html#Submono"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"localization theorem\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"localization theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/GroupTheory/OreLocalization\"}",
+   "ok": true,
+   "result_chars": 871,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/GroupTheory/OreLocalization\\\",\\\"id\\\":\\\"path:Mathlib/GroupTheory/OreLocalization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"OreLocalization\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/GroupTheory/OreLocalization\\\",\\\"parent\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"children\\\":[\\\"path:Mathlib/GroupTheory/OreLocalization/Basic\\\",\\\"path:Mathlib/GroupTheory/OreLocalization/Cardinality\\\",\\\"path:Mathlib/GroupTheory/OreLocalization/OreSet\\\"],\\\"fa\\\":33816},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OreLocalization theorem instance\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization theorem instance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/RingTheory/Localization\"}",
+   "ok": true,
+   "result_chars": 1791,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/RingTheory/Localization\\\",\\\"id\\\":\\\"path:Mathlib/RingTheory/Localization\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/RingTheory/Localization\\\",\\\"parent\\\":\\\"path:Mathlib/RingTheory\\\",\\\"children\\\":[\\\"path:Mathlib/RingTheory/Localization/Algebra\\\",\\\"path:Mathlib/RingTheory/Localization/AsSubring\\\",\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\",\\\"path:Mathlib/RingTheory/Localization/Away\\\",\\\"path:Mathlib/RingTheory/Localization/BaseChange\\\",\\\"path:Mathlib/RingTheory/Localization/Basic\\\",\\\"path:Mathlib/RingTheory/Localization/Cardinality\\\",\\\"path:Mathlib/RingTheory/Localization/Defs\\\",\\\"path:Mathlib/RingTheory/Localization/Finiteness\\\",\\\"path:Mathlib/RingTheory/Localization/FractionRing\\\",\\\"path:Mathlib/RingTheory/Localization/Free\\\",\\\"path:Mathlib/RingTheory/Localization/Ideal\\\",\\\"path:Mathlib/RingTheory/Localization/Integer\\\",\\\"path:Mathlib/RingTheory/Localization/Integral\\\",\\\"path:Mathlib/RingTheory/Localization/InvSubmonoid\\\",\\\"path:Mathlib/RingTheory/Localization/LocalizationLocalization\\\",\\\"path:Mathlib/RingTheory/Localization/Module\\\",\\\"path:Mathlib/RingTheory/Localization/NormTrace\\\",\\\"path:Mathlib/RingTheory/Localization/NumDen\\\",\\\"path:Mathlib/RingTheory/Localization/Pi\\\",\\\"path:Mathlib/RingTheory/Localization/Rat\\\",\\\"path:Mathlib/RingTheory/Localization/Submodule\\\"],\\\"fa\\\":41098},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/RingTheory/UniqueFactorizationDomain\"}",
+   "ok": true,
+   "result_chars": 1630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"id\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"UniqueFactorizationDomain\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain\\\",\\\"parent\\\":\\\"path:Mathlib/RingTheory\\\",\\\"children\\\":[\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Basic\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/ClassGroup\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Defs\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/FactorSet\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Finite\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Finsupp\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/GCDMonoid\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Ideal\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Kaplansky\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Moebius\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Multiplicative\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Multiplicity\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/Nat\\\",\\\"path:Mathlib/RingTheory/UniqueFactorizationDomain/NormalizedFactors\\\"],\\\"fa\\\":161},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"UniqueFactorizationDomain.toLocalization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 197,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"UniqueFactorizationDomain.toLocalization\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Localization.UniqueFactorizationMonoid\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Localization.UniqueFactorizationMonoid\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"CommMonoidWithZero\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 251,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"CommMonoidWithZero\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Ore localization\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Ore localization\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory\\\",\\\"label\\\":\\\"GroupTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization\\\",\\\"label\\\":\\\"MonoidLocalization\\\"},{\\\"id\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Submonoid Localization map\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid Localization map\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"UniqueFactorizationMonoid\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 722,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"UniqueFactorizationMonoid\\\",\\\"decl\\\":\\\"UniqueFactorizationMonoid\\\",\\\"id\\\":\\\"cell:Q1052579\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q1052579\\\",\\\"label\\\":\\\"unique factorization domain\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Unique_factorization_domain\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Unique_factorization_domain\\\",\\\"description\\\":\\\"integral domain where every nonzero element is uniquely expressible as a product of prime elements\\\",\\\"snippet_sources\\\":[],\\\"via_cell\\\":\\\"cell:Q1052579\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Submonoid S M algebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Submonoid S M algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OreLocalization S M\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization S M\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Localization\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1510,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Localization\\\",\\\"decl\\\":\\\"Localization\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Localization\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime\\\",\\\"label\\\":\\\"Localization.AtPrime\\\",\\\"aka\\\":[\\\"Basic Set Theory and Algebra: Hints on Representation, Topology, Geometry, Analysis\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"label\\\":\\\"Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ\\\",\\\"aka\\\":[\\\"algebra-lemma-produce-finite\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Etale/QuasiFinite\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/MonoidLocalization/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Localization.AtPrime.isLocalRing\\\",\\\"label\\\":\\\"Localization.AtPrime.isLocalRing\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Localization/AtPrime\\\"},{\\\"id\\\":\\\"cell:Q1047749\\\",\\\"label\\\":\\\"Turán's theorem\\\",\\\"aka\\\":[\\\"SimpleGraph.CliqueFree.card_edgeFinset_le\\\",\\\"Vertex-Based Localization of Tur\\\\\\\\'{a}n's Theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Extremal\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"Localization\"}",
+   "ok": true,
+   "result_chars": 523,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Localization\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Localization\\\",\\\"label\\\":\\\"Localization\\\",\\\"code\\\":\\\"abbrev Localization := OreLocalization S M\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/MonoidLocalization/Basic.html#Localization\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OreLocalization monoid\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OreLocalization monoid\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem localization_unique_factorization_monoid {M : Type*} [CommMonoidWithZero M]\n    [UniqueFactorizationMonoid M] (S : Submonoid M) :\n    UniqueFactorizationMonoid (Localization S M) := sorry"
+}

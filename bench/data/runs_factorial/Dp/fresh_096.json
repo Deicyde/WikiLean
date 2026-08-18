@@ -1,0 +1,290 @@
+{
+ "task_id": "fresh_096",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:43:44Z",
+ "wall_s": 76.5,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 24,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 16,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__decl_exists": 6
+  },
+  "tokens_in": 194,
+  "tokens_out": 5555,
+  "cost_usd": 0.09062945
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"conditionally complete linear order\"}",
+   "ok": false,
+   "result_chars": 268,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"conditionally complete linear order\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"order topology\"}",
+   "ok": false,
+   "result_chars": 247,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"order topology\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"left continuous right continuous order preserves suprema infima\"}",
+   "ok": true,
+   "result_chars": 2957,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"left continuous right continuous order preserves suprema infima\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"label\\\":\\\"Topological space\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"label\\\":\\\"Homeomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"label\\\":\\\"Hausdorff space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q185148\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":100,\\\"withheld_by_shard\\\":395,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\",\\\"via_cell\\\":\\\"cell:Q170058\\\",\\\"cell_label\\\":\\\"Continuous function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ConditionallyCompleteLinearOrder\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"supercell\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField.inducedOrderRingIso\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField.inducedOrderRingIso\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField.to_archimedean\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField.to_archimedean\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrderedField.uniqueOrderRingIso\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrderedField.uniqueOrderRingIso\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CompleteField\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderTopology\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 767,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderTopology\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology.completelyNormalSpace\\\",\\\"label\\\":\\\"OrderTopology.completelyNormalSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/T5\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology.t5Space\\\",\\\"label\\\":\\\"OrderTopology.t5Space\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/Order/T5\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:instOrderTopologyReal\\\",\\\"label\\\":\\\"instOrderTopologyReal\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Pseudo\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsClosed saturated sSup sInf\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsClosed saturated sSup sInf\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"supremum preserving infimum preserving monotone\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum preserving infimum preserving monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sSup sSup_le le_sSup continuity order\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 194,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sSup sSup_le le_sSup continuity order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Order closed upper set filter principal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 196,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Order closed upper set filter principal\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:OrderTopology\"}",
+   "ok": true,
+   "result_chars": 1347,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"anchor\\\":\\\"decl:Mathlib:OrderTopology\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Order/Basic\\\"],\\\"xy\\\":[693.2,-415]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:OrderTopology\\\",\\\"label\\\":\\\"OrderTopology\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class OrderTopology (α : Type*) [t : TopologicalSpace α] [Preorder α] : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Basic\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Order/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\"}",
+   "ok": true,
+   "result_chars": 1570,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"anchor\\\":\\\"decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\"],\\\"xy\\\":[-424.2,-878.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:ConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"module\\\":\\\"Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class ConditionallyCompleteLinearOrder (α : Type*)\\\\n    extends ConditionallyCompleteLattice α, Ord α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.ConditionallyCompleteLattice.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice\\\",\\\"label\\\":\\\"ConditionallyCompleteLattice\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/ConditionallyCompleteLattice/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"BddAbove BddBelow monotone\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"BddAbove BddBelow monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"image supremum infimum sets\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"image supremum infimum sets\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:decl:Mathlib:OrderTopology\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1046,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q369377\\\",\\\"dst\\\":\\\"decl:Mathlib:OrderTopology\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"88044c5d9cdf\\\",\\\"label\\\":\\\"Order topology\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q621550\\\",\\\"dst\\\":\\\"decl:Mathlib:OrderTopology\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"0053450a4b05\\\",\\\"label\\\":\\\"Order topology on an ordinal\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":2,\\\"matched\\\":2,\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Monotone StrictMono continuity order\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone StrictMono continuity order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"topological continuous theorem\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"topological continuous theorem\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ConditionallyCompleteLinearOrder\", \"OrderTopology\", \"Continuous\", \"BddAbove\", \"BddBelow\", \"sSup\", \"sInf\"]}",
+   "ok": true,
+   "result_chars": 2153,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/ConditionallyCompleteLattice/Defs.html#ConditionallyCompleteLinearOrder\\\"},{\\\"decl\\\":\\\"OrderTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/Basic.html#OrderTopology\\\"},{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"},{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"},{\\\"decl\\\":\\\"BddBelow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddBelow\\\"},{\\\"decl\\\":\\\"sSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"sInf\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Sup Inf complete lattice\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Sup Inf complete lattice\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Sup\", \"Inf\", \"sSup_le\", \"le_sInf\", \"map_sSup\", \"map_sInf\"]}",
+   "ok": true,
+   "result_chars": 1718,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Sup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Inf\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"sSup_le\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Defs.html#sSup_le\\\"},{\\\"decl\\\":\\\"le_sInf\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Defs.html#le_sInf\\\"},{\\\"decl\\\":\\\"map_sSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"map_sInf\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":6,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order topology supremum continuous bounded\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 199,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order topology supremum continuous bounded\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"continuous function order lattice\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous function order lattice\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Monotone le mono function order\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Monotone le mono function order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone\", \"Filter\", \"Topology\", \"TopologicalSpace\"]}",
+   "ok": true,
+   "result_chars": 1274,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"Filter\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Filter.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Filter.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Filter/Defs.html#Filter\\\"},{\\\"decl\\\":\\\"Topology\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"TopologicalSpace\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#TopologicalSpace\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.image\", \"Set.Nonempty\", \"BddBelow\", \"BddAbove\", \"ConditionallyCompleteLattice\"]}",
+   "ok": true,
+   "result_chars": 1646,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\"},{\\\"decl\\\":\\\"Set.Nonempty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.Nonempty\\\"},{\\\"decl\\\":\\\"BddBelow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddBelow\\\"},{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"},{\\\"decl\\\":\\\"ConditionallyCompleteLattice\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/ConditionallyCompleteLattice/Defs.html#ConditionallyCompleteLattice\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":5,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"biSup piSup finset sum product\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"biSup piSup finset sum product\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"csSup_eq_cSup\", \"csInf_eq_cInf\", \"sSup_empty\", \"sInf_empty\", \"biSup_eq_sSup\"]}",
+   "ok": true,
+   "result_chars": 1529,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"csSup_eq_cSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"csInf_eq_cInf\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"sSup_empty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Basic.html#sSup_empty\\\"},{\\\"decl\\\":\\\"sInf_empty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.CompleteLattice.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Order.CompleteLattice.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/CompleteLattice/Basic.html#sInf_empty\\\"},{\\\"decl\\\":\\\"biSup_eq_sSup\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Continuous\"}",
+   "ok": true,
+   "result_chars": 4048,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Continuous\\\",\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q170058\\\",\\\"anchor\\\":\\\"Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Defs/Basic\\\"],\\\"f\\\":36057,\\\"xy\\\":[-173.7,-76.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"function such that the preimage of an open set is open\\\",\\\"slug\\\":\\\"Continuous_function\\\",\\\"article_annotations\\\":{\\\"total\\\":102,\\\"formalized\\\":77,\\\"partial\\\":6,\\\"not_formalized\\\":19},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Continuous\\\",\\\"label\\\":\\\"Continuous\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Continuous_function\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Continuous_function\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ContinuousFunction\\\",\\\"label\\\":\\\"Continuous Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ContinuousFunction.html\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ContinuousMap\\\",\\\"label\\\":\\\"Continuous Map\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ContinuousMap.html\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:continuous map\\\",\\\"label\\\":\\\"continuous map\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/continuous+map\\\",\\\"qid\\\":\\\"Q170058\\\",\\\"snippet\\\":\\\"There are multiple different concepts of continuous maps, even in classical mathematics, depending upon which foundation one is using.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Continuous_function\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":102,\\\"formalized\\\":77,\\\"partial\\\":6,\\\"not_formalized\\\":19}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2507.13968#2.16\\\",\\\"label\\\":\\\"Continuity of Functions on Bare Representation of Graphs under Star Topology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2507.13968\\\",\\\"ref\\\":\\\"2.16\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":4,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":16,\\\"depends\\\":200,\\\"links\\\":74,\\\"mentions\\\":60,\\\"relates\\\":2,\\\"invocation\\\":47},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"cites\\\":2,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":5,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":4,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":3}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}}],\\\"counts\\\":{\\\"syn\\\":595,\\\"organs\\\":8},\\\"truncated\\\":{\\\"syn\\\":395},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"order topology continuous lattice ordered monotone\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 207,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"order topology continuous lattice ordered monotone\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:OrderTopology\", \"limit\": 30, \"kinds\": \"depends\"}",
+   "ok": true,
+   "result_chars": 411,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:OrderTopology\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:OrderTopology\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"OrderTopology\", \"ConditionallyCompleteLinearOrder\", \"Continuous\", \"BddBelow\", \"BddAbove\", \"Set.image\", \"Set.Nonempty\"]}",
+   "ok": true,
+   "result_chars": 2219,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"OrderTopology\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/Basic.html#OrderTopology\\\"},{\\\"decl\\\":\\\"ConditionallyCompleteLinearOrder\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.ConditionallyCompleteLattice.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/ConditionallyCompleteLattice/Defs.html#ConditionallyCompleteLinearOrder\\\"},{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\"},{\\\"decl\\\":\\\"BddBelow\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddBelow\\\"},{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"},{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\"},{\\\"decl\\\":\\\"Set.Nonempty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.Nonempty\\\"}],\\\"counts\\\":{\\\"total\\\":7,\\\"exists\\\":7,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem orderTopologyPreservesSupInf\n    {α β : Type*}\n    [ConditionallyCompleteLinearOrder α] [OrderTopology α]\n    [ConditionallyCompleteLinearOrder β] [OrderTopology β]\n    (f : α → β)\n    (hsupr : ∀ s : Set α, BddBelow s → s.Nonempty → f (sSup s) = sSup (f '' s))\n    (hinf : ∀ s : Set α, BddAbove s → s.Nonempty → f (sInf s) = sInf (f '' s)) :\n    Continuous f := sorry"
+}

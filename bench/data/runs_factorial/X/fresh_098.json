@@ -1,0 +1,232 @@
+{
+ "task_id": "fresh_098",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:21:21Z",
+ "wall_s": 56.3,
+ "transcript_stats": {
+  "turns": 23,
+  "assistant_turns": 14,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 6,
+   "mcp__formal__decl_grep": 12,
+   "mcp__formal__decl_read": 2,
+   "mcp__wikibrain__decl_exists": 2
+  },
+  "tokens_in": 116,
+  "tokens_out": 3629,
+  "cost_usd": 0.0582194
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"fixed point continuous map interval\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'fixed point continuous map interval': Unknown identifier `fixed`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"exists_fixed_point Continuous\"}",
+   "ok": true,
+   "result_chars": 119,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'exists_fixed_point Continuous': Unknown identifier `exists_fixed_point`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f → ?f\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f → ?f': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Continuous → ?a → ?a\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Continuous → ?a → ?a': type expected, got\\n  (Continuous : (?m.1 → ?m.2) → Prop)\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*fixed.*point\"}",
+   "ok": true,
+   "result_chars": 1943,
+   "result_head": "[{\"type\": \"text\", \"text\": \"13 match(es) for 'theorem.*fixed.*point' (via ripgrep):\\n- Mathlib/Computability/PartrecCode.lean:1000\\n    /-- **Roger's fixed-point theorem**: any total, computable `f` has a fixed point.\\n- Mathlib/Computability/PartrecCode.lean:1004\\n    theorem fixed_point {f : Code → Code} (hf : Computable f) : ∃ c : Code, eval (f c) = eval c :=\\n- Mathlib/Computability/PartrecCode.lean:1022\\n    theorem fixed_point₂ {f : Code → ℕ →. ℕ} (hf : Partrec₂ f) : ∃ c : Code, eval c = f c :=\\n- Mathlib/Logic/Function/Basic.lean:363\\n    theorem exists_fixed_point_of_surjective {α β : Type*} (f : α → α → β)\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:389\\n    theorem exists_fixed_point_of_prime {p n : ℕ} [hp : Fact p.Prime] (hα : ¬p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:397\\n    theorem exists_fixed_point_of_prime' {p n : ℕ} [hp : Fact p.Prime] (hα : p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Support.lean:641\\n    theorem fixed_point_card_lt_of_ne_one [DecidableEq α] [Fintype α] {σ : Perm α} (h : σ ≠ 1) :\\n- Mathlib/GroupTheory/PGroup.lean:199\\n    theorem nonempty_fixed_point_of_prime_not_dvd_card (α) [MulAction G α] (hpα : ¬p ∣ Nat.card α) :\\n- Mathlib/GroupTheory/PGroup.lean:211\\n    theorem exists_fixed_point_of_prime_dvd_card_of_fixed_point (hpα : p ∣ Nat.card α) {a : α}\\n- Mathlib/Analysis/Normed/Affine/Isometry.lean:776\\n    theorem dist_pointReflection_fixed (x y : P) : dist (pointReflection 𝕜 x y) x = dist y x := by\\n- Mathlib/Order/FixedPoints.lean:25\\n    * `fixedPoints.completeLattice`: The Knaster-Tarski theorem: fixed points of a monotone\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:226\\n    theorem exists_fixed_point_of_contractible (F : (β →ᵤ Seq α) → (β →ᵤ Seq α))\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:239\\n    theorem FriendlyOperation.exists_fixed_point (F : β → Option (α × γ × β)) (op : γ → Seq α → Seq α)\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Ii]nterval.*fixed\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*[Ii]nterval.*fixed' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*[Bb]rouwer\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*[Bb]rouwer' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*intermediate.*value\"}",
+   "ok": true,
+   "result_chars": 3139,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'theorem.*intermediate.*value' (via ripgrep):\\n- Mathlib/Topology/Order/IntermediateValue.lean:58\\n    In this section we prove the following theorem (see `IsPreconnected.intermediate_value₂`): if `f`\\n- Mathlib/Topology/Order/IntermediateValue.lean:71\\n    theorem intermediate_value_univ₂ [PreconnectedSpace X] {a b : X} {f g : X → α} (hf : Continuous f)\\n- Mathlib/Topology/Order/IntermediateValue.lean:78\\n    theorem intermediate_value_univ₂_eventually₁ [PreconnectedSpace X] {a : X} {l : Filter X} [NeBot l]\\n- Mathlib/Topology/Order/IntermediateValue.lean:83\\n    theorem intermediate_value_univ₂_eventually₂ [PreconnectedSpace X] {l₁ l₂ : Filter X} [NeBot l₁]\\n- Mathlib/Topology/Order/IntermediateValue.lean:93\\n    theorem IsPreconnected.intermediate_value₂ {s : Set X} (hs : IsPreconnected s) {a b : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:102\\n    theorem IsPreconnected.intermediate_value₂_eventually₁ {s : Set X} (hs : IsPreconnected s) {a : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:111\\n    theorem IsPreconnected.intermediate_value₂_eventually₂ {s : Set X} (hs : IsPreconnected s)\\n- Mathlib/Topology/Order/IntermediateValue.lean:123\\n    theorem IsPreconnected.intermediate_value {s : Set X} (hs : IsPreconnected s) {a b : X} (ha : a ∈ s)\\n- Mathlib/Topology/Order/IntermediateValue.lean:127\\n    theorem IsPreconnected.intermediate_value_Ico {s : Set X} (hs : IsPreconnected s) {a : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:132\\n    theorem IsPreconnected.intermediate_value_Ioc {s : Set X} (hs : IsPreconnected s) {a : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:138\\n    theorem IsPreconnected.intermediate_value_Ioo {s : Set X} (hs : IsPreconnected s) {l₁ l₂ : Filter X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:145\\n    theorem IsPreconnected.intermediate_value_Ici {s : Set X} (hs : IsPreconnected s) {a : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:150\\n    theorem IsPreconnected.intermediate_value_Iic {s : Set X} (hs : IsPreconnected s) {a : X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:156\\n    theorem IsPreconnected.intermediate_value_Ioi {s : Set X} (hs : IsPreconnected s) {l₁ l₂ : Filter X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:162\\n    theorem IsPreconnected.intermediate_value_Iio {s : Set X} (hs : IsPreconnected s) {l₁ l₂ : Filter X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:168\\n    theorem IsPreconnected.intermediate_value_Iii {s : Set X} (hs : IsPreconnected s) {l₁ l₂ : Filter X}\\n- Mathlib/Topology/Order/IntermediateValue.lean:175\\n    theorem intermediate_value_univ [PreconnectedSpace X] (a b : X) {f : X → α} (hf : Continuous f) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:553\\n    theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:559\\n    theorem intermediate_value_Icc' {a b : α} (hab : a ≤ b) {f : α → δ}\\n- Mathlib/Topology/Order/IntermediateValue.lean:564\\n    theorem intermediate_value_uIcc {a b : α} {f : α → δ} (hf : ContinuousOn f [[a, b]]) :\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*fixed.*Icc\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*fixed.*Icc' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"exists.*fixed.*point\"}",
+   "ok": true,
+   "result_chars": 1765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'exists.*fixed.*point' (via ripgrep):\\n- Mathlib/Logic/Function/Basic.lean:363\\n    theorem exists_fixed_point_of_surjective {α β : Type*} (f : α → α → β)\\n- Mathlib/GroupTheory/PGroup.lean:211\\n    theorem exists_fixed_point_of_prime_dvd_card_of_fixed_point (hpα : p ∣ Nat.card α) {a : α}\\n- Mathlib/GroupTheory/PGroup.lean:224\\n    have := (hG.of_equiv ConjAct.toConjAct).exists_fixed_point_of_prime_dvd_card_of_fixed_point G\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:389\\n    theorem exists_fixed_point_of_prime {p n : ℕ} [hp : Fact p.Prime] (hα : ¬p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:397\\n    theorem exists_fixed_point_of_prime' {p n : ℕ} [hp : Fact p.Prime] (hα : p ∣ Fintype.card α)\\n- Mathlib/GroupTheory/Perm/Cycle/Type.lean:520\\n    obtain ⟨v, hv1, hv2⟩ := exists_fixed_point_of_prime' Scard hσ hv₀\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:226\\n    theorem exists_fixed_point_of_contractible (F : (β →ᵤ Seq α) → (β →ᵤ Seq α))\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:239\\n    theorem FriendlyOperation.exists_fixed_point (F : β → Option (α × γ × β)) (op : γ → Seq α → Seq α)\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:277\\n    obtain ⟨f, hf⟩ := exists_fixed_point_of_contractible T hT\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:296\\n    β → Seq α := (FriendlyOperation.exists_fixed_point F op).choose\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:302\\n    have := (FriendlyOperation.exists_fixed_point F op).choose_spec b\\n- Mathlib/Tactic/ComputeAsymptotics/Multiseries/Corecursion.lean:310\\n    have := (FriendlyOperation.exists_fixed_point F op).choose_spec b\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Continuous.*Icc\"}",
+   "ok": true,
+   "result_chars": 3238,
+   "result_head": "[{\"type\": \"text\", \"text\": \"58 match(es) for 'theorem.*Continuous.*Icc' (via ripgrep):\\n- Mathlib/Analysis/Calculus/LocalExtr/Rolle.lean:52\\n    theorem exists_hasDerivAt_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b)\\n- Mathlib/Analysis/Calculus/LocalExtr/Rolle.lean:59\\n    theorem exists_deriv_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b) :\\n- Mathlib/Analysis/Calculus/MeanValue.lean:360\\n    theorem constant_of_has_deriv_right_zero (hcont : ContinuousOn f (Icc a b))\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/EulerSineProd.lean:251\\n    theorem tendsto_integral_cos_pow_mul_div {f : ℝ → ℂ} (hf : ContinuousOn f (Icc 0 (π / 2))) :\\n- Mathlib/Analysis/SpecialFunctions/Trigonometric/Chebyshev/Orthogonality.lean:67\\n    theorem integrable_measureT {f : ℝ → ℝ} (hf : ContinuousOn f (Set.Icc (-1) 1)) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1068\\n    theorem sub_le_integral_of_hasDeriv_right_of_le (hab : a ≤ b) (hcont : ContinuousOn g (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1094\\n    theorem integral_le_sub_of_hasDeriv_right_of_le (hab : a ≤ b) (hcont : ContinuousOn g (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1116\\n    theorem integral_eq_sub_of_hasDeriv_right_of_le (hab : a ≤ b) (hcont : ContinuousOn f (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1128\\n    theorem integral_eq_sub_of_hasDeriv_right (hcont : ContinuousOn f (uIcc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1140\\n    theorem integral_eq_sub_of_hasDerivAt_of_le (hab : a ≤ b) (hcont : ContinuousOn f (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1221\\n    theorem integrableOn_deriv_right_of_nonneg (hcont : ContinuousOn g (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1256\\n    theorem integrableOn_deriv_of_nonneg (hcont : ContinuousOn g (Icc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1263\\n    theorem intervalIntegrable_deriv_of_nonneg (hcont : ContinuousOn g (uIcc a b))\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:502\\n    theorem ContinuousOn.intervalIntegrable {u : ℝ → E} {a b : ℝ} (hu : ContinuousOn u (uIcc a b)) :\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:506\\n    theorem ContinuousOn.intervalIntegrable_of_Icc {u : ℝ → E} {a b : ℝ} (h : a ≤ b)\\n- Mathlib/Topology/Order/Rolle.lean:39\\n    theorem exists_Ioo_extr_on_Icc (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b) :\\n- Mathlib/Topology/Order/Rolle.lean:61\\n    theorem exists_isLocalExtr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b) :\\n- Mathlib/Topology/Order/Rolle.lean:88\\n    theorem exists_uIoo_isExtrOn_uIcc (hab : a ≠ b) (hfc : ContinuousOn f (uIcc a b))\\n- Mathlib/Topology/Order/Rolle.lean:95\\n    theorem exists_isLocalExtr_uIoo (hab : a ≠ b) (hfc : ContinuousOn f (uIcc a b)) (hfI : f a = f b) :\\n- Mathlib/Topology/Order/ProjIcc.lean:33\\n    theorem continuous_projIcc : Continuous (projIcc a b h) := Continuous.subtype_mk (by fun_prop) _\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Icc → Continuous\"}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Icc → Continuous': Unknown identifier `Icc`\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*intermediate_value.*Icc\"}",
+   "ok": true,
+   "result_chars": 1002,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*intermediate_value.*Icc' (via ripgrep):\\n- Mathlib/Topology/Order/IntermediateValue.lean:553\\n    theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:559\\n    theorem intermediate_value_Icc' {a b : α} (hab : a ≤ b) {f : α → δ}\\n- Mathlib/Topology/Order/IntermediateValue.lean:564\\n    theorem intermediate_value_uIcc {a b : α} {f : α → δ} (hf : ContinuousOn f [[a, b]]) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:590\\n    theorem intermediate_value_Ico {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:604\\n    theorem intermediate_value_Ioc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n- Mathlib/Topology/Order/IntermediateValue.lean:618\\n    theorem intermediate_value_Ioo {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"FixedPoint\"}",
+   "ok": true,
+   "result_chars": 2381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"193 match(es) for 'FixedPoint' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:90\\n    def FixedPoints.subsemiring : Subsemiring B' where\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:91\\n    __ := FixedPoints.addSubmonoid G B'\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:92\\n    __ := FixedPoints.submonoid G B'\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:94\\n    instance : SMulCommClass G (FixedPoints.subsemiring B' G) B' :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:95\\n    inferInstanceAs (SMulCommClass G (FixedPoints.submonoid G B') B')\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:98\\n    def FixedPoints.subring : Subring B where\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:99\\n    __ := FixedPoints.addSubgroup G B\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:100\\n    __ := FixedPoints.submonoid G B\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:102\\n    instance : SMulCommClass G (FixedPoints.subring B G) B :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:103\\n    inferInstanceAs (SMulCommClass G (FixedPoints.subsemiring B G) B)\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:106\\n    def FixedPoints.subalgebra : Subalgebra A B' where\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:107\\n    __ := FixedPoints.subsemiring B' G\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:110\\n    instance : SMulCommClass G (FixedPoints.subalgebra A B' G) B' :=\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:111\\n    inferInstanceAs (SMulCommClass G (FixedPoints.subsemiring B' G) B')\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:23\\n    def FixedPoints.addSubmonoid : AddSubmonoid α where\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:29\\n    lemma FixedPoints.mem_addSubmonoid (a : α) : a ∈ addSubmonoid M α ↔ ∀ m : M, m • a = a :=\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:38\\n    def FixedPoints.addSubgroup : AddSubgroup α where\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:43\\n    lemma FixedPoints.mem_addSubgroup (a : α) : a ∈ FixedPoints.addSubgroup M α ↔ ∀ m : M, m • a = a :=\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:47\\n    lemma FixedPoints.addSubgroup_toAddSubmonoid :\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:48\\n    (FixedPoints.addSubgroup M α).toAddSubmonoid = addSubmonoid M α :=\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Order/IntermediateValue.lean\", \"line\": 553, \"n\": 15}",
+   "ok": true,
+   "result_chars": 1105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Order/IntermediateValue.lean  (lines 553–567 of 946):\\n   553  theorem intermediate_value_Icc {a b : α} (hab : a ≤ b) {f : α → δ} (hf : ContinuousOn f (Icc a b)) :\\n   554      Icc (f a) (f b) ⊆ f '' Icc a b :=\\n   555    isPreconnected_Icc.intermediate_value (left_mem_Icc.2 hab) (right_mem_Icc.2 hab) hf\\n   556  \\n   557  /-- **Intermediate Value Theorem** for continuous functions on closed intervals, case\\n   558  `f a ≥ t ≥ f b`. -/\\n   559  theorem intermediate_value_Icc' {a b : α} (hab : a ≤ b) {f : α → δ}\\n   560      (hf : ContinuousOn f (Icc a b)) : Icc (f b) (f a) ⊆ f '' Icc a b :=\\n   561    isPreconnected_Icc.intermediate_value (right_mem_Icc.2 hab) (left_mem_Icc.2 hab) hf\\n   562  \\n   563  /-- **Intermediate Value Theorem** for continuous functions on closed intervals, unordered case. -/\\n   564  theorem intermediate_value_uIcc {a b : α} {f : α → δ} (hf : ContinuousOn f [[a, b]]) :\\n   565      [[f a, f b]] ⊆ f '' uIcc a b := by\\n   566    cases le_total (f a) (f b) <;> simp [*, isPreconnected_uIcc.intermediate_value]\\n   567  \\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*[Ff]ixed[Pp]oint\"}",
+   "ok": true,
+   "result_chars": 2312,
+   "result_head": "[{\"type\": \"text\", \"text\": \"35 match(es) for 'def.*[Ff]ixed[Pp]oint' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:90\\n    def FixedPoints.subsemiring : Subsemiring B' where\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:98\\n    def FixedPoints.subring : Subring B where\\n- Mathlib/Algebra/Algebra/Subalgebra/Operations.lean:106\\n    def FixedPoints.subalgebra : Subalgebra A B' where\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:23\\n    def FixedPoints.addSubmonoid : AddSubmonoid α where\\n- Mathlib/Algebra/Ring/Action/Submonoid.lean:38\\n    def FixedPoints.addSubgroup : AddSubgroup α where\\n- Mathlib/RingTheory/IsGaloisGroup/Defs.lean:125\\n    noncomputable def ringEquivFixedPoints :\\n- Mathlib/Combinatorics/Derangements/Basic.lean:79\\n    def atMostOneFixedPointEquivSum_derangements [DecidableEq α] (a : α) :\\n- Mathlib/Combinatorics/Derangements/Basic.lean:172\\n    def derangementsOptionEquivSigmaAtMostOneFixedPoint :\\n- Mathlib/Order/FixedPoints.lean:170\\n    def prevFixed (x : α) (hx : f x ≤ x) : fixedPoints f :=\\n- Mathlib/Order/FixedPoints.lean:181\\n    def nextFixed (x : α) (hx : x ≤ f x) : fixedPoints f :=\\n- Mathlib/GroupTheory/Sylow.lean:559\\n    def fixedPointsMulLeftCosetsEquivQuotient (H : Subgroup G) [Finite (H : Set G)] :\\n- Mathlib/GroupTheory/FixedPointFree.lean:29\\n    def FixedPointFree [One G] := ∀ g, φ g = g → g = 1\\n- Mathlib/GroupTheory/FixedPointFree.lean:75\\n    def commGroupOfInvolutive (hφ : FixedPointFree φ) (h2 : Function.Involutive φ) :\\n- Mathlib/Dynamics/FixedPoints/Defs.lean:13\\n    In this file we define the set `Function.fixedPoints` of fixed points of a function `f : α → α`.\\n- Mathlib/Dynamics/FixedPoints/Defs.lean:28\\n    def fixedPoints (f : α → α) : Set α :=\\n- Mathlib/Dynamics/FixedPoints/Support.lean:29\\n    public lemma fixedSupport_def (f : X → X) : fixedSupport f = closure (fixedPoints f)ᶜ := by\\n- Mathlib/GroupTheory/GroupAction/Defs.lean:116\\n    def fixedPoints : Set α :=\\n- Mathlib/GroupTheory/GroupAction/Defs.lean:184\\n    def FixedPoints.submonoid : Submonoid α where\\n- Mathlib/FieldTheory/Fixed.lean:22\\n    Given a (finite) group `G` that acts on a field `F`, we define `FixedPoints.subfield G F`,\\n- Mathlib/FieldTheory/Fixed.lean:182\\n    def minpoly : Polynomial (FixedPoints.subfield G F) :=\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Function.FixedPoint\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Function.FixedPoint': unknown identifier 'Function.FixedPoint'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Dynamics/FixedPoints/Defs.lean\", \"line\": 1, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1413,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Dynamics/FixedPoints/Defs.lean  (lines 1–40 of 54):\\n     1  /-\\n     2  Copyright (c) 2020 Yury Kudryashov. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Operations\\n     9  \\n    10  /-!\\n    11  # Fixed points of a self-map\\n    12  \\n    13  In this file we define the set `Function.fixedPoints` of fixed points of a function `f : α → α`.\\n    14  The related predicate `IsFixedPt` is defined in `Mathlib.Logic.Function.Defs`.\\n    15  \\n    16  ## Tags\\n    17  \\n    18  fixed point\\n    19  -/\\n    20  \\n    21  @[expose] public section\\n    22  \\n    23  namespace Function\\n    24  \\n    25  variable {α : Type*} {x : α} {f g : α → α}\\n    26  \\n    27  /-- The set of fixed points of a map `f : α → α`. -/\\n    28  def fixedPoints (f : α → α) : Set α :=\\n    29    { x : α | IsFixedPt f x }\\n    30  \\n    31  instance fixedPoints.decidable [DecidableEq α] (f : α → α) (x : α) :\\n    32      Decidable (x ∈ fixedPoints f) :=\\n    33    IsFixedPt.decidable\\n    34  \\n    35  @[simp]\\n    36  theorem mem_fixedPoints : x ∈ fixedPoints f ↔ IsFixedPt f x :=\\n    37    .rfl\\n    38  \\n    39  theorem mem_fixedPoints_iff {α : Type*} {f : α → α} {x : α} : x ∈ fixedPoints f ↔ f x = x :=\\n    40    .rfl\\n\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IsFixedPt\"}",
+   "ok": true,
+   "result_chars": 166,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def IsFixedPt' (via ripgrep):\\n- Mathlib/Logic/Function/Defs.lean:173\\n    def IsFixedPt (f : α → α) (x : α) := f x = x\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"ContinuousOn\", \"Icc\", \"IsFixedPt\", \"Function.fixedPoints\", \"Set.nonempty_iff_ne_empty\"]}",
+   "ok": true,
+   "result_chars": 1680,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"ContinuousOn\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Defs.Filter\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Filter\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Filter.html#ContinuousOn\\\"},{\\\"decl\\\":\\\"Icc\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"IsFixedPt\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Function.IsFixedPt\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Logic.Function.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Function.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Function/Defs.html#Function.IsFixedPt\\\"},{\\\"decl\\\":\\\"Function.fixedPoints\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.FixedPoints.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Dynamics/FixedPoints/Defs.html#Function.fixedPoints\\\"},{\\\"decl\\\":\\\"Set.nonempty_iff_ne_empty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Basic.html#Set.nonempty_iff_ne_empty\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Icc\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 581,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'def Icc' (via ripgrep):\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:268\\n    def IccLeftChart (x y : ℝ) [h : Fact (x < y)] :\\n- Mathlib/Geometry/Manifold/Instances/Real.lean:333\\n    def IccRightChart (x y : ℝ) [h : Fact (x < y)] :\\n- Mathlib/Analysis/BoxIntegral/Box/Basic.lean:184\\n    protected def Icc : Box ι ↪o Set (ι → ℝ) :=\\n- Mathlib/Order/Hom/Set.lean:217\\n    protected def Icc [Lattice α] [Lattice β] (e : α ≃o β) (x y : α) :\\n- Mathlib/Order/Interval/Set/Defs.lean:76\\n    def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Function.IsFixedPt\", \"Set.Nonempty\", \"intermediate_value_Icc\"]}",
+   "ok": true,
+   "result_chars": 1113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Function.IsFixedPt\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Logic.Function.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Logic.Function.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Logic/Function/Defs.html#Function.IsFixedPt\\\"},{\\\"decl\\\":\\\"Set.Nonempty\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.Nonempty\\\"},{\\\"decl\\\":\\\"intermediate_value_Icc\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Topology.Order.IntermediateValue\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Order.IntermediateValue\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Order/IntermediateValue.html#intermediate_value_Icc\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem continuous_map_on_interval_has_fixed_point {a b : ℝ} (hab : a ≤ b) (f : ℝ → ℝ)\n    (hf : ContinuousOn f (Set.Icc a b)) (hfim : Set.range_restrict f (Set.Icc a b) ⊆ Set.Icc a b) :\n    ∃ x ∈ Set.Icc a b, f x = x := sorry"
+}

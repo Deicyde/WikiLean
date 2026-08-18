@@ -1,0 +1,354 @@
+{
+ "task_id": "fresh_008",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:43:56Z",
+ "wall_s": 119.0,
+ "transcript_stats": {
+  "turns": 39,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 19,
+   "mcp__formal__decl_grep": 10,
+   "mcp__formal__decl_read": 9
+  },
+  "tokens_in": 242,
+  "tokens_out": 8391,
+  "cost_usd": 0.12345639999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LaurentPolynomial\"}",
+   "ok": true,
+   "result_chars": 1733,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 115 declarations mentioning LaurentPolynomial.\\n- LaurentPolynomial   [Mathlib.Algebra.Polynomial.Laurent]\\n    The semiring of Laurent polynomials with coefficients in the semiring `R`. We denote it by `R[T;T⁻¹]`. The ring homomorphism `C : R →+* R[T;T⁻¹]` includes `R` a\\n- LaurentPolynomial.T   [Mathlib.Algebra.Polynomial.Laurent]\\n    The function `n ↦ T ^ n`, implemented as a sequence `ℤ → R[T;T⁻¹]`.  Using directly `T ^ n` does not work, since we want the exponents to be of Type `ℤ` and the\\n- LaurentPolynomial.degree   [Mathlib.Algebra.Polynomial.Laurent]\\n    The degree of a Laurent polynomial takes values in `WithBot ℤ`. If `f : R[T;T⁻¹]` is a Laurent polynomial, then `f.degree` is the maximum of its support of `f`,\\n- LaurentPolynomial.instModulePolynomial   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.C   [Mathlib.Algebra.Polynomial.Laurent]\\n    The ring homomorphism `C`, including `R` into the ring of Laurent polynomials over `R` as the constant Laurent polynomials.\\n- LaurentPolynomial.commute_T   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.isUnit_T   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.algebraPolynomial   [Mathlib.Algebra.Polynomial.Laurent]\\n- Polynomial.toLaurent   [Mathlib.Algebra.Polynomial.Laurent]\\n    The ring homomorphism, taking a polynomial with coefficients in `R` to a Laurent polynomial with coefficients in `R`.\\n- LaurentPolynomial.invertibleT   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.isLocalization   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.smeval   [Mathlib.Algebra.Polynomial.Laurent]\\n    Evaluate a Laurent polynomial at a unit, using scalar multiplication.\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial support\"}",
+   "ok": true,
+   "result_chars": 97,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial support': Unknown identifier `support`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.support\"}",
+   "ok": true,
+   "result_chars": 939,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 116 declarations mentioning Polynomial.support.\\n- Polynomial.support   [Mathlib.Algebra.Polynomial.Basic]\\n    The set of all `n` such that `X^n` has a non-zero coefficient.\\n- Polynomial.support_X   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_erase   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_zero   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_toFinsupp   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_nonempty   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_ofFinsupp   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_neg   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_eq_empty   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.support_update_zero   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.card_support_eq_zero   [Mathlib.Algebra.Polynomial.Basic]\\n- Polynomial.sum_def   [Mathlib.Algebra.Polynomial.Basic]\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.support\"}",
+   "ok": true,
+   "result_chars": 963,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 431 declarations mentioning Finsupp.support.\\n- Finsupp.support   [Mathlib.Data.Finsupp.Defs]\\n    The support of a finitely supported function (aka `Finsupp`).\\n- Finsupp.support_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.ofSupportFinite_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_embDomain   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_nonempty_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.fun_support_eq   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_toFun   [Mathlib.Data.Finsupp.Defs]\\n    The witness that the support of a `Finsupp` is indeed the exact locus where its underlying function is nonzero.\\n- Finsupp.onFinset_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_eq_empty   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.card_support_eq_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.notMem_support_iff   [Mathlib.Data.Finsupp.Defs]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LaurentPolynomial.support\"}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LaurentPolynomial.support': unknown identifier 'LaurentPolynomial.support'\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"LaurentPolynomial\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3321,
+   "result_head": "[{\"type\": \"text\", \"text\": \"29 match(es) for 'LaurentPolynomial' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:28\\n    The symbol `R[T;T⁻¹]` stands for `LaurentPolynomial R`.  We also define\\n- Mathlib/Algebra/Polynomial/Laurent.lean:40\\n    As a consequence, `LaurentPolynomial` plays well with polynomials, but there is a little roughness\\n- Mathlib/Algebra/Polynomial/Laurent.lean:84\\n    abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\n- Mathlib/Algebra/Polynomial/Laurent.lean:88\\n    scoped[LaurentPolynomial] notation:9000 R \\\"[T;T⁻¹]\\\" => LaurentPolynomial R\\n- Mathlib/Algebra/Polynomial/Laurent.lean:90\\n    open LaurentPolynomial\\n- Mathlib/Algebra/Polynomial/Laurent.lean:93\\n    theorem LaurentPolynomial.ext [Semiring R] {p q : R[T;T⁻¹]} (h : ∀ a, p.coeff a = q.coeff a) :\\n- Mathlib/Algebra/Polynomial/Laurent.lean:119\\n    namespace LaurentPolynomial\\n- Mathlib/Algebra/Polynomial/Laurent.lean:135\\n    algebraMap R (LaurentPolynomial A) r = C (algebraMap R A r) :=\\n- Mathlib/Algebra/Polynomial/Laurent.lean:283\\n    induction f using LaurentPolynomial.induction_on' with\\n- Mathlib/Algebra/Polynomial/Laurent.lean:367\\n    induction f using LaurentPolynomial.induction_on_mul_T with | _ f n\\n- Mathlib/Algebra/Polynomial/Laurent.lean:494\\n    induction f using LaurentPolynomial.induction_on_mul_T with | _ f n\\n- Mathlib/Algebra/Polynomial/Laurent.lean:656\\n    induction f using LaurentPolynomial.induction_on' with\\n- Mathlib/Algebra/Polynomial/Laurent.lean:674\\n    end LaurentPolynomial\\n- Mathlib/Algebra/MonoidAlgebra/Division.lean:17\\n    In order to apply in maximal generality (such as for `LaurentPolynomial`s), this uses\\n- Mathlib/Algebra/MonoidAlgebra/Division.lean:55\\n    -- If `G` is an additive group, such as `ℤ` when used for `LaurentPolynomial`,\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean:285\\n    open LaurentPolynomial hiding C\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean:299\\n    let p : R[T;T⁻¹] := det (scalar n t - M.map LaurentPolynomial.C)\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean:300\\n    let q : R[T;T⁻¹] := det (1 - scalar n t * M.map LaurentPolynomial.C)\\n- Mathlib/Algebra/Lie/Loop.lean:26\\n    We implement the basic theory using `AddMonoidAlgebra` instead of `LaurentPolynomial` for\\n- Mathlib/Algebra/Lie/Loop.lean:64\\n    open LaurentPolynomial in\\n- Mathlib/RingTheory/Coalgebra/MonoidAlgebra.lean:22\\n    * `LaurentPolynomial.instCoalgebra`: the `R`-coalgebra structure on the Laurent polynomials\\n- Mathlib/RingTheory/Coalgebra/MonoidAlgebra.lean:63\\n    namespace LaurentPolynomial\\n- Mathlib/RingTheory/Coalgebra/MonoidAlgebra.lean:101\\n    end LaurentPolynomial\\n- Mathlib/RingTheory/Bialgebra/MonoidAlgebra.lean:23\\n    * `LaurentPolynomial.instBialgebra`: the `R`-bialgebra structure on the Laurent polynomials\\n- Mathlib/RingTheory/Bialgebra/MonoidAlgebra.lean:86\\n    namespace LaurentPolynomial\\n- Mathlib/RingTheory/Bialgebra/MonoidAlgebra.lean:105\\n    end LaurentPolynomial\\n- Mathlib/RingTheory/HopfAlgebra/MonoidAlgebra.lean:22\\n    * `LaurentPolynomial.instHopfAlgebra`: the `R`-Hopf algebra structure on the Laurent polynomials\\n- Mathlib/RingTheory/HopfAlgebra/MonoidAlgebra.lean:63\\n    namespace LaurentPolynomial\\n- Mathlib/RingTheory/HopfAlgebra/MonoidAlgebra.lean:92\\n    end LaurentPolynomial\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 84, \"n\": 20}",
+   "ok": true,
+   "result_chars": 1029,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 84–103 of 674):\\n    84  abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\n    85    AddMonoidAlgebra R ℤ\\n    86  \\n    87  @[nolint docBlame]\\n    88  scoped[LaurentPolynomial] notation:9000 R \\\"[T;T⁻¹]\\\" => LaurentPolynomial R\\n    89  \\n    90  open LaurentPolynomial\\n    91  \\n    92  @[ext]\\n    93  theorem LaurentPolynomial.ext [Semiring R] {p q : R[T;T⁻¹]} (h : ∀ a, p.coeff a = q.coeff a) :\\n    94      p = q := by ext; exact h _\\n    95  \\n    96  /-- The ring homomorphism, taking a polynomial with coefficients in `R` to a Laurent polynomial\\n    97  with coefficients in `R`. -/\\n    98  def Polynomial.toLaurent [Semiring R] : R[X] →+* R[T;T⁻¹] :=\\n    99    (mapDomainRingHom R Int.ofNatHom).comp (toFinsuppIso R).toRingHom\\n   100  \\n   101  /-- This is not a simp lemma, as it is usually preferable to use the lemmas about `C` and `X`\\n   102  instead. -/\\n   103  theorem Polynomial.toLaurent_apply [Semiring R] (p : R[X]) :\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddMonoidAlgebra support\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddMonoidAlgebra support': Unknown identifier `support`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.toLaurent\"}",
+   "ok": true,
+   "result_chars": 1765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 29 declarations mentioning Polynomial.toLaurent.\\n- Polynomial.toLaurent   [Mathlib.Algebra.Polynomial.Laurent]\\n    The ring homomorphism, taking a polynomial with coefficients in `R` to a Laurent polynomial with coefficients in `R`.\\n- Polynomial.toLaurent_injective   [Mathlib.Algebra.Polynomial.Laurent]\\n- Polynomial.toLaurent_X   [Mathlib.Algebra.Polynomial.Laurent]\\n- Polynomial.toLaurent_apply   [Mathlib.Algebra.Polynomial.Laurent]\\n    This is not a simp lemma, as it is usually preferable to use the lemmas about `C` and `X` instead.\\n- LaurentPolynomial.support_coeff_toLaurent   [Mathlib.Algebra.Polynomial.Laurent]\\n    The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f` shows that the support of `f.toLaurent` is the same finset, but viewed in `\\n- LaurentPolynomial.toLaurent_support   [Mathlib.Algebra.Polynomial.Laurent]\\n    **Alias** of `LaurentPolynomial.support_coeff_toLaurent`.  ---  The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f` shows that \\n- Polynomial.toLaurent_one   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.induction_on_mul_T   [Mathlib.Algebra.Polynomial.Laurent]\\n    This is a version of `exists_T_pow` stated as an induction principle.\\n- Polynomial.toLaurent_X_pow   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.exists_T_pow   [Mathlib.Algebra.Polynomial.Laurent]\\n- LaurentPolynomial.reduce_to_polynomial_of_mul_T   [Mathlib.Algebra.Polynomial.Laurent]\\n    Suppose that `Q` is a statement about Laurent polynomials such that * `Q` is true on *ordinary* polynomials; * `Q (f * T)` implies `Q f`;  it follow that `Q` is\\n- Polynomial.toLaurent_eq_zero   [Mathlib.Algebra.Polynomial.Laurent]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 1, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2062,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 1–40 of 674):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Damiano Testa\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Polynomial.AlgebraMap\\n     9  public import Mathlib.Algebra.Polynomial.Reverse\\n    10  public import Mathlib.Algebra.Polynomial.Inductions\\n    11  public import Mathlib.RingTheory.Localization.Away.Basic\\n    12  \\n    13  /-! # Laurent polynomials\\n    14  \\n    15  We introduce Laurent polynomials over a semiring `R`.  Mathematically, they are expressions of the\\n    16  form\\n    17  $$\\n    18  \\\\sum_{i \\\\in \\\\mathbb{Z}} a_i T ^ i\\n    19  $$\\n    20  where the sum extends over a finite subset of `ℤ`.  Thus, negative exponents are allowed.  The\\n    21  coefficients come from the semiring `R` and the variable `T` commutes with everything.\\n    22  \\n    23  Since we are going to convert back and forth between polynomials and Laurent polynomials, we\\n    24  decided to maintain some distinction by using the symbol `T`, rather than `X`, as the variable for\\n    25  Laurent polynomials.\\n    26  \\n    27  ## Notation\\n    28  The symbol `R[T;T⁻¹]` stands for `LaurentPolynomial R`.  We also define\\n    29  \\n    30  * `C : R →+* R[T;T⁻¹]` the inclusion of constant polynomials, analogous to the one for `R[X]`;\\n    31  * `T : ℤ → R[T;T⁻¹]` the sequence of powers of the variable `T`.\\n    32  \\n    33  ## Implementation notes\\n    34  \\n    35  We define Laurent polynomials as `AddMonoidAlgebra R ℤ`.\\n    36  Thus, they are essentially `Finsupp`s `ℤ →₀ R`.\\n    37  This choice differs from the current irreducible design of `Polynomial`, that instead shields away\\n    38  the implementation via `Finsupp`s.  It is closer to the original definition of polynomials.\\n    39  \\n    40  As a consequence, `LaurentPolynomial` plays well with polynomials, but there is a little roughness\\n\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"support_coeff_toLaurent\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 326,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'support_coeff_toLaurent' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Laurent.lean:392\\n    theorem support_coeff_toLaurent (f : R[X]) :\\n- Mathlib/Algebra/Polynomial/Laurent.lean:395\\n    @[deprecated (since := \\\"2026-06-18\\\")] alias toLaurent_support := support_coeff_toLaurent\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 392, \"n\": 10}",
+   "ok": true,
+   "result_chars": 518,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 392–401 of 674):\\n   392  theorem support_coeff_toLaurent (f : R[X]) :\\n   393      f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := by simp [Polynomial.support]\\n   394  \\n   395  @[deprecated (since := \\\"2026-06-18\\\")] alias toLaurent_support := support_coeff_toLaurent\\n   396  \\n   397  end Support\\n   398  \\n   399  section Degrees\\n   400  \\n   401  /-- The degree of a Laurent polynomial takes values in `WithBot ℤ`.\\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"support map Nat.castEmbedding\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'support map Nat.castEmbedding': Unknown identifier `support`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.image Int.ofNat\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle: no declarations found for 'Set.image Int.ofNat'.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?p : LaurentPolynomial ?R) : (?p).support\"}",
+   "ok": true,
+   "result_chars": 128,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?p : LaurentPolynomial ?R) : (?p).support': <input>:1:28: expected end of input\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.support (?f : ?M →₀ ?R)\"}",
+   "ok": true,
+   "result_chars": 918,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 431 declarations mentioning Finsupp.support.\\n- Finsupp.support_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.ofSupportFinite_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_embDomain   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_nonempty_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.fun_support_eq   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_toFun   [Mathlib.Data.Finsupp.Defs]\\n    The witness that the support of a `Finsupp` is indeed the exact locus where its underlying function is nonzero.\\n- Finsupp.onFinset_support   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_eq_empty   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.card_support_eq_zero   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.mem_support_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.notMem_support_iff   [Mathlib.Data.Finsupp.Defs]\\n- Finsupp.support_mapRange_of_injective   [Mathlib.Data.Finsupp.Defs]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?f : AddMonoidAlgebra) (?f).coeff\"}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?f : AddMonoidAlgebra) (?f).coeff': type expected, got\\n  (AddMonoidAlgebra : (R : Type ?u.3) → Type ?u.2 → [Semiring R] → Type (max ?u.3 ?u.2))\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*coeff.*Laurent\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*coeff.*Laurent' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 370, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1432,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 370–399 of 674):\\n   370    | succ n hn => convert QT _ _; simpa\\n   371  \\n   372  section Support\\n   373  \\n   374  theorem support_C_mul_T (a : R) (n : ℤ) : (C a * T n).coeff.support ⊆ {n} := by\\n   375    rw [← single_eq_C_mul_T]\\n   376    exact support_single_subset\\n   377  \\n   378  theorem support_coeff_C_mul_T_of_ne_zero {a : R} (a0 : a ≠ 0) (n : ℤ) :\\n   379      (C a * T n).coeff.support = {n} := by\\n   380    rw [← single_eq_C_mul_T]\\n   381    exact support_single _ a0\\n   382  \\n   383  @[deprecated (since := \\\"2026-06-18\\\")]\\n   384  alias support_C_mul_T_of_ne_zero := support_coeff_C_mul_T_of_ne_zero\\n   385  \\n   386  @[simp] lemma coeff_toLaurent (f : R[X]) :\\n   387      f.toLaurent.coeff = f.toFinsupp.coeff.mapDomain Nat.castEmbedding := rfl\\n   388  \\n   389  /-- The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f`\\n   390  shows that the support of `f.toLaurent` is the same finset, but viewed in `ℤ` under the natural\\n   391  inclusion `ℕ ↪ ℤ`. -/\\n   392  theorem support_coeff_toLaurent (f : R[X]) :\\n   393      f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := by simp [Polynomial.support]\\n   394  \\n   395  @[deprecated (since := \\\"2026-06-18\\\")] alias toLaurent_support := support_coeff_toLaurent\\n   396  \\n   397  end Support\\n   398  \\n   399  section Degrees\\n\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.image Nat.cast\"}",
+   "ok": true,
+   "result_chars": 900,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 23 declarations mentioning Nat.cast, Nat, and Set.image.\\n- Ordinal.natCast_image_Iio   [Mathlib.SetTheory.Ordinal.Arithmetic]\\n- NNReal.bddAbove_natCast_image_iff   [Mathlib.Data.NNReal.Basic]\\n- Nat.image_cast_int_Ici   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Ioi   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Iic   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Iio   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Icc   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Ico   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Ioc   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.image_cast_int_Ioo   [Mathlib.Data.Nat.Cast.SetInterval]\\n- Nat.span_singleton_setGcd   [Mathlib.NumberTheory.FrobeniusNumber]\\n- HahnSeries.ofPowerSeriesAlg_apply_coeff   [Mathlib.RingTheory.HahnSeries.PowerSeries]\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Nat.castEmbedding\"}",
+   "ok": true,
+   "result_chars": 1235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 16 declarations mentioning Nat.castEmbedding.\\n- Nat.castEmbedding   [Mathlib.Algebra.Ring.CharZero]\\n    `Nat.cast` as an embedding into monoids of characteristic `0`.\\n- Nat.castEmbedding_apply   [Mathlib.Algebra.Ring.CharZero]\\n- Int.divisorsAntidiag_natCast   [Mathlib.NumberTheory.Divisors]\\n- Int.divisorsAntidiag_ofNat   [Mathlib.NumberTheory.Divisors]\\n- Int.divisorsAntidiag_neg_natCast   [Mathlib.NumberTheory.Divisors]\\n- Int.Ico_eq_finset_map   [Mathlib.Data.Int.Interval]\\n- Int.Icc_eq_finset_map   [Mathlib.Data.Int.Interval]\\n- Int.Ioc_eq_finset_map   [Mathlib.Data.Int.Interval]\\n- Int.uIcc_eq_finset_map   [Mathlib.Data.Int.Interval]\\n- Int.Ioo_eq_finset_map   [Mathlib.Data.Int.Interval]\\n- LaurentPolynomial.support_coeff_toLaurent   [Mathlib.Algebra.Polynomial.Laurent]\\n    The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f` shows that the support of `f.toLaurent` is the same finset, but viewed in `\\n- LaurentPolynomial.toLaurent_support   [Mathlib.Algebra.Polynomial.Laurent]\\n    **Alias** of `LaurentPolynomial.support_coeff_toLaurent`.  ---  The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f` shows that \"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finset.coe_map\"}",
+   "ok": true,
+   "result_chars": 126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Finset.coe_map.\\n- Finset.coe_map   [Mathlib.Data.Finset.Image]\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Embedding apply\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Embedding apply': Unknown identifier `Embedding`\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def.*Polynomial.support\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def.*Polynomial.support' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Polynomial.support\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 725,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'Polynomial.support' (via ripgrep):\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:115\\n    /-- Though `SkewPolynomial.support` is not definiyionally equal to `SkewMonoidAlgebra.support` we\\n- Mathlib/Algebra/Polynomial/Basic.lean:761\\n    theorem support_C_mul_X {c : R} (h : c ≠ 0) : Polynomial.support (C c * X) = singleton 1 := by\\n- Mathlib/Algebra/Polynomial/Basic.lean:764\\n    theorem support_C_mul_X_subset (c : R) : Polynomial.support (C c * X) ⊆ singleton 1 := by\\n- Mathlib/Algebra/Polynomial/Basic.lean:771\\n    Polynomial.support (C c * X ^ n) = singleton n := by\\n- Mathlib/Algebra/Polynomial/Basic.lean:775\\n    Polynomial.support (C c * X ^ n) ⊆ singleton n := by\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^namespace Polynomial|^def support|^abbrev support\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 2591,
+   "result_head": "[{\"type\": \"text\", \"text\": \"180 match(es) for '^namespace Polynomial|^def support|^abbrev support' (via ripgrep):\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:103\\n    def support (a : FreeAbelianGroup X) : Finset X :=\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:141\\n    def supported : Submodule R S[M] := (Finsupp.supported S R s).comap (coeffLinearEquiv R).toLinearMap\\n- Mathlib/Algebra/MonoidAlgebra/Module.lean:169\\n    def supportedEquivFinsupp (s : Set M) : supported R S s ≃ₗ[R] s →₀ S :=\\n- Mathlib/Algebra/Polynomial/EraseLead.lean:33\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Roots.lean:44\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:31\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Inductions.lean:28\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Cardinal.lean:26\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Identities.lean:23\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Basis.lean:25\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Coeff.lean:31\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/OfFn.lean:27\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Algebra.lean:27\\n    namespace Polynomial\\n- Mathlib/Algebra/Ring/Subring/IntPolynomial.lean:36\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Coeff.lean:25\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Irreducible.lean:29\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Degree.lean:28\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Defs.lean:40\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/Subring.lean:24\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Eval/SMul.lean:28\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/Splits.lean:29\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/HasseDeriv.lean:49\\n    namespace Polynomial\\n- Mathlib/Algebra/SkewPolynomial/Basic.lean:112\\n    def support (p : SkewPolynomial R) : Finset ℕ :=\\n- Mathlib/Algebra/Polynomial/Monic.lean:27\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/PartialFractions.lean:92\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/GroupRingAction.lean:28\\n    namespace Polynomial\\n- Mathlib/Algebra/MvPolynomial/Basic.lean:462\\n    def support (p : MvPolynomial σ R) : Finset (σ →₀ ℕ) :=\\n- Mathlib/Algebra/Polynomial/BigOperators.lean:43\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/CancelLeads.lean:27\\n    namespace Polynomial\\n- Mathlib/Algebra/Polynomial/RingDivision.lean:30\\n    namespace Polynomial\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Polynomial.support\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^def Polynomial.support' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.support (?p : R[X])\"}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Polynomial.support (?p : R[X])': Unknown identifier `R`\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 750, \"n\": 20}",
+   "ok": true,
+   "result_chars": 979,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 750–769 of 1243):\\n   750  \\n   751  @[deprecated (since := \\\"2026-06-09\\\")] alias support_monomial' := support_monomial_subset\\n   752  \\n   753  @[simp]\\n   754  theorem support_C {a : R} (h : a ≠ 0) : (C a).support = singleton 0 :=\\n   755    support_monomial 0 h\\n   756  \\n   757  theorem support_C_subset (a : R) : (C a).support ⊆ singleton 0 :=\\n   758    support_monomial_subset 0 a\\n   759  \\n   760  @[simp]\\n   761  theorem support_C_mul_X {c : R} (h : c ≠ 0) : Polynomial.support (C c * X) = singleton 1 := by\\n   762    rw [C_mul_X_eq_monomial, support_monomial 1 h]\\n   763  \\n   764  theorem support_C_mul_X_subset (c : R) : Polynomial.support (C c * X) ⊆ singleton 1 := by\\n   765    simpa only [C_mul_X_eq_monomial] using support_monomial_subset 1 c\\n   766  \\n   767  @[deprecated (since := \\\"2026-06-09\\\")] alias support_C_mul_X' := support_C_mul_X_subset\\n   768  \\n   769  @[simp]\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"support.*toFinsupp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1412,
+   "result_head": "[{\"type\": \"text\", \"text\": \"12 match(es) for 'support.*toFinsupp' (via ripgrep):\\n- Mathlib/Algebra/FreeAbelianGroup/Finsupp.lean:121\\n    rw [support, toFinsupp_of, Finsupp.support_single _ one_ne_zero]\\n- Mathlib/Algebra/SkewMonoidAlgebra/Basic.lean:191\\n    @[deprecated (since := \\\"2026-07-04\\\")] alias support_toFinsupp := support_coeff\\n- Mathlib/Algebra/Polynomial/Coeff.lean:62\\n    _ = #(p.toFinsupp * q.toFinsupp).coeff.support := by rw [← support_toFinsupp, toFinsupp_mul]\\n- Mathlib/Algebra/Polynomial/Coeff.lean:63\\n    _ ≤ #(p.toFinsupp.coeff.support + q.toFinsupp.coeff.support) := by\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:327\\n    simpa only [degree, ← support_toFinsupp, toFinsupp_add]\\n- Mathlib/Algebra/Polynomial/Degree/Defs.lean:395\\n    simpa [degree, ← support_toFinsupp] using! AddMonoidAlgebra.sup_support_coeff_mul_le (by simp) ..\\n- Mathlib/Algebra/Polynomial/Degree/Support.lean:44\\n    rwa [support_toFinsupp, nonempty_iff_ne_empty, Ne, support_eq_empty]\\n- Mathlib/Algebra/Polynomial/Basic.lean:363\\n    theorem support_toFinsupp (p : R[X]) : p.toFinsupp.coeff.support = p.support := by rw [support]\\n- Mathlib/Algebra/Polynomial/Basic.lean:860\\n    simp_rw [sum, coeff, toFinsupp_sum, support, toFinsupp_mul, toFinsupp_monomial,\\n- Mathlib/Data/Finsupp/ToDFinsupp.lean:113\\n    theorem DFinsupp.toFinsupp_support (f : Π₀ _ : ι, M) : f.toFinsupp.support = f.support := by\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 358, \"n\": 15}",
+   "ok": true,
+   "result_chars": 617,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 358–372 of 1243):\\n   358    | ⟨p⟩ => p.coeff.support\\n   359  \\n   360  @[simp]\\n   361  theorem support_ofFinsupp (p) : support (⟨p⟩ : R[X]) = p.coeff.support := by rw [support]\\n   362  \\n   363  theorem support_toFinsupp (p : R[X]) : p.toFinsupp.coeff.support = p.support := by rw [support]\\n   364  \\n   365  @[simp]\\n   366  theorem support_zero : (0 : R[X]).support = ∅ :=\\n   367    rfl\\n   368  \\n   369  @[simp]\\n   370  theorem support_eq_empty : p.support = ∅ ↔ p = 0 := by\\n   371    rcases p with ⟨⟩\\n   372    simp [support]\\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Basic.lean\", \"line\": 350, \"n\": 15}",
+   "ok": true,
+   "result_chars": 755,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Basic.lean  (lines 350–364 of 1243):\\n   350    map_sum (toFinsuppIso R).symm f s\\n   351  \\n   352  theorem toFinsupp_sum {ι : Type*} (s : Finset ι) (f : ι → R[X]) :\\n   353      (∑ i ∈ s, f i : R[X]).toFinsupp = ∑ i ∈ s, (f i).toFinsupp :=\\n   354    map_sum (toFinsuppIso R) f s\\n   355  \\n   356  /-- The set of all `n` such that `X^n` has a non-zero coefficient. -/\\n   357  def support : R[X] → Finset ℕ\\n   358    | ⟨p⟩ => p.coeff.support\\n   359  \\n   360  @[simp]\\n   361  theorem support_ofFinsupp (p) : support (⟨p⟩ : R[X]) = p.coeff.support := by rw [support]\\n   362  \\n   363  theorem support_toFinsupp (p : R[X]) : p.toFinsupp.coeff.support = p.support := by rw [support]\\n   364  \\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 120, \"n\": 20}",
+   "ok": true,
+   "result_chars": 952,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 120–139 of 674):\\n   120  \\n   121  section Semiring\\n   122  \\n   123  variable [Semiring R]\\n   124  \\n   125  theorem single_zero_one_eq_one : (.single 0 1 : R[T;T⁻¹]) = 1 := rfl\\n   126  \\n   127  /-!  ### The functions `C` and `T`. -/\\n   128  \\n   129  /-- The ring homomorphism `C`, including `R` into the ring of Laurent polynomials over `R` as\\n   130  the constant Laurent polynomials. -/\\n   131  def C : R →+* R[T;T⁻¹] :=\\n   132    singleZeroRingHom\\n   133  \\n   134  theorem algebraMap_apply {R A : Type*} [CommSemiring R] [Semiring A] [Algebra R A] (r : R) :\\n   135      algebraMap R (LaurentPolynomial A) r = C (algebraMap R A r) :=\\n   136    rfl\\n   137  \\n   138  /-- When we have `[CommSemiring R]`, the function `C` is the same as `algebraMap R R[T;T⁻¹]`.\\n   139  (But note that `C` is defined when `R` is not necessarily commutative, in which case\\n\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddMonoidAlgebra coeff\"}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddMonoidAlgebra coeff': Unknown identifier `coeff`\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*coeff.*Laurent\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*coeff.*Laurent' under Mathlib/.\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"coeff.*AddMonoidAlgebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1457,
+   "result_head": "[{\"type\": \"text\", \"text\": \"11 match(es) for 'coeff.*AddMonoidAlgebra' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Module/Basic.lean:240\\n    toAddEquiv := coeffAddEquiv.trans <| AddMonoidAlgebra.coeffAddEquiv.symm.trans\\n- Mathlib/Algebra/Polynomial/Module/Basic.lean:249\\n    simp only [coeffAddEquiv_apply, AddMonoidAlgebra.coeffAddEquiv_symm_apply,\\n- Mathlib/Algebra/Polynomial/Module/Basic.lean:261\\n    toAddEquiv := coeffAddEquiv.trans <| AddMonoidAlgebra.coeffAddEquiv.symm.trans\\n- Mathlib/Algebra/MonoidAlgebra/MapDomain.lean:488\\n    simp [MonoidAlgebra.coeff_mul, AddMonoidAlgebra.coeff_mul, Finsupp.sum_mapDomain_index, add_mul,\\n- Mathlib/Algebra/MonoidAlgebra/MapDomain.lean:504\\n    simp [MonoidAlgebra.coeff_mul, AddMonoidAlgebra.coeff_mul, Finsupp.sum_mapDomain_index, add_mul,\\n- Mathlib/Algebra/MvPolynomial/Equiv.lean:411\\n    ext; simp [sumAlgEquiv, X, monomial, coeff, AddMonoidAlgebra.one_def]\\n- Mathlib/Algebra/MvPolynomial/Equiv.lean:415\\n    ext; simp [sumAlgEquiv, X, monomial, coeff, AddMonoidAlgebra.one_def]\\n- Mathlib/Algebra/MvPolynomial/Equiv.lean:450\\n    ext; simp [commAlgEquiv, mapAlgHom, X, C, monomial, coeff, AddMonoidAlgebra.one_def]\\n- Mathlib/Algebra/MvPolynomial/Basic.lean:172\\n    fun p ↦ ⟨p.coeff 0, by apply AddMonoidAlgebra.ext; ext; simp [C_apply, ← single_eq_monomial]⟩\\n- Mathlib/RingTheory/MvPolynomial/Basic.lean:137\\n    simp [mem_restrictSupport_iff, subset_def, coeff, AddMonoidAlgebra.one_def,\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddMonoidAlgebra.coeff\"}",
+   "ok": true,
+   "result_chars": 1145,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 210 declarations mentioning AddMonoidAlgebra.coeff.\\n- AddMonoidAlgebra.coeff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n    The coefficients `M →₀ R` of an element of the additive monoid algebra `R[M]`.\\n- AddMonoidAlgebra.coeff_injective   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.ofCoeff_coeff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.coeff_ofCoeff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.coeff_single   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.ext   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n    **Alias** of the forward direction of `AddMonoidAlgebra.coeff_inj`.\\n- AddMonoidAlgebra.coeff_inj   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.ext_iff   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.sum_coeff_single   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.sum_single   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n    **Alias** of `AddMonoidAlgebra.sum_coeff_single`.\\n- AddMonoidAlgebra.coeff_erase   [Mathlib.Algebra.MonoidAlgebra.Defs]\\n- AddMonoidAlgebra.coeff_update   [Mathlib.Algebra.MonoidAlgebra.Defs]\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Polynomial/Laurent.lean\", \"line\": 386, \"n\": 8}",
+   "ok": true,
+   "result_chars": 637,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Polynomial/Laurent.lean  (lines 386–393 of 674):\\n   386  @[simp] lemma coeff_toLaurent (f : R[X]) :\\n   387      f.toLaurent.coeff = f.toFinsupp.coeff.mapDomain Nat.castEmbedding := rfl\\n   388  \\n   389  /-- The support of a polynomial `f` is a finset in `ℕ`.  The lemma `toLaurent_support f`\\n   390  shows that the support of `f.toLaurent` is the same finset, but viewed in `ℤ` under the natural\\n   391  inclusion `ℕ ↪ ℤ`. -/\\n   392  theorem support_coeff_toLaurent (f : R[X]) :\\n   393      f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := by simp [Polynomial.support]\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem support_laurent_of_polynomial_support {R : Type*} [Semiring R] (f : R[X]) :\n    f.toLaurent.coeff.support = f.support.map Nat.castEmbedding := sorry"
+}

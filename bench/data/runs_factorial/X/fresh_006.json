@@ -1,0 +1,168 @@
+{
+ "task_id": "fresh_006",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:41:56Z",
+ "wall_s": 78.7,
+ "transcript_stats": {
+  "turns": 15,
+  "assistant_turns": 15,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 2,
+   "mcp__formal__decl_read": 7,
+   "mcp__formal__decl_grep": 4,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 124,
+  "tokens_out": 4826,
+  "cost_usd": 0.05557245
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Monotone ?f → Monotone (fun x => ?a * ?f x)\"}",
+   "ok": true,
+   "result_chars": 348,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 44 declarations mentioning HMul.hMul and Monotone.\\n- Monotone.const_mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n- Monotone.mul'   [Mathlib.Algebra.Order.Monoid.Unbundled.Basic]\\n    The product of two monotone functions is monotone.\\n- Monotone.const_mul   [Mathlib.Algebra.Order.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1995,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 1–50 of 1480):\\n     1  /-\\n     2  Copyright (c) 2022 Damiano Testa. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Damiano Testa, Yuyang Zhao\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.GroupWithZero.Units.Basic\\n     9  public import Mathlib.Algebra.Notation.Pi.Defs\\n    10  public import Mathlib.Algebra.Order.GroupWithZero.Defs\\n    11  public import Mathlib.Algebra.Order.ZeroLEOne\\n    12  public import Mathlib.Tactic.Bound.Attribute\\n    13  public import Mathlib.Tactic.Monotonicity.Attr\\n    14  \\n    15  import Mathlib.Data.Set.Function\\n    16  public import Mathlib.Data.Int.Order.Basic\\n    17  public import Mathlib.Util.CompileInductive\\n    18  \\n    19  /-!\\n    20  # Lemmas on the monotone multiplication typeclasses\\n    21  \\n    22  This file builds on `Mathlib/Algebra/Order/GroupWithZero/Unbundled/Defs.lean` by proving several\\n    23  lemmas that do not immediately follow from the typeclass specifications.\\n    24  -/\\n    25  \\n    26  public section\\n    27  \\n    28  open Function\\n    29  \\n    30  variable {α M₀ G₀ : Type*}\\n    31  \\n    32  section MulZeroClass\\n    33  \\n    34  variable [MulZeroClass α] {a b c d : α}\\n    35  \\n    36  section Preorder\\n    37  \\n    38  variable [Preorder α]\\n    39  \\n    40  /-- Assumes left covariance. -/\\n    41  theorem Left.mul_pos [PosMulStrictMono α] (ha : 0 < a) (hb : 0 < b) : 0 < a * b := by\\n    42    simpa only [mul_zero] using mul_lt_mul_of_pos_left hb ha\\n    43  \\n    44  alias mul_pos := Left.mul_pos\\n    45  \\n    46  theorem mul_neg_of_pos_of_neg [PosMulStrictMono α] (ha : 0 < a) (hb : b < 0) : a * b < 0 := by\\n    47    simpa only [mul_zero] using mul_lt_mul_of_pos_left hb ha\\n    48  \\n    49  @[simp]\\n    50  theorem mul_pos_iff_of_pos_left [PosMulStrictMono α] [PosMulReflectLT α] (h : 0 < a) :\\n\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Monotone.const_mul\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 382,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'theorem Monotone.const_mul' (via ripgrep):\\n- Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean:158\\n    theorem Monotone.const_mul_of_nonpos [ExistsAddOfLE R] [PosMulMono R]\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1165\\n    theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monotone fun x ↦ a * f x :=\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean\", \"line\": 1165, \"n\": 10}",
+   "ok": true,
+   "result_chars": 661,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean  (lines 1165–1174 of 1477):\\n  1165  theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monotone fun x ↦ a * f x :=\\n  1166    mul_right_mono.comp hf\\n  1167  \\n  1168  @[to_additive const_add]\\n  1169  theorem MonotoneOn.const_mul' [MulLeftMono α] (hf : MonotoneOn f s) (a : α) :\\n  1170      MonotoneOn (fun x => a * f x) s := mul_right_mono.comp_monotoneOn hf\\n  1171  \\n  1172  @[to_additive const_add]\\n  1173  theorem Antitone.const_mul' [MulLeftMono α] (hf : Antitone f) (a : α) : Antitone fun x ↦ a * f x :=\\n  1174    mul_right_mono.comp_antitone hf\\n\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Monotone.const_mul\\\\b\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 257,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'theorem Monotone.const_mul\\\\\\\\b' (via ripgrep):\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1165\\n    theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monotone fun x ↦ a * f x :=\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(0 ≤ ?a) → Monotone ?f → Monotone (fun x => ?a * ?f x)\"}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 25 declarations mentioning HMul.hMul, Monotone, LE.le, and OfNat.ofNat.\\n- Monotone.const_mul   [Mathlib.Algebra.Order.GroupWithZero.Basic]\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Monotone\\\\.const_mul\\\\s\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem Monotone\\\\\\\\.const_mul\\\\\\\\s' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"const_mul.*Monotone\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 519,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'const_mul.*Monotone' (via ripgrep):\\n- Mathlib/Algebra/Order/GroupWithZero/Basic.lean:492\\n    lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1165\\n    theorem Monotone.const_mul' [MulLeftMono α] (hf : Monotone f) (a : α) : Monotone fun x ↦ a * f x :=\\n- Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean:1169\\n    theorem MonotoneOn.const_mul' [MulLeftMono α] (hf : MonotoneOn f s) (a : α) :\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 492, \"n\": 5}",
+   "ok": true,
+   "result_chars": 454,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 492–496 of 1480):\\n   492  lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   493      Monotone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp hf\\n   494  \\n   495  lemma Antitone.mul_const [MulPosMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   496      Antitone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp_antitone hf\\n\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Monotone\", \"PosMulMono\", \"Monotone.const_mul\"]}",
+   "ok": true,
+   "result_chars": 1141,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Monotone\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Monotone/Defs.html#Monotone\\\"},{\\\"decl\\\":\\\"PosMulMono\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Defs.html#PosMulMono\\\"},{\\\"decl\\\":\\\"Monotone.const_mul\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Order.GroupWithZero.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Order/GroupWithZero/Basic.html#Monotone.const_mul\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 485, \"n\": 15}",
+   "ok": true,
+   "result_chars": 990,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 485–499 of 1480):\\n   485  \\n   486  lemma monotone_mul_right_of_nonneg [MulPosMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ x * a :=\\n   487    fun _ _ h ↦ mul_le_mul_of_nonneg_right h ha\\n   488  \\n   489  lemma Monotone.mul_const [MulPosMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   490      Monotone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp hf\\n   491  \\n   492  lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   493      Monotone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp hf\\n   494  \\n   495  lemma Antitone.mul_const [MulPosMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   496      Antitone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp_antitone hf\\n   497  \\n   498  lemma Antitone.const_mul [PosMulMono M₀] (hf : Antitone f) (ha : 0 ≤ a) :\\n   499      Antitone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp_antitone hf\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 470, \"n\": 25}",
+   "ok": true,
+   "result_chars": 1388,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 470–494 of 1480):\\n   470  theorem pow_le_pow_left₀ [PosMulMono M₀] [MulPosMono M₀]\\n   471      (ha : 0 ≤ a) (hab : a ≤ b) : ∀ n, a ^ n ≤ b ^ n\\n   472    | 0 => by simp\\n   473    | 1 => by simpa using hab\\n   474    | n + 2 => by simpa only [pow_succ']\\n   475        using mul_le_mul hab (pow_le_pow_left₀ ha hab _) (pow_succ_nonneg ha _) (ha.trans hab)\\n   476  \\n   477  lemma pow_left_monotoneOn [PosMulMono M₀] [MulPosMono M₀] :\\n   478      MonotoneOn (fun a : M₀ ↦ a ^ n) {x | 0 ≤ x} :=\\n   479    fun _a ha _b _ hab ↦ pow_le_pow_left₀ ha hab _\\n   480  \\n   481  variable [Preorder α] {f g : α → M₀}\\n   482  \\n   483  lemma monotone_mul_left_of_nonneg [PosMulMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ a * x :=\\n   484    fun _ _ h ↦ mul_le_mul_of_nonneg_left h ha\\n   485  \\n   486  lemma monotone_mul_right_of_nonneg [MulPosMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ x * a :=\\n   487    fun _ _ h ↦ mul_le_mul_of_nonneg_right h ha\\n   488  \\n   489  lemma Monotone.mul_const [MulPosMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   490      Monotone fun x ↦ f x * a := (monotone_mul_right_of_nonneg ha).comp hf\\n   491  \\n   492  lemma Monotone.const_mul [PosMulMono M₀] (hf : Monotone f) (ha : 0 ≤ a) :\\n   493      Monotone fun x ↦ a * f x := (monotone_mul_left_of_nonneg ha).comp hf\\n   494  \\n\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 450, \"n\": 35}",
+   "ok": true,
+   "result_chars": 1801,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 450–484 of 1480):\\n   450      (h : 1 ≤ a ∧ n ≤ m ∨ 0 ≤ a ∧ a ≤ 1 ∧ m ≤ n) :\\n   451      a ^ n ≤ a ^ m := by\\n   452    obtain ⟨a1, nm⟩ | ⟨a0, a1, mn⟩ := h\\n   453    · exact pow_right_mono₀ a1 nm\\n   454    · exact pow_le_pow_of_le_one a0 a1 mn\\n   455  \\n   456  @[gcongr]\\n   457  lemma pow_le_pow_right₀ [ZeroLEOneClass M₀] [PosMulMono M₀] (ha : 1 ≤ a) (hmn : m ≤ n) :\\n   458      a ^ m ≤ a ^ n :=\\n   459    pow_right_mono₀ ha hmn\\n   460  \\n   461  lemma le_self_pow₀ [ZeroLEOneClass M₀] [PosMulMono M₀] (ha : 1 ≤ a) (hn : n ≠ 0) : a ≤ a ^ n := by\\n   462    simpa only [pow_one] using pow_le_pow_right₀ ha <| Nat.pos_iff_ne_zero.2 hn\\n   463  \\n   464  /-- The `bound` tactic can't handle `m ≠ 0` goals yet, so we express as `0 < m` -/\\n   465  @[bound]\\n   466  lemma Bound.le_self_pow_of_pos [ZeroLEOneClass M₀] [PosMulMono M₀] (ha : 1 ≤ a) (hn : 0 < n) :\\n   467      a ≤ a ^ n := le_self_pow₀ ha hn.ne'\\n   468  \\n   469  @[mono, gcongr, bound]\\n   470  theorem pow_le_pow_left₀ [PosMulMono M₀] [MulPosMono M₀]\\n   471      (ha : 0 ≤ a) (hab : a ≤ b) : ∀ n, a ^ n ≤ b ^ n\\n   472    | 0 => by simp\\n   473    | 1 => by simpa using hab\\n   474    | n + 2 => by simpa only [pow_succ']\\n   475        using mul_le_mul hab (pow_le_pow_left₀ ha hab _) (pow_succ_nonneg ha _) (ha.trans hab)\\n   476  \\n   477  lemma pow_left_monotoneOn [PosMulMono M₀] [MulPosMono M₀] :\\n   478      MonotoneOn (fun a : M₀ ↦ a ^ n) {x | 0 ≤ x} :=\\n   479    fun _a ha _b _ hab ↦ pow_le_pow_left₀ ha hab _\\n   480  \\n   481  variable [Preorder α] {f g : α → M₀}\\n   482  \\n   483  lemma monotone_mul_left_of_nonneg [PosMulMono M₀] (ha : 0 ≤ a) : Monotone fun x ↦ a * x :=\\n   484    fun _ _ h ↦ mul_le_mul_of_nonneg_left h ha\\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean\", \"line\": 26, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1779,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/Order/GroupWithZero/Basic.lean  (lines 26–65 of 1480):\\n    26  public section\\n    27  \\n    28  open Function\\n    29  \\n    30  variable {α M₀ G₀ : Type*}\\n    31  \\n    32  section MulZeroClass\\n    33  \\n    34  variable [MulZeroClass α] {a b c d : α}\\n    35  \\n    36  section Preorder\\n    37  \\n    38  variable [Preorder α]\\n    39  \\n    40  /-- Assumes left covariance. -/\\n    41  theorem Left.mul_pos [PosMulStrictMono α] (ha : 0 < a) (hb : 0 < b) : 0 < a * b := by\\n    42    simpa only [mul_zero] using mul_lt_mul_of_pos_left hb ha\\n    43  \\n    44  alias mul_pos := Left.mul_pos\\n    45  \\n    46  theorem mul_neg_of_pos_of_neg [PosMulStrictMono α] (ha : 0 < a) (hb : b < 0) : a * b < 0 := by\\n    47    simpa only [mul_zero] using mul_lt_mul_of_pos_left hb ha\\n    48  \\n    49  @[simp]\\n    50  theorem mul_pos_iff_of_pos_left [PosMulStrictMono α] [PosMulReflectLT α] (h : 0 < a) :\\n    51      0 < a * b ↔ 0 < b := by simpa using mul_lt_mul_iff_right₀ (b := 0) h\\n    52  \\n    53  /-- Assumes right covariance. -/\\n    54  theorem Right.mul_pos [MulPosStrictMono α] (ha : 0 < a) (hb : 0 < b) : 0 < a * b := by\\n    55    simpa only [zero_mul] using mul_lt_mul_of_pos_right ha hb\\n    56  \\n    57  theorem mul_neg_of_neg_of_pos [MulPosStrictMono α] (ha : a < 0) (hb : 0 < b) : a * b < 0 := by\\n    58    simpa only [zero_mul] using mul_lt_mul_of_pos_right ha hb\\n    59  \\n    60  @[simp]\\n    61  theorem mul_pos_iff_of_pos_right [MulPosStrictMono α] [MulPosReflectLT α] (h : 0 < b) :\\n    62      0 < a * b ↔ 0 < a := by simpa using mul_lt_mul_iff_left₀ (b := 0) h\\n    63  \\n    64  /-- Assumes left covariance. -/\\n    65  theorem Left.mul_nonneg [PosMulMono α] (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem scalar_mul_nonneg_preserves_monotone {α M₀ : Type*} [Preorder α] [PosMulMono M₀]\n    {f : α → M₀} {a : M₀} (hf : Monotone f) (ha : 0 ≤ a) :\n    Monotone fun x ↦ a * f x := sorry"
+}

@@ -1,0 +1,280 @@
+{
+ "task_id": "fresh_099",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:02:06Z",
+ "wall_s": 68.1,
+ "transcript_stats": {
+  "turns": 30,
+  "assistant_turns": 16,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 20,
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_cell": 3,
+   "mcp__wikibrain__brain_transfer": 4
+  },
+  "tokens_in": 132,
+  "tokens_out": 5087,
+  "cost_usd": 0.07034835
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monotone function\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 345,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone function\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"aka\\\":[\\\"On Exact Learning of $d$-Monotone Functions\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"continuous function topology\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous function topology\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"supremum preserving order continuous\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum preserving order continuous\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Continuous\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 2247,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Continuous\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"aka\\\":[\\\"Continuous\\\",\\\"Continuous Function\\\",\\\"Continuous Map\\\",\\\"continuous map\\\",\\\"Continuity of Functions on Bare Representation of Graphs under Star Topology\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q939927\\\",\\\"label\\\":\\\"Stone–Weierstrass theorem\\\",\\\"aka\\\":[\\\"ContinuousMap.continuousMap_mem_subalgebra_closure_of_separatesPoints\\\",\\\"ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints\\\",\\\"Stone-Weierstrass Theorem\\\",\\\"Stone-Weierstrass theorem\\\",\\\"Weierstrass approximation theorem\\\",\\\"proof of Weierstrass approximation theorem\\\",\\\"proof of Weierstrass approximation theorem in R^n\\\",\\\"A Primer on the Signature Method in Machine Learning\\\",\\\"A new approach to the Kat\\\\\\\\v{e}tov-Tong theorem\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/ContinuousMap/StoneWeierstrass\\\"},{\\\"id\\\":\\\"cell:Q1068085\\\",\\\"label\\\":\\\"closed graph theorem\\\",\\\"aka\\\":[\\\"Closed Graph Theorem\\\",\\\"Closed graph theorem (functional analysis)\\\",\\\"Closed graph theorem functional analysis\\\",\\\"ContinuousLinearMap.ofIsClosedGraph\\\",\\\"LinearMap.continuous_of_isClosed_graph\\\",\\\"A symplectic approach to Schr\\\\\\\\\\\\\\\"odinger equations in the infinite-dimensional unbounded setting\\\",\\\"The differentiation operator on discrete function spaces of a tree\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Normed/Operator\\\"},{\\\"id\\\":\\\"cell:Q595466\\\",\\\"label\\\":\\\"Dini's theorem\\\",\\\"aka\\\":[\\\"ContinuousMap.tendsto_of_monotone_of_pointwise\\\",\\\"Dini theorem\\\",\\\"Dinis Theorem\\\",\\\"Monotone.tendstoUniformly_of_forall_tendsto\\\",\\\"The Dirichlet problem for the minimal surface equation in $\\\\\\\\rm Sol_3$, with possible infinite boundary data\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Dini\\\"},{\\\"id\\\":\\\"cell:Q1346677\\\",\\\"label\\\":\\\"Tietze extension theorem\\\",\\\"aka\\\":[\\\"ContinuousMap.exists_restrict_eq\\\",\\\"Tietze Extension Theorem\\\",\\\"TietzeExtension.exists_restrict_eq'\\\",\\\"Tietzes Extension Theorem\\\",\\\"Which sequences are orbits?\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/TietzeExtension\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sSup supremum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sSup supremum\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderIso order isomorphism\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderIso order isomorphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"monotone continuous function sends supremum to supremum left-continuous order\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3534,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monotone continuous function sends supremum to supremum left-continuous order\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"label\\\":\\\"Topological space\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"label\\\":\\\"Limit of a function\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"label\\\":\\\"Homeomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"label\\\":\\\"Hausdorff space\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q185148\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":100,\\\"withheld_by_shard\\\":395,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Continuous\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Defs/Basic.html#Continuous\\\",\\\"via_cell\\\":\\\"cell:Q170058\\\",\\\"cell_label\\\":\\\"Continuous function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Function\\\",\\\"exists\\\":false,\\\"module\\\":null,\\\"bond\\\":null,\\\"docs_url\\\":\\\"https://wikilean.jackmccarthy.org/decl/Function\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"cell_label\\\":\\\"Function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:decl:Mathlib:Monotone\"}",
+   "ok": true,
+   "result_chars": 2412,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"anchor\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Monotone/Defs\\\"],\\\"f\\\":128,\\\"xy\\\":[-895.9,-185.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Monotone\\\",\\\"label\\\":\\\"Monotone\\\",\\\"module\\\":\\\"Mathlib.Order.Monotone.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Monotone (f : α → β) : Prop :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Monotone.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2502.01265#monotoneD\\\",\\\"label\\\":\\\"On Exact Learning of $d$-Monotone Functions\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2502.01265\\\",\\\"ref\\\":\\\"monotoneD\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone\\\",\\\"label\\\":\\\"Monotone\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":1,\\\"mentions\\\":3,\\\"invocation\\\":35},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q133250\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q854531\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.equivMonotoneSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.exists_minimal_true_subset\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_monotone\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.fromSperner_toSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DedekindNumber.toSperner_isSperner\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_a\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:DegreeSequencesTriangleFree.lemma1_b\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q170058\"}",
+   "ok": true,
+   "result_chars": 4036,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q170058\\\",\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"f\\\":36057,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q170058\\\",\\\"anchor\\\":\\\"Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/Defs/Basic\\\"],\\\"f\\\":36057,\\\"xy\\\":[-173.7,-76.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"function such that the preimage of an open set is open\\\",\\\"slug\\\":\\\"Continuous_function\\\",\\\"article_annotations\\\":{\\\"total\\\":102,\\\"formalized\\\":77,\\\"partial\\\":6,\\\"not_formalized\\\":19},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Continuous\\\",\\\"label\\\":\\\"Continuous\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Topology.Defs.Basic\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Continuous (f : X → Y) : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.Defs.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Continuous_function\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Continuous_function\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ContinuousFunction\\\",\\\"label\\\":\\\"Continuous Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ContinuousFunction.html\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ContinuousMap\\\",\\\"label\\\":\\\"Continuous Map\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ContinuousMap.html\\\",\\\"qid\\\":\\\"Q170058\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:continuous map\\\",\\\"label\\\":\\\"continuous map\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/continuous+map\\\",\\\"qid\\\":\\\"Q170058\\\",\\\"snippet\\\":\\\"There are multiple different concepts of continuous maps, even in classical mathematics, depending upon which foundation one is using.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Continuous_function\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":102,\\\"formalized\\\":77,\\\"partial\\\":6,\\\"not_formalized\\\":19}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2507.13968#2.16\\\",\\\"label\\\":\\\"Continuity of Functions on Bare Representation of Graphs under Star Topology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2507.13968\\\",\\\"ref\\\":\\\"2.16\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":4,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs\\\",\\\"label\\\":\\\"Defs\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/Defs/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":16,\\\"depends\\\":200,\\\"links\\\":74,\\\"mentions\\\":60,\\\"relates\\\":2,\\\"invocation\\\":47},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q179899\\\",\\\"w\\\":8,\\\"kinds\\\":{\\\"cites\\\":2,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":2}},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":5,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q202906\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":4,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":3}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}}],\\\"counts\\\":{\\\"syn\\\":595,\\\"organs\\\":8},\\\"truncated\\\":{\\\"syn\\\":395},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"sSup join supremum preserving\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"sSup join supremum preserving\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"BddAbove order upper bound\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"BddAbove order upper bound\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"completeness lattice\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"completeness lattice\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"continuous lattice Scott\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"continuous lattice Scott\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Supremum\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 308,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Supremum\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"aka\\\":[\\\"InfSet\\\",\\\"SupSet\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/SetNotation\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Limit limit\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Limit limit\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q17502105\"}",
+   "ok": true,
+   "result_chars": 2424,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q17502105\\\",\\\"id\\\":\\\"cell:Q17502105\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q17502105\\\",\\\"anchor\\\":\\\"Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/SetNotation\\\"],\\\"f\\\":32,\\\"xy\\\":[986.5,979.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"least (resp. greatest) of majoring (resp. minoring) elements of a partially ordered set (not necessarily existing in all sets)\\\",\\\"slug\\\":\\\"Infimum_and_supremum\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:InfSet\\\",\\\"label\\\":\\\"InfSet\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:SupSet\\\",\\\"label\\\":\\\"SupSet\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/SetNotation\\\",\\\"label\\\":\\\"SetNotation\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2,\\\"invocation\\\":6},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow347178.mathoverflow_347178\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow347178.mathoverflow_347178.variants.bounded_only\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.hitting_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.upcrossingsBefore_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.upperCrossingTime_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.HopfIdeal.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Subcoalgebra.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Subcomodule.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":8,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Scott continuous order theory\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Scott continuous order theory\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Join sup preserving lattice morphism\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Join sup preserving lattice morphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"function sends supremum to supremum\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2761,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"function sends supremum to supremum\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"OrderClosedTopology topology order\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 191,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"OrderClosedTopology topology order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"ClosedSet closed set topology\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"ClosedSet closed set topology\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"image preimage set function\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"image preimage set function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset Fintype finiteness\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 182,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset Fintype finiteness\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"monotone order preserving function\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 230,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"monotone order preserving function\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"continuous topological function\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 227,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"continuous topological function\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Monotone\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 1942,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Monotone\\\",\\\"decl\\\":\\\"Monotone\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Monotone\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monotone\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q595466\\\",\\\"label\\\":\\\"Dini's theorem\\\",\\\"aka\\\":[\\\"ContinuousMap.tendsto_of_monotone_of_pointwise\\\",\\\"Dini theorem\\\",\\\"Dinis Theorem\\\",\\\"Monotone.tendstoUniformly_of_forall_tendsto\\\",\\\"The Dirichlet problem for the minimal surface equation in $\\\\\\\\rm Sol_3$, with possible infinite boundary data\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Dini\\\"},{\\\"id\\\":\\\"cell:Q914099\\\",\\\"label\\\":\\\"alternating series test\\\",\\\"aka\\\":[\\\"Alternating Series Test\\\",\\\"Antitone.tendsto_alternating_series_of_tendsto_zero\\\",\\\"Leibniz Criterion\\\",\\\"Monotone.tendsto_alternating_series_of_tendsto_zero\\\",\\\"Criteria of convergence of a non ordinary random continued fractions on a symmetric cone\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecificLimits/Normed\\\"},{\\\"id\\\":\\\"cell:Q1153584\\\",\\\"label\\\":\\\"Monotone convergence theorem\\\",\\\"aka\\\":[\\\"MeasureTheory.lintegral_iSup\\\",\\\"Monotone Convergence Theorem\\\",\\\"Notes on Probability Theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Integral/Lebesgue\\\"},{\\\"id\\\":\\\"cell:Q1149255\\\",\\\"label\\\":\\\"Dirichlet's test\\\",\\\"aka\\\":[\\\"Antitone.cauchySeq_series_mul_of_tendsto_zero_of_bounded\\\",\\\"Monotone.cauchySeq_series_mul_of_tendsto_zero_of_bounded\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecificLimits/Normed\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:EuclideanGeometry.angle\\\",\\\"label\\\":\\\"EuclideanGeometry.angle\\\",\\\"aka\\\":[\\\"Monotone vector fields and generation of nonexpansive semigroups in complete CAT(0) spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Geometry/Euclidean/Angle\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Continuous\", \"direction\": \"formal_to_informal\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 643,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Continuous\\\",\\\"decl\\\":\\\"Continuous\\\",\\\"id\\\":\\\"cell:Q170058\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"hits\\\":[{\\\"qid\\\":\\\"Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"bond\\\":\\\"exact\\\",\\\"slug\\\":\\\"Continuous_function\\\",\\\"article_url\\\":\\\"https://wikilean.jackmccarthy.org/Continuous_function\\\",\\\"description\\\":\\\"function such that the preimage of an open set is open\\\",\\\"snippet_sources\\\":[\\\"eom\\\",\\\"mathworld\\\",\\\"nlab\\\"],\\\"via_cell\\\":\\\"cell:Q170058\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"upper bounds bounded above order\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 189,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"upper bounds bounded above order\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"complete lattice conditionally complete\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 196,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"complete lattice conditionally complete\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem Monotone.continuous_iff_left_continuous {α β : Type*} [Preorder α] [Preorder β] \n    [TopologicalSpace α] [TopologicalSpace β] {f : α → β} \n    (hmon : Monotone f) (hcont : Continuous f) : \n    ∀ s : Set α, (∃ x, ∀ y ∈ s, y ≤ x) → f (sSup s) = sSup (f '' s) := sorry"
+}

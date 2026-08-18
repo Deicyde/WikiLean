@@ -1,0 +1,207 @@
+{
+ "task_id": "fresh_094",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:04:19Z",
+ "wall_s": 129.7,
+ "transcript_stats": {
+  "turns": 21,
+  "assistant_turns": 21,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 2,
+   "mcp__wikibrain__brain_search": 15,
+   "mcp__wikibrain__brain_cell": 3
+  },
+  "tokens_in": 170,
+  "tokens_out": 10786,
+  "cost_usd": 0.10341750000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation of a function on an interval\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3481,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function on an interval\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q185148\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.Icc\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Interval/Set/Defs.html#Set.Icc\\\",\\\"via_cell\\\":\\\"cell:Q185148\\\",\\\"cell_label\\\":\\\"Interval (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}]},{\\\"decl\\\":\\\"Function\\\",\\\"exists\\\":false,\\\"module\\\":null,\\\"bond\\\":null,\\\"docs_url\\\":\\\"https://wikilean.jackmccarthy.org/decl/Function\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"cell_label\\\":\\\"Function\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 248,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"total variation\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"total variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded variation function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"partition of interval\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"partition of interval\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"identity function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 389,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"identity function\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q321119\\\",\\\"label\\\":\\\"Identity function\\\",\\\"aka\\\":[\\\"Identity Function\\\",\\\"Identity Map\\\",\\\"Identity Operator\\\",\\\"id\\\",\\\"identity function\\\"],\\\"supercell\\\":\\\"path:Init/Prelude\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q321119\"}",
+   "ok": true,
+   "result_chars": 3756,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q321119\\\",\\\"id\\\":\\\"cell:Q321119\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Identity function\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q321119\\\",\\\"anchor\\\":\\\"Q321119\\\",\\\"label\\\":\\\"Identity function\\\",\\\"supercells\\\":[\\\"path:Init/Prelude\\\"],\\\"f\\\":36056,\\\"xy\\\":[91,-79.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q321119\\\",\\\"label\\\":\\\"Identity function\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"function that always returns the same value that was used as its argument\\\",\\\"slug\\\":\\\"Identity_function\\\",\\\"article_annotations\\\":{\\\"total\\\":15,\\\"formalized\\\":11,\\\"partial\\\":4,\\\"not_formalized\\\":0},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:id\\\",\\\"label\\\":\\\"id\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Init.Prelude\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"The identity function. `id` takes an implicit argument `α : Sort u`\\\\n(a type in any universe), and an argument `a : α`, and returns `a`.\\\\n\\\\nAlthough this may look like a useless function, one application of the identity\\\\nfunction is to explicitly put a type on an expression. If `e` h\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:IdentityFunction\\\",\\\"label\\\":\\\"Identity Function\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/IdentityFunction.html\\\",\\\"qid\\\":\\\"Q321119\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:IdentityMap\\\",\\\"label\\\":\\\"Identity Map\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/IdentityMap.html\\\",\\\"qid\\\":\\\"Q321119\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:IdentityOperator\\\",\\\"label\\\":\\\"Identity Operator\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/IdentityOperator.html\\\",\\\"qid\\\":\\\"Q321119\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:identity function\\\",\\\"label\\\":\\\"identity function\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/identity+function\\\",\\\"qid\\\":\\\"Q321119\\\",\\\"snippet\\\":\\\"Given a set $S$, the __identity function__ on $S$ is the function $id_S\\\\\\\\colon S \\\\\\\\to S$ that maps any element $x$ of $S$ to itself: $$ id_S = (x \\\\\\\\mapsto x) = \\\\\\\\lambda x.\\\\\\\\; x ;$$ or equivalently, $$ id_S(x) = x .$$\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Identity_function\\\",\\\"label\\\":\\\"Identity function\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":15,\\\"formalized\\\":11,\\\"partial\\\":4,\\\"not_formalized\\\":0}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":4,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":304,\\\"links\\\":18,\\\"mentions\\\":14,\\\"relates\\\":2,\\\"cites\\\":4,\\\"special_case\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":6}},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q632814\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q12485\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}}],\\\"counts\\\":{\\\"syn\\\":782,\\\"organs\\\":7},\\\"truncated\\\":{\\\"syn\\\":582},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"closed interval Icc\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"closed interval Icc\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Set.Icc\"}",
+   "ok": true,
+   "result_chars": 3824,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Set.Icc\\\",\\\"id\\\":\\\"cell:Q185148\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"f\\\":36056,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q185148\\\",\\\"anchor\\\":\\\"Q185148\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/Interval/Set\\\"],\\\"f\\\":36056,\\\"xy\\\":[-125.4,92.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q185148\\\",\\\"label\\\":\\\"Interval (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"subset an ordered set that consists of all elements between two given endpoints\\\",\\\"slug\\\":\\\"Interval_mathematics\\\",\\\"article_annotations\\\":{\\\"total\\\":55,\\\"formalized\\\":28,\\\"partial\\\":14,\\\"not_formalized\\\":13},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Set.Icc\\\",\\\"label\\\":\\\"Set.Icc\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Order.Interval.Set.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Interval.Set.Defs\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Interval_and_segment\\\",\\\"label\\\":\\\"Interval and segment\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Interval_and_segment\\\",\\\"qid\\\":\\\"Q185148\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Interval\\\",\\\"label\\\":\\\"Interval\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Interval.html\\\",\\\"qid\\\":\\\"Q185148\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:interval\\\",\\\"label\\\":\\\"interval\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/interval\\\",\\\"qid\\\":\\\"Q185148\\\",\\\"snippet\\\":\\\"In the general context of posets, an _interval_ is an under category, over category, or under-over category. They are closed under betweenness: if two points belong to an interval and a third point is between them, then that third point also belongs to the interval.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Interval_mathematics\\\",\\\"label\\\":\\\"Interval mathematics\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":55,\\\"formalized\\\":28,\\\"partial\\\":14,\\\"not_formalized\\\":13}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1709.00606#2.1\\\",\\\"label\\\":\\\"A geometric perspective on the MSTD question\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1709.00606\\\",\\\"ref\\\":\\\"2.1\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval\\\",\\\"label\\\":\\\"Interval\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/Interval/Set\\\",\\\"label\\\":\\\"Set\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":159,\\\"links\\\":41,\\\"cites\\\":10,\\\"mentions\\\":33,\\\"invocation\\\":46},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q170058\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q245098\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q33540\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q827230\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q1217677\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q12916\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q189156\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":381,\\\"organs\\\":7},\\\"truncated\\\":{\\\"syn\\\":181},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"arc length curve\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"arc length curve\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"supremum least upper bound\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum least upper bound\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"supremum\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 308,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"supremum\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"aka\\\":[\\\"InfSet\\\",\\\"SupSet\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/SetNotation\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q17502105\"}",
+   "ok": true,
+   "result_chars": 2424,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q17502105\\\",\\\"id\\\":\\\"cell:Q17502105\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q17502105\\\",\\\"anchor\\\":\\\"Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"supercells\\\":[\\\"path:Mathlib/Order/SetNotation\\\"],\\\"f\\\":32,\\\"xy\\\":[986.5,979.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q17502105\\\",\\\"label\\\":\\\"infimum and supremum\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"least (resp. greatest) of majoring (resp. minoring) elements of a partially ordered set (not necessarily existing in all sets)\\\",\\\"slug\\\":\\\"Infimum_and_supremum\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:InfSet\\\",\\\"label\\\":\\\"InfSet\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:SupSet\\\",\\\"label\\\":\\\"SupSet\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Order.SetNotation\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Order.SetNotation\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Order\\\",\\\"label\\\":\\\"Order\\\"},{\\\"id\\\":\\\"path:Mathlib/Order/SetNotation\\\",\\\"label\\\":\\\"SetNotation\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":2,\\\"invocation\\\":6},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow347178.mathoverflow_347178\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Mathoverflow347178.mathoverflow_347178.variants.bounded_only\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.hitting_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.upcrossingsBefore_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:MeasureTheory.upperCrossingTime_congr\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.HopfIdeal.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Subcoalgebra.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Subcomodule.instSupSet\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":8,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"real numbers interval ℝ\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"real numbers interval ℝ\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"real number\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2435,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"real number\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q12916\\\",\\\"label\\\":\\\"Real number\\\",\\\"aka\\\":[\\\"Definition:Real Number\\\",\\\"Real\\\",\\\"Real Number\\\",\\\"construction of the real numbers\\\",\\\"real number\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Basic\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:Q1324487\\\",\\\"label\\\":\\\"Completeness of the real numbers\\\",\\\"aka\\\":[\\\"Real.instCompleteSpace\\\",\\\"Axiomatizing mathematical conceptualism in third order arithmetic\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Real\\\"},{\\\"id\\\":\\\"cell:Q2039387\\\",\\\"label\\\":\\\"extended real number line\\\",\\\"aka\\\":[\\\"EReal\\\",\\\"Summability of Sequence of Random Variables\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/EReal/Basic\\\"},{\\\"id\\\":\\\"cell:Q2997826\\\",\\\"label\\\":\\\"totally real number field\\\",\\\"aka\\\":[\\\"NumberField.IsTotallyReal\\\",\\\"On Variants of Inverse Cluster Size Problem & General Magnification\\\"],\\\"supercell\\\":\\\"path:Mathlib/NumberTheory/NumberField/InfinitePlace\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGroup\\\",\\\"label\\\":\\\"AddCommGroup\\\",\\\"aka\\\":[\\\"Relational Algebraic Approach to the Real Numbers: The Least-Upper-Bound Property\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CauSeq.equiv\\\",\\\"label\\\":\\\"CauSeq.equiv\\\",\\\"aka\\\":[\\\"A new approach to the real numbers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/CauSeq\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:ModuleCat.free_shortExact_finrank_add\\\",\\\"label\\\":\\\"ModuleCat.free_shortExact_finrank_add\\\",\\\"aka\\\":[\\\"On the modularity of supersingular elliptic curves over certain totally real number fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/ModuleCat\\\"},{\\\"id\\\":\\\"cell:decl:Init:Prod.ext_iff\\\",\\\"label\\\":\\\"Prod.ext_iff\\\",\\\"aka\\\":[\\\"The Surreal Numbers as an Ordered Commutative Ring with an Apartness: A Development in Univalent Foundations\\\"],\\\"supercell\\\":\\\"path:Init/Ext\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Real.instConditionallyCompleteLinearOrder\\\",\\\"label\\\":\\\"Real.instConditionallyCompleteLinearOrder\\\",\\\"aka\\\":[\\\"A new approach to the real numbers\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Real/Archimedean\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:neg_sub\\\",\\\"label\\\":\\\"neg_sub\\\",\\\"aka\\\":[\\\"The Surreal Numbers as an Ordered Commutative Ring with an Apartness: A Development in Univalent Foundations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Lipschitz continuous function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Lipschitz continuous function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset sum\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 167,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset sum\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"absolute value\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 424,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"absolute value\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q120812\\\",\\\"label\\\":\\\"Absolute value\\\",\\\"aka\\\":[\\\"Absolute Value\\\",\\\"AbsoluteValue\\\",\\\"AbsoluteValue.abs\\\",\\\"Definition:Absolute Value\\\",\\\"absolute value\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Order/AbsoluteValue\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset finite set\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset finite set\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"list array sequence\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"list array sequence\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem identity_total_variation (a b : ℝ) (h : a ≤ b) :\n  let f := id\n  let interval := Set.Icc a b\n  let totalVariation (g : ℝ → ℝ) : ℝ :=\n    sSup {s : ℝ | ∃ (P : Finset ℝ),\n      (∀ p ∈ P, interval p) ∧ a ∈ P ∧ b ∈ P ∧\n      ∃ (sorted : List ℝ),\n        (∀ x ∈ sorted, interval x) ∧\n        (sorted.head? = some a) ∧\n        (sorted.getLast? = some b) ∧\n        s = (Finset.range (sorted.length - 1)).sum fun i =>\n          |g (sorted.get! (i + 1)) - g (sorted.get! i)|}\n  totalVariation f = b - a := sorry"
+}

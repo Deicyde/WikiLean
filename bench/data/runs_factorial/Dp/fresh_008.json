@@ -1,0 +1,358 @@
+{
+ "task_id": "fresh_008",
+ "arm": "Dp",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": true
+ },
+ "condition_hash": "2c5a3fc86a5a9346847681919c882cbc72833ee071da7f59e8bc83017916f876",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T00:56:13Z",
+ "wall_s": 106.6,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 5,
+   "mcp__wikibrain__brain_search": 8,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__brain_snippets": 4,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__decl_exists": 16,
+   "mcp__wikibrain__brain_transfer": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 7054,
+  "cost_usd": 0.13098500000000002
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Laurent polynomial\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3334,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent polynomial\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"resolved_from\\\":\\\"label\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\",\\\"label\\\":\\\"Laurent\\\"}]},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"LaurentPolynomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Laurent\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#LaurentPolynomial\\\",\\\"via_cell\\\":\\\"cell:Q1701125\\\",\\\"cell_label\\\":\\\"Laurent polynomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\",\\\"label\\\":\\\"Laurent\\\"}]},{\\\"decl\\\":\\\"Polynomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial\\\",\\\"via_cell\\\":\\\"cell:Q43260\\\",\\\"cell_label\\\":\\\"Polynomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"polynomial support nonzero coefficients\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3078,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"polynomial support nonzero coefficients\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q243723\\\",\\\"label\\\":\\\"monomial\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q50698\\\",\\\"label\\\":\\\"Algebraic equation\\\",\\\"w\\\":10},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"label\\\":\\\"Power series\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q11348\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q192760\\\",\\\"label\\\":\\\"Fundamental theorem of algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q637347\\\",\\\"label\\\":\\\"Polynomial interpolation\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1071948\\\",\\\"label\\\":\\\"Polynomial remainder theorem\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":93,\\\"withheld_by_shard\\\":175,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Polynomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial\\\",\\\"via_cell\\\":\\\"cell:Q43260\\\",\\\"cell_label\\\":\\\"Polynomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"support finsupp nonzero carriers\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 265,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"support finsupp nonzero carriers\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"natCast inclusion natural integers\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 267,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"natCast inclusion natural integers\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"support polynomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support polynomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finsupp support\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 172,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finsupp support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1701125\"}",
+   "ok": true,
+   "result_chars": 1532,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1701125\\\",\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"f\\\":32,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1701125\\\",\\\"anchor\\\":\\\"Q1701125\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\"],\\\"f\\\":32,\\\"xy\\\":[-889.6,323.8]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1701125\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"description\\\":\\\"polynomial with finitely many terms of the form axⁿ where n ∈ ℤ\\\",\\\"slug\\\":\\\"Laurent_polynomial\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:LaurentPolynomial\\\",\\\"label\\\":\\\"LaurentPolynomial\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Laurent\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\",\\\"label\\\":\\\"Laurent\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q43260\"}",
+   "ok": true,
+   "result_chars": 5316,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q43260\\\",\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"f\\\":40153,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q43260\\\",\\\"anchor\\\":\\\"Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/Polynomial/Basic\\\"],\\\"f\\\":40153,\\\"xy\\\":[-71.1,29.4]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1455652\\\",\\\"label\\\":\\\"Polynomial ring\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"ring of polynomials (with one or several variables) with coefficients in a given ring\\\",\\\"slug\\\":\\\"Polynomial_ring\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"mathematical expression consisting of variables and coefficients\\\",\\\"slug\\\":\\\"Polynomial\\\",\\\"article_annotations\\\":{\\\"total\\\":91,\\\"formalized\\\":58,\\\"partial\\\":15,\\\"not_formalized\\\":18},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Polynomial\\\",\\\"qid\\\":\\\"Q43260\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Ring_of_polynomials\\\",\\\"label\\\":\\\"Ring of polynomials\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Ring_of_polynomials\\\",\\\"qid\\\":\\\"Q1455652\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Polynomial.html\\\",\\\"qid\\\":\\\"Q43260\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:PolynomialRing\\\",\\\"label\\\":\\\"Polynomial Ring\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/PolynomialRing.html\\\",\\\"qid\\\":\\\"Q1455652\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/polynomial\\\",\\\"qid\\\":\\\"Q43260\\\",\\\"snippet\\\":\\\"> This entry is about polynomials in commutative rings. For polynomials in categories, see _polynomial functor_.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:planetmath:Polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"db\\\":\\\"planetmath\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":20,\\\"url\\\":\\\"https://planetmath.org/Polynomial\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q43260\\\",\\\"snippet\\\":\\\"A polynomial can be defined iteratively as follows: \\\\\\\\item Constants are polynomials. \\\\\\\\item Variables (such as $x$) are polynomials. \\\\\\\\item Adding, subtracting, or multiplying two polynomials always yields a polynomial.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA (PlanetMath)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Polynomial\\\",\\\"label\\\":\\\"Definition:Polynomial\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Polynomial\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q43260\\\",\\\"snippet\\\":\\\"A polynomial is a mathematical expression formed from a sum of terms, each consisting of a constant multiplied by a non-negative (integer) power of one or more variables.\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":91,\\\"formalized\\\":58,\\\"partial\\\":15,\\\"not_formalized\\\":18}}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":7,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathli"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Finsupp finitely supported functions\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 269,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Finsupp finitely supported functions\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"AddMonoidAlgebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"AddMonoidAlgebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:Q1701125\"}",
+   "ok": true,
+   "result_chars": 765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1701125\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"snippet\\\":\\\"polynomial with finitely many terms of the form axⁿ where n ∈ ℤ\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1701125\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:LaurentPolynomial\\\",\\\"label\\\":\\\"LaurentPolynomial\\\",\\\"code\\\":\\\"abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#LaurentPolynomial\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:Q43260\"}",
+   "ok": true,
+   "result_chars": 2998,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1455652\\\",\\\"label\\\":\\\"Polynomial ring\\\",\\\"snippet\\\":\\\"ring of polynomials (with one or several variables) with coefficients in a given ring\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1455652\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"snippet\\\":\\\"mathematical expression consisting of variables and coefficients\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q43260\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Polynomial\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Ring_of_polynomials\\\",\\\"label\\\":\\\"Ring of polynomials\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Ring_of_polynomials\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/Polynomial.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:PolynomialRing\\\",\\\"label\\\":\\\"Polynomial Ring\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/PolynomialRing.html\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"snippet\\\":\\\"> This entry is about polynomials in commutative rings. For polynomials in categories, see _polynomial functor_.\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/polynomial\\\"},{\\\"source_db\\\":\\\"planetmath\\\",\\\"id\\\":\\\"xref:planetmath:Polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"snippet\\\":\\\"A polynomial can be defined iteratively as follows: \\\\\\\\item Constants are polynomials. \\\\\\\\item Variables (such as $x$) are polynomials. \\\\\\\\item Adding, subtracting, or multiplying two polynomials always yields a polynomial.\\\",\\\"license\\\":\\\"CC-BY-SA (PlanetMath)\\\",\\\"url\\\":\\\"https://planetmath.org/Polynomial\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Polynomial\\\",\\\"label\\\":\\\"Definition:Polynomial\\\",\\\"snippet\\\":\\\"A polynomial is a mathematical expression formed from a sum of terms, each consisting of a constant multiplied by a non-negative (integer) power of one or more variables.\\\",\\\"license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Polynomial\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Polynomial\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q1701125\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 659,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q43260\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q43260\\\",\\\"dst\\\":\\\"decl:Mathlib:LaurentPolynomial\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"201c43aa0eb3\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":2},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"support finsupp carrier\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"support finsupp carrier\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Nat Int coercion embedding\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Nat Int coercion embedding\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Polynomial.support\", \"Polynomial.toFinsuppSupport\", \"LaurentPolynomial.support\", \"Finsupp.support\", \"Polynomial.natCastInclusion\"]}",
+   "ok": true,
+   "result_chars": 1556,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial.support\\\"},{\\\"decl\\\":\\\"Polynomial.toFinsuppSupport\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp.support\\\"},{\\\"decl\\\":\\\"Polynomial.natCastInclusion\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":2,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LaurentPolynomial.support\", \"Polynomial.toLaurent\", \"LaurentPolynomial.of\", \"Polynomial.toLaurentPolynomial\", \"ofPolynomial\"]}",
+   "ok": true,
+   "result_chars": 1516,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.toLaurent\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Laurent\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#Polynomial.toLaurent\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.of\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.toLaurentPolynomial\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ofPolynomial\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.carrier\", \"Finsupp.support\", \"AddMonoidAlgebra.support\", \"AddMonoidAlgebra.carrier\"]}",
+   "ok": true,
+   "result_chars": 1231,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.carrier\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp.support\\\"},{\\\"decl\\\":\\\"AddMonoidAlgebra.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"AddMonoidAlgebra.carrier\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.liftOn\", \"AddMonoidAlgebra.liftOn\", \"support\", \"Nat.cast\", \"Int.natCast\"]}",
+   "ok": true,
+   "result_chars": 1400,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.liftOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"AddMonoidAlgebra.liftOn\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.cast\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Cast\\\",\\\"import_line\\\":\\\"import Init.Data.Cast\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Cast.html#Nat.cast\\\"},{\\\"decl\\\":\\\"Int.natCast\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Laurent\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2177,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Laurent\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q1701125\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"aka\\\":[\\\"LaurentPolynomial\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\"},{\\\"id\\\":\\\"cell:Q425432\\\",\\\"label\\\":\\\"Laurent series\\\",\\\"aka\\\":[\\\"LaurentSeries\\\"],\\\"supercell\\\":\\\"path:Mathlib/RingTheory/LaurentSeries\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Margulis.polyToLaurent\\\",\\\"label\\\":\\\"Margulis.polyToLaurent\\\",\\\"supercell\\\":\\\"path:FormalConjectures/Arxiv/2504/17644\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.exists_laurent_data_of_meromorphicAt\\\",\\\"label\\\":\\\"TauCeti.Contour.exists_laurent_data_of_meromorphicAt\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.laurent_coeff_eq_meromorphicPolarCoeffAt\\\",\\\"label\\\":\\\"TauCeti.Contour.laurent_coeff_eq_meromorphicPolarCoeffAt\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.laurent_coeff_eq_zero_of_eventuallyEq\\\",\\\"label\\\":\\\"TauCeti.Contour.laurent_coeff_eq_zero_of_eventuallyEq\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.laurent_coeff_unique\\\",\\\"label\\\":\\\"TauCeti.Contour.laurent_coeff_unique\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.laurent_data_of_zpow_factor\\\",\\\"label\\\":\\\"TauCeti.Contour.laurent_data_of_zpow_factor\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.Contour.residue_of_laurent_expansion\\\",\\\"label\\\":\\\"TauCeti.Contour.residue_of_laurent_expansion\\\",\\\"supercell\\\":\\\"path:TauCeti/Analysis/Contour/Residue\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Laurent\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Laurent\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Laurent\\\"},{\\\"id\\\":\\\"path:Mathlib/RingTheory/LaurentSeries\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"LaurentSeries\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Toric/MvLaurentPolynomial\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"MvLaurentPolynomial\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"path:Mathlib/Algebra/Polynomial/Laurent\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 355,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/Algebra/Polynomial/Laurent\\\",\\\"kind\\\":\\\"supercell\\\",\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"withheld_by_shard\\\":0,\\\"traces_hydrated\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LaurentPolynomial.toPower\", \"LaurentPolynomial.toLaurent\", \"LaurentPolynomial.ratCast\", \"Polynomial.toLaurent.support\"]}",
+   "ok": true,
+   "result_chars": 1215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial.toPower\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.ratCast\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.toLaurent.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LaurentPolynomial.of\", \"LaurentPolynomial.C\", \"LaurentPolynomial.X\", \"Polynomial.support.image\"]}",
+   "ok": true,
+   "result_chars": 1266,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial.of\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.C\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Laurent\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#LaurentPolynomial.C\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.X\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.support.image\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.support\", \"Function.support\", \"Finsupp.support\", \"Polynomial.support\", \"natCast\"]}",
+   "ok": true,
+   "result_chars": 1576,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Function.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Notation.Support\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Notation.Support\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Notation/Support.html#Function.support\\\"},{\\\"decl\\\":\\\"Finsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp.support\\\"},{\\\"decl\\\":\\\"Polynomial.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial.support\\\"},{\\\"decl\\\":\\\"natCast\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Nat.cast\", \"Nat.succ_inj\", \"natCast_def\", \"ofNat\"]}",
+   "ok": true,
+   "result_chars": 1264,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Nat.cast\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Cast\\\",\\\"import_line\\\":\\\"import Init.Data.Cast\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Cast.html#Nat.cast\\\"},{\\\"decl\\\":\\\"Nat.succ_inj\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Nat.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.Nat.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Nat/Basic.html#Nat.succ_inj\\\"},{\\\"decl\\\":\\\"natCast_def\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"ofNat\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"PSet.ofNat\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.SetTheory.ZFC.PSet\\\",\\\"import_line\\\":\\\"import Mathlib.SetTheory.ZFC.PSet\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/SetTheory/ZFC/PSet.html#PSet.ofNat\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":2,\\\"renamed\\\":1,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LaurentPolynomial\", \"Finsupp\", \"AddMonoidAlgebra\"]}",
+   "ok": true,
+   "result_chars": 1104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Laurent\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Laurent\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#LaurentPolynomial\\\"},{\\\"decl\\\":\\\"Finsupp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Defs.html#Finsupp\\\"},{\\\"decl\\\":\\\"AddMonoidAlgebra\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#AddMonoidAlgebra\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"toLaurent support\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"toLaurent support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Laurent polynomial support image\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 228,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Laurent polynomial support image\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.image\", \"image\", \"Nat.cast_injective\", \"Nat.succ\", \"Int.ofNat\"]}",
+   "ok": true,
+   "result_chars": 1482,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.image\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Defs.html#Set.image\\\"},{\\\"decl\\\":\\\"image\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Nat.cast_injective\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.CharZero.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.CharZero.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/CharZero/Defs.html#Nat.cast_injective\\\"},{\\\"decl\\\":\\\"Nat.succ\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Nat.succ\\\"},{\\\"decl\\\":\\\"Int.ofNat\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Data.Int.Basic\\\",\\\"import_line\\\":\\\"import Init.Data.Int.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Data/Int/Basic.html#Int.ofNat\\\"}],\\\"counts\\\":{\\\"total\\\":5,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Finsupp.map_support\", \"Finsupp.erase\", \"AddMonoidAlgebra.support\", \"support\"]}",
+   "ok": true,
+   "result_chars": 1220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Finsupp.map_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finsupp.erase\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Finsupp.Single\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finsupp.Single\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finsupp/Single.html#Finsupp.erase\\\"},{\\\"decl\\\":\\\"AddMonoidAlgebra.support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"LaurentPolynomial.toFun\", \"LaurentPolynomial.toFinsupp\", \"LaurentPolynomial.equiv\", \"toAddMonoidAlgebra\"]}",
+   "ok": true,
+   "result_chars": 1279,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"LaurentPolynomial.toFun\\\",\\\"exists\\\":false,\\\"renamed_to\\\":\\\"Flow.toFun\\\",\\\"suggestion_basis\\\":\\\"unique-suffix-match\\\",\\\"module\\\":\\\"Mathlib.Dynamics.Flow\\\",\\\"import_line\\\":\\\"import Mathlib.Dynamics.Flow\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Dynamics/Flow.html#Flow.toFun\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.toFinsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.equiv\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"toAddMonoidAlgebra\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":1,\\\"missing\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Polynomial support naturals\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Polynomial support naturals\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Polynomial.coeff\", \"Polynomial.natDegree\", \"Polynomial.leadingCoeff\", \"Nat.cast_image\"]}",
+   "ok": true,
+   "result_chars": 1425,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.coeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial.coeff\\\"},{\\\"decl\\\":\\\"Polynomial.natDegree\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Degree.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Degree.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Degree/Defs.html#Polynomial.natDegree\\\"},{\\\"decl\\\":\\\"Polynomial.leadingCoeff\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Degree.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Degree.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Degree/Defs.html#Polynomial.leadingCoeff\\\"},{\\\"decl\\\":\\\"Nat.cast_image\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Polynomial.support_toLaurent\", \"LaurentPolynomial.support_of_toLaurent\", \"Polynomial.toLaurent_support\", \"Polynomial.support_natCast\"]}",
+   "ok": true,
+   "result_chars": 1230,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.support_toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.support_of_toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.toLaurent_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.support_natCast\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Polynomial\"}",
+   "ok": true,
+   "result_chars": 2998,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q43260\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1455652\\\",\\\"label\\\":\\\"Polynomial ring\\\",\\\"snippet\\\":\\\"ring of polynomials (with one or several variables) with coefficients in a given ring\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1455652\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"snippet\\\":\\\"mathematical expression consisting of variables and coefficients\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q43260\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"code\\\":\\\"structure Polynomial (R : Type*) [Semiring R] where ofFinsupp ::\\\\n  /-- The coefficients `ℕ →₀ R` of a polynomial in `R[X]`. -/\\\\n  toFinsupp : AddMonoidAlgebra R ℕ\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Polynomial\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Ring_of_polynomials\\\",\\\"label\\\":\\\"Ring of polynomials\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Ring_of_polynomials\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/Polynomial.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:PolynomialRing\\\",\\\"label\\\":\\\"Polynomial Ring\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/PolynomialRing.html\\\"},{\\\"source_db\\\":\\\"nlab\\\",\\\"id\\\":\\\"xref:nlab:polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"snippet\\\":\\\"> This entry is about polynomials in commutative rings. For polynomials in categories, see _polynomial functor_.\\\",\\\"license\\\":\\\"nLab (attribution, no formal license)\\\",\\\"url\\\":\\\"https://ncatlab.org/nlab/show/polynomial\\\"},{\\\"source_db\\\":\\\"planetmath\\\",\\\"id\\\":\\\"xref:planetmath:Polynomial\\\",\\\"label\\\":\\\"polynomial\\\",\\\"snippet\\\":\\\"A polynomial can be defined iteratively as follows: \\\\\\\\item Constants are polynomials. \\\\\\\\item Variables (such as $x$) are polynomials. \\\\\\\\item Adding, subtracting, or multiplying two polynomials always yields a polynomial.\\\",\\\"license\\\":\\\"CC-BY-SA (PlanetMath)\\\",\\\"url\\\":\\\"https://planetmath.org/Polynomial\\\"},{\\\"source_db\\\":\\\"proofwiki\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Polynomial\\\",\\\"label\\\":\\\"Definition:Polynomial\\\",\\\"snippet\\\":\\\"A polynomial is a mathematical expression formed from a sum of terms, each consisting of a constant multiplied by a non-negative (integer) power of one or more variables.\\\",\\\"license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\",\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Polynomial\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Polynomial\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Polynomial\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:LaurentPolynomial\"}",
+   "ok": true,
+   "result_chars": 765,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q1701125\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q1701125\\\",\\\"label\\\":\\\"Laurent polynomial\\\",\\\"snippet\\\":\\\"polynomial with finitely many terms of the form axⁿ where n ∈ ℤ\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q1701125\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:LaurentPolynomial\\\",\\\"label\\\":\\\"LaurentPolynomial\\\",\\\"code\\\":\\\"abbrev LaurentPolynomial (R : Type*) [Semiring R] :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Laurent.html#LaurentPolynomial\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"DFinsupp.support\", \"Finsupp.toFun_support\", \"Finsupp.support_coeFun\"]}",
+   "ok": true,
+   "result_chars": 992,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"DFinsupp.support\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.DFinsupp.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.DFinsupp.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/DFinsupp/Defs.html#DFinsupp.support\\\"},{\\\"decl\\\":\\\"Finsupp.toFun_support\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Finsupp.support_coeFun\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":1,\\\"renamed\\\":0,\\\"missing\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Polynomial.coe_toLaurent\", \"Polynomial.coeff_toLaurent\", \"LaurentPolynomial.ofFinsupp\", \"toLaurent\"]}",
+   "ok": true,
+   "result_chars": 1196,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Polynomial.coe_toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"Polynomial.coeff_toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"LaurentPolynomial.ofFinsupp\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"},{\\\"decl\\\":\\\"toLaurent\\\",\\\"exists\\\":false,\\\"hint\\\":\\\"not in the Mathlib decl index — check spelling/namespace; renames are common (e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":0,\\\"renamed\\\":0,\\\"missing\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

@@ -1,0 +1,234 @@
+{
+ "task_id": "fresh_072",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:23:21Z",
+ "wall_s": 76.8,
+ "transcript_stats": {
+  "turns": 24,
+  "assistant_turns": 22,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 9,
+   "mcp__formal__decl_grep": 11,
+   "mcp__formal__decl_read": 3
+  },
+  "tokens_in": 178,
+  "tokens_out": 4226,
+  "cost_usd": 0.08314585000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearOrder ?α → WellFounded\"}",
+   "ok": true,
+   "result_chars": 144,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'LinearOrder ?α → WellFounded': type expected, got\\n  (WellFounded : (?m.2 → ?m.2 → Prop) → Prop)\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"WellFounded (· < ·) → WellFounded (· > ·) → Finite\"}",
+   "ok": true,
+   "result_chars": 151,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'WellFounded (· < ·) → WellFounded (· > ·) → Finite': type expected, got\\n  (Finite : Sort ?u.13 → Prop)\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearOrder ?α → Finite ?α\"}",
+   "ok": true,
+   "result_chars": 394,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 61 declarations mentioning LinearOrder and Finite.\\n- Finite.of_forall_not_lt_lt   [Mathlib.Data.Set.Finite.Basic]\\n    If a linear order does not contain any triple of elements `x < y < z`, then this type is finite.\\n- Finite.of_wellFoundedLT_wellFoundedGT   [Mathlib.Order.OrderIsoNat]\\n    A linear order that is well-founded in both directions is finite.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finite.of_wellFoundedLT_wellFoundedGT\"}",
+   "ok": true,
+   "result_chars": 108,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Finite.of_wellFoundedLT_wellFoundedGT' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"wellFounded.*wellFounded\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3801,
+   "result_head": "[{\"type\": \"text\", \"text\": \"41 match(es) for 'wellFounded.*wellFounded' (via ripgrep):\\n- Mathlib/Algebra/EuclideanDomain/Basic.lean:428\\n    r_wellFounded := InvImage.wf e EuclideanDomain.r_wellFounded\\n- Mathlib/Algebra/Lie/Submodule.lean:529\\n    isAtomic_of_orderBot_wellFounded_lt <| (wellFoundedLT_of_isArtinian R L M).wf\\n- Mathlib/Data/Finsupp/WellFounded.lean:21\\n    `Finsupp.wellFoundedLT` and `wellFoundedLT_of_finite` state the same results for the product\\n- Mathlib/Data/Finsupp/MonomialOrder/DegLex.lean:187\\n    ⟨wellFounded wellFounded_gt wellFounded_lt fun _ ↦ not_lt_zero⟩\\n- Mathlib/Data/DFinsupp/WellFounded.lean:28\\n    Finally, we deduce `DFinsupp.wellFoundedLT`, `Pi.wellFoundedLT`,\\n- Mathlib/SetTheory/Ordinal/Basic.lean:588\\n    wellFounded_iff_wellFounded_subrel.mpr (·.induction_on fun ⟨_, _, wo⟩ ↦\\n- Mathlib/FieldTheory/CardinalEmb.lean:151\\n    exact ⟨wellFounded_lt.min_mem _ _, fun _ ↦ (wellFounded_lt.min_le ·)⟩\\n- Mathlib/Order/CompactlyGenerated/Basic.lean:289\\n    alias ⟨_, IsSupFiniteCompact.wellFoundedGT⟩ := wellFoundedGT_iff_isSupFiniteCompact\\n- Mathlib/Order/CompactlyGenerated/Basic.lean:334\\n    · exact (RelEmbedding.natGT a lt).not_wellFounded wellFounded_lt\\n- Mathlib/Order/SuccPred/Basic.lean:120\\n    exact ⟨wellFounded_lt.min_le (s := Ioi _), lt_of_lt_of_le (wellFounded_lt.prop_min ha)⟩)\\n- Mathlib/Order/Atoms.lean:507\\n    IsStronglyAtomic.of_wellFounded_lt wellFounded_lt\\n- Mathlib/Order/Atoms.lean:510\\n    IsStronglyCoatomic.of_wellFounded_gt wellFounded_gt\\n- Mathlib/Order/OrderIsoNat.lean:83\\n    (RelEmbedding.natGT f (fun n ↦ hf (by simp))).not_wellFounded wellFounded_lt\\n- Mathlib/Order/OrderIsoNat.lean:261\\n    theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (α) [Preorder α]\\n- Mathlib/Order/OrderIsoNat.lean:276\\n    exact ⟨_, wellFounded_lt.min_mem _ H, fun i h ↦ cov _ (wellFounded_lt.not_lt_min _ · h)⟩\\n- Mathlib/Order/OrderIsoNat.lean:278\\n    theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT_of_le {α : Type*} [PartialOrder α]\\n- Mathlib/Order/OrderIsoNat.lean:284\\n    obtain ⟨a, h₁, n, h₂, e⟩ := exists_covBy_seq_of_wellFoundedLT_wellFoundedGT S\\n- Mathlib/Combinatorics/Additive/CauchyDavenport.lean:103\\n    refine wellFounded_lt.onFun.wellFoundedOn.prod_lex_of_wellFoundedOn_fiber fun n ↦\\n- Mathlib/Combinatorics/Additive/CauchyDavenport.lean:105\\n    wellFounded_lt.onFun.wellFoundedOn\\n- Mathlib/Combinatorics/Additive/CauchyDavenport.lean:106\\n    exact wellFounded_lt.onFun.wellFoundedOn.mono' fun x hx y _ ↦ tsub_lt_tsub_left_of_le <|\\n- Mathlib/Order/RelIso/Set.lean:151\\n    theorem wellFounded_iff_wellFounded_subrel {r : α → α → Prop} [IsTrans α r] :\\n- Mathlib/Order/WellFoundedSet.lean:170\\n    simp only [wellFoundedOn_iff, RelEmbedding.wellFounded_iff_isEmpty, ← not_exists, ←\\n- Mathlib/Order/WellFoundedSet.lean:505\\n    refine ⟨hs.wellFounded.min t h, hs.wellFounded.min_mem t h,\\n- Mathlib/Order/WellFoundedSet.lean:508\\n    exact hs.wellFounded.not_lt_min t (x := ⟨y, hy⟩) (hle.trans (hs.wellFounded.min_mem t h))\\n- Mathlib/Order/WellFoundedSet.lean:542\\n    simp only [← singleton_union, wellFoundedOn_union, wellFoundedOn_singleton, true_and]\\n- Mathlib/Order/InitialSeg.lean:470\\n    wellFounded_iff_wellFounded_subrel.mpr fun b => h _ _ (PrincipalSeg.ofElement s b)⟩\\n- Mathlib/Order/RelSeries.lean:986\\n    exists_covBy_seq_of_wellFoundedLT_wellFoundedGT_of_le (h (.last _)).le\\n- Mathlib/Order/RelClasses.lean:382\\n    @[deprecated (since := \\\"2026-01-12\\\")] alias Prod.wellFoundedLT' := Prod.wellFoundedLT\\n- Mathlib/Order/RelClasses.lean:383\\n    @[deprecated (since := \\\"2026-01-12\\\")] alias Prod.wellFoundedGT' := Prod.wellFoundedGT\\n- Mathlib/Order/UpperLower/Basic.lean:251\\n    exact ⟨_, ext fun b ↦ ⟨wellFounded_lt.min_le, (h · <| wellFounded_lt.min_mem _ ⟨a, ha⟩)⟩⟩\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*finite.*wellFounded\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*finite.*wellFounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finite\", \"limit\": 40}",
+   "ok": true,
+   "result_chars": 4515,
+   "result_head": "[{\"type\": \"text\", \"text\": \"16257 match(es) for 'Finite' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Epi.lean:11\\n    public import Mathlib.RingTheory.TensorProduct.Finite\\n- Mathlib/Algebra/Algebra/Epi.lean:79\\n    lemma isEpi_iff_surjective_algebraMap_of_finite [Module.Finite R A] :\\n- Mathlib/Algebra/Algebra/Equiv.lean:767\\n    /-- See also `Finite.algHom` -/\\n- Mathlib/Algebra/Algebra/Equiv.lean:768\\n    instance _root_.Finite.algEquiv [Finite (A₁ →ₐ[R] A₂)] : Finite (A₁ ≃ₐ[R] A₂) :=\\n- Mathlib/Algebra/Algebra/Equiv.lean:769\\n    Finite.of_injective _ AlgEquiv.coe_toAlgHom_injective\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:8\\n    public import Mathlib.LinearAlgebra.FiniteDimensional.Basic\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:27\\n    haveI : FiniteDimensional _ _ := .of_finrank_pos hp.pos\\n- Mathlib/Algebra/Algebra/Subalgebra/IsSimpleOrder.lean:28\\n    letI := divisionRingOfFiniteDimensional F K\\n- Mathlib/Algebra/ModEq.lean:4\\n    public import Mathlib.Tactic.Finiteness.Attr\\n- Mathlib/Algebra/QuadraticDiscriminant.lean:39\\n    assert_not_exists Finite Finset\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:9\\n    public import Mathlib.Algebra.FiniteSupport.Defs\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:10\\n    public import Mathlib.Data.Set.Finite.Basic\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:13\\n    # Finiteness of support\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:24\\n    lemma mulSupport_along_fiber_finite_of_finite (f : α × β → γ) (a : α) (h : HasFiniteMulSupport f) :\\n- Mathlib/Algebra/Notation/FiniteSupport.lean:25\\n    HasFiniteMulSupport fun b ↦ f (a, b) :=\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:9\\n    public import Mathlib.Data.Set.Finite.Basic\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:14\\n    We define a new predicate `HasFiniteMulSupport` (and its additivized version) on functions\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:17\\n    are provided in [Mathlib.Algebra.FiniteSupport.Basic](Mathlib/Algebra/FiniteSupport/Basic.lean).\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:28\\n    def HasFiniteMulSupport (f : α → M) : Prop := f.mulSupport.Finite\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:31\\n    lemma hasFiniteMulSupport_one : HasFiniteMulSupport fun _ : α ↦ (1 : M) := by\\n- Mathlib/Algebra/FiniteSupport/Defs.lean:32\\n    simp [HasFiniteMulSupport]\\n- Mathlib/Algebra/GroupWithZero/Pointwise/Set/Card.lean:10\\n    public import Mathlib.SetTheory.Cardinal.Finite\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:9\\n    public import Mathlib.Algebra.FiniteSupport.Defs\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:13\\n    public import Mathlib.Data.Set.Finite.Lattice\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:21\\n    We provide API lemmas for the predicate `HasFiniteMulSupport` (and its additivized version\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:22\\n    `HasFiniteSupport`) on functions so that `fun_prop` can prove it for functions that are\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:33\\n    lemma hasFiniteMulSupport_fun_one : HasFiniteMulSupport (1 : α → M) := by\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:34\\n    simp [HasFiniteMulSupport]\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:37\\n    lemma HasFiniteMulSupport.fun_comp {N : Type*} [One N] {g : M → N} {f : α → M}\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:38\\n    (hf : HasFiniteMulSupport f) (hg : g 1 = 1) :\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:39\\n    HasFiniteMulSupport fun a ↦ g (f a) :=\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:43\\n    lemma HasFiniteMulSupport.comp {N : Type*} [One N] {g : M → N} {f : α → M}\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:44\\n    (hf : HasFiniteMulSupport f) (hg : g 1 = 1) :\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:45\\n    HasFiniteMulSupport (g ∘ f) :=\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:49\\n    lemma HasFiniteMulSupport.fst {M' : Type*} [One M'] {f : α → M × M'} (hf : HasFiniteMulSupport f) :\\n- Mathlib/Algebra/FiniteSupport/Basic.lean:50\\n    HasFiniteMulSuppo"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4775,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 1–100 of 287):\\n     1  /-\\n     2  Copyright (c) 2017 Mario Carneiro. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Mario Carneiro\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Subsingleton\\n     9  public import Mathlib.Logic.Denumerable\\n    10  public import Mathlib.Logic.Function.Iterate\\n    11  public import Mathlib.Order.Hom.Basic\\n    12  public import Mathlib.Order.Lattice.Nat\\n    13  \\n    14  /-!\\n    15  # Relation embeddings from the naturals\\n    16  \\n    17  This file allows translation from monotone functions `ℕ → α` to order embeddings `ℕ ↪ α` and\\n    18  defines the limit value of an eventually-constant sequence.\\n    19  \\n    20  ## Main declarations\\n    21  \\n    22  * `natLT`/`natGT`: Make an order embedding `Nat ↪ α` from\\n    23    an increasing/decreasing function `Nat → α`.\\n    24  * `monotonicSequenceLimit`: The limit of an eventually-constant monotone sequence `Nat →o α`.\\n    25  * `monotonicSequenceLimitIndex`: The index of the first occurrence of `monotonicSequenceLimit`\\n    26    in the sequence.\\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  \\n    32  variable {α : Type*}\\n    33  \\n    34  namespace RelEmbedding\\n    35  \\n    36  variable {r : α → α → Prop} [IsStrictOrder α r]\\n    37  \\n    38  /-- If `f` is a strictly `r`-increasing sequence, then this returns `f` as an order embedding. -/\\n    39  def natLT (f : ℕ → α) (H : ∀ n : ℕ, r (f n) (f (n + 1))) : ((· < ·) : ℕ → ℕ → Prop) ↪r r :=\\n    40    ofMonotone f <| Nat.rel_of_forall_rel_succ_of_lt r H\\n    41  \\n    42  @[simp]\\n    43  theorem coe_natLT {f : ℕ → α} {H : ∀ n : ℕ, r (f n) (f (n + 1))} : ⇑(natLT f H) = f :=\\n    44    rfl\\n    45  \\n    46  /-- If `f` is a strictly `r`-decreasing sequence, then this returns `f` as an order embedding. -/\\n    47  def natGT (f : ℕ → α) (H : ∀ n : ℕ, r (f (n + 1)) (f n)) : ((· > ·) : ℕ → ℕ → Prop) ↪r r :=\\n    48    RelEmbedding.swap (natLT f H)\\n    49  \\n    50  @[simp]\\n    51  theorem coe_natGT {f : ℕ → α} {H : ∀ n : ℕ, r (f (n + 1)) (f n)} : ⇑(natGT f H) = f :=\\n    52    rfl\\n    53  \\n    54  /-- A value is accessible iff it isn't contained in any infinite decreasing sequence. -/\\n    55  theorem acc_iff_isEmpty_subtype_mem_range {x} :\\n    56      Acc r x ↔ IsEmpty { f : ((· > ·) : ℕ → ℕ → Prop) ↪r r // x ∈ Set.range f } where\\n    57    mp acc := .mk fun ⟨f, k, hk⟩ ↦ not_acc_iff_exists_descending_chain.mpr\\n    58      ⟨(f <| k + ·), hk, fun _n ↦ f.map_rel_iff.2 (Nat.lt_succ_self _)⟩ acc\\n    59    mpr h := of_not_not fun nacc ↦\\n    60      have ⟨f, hf⟩ := not_acc_iff_exists_descending_chain.mp nacc\\n    61      h.elim ⟨natGT f hf.2, 0, hf.1⟩\\n    62  \\n    63  theorem not_acc (f : ((· > ·) : ℕ → ℕ → Prop) ↪r r) (k : ℕ) : ¬Acc r (f k) := by\\n    64    rw [acc_iff_isEmpty_subtype_mem_range, not_isEmpty_iff]\\n    65    exact ⟨⟨f, k, rfl⟩⟩\\n    66  \\n    67  /-- A strict order relation is well-founded iff it doesn't have any infinite descending chain.\\n    68  \\n    69  See `wellFounded_iff_isEmpty_descending_chain` for a version which works on any relation. -/\\n    70  theorem wellFounded_iff_isEmpty :\\n    71      WellFounded r ↔ IsEmpty (((· > ·) : ℕ → ℕ → Prop) ↪r r) where\\n    72    mp := fun ⟨h⟩ ↦ ⟨fun f ↦ f.not_acc 0 (h _)⟩\\n    73    mpr _ := ⟨fun _x ↦ acc_iff_isEmpty_subtype_mem_range.2 inferInstance⟩\\n    74  \\n    75  theorem not_wellFounded (f : ((· > ·) : ℕ → ℕ → Prop) ↪r r) : ¬WellFounded r := by\\n    76    rw [wellFounded_iff_isEmpty, not_isEmpty_iff]\\n    77    exact ⟨f⟩\\n    78  \\n    79  end RelEmbedding\\n    80  \\n    81  theorem not_strictAnti_of_wellFoundedLT [Preorder α] [WellFoundedLT α] (f : ℕ → α) :\\n    82      ¬ StrictAnti f := fun hf ↦\\n    83    (RelEmbedding.natGT f (fun n ↦ hf (by simp))).not_wellFounded wellFounded_lt\\n    84  \\n    85  theorem not_strictMon"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 200, \"n\": 80}",
+   "ok": true,
+   "result_chars": 5000,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 200–279 of 287):\\n   200      exact ⟨n, fun m _ => H _ (Set.mem_range_self _)⟩\\n   201    · rw [WellFoundedGT, isWellFounded_iff, RelEmbedding.wellFounded_iff_isEmpty]\\n   202      refine ⟨fun a => ?_⟩\\n   203      obtain ⟨n, hn⟩ := h (a.swap : _ →r _).toOrderHom\\n   204      exact hn n.succ n.lt_succ_self.le ((RelEmbedding.map_rel_iff _).2 n.lt_succ_self)\\n   205  \\n   206  theorem WellFoundedGT.monotone_chain_condition' [Preorder α] [h : WellFoundedGT α] (a : ℕ →o α) :\\n   207      ∃ n, ∀ m, n ≤ m → ¬a n < a m :=\\n   208    wellFoundedGT_iff_monotone_chain_condition'.1 h a\\n   209  \\n   210  /-- A stronger version of the **monotone chain** condition for partial orders.\\n   211  \\n   212  See `wellFoundedGT_iff_monotone_chain_condition'` for a version on preorders. -/\\n   213  theorem wellFoundedGT_iff_monotone_chain_condition [PartialOrder α] :\\n   214      WellFoundedGT α ↔ ∀ a : ℕ →o α, ∃ n, ∀ m, n ≤ m → a n = a m :=\\n   215    wellFoundedGT_iff_monotone_chain_condition'.trans <| by\\n   216    congrm ∀ a, ∃ n, ∀ m h, ?_\\n   217    rw [lt_iff_le_and_ne]\\n   218    simp [a.mono h]\\n   219  \\n   220  theorem WellFoundedGT.monotone_chain_condition [PartialOrder α] [h : WellFoundedGT α] (a : ℕ →o α) :\\n   221      ∃ n, ∀ m, n ≤ m → a n = a m :=\\n   222    wellFoundedGT_iff_monotone_chain_condition.1 h a\\n   223  \\n   224  /-- The **antitone chain** condition: an antitone sequence in a partially-ordered type with\\n   225  well-founded `<` is eventually constant.\\n   226  \\n   227  This is the dual of `WellFoundedGT.monotone_chain_condition`. It is provided for convenience,\\n   228  since it unbundles the antitone property from the order homomorphism. -/\\n   229  theorem WellFoundedLT.antitone_chain_condition [PartialOrder α] [WellFoundedLT α]\\n   230      {f : ℕ → α} (hf : Antitone f) : ∃ n, ∀ m, n ≤ m → f n = f m :=\\n   231    WellFoundedGT.monotone_chain_condition ⟨OrderDual.toDual ∘ f, hf⟩\\n   232  \\n   233  /-- Given an eventually-constant monotone sequence `a₀ ≤ a₁ ≤ a₂ ≤ ...` in a partially-ordered\\n   234  type, `monotonicSequenceLimitIndex a` is the least natural number `n` for which `aₙ` reaches the\\n   235  constant value. For sequences that are not eventually constant, `monotonicSequenceLimitIndex a`\\n   236  is defined, but is a junk value. -/\\n   237  noncomputable def monotonicSequenceLimitIndex [Preorder α] (a : ℕ →o α) : ℕ :=\\n   238    sInf { n | ∀ m, n ≤ m → a n = a m }\\n   239  \\n   240  /-- The constant value of an eventually-constant monotone sequence `a₀ ≤ a₁ ≤ a₂ ≤ ...` in a\\n   241  partially-ordered type. -/\\n   242  noncomputable def monotonicSequenceLimit [Preorder α] (a : ℕ →o α) :=\\n   243    a (monotonicSequenceLimitIndex a)\\n   244  \\n   245  theorem le_monotonicSequenceLimit [PartialOrder α] [WellFoundedGT α] (a : ℕ →o α) (m : ℕ) :\\n   246      a m ≤ monotonicSequenceLimit a := by\\n   247    rcases le_or_gt m (monotonicSequenceLimitIndex a) with hm | hm\\n   248    · exact a.monotone hm\\n   249    · obtain h := WellFoundedGT.monotone_chain_condition a\\n   250      exact (Nat.sInf_mem (s := {n | ∀ m, n ≤ m → a n = a m}) h m hm.le).ge\\n   251  \\n   252  theorem WellFoundedGT.iSup_eq_monotonicSequenceLimit [CompleteLattice α]\\n   253      [WellFoundedGT α] (a : ℕ →o α) : iSup a = monotonicSequenceLimit a :=\\n   254    (iSup_le (le_monotonicSequenceLimit a)).antisymm (le_iSup a _)\\n   255  \\n   256  theorem WellFoundedGT.ciSup_eq_monotonicSequenceLimit [ConditionallyCompleteLattice α]\\n   257      [WellFoundedGT α] (a : ℕ →o α) (ha : BddAbove (Set.range a)) :\\n   258      iSup a = monotonicSequenceLimit a :=\\n   259    (ciSup_le (le_monotonicSequenceLimit a)).antisymm (le_ciSup ha _)\\n   260  \\n   261  theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (α) [Preorder α]\\n   262      [Nonempty α] [wfl : WellFoundedLT α] [wfg : WellFoundedGT α] :\\n   263      ∃ a : ℕ → α, IsMin (a 0) ∧ ∃ n, IsMax (a n) ∧ ∀ i < n, a i ⋖ a (i + 1) := by\\"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finite.of_wellFoundedLT_wellFoundedGT\"}",
+   "ok": true,
+   "result_chars": 243,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Finite.of_wellFoundedLT_wellFoundedGT.\\n- Finite.of_wellFoundedLT_wellFoundedGT   [Mathlib.Order.OrderIsoNat]\\n    A linear order that is well-founded in both directions is finite.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"of_wellFoundedLT_wellFoundedGT\"}",
+   "ok": true,
+   "result_chars": 713,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'of_wellFoundedLT_wellFoundedGT' (via ripgrep):\\n- Mathlib/RingTheory/FiniteLength.lean:52\\n    obtain ⟨f, f0, n, hn⟩ := exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (Submodule R M)\\n- Mathlib/Order/OrderIsoNat.lean:261\\n    theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT (α) [Preorder α]\\n- Mathlib/Order/OrderIsoNat.lean:278\\n    theorem exists_covBy_seq_of_wellFoundedLT_wellFoundedGT_of_le {α : Type*} [PartialOrder α]\\n- Mathlib/Order/OrderIsoNat.lean:284\\n    obtain ⟨a, h₁, n, h₂, e⟩ := exists_covBy_seq_of_wellFoundedLT_wellFoundedGT S\\n- Mathlib/Order/RelSeries.lean:986\\n    exists_covBy_seq_of_wellFoundedLT_wellFoundedGT_of_le (h (.last _)).le\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"LinearOrder ?α → WellFoundedLT ?α → WellFoundedGT ?α → Finite ?α\"}",
+   "ok": true,
+   "result_chars": 259,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning LinearOrder, Finite, WellFoundedLT, and WellFoundedGT.\\n- Finite.of_wellFoundedLT_wellFoundedGT   [Mathlib.Order.OrderIsoNat]\\n    A linear order that is well-founded in both directions is finite.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*Finite|def.*Finite.*:=|theorem.*Finite.*:=\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4024,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2258 match(es) for 'instance.*Finite|def.*Finite.*:=|theorem.*Finite.*:=' (via ripgrep):\\n- Mathlib/Algebra/Algebra/Equiv.lean:768\\n    instance _root_.Finite.algEquiv [Finite (A₁ →ₐ[R] A₂)] : Finite (A₁ ≃ₐ[R] A₂) :=\\n- Mathlib/Algebra/QuadraticAlgebra/Defs.lean:421\\n    instance : Module.Finite R (QuadraticAlgebra R a b) := .of_basis (basis a b)\\n- Mathlib/CategoryTheory/FintypeCat.lean:45\\n    instance {X : FintypeCat} : Finite X :=\\n- Mathlib/CategoryTheory/FintypeCat.lean:142\\n    instance (X Y : FintypeCat) : Finite (X ⟶ Y) :=\\n- Mathlib/CategoryTheory/FintypeCat.lean:146\\n    instance (X Y : FintypeCat) : Finite (X ≅ Y) :=\\n- Mathlib/CategoryTheory/FintypeCat.lean:149\\n    instance (X : FintypeCat) : Finite (Aut X) :=\\n- Mathlib/Algebra/Category/FGModuleCat/Limits.lean:40\\n    instance {J : Type} [Finite J] (Z : J → ModuleCat.{v} k) [∀ j, Module.Finite k (Z j)] :\\n- Mathlib/Algebra/Category/FGModuleCat/Limits.lean:74\\n    instance : HasFiniteLimits (FGModuleCat.{v} k) where\\n- Mathlib/Algebra/Category/FGModuleCat/Limits.lean:77\\n    instance : PreservesFiniteLimits (forget₂ (FGModuleCat k) (ModuleCat.{v} k)) where\\n- Mathlib/Probability/Process/Stopping.lean:529\\n    instance sigmaFinite_stopping_time {ι} [SemilatticeSup ι] [OrderBot ι]\\n- Mathlib/Probability/Process/Stopping.lean:538\\n    instance sigmaFinite_stopping_time_of_le {ι} [SemilatticeSup ι] [OrderBot ι] {μ : Measure Ω}\\n- Mathlib/Algebra/Category/FGModuleCat/Colimits.lean:34\\n    instance {J : Type} [Finite J] (Z : J → ModuleCat.{v} k) [∀ j, Module.Finite k (Z j)] :\\n- Mathlib/Algebra/Category/FGModuleCat/Colimits.lean:66\\n    instance : HasFiniteColimits (FGModuleCat.{v} k) where\\n- Mathlib/Algebra/Category/FGModuleCat/Colimits.lean:69\\n    instance : PreservesFiniteColimits (forget₂ (FGModuleCat k) (ModuleCat.{v} k)) where\\n- Mathlib/CategoryTheory/Localization/FiniteProducts.lean:124\\n    instance : HasFiniteProducts (W.Localization) := hasFiniteProducts W.Q W\\n- Mathlib/CategoryTheory/Localization/FiniteProducts.lean:126\\n    noncomputable instance : PreservesFiniteProducts W.Q := preservesFiniteProducts W.Q W\\n- Mathlib/Probability/Process/Filtration.lean:204\\n    instance sigmaFinite_of_sigmaFiniteFiltration [Preorder ι] (μ : Measure Ω) (f : Filtration ι m)\\n- Mathlib/Probability/Process/Filtration.lean:208\\n    instance (priority := 100) IsFiniteMeasure.sigmaFiniteFiltration [Preorder ι] (μ : Measure Ω)\\n- Mathlib/Algebra/Category/FGModuleCat/Basic.lean:72\\n    instance (M : FGModuleCat.{v} R) : Module.Finite R M :=\\n- Mathlib/Algebra/Category/FGModuleCat/Basic.lean:113\\n    instance (V : FGModuleCat.{v} R) : Module.Finite R V :=\\n- Mathlib/Algebra/Category/FGModuleCat/Basic.lean:186\\n    instance (V W : FGModuleCat.{v} K) : Module.Finite K (V.obj ⟶ W.obj) :=\\n- Mathlib/Algebra/Category/FGModuleCat/Basic.lean:189\\n    instance (V W : FGModuleCat.{v} K) : Module.Finite K (V ⟶ W) :=\\n- Mathlib/Computability/Primrec/Basic.lean:683\\n    theorem dom_finite [Finite α] (f : α → σ) : Primrec f :=\\n- Mathlib/Algebra/Category/FGModuleCat/EssentiallySmall.lean:51\\n    instance (x : FGModuleRepr R) : Module.Finite R x :=\\n- Mathlib/Algebra/Category/FGModuleCat/EssentiallySmall.lean:62\\n    noncomputable def ofFiniteEquiv : ofFinite R M ≃ₗ[R] M :=\\n- Mathlib/Algebra/Homology/HomologicalComplexLimits.lean:100\\n    instance [HasFiniteLimits C] : HasFiniteLimits (HomologicalComplex C c) :=\\n- Mathlib/Algebra/Homology/HomologicalComplexLimits.lean:103\\n    noncomputable instance [HasFiniteLimits C] (n : ι) : PreservesFiniteLimits (eval C c n) :=\\n- Mathlib/Algebra/Homology/HomologicalComplexLimits.lean:106\\n    instance [HasFiniteLimits C] {K L : HomologicalComplex C c} (φ : K ⟶ L) [Mono φ] (n : ι) :\\n- Mathlib/Algebra/Homology/HomologicalComplexLimits.lean:182\\n    instance [HasFiniteColimits C] : HasFiniteColimits (HomologicalComplex C c) :=\\n- Mathlib/Algebra/Homology/HomologicalComplexLimits.lean:185\\n    noncomputable instance [HasFinite"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace Finite\"}",
+   "ok": true,
+   "result_chars": 1593,
+   "result_head": "[{\"type\": \"text\", \"text\": \"69 match(es) for 'namespace Finite' (via ripgrep):\\n- Mathlib/Algebra/Category/ModuleCat/Sheaf/Limits.lean:93\\n    namespace Finite\\n- Mathlib/Algebra/Order/Ring/StandardPart.lean:53\\n    namespace FiniteElement\\n- Mathlib/Algebra/Order/Ring/StandardPart.lean:129\\n    namespace FiniteResidueField\\n- Mathlib/Algebra/Module/LinearMap/FiniteRange.lean:220\\n    namespace FiniteRangeSetoid\\n- Mathlib/Algebra/Category/Grp/FiniteGrp.lean:41\\n    namespace FiniteGrp\\n- Mathlib/Algebra/Category/ModuleCat/Presheaf/Colimits.lean:151\\n    namespace Finite\\n- Mathlib/Algebra/Order/Module/Archimedean.lean:111\\n    namespace FiniteArchimedeanClass\\n- Mathlib/Algebra/Group/TransferInstance.lean:197\\n    namespace Finite\\n- Mathlib/Algebra/Order/Archimedean/Class.lean:716\\n    namespace FiniteMulArchimedeanClass\\n- Mathlib/NumberTheory/NumberField/Completion/FinitePlace.lean:343\\n    namespace FinitePlace\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:63\\n    namespace Finite\\n- Mathlib/SetTheory/Cardinal/NatCard.lean:171\\n    namespace Finite\\n- Mathlib/Data/Set/Constructions.lean:39\\n    namespace FiniteInter\\n- Mathlib/Data/Set/Finite/Lattice.lean:90\\n    namespace Finite.Set\\n- Mathlib/Data/Set/Finite/Range.lean:62\\n    namespace Finite.Set\\n- Mathlib/Data/Set/Finite/Basic.lean:101\\n    namespace Finite\\n- Mathlib/Data/Set/Finite/Basic.lean:428\\n    namespace Finite.Set\\n- Mathlib/Data/Set/Finite/Monad.lean:83\\n    namespace Finite.Set\\n- Mathlib/Data/Fintype/Order.lean:269\\n    namespace Finite\\n- Mathlib/Data/Fintype/Card.lean:320\\n    namespace Finite\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*wellFounded.*finite|theorem.*finite.*wellFounded\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 627,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem.*wellFounded.*finite|theorem.*finite.*wellFounded' (via ripgrep):\\n- Mathlib/Data/Finsupp/WellFounded.lean:67\\n    theorem Lex.wellFounded_of_finite [IsStrictTotalOrder α r] [Finite α]\\n- Mathlib/Data/Finsupp/WellFounded.lean:71\\n    theorem Lex.wellFoundedLT_of_finite [LinearOrder α] [Finite α] [LT N]\\n- Mathlib/Data/Finsupp/WellFounded.lean:75\\n    theorem Colex.wellFoundedLT_of_finite [LinearOrder α] [Finite α] [LT N]\\n- Mathlib/Data/DFinsupp/WellFounded.lean:209\\n    theorem DFinsupp.Lex.wellFounded_of_finite [IsStrictTotalOrder ι r] [Finite ι] [∀ i, Zero (α i)]\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/OrderIsoNat.lean\", \"line\": 279, \"n\": 120}",
+   "ok": true,
+   "result_chars": 767,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/OrderIsoNat.lean  (lines 279–287 of 287):\\n   279      [wfl : WellFoundedLT α] [wfg : WellFoundedGT α] {x y : α} (h : x ≤ y) :\\n   280      ∃ a : ℕ → α, a 0 = x ∧ ∃ n, a n = y ∧ ∀ i < n, a i ⋖ a (i + 1) := by\\n   281    let S := Set.Icc x y\\n   282    let hS : BoundedOrder S :=\\n   283      { top := ⟨y, h, le_rfl⟩, le_top x := x.2.2, bot := ⟨x, le_rfl, h⟩, bot_le x := x.2.1 }\\n   284    obtain ⟨a, h₁, n, h₂, e⟩ := exists_covBy_seq_of_wellFoundedLT_wellFoundedGT S\\n   285    simp only [isMin_iff_eq_bot, Subtype.ext_iff, isMax_iff_eq_top] at h₁ h₂\\n   286    exact ⟨Subtype.val ∘ a, h₁, n, h₂, fun i hi ↦ ⟨(e i hi).1, fun c hc h ↦ (e i hi).2\\n   287      (c := ⟨c, (a i).2.1.trans hc.le, h.le.trans (a _).2.2⟩) hc h⟩⟩\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Finite.*of_.*wellFounded\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 95,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Finite.*of_.*wellFounded' under Mathlib/.\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?α → Finite ?α\"}",
+   "ok": true,
+   "result_chars": 572,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3647 declarations mentioning Finite.\\n- Sylow.finite_of_finiteIndex   [Mathlib.GroupTheory.Sylow]\\n    If a Sylow `p`-subgroup has finite index, then the number of Sylow `p`-subgroups is finite.\\n- SimpleGraph.Walk.IsHamiltonianCycle.finite   [Mathlib.Combinatorics.SimpleGraph.Hamiltonian]\\n    If a cycle `p` is Hamiltonian then the graph has finitely many vertices.\\n- SimpleGraph.Walk.IsHamiltonian.finite   [Mathlib.Combinatorics.SimpleGraph.Hamiltonian]\\n    If a path `p` is Hamiltonian then the graph has finitely many vertices.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"\\\\[WellFoundedLT.*\\\\[WellFoundedGT|\\\\[WellFoundedGT.*\\\\[WellFoundedLT\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '\\\\\\\\[WellFoundedLT.*\\\\\\\\[WellFoundedGT|\\\\\\\\[WellFoundedGT.*\\\\\\\\[WellFoundedLT' (via ripgrep):\\n- Mathlib/Order/RelSeries.lean:977\\n    {α} [PartialOrder α] [WellFoundedLT α] [WellFoundedGT α] (s : LTSeries α) :\\n- Mathlib/Order/RelSeries.lean:1004\\n    {α} [PartialOrder α] [BoundedOrder α] [WellFoundedLT α] [WellFoundedGT α] (s : LTSeries α) :\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Finite|lemma Finite|def Finite\"}",
+   "ok": true,
+   "result_chars": 2828,
+   "result_head": "[{\"type\": \"text\", \"text\": \"249 match(es) for 'theorem Finite|lemma Finite|def Finite' (via ripgrep):\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:168\\n    theorem FiniteDimensional.of_rank_eq_nat {n : ℕ} (h : Module.rank K V = n) :\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:172\\n    theorem FiniteDimensional.of_rank_eq_zero (h : Module.rank K V = 0) : FiniteDimensional K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:175\\n    theorem FiniteDimensional.of_rank_eq_one (h : Module.rank K V = 1) : FiniteDimensional K V :=\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:506\\n    lemma FiniteDimensional.exists_mul_eq_one (F : Type*) {K : Type*} [Field F] [Ring K] [IsDomain K]\\n- Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean:529\\n    lemma FiniteDimensional.isUnit (F : Type*) {K : Type*} [Field F] [Ring K] [IsDomain K]\\n- Mathlib/LinearAlgebra/Dimension/Free.lean:212\\n    theorem FiniteDimensional.nonempty_linearEquiv_of_finrank_eq\\n- Mathlib/LinearAlgebra/Dimension/Free.lean:218\\n    theorem FiniteDimensional.nonempty_linearEquiv_iff_finrank_eq [Module.Finite R M]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:348\\n    lemma FinitePresentation.of_isBaseChange\\n- Mathlib/Data/Set/Countable.lean:256\\n    theorem Finite.countable {s : Set α} (hs : s.Finite) : s.Countable :=\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/FiniteField.lean:28\\n    theorem FiniteField.Matrix.charpoly_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K) :\\n- Mathlib/LinearAlgebra/Matrix/Charpoly/FiniteField.lean:53\\n    theorem FiniteField.trace_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K) :\\n- Mathlib/Data/Set/Finite/Lattice.lean:144\\n    theorem Finite.biUnion' {ι} {s : Set ι} (hs : s.Finite) {t : ∀ i ∈ s, Set α}\\n- Mathlib/Data/Set/Finite/Lattice.lean:150\\n    theorem Finite.biUnion {ι} {s : Set ι} (hs : s.Finite) {t : ι → Set α}\\n- Mathlib/Data/Set/Finite/Lattice.lean:154\\n    theorem Finite.sUnion {s : Set (Set α)} (hs : s.Finite) (H : ∀ t ∈ s, Set.Finite t) :\\n- Mathlib/Data/Set/Finite/Lattice.lean:158\\n    theorem Finite.sInter {α : Type*} {s : Set (Set α)} {t : Set α} (ht : t ∈ s) (hf : t.Finite) :\\n- Mathlib/Data/Set/Finite/Lattice.lean:164\\n    theorem Finite.iUnion {ι : Type*} {s : ι → Set α} {t : Set ι} (ht : t.Finite)\\n- Mathlib/Data/Set/Finite/Lattice.lean:213\\n    theorem Finite.preimage' (h : s.Finite) (hf : ∀ b ∈ s, (f ⁻¹' {b}).Finite) :\\n- Mathlib/Data/Set/Finite/Lattice.lean:234\\n    lemma Finite.of_finite_fibers (f : α → β) {s : Set α} (himage : (f '' s).Finite)\\n- Mathlib/Data/Set/Finite/Lattice.lean:303\\n    theorem Finite.iSup_biInf_of_monotone {ι ι' α : Type*} [Preorder ι'] [Nonempty ι']\\n- Mathlib/Data/Set/Finite/Lattice.lean:314\\n    theorem Finite.iSup_biInf_of_antitone {ι ι' α : Type*} [Preorder ι'] [Nonempty ι']\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"wellFounded_lt → wellFounded_gt → Finite\"}",
+   "ok": true,
+   "result_chars": 164,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'wellFounded_lt → wellFounded_gt → Finite': type expected, got\\n  (wellFounded_lt : WellFounded fun x1 x2 => x1 < x2)\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"of_wellFoundedLT_wellFoundedGT\"}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'of_wellFoundedLT_wellFoundedGT': unknown identifier 'of_wellFoundedLT_wellFoundedGT'\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"[WellFoundedLT ?α] → [WellFoundedGT ?α] → Finite ?α\"}",
+   "ok": true,
+   "result_chars": 246,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Finite, WellFoundedLT, and WellFoundedGT.\\n- Finite.of_wellFoundedLT_wellFoundedGT   [Mathlib.Order.OrderIsoNat]\\n    A linear order that is well-founded in both directions is finite.\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem wellFounded_linear_order_finite {α : Type*} [LinearOrder α] [WellFoundedLT α] [WellFoundedGT α] : Finite α := sorry"
+}

@@ -1,0 +1,394 @@
+{
+ "task_id": "fresh_025",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:23:38Z",
+ "wall_s": 134.5,
+ "transcript_stats": {
+  "turns": 44,
+  "assistant_turns": 27,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 11,
+   "mcp__formal__decl_grep": 22,
+   "mcp__formal__decl_read": 10
+  },
+  "tokens_in": 218,
+  "tokens_out": 8449,
+  "cost_usd": 0.11897205
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integrable summable antitone\"}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integrable summable antitone': Unknown identifier `integrable`\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"integral test\"}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'integral test': Unknown identifier `integral`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable ?a → Integrable\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Summable ?a → Integrable': Unknown identifier `Integrable`\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable\"}",
+   "ok": true,
+   "result_chars": 1165,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 671 declarations mentioning Summable.\\n- Summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the value.\\n- summable_bot   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- HasSum.summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_zero_of_not_summable   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.hasSum_iff   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- Summable.mono_filter   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_summable_unconditional   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- summable_of_ne_finset_zero   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_eq_of_filter_le   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n- tsum_def   [Mathlib.Topology.Algebra.InfiniteSum.Defs]\\n    `∑' i, f i` is the unconditional sum of `f` if it exists, or 0 otherwise.  More generally, if `L` is a `SummationFilter`, `∑'[L] i, f i` is the sum of `f` with \\n- summable_empty   [Mathlib.Topology.Algebra.InfiniteSum.Basic]\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*integral.*test\"}",
+   "ok": true,
+   "result_chars": 94,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*integral.*test' under Mathlib/.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def (Antitone|antitone)\"}",
+   "ok": true,
+   "result_chars": 349,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'def (Antitone|antitone)' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:68\\n    def Antitone (f : α → β) : Prop :=\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\\n- Mathlib/Topology/MetricSpace/CantorScheme.lean:61\\n    protected def Antitone : Prop :=\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Integrable\"}",
+   "ok": true,
+   "result_chars": 736,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Integrable' (via ripgrep):\\n- Mathlib/Analysis/BoxIntegral/Basic.lean:164\\n    def Integrable (I : Box ι) (l : IntegrationParams) (f : ℝⁿ → E) (vol : ι →ᵇᵃ E →L[ℝ] F) :=\\n- Mathlib/MeasureTheory/Function/L1Space/Integrable.lean:58\\n    def Integrable {α} {_ : MeasurableSpace α} (f : α → ε)\\n- Mathlib/MeasureTheory/Function/L1Space/AEEqFun.lean:48\\n    def Integrable (f : α →ₘ[μ] ε) : Prop :=\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:495\\n    def IntegrableAtFilter (f : α → ε) (l : Filter α) (μ : Measure α := by volume_tac) :=\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IntervalIntegrable\"}",
+   "ok": true,
+   "result_chars": 226,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def IntervalIntegrable' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean:72\\n    def IntervalIntegrable (f : ℝ → ε) (μ : Measure ℝ) (a b : ℝ) : Prop :=\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"0 ≤ ?a\"}",
+   "ok": true,
+   "result_chars": 256,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '0 ≤ ?a': (deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached\\n\\nNote: Use `set_option maxHeartbeats <num>` to set the limit.(invalid MessageData.lazy, missing context)\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*antitone.*summable\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*antitone.*summable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*antitone.*summable\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma.*antitone.*summable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"summableOfIntegrable\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 91,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'summableOfIntegrable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Summable (fun n =>\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Summable (fun n =>': <input>:1:18: unexpected end of input\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*[Ii]ntegrate\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 669,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'def.*[Ii]ntegrate' (via ripgrep):\\n- Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean:417\\n    disintegrate := by rw [condKernel_def]; split_ifs with hα <;> exact disintegrate _ _\\n- Mathlib/Probability/Kernel/Disintegration/Basic.lean:14\\n    This file defines predicates for a kernel to \\\"disintegrate\\\" a measure or a kernel. This kernel is\\n- Mathlib/Analysis/Calculus/TaylorIntegral.lean:104\\n    -- We define the functions u and v that we will integrate by parts\\n- Mathlib/MeasureTheory/Measure/Haar/Extension.lean:156\\n    noncomputable def integrate : CompactlySupportedContinuousMap B E →ₗ[ℝ] E where\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean\", \"line\": 58, \"n\": 10}",
+   "ok": true,
+   "result_chars": 671,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Function/L1Space/Integrable.lean  (lines 58–67 of 1258):\\n    58  def Integrable {α} {_ : MeasurableSpace α} (f : α → ε)\\n    59      (μ : Measure α := by volume_tac) : Prop :=\\n    60    AEStronglyMeasurable f μ ∧ HasFiniteIntegral f μ\\n    61  \\n    62  /-- Notation for `Integrable` with respect to a non-standard σ-algebra. -/\\n    63  scoped notation \\\"Integrable[\\\" mα \\\"]\\\" => @Integrable _ _ _ _ mα\\n    64  \\n    65  theorem memLp_one_iff_integrable {f : α → ε} : MemLp f 1 μ ↔ Integrable f μ := by\\n    66    simp_rw [Integrable, hasFiniteIntegral_iff_enorm, MemLp, eLpNorm_one_eq_lintegral_enorm]\\n    67  \\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 68, \"n\": 10}",
+   "ok": true,
+   "result_chars": 537,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 68–77 of 583):\\n    68  def Antitone (f : α → β) : Prop :=\\n    69    ∀ ⦃a b⦄, a ≤ b → f b ≤ f a\\n    70  \\n    71  to_dual_insert_cast Antitone := forall_comm.eq\\n    72  \\n    73  /-- A function `f` is monotone on `s` if, for all `a, b ∈ s`, `a ≤ b` implies `f a ≤ f b`. -/\\n    74  def MonotoneOn (f : α → β) (s : Set α) : Prop :=\\n    75    ∀ ⦃a⦄ (_ : a ∈ s) ⦃b⦄ (_ : b ∈ s), a ≤ b → f a ≤ f b\\n    76  \\n    77  to_dual_insert_cast MonotoneOn := by grind only\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Ici\"}",
+   "ok": true,
+   "result_chars": 531,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def Ici' (via ripgrep):\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:154\\n    def IciExtend (f : Ici a → β) : α → β :=\\n- Mathlib/Order/Interval/Multiset.lean:77\\n    def Ici (a : α) : Multiset α := (Finset.Ici a).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:357\\n    def Ici (a : α) : Finset α :=\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\\n- Mathlib/Order/Hom/Set.lean:207\\n    protected def Ici [Lattice α] [Lattice β] (e : α ≃o β) (x : α) :\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IntegrableOn\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'IntegrableOn': unknown identifier 'IntegrableOn'\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def IntegrableOn\"}",
+   "ok": true,
+   "result_chars": 223,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def IntegrableOn' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/IntegrableOn.lean:92\\n    def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f on Set ?s\"}",
+   "ok": true,
+   "result_chars": 127,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f on Set ?s': Cannot search: No constants or name fragments in search pattern.\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 10}",
+   "ok": true,
+   "result_chars": 524,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–101 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93    Integrable f (μ.restrict s)\\n    94  \\n    95  theorem IntegrableOn.integrable (h : IntegrableOn f s μ) : Integrable f (μ.restrict s) :=\\n    96    h\\n    97  \\n    98  variable [TopologicalSpace ε'] [ESeminormedAddMonoid ε']\\n    99  \\n   100  @[simp]\\n   101  theorem integrableOn_empty : IntegrableOn f ∅ μ := by\\n\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Set\\\\.Ici\"}",
+   "ok": true,
+   "result_chars": 86,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Set\\\\\\\\.Ici' under Mathlib/.\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.Ici 0\"}",
+   "ok": true,
+   "result_chars": 908,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 192 declarations mentioning Set.Ici and OfNat.ofNat.\\n- Set.Ici_zero_eq_univ   [Mathlib.Order.Interval.Set.Basic]\\n- AddSubmonoid.coe_nonneg   [Mathlib.Algebra.Order.Monoid.Submonoid]\\n- EReal.range_coe_ennreal   [Mathlib.Data.EReal.Basic]\\n- NNReal.range_coe   [Mathlib.Data.NNReal.Basic]\\n- tendsto_norm_div_self_nhdsGE   [Mathlib.Analysis.Normed.Group.Continuity]\\n- tendsto_norm_sub_self_nhdsGE   [Mathlib.Analysis.Normed.Group.Continuity]\\n- tendsto_norm_inv_mul_self_nhdsGE   [Mathlib.Analysis.Normed.Group.Continuity]\\n- tendsto_norm_neg_add_self_nhdsGE   [Mathlib.Analysis.Normed.Group.Continuity]\\n- tendsto_measure_Icc_nhdsWithin_right   [Mathlib.MeasureTheory.Constructions.BorelSpace.Real]\\n- Real.strictMonoOn_sqrt   [Mathlib.Analysis.Real.Sqrt]\\n- Complex.range_norm   [Mathlib.Analysis.Complex.Norm]\\n- Complex.range_normSq   [Mathlib.Analysis.Complex.Norm]\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|def) Ici\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2524,
+   "result_head": "[{\"type\": \"text\", \"text\": \"61 match(es) for '(theorem|def) Ici' (via ripgrep):\\n- Mathlib/Algebra/Order/UpperLower.lean:130\\n    theorem Ici_one : Ici (1 : α) = 1 :=\\n- Mathlib/Algebra/Order/Group/Pointwise/Interval.lean:60\\n    theorem Ici_mul_Ici_subset' (a b : α) : Ici a * Ici b ⊆ Ici (a * b) := by\\n- Mathlib/Algebra/Order/Group/Pointwise/Interval.lean:117\\n    theorem Ici_mul_Ioi_subset' (a b : α) : Ici a * Ioi b ⊆ Ioi (a * b) := by\\n- Mathlib/Algebra/Order/Group/Pointwise/Interval.lean:888\\n    theorem Ici_mul_Ici_eq {a b : α} :\\n- Mathlib/Algebra/Order/Group/Pointwise/Interval.lean:896\\n    theorem Ici_pow_eq {a : α} :\\n- Mathlib/Algebra/Order/Interval/Set/Monoid.lean:31\\n    theorem Ici_add_bij : BijOn (· + d) (Ici a) (Ici (a + d)) := by\\n- Mathlib/Data/Set/Lattice.lean:1327\\n    theorem Ici_iSup (f : ι → α) : Ici (⨆ i, f i) = ⋂ i, Ici (f i) :=\\n- Mathlib/Data/Set/Lattice.lean:1333\\n    theorem Ici_iSup₂ (f : ∀ i, κ i → α) : Ici (⨆ (i) (j), f i j) = ⋂ (i) (j), Ici (f i j) := by\\n- Mathlib/Data/Set/Lattice.lean:1339\\n    theorem Ici_sSup (s : Set α) : Ici (sSup s) = ⋂ a ∈ s, Ici a := by rw [sSup_eq_iSup, Ici_iSup₂]\\n- Mathlib/Algebra/Group/Pointwise/Finset/Interval.lean:50\\n    theorem Ici_mul_Ici_subset' [LocallyFiniteOrderTop α] (a b : α) : Ici a * Ici b ⊆ Ici (a * b) :=\\n- Mathlib/Algebra/Group/Pointwise/Finset/Interval.lean:93\\n    theorem Ici_mul_Ioi_subset' [LocallyFiniteOrderTop α] (a b : α) : Ici a * Ioi b ⊆ Ioi (a * b) :=\\n- Mathlib/Data/Sum/Interval.lean:316\\n    theorem Ici_inl : Ici (inl a : α ⊕ β) = (Ici a).map Embedding.inl := rfl\\n- Mathlib/Data/Sum/Interval.lean:317\\n    theorem Ici_inr : Ici (inr b : α ⊕ β) = (Ici b).map Embedding.inr := rfl\\n- Mathlib/Data/Sigma/Interval.lean:136\\n    @[simp] theorem Ici_mk : Ici (⟨i, a⟩ : Sigma α) = (Ici a).map (Embedding.sigmaMk i) := rfl\\n- Mathlib/Topology/Order/NhdsSet.lean:66\\n    theorem Ici_mem_nhdsSet_Ici (h : a < b) : Ici a ∈ 𝓝ˢ (Ici b) :=\\n- Mathlib/Topology/Order/NhdsSet.lean:88\\n    theorem Ici_mem_nhdsSet_Icc (h : a < b) : Ici a ∈ 𝓝ˢ (Icc b c) :=\\n- Mathlib/Topology/Order/NhdsSet.lean:113\\n    theorem Ici_mem_nhdsSet_Ico (h : a < b) : Ici a ∈ 𝓝ˢ (Ico b c) :=\\n- Mathlib/Topology/Order/NhdsSet.lean:147\\n    theorem Ici_mem_nhdsSet_Ioc (h : a ≤ b) : Ici a ∈ 𝓝ˢ (Ioc b c) :=\\n- Mathlib/Topology/Order/NhdsSet.lean:202\\n    theorem Ici_mem_nhdsSet_Ici_iff {a b : α} [NeBot (𝓝[<] b)] : Ici a ∈ 𝓝ˢ (Ici b) ↔ a < b :=\\n- Mathlib/Topology/Order/OrderClosed.lean:233\\n    theorem Ici_mem_nhds (h : a < b) : Ici a ∈ 𝓝 b :=\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Ici\"}",
+   "ok": true,
+   "result_chars": 428,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for '^def Ici' (via ripgrep):\\n- Mathlib/Order/Interval/Set/ProjIcc.lean:154\\n    def IciExtend (f : Ici a → β) : α → β :=\\n- Mathlib/Order/Interval/Multiset.lean:77\\n    def Ici (a : α) : Multiset α := (Finset.Ici a).val\\n- Mathlib/Order/Interval/Finset/Defs.lean:357\\n    def Ici (a : α) : Finset α :=\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Ici.*Set\"}",
+   "ok": true,
+   "result_chars": 158,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def Ici.*Set' (via ripgrep):\\n- Mathlib/Order/UpperLower/Principal.lean:41\\n    def Ici (a : α) : UpperSet α :=\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Ici\"}",
+   "ok": true,
+   "result_chars": 78,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Ici': unknown identifier 'Ici'\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Ici.*:=.*\\\\{\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Ici.*:=.*\\\\\\\\{' under Mathlib/.\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem Ici_subset\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 565,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'theorem Ici_subset' (via ripgrep):\\n- Mathlib/Order/Interval/Set/LinearOrder.lean:180\\n    theorem Ici_subset_Ico_union_Ici : Ici a ⊆ Ico a b ∪ Ici b := fun x hx =>\\n- Mathlib/Order/Interval/Set/LinearOrder.lean:208\\n    theorem Ici_subset_Icc_union_Ioi : Ici a ⊆ Icc a b ∪ Ioi b := fun x hx =>\\n- Mathlib/Order/Interval/Set/LinearOrder.lean:223\\n    theorem Ici_subset_Icc_union_Ici : Ici a ⊆ Icc a b ∪ Ici b :=\\n- Mathlib/Order/Interval/Finset/Basic.lean:355\\n    theorem Ici_subset_Ici : Ici a ⊆ Ici b ↔ b ≤ a := by\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/LinearOrder.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1791,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/LinearOrder.lean  (lines 1–50 of 571):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Patrick Massot, Yury Kudryashov, Rémy Degenne\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Order.Interval.Set.Basic\\n     9  \\n    10  /-!\\n    11  # Interval properties in linear orders\\n    12  \\n    13  Since every pair of elements are comparable in a linear order, intervals over them are\\n    14  better behaved. This file collects their properties under this assumption.\\n    15  -/\\n    16  \\n    17  public section\\n    18  \\n    19  assert_not_exists RelIso\\n    20  \\n    21  open Function\\n    22  \\n    23  namespace Set\\n    24  \\n    25  variable {α : Type*} [LinearOrder α] {a a₁ a₂ b b₁ b₂ c d : α}\\n    26  \\n    27  @[to_dual]\\n    28  theorem notMem_Ici : c ∉ Ici a ↔ c < a :=\\n    29    not_le\\n    30  \\n    31  @[to_dual]\\n    32  theorem notMem_Ioi : c ∉ Ioi a ↔ c ≤ a :=\\n    33    not_lt\\n    34  \\n    35  @[to_dual (attr := simp)]\\n    36  theorem compl_Iic : (Iic a)ᶜ = Ioi a :=\\n    37    ext fun _ => not_le\\n    38  \\n    39  @[to_dual (attr := simp)]\\n    40  theorem compl_Iio : (Iio a)ᶜ = Ici a :=\\n    41    ext fun _ => not_lt\\n    42  \\n    43  @[to_dual (attr := simp)]\\n    44  theorem Ici_sdiff_Ici : Ici a \\\\ Ici b = Ico a b := by rw [sdiff_eq, compl_Ici, Ici_inter_Iio]\\n    45  \\n    46  @[deprecated (since := \\\"2026-06-03\\\")] alias Ici_diff_Ici := Ici_sdiff_Ici\\n    47  \\n    48  @[to_dual (attr := simp)]\\n    49  theorem Ici_sdiff_Ioi : Ici a \\\\ Ioi b = Icc a b := by rw [sdiff_eq, compl_Ioi, Ici_inter_Iic]\\n    50  \\n\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*Ici.*:=.*{.*|\"}",
+   "ok": true,
+   "result_chars": 1734,
+   "result_head": "[{\"type\": \"text\", \"text\": \"20 match(es) for 'def.*Ici.*:=.*{.*|' (via python-fallback):\\n- Mathlib/Init.lean:1\\n    module  -- shake: keep-all, shake: keep-downstream\\n- Mathlib/Init.lean:2\\n    \\n- Mathlib/Init.lean:3\\n    public import Lean.Linter.Sets -- for the definition of linter sets\\n- Mathlib/Init.lean:4\\n    public import Lean.LibrarySuggestions.Default -- for `+suggestions` modes in tactics\\n- Mathlib/Init.lean:5\\n    public import Mathlib.Lean.Linter -- linter utilities; will be transitively imported in #31134\\n- Mathlib/Init.lean:6\\n    public import Mathlib.Tactic.AdaptationNote -- make #adaptation_note available everywhere\\n- Mathlib/Init.lean:7\\n    public import Mathlib.Tactic.Lemma\\n- Mathlib/Init.lean:8\\n    public import Mathlib.Tactic.Linter.AuxLemma\\n- Mathlib/Init.lean:9\\n    public import Mathlib.Tactic.Linter.DeprecatedSyntaxLinter\\n- Mathlib/Init.lean:10\\n    public import Mathlib.Tactic.Linter.DirectoryDependency\\n- Mathlib/Init.lean:11\\n    public import Mathlib.Tactic.Linter.DocPrime\\n- Mathlib/Init.lean:12\\n    public import Mathlib.Tactic.Linter.DocString\\n- Mathlib/Init.lean:13\\n    public import Mathlib.Tactic.Linter.EmptyLine\\n- Mathlib/Init.lean:14\\n    public import Mathlib.Tactic.Linter.GlobalAttributeIn\\n- Mathlib/Init.lean:15\\n    public import Mathlib.Tactic.Linter.HashCommandLinter\\n- Mathlib/Init.lean:16\\n    public import Mathlib.Tactic.Linter.Header\\n- Mathlib/Init.lean:17\\n    public import Mathlib.Tactic.Linter.FlexibleLinter\\n- Mathlib/Init.lean:18\\n    public import Mathlib.Tactic.Linter.Multigoal\\n- Mathlib/Init.lean:19\\n    public import Mathlib.Tactic.Linter.OldObtain\\n- Mathlib/Init.lean:20\\n    public import Mathlib.Tactic.Linter.OverlappingInstances\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/Basic.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3346,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/Basic.lean  (lines 1–80 of 773):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Mario Carneiro, Patrick Massot, Yury Kudryashov, Rémy Degenne\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.IsBotOne\\n     9  public import Mathlib.Data.Set.Subsingleton\\n    10  public import Mathlib.Order.BooleanAlgebra.Set\\n    11  public import Mathlib.Order.Interval.Set.Defs\\n    12  \\n    13  /-!\\n    14  # Intervals\\n    15  \\n    16  In any preorder, we define intervals (which on each side can be either infinite, open or closed)\\n    17  using the following naming conventions:\\n    18  \\n    19  - `i`: infinite\\n    20  - `o`: open\\n    21  - `c`: closed\\n    22  \\n    23  Each interval has the name `I` + letter for left side + letter for right side.\\n    24  For instance, `Ioc a b` denotes the interval `(a, b]`.\\n    25  The definitions can be found in `Mathlib/Order/Interval/Set/Defs.lean`.\\n    26  \\n    27  This file contains basic facts on inclusion of and set operations on intervals\\n    28  (where the precise statements depend on the order's properties;\\n    29  statements requiring `LinearOrder` are in `Mathlib/Order/Interval/Set/LinearOrder.lean`).\\n    30  \\n    31  A conscious decision was made not to list all possible inclusion relations.\\n    32  Monotonicity results and \\\"self\\\" results *are* included.\\n    33  Most use cases can suffice with a transitive combination of those, for example:\\n    34  ```\\n    35  theorem Ico_subset_Ici (h : a₂ ≤ a₁) : Ico a₁ b₁ ⊆ Ici a₂ :=\\n    36    (Ico_subset_Ico_left h).trans Ico_subset_Ici_self\\n    37  ```\\n    38  Logical equivalences, such as `Icc_subset_Ici_iff`, are however stated.\\n    39  -/\\n    40  \\n    41  public section\\n    42  \\n    43  assert_not_exists RelIso\\n    44  \\n    45  open Function\\n    46  \\n    47  open OrderDual (toDual ofDual)\\n    48  \\n    49  variable {α : Type*}\\n    50  \\n    51  namespace Set\\n    52  \\n    53  section Preorder\\n    54  \\n    55  variable [Preorder α] {a a₁ a₂ b b₁ b₂ c x : α}\\n    56  \\n    57  @[to_dual]\\n    58  instance decidableMemIio [Decidable (x < b)] : Decidable (x ∈ Iio b) := by assumption\\n    59  \\n    60  @[to_dual]\\n    61  instance decidableMemIic [Decidable (x ≤ b)] : Decidable (x ∈ Iic b) := by assumption\\n    62  \\n    63  @[to_dual self (reorder := a b, 6 7)]\\n    64  instance decidableMemIoo [Decidable (a < x)] [Decidable (x < b)] : Decidable (x ∈ Ioo a b) :=\\n    65    instDecidableAnd\\n    66  \\n    67  instance decidableMemIco [Decidable (a ≤ x)] [Decidable (x < b)] : Decidable (x ∈ Ico a b) :=\\n    68    instDecidableAnd\\n    69  \\n    70  @[to_dual self (reorder := a b, 6 7)]\\n    71  instance decidableMemIcc [Decidable (a ≤ x)] [Decidable (x ≤ b)] : Decidable (x ∈ Icc a b) :=\\n    72    instDecidableAnd\\n    73  \\n    74  @[to_dual existing (reorder := a b, 6 7)]\\n    75  instance decidableMemIoc [Decidable (a < x)] [Decidable (x ≤ b)] : Decidable (x ∈ Ioc a b) :=\\n    76    instDecidableAnd\\n    77  \\n    78  @[to_dual] theorem self_notMem_Iio : a ∉ Iio a := by simp\\n    79  @[to_dual] theorem self_mem_Iic : a ∈ Iic a := by simp\\n    80  \\n\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Interval/Set/Defs.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4593,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Interval/Set/Defs.lean  (lines 1–94 of 94):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Defs\\n     9  public import Mathlib.Order.Defs.PartialOrder\\n    10  public import Mathlib.Tactic.Push.Attr\\n    11  \\n    12  /-!\\n    13  # Intervals\\n    14  \\n    15  In any preorder `α`, we define intervals\\n    16  (which on each side can be either infinite, open, or closed)\\n    17  using the following naming conventions:\\n    18  - `i`: infinite\\n    19  - `o`: open\\n    20  - `c`: closed\\n    21  \\n    22  Each interval has the name `I` + letter for left side + letter for right side.\\n    23  For instance, `Ioc a b` denotes the interval `(a, b]`.\\n    24  \\n    25  We also define a typeclass `Set.OrdConnected`\\n    26  saying that a set includes `Set.Icc a b` whenever it contains both `a` and `b`.\\n    27  -/\\n    28  \\n    29  @[expose] public section\\n    30  \\n    31  namespace Set\\n    32  \\n    33  variable {α : Type*} [Preorder α] {a b x : α}\\n    34  \\n    35  /-- `Iio b` is the left-infinite right-open interval $(-∞, b)$. -/\\n    36  @[to_dual /-- `Ioi a` is the left-open right-infinite interval $(a, ∞)$. -/]\\n    37  def Iio (b : α) := { x | x < b }\\n    38  \\n    39  @[to_dual (attr := simp, grind =, push)] theorem mem_Iio : x ∈ Iio b ↔ x < b := .rfl\\n    40  @[to_dual] theorem Iio_def (a : α) : { x | x < a } = Iio a := rfl\\n    41  \\n    42  /-- `Iic b` is the left-infinite right-closed interval $(-∞, b]$. -/\\n    43  @[to_dual /-- `Ici a` is the left-closed right-infinite interval $[a, ∞)$. -/]\\n    44  def Iic (b : α) := { x | x ≤ b }\\n    45  \\n    46  @[to_dual (attr := simp, grind =, push)] theorem mem_Iic : x ∈ Iic b ↔ x ≤ b := .rfl\\n    47  @[to_dual] theorem Iic_def (b : α) : { x | x ≤ b } = Iic b := rfl\\n    48  \\n    49  /-- `Ioo a b` is the left-open right-open interval $(a, b)$. -/\\n    50  @[to_dual self (reorder := a b)]\\n    51  def Ioo (a b : α) := { x | a < x ∧ x < b }\\n    52  \\n    53  to_dual_insert_cast Ioo := by simp only [and_comm]\\n    54  \\n    55  @[simp, grind =, push, to_dual none] theorem mem_Ioo : x ∈ Ioo a b ↔ a < x ∧ x < b := .rfl\\n    56  @[to_dual none] theorem Ioo_def (a b : α) : { x | a < x ∧ x < b } = Ioo a b := rfl\\n    57  \\n    58  /-- `Ico a b` is the left-closed right-open interval $[a, b)$. -/\\n    59  def Ico (a b : α) := { x | a ≤ x ∧ x < b }\\n    60  \\n    61  /-- `Ioc a b` is the left-open right-closed interval $(a, b]$. -/\\n    62  @[to_dual existing (reorder := a b)]\\n    63  def Ioc (a b : α) := { x | a < x ∧ x ≤ b }\\n    64  \\n    65  to_dual_insert_cast Ico := by simp only [and_comm]\\n    66  to_dual_insert_cast Ioc := by simp only [and_comm]\\n    67  \\n    68  @[simp, grind =, push, to_dual none] theorem mem_Ico : x ∈ Ico a b ↔ a ≤ x ∧ x < b := .rfl\\n    69  @[to_dual none] theorem Ico_def (a b : α) : { x | a ≤ x ∧ x < b } = Ico a b := rfl\\n    70  \\n    71  @[simp, grind =, push, to_dual none] theorem mem_Ioc : x ∈ Ioc a b ↔ a < x ∧ x ≤ b := .rfl\\n    72  @[to_dual none] theorem Ioc_def (a b : α) : { x | a < x ∧ x ≤ b } = Ioc a b := rfl\\n    73  \\n    74  /-- `Icc a b` is the left-closed right-closed interval $[a, b]$. -/\\n    75  @[to_dual self (reorder := a b)]\\n    76  def Icc (a b : α) := { x | a ≤ x ∧ x ≤ b }\\n    77  \\n    78  to_dual_insert_cast Icc := by simp only [and_comm]\\n    79  \\n    80  @[simp, grind =, push, to_dual none] theorem mem_Icc : x ∈ Icc a b ↔ a ≤ x ∧ x ≤ b := .rfl\\n    81  @[to_dual none] theorem Icc_def (a b : α) : { x | a ≤ x ∧ x ≤ b } = Icc a b := rfl\\n    82  \\n    83  /-- We say that a set `s : Set α` is `OrdConnected` if for all `x y ∈ s` it includes the\\n    84  interval `[[x, y]]`. If `α` is a `DenselyOrdered` `ConditionallyCompleteLinearOrder` with\\n    85  the `OrderTopology"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def AntitoneOn\"}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def AntitoneOn' (via ripgrep):\\n- Mathlib/Order/Monotone/Defs.lean:80\\n    def AntitoneOn (f : α → β) (s : Set α) : Prop :=\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"0 ≤\"}",
+   "ok": true,
+   "result_chars": 90,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '0 ≤': <input>:1:3: unexpected end of input\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Monotone/Defs.lean\", \"line\": 80, \"n\": 5}",
+   "ok": true,
+   "result_chars": 286,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Monotone/Defs.lean  (lines 80–84 of 583):\\n    80  def AntitoneOn (f : α → β) (s : Set α) : Prop :=\\n    81    ∀ ⦃a⦄ (_ : a ∈ s) ⦃b⦄ (_ : b ∈ s), a ≤ b → f b ≤ f a\\n    82  \\n    83  to_dual_insert_cast AntitoneOn := by grind only\\n    84  \\n\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4361,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 1–80 of 349):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.BigOperators.Finprod\\n     9  public import Mathlib.Topology.Algebra.InfiniteSum.SummationFilter\\n    10  public import Mathlib.Topology.Separation.Hausdorff\\n    11  public import Mathlib.Algebra.BigOperators.Group.Finset.Preimage\\n    12  \\n    13  /-!\\n    14  # Infinite sum and product in a topological monoid\\n    15  \\n    16  This file defines infinite products and sums for (possibly infinite) indexed families of elements\\n    17  in a commutative topological monoid (resp. add monoid).\\n    18  \\n    19  To handle convergence questions we use the formalism of *summation filters* (defined in the\\n    20  file `Mathlib/Topology/Algebra/InfiniteSum/SummationFilter.lean`). These are filters on the finite\\n    21  subsets of a given type, and we define a function to be *summable* for a summation filter `L` if\\n    22  its partial sums over finite subsets tend to a limit along `L` (and similarly for products).\\n    23  \\n    24  This simultaneously generalizes several different kinds of summation: for instance,\\n    25  *unconditional summation* (which makes sense for any index type) where we take the limit with\\n    26  respect to the `atTop` filter; but also *conditional summation* for functions on `ℕ`, where the\\n    27  limit is over the partial sums `∑ i ∈ range n, f i` as `n → ∞` (so there exist\\n    28  conditionally-summable sequences which are not unconditionally summable).\\n    29  \\n    30  ## Implementation notes\\n    31  \\n    32  We say that a function `f : β → α` has a product of `a` w.r.t. the summation filter `L` if the\\n    33  function `fun s : Finset β ↦ ∏ b ∈ s, f b` converges to `a` w.r.t. the filter `L.filter` on\\n    34  `Finset β`.\\n    35  \\n    36  In the most important case of unconditional summation, this translates to the following condition:\\n    37  for every neighborhood `U` of `a`, there exists a finite set `s : Finset β` of indices such\\n    38  that `∏ b ∈ s', f b ∈ U` for any finite set `s'` which is a superset of `s`.\\n    39  \\n    40  This may yield some unexpected results. For example, according to this definition, the product\\n    41  `∏' n : ℕ, (1 : ℝ) / 2` unconditionally exists and is equal to `0`. More strikingly,\\n    42  the product `∏' n : ℕ, (n : ℝ)` unconditionally exists and is equal to `0`, because one\\n    43  of its terms is `0` (even though the product of the remaining terms diverges). Users who would\\n    44  prefer that these products be considered not to exist can carry them out in the unit group `ℝˣ`\\n    45  rather than in `ℝ`.\\n    46  \\n    47  ## References\\n    48  \\n    49  * Bourbaki: General Topology (1995), Chapter 3 §5 (Infinite sums in commutative groups)\\n    50  \\n    51  -/\\n    52  \\n    53  @[expose] public section\\n    54  \\n    55  /- **NOTE**. This file is intended to be kept short, just enough to state the basic definitions and\\n    56  six key lemmas relating them together, namely `Summable.hasSum`, `Multipliable.hasProd`,\\n    57  `HasSum.tsum_eq`, `HasProd.tprod_eq`, `Summable.hasSum_iff`, and `Multipliable.hasProd_iff`.\\n    58  \\n    59  Do not add further lemmas here -- add them to `InfiniteSum.Basic` or (preferably) another, more\\n    60  specific file. -/\\n    61  \\n    62  noncomputable section\\n    63  \\n    64  open Filter Function SummationFilter\\n    65  \\n    66  open scoped Topology\\n    67  \\n    68  variable {α β γ : Type*}\\n    69  \\n    70  section HasProd\\n    71  \\n    72  variable [CommMonoid α] [TopologicalSpace α]\\n    73  \\n    74  /-- `HasProd f a L` means that the (potentially infinite) product of the `f b` for `b : β` converges\\n    75  to `a` along the SummationFilte"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Summable\"}",
+   "ok": true,
+   "result_chars": 83,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def Summable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class Summable\"}",
+   "ok": true,
+   "result_chars": 85,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'class Summable' under Mathlib/.\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"structure Summable\"}",
+   "ok": true,
+   "result_chars": 220,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'structure Summable' (via ripgrep):\\n- Mathlib/RingTheory/HahnSeries/Summable.lean:67\\n    structure SummableFamily (Γ R) [PartialOrder Γ] [AddCommMonoid R] (α : Type*) where\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Summable.*:=\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1186,
+   "result_head": "[{\"type\": \"text\", \"text\": \"418 match(es) for 'Summable.*:=' (via ripgrep):\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:227\\n    Summable fun z : L ↦ ‖z‖ ^ r :=\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:238\\n    Summable fun z : L ↦ ‖z - x‖ ^ r := by\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:262\\n    Summable fun z : L ↦ ‖z - x‖ ^ n :=\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:266\\n    Summable fun z : L ↦ ‖z‖ ^ n := by\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:270\\n    Summable fun z : L ↦ ‖z - x‖⁻¹ ^ n := by\\n- Mathlib/Algebra/Module/ZLattice/Summable.lean:274\\n    Summable fun z : L ↦ ‖z‖⁻¹ ^ n := by\\n- Mathlib/NumberTheory/SumPrimeReciprocals.lean:69\\n    ¬ Summable (indicator {p | p.Prime} (fun n : ℕ ↦ (1 : ℝ) / n)) := by\\n- Mathlib/NumberTheory/SumPrimeReciprocals.lean:74\\n    have h' : Summable (indicator ({p | Nat.Prime p} ∩ {p | k ≤ p}) fun n ↦ (1 : ℝ) / n) := by\\n- Mathlib/NumberTheory/SumPrimeReciprocals.lean:89\\n    theorem Nat.Primes.not_summable_one_div : ¬ Summable (fun p : Nat.Primes ↦ (1 / p : ℝ)) := by\\n- Mathlib/NumberTheory/SumPrimeReciprocals.lean:94\\n    Summable (fun p : Nat.Primes ↦ (p : ℝ) ^ r) ↔ r < -1 := by\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean\", \"line\": 80, \"n\": 40}",
+   "ok": true,
+   "result_chars": 2764,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Topology/Algebra/InfiniteSum/Defs.lean  (lines 80–119 of 349):\\n    80  are not).\\n    81  \\n    82  For the definition and many statements, `α` does not need to be a topological monoid, only a monoid\\n    83  with a topology (i.e. the multiplication is not assumed to be continuous). We only add this\\n    84  assumption later, for the lemmas where it is relevant.\\n    85  \\n    86  These are defined in an identical way to infinite sums (`HasSum`). For example, we say that\\n    87  the function `ℕ → ℝ` sending `n` to `1 / 2` has a product of `0`, rather than saying that it does\\n    88  not converge as some authors would. -/\\n    89  @[to_additive /-- `HasSum f a L` means that the (potentially infinite) sum of the `f b` for `b : β`\\n    90  converges to `a` along the SummationFilter `L`.\\n    91  \\n    92  By default `L` is the `unconditional` one, corresponding to the limit of all finite sets towards\\n    93  the entire type. So we take the sum over bigger and bigger finite sets. This sum operation is\\n    94  invariant under permuting the terms (while sums for more general summation filters usually are not).\\n    95  This is based on Mario Carneiro's\\n    96  [infinite sum `df-tsms` in Metamath](http://us.metamath.org/mpeuni/df-tsms.html).\\n    97  \\n    98  In particular, the function `ℕ → ℝ` sending `n` to `(-1) ^ n / (n + 1)` does not have a\\n    99  sum for this definition, although it is summable for the `conditional` summation filter that\\n   100  takes limits of sums over `n ∈ {0, ..., X}` as `X → ∞`. However, a series which is *absolutely*\\n   101  convergent with respect to the conditional summation filter is in fact unconditionally summable.\\n   102  \\n   103  For the definition and many statements, `α` does not need to be a topological additive monoid,\\n   104  only an additive monoid with a topology (i.e. the addition is not assumed to be continuous). We\\n   105  only add this assumption later, for the lemmas where it is relevant. -/]\\n   106  def HasProd (f : β → α) (a : α) (L := unconditional β) : Prop :=\\n   107    Tendsto (fun s : Finset β ↦ ∏ b ∈ s, f b) L.filter (𝓝 a)\\n   108  \\n   109  /-- `Multipliable f` means that `f` has some (infinite) product with respect to `L`. Use `tprod` to\\n   110  get the value. -/\\n   111  @[to_additive\\n   112  /-- `Summable f` means that `f` has some (infinite) sum with respect to `L`. Use `tsum` to get the\\n   113  value. -/]\\n   114  def Multipliable (f : β → α) (L := unconditional β) : Prop :=\\n   115    ∃ a, HasProd f a L\\n   116  \\n   117  @[to_additive]\\n   118  lemma Multipliable.mono_filter {f : β → α} {L₁ L₂ : SummationFilter β}\\n   119      (hf : Multipliable f L₂) (h : L₁.filter ≤ L₂.filter) : Multipliable f L₁ :=\\n\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean\", \"line\": 92, \"n\": 5}",
+   "ok": true,
+   "result_chars": 357,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/Integral/IntegrableOn.lean  (lines 92–96 of 942):\\n    92  def IntegrableOn (f : α → ε) (s : Set α) (μ : Measure α := by volume_tac) : Prop :=\\n    93    Integrable f (μ.restrict s)\\n    94  \\n    95  theorem IntegrableOn.integrable (h : IntegrableOn f s μ) : Integrable f (μ.restrict s) :=\\n    96    h\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem summable_of_antitone_nonneg_integrable_Ici_zero {f : ℝ → ℝ}\n    (hnn : ∀ x, 0 ≤ f x)\n    (hant : Antitone f)\n    (hint : IntegrableOn f (Set.Ici 0)) :\n    Summable (fun n : ℕ ↦ f n) := sorry"
+}

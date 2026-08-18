@@ -1,0 +1,313 @@
+{
+ "task_id": "fresh_057",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:09:35Z",
+ "wall_s": 90.6,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 3,
+   "mcp__formal__decl_grep": 23,
+   "mcp__formal__decl_read": 6
+  },
+  "tokens_in": 242,
+  "tokens_out": 4899,
+  "cost_usd": 0.106553
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"SignedMeasure\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'SignedMeasure': unknown identifier 'SignedMeasure'\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"total variation measure\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'total variation measure': Unknown identifier `total`\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"SignedMeasure.*totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 413,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'SignedMeasure.*totalVariation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:463\\n    theorem totalVariation_zero : (0 : SignedMeasure α).totalVariation = 0 := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:466\\n    theorem totalVariation_neg (s : SignedMeasure α) : (-s).totalVariation = s.totalVariation := by\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*\\\\(.*SignedMeasure.*:.*≤\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*\\\\\\\\(.*SignedMeasure.*:.*≤' under Mathlib/.\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 1, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3486,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 1–80 of 550):\\n     1  /-\\n     2  Copyright (c) 2021 Kexing Ying. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Kexing Ying\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.MeasureTheory.VectorMeasure.Decomposition.Hahn\\n     9  public import Mathlib.MeasureTheory.Measure.MutuallySingular\\n    10  public import Mathlib.Topology.Algebra.UniformMulAction\\n    11  \\n    12  /-!\\n    13  # Jordan decomposition\\n    14  \\n    15  This file proves the existence and uniqueness of the Jordan decomposition for signed measures.\\n    16  The Jordan decomposition theorem states that, given a signed measure `s`, there exists a\\n    17  unique pair of mutually singular measures `μ` and `ν`, such that `s = μ - ν`.\\n    18  \\n    19  The Jordan decomposition theorem for measures is a corollary of the Hahn decomposition theorem and\\n    20  is useful for the Lebesgue decomposition theorem.\\n    21  \\n    22  ## Main definitions\\n    23  \\n    24  * `MeasureTheory.JordanDecomposition`: a Jordan decomposition of a measurable space is a\\n    25    pair of mutually singular finite measures. We say `j` is a Jordan decomposition of a signed\\n    26    measure `s` if `s = j.posPart - j.negPart`.\\n    27  * `MeasureTheory.SignedMeasure.toJordanDecomposition`: the Jordan decomposition of a\\n    28    signed measure.\\n    29  * `MeasureTheory.SignedMeasure.toJordanDecompositionEquiv`: is the `Equiv` between\\n    30    `MeasureTheory.SignedMeasure` and `MeasureTheory.JordanDecomposition` formed by\\n    31    `MeasureTheory.SignedMeasure.toJordanDecomposition`.\\n    32  \\n    33  ## Main results\\n    34  \\n    35  * `MeasureTheory.SignedMeasure.toSignedMeasure_toJordanDecomposition` : the Jordan\\n    36    decomposition theorem.\\n    37  * `MeasureTheory.JordanDecomposition.toSignedMeasure_injective` : the Jordan decomposition of a\\n    38    signed measure is unique.\\n    39  \\n    40  ## Tags\\n    41  \\n    42  Jordan decomposition theorem\\n    43  -/\\n    44  \\n    45  @[expose] public section\\n    46  \\n    47  \\n    48  noncomputable section\\n    49  \\n    50  open scoped MeasureTheory ENNReal NNReal\\n    51  \\n    52  variable {α : Type*} [MeasurableSpace α]\\n    53  \\n    54  namespace MeasureTheory\\n    55  \\n    56  /-- A Jordan decomposition of a measurable space is a pair of mutually singular,\\n    57  finite measures. -/\\n    58  @[ext]\\n    59  structure JordanDecomposition (α : Type*) [MeasurableSpace α] where\\n    60    /-- Positive part of the Jordan decomposition -/\\n    61    posPart : Measure α\\n    62    /-- Negative part of the Jordan decomposition -/\\n    63    negPart : Measure α\\n    64    [posPart_finite : IsFiniteMeasure posPart]\\n    65    [negPart_finite : IsFiniteMeasure negPart]\\n    66    mutuallySingular : posPart ⟂ₘ negPart\\n    67  \\n    68  attribute [instance] JordanDecomposition.posPart_finite\\n    69  \\n    70  attribute [instance] JordanDecomposition.negPart_finite\\n    71  \\n    72  namespace JordanDecomposition\\n    73  \\n    74  open Measure VectorMeasure\\n    75  \\n    76  variable (j : JordanDecomposition α)\\n    77  \\n    78  instance instZero : Zero (JordanDecomposition α) where zero := ⟨0, 0, MutuallySingular.zero_right⟩\\n    79  \\n    80  instance instInhabited : Inhabited (JordanDecomposition α) where default := 0\\n\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*measure_le.*totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*measure_le.*totalVariation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*SignedMeasure.*\\\\|.*\\\\|\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma).*SignedMeasure.*\\\\\\\\|.*\\\\\\\\|' under Mathlib/.\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*apply_le_totalVariation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'lemma.*apply_le_totalVariation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^class SignedMeasure|^structure SignedMeasure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 116,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '^class SignedMeasure|^structure SignedMeasure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"SignedMeasure\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1384,
+   "result_head": "[{\"type\": \"text\", \"text\": \"101 match(es) for 'SignedMeasure' (via ripgrep):\\n- Mathlib/Probability/Notation.lean:26\\n    `MeasureTheory.Measure.rnDeriv`, `MeasureTheory.SignedMeasure.rnDeriv` and\\n- Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean:28\\n    * `MeasureTheory.SignedMeasure.absolutelyContinuous_iff_withDensityᵥ_rnDeriv_eq` :\\n- Mathlib/MeasureTheory/Measure/Complex.lean:24\\n    * `MeasureTheory.SignedMeasure.toComplexMeasure`: given two signed measures `s` and `t`,\\n- Mathlib/MeasureTheory/Measure/Complex.lean:26\\n    * `MeasureTheory.ComplexMeasure.equivSignedMeasure`: is the equivalence between the complex\\n- Mathlib/MeasureTheory/Measure/Complex.lean:55\\n    def re : ComplexMeasure α →ₗ[ℝ] SignedMeasure α :=\\n- Mathlib/MeasureTheory/Measure/Complex.lean:60\\n    def im : ComplexMeasure α →ₗ[ℝ] SignedMeasure α :=\\n- Mathlib/MeasureTheory/Measure/Complex.lean:65\\n    def _root_.MeasureTheory.SignedMeasure.toComplexMeasure (s t : SignedMeasure α) :\\n- Mathlib/MeasureTheory/Measure/Complex.lean:72\\n    theorem _root_.MeasureTheory.SignedMeasure.toComplexMeasure_apply\\n- Mathlib/MeasureTheory/Measure/Complex.lean:73\\n    {s t : SignedMeasure α} {i : Set α} : s.toComplexMeasure t i = ⟨s i, t i⟩ := rfl\\n- Mathlib/MeasureTheory/Measure/Complex.lean:76\\n    SignedMeasure.toComplexMeasure (ComplexMeasure.re c) (ComplexMeasure.im c) = c := rfl\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"VectorMeasure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 650,
+   "result_head": "[{\"type\": \"text\", \"text\": \"87 match(es) for 'VectorMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/Integral/SetToL1.lean:25\\n    in `Mathlib/MeasureTheory/VectorMeasure/Integral.lean`.\\n- Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean:51\\n    assert_not_exists MeasureTheory.VectorMeasure\\n- Mathlib/MeasureTheory/Measure/Decomposition/Exhaustion.lean:52\\n    assert_not_exists MeasureTheory.VectorMeasure\\n- Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean:48\\n    assert_not_exists MeasureTheory.VectorMeasure\\n- Mathlib/MeasureTheory/Measure/Decomposition/Hahn.lean:36\\n    assert_not_exists MeasureTheory.VectorMeasure\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def SignedMeasure|abbrev SignedMeasure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 215,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'def SignedMeasure|abbrev SignedMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Basic.lean:73\\n    abbrev SignedMeasure (α : Type*) [MeasurableSpace α] :=\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean\", \"line\": 70, \"n\": 50}",
+   "ok": true,
+   "result_chars": 1993,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean  (lines 70–119 of 1464):\\n    70      HasSum (fun i => measureOf' (f i)) (measureOf' (⋃ i, f i))\\n    71  \\n    72  /-- A `SignedMeasure` is an `ℝ`-vector measure. -/\\n    73  abbrev SignedMeasure (α : Type*) [MeasurableSpace α] :=\\n    74    VectorMeasure α ℝ\\n    75  \\n    76  open Set\\n    77  \\n    78  namespace VectorMeasure\\n    79  \\n    80  section\\n    81  \\n    82  variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]\\n    83  \\n    84  instance : FunLike (VectorMeasure α M) (Set α) M where\\n    85    coe := VectorMeasure.measureOf'\\n    86    coe_injective v w h := by\\n    87      cases v; cases w; congr\\n    88  \\n    89  @[simp]\\n    90  theorem coe_mk (v : Set α → M) (h₁) (h₂) (h₃) : (mk v h₁ h₂ h₃ : VectorMeasure α M) = v := rfl\\n    91  \\n    92  initialize_simps_projections VectorMeasure (measureOf' → apply)\\n    93  \\n    94  @[simp]\\n    95  theorem empty (v : VectorMeasure α M) : v ∅ = 0 :=\\n    96    v.empty'\\n    97  \\n    98  @[simp]\\n    99  theorem not_measurable (v : VectorMeasure α M) {i : Set α} (hi : ¬MeasurableSet i) : v i = 0 :=\\n   100    v.not_measurable' hi\\n   101  \\n   102  theorem m_iUnion (v : VectorMeasure α M) {f : ℕ → Set α} (hf₁ : ∀ i, MeasurableSet (f i))\\n   103      (hf₂ : Pairwise (Disjoint on f)) : HasSum (fun i => v (f i)) (v (⋃ i, f i)) :=\\n   104    v.m_iUnion' hf₁ hf₂\\n   105  \\n   106  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_injective := DFunLike.coe_injective\\n   107  \\n   108  @[deprecated (since := \\\"2026-06-10\\\")] alias ext_iff' := DFunLike.ext_iff\\n   109  \\n   110  theorem ext_iff (v w : VectorMeasure α M) : v = w ↔ ∀ i : Set α, MeasurableSet i → v i = w i := by\\n   111    constructor\\n   112    · rintro rfl _ _\\n   113      rfl\\n   114    · rw [DFunLike.ext_iff]\\n   115      intro h i\\n   116      by_cases hi : MeasurableSet i\\n   117      · exact h i hi\\n   118      · simp_rw [not_measurable _ hi]\\n   119  \\n\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*totalVariation\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 1023,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'theorem.*totalVariation' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:130\\n    theorem singularPart_totalVariation (s : SignedMeasure α) (μ : Measure α) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:463\\n    theorem totalVariation_zero : (0 : SignedMeasure α).totalVariation = 0 := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:466\\n    theorem totalVariation_neg (s : SignedMeasure α) : (-s).totalVariation = s.totalVariation := by\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:469\\n    theorem null_of_totalVariation_zero (s : SignedMeasure α) {i : Set α}\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:491\\n    theorem totalVariation_absolutelyContinuous_iff (s : SignedMeasure α) (μ : Measure α) :\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:543\\n    theorem totalVariation_mutuallySingular_iff (s : SignedMeasure α) (μ : Measure α) :\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 400, \"n\": 80}",
+   "ok": true,
+   "result_chars": 4353,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 400–479 of 550):\\n   400  @[simp]\\n   401  theorem toJordanDecomposition_toSignedMeasure (j : JordanDecomposition α) :\\n   402      j.toSignedMeasure.toJordanDecomposition = j :=\\n   403    (@toSignedMeasure_injective _ _ j j.toSignedMeasure.toJordanDecomposition (by simp)).symm\\n   404  \\n   405  end JordanDecomposition\\n   406  \\n   407  namespace SignedMeasure\\n   408  \\n   409  open JordanDecomposition\\n   410  \\n   411  /-- `MeasureTheory.SignedMeasure.toJordanDecomposition` and\\n   412  `MeasureTheory.JordanDecomposition.toSignedMeasure` form an `Equiv`. -/\\n   413  @[simps apply symm_apply]\\n   414  def toJordanDecompositionEquiv (α : Type*) [MeasurableSpace α] :\\n   415      SignedMeasure α ≃ JordanDecomposition α where\\n   416    toFun := toJordanDecomposition\\n   417    invFun := toSignedMeasure\\n   418    left_inv := toSignedMeasure_toJordanDecomposition\\n   419    right_inv := toJordanDecomposition_toSignedMeasure\\n   420  \\n   421  theorem toJordanDecomposition_zero : (0 : SignedMeasure α).toJordanDecomposition = 0 := by\\n   422    apply toSignedMeasure_injective\\n   423    simp [toSignedMeasure_zero]\\n   424  \\n   425  theorem toJordanDecomposition_neg (s : SignedMeasure α) :\\n   426      (-s).toJordanDecomposition = -s.toJordanDecomposition := by\\n   427    apply toSignedMeasure_injective\\n   428    simp [toSignedMeasure_neg]\\n   429  \\n   430  theorem toJordanDecomposition_smul (s : SignedMeasure α) (r : ℝ≥0) :\\n   431      (r • s).toJordanDecomposition = r • s.toJordanDecomposition := by\\n   432    apply toSignedMeasure_injective\\n   433    simp [toSignedMeasure_smul]\\n   434  \\n   435  private theorem toJordanDecomposition_smul_real_nonneg (s : SignedMeasure α) (r : ℝ)\\n   436      (hr : 0 ≤ r) : (r • s).toJordanDecomposition = r • s.toJordanDecomposition := by\\n   437    lift r to ℝ≥0 using hr\\n   438    rw [JordanDecomposition.coe_smul, ← toJordanDecomposition_smul]\\n   439    rfl\\n   440  \\n   441  theorem toJordanDecomposition_smul_real (s : SignedMeasure α) (r : ℝ) :\\n   442      (r • s).toJordanDecomposition = r • s.toJordanDecomposition := by\\n   443    by_cases! hr : 0 ≤ r\\n   444    · exact toJordanDecomposition_smul_real_nonneg s r hr\\n   445    · ext1\\n   446      · rw [real_smul_posPart_neg _ _ hr,\\n   447          show r • s = -(-r • s) by rw [neg_smul, neg_neg], toJordanDecomposition_neg, neg_posPart,\\n   448          toJordanDecomposition_smul_real_nonneg, ← smul_negPart, real_smul_nonneg]\\n   449        all_goals exact Left.nonneg_neg_iff.2 hr.le\\n   450      · rw [real_smul_negPart_neg _ _ hr,\\n   451          show r • s = -(-r • s) by rw [neg_smul, neg_neg], toJordanDecomposition_neg, neg_negPart,\\n   452          toJordanDecomposition_smul_real_nonneg, ← smul_posPart, real_smul_nonneg]\\n   453        all_goals exact Left.nonneg_neg_iff.2 hr.le\\n   454  \\n   455  theorem toJordanDecomposition_eq {s : SignedMeasure α} {j : JordanDecomposition α}\\n   456      (h : s = j.toSignedMeasure) : s.toJordanDecomposition = j := by\\n   457    rw [h, toJordanDecomposition_toSignedMeasure]\\n   458  \\n   459  /-- The total variation of a signed measure. -/\\n   460  def totalVariation (s : SignedMeasure α) : Measure α :=\\n   461    s.toJordanDecomposition.posPart + s.toJordanDecomposition.negPart\\n   462  \\n   463  theorem totalVariation_zero : (0 : SignedMeasure α).totalVariation = 0 := by\\n   464    simp [totalVariation, toJordanDecomposition_zero]\\n   465  \\n   466  theorem totalVariation_neg (s : SignedMeasure α) : (-s).totalVariation = s.totalVariation := by\\n   467    simp [totalVariation, toJordanDecomposition_neg, add_comm]\\n   468  \\n   469  theorem null_of_totalVariation_zero (s : SignedMeasure α) {i : Set α}\\n   470      (hs : s.totalVariation i = 0) : s i = 0 := by\\n   471    rw [totalVariation, Measure.coe_add, Pi.add_apply, add_eq_zero] at hs\\n   472    by_cases hi : MeasurableSet i\\n   473    · rw"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Real\\\\.toNNReal|theorem.*abs_le\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1381,
+   "result_head": "[{\"type\": \"text\", \"text\": \"63 match(es) for 'theorem.*Real\\\\\\\\.toNNReal|theorem.*abs_le' (via ripgrep):\\n- Mathlib/Algebra/Ring/Divisibility/Lemmas.lean:128\\n    theorem associated_abs_left_iff :\\n- Mathlib/Analysis/Normed/Group/Int.lean:42\\n    theorem abs_le_floor_nnreal_iff (z : ℤ) (c : ℝ≥0) : |z| ≤ ⌊c⌋₊ ↔ ‖z‖₊ ≤ c := by\\n- Mathlib/Analysis/Normed/Order/Lattice.lean:52\\n    theorem norm_le_norm_of_abs_le_abs {a b : α} (h : |a| ≤ |b|) : ‖a‖ ≤ ‖b‖ :=\\n- Mathlib/Analysis/Normed/Order/Lattice.lean:152\\n    theorem norm_abs_sub_abs (a b : α) : ‖|a| - |b|‖ ≤ ‖a - b‖ := solid (abs_abs_sub_abs_le _ _)\\n- Mathlib/MeasureTheory/Function/LpSpace/Basic.lean:228\\n    theorem nnnorm_def (f : Lp E p μ) : ‖f‖₊ = ENNReal.toNNReal (eLpNorm f p μ) :=\\n- Mathlib/Data/ENNReal/Real.lean:317\\n    theorem toNNReal_mul_top (a : ℝ≥0∞) : ENNReal.toNNReal (a * ∞) = 0 := by simp\\n- Mathlib/Data/ENNReal/Real.lean:319\\n    theorem toNNReal_top_mul (a : ℝ≥0∞) : ENNReal.toNNReal (∞ * a) = 0 := by simp\\n- Mathlib/Data/ENNReal/Basic.lean:266\\n    theorem ofNNReal_toNNReal (x : ℝ) : (Real.toNNReal x : ℝ≥0∞) = ENNReal.ofReal x := rfl\\n- Mathlib/Data/ENNReal/Basic.lean:278\\n    @[simp] theorem toNNReal_toReal_eq (z : ℝ≥0∞) : z.toReal.toNNReal = z.toNNReal := by\\n- Mathlib/Data/ENNReal/Basic.lean:544\\n    theorem toNNReal_ofNat (n : ℕ) [n.AtLeastTwo] : ENNReal.toNNReal ofNat(n) = ofNat(n) :=\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"namespace SignedMeasure\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 579,
+   "result_head": "[{\"type\": \"text\", \"text\": \"6 match(es) for 'namespace SignedMeasure' (via ripgrep):\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean:57\\n    namespace SignedMeasure\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/RadonNikodym.lean:27\\n    namespace SignedMeasure\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Hahn.lean:49\\n    namespace SignedMeasure\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:190\\n    namespace SignedMeasure\\n- Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean:407\\n    namespace SignedMeasure\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean\", \"line\": 479, \"n\": 70}",
+   "ok": true,
+   "result_chars": 4120,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Decomposition/Jordan.lean  (lines 479–548 of 550):\\n   479    constructor <;> intro h\\n   480    · refine Measure.AbsolutelyContinuous.mk fun S hS₁ hS₂ => ?_\\n   481      obtain ⟨i, hi₁, hi₂, hi₃, hpos, hneg⟩ := s.toJordanDecomposition_spec\\n   482      rw [totalVariation, Measure.add_apply, hpos, hneg, toMeasureOfZeroLE_apply _ _ _ hS₁,\\n   483        toMeasureOfLEZero_apply _ _ _ hS₁]\\n   484      rw [← VectorMeasure.AbsolutelyContinuous.ennrealToMeasure] at h\\n   485      simp [h (measure_mono_null (i.inter_subset_right) hS₂),\\n   486        h (measure_mono_null (iᶜ.inter_subset_right) hS₂)]\\n   487    · refine VectorMeasure.AbsolutelyContinuous.mk fun S hS₁ hS₂ => ?_\\n   488      rw [← VectorMeasure.ennrealToMeasure_apply hS₁] at hS₂\\n   489      exact null_of_totalVariation_zero s (h hS₂)\\n   490  \\n   491  theorem totalVariation_absolutelyContinuous_iff (s : SignedMeasure α) (μ : Measure α) :\\n   492      s.totalVariation ≪ μ ↔\\n   493        s.toJordanDecomposition.posPart ≪ μ ∧ s.toJordanDecomposition.negPart ≪ μ := by\\n   494    constructor <;> intro h\\n   495    · constructor\\n   496      all_goals\\n   497        refine Measure.AbsolutelyContinuous.mk fun S _ hS₂ => ?_\\n   498        have := h hS₂\\n   499        rw [totalVariation, Measure.add_apply, add_eq_zero] at this\\n   500      exacts [this.1, this.2]\\n   501    · refine Measure.AbsolutelyContinuous.mk fun S _ hS₂ => ?_\\n   502      rw [totalVariation, Measure.add_apply, h.1 hS₂, h.2 hS₂, add_zero]\\n   503  \\n   504  -- TODO: Generalize to vector measures once total variation on vector measures is defined\\n   505  theorem mutuallySingular_iff (s t : SignedMeasure α) :\\n   506      s ⟂ᵥ t ↔ s.totalVariation ⟂ₘ t.totalVariation := by\\n   507    constructor\\n   508    · rintro ⟨u, hmeas, hu₁, hu₂⟩\\n   509      obtain ⟨i, hi₁, hi₂, hi₃, hipos, hineg⟩ := s.toJordanDecomposition_spec\\n   510      obtain ⟨j, hj₁, hj₂, hj₃, hjpos, hjneg⟩ := t.toJordanDecomposition_spec\\n   511      refine ⟨u, hmeas, ?_, ?_⟩\\n   512      · rw [totalVariation, Measure.add_apply, hipos, hineg, toMeasureOfZeroLE_apply _ _ _ hmeas,\\n   513          toMeasureOfLEZero_apply _ _ _ hmeas]\\n   514        simp [hu₁ _ Set.inter_subset_right]\\n   515      · rw [totalVariation, Measure.add_apply, hjpos, hjneg,\\n   516          toMeasureOfZeroLE_apply _ _ _ hmeas.compl,\\n   517          toMeasureOfLEZero_apply _ _ _ hmeas.compl]\\n   518        simp [hu₂ _ Set.inter_subset_right]\\n   519    · rintro ⟨u, hmeas, hu₁, hu₂⟩\\n   520      exact\\n   521        ⟨u, hmeas, fun t htu => null_of_totalVariation_zero _ (measure_mono_null htu hu₁),\\n   522          fun t htv => null_of_totalVariation_zero _ (measure_mono_null htv hu₂)⟩\\n   523  \\n   524  theorem mutuallySingular_ennreal_iff (s : SignedMeasure α) (μ : VectorMeasure α ℝ≥0∞) :\\n   525      s ⟂ᵥ μ ↔ s.totalVariation ⟂ₘ μ.ennrealToMeasure := by\\n   526    constructor\\n   527    · rintro ⟨u, hmeas, hu₁, hu₂⟩\\n   528      obtain ⟨i, hi₁, hi₂, hi₃, hpos, hneg⟩ := s.toJordanDecomposition_spec\\n   529      refine ⟨u, hmeas, ?_, ?_⟩\\n   530      · rw [totalVariation, Measure.add_apply, hpos, hneg, toMeasureOfZeroLE_apply _ _ _ hmeas,\\n   531          toMeasureOfLEZero_apply _ _ _ hmeas]\\n   532        simp [hu₁ _ Set.inter_subset_right]\\n   533      · rw [VectorMeasure.ennrealToMeasure_apply hmeas.compl]\\n   534        exact hu₂ _ (Set.Subset.refl _)\\n   535    · rintro ⟨u, hmeas, hu₁, hu₂⟩\\n   536      refine\\n   537        VectorMeasure.MutuallySingular.mk u hmeas\\n   538          (fun t htu _ => null_of_totalVariation_zero _ (measure_mono_null htu hu₁)) fun t htv hmt =>\\n   539          ?_\\n   540      rw [← VectorMeasure.ennrealToMeasure_apply hmt]\\n   541      exact measure_mono_null htv hu₂\\n   542  \\n   543  theorem totalVariation_mutuallySingular_iff (s : SignedMeasure α) (μ : Measure α) :\\n   544      s.totalVariation ⟂ₘ μ ↔\\n   545        s.toJordanDecomposition.posPart ⟂ₘ μ ∧ s.toJordan"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*measureOf.*le|lemma.*apply_le\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"54 match(es) for 'theorem.*measureOf.*le|lemma.*apply_le' (via ripgrep):\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:827\\n    lemma coeff_mul_apply_left (x y : R[G]) (g : G) :\\n- Mathlib/Algebra/Module/Basic.lean:145\\n    lemma indicator_smul_apply_left (s : Set α) (r : α → R) (f : α → M) (a : α) :\\n- Mathlib/Algebra/Order/Group/Indicator.lean:68\\n    lemma mulIndicator_apply_le' (hfg : a ∈ s → f a ≤ y) (hg : a ∉ s → 1 ≤ y) :\\n- Mathlib/Algebra/Order/Group/Indicator.lean:100\\n    lemma mulIndicator_apply_le_one (h : a ∈ s → f a ≤ 1) : mulIndicator s f a ≤ 1 :=\\n- Mathlib/Algebra/Order/Group/Indicator.lean:213\\n    lemma mulIndicator_apply_le {a : α} {s : Set α} {f g : α → M} (hfg : a ∈ s → f a ≤ g a) :\\n- Mathlib/CategoryTheory/LiftingProperties/ParametrizedAdjunction.lean:104\\n    lemma inl_arrowHomEquiv_symm_apply_left (β : Arrow.mk f₂ ⟶ Arrow.mk sq₁₃.π) :\\n- Mathlib/CategoryTheory/LiftingProperties/ParametrizedAdjunction.lean:109\\n    lemma inr_arrowHomEquiv_symm_apply_left (β : Arrow.mk f₂ ⟶ Arrow.mk sq₁₃.π) :\\n- Mathlib/Topology/ContinuousMap/Bounded/Normed.lean:71\\n    lemma apply_le_norm (f : α →ᵇ ℝ) (x : α) :\\n- Mathlib/Topology/LocallyConstant/Basic.lean:545\\n    lemma piecewise_apply_left {C₁ C₂ : Set X} (h₁ : IsClosed C₁) (h₂ : IsClosed C₂)\\n- Mathlib/Topology/LocallyConstant/Basic.lean:582\\n    lemma piecewise'_apply_left {C₀ C₁ C₂ : Set X} (h₀ : C₀ ⊆ C₁ ∪ C₂) (h₁ : IsClosed C₁)\\n- Mathlib/LinearAlgebra/Matrix/Swap.lean:89\\n    lemma swap_mul_apply_left (i j : n) (a : m) (g : Matrix n m R) :\\n- Mathlib/LinearAlgebra/Matrix/Swap.lean:105\\n    lemma mul_swap_apply_left (i j : n) (a : m) (g : Matrix m n R) :\\n- Mathlib/LinearAlgebra/SesquilinearForm/Basic.lean:824\\n    lemma apply_mul_apply_le_of_forall_zero_le (hs : ∀ x, 0 ≤ B x x) (x y : M) :\\n- Mathlib/Analysis/ODE/PicardLindelof.lean:330\\n    lemma dist_iterate_next_apply_le (hf : IsPicardLindelof f t₀ x₀ a r L K)\\n- Mathlib/Analysis/CStarAlgebra/Spectrum.lean:269\\n    lemma nnnorm_apply_le (φ : F) (a : A) : ‖φ a‖₊ ≤ ‖a‖₊ := by\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma).*SetToMeasure|theorem.*apply.*le.*real\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 448,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '(theorem|lemma).*SetToMeasure|theorem.*apply.*le.*real' (via ripgrep):\\n- Mathlib/MeasureTheory/Function/ConditionalExpectation/CondexpL1.lean:258\\n    theorem norm_condExpInd_apply_le (x : G) : ‖condExpInd G hm μ s x‖ ≤ μ.real s * ‖x‖ :=\\n- Mathlib/NumberTheory/NumberField/CanonicalEmbedding/PolarCoord.lean:277\\n    theorem homeoRealMixedSpacePolarSpace_apply_fst_ofIsComplex (x : realMixedSpace K)\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Real\\\\.abs.*≤|norm.*≤.*measure\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 103,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Real\\\\\\\\.abs.*≤|norm.*≤.*measure' under Mathlib/.\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean\", \"line\": 300, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4448,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean  (lines 300–399 of 1464):\\n   300    ⟨fun μ ν => by ext; rw [apply_eq_zero_of_isEmpty, apply_eq_zero_of_isEmpty]⟩\\n   301  \\n   302  theorem eq_zero_of_isEmpty [IsEmpty α] (μ : VectorMeasure α M) : μ = 0 :=\\n   303    Subsingleton.elim μ 0\\n   304  \\n   305  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_zero := FunLike.coe_zero\\n   306  \\n   307  @[deprecated (since := \\\"2026-06-10\\\")] protected alias zero_apply := zero_apply\\n   308  \\n   309  variable [ContinuousAdd M]\\n   310  \\n   311  /-- The sum of two vector measure is a vector measure. -/\\n   312  def add (v w : VectorMeasure α M) : VectorMeasure α M where\\n   313    measureOf' := v + w\\n   314    empty' := by simp\\n   315    not_measurable' _ hi := by rw [Pi.add_apply, v.not_measurable hi, w.not_measurable hi, add_zero]\\n   316    m_iUnion' _ hf₁ hf₂ := HasSum.add (v.m_iUnion hf₁ hf₂) (w.m_iUnion hf₁ hf₂)\\n   317  \\n   318  instance instAdd : Add (VectorMeasure α M) :=\\n   319    ⟨add⟩\\n   320  \\n   321  instance : IsAddApply (VectorMeasure α M) (Set α) M where\\n   322    add_apply _ _ _ := rfl\\n   323  \\n   324  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_add := FunLike.coe_add\\n   325  \\n   326  @[deprecated (since := \\\"2026-06-10\\\")] protected alias add_apply := add_apply\\n   327  \\n   328  instance instAddCommMonoid : AddCommMonoid (VectorMeasure α M) :=\\n   329    fast_instance% FunLike.addCommMonoid\\n   330  \\n   331  @[deprecated (since := \\\"2026-06-10\\\")] alias coeFnAddMonoidHom := FunLike.coeAddMonoidHom\\n   332  \\n   333  @[deprecated (since := \\\"2026-06-10\\\")] alias coeFnAddMonoidHom_apply := FunLike.coeAddMonoidHom_apply\\n   334  \\n   335  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_finsetSum := FunLike.coe_sum\\n   336  \\n   337  end AddCommMonoid\\n   338  \\n   339  section AddCommGroup\\n   340  \\n   341  variable {M : Type*} [AddCommGroup M] [TopologicalSpace M] [IsTopologicalAddGroup M]\\n   342  \\n   343  /-- The negative of a vector measure is a vector measure. -/\\n   344  def neg (v : VectorMeasure α M) : VectorMeasure α M where\\n   345    measureOf' := -v\\n   346    empty' := by simp\\n   347    not_measurable' _ hi := by rw [Pi.neg_apply, neg_eq_zero, v.not_measurable hi]\\n   348    m_iUnion' _ hf₁ hf₂ := HasSum.neg <| v.m_iUnion hf₁ hf₂\\n   349  \\n   350  instance instNeg : Neg (VectorMeasure α M) :=\\n   351    ⟨neg⟩\\n   352  \\n   353  instance : IsNegApply (VectorMeasure α M) (Set α) M where\\n   354    neg_apply _ _ := rfl\\n   355  \\n   356  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_neg := FunLike.coe_neg\\n   357  \\n   358  @[deprecated (since := \\\"2026-06-10\\\")] protected alias neg_apply := neg_apply\\n   359  \\n   360  /-- The difference of two vector measure is a vector measure. -/\\n   361  def sub (v w : VectorMeasure α M) : VectorMeasure α M where\\n   362    measureOf' := v - w\\n   363    empty' := by simp\\n   364    not_measurable' _ hi := by rw [Pi.sub_apply, v.not_measurable hi, w.not_measurable hi, sub_zero]\\n   365    m_iUnion' _ hf₁ hf₂ := HasSum.sub (v.m_iUnion hf₁ hf₂) (w.m_iUnion hf₁ hf₂)\\n   366  \\n   367  instance instSub : Sub (VectorMeasure α M) :=\\n   368    ⟨sub⟩\\n   369  \\n   370  instance : IsSubApply (VectorMeasure α M) (Set α) M where\\n   371    sub_apply _ _ _ := rfl\\n   372  \\n   373  @[deprecated (since := \\\"2026-06-10\\\")] alias coe_sub := FunLike.coe_sub\\n   374  \\n   375  @[deprecated (since := \\\"2026-06-10\\\")] protected alias sub_apply := sub_apply\\n   376  \\n   377  instance instAddCommGroup : AddCommGroup (VectorMeasure α M) := fast_instance% FunLike.addCommGroup\\n   378  \\n   379  end AddCommGroup\\n   380  \\n   381  section DistribMulAction\\n   382  \\n   383  variable {M : Type*} [AddCommMonoid M] [TopologicalSpace M]\\n   384  variable {R : Type*} [Semiring R] [DistribMulAction R M] [ContinuousConstSMul R M]\\n   385  \\n   386  instance instDistribMulAction [ContinuousAdd M] : DistribMulAction R (VectorMeasure α M) :=\\n   "
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?s : SignedMeasure ?α → ?i : Set ?α → ?n : ℝ≥0∞\"}",
+   "ok": true,
+   "result_chars": 132,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?s : SignedMeasure ?α → ?i : Set ?α → ?n : ℝ≥0∞': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*abs_apply|lemma.*Real_apply_le\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*abs_apply|lemma.*Real_apply_le' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"ENNReal\\\\.ofReal.*≤.*totalVariation|theorem.*ofReal.*apply\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 537,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4 match(es) for 'ENNReal\\\\\\\\.ofReal.*≤.*totalVariation|theorem.*ofReal.*apply' (via ripgrep):\\n- Mathlib/Analysis/Complex/Basic.lean:290\\n    theorem ofRealLI_apply (x : ℝ) : ofRealLI x = x := rfl\\n- Mathlib/Analysis/Complex/Basic.lean:334\\n    theorem ofRealCLM_apply (x : ℝ) : ofRealCLM x = x :=\\n- Mathlib/Analysis/RCLike/Basic.lean:1171\\n    theorem ofRealLI_apply : (ofRealLI : ℝ → K) = ofReal :=\\n- Mathlib/Analysis/RCLike/Basic.lean:1183\\n    theorem ofRealCLM_apply : (ofRealCLM : ℝ → K) = ofReal :=\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*apply.*variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*apply.*variation' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean\", \"line\": 1000, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5244,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/MeasureTheory/VectorMeasure/Basic.lean  (lines 1000–1099 of 1464):\\n  1000  \\n  1001  theorem neg_le_neg_iff {i : Set α} (hi : MeasurableSet i) : -w ≤[i] -v ↔ v ≤[i] w :=\\n  1002    ⟨fun h => neg_neg v ▸ neg_neg w ▸ neg_le_neg _ _ hi h, fun h => neg_le_neg _ _ hi h⟩\\n  1003  \\n  1004  end\\n  1005  \\n  1006  section\\n  1007  \\n  1008  variable {M : Type*} [TopologicalSpace M]\\n  1009    [AddCommMonoid M] [PartialOrder M] [IsOrderedAddMonoid M] [OrderClosedTopology M]\\n  1010  variable (v w : VectorMeasure α M) {i j : Set α}\\n  1011  \\n  1012  theorem restrict_le_restrict_iUnion {f : ℕ → Set α} (hf₁ : ∀ n, MeasurableSet (f n))\\n  1013      (hf₂ : ∀ n, v ≤[f n] w) : v ≤[⋃ n, f n] w := by\\n  1014    refine restrict_le_restrict_of_subset_le v w fun a ha₁ ha₂ => ?_\\n  1015    have ha₃ : ⋃ n, a ∩ disjointed f n = a := by\\n  1016      rwa [← Set.inter_iUnion, iUnion_disjointed, Set.inter_eq_left]\\n  1017    have ha₄ : Pairwise (Disjoint on fun n => a ∩ disjointed f n) :=\\n  1018      (disjoint_disjointed _).mono fun i j => Disjoint.mono inf_le_right inf_le_right\\n  1019    rw [← ha₃, v.of_disjoint_iUnion _ ha₄, w.of_disjoint_iUnion _ ha₄]\\n  1020    · refine Summable.tsum_le_tsum (fun n => (restrict_le_restrict_iff v w (hf₁ n)).1 (hf₂ n) ?_ ?_)\\n  1021        ?_ ?_\\n  1022      · exact ha₁.inter (MeasurableSet.disjointed hf₁ n)\\n  1023      · exact Set.Subset.trans Set.inter_subset_right (disjointed_subset _ _)\\n  1024      · refine (v.m_iUnion (fun n => ?_) ?_).summable\\n  1025        · exact ha₁.inter (MeasurableSet.disjointed hf₁ n)\\n  1026        · exact (disjoint_disjointed _).mono fun i j => Disjoint.mono inf_le_right inf_le_right\\n  1027      · refine (w.m_iUnion (fun n => ?_) ?_).summable\\n  1028        · exact ha₁.inter (MeasurableSet.disjointed hf₁ n)\\n  1029        · exact (disjoint_disjointed _).mono fun i j => Disjoint.mono inf_le_right inf_le_right\\n  1030    · intro n\\n  1031      exact ha₁.inter (MeasurableSet.disjointed hf₁ n)\\n  1032    · exact fun n => ha₁.inter (MeasurableSet.disjointed hf₁ n)\\n  1033  \\n  1034  theorem restrict_le_restrict_countable_iUnion [Countable β] {f : β → Set α}\\n  1035      (hf₁ : ∀ b, MeasurableSet (f b)) (hf₂ : ∀ b, v ≤[f b] w) : v ≤[⋃ b, f b] w := by\\n  1036    cases nonempty_encodable β\\n  1037    rw [← Encodable.iUnion_decode₂]\\n  1038    refine restrict_le_restrict_iUnion v w ?_ ?_\\n  1039    · intro n\\n  1040      measurability\\n  1041    · intro n\\n  1042      rcases Encodable.decode₂ β n with - | b\\n  1043      · simp\\n  1044      · simp [hf₂ b]\\n  1045  \\n  1046  theorem restrict_le_restrict_union (hi₁ : MeasurableSet i) (hi₂ : v ≤[i] w) (hj₁ : MeasurableSet j)\\n  1047      (hj₂ : v ≤[j] w) : v ≤[i ∪ j] w := by\\n  1048    rw [Set.union_eq_iUnion]\\n  1049    refine restrict_le_restrict_countable_iUnion v w ?_ ?_\\n  1050    · measurability\\n  1051    · rintro (_ | _) <;> simpa\\n  1052  \\n  1053  end\\n  1054  \\n  1055  section\\n  1056  \\n  1057  variable {M : Type*} [TopologicalSpace M] [AddCommMonoid M] [PartialOrder M]\\n  1058  variable (v w : VectorMeasure α M) {i j : Set α}\\n  1059  \\n  1060  theorem nonneg_of_zero_le_restrict (hi₂ : 0 ≤[i] v) : 0 ≤ v i := by\\n  1061    by_cases hi₁ : MeasurableSet i\\n  1062    · exact (restrict_le_restrict_iff _ _ hi₁).1 hi₂ hi₁ Set.Subset.rfl\\n  1063    · rw [v.not_measurable hi₁]\\n  1064  \\n  1065  theorem nonpos_of_restrict_le_zero (hi₂ : v ≤[i] 0) : v i ≤ 0 := by\\n  1066    by_cases hi₁ : MeasurableSet i\\n  1067    · exact (restrict_le_restrict_iff _ _ hi₁).1 hi₂ hi₁ Set.Subset.rfl\\n  1068    · rw [v.not_measurable hi₁]\\n  1069  \\n  1070  theorem zero_le_restrict_not_measurable (hi : ¬MeasurableSet i) : 0 ≤[i] v := by\\n  1071    rw [restrict_zero, restrict_not_measurable _ hi]\\n  1072  \\n  1073  theorem restrict_le_zero_of_not_measurable (hi : ¬MeasurableSet i) : v ≤[i] 0 := by\\n  1074    rw [restrict_zero, restrict_not_measurable _ hi]\\n  1075  \\n  1076  theorem measurable_of_not_zero_le_restrict (hi : ¬0"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"lemma.*apply.*le|theorem.*apply.*le.*measure\", \"limit\": 15}",
+   "ok": true,
+   "result_chars": 2071,
+   "result_head": "[{\"type\": \"text\", \"text\": \"414 match(es) for 'lemma.*apply.*le|theorem.*apply.*le.*measure' (via ripgrep):\\n- Mathlib/Algebra/WithConv.lean:143\\n    @[simp] lemma linearEquiv_apply [Semiring R] [Module R A]\\n- Mathlib/Algebra/WithConv.lean:145\\n    @[simp] lemma symm_linearEquiv_apply [Semiring R] [Module R A]\\n- Mathlib/Algebra/Algebra/Equiv.lean:827\\n    lemma AlgEquiv.default_apply [Subsingleton S] [Subsingleton T] (x : S) :\\n- Mathlib/Algebra/Algebra/Operations.lean:738\\n    @[simp] lemma spanSingleton_apply (x : A) : spanSingleton R x = Submodule.span R {x} := rfl\\n- Mathlib/Probability/Process/HittingTime.lean:392\\n    lemma hittingBtwn_apply_mono_left (u : ι → Ω → β) (s : Set β) (m : ι) (ω : Ω) :\\n- Mathlib/Algebra/GroupWithZero/Action/Defs.lean:224\\n    lemma Pi.single_apply_smul {ι : Type*} [DecidableEq ι] (x : A) (i j : ι) :\\n- Mathlib/Algebra/Order/Ring/IsNonarchimedean.lean:56\\n    lemma apply_natCast_le_one {F α : Type*} [AddMonoidWithOne α] [FunLike F α R]\\n- Mathlib/Algebra/Order/Ring/IsNonarchimedean.lean:134\\n    lemma apply_sum_le_sup {α β : Type*} [AddCommMonoid α] {f : α → R}\\n- Mathlib/Algebra/Module/FinitePresentation.lean:616\\n    lemma Module.FinitePresentation.linearEquivMap_apply [Module.FinitePresentation R M]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:623\\n    lemma Module.FinitePresentation.linearEquivMap_symm_apply [Module.FinitePresentation R M]\\n- Mathlib/Algebra/Module/FinitePresentation.lean:640\\n    lemma Module.FinitePresentation.linearEquivMapExtendScalars_apply [Module.FinitePresentation R M]\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:752\\n    lemma uniqueRingEquiv_symm_apply [Subsingleton M] (r : R) :\\n- Mathlib/Algebra/MonoidAlgebra/Defs.lean:827\\n    lemma coeff_mul_apply_left (x y : R[G]) (g : G) :\\n- Mathlib/Probability/Kernel/Defs.lean:292\\n    lemma apply_congr_of_mem_measurableAtom (κ : Kernel α β) {y' y : α} (hy' : y' ∈ measurableAtom y) :\\n- Mathlib/Computability/AkraBazzi/AkraBazzi.lean:217\\n    lemma isBigO_apply_r_sub_b (q : ℝ → ℝ) (hq_diff : DifferentiableOn ℝ q (Set.Ioi 1))\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"VectorMeasure.*norm|SignedMeasure.*norm|measure.*bound\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2394,
+   "result_head": "[{\"type\": \"text\", \"text\": \"68 match(es) for 'VectorMeasure.*norm|SignedMeasure.*norm|measure.*bound' (via ripgrep):\\n- Mathlib/Probability/Kernel/Defs.lean:154\\n    /-- A kernel is finite if every measure in its image is finite, with a uniform bound. -/\\n- Mathlib/Probability/Kernel/Defs.lean:165\\n    `κ a s ≤ C` (`ProbabilityTheory.Kernel.measure_le_bound κ a s`). -/\\n- Mathlib/Probability/Kernel/Defs.lean:179\\n    theorem measure_le_bound (κ : Kernel α β) (a : α) (s : Set β) :\\n- Mathlib/Probability/Kernel/Defs.lean:204\\n    exact add_le_add (Kernel.measure_le_bound _ _ _) (Kernel.measure_le_bound _ _ _)\\n- Mathlib/Probability/Kernel/Defs.lean:208\\n    ⟨ν.bound, ν.bound_lt_top, fun a ↦ (hκν _ _).trans (ν.measure_le_bound a Set.univ)⟩\\n- Mathlib/Probability/Kernel/Defs.lean:229\\n    ⟨(κ.measure_le_bound a Set.univ).trans_lt κ.bound_lt_top⟩\\n- Mathlib/Probability/Kernel/WithDensity.lean:192\\n    _ ≤ B * κ.bound := by grw [measure_le_bound]⟩⟩\\n- Mathlib/Probability/Kernel/Composition/CompProd.lean:451\\n    lintegral_mono fun b => measure_le_bound η (a, b) Set.univ\\n- Mathlib/Probability/Kernel/Composition/ParallelComp.lean:159\\n    · exact measure_le_bound κ a.1 Set.univ\\n- Mathlib/Probability/Kernel/Composition/ParallelComp.lean:160\\n    · exact measure_le_bound η a.2 Set.univ\\n- Mathlib/Probability/Kernel/Composition/MapComap.lean:135\\n    exact measure_le_bound κ a _\\n- Mathlib/Probability/Kernel/Composition/MapComap.lean:201\\n    exact measure_le_bound κ _ _\\n- Mathlib/Probability/Kernel/Composition/MapComap.lean:448\\n    fun a ↦ le_trans ?_ (measure_le_bound (fst κ) a Set.univ)⟩\\n- Mathlib/Probability/Kernel/Composition/MapComap.lean:510\\n    fun a ↦ le_trans ?_ (measure_le_bound (snd κ) a Set.univ)⟩\\n- Mathlib/Probability/Kernel/Composition/Comp.lean:70\\n    lintegral_mono fun b => measure_le_bound η b Set.univ\\n- Mathlib/Probability/Kernel/Composition/Comp.lean:228\\n    _ ≤ κ.bound * η.bound := by gcongr; exact measure_le_bound κ a Set.univ\\n- Mathlib/Probability/Kernel/RadonNikodym.lean:532\\n    exact Measure.lintegral_rnDeriv_le.trans (measure_le_bound _ _ _)\\n- Mathlib/Probability/Kernel/RadonNikodym.lean:539\\n    exact (self_le_add_left _ _).trans (h.le.trans (measure_le_bound _ _ _))\\n- Mathlib/Probability/Kernel/Basic.lean:288\\n    exact measure_le_bound κ a _\\n- Mathlib/Probability/Kernel/Basic.lean:339\\n    exact measure_le_bound κ a _\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*\\\\|.*apply.*\\\\|.*≤\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 102,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*\\\\\\\\|.*apply.*\\\\\\\\|.*≤' under Mathlib/.\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*Real\\\\.abs|lemma.*Real\\\\.abs\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*Real\\\\\\\\.abs|lemma.*Real\\\\\\\\.abs' under Mathlib/.\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"apply.*≤.*posPart|apply.*≤.*negPart\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'apply.*≤.*posPart|apply.*≤.*negPart' under Mathlib/.\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": true,
+ "extraction": "none",
+ "output_lean": null,
+ "no_lean": true
+}

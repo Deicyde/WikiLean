@@ -1,0 +1,312 @@
+{
+ "task_id": "fresh_040",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:28:17Z",
+ "wall_s": 94.2,
+ "transcript_stats": {
+  "turns": 33,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 8,
+   "mcp__formal__decl_grep": 16,
+   "mcp__formal__decl_read": 7,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 242,
+  "tokens_out": 5554,
+  "cost_usd": 0.10777939999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"UniqueFactorizationMonoid\"}",
+   "ok": true,
+   "result_chars": 1515,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 305 declarations mentioning UniqueFactorizationMonoid.\\n- UniqueFactorizationMonoid   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n    Unique factorization monoids are defined as cancellative `CommMonoidWithZero`s with well-founded strict divisibility relations, but this is equivalent to more f\\n- UniqueFactorizationMonoid.of_subsingleton   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.factors   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n    Noncomputably determines the multiset of prime factors.\\n- UniqueFactorizationMonoid.toIsWellFounded   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.instDecompositionMonoid   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.irreducible_iff_prime   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.prime_of_factor   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.toIsCancelMulZero   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.irreducible_of_factor   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.card_factors_of_irreducible   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.dvd_of_mem_factors   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\\n- UniqueFactorizationMonoid.factors_zero   [Mathlib.RingTheory.UniqueFactorizationDomain.Defs]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Localization\"}",
+   "ok": true,
+   "result_chars": 1676,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 312 declarations mentioning Localization.\\n- Localization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    The localization of a `CommMonoid` at one of its submonoids (as a quotient type).\\n- Submonoid.LocalizationMap.instSubsingletonLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Submonoid.LocalizationMap.instCancelCommMonoidLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Localization.monoidOf   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    Natural homomorphism sending `x : M`, `M` a `CommMonoid`, to the equivalence class of `(x, 1)` in the Localization of `M` at a Submonoid.\\n- Localization.decidableEq   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Submonoid.LocalizationMap.instNontrivialLocalizationOfIsCancelMul   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Localization.instIsMulTorsionFree   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    The localization of a torsion-free monoid is torsion-free.\\n- Submonoid.LocalizationMap.instIsCancelMulLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Localization.mk   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    Given a `CommMonoid` `M` and submonoid `S`, `mk` sends `x : M`, `y ∈ S` to the equivalence class of `(x, y)` in the localization of `M` at `S`.\\n- OreLocalization.equivMonoidLocalization   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n    If `R` is commutative, Ore localization and monoid localization are isomorphic.\\n- Localization.mk_left_injective   [Mathlib.GroupTheory.MonoidLocalization.Basic]\\n- Localization.mk_eq_monoidOf_mk'   [Mathlib.GroupTheory.MonoidLocalization.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"(theorem|lemma) .*Localization.*UniqueFactorization\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 122,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '(theorem|lemma) .*Localization.*UniqueFactorization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Localization UniqueFactorizationMonoid CommMonoid Submonoid\"}",
+   "ok": true,
+   "result_chars": 282,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Localization UniqueFactorizationMonoid CommMonoid Submonoid': Function expected at\\n  Localization ?m.3\\nbut this term has type\\n  Type ?u.1\\n\\nNote: Expected a function because this term is being applied to the argument\\n  CommMonoid\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(Localization ?S) → UniqueFactorizationMonoid\"}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(Localization ?S) → UniqueFactorizationMonoid': type expected, got\\n  (UniqueFactorizationMonoid : (α : Type ?u.4) → [CommMonoidWithZero α] → Prop)\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization.*unique.*factor\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Localization.*unique.*factor' under Mathlib/.\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"UniqueFactorizationMonoid (Localization ?S)\"}",
+   "ok": true,
+   "result_chars": 214,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Localization and UniqueFactorizationMonoid.\\n- instUniqueFactorizationMonoidLocalization   [Mathlib.GroupTheory.MonoidLocalization.UniqueFactorization]\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/UniqueFactorization.lean\", \"line\": 1, \"n\": 80}",
+   "ok": false,
+   "result_chars": 105,
+   "result_head": "error: no such file under the checkout: 'Mathlib/GroupTheory/MonoidLocalization/UniqueFactorization.lean'"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instUniqueFactorizationMonoidLocalization\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'instUniqueFactorizationMonoidLocalization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"UniqueFactorization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1160,
+   "result_head": "[{\"type\": \"text\", \"text\": \"276 match(es) for 'UniqueFactorization' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:13\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:693\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:706\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:9\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:14\\n    We prove that if `M` is an `UniqueFactorizationMonoid` that can be equipped with a\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:34\\n    variable [UniqueFactorizationMonoid M] [NormalizationMonoid M] [IsMulTorsionFree Mˣ]\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:36\\n    namespace UniqueFactorizationMonoid\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:49\\n    end UniqueFactorizationMonoid\\n- Mathlib/Algebra/Polynomial/Splits.lean:681\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/Polynomial/Splits.lean:896\\n    open UniqueFactorizationMonoid Associates\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MonoidLocalization.*UniqueFactorization\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'MonoidLocalization.*UniqueFactorization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 3706,
+   "result_head": "[{\"type\": \"text\", \"text\": \"4633 match(es) for 'Localization' (via ripgrep):\\n- Mathlib/Algebra/CharP/Algebra.lean:10\\n    public import Mathlib.RingTheory.Localization.FractionRing\\n- Mathlib/Algebra/Algebra/Epi.lean:10\\n    public import Mathlib.RingTheory.Localization.FractionRing\\n- Mathlib/Algebra/Homology/HomotopyCategory/Plus.lean:11\\n    public import Mathlib.CategoryTheory.Localization.OfQuotient\\n- Mathlib/Algebra/Homology/HomotopyCategory/Plus.lean:209\\n    (quotient C).IsLocalization\\n- Mathlib/Algebra/Homology/HomotopyCategory/Plus.lean:211\\n    Functor.isLocalization_of_essSurj_of_full_of_exists_cylinders _ _\\n- Mathlib/Algebra/Homology/HomotopyCategory/Acyclic.lean:10\\n    public import Mathlib.Algebra.Homology.Localization\\n- Mathlib/Algebra/Homology/HomotopyCategory/ShiftSequence.lean:9\\n    public import Mathlib.CategoryTheory.Shift.Localization\\n- Mathlib/Algebra/Homology/Factorizations/CM5a.lean:677\\n    have : HasDerivedCategory C := MorphismProperty.HasLocalization.standard _\\n- Mathlib/Algebra/Homology/Localization.lean:11\\n    public import Mathlib.CategoryTheory.Localization.Composition\\n- Mathlib/Algebra/Homology/Localization.lean:12\\n    public import Mathlib.CategoryTheory.Localization.HasLocalization\\n- Mathlib/Algebra/Homology/Localization.lean:45\\n    variable [(HomologicalComplex.quasiIso C c).HasLocalization]\\n- Mathlib/Algebra/Homology/Localization.lean:48\\n    abbrev HomologicalComplexUpToQuasiIso := (HomologicalComplex.quasiIso C c).Localization'\\n- Mathlib/Algebra/Homology/Localization.lean:60\\n    Localization.lift _ (HomologicalComplex.homologyFunctor_inverts_quasiIso C c i) Q\\n- Mathlib/Algebra/Homology/Localization.lean:66\\n    Localization.fac _ (HomologicalComplex.homologyFunctor_inverts_quasiIso C c i) Q\\n- Mathlib/Algebra/Homology/Localization.lean:82\\n    exact Localization.inverts Q (HomologicalComplex.quasiIso C c) _ h\\n- Mathlib/Algebra/Homology/Localization.lean:94\\n    [(HomologicalComplex.quasiIso C c).HasLocalization] :\\n- Mathlib/Algebra/Homology/Localization.lean:98\\n    (Localization.inverts Q (HomologicalComplex.quasiIso C c))\\n- Mathlib/Algebra/Homology/Localization.lean:161\\n    areEqualizedByLocalization {K L : HomologicalComplex C c} {f g : K ⟶ L} (h : Homotopy f g) :\\n- Mathlib/Algebra/Homology/Localization.lean:162\\n    AreEqualizedByLocalization (HomologicalComplex.quasiIso C c) f g\\n- Mathlib/Algebra/Homology/Localization.lean:167\\n    variable [(HomologicalComplex.quasiIso C c).HasLocalization] [c.QFactorsThroughHomotopy C]\\n- Mathlib/Algebra/Homology/Localization.lean:171\\n    (ComplexShape.QFactorsThroughHomotopy.areEqualizedByLocalization h).map_eq Q\\n- Mathlib/Algebra/Homology/Localization.lean:194\\n    instance : (HomotopyCategory.quotient C c ⋙ Qh).IsLocalization\\n- Mathlib/Algebra/Homology/Localization.lean:196\\n    Functor.IsLocalization.of_iso _ (quotientCompQhIso C c).symm\\n- Mathlib/Algebra/Homology/Localization.lean:228\\n    variable [(HomotopyCategory.quotient C c).IsLocalization\\n- Mathlib/Algebra/Homology/Localization.lean:234\\n    instance : HomologicalComplexUpToQuasiIso.Qh.IsLocalization (HomotopyCategory.quasiIso C c) :=\\n- Mathlib/Algebra/Homology/Localization.lean:235\\n    Functor.IsLocalization.of_comp (HomotopyCategory.quotient C c)\\n- Mathlib/Algebra/Homology/Localization.lean:256\\n    Localization.StrictUniversalPropertyFixedTarget (HomotopyCategory.quotient C c)\\n- Mathlib/Algebra/Homology/Localization.lean:266\\n    lemma ComplexShape.quotient_isLocalization :\\n- Mathlib/Algebra/Homology/Localization.lean:267\\n    (HomotopyCategory.quotient C c).IsLocalization\\n- Mathlib/Algebra/Homology/Localization.lean:269\\n    apply Functor.IsLocalization.mk'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(Localization S) → UniqueFactorizationMonoid (Localization S)\"}",
+   "ok": true,
+   "result_chars": 134,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(Localization S) → UniqueFactorizationMonoid (Localization S)': Unknown identifier `S`\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"instance UniqueFactorizationMonoid (Localization ?S)\"}",
+   "ok": true,
+   "result_chars": 137,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'instance UniqueFactorizationMonoid (Localization ?S)': <input>:1:0: expected end of input\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"class UniqueFactorizationMonoid\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 235,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'class UniqueFactorizationMonoid' (via ripgrep):\\n- Mathlib/RingTheory/UniqueFactorizationDomain/Defs.lean:132\\n    class UniqueFactorizationMonoid (α : Type*) [CommMonoidWithZero α] : Prop\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Defs.lean\", \"line\": 132, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1630,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Defs.lean  (lines 132–161 of 228):\\n   132  class UniqueFactorizationMonoid (α : Type*) [CommMonoidWithZero α] : Prop\\n   133      extends IsCancelMulZero α, IsWellFounded α DvdNotUnit where\\n   134    protected irreducible_iff_prime : ∀ {a : α}, Irreducible a ↔ Prime a\\n   135  \\n   136  attribute [instance 100] UniqueFactorizationMonoid.toIsCancelMulZero\\n   137  \\n   138  instance (priority := 100) ufm_of_decomposition_of_wfDvdMonoid\\n   139      [CommMonoidWithZero α] [IsCancelMulZero α] [WfDvdMonoid α] [DecompositionMonoid α] :\\n   140      UniqueFactorizationMonoid α where\\n   141    irreducible_iff_prime := irreducible_iff_prime\\n   142  \\n   143  end Prio\\n   144  \\n   145  namespace UniqueFactorizationMonoid\\n   146  \\n   147  variable [CommMonoidWithZero α] [UniqueFactorizationMonoid α]\\n   148  \\n   149  theorem exists_prime_factors (a : α) :\\n   150      a ≠ 0 → ∃ f : Multiset α, (∀ b ∈ f, Prime b) ∧ f.prod ~ᵤ a := by\\n   151    simp_rw [← UniqueFactorizationMonoid.irreducible_iff_prime]\\n   152    apply WfDvdMonoid.exists_factors a\\n   153  \\n   154  lemma exists_prime_iff :\\n   155      (∃ (p : α), Prime p) ↔ ∃ (x : α), x ≠ 0 ∧ ¬ IsUnit x := by\\n   156    refine ⟨fun ⟨p, hp⟩ ↦ ⟨p, hp.ne_zero, hp.not_unit⟩, fun ⟨x, hx₀, hxu⟩ ↦ ?_⟩\\n   157    obtain ⟨f, hf, -⟩ := WfDvdMonoid.exists_irreducible_factor hxu hx₀\\n   158    exact ⟨f, UniqueFactorizationMonoid.irreducible_iff_prime.mp hf⟩\\n   159  \\n   160  @[elab_as_elim]\\n   161  theorem induction_on_prime {P : α → Prop} (a : α) (h₁ : P 0) (h₂ : ∀ x : α, IsUnit x → P x)\\n\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Localization\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 661,
+   "result_head": "[{\"type\": \"text\", \"text\": \"9 match(es) for 'def Localization' (via ripgrep):\\n- Mathlib/CategoryTheory/Localization/HasLocalization.lean:67\\n    def Localization' := HasLocalization.D W\\n- Mathlib/CategoryTheory/Localization/Construction.lean:107\\n    def Localization :=\\n- Mathlib/CategoryTheory/Localization/CalculusOfFractions.lean:326\\n    def Localization.Hom (X Y : C) :=\\n- Mathlib/CategoryTheory/Localization/CalculusOfFractions.lean:330\\n    def Localization.Hom.mk {X Y : C} (z : W.LeftFraction X Y) : Localization.Hom W X Y :=\\n- Mathlib/CategoryTheory/Localization/CalculusOfFractions.lean:445\\n    def Localization (_ : MorphismProperty C) := C\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"MonoidLocalization.*Basic.*def.*Localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 115,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'MonoidLocalization.*Basic.*def.*Localization' under Mathlib/.\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 5670,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean  (lines 1–100 of 898):\\n     1  /-\\n     2  Copyright (c) 2019 Amelia Livingston. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Amelia Livingston\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.BigOperators.Group.Finset.Basic\\n     9  public import Mathlib.Algebra.Group.Submonoid.Operations\\n    10  public import Mathlib.Algebra.Regular.Basic\\n    11  public import Mathlib.GroupTheory.Congruence.Hom\\n    12  public import Mathlib.GroupTheory.OreLocalization.Basic\\n    13  \\n    14  /-!\\n    15  # Localizations of commutative monoids\\n    16  \\n    17  Localizing a commutative ring at one of its submonoids does not rely on the ring's addition, so\\n    18  we can generalize localizations to commutative monoids.\\n    19  \\n    20  We characterize the localization of a commutative monoid `M` at a submonoid `S` up to\\n    21  isomorphism; that is, a commutative monoid `N` is the localization of `M` at `S` iff we can find a\\n    22  monoid homomorphism `f : M →* N` satisfying 3 properties:\\n    23  1. For all `y ∈ S`, `f y` is a unit;\\n    24  2. For all `z : N`, there exists `(x, y) : M × S` such that `z * f y = f x`;\\n    25  3. For all `x, y : M` such that `f x = f y`, there exists `c ∈ S` such that `x * c = y * c`.\\n    26     (The converse is a consequence of 1.)\\n    27  \\n    28  Given such a localization map `f : M →* N`, we can define the surjection\\n    29  `Submonoid.LocalizationMap.mk'` sending `(x, y) : M × S` to `f x * (f y)⁻¹`. Mapping properties\\n    30  of the localization (e.g. extending a map from `M → P` to `N` if the image of `S` is contained in\\n    31  the units) are treated in a later file `Mathlib.GroupTheory.MonoidLocalization.Maps`.\\n    32  \\n    33  We also define the quotient of `M × S` by the unique congruence relation (equivalence relation\\n    34  preserving a binary operation) `r` such that for any other congruence relation `s` on `M × S`\\n    35  satisfying '`∀ y ∈ S`, `(1, 1) ∼ (y, y)` under `s`', we have that `(x₁, y₁) ∼ (x₂, y₂)` by `s`\\n    36  whenever `(x₁, y₁) ∼ (x₂, y₂)` by `r`. We show this relation is equivalent to the standard\\n    37  localization relation.\\n    38  This defines the localization as a quotient type, `Localization`, but the majority of\\n    39  subsequent lemmas in the file are given in terms of localizations up to isomorphism, using maps\\n    40  which satisfy the characteristic predicate.\\n    41  \\n    42  The Grothendieck group construction corresponds to localizing at the top submonoid, namely making\\n    43  every element invertible.\\n    44  \\n    45  ## Implementation notes\\n    46  \\n    47  In maths it is natural to reason up to isomorphism, but in Lean we cannot naturally `rewrite` one\\n    48  structure with an isomorphic one; one way around this is to isolate a predicate characterizing\\n    49  a structure up to isomorphism, and reason about things that satisfy the predicate.\\n    50  \\n    51  The infimum form of the localization congruence relation is chosen as 'canonical' here, since it\\n    52  shortens some proofs.\\n    53  \\n    54  To reason about the localization as a quotient type, use `mk_eq_monoidOf_mk'` and associated\\n    55  lemmas. These show the quotient map `mk : M → S → Localization S` equals the\\n    56  surjection `LocalizationMap.mk'` induced by the map\\n    57  `Localization.monoidOf : Submonoid.LocalizationMap S (Localization S)` (where `of` establishes the\\n    58  localization as a quotient type satisfies the characteristic predicate). The lemma\\n    59  `mk_eq_monoidOf_mk'` hence gives you access to the results in the rest of the file, which are about\\n    60  the `LocalizationMap.mk'` induced by any localization map.\\n    61  \\n    62  ## TODO\\n    63  \\n    64  * Show that the localization at the top monoid is a group.\\n    65  * Generalise to (nonempty) subs"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean\", \"line\": 200, \"n\": 50}",
+   "ok": true,
+   "result_chars": 3113,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean  (lines 200–249 of 898):\\n   200      exact ⟨_, mul_mem hu x.2.2, u * y.2, by rw [mul_assoc, mul_assoc, ← e], mul_right_comm _ _ _⟩\\n   201    · rintro ⟨u, hu, v, e₁, e₂⟩\\n   202      exact ⟨u, hu, by rw [← mul_assoc, e₂, mul_right_comm, ← e₁, mul_assoc, mul_comm y.1]⟩\\n   203  \\n   204  end Localization\\n   205  \\n   206  set_option linter.translateOverwrite false in\\n   207  /-- The localization of a `CommMonoid` at one of its submonoids (as a quotient type). -/\\n   208  @[to_additive AddLocalization\\n   209  /-- The localization of an `AddCommMonoid` at one of its submonoids (as a quotient type). -/]\\n   210  abbrev Localization := OreLocalization S M\\n   211  \\n   212  namespace Localization\\n   213  \\n   214  variable {S}\\n   215  \\n   216  /-- Given a `CommMonoid` `M` and submonoid `S`, `mk` sends `x : M`, `y ∈ S` to the equivalence\\n   217  class of `(x, y)` in the localization of `M` at `S`. -/\\n   218  @[to_additive\\n   219  /-- Given an `AddCommMonoid` `M` and submonoid `S`, `mk` sends `x : M`, `y ∈ S` to\\n   220  the equivalence class of `(x, y)` in the localization of `M` at `S`. -/]\\n   221  def mk (x : M) (y : S) : Localization S := x /ₒ y\\n   222  \\n   223  @[to_additive]\\n   224  theorem mk_eq_mk_iff {a c : M} {b d : S} : mk a b = mk c d ↔ r S ⟨a, b⟩ ⟨c, d⟩ := by\\n   225    simp +instances only [mk, OreLocalization.oreDiv_eq_iff, r_iff_oreEqv_r, OreLocalization.oreEqv]\\n   226  \\n   227  universe u\\n   228  \\n   229  /-- Dependent recursion principle for `Localizations`: given elements `f a b : p (mk a b)`\\n   230  for all `a b`, such that `r S (a, b) (c, d)` implies `f a b = f c d` (with the correct coercions),\\n   231  then `f` is defined on the whole `Localization S`. -/\\n   232  @[to_additive (attr := elab_as_elim)\\n   233  /-- Dependent recursion principle for `AddLocalizations`: given elements `f a b : p (mk a b)`\\n   234  for all `a b`, such that `r S (a, b) (c, d)` implies `f a b = f c d` (with the correct coercions),\\n   235  then `f` is defined on the whole `AddLocalization S`. -/]\\n   236  def rec {p : Localization S → Sort u} (f : ∀ (a : M) (b : S), p (mk a b))\\n   237      (H : ∀ {a c : M} {b d : S} (h : r S (a, b) (c, d)),\\n   238        (Eq.ndrec (f a b) (mk_eq_mk_iff.mpr h) : p (mk c d)) = f c d) (x) : p x :=\\n   239    Quot.rec (fun y ↦ f y.1 y.2)\\n   240      (fun y z h ↦ by cases y; cases z; exact H (r_iff_oreEqv_r.mpr h)) x\\n   241  \\n   242  /-- Copy of `Quotient.recOnSubsingleton₂` for `Localization` -/\\n   243  @[to_additive (attr := elab_as_elim)\\n   244  /-- Copy of `Quotient.recOnSubsingleton₂` for `AddLocalization` -/]\\n   245  def recOnSubsingleton₂ {r : Localization S → Localization S → Sort u}\\n   246      [h : ∀ (a c : M) (b d : S), Subsingleton (r (mk a b) (mk c d))] (x y : Localization S)\\n   247      (f : ∀ (a c : M) (b d : S), r (mk a b) (mk c d)) : r x y :=\\n   248    @Quotient.recOnSubsingleton₂' _ _ _ _ r (Prod.rec fun _ _ => Prod.rec fun _ _ => h _ _ _ _) x y\\n   249      (Prod.rec fun _ _ => Prod.rec fun _ _ => f _ _ _ _)\\n\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*UniqueFactorization.*Localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 268,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'instance.*UniqueFactorization.*Localization' (via ripgrep):\\n- Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean:47\\n    instance localization (M : Submonoid R) : UniqueFactorizationMonoid (Localization M) :=\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2488,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean  (lines 1–50 of 50):\\n     1  /-\\n     2  Copyright (c) 2026 Yongle Hu. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Yongle Hu\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.RingTheory.Localization.Ideal\\n     9  public import Mathlib.RingTheory.UniqueFactorizationDomain.Kaplansky\\n    10  \\n    11  /-!\\n    12  # Localization of a UFD\\n    13  \\n    14  ## Main results\\n    15  * `UniqueFactorizationMonoid.localization` : The localization of a UFD is still a UFD.\\n    16  -/\\n    17  \\n    18  public section\\n    19  \\n    20  namespace UniqueFactorizationMonoid\\n    21  \\n    22  variable {R : Type*} [CommRing R] [UniqueFactorizationMonoid R] [IsDomain R]\\n    23  \\n    24  /-- If `S` is the localization of a UFD `R`, then `S` is also a UFD. -/\\n    25  theorem of_isLocalization (M : Submonoid R)\\n    26      (S : Type*) [CommRing S] [Algebra R S] [IsLocalization M S] : UniqueFactorizationMonoid S := by\\n    27    by_cases h0 : 0 ∈ M\\n    28    · have : Subsingleton S := IsLocalization.subsingleton h0\\n    29      exact of_subsingleton S\\n    30    have hM : M ≤ nonZeroDivisors R := le_nonZeroDivisors_of_noZeroDivisors h0\\n    31    have : IsDomain S := IsLocalization.isDomain_of_le_nonZeroDivisors S hM\\n    32    rw [UniqueFactorizationMonoid.iff_exists_prime_mem_of_isPrime]\\n    33    intro p hpb _\\n    34    obtain ⟨x, hxp, hpx⟩ := Ideal.IsPrime.exists_mem_prime_of_ne_bot\\n    35      inferInstance (IsLocalization.bot_lt_under_prime M S hM p hpb).ne'\\n    36    use algebraMap R S x, hxp\\n    37    rw [← Ideal.span_singleton_prime]\\n    38    · rw [← Set.image_singleton, ← Ideal.map_span]\\n    39      refine IsLocalization.isPrime_of_isPrime_disjoint M S _\\n    40        (Ideal.isPrime_span_singleton_of_prime hpx) ?_\\n    41      rw [← IsLocalization.map_algebraMap_ne_top_iff_disjoint M S]\\n    42      intro h\\n    43      exact Ideal.IsPrime.ne_top' (top_unique (h.symm.trans_le (by simpa [Ideal.map_span] using hxp)))\\n    44    · simp [map_ne_zero_iff _ (IsLocalization.injective S hM), hpx.ne_zero]\\n    45  \\n    46  /-- The localization of a UFD is still a UFD. -/\\n    47  instance localization (M : Submonoid R) : UniqueFactorizationMonoid (Localization M) :=\\n    48    of_isLocalization M (Localization M)\\n    49  \\n    50  end UniqueFactorizationMonoid\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"UniqueFactorization\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 2209,
+   "result_head": "[{\"type\": \"text\", \"text\": \"313 match(es) for 'UniqueFactorization' (via ripgrep):\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:9\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:14\\n    We prove that if `M` is an `UniqueFactorizationMonoid` that can be equipped with a\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:34\\n    variable [UniqueFactorizationMonoid M] [NormalizationMonoid M] [IsMulTorsionFree Mˣ]\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:36\\n    namespace UniqueFactorizationMonoid\\n- Mathlib/Algebra/GroupWithZero/Torsion.lean:49\\n    end UniqueFactorizationMonoid\\n- Mathlib/Algebra/Module/PID.lean:65\\n    open UniqueFactorizationMonoid\\n- Mathlib/Algebra/Module/DedekindDomain.lean:31\\n    open UniqueFactorizationMonoid\\n- Mathlib/Algebra/Squarefree/Basic.lean:10\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.GCDMonoid\\n- Mathlib/Algebra/Squarefree/Basic.lean:11\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicity\\n- Mathlib/Algebra/Squarefree/Basic.lean:27\\n    - `UniqueFactorizationMonoid.squarefree_iff_nodup_factors`: A nonzero element `x` of a unique\\n- Mathlib/Algebra/Squarefree/Basic.lean:249\\n    namespace UniqueFactorizationMonoid\\n- Mathlib/Algebra/Squarefree/Basic.lean:251\\n    variable [CommMonoidWithZero R] [UniqueFactorizationMonoid R]\\n- Mathlib/Algebra/Squarefree/Basic.lean:293\\n    end UniqueFactorizationMonoid\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:13\\n    public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:693\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:706\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/Polynomial/Splits.lean:681\\n    open UniqueFactorizationMonoid in\\n- Mathlib/Algebra/Polynomial/Splits.lean:896\\n    open UniqueFactorizationMonoid Associates\\n- Mathlib/FieldTheory/SeparableDegree.lean:15\\n    public import Mathlib.RingTheory.Polynomial.UniqueFactorization\\n- Mathlib/FieldTheory/SeparableDegree.lean:903\\n    obtain ⟨u, hu⟩ := UniqueFactorizationMonoid.factors_prod hf0\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization.*UniqueFactorization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 397,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'Localization.*UniqueFactorization' (via ripgrep):\\n- Mathlib/RingTheory/UniqueFactorizationDomain/Localization.lean:26\\n    (S : Type*) [CommRing S] [Algebra R S] [IsLocalization M S] : UniqueFactorizationMonoid S := by\\n- Mathlib/RingTheory/Polynomial/RationalRoot.lean:64\\n    open IsFractionRing IsLocalization Polynomial UniqueFactorizationMonoid\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"abbrev Localization.*OreLocalization\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'abbrev Localization.*OreLocalization' (via ripgrep):\\n- Mathlib/GroupTheory/MonoidLocalization/Basic.lean:210\\n    abbrev Localization := OreLocalization S M\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"OreLocalization\"}",
+   "ok": true,
+   "result_chars": 1226,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 141 declarations mentioning OreLocalization.\\n- OreLocalization   [Mathlib.GroupTheory.OreLocalization.Basic]\\n    The Ore localization of a monoid and a submonoid fulfilling the Ore condition.\\n- OreLocalization.instInhabited   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.instMonoid   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.instMul   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.one   [Mathlib.GroupTheory.OreLocalization.Basic]\\n    `1` in the localization, defined as `1 /ₒ 1`.\\n- OreLocalization.zero   [Mathlib.GroupTheory.OreLocalization.Basic]\\n    `0` in the localization, defined as `0 /ₒ 1`.\\n- OreLocalization.instOne   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.instZero   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.instCommMonoid   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.npow   [Mathlib.GroupTheory.OreLocalization.Basic]\\n    `npow` of `OreLocalization`\\n- OreLocalization.instSMul   [Mathlib.GroupTheory.OreLocalization.Basic]\\n- OreLocalization.hsmul   [Mathlib.GroupTheory.OreLocalization.Basic]\\n    Scalar multiplication in a monoid localization.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"Localization.*instance.*Unique\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 101,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'Localization.*instance.*Unique' under Mathlib/.\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*Localization\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 4092,
+   "result_head": "[{\"type\": \"text\", \"text\": \"204 match(es) for 'instance.*Localization' (via ripgrep):\\n- Mathlib/RingTheory/QuasiFinite/Basic.lean:220\\n    instance (M : Submonoid S) [QuasiFinite R S] : QuasiFinite R (Localization M) := of_isLocalization M\\n- Mathlib/RingTheory/EssentialFiniteness.lean:68\\n    instance EssFiniteType.isLocalization [h : EssFiniteType R S] :\\n- Mathlib/RingTheory/EssentialFiniteness.lean:217\\n    instance [EssFiniteType R S] (M : Submonoid S) : EssFiniteType R (Localization M) :=\\n- Mathlib/RingTheory/Localization/FractionRing.lean:81\\n    instance : IsLocalization (Submonoid.pos ℤ) ℚ where\\n- Mathlib/RingTheory/Localization/Finiteness.lean:175\\n    instance [Module.Finite R M] : Module.Finite (Localization S) (LocalizedModule S M) :=\\n- Mathlib/RingTheory/Localization/BaseChange.lean:110\\n    instance [Module (Localization S) M₁] [Module (Localization S) M₂]\\n- Mathlib/RingTheory/Localization/BaseChange.lean:267\\n    instance IsLocalization.tensor (M : Submonoid R) [IsLocalization M A] :\\n- Mathlib/RingTheory/Localization/BaseChange.lean:274\\n    instance IsLocalization.tensorRight (M : Submonoid R) [IsLocalization M A] :\\n- Mathlib/RingTheory/Localization/BaseChange.lean:447\\n    instance tensor [IsLocalization.Away r A] :\\n- Mathlib/RingTheory/Localization/BaseChange.lean:460\\n    instance tensorRight [IsLocalization.Away r A] :\\n- Mathlib/RingTheory/Localization/Algebra.lean:101\\n    instance isLocalization_algebraMapSubmonoid_map_algHom (f : A →ₐ[R] B) :\\n- Mathlib/RingTheory/Localization/LocalizationLocalization.lean:142\\n    instance (p : Ideal (Localization M)) [p.IsPrime] : Algebra R (Localization.AtPrime p) :=\\n- Mathlib/RingTheory/Localization/LocalizationLocalization.lean:145\\n    instance (p : Ideal (Localization M)) [p.IsPrime] :\\n- Mathlib/RingTheory/Localization/LocalizationLocalization.lean:149\\n    instance isLocalization_atPrime_localization_atPrime (p : Ideal (Localization M))\\n- Mathlib/RingTheory/Localization/LocalizationLocalization.lean:180\\n    noncomputable instance instAlgebraLocalizationAtPrime (x : Ideal R) [H : x.IsPrime] [IsDomain R] :\\n- Mathlib/RingTheory/Localization/AtPrime/Basic.lean:107\\n    instance AtPrime.isLocalRing : IsLocalRing (Localization P.primeCompl) :=\\n- Mathlib/RingTheory/Localization/Defs.lean:52\\n    instances if `R` is a ring. `Localization.Away`, `Localization.AtPrime` and `FractionRing`\\n- Mathlib/RingTheory/Localization/Defs.lean:802\\n    instance instUniqueLocalization [Subsingleton R] : Unique (Localization M) where\\n- Mathlib/RingTheory/Localization/Defs.lean:837\\n    instance isLocalization : IsLocalization M (Localization M) :=\\n- Mathlib/RingTheory/Localization/Defs.lean:840\\n    instance [NoZeroDivisors R] : NoZeroDivisors (Localization M) := IsLocalization.noZeroDivisors M\\n- Mathlib/Algebra/Category/Ring/Instances.lean:35\\n    instance Localization.epi {R : Type*} [CommRing R] (M : Submonoid R) :\\n- Mathlib/Algebra/Category/Ring/Instances.lean:39\\n    instance Localization.epi' {R : CommRingCat} (M : Submonoid R) :\\n- Mathlib/RingTheory/Localization/Basic.lean:143\\n    instance [Module (Localization M) N₁] [Module (Localization M) N₂]\\n- Mathlib/RingTheory/Localization/Basic.lean:296\\n    instance : IsLocalization (IsUnit.submonoid R) R := of_le_isUnit le_rfl\\n- Mathlib/RingTheory/Localization/Basic.lean:298\\n    instance : IsLocalization (Algebra.algebraMapSubmonoid S (IsUnit.submonoid R)) S :=\\n- Mathlib/RingTheory/Localization/Basic.lean:523\\n    This instance can be helpful if you define `Sₘ := Localization (Algebra.algebraMapSubmonoid S M)`,\\n- Mathlib/RingTheory/Localization/Basic.lean:533\\n    noncomputable instance : Algebra (Localization M)\\n- Mathlib/RingTheory/Localization/Basic.lean:545\\n    instance : IsScalarTower R (Localization M) (Localization (Algebra.algebraMapSubmonoid S M)) :=\\n- Mathlib/RingTheory/Localization/Basic.lean:621\\n    instance : IsLocalization (Algebra.algebraMapSubmonoid R M) Rₘ := by\\n- Mathlib/Algebra/Homology/"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean\", \"line\": 350, \"n\": 80}",
+   "ok": true,
+   "result_chars": 3619,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/MonoidLocalization/Basic.lean  (lines 350–429 of 898):\\n   350  section Scalar\\n   351  \\n   352  variable {R R₁ R₂ : Type*}\\n   353  \\n   354  theorem smul_mk [SMul R M] [IsScalarTower R M M] (c : R) (a b) :\\n   355      c • (mk a b : Localization S) = mk (c • a) b := by\\n   356    rw [mk, mk, ← OreLocalization.smul_one_oreDiv_one_smul, OreLocalization.oreDiv_smul_oreDiv]\\n   357    change (c • 1) • a /ₒ (b * 1) = _\\n   358    rw [smul_assoc, one_smul, mul_one]\\n   359  \\n   360  -- Note: Previously there was a `MulDistribMulAction R (Localization S)`.\\n   361  -- It was removed as it is not the correct action.\\n   362  \\n   363  end Scalar\\n   364  \\n   365  end Localization\\n   366  \\n   367  variable {S N}\\n   368  \\n   369  namespace MonoidHom\\n   370  \\n   371  /-- Makes a localization map from a `CommMonoid` hom satisfying the characteristic predicate. -/\\n   372  @[to_additive /-- Makes a localization map from an `AddCommMonoid` hom satisfying the\\n   373  characteristic predicate. -/]\\n   374  def toLocalizationMap (f : M →* N) (H1 : ∀ y : S, IsUnit (f y))\\n   375      (H2 : ∀ z, ∃ x : M × S, z * f x.2 = f x.1) (H3 : ∀ x y, f x = f y → ∃ c : S, ↑c * x = ↑c * y) :\\n   376      Submonoid.LocalizationMap S N where\\n   377    __ := f\\n   378    isLocalizationMap :=\\n   379    { map_units := H1\\n   380      surj := H2\\n   381      exists_of_eq := H3 _ _ }\\n   382  \\n   383  end MonoidHom\\n   384  \\n   385  namespace Submonoid\\n   386  \\n   387  namespace IsLocalizationMap\\n   388  \\n   389  @[to_additive] protected theorem map_one {F : Type*} [FunLike F M N] [MulHomClass F M N]\\n   390      {f : F} (hf : IsLocalizationMap S f) : f 1 = 1 := by\\n   391    rw [← (hf.map_units 1).mul_right_inj, mul_one]\\n   392    exact (map_mul ..).symm.trans congr(f $(mul_one _))\\n   393  \\n   394  @[to_additive] theorem mulEquiv_comp {f : M → N} (hf : IsLocalizationMap S f)\\n   395      {E} [EquivLike E N P] [MulEquivClass E N P] (e : E) : IsLocalizationMap S (e ∘ f) where\\n   396    map_units x := (hf.map_units x).map e\\n   397    surj y := let e : N ≃* P := e\\n   398      have ⟨x, eq⟩ := hf.surj (e.symm y)\\n   399      ⟨x, e.symm.injective (by simpa [e])⟩\\n   400    exists_of_eq eq := hf.exists_of_eq (EquivLike.injective e eq)\\n   401  \\n   402  end IsLocalizationMap\\n   403  \\n   404  namespace LocalizationMap\\n   405  \\n   406  /-- A localization map between monoids automatically preserves 1 and therefore\\n   407  is a monoid homomorphism. -/\\n   408  @[to_additive /-- A localization map between additive monoids automatically preserves 0 and\\n   409  therefore is an additive monoid homomorphism. -/]\\n   410  abbrev toMonoidHom (f : LocalizationMap S N) : M →* N where\\n   411    __ := f\\n   412    map_one' := f.isLocalizationMap.map_one (f := f.toMulHom)\\n   413  \\n   414  @[to_additive]\\n   415  theorem toMonoidHom_injective : Injective (toMonoidHom : LocalizationMap S N → M →* N) :=\\n   416    fun f g ↦ by cases f; congr! with eq; ext; exact congr($eq _)\\n   417  \\n   418  @[to_additive] instance : FunLike (LocalizationMap S N) M N where\\n   419    coe f := f.toMonoidHom\\n   420    coe_injective := DFunLike.coe_injective.comp toMonoidHom_injective\\n   421  \\n   422  @[to_additive] instance : MonoidHomClass (LocalizationMap S N) M N where\\n   423    map_one f := f.toMonoidHom.map_one\\n   424    map_mul f := f.map_mul\\n   425  \\n   426  @[to_additive (attr := simp)] lemma toMonoidHom_apply (f : LocalizationMap S N) (x : M) :\\n   427      f.toMonoidHom x = f x := rfl\\n   428  \\n   429  @[to_additive (attr := ext)]\\n\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"instance.*CommMonoidWithZero.*Localization\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 228,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'instance.*CommMonoidWithZero.*Localization' (via ripgrep):\\n- Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero.lean:66\\n    instance : CommMonoidWithZero (Localization S) where\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero.lean\", \"line\": 1, \"n\": 90}",
+   "ok": true,
+   "result_chars": 3997,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/GroupTheory/MonoidLocalization/MonoidWithZero.lean  (lines 1–90 of 152):\\n     1  /-\\n     2  Copyright (c) 2019 Amelia Livingston. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Amelia Livingston\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.GroupWithZero.Hom\\n     9  public import Mathlib.Algebra.GroupWithZero.NonZeroDivisors\\n    10  public import Mathlib.Algebra.GroupWithZero.Units.Basic\\n    11  public import Mathlib.GroupTheory.MonoidLocalization.Maps\\n    12  public import Mathlib.RingTheory.OreLocalization.Basic\\n    13  \\n    14  /-!\\n    15  # Localizations of commutative monoids with zeroes\\n    16  \\n    17  -/\\n    18  \\n    19  @[expose] public section\\n    20  \\n    21  open Function\\n    22  \\n    23  section CommMonoidWithZero\\n    24  \\n    25  variable {M : Type*} [CommMonoidWithZero M] (S : Submonoid M) (N : Type*) [CommMonoidWithZero N]\\n    26    {P : Type*} [CommMonoidWithZero P]\\n    27  \\n    28  namespace Submonoid\\n    29  \\n    30  variable {S N}\\n    31  \\n    32  /-- If `S` contains `0` then the localization at `S` is trivial. -/\\n    33  theorem LocalizationMap.subsingleton (f : LocalizationMap S N) (h : 0 ∈ S) : Subsingleton N where\\n    34    allEq a b := by\\n    35      rw [← f.mk'_sec a, ← f.mk'_sec b, f.eq]\\n    36      exact ⟨⟨0, h⟩, by simp only [zero_mul]⟩\\n    37  \\n    38  theorem LocalizationMap.subsingleton_iff (f : LocalizationMap S N) : Subsingleton N ↔ 0 ∈ S :=\\n    39    ⟨fun _ ↦ have ⟨c, eq⟩ := f.exists_of_eq (Subsingleton.elim (f 0) (f 1))\\n    40      by rw [mul_zero, mul_one] at eq; exact eq ▸ c.2, f.subsingleton⟩\\n    41  \\n    42  theorem LocalizationMap.nontrivial (f : LocalizationMap S N) (h : 0 ∉ S) : Nontrivial N := by\\n    43    rwa [← not_subsingleton_iff_nontrivial, f.subsingleton_iff]\\n    44  \\n    45  protected theorem LocalizationMap.map_zero (f : LocalizationMap S N) : f 0 = 0 := by\\n    46    have ⟨ms, eq⟩ := f.surj 0\\n    47    rw [← zero_mul, map_mul, ← eq, zero_mul, mul_zero]\\n    48  \\n    49  protected theorem IsLocalizationMap.map_zero {F} [FunLike F M N] [MulHomClass F M N] {f : F}\\n    50      (hf : IsLocalizationMap S f) : f 0 = 0 :=\\n    51    LocalizationMap.map_zero ⟨MulHomClass.toMulHom f, hf⟩\\n    52  \\n    53  instance : MonoidWithZeroHomClass (LocalizationMap S N) M N where\\n    54    map_zero f := by\\n    55      have ⟨ms, eq⟩ := f.surj 0\\n    56      rw [← zero_mul, map_mul, ← eq, zero_mul, mul_zero]\\n    57  \\n    58  end Submonoid\\n    59  \\n    60  namespace Localization\\n    61  \\n    62  variable {S}\\n    63  \\n    64  theorem mk_zero (x : S) : mk 0 (x : S) = 0 := OreLocalization.zero_oreDiv' _\\n    65  \\n    66  instance : CommMonoidWithZero (Localization S) where\\n    67    zero_mul := fun x ↦ Localization.induction_on x fun y => by\\n    68      simp only [← Localization.mk_zero y.2, mk_mul, mk_eq_mk_iff, mul_zero, zero_mul, r_of_eq]\\n    69    mul_zero := fun x ↦ Localization.induction_on x fun y => by\\n    70      simp only [← Localization.mk_zero y.2, mk_mul, mk_eq_mk_iff, mul_zero, r_of_eq]\\n    71  \\n    72  theorem liftOn_zero {p : Type*} (f : M → S → p) (H) : liftOn 0 f H = f 0 1 := by\\n    73    rw [← mk_zero 1, liftOn_mk]\\n    74  \\n    75  end Localization\\n    76  \\n    77  variable {S N}\\n    78  \\n    79  namespace Submonoid\\n    80  \\n    81  @[simp]\\n    82  theorem LocalizationMap.sec_zero_fst {f : LocalizationMap S N} : f (f.sec 0).fst = 0 := by\\n    83    rw [LocalizationMap.sec_spec', mul_zero]\\n    84  \\n    85  namespace LocalizationMap\\n    86  \\n    87  /-- Given a Localization map `f : M →*₀ N` for a Submonoid `S ⊆ M` and a map of\\n    88  `CommMonoidWithZero`s `g : M →*₀ P` such that `g y` is invertible for all `y : S`, the\\n    89  homomorphism induced from `N` to `P` sending `z : N` to `g x * (g y)⁻¹`, where `(x, y) : M × S`\\n    90  are such that `z = f x * (f y)⁻¹`. -/\\n\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"UniqueFactorizationMonoid\", \"Localization\", \"Submonoid\", \"CommMonoidWithZero\"]}",
+   "ok": true,
+   "result_chars": 1539,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"UniqueFactorizationMonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.RingTheory.UniqueFactorizationDomain.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/UniqueFactorizationDomain/Defs.html#UniqueFactorizationMonoid\\\"},{\\\"decl\\\":\\\"Localization\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.GroupTheory.MonoidLocalization.Basic\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/MonoidLocalization/Basic.html#Localization\\\"},{\\\"decl\\\":\\\"Submonoid\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Submonoid.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Submonoid/Defs.html#Submonoid\\\"},{\\\"decl\\\":\\\"CommMonoidWithZero\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.GroupWithZero.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/GroupWithZero/Defs.html#CommMonoidWithZero\\\"}],\\\"counts\\\":{\\\"total\\\":4,\\\"exists\\\":4,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem localization_of_unique_factorization_monoid {M : Type*} [CommMonoidWithZero M]\n    [UniqueFactorizationMonoid M] (S : Submonoid M) :\n    UniqueFactorizationMonoid (Localization S) := sorry"
+}

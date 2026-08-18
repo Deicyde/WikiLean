@@ -1,0 +1,291 @@
+{
+ "task_id": "fresh_002",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:06:32Z",
+ "wall_s": 103.7,
+ "transcript_stats": {
+  "turns": 31,
+  "assistant_turns": 30,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 18,
+   "mcp__wikibrain__brain_bridge": 4,
+   "mcp__wikibrain__brain_cell": 2,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_filter": 1,
+   "mcp__wikibrain__brain_snippets": 1,
+   "mcp__wikibrain__brain_transfer": 3
+  },
+  "tokens_in": 242,
+  "tokens_out": 6746,
+  "cost_usd": 0.12307575
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monoid algebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monomial coefficient monoid\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monomial coefficient monoid\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"monoid algebra map to monomials is injective\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3953,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra map to monomials is injective\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Monoid\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":19},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":12},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q11567\\\",\\\"label\\\":\\\"Complex number\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q190109\\\",\\\"label\\\":\\\"Field (mathematics)\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q674689\\\",\\\"label\\\":\\\"Clifford algebra\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":7}],\\\"returned\\\":12,\\\"total\\\":142,\\\"withheld_by_shard\\\":235,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Algebra\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Algebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Algebra.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Algebra/Defs.html#Algebra\\\",\\\"via_cell\\\":\\\"cell:Q1000660\\\",\\\"cell_label\\\":\\\"Algebra over a field\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Algebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Monoid\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Monoid (M : Type u) extends Semigroup M, MulOneClass M, NPow M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Monoid\\\",\\\"via_cell\\\":\\\"cell:Q208237\\\",\\\"cell_label\\\":\\\"Monoid\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"aka\\\":[\\\"MonoidAlgebra\\\",\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q656198\\\",\\\"label\\\":\\\"Maschke's theorem\\\",\\\"aka\\\":[\\\"Maschkes Theorem\\\",\\\"MonoidAlgebra.Submodule.exists_isCompl\\\",\\\"Halidon Rings and their Applications\\\"],\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/Maschke\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MonoidAlgebra.exists_leftInverse_of_injective\\\",\\\"label\\\":\\\"MonoidAlgebra.exists_leftInverse_of_injective\\\",\\\"supercell\\\":\\\"path:Mathlib/RepresentationTheory/Maschke\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MonoidAlgebra.liftMagma\\\",\\\"label\\\":\\\"MonoidAlgebra.liftMagma\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Basic\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.commute_mapDomainAlgHom_inl_inr\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.commute_mapDomainAlgHom_inl_inr\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodGroupLike\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodGroupLike\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodGroupLike_apply\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodGroupLike_apply\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/Bialgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_fst_ofConv_single\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_fst_ofConv_single\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.MonoidAlgebra.prodPointsMulEquiv_mapValue\\\",\\\"label\\\":\\\"TauCeti.MonoidAlgebra.prodPointsMulEquiv_mapValue\\\",\\\"supercell\\\":\\\"path:TauCeti/Algebra/AlgebraicGroup/GroupAlgebra\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q2602722\"}",
+   "ok": true,
+   "result_chars": 2688,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q2602722\\\",\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"group ring\\\",\\\"f\\\":160,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q2602722\\\",\\\"anchor\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"supercells\\\":[\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\"],\\\"f\\\":160,\\\"xy\\\":[1435.7,393.5]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"bond\\\":\\\"generalization\\\",\\\"prov\\\":2,\\\"description\\\":\\\"free module and at the same time a ring\\\",\\\"slug\\\":\\\"Group_ring\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"prov\\\":2,\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"structure MonoidAlgebra (R M : Type*) [Semiring R] where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2508.19360#0\\\",\\\"label\\\":\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2508.19360\\\",\\\"ref\\\":\\\"0\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":84,\\\"mentions\\\":5,\\\"cites\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q6366842\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"invocation\\\":6,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q864145\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/RepresentationTheory\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.IsTrivialUnit\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.IsTrivialUnit.isUnit\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.DiagonalizableGroup.baseChangePointsMulEquiv_apply_coe\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1}}],\\\"counts\\\":{\\\"syn\\\":83,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monoidAlgebra of monoid element single\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 195,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoidAlgebra of monoid element single\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.of single\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.of single\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:MonoidAlgebra\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 9071,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q2602722\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q6366842\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"invocation\\\":6,\\\"mentions\\\":1},\\\"traces_total\\\":7,\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q2602722\\\",\\\"dst\\\":\\\"decl:FormalConjectures:Kaplansky.zero_divisor_conjecture\\\",\\\"prov\\\":3,\\\"evidence\\\":{\\\"note\\\":\\\"The conjecture is about zero divisors in 'the group algebra K[G]' (MonoidAlgebra K G), i.e. the group ring of a torsion-free group.\\\",\\\"wikipedia_slug\\\":\\\"Group_ring\\\",\\\"file\\\":\\\"FormalConjectures/Wikipedia/Kaplansky.lean\\\",\\\"proposer\\\":\\\"fc-tagger-79\\\",\\\"skeptic\\\":\\\"accept\\\",\\\"shard\\\":\\\"fc_links_batch_79.jsonl\\\",\\\"role\\\":\\\"citation\\\"}},{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:Kaplansky.UnitConjecture.counterexamples.i\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"MonoidAlgebra\\\"}},{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:Kaplansky.UnitConjecture.counterexamples.ii\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"MonoidAlgebra\\\"}},{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:Kaplansky.counter_unit_conjecture\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"MonoidAlgebra\\\"}},{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:Kaplansky.counter_unit_conjecture_weak\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"MonoidAlgebra\\\"}},{\\\"kind\\\":\\\"invocation\\\",\\\"src\\\":\\\"decl:FormalConjectures:Kaplansky.idempotent_conjecture\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":32,\\\"evidence\\\":{\\\"name\\\":\\\"MonoidAlgebra\\\"}}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q1000660\\\",\\\"dst\\\":\\\"lit:2508.19360#0\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"MonoidAlgebra\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.843,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q1000660\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"fadbc4d12872\\\",\\\"label\\\":\\\"Group algebras\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q864145\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q864145\\\",\\\"dst\\\":\\\"lit:2508.19360#0\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"MonoidAlgebra\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.843,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q864145\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"partial\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"1b85f643531d\\\",\\\"label\\\":\\\"Isomorphic to group ring of C2\\\",\\\"status\\\":\\\"partial\\\"}]}}]},{\\\"id\\\":\\\"path:Mathlib/RepresentationTheory\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"cites\\\",\\\"src\\\":\\\"Q3526854\\\",\\\"dst\\\":\\\"lit:2508.19360#0\\\",\\\"prov\\\":25,\\\"evidence\\\":{\\\"via_decls\\\":[\\\"MonoidAlgebra\\\"],\\\"gpt54\\\":\\\"inexact\\\",\\\"deepseek\\\":\\\"exact\\\",\\\"sim\\\":0.843,\\\"primary\\\":false,\\\"license_open\\\":false}},{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q3526854\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":null,\\\"label\\\":\\\"Convolution algebra\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q161172\\\",\\\"dst\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":1,\\\"statuses\\\":{\\\"formalized\\\":1},\\\"sample\\\":[{\\\"id\\\":\\\"27c7157e18c2\\\",\\\"label\\\":\\\"Group ring\\\",\\\"status\\\":\\\"formalized\\\"}]}}]},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Kaplansky.IsTrivialUnit\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"invocation\\\":1},\\\"traces\\\":["
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"of_apply monoid algebra injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 190,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"of_apply monoid algebra injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"finsupp injective monomial\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"finsupp injective monomial\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"the function that embeds a monoid element into the monoid algebra as a monomial\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 4295,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"the function that embeds a monoid element into the monoid algebra as a monomial\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:Q243723\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"monomial\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial\\\",\\\"label\\\":\\\"MvPolynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"MvPolynomial.monomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.MvPolynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MvPolynomial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def monomial (s : σ →₀ ℕ) : R →ₗ[R] MvPolynomial σ R :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MvPolynomial/Basic.html#MvPolynomial.monomial\\\",\\\"via_cell\\\":\\\"cell:Q243723\\\",\\\"cell_label\\\":\\\"monomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial\\\",\\\"label\\\":\\\"MvPolynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Polynomial.monomial\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Polynomial.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Polynomial.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def monomial (n : ℕ) : R →ₗ[R] R[X] where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Polynomial/Basic.html#Polynomial.monomial\\\",\\\"via_cell\\\":\\\"cell:Q243723\\\",\\\"cell_label\\\":\\\"monomial\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial\\\",\\\"label\\\":\\\"MvPolynomial\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MvPolynomial/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]},{\\\"decl\\\":\\\"Function\\\",\\\"exists\\\":false,\\\"module\\\":null,\\\"bond\\\":null,\\\"d"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.of\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.of\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 0, \"under\": \"path:Mathlib/Algebra/MonoidAlgebra\", \"limit\": 30}",
+   "ok": true,
+   "result_chars": 631,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":0,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"f\\\":160,\\\"aka\\\":[\\\"MonoidAlgebra\\\",\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\"],\\\"p\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MonoidAlgebra.liftMagma\\\",\\\"label\\\":\\\"MonoidAlgebra.liftMagma\\\",\\\"p\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Basic\\\"}],\\\"returned\\\":2,\\\"cursor\\\":0,\\\"next_cursor\\\":null,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"finsupp single injection\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 257,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"finsupp single injection\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finsupp\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2784,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q27628\\\",\\\"label\\\":\\\"Linear combination\\\",\\\"aka\\\":[\\\"Finsupp.linearCombination\\\",\\\"Linear Combination\\\",\\\"linear combination\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Finsupp/LinearCombination\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Finsupp.basisSingleOne\\\",\\\"label\\\":\\\"Finsupp.basisSingleOne\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Finsupp/VectorSpace\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.add_ofFinsupp\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.add_ofFinsupp\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.coe_ofFinsupp\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.coe_ofFinsupp\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.coeff_ofFinsupp\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.coeff_ofFinsupp\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_apply_coe\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_apply_coe\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_subOfLe_coe\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_subOfLe_coe\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_symm_apply\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.equivFinsupp_symm_apply\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"},{\\\"id\\\":\\\"cell:decl:TauCeti:TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.multiplicityFinsupp\\\",\\\"label\\\":\\\"TauCeti.AlgebraicGeometry.WeilDivisor.EffectiveDivisorOfDegree.multiplicityFinsupp\\\",\\\"supercell\\\":\\\"path:TauCeti/AlgebraicGeometry/WeilDivisor/FixedDegree\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q27628\"}",
+   "ok": true,
+   "result_chars": 3007,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q27628\\\",\\\"id\\\":\\\"cell:Q27628\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Linear combination\\\",\\\"f\\\":35864,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q27628\\\",\\\"anchor\\\":\\\"Q27628\\\",\\\"label\\\":\\\"Linear combination\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Finsupp/LinearCombination\\\"],\\\"f\\\":35864,\\\"xy\\\":[-122.6,-86.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q27628\\\",\\\"label\\\":\\\"Linear combination\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"expression constructed from a set of terms by the addition of terms in the set to each other any number of times\\\",\\\"slug\\\":\\\"Linear_combination\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Finsupp.linearCombination\\\",\\\"label\\\":\\\"Finsupp.linearCombination\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Finsupp.LinearCombination\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def linearCombination : (α →₀ R) →ₗ[R] M :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Finsupp.LinearCombination\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:LinearCombination\\\",\\\"label\\\":\\\"Linear Combination\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/LinearCombination.html\\\",\\\"qid\\\":\\\"Q27628\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:linear combination\\\",\\\"label\\\":\\\"linear combination\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/linear+combination\\\",\\\"qid\\\":\\\"Q27628\\\",\\\"snippet\\\":\\\"Linear combinations are the most general operations in the operads for modules over a rig (including modules over a ring and vector spaces over a field).\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":2},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Finsupp\\\",\\\"label\\\":\\\"Finsupp\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Finsupp/LinearCombination\\\",\\\"label\\\":\\\"LinearCombination\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":34,\\\"links\\\":18,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":3,\\\"links\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":3}},{\\\"id\\\":\\\"cell:Q189569\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q32043\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q382698\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q1129902\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"links\\\":1}}],\\\"counts\\\":{\\\"syn\\\":38,\\\"organs\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finsupp.single injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp.single injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finsupp single\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finsupp single\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:MonoidAlgebra\"}",
+   "ok": true,
+   "result_chars": 935,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q2602722\\\",\\\"label\\\":\\\"group ring\\\",\\\"snippet\\\":\\\"free module and at the same time a ring\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q2602722\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\",\\\"code\\\":\\\"structure MonoidAlgebra (R M : Type*) [Semiring R] where\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:2508.19360#0\\\",\\\"label\\\":\\\"Search for a basis of the Temperley-Lieb algebra, using rewriting systems\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/2508.19360\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monoid algebra support injection coefficient\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 201,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monoid algebra support injection coefficient\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"for nonzero r, the map m ↦ r • m is injective\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 278,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"for nonzero r, the map m ↦ r • m is injective\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.ofMulSingleClass\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 187,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.ofMulSingleClass\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.ofMulLeftInvariant injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 199,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.ofMulLeftInvariant injective\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 3050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"injective\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q2716519\\\",\\\"label\\\":\\\"Injective module\\\",\\\"aka\\\":[\\\"Definition:Injective Module\\\",\\\"Injective Module\\\",\\\"Module.Injective\\\",\\\"injective module\\\",\\\"Ext groups in Homotopy Type Theory\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Injective\\\"},{\\\"id\\\":\\\"cell:Q1148215\\\",\\\"label\\\":\\\"Mitchell's embedding theorem\\\",\\\"aka\\\":[\\\"CategoryTheory.Abelian.freyd_mitchell\\\",\\\"injectives-remark-embedding\\\",\\\"On functors preserving projective resolutions\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/FreydMitchell\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.IsGrothendieckAbelian.enoughInjectives\\\",\\\"label\\\":\\\"CategoryTheory.IsGrothendieckAbelian.enoughInjectives\\\",\\\"aka\\\":[\\\"injectives-theorem-injective-embedding-grothendieck\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Abelian/GrothendieckCategory\\\"},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"aka\\\":[\\\"Bijection injection and surjection\\\",\\\"Bijection, injection and surjection\\\",\\\"Function.Bijective\\\",\\\"Function.Injective\\\",\\\"Function.Surjective\\\",\\\"Surjection\\\",\\\"Surjective\\\",\\\"Surjective function\\\",\\\"bijection\\\",\\\"Gravity and its wonders: braneworlds and holography\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\"},{\\\"id\\\":\\\"cell:Q536640\\\",\\\"label\\\":\\\"Hall's marriage theorem\\\",\\\"aka\\\":[\\\"Finset.all_card_le_biUnion_card_iff_exists_injective\\\",\\\"Hall's Marriage Theorem\\\",\\\"Hall's marriage theorem, proof of\\\",\\\"HallMarriageTheorem.hall_hard_inductive\\\",\\\"Halls Theorem\\\",\\\"Graph Derangements\\\",\\\"Measure Algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Hall/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AddCommGrpCat.injective_of_divisible\\\",\\\"label\\\":\\\"AddCommGrpCat.injective_of_divisible\\\",\\\"aka\\\":[\\\"Existentially Closed Exponential Fields\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Category/Grp\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.IsProper\\\",\\\"label\\\":\\\"AlgebraicGeometry.IsProper\\\",\\\"aka\\\":[\\\"On injective endomorphisms of symbolic schemes\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/Proper\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.descendsAlong_universallyInjective_surjective_inf_flat_inf_quasicompact\\\",\\\"label\\\":\\\"AlgebraicGeometry.descendsAlong_universallyInjective_surjective_inf_flat_inf_quasicompact\\\",\\\"aka\\\":[\\\"descent-lemma-descending-property-universally-injective\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/FlatDescent\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.isSeparated_of_injective\\\",\\\"label\\\":\\\"AlgebraicGeometry.isSeparated_of_injective\\\",\\\"aka\\\":[\\\"schemes-lemma-injective-points\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/Separated\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.tfae_universallyInjective\\\",\\\"label\\\":\\\"AlgebraicGeometry.tfae_universallyInjective\\\",\\\"aka\\\":[\\\"morphisms-lemma-universally-injective\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/UniversallyInjective\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Function.Injective\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1297,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Function.Injective\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"aka\\\":[\\\"Bijection injection and surjection\\\",\\\"Bijection, injection and surjection\\\",\\\"Function.Bijective\\\",\\\"Function.Injective\\\",\\\"Function.Surjective\\\",\\\"Surjection\\\",\\\"Surjective\\\",\\\"Surjective function\\\",\\\"bijection\\\",\\\"Gravity and its wonders: braneworlds and holography\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Init:Function.Injective.comp\\\",\\\"label\\\":\\\"Function.Injective.comp\\\",\\\"aka\\\":[\\\"IoUCert: Robustness Verification for Anchor-based Object Detectors\\\"],\\\"supercell\\\":\\\"path:Init/Data/Function\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.Injective.countable\\\",\\\"label\\\":\\\"Function.Injective.countable\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Countable/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.injective_comp_right_iff_surjective\\\",\\\"label\\\":\\\"Function.injective_comp_right_iff_surjective\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function.injective_iff_hasLeftInverse\\\",\\\"label\\\":\\\"Function.injective_iff_hasLeftInverse\\\",\\\"supercell\\\":\\\"path:Mathlib/Logic/Function/Basic\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra.inl embedding\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra.inl embedding\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"MonoidAlgebra basis element support\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 192,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"MonoidAlgebra basis element support\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Finsupp single injective scalar\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 227,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Finsupp single injective scalar\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"MonoidAlgebra\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1475,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"informal_to_formal\\\",\\\"q\\\":\\\"MonoidAlgebra\\\",\\\"resolved_from\\\":\\\"decl\\\",\\\"id\\\":\\\"cell:Q2602722\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"group ring\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra\\\",\\\"label\\\":\\\"MonoidAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/MonoidAlgebra/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"match\\\":\\\"formalizes\\\",\\\"hits\\\":[{\\\"decl\\\":\\\"MonoidAlgebra\\\",\\\"module\\\":\\\"Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.MonoidAlgebra.Defs\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"structure MonoidAlgebra (R M : Type*) [Semiring R] where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/MonoidAlgebra/Defs.html#MonoidAlgebra\\\",\\\"via_cell\\\":\\\"cell:Q2602722\\\",\\\"cell_label\\\":\\\"group ring\\\"}],\\\"note\\\":\\\"no exact formalization; nearest is a related declaration (MonoidAlgebra on group ring)\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"of injective function nonzero\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 225,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"of injective function nonzero\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem monoidAlgebraOfInjective (R : Type*) (M : Type*) \n    [Semiring R] [Monoid M] (r : R) (hr : r ≠ 0) : \n    Function.Injective (fun (m : M) => r • (MonoidAlgebra.of R M m)) := sorry"
+}

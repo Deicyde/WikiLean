@@ -1,0 +1,152 @@
+{
+ "task_id": "fresh_070",
+ "arm": "X",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": true
+ },
+ "condition_hash": "7e415ddbf500d08ec3e72fa1e3c10ee91f36ddc4922ebaac2f8c56d2b4787d8e",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:09:07Z",
+ "wall_s": 52.6,
+ "transcript_stats": {
+  "turns": 13,
+  "assistant_turns": 8,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 3,
+   "mcp__formal__decl_read": 4,
+   "mcp__formal__decl_grep": 4,
+   "mcp__wikibrain__decl_exists": 1
+  },
+  "tokens_in": 68,
+  "tokens_out": 3959,
+  "cost_usd": 0.04531715
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Set.range\"}",
+   "ok": true,
+   "result_chars": 1126,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 3331 declarations mentioning Set.range.\\n- Set.range   [Mathlib.Data.Set.Operations]\\n    Range of a function.  This function is more flexible than `f '' univ`, as the image requires that the domain is in Type and not an arbitrary Sort.\\n- Set.rangeFactorization   [Mathlib.Data.Set.Operations]\\n    Any map `f : ι → α` factors through a map `rangeFactorization f : ι → range f`.\\n- Set.rangeSplitting   [Mathlib.Data.Set.Operations]\\n    We can use the axiom of choice to pick a preimage for every element of `range f`.\\n- Set.rangeFactorization_surjective   [Mathlib.Data.Set.Operations]\\n- Set.mem_range_self   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_bijective   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_injective   [Mathlib.Data.Set.Operations]\\n- Set.mem_range   [Mathlib.Data.Set.Operations]\\n- Set.rangeFactorization_eq_rangeFactorization_iff   [Mathlib.Data.Set.Operations]\\n- Set.apply_rangeSplitting   [Mathlib.Data.Set.Operations]\\n- Set.Subtype.range_coind   [Mathlib.Data.Set.Operations]\\n- Set.comp_rangeSplitting   [Mathlib.Data.Set.Operations]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"BddAbove\"}",
+   "ok": true,
+   "result_chars": 787,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 532 declarations mentioning BddAbove.\\n- BddAbove   [Mathlib.Order.Bounds.Defs]\\n    A set is bounded above if there exists an upper bound.\\n- bddAbove_Iic   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Iio   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Icc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ico   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioc   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_Ioo   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_empty   [Mathlib.Order.Bounds.Basic]\\n- bddAbove_singleton   [Mathlib.Order.Bounds.Basic]\\n- not_bddAbove_univ   [Mathlib.Order.Bounds.Basic]\\n- OrderTop.bddAbove   [Mathlib.Order.Bounds.Basic]\\n    When there is a global maximum, every set is bounded above.\\n- nonempty_of_not_bddAbove   [Mathlib.Order.Bounds.Basic]\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Function.comp\"}",
+   "ok": true,
+   "result_chars": 866,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 4992 declarations mentioning Function.comp.\\n- Function.comp   [Init.Prelude]\\n    Function composition, usually written with the infix operator `∘`. A new function is created from two existing functions, where one function's output is used as\\n- Function.comp_id   [Init.Core]\\n- Function.id_comp   [Init.Core]\\n- Function.false_comp   [Init.Core]\\n- Function.true_comp   [Init.Core]\\n- Function.comp_apply   [Init.Core]\\n- Function.comp_def   [Init.Core]\\n- Function.const_comp   [Init.Core]\\n- Function.comp_const   [Init.Core]\\n- instDecidablePredComp   [Init.PropLemmas]\\n- LawfulFunctor.map_const   [Init.Control.Lawful.Basic]\\n    The `mapConst` implementation is equivalent to the default implementation.\\n- LawfulFunctor.comp_map   [Init.Control.Lawful.Basic]\\n    The `map` implementation preserves function composition.\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Operations.lean\", \"line\": 1, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4828,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Operations.lean  (lines 1–100 of 347):\\n     1  /-\\n     2  Copyright (c) 2016 Jeremy Avigad. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Jeremy Avigad, Johannes Hölzl, Reid Barton, Kim Morrison, Patrick Massot, Kyle Miller,\\n     5  Minchao Wu, Yury Kudryashov, Floris van Doorn\\n     6  -/\\n     7  module\\n     8  \\n     9  public import Mathlib.Data.Set.CoeSort\\n    10  public import Mathlib.Data.SProd\\n    11  public import Mathlib.Data.Subtype\\n    12  public import Mathlib.Order.Notation\\n    13  public import Mathlib.Tactic.Push.Attr\\n    14  \\n    15  import Mathlib.Tactic.Attr.Register\\n    16  import Aesop.BuiltinRules\\n    17  import Aesop.Frontend.Tactic\\n    18  import Aesop.Main\\n    19  \\n    20  /-!\\n    21  # Basic definitions about sets\\n    22  \\n    23  In this file we define various operations on sets.\\n    24  We also provide basic lemmas needed to unfold the definitions.\\n    25  More advanced theorems about these definitions are located in other files in `Mathlib/Data/Set`.\\n    26  \\n    27  ## Main definitions\\n    28  \\n    29  - complement of a set and set difference;\\n    30  - `Set.preimage f s`, a.k.a. `f ⁻¹' s`: preimage of a set;\\n    31  - `Set.range f`: the range of a function;\\n    32    it is more general than `f '' univ` because it allows functions from `Sort*`;\\n    33  - `s ×ˢ t`: product of `s : Set α` and `t : Set β` as a set in `α × β`;\\n    34  - `Set.diagonal`: the diagonal in `α × α`;\\n    35  - `Set.offDiag s`: the part of `s ×ˢ s` that is off the diagonal;\\n    36  - `Set.pi`: indexed product of a family of sets `∀ i, Set (α i)`,\\n    37    as a set in `∀ i, α i`;\\n    38  - `Set.EqOn f g s`: the predicate saying that two functions are equal on a set;\\n    39  - `Set.MapsTo f s t`: the predicate saying that `f` sends all points of `s` to `t`;\\n    40  - `Set.MapsTo.restrict`: restrict `f : α → β` to `f' : s → t` provided that `Set.MapsTo f s t`;\\n    41  - `Set.restrictPreimage`: restrict `f : α → β` to `f' : (f ⁻¹' t) → t`;\\n    42  - `Set.InjOn`: the predicate saying that `f` is injective on a set;\\n    43  - `Set.SurjOn f s t`: the predicate saying that `t ⊆ f '' s`;\\n    44  - `Set.BijOn f s t`: the predicate saying that `f` is injective on `s` and `f '' s = t`;\\n    45  - `Set.graphOn`: the graph of a function on a set;\\n    46  - `Set.LeftInvOn`, `Set.RightInvOn`, `Set.InvOn`:\\n    47    the predicates saying that `f'` is a left, right or two-sided inverse of `f` on `s`, `t`, or both;\\n    48  - `Set.image2`: the image of a pair of sets under a binary operation,\\n    49    mostly useful to define pointwise algebraic operations on sets;\\n    50  - `Set.seq`: monadic `seq` operation on sets;\\n    51    we don't use monadic notation to ensure support for maps between different universes.\\n    52  \\n    53  ## Notation\\n    54  \\n    55  - `f '' s`: image of a set;\\n    56  - `f ⁻¹' s`: preimage of a set;\\n    57  - `s ×ˢ t`: the product of sets;\\n    58  - `s ∪ t`: the union of two sets;\\n    59  - `s ∩ t`: the intersection of two sets;\\n    60  - `sᶜ`: the complement of a set;\\n    61  - `s \\\\ t`: the difference of two sets.\\n    62  \\n    63  ## Keywords\\n    64  \\n    65  set, image, preimage\\n    66  -/\\n    67  \\n    68  @[expose] public section\\n    69  \\n    70  universe u v w\\n    71  \\n    72  namespace Set\\n    73  \\n    74  variable {α : Type u} {β : Type v} {γ : Type w}\\n    75  \\n    76  /-! ### Lemmas about `mem` and `setOf` -/\\n    77  \\n    78  @[simp, mfld_simps, push]\\n    79  theorem mem_setOf_eq {x : α} {p : α → Prop} : (x ∈ {y | p y}) = p x := rfl\\n    80  \\n    81  grind_pattern mem_setOf_eq => x ∈ setOf p\\n    82  \\n    83  /-- This lemma is intended for use with `rw` where a membership predicate is needed,\\n    84  hence the explicit argument and the equality in the reverse direction from normal.\\n    85  See also `Set.mem_setOf_eq` for the"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def Set.range\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 327,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for '^def Set.range' (via ripgrep):\\n- Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean:422\\n    def Set.rangeInl : (range Sum.inl : Set (α ⊕ β)) ≃ᵐ α where\\n- Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean:430\\n    def Set.rangeInr : (range Sum.inr : Set (α ⊕ β)) ≃ᵐ β where\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"^def BddAbove\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 146,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for '^def BddAbove' (via ripgrep):\\n- Mathlib/Order/Bounds/Defs.lean:39\\n    def BddAbove (s : Set α) :=\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Bounds/Defs.lean\", \"line\": 39, \"n\": 10}",
+   "ok": true,
+   "result_chars": 586,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Bounds/Defs.lean  (lines 39–48 of 63):\\n    39  def BddAbove (s : Set α) :=\\n    40    (upperBounds s).Nonempty\\n    41  \\n    42  /-- `a` is a least element of a set `s`; for a partial order, it is unique if exists. -/\\n    43  @[to_dual\\n    44  /-- `a` is a greatest element of a set `s`; for a partial order, it is unique if exists. -/]\\n    45  def IsLeast (s : Set α) (a : α) : Prop :=\\n    46    a ∈ s ∧ a ∈ lowerBounds s\\n    47  \\n    48  /-- `a` is a least upper bound of a set `s`; for a partial order, it is unique if exists. -/\\n\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def Set\\\\.range\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 330,
+   "result_head": "[{\"type\": \"text\", \"text\": \"2 match(es) for 'def Set\\\\\\\\.range' (via ripgrep):\\n- Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean:422\\n    def Set.rangeInl : (range Sum.inl : Set (α ⊕ β)) ≃ᵐ α where\\n- Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean:430\\n    def Set.rangeInr : (range Sum.inr : Set (α ⊕ β)) ≃ᵐ β where\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"range\\\\s*:\\\\s*\\\\(.*\\\\)\\\\s*→.*Set\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 204,
+   "result_head": "[{\"type\": \"text\", \"text\": \"1 match(es) for 'range\\\\\\\\s*:\\\\\\\\s*\\\\\\\\(.*\\\\\\\\)\\\\\\\\s*→.*Set' (via ripgrep):\\n- Mathlib/Topology/Sets/VietorisTopology.lean:220\\n    Continuous (range : (ι → α) → Set α) := by\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Data/Set/Operations.lean\", \"line\": 100, \"n\": 100}",
+   "ok": true,
+   "result_chars": 4870,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Data/Set/Operations.lean  (lines 100–199 of 347):\\n   100  theorem mem_univ (x : α) : x ∈ @univ α := trivial\\n   101  \\n   102  /-! ### Operations -/\\n   103  \\n   104  instance : Compl (Set α) := ⟨fun s ↦ {x | x ∉ s}⟩\\n   105  \\n   106  @[simp, grind =, push]\\n   107  theorem mem_compl_iff (s : Set α) (x : α) : x ∈ sᶜ ↔ x ∉ s := Iff.rfl\\n   108  \\n   109  theorem sdiff_eq (s t : Set α) : s \\\\ t = s ∩ tᶜ := rfl\\n   110  \\n   111  @[deprecated (since := \\\"2026-06-03\\\")] alias diff_eq := sdiff_eq\\n   112  \\n   113  @[simp, grind =, push]\\n   114  theorem mem_sdiff {s t : Set α} (x : α) : x ∈ s \\\\ t ↔ x ∈ s ∧ x ∉ t := Iff.rfl\\n   115  \\n   116  @[deprecated (since := \\\"2026-06-03\\\")] alias mem_diff := mem_sdiff\\n   117  \\n   118  theorem mem_sdiff_of_mem {s t : Set α} {x : α} (h1 : x ∈ s) (h2 : x ∉ t) : x ∈ s \\\\ t := ⟨h1, h2⟩\\n   119  \\n   120  @[deprecated (since := \\\"2026-06-03\\\")] alias mem_diff_of_mem := mem_sdiff_of_mem\\n   121  \\n   122  /-- The preimage of `s : Set β` by `f : α → β`, written `f ⁻¹' s`,\\n   123    is the set of `x : α` such that `f x ∈ s`. -/\\n   124  def preimage (f : α → β) (s : Set β) : Set α := {x | f x ∈ s}\\n   125  \\n   126  /-- `f ⁻¹' t` denotes the preimage of `t : Set β` under the function `f : α → β`. -/\\n   127  infixr:80 \\\" ⁻¹' \\\" => preimage\\n   128  \\n   129  @[simp, mfld_simps, grind =, push]\\n   130  theorem mem_preimage {f : α → β} {s : Set β} {a : α} : a ∈ f ⁻¹' s ↔ f a ∈ s := Iff.rfl\\n   131  \\n   132  /-- `f '' s` denotes the image of `s : Set α` under the function `f : α → β`. -/\\n   133  infixr:80 \\\" '' \\\" => image\\n   134  \\n   135  @[simp, grind =, push]\\n   136  theorem mem_image (f : α → β) (s : Set α) (y : β) : y ∈ f '' s ↔ ∃ x ∈ s, f x = y :=\\n   137    Iff.rfl\\n   138  \\n   139  @[mfld_simps]\\n   140  theorem mem_image_of_mem (f : α → β) {x : α} {a : Set α} (h : x ∈ a) : f x ∈ f '' a :=\\n   141    ⟨_, h, rfl⟩\\n   142  \\n   143  /-- Restriction of `f` to `s` factors through `s.imageFactorization f : s → f '' s`. -/\\n   144  def imageFactorization (f : α → β) (s : Set α) : s → f '' s := fun p =>\\n   145    ⟨f p.1, mem_image_of_mem f p.2⟩\\n   146  \\n   147  /-- `kernImage f s` is the set of `y` such that `f ⁻¹ y ⊆ s`. -/\\n   148  def kernImage (f : α → β) (s : Set α) : Set β := {y | ∀ ⦃x⦄, f x = y → x ∈ s}\\n   149  \\n   150  lemma subset_kernImage_iff {s : Set β} {t : Set α} {f : α → β} : s ⊆ kernImage f t ↔ f ⁻¹' s ⊆ t :=\\n   151    ⟨fun h _ hx ↦ h hx rfl,\\n   152      fun h _ hx y hy ↦ h (show f y ∈ s from hy.symm ▸ hx)⟩\\n   153  \\n   154  section Range\\n   155  \\n   156  variable {ι : Sort*} {f : ι → α}\\n   157  \\n   158  /-- Range of a function.\\n   159  \\n   160  This function is more flexible than `f '' univ`, as the image requires that the domain is in Type\\n   161  and not an arbitrary Sort. -/\\n   162  def range (f : ι → α) : Set α := {x | ∃ y, f y = x}\\n   163  \\n   164  @[simp, grind =, push] theorem mem_range {x : α} : x ∈ range f ↔ ∃ y, f y = x := Iff.rfl\\n   165  \\n   166  @[mfld_simps] theorem mem_range_self (i : ι) : f i ∈ range f := ⟨i, rfl⟩\\n   167  \\n   168  /-- Any map `f : ι → α` factors through a map `rangeFactorization f : ι → range f`. -/\\n   169  def rangeFactorization (f : ι → α) : ι → range f := fun i => ⟨f i, mem_range_self i⟩\\n   170  \\n   171  @[simp] lemma rangeFactorization_injective :\\n   172      (Set.rangeFactorization f).Injective ↔ f.Injective := by\\n   173    simp [Function.Injective, rangeFactorization]\\n   174  \\n   175  @[simp] lemma rangeFactorization_surjective : (rangeFactorization f).Surjective :=\\n   176    fun ⟨_, i, rfl⟩ ↦ ⟨i, rfl⟩\\n   177  \\n   178  @[simp] lemma rangeFactorization_bijective :\\n   179      (Set.rangeFactorization f).Bijective ↔ f.Injective := by simp [Function.Bijective]\\n   180  \\n   181  @[simp] lemma rangeFactorization_eq_rangeFactorization_iff {ι : Sort*} {α : Type*} {f : ι → α}\\n   182      (a b : ι) : Set.rangeFactorization f a = Set.rangeFactorization f b ↔ f a = f b := by\\n "
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Order/Bounds/Defs.lean\", \"line\": 1, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2568,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Order/Bounds/Defs.lean  (lines 1–50 of 63):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johannes Hölzl, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Data.Set.Defs\\n     9  public import Mathlib.Tactic.ToDual\\n    10  \\n    11  /-!\\n    12  # Definitions about upper/lower bounds\\n    13  \\n    14  In this file we define:\\n    15  * `upperBounds`, `lowerBounds` : the set of upper bounds (resp., lower bounds) of a set;\\n    16  * `BddAbove s`, `BddBelow s` : the set `s` is bounded above (resp., below), i.e., the set of upper\\n    17    (resp., lower) bounds of `s` is nonempty;\\n    18  * `IsLeast s a`, `IsGreatest s a` : `a` is a least (resp., greatest) element of `s`;\\n    19    for a partial order, it is unique if exists;\\n    20  * `IsLUB s a`, `IsGLB s a` : `a` is a least upper bound (resp., a greatest lower bound)\\n    21    of `s`; for a partial order, it is unique if exists.\\n    22  * `IsCofinal s`: for every `a`, there exists a member of `s` greater or equal to it.\\n    23  * `IsCofinalFor s t` : for all `a ∈ s` there exists `b ∈ t` such that `a ≤ b`\\n    24  * `IsCoinitial s`: for every `a`, there exists a member of `s` less than or equal to it.\\n    25  * `IsCoinitialFor s t` : for all `a ∈ s` there exists `b ∈ t` such that `b ≤ a`\\n    26  -/\\n    27  \\n    28  @[expose] public section\\n    29  \\n    30  variable {α : Type*} [LE α]\\n    31  \\n    32  /-- The set of upper bounds of a set. -/\\n    33  @[to_dual /-- The set of lower bounds of a set. -/]\\n    34  def upperBounds (s : Set α) : Set α :=\\n    35    { x | ∀ ⦃a⦄, a ∈ s → a ≤ x }\\n    36  \\n    37  /-- A set is bounded above if there exists an upper bound. -/\\n    38  @[to_dual /-- A set is bounded below if there exists a lower bound. -/]\\n    39  def BddAbove (s : Set α) :=\\n    40    (upperBounds s).Nonempty\\n    41  \\n    42  /-- `a` is a least element of a set `s`; for a partial order, it is unique if exists. -/\\n    43  @[to_dual\\n    44  /-- `a` is a greatest element of a set `s`; for a partial order, it is unique if exists. -/]\\n    45  def IsLeast (s : Set α) (a : α) : Prop :=\\n    46    a ∈ s ∧ a ∈ lowerBounds s\\n    47  \\n    48  /-- `a` is a least upper bound of a set `s`; for a partial order, it is unique if exists. -/\\n    49  @[to_dual\\n    50  /-- `a` is a greatest lower bound of a set `s`; for a partial order, it is unique if exists. -/]\\n\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__decl_exists",
+   "input": "{\"names\": [\"Set.range\", \"BddAbove\", \"Function.comp\"]}",
+   "ok": true,
+   "result_chars": 997,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"results\\\":[{\\\"decl\\\":\\\"Set.range\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Data.Set.Operations\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Set.Operations\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Set/Operations.html#Set.range\\\"},{\\\"decl\\\":\\\"BddAbove\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Mathlib.Order.Bounds.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Order.Bounds.Defs\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Order/Bounds/Defs.html#BddAbove\\\"},{\\\"decl\\\":\\\"Function.comp\\\",\\\"exists\\\":true,\\\"library\\\":\\\"mathlib\\\",\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Function.comp\\\"}],\\\"counts\\\":{\\\"total\\\":3,\\\"exists\\\":3,\\\"renamed\\\":0,\\\"missing\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ],
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search",
+  "mcp__wikibrain__decl_exists"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem bddAbove_range_comp {α β γ : Type*} [LE γ] (g : β → γ) (f : α → β)\n    (h : BddAbove (Set.range g)) : BddAbove (Set.range (g ∘ f)) := sorry"
+}

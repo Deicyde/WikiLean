@@ -1,0 +1,443 @@
+{
+ "task_id": "fresh_080",
+ "arm": "Ep",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": false,
+  "verifier": false
+ },
+ "condition_hash": "3fd8437ed7ea6c512a83b61a2e4518cdb878275cf9b532b529116dc22cee76ec",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T02:21:52Z",
+ "wall_s": 167.3,
+ "transcript_stats": {
+  "turns": 50,
+  "assistant_turns": 21,
+  "tool_calls_by_name": {
+   "mcp__formal__loogle": 33,
+   "mcp__wiki__wiki_search": 1,
+   "mcp__formal__decl_read": 7,
+   "mcp__formal__decl_grep": 8
+  },
+  "tokens_in": 170,
+  "tokens_out": 13377,
+  "cost_usd": 0.13773249999999998
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 1131,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 733 declarations mentioning MvPowerSeries.\\n- MvPowerSeries   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    Multivariate formal power series, where `σ` is the index set of the variables and `R` is the coefficient ring.\\n- MvPowerSeries.X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The variables of the multivariate formal power series ring.\\n- MvPowerSeries.instAddCommGroup   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddCommMonoid   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddGroup   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddMonoid   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instAddMonoidWithOne   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instCommRing   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instCommSemiring   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instInhabited   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instMul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.instNontrivial   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"partialDeriv\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'partialDeriv': unknown identifier 'partialDeriv'\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wiki__wiki_search",
+   "input": "{\"q\": \"torsion-free module\"}",
+   "ok": true,
+   "result_chars": 2104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"8 result(s) for 'torsion-free module':\\n- Torsion-free module  (slug: Torsion-free_module)\\n    https://en.wikipedia.org/wiki/Torsion-free_module\\n    In algebra, a torsion-free module is a module over a ring such that zero is the only element annihilated by a regular element (non zero-divisor) of the\\n- Torsion (algebra)  (slug: Torsion_(algebra))\\n    https://en.wikipedia.org/wiki/Torsion_(algebra)\\n    a torsion element is an element of a module that yields zero when multiplied by some non-zero-divisor of the ring. The torsion submodule of a module is\\n- Free module  (slug: Free_module)\\n    https://en.wikipedia.org/wiki/Free_module\\n    mathematics, a free module is a module that has a basis, that is, a generating set that is linearly independent. Every vector space is a free module, but, if\\n- Flat module  (slug: Flat_module)\\n    https://en.wikipedia.org/wiki/Flat_module\\n    algebra, flat modules include free modules, projective modules, and, over a principal ideal domain, torsion-free modules. Formally, a module M over a ring\\n- Torsion-free  (slug: Torsion-free)\\n    https://en.wikipedia.org/wiki/Torsion-free\\n    mathematics, torsion-free may refer to: Torsion-free group, a group whose only element of finite order is the identity Torsion-free module, module over an\\n- Torsion  (slug: Torsion)\\n    https://en.wikipedia.org/wiki/Torsion\\n    product of modules over a ring Torsion-free module, in algebra See also Torsion-free (disambiguation) Analytic torsion (Reidemeister torsion, R-torsion, Franz\\n- Module (mathematics)  (slug: Module_(mathematics))\\n    https://en.wikipedia.org/wiki/Module_(mathematics)\\n    Equivalently, the annihilator of M is the zero ideal. Torsion-free A torsion-free module is a module over a ring such that 0 is the only element annihilated\\n- Projective module  (slug: Projective_module)\\n    https://en.wikipedia.org/wiki/Projective_module\\n    projective modules enlarges the class of free modules (that is, modules with basis vectors) over a ring, keeping some of the main properties of free modules. Various\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"derivative power series\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'derivative power series': Unknown identifier `derivative`\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"NoZeroSMulDivisors\"}",
+   "ok": true,
+   "result_chars": 1544,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 17 declarations mentioning NoZeroSMulDivisors.\\n- NoZeroSMulDivisors   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n    `NoZeroSMulDivisors R M` states that a scalar multiple is `0` only if either argument is `0`. This is a version of saying that `M` is torsion free, without assu\\n- NoZeroDivisors.toNoZeroSMulDivisors   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- IsAddTorsionFree.to_noZeroSMulDivisors_nat   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- IsAddTorsionFree.to_noZeroSMulDivisors_int   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- noZeroSMulDivisors_iff_right_eq_zero_of_smul   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- NoZeroSMulDivisors.eq_zero_or_eq_zero_of_smul_eq_zero   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n    If scalar multiplication yields zero, either the scalar or the vector was zero.\\n- NoZeroSMulDivisors.mk   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- noZeroSMulDivisors_iff   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- Function.Injective.noZeroSMulDivisors   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n    Pullback a `NoZeroSMulDivisors` instance along an injective function.\\n- instIsTorsionFreeOfIsDomainOfNoZeroSMulDivisors   [Mathlib.Algebra.NoZeroSMulDivisors.Defs]\\n- Equiv.noZeroSMulDivisors   [Mathlib.Algebra.Module.TransferInstance]\\n    Transfer `NoZeroSMulDivisors` across an `Equiv`\\n- GroupWithZero.toNoZeroSMulDivisors   [Mathlib.Algebra.NoZeroSMulDivisors.Basic]\\n    This instance applies to `DivisionSemiring`s, in particular `NNReal` and `NNRat`.\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"coeff MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'coeff MvPowerSeries': Unknown identifier `coeff`\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.coeff\"}",
+   "ok": true,
+   "result_chars": 1091,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 148 declarations mentioning MvPowerSeries.coeff.\\n- MvPowerSeries.coeff   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The `n`th coefficient of a multivariate formal power series.\\n- MvPowerSeries.coeff_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_comp_monomial   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_index_single_self_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.eq_zero_iff_forall_coeff_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_one   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.ne_zero_iff_exists_coeff_ne_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_index_single_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_X_mul   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.coeff_zero_mul_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries ext\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries ext': Unknown identifier `ext`\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"IsAddTorsionFree\"}",
+   "ok": true,
+   "result_chars": 1019,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 164 declarations mentioning IsAddTorsionFree.\\n- IsAddTorsionFree   [Mathlib.Algebra.Group.Defs]\\n    An additive monoid is torsion-free if scalar multiplication by every non-zero element `n : ℕ` is injective.\\n- IsAddTorsionFree.mk   [Mathlib.Algebra.Group.Defs]\\n- IsAddTorsionFree.nsmul_right_injective   [Mathlib.Algebra.Group.Defs]\\n- isAddTorsionFree_iff   [Mathlib.Algebra.Group.Defs]\\n- Function.Injective.isAddTorsionFree   [Mathlib.Algebra.Group.Hom.Defs]\\n    If the codomain of an injective additive monoid homomorphism is torsion free, then so is the domain.\\n- Subsingleton.to_isAddTorsionFree   [Mathlib.Algebra.Group.Torsion]\\n- instNoNatZeroDivisorsOfIsAddTorsionFree   [Mathlib.Algebra.Group.Torsion]\\n- nsmul_right_injective   [Mathlib.Algebra.Group.Torsion]\\n- zsmul_right_injective   [Mathlib.Algebra.Group.Torsion]\\n- neg_eq_self   [Mathlib.Algebra.Group.Torsion]\\n- neg_ne_self   [Mathlib.Algebra.Group.Torsion]\\n- self_eq_neg   [Mathlib.Algebra.Group.Torsion]\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.ext\"}",
+   "ok": true,
+   "result_chars": 234,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning MvPowerSeries.ext.\\n- MvPowerSeries.ext   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    Two multivariate formal power series are equal if all their coefficients are equal.\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"directionalDeriv\"}",
+   "ok": true,
+   "result_chars": 104,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'directionalDeriv': unknown identifier 'directionalDeriv'\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"AddDerivation\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'AddDerivation': unknown identifier 'AddDerivation'\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Deriv\"}",
+   "ok": true,
+   "result_chars": 82,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Deriv': unknown identifier 'Deriv'\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries deriv\"}",
+   "ok": true,
+   "result_chars": 1138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.C   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The constant formal power series.\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2834,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 1–60 of 1014):\\n     1  /-\\n     2  Copyright (c) 2019 Johan Commelin. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Johan Commelin, Kenny Lau\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.Order.Antidiag.Finsupp\\n     9  public import Mathlib.Data.Finsupp.Weight\\n    10  public import Mathlib.LinearAlgebra.Pi\\n    11  public import Mathlib.Algebra.MvPolynomial.Basic\\n    12  public import Mathlib.Tactic.NormNum\\n    13  \\n    14  /-!\\n    15  # Formal (multivariate) power series\\n    16  \\n    17  This file defines multivariate formal power series\\n    18  and develops the basic properties of these objects.\\n    19  \\n    20  A formal power series is to a polynomial like an infinite sum is to a finite sum.\\n    21  \\n    22  We provide the natural inclusion from multivariate polynomials to multivariate formal power series.\\n    23  \\n    24  ## Main definitions\\n    25  \\n    26  - `MvPowerSeries.C`: constant power series\\n    27  \\n    28  - `MvPowerSeries.X`: the indeterminates\\n    29  \\n    30  - `MvPowerSeries.coeff`, `MvPowerSeries.constantCoeff`:\\n    31    the coefficients of a `MvPowerSeries`, its constant coefficient\\n    32  \\n    33  - `MvPowerSeries.monomial`: the monomials\\n    34  \\n    35  - `MvPowerSeries.coeff_mul`: computes the coefficients of the product of two `MvPowerSeries`\\n    36  \\n    37  - `MvPowerSeries.coeff_prod` : computes the coefficients of products of `MvPowerSeries`\\n    38  \\n    39  - `MvPowerSeries.coeff_pow` : computes the coefficients of powers of a `MvPowerSeries`\\n    40  \\n    41  - `MvPowerSeries.coeff_eq_zero_of_constantCoeff_nilpotent`: if the constant coefficient\\n    42    of a `MvPowerSeries` is nilpotent, then some coefficients of its powers are automatically zero\\n    43  \\n    44  - `MvPowerSeries.map`: apply a `RingHom` to the coefficients of a `MvPowerSeries` (as a `RingHom`).\\n    45  \\n    46  - `MvPowerSeries.X_pow_dvd_iff`, `MvPowerSeries.X_dvd_iff`: equivalent\\n    47    conditions for (a power of) an indeterminate to divide a `MvPowerSeries`\\n    48  \\n    49  - `MvPolynomial.toMvPowerSeries`: the canonical coercion from `MvPolynomial` to `MvPowerSeries`\\n    50  \\n    51  \\n    52  ## Note\\n    53  \\n    54  This file sets up the (semi)ring structure on multivariate power series:\\n    55  additional results are in:\\n    56  * `Mathlib/RingTheory/MvPowerSeries/Inverse.lean` : invertibility,\\n    57    formal power series over a local ring form a local ring;\\n    58  * `Mathlib/RingTheory/MvPowerSeries/Trunc.lean`: truncation of power series.\\n    59  \\n    60  In `Mathlib/RingTheory/PowerSeries/Basic.lean`, formal power series in one variable\\n\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPolynomial.pderiv\"}",
+   "ok": true,
+   "result_chars": 1006,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 44 declarations mentioning MvPolynomial.pderiv.\\n- MvPolynomial.pderiv   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n    `pderiv i p` is the partial derivative of `p` with respect to `i`\\n- MvPolynomial.pderiv_X_self   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_X_of_ne   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_def   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_eq_zero_of_notMem_vars   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_one   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_X   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_C   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.coeff_pderiv   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_monomial_single   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.pderiv_monomial   [Mathlib.Algebra.MvPolynomial.PDeriv]\\n- MvPolynomial.X_mul_pderiv_monomial   [Mathlib.Algebra.MvPolynomial.PDeriv]\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"pderiv\"}",
+   "ok": true,
+   "result_chars": 84,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'pderiv': unknown identifier 'pderiv'\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"constantCoeff MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'constantCoeff MvPowerSeries': Unknown identifier `constantCoeff`\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries pderiv\"}",
+   "ok": true,
+   "result_chars": 98,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries pderiv': Unknown identifier `pderiv`\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries constantCoeff\"}",
+   "ok": true,
+   "result_chars": 112,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries constantCoeff': Unknown identifier `constantCoeff`\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def constantCoeff\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 562,
+   "result_head": "[{\"type\": \"text\", \"text\": \"5 match(es) for 'def constantCoeff' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/Coeff.lean:128\\n    def constantCoeff : R[X] →+* R where\\n- Mathlib/Algebra/MvPolynomial/Basic.lean:918\\n    def constantCoeff : MvPolynomial σ R →+* R where\\n- Mathlib/RingTheory/WittVector/Basic.lean:343\\n    noncomputable def constantCoeff : 𝕎 R →+* R where\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:435\\n    def constantCoeff : MvPowerSeries σ R →+* R :=\\n- Mathlib/RingTheory/PowerSeries/Basic.lean:143\\n    def constantCoeff : R⟦X⟧ →+* R :=\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 435, \"n\": 20}",
+   "ok": true,
+   "result_chars": 824,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 435–454 of 1014):\\n   435  def constantCoeff : MvPowerSeries σ R →+* R :=\\n   436    { coeff (0 : σ →₀ ℕ) with\\n   437      toFun := coeff (0 : σ →₀ ℕ)\\n   438      map_one' := coeff_zero_one\\n   439      map_mul' := fun φ ψ => by classical simp [coeff_mul]\\n   440      map_zero' := map_zero _ }\\n   441  \\n   442  @[simp]\\n   443  theorem coeff_zero_eq_constantCoeff : ⇑(coeff (R := R) (0 : σ →₀ ℕ)) = constantCoeff :=\\n   444    rfl\\n   445  \\n   446  theorem coeff_zero_eq_constantCoeff_apply (φ : MvPowerSeries σ R) :\\n   447      coeff (0 : σ →₀ ℕ) φ = constantCoeff φ :=\\n   448    rfl\\n   449  \\n   450  @[simp]\\n   451  theorem constantCoeff_C (a : R) : constantCoeff (σ := σ) (C a) = a :=\\n   452    rfl\\n   453  \\n   454  @[simp]\\n\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"(?a : MvPowerSeries ?σ ?R) → MvPowerSeries ?σ ?R\"}",
+   "ok": true,
+   "result_chars": 147,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '(?a : MvPowerSeries ?σ ?R) → MvPowerSeries ?σ ?R': type expected, got\\n  (?a : MvPowerSeries ?σ ?R)\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".*deriv.*MvPowerSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 93,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern '.*deriv.*MvPowerSeries' under Mathlib/.\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp pderiv\"}",
+   "ok": true,
+   "result_chars": 92,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Finsupp pderiv': Unknown identifier `pderiv`\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"def.*shift.*MvPowerSeries\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 96,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'def.*shift.*MvPowerSeries' under Mathlib/.\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"formal derivative polynomial\"}",
+   "ok": true,
+   "result_chars": 106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'formal derivative polynomial': Unknown identifier `formal`\"}]"
+  },
+  {
+   "i": 27,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \".*Derivative.*\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"205 match(es) for '.*Derivative.*' (via ripgrep):\\n- Mathlib/Algebra/Polynomial/FieldDivision.lean:9\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Polynomial/Identities.lean:8\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Polynomial/HasseDeriv.lean:9\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Polynomial/Derivative.lean:39\\n    section Derivative\\n- Mathlib/Algebra/Polynomial/Derivative.lean:782\\n    end Derivative\\n- Mathlib/Algebra/Polynomial/SumIteratedDerivative.lean:11\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Polynomial/Expand.lean:9\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Polynomial/Derivation.lean:9\\n    public import Mathlib.Algebra.Polynomial.Derivative\\n- Mathlib/Algebra/Vertex/VertexOperator.lean:21\\n    * `HasseDerivative` : A divided-power derivative.\\n- Mathlib/NumberTheory/Transcendental/Lindemann/AnalyticalPart.lean:8\\n    public import Mathlib.Algebra.Polynomial.SumIteratedDerivative\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.deriv\"}",
+   "ok": true,
+   "result_chars": 147,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found one declaration mentioning Polynomial.deriv.\\n- Polynomial.deriv   [Mathlib.Analysis.Calculus.Deriv.Polynomial]\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"deriv Polynomial\"}",
+   "ok": true,
+   "result_chars": 962,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 569 declarations mentioning deriv.\\n- deriv_const   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_const'   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id'   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_id''   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    Variant with `fun x => x` rather than `id`\\n- derivWithin_univ   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- norm_deriv_le_of_lipschitz   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n    Converse to the mean value inequality: if `f` is `C`-lipschitz then its derivative at `x₀` has norm bounded by `C`. Version using `deriv`.\\n- deriv_intCast   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_natCast   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_one   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_ofNat   [Mathlib.Analysis.Calculus.Deriv.Basic]\\n- deriv_zero   [Mathlib.Analysis.Calculus.Deriv.Basic]\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"PowerSeries deriv\"}",
+   "ok": true,
+   "result_chars": 1138,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 890 declarations mentioning PowerSeries.\\n- PowerSeries.X   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The variable of the formal power series ring.\\n- PowerSeries.mk   [Mathlib.RingTheory.PowerSeries.Basic]\\n    Constructor for formal power series.\\n- Polynomial.toPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.instSubsingleton   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coeToPowerSeries   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The natural inclusion from polynomials into formal power series.\\n- PowerSeries.subsingleton_iff   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_injective   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.X_apply   [Mathlib.RingTheory.PowerSeries.Basic]\\n- Polynomial.coe_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.not_isField   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.commute_X   [Mathlib.RingTheory.PowerSeries.Basic]\\n- PowerSeries.C   [Mathlib.RingTheory.PowerSeries.Basic]\\n    The constant formal power series.\"}]"
+  },
+  {
+   "i": 31,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Polynomial.derivative\"}",
+   "ok": true,
+   "result_chars": 1064,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 276 declarations mentioning Polynomial.derivative.\\n- Polynomial.derivative   [Mathlib.Algebra.Polynomial.Derivative]\\n    `derivative p` is the formal derivative of the polynomial `p`\\n- Polynomial.derivative_X   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.degree_derivative_le   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.derivative_natCast   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.natDegree_derivative_lt   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.natDegree_derivative_le   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.derivative_one   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.derivative_zero   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.natDegree_iterate_derivative   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.derivative_of_natDegree_zero   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.derivative_ofNat   [Mathlib.Algebra.Polynomial.Derivative]\\n- Polynomial.iterate_derivative_X   [Mathlib.Algebra.Polynomial.Derivative]\"}]"
+  },
+  {
+   "i": 32,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*ext.*MvPowerSeries\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 538,
+   "result_head": "[{\"type\": \"text\", \"text\": \"3 match(es) for 'theorem.*ext.*MvPowerSeries' (via ripgrep):\\n- Mathlib/RingTheory/MvPowerSeries/Basic.lean:145\\n    theorem ext {φ ψ : MvPowerSeries σ R} (h : ∀ n : σ →₀ ℕ, coeff n φ = coeff n ψ) : φ = ψ :=\\n- Mathlib/RingTheory/MvPowerSeries/Trunc.lean:298\\n    theorem ext_trunc' {f g : MvPowerSeries σ R} : f = g ↔ ∀ n, trunc' R n f = trunc' R n g := by\\n- Mathlib/RingTheory/MvPowerSeries/Evaluation.lean:237\\n    theorem eval₂Hom_eq_extend (hφ : Continuous φ) (ha : HasEval a) (f : MvPowerSeries σ R) :\"}]"
+  },
+  {
+   "i": 33,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"ext_iff MvPowerSeries\"}",
+   "ok": true,
+   "result_chars": 100,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'ext_iff MvPowerSeries': Unknown identifier `ext_iff`\"}]"
+  },
+  {
+   "i": 34,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 350, \"n\": 50}",
+   "ok": true,
+   "result_chars": 2493,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 350–399 of 1014):\\n   350  \\n   351  theorem coeff_zero_C (a : R) : coeff (0 : σ →₀ ℕ) (C a) = a :=\\n   352    coeff_monomial_same 0 a\\n   353  \\n   354  theorem coeff_C_of_ne_zero {n : σ →₀ ℕ} (h : n ≠ 0) (a : R) : coeff n (C a) = 0 := by\\n   355    classical rw [coeff_C, if_neg h]\\n   356  \\n   357  -- The intended use case of this theorem is for `m = 1` (often useful for `pderiv`).\\n   358  @[simp]\\n   359  theorem coeff_add_single_C {m : ℕ} [NeZero m] {n : σ →₀ ℕ} (a : R) (i : σ) :\\n   360      coeff (n + single i m) (C a) = 0 :=\\n   361    coeff_C_of_ne_zero (fun H ↦ by simpa [NeZero.ne] using congr($(H) i)) a\\n   362  \\n   363  @[grind inj]\\n   364  theorem C_injective : Function.Injective (C : R → MvPowerSeries σ R) := by\\n   365    intro a b h\\n   366    rw [← coeff_zero_C a, h, coeff_zero_C]\\n   367  \\n   368  theorem C_surjective [IsEmpty σ] : Function.Surjective (C : R → MvPowerSeries σ R) :=\\n   369    fun p => ⟨p 0, by ext n; simpa [coeff_C, Subsingleton.eq_zero n] using! coeff_apply _ _⟩\\n   370  \\n   371  @[simp] theorem C_inj (r s : R) : (C r : MvPowerSeries σ R) = C s ↔ r = s := (C_injective).eq_iff\\n   372  \\n   373  /-- The variables of the multivariate formal power series ring. -/\\n   374  def X (s : σ) : MvPowerSeries σ R :=\\n   375    monomial (single s 1) 1\\n   376  \\n   377  theorem coeff_X [DecidableEq σ] (n : σ →₀ ℕ) (s : σ) :\\n   378      coeff n (X s : MvPowerSeries σ R) = if n = single s 1 then 1 else 0 :=\\n   379    coeff_monomial _ _ _\\n   380  \\n   381  theorem coeff_index_single_X [DecidableEq σ] (s t : σ) :\\n   382      coeff (single t 1) (X s : MvPowerSeries σ R) = if t = s then 1 else 0 := by\\n   383    simp only [coeff_X, single_left_inj (one_ne_zero : (1 : ℕ) ≠ 0)]\\n   384  \\n   385  @[simp]\\n   386  theorem coeff_index_single_self_X (s : σ) : coeff (single s 1) (X s : MvPowerSeries σ R) = 1 :=\\n   387    coeff_monomial_same _ _\\n   388  \\n   389  theorem coeff_zero_X (s : σ) : coeff (0 : σ →₀ ℕ) (X s : MvPowerSeries σ R) = 0 := by\\n   390    classical\\n   391    rw [coeff_X, if_neg]\\n   392    intro h\\n   393    exact one_ne_zero (single_eq_zero.mp h.symm)\\n   394  \\n   395  theorem commute_X (φ : MvPowerSeries σ R) (s : σ) : Commute φ (X s) :=\\n   396    φ.commute_monomial.mpr fun _m => Commute.one_right _\\n   397  \\n   398  theorem X_mul {φ : MvPowerSeries σ R} {s : σ} : X s * φ = φ * X s :=\\n   399    φ.commute_X s |>.symm.eq\\n\"}]"
+  },
+  {
+   "i": 35,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"pderiv.*MvPowerSeries|MvPowerSeries.*pderiv\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'pderiv.*MvPowerSeries|MvPowerSeries.*pderiv' under Mathlib/.\"}]"
+  },
+  {
+   "i": 36,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"?f : MvPowerSeries ?σ ?R → ?a\"}",
+   "ok": true,
+   "result_chars": 114,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for '?f : MvPowerSeries ?σ ?R → ?a': <input>:1:3: expected end of input\"}]"
+  },
+  {
+   "i": 37,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries.map\"}",
+   "ok": true,
+   "result_chars": 1047,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 33 declarations mentioning MvPowerSeries.map.\\n- MvPowerSeries.map   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n    The map between multivariate formal power series induced by a map on the coefficients.\\n- MvPowerSeries.map_id   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.map_X   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.map_comp   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.map_eq_zero   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.map_C   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.algebraMap_apply''   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.constantCoeff_map   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.algebraMap_apply'   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.mapAlgHom_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPolynomial.coeToMvPowerSeries.algHom_apply   [Mathlib.RingTheory.MvPowerSeries.Basic]\\n- MvPowerSeries.map_map   [Mathlib.RingTheory.MvPowerSeries.Basic]\"}]"
+  },
+  {
+   "i": 38,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"polynomial deriv linear\"}",
+   "ok": true,
+   "result_chars": 105,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'polynomial deriv linear': Unknown identifier `polynomial`\"}]"
+  },
+  {
+   "i": 39,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"theorem.*additively.*torsion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 99,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'theorem.*additively.*torsion' under Mathlib/.\"}]"
+  },
+  {
+   "i": 40,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Derivation CommRing\"}",
+   "ok": true,
+   "result_chars": 242,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'Derivation CommRing': Application type mismatch: The argument\\n  CommRing\\nhas type\\n  Type ?u.3 → Type ?u.3\\nbut is expected to have type\\n  Type ?u.3\\nin the application\\n  Derivation CommRing\"}]"
+  },
+  {
+   "i": 41,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 140, \"n\": 30}",
+   "ok": true,
+   "result_chars": 1492,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 140–169 of 1014):\\n   140  theorem coeff_apply (f : MvPowerSeries σ R) (d : σ →₀ ℕ) : coeff d f = f d :=\\n   141    rfl\\n   142  \\n   143  /-- Two multivariate formal power series are equal if all their coefficients are equal. -/\\n   144  @[ext]\\n   145  theorem ext {φ ψ : MvPowerSeries σ R} (h : ∀ n : σ →₀ ℕ, coeff n φ = coeff n ψ) : φ = ψ :=\\n   146    funext h\\n   147  \\n   148  /-- Two multivariate formal power series are equal\\n   149  if and only if all their coefficients are equal. -/\\n   150  add_decl_doc MvPowerSeries.ext_iff\\n   151  \\n   152  set_option backward.isDefEq.respectTransparency false in\\n   153  theorem monomial_def [DecidableEq σ] (n : σ →₀ ℕ) :\\n   154      monomial n = LinearMap.single R (fun _ ↦ R) n := by\\n   155    rw [monomial]\\n   156    -- unify the `Decidable` arguments\\n   157    convert! rfl\\n   158  \\n   159  set_option backward.isDefEq.respectTransparency false in\\n   160  theorem coeff_monomial [DecidableEq σ] (m n : σ →₀ ℕ) (a : R) :\\n   161      coeff m (monomial n a) = if m = n then a else 0 := by\\n   162    dsimp only [coeff, MvPowerSeries]\\n   163    rw [monomial_def, LinearMap.proj_apply (i := m), LinearMap.single_apply, Pi.single_apply]\\n   164  \\n   165  @[simp]\\n   166  theorem coeff_monomial_same (n : σ →₀ ℕ) (a : R) : coeff n (monomial n a) = a := by\\n   167    classical\\n   168    rw [monomial_def]\\n   169    exact Pi.single_eq_same _ _\\n\"}]"
+  },
+  {
+   "i": 42,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Derivation\"}",
+   "ok": true,
+   "result_chars": 1109,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 351 declarations mentioning Derivation.\\n- Derivation   [Mathlib.RingTheory.Derivation.Basic]\\n    `D : Derivation R A M` is an `R`-linear map from `A` to `M` that satisfies the `leibniz` equality. We also require that `D 1 = 0`. See `Derivation.mk'` for a co\\n- Derivation.instAdd   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instAddCommMonoid   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instInhabited   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instZero   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.Simps.apply   [Mathlib.RingTheory.Derivation.Basic]\\n    See Note [custom simps projection]\\n- Derivation.instFunLike   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instAddCommGroup   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instNeg   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.instSub   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.coe_injective   [Mathlib.RingTheory.Derivation.Basic]\\n- Derivation.toLinearMap   [Mathlib.RingTheory.Derivation.Basic]\\n    The `LinearMap` underlying a `Derivation`.\"}]"
+  },
+  {
+   "i": 43,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean\", \"line\": 1, \"n\": 60}",
+   "ok": true,
+   "result_chars": 2150,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean  (lines 1–60 of 186):\\n     1  /-\\n     2  Copyright (c) 2017 Johannes Hölzl. All rights reserved.\\n     3  Released under Apache 2.0 license as described in the file LICENSE.\\n     4  Authors: Shing Tak Lam, Yury Kudryashov\\n     5  -/\\n     6  module\\n     7  \\n     8  public import Mathlib.Algebra.MvPolynomial.Derivation\\n     9  public import Mathlib.Algebra.MvPolynomial.Equiv\\n    10  \\n    11  /-!\\n    12  # Partial derivatives of polynomials\\n    13  \\n    14  This file defines the notion of the formal *partial derivative* of a polynomial,\\n    15  the derivative with respect to a single variable.\\n    16  This derivative is not connected to the notion of derivative from analysis.\\n    17  It is based purely on the polynomial exponents and coefficients.\\n    18  \\n    19  ## Main declarations\\n    20  \\n    21  * `MvPolynomial.pderiv i p` : the partial derivative of `p` with respect to `i`, as a bundled\\n    22    derivation of `MvPolynomial σ R`.\\n    23  \\n    24  ## Notation\\n    25  \\n    26  As in other polynomial files, we typically use the notation:\\n    27  \\n    28  + `σ : Type*` (indexing the variables)\\n    29  \\n    30  + `R : Type*` `[CommRing R]` (the coefficients)\\n    31  \\n    32  + `s : σ →₀ ℕ`, a function from `σ` to `ℕ` which is zero away from a finite set.\\n    33    This will give rise to a monomial in `MvPolynomial σ R` which mathematicians might call `X^s`.\\n    34  \\n    35  + `a : R`\\n    36  \\n    37  + `i : σ`, with corresponding monomial `X i`, often denoted `X_i` by mathematicians\\n    38  \\n    39  + `p : MvPolynomial σ R`\\n    40  \\n    41  -/\\n    42  \\n    43  @[expose] public section\\n    44  \\n    45  \\n    46  noncomputable section\\n    47  \\n    48  universe u v\\n    49  \\n    50  namespace MvPolynomial\\n    51  \\n    52  open Set Function Finsupp\\n    53  \\n    54  variable {R : Type u} {σ : Type v} {a a' a₁ a₂ : R} {s : σ →₀ ℕ}\\n    55  \\n    56  section PDeriv\\n    57  \\n    58  variable [CommSemiring R]\\n    59  \\n    60  /-- `pderiv i p` is the partial derivative of `p` with respect to `i` -/\\n\"}]"
+  },
+  {
+   "i": 44,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean\", \"line\": 60, \"n\": 40}",
+   "ok": true,
+   "result_chars": 1976,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/Algebra/MvPolynomial/PDeriv.lean  (lines 60–99 of 186):\\n    60  /-- `pderiv i p` is the partial derivative of `p` with respect to `i` -/\\n    61  def pderiv (i : σ) : Derivation R (MvPolynomial σ R) (MvPolynomial σ R) :=\\n    62    letI := Classical.decEq σ\\n    63    mkDerivation R <| Pi.single i 1\\n    64  \\n    65  theorem pderiv_def [DecidableEq σ] (i : σ) : pderiv i = mkDerivation R (Pi.single i 1) := by\\n    66    unfold pderiv; congr!\\n    67  \\n    68  @[simp]\\n    69  theorem pderiv_monomial {i : σ} :\\n    70      pderiv i (monomial s a) = monomial (s - single i 1) (a * s i) := by\\n    71    classical\\n    72    simp only [pderiv_def, mkDerivation_monomial, Finsupp.smul_sum, smul_eq_mul, ← smul_mul_assoc,\\n    73      ← (monomial _).map_smul]\\n    74    refine (Finset.sum_eq_single i (fun j _ hne => ?_) fun hi => ?_).trans ?_\\n    75    · simp [Pi.single_eq_of_ne hne]\\n    76    · rw [Finsupp.notMem_support_iff] at hi; simp [hi]\\n    77    · simp\\n    78  \\n    79  lemma X_mul_pderiv_monomial {i : σ} {m : σ →₀ ℕ} {r : R} :\\n    80      X i * pderiv i (monomial m r) = m i • monomial m r := by\\n    81    rw [pderiv_monomial, X, monomial_mul, smul_monomial]\\n    82    by_cases h : m i = 0\\n    83    · simp_rw [h, Nat.cast_zero, mul_zero, zero_smul, monomial_zero]\\n    84    rw [one_mul, mul_comm, nsmul_eq_mul, add_comm, sub_add_single_one_cancel h]\\n    85  \\n    86  theorem pderiv_C {i : σ} : pderiv i (C a) = 0 :=\\n    87    derivation_C _ _\\n    88  \\n    89  theorem pderiv_one {i : σ} : pderiv i (1 : MvPolynomial σ R) = 0 := pderiv_C\\n    90  \\n    91  @[simp]\\n    92  theorem pderiv_X [DecidableEq σ] (i j : σ) :\\n    93      pderiv i (X j : MvPolynomial σ R) = Pi.single (M := fun _ => _) i 1 j := by\\n    94    rw [pderiv_def, mkDerivation_X]\\n    95  \\n    96  @[simp]\\n    97  theorem pderiv_X_self (i : σ) : pderiv i (X i : MvPolynomial σ R) = 1 := by classical simp\\n    98  \\n    99  @[simp]\\n\"}]"
+  },
+  {
+   "i": 45,
+   "name": "mcp__formal__decl_grep",
+   "input": "{\"pattern\": \"pderiv.*MvPowerSeries|MvPowerSeries.*[Pp]deriv\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 117,
+   "result_head": "[{\"type\": \"text\", \"text\": \"No matches for pattern 'pderiv.*MvPowerSeries|MvPowerSeries.*[Pp]deriv' under Mathlib/.\"}]"
+  },
+  {
+   "i": 46,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"MvPowerSeries Derivation\"}",
+   "ok": true,
+   "result_chars": 503,
+   "result_head": "[{\"type\": \"text\", \"text\": \"loogle error for 'MvPowerSeries Derivation': Application type mismatch: The argument\\n  Derivation\\nhas type\\n  (R : Type ?u.5) →\\n    (A : Type ?u.4) →\\n      (M : Type ?u.3) →\\n        [inst : CommSemiring R] →\\n          [inst_1 : CommSemiring A] →\\n            [inst_2 : AddCommMonoid M] → [Algebra R A] → [Module A M] → [Module R M] → Type (max ?u.4 ?u.3)\\nbut is expected to have type\\n  Type (max (max ?u.3 ?u.4) ?u.5)\\nin the application\\n  MvPowerSeries Derivation\"}]"
+  },
+  {
+   "i": 47,
+   "name": "mcp__formal__loogle",
+   "input": "{\"q\": \"Finsupp.single\"}",
+   "ok": true,
+   "result_chars": 1188,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Found 453 declarations mentioning Finsupp.single.\\n- Finsupp.single   [Mathlib.Data.Finsupp.Single]\\n    `single a b` is the finitely supported function with value `b` at `a` and zero otherwise.\\n- Finsupp.single_injective   [Mathlib.Data.Finsupp.Single]\\n    `Finsupp.single a b` is injective in `b`. For the statement that it is injective in `a`, see `Finsupp.single_left_injective`\\n- Finsupp.single_left_injective   [Mathlib.Data.Finsupp.Single]\\n    `Finsupp.single a b` is injective in `a`. For the statement that it is injective in `b`, see `Finsupp.single_injective`\\n- Finsupp.single_eq_same   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.unique_single_eq_iff   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.erase_single_ne   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single_subset   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.support_single_ne_zero   [Mathlib.Data.Finsupp.Single]\\n    **Alias** of `Finsupp.support_single`.\\n- Finsupp.single_zero   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.erase_single   [Mathlib.Data.Finsupp.Single]\\n- Finsupp.single_eq_of_ne   [Mathlib.Data.Finsupp.Single]\"}]"
+  },
+  {
+   "i": 48,
+   "name": "mcp__formal__decl_read",
+   "input": "{\"file\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean\", \"line\": 432, \"n\": 20}",
+   "ok": true,
+   "result_chars": 914,
+   "result_head": "[{\"type\": \"text\", \"text\": \"Mathlib/RingTheory/MvPowerSeries/Basic.lean  (lines 432–451 of 1014):\\n   432    rw [← (φ.commute_X s).eq, coeff_zero_mul_X]\\n   433  \\n   434  /-- The constant coefficient of a formal power series. -/\\n   435  def constantCoeff : MvPowerSeries σ R →+* R :=\\n   436    { coeff (0 : σ →₀ ℕ) with\\n   437      toFun := coeff (0 : σ →₀ ℕ)\\n   438      map_one' := coeff_zero_one\\n   439      map_mul' := fun φ ψ => by classical simp [coeff_mul]\\n   440      map_zero' := map_zero _ }\\n   441  \\n   442  @[simp]\\n   443  theorem coeff_zero_eq_constantCoeff : ⇑(coeff (R := R) (0 : σ →₀ ℕ)) = constantCoeff :=\\n   444    rfl\\n   445  \\n   446  theorem coeff_zero_eq_constantCoeff_apply (φ : MvPowerSeries σ R) :\\n   447      coeff (0 : σ →₀ ℕ) φ = constantCoeff φ :=\\n   448    rfl\\n   449  \\n   450  @[simp]\\n   451  theorem constantCoeff_C (a : R) : constantCoeff (σ := σ) (C a) = a :=\\n\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wiki",
+   "connected"
+  ],
+  [
+   "formal",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__formal__decl_grep",
+  "mcp__formal__decl_read",
+  "mcp__formal__loogle",
+  "mcp__wiki__nlab_search",
+  "mcp__wiki__wiki_get",
+  "mcp__wiki__wiki_search"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem MvPowerSeries.ext_const_coeff_and_partialDeriv\n    {σ R : Type*} [CommRing R] [IsAddTorsionFree R]\n    {f g : MvPowerSeries σ R}\n    (h_const : constantCoeff f = constantCoeff g)\n    (h_pderiv : ∀ i : σ, ∀ n : σ →₀ ℕ,\n      coeff (n + Finsupp.single i 1) f * (↑((n + Finsupp.single i 1) i) : R) =\n      coeff (n + Finsupp.single i 1) g * (↑((n + Finsupp.single i 1) i) : R))\n    : f = g := sorry"
+}

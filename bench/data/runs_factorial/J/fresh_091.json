@@ -1,0 +1,297 @@
+{
+ "task_id": "fresh_091",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T01:25:38Z",
+ "wall_s": 85.1,
+ "transcript_stats": {
+  "turns": 32,
+  "assistant_turns": 25,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 3,
+   "mcp__wikibrain__brain_search": 20,
+   "mcp__wikibrain__brain_cell": 6,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_snippets": 1
+  },
+  "tokens_in": 202,
+  "tokens_out": 5832,
+  "cost_usd": 0.11362140000000001
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation of a function\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2755,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"total variation of a function\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":13},{\\\"id\\\":\\\"path:Mathlib/Analysis/SpecialFunctions/Trigonometric\\\",\\\"label\\\":\\\"Trigonometric\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1756942\\\",\\\"label\\\":\\\"Partial function\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q43260\\\",\\\"label\\\":\\\"Polynomial\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"label\\\":\\\"Integral\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q11197\\\",\\\"label\\\":\\\"Logarithm\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q182598\\\",\\\"label\\\":\\\"Graph of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q192439\\\",\\\"label\\\":\\\"domain of a function\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q284164\\\",\\\"label\\\":\\\"General recursive function\\\",\\\"w\\\":5}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":717,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q11348\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Function\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Function\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"total variation\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 248,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"total variation\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"bounded variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 378,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"bounded variation\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"aka\\\":[\\\"Bounded Variation\\\",\\\"BoundedVariationOn\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"metric space distance\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 178,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"metric space distance\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q829653\"}",
+   "ok": true,
+   "result_chars": 2522,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q829653\\\",\\\"id\\\":\\\"cell:Q829653\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"f\\\":2072,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q829653\\\",\\\"anchor\\\":\\\"Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"],\\\"f\\\":2072,\\\"xy\\\":[-175.5,-1.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q829653\\\",\\\"label\\\":\\\"Bounded variation\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"real function with finite total variation\\\",\\\"slug\\\":\\\"Bounded_variation\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:BoundedVariationOn\\\",\\\"label\\\":\\\"BoundedVariationOn\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"A function has bounded variation on a set `s` if its total variation there is finite. \\\",\\\"code\\\":\\\"def BoundedVariationOn (f : α → E) (s : Set α) :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.BoundedVariation\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:BoundedVariation\\\",\\\"label\\\":\\\"Bounded Variation\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/BoundedVariation.html\\\",\\\"qid\\\":\\\"Q829653\\\"}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"label\\\":\\\"BoundedVariation\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":18,\\\"mentions\\\":3},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":2}},{\\\"id\\\":\\\"cell:Q107223533\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q121416\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q126017\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q204\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q290810\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}},{\\\"id\\\":\\\"cell:Q36161\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"depends\\\":1}}],\\\"counts\\\":{\\\"syn\\\":16,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"two-point set finite set\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3076,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"two-point set finite set\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q272404\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"finite set\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Finite\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q44946\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Point (geometry)\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[],\\\"returned\\\":0,\\\"total\\\":0,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Set.Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"protected def Finite (s : Set α) : Prop := Finite s\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Set.Finite\\\",\\\"via_cell\\\":\\\"cell:Q272404\\\",\\\"cell_label\\\":\\\"finite set\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Finite\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Data.Finite.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Data.Finite.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Finite/Defs.html#Finite\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Finite\\\",\\\"cell_label\\\":\\\"Finite\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Data\\\",\\\"label\\\":\\\"Data\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite\\\",\\\"label\\\":\\\"Finite\\\"},{\\\"id\\\":\\\"path:Mathlib/Data/Finite/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"fintype\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2110,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"fintype\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_fun\\\",\\\"label\\\":\\\"Fintype.card_fun\\\",\\\"aka\\\":[\\\"Some Notes on Finite Sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/BigOperators\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_injective\\\",\\\"label\\\":\\\"Fintype.card_le_of_injective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_le_of_surjective\\\",\\\"label\\\":\\\"Fintype.card_le_of_surjective\\\",\\\"aka\\\":[\\\"A Theoretical Analysis of Compositional Generalization in Neural Networks: A Necessary and Sufficient Condition\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"label\\\":\\\"Fintype.exists_card_fiber_lt_of_card_lt_mul\\\",\\\"aka\\\":[\\\"Constructions and nonexistence results for suitable sets of permutations\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Pigeonhole\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.nonempty_field_iff\\\",\\\"label\\\":\\\"Fintype.nonempty_field_iff\\\",\\\"aka\\\":[\\\"Clique number of Xor products of Kneser graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/FieldTheory/Cardinality\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card\\\",\\\"label\\\":\\\"Fintype.card\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Card\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_embedding_eq_of_infinite\\\",\\\"label\\\":\\\"Fintype.card_embedding_eq_of_infinite\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/CardEmbedding\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_eq\\\",\\\"label\\\":\\\"Fintype.card_eq\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/EquivFin\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Fintype.card_finset\\\",\\\"label\\\":\\\"Fintype.card_finset\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Fintype/Powerset\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"variation function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variation function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"metric space\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2690,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"metric space\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q180953\\\",\\\"label\\\":\\\"Metric space\\\",\\\"aka\\\":[\\\"Definition:Metric Space\\\",\\\"Metric Space\\\",\\\"MetricSpace\\\",\\\"metric space\\\",\\\"Elements of Linear Algebra. Lecture Notes\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Defs\\\",\\\"matched\\\":\\\"label\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Metric.Snowflaking\\\",\\\"label\\\":\\\"Metric.Snowflaking\\\",\\\"aka\\\":[\\\"Metric spaces admitting low-distortion embeddings into all $n$-dimensional Banach spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Snowflaking\\\"},{\\\"id\\\":\\\"cell:Q272735\\\",\\\"label\\\":\\\"Tree (graph theory)\\\",\\\"aka\\\":[\\\"Definition:Tree (Graph Theory)\\\",\\\"SimpleGraph.IsTree\\\",\\\"Tree\\\",\\\"Tree graph theory\\\",\\\"Labeled trees generating complete, compact, and discrete ultrametric spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SimpleGraph/Acyclic\\\"},{\\\"id\\\":\\\"cell:Q848569\\\",\\\"label\\\":\\\"Complete metric space\\\",\\\"aka\\\":[\\\"Complete Metric Space\\\",\\\"CompleteSpace\\\",\\\"Definition:Complete Metric Space\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Cauchy\\\"},{\\\"id\\\":\\\"cell:Q1397059\\\",\\\"label\\\":\\\"pseudometric space\\\",\\\"aka\\\":[\\\"Definition:Pseudometric/Pseudometric Space\\\",\\\"PseudoMetricSpace\\\",\\\"Lifting Weak Supervision To Structured Prediction\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Pseudo\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:InnerProductSpace.Core.toNormedAddCommGroup\\\",\\\"label\\\":\\\"InnerProductSpace.Core.toNormedAddCommGroup\\\",\\\"aka\\\":[\\\"An Elementary Expository Study: From Metric Spaces to Hilbert Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/InnerProductSpace/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.Measure.HaveLebesgueDecomposition\\\",\\\"label\\\":\\\"MeasureTheory.Measure.HaveLebesgueDecomposition\\\",\\\"aka\\\":[\\\"Differentiation of measures in metric spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Decomposition\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.Measure.haarMeasure_unique\\\",\\\"label\\\":\\\"MeasureTheory.Measure.haarMeasure_unique\\\",\\\"aka\\\":[\\\"Unitarization of the Horocyclic Radon Transform on Symmetric Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Measure/Haar\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Metric.uniformContinuous_iff\\\",\\\"label\\\":\\\"Metric.uniformContinuous_iff\\\",\\\"aka\\\":[\\\"Zig-zag chains and metric equivalences between ultrametric spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/MetricSpace/Pseudo\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:StrictMono\\\",\\\"label\\\":\\\"StrictMono\\\",\\\"aka\\\":[\\\"Dynamic Tangled Derivative Logic of Metric Spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Order/Monotone/Defs\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"distance function\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 174,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"distance function\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Finset\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2417,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Finset\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Finset\\\",\\\"label\\\":\\\"Finset\\\",\\\"supercell\\\":\\\"path:Mathlib/Data/Finset/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:Q536640\\\",\\\"label\\\":\\\"Hall's marriage theorem\\\",\\\"aka\\\":[\\\"Finset.all_card_le_biUnion_card_iff_exists_injective\\\",\\\"Hall's Marriage Theorem\\\",\\\"Hall's marriage theorem, proof of\\\",\\\"HallMarriageTheorem.hall_hard_inductive\\\",\\\"Halls Theorem\\\",\\\"Graph Derangements\\\",\\\"Measure Algebras\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/Hall/Basic\\\"},{\\\"id\\\":\\\"cell:Q318754\\\",\\\"label\\\":\\\"summation by parts\\\",\\\"aka\\\":[\\\"Abel's Lemma\\\",\\\"Abels Lemma\\\",\\\"Finset.sum_Ico_by_parts\\\",\\\"Summationby Parts\\\",\\\"Uniform approximation by harmonic polynomials for solving the Dirichlet problem of Laplace's equation on a disk\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/BigOperators/Module\\\"},{\\\"id\\\":\\\"cell:Q188276\\\",\\\"label\\\":\\\"Pigeonhole principle\\\",\\\"aka\\\":[\\\"Dirichlet's Box Principle\\\",\\\"Dirichlets Box Principle\\\",\\\"Finset.exists_ne_map_eq_of_card_lt_of_maps_to\\\",\\\"New Bounds on cap sets\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Finset/Card\\\"},{\\\"id\\\":\\\"cell:Q619985\\\",\\\"label\\\":\\\"multinomial theorem\\\",\\\"aka\\\":[\\\"Finset.sum_pow\\\",\\\"Multinomial Series\\\",\\\"Multinomial Theorem\\\",\\\"multinomial theorem (proof)\\\"],\\\"supercell\\\":\\\"path:Mathlib/Data/Nat/Choose\\\"},{\\\"id\\\":\\\"cell:Q192024\\\",\\\"label\\\":\\\"Shattered set\\\",\\\"aka\\\":[\\\"Finset.Shatters\\\",\\\"Shattered Set\\\",\\\"On rough mereology and VC-dimension in treatment of decision prediction for open world decision systems\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SetFamily/Shatter\\\"},{\\\"id\\\":\\\"cell:Q511093\\\",\\\"label\\\":\\\"Centroid\\\",\\\"aka\\\":[\\\"Finset.centroid\\\",\\\"Geometric Centroid\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/AffineSpace/Centroid\\\"},{\\\"id\\\":\\\"cell:Q4129097\\\",\\\"label\\\":\\\"Convex polytope\\\",\\\"aka\\\":[\\\"Convex Polytope\\\",\\\"Finset.convexHull_eq\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/Convex/Combination\\\"},{\\\"id\\\":\\\"cell:Q718875\\\",\\\"label\\\":\\\"Erdős–Ko–Rado theorem\\\",\\\"aka\\\":[\\\"Finset.erdos_ko_rado\\\",\\\"Erdos-Ko-Rado theorems for simplicial complexes\\\"],\\\"supercell\\\":\\\"path:Mathlib/Combinatorics/SetFamily/KruskalKatona\\\"},{\\\"id\\\":\\\"cell:Q218005\\\",\\\"label\\\":\\\"Summation\\\",\\\"aka\\\":[\\\"Finset.sum\\\",\\\"Sum\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/BigOperators/Group\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"EMetric edist\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EMetric edist\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"path variation\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"path variation\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"dist metric\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"dist metric\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Topology/EMetricSpace/BoundedVariation\"}",
+   "ok": true,
+   "result_chars": 1057,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"BoundedVariation\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"parent\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"cells\\\":[\\\"cell:Q28474\\\",\\\"cell:Q829653\\\",\\\"cell:decl:Mathlib:LipschitzWith.locallyBoundedVariationOn\\\",\\\"cell:decl:Mathlib:eVariationOn.add_point\\\",\\\"cell:decl:Mathlib:eVariationOn.comp_eq_of_monotoneOn\\\",\\\"cell:decl:Mathlib:variationOnFromTo\\\"],\\\"fa\\\":2296},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"variationOnFromTo\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 439,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"variationOnFromTo\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"aka\\\":[\\\"A mixing tree-valued process arising under neutral evolution with recombination\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"matched\\\":\\\"decl\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eVariationOn\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 818,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"aka\\\":[\\\"Arc Length\\\",\\\"Arc length\\\",\\\"Curve Length\\\",\\\"eVariationOn\\\",\\\"Brownian motion project\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:eVariationOn.comp_eq_of_monotoneOn\\\",\\\"label\\\":\\\"eVariationOn.comp_eq_of_monotoneOn\\\",\\\"aka\\\":[\\\"Topological signatures of periodic-like signals\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:eVariationOn.add_point\\\",\\\"label\\\":\\\"eVariationOn.add_point\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:variationOnFromTo\"}",
+   "ok": true,
+   "result_chars": 1886,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:variationOnFromTo\\\",\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"f\\\":128,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:variationOnFromTo\\\",\\\"anchor\\\":\\\"decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"],\\\"f\\\":128,\\\"xy\\\":[210.6,-636.7]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:variationOnFromTo\\\",\\\"label\\\":\\\"variationOnFromTo\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"The **signed** variation of `f` on the interval `Icc a b` intersected with the set `s`,\\\\nsquashed to a real (therefore only really meaningful if the variation is finite)\\\\n\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.BoundedVariation\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1505.01165#3.2\\\",\\\"label\\\":\\\"A mixing tree-valued process arising under neutral evolution with recombination\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"1505.01165\\\",\\\"ref\\\":\\\"3.2\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"label\\\":\\\"BoundedVariation\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":2,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q126017\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":2,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q28474\"}",
+   "ok": true,
+   "result_chars": 4149,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q28474\\\",\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"f\\\":2296,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q28474\\\",\\\"anchor\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"],\\\"f\\\":2296,\\\"xy\\\":[47.4,-233.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"bond\\\":\\\"generalization\\\",\\\"prov\\\":0,\\\"description\\\":\\\"arc length of the path that surrounds an area\\\",\\\"slug\\\":\\\"Perimeter\\\",\\\"status\\\":\\\"partial\\\"},{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q670036\\\",\\\"label\\\":\\\"Arc length\\\",\\\"bond\\\":\\\"generalization\\\",\\\"prov\\\":0,\\\"description\\\":\\\"property of a curve\\\",\\\"slug\\\":\\\"Arc_length\\\",\\\"article_annotations\\\":{\\\"total\\\":31,\\\"formalized\\\":8,\\\"partial\\\":6,\\\"not_formalized\\\":17},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:eVariationOn\\\",\\\"label\\\":\\\"eVariationOn\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"decl_kind\\\":\\\"definition\\\",\\\"docstring\\\":\\\"The (extended-real-valued) variation of a function `f` on a set `s` inside a linear order is\\\\nthe supremum of the sum of `edist (f (u (i+1))) (f (u i))` over all finite increasing\\\\nsequences `u` in `s`. \\\",\\\"code\\\":\\\"noncomputable def eVariationOn (f : α → E) (s : Set α) : ℝ≥0∞ :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.BoundedVariation\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Perimeter\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Perimeter\\\",\\\"qid\\\":\\\"Q28474\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:ArcLength\\\",\\\"label\\\":\\\"Arc Length\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/ArcLength.html\\\",\\\"qid\\\":\\\"Q670036\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:CurveLength\\\",\\\"label\\\":\\\"Curve Length\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/CurveLength.html\\\",\\\"qid\\\":\\\"Q670036\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Perimeter\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Perimeter.html\\\",\\\"qid\\\":\\\"Q28474\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Arc_length\\\",\\\"label\\\":\\\"Arc length\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":31,\\\"formalized\\\":8,\\\"partial\\\":6,\\\"not_formalized\\\":17}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:RemyDegenne/brownian-motion#2.7.3\\\",\\\"label\\\":\\\"Brownian motion project\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"RemyDegenne/brownian-motion\\\",\\\"ref\\\":\\\"2.7.3\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":2,\\\"decl\\\":1,\\\"page\\\":4,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"label\\\":\\\"BoundedVariation\\\"}],\\\"synapses_summary\\\":{\\\"co-page\\\":11,\\\"depends\\\":188,\\\"links\\\":133,\\\"relates\\\":8,\\\"cites\\\":6,\\\"mentions\\\":9},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1591095\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":1,\\\"relates\\\":2}},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q126017\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q11210\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q206925\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q2796622\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"links\\\":4}},{\\\"id\\\":\\\"cell:Q80091\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}}],\\\"counts\\\""
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"edist\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 2414,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"edist\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Manifold.riemannianEDist\\\",\\\"label\\\":\\\"Manifold.riemannianEDist\\\",\\\"aka\\\":[\\\"Beyond Flatland: A Geometric Take on Matching Methods for Treatment Effect Estimation\\\"],\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/Riemannian\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Manifold.riemannianEDist_le_pathELength\\\",\\\"label\\\":\\\"Manifold.riemannianEDist_le_pathELength\\\",\\\"aka\\\":[\\\"Geometric Generative Models based on Morphological Equivariant PDEs and GANs\\\"],\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/Riemannian\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:MeasureTheory.tendstoInMeasure_of_tendsto_ae_of_measurable_edist\\\",\\\"label\\\":\\\"MeasureTheory.tendstoInMeasure_of_tendsto_ae_of_measurable_edist\\\",\\\"aka\\\":[\\\"Metrizable uniform spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/MeasureTheory/Function/ConvergenceInMeasure\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos350.DecidableDistinctSubsetSums\\\",\\\"label\\\":\\\"Erdos350.DecidableDistinctSubsetSums\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos350.DistinctSubsetSums_iff_DecidableDistinctSubsetSums\\\",\\\"label\\\":\\\"Erdos350.DistinctSubsetSums_iff_DecidableDistinctSubsetSums\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos350.decidableDistinctSubsetSums_1_2\\\",\\\"label\\\":\\\"Erdos350.decidableDistinctSubsetSums_1_2\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos74.SimpleGraph.edgeDistancesToBipartite\\\",\\\"label\\\":\\\"Erdos74.SimpleGraph.edgeDistancesToBipartite\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos74.SimpleGraph.edgeDistancesToBipartite_nonempty\\\",\\\"label\\\":\\\"Erdos74.SimpleGraph.edgeDistancesToBipartite_nonempty\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos74.SimpleGraph.maxSubgraphEdgeDistToBipartite\\\",\\\"label\\\":\\\"Erdos74.SimpleGraph.maxSubgraphEdgeDistToBipartite\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"},{\\\"id\\\":\\\"cell:decl:FormalConjectures:Erdos74.SimpleGraph.minEdgeDistToBipartite\\\",\\\"label\\\":\\\"Erdos74.SimpleGraph.minEdgeDistToBipartite\\\",\\\"supercell\\\":\\\"path:FormalConjectures/ErdosProblems\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"extended distance metric\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"extended distance metric\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PseudoEMetricSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PseudoEMetricSpace\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"EMetricSpace\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 585,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"EMetricSpace\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"supercell\\\":\\\"path:Mathlib/Topology/EMetricSpace/Defs\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace.ofRiemannianMetric\\\",\\\"label\\\":\\\"EMetricSpace.ofRiemannianMetric\\\",\\\"supercell\\\":\\\"path:Mathlib/Geometry/Manifold/Riemannian\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"EMetricSpace\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:EMetricSpace\"}",
+   "ok": true,
+   "result_chars": 1298,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:EMetricSpace\\\",\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:EMetricSpace\\\",\\\"anchor\\\":\\\"decl:Mathlib:EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/EMetricSpace/Defs\\\"],\\\"xy\\\":[-811.3,-677.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.Defs\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class EMetricSpace (α : Type u) : Type u extends PseudoEMetricSpace α where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.Defs\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"PseudoEMetric\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 170,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"PseudoEMetric\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 25,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eVariationOn insert\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn insert\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 26,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q28474\", \"limit\": 50, \"kinds\": \"depends,relates\"}",
+   "ok": true,
+   "result_chars": 25184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\",\\\"relates\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q1591095\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"co-page\\\":1,\\\"depends\\\":2,\\\"links\\\":1,\\\"relates\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q11500\\\",\\\"dst\\\":\\\"Q670036\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"EuclideanSpace.volume_ball_fin_two\\\",\\\"Real.pi\\\"]]}},{\\\"kind\\\":\\\"relates\\\",\\\"src\\\":\\\"Q1379273\\\",\\\"dst\\\":\\\"Q670036\\\",\\\"prov\\\":30,\\\"evidence\\\":{\\\"properties\\\":[{\\\"p\\\":\\\"P155\\\",\\\"label\\\":\\\"follows\\\"}]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q11500\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"Manifold.pathELength_comp_of_monotoneOn\\\",\\\"Real.measureSpace\\\"]]}},{\\\"kind\\\":\\\"relates\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q1379273\\\",\\\"prov\\\":30,\\\"evidence\\\":{\\\"properties\\\":[{\\\"p\\\":\\\"P156\\\",\\\"label\\\":\\\"followed by\\\"}]}}]},{\\\"id\\\":\\\"cell:Q369377\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q28474\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q28474\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q28113351\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q369377\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"eVariationOn\\\",\\\"LinearOrder\\\"]]}}]},{\\\"id\\\":\\\"cell:Q126017\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q126017\\\",\\\"dst\\\":\\\"Q28474\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"variationOnFromTo\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q126017\\\",\\\"dst\\\":\\\"Q670036\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"variationOnFromTo\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q126017\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"variationOnFromTo\\\",\\\"eVariationOn\\\"]]}}]},{\\\"id\\\":\\\"cell:Q161973\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q161973\\\",\\\"dst\\\":\\\"Q28474\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":2,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"HasConstantSpeedOnWith\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q161973\\\",\\\"dst\\\":\\\"Q670036\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":2,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"HasConstantSpeedOnWith\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q161973\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"variationOnFromTo\\\",\\\"eVariationOn\\\"]]}}]},{\\\"id\\\":\\\"cell:Q180953\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":3,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q180953\\\",\\\"dst\\\":\\\"Q28474\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"BoundedVariationOn\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q180953\\\",\\\"dst\\\":\\\"Q670036\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"BoundedVariationOn\\\",\\\"eVariationOn\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q670036\\\",\\\"dst\\\":\\\"Q180953\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"M"
+  },
+  {
+   "i": 27,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:eVariationOn.add_point\"}",
+   "ok": true,
+   "result_chars": 2005,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:eVariationOn.add_point\\\",\\\"id\\\":\\\"cell:decl:Mathlib:eVariationOn.add_point\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"eVariationOn.add_point\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:eVariationOn.add_point\\\",\\\"anchor\\\":\\\"decl:Mathlib:eVariationOn.add_point\\\",\\\"label\\\":\\\"eVariationOn.add_point\\\",\\\"supercells\\\":[\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\"],\\\"xy\\\":[315.3,-1037]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:eVariationOn.add_point\\\",\\\"label\\\":\\\"eVariationOn.add_point\\\",\\\"module\\\":\\\"Mathlib.Topology.EMetricSpace.BoundedVariation\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"docstring\\\":\\\"Consider a monotone function `u` parameterizing some points of a set `s`. Given `x ∈ s`, then\\\\none can find another monotone function `v` parameterizing the same points as `u`, with `x` added.\\\\nIn particular, the variation of a function along `u` is bounded by its variation along `\\\",\\\"code\\\":\\\"theorem add_point (f : α → E) {s : Set α} {x : α} (hx : x ∈ s) (u : ℕ → α) (hu : Monotone u)\\\\n    (us : ∀ i, u i ∈ s) (n : ℕ) :\\\\n    ∃ (v : ℕ → α) (m : ℕ), Monotone v ∧ (∀ i, v i ∈ s) ∧ x ∈ v '' Iio m ∧\\\\n      (∑ i ∈ Finset.range n, edist (f (u (i + 1))) (f (u i))) ≤\\\\n        ∑ j ∈ Finset.range m, edist (f (v (j + 1))) (f (v j)) := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.Topology.EMetricSpace.BoundedVariation\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology\\\",\\\"label\\\":\\\"Topology\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace\\\",\\\"label\\\":\\\"EMetricSpace\\\"},{\\\"id\\\":\\\"path:Mathlib/Topology/EMetricSpace/BoundedVariation\\\",\\\"label\\\":\\\"BoundedVariation\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q28474\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 28,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eVariationOn singleton\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn singleton\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 29,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"cell:Q28474\"}",
+   "ok": true,
+   "result_chars": 2106,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q28474\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q28474\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"snippet\\\":\\\"arc length of the path that surrounds an area\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q28474\\\"},{\\\"source_db\\\":\\\"wikidata\\\",\\\"id\\\":\\\"Q670036\\\",\\\"label\\\":\\\"Arc length\\\",\\\"snippet\\\":\\\"property of a curve\\\",\\\"license\\\":\\\"CC0 (Wikidata)\\\",\\\"url\\\":\\\"https://www.wikidata.org/wiki/Q670036\\\"},{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:eVariationOn\\\",\\\"label\\\":\\\"eVariationOn\\\",\\\"snippet\\\":\\\"The (extended-real-valued) variation of a function `f` on a set `s` inside a linear order is\\\\nthe supremum of the sum of `edist (f (u (i+1))) (f (u i))` over all finite increasing\\\\nsequences `u` in `s`. \\\",\\\"license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"code\\\":\\\"noncomputable def eVariationOn (f : α → E) (s : Set α) : ℝ≥0∞ :=\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/EMetricSpace/BoundedVariation.html#eVariationOn\\\"},{\\\"source_db\\\":\\\"eom\\\",\\\"id\\\":\\\"xref:eom:Perimeter\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Perimeter\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:ArcLength\\\",\\\"label\\\":\\\"Arc Length\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/ArcLength.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:CurveLength\\\",\\\"label\\\":\\\"Curve Length\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/CurveLength.html\\\"},{\\\"source_db\\\":\\\"mathworld\\\",\\\"id\\\":\\\"xref:mathworld:Perimeter\\\",\\\"label\\\":\\\"Perimeter\\\",\\\"url\\\":\\\"https://mathworld.wolfram.com/Perimeter.html\\\"},{\\\"source_db\\\":\\\"wikilean\\\",\\\"id\\\":\\\"Arc_length\\\",\\\"label\\\":\\\"Arc length\\\",\\\"url\\\":\\\"https://wikilean.jackmccarthy.org/Arc_length\\\"},{\\\"source_db\\\":\\\"arxiv\\\",\\\"id\\\":\\\"lit:RemyDegenne/brownian-motion#2.7.3\\\",\\\"label\\\":\\\"Brownian motion project\\\",\\\"license_open\\\":false,\\\"url\\\":\\\"https://arxiv.org/abs/RemyDegenne/brownian-motion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 30,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"eVariationOn two points\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 180,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"eVariationOn two points\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem eVariationOn_two_point_set {α E : Type*} [LinearOrder α] [PseudoEMetricSpace E]\n    (f : α → E) {a b : α} (hab : a < b) :\n    eVariationOn f {a, b} = edist (f a) (f b) := sorry"
+}

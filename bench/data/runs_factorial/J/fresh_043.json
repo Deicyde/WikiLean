@@ -1,0 +1,219 @@
+{
+ "task_id": "fresh_043",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 2,
+ "timestamp": "2026-08-08T01:29:51Z",
+ "wall_s": 104.3,
+ "transcript_stats": {
+  "turns": 22,
+  "assistant_turns": 19,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 9,
+   "mcp__wikibrain__brain_bridge": 1,
+   "mcp__wikibrain__brain_cell": 4,
+   "mcp__wikibrain__brain_snippets": 2,
+   "mcp__wikibrain__brain_neighborhood": 2,
+   "mcp__wikibrain__brain_transfer": 2,
+   "mcp__wikibrain__brain_filter": 1
+  },
+  "tokens_in": 154,
+  "tokens_out": 8212,
+  "cost_usd": 0.09111544999999999
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"torsion module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank module linear algebra\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank module linear algebra\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"torsion module rank zero\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3539,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"torsion module rank zero\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q18848\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q204\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"0\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":17},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":15},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":14},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":14},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":13},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":12},{\\\"id\\\":\\\"cell:Q17295\\\",\\\"label\\\":\\\"Euclidean space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q877775\\\",\\\"label\\\":\\\"Projective space\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":10},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":10}],\\\"returned\\\":12,\\\"total\\\":128,\\\"withheld_by_shard\\\":615,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Module\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Module.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Module.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Module (R : Type u) (M : Type v) [Semiring R] [AddCommMonoid M] extends\\\\n  DistribMulAction R M where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Module/Defs.html#Module\\\",\\\"via_cell\\\":\\\"cell:Q18848\\\",\\\"cell_label\\\":\\\"Module (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Zero\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Init.Prelude\\\",\\\"import_line\\\":\\\"import Init.Prelude\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Init/Prelude.html#Zero\\\",\\\"via_cell\\\":\\\"cell:Q204\\\",\\\"cell_label\\\":\\\"0\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Init\\\",\\\"label\\\":\\\"Init\\\"},{\\\"id\\\":\\\"path:Init/Prelude\\\",\\\"label\\\":\\\"Prelude\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.rank\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 884,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.rank\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"aka\\\":[\\\"fields-definition-degree\\\"],\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"matched\\\":\\\"decl\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rankAtStalk\\\",\\\"label\\\":\\\"Module.rankAtStalk\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Spectrum/Prime\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"label\\\":\\\"Module.rank_dual_eq_card_dual_of_aleph0_le_rank\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/ErdosKaplansky\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\"}",
+   "ok": true,
+   "result_chars": 1573,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"],\\\"xy\\\":[1157.8,60.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Torsion.Finite\\\",\\\"decl_kind\\\":\\\"theorem\\\",\\\"code\\\":\\\"lemma Module.rank_eq_zero_iff_isTorsion : Module.rank R M = 0 ↔ Module.IsTorsion R M := by\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"renamed_to\\\":\\\"rank_eq_zero_iff_isTorsion\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Torsion.Finite\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"label\\\":\\\"Dimension\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"label\\\":\\\"Torsion\\\"}],\\\"synapses_summary\\\":{\\\"mentions\\\":1},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q181296\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"Module.rank\"}",
+   "ok": true,
+   "result_chars": 1911,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"decl\\\",\\\"key\\\":\\\"Module.rank\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"f\\\":40970,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"anchor\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\"],\\\"f\\\":40970,\\\"xy\\\":[536.2,-207.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Dimension.Basic\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Dimension.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:09G3\\\",\\\"label\\\":\\\"fields-definition-degree\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09G3\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"Let $F/E$ be an extension of fields. The dimension of $F$ considered as an $E$-vector space is called the {\\\\\\\\it degree} of the extension and is denoted $[F : E]$. If $[F : E] < \\\\\\\\infty$ then $F$ is said to be a {\\\\\\\\it finite} extension of $E$.\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"page\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"label\\\":\\\"Dimension\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"invocation\\\":3,\\\"mentions\\\":2},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q6059532\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"invocation\\\":3}},{\\\"id\\\":\\\"cell:Q181296\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q44946\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":3,\\\"organs\\\":2},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.IsTorsion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 374,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.IsTorsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of FI_G-modules\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"IsTorsion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 1297,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"IsTorsion\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of FI_G-modules\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\"},{\\\"id\\\":\\\"cell:Q1551033\\\",\\\"label\\\":\\\"torsion group\\\",\\\"aka\\\":[\\\"Monoid.IsTorsion\\\"],\\\"supercell\\\":\\\"path:Mathlib/GroupTheory/Torsion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.Flat.isTorsionFree\\\",\\\"label\\\":\\\"Module.Flat.isTorsionFree\\\",\\\"supercell\\\":\\\"path:Mathlib/RingTheory/Flat/TorsionFree\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.equiv_directSum_of_isTorsion\\\",\\\"label\\\":\\\"Module.equiv_directSum_of_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/PID\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Monoid.IsTorsionFree\\\",\\\"label\\\":\\\"Monoid.IsTorsionFree\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:Submodule.instIsTorsionFree\\\",\\\"label\\\":\\\"Submodule.instIsTorsionFree\\\",\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Submodule\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/LinearAlgebra/Dimension/Torsion\"}",
+   "ok": true,
+   "result_chars": 845,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Torsion\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"parent\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\"]},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"label\\\":\\\"Dimension\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.IsTorsion definition\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 184,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.IsTorsion definition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Torsion module\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 171,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Torsion module\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/Algebra/Module/Torsion\"}",
+   "ok": true,
+   "result_chars": 783,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\",\\\"id\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Torsion\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\",\\\"parent\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"cells\\\":[\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\"],\\\"fa\\\":128},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Module\\\",\\\"label\\\":\\\"Module\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Module.IsTorsion\", \"limit\": 10, \"type\": \"cell\"}",
+   "ok": true,
+   "result_chars": 392,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Module.IsTorsion\\\",\\\"type\\\":\\\"cell\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.IsTorsionFree\\\",\\\"label\\\":\\\"Module.IsTorsionFree\\\",\\\"aka\\\":[\\\"Depth and the Local Cohomology of FI_G-modules\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Module/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\"}",
+   "ok": true,
+   "result_chars": 657,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"code\\\":\\\"lemma Module.rank_eq_zero_iff_isTorsion : Module.rank R M = 0 ↔ Module.IsTorsion R M := by\\\",\\\"code_license\\\":\\\"Apache-2.0 (Mathlib)\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Torsion/Finite.html#Module.rank_eq_zero_iff_isTorsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\", \"limit\": 10}",
+   "ok": true,
+   "result_chars": 898,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"kind\\\":\\\"cell\\\",\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q181296\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"mentions\\\",\\\"src\\\":\\\"Q181296\\\",\\\"dst\\\":\\\"decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"prov\\\":28,\\\"evidence\\\":{\\\"role\\\":\\\"citation\\\",\\\"n_annotations\\\":2,\\\"statuses\\\":{\\\"formalized\\\":2},\\\"sample\\\":[{\\\"id\\\":\\\"668f2fdeb05a\\\",\\\"label\\\":\\\"Rank zero iff torsion\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"id\\\":\\\"0922184fdff9\\\",\\\"label\\\":\\\"Rank 0 groups are periodic\\\",\\\"status\\\":\\\"formalized\\\"}]}}]}],\\\"returned\\\":1,\\\"matched\\\":1,\\\"counts\\\":{\\\"syn\\\":1,\\\"organs\\\":1},\\\"withheld_by_shard\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_snippets",
+   "input": "{\"id\": \"decl:Mathlib:Module.rank\"}",
+   "ok": true,
+   "result_chars": 865,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank\\\",\\\"kind\\\":\\\"cell\\\",\\\"rows\\\":[{\\\"source_db\\\":\\\"mathlib\\\",\\\"id\\\":\\\"decl:Mathlib:Module.rank\\\",\\\"label\\\":\\\"Module.rank\\\",\\\"url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Dimension/Basic.html#Module.rank\\\"},{\\\"source_db\\\":\\\"stacks\\\",\\\"id\\\":\\\"xref:stacks:09G3\\\",\\\"label\\\":\\\"fields-definition-degree\\\",\\\"snippet\\\":\\\"Let $F/E$ be an extension of fields. The dimension of $F$ considered as an $E$-vector space is called the {\\\\\\\\it degree} of the extension and is denoted $[F : E]$. If $[F : E] < \\\\\\\\infty$ then $F$ is said to be a {\\\\\\\\it finite} extension of $E$.\\\",\\\"license\\\":\\\"GFDL (Stacks Project)\\\",\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/09G3\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"path:Mathlib/LinearAlgebra/Dimension/Torsion\", \"limit\": 20, \"kinds\": \"depends\"}",
+   "ok": true,
+   "result_chars": 384,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\",\\\"kind\\\":\\\"supercell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[],\\\"returned\\\":0,\\\"matched\\\":0,\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"withheld_by_shard\\\":0,\\\"traces_hydrated\\\":0,\\\"truncated\\\":false,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"Module.rank_eq_zero_iff_isTorsion\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 708,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"decl\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:Module.rank_eq_zero_iff_isTorsion\\\",\\\"label\\\":\\\"Module.rank_eq_zero_iff_isTorsion\\\",\\\"supercell\\\":\\\"path:Mathlib/LinearAlgebra/Dimension/Torsion\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"torsion module rank zero\", \"direction\": \"informal_to_formal\", \"limit\": 10}",
+   "ok": false,
+   "result_chars": 220,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"torsion module rank zero\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank eq zero iff torsion\", \"limit\": 5}",
+   "ok": true,
+   "result_chars": 181,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"rank eq zero iff torsion\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_filter",
+   "input": "{\"f\": 4, \"limit\": 5, \"under\": \"path:Mathlib/LinearAlgebra/Dimension\"}",
+   "ok": true,
+   "result_chars": 272,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"f\\\":4,\\\"type\\\":\\\"cell\\\",\\\"under\\\":\\\"path:Mathlib/LinearAlgebra/Dimension\\\",\\\"hits\\\":[],\\\"returned\\\":0,\\\"cursor\\\":0,\\\"next_cursor\\\":null,\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem torsion_rank_zero {R : Type*} {M : Type*}\n  [Ring R] [AddCommMonoid M] [Module R M]\n  (h : Module.IsTorsion R M) :\n  Module.rank R M = 0 :=\n  Module.rank_eq_zero_iff_isTorsion.mpr h"
+}

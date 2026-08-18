@@ -1,0 +1,217 @@
+{
+ "task_id": "fresh_047",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:39:09Z",
+ "wall_s": 94.4,
+ "transcript_stats": {
+  "turns": 22,
+  "assistant_turns": 11,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_bridge": 6,
+   "mcp__wikibrain__brain_search": 5,
+   "mcp__wikibrain__brain_cell": 1,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_transfer": 8
+  },
+  "tokens_in": 90,
+  "tokens_out": 7893,
+  "cost_usd": 0.0838628
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Smith normal form matrix decomposition\"}",
+   "ok": true,
+   "result_chars": 4050,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Smith normal form matrix decomposition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:decl:Mathlib:Normal\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Normal\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory\\\",\\\"label\\\":\\\"FieldTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Normal\\\",\\\"label\\\":\\\"Normal\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Normal/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"label\\\":\\\"Orthogonal matrix\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"label\\\":\\\"Spectral theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":85,\\\"withheld_by_shard\\\":332,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Matrix (m : Type u) (n : Type u') (α : Type v) : Type max u u' v :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix\\\",\\\"via_cell\\\":\\\"cell:Q44337\\\",\\\"cell_label\\\":\\\"Matrix (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"decl\\\":\\\"Normal\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.FieldTheory.Normal.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.FieldTheory.Normal.Defs\\\",\\\"bond\\\":null,\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Normal : Prop extends Algebra.IsAlgebraic F K where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/Normal/Defs.html#Normal\\\",\\\"via_cell\\\":\\\"cell:decl:Mathlib:Normal\\\",\\\"cell_label\\\":\\\"Normal\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory\\\",\\\"label\\\":\\\"FieldTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Normal\\\",\\\"label\\\":\\\"Normal\\\"},{\\\"id\\\":\\\"path:Mathlib/FieldTheory/Normal/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"matrix rank block diagonal decomposition\"}",
+   "ok": true,
+   "result_chars": 2980,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix rank block diagonal decomposition\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"label\\\":\\\"Orthogonal matrix\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"label\\\":\\\"Functional (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"label\\\":\\\"Topological group\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"label\\\":\\\"Spectral theorem\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q214159\\\",\\\"label\\\":\\\"Inner product space\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":85,\\\"withheld_by_shard\\\":332,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"Matrix\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Matrix (m : Type u) (n : Type u') (α : Type v) : Type max u u' v :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/Defs.html#Matrix\\\",\\\"via_cell\\\":\\\"cell:Q44337\\\",\\\"cell_label\\\":\\\"Matrix (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"square matrix invertible equivalence rank\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e37eb145589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e37eb145589\",\"timestamp\":\"2026-08-08T03:39:17Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"matrix rank linear algebra\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e4e8e945589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e4e8e945589\",\"timestamp\":\"2026-08-08T03:39:20Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"equivalent matrices left right multiplication\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e5158095589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e5158095589\",\"timestamp\":\"2026-08-08T03:39:21Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"invertible matrix field\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e51e8595589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e51e8595589\",\"timestamp\":\"2026-08-08T03:39:21Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"matrix rank\"}",
+   "ok": true,
+   "result_chars": 168,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"matrix rank\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"block diagonal matrix\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e60382f5589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e60382f5589\",\"timestamp\":\"2026-08-08T03:39:23Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Smith normal form\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e6088595589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e6088595589\",\"timestamp\":\"2026-08-08T03:39:23Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q44337\"}",
+   "ok": true,
+   "result_chars": 3778,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q44337\\\",\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"f\\\":39129,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q44337\\\",\\\"anchor\\\":\\\"Q44337\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"supercells\\\":[\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\"],\\\"f\\\":39129,\\\"xy\\\":[-142.4,-307.9]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q44337\\\",\\\"label\\\":\\\"Matrix (mathematics)\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"description\\\":\\\"rectangular array of numbers, symbols, or expressions, arranged in rows and columns\\\",\\\"slug\\\":\\\"Matrix_mathematics\\\",\\\"article_annotations\\\":{\\\"total\\\":105,\\\"formalized\\\":60,\\\"partial\\\":24,\\\"not_formalized\\\":21},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:Matrix\\\",\\\"label\\\":\\\"Matrix\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":1,\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.Defs\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"def Matrix (m : Type u) (n : Type u') (α : Type v) : Type max u u' v :=\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.Defs\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:eom:Matrix\\\",\\\"label\\\":\\\"Matrix\\\",\\\"db\\\":\\\"eom\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":11,\\\"url\\\":\\\"https://encyclopediaofmath.org/wiki/Matrix\\\",\\\"qid\\\":\\\"Q44337\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:Matrix\\\",\\\"label\\\":\\\"Matrix\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/Matrix.html\\\",\\\"qid\\\":\\\"Q44337\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Matrix\\\",\\\"label\\\":\\\"Definition:Matrix\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Matrix\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q44337\\\",\\\"snippet\\\":\\\"Let $S$ be a set. Let $m, n \\\\\\\\in \\\\\\\\Z_{>0}$ be strictly positive integers. An $m \\\\\\\\times n$ matrix over $S$ (said $m$ times $n$ or $m$ by $n$) is a mapping from the cartesian product of two integer intervals $\\\\\\\\closedint 1 m \\\\\\\\times \\\\\\\\closedint 1 n$ into $S$. When the set $S$ is understood, or for the purpose of the particular argument irrelevant, we can refer just to an $m \\\\\\\\times n$ matrix. The…\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Matrix_mathematics\\\",\\\"label\\\":\\\"Matrix mathematics\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":105,\\\"formalized\\\":60,\\\"partial\\\":24,\\\"not_formalized\\\":21}}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/Defs\\\",\\\"label\\\":\\\"Defs\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":202,\\\"mentions\\\":64,\\\"links\\\":9,\\\"relates\\\":5,\\\"cites\\\":9,\\\"invocation\\\":63},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":6,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":4,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q579600\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5}},{\\\"id\\\":\\\"cell:Q1046291\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q1425077\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}}],\\\"counts\\\":{\\\"syn\\\":532,\\\"organs\\\":6},\\\"truncated\\\":{\\\"syn\\\":332},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank matrix\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e7d4fcf5589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e7d4fcf5589\",\"timestamp\":\"2026-08-08T03:39:28Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q44337\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 16411,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q44337\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"depends\\\":6,\\\"mentions\\\":1},\\\"traces_total\\\":7,\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q159943\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":2,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Algebra\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q205464\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"IsOrderedRing\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q3968\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":10,\\\"w_types\\\":{\\\"sig\\\":10,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Algebra\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q159943\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Matrix.instRing\\\",\\\"Ring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q205464\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":32,\\\"w_types\\\":{\\\"sig\\\":32,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"Matrix.det_apply\\\",\\\"CommRing\\\"]]}}]},{\\\"id\\\":\\\"cell:Q333871\\\",\\\"w\\\":6,\\\"kinds\\\":{\\\"depends\\\":4,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1783179\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":30,\\\"w_types\\\":{\\\"sig\\\":22,\\\"def\\\":8,\\\"proof\\\":10},\\\"witnesses\\\":[[\\\"LinearIsometryEquiv.instGroup\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q333871\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":60,\\\"w_types\\\":{\\\"sig\\\":39,\\\"def\\\":9,\\\"proof\\\":37},\\\"witnesses\\\":[[\\\"Matrix.mem_specialOrthogonalGroup_iff\\\",\\\"Matrix\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q1783179\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Matrix.orthogonalGroup\\\",\\\"Matrix.unitaryGroup\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q333871\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":0,\\\"def\\\":0,\\\"proof\\\":1},\\\"witnesses\\\":[[\\\"Matrix.IsHermitian.posDef_iff_eigenvalues_pos\\\",\\\"Matrix.IsHermitian.spectral_theorem\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":5},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1000660\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":15,\\\"w_types\\\":{\\\"sig\\\":14,\\\"def\\\":3,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"AlgHom\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q1000660\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":4,\\\"def\\\":0,\\\"proof\\\":4},\\\"witnesses\\\":[[\\\"Matrix.aeval_self_charpoly\\\",\\\"AlgHom\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q577835\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":2,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"LinearMap.finrank_range_add_finrank_ker\\\",\\\"FiniteDimensional\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q577835\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"Algebra\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q837414\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":0,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"Algebra\\\",\\\"Semiring\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":3,\\\"mentions\\\":1,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1163016\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":10,\\\"w_types\\\":{\\\"sig\\\":9,\\\"def\\\":1,\\\"proof\\\":4},\\\"witnesses\\\":[[\\\"Module.finrank_tensorProduct\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q188524\\\",\\\"dst\\\":\\\"Q44337\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"MultilinearMap\\\",\\\"Semiring\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q44337\\\",\\\"dst\\\":\\\"Q188524\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":55,\\\"w_types\\\":{\\\"sig\\\":53,\\\"def\\\":34,\\\"proof\\\":19},\\\"witnesses\\\":[[\\\"Matrix"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"rank\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e9a2f115589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e9a2f115589\",\"timestamp\":\"2026-08-08T03:39:32Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"rank\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7e9b9fbc5589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7e9b9fbc5589\",\"timestamp\":\"2026-08-08T03:39:33Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"general linear group\", \"direction\": \"informal_to_formal\"}",
+   "ok": true,
+   "result_chars": 1554,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"informal_to_formal\\\",\\\"q\\\":\\\"general linear group\\\",\\\"resolved_from\\\":\\\"label\\\",\\\"id\\\":\\\"cell:Q524607\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"General linear group\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra\\\",\\\"label\\\":\\\"LinearAlgebra\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix\\\",\\\"label\\\":\\\"Matrix\\\"},{\\\"id\\\":\\\"path:Mathlib/LinearAlgebra/Matrix/GeneralLinearGroup\\\",\\\"label\\\":\\\"GeneralLinearGroup\\\"}],\\\"match\\\":\\\"exact\\\",\\\"hits\\\":[{\\\"decl\\\":\\\"Matrix.GeneralLinearGroup\\\",\\\"module\\\":\\\"Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"def\\\",\\\"code\\\":\\\"abbrev GeneralLinearGroup (n : Type u) (R : Type v) [DecidableEq n] [Fintype n] [Semiring R] :\\\\n    Type _ :=\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/LinearAlgebra/Matrix/GeneralLinearGroup/Defs.html#Matrix.GeneralLinearGroup\\\",\\\"via_cell\\\":\\\"cell:Q524607\\\",\\\"cell_label\\\":\\\"General linear group\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"matrix rank\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7ecc48865589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7ecc48865589\",\"timestamp\":\"2026-08-08T03:39:40Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"block diagonal matrix\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7ed82ecc5589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7ed82ecc5589\",\"timestamp\":\"2026-08-08T03:39:42Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"identity matrix\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 211,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"identity matrix\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"1 matrix\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7ee63dd25589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7ee63dd25589\",\"timestamp\":\"2026-08-08T03:39:45Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"field division ring\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b7ef11b5b5589\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b7ef11b5b5589\",\"timestamp\":\"2026-08-08T03:39:46Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"diagonal matrix\", \"direction\": \"informal_to_formal\"}",
+   "ok": false,
+   "result_chars": 211,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"diagonal matrix\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem square_matrix_rank_form (n : ℕ) (F : Type*) [Field F] \n  (M : Matrix (Fin n) (Fin n) F) :\n  ∃ (P Q : Matrix.GeneralLinearGroup (Fin n) F),\n    (P : Matrix (Fin n) (Fin n) F) * M * Q = \n    Matrix.diagonal fun i => if i.val < Matrix.rank F M then (1 : F) else 0 := sorry"
+}

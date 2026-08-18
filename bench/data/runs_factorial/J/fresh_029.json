@@ -1,0 +1,249 @@
+{
+ "task_id": "fresh_029",
+ "arm": "J",
+ "model": "claude-haiku-4-5-20251001",
+ "max_turns": 30,
+ "factorial_cell": {
+  "join": true,
+  "verifier": false
+ },
+ "condition_hash": "66ee00f14e4cf98a61684df138f5a09405d2bd22c782e7efca1d3958aa4cc36b",
+ "cli_version": "2.1.153 (Claude Code)",
+ "attempt": 1,
+ "timestamp": "2026-08-08T03:34:13Z",
+ "wall_s": 101.0,
+ "transcript_stats": {
+  "turns": 26,
+  "assistant_turns": 17,
+  "tool_calls_by_name": {
+   "mcp__wikibrain__brain_search": 13,
+   "mcp__wikibrain__brain_bridge": 5,
+   "mcp__wikibrain__brain_cell": 5,
+   "mcp__wikibrain__brain_neighborhood": 1,
+   "mcp__wikibrain__brain_transfer": 1
+  },
+  "tokens_in": 140,
+  "tokens_out": 9299,
+  "cost_usd": 0.10561940000000003
+ },
+ "tool_trace": [
+  {
+   "i": 0,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"commutative square diagram\"}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative square diagram\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 1,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monomorphism category theory\"}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monomorphism category theory\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 2,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"commutative cube\"}",
+   "ok": true,
+   "result_chars": 173,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative cube\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 3,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"monomorphism\"}",
+   "ok": true,
+   "result_chars": 1092,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monomorphism\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:decl:Mathlib:AlgebraicGeometry.Flat.isIso_of_surjective_of_mono\\\",\\\"label\\\":\\\"AlgebraicGeometry.Flat.isIso_of_surjective_of_mono\\\",\\\"aka\\\":[\\\"descent-lemma-flat-surjective-quasi-compact-monomorphism-isomorphism\\\"],\\\"supercell\\\":\\\"path:Mathlib/AlgebraicGeometry/Morphisms/FlatMono\\\"},{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.ObjectProperty.IsConservativeFamilyOfPoints.jointlyReflectMonomorphisms\\\",\\\"label\\\":\\\"CategoryTheory.ObjectProperty.IsConservativeFamilyOfPoints.jointlyReflectMonomorphisms\\\",\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/Sites/Point\\\"},{\\\"id\\\":\\\"path:Mathlib/AlgebraicTopology/SimplicialSet/Monomorphisms\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Monomorphisms\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Monomorphisms\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Monomorphisms\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Types/Monomorphisms\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Monomorphisms\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 4,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"commutative diagram\"}",
+   "ok": true,
+   "result_chars": 465,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"commutative diagram\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"aka\\\":[\\\"CategoryTheory.CommSq\\\",\\\"Commutative Diagram\\\",\\\"Definition:Commutative Diagram\\\",\\\"commutative diagram\\\",\\\"Category Theory for Programming\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/CommSq\\\",\\\"matched\\\":\\\"label\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 5,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"morphism is monomorphism if left-cancellative\"}",
+   "ok": true,
+   "result_chars": 2813,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"morphism is monomorphism if left-cancellative\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Morphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver\\\",\\\"label\\\":\\\"Quiver\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q1347208\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q864475\\\",\\\"label\\\":\\\"Functor\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Morphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver\\\",\\\"label\\\":\\\"Quiver\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 6,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q621542\"}",
+   "ok": true,
+   "result_chars": 4373,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q621542\\\",\\\"id\\\":\\\"cell:Q621542\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"f\\\":40152,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q621542\\\",\\\"anchor\\\":\\\"Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"supercells\\\":[\\\"path:Mathlib/CategoryTheory/CommSq\\\"],\\\"f\\\":40152,\\\"xy\\\":[-43.5,151.2]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"bond\\\":\\\"special_case\\\",\\\"prov\\\":0,\\\"description\\\":\\\"collection of maps in which all map compositions starting from the same set and ending with the same set give the same result\\\",\\\"slug\\\":\\\"Commutative_diagram\\\",\\\"article_annotations\\\":{\\\"total\\\":18,\\\"formalized\\\":5,\\\"partial\\\":7,\\\"not_formalized\\\":6},\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:CategoryTheory.CommSq\\\",\\\"label\\\":\\\"CategoryTheory.CommSq\\\",\\\"bond\\\":\\\"formalizes\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.CategoryTheory.CommSq\\\",\\\"decl_kind\\\":\\\"struct\\\",\\\"code\\\":\\\"structure CommSq {W X Y Z : C} (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.CommSq\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:mathworld:CommutativeDiagram\\\",\\\"label\\\":\\\"Commutative Diagram\\\",\\\"db\\\":\\\"mathworld\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":15,\\\"url\\\":\\\"https://mathworld.wolfram.com/CommutativeDiagram.html\\\",\\\"qid\\\":\\\"Q621542\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:commutative diagram\\\",\\\"label\\\":\\\"commutative diagram\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/commutative+diagram\\\",\\\"qid\\\":\\\"Q621542\\\",\\\"snippet\\\":\\\"In category theory, a _commutative diagram_ is a free diagram in which all parallel morphisms obtained by composing morphisms in the diagram agree.\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:proofwiki:Definition:Commutative_Diagram\\\",\\\"label\\\":\\\"Definition:Commutative Diagram\\\",\\\"db\\\":\\\"proofwiki\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":21,\\\"url\\\":\\\"https://proofwiki.org/wiki/Definition:Commutative_Diagram\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"qid\\\":\\\"Q621542\\\",\\\"snippet\\\":\\\"A commutative diagram is a graphical technique designed to illustrate the construction of composite mappings. It is also a widespread tool in category theory, where it deals with morphisms instead of mappings. $\\\\\\\\begin{xy} \\\\\\\\xymatrix@L+2mu@+1em{ S_1 \\\\\\\\ar[r]^*{f_1} \\\\\\\\ar@{-->}[rd]_*{f_2 \\\\\\\\circ f_1} & S_2 \\\\\\\\ar[d]^*{f_2} \\\\\\\\\\\\\\\\ & S_3 }\\\\\\\\end{xy}$ It consists of: $(1): \\\\\\\\quad$ A collection of points representing…\\\",\\\"snippet_license\\\":\\\"CC-BY-SA-3.0 (ProofWiki)\\\"},{\\\"kind\\\":\\\"article\\\",\\\"id\\\":\\\"Commutative_diagram\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"bond\\\":\\\"article\\\",\\\"prov\\\":24,\\\"annotations\\\":{\\\"total\\\":18,\\\"formalized\\\":5,\\\"partial\\\":7,\\\"not_formalized\\\":6}},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2209.01259#2\\\",\\\"label\\\":\\\"Category Theory for Programming\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"2209.01259\\\",\\\"ref\\\":\\\"2\\\",\\\"license_open\\\":true}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":3,\\\"article\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/CommSq\\\",\\\"label\\\":\\\"CommSq\\\"}],\\\"synapses_summary\\\":{\\\"depends\\\":120,\\\"links\\\":30,\\\"mentions\\\":12,\\\"relates\\\":1,\\\"cites\\\":7},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q864475\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q1442189\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4}},{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q719395\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1347208\\\",\\\"w\\\":3,\\\"ki"
+  },
+  {
+   "i": 7,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Mono CategoryTheory\"}",
+   "ok": true,
+   "result_chars": 176,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Mono CategoryTheory\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 8,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Mono left cancellative\"}",
+   "ok": true,
+   "result_chars": 179,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Mono left cancellative\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 9,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/CategoryTheory/Abelian/Monomorphisms\"}",
+   "ok": true,
+   "result_chars": 796,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Monomorphisms\\\",\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Monomorphisms\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"Monomorphisms\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/CategoryTheory/Abelian/Monomorphisms\\\",\\\"parent\\\":\\\"path:Mathlib/CategoryTheory/Abelian\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian\\\",\\\"label\\\":\\\"Abelian\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 10,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"monomorphism in a category\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 3039,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"monomorphism in a category\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category\\\",\\\"label\\\":\\\"Category\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"label\\\":\\\"Morphism\\\",\\\"w\\\":11},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\",\\\"w\\\":8},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q864475\\\",\\\"label\\\":\\\"Functor\\\",\\\"w\\\":6},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q1347208\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q1442189\\\",\\\"label\\\":\\\"Natural transformation\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q1575634\\\",\\\"label\\\":\\\"Concrete category\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q318737\\\",\\\"label\\\":\\\"Abelian category\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":106,\\\"withheld_by_shard\\\":20,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CategoryTheory.Category\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Category (obj : Type u) : Type max u (v + 1) extends CategoryStruct.{v} obj where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html#CategoryTheory.Category\\\",\\\"via_cell\\\":\\\"cell:Q719395\\\",\\\"cell_label\\\":\\\"Category (mathematics)\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category\\\",\\\"label\\\":\\\"Category\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 11,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"Mono f means f is left cancellative\", \"limit\": 8}",
+   "ok": false,
+   "result_chars": 268,
+   "result_head": "{\"ok\":false,\"error\":\"no atom matched q\",\"q\":\"Mono f means f is left cancellative\",\"match\":\"none\",\"suggestions\":[],\"hint\":\"try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell\",\"snapshot\":{\"generated_at\":\"2026-08-01T06:19:38+00:00\",\"pin\":\"bf3266149cda603f\"}}"
+  },
+  {
+   "i": 12,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"CommSq\"}",
+   "ok": true,
+   "result_chars": 828,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"CommSq\\\",\\\"hits\\\":[{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"aka\\\":[\\\"CategoryTheory.CommSq\\\",\\\"Commutative Diagram\\\",\\\"Definition:Commutative Diagram\\\",\\\"commutative diagram\\\",\\\"Category Theory for Programming\\\"],\\\"supercell\\\":\\\"path:Mathlib/CategoryTheory/CommSq\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Homology/CommSq\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"CommSq\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian/CommSq\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"CommSq\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/CommSq\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"CommSq\\\",\\\"n_cells\\\":1},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/CatCommSq\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"CatCommSq\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 13,
+   "name": "mcp__wikibrain__brain_neighborhood",
+   "input": "{\"id\": \"cell:Q621542\", \"kinds\": \"depends\", \"limit\": 20}",
+   "ok": true,
+   "result_chars": 11268,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"id\\\":\\\"cell:Q621542\\\",\\\"kind\\\":\\\"cell\\\",\\\"kinds\\\":[\\\"depends\\\"],\\\"synapses\\\":[{\\\"id\\\":\\\"cell:Q864475\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q864475\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":4,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":3,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.NatTrans\\\",\\\"CategoryTheory.Functor\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q864475\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":16,\\\"w_types\\\":{\\\"sig\\\":15,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor.op\\\",\\\"CategoryTheory.Functor\\\"]]}}]},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2,\\\"relates\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q217413\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor.op\\\",\\\"CategoryTheory.Functor\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q217413\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor\\\",\\\"CategoryTheory.Category\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1442189\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1442189\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.NatTrans\\\",\\\"CategoryTheory.Functor\\\"]]}}]},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":4},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q229102\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":1,\\\"w_types\\\":{\\\"sig\\\":1,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.IsSplitEpi.epi\\\",\\\"CategoryTheory.Epi\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q180907\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":1,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"QuotientGroup.quotientKerEquivRange\\\",\\\"Function.Surjective\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q229102\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":3,\\\"w_types\\\":{\\\"sig\\\":2,\\\"def\\\":1,\\\"proof\\\":2},\\\"witnesses\\\":[[\\\"QuotientGroup.quotientKerEquivRange\\\",\\\"Function.Surjective\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q4907197\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":3,\\\"def\\\":2,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"QuotientGroup.quotientKerEquivRange\\\",\\\"Function.Surjective\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1948412\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":12,\\\"w_types\\\":{\\\"sig\\\":11,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.IsIso.inv_eq_of_hom_inv_id\\\",\\\"CategoryTheory.IsIso\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q1948412\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":9,\\\"w_types\\\":{\\\"sig\\\":8,\\\"def\\\":1,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor\\\",\\\"CategoryTheory.Category\\\"]]}}]},{\\\"id\\\":\\\"cell:Q719395\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q621542\\\",\\\"dst\\\":\\\"Q719395\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":12,\\\"w_types\\\":{\\\"sig\\\":11,\\\"def\\\":2,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor\\\",\\\"CategoryTheory.Category\\\"]]}},{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q719395\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":5,\\\"w_types\\\":{\\\"sig\\\":5,\\\"def\\\":0,\\\"proof\\\":0},\\\"witnesses\\\":[[\\\"CategoryTheory.Functor.category\\\",\\\"CategoryTheory.Functor\\\"]]}}]},{\\\"id\\\":\\\"cell:Q1479523\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":2},\\\"traces\\\":[{\\\"kind\\\":\\\"depends\\\",\\\"src\\\":\\\"Q1479523\\\",\\\"dst\\\":\\\"Q621542\\\",\\\"prov\\\":27,\\\"evidence\\\":{\\\"weight\\\":10,\\\"w_types\\\":{\\\"sig\\\":10,\\\"def\\\":0,\\\"proof\\\":3},\\\"witnesses\\\":[[\\\"CategoryTheory.Abelian.epi_of_epi_of_epi_of_mono\\\",\\\"CategoryTheory.Epi\\\"]]}}]},{\\\"id\\\":\\"
+  },
+  {
+   "i": 14,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"cube diagram lemma\"}",
+   "ok": true,
+   "result_chars": 175,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"cube diagram lemma\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 15,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"path:Mathlib/CategoryTheory/Abelian/CommSq\"}",
+   "ok": true,
+   "result_chars": 768,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"supercell\\\",\\\"key\\\":\\\"path:Mathlib/CategoryTheory/Abelian/CommSq\\\",\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian/CommSq\\\",\\\"kind\\\":\\\"supercell\\\",\\\"label\\\":\\\"CommSq\\\",\\\"supercell\\\":{\\\"path\\\":\\\"path:Mathlib/CategoryTheory/Abelian/CommSq\\\",\\\"parent\\\":\\\"path:Mathlib/CategoryTheory/Abelian\\\"},\\\"organs\\\":[],\\\"organs_by_kind\\\":{},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Abelian\\\",\\\"label\\\":\\\"Abelian\\\"}],\\\"synapses_summary\\\":{},\\\"synapses_preview\\\":[],\\\"counts\\\":{\\\"syn\\\":0,\\\"organs\\\":0},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 16,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"comm square of morphisms composition\"}",
+   "ok": true,
+   "result_chars": 193,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"comm square of morphisms composition\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 17,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"if a cube has five commutative faces\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2961,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"if a cube has five commutative faces\\\",\\\"match\\\":\\\"exact\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q165474\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Commutative property\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]},{\\\"id\\\":\\\"cell:Q812880\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Cube\\\",\\\"resolved_from\\\":\\\"statement\\\"}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q40276\\\",\\\"label\\\":\\\"Multiplication\\\",\\\"w\\\":7},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q1000660\\\",\\\"label\\\":\\\"Algebra over a field\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q181296\\\",\\\"label\\\":\\\"Abelian group\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q161172\\\",\\\"label\\\":\\\"Ring (mathematics)\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q18848\\\",\\\"label\\\":\\\"Module (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q207643\\\",\\\"label\\\":\\\"Linear map\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q858656\\\",\\\"label\\\":\\\"Commutative ring\\\",\\\"w\\\":4},{\\\"id\\\":\\\"path:Mathlib/RingTheory\\\",\\\"label\\\":\\\"RingTheory\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q11205\\\",\\\"label\\\":\\\"Arithmetic\\\",\\\"w\\\":3},{\\\"id\\\":\\\"cell:Q1163016\\\",\\\"label\\\":\\\"Tensor product\\\",\\\"w\\\":3}],\\\"returned\\\":12,\\\"total\\\":189,\\\"withheld_by_shard\\\":323,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[{\\\"decl\\\":\\\"CommMagma\\\",\\\"exists\\\":true,\\\"module\\\":\\\"Mathlib.Algebra.Group.Defs\\\",\\\"import_line\\\":\\\"import Mathlib.Algebra.Group.Defs\\\",\\\"bond\\\":\\\"exact\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class CommMagma (G : Type u) extends Mul G where\\\",\\\"docs_url\\\":\\\"https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#CommMagma\\\",\\\"via_cell\\\":\\\"cell:Q165474\\\",\\\"cell_label\\\":\\\"Commutative property\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra\\\",\\\"label\\\":\\\"Algebra\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group\\\",\\\"label\\\":\\\"Group\\\"},{\\\"id\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\",\\\"label\\\":\\\"Defs\\\"}]}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 18,
+   "name": "mcp__wikibrain__brain_bridge",
+   "input": "{\"q\": \"left cancellative morphism\", \"limit\": 8}",
+   "ok": true,
+   "result_chars": 2794,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"left cancellative morphism\\\",\\\"match\\\":\\\"none\\\",\\\"confidence_floor\\\":\\\"a hit clears the floor when the atom resolved by IDENTITY (an exact id/label match, resolved_from≠'search') OR the best decl bond is 'exact'; a fuzzy free-text match whose best bond is weaker than exact does NOT clear it — the API returns match:'none' with nearest candidates instead of forcing a weak grounding.\\\",\\\"atoms\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Morphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver\\\",\\\"label\\\":\\\"Quiver\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver/Basic\\\",\\\"label\\\":\\\"Basic\\\"}]}],\\\"depends\\\":{\\\"partners\\\":[{\\\"id\\\":\\\"cell:Q719395\\\",\\\"label\\\":\\\"Category (mathematics)\\\",\\\"w\\\":11},{\\\"id\\\":\\\"cell:Q1347208\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"w\\\":7},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"label\\\":\\\"Isomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"w\\\":6},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"label\\\":\\\"Bijection\\\",\\\"w\\\":5},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\",\\\"w\\\":5},{\\\"id\\\":\\\"cell:Q170058\\\",\\\"label\\\":\\\"Continuous function\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q203920\\\",\\\"label\\\":\\\"Manifold\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"label\\\":\\\"Commutative diagram\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q83478\\\",\\\"label\\\":\\\"Group (mathematics)\\\",\\\"w\\\":4},{\\\"id\\\":\\\"cell:Q864475\\\",\\\"label\\\":\\\"Functor\\\",\\\"w\\\":4}],\\\"returned\\\":12,\\\"total\\\":139,\\\"withheld_by_shard\\\":0,\\\"truncated\\\":true},\\\"next_tools\\\":[\\\"brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)\\\",\\\"decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it\\\",\\\"brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)\\\",\\\"brain_transfer direction=formal_to_informal — pull the informal side (article, description) back\\\"],\\\"hits\\\":[],\\\"nearest\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Morphism\\\",\\\"resolved_from\\\":\\\"statement\\\",\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics\\\",\\\"label\\\":\\\"Combinatorics\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver\\\",\\\"label\\\":\\\"Quiver\\\"},{\\\"id\\\":\\\"path:Mathlib/Combinatorics/Quiver/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"why\\\":\\\"atom matched by label similarity only, and the best bond is not exact\\\"}],\\\"note\\\":\\\"no formalization cleared the confidence floor — nearest candidate atoms returned instead of a forced grounding\\\",\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 19,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"cell:Q1347208\"}",
+   "ok": true,
+   "result_chars": 3004,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"cell\\\",\\\"key\\\":\\\"cell:Q1347208\\\",\\\"id\\\":\\\"cell:Q1347208\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"f\\\":33944,\\\"cell\\\":{\\\"id\\\":\\\"cell:Q1347208\\\",\\\"anchor\\\":\\\"Q1347208\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"supercells\\\":[\\\"path:Mathlib/CategoryTheory/Category/Basic\\\"],\\\"f\\\":33944,\\\"xy\\\":[-83,148]},\\\"organs\\\":[{\\\"kind\\\":\\\"concept\\\",\\\"id\\\":\\\"Q1347208\\\",\\\"label\\\":\\\"Epimorphism\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"description\\\":\\\"right-cancellative morphism\\\",\\\"slug\\\":\\\"Epimorphism\\\",\\\"status\\\":\\\"formalized\\\"},{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:CategoryTheory.Epi\\\",\\\"label\\\":\\\"CategoryTheory.Epi\\\",\\\"bond\\\":\\\"exact\\\",\\\"prov\\\":0,\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Epi (f : X ⟶ Y) : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:nlab:epimorphism\\\",\\\"label\\\":\\\"epimorphism\\\",\\\"db\\\":\\\"nlab\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":16,\\\"url\\\":\\\"https://ncatlab.org/nlab/show/epimorphism\\\",\\\"qid\\\":\\\"Q1347208\\\",\\\"snippet\\\":\\\"In category theory, the concept of _epimorphism_ is a generalization or strengthening of the concept of _surjective functions_ between sets (example \\\\\\\\ref{EpimorphismsOfSets} below).\\\",\\\"snippet_license\\\":\\\"nLab (attribution, no formal license)\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:1209.5665#119\\\",\\\"label\\\":\\\"Mathematics for theoretical physics\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":26,\\\"arxiv_id\\\":\\\"1209.5665\\\",\\\"ref\\\":\\\"119\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"concept\\\":1,\\\"decl\\\":1,\\\"page\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category\\\",\\\"label\\\":\\\"Category\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":4,\\\"depends\\\":14,\\\"links\\\":32,\\\"mentions\\\":4,\\\"relates\\\":4},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"w\\\":7,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":2,\\\"mentions\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q719395\\\",\\\"w\\\":5,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":2,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q180907\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1,\\\"relates\\\":2}},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"cites\\\":1,\\\"depends\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"w\\\":4,\\\"kinds\\\":{\\\"depends\\\":2,\\\"links\\\":1,\\\"relates\\\":1}},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"w\\\":3,\\\"kinds\\\":{\\\"cites\\\":1,\\\"links\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q1479523\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"depends\\\":1,\\\"links\\\":1}},{\\\"id\\\":\\\"cell:Q179692\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q189112\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}},{\\\"id\\\":\\\"cell:Q326908\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"links\\\":2}}],\\\"counts\\\":{\\\"syn\\\":32,\\\"organs\\\":4},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 20,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"Mono CategoryTheory morphism\"}",
+   "ok": true,
+   "result_chars": 185,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"Mono CategoryTheory morphism\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 21,
+   "name": "mcp__wikibrain__brain_transfer",
+   "input": "{\"q\": \"CategoryTheory.Mono\", \"direction\": \"formal_to_informal\"}",
+   "ok": true,
+   "result_chars": 2054,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"direction\\\":\\\"formal_to_informal\\\",\\\"q\\\":\\\"CategoryTheory.Mono\\\",\\\"decl\\\":\\\"CategoryTheory.Mono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Mono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"CategoryTheory.Mono\\\",\\\"hits\\\":[],\\\"note\\\":\\\"the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)\\\",\\\"suggestions\\\":[{\\\"id\\\":\\\"cell:Q215111\\\",\\\"label\\\":\\\"Homomorphism\\\",\\\"aka\\\":[\\\"Definition:Group Homomorphism\\\",\\\"Definition:Homomorphism (Abstract Algebra)\\\",\\\"Group Homomorphism\\\",\\\"Group homomorphism\\\",\\\"MonoidHom\\\",\\\"homomorphism\\\",\\\"A note on Herglotz's theorem for time series on function spaces\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Hom\\\"},{\\\"id\\\":\\\"cell:Q208237\\\",\\\"label\\\":\\\"Monoid\\\",\\\"aka\\\":[\\\"Definition:Monoid\\\",\\\"Product\\\",\\\"Product (mathematics)\\\",\\\"Product mathematics\\\",\\\"monoid\\\",\\\"From Signed Networks to Group Graphs\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Defs\\\"},{\\\"id\\\":\\\"cell:Q595466\\\",\\\"label\\\":\\\"Dini's theorem\\\",\\\"aka\\\":[\\\"ContinuousMap.tendsto_of_monotone_of_pointwise\\\",\\\"Dini theorem\\\",\\\"Dinis Theorem\\\",\\\"Monotone.tendstoUniformly_of_forall_tendsto\\\",\\\"The Dirichlet problem for the minimal surface equation in $\\\\\\\\rm Sol_3$, with possible infinite boundary data\\\"],\\\"supercell\\\":\\\"path:Mathlib/Topology/UniformSpace/Dini\\\"},{\\\"id\\\":\\\"cell:Q914099\\\",\\\"label\\\":\\\"alternating series test\\\",\\\"aka\\\":[\\\"Alternating Series Test\\\",\\\"Antitone.tendsto_alternating_series_of_tendsto_zero\\\",\\\"Leibniz Criterion\\\",\\\"Monotone.tendsto_alternating_series_of_tendsto_zero\\\",\\\"Criteria of convergence of a non ordinary random continued fractions on a symmetric cone\\\"],\\\"supercell\\\":\\\"path:Mathlib/Analysis/SpecificLimits/Normed\\\"},{\\\"id\\\":\\\"cell:Q574844\\\",\\\"label\\\":\\\"Kernel (algebra)\\\",\\\"aka\\\":[\\\"Kernel\\\",\\\"Kernel of a matrix\\\",\\\"MonoidHom.ker\\\",\\\"Ultrametric-preserving functions as monoid endomorphisms\\\"],\\\"supercell\\\":\\\"path:Mathlib/Algebra/Group/Subgroup\\\"}],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 22,
+   "name": "mcp__wikibrain__brain_cell",
+   "input": "{\"key\": \"decl:Mathlib:CategoryTheory.Mono\"}",
+   "ok": true,
+   "result_chars": 2659,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"resolved_from\\\":\\\"organ\\\",\\\"key\\\":\\\"decl:Mathlib:CategoryTheory.Mono\\\",\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Mono\\\",\\\"kind\\\":\\\"cell\\\",\\\"label\\\":\\\"CategoryTheory.Mono\\\",\\\"f\\\":41098,\\\"cell\\\":{\\\"id\\\":\\\"cell:decl:Mathlib:CategoryTheory.Mono\\\",\\\"anchor\\\":\\\"decl:Mathlib:CategoryTheory.Mono\\\",\\\"label\\\":\\\"CategoryTheory.Mono\\\",\\\"supercells\\\":[\\\"path:Mathlib/CategoryTheory/Category/Basic\\\"],\\\"f\\\":41098,\\\"xy\\\":[-141.2,271.6]},\\\"organs\\\":[{\\\"kind\\\":\\\"decl\\\",\\\"id\\\":\\\"decl:Mathlib:CategoryTheory.Mono\\\",\\\"label\\\":\\\"CategoryTheory.Mono\\\",\\\"module\\\":\\\"Mathlib.CategoryTheory.Category.Basic\\\",\\\"decl_kind\\\":\\\"class\\\",\\\"code\\\":\\\"class Mono (f : X ⟶ Y) : Prop where\\\",\\\"library\\\":\\\"Mathlib\\\",\\\"import_line\\\":\\\"import Mathlib.CategoryTheory.Category.Basic\\\"},{\\\"kind\\\":\\\"page\\\",\\\"id\\\":\\\"xref:stacks:003B\\\",\\\"label\\\":\\\"categories-definition-mono-epi\\\",\\\"db\\\":\\\"stacks\\\",\\\"bond\\\":\\\"xref\\\",\\\"prov\\\":23,\\\"url\\\":\\\"https://stacks.math.columbia.edu/tag/003B\\\",\\\"kind_hint\\\":\\\"definition\\\",\\\"snippet\\\":\\\"Let $\\\\\\\\mathcal{C}$ be a category and let $f : X \\\\\\\\to Y$ be a morphism of $\\\\\\\\mathcal{C}$. \\\\\\\\begin{enumerate} \\\\\\\\item We say that $f$ is a {\\\\\\\\it monomorphism} if for every object $W$ and every pair of morphisms $a, b : W \\\\\\\\to X$ such that $f \\\\\\\\circ a = f \\\\\\\\circ b$ we have $a = b$. \\\\\\\\item We say that $f$ is an {\\\\\\\\it epimorphism} if for every object $W$ and every pair of morphisms $a, b : Y \\\\\\\\to W$ such that $a…\\\",\\\"snippet_license\\\":\\\"GFDL (Stacks Project)\\\"},{\\\"kind\\\":\\\"statement\\\",\\\"id\\\":\\\"lit:2107.05914#0\\\",\\\"label\\\":\\\"Categorical Center of Higher Genera and 4D Factorization Homology\\\",\\\"bond\\\":\\\"matches\\\",\\\"prov\\\":25,\\\"arxiv_id\\\":\\\"2107.05914\\\",\\\"ref\\\":\\\"0\\\",\\\"license_open\\\":false}],\\\"organs_by_kind\\\":{\\\"decl\\\":1,\\\"page\\\":1,\\\"statement\\\":1},\\\"breadcrumb\\\":[{\\\"id\\\":\\\"path:Mathlib\\\",\\\"label\\\":\\\"Mathlib\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"label\\\":\\\"CategoryTheory\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category\\\",\\\"label\\\":\\\"Category\\\"},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory/Category/Basic\\\",\\\"label\\\":\\\"Basic\\\"}],\\\"synapses_summary\\\":{\\\"cites\\\":4,\\\"mentions\\\":5},\\\"synapses_preview\\\":[{\\\"id\\\":\\\"cell:Q1948412\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q215111\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q621542\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"path:Mathlib/CategoryTheory\\\",\\\"w\\\":2,\\\"kinds\\\":{\\\"cites\\\":1,\\\"mentions\\\":1}},{\\\"id\\\":\\\"cell:Q719395\\\",\\\"w\\\":1,\\\"kinds\\\":{\\\"mentions\\\":1}}],\\\"counts\\\":{\\\"syn\\\":5,\\\"organs\\\":3},\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 23,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"five lemma six lemma snake\"}",
+   "ok": true,
+   "result_chars": 183,
+   "result_head": "[{\"type\": \"text\", \"text\": \"{\\\"ok\\\":true,\\\"q\\\":\\\"five lemma six lemma snake\\\",\\\"hits\\\":[],\\\"snapshot\\\":{\\\"generated_at\\\":\\\"2026-08-01T06:19:38+00:00\\\",\\\"pin\\\":\\\"bf3266149cda603f\\\"}}\"}]"
+  },
+  {
+   "i": 24,
+   "name": "mcp__wikibrain__brain_search",
+   "input": "{\"q\": \"abelian category diagram chasing\"}",
+   "ok": false,
+   "result_chars": 874,
+   "result_head": "Streamable HTTP error: Error POSTing to endpoint: {\"type\":\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1102/\",\"title\":\"Error 1102: Worker exceeded resource limits\",\"status\":503,\"detail\":\"A Worker script configured by the website owner exceeded its resource limits (CPU time or memory) and was terminated.\",\"instance\":\"a27b786abdb6dcde\",\"error_code\":1102,\"error_name\":\"worker_exceeded_resources\",\"error_category\":\"worker\",\"ray_id\":\"a27b786abdb6dcde\",\"timestamp\":\"2026-08-08T03:35:19Z\",\"zone\":\"wikilean.jackmccarthy.org\",\"cloudflare_error\":true,\"retryable\":false,\"owner_action_required\":true,\"what_you_should_do\":\"**Do not retry.** The same request will hit the same resource limits. The site owner must optimize the Worker script.\",\"footer\":\"This error was generated by Cloudflare on behalf of the website owner.\"}"
+  }
+ ],
+ "mcp_init": [
+  [
+   "wikibrain",
+   "connected"
+  ]
+ ],
+ "init_tools": [
+  "mcp__wikibrain__brain_bridge",
+  "mcp__wikibrain__brain_cell",
+  "mcp__wikibrain__brain_filter",
+  "mcp__wikibrain__brain_neighborhood",
+  "mcp__wikibrain__brain_search",
+  "mcp__wikibrain__brain_snippets",
+  "mcp__wikibrain__brain_transfer"
+ ],
+ "attach_ok": true,
+ "capped": false,
+ "output_lean": "theorem commutative_cube_lemma\n  {C : Type*} [CategoryTheory.Category C]\n  {V₀ V₁ V₂ V₃ V₄ V₅ V₆ V₇ : C}\n  (f₁ : V₀ ⟶ V₁) (f₂ : V₀ ⟶ V₂) (f₃ : V₁ ⟶ V₃) (f₄ : V₂ ⟶ V₃)\n  (f₅ : V₄ ⟶ V₅) (f₆ : V₄ ⟶ V₆) (f₇ : V₅ ⟶ V₇) (f₈ : V₆ ⟶ V₇)\n  (f₉ : V₀ ⟶ V₄) (f₁₀ : V₁ ⟶ V₅) (f₁₁ : V₂ ⟶ V₆) (f₁₂ : V₃ ⟶ V₇)\n  (h_bottom : CategoryTheory.CommSq f₁ f₂ f₃ f₄)\n  (h_top : CategoryTheory.CommSq f₅ f₆ f₇ f₈)\n  (h_front : CategoryTheory.CommSq f₁ f₉ f₅ f₁₀)\n  (h_right : CategoryTheory.CommSq f₃ f₁₀ f₇ f₁₂)\n  (h_left : CategoryTheory.CommSq f₂ f₉ f₆ f₁₁)\n  (mono_f₉ : CategoryTheory.Mono f₉)\n  : CategoryTheory.CommSq f₄ f₁₁ f₈ f₁₂ := sorry"
+}
