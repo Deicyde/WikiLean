@@ -109,13 +109,15 @@ describe("POST /mcp — lifecycle", () => {
 });
 
 describe("POST /mcp — tools/list", () => {
-  it("lists all eight tools with schemas, brain_bridge first", async () => {
+  it("lists all nine tools with schemas, brain_bridge first, brain_premises last", async () => {
     const h = harness();
     const j = (await (await rpc(h, "tools/list")).json()) as {
       result: { tools: Array<{ name: string; description: string; inputSchema: { type: string } }> };
     };
     // brain_node + brain_unit collapsed into brain_cell (v3 has no particle
-    // nodes); brain_bridge is the composite first call of the loop
+    // nodes); brain_bridge is the composite first call of the loop;
+    // brain_premises (tranche #18, tool #9) is APPENDED — agents holding the
+    // eight-tool catalog keep their positions
     expect(j.result.tools.map((t) => t.name)).toEqual([
       "brain_bridge",
       "brain_search",
@@ -125,6 +127,7 @@ describe("POST /mcp — tools/list", () => {
       "brain_snippets",
       "brain_filter",
       "decl_exists",
+      "brain_premises",
     ]);
     for (const t of j.result.tools) {
       expect(t.description.length).toBeGreaterThan(20);
@@ -243,6 +246,45 @@ describe("POST /mcp — tools/call", () => {
     expect(data.counts).toEqual({ total: 4, exists: 1, renamed: 2, missing: 1 });
   });
 
+  // Tranche #18, tool #9 — brain_premises answers exactly like premisesFor.
+  it("brain_premises ranks the union of the seeds' stored premise lists", async () => {
+    const h = harness();
+    const { isError, data } = await callTool(h, "brain_premises", {
+      seeds: ["Module", "Module.Basis"],
+    });
+    expect(isError).toBeUndefined();
+    const premises = data.premises as Array<Record<string, unknown>>;
+    // multiplicity across seeds first (Finset.sum_comm is in both lists),
+    // then stored rank — the output ORDER is the ranking hint agents consume
+    expect(premises.map((p) => p.decl)).toEqual([
+      "Finset.sum_comm",
+      "CommGroup",
+      "Semiconj.exp_right",
+      "fourierCoeff",
+    ]);
+    expect(premises[0]).toMatchObject({
+      module: "Mathlib.Algebra.BigOperators.Basic",
+      import_line: "import Mathlib.Algebra.BigOperators.Basic",
+    });
+    expect((premises[0].via as string[]).slice().sort()).toEqual(["Module", "Module.Basis"]);
+    expect(data.seeds_unknown).toEqual([]);
+  });
+
+  it("brain_premises validation failures are isError tool results (bad seeds)", async () => {
+    const h = harness();
+    const none = await callTool(h, "brain_premises", {});
+    expect(none.isError).toBe(true);
+    expect(none.data.ok).toBe(false);
+    const empty = await callTool(h, "brain_premises", { seeds: [] });
+    expect(empty.isError).toBe(true);
+    const nine = await callTool(h, "brain_premises", {
+      seeds: Array.from({ length: 9 }, (_, i) => `X${i}`),
+    });
+    expect(nine.isError).toBe(true);
+    const badName = await callTool(h, "brain_premises", { seeds: ["bad name"] });
+    expect(badName.isError).toBe(true);
+  });
+
   // BRIDGE item 7 — the composite first call.
   it("brain_bridge returns existence-verified decls with signatures + depends", async () => {
     const h = harness();
@@ -268,6 +310,7 @@ describe("POST /mcp — tools/call", () => {
       ["brain_cell", { key: "CommGroup" }],
       ["decl_exists", { name: "CommGroup" }],
       ["brain_bridge", { q: "abelian group" }],
+      ["brain_premises", { seeds: ["Module"] }],
     ] as Array<[string, Record<string, unknown>]>) {
       const { data } = await callTool(h, name, args);
       expect(data.snapshot).toEqual({ generated_at: "2026-07-15", pin: "2026-07-04" });

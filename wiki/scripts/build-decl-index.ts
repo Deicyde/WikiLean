@@ -131,6 +131,47 @@ export function buildShards(pairs: DeclPair[], opts: ShardOptions = {}): Map<str
   return new Map([...leaves.entries()].sort(([a], [b]) => (a < b ? -1 : 1)));
 }
 
+// buildShards generalized to arbitrary keyed values for the sibling indexes
+// (build-suffix-index.ts, build-premise-index.ts): identical recursive
+// longest-prefix split on the entry KEY, but shard files are JSON OBJECTS
+// { [key]: value } (sorted keys), so oversize is measured on the serialized
+// object. Same prefix-free-leaf guarantee; the Worker resolves any of these
+// manifests with the one declShardFor implementation.
+export function buildKeyedShards<T>(
+  entries: Array<[key: string, value: T]>,
+  opts: ShardOptions = {},
+): Map<string, Array<[string, T]>> {
+  const maxBytes = opts.maxBytes ?? MAX_SHARD_BYTES;
+  const minLen = opts.minLen ?? MIN_KEY_LEN;
+  const maxLen = opts.maxLen ?? MAX_KEY_LEN;
+  const bytes = (items: Array<[string, T]>) =>
+    Buffer.byteLength(JSON.stringify(Object.fromEntries(items)), "utf8");
+  const leaves = new Map<string, Array<[string, T]>>();
+  const group = (items: Array<[string, T]>, len: number): Map<string, Array<[string, T]>> => {
+    const m = new Map<string, Array<[string, T]>>();
+    for (const it of items) {
+      const k = shardKey(it[0], len);
+      const arr = m.get(k);
+      if (arr) arr.push(it);
+      else m.set(k, [it]);
+    }
+    return m;
+  };
+  const queue: Array<[len: number, items: Array<[string, T]>]> = [[minLen, entries]];
+  while (queue.length) {
+    const [len, items] = queue.pop()!;
+    for (const [key, arr] of group(items, len)) {
+      if (len < maxLen && bytes(arr) > maxBytes) {
+        queue.push([len + 1, arr]);
+      } else {
+        arr.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+        leaves.set(key, arr);
+      }
+    }
+  }
+  return new Map([...leaves.entries()].sort(([a], [b]) => (a < b ? -1 : 1)));
+}
+
 export function buildManifest(
   shards: Map<string, DeclPair[]>,
   meta: { source: string; source_sha_or_etag: string; built_at?: string; maxBytes?: number; minLen?: number },
@@ -179,7 +220,18 @@ async function loadSource(localPath?: string): Promise<{ raw: string; etag: stri
   }
   const res = await fetch(SOURCE_URL);
   if (!res.ok) throw new Error(`fetch ${SOURCE_URL} → ${res.status}`);
-  return { raw: await res.text(), etag: res.headers.get("etag") ?? "unknown", source: SOURCE_URL };
+  const raw = await res.text();
+  const etag = res.headers.get("etag") ?? "unknown";
+  // Optional raw-body cache so sibling builders (build-suffix-index.ts reads the
+  // emitted shards; build-premise-index.ts joins per-decl `kind`) work from the
+  // EXACT same snapshot without a second ~65 MB fetch. Sidecar records the etag.
+  const cache = process.env.DECL_DATA_CACHE;
+  if (cache) {
+    writeFileSync(cache, raw);
+    writeFileSync(cache + ".meta.json", JSON.stringify({ source: SOURCE_URL, etag, fetched_at: new Date().toISOString() }));
+    console.log(`cached source → ${cache} (etag ${etag})`);
+  }
+  return { raw, etag, source: SOURCE_URL };
 }
 
 async function main() {

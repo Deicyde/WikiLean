@@ -15,6 +15,9 @@
 //   GET /api/brain/snippets?id=                    stored source snippets
 //   GET /api/brain/filter?f=&type=&under=&limit=&cursor=   facet enumeration
 //   GET /api/brain/search?q=&type=&limit=          label + `aka` search
+//   GET /api/brain/decl?name=|names=               decl existence oracle (batch ≤16)
+//   GET /api/brain/premises?seeds=&limit=          stored-premise retrieval (seeds ≤8)
+//   GET /api/brain/bridge?q=&limit=                the composite first call
 //   GET /brain/api                                 human-readable reference
 //
 // All logic lives in exported `*For()` helpers returning {status, body} so the
@@ -51,7 +54,17 @@ import {
   BRAIN_ID_RE,
   type BrainLabelRow,
 } from "./brain.js";
-import { declShardFor, docsUrlFor, lookupInShard } from "./decl.js";
+import {
+  bucketEntries,
+  bucketTotal,
+  declShardFor,
+  declShardKey,
+  docsUrlFor,
+  finalSegment,
+  lookupInShard,
+  type DeclPair,
+  type SuffixBucket,
+} from "./decl.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -1444,6 +1457,7 @@ export async function searchFor(c: Ctx, qRaw: string, type?: string, limitRaw?: 
 interface DeclManifest {
   scheme: { min_len: number; max_len: number; pad: string };
   shards: Record<string, number>;
+  source_sha_or_etag?: string; // the doc-gen4 snapshot id (sibling indexes must match)
 }
 
 const DECL_NAME_BAD = /[\s\p{C}/\\]/u;
@@ -1452,50 +1466,192 @@ const DECL_MISS_HINT =
   "not in the Mathlib decl index — check spelling/namespace; renames are common " +
   "(e.g. Basis → Module.Basis). https://wikilean.jackmccarthy.org/decl/<name> redirects to docs search.";
 
+// Hard per-call ASSETS fan-out caps (isolate-memoized manifests excluded).
+// `suggest` bounds the rename-suggestion verification fan-out one decl_exists /
+// bridge call may buy (a 16-name dead batch × 8-sharer buckets is ~160 fetches
+// unbounded — past the Workers free-tier 50-subrequest cap); `premise` is
+// premisesFor's total, of which `premiseChunkReserve` is held back for the
+// name-chunk + module hydration phase so seed resolution can never starve the
+// response to zero rows. Exported as a mutable object ONLY so tests can
+// exercise the exhaustion paths; production code treats it as constants.
+export const FETCH_CAPS = { suggest: 24, premise: 30, premiseChunkReserve: 8 };
+
+// A per-call fetch allowance. Spent ONLY on cache misses (a shard already in a
+// per-call promise cache is free); when a claim comes up short the response
+// says so (`suggestion_truncated` / `truncated`) instead of silently fanning
+// out further or silently under-answering.
+interface FetchBudget {
+  left: number;
+  exhausted: boolean;
+}
+
+// claim up to `want` fetches; marks the budget exhausted when the claim is short
+function takeBudget(budget: FetchBudget, want: number): number {
+  const take = Math.min(want, Math.max(budget.left, 0));
+  if (take < want) budget.exhausted = true;
+  budget.left -= take;
+  return take;
+}
+
 // bare fully-qualified name from either `decl:<Lib>:<Name>` or a bare name
 function bareDeclName(name: string): string {
   return name.startsWith("decl:") ? name.split(":").slice(2).join(":") : name;
 }
 
-// One existence check against the decl-index (the doc-gen4 oracle GET /decl uses).
-// The manifest is memoized; a small per-call shard cache dedupes a batch that
-// shares shards without memoizing every shard for the isolate's lifetime.
+// Per-call shard caches store PROMISES, set before the first await (the
+// memoAssetJson pattern) — concurrent misses on one shard share a single fetch.
+type DeclShardCache = Map<string, Promise<DeclPair[] | null>>;
+type SuffixShardCache = Map<string, Promise<Record<string, unknown> | null>>;
+
+// One existence check against the decl-index (the doc-gen4 oracle GET /decl
+// uses). The manifest is memoized; the per-call promise cache dedupes a batch
+// that shares shards without memoizing every shard for the isolate's lifetime.
+// A `budget` (suggestion/hydration paths only) is spent on cache misses; an
+// empty budget suppresses the fetch and says so instead of guessing.
 async function declLookup(
   c: Ctx,
   name: string,
   manifest: DeclManifest,
-  shardCache: Map<string, Array<[string, string]> | null>,
-): Promise<{ exists: boolean; module?: string }> {
+  shardCache: DeclShardCache,
+  budget?: FetchBudget,
+): Promise<{ exists: boolean; module?: string; suppressed?: boolean }> {
   const key = declShardFor(manifest, name);
   if (!key) return { exists: false };
-  let pairs = shardCache.get(key);
-  if (pairs === undefined) {
-    pairs = await assetJson<Array<[string, string]>>(c, `/assets/decl-index/${key}.json`);
-    shardCache.set(key, pairs);
+  let p = shardCache.get(key);
+  if (!p) {
+    if (budget && takeBudget(budget, 1) < 1) return { exists: false, suppressed: true };
+    p = assetJson<DeclPair[]>(c, `/assets/decl-index/${key}.json`);
+    shardCache.set(key, p);
   }
+  const pairs = await p;
   const module = pairs ? lookupInShard(pairs, name) : null;
   return module ? { exists: true, module } : { exists: false };
 }
 
+// ---- suffix index: final-segment → FQ names, over the FULL decl universe ------
+//
+// /assets/suffix-index/ shards the doc-gen4 universe (411k names) by NORMALIZED
+// final segment, with the same longest-prefix scheme as the decl index (so
+// declShardFor resolves its manifest verbatim, precedent: cellEntry). Shard
+// values are buckets keyed by the normalized final segment:
+//   { "total_count": <uncapped n>, "entries": [[fq, module], …] }   (≤64 stored)
+// (a bare [[fq, module], …] array is accepted as an uncapped bucket). It
+// replaces the old aliases.decls linear scan, whose uniqueness was scoped to
+// the brain's ~19.6k decl organs — 4.8% of the universe (bench task 063's gold
+// suffix was typed exactly and still got no suggestion).
+const SUFFIX_INDEX = "/assets/suffix-index";
+const NAMESPACE_MATCH_CAP = 8; // 2..8 verified matches enumerate; more → count + hint
+
+// Bucket key normalization — declShardKey over the whole segment (lowercase
+// [a-z0-9], "_" otherwise, no padding). Must mirror the suffix-index builder.
+function suffixBucketKey(segment: string): string {
+  return declShardKey(segment, segment.length);
+}
+
+// Runtime guard over unknown JSON → the shared SuffixBucket type (decl.ts).
+// Exactly the builder's two shapes: a bare entries array, or
+// { total_count, entries } for an over-cap bucket. Anything else is null.
+function parseSuffixBucket(raw: unknown): SuffixBucket | null {
+  if (Array.isArray(raw)) return raw as DeclPair[];
+  if (typeof raw !== "object" || raw === null) return null;
+  const o = raw as Record<string, unknown>;
+  return Array.isArray(o.entries) && typeof o.total_count === "number"
+    ? { total_count: o.total_count, entries: o.entries as DeclPair[] }
+    : null;
+}
+
+interface SuffixLookupResult {
+  bucket: SuffixBucket | null;
+  stale?: true; // suffix index pinned to a DIFFERENT decl-index snapshot
+  suppressed?: true; // the fetch budget ran out before the shard could load
+}
+
+// The suffix-index bucket for a final segment. `bucket: null` when the index is
+// not shipped (namespace resolution degrades to the plain miss hint —
+// decl_exists itself keeps working) or the bucket is absent. `stale` when the
+// suffix manifest's decl-index pin does not match the live decl manifest — a
+// mismatched deploy would verify suggestions against a different universe, so
+// suggestions degrade to none (surfaced via the response hint, never silently).
+async function suffixLookup(
+  c: Ctx,
+  segment: string,
+  suffixShardCache: SuffixShardCache,
+  declManifest: DeclManifest,
+  budget?: FetchBudget,
+): Promise<SuffixLookupResult> {
+  const manifest = await memoAssetJson<DeclManifest>(c, `${SUFFIX_INDEX}/manifest.json`);
+  if (!manifest?.shards) return { bucket: null };
+  if (
+    manifest.source_sha_or_etag &&
+    declManifest.source_sha_or_etag &&
+    manifest.source_sha_or_etag !== declManifest.source_sha_or_etag
+  ) {
+    return { bucket: null, stale: true };
+  }
+  const key = declShardFor(manifest, segment);
+  if (!key) return { bucket: null };
+  let p = suffixShardCache.get(key);
+  if (!p) {
+    if (budget && takeBudget(budget, 1) < 1) return { bucket: null, suppressed: true };
+    p = assetJson<Record<string, unknown>>(c, `${SUFFIX_INDEX}/${key}.json`);
+    suffixShardCache.set(key, p);
+  }
+  const shard = await p;
+  const raw = shard ? own(shard, suffixBucketKey(segment)) : undefined;
+  return { bucket: raw === undefined ? null : parseSuffixBucket(raw) };
+}
+
+interface RenameSuggestion {
+  renamed_to?: string;
+  suggestion_basis?: "verified-rename" | "namespace-resolution";
+  module?: string;
+  namespace_matches?: Array<{ decl: string; module: string }>;
+  namespace_match_count?: number;
+  hint?: string;
+  suggestion_truncated?: true; // the shared fetch budget ran out mid-verification
+}
+
+// The "many sharers — qualify" hint. `normalized` marks counts taken from a
+// CAPPED bucket, whose total counts normalized-segment sharers (Ne/ne merge),
+// not exact-segment sharers — the wording must not overclaim.
+function nsHint(n: number, suffix: string, normalized: boolean): string {
+  return (
+    `${n} indexed decls share this name's ${normalized ? "normalized " : ""}final segment ('${suffix}') — ` +
+    "qualify the namespace (Namespace.name) and re-verify with decl_exists"
+  );
+}
+
 // A rename SUGGESTION for a name the oracle rejects — never presented as a fact
-// (BRIDGE item 1). Two clearly-labelled bases:
-//   verified-rename    — the owning cell's decl organ carries `renamed_to`
-//                        (catalog/data/decl_renames.jsonl, agent + adversary
-//                        verified, baked into the shards).
-//   unique-suffix-match — exactly one decl in the brain's decl-organ index shares
-//                        this name's last segment. Weaker; the candidate is then
-//                        verified against the decl-index oracle so a suggestion is
-//                        always a REAL current name, and its uniqueness is scoped
-//                        to the brain's indexed decls (stated in the label).
+// (BRIDGE item 1). Clearly-labelled bases:
+//   verified-rename      — the owning cell's decl organ carries `renamed_to`
+//                          (catalog/data/decl_renames.jsonl, agent + adversary
+//                          verified, baked into the shards).
+//   namespace-resolution — exactly one decl in the FULL decl universe (the
+//                          suffix index) shares this name's EXACT final
+//                          segment, and the oracle verifies it. Bucket keys are
+//                          NORMALIZED (Ne/ne, prime/₁ variants share a bucket),
+//                          so entries are first filtered to the exact segment —
+//                          the builder contract says the consumer disambiguates
+//                          on the stored exact names. 2–8 exact sharers come
+//                          back as `namespace_matches` (each oracle-verified —
+//                          never a forced pick, BRIDGE item 4); more than 8
+//                          returns `namespace_match_count` + a hint to qualify.
+//                          A CAPPED bucket ({total_count > entries.length})
+//                          stores an incomplete view, so it never claims
+//                          uniqueness or enumerates — it degrades to the
+//                          normalized count + hint.
 async function suggestRename(
   c: Ctx,
   name: string,
-  aliases: CellAliases | null,
   manifest: DeclManifest,
-  shardCache: Map<string, Array<[string, string]> | null>,
-): Promise<{ renamed_to: string; suggestion_basis: string; module?: string } | null> {
+  shardCache: DeclShardCache,
+  suffixShardCache: SuffixShardCache,
+  budget?: FetchBudget,
+): Promise<RenameSuggestion | null> {
   const bare = bareDeclName(name);
-  // (a) verified rename via the owning cell's organ
+  // (a) verified rename via the owning cell's organ. aliases.json (4.6MB) is
+  // loaded only on this miss path — the all-exists hot path never pays it.
+  const aliases = await cellAliases(c);
   const cellId = own(aliases?.decls, bare);
   if (cellId) {
     const atom = await atomFor(c, cellId);
@@ -1503,43 +1659,88 @@ async function suggestRename(
       (o) => o.kind === "decl" && o.renamed_to && (o.label ?? bareDeclName(o.id)) === bare,
     );
     if (organ?.renamed_to) {
-      const tgt = await declLookup(c, organ.renamed_to, manifest, shardCache);
+      const tgt = await declLookup(c, organ.renamed_to, manifest, shardCache, budget);
       return {
         renamed_to: organ.renamed_to,
         suggestion_basis: "verified-rename",
         ...(tgt.exists ? { module: tgt.module } : {}),
+        ...(tgt.suppressed ? { suggestion_truncated: true as const } : {}),
       };
     }
   }
-  // (b) unique-suffix match over the brain's decl-organ index (aliases.decls),
-  // verified against the oracle
-  const suffix = bare.includes(".") ? bare.slice(bare.lastIndexOf(".") + 1) : bare;
-  let cand: string | null = null;
-  let ambiguous = false;
-  for (const k of Object.keys(aliases?.decls ?? {})) {
-    if (k === bare) continue;
-    const last = k.includes(".") ? k.slice(k.lastIndexOf(".") + 1) : k;
-    if (last !== suffix) continue;
-    if (cand) {
-      ambiguous = true; // ≥2 candidates ⇒ never force one (BRIDGE item 4)
-      break;
-    }
-    cand = k;
+  // (b) namespace resolution over the full universe, verified against the oracle
+  const suffix = finalSegment(bare);
+  const res = await suffixLookup(c, suffix, suffixShardCache, manifest, budget);
+  if (res.stale) {
+    return {
+      hint:
+        "namespace suggestions disabled: the suffix index was built from a different " +
+        "decl-index snapshot (rebuild together: npm run build:indexes)",
+    };
   }
-  if (cand && !ambiguous) {
-    const tgt = await declLookup(c, cand, manifest, shardCache);
-    if (tgt.exists) return { renamed_to: cand, suggestion_basis: "unique-suffix-match", module: tgt.module };
+  if (res.suppressed) {
+    return {
+      suggestion_truncated: true,
+      hint: "rename-suggestion lookups exhausted this call's fetch budget — re-check in a smaller batch",
+    };
   }
+  const bucket = res.bucket;
+  if (!bucket) return null;
+  const entries = bucketEntries(bucket);
+  const total = bucketTotal(bucket);
+  if (total < 1) return null;
+  if (total > entries.length) {
+    // capped bucket: the stored entries are an incomplete view of the
+    // population — never decide uniqueness or enumerate from it
+    return { namespace_match_count: total, hint: nsHint(total, suffix, true) };
+  }
+  // uncapped: the stored entries ARE the population. Filter to the EXACT final
+  // segment (never suggest the dead name itself) before any size decision.
+  const exact = entries.filter(
+    (e): e is DeclPair =>
+      Array.isArray(e) && typeof e[0] === "string" && e[0] !== bare && finalSegment(e[0]) === suffix,
+  );
+  if (!exact.length) return null;
+  if (exact.length > NAMESPACE_MATCH_CAP) {
+    return { namespace_match_count: exact.length, hint: nsHint(exact.length, suffix, false) };
+  }
+  const checks = await Promise.all(
+    exact.map(async ([fq]) => ({ fq, r: await declLookup(c, fq, manifest, shardCache, budget) })),
+  );
+  if (checks.some((x) => x.r.suppressed)) {
+    // partial verification could mint a false unique — degrade honestly
+    return {
+      namespace_match_count: exact.length,
+      hint: nsHint(exact.length, suffix, false),
+      suggestion_truncated: true,
+    };
+  }
+  const verified = checks
+    .filter((x) => x.r.exists && x.r.module)
+    .map((x) => ({ decl: x.fq, module: x.r.module! }));
+  if (verified.length === 1) {
+    return {
+      renamed_to: verified[0].decl,
+      suggestion_basis: "namespace-resolution",
+      module: verified[0].module,
+    };
+  }
+  if (verified.length >= 2) return { namespace_matches: verified };
   return null;
 }
 
-// One per-name verdict: exists (+module/import) or a labelled rename suggestion.
+// One per-name verdict: exists (+module/import), a labelled rename suggestion,
+// an oracle-verified `namespace_matches` shortlist (2–8 exact sharers), or —
+// past the cap / on a capped bucket — `namespace_match_count` + a hint. The
+// suggestion's fields spread through verbatim (one copy of the field list);
+// only import_line/docs_url are derived here.
 async function declVerdict(
   c: Ctx,
   name: string,
-  aliases: CellAliases | null,
   manifest: DeclManifest,
-  shardCache: Map<string, Array<[string, string]> | null>,
+  shardCache: DeclShardCache,
+  suffixShardCache: SuffixShardCache,
+  budget?: FetchBudget,
 ): Promise<Record<string, unknown>> {
   const hit = await declLookup(c, name, manifest, shardCache);
   if (hit.exists && hit.module) {
@@ -1552,19 +1753,15 @@ async function declVerdict(
       docs_url: docsUrlFor(hit.module, name),
     };
   }
-  const sugg = await suggestRename(c, name, aliases, manifest, shardCache);
+  const sugg = await suggestRename(c, name, manifest, shardCache, suffixShardCache, budget);
+  if (!sugg) return { decl: name, exists: false, hint: DECL_MISS_HINT };
   return {
     decl: name,
     exists: false,
-    ...(sugg
-      ? {
-          renamed_to: sugg.renamed_to,
-          suggestion_basis: sugg.suggestion_basis, // "verified-rename" | "unique-suffix-match"
-          ...(sugg.module
-            ? { module: sugg.module, import_line: `import ${sugg.module}`, docs_url: docsUrlFor(sugg.module, sugg.renamed_to) }
-            : {}),
-        }
-      : { hint: DECL_MISS_HINT }),
+    ...sugg,
+    ...(sugg.renamed_to && sugg.module
+      ? { import_line: `import ${sugg.module}`, docs_url: docsUrlFor(sugg.module, sugg.renamed_to) }
+      : {}),
   };
 }
 
@@ -1576,16 +1773,19 @@ export async function declExistsFor(c: Ctx, nameRaw: string, namesRaw?: unknown)
   if ("error" in names) return { status: 400, body: names.error };
   const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
   if (!manifest?.shards) return { status: 503, body: { ok: false, error: "decl index unavailable" } };
-  const aliases = await cellAliases(c);
-  const shardCache = new Map<string, Array<[string, string]> | null>();
+  const shardCache: DeclShardCache = new Map();
+  const suffixShardCache: SuffixShardCache = new Map();
+  // one suggestion budget across the whole batch (promise caches make shared
+  // shards free; the budget bounds only genuinely new suggestion fetches)
+  const budget: FetchBudget = { left: FETCH_CAPS.suggest, exhausted: false };
 
   if (!names.batch) {
     // single-name shape preserved for back-compat (adds renamed_to/import_line)
-    const body = await declVerdict(c, names.list[0], aliases, manifest, shardCache);
+    const body = await declVerdict(c, names.list[0], manifest, shardCache, suffixShardCache, budget);
     return { status: 200, body: { ok: true, ...body } };
   }
   const results = await Promise.all(
-    names.list.map((n) => declVerdict(c, n, aliases, manifest, shardCache)),
+    names.list.map((n) => declVerdict(c, n, manifest, shardCache, suffixShardCache, budget)),
   );
   const counts = { total: results.length, exists: 0, renamed: 0, missing: 0 };
   for (const r of results) {
@@ -1598,11 +1798,16 @@ export async function declExistsFor(c: Ctx, nameRaw: string, namesRaw?: unknown)
 
 // Parse `name` / `names` into a validated list, or an error body. `names` may be
 // a JSON array (MCP) or a comma-separated string (REST). Every name is validated
-// the same way the single path always was.
+// the same way the single path always was. The ONE validator for every
+// decl-name-list input: normalizeSeeds parameterizes it rather than re-stating
+// the split/trim/cap/charset rules.
 function normalizeNames(
   nameRaw: string,
   namesRaw: unknown,
+  opts: { cap?: number; noun?: string; mapName?: (s: string) => string; dedupe?: boolean } = {},
 ): { list: string[]; batch: boolean } | { error: Record<string, unknown> } {
+  const cap = opts.cap ?? BATCH_CAP;
+  const noun = opts.noun ?? "names";
   let list: string[];
   let batch: boolean;
   if (namesRaw !== undefined && namesRaw !== null && namesRaw !== "") {
@@ -1610,9 +1815,11 @@ function normalizeNames(
       ? namesRaw.map((x) => (typeof x === "string" ? x : String(x)))
       : String(namesRaw).split(",");
     list = arr.map((s) => s.trim()).filter(Boolean);
+    if (opts.mapName) list = list.map(opts.mapName);
+    if (opts.dedupe) list = [...new Set(list)];
     batch = true;
-    if (!list.length) return { error: { ok: false, error: "names is empty" } };
-    if (list.length > BATCH_CAP) return { error: { ok: false, error: `too many names (cap ${BATCH_CAP})` } };
+    if (!list.length) return { error: { ok: false, error: `${noun} is empty` } };
+    if (list.length > cap) return { error: { ok: false, error: `too many ${noun} (cap ${cap})` } };
   } else {
     const name = (nameRaw || "").trim();
     list = [name];
@@ -1627,11 +1834,247 @@ function normalizeNames(
   return { list, batch };
 }
 
+// ---- premises: stored-premise retrieval (the DECL-grain depends signal) --------
+//
+// The Brain's cell-level depends synapses cannot serve premise selection (13.8%
+// gold-premise coverage vs 99.4% for the decl universe — bench/analysis/
+// brain_artifact.md), so premises come from a dedicated decl-grain asset:
+// /assets/premise-index/ maps each source decl (prefix-sharded by name, same
+// scheme as the decl index) to the top-K premises its stored proof used (K ≤ 12,
+// hub-damped at build time; the manifest records source, pin, filters and the
+// hub-drop list). Premise names are int-coded against FIXED 8192-name chunk
+// tables (names/<chunk>.json — index i lives at names/<floor(i/8192)>.json at
+// offset i%8192) so the shards stay small.
+const PREMISE_INDEX = "/assets/premise-index";
+const SEED_CAP = 8; // seeds are theorems the agent already FOUND — a handful, not a dragnet
+const PREMISE_LIMIT_DEFAULT = 20;
+const PREMISE_LIMIT_CAP = 50;
+const PREMISE_NAME_CHUNK = 8192; // the Worker's decode constant — validated against manifest.chunk_size
+// How far past `limit` the ranked window extends: rows the oracle drops (stale
+// names, ~5.5% observed drift) backfill from below the cutoff instead of
+// under-filling the response. The agg map already holds the candidates.
+const PREMISE_BACKFILL = 12;
+
+interface PremiseManifest {
+  scheme: { min_len: number; max_len: number; pad: string };
+  shards: Record<string, number>;
+  chunk_size?: number; // the builder's name-table chunk size (must equal PREMISE_NAME_CHUNK)
+  source?: string;
+  pin?: { edges_mtime?: string; edges_bytes?: number; decl_index_etag?: string };
+  filters?: unknown;
+  hub_drop?: unknown;
+}
+
+// `seeds` may be a JSON array (MCP) or a comma-separated string (REST). One
+// validator with decl_exists (normalizeNames, parameterized): `decl:<Lib>:<Name>`
+// ids are accepted and bared; duplicates collapse before the cap check.
+function normalizeSeeds(seedsRaw: unknown): { list: string[] } | { error: Record<string, unknown> } {
+  if (seedsRaw === undefined || seedsRaw === null || seedsRaw === "") {
+    return { error: { ok: false, error: "missing seeds — pass 1–8 fully-qualified decl names" } };
+  }
+  const r = normalizeNames("", seedsRaw, { cap: SEED_CAP, noun: "seeds", mapName: bareDeclName, dedupe: true });
+  return "error" in r ? r : { list: r.list };
+}
+
+// A premise-index shard through the per-call promise cache, budgeted like
+// declLookup: a miss with an empty budget is suppressed (null), never fetched.
+function premiseShard(
+  c: Ctx,
+  key: string,
+  cache: SuffixShardCache,
+  budget: FetchBudget,
+): Promise<Record<string, unknown> | null> {
+  let p = cache.get(key);
+  if (!p) {
+    if (takeBudget(budget, 1) < 1) return Promise.resolve(null);
+    p = assetJson<Record<string, unknown>>(c, `${PREMISE_INDEX}/${key}.json`);
+    cache.set(key, p);
+  }
+  return p;
+}
+
+// The ranked union of 1–8 seed theorems' stored premises. Ranking = multiplicity
+// across seeds desc, then best stored per-seed rank asc (ties by chunk index for
+// determinism). Every returned row carries module + import_line, resolved
+// against the SAME decl oracle decl_exists uses, within the fetch budget. Seeds
+// resolve through the oracle first; a dead seed goes through the SAME
+// suggestRename decl_exists serves — verified renames (Basis → Module.Basis)
+// and exact-segment-unique namespace resolutions both recover, noted via
+// `resolved_via` — anything else lands in seeds_unknown rather than failing
+// the call.
+export async function premisesFor(c: Ctx, seedsRaw: unknown, limitRaw?: unknown): Promise<ApiResult> {
+  const seeds = normalizeSeeds(seedsRaw);
+  if ("error" in seeds) return { status: 400, body: seeds.error };
+  const limit = clampLimit(limitRaw, PREMISE_LIMIT_DEFAULT, PREMISE_LIMIT_CAP);
+
+  const premiseManifest = await memoAssetJson<PremiseManifest>(c, `${PREMISE_INDEX}/manifest.json`);
+  if (!premiseManifest?.shards) {
+    return { status: 503, body: { ok: false, error: "premise index unavailable" } };
+  }
+  // The chunk size is the builder's to choose and the manifest records it. A
+  // Worker decoding with a different constant would serve wrong-but-REAL decl
+  // names (they'd even pass oracle verification) — silent corruption of every
+  // response — so a mismatch refuses loudly instead.
+  if (premiseManifest.chunk_size !== PREMISE_NAME_CHUNK) {
+    return { status: 503, body: { ok: false, error: "premise index unavailable (chunk-size mismatch)" } };
+  }
+  const declManifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
+  if (!declManifest?.shards) return { status: 503, body: { ok: false, error: "decl index unavailable" } };
+
+  const shardCache: DeclShardCache = new Map();
+  const suffixShardCache: SuffixShardCache = new Map();
+  const premiseShardCache: SuffixShardCache = new Map();
+
+  // Fan-out budget: phases 1–2 (seed resolution + premise lists) spend from
+  // cap − reserve; the reserve is released for name-chunk + module hydration,
+  // so a pathological seed batch can never starve hydration to zero rows.
+  // Promise caches make shared shards free; only genuinely new fetches spend.
+  const budget: FetchBudget = {
+    left: Math.max(FETCH_CAPS.premise - FETCH_CAPS.premiseChunkReserve, 0),
+    exhausted: false,
+  };
+
+  // 1. resolve seeds against the oracle (parallel — the budget is claimed
+  // synchronously per cache miss, so accounting stays exact)
+  const outcomes = await Promise.all(
+    seeds.list.map(async (seed) => {
+      const hit = await declLookup(c, seed, declManifest, shardCache, budget);
+      if (hit.exists) return { seed, decl: seed as string | null, resolved_via: undefined as string | undefined };
+      const sugg = await suggestRename(c, seed, declManifest, shardCache, suffixShardCache, budget);
+      return sugg?.renamed_to && sugg.module && sugg.renamed_to !== seed
+        ? { seed, decl: sugg.renamed_to as string | null, resolved_via: sugg.suggestion_basis as string | undefined }
+        : { seed, decl: null, resolved_via: undefined };
+    }),
+  );
+  const seedsResolved: Array<Record<string, unknown>> = [];
+  const seedsUnknown: string[] = [];
+  const resolvedNames: string[] = [];
+  for (const o of outcomes) {
+    if (!o.decl) {
+      seedsUnknown.push(o.seed);
+      continue;
+    }
+    seedsResolved.push(
+      o.resolved_via ? { seed: o.seed, decl: o.decl, resolved_via: o.resolved_via } : { seed: o.seed, decl: o.decl },
+    );
+    if (!resolvedNames.includes(o.decl)) resolvedNames.push(o.decl);
+  }
+
+  // 2. each resolved seed's stored premise ints (parallel; Promise.all keeps
+  // seed order, so `via` stays deterministic)
+  const listsBySeed = new Map<string, number[]>();
+  const fetchedLists = await Promise.all(
+    resolvedNames.map(async (decl) => {
+      const key = declShardFor(premiseManifest, decl);
+      if (!key) return null;
+      const shard = await premiseShard(c, key, premiseShardCache, budget);
+      const ints = shard ? own(shard, decl) : undefined;
+      if (!Array.isArray(ints)) return null;
+      // dedupe preserves first-occurrence order, so positions stay the stored rank
+      const deduped = [...new Set(ints.filter((v): v is number => Number.isInteger(v) && v >= 0))];
+      return [decl, deduped] as [string, number[]];
+    }),
+  );
+  for (const row of fetchedLists) if (row) listsBySeed.set(row[0], row[1]);
+
+  // 3. rank the FULL union BEFORE any hydration fetch: multiplicity desc, best
+  // rank asc. No early slice — a bounded window past `limit` lets rows the
+  // oracle drops backfill from below the cutoff.
+  const agg = new Map<number, { count: number; best: number; via: string[] }>();
+  for (const [decl, ints] of listsBySeed) {
+    ints.forEach((idx, rank) => {
+      const row = agg.get(idx);
+      if (row) {
+        row.count += 1;
+        if (rank < row.best) row.best = rank;
+        row.via.push(decl);
+      } else {
+        agg.set(idx, { count: 1, best: rank, via: [decl] });
+      }
+    });
+  }
+  const ranked = [...agg].sort((a, b) => b[1].count - a[1].count || a[1].best - b[1].best || a[0] - b[0]);
+  const window = ranked.slice(0, limit + PREMISE_BACKFILL);
+
+  budget.left += FETCH_CAPS.premiseChunkReserve; // release the hydration reserve
+
+  // 4. name-table chunks for the window (deduped in rank order, budgeted)
+  const wantChunks = [...new Set(window.map(([idx]) => Math.floor(idx / PREMISE_NAME_CHUNK)))];
+  const chunkCache = new Map<number, unknown[] | null>();
+  await Promise.all(
+    wantChunks.slice(0, takeBudget(budget, wantChunks.length)).map(async (n) => {
+      chunkCache.set(n, await assetJson<unknown[]>(c, `${PREMISE_INDEX}/names/${n}.json`));
+    }),
+  );
+
+  // 5. int → name. Chunks are plain string arrays — the only shape the builder
+  // emits (build-premise-index.ts assemble()).
+  const cands = window.map(([idx, row]) => {
+    const chunk = chunkCache.get(Math.floor(idx / PREMISE_NAME_CHUNK));
+    const entry = chunk ? chunk[idx % PREMISE_NAME_CHUNK] : undefined;
+    return { decl: typeof entry === "string" ? entry : null, score: row.count, via: row.via };
+  });
+
+  // 6. module resolution against the SAME oracle decl_exists uses (parallel,
+  // promise-cached, budget claimed in rank order)
+  const mods = await Promise.all(
+    cands.map((cand) =>
+      cand.decl
+        ? declLookup(c, cand.decl, declManifest, shardCache, budget)
+        : Promise.resolve({ exists: false, module: undefined as string | undefined }),
+    ),
+  );
+
+  // fill to `limit`, walking past dropped rows (stale names, budget gaps) —
+  // the window below the cutoff backfills what the oracle rejects
+  const premises: Array<Record<string, unknown>> = [];
+  let dropped = 0;
+  for (let i = 0; i < cands.length && premises.length < limit; i++) {
+    const cand = cands[i];
+    const module = cand.decl ? mods[i].module : undefined;
+    if (!cand.decl || !module) {
+      dropped += 1; // chunk gap, stale name, or past the budget — counted, never silent
+      continue;
+    }
+    premises.push({
+      decl: cand.decl,
+      module,
+      import_line: `import ${module}`,
+      score: cand.score, // multiplicity: how many seeds cite this premise
+      via: cand.via, // the RESOLVED seed names that cite it
+    });
+  }
+
+  const body: Record<string, unknown> = {
+    ok: true,
+    premises,
+    seeds_resolved: seedsResolved,
+    seeds_unknown: seedsUnknown,
+    // THIS index's own pin (edges snapshot + the decl-index etag it was joined
+    // against). The top-level `snapshot` echo tracks the brain cells manifest —
+    // a different artifact on a different rebuild cadence — so staleness
+    // questions about premise data must read index_pin, not snapshot.
+    index_pin: premiseManifest.pin
+      ? {
+          edges_mtime: premiseManifest.pin.edges_mtime ?? null,
+          decl_index_etag: premiseManifest.pin.decl_index_etag ?? null,
+        }
+      : null,
+  };
+  if (dropped > 0) body.premises_dropped = dropped; // never silently — the counter is the honesty
+  if (budget.exhausted) body.truncated = true; // the fetch budget stopped resolution/hydration early
+  if (!resolvedNames.length) {
+    body.hint = "no seed resolved in the decl index — verify seed names with decl_exists first";
+  }
+  return { status: 200, body };
+}
+
 // ---- bridge: the composite first call of an autoformalization loop (item 7) ----
 
 const NEXT_TOOLS = [
   "brain_cell <via_cell> — the full atom card (every organ, embedded Lean code, snippets, breadcrumb)",
   "decl_exists {names:[…]} — re-verify EVERY decl name you write before citing it",
+  "brain_premises {seeds:[…]} — seed with the theorems you just found; their stored proof premises come back ranked + oracle-verified",
   "brain_neighborhood <via_cell> kinds=depends — walk the formal dependency chain across turns (cursored)",
   "brain_transfer direction=formal_to_informal — pull the informal side (article, description) back",
 ];
@@ -1783,8 +2226,10 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
 
   // 3. verify existence + attach signature/module/import/bond/breadcrumb
   const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
-  const aliases = await cellAliases(c);
-  const shardCache = new Map<string, Array<[string, string]> | null>();
+  const shardCache: DeclShardCache = new Map();
+  const suffixShardCache: SuffixShardCache = new Map();
+  // one suggestion budget across all dead organs (same discipline as decl_exists)
+  const suggestBudget: FetchBudget = { left: FETCH_CAPS.suggest, exhausted: false };
   const hits = await Promise.all(
     chosen.map(async ({ o, atom }) => {
       const name = o.label ?? bareDeclName(o.id);
@@ -1804,12 +2249,18 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
       };
       // a dead cited name gets the same labelled suggestion decl_exists serves
       if (exists === false && manifest) {
-        const sugg = await suggestRename(c, name, aliases, manifest, shardCache);
-        if (sugg) {
+        const sugg = await suggestRename(c, name, manifest, shardCache, suffixShardCache, suggestBudget);
+        if (sugg?.renamed_to) {
           hit.renamed_to = sugg.renamed_to;
           hit.suggestion_basis = sugg.suggestion_basis;
           if (sugg.module) hit.suggested_import_line = `import ${sugg.module}`;
+        } else if (sugg?.namespace_matches) {
+          hit.namespace_matches = sugg.namespace_matches; // 2–8 verified sharers, no forced pick
+        } else if (sugg?.namespace_match_count) {
+          hit.namespace_match_count = sugg.namespace_match_count; // hub segment: count + qualify hint
+          hit.hint = sugg.hint;
         }
+        if (sugg?.suggestion_truncated) hit.suggestion_truncated = true;
       }
       return hit;
     }),
@@ -1889,6 +2340,7 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
   app.use("/api/brain/filter", rateLimitGate);
   app.use("/api/brain/search", rateLimitGate);
   app.use("/api/brain/decl", rateLimitGate);
+  app.use("/api/brain/premises", rateLimitGate);
   app.use("/api/brain/bridge", rateLimitGate);
 
   app.get("/api/brain/cell", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
@@ -1927,6 +2379,11 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
   // is comma-separated over REST (cap 16); `name` stays the single-decl form.
   app.get("/api/brain/decl", async (c) =>
     send(c, await declExistsFor(c, c.req.query("name") ?? "", c.req.query("names"))),
+  );
+
+  // Stored-premise retrieval: `seeds` is comma-separated over REST (cap 8).
+  app.get("/api/brain/premises", async (c) =>
+    send(c, await premisesFor(c, c.req.query("seeds"), c.req.query("limit"))),
   );
 
   // The composite first call of an autoformalization loop (BRIDGE item 7).
@@ -2050,9 +2507,10 @@ only STATEMENTS a cell claims are organs). The cell layer is the only resolver.<
 <h2>Connect over MCP (recommended for agents)</h2>
 <pre><code>claude mcp add --transport http wikibrain https://wikilean.jackmccarthy.org/mcp</code></pre>
 <p>A dependency-free streamable-HTTP MCP server (JSON-RPC 2.0, stateless, single-response
-mode) exposing eight tools: <code>brain_bridge</code>, <code>brain_search</code>,
+mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_cell</code>, <code>brain_transfer</code>, <code>brain_neighborhood</code>,
-<code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>.
+<code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>,
+<code>brain_premises</code>.
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
 card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
 <code>snapshot:{generated_at,pin}</code>.</p>
@@ -2101,12 +2559,27 @@ says so in <code>match_rule</code>. Ends with <code>next_tools</code> hints.</p>
 
 <h3>GET /api/brain/decl?name= | names=&lt;csv, ≤16&gt;</h3>
 <p>Existence oracle for declaration names — <b>batch it</b>: agents draft statements citing
-several decls, and one round-trip beats eight. Per name: <code>exists</code>, and when
-false a <code>renamed_to</code> suggestion labelled by <code>suggestion_basis</code> —
-<code>"verified-rename"</code> (an agent read the declaration in the checkout and an
-adversarial verifier upheld it) vs <code>"unique-suffix-match"</code> (heuristic — treat
-as a lead, not a fact).</p>
+several decls, and one round-trip beats eight. Per name: <code>exists</code>, and when false,
+namespace resolution over the FULL decl index: a <code>renamed_to</code> suggestion labelled
+by <code>suggestion_basis</code> — <code>"verified-rename"</code> (an agent read the
+declaration in the checkout and an adversarial verifier upheld it) vs
+<code>"namespace-resolution"</code> (exactly one indexed decl shares the final segment,
+oracle-verified — a lead, not a fact). When 2&ndash;8 decls share the segment the verified
+list returns as <code>namespace_matches:[{decl,module}]</code> with no forced pick; more
+than 8 returns <code>namespace_match_count</code> + a hint to qualify the namespace.</p>
 <pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/decl?names=Basis,Module.Basis,AddCircle.fourierCoeff,NotARealName'</code></pre>
+
+<h3>GET /api/brain/premises?seeds=&lt;csv, ≤8&gt;&amp;limit=</h3>
+<p>Stored-premise retrieval for proof drafting — use it <b>after</b> search, never instead
+of it: seed with the anchor theorems you already found (1&ndash;8 fully-qualified decl names)
+and get back the ranked union of the premises their stored proofs actually used. Ranking =
+multiplicity across seeds, then stored per-seed rank; every row is oracle-verified and
+carries <code>module</code> + <code>import_line</code> + <code>score</code> +
+<code>via</code> (the seeds that cite it). A dead seed that namespace-resolves uniquely is
+auto-resolved and says so (<code>resolved_via</code> in <code>seeds_resolved</code>);
+unresolvable seeds return in <code>seeds_unknown</code> instead of failing the call.
+<code>limit</code> defaults 20, cap 50.</p>
+<pre><code>curl 'https://wikilean.jackmccarthy.org/api/brain/premises?seeds=Nat.ModEq.pow_totient,Nat.totient_prime'</code></pre>
 
 <h3>GET /api/brain/neighborhood?id=&amp;kinds=&amp;limit=&amp;traces=&amp;min_w=&amp;min_conf=&amp;cursor=</h3>
 <p>An atom's <b>synapses</b>: one row per partner atom with <code>w</code>, the <code>kinds</code>

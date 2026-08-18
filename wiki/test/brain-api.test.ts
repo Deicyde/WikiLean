@@ -8,7 +8,7 @@
 
 import { beforeEach, describe, it, expect } from "vitest";
 import { _resetBrainAssetMemo } from "../src/brain.js";
-import { SYNAPSE_KINDS, SYNAPSE_KINDS_CSV } from "../src/brain-api.js";
+import { FETCH_CAPS, SYNAPSE_KINDS, SYNAPSE_KINDS_CSV } from "../src/brain-api.js";
 import { setup, get, put, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import {
   installBrainFixture,
@@ -17,6 +17,9 @@ import {
   EMPTY_CELL,
   DECL_CELL,
   BASIS_CELL,
+  HUB_CELL,
+  FIXTURE_DECL_ETAG,
+  FIXTURE_EDGES_MTIME,
   LINALG_SUPER,
   ALGEBRA_SUPER,
   ABELIAN,
@@ -682,15 +685,169 @@ describe("GET /api/brain/decl — batch existence + rename suggestions", () => {
     expect(j.counts).toEqual({ total: 4, exists: 1, renamed: 2, missing: 1 });
   });
 
+  // Tranche #18: the suffix index (full 411k decl universe) replaced the old
+  // aliases.decls linear scan, so a unique last-segment match is now labelled
+  // "namespace-resolution" — still a suggestion, still oracle-verified.
   it("a unique last-segment match is a labelled suggestion, verified against the oracle", async () => {
     const h = harness();
     const { j } = await getJson(h, `/api/brain/decl?name=sum_comm`);
     expect(j).toMatchObject({
       exists: false,
       renamed_to: "Finset.sum_comm",
-      suggestion_basis: "unique-suffix-match",
+      suggestion_basis: "namespace-resolution",
       module: "Mathlib.Algebra.BigOperators.Basic",
     });
+  });
+
+  // THE mathlibmpr_063/003 failure shape: the agent holds the exact final
+  // segment and only the namespace is wrong (old `Doset.*` → `DoubleCoset.*`).
+  // The old scan covered only the brain's ~19k decl organs, so the gold —
+  // present in the full index but not an organ — got a bare miss.
+  it("resolves a wrong-namespace citation through the full-universe suffix index", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=Doset.mk_out_eq_mul");
+    expect(j).toMatchObject({
+      exists: false,
+      renamed_to: "DoubleCoset.mk_out_eq_mul",
+      suggestion_basis: "namespace-resolution",
+      module: "Mathlib.GroupTheory.DoubleCoset",
+    });
+  });
+
+  // 2..8 candidates: an oracle-verified namespace_matches LIST and no
+  // renamed_to — never force one (BRIDGE item 4). The fixture bucket stores a
+  // third, STALE entry (`Retired.exp_right`, absent from the oracle) that must
+  // be verified away, not served.
+  it("2..8 suffix candidates return namespace_matches (oracle-verified), no renamed_to", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=Nope.exp_right");
+    expect(j).toMatchObject({ exists: false });
+    expect(j.renamed_to).toBeUndefined();
+    const matches = j.namespace_matches as Array<{ decl: string; module: string }>;
+    expect(matches.map((m) => m.decl)).toEqual(["Commute.exp_right", "Semiconj.exp_right"]);
+    for (const m of matches) expect(m.module).toBe("Mathlib.Analysis.SpecialFunctions.Exponential");
+  });
+
+  // >8 candidates (hub segments like `mk`, real total 6,133): a COUNT plus a
+  // hint advising qualification — enumerating the bucket would be noise, and
+  // the stored 64-entry cap must never masquerade as the population.
+  it(">8 suffix candidates return namespace_match_count + a qualification hint", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=Nope.mk");
+    expect(j).toMatchObject({ exists: false });
+    expect(j.renamed_to).toBeUndefined();
+    expect(j.namespace_matches).toBeUndefined();
+    expect(j.namespace_match_count as number).toBeGreaterThan(8);
+    expect(String(j.hint)).toMatch(/namespace|qualif/i);
+  });
+
+  // Review finding (3 angles): bucket keys are NORMALIZED (case/punctuation
+  // fold), so a bucket can hold entries whose EXACT final segment differs from
+  // the query's. The builder contract says the consumer disambiguates on the
+  // stored exact names — uniqueness decisions must run on the exact-segment set.
+  it("filters bucket-mates to the exact final segment before deciding uniqueness", async () => {
+    const h = harness();
+    // `hAdd` is exactly-unique although the normalized bucket holds 2 entries
+    const { j } = await getJson(h, "/api/brain/decl?name=Foo.hAdd");
+    expect(j).toMatchObject({
+      exists: false,
+      renamed_to: "HAdd.hAdd", // NEVER the case-variant `HAdd`
+      suggestion_basis: "namespace-resolution",
+      module: "Mathlib.Init.Prelude",
+    });
+    // and the case-variant direction resolves to ITS exact segment
+    const r2 = (await getJson(h, "/api/brain/decl?name=Bar.HAdd")).j;
+    expect(r2).toMatchObject({ exists: false, renamed_to: "HAdd", suggestion_basis: "namespace-resolution" });
+  });
+
+  // A CAPPED bucket ({total_count > entries stored}) is an incomplete view:
+  // deciding uniqueness or enumerating from it could mint a forced pick, so it
+  // degrades to the honest normalized count + hint.
+  it("a capped bucket never claims uniqueness — degrades to count + hint", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=Foo.capped_seg");
+    expect(j).toMatchObject({ exists: false, namespace_match_count: 5 });
+    expect(j.renamed_to).toBeUndefined();
+    expect(j.namespace_matches).toBeUndefined();
+    expect(String(j.hint)).toContain("normalized final segment");
+  });
+
+  // Snapshot-pin guard: a suffix index built from a DIFFERENT decl-index
+  // snapshot would verify suggestions against the wrong universe — namespace
+  // suggestions degrade to none, surfaced via the hint (never silently).
+  it("degrades namespace suggestions when the suffix index pin mismatches the decl index", async () => {
+    const h = harness({ suffixEtag: 'W/"some-other-snapshot"' });
+    const { j } = await getJson(h, "/api/brain/decl?name=sum_comm");
+    expect(j).toMatchObject({ exists: false });
+    expect(j.renamed_to).toBeUndefined();
+    expect(String(j.hint)).toContain("different decl-index snapshot");
+    // verified renames never touch the suffix index — they survive the mismatch
+    expect((await getJson(h, "/api/brain/decl?name=Basis")).j).toMatchObject({
+      renamed_to: "Module.Basis",
+      suggestion_basis: "verified-rename",
+    });
+  });
+
+  // The shared suggestion fetch budget: when it runs out, affected rows say
+  // suggestion_truncated:true instead of fanning out further or silently
+  // downgrading to a bare miss.
+  it("marks rows suggestion_truncated when the suggestion budget is exhausted", async () => {
+    const prev = FETCH_CAPS.suggest;
+    FETCH_CAPS.suggest = 0;
+    try {
+      const h = harness();
+      const { j } = await getJson(h, "/api/brain/decl?name=sum_comm");
+      expect(j).toMatchObject({ exists: false, suggestion_truncated: true });
+      expect(j.renamed_to).toBeUndefined();
+    } finally {
+      FETCH_CAPS.suggest = prev;
+    }
+  });
+
+  // a unique candidate that FAILS oracle verification (a stale index row) is
+  // no suggestion at all — same posture as a clean miss
+  it("a unique suffix candidate absent from the oracle yields no suggestion", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/decl?name=X.gone_lemma");
+    expect(j).toMatchObject({ exists: false });
+    expect(j.renamed_to).toBeUndefined();
+    expect(j.namespace_matches).toBeUndefined();
+    expect(String(j.hint)).toContain("decl index");
+  });
+
+  // batch shape unchanged: namespace suggestions ride the existing counts —
+  // a unique resolution counts as renamed, a match list / count as missing
+  it("namespace suggestions flow through the batch form with unchanged counts", async () => {
+    const h = harness();
+    const { j } = await getJson(
+      h,
+      `/api/brain/decl?names=${q("Doset.mk_out_eq_mul,Nope.exp_right,Nope.mk")}`,
+    );
+    const results = j.results as Array<Record<string, unknown>>;
+    const byName = Object.fromEntries(results.map((r) => [String(r.decl), r]));
+    expect(byName["Doset.mk_out_eq_mul"]).toMatchObject({
+      renamed_to: "DoubleCoset.mk_out_eq_mul",
+      suggestion_basis: "namespace-resolution",
+    });
+    expect((byName["Nope.exp_right"].namespace_matches as unknown[]).length).toBe(2);
+    expect(byName["Nope.mk"].namespace_match_count as number).toBeGreaterThan(8);
+    expect(j.counts).toEqual({ total: 3, exists: 0, renamed: 1, missing: 2 });
+  });
+
+  // Degradation: without the suffix-index asset decl_exists still answers
+  // (existence is the decl-index's job), and verified renames — which come off
+  // the owning cell's organ, not the suffix index — survive intact.
+  it("without the suffix index, existence + verified renames still answer", async () => {
+    const h = harness({ suffixIndex: null });
+    expect((await getJson(h, "/api/brain/decl?name=CommGroup")).j).toMatchObject({ exists: true });
+    expect((await getJson(h, "/api/brain/decl?name=Basis")).j).toMatchObject({
+      exists: false,
+      renamed_to: "Module.Basis",
+      suggestion_basis: "verified-rename",
+    });
+    const miss = await getJson(h, "/api/brain/decl?name=sum_comm");
+    expect(miss.status).toBe(200);
+    expect(miss.j).toMatchObject({ ok: true, exists: false });
   });
 
   it("the single-name form still works and gains import_line", async () => {
@@ -710,6 +867,189 @@ describe("GET /api/brain/decl — batch existence + rename suggestions", () => {
     const many = Array.from({ length: 17 }, (_, i) => `X${i}`).join(",");
     expect((await get(h.env, `/api/brain/decl?names=${q(many)}`)).status).toBe(400);
     expect((await get(h.env, `/api/brain/decl?names=${q("Ok,bad name")}`)).status).toBe(400);
+  });
+});
+
+// Tranche #18, tool #9 — brain_premises: stored premise lists for seed decls,
+// ranked across the union. The premise data is decl-grain on purpose: cell-level
+// `depends` synapses cover only 13.8% of MPR gold premises
+// (bench/analysis/brain_artifact.md), so a concept-graph walk cannot serve this.
+describe("GET /api/brain/premises — ranked premise retrieval for seed decls", () => {
+  it("ranks the union of the seeds' stored lists: multiplicity first, then stored rank", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, `/api/brain/premises?seeds=${q("Module,Module.Basis")}`);
+    expect(status).toBe(200);
+    expect(j.ok).toBe(true);
+    const premises = j.premises as Array<Record<string, unknown>>;
+    // Finset.sum_comm is in BOTH lists (multiplicity 2) → first; the rest by
+    // stored rank: CommGroup (0) < Semiconj.exp_right (1) < fourierCoeff (2)
+    expect(premises.map((p) => p.decl)).toEqual([
+      "Finset.sum_comm",
+      "CommGroup",
+      "Semiconj.exp_right",
+      "fourierCoeff",
+    ]);
+    // every row: module + a compilable import_line + a numeric score + via seeds
+    for (const p of premises) {
+      expect(typeof p.module).toBe("string");
+      expect(p.import_line).toBe(`import ${String(p.module)}`);
+      expect(typeof p.score).toBe("number");
+    }
+    expect(premises[0]).toMatchObject({ module: "Mathlib.Algebra.BigOperators.Basic" });
+    expect((premises[0].via as string[]).slice().sort()).toEqual(["Module", "Module.Basis"]);
+    expect(premises[1].via).toEqual(["Module"]);
+    expect(premises[2].via).toEqual(["Module.Basis"]);
+    expect(Array.isArray(j.seeds_resolved)).toBe(true);
+    expect(j.seeds_unknown).toEqual([]);
+  });
+
+  it("limit truncates the ranked list", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/premises?seeds=Module&limit=2");
+    const premises = j.premises as Array<Record<string, unknown>>;
+    expect(premises.map((p) => p.decl)).toEqual(["CommGroup", "Finset.sum_comm"]);
+    expect(premises[0].via).toEqual(["Module"]);
+  });
+
+  it("an unknown seed lands in seeds_unknown while the known seeds still answer", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, `/api/brain/premises?seeds=${q("Module,Nope.NotReal")}`);
+    expect(status).toBe(200);
+    expect(JSON.stringify(j.seeds_unknown)).toContain("Nope.NotReal");
+    expect((j.premises as Array<{ decl: string }>).map((p) => p.decl)).toEqual([
+      "CommGroup",
+      "Finset.sum_comm",
+      "fourierCoeff",
+    ]);
+  });
+
+  // the decl_exists namespace resolution serves seed resolution too: a bare
+  // segment that uniquely resolves is auto-resolved and noted, not rejected
+  it("a unique-namespace-resolvable seed is auto-resolved and noted", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, "/api/brain/premises?seeds=sum_comm");
+    expect(status).toBe(200);
+    expect(j.ok).toBe(true);
+    expect(JSON.stringify(j.seeds_resolved)).toContain("Finset.sum_comm");
+    expect(j.seeds_unknown).toEqual([]);
+    const premises = j.premises as Array<Record<string, unknown>>;
+    expect(premises.map((p) => p.decl)).toEqual(["CommGroup"]);
+    expect((premises[0].via as string[]).length).toBe(1);
+  });
+
+  it("a resolvable seed with no stored list answers honestly empty, not an error", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, "/api/brain/premises?seeds=CommGroup");
+    expect(status).toBe(200);
+    expect(j.ok).toBe(true);
+    expect(j.premises).toEqual([]);
+    expect(JSON.stringify(j.seeds_resolved)).toContain("CommGroup");
+  });
+
+  // Review finding: rank/verify then slice — a ranked row the oracle drops
+  // (stale name) must BACKFILL from below the limit cutoff, not under-fill.
+  it("backfills from below the limit cutoff when the oracle drops a ranked row", async () => {
+    const h = harness();
+    // stored list [CommGroup, Ghost.gone, Finset.sum_comm, fourierCoeff];
+    // Ghost.gone is not in the oracle → rank #4 backfills into limit=3
+    const { j } = await getJson(h, "/api/brain/premises?seeds=DoubleCoset.mk_out_eq_mul&limit=3");
+    expect((j.premises as Array<{ decl: string }>).map((p) => p.decl)).toEqual([
+      "CommGroup",
+      "Finset.sum_comm",
+      "fourierCoeff",
+    ]);
+    expect(j.premises_dropped).toBe(1); // the drop is still counted, never silent
+    expect(j.truncated).toBeUndefined(); // nothing budget-related happened
+  });
+
+  // Review finding: dead seeds resolve through the SAME suggestRename
+  // decl_exists serves, so a verified rename recovers the seed too.
+  it("a dead seed with a verified rename resolves through it (Basis → Module.Basis)", async () => {
+    const h = harness();
+    const { status, j } = await getJson(h, "/api/brain/premises?seeds=Basis");
+    expect(status).toBe(200);
+    expect(j.seeds_resolved).toEqual([
+      { seed: "Basis", decl: "Module.Basis", resolved_via: "verified-rename" },
+    ]);
+    expect(j.seeds_unknown).toEqual([]);
+    expect((j.premises as Array<{ decl: string }>).map((p) => p.decl)).toEqual([
+      "Finset.sum_comm",
+      "Semiconj.exp_right",
+    ]);
+  });
+
+  // Review finding: the Worker's chunk-decode constant must match the
+  // builder's manifest.chunk_size — a silent divergence would serve
+  // wrong-but-REAL names that even pass oracle verification.
+  it("503s on a chunk-size mismatch between Worker and builder", async () => {
+    const h = harness({ premiseChunkSize: 4096 });
+    const { status, j } = await getJson(h, "/api/brain/premises?seeds=Module");
+    expect(status).toBe(503);
+    expect(String(j.error)).toContain("chunk-size mismatch");
+    // decl_exists rides a different index and is unaffected
+    expect((await getJson(h, "/api/brain/decl?name=CommGroup")).j).toMatchObject({ exists: true });
+  });
+
+  // Review finding: the fetch budget reserves hydration headroom, and
+  // exhaustion is declared (truncated:true), never silent under-answering.
+  it("declares truncated:true when the fetch budget is exhausted", async () => {
+    const prevCap = FETCH_CAPS.premise;
+    const prevReserve = FETCH_CAPS.premiseChunkReserve;
+    FETCH_CAPS.premise = 2;
+    FETCH_CAPS.premiseChunkReserve = 1;
+    try {
+      const h = harness();
+      const { status, j } = await getJson(h, `/api/brain/premises?seeds=${q("Module,Module.Basis")}`);
+      expect(status).toBe(200);
+      // both seeds resolved (one shared decl shard fetch), but the premise
+      // shard fetch fell past the budget — declared, not silent
+      expect((j.seeds_resolved as unknown[]).length).toBe(2);
+      expect(j.premises).toEqual([]);
+      expect(j.truncated).toBe(true);
+    } finally {
+      FETCH_CAPS.premise = prevCap;
+      FETCH_CAPS.premiseChunkReserve = prevReserve;
+    }
+  });
+
+  // Review finding: the premise index's staleness signal is ITS OWN pin — the
+  // top-level snapshot echo tracks the brain cells manifest, a different
+  // artifact on a different cadence.
+  it("surfaces the premise build's own pin as index_pin", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/premises?seeds=Module");
+    expect(j.index_pin).toEqual({
+      edges_mtime: FIXTURE_EDGES_MTIME,
+      decl_index_etag: FIXTURE_DECL_ETAG,
+    });
+  });
+
+  it("400s missing/empty/oversize seeds and a bad name", async () => {
+    const h = harness();
+    expect((await get(h.env, "/api/brain/premises")).status).toBe(400);
+    expect((await get(h.env, "/api/brain/premises?seeds=")).status).toBe(400);
+    const nine = Array.from({ length: 9 }, (_, i) => `X${i}`).join(",");
+    expect((await get(h.env, `/api/brain/premises?seeds=${q(nine)}`)).status).toBe(400);
+    expect((await get(h.env, `/api/brain/premises?seeds=${q("Ok,bad name")}`)).status).toBe(400);
+  });
+
+  // same posture as decl_exists when ITS index is gone: a missing premise-index
+  // manifest is a 503, and it must not bleed into the decl oracle
+  it("503s when the premise-index manifest is absent; decl_exists is unaffected", async () => {
+    const h = harness({ premiseIndex: null });
+    const { status, j } = await getJson(h, "/api/brain/premises?seeds=Module");
+    expect(status).toBe(503);
+    expect(j.ok).toBe(false);
+    expect(String(j.error)).toContain("premise");
+    expect((await getJson(h, "/api/brain/decl?name=CommGroup")).j).toMatchObject({ exists: true });
+  });
+
+  // a new REST twin registered without its rateLimitGate line is a silent
+  // rate-limit bypass (the documented review defect) — pin the gate
+  it("429s when the per-IP limiter denies", async () => {
+    const h = setup({ brainApiLimiterAllows: false });
+    installBrainFixture(h.env);
+    expect((await get(h.env, "/api/brain/premises?seeds=Module")).status).toBe(429);
   });
 });
 
@@ -807,6 +1147,7 @@ describe("snapshot echo", () => {
       "/api/brain/filter?f=0",
       "/api/brain/search?q=abelian",
       "/api/brain/decl?name=CommGroup",
+      "/api/brain/premises?seeds=Module",
       "/api/brain/bridge?q=abelian%20group",
     ]) {
       const { j } = await getJson(h, path);
@@ -873,6 +1214,18 @@ describe("GET /api/brain/bridge — the first call of an autoformalization loop"
     expect(hits.find((x) => x.decl === "Module.Basis")).toMatchObject({ exists: true });
   });
 
+  // Review finding: the >8-sharers (hub-segment) case must reach bridge hits
+  // too — "a dead cited name gets the same labelled suggestion decl_exists
+  // serves" includes the count + qualification hint.
+  it("a dead cited name with a hub final segment gets the count + hint", async () => {
+    const h = harness();
+    const { j } = await getJson(h, "/api/brain/bridge?q=Q424242");
+    const hit = (j.hits as Array<Record<string, unknown>>).find((x) => x.decl === "Widget.mk")!;
+    expect(hit).toMatchObject({ exists: false, via_cell: HUB_CELL, namespace_match_count: 6133 });
+    expect(hit.renamed_to).toBeUndefined();
+    expect(String(hit.hint)).toMatch(/qualify the namespace/i);
+  });
+
   it("abstains with match:'none' + nearest when nothing clears the floor", async () => {
     const h = harness();
     // "Parity conjecture" resolves (exact label) but holds no decl
@@ -901,6 +1254,9 @@ describe("GET /brain/api — the reference page", () => {
     const html = await res.text();
     expect(html).toContain("/api/brain/cell");
     expect(html).toContain("/api/brain/transfer");
+    // tool #9 (tranche #18) must be documented alongside its REST twin
+    expect(html).toContain("/api/brain/premises");
+    expect(html).toContain("brain_premises");
     expect(html).toContain("claude mcp add --transport http wikibrain");
     // the page must teach the model it serves, not the retired one
     expect(html).toContain("supercell");

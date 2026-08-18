@@ -1,9 +1,10 @@
 // Brain CELL-shard ASSETS shim shared by brain-api.test.ts and mcp.test.ts: a
 // small but complete v3 fixture (cells with organs of every kind, embedded
 // payloads + licensed snippets, aggregated synapses with traces, supercells
-// owning a rule-5 field concept, aliases, labels with `aka`, decl-index shards)
-// served through a fake ASSETS fetcher, keyed with the REAL declShardKey so
-// shard resolution matches production (same approach as brain-edges.test.ts).
+// owning a rule-5 field concept, aliases, labels with `aka`, decl-index shards,
+// and the suffix-index + premise-index sibling assets) served through a fake
+// ASSETS fetcher, keyed with the REAL declShardKey so shard resolution matches
+// production (same approach as brain-edges.test.ts).
 //
 // Shapes mirror site/assets/brain/cells/ exactly — including the ones that bite:
 // a supercell's synapses ship WITHOUT traces, `tt` appears only when traces were
@@ -19,6 +20,7 @@ export const EMPTY_CELL = "cell:Q555000"; // concept organ only — no formaliza
 export const DECL_CELL = "cell:decl:Mathlib:Finset.sum_comm"; // lone-particle decl cell
 export const BASIS_CELL = "cell:Q189569"; // decl organ carries a verified `renamed_to`
 export const FOURIER_DEAD_CELL = "cell:decl:Mathlib:AddCircle.fourierCoeff"; // dead-name decl cell
+export const HUB_CELL = "cell:Q424242"; // dead decl organ whose final segment is the `mk` hub
 export const LINALG_SUPER = "path:Mathlib/LinearAlgebra"; // owns the rule-5 field concept
 export const ALGEBRA_SUPER = "path:Mathlib/Algebra";
 
@@ -62,6 +64,8 @@ export const DEFAULT_ALIASES = {
     "decl:Mathlib:Basis": BASIS_CELL,
     "decl:Mathlib:Module.Basis": BASIS_CELL,
     "decl:Mathlib:AddCircle.fourierCoeff": FOURIER_DEAD_CELL,
+    Q424242: HUB_CELL,
+    "decl:Mathlib:Widget.mk": HUB_CELL,
     [FIELD_Q]: LINALG_SUPER, // rule 5: a field concept is a SUPERCELL organ, never a cell
   },
   decls: {
@@ -101,19 +105,152 @@ export const LABELS = [
 // names whose current forms `Module.Basis` / `fourierCoeff` DO resolve, so a
 // batch decl_exists can serve a verified rename. `Finset.sum_comm` is present so
 // a unique-suffix candidate can be verified against the oracle. Pairs stay sorted
-// (lookupInShard binary-searches).
+// (lookupInShard binary-searches). The manifest carries the snapshot etag the
+// suffix index must match (suffixLookup's pin check).
+export const FIXTURE_DECL_ETAG = 'W/"fixture-decl-snapshot"';
 const DECL_MANIFEST = {
   scheme: { min_len: 2, max_len: 2, pad: "_" },
-  shards: { co: 1, mo: 2, fi: 1, fo: 1 } as Record<string, number>,
+  shards: { co: 2, do: 1, ha: 2, mo: 2, fi: 1, fo: 1, se: 1 } as Record<string, number>,
+  source_sha_or_etag: FIXTURE_DECL_ETAG,
 };
 const DECL_SHARDS: Record<string, Array<[string, string]>> = {
-  co: [["CommGroup", "Mathlib.Algebra.Group.Defs"]],
+  co: [
+    ["CommGroup", "Mathlib.Algebra.Group.Defs"],
+    ["Commute.exp_right", "Mathlib.Analysis.SpecialFunctions.Exponential"],
+  ],
+  do: [["DoubleCoset.mk_out_eq_mul", "Mathlib.GroupTheory.DoubleCoset"]],
+  ha: [
+    ["HAdd", "Mathlib.Init.Prelude"],
+    ["HAdd.hAdd", "Mathlib.Init.Prelude"],
+  ],
   mo: [
     ["Module", "Mathlib.Algebra.Module.Defs"],
     ["Module.Basis", "Mathlib.LinearAlgebra.Basis.Defs"],
   ],
   fi: [["Finset.sum_comm", "Mathlib.Algebra.BigOperators.Basic"]],
   fo: [["fourierCoeff", "Mathlib.Analysis.Fourier.AddCircle"]],
+  se: [["Semiconj.exp_right", "Mathlib.Analysis.SpecialFunctions.Exponential"]],
+};
+
+// The suffix index — final-segment → candidate FQ names over the FULL decl
+// universe (wiki/scripts/build-suffix-index.ts; API tranche #18). Shards
+// resolve with the same declShardFor prefix scheme, keyed on the NORMALIZED
+// final segment. Both builder shapes ship here: the bare entries array
+// (uncapped — the majority shape) and { total_count, entries } when storage is
+// capped, with total_count the TRUE total ("extreme minority" lesson: the cap
+// must never masquerade as the population). The manifest's source_sha_or_etag
+// matches the decl manifest's (suffixLookup refuses a mismatched pair).
+//   sum_comm      → unique, oracle-verified, BARE-ARRAY bucket (namespace-resolution)
+//   mk_out_eq_mul → unique — THE mathlibmpr_063/003 shape: the agent had the
+//                   exact segment, only the namespace was wrong (Doset →
+//                   DoubleCoset)
+//   exp_right     → 3 stored, 1 stale: `Retired.exp_right` is NOT in the
+//                   oracle, so the served namespace_matches list holds 2
+//   gone_lemma    → unique but FAILS oracle verification ⇒ no suggestion
+//   mk            → the hub segment: 10 stored of n=6133 (real data: "mk")
+//   hadd          → the normalized-collision bucket: `HAdd` and `HAdd.hAdd`
+//                   share the key but their EXACT final segments differ — the
+//                   consumer must disambiguate on the stored exact names
+//   capped_seg    → a CAPPED bucket (total_count > entries stored): the view
+//                   is incomplete, so no uniqueness claim may come from it
+const SUFFIX_MANIFEST = {
+  scheme: { min_len: 2, max_len: 2, pad: "_" },
+  shards: { su: 1, mk: 2, ex: 1, go: 1, ha: 1, ca: 1 } as Record<string, number>,
+  source_sha_or_etag: FIXTURE_DECL_ETAG,
+};
+const SUFFIX_SHARDS: Record<string, Record<string, unknown>> = {
+  su: {
+    // the bare-array (uncapped) shape — what ~all real buckets ship as
+    sum_comm: [["Finset.sum_comm", "Mathlib.Algebra.BigOperators.Basic"]],
+  },
+  mk: {
+    mk: {
+      entries: [
+        ["Equiv.mk", "Mathlib.Logic.Equiv.Defs"],
+        ["Fin.mk", "Mathlib.Data.Fin.Basic"],
+        ["Finset.mk", "Mathlib.Data.Finset.Basic"],
+        ["Int.mk", "Mathlib.Data.Int.Defs"],
+        ["List.mk", "Mathlib.Data.List.Basic"],
+        ["Multiset.mk", "Mathlib.Data.Multiset.Basic"],
+        ["Nat.mk", "Mathlib.Data.Nat.Defs"],
+        ["Option.mk", "Mathlib.Data.Option.Basic"],
+        ["Prod.mk", "Mathlib.Data.Prod.Basic"],
+        ["Quot.mk", "Mathlib.Data.Quot"],
+      ],
+      total_count: 6133,
+    },
+    mk_out_eq_mul: { entries: [["DoubleCoset.mk_out_eq_mul", "Mathlib.GroupTheory.DoubleCoset"]], total_count: 1 },
+  },
+  ex: {
+    exp_right: {
+      entries: [
+        ["Commute.exp_right", "Mathlib.Analysis.SpecialFunctions.Exponential"],
+        ["Retired.exp_right", "Mathlib.Analysis.OldExponential"], // stale — not in the oracle
+        ["Semiconj.exp_right", "Mathlib.Analysis.SpecialFunctions.Exponential"],
+      ],
+      total_count: 3,
+    },
+  },
+  go: {
+    gone_lemma: { entries: [["Deleted.gone_lemma", "Mathlib.Old.Gone"]], total_count: 1 },
+  },
+  ha: {
+    // key-normalized collision: two DISTINCT exact segments in one bucket
+    hadd: {
+      entries: [
+        ["HAdd", "Mathlib.Init.Prelude"],
+        ["HAdd.hAdd", "Mathlib.Init.Prelude"],
+      ],
+      total_count: 2,
+    },
+  },
+  ca: {
+    // capped: 5 sharers exist, only 1 stored — enumeration/uniqueness forbidden
+    capped_seg: { entries: [["Stored.capped_seg", "Mathlib.Some.Module"]], total_count: 5 },
+  },
+};
+
+// The premise index — per-decl stored premise lists (API tranche #18; derived
+// from MathNetwork/MathlibGraph, Apache-2.0). Shards resolve with the same
+// declShardFor prefix scheme keyed on the SOURCE decl name; values are int
+// lists (stored rank order, K≤12) into fixed 8192-name chunk tables
+// names/<chunk>.json. The manifest mirrors the BUILDER's real shape
+// (build-premise-index.ts): `chunk_size` (the Worker validates it — a silent
+// divergence mis-decodes every int into a wrong-but-real name) and `pin` as
+// the {edges_mtime, edges_bytes, decl_index_etag} object.
+//   Module                   → [CommGroup, Finset.sum_comm, fourierCoeff]
+//   Module.Basis             → [Finset.sum_comm, Semiconj.exp_right]
+//   DoubleCoset.mk_out_eq_mul → [CommGroup, Ghost.gone, Finset.sum_comm,
+//                               fourierCoeff] — `Ghost.gone` is NOT in the
+//                               oracle, so it drops and rows below the limit
+//                               cutoff must backfill.
+// Union of Module+Module.Basis ranks Finset.sum_comm first (multiplicity 2),
+// then CommGroup (rank 0) < Semiconj.exp_right (rank 1) < fourierCoeff (rank 2).
+export const FIXTURE_EDGES_MTIME = "2026-07-03T00:00:00.000Z";
+const PREMISE_NAMES: string[][] = [
+  ["CommGroup", "Module", "Finset.sum_comm", "Module.Basis", "fourierCoeff", "Semiconj.exp_right", "Ghost.gone"],
+];
+const PREMISE_MANIFEST = {
+  scheme: { min_len: 2, max_len: 2, pad: "_" },
+  shards: { mo: 2, fi: 1, do: 1 } as Record<string, number>,
+  chunk_size: 8192,
+  chunks: 1,
+  source: "MathNetwork/MathlibGraph (arXiv 2604.24797, Apache-2.0)",
+  pin: { edges_mtime: FIXTURE_EDGES_MTIME, edges_bytes: 753711915, decl_index_etag: FIXTURE_DECL_ETAG },
+  filters: { explicit_only: true, per_decl_cap: 12 },
+  hub_drop: ["Eq.mpr", "Eq.mp", "id"],
+};
+const PREMISE_SHARDS: Record<string, Record<string, number[]>> = {
+  mo: {
+    Module: [0, 2, 4],
+    "Module.Basis": [2, 5],
+  },
+  fi: {
+    "Finset.sum_comm": [0],
+  },
+  do: {
+    "DoubleCoset.mk_out_eq_mul": [0, 6, 2, 4],
+  },
 };
 
 // supercells.json. Note LINALG_SUPER carries the field concept Q82571 as an
@@ -367,6 +504,22 @@ function fixtureCells(): Record<string, CellSpec> {
         },
       ],
     },
+    // A dead decl organ whose final segment is a HUB ("mk", capped bucket):
+    // bridgeFor must serve the same namespace_match_count + hint decl_exists
+    // does. Not in LABELS — reachable only by identity (Q424242).
+    [HUB_CELL]: {
+      cell: { id: HUB_CELL, anchor: "Q424242", label: "Widget hub", xy: [7.0, 7.0] },
+      organs: [
+        {
+          kind: "concept", id: "Q424242", label: "Widget hub", bond: "exact", prov: 0,
+          description: "a made-up object whose decl name died into a hub segment",
+        },
+        {
+          kind: "decl", id: "decl:Mathlib:Widget.mk", label: "Widget.mk", bond: "exact",
+          prov: 1, library: "Mathlib",
+        },
+      ],
+    },
     // A dead-name lone-particle decl cell (cell:decl:Mathlib:AddCircle.fourierCoeff
     // in the shipped build): the organ's `renamed_to` points at the current bare
     // `fourierCoeff`, which lives on a DIFFERENT atom.
@@ -391,6 +544,18 @@ const KEY_LEN = 6; // every fixture atom id is ≥6 chars, so fixed-length keys 
 export interface BrainFixtureOpts {
   // undefined → serve DEFAULT_ALIASES; null → 404 aliases.json (degradation path)
   aliases?: object | null;
+  // null → 404 the whole suffix index (decl_exists must still answer; only the
+  // namespace-resolution suggestions go away)
+  suffixIndex?: null;
+  // null → 404 the whole premise index (brain_premises must 503, decl_exists
+  // must be unaffected)
+  premiseIndex?: null;
+  // override the premise manifest's chunk_size (the Worker must 503 a mismatch
+  // instead of mis-decoding every int)
+  premiseChunkSize?: number;
+  // override the suffix manifest's source_sha_or_etag (a mismatch with the decl
+  // manifest must degrade namespace suggestions to none)
+  suffixEtag?: string;
 }
 
 export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void {
@@ -439,6 +604,24 @@ export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void
       if (path === "/assets/decl-index/manifest.json") return json(DECL_MANIFEST);
       const dm = /^\/assets\/decl-index\/([a-z0-9_]+)\.json$/.exec(path);
       if (dm && DECL_SHARDS[dm[1]]) return json(DECL_SHARDS[dm[1]]);
+      if (opts.suffixIndex !== null) {
+        if (path === "/assets/suffix-index/manifest.json")
+          return json(
+            opts.suffixEtag ? { ...SUFFIX_MANIFEST, source_sha_or_etag: opts.suffixEtag } : SUFFIX_MANIFEST,
+          );
+        const sm = /^\/assets\/suffix-index\/([a-z0-9_]+)\.json$/.exec(path);
+        if (sm && SUFFIX_SHARDS[sm[1]]) return json(SUFFIX_SHARDS[sm[1]]);
+      }
+      if (opts.premiseIndex !== null) {
+        if (path === "/assets/premise-index/manifest.json")
+          return json(
+            opts.premiseChunkSize ? { ...PREMISE_MANIFEST, chunk_size: opts.premiseChunkSize } : PREMISE_MANIFEST,
+          );
+        const pn = /^\/assets\/premise-index\/names\/(\d+)\.json$/.exec(path);
+        if (pn && PREMISE_NAMES[Number(pn[1])]) return json(PREMISE_NAMES[Number(pn[1])]);
+        const pm = /^\/assets\/premise-index\/([a-z0-9_]+)\.json$/.exec(path);
+        if (pm && PREMISE_SHARDS[pm[1]]) return json(PREMISE_SHARDS[pm[1]]);
+      }
       const m = /^\/assets\/brain\/cells\/([a-z0-9_]+)\.json$/.exec(path);
       if (m && data[m[1]]) return json(data[m[1]]);
       return new Response("not found", { status: 404 });
