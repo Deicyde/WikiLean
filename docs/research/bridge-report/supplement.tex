@@ -40,8 +40,12 @@
 \newcommand{\best}[1]{\textbf{#1}}
 
 % Supplement sections are S1..S14; use the section counter with an S prefix.
+% Floats follow the same scheme (Figure S1, Table S1) so cross-document
+% mentions cannot collide with the main paper's Figures 1-3 / Tables 1-3.
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thesubsection}{S\arabic{section}.\arabic{subsection}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
 
 \title{\textbf{The Bridge Study --- Supplement (v3.1)}}
 \author{Jack McCarthy\\
@@ -509,7 +513,7 @@ the advisory 30 turns (raw instrument, post-repair rows): D-vs-E n=35,
 p=0.0146. Consistent in direction; for D-vs-E, inconclusive within
 budget.
 
-\section{Tool-call census, cost/latency, and figure 5}\label{s6}
+\section{Tool-call census, cost/latency, and the tool-use figure}\label{s6}
 
 \paragraph{Tier-1 eval-split trace attribution}
 (\code{bench/trace\_analysis.py}): 98--100\% of traced tool-arm runs
@@ -523,8 +527,8 @@ same statistic is C 44\%, D 34\%, E 61\%: verify-before-cite
 discipline transferred imperfectly to the held-out set, and worst in
 E.
 
-\paragraph{v2 census} (figure: \code{figures/fig5\_tooluse.pdf} in the
-typeset build, regenerated on the repaired run rows; the per-tool
+\paragraph{v2 census} (Figure~\ref{fig:tooluse},
+regenerated on the repaired run rows; the per-tool
 counts quoted here are the as-run census --- the race repair raises
 only F's means, since its 190 condemned rows had zero calls; basis
 stated per clause): W averages 3.5 calls/run on QR-810 and 10.6 on
@@ -544,8 +548,9 @@ Same-eval-set caveat as the manual (\S S8).
 \caption{The v2 tool-use census by tool family (Brain blues, formal
 oranges), summed over run rows --- regenerated on the race-repaired
 grid (fig\_f4\_tooluse.py; census assertions against the \S S6 values
-inside the script). The race repair raises only F's totals; the
-prose census above quotes the as-run figures, basis stated per
+inside the script). Arms: W = the Brain; F = formal search;
+WF = union + manual (post-hoc). The race repair raises only F's totals;
+the prose census above quotes the as-run figures, basis stated per
 clause.}
 \label{fig:tooluse}
 \end{figure}
