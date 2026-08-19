@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The immersion in the gold statement maps into a genuinely different/further manifold N' (with its own model J, J' via IsImmersion J J' n φ); the produced statement restricts the immersion to self-maps g : N → N, dropping the 'further manifold' entirely and losing the core content of the theorem.",
+  "Gold fixes an arbitrary but given C^n immersion φ as an explicit/implicit hypothesis (hφ : IsImmersion J J' n φ), which is logically equivalent to an outer universal quantification over immersions; the produced statement instead places a ∀ g quantifier inside the right-hand conjunct of the iff. Combined with self-maps g : N → N, taking g = id (a trivial immersion) makes the ∀-hypothesis directly imply ContMDiff I' I n (id ∘ f) = ContMDiff I' I n f, trivializing the equivalence rather than expressing the intended content of composing with an immersion into a further space.",
+  "`Manifold.IsImmersion g` is applied with only the function argument, omitting the source/target models and smoothness order that IsImmersion actually requires (cf. gold's `IsImmersion J J' n φ`); this is inconsistent with how IsImmersion is used in the gold statement and likely mismatched/incorrect relative to its real signature.",
+  "No model-with-corners data (analogous to gold's J, J', E'', E''') is introduced for a target manifold of the immersion, since the produced statement collapses the immersion's codomain to N itself.",
+  "The redundant/duplicated smoothness requirement (`ContMDiff I' I' n g` alongside `Manifold.IsImmersion g`) does not correspond to any single well-specified hypothesis in the gold statement and changes the shape of the C^n-immersion hypothesis."
+ ],
+ "arm": "J",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 57.7,
+ "judge_cost_usd": 0.167596,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d883a8562fcc5f28265be40a65b3e6b18741c221b75658288f72038b16decd07"
+}

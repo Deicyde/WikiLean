@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis 'Antitone f' is global antitonicity on all of ℝ, strictly stronger than the gold's 'AntitoneOn f (Ici N)' which only requires monotonicity on the ray",
+  "Hypothesis 'hnn : ∀ x, 0 ≤ f x' requires nonnegativity everywhere on ℝ, strictly stronger than gold's nonneg only on Ioi N",
+  "Drops the general starting point N : ℕ entirely (implicitly fixes N = 0), losing the generality of the gold statement which applies to any eventually-antitone-from-N function",
+  "Summable hypothesis is 'Summable (fun n : ℕ ↦ f n)' with no shift, whereas gold's is shifted 'Summable (fun n ↦ f (n + N : ℕ))' to align with the ray starting at N; only coincide when N = 0",
+  "Conclusion is IntegrableOn f (Ici 0) rather than IntegrableOn f (Ioi N), changing both the domain type (Ici vs Ioi) and hardcoding N = 0"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.3,
+ "judge_cost_usd": 0.089002,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a3d45ea0c4a62b263b645e9bf4de76472455079b6de2cdeec1af056c80d0bfe8"
+}

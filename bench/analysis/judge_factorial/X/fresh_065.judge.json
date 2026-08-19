@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The LiesOver hypothesis is malformed: it is written as `[w.1.LiesOver v.1]`, applying `.1` to project `w` and `v` down to their underlying `AbsoluteValue` (since `InfinitePlace` is defined as a subtype of `AbsoluteValue`), but `LiesOver` is a typeclass defined on `InfinitePlace`, not on `AbsoluteValue`. This does not match the gold's `[w.LiesOver v]` and either fails to typecheck or silently invokes a different/nonexistent instance, so the 'lies over' hypothesis is not correctly expressed."
+ ],
+ "arm": "X",
+ "task_id": "fresh_065",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.8,
+ "judge_cost_usd": 0.12769,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7071db32bdde85b85e9e109b1c05357d994532fe32b26a853b7c1c660c70bf10"
+}

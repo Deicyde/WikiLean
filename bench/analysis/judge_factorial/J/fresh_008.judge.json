@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "States the fact at the Set level (Set.image plus explicit Finset→Set coercions) rather than gold's Finset-level equality (Finset.map with the embedding Nat.castEmbedding); the two are equivalent because Nat.cast : ℕ → ℤ is injective (Finset.coe_map / Finset.coe_injective bridge them), but this is a genuine reshaping, not a purely syntactic restatement",
+  "Binds R as an explicit argument (R : Type*) instead of gold's implicit {R : Type*}, changing call-site usage",
+  "Writes p.toFinsupp.support instead of p.support (equal by the definitional unfolding of Polynomial.support, but a different accessor spelling)"
+ ],
+ "arm": "J",
+ "task_id": "fresh_008",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 223.7,
+ "judge_cost_usd": 0.590515,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "17b2a9a465044f13d64dcc1ae4080f076764dfc6d34b3e256af4617887417036"
+}

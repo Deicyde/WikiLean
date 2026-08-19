@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses left-endpoint terms f(a+i) for i=0..n-1 instead of gold's right-endpoint terms f(n+1); with an antitone f this reverses the standard integral-test inequality, making the produced claim mathematically false in general (e.g. f(x)=e^{-x}, a=0, n=1: sum=f(0)=1 > ∫₀¹e^{-x}dx≈0.632)",
+  "Integrates over the finite interval Icc a (a+n) instead of the infinite ray Ioi a required by the informal statement ('integral over a ray') and used in gold",
+  "Hypothesis strengthened: requires global Antitone f instead of gold's localized AntitoneOn f (Icc a b)",
+  "Hypothesis strengthened: requires nonneg for all x ∈ ℝ instead of gold's localized nonneg only on Ioi a",
+  "Missing the integrability hypothesis IntegrableOn f (Ioi a) that gold requires (needed since gold's integral is over an infinite ray)"
+ ],
+ "arm": "J",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 52.4,
+ "judge_cost_usd": 0.168408,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "064dee149877be0cf61c7b68bd901ae1297f7168d4e9bd9342fdc4ec3f61982c"
+}

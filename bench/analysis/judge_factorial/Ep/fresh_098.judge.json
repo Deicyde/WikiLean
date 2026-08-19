@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Typeclass hypotheses substantially weakened: gold requires ConditionallyCompleteLinearOrder, OrderTopology, and DenselyOrdered on α (needed for order-completeness/IVT-style compactness arguments); produced only assumes LinearOrder, TopologicalSpace, OrderClosedTopology, which is insufficient for the theorem to hold in general (e.g. fails for α = ℚ)",
+  "Uses Icc a b instead of uIcc a b, so it does not cover the case b ≤ a that the gold statement (via uIcc) handles",
+  "Adds an extra hypothesis hle : a ≤ b not present in the gold statement, needed only because Icc was used instead of uIcc"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.5,
+ "judge_cost_usd": 0.087934,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f37769334b55dfc242a401948e1e97ca8eade9f810b34839e915a84a60bac87d"
+}

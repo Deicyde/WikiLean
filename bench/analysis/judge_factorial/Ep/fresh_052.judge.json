@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds a continuity hypothesis (hg_cont : ContinuousOn g (exp '' Ioi a)) that is absent from the gold statement, which holds unconditionally",
+  "Adds an integrability hypothesis (hg1 : IntegrableOn g (exp '' Ici a)) not present in gold, and moreover uses Ici a instead of Ioi a, inconsistent with the rest of the statement",
+  "Adds an integrability hypothesis (hg2 : IntegrableOn (fun x => g (exp x) * exp x) (Ici a)) not present in gold",
+  "Restricts the codomain from a general NormedAddCommGroup/NormedSpace E to ℝ, losing the generality of the gold statement",
+  "Uses multiplication g(exp x) * exp x instead of the scalar action exp x • g(exp x), reflecting the reduced generality rather than an equivalent spelling",
+  "The gold identity holds unconditionally via Mathlib's junk-value convention for non-integrable functions, so the added hypotheses make the produced statement a strictly weaker consequence rather than an equivalent proposition"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 18.7,
+ "judge_cost_usd": 0.074202,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "668b1420d78ab500b8c7f048aa843f337e67a861dd46d75cbf9daea7aa092dd5"
+}

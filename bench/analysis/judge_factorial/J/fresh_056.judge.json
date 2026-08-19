@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`s.posPart` and `s.negPart` are not fields of `SignedMeasure` — `posPart`/`negPart` belong to `JordanDecomposition`, reached only via `s.toJordanDecomposition.posPart` / `s.toJordanDecomposition.negPart`; as written this does not elaborate",
+  "even granting the intended meaning, `posPart`/`negPart` are `Measure α` (ℝ≥0∞-valued), so `s.posPart i - s.negPart i` would use truncated ℝ≥0∞ subtraction rather than real subtraction, and would not have type ℝ to match `s i`; the gold's `.real` conversion (Measure.real, mapping to ℝ via toReal) is missing, which is not merely cosmetic since ℝ≥0∞ truncated subtraction differs from real subtraction"
+ ],
+ "arm": "J",
+ "task_id": "fresh_056",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 22.2,
+ "judge_cost_usd": 0.085615,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "18c152a7ca9729df2cff06041abc31d86f8959d6145c4b50483ce3f1bb29aed5"
+}

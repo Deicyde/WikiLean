@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hM_proper : I • M ≠ ⊤ is not meaningfully typed as written: M is a bare Type* with a Module R M instance, not a Submodule R M, so 'I • M' cannot denote the submodule I·M (should be I • (⊤ : Submodule R M) as in gold); as stated this hypothesis does not correctly express 'I·M is a proper submodule of M'",
+  "hExt : ∀ i < n, CategoryTheory.Abelian.Ext i N M = 0 is not well-typed: Ext i N M (Mathlib's Abelian.Ext) is a Type-valued Hom-object, not an element of an additive group, so comparing it to '0' via '=' does not typecheck; the gold correctly expresses vanishing via Subsingleton (Ext N M i)",
+  "Conclusion's ∀ k, IsRegular (seq k) drops the module M entirely: unqualified IsRegular in Mathlib is the ring/monoid notion of a non-zero-divisor element of R, unrelated to M, so this fails to express 'M-regular sequence' — it neither references M nor captures the required successive-quotient regularity condition (r_1 regular on M, r_2 regular on M/(r_1)M, etc.) that the gold's IsRegular M rs encodes",
+  "Support hypothesis coerces I to Set R explicitly via (↑I : Set R) versus gold's implicit Ideal coercion — cosmetic, not a defect, but flagged since combined with the Ext/regularity issues the overall statement is not a faithful formalization"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 86.5,
+ "judge_cost_usd": 0.252584,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "547503ae051fab191163f38547ab87087512522ee9bc4d754e4c74b44fba20f3"
+}

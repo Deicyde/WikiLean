@@ -1,0 +1,22 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Only states an iff between conditions (1) and (2) of the gold's four-way TFAE; entirely omits condition (3) (existence of N with support EQUAL to the zero locus) and condition (4) (existence of an M-regular sequence of length n in I), which is a core part of the theorem",
+  "Missing the hypothesis that M is nontrivial",
+  "Missing the hypothesis I • ⊤ < ⊤ (I·M is a proper submodule of M)",
+  "'M : Module R' is not valid Lean syntax — Module R is a type class parameterized by a carrier type, not itself a Type, so this argument does not typecheck / does not correspond to 'M a finitely generated R-module'",
+  "In condition (1), 'Nontrivial N' hypothesis is dropped (gold requires N nontrivial, produced only requires Module.Finite)",
+  "Support condition is reformulated as '∀ p, I ≤ p.asIdeal → Submodule.support R N p' instead of Module.support R N ⊆ PrimeSpectrum.zeroLocus I — treats support as a predicate on primes rather than the standard support-as-set membership condition, and 'Submodule.support' does not match the gold's 'Module.support'",
+  "Ext R i N M — argument order/signature not shown to match Mathlib's Ext object indexing used in gold (Ext N M i in the appropriate category); ambiguous whether this is the same bifunctor",
+  "[Module.Finite R N] declared as an instance-implicit binder nested inside a ∀-quantified N without N being introduced first in a way consistent with gold's explicit ∀ N, ... form"
+ ],
+ "arm": "J",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.0,
+ "judge_cost_usd": 0.07584,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "55385402e249967acf13fcb04965d9d3d765619a3098aa90bb2bc1449e957c13"
+}

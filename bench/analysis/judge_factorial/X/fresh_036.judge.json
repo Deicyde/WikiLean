@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Moves the quantifier over immersions: gold takes a single GIVEN immersion φ (with hφ : IsImmersionOfComplement ... φ) as an external parameter, so the iff is stated for one fixed immersion; produced instead places '∀ P g, IsImmersion g → ContMDiff (g∘f)' inside the RHS of the iff, which is a different (and stronger/degenerate) logical statement, not equivalent to the gold's per-immersion family of iffs.",
+  "Drops the key hypothesis 'IsImmersionOfComplement' (an immersion with a locally split/complemented normal bundle, essential for the backward direction of the theorem) and substitutes the strictly weaker plain 'Manifold.IsImmersion', losing the structural condition that makes the equivalence provable.",
+  "Forces the further manifold P (and even N) to share the exact same model I and chart space H as M, via 'ChartedSpace H P', 'IsManifold I n P', and 'Manifold.IsImmersion I I n g' — whereas gold allows a genuinely different model (J, J', E''', G', F) for the target/further manifold, matching the informal statement's 'a further manifold' (arbitrary manifold, not same-model).",
+  "Because the produced RHS quantifies over ALL immersions g rather than one witness, it admits a degenerate instantiation (e.g. P = N, g = id_N, which is a valid immersion) that makes the RHS conjunct 'ContMDiff (g∘f)' reduce to 'ContMDiff f' directly, trivializing the intended content that a single well-chosen immersion suffices to detect smoothness.",
+  "No analogue of the 'F' (complement space) parameter appears in the produced statement, so the necessary splitting/complement data used to characterize which immersions make the criterion work is entirely absent."
+ ],
+ "arm": "X",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 101.1,
+ "judge_cost_usd": 0.51112,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "c5c4ac8511ff6b5ed7be2e42b50cec669ab6506b237950a5d933ba8ea9458202"
+}

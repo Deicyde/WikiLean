@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "AntitoneOn hypothesis is strengthened: produced requires antitone on all of Ici 0 (0,∞) rather than gold's Icc 0 N (only up to N), a different/stronger hypothesis than gold uses",
+  "nonneg hypothesis domain differs: produced quantifies over x ≥ 0 (includes 0) instead of gold's t ∈ Ioi 0 (t > 0)",
+  "RHS integral is malformed: MeasureTheory.integral (Set.indicator (Set.Ioi 0) f) passes the indicator function as the measure argument to MeasureTheory.integral (whose first explicit argument is a Measure), omitting the actual measure (volume) and effectively missing the integrand argument — this does not correctly express ∫ x in Ioi 0, f x ∂volume and likely fails to elaborate/type-check"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_023",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 39.8,
+ "judge_cost_usd": 0.139659,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ae026c75bbb6ffaddaa69407e82093555039c7371484c77e04f0f3bdfbd3e779"
+}

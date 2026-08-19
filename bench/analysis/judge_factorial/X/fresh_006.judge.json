@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces general scalar multiplication (SMul α β, a : α acting on β via •) with plain ring/monoid multiplication (Mul M₀, a : M₀ acting on M₀ via *), collapsing the scalar type and the codomain type into a single type M₀ — this drops the generality of the gold statement, which allows the scalars (type α) and the target (type β) to be different structures related only by a PosSMulMono instance",
+  "Uses PosMulMono M₀ instead of PosSMulMono α β, which is a strictly more specific typeclass assumption (only covers the self-action case β = α via Mul.toSMul, not arbitrary SMul actions)",
+  "Conclusion is stated with a * f x instead of a • f x, i.e. only proves the multiplicative specialization rather than the general scalar-multiplication statement"
+ ],
+ "arm": "X",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 34.8,
+ "judge_cost_usd": 0.116752,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "c1466239dc31a30919963a1024d501354b76903ebb9d139bbe2d1ee8c90614b1"
+}

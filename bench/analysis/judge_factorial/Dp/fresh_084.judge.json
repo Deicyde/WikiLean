@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "𝕜 is weakened from NontriviallyNormedField + CompleteSpace (gold) to a bare DivisionRing (produced), dropping all norm/topology/completeness structure on the scalar field",
+  "Domain type (M vs gold's E) is only assumed AddCommMonoid instead of AddCommGroup, weakening the algebraic structure (and putting the well-definedness of the quotient M ⧸ p, which normally needs an additive group, in question)",
+  "Codomain type (N vs gold's F) is only assumed AddCommMonoid instead of AddCommGroup, same issue as above",
+  "Codomain N lacks IsTopologicalAddGroup/ContinuousAdd and ContinuousSMul assumptions that gold requires on F, so N is not actually shown to be a topological vector space — only a bare TopologicalSpace with no compatibility to the algebraic structure",
+  "Produced adds an unnecessary TopologicalSpace M hypothesis on the domain that is not present in gold (gold's shadowed E has no topology at all)",
+  "The finite-codimension/closed-image hypothesis is restructured from a universally quantified implicit submodule (with CoFG instance and closedness hypothesis) into an existential conjunction; while logically equivalent in isolation, combined with the weakened typeclasses above the overall statement is no longer equivalent to gold"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 70.9,
+ "judge_cost_usd": 0.207215,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6d19849efdd0a96503c7c75a0423bb2bb0036afd24b3473679a98d3f92177708"
+}

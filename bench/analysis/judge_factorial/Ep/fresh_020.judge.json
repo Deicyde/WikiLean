@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Gold is stated for an arbitrary starting point N : ℕ (Ici (N:ℝ)/Ioi (N:ℝ)) while produced fixes N = 0, i.e. only proves the special case N=0 of the gold theorem, dropping the generality over N",
+  "Summable hypothesis differs accordingly: gold requires Summable (fun n ↦ f (n + N : ℕ)) (a shifted sum), produced only requires Summable (fun n ↦ f n), which is the N=0 instance and not equivalent to the general shifted-sum hypothesis",
+  "Resulting theorem is strictly weaker than gold (a single special case rather than the general statement), so gold cannot be recovered from the produced statement"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 15.6,
+ "judge_cost_usd": 0.068077,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "df881b3c03a06b667b4c41d242dfdbe4d302742fe9f064341465a1efc4396054"
+}

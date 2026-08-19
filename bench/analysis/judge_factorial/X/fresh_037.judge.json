@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis predicate differs: gold requires `Manifold.IsImmersionOfComplement F I J n f`, which is parametrized by an explicit 'complement' type F (the splitting used to define immersions rigorously in the possibly-infinite-dimensional setting); produced uses `Manifold.IsImmersion I J n f`, which has no complement parameter. This is a different (and not verifiably equivalent) hypothesis — it is not shown/assumed that `IsImmersion` unfolds to `∃ F, IsImmersionOfComplement F ...`.",
+  "Adds unwarranted typeclass hypotheses `[PseudoMetricSpace H]` and `[PseudoMetricSpace H']` on the model target spaces H, H' that are not present in the gold statement (gold only assumes `[TopologicalSpace H]`/`[TopologicalSpace H']`), strictly narrowing the generality of the theorem.",
+  "Adds hypotheses `[IsManifold I n M]` and `[IsManifold J n N]` that are not present as explicit hypotheses in the gold statement's context.",
+  "The smoothness index `n` is typed as `ℕ∞` (extended naturals) in the produced statement, whereas gold's `n` ranges over a broader index type that also includes the analytic order (ω), so the produced statement is narrower and excludes the analytic-smoothness case covered by gold.",
+  "Model-with-corners arguments `I` and `J` are made explicit in the produced statement versus implicit `{...}` variables in gold (minor binder-style difference, not purely cosmetic given other structural changes)."
+ ],
+ "arm": "X",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 118.0,
+ "judge_cost_usd": 0.32004,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9a850b5c049b82167673c2bc595666da99905528cdaa8058a1f141d898e6ad01"
+}

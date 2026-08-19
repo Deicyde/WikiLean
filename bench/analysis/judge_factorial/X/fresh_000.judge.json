@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The conclusion is disconnected from the hypothesis map f: it only asserts ∃ h : M →ₗ[R] N, Surjective (LocalizedModule.map S h), with no relation between h's localization and f (or any scalar multiple of f). The gold requires the lift to satisfy IsLocalizedModule.map S f g φ = s • ϕ for some s ∈ S, i.e. the constructed map must actually be (a unit multiple of) the given surjective map's localization. In the produced statement f and hf are effectively vestigial — any h with surjective localization would satisfy the conclusion regardless of its relationship to f — so it is a materially different, weaker claim, not a formalization of 'ϕ lifts to φ'.",
+  "Missing the existential scalar s ∈ S and the defining equation tying the localized lift to s • ϕ, which is the core 'lifting' content of the gold statement.",
+  "f is typed as Localization S-linear (→ₗ[Localization S]) rather than merely R-linear as in gold's ϕ : Mₚ →ₗ[R] Nₚ; mathematically equivalent given IsLocalizedModule, but a different presentation choice worth noting."
+ ],
+ "arm": "X",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 66.9,
+ "judge_cost_usd": 0.197534,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "cb5d06b6c114501ccf0876cce6d9e4aa4fb44675faeac8eb58a35829319b3bed"
+}

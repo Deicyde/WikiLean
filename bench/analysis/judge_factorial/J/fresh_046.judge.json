@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Weakens DivisionRing K to Semiring R, dropping the division-ring structure the gold statement relies on (needed to show any element of a rank-1 submodule is a scalar multiple of the given nonzero generator)",
+  "Weakens AddCommGroup V to AddCommMonoid M, dropping the additive group (subtraction) structure present in gold",
+  "Uses Module.rank (cardinal-valued) instead of gold's finrank (natural-number-valued); combined with the weaker algebraic hypotheses this changes the effective content of the 'dimension one' condition rather than being a purely cosmetic restatement",
+  "Overall hypotheses are substantially weakened/altered relative to gold, not just renamed or reshaped, risking a statement that is not equivalent to (and possibly not even true in the generality of) the gold theorem"
+ ],
+ "arm": "J",
+ "task_id": "fresh_046",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 21.9,
+ "judge_cost_usd": 0.079865,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "057ef719a0079ee63c2c16ea5d1982b6bbb49bd11e27123f7a5cc5b5e8af90cc"
+}

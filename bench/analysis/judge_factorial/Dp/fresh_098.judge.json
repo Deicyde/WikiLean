@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Typeclass assumptions on α are far too weak: gold requires ConditionallyCompleteLinearOrder, OrderTopology, and DenselyOrdered (essential for the fixed-point result to hold, e.g. via completeness/IVT-type arguments), while produced only assumes Preorder and TopologicalSpace, which do not suffice for the theorem to be true",
+  "Uses Set.Icc a b with an added explicit hypothesis a ≤ b instead of gold's uIcc a b, which unnecessarily restricts/changes the statement structure and adds a hypothesis not present in the gold (though this alone would be an acceptable equivalent spelling if the typeclasses were correct)"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 18.1,
+ "judge_cost_usd": 0.271051,
+ "num_turns": 1,
+ "attempts": 3,
+ "prompt_sha256": "dd254e81b2619f230ce2c2a7fc1549d428bb82d35c7fae5abf349a145566547a"
+}

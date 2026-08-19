@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis strengthened: uses BoundedVariationOn f s (globally finite variation on all of s) instead of gold's LocallyBoundedVariationOn f s (only locally bounded on each sub-interval), which is a strictly stronger/more restrictive assumption than the informal statement's 'locally bounded variation'.",
+  "Conclusion weakened for the decomposition equality: gold requires the full function equality f = p - q (holding on all of α), but produced only gives the pointwise statement ∀ x ∈ s, f x = g x - h x, restricted to s.",
+  "The 'combined increments equal the total variation' clause is not faithfully formalized: gold states a pointwise/interval-wise identity ∀ x ∈ s, ∀ y ∈ s, (p y - p x) + (q y - q x) = variationOnFromTo f s x y, capturing increments over every sub-pair of points, whereas produced only asserts a single global equation eVariationOn g s + eVariationOn h s = eVariationOn f s, which is a materially weaker and different property that does not capture increments over arbitrary subintervals.",
+  "Uses eVariationOn (extended ℝ≥0∞-valued total variation) for the increment/variation equality instead of gold's real-valued variationOnFromTo, changing the mathematical content and type of the equality being asserted."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_095",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 61.4,
+ "judge_cost_usd": 0.188646,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "684a8267821b7bba4c33307fda47d5009d66dceb7df930551a4c1d38ab9788c0"
+}

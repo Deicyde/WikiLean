@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses the identifier `totalVariation`, which is not a standard Mathlib declaration with this signature (function → set → ℝ equality); gold uses `eVariationOn`, which is ℝ≥0∞-valued via `.ofReal`, so this is likely a nonexistent or mismatched declaration rather than an equivalent spelling",
+  "Adds hypothesis `hab : a ≤ b` not present in the gold statement, unnecessarily restricting generality (gold holds for all a b since eVariationOn of the empty interval when b < a is 0, matching ENNReal.ofReal (b-a) = 0)",
+  "Conclusion is stated as an equality in ℝ rather than in ℝ≥0∞ as in the gold, changing the value type/codomain of the total variation notion being equated"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_094",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.4,
+ "judge_cost_usd": 0.083109,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "900e4c940b37d1a0c82a62ee38a476fb62910199ca428e839fb48219520ae9bd"
+}

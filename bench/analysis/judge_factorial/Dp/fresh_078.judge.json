@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The four conditions are joined as a bare chain `A ↔ B ↔ C ↔ D` instead of gold's `List.TFAE`. `Iff` (↔) is non-associative notation in Lean 4 (infix:20 without l/r), so this does not even parse without explicit parentheses; and even under a forced right-association reading A ↔ (B ↔ (C ↔ D)), that formula is NOT logically equivalent to '4 pairwise-equivalent propositions' (e.g. A=false, B=true, C=false satisfies the nested formula without all four agreeing).",
+  "`Ext` is invoked as `CategoryTheory.Abelian.Ext R N M i`, inserting an explicit ring argument `R` before the objects and passing raw `Type*`/`Module R _` values N, M directly. This does not match the actual `Abelian.Ext (X Y : C) (n : ℕ)` signature (objects of an abelian category, no explicit ring parameter); N, M would need to be coerced via e.g. `ModuleCat.of R N`, which is missing, so the term as written does not typecheck.",
+  "Condition (4) mis-states 'M-regular sequence': it requires each `seq i` to individually satisfy `Function.Injective (fun m : M => seq i • m)` (regular on M itself for every index), instead of the correct sequential condition that `seq i` is a nonzerodivisor on `M ⧸ (span {seq 0,...,seq (i-1)}) • M` as encoded by gold's `RingTheory.Sequence.IsRegular M rs`. This changes the mathematical content of condition (4) — it is not the standard notion of regular sequence for i ≥ 2.",
+  "Drops the `[Small.{v} R]` universe hypothesis present in gold (side-stepped by using `Type*` throughout, but still a hypothesis-level difference from the stated theorem).",
+  "The properness hypothesis is phrased via the convoluted `Submodule.smul (I.map (Submodule.subtype (⊤ : Submodule R R))) M ≠ ⊤` instead of gold's `I • (⊤ : Submodule R M) < ⊤`; presumably reduces to the same content but uses an unusual/likely-nonexistent bare identifier `Submodule.smul` and an unnecessary detour through `I.map (Submodule.subtype ⊤)`."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_078",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 114.1,
+ "judge_cost_usd": 0.307802,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "06fbe7363ef4153f328f18f2df7e4b0022afd94a9b8aff24baf5e8aa1c60c962"
+}

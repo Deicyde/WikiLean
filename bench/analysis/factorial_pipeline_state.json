@@ -4,9 +4,9 @@
  "data": "bench/data/runs_factorial/{Ep,X,J,Dp} @ ba35fe7f (400 rows)",
  "stages": {
   "stage1_mechanical_scoring": "COMPLETE (retc-arm Dp repair applied; 48 healthy verdicts reproduced, 23 poisoned verdicts flipped; final table Ep31/X41/J39/Dp39)",
-  "stage2_judge": "blocked_auth",
-  "stage3_analysis": "COMPLETE except judge secondaries (JOIN +0.030 [-0.093,+0.139] p=0.645 NULL; VERIFIER +0.050 [-0.029,+0.121] p=0.230 NULL; interaction -0.100 [-0.245,+0.047] p=0.196 exploratory null; det2 subset corrected to both-annotator n=74)",
-  "stage4_addendum": "COMPLETE (v3.1 published; judge slot explicitly pending per \u00a7S15.4)",
+  "stage2_judge": "COMPLETE (400/400 graded + 40-item consistency; 0 judge errors after retry of 3 transient max-turns rows; evaluated Ep46/X42/J20/Dp15; join on evaluated -0.265 p=0.0002 exploratory; conjunction Ep20/X25/J17/Dp14 all effects null; consistency 100%/97.5%; judge cost $52.32)",
+  "stage3_analysis": "COMPLETE incl. judge secondaries",
+  "stage4_addendum": "COMPLETE (v3.1 with judge results folded into \u00a74.4/\u00a7S15.4/\u00a77/S13; PDFs sentinel-checked)",
   "stage5_publish": "COMPLETE (WikiLean main aa75c088; preservation decf56cf)"
  },
  "notes": [
@@ -16,5 +16,5 @@
   "Judge (Stage 2) definitively blocked: child-CLI Max OAuth refresh token dead (last successful child auth = run phase 2026-08-08). Needs interactive `claude /login` by Jack, then: python3 bench/analysis/judge_factorial_run.py (resumable, skips existing); then --consistency; then factorial_scored.py judge-summary; then factorial_analysis.py; then fold judge numbers into the addendum + typeset + publish.",
   "Correction: server death occurred DURING Dp/fresh_052 (verdict recorded repl-died; flipped False->True on re-run); 44 subsequent produced rows were bare-env fallbacks; 45 cells re-examined total, 23 flips (all False->True), 48 healthy reproduced."
  ],
- "resume_path": "When `claude` CLI is re-authenticated (interactive /login): 1) python3 bench/analysis/judge_factorial_run.py  (resumable; skips the 47 pre-decided no-output verdicts) 2) python3 bench/analysis/judge_factorial_run.py --consistency  (40-item re-grade) 3) python3 bench/analysis/factorial_scored.py judge-summary 4) python3 bench/analysis/factorial_analysis.py  (folds judge+conjunction secondaries) 5) fold the judge numbers into report \u00a74.4 sentence + supplement \u00a7S15.4, retypeset, commit, push, sync preservation repo."
+ "resume_path": "DONE \u2014 nothing pending. Open science items: 36-task human queue, judge calibration."
 }

@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Introduces an arbitrary, unconstrained measure μ instead of the fixed Lebesgue/volume measure implicit in the gold statement; without tying μ to volume the theorem is false (e.g. μ = 0 gives RHS = 0 while LHS can be positive)",
+  "Wrong summation indexing: sums f(k) for k = 0,...,n-1 (includes f(0)) instead of f(k+1) for the corresponding range (starts at f(1)); this reverses which Riemann-sum bound applies and makes the inequality false in general even under Lebesgue measure (counterexample: f(x)=1/(x+1)^2, whose sum from k=0 exceeds its integral over [0,∞))",
+  "Fixes the starting point a = 0 (Set.Ici 0) instead of allowing a general a : ℕ as in the gold statement",
+  "Requires AntitoneOn f on the entire ray Ici 0 rather than only on the finite interval Icc a b, a stronger hypothesis than gold's per-(a,b) requirement",
+  "Uses HasFiniteIntegral alone instead of IntegrableOn, omitting the AEStronglyMeasurable component that IntegrableOn bundles"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 53.2,
+ "judge_cost_usd": 0.170971,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9248757d8c92e1d522b56a86f4a9db0706c5575bdf0f79a1b8fbb60814d653eb"
+}

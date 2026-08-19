@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Replaces the gold's generic ring-of-integers type 𝒪 (with hypotheses [CommRing 𝒪] [Algebra 𝒪 K] [IsIntegralClosure 𝒪 ℤ K]) with the concrete NumberField.RingOfIntegers K, so the produced statement is only the canonical instantiation rather than the gold's more general claim (true for every type satisfying IsIntegralClosure)",
+  "Uses bare `IsUnramifiedIn` instead of the gold's `Algebra.IsUnramifiedIn`; without an `open Algebra` this references a name that likely does not resolve to the intended declaration",
+  "Rephrases hypothesis as `1 < Module.finrank ℚ K` instead of gold's `Module.finrank ℚ K ≠ 1`; equivalent only via the extra (true but unstated) fact that finrank ℚ K ≥ 1 for a NumberField, not a direct syntactic restatement"
+ ],
+ "arm": "X",
+ "task_id": "fresh_067",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 89.2,
+ "judge_cost_usd": 0.25454,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "06341b9b21b0b0c7def5dd8efcc2e70a43b3ce7e70773a7b6fcaaac142b52cd0"
+}

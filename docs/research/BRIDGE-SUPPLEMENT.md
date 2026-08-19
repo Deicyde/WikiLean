@@ -843,9 +843,12 @@ reading and v1's error-inflated headline p=2.4e-5.
   (redundancy, not synergy); abstract, §1, §7, and §8 updated to the
   causal answer. One scoring-phase infrastructure incident (REPL
   server death mid-D′; the whole arm re-typechecked, §S15.1) documented with
-  full cell provenance. Judge-graded secondaries staged but pending
-  re-authentication (§S15.4); still open alongside them: the 36-task
-  human queue and judge calibration.
+  full cell provenance. Judge-graded secondaries completed same-day
+  after an authentication delay (400/400 + 40-item re-grade,
+  self-consistency 100%/97.5%): the §4.2 contamination-by-endpoint
+  inversion reproduces (evaluated-equivalence JOIN −0.265 p=0.0002,
+  exploratory; conjunction parity, all effects null; §S15.4). Still
+  open: the 36-task human queue and judge calibration.
 
 ## S14. Data availability and file map
 
@@ -898,7 +901,7 @@ routing fix ("honest labels").
 | `bench/arms/mcp-{Ep,X,J,Dp}.json` | the four factorial arm MCP configs |
 | `bench/data/runs_factorial/` | all 400 factorial rows + gzipped stream transcripts + `conditions.json` (commit `ba35fe7f`) |
 | `bench/analysis/factorial_scored.{py,json,md}` | Stage-1 mechanical scoring (repaired+raw oracle, fresh-pin typecheck, integrity gate, `retc_provenance`) |
-| `bench/analysis/judge_factorial_run.py` + `judge_factorial/` | Stage-2 blinded-judge driver (staged; §S15.4) + verdicts |
+| `bench/analysis/judge_factorial_run.py` + `judge_factorial/` | Stage-2 blinded-judge driver + all 400 verdicts + 40-item consistency re-grade (§S15.4) |
 | `bench/analysis/factorial_analysis.{py,json,md}` | Stage-3 preregistered analysis (effects, pairwise grid, sensitivity cuts) |
 
 **Recomputation entry points.** Factorial
@@ -1011,22 +1014,48 @@ Rates: E′ 9/100 · X 5/100 · J 11/100 · D′ 10/100. Effects: join +0.035
 interaction +0.030 [−0.082, +0.142] p=0.666. With formal tools of any
 kind present, flagged citations no longer separate arms.
 
-### S15.4 Secondaries pending: judge and conjunction
+### S15.4 Secondaries: judge evaluated-equivalence and the conjunction
 
-The blinded-judge secondaries (evaluated equivalence; conjunction =
-grounded typecheck ∧ evaluated) are staged but ungraded in v3.1: the
-protocol is `bench/analysis/judge_factorial_run.py`, identical to the
-v3 fresh-set judge pass (verbatim `judge_bridge.PROMPT`, gold with
-binders, arm-substring blinding scan — green over all 353 gradeable
-outputs — no-tools claude-sonnet-5 from an empty scratch cwd,
-`--max-turns 1`, concurrency 3, 429 wait-retry, 40-item seeded
-self-consistency re-grade), and the 47 no-output rows are pre-decided
-not-equivalent by definition. Grading could not run in this pass: the
-judging CLI's Max OAuth session had expired (idle since the run phase)
-and re-authentication is interactive. Both endpoints are
-preregistered-exploratory; nothing confirmatory rests on them. Verdicts
-will fold into `factorial_scored.json` (`judge-summary` subcommand) and
-`factorial_analysis.*` when graded, with a changelog entry here.
+Graded 2026-08-18, after a same-day authentication delay (the judging
+CLI's Max OAuth had expired; interactive re-login, then the staged
+pass ran unchanged): `bench/analysis/judge_factorial_run.py`, protocol
+identical to the v3 fresh-set judge pass (verbatim
+`judge_bridge.PROMPT`, gold with binders, arm-substring blinding scan
+green over all 353 gradeable outputs, no-tools claude-sonnet-5 from an
+empty scratch cwd, `--max-turns 1`, concurrency 3, 429 wait-retry);
+the 47 no-output rows pre-decided not-equivalent by definition.
+400/400 verdicts, 0 judge errors (three transient max-turns failures
+re-graded cleanly); judge cost $52.32. Self-consistency on the fixed
+40-item seed-stratified re-grade (seed 20260727, 10/arm): evaluated
+agreement 100.0%, strict agreement 97.5% (one flip). Both endpoints
+are preregistered-exploratory; the judge remains uncalibrated (§4.2
+caveats apply unchanged).
+
+Evaluated equivalence:
+
+| arm | evaluated | Wilson 95% | strict | exposed (n=51) | unexposed (n=49) |
+|---|---|---|---|---|---|
+| E′ | 46/100 | [36.6, 55.7] | 39/100 | 30/51 (.588) | 16/49 (.327) |
+| X | 42/100 | [32.8, 51.8] | 36/100 | 34/51 (.667) | 8/49 (.163) |
+| J | 20/100 | [13.3, 28.9] | 13/100 | 9/51 (.176) | 11/49 (.224) |
+| D′ | 15/100 | [9.3, 23.3] | 12/100 | 7/51 (.137) | 8/49 (.163) |
+
+Factorial effects on evaluated (same clustered machinery): join
+**−0.265** [−0.368, −0.154] p=0.0002; verifier −0.045
+[−0.117, +0.029] p=0.264; interaction −0.010 [−0.152, +0.117]
+p=0.915. This is §4.2's contamination-by-endpoint inversion
+reproduced under the factorial's yoked interface: the unjoined arms
+hold source grep over the checkout containing 51 of the 100 golds and
+transcribe — their judged-equivalence advantage concentrates on the
+exposed half and largely vanishes off it — while the join arms'
+generate-and-verify outputs are grounded but less often judged
+equivalent.
+
+Conjunction (grounded typecheck ∧ evaluated, the closest
+faithful@budget analogue): E′ 20 / X 25 / J 17 / D′ 14 per 100; join
+−0.070 [−0.161, +0.021] p=0.141; verifier +0.010 [−0.053, +0.065]
+p=0.822; interaction −0.080 [−0.176, +0.011] p=0.108 — parity: no
+factor moves the conjunction detectably in either direction.
 
 ### S15.5 Manipulation checks, descriptives, sensitivity cuts
 

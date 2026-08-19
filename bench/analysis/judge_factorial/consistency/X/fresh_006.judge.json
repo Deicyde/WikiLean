@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the general scalar action SMul α β (with PosSMulMono α β, α and β allowed to be different types) with plain multiplication Mul on a single type M₀ (PosMulMono M₀), collapsing the scalar type and the codomain of f into the same type instead of keeping them independent",
+  "Uses M₀'s own multiplication instead of an abstract SMul instance, so the statement only covers the self-action case rather than the general scalar-multiplication case the gold expresses",
+  "Loses the Zero α / separate-preorder-on-scalars structure implicit in the gold's PosSMulMono α β setup, since scalars and values now share one PosMulMono structure"
+ ],
+ "arm": "X",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.9,
+ "judge_cost_usd": 0.080903,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "c1466239dc31a30919963a1024d501354b76903ebb9d139bbe2d1ee8c90614b1"
+}

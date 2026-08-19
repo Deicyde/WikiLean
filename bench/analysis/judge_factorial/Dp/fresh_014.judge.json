@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Weakens the field typeclass from `NontriviallyNormedField 𝕜` (gold) to `NormedField 𝕜`; in Mathlib, `MeromorphicAt`, `meromorphicOrderAt`, and `AnalyticAt` are all defined for `NontriviallyNormedField 𝕜`, so with only `NormedField 𝕜` in scope the required `NontriviallyNormedField 𝕜` instance is missing and the statement (starting with the `hf : MeromorphicAt f x` hypothesis) does not elaborate.",
+  "`AnalyticAt g x` omits the mandatory explicit field argument `𝕜` (Mathlib's signature is `AnalyticAt (𝕜 : Type*) ... (f : E → F) (x : E)`), so `g` is being passed where a `Type*` is expected — a type error."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_014",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 44.1,
+ "judge_cost_usd": 0.151584,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ffaefc051e06b8a24f4e15dfe3d8e2e7041a6d6fbfdc1f7c6caf8ea2a9d644e2"
+}

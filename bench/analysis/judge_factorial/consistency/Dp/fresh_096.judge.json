@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hsupr is guarded by `BddBelow s` instead of `BddAbove s`: sSup s is only guaranteed to be the genuine supremum (IsLUB) of s when s is Nonempty and BddAbove; with only BddBelow assumed, sSup s can be an arbitrary junk value for unbounded-above sets, so hsupr does not correctly express 'preserves suprema of sets bounded above' (gold's LeftOrdContinuous, built on IsLUB) — it expresses a different, essentially unrelated/degenerate condition",
+  "hinf is guarded by `BddAbove s` instead of `BddBelow s`: sInf s is only guaranteed to be the genuine infimum (IsGLB) of s when s is Nonempty and BddBelow; as stated it does not correctly express 'preserves infima of sets bounded below' (gold's RightOrdContinuous, built on IsGLB)",
+  "hypotheses require s.Nonempty and thus omit the empty-set case that gold's IsLUB/IsGLB-based LeftOrdContinuous/RightOrdContinuous implicitly cover (preservation of bottom/top elements when they exist)",
+  "overall the produced hsupr/hinf are not equivalent reformulations of LeftOrdContinuous/RightOrdContinuous — the bound swap changes the mathematical content of the hypotheses, not merely their presentation"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 84.3,
+ "judge_cost_usd": 0.247991,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ed1d1f42633bf49e33eab70e59d58cf589417b4db9c53fd50d78ec610d3728d3"
+}

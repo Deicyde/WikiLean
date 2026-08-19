@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis differs from gold: uses `(l₁.filter p).length ≤ 1` (at most one *occurrence*, i.e. no duplicates at all) instead of gold's `{x ∈ l₁ | p x}.Subsingleton` (at most one *distinct value* satisfying p, duplicates of that same value are allowed) — this is a strictly stronger/less general hypothesis than the gold's",
+  "Uses `List.find` rather than `List.find?`; in current Lean4/Mathlib the list search function is named `find?` (returns `Option α`), so `List.find` as used likely does not exist or has different semantics/type, making the statement not a faithful match to the gold conclusion"
+ ],
+ "arm": "J",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 38.5,
+ "judge_cost_usd": 0.119683,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "74af47bef33b3c9eaeb6838f2ee8bcee81271ca38ff6957668f47f0974369b0a"
+}

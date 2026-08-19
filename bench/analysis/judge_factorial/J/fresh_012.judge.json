@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Gold is stated for a general linear map f : U →ₗ[𝕜] V between possibly different-dimensional inner product spaces over any RCLike field 𝕜; produced statement is restricted to square matrices M : Matrix n n ℂ, i.e. only the case U = V = 𝕜ⁿ and 𝕜 = ℂ",
+  "Gold uses the abstract norm-determinant f.normDet defined for general (possibly non-square/rank-deficient) linear maps; produced statement instead uses the ordinary matrix determinant norm ‖det M‖, which only coincides with normDet in the square, full-rank-domain case",
+  "Gold quantifies over an arbitrary OrthonormalBasis ι 𝕜 U and forms the Gram matrix of the images f(b i); produced statement hardcodes the standard basis implicitly via the matrix representation and never introduces an orthonormal basis or Matrix.gram construction",
+  "Gold's conclusion uses Matrix.gram 𝕜 (f ∘ b) (Gram matrix w.r.t. the inner product on V, valid for any target space); produced statement replaces this with Mᴴ * M, which is only the correct Gram matrix representation in the special case of square matrices with the standard inner product",
+  "Loses generality over the codomain W/V dimension and over general RCLike fields, making the produced statement a much narrower corollary rather than the same proposition as the gold"
+ ],
+ "arm": "J",
+ "task_id": "fresh_012",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 29.9,
+ "judge_cost_usd": 0.095471,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7147a4477f033e64749e22b807f5948b176398b208cf5d387079b4ce145843cf"
+}

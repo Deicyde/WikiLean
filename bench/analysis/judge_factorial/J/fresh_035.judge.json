@@ -1,0 +1,21 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Quantifies φ existentially inside the RHS (∃ φ, IsImmersion φ ∧ ...) instead of gold's universal hypothesis (φ is a fixed C^n immersion at f x); this changes the logical content from 'for every C^n immersion φ at f(x), ...' to 'there merely exists some immersion φ making f∘φ smooth', which is a much weaker/different statement",
+  "φ has the wrong type and composition order: gold's φ : N → N' is post-composed as φ ∘ f (testing smoothness of f via an immersion out of the codomain N), while produced's φ : M → M is an endomorphism of the domain pre-composed as f ∘ φ, a fundamentally different mathematical construction",
+  "Drops the localization of the immersion hypothesis: gold requires φ to be an immersion specifically at the point f x (IsImmersionAt ... (f x)); produced only requires a global 'Manifold.IsImmersion φ' with no reference to the point",
+  "Uses global smoothness ContMDiff n (f ∘ φ) for the composite instead of gold's pointwise ContMDiffAt n (φ ∘ f) x, materially strengthening/changing that conjunct",
+  "Drops the general model-with-corners setup (𝕜, E, H, I, J, etc.) and hardcodes ChartedSpace ℝ M / ChartedSpace ℝ M', restricting to manifolds whose charts land in ℝ and omitting the ModelWithCorners arguments that ContMDiffAt requires in Mathlib",
+  "Only involves two manifolds M, M' with no analogue of gold's target manifold N' for φ's codomain, since φ maps within M instead of out of the codomain",
+  "Cites 'Manifold.IsImmersion', a declaration not shown to exist (gold uses the pointwise 'IsImmersionAt'); likely referencing a nonexistent or mismatched declaration"
+ ],
+ "arm": "J",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 41.1,
+ "judge_cost_usd": 0.136802,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8a8b4bf980adda197849fa3e45e416bc52ee97dcfe64ffbb255ff1805c40707d"
+}

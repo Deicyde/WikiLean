@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `[P.IsPrime]` on the base ideal (produced's `P`, matching gold's `p`) that gold does not require — gold's theorem only assumes primality of the ideal lying over (gold's `P.IsPrime`, matching produced's `Q.IsPrime`), leaving the base ideal `p` unconstrained in primality; the produced statement is therefore a strictly less general claim, not the same proposition.",
+  "The conclusion `FiniteDimensional.finrank (R ⧸ P) (S ⧸ Q)` requires a `Module (R ⧸ P) (S ⧸ Q)` instance to typecheck, but no such instance is derivable automatically from the plain Prop hypothesis `hlying : comap (algebraMap R S) Q = P` (unlike Mathlib's approach of building this via the `Ideal.LiesOver`/`inertiaDeg'` machinery, which explicitly constructs the algebra structure from the lying-over relation); as stated the term likely fails to elaborate."
+ ],
+ "arm": "J",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 151.6,
+ "judge_cost_usd": 0.756092,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "23de0db1aa31ae6ce273c264aecb64eedb1fd9a0658af2f2b49a349b9560ad1b"
+}

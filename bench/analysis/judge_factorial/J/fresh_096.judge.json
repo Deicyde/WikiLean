@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an explicit `Monotone f` hypothesis not present in the gold statement (even though it is implied by ord-continuity, it is an extra stated hypothesis, not part of the original proposition)",
+  "`hleft` pairs the sSup-preservation equation `f (sSup s) = sSup (f '' s)` with the condition `BddBelow s` instead of `BddAbove s`. In a conditionally complete lattice, `sSup s` only equals the genuine supremum when `s` is Nonempty and BddAbove; for sets that are BddBelow but not BddAbove, `sSup s` is an arbitrary junk value, so this hypothesis is not equivalent to `LeftOrdContinuous f` (which, via `IsLUB`, correctly corresponds to Nonempty+BddAbove sets) — it imposes extraneous, implementation/junk-dependent constraints instead",
+  "`hright` symmetrically pairs the sInf-preservation equation with `BddAbove s` instead of `BddBelow s`, the boundedness condition needed for `sInf s` to be meaningful, mismatching `RightOrdContinuous f` in the same way",
+  "Because of the swapped boundedness conditions, the produced hypotheses do not faithfully capture left/right order continuity, so mathematical equivalence to the gold statement cannot be confirmed"
+ ],
+ "arm": "J",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 102.9,
+ "judge_cost_usd": 0.606467,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "e43e111fe8a1b00a5aff0fb0550521246af76bde0e6d3a845122f5344d6092ed"
+}

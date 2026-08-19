@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Gold uses the named function `σ (k - 1) n` (ArithmeticFunction.sigma) cast to ℂ, i.e. `((σ (k-1) n : ℕ) : ℂ)`; the produced statement instead inlines an explicit sum `∑ d in Nat.divisors n, (d : ℂ) ^ (k - 1)` with the ℕ→ℂ cast pushed inside the sum/power. These are provably equal (via Nat.cast_sum / Nat.cast_pow, i.e. push_cast) but are not syntactically/definitionally the same expression, so it is a rewritten-but-equivalent formula rather than a mere notational variant of the same structure."
+ ],
+ "arm": "J",
+ "task_id": "fresh_063",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 50.0,
+ "judge_cost_usd": 0.157952,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "48110c035d5f714b2ca2f620b64e3d219d3f630a6b1fb6e3791405c61e63b30f"
+}

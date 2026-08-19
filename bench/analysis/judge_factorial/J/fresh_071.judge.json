@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the specific second-isomorphism-theorem move (IsMaximal x (x ⊔ y) → e (x, x⊔y) (x⊓y, y)) with an arbitrary uninterpreted relation `moves`, so the statement no longer encodes the actual move being generated from",
+  "Drops the JordanHolderLattice typeclass and the actual `Iso` relation entirely; only assumes a plain Lattice",
+  "Represents 'intervals of a lattice' as arbitrary `Set α` rather than pairs of lattice elements (X × X) as used in the gold formalization of intervals/Iso",
+  "Changes the logical shape from 'e contains the Iso relation' (universally quantified over isomorphic pairs) to an existential construction of a minimal equivalence relation containing an arbitrary relation moves, which is a generic universal-algebra triviality unrelated to the Jordan-Hölder content",
+  "Because `moves` is a free, uninterpreted parameter, the theorem becomes a generic fact true for any relation on any type, losing all mathematical content specific to the second isomorphism theorem and lattice structure"
+ ],
+ "arm": "J",
+ "task_id": "fresh_071",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 28.2,
+ "judge_cost_usd": 0.098015,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d48ec15059ae327bab5fa33f3e2958b44c8e129fe623f0c694022ee69fb18186"
+}

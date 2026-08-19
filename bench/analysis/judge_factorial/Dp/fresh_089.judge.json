@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing the `[LinearOrder α]` hypothesis on the domain type α; Mathlib's `BoundedVariationOn`/`eVariationOn` is only defined for a `LinearOrder α` (needed to talk about monotone enumerations of points in s), so as written the conclusion `BoundedVariationOn f s` cannot even be elaborated without an order instance on α",
+  "Uses `[MetricSpace E]` instead of the gold's `[PseudoMetricSpace E]`, strengthening the codomain hypothesis and excluding genuine pseudometric spaces (where dist x y = 0 does not imply x = y) that the gold statement covers"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_089",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 35.2,
+ "judge_cost_usd": 0.121746,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "220a30d137fb2fc12f16234b439871bde8a53552777e1ec47f608333722dcabd"
+}

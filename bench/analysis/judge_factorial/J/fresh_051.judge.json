@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing `[TopologicalSpace α]` instance — `ContinuousOn f sᶜ` requires a topology on α, which is never declared, so the statement as written does not typecheck",
+  "Missing `[OpensMeasurableSpace α]` and `[MeasurableSingletonClass α]` hypotheses connecting the topology/measurable structure on α, present in gold",
+  "Missing `[SecondCountableTopologyEither α β]` hypothesis, which is needed for the strong-measurability conclusion in gold",
+  "`[PseudoMetricSpace β]` is used instead of `[TopologicalSpace β] [PseudoMetrizableSpace β]`, strengthening/narrowing the hypothesis from 'topology admits a compatible pseudometric' to 'a specific pseudometric structure is given', which is a different (less general) proposition",
+  "Conclusion weakened from `StronglyMeasurable f` (gold) to `Measurable f` (produced) — these are not equivalent notions in general, so the theorem proved is strictly weaker than the gold's"
+ ],
+ "arm": "J",
+ "task_id": "fresh_051",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 43.6,
+ "judge_cost_usd": 0.14434,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f3b98146d0d11a7d1e48b60ca4ff67733e0b354e4fdd764643bd121938317ec2"
+}

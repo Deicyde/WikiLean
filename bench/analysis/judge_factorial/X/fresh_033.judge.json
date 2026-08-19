@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis is strictly stronger than gold's: `l.countP p ≤ 1` forbids duplicate list entries satisfying p, whereas gold's `{x ∈ l₁ | p x}.Subsingleton` only requires at most one *distinct value* satisfying p (duplicates of that one value are allowed). E.g. l = [a, a] with p a = true satisfies gold's hypothesis but not countP ≤ 1 (countP = 2)",
+  "Because the hypothesis is strictly stronger, the produced theorem is a weaker result than the gold theorem — it fails to cover cases (lists with repeated elements satisfying p) that the gold theorem does cover, even though the conclusion would still hold there"
+ ],
+ "arm": "X",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 29.0,
+ "judge_cost_usd": 0.184904,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "b6573e5aa25e1888046d58e2275ba144883468ce836909134a21ee384d11d970"
+}

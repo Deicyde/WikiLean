@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra explicit hypothesis `h_mono : ∀ x y : β, x ≤ y → a • x ≤ a • y` that is not present in the gold statement",
+  "The added h_mono hypothesis makes `ha : 0 ≤ a` redundant for proving the conclusion, trivializing the theorem into a generic 'antitone composed with monotone map is antitone' fact rather than the intended order-compatibility-of-scalar-action result",
+  "Gold statement derives the a≥0 ⇒ smul-monotone fact from the `[PosSMulMono α β]` typeclass structure; produced statement instead requires the caller to separately supply this fact as a hypothesis, which is a materially different (and strictly additional) requirement not implied by the gold's hypotheses alone"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_005",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 20.5,
+ "judge_cost_usd": 0.078246,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "298f68e2277a8fa3e404bba90b3943c9ac647bf384ac898437602b3a1a35327b"
+}

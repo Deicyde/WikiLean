@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `[AddCancelMonoid R]` instead of the gold's `[IsAddTorsionFree R]`. Since `R` is already a `CommRing`, it is automatically an additive group, and every additive group is automatically an `AddCancelMonoid` (cancellation of addition, i.e. a+b=a+c → b=c, always holds in a group). So this added typeclass is vacuous and adds no real constraint on R, whereas the gold's torsion-free hypothesis (n•a = n•b → a=b for n≠0) is essential and not automatically true for all commutative rings.",
+  "Because the torsion-free hypothesis is effectively dropped, the resulting theorem is mathematically false in general: e.g. take σ = Unit, R = ZMod p, f = X^p, g = 0. Then constantCoeff f = constantCoeff g = 0, and h_deriv holds for all i,m since (m+1)•f.coeff(m+1) = p•1 = 0 = (m+1)•g.coeff(m+1) whenever m+1 = p, and 0=0 otherwise, yet f ≠ g. The gold statement correctly excludes this case via IsAddTorsionFree; the produced statement does not."
+ ],
+ "arm": "X",
+ "task_id": "fresh_080",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 78.9,
+ "judge_cost_usd": 0.230159,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "21f6b1befc92b29267d1af0303a0e4d2c7d8206eb83f523f85860ba2c666af31"
+}

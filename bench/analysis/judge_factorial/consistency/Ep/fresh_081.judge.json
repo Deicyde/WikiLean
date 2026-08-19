@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `f : MvPolynomial σ R` (multivariate polynomials) instead of `g : MvPowerSeries σ R` (multivariate power series) as stated in the informal task — a different, more restrictive algebraic structure",
+  "`pderiv i` here resolves to `MvPolynomial.pderiv`, a different declaration than the gold's `MvPowerSeries.pderiv R i`, not merely a notational variant",
+  "Main object `g`/`f` and `n` are made implicit `{f}`/`{n}` instead of explicit as in the gold, obscuring the theorem's primary arguments"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_081",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 14.5,
+ "judge_cost_usd": 0.061728,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8d569366c2cb09579c113a0da34c262692619e8a5e93c95ebd4b4984f842f28b"
+}

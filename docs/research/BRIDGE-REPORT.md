@@ -576,11 +576,20 @@ essentially untouched in E′/X (2 and 4 runs) — the same informal-arm
 manipulation failure as Tier-1. Preregistered sensitivity cuts (raw
 oracle, own-module exposure strata, dropping the 3 live-index-leaked
 tasks, the 74-task both-annotator determinacy subset) all preserve the
-nulls (§S15). The two judge-dependent secondaries (evaluated
-equivalence and the conjunction) are staged — blinding scan green over
-all 353 gradeable outputs — but not yet graded in this revision (the
-judging CLI's authentication expired; §S15.4); nothing confirmatory
-rests on them.
+nulls (§S15). The judge secondaries (blinded claude-sonnet-5, protocol
+identical to §4.2's pass; 400/400 graded, 0 errors; self-consistency
+on a 40-item re-grade: evaluated 100%, strict 97.5%) reproduce §4.2's
+contamination-by-endpoint inversion under the yoked interface:
+evaluated equivalence runs E′ 46 / X 42 / J 20 / D′ 15 per 100 — a
+strongly negative exploratory JOIN effect (−0.265 [−0.368, −0.154],
+p=0.0002) concentrated exactly where the unjoined arms can transcribe
+the gold from the exposed checkout (E′/X evaluated at .59/.67 on the
+51 exposed tasks against .33/.16 unexposed, while J/D′ are flat) —
+and the conjunction (grounded typecheck ∧ evaluated) returns to
+parity with every factorial effect null (E′ 20 / X 25 / J 17 / D′ 14;
+join −0.070, p=0.14; verifier +0.010, p=0.82; §S15.4). Nothing
+confirmatory rests on the judge legs, and the judge remains
+uncalibrated.
 
 Execution fidelity: 400/400 rows terminal and attach-clean — 0 errors,
 0 zero-tool rows, 0 turn-cap violations (46 capped rows are valid
@@ -804,8 +813,9 @@ effect, D′ does not reproduce D's 48% (39% under the stricter
 interface), and the join's remaining measurable signature is
 within-budget production efficiency, not grounded accuracy. What the
 factorial cannot separate is content from interface (its own
-preregistered limit), and its judge-graded secondaries remain
-pending (§S15.4).
+preregistered limit); its judge-graded secondaries reproduce the §4.2
+inversion — judged equivalence favors the transcribing unjoined arms
+(exploratory) while the conjunction is parity (§S15.4).
 
 **A warning for the field.** The contamination-by-endpoint interaction
 (§4.2) generalizes: a contaminated task set does not merely inflate

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the precise `PosSMulStrictMono α β` hypothesis (which exactly encodes that positive scalars act strictly monotonically) with unrelated algebraic structure `[OrderedSemiring R] [Module R β]`; a module structure over an ordered semiring does not by itself guarantee any compatibility between the order on β and the scalar action, so the statement as given is not provable/true in general and is not the same proposition as the gold.",
+  "`Module R β` requires `[AddCommMonoid β]`, which is not declared anywhere in the produced signature, so it likely fails to elaborate.",
+  "Drops the gold's `[Zero α]`/`[Preorder α]`-on-scalar-type setup (replaced by `OrderedSemiring R` on the scalar type), an unrelated strengthening/change of hypotheses rather than an equivalent rephrasing."
+ ],
+ "arm": "J",
+ "task_id": "fresh_007",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 34.6,
+ "judge_cost_usd": 0.117315,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "fc98a3d36908f518adbca3abc3563830264aa89a87eedc300679c4f5dfd8b64f"
+}

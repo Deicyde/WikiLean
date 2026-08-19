@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion is a tautology (LHS and RHS are syntactically identical sums), so it does not assert anything about total variation at all",
+  "Missing any notion of total variation (e.g. eVariationOn); the statement never equates a variation quantity to the sum of consecutive distances",
+  "Uses dist/MetricSpace instead of edist/PseudoEMetricSpace as in the gold, and more importantly never invokes eVariationOn on the image of Iic n",
+  "Domain of f/pts uses only Preorder α with no linear order requirement, but this is moot since the core mathematical content (total variation) is entirely absent"
+ ],
+ "arm": "J",
+ "task_id": "fresh_090",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 8.6,
+ "judge_cost_usd": 0.047184,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "13aea3ca8ec022536fe502e85b7e14e380d00dee94872a4616baf276b0120be6"
+}

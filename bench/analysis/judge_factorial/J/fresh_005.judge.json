@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the minimal `PosSMulMono α β` (order-preserving nonneg scalar action) with `OrderedSMul γ β`, a different and strictly stronger typeclass built from strict inequalities (`smul_lt_smul_of_pos`), which is not the condition actually needed for this lemma",
+  "Requires `OrderedSemiring γ` on the scalar type instead of just `Preorder` + `Zero`, adding ring/distributivity/multiplicative structure not needed by the gold statement",
+  "Requires `Module γ β` (full module axioms: distributivity, associativity, unit law) instead of the bare `SMul α β` used in gold, adding unnecessary algebraic structure",
+  "`Module γ β` and `OrderedSMul γ β` both require an `AddCommMonoid β` (resp. `OrderedAddCommMonoid β`) instance, but only `Preorder β` is declared in context — the statement as written likely fails to elaborate/typecheck",
+  "Overall hypotheses are strictly stronger than gold's, so even though the conclusion Antitone (fun x => a • f x) matches syntactically, the produced statement is not the same (nor confidently equivalent) proposition"
+ ],
+ "arm": "J",
+ "task_id": "fresh_005",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 61.6,
+ "judge_cost_usd": 0.308855,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "84c4c3c893901741e07034e058ed7b381f32b86927ee40312d2cd6a514e63b23"
+}

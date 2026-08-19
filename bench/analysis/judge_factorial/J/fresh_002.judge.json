@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extraneous [Monoid M] hypothesis not present in (or required by) the gold statement — the gold's injectivity of `single m r` holds for M as a bare type with no algebraic structure, so the produced statement is strictly less general",
+  "States the conclusion via `r • MonoidAlgebra.of R M m` rather than directly as `single m r`; this equals `single m r` only after unfolding `of = fun m => single m 1` and applying `smul_single` (r • 1 = r), and that identification is only well-typed because of the added Monoid M constraint, so it is not a mere notational restatement of the gold's conclusion"
+ ],
+ "arm": "J",
+ "task_id": "fresh_002",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 77.3,
+ "judge_cost_usd": 0.216821,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "52f3da3d0a738b759fa38aa0cf2c7253823bd1a22ba455fc28967002c8b4e63d"
+}

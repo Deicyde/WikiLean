@@ -1,0 +1,22 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses AddCommMonoid instead of AddCommGroup for M and N, weakening the algebraic structure required by gold",
+  "Weakens Module.FinitePresentation (finitely presented) to Module.Finite (finitely generated), a strictly weaker hypothesis that changes the theorem's content",
+  "The map φ : Localization S M → Localization S N is only a plain function, not required to be R-linear, dropping the essential linearity hypothesis on the given surjective map",
+  "Misuses `Localization S M` (ring/monoid localization notation) to denote a localized module, where Mathlib's actual construction is `LocalizedModule S M`; this does not correspond to a meaningful/well-typed localized-module map",
+  "The conclusion's use of `IsLocalization.lift (fun _ => True)` is nonsensical: IsLocalization.lift applies to localizing commutative rings via a hypothesis about units, not to modules, and `fun _ => True` is not a valid such hypothesis",
+  "The existentially quantified linear map ψ : M →ₗ[R] N is never used in the stated conclusion; the surjectivity claim is about an unrelated composite of φ and a bogus lift, not about ψ's localization, so the theorem does not actually assert that the lift becomes surjective after localizing",
+  "Missing the gold's scalar s : S and equation IsLocalizedModule.map S f g φ = s • ϕ relating the lifted map's localization to the original map up to a unit of S",
+  "No use of the IsLocalizedModule typeclass framework to express 'localization at S' abstractly for both M and N, unlike gold"
+ ],
+ "arm": "J",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 27.5,
+ "judge_cost_usd": 0.160692,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "fea679760eb43141a64b42fb0a1c9628fd3fbfa637fda00b404e6352875d85b7"
+}

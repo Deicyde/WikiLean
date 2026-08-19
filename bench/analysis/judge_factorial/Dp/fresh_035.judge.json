@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "No manifold structure declared for M, N, P (missing TopologicalSpace/ChartedSpace/ModelWithCorners instances), so ContMDiffAt as used would not even typecheck",
+  "ContMDiffAt is invoked as `ContMDiffAt f Set.univ x n` with no ModelWithCorners arguments (I, I'); this does not match Mathlib's actual ContMDiffAt signature, which takes (I I' n f x) and has no exposed set argument (Set.univ is internal to ContMDiffWithinAt)",
+  "Composition direction is reversed: gold post-composes f with an immersion φ : N → N' (φ ∘ f, immersion on the codomain side), matching the informal statement's 'composition of f with an immersion'; produced instead pre-composes f with an immersion i : P → M into the domain (f ∘ i), a structurally different construction",
+  "Produced universally quantifies over all immersions i : P → M with i y = x inside the iff, rather than fixing a single given immersion φ at f x as in gold's hypothesis hφ; this changes the logical strength/content of the theorem (e.g. taking i = id_M trivializes the RHS in a way not present in gold)",
+  "Uses `Manifold.IsImmersion` (unpointed) instead of the pointed `IsImmersionAt ... (f x)` used in gold, dropping the localization of the immersion condition to the relevant point",
+  "n ranges over ℕ∞ in the produced statement versus ℕ∞ω (extended smoothness order) in gold, a possible narrowing of generality"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_035",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 63.1,
+ "judge_cost_usd": 0.187383,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "276edefcdcb145a594eddbda71a815626126942e200129475c0f8c64c37fff7f"
+}

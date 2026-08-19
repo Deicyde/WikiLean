@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `ContMDiff n f` without the required ModelWithCorners arguments (I, I') that Mathlib's ContMDiff/CMDiff takes — as written this doesn't match the gold's `CMDiff n f` (which is defined relative to I, I') and likely fails to typecheck or silently resolves to a different/incomplete notion.",
+  "Replaces the gold's specific hypothesis `IsImmersionOfComplement F J J' n φ` with a plain `Manifold.IsImmersion i` — the 'of complement' structure is a strictly stronger condition needed to make the backward (⟸) direction true; a generic immersion is not sufficient, so the theorem's mathematical content is changed/weakened.",
+  "Changes the logical structure from 'given one fixed nice immersion φ, prove f C^n ↔ continuous f ∧ C^n(φ∘f)' to 'f C^n ↔ continuous f ∧ ∀ immersions i, C^n i → C^n(i∘f)' — quantifying over ALL immersions inside the right conjunct rather than fixing one outside the iff. This is a different proposition, and is degenerate: taking i = id_N (which is always a valid C^n immersion) makes the universal clause require C^n f directly, collapsing the theorem to a near-tautology and losing the intended 'check smoothness via one nice embedding' content.",
+  "Drops the extra ambient normed-field/model-with-corners structure on the target manifold P/N' (E''', J', 𝕜-linear structure) that gold's setup requires for the immersion's codomain, since the immersion notion is no longer IsImmersionOfComplement.",
+  "Uses `n : ℕ∞` instead of gold's extended smoothness-order type (`ℕ∞ω`, covering the analytic/ω case), narrowing generality.",
+  "ContMDiff n i is bundled as an extra requirement inside the universal quantifier rather than being a hypothesis on the single φ as in gold, reflecting the same structural mismatch as above."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 86.8,
+ "judge_cost_usd": 0.241277,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e01e95aaf95028591222d672e4446a33561159f185db6cf19826d6d35379645e"
+}

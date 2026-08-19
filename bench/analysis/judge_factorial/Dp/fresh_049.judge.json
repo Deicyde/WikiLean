@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing [MeasurableSpace α] instance: the conclusion `Measurable f` requires a MeasurableSpace structure on the domain α, but the produced statement never declares one (gold has [MeasurableSpace α] via [OpensMeasurableSpace α])",
+  "Missing [TopologicalSpace β] instance: `ContinuousOn f sᶜ` needs a topology on the codomain β to even be stated, and [BorelSpace β] itself presupposes a TopologicalSpace β instance, but none is declared — the statement as written does not elaborate",
+  "Missing [MeasurableSingletonClass α]: gold's key hypothesis (needed to build the countable set sᶜ as measurable from singleton points) is dropped entirely",
+  "Missing [OpensMeasurableSpace α]: gold requires compatibility between the topology and measurable structure on the domain; produced drops this (compounded by omitting MeasurableSpace α altogether)"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_049",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 56.4,
+ "judge_cost_usd": 0.18059,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d9dbfc394aa5d5227879a4c0d3ca3572d8a81cd87c51a932ebcaa086cd409325"
+}

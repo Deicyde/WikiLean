@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the general offset parameter N present in gold (implicit ℕ argument allowing the ray to start at any natural number) — produced only covers the N = 0 case, losing generality",
+  "Hypothesis h_ant : Antitone f is global antitone on all of ℝ, strictly stronger than gold's AntitoneOn f (Ici N) which only requires antitonicity on the ray; even restricted to N=0 this is stronger than AntitoneOn f (Ici 0)",
+  "Hypothesis h_nonneg : ∀ x, 0 ≤ f x requires nonnegativity on all of ℝ, strictly stronger than gold's ∀ t ∈ Ioi N, 0 ≤ f t which only requires nonnegativity on the ray",
+  "Because the produced hypotheses are strictly stronger than the corresponding N=0 instantiation of gold's hypotheses, the produced theorem is a weaker corollary, not an equivalent restatement"
+ ],
+ "arm": "J",
+ "task_id": "fresh_020",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 21.2,
+ "judge_cost_usd": 0.085546,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "535a38498582e42819b0936079593c80f98c902e13240747dfd0a72ee486d992"
+}

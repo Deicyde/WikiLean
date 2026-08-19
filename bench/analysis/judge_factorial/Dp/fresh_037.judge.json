@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis uses a different predicate `Manifold.IsImmersion f` instead of gold's `IsImmersionOfComplement F I J n f`, dropping the auxiliary complement type F and models I, J entirely",
+  "The immersion hypothesis is not parameterized by n, so there is no link between the smoothness class n in the hypothesis and the n in the conclusion ContMDiff n f, changing the logical content of the theorem",
+  "Drops essentially all the surrounding manifold/model-with-corners structure present in gold (E, E', E''', H, H', G, G', I', J', M', N', F', etc.), collapsing the general setting into an unspecified/likely narrower one",
+  "Uses `ContMDiff n f` instead of gold's `CMDiff n f` conclusion name (though this may just be a gold typo, it is a naming mismatch)"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 31.4,
+ "judge_cost_usd": 0.101959,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7010b8691c4da1ea683369576939933009e5a55e4b5b29cc815a78e6dabbbf2f"
+}

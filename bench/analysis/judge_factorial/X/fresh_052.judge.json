@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Restricts g to ℝ → ℝ instead of a general Banach space E (NormedAddCommGroup E, NormedSpace ℝ E) as in gold, losing generality",
+  "Adds three unnecessary hypotheses about exp itself (hf_cont, hf_tendsto, hf_deriv) that are not present in gold and not needed since these facts about exp always hold",
+  "Adds hg_cont: ContinuousOn g (...), a continuity hypothesis on g not present in gold",
+  "Adds hg_int1 and hg_int2 integrability hypotheses on g not present in gold; gold's identity holds unconditionally for any g (non-integrable case trivializes via junk-value convention), so these hypotheses strictly narrow the class of g for which the theorem is stated, making it a weaker special case rather than the same proposition"
+ ],
+ "arm": "X",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 25.4,
+ "judge_cost_usd": 0.088759,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "bc8287c53ba1921e3c4daa9004a588c528749898b42ab9ed8ac11c0cb7e0d992"
+}
