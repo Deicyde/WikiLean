@@ -540,7 +540,9 @@ source commits} and 57 files, with conspicuous sibling families (a
 9-task sum--integral family, an 8-task bounded-variation file). Our
 single main-text inferential framework is therefore the
 \textbf{commit-clustered paired bootstrap} (44 clusters, B=10,000;
-interval and p-value read off the same resampling distribution):
+interval and p-value read off the same resampling distribution;
+Figure~\ref{fig:forest} draws these and the other headline contrasts
+with their exact interval bounds):
 
 \begin{center}\footnotesize
 \begin{tabular}{@{}llll@{}}
@@ -556,18 +558,26 @@ D $-$ E & $+11$ & 19.9 & 0.304 \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/f1_forest.pdf}
-\caption{Commit-clustered paired risk differences with 95\%
-confidence whiskers --- the exact asymmetric bounds behind the main
-text's $\pm$ values (fresh-100, repaired instrument; 44 commit
-clusters, B=10,000) for the
-headline contrasts, grouped by outcome. Grounded typecheck and the
-flagged-citation rates are corrective-exploratory (the preregistered
-endpoint was never graded, \S 3.3); the conjunction adds the
-uncalibrated-judge leg and is exploratory only (\S 4.2). Flagged-citation
-RDs are negative because fewer flags are better; flagged rates are upper
-bounds on true hallucination (\S 4.1). Blue intervals exclude zero.
-Sources: \code{success\_repaired.json}, \code{v3\_gate\_fixes.json}.}
+\includegraphics[width=0.92\textwidth]{figures/f1_forest.pdf}
+\caption{Headline contrasts of the fresh-100 study, grouped by outcome
+(repaired instrument). \textbf{Arms:} A = no tools; C = formal search;
+D = the Brain (join + verifier); E = both corpora, unjoined.
+\textbf{Rows:} each row is a paired comparison --- e.g.\ D $-$ A is the
+Brain arm's rate minus the no-tools arm's rate on the same 100 tasks,
+in percentage points (plotted as proportions: $+0.27$ = $+27$ points).
+\textbf{Reading:} points right of zero favor the first-named arm;
+whiskers are 95\% confidence (commit-clustered bootstrap, 44 clusters,
+B=10,000 --- the exact asymmetric bounds behind the $\pm$ values in
+the text); a whisker crossing zero means the comparison is
+inconclusive; blue intervals exclude zero. \textbf{Outcome groups:}
+grounded typecheck (\S 4.1); runs with a flagged (hallucinated)
+citation (\S 4.3 --- RDs are negative because fewer flags are better,
+and flagged rates are upper bounds on true hallucination, \S 4.1); and
+the grounded-typecheck $\wedge$ judged-equivalent conjunction
+(\S 4.2). Register: the first two groups are corrective-exploratory
+(the preregistered endpoint was never graded, \S 3.3); the conjunction
+adds the uncalibrated-judge leg and is exploratory only. Sources:
+\code{success\_repaired.json}, \code{v3\_gate\_fixes.json}.}
 \label{fig:forest}
 \end{figure}
 
@@ -629,7 +639,8 @@ gets adjudicated.
 
 \paragraph{Layer 3 --- the conjunction.} On grounded-typecheck $\wedge$
 judge-evaluated --- the closest available analogue of the preregistered
-faithful@budget --- the arms return to parity. Under the repaired
+faithful@budget --- the arms return to parity
+(Figure~\ref{fig:forest}, bottom group). Under the repaired
 typecheck leg (\code{conjunction\_repaired.py}; the judge ran before the
 oracle repair, so \Ssec{S11} reports both instruments): C 20, D 16,
 E 21 per 100 (raw leg: 16/15/18). Every between-tool contrast is null
@@ -666,7 +677,8 @@ E B+C unjoined & 10/100 & 7.4 \\
 \end{tabular}
 \end{center}
 
-Tools-versus-none survives everything: D-vs-A $-31 \pm 13.6$
+Tools-versus-none survives everything (Figure~\ref{fig:forest}, middle
+group): D-vs-A $-31 \pm 13.6$
 points (95\% confidence), clustered p=0.0002 (E-vs-A $-0.27$, clustered
 p=0.0002; D-vs-B p=3.9e-5, unclustered). The between-tool contrasts
 dissolve: D-vs-E clustered p=0.44, D-vs-C clustered p=0.31 ---
@@ -837,7 +849,9 @@ agent WF (union + manual; post-hoc) & 0.885 & 0.036 & 0.839 & 0.038 & 0.21 & 4.2
 \caption{The repaired-grid five-arm retrieval results (exploratory) with
 declaration-clustered (QR) and task-bootstrap (MPR) 95\% confidence
 whiskers (the exact asymmetric bounds), against
-the published anchors (dashed). WF (hatched) is post-hoc and
+the published anchors (dashed). \textbf{Arms:} N = no tools; F = formal
+search; W = the Brain; U = the bare W $\cup$ F union, no manual;
+WF = union + manual. WF (hatched) is post-hoc and
 benchmark-informed (\S 5, \Ssec{S8}); published anchors are single-call
 systems (MPR: LSv2's reasoning mode is itself iterative) --- context,
 not controlled comparison. Source: \code{grid\_repaired.json},
@@ -845,7 +859,9 @@ not controlled comparison. Source: \code{grid\_repaired.json},
 \label{fig:retrieval}
 \end{figure}
 
-Declaration-clustered paired contrasts on the repaired grid:
+Declaration-clustered paired contrasts on the repaired grid
+(Table~\ref{tab:qr}; Figure~\ref{fig:retrieval} draws the QR and MPR
+results against the published anchors):
 \textbf{F $-$ W is a null} (R@10 $+0.030 \pm 0.046$, 95\%
 confidence; Wilcoxon p=0.086, sign 34/35) with different textures ---
 W wins the special-case paraphrase style (nDCG 0.522 vs 0.356), F the
@@ -872,7 +888,7 @@ hallucinated tool calls, not wrapper noncompliance (\Ssec{S6}).
 
 \paragraph{Where the answers actually came from.} For every QR hit we
 traced the chronologically first entry of the gold name into the
-transcript (full-transcript resolved pass):
+transcript (full-transcript resolved pass; Figure~\ref{fig:provenance}):
 
 \begin{center}\footnotesize
 \begin{tabular}{@{}lllll@{}}
@@ -905,7 +921,9 @@ it greps and loogles when holding syntax, bridges when holding words.
 \centering
 \includegraphics[width=0.8\textwidth]{figures/f3_provenance.pdf}
 \caption{Provenance decomposition of MathlibQR hits (exploratory): where
-the gold name first entered the transcript. ``Guessed, then verified''
+the gold name first entered the transcript. Arms as in
+Figure~\ref{fig:retrieval} (W = the Brain, WF = union + manual,
+F = formal search). ``Guessed, then verified''
 means the model wrote the name and \code{decl\_exists} (or another
 tool) confirmed it; the residual sliver is names present in the query
 itself. The trace pass is as-run --- F's 175 zero-tool race rows count

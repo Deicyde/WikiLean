@@ -79,8 +79,15 @@ assert abs(gtc["D_vs_A"]["ci95_percentile"][0] - 0.130952) < 1e-6
 assert abs(gtc["D_vs_A"]["ci95_percentile"][1] - 0.394737) < 1e-6
 assert abs(gtc["D_vs_A"]["p_two_sided_percentile_inversion"] - 0.0004) < 1e-9
 
-PAIR_LABEL = {"D_vs_A": "D − A", "E_vs_A": "E − A",
-              "D_vs_C": "D − C", "D_vs_E": "D − E"}
+# pair code + a short gloss (A = no tools; C = formal search; D = the Brain,
+# join + verifier; E = both corpora, unjoined)
+PAIR_LABEL = {"D_vs_A": ("D − A", "Brain vs no tools"),
+              "E_vs_A": ("E − A", "unjoined vs no tools"),
+              "D_vs_C": ("D − C", "Brain vs formal"),
+              "D_vs_E": ("D − E", "Brain vs unjoined")}
+# label columns and the stats column live in figure-fraction x; the axes box
+# is pinned (no tight_layout) so the geometry cannot collapse.
+HDR_X, LBL_X, GLOSS_X, STAT_X = 0.015, 0.045, 0.115, 0.685
 
 
 def fmt_p(p):
@@ -88,7 +95,8 @@ def fmt_p(p):
 
 
 # --------------------------------------------------------------------- plot --
-fig, ax = plt.subplots(figsize=(6.3, 3.6))
+fig = plt.figure(figsize=(9.4, 3.6))
+ax = fig.add_axes([0.27, 0.15, 0.40, 0.77])
 groups = ["Grounded typecheck", "Runs with a flagged citation",
           "Typecheck AND judge-evaluated"]
 y = 0.0
@@ -107,17 +115,24 @@ for g in groups:
             ax.plot([end, end], [y - 0.10, y + 0.10], color=color, lw=1.2,
                     zorder=3)
         ax.plot([rd], [y], marker="s", ms=5.5, color=color, zorder=4)
-        ax.annotate(PAIR_LABEL[pair], (-0.62, y), va="center", ha="left",
+        code, gloss = PAIR_LABEL[pair]
+        ax.annotate(code, (LBL_X, y), xycoords=("figure fraction", "data"),
+                    va="center", ha="left",
                     fontsize=8.5, color=INK, annotation_clip=False)
+        ax.annotate(gloss, (GLOSS_X, y), xycoords=("figure fraction", "data"),
+                    va="center", ha="left",
+                    fontsize=7.3, color=MUTED, annotation_clip=False)
         ax.annotate(f"{rd:+.2f}  [{lo:+.2f}, {hi:+.2f}]   {fmt_p(p)}",
-                    (0.55, y), va="center", ha="left", fontsize=7.8,
+                    (STAT_X, y), xycoords=("figure fraction", "data"),
+                    va="center", ha="left", fontsize=7.8,
                     color=INK, annotation_clip=False)
         ys.append(y)
         y -= 0.55
     y -= 0.30
 
 for hy, g in headers:
-    ax.annotate(g, (-0.62, hy), va="center", ha="left", fontsize=9,
+    ax.annotate(g, (HDR_X, hy), xycoords=("figure fraction", "data"),
+                va="center", ha="left", fontsize=9,
                 color=INK, fontweight="bold", annotation_clip=False)
 
 ax.axvline(0.0, color=INK, lw=0.9, zorder=2)
@@ -129,11 +144,10 @@ ax.grid(axis="x", color=GRID, linewidth=0.6, zorder=0)
 ax.set_axisbelow(True)
 ax.set_xlabel("paired risk difference (commit-clustered bootstrap, 44 clusters, "
               "B=10,000; whiskers: 95% confidence, exact asymmetric bounds)")
-ax.annotate("favors the right arm  ←", (-0.02, 0.42), ha="right", fontsize=7.8,
-            color=MUTED, style="italic")
-ax.annotate("→  favors the left arm", (0.02, 0.42), ha="left", fontsize=7.8,
-            color=MUTED, style="italic")
-fig.tight_layout()
+ax.annotate("favors the second-named arm  ←", (-0.02, 0.42), ha="right",
+            fontsize=7.8, color=MUTED, style="italic", annotation_clip=False)
+ax.annotate("→  favors the first-named arm", (0.02, 0.42), ha="left",
+            fontsize=7.8, color=MUTED, style="italic", annotation_clip=False)
 fig.savefig(FIG / "f1_forest.pdf", bbox_inches="tight")
 plt.close(fig)
 print("wrote", FIG / "f1_forest.pdf", f"({len(ys)} contrasts)")
