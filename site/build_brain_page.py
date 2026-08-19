@@ -93,6 +93,10 @@ a:hover { text-decoration:underline; }
 #crumbbar { background:#10141d; border-bottom:1px solid #1c2230; padding:6px 20px;
   font-size:.82rem; color:#9aa3b2; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 #crumbbar a { cursor:pointer; }
+#crumbpath { min-width:0; }
+#crumbside { margin-left:auto; display:flex; gap:14px; align-items:center;
+  white-space:nowrap; overflow:hidden; min-width:0; flex:0 1 auto; }
+#crumbside .note { overflow:hidden; text-overflow:ellipsis; }
 #crumbbar .sep { color:#556074; }
 #crumbbar b { color:#e6e4de; }
 .main { display:flex; flex:1 1 auto; min-height:0; }   /* fills the space the chrome leaves — no magic numbers */
@@ -367,11 +371,10 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
     <button class="fchip" data-fbit="128" title="cells holding an arXiv statement organ (a TheoremGraph match)">literature</button>
     <span class="note" id="filterstat"></span>
   </span>
-  <span class="grp"><a id="srcbtn2" style="cursor:pointer"
-    title="every external database the brain links to — layer, provenance, license">Sources</a></span>
-  <span class="note" id="status">loading manifest…</span>
 </div>
-<div id="crumbbar"></div>
+<div id="crumbbar"><span id="crumbpath"></span><span id="crumbside"><a id="srcbtn2" style="cursor:pointer"
+  title="every external database the brain links to — layer, provenance, license">Sources</a><span
+  class="note" id="status">loading manifest…</span></span></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
     <canvas id="xcanvas"></canvas>
@@ -494,7 +497,7 @@ async function getEntry(id, canRetry = true) {
 
 const $ = s => document.querySelector(s);
 const stageEl = $("#stage"), panelEl = $("#panel"), statusEl = $("#status");
-const crumbEl = $("#crumbbar");
+const crumbEl = $("#crumbpath");   // the bar also holds Sources + the status (right side)
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
