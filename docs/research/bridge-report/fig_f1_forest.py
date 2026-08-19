@@ -128,7 +128,7 @@ ax.spines[["top", "right", "left"]].set_visible(False)
 ax.grid(axis="x", color=GRID, linewidth=0.6, zorder=0)
 ax.set_axisbelow(True)
 ax.set_xlabel("paired risk difference (commit-clustered bootstrap, 44 clusters, "
-              "B=10,000; 95% CI)")
+              "B=10,000; whiskers: 95% confidence, exact asymmetric bounds)")
 ax.annotate("favors the right arm  ←", (-0.02, 0.42), ha="right", fontsize=7.8,
             color=MUTED, style="italic")
 ax.annotate("→  favors the left arm", (0.02, 0.42), ha="left", fontsize=7.8,
