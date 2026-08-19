@@ -6,7 +6,9 @@ preregistration execution inventory, raw-instrument tables and outage
 bases, instrument-validation detail, exposure strata, sensitivity
 analyses, the full tool-call census, the WF manual, review responses,
 the changelog, and data availability. Section numbers §Sn are cited from
-the main paper. Nothing here is new evidence; every table is
+the main paper. This supplement also carries the exact asymmetric
+interval bounds — [lo, hi] — behind every "± (95% confidence)" value
+the main paper quotes. Nothing here is new evidence; every table is
 recomputable from the file named beside it.
 
 ## S1. Complete preregistration execution inventory

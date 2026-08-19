@@ -28,13 +28,14 @@ oracle 13.3% precise on flags and biased against the controls; a
 five-rule repair validated at 90% held-out; inference moved to a
 commit-clustered bootstrap. Tools versus none is robust: on 100
 post-Brain-index tasks Brain-arm grounded typecheck is 48% over a
-21% floor (+0.27, 95% CI [+0.13, +0.40], p=0.0004), and formal tools
+21% floor (+27 ± 14 points, 95% confidence[^pm]; p=0.0004), and formal
+tools
 collapse oracle-flagged hallucination — an upper bound on truth —
 to 6–11% of runs versus 30–37% (clustered p=0.0002). Between packages
 nothing favors the join, and the preregistered factorial (join ×
 verifier, 400 interleaved capped runs on the same tasks) now says so
-causally: both main effects are null (join +0.03, 95% CI
-[−0.09, +0.14], p=0.65; verifier +0.05, [−0.03, +0.12], p=0.23), with
+causally: both main effects are null (join +3 ± 12 points, p=0.65;
+verifier +5 ± 8 points, p=0.23; 95% confidence), with
 an exploratory negative interaction — the verifier's +10-point pairwise
 gain appears only without the join, whose outputs arrive already
 verified. The one decisive contrast, premise retrieval, favors formal
@@ -45,6 +46,12 @@ graph holds 38% of golds. The proving phase was uninformative: the union arm sen
 94% of calls to formal search; the Brain-only arm never ran. Transferable findings close the paper: instrument bias, a
 contamination-by-endpoint interaction, four infrastructure failure
 modes, and benchmark snapshot rot.
+
+[^pm]: Intervals are Wilson score intervals for single rates and
+bootstrap percentile intervals for paired differences; both are
+asymmetric, so the ± shown is the wider half-width (the exact bounds
+are in the supplement). "95% confidence" means: computed so that
+intervals constructed this way contain the true value 95% of the time.
 
 ## 1. Introduction and contributions
 
@@ -337,8 +344,12 @@ gain) additionally rewards ranking it early.
 **group-recall@10** (MPR): each task's gold is a set of premise groups
 of interchangeable names; the score is the fraction of groups with ≥1
 member in the top 10. An **RD** is a risk difference between two arms'
-rates; a **Wilson 95% CI** is the binomial confidence interval we quote
-for single proportions; an exact **McNemar** test compares paired arms
+rates. Uncertainty is quoted as **± (95% confidence)** — the wider
+half-width of a Wilson score interval for single rates or of a
+bootstrap percentile interval for paired differences (footnote at
+first use in the Abstract; exact asymmetric bounds in the supplement)
+— in percentage points for rates and RDs, in the metric's own units
+for retrieval metrics. An exact **McNemar** test compares paired arms
 on their discordant tasks. A **sign count** such as 34/35 counts
 gold-declaration clusters where one arm's mean beats the other's (ties
 dropped). **Own-module** exposure counts a gold as exposed when its
@@ -373,7 +384,8 @@ surface.
 **The instrument had to be repaired first.** A blinded audit of the
 hallucination oracle (60 distinct cited names, seeded and stratified,
 graded against raw `git grep` evidence with verdicts sealed) found the
-flagged class only **13.3% precise** [5.3, 29.7]: most flags were real
+flagged class only **13.3% precise** ± 16.3 points (95% confidence):
+most flags were real
 declarations cited by their conventional namespace-short names, plus
 extractor noise. Five mechanical repair rules (drop comment, import, and
 self-declaration tokens and single-letter dot-notation heads; resolve
@@ -381,7 +393,7 @@ single-segment namespace prefixes) agree with the blinded truth on
 59/60. The rules were formulated after that audit unsealed, so 59/60 is
 an in-sample fit; a second, disjoint 40-name blinded sample (seed
 20260802) measured the repair out of sample: binary agreement 36/40 =
-90% [77, 96], recall on true fabrications 3/3, but flagged-class
+90% ± 13.1 points (95% confidence), recall on true fabrications 3/3, but flagged-class
 precision only 43–57%. The raw oracle's invalidity replicates almost
 exactly (15% precision held-out), the repair transfers most of its
 value, and a repaired flag remains closer to a coin toss than a
@@ -396,13 +408,13 @@ repaired instrument; raw-instrument tables, the outage bases
 (errors-as-failures and completed-69), and the earlier Wald/McNemar
 mismatch are Supplement §S2.
 
-| arm | grounded typecheck (repaired) | Wilson 95% CI |
+| arm | grounded typecheck (repaired) | ± (95% confidence) |
 |---|---|---|
-| A no tools | 21/100 = 21.0% | [14.2, 30.0] |
-| B informal | 22/100 = 22.0% | [15.0, 31.1] |
-| C formal | 33/100 = 33.0% | [24.6, 42.7] |
-| D wikibrain | **48/100 = 48.0%** | [38.5, 57.7] |
-| E B+C unjoined | 37/100 = 37.0% | [28.2, 46.8] |
+| A no tools | 21/100 = 21.0% | 9.0 |
+| B informal | 22/100 = 22.0% | 9.1 |
+| C formal | 33/100 = 33.0% | 9.7 |
+| D wikibrain | **48/100 = 48.0%** | 9.7 |
+| E B+C unjoined | 37/100 = 37.0% | 9.8 |
 
 The 100 tasks are not independent draws: they come from **44 source
 commits** and 57 files, with conspicuous sibling families (a 9-task
@@ -411,14 +423,14 @@ main-text inferential framework is therefore the **commit-clustered
 paired bootstrap** (44 clusters, B=10,000; interval and p-value read off
 the same resampling distribution):
 
-| pair | RD | 95% CI | p |
+| pair | RD (points) | ± (95% confidence) | p |
 |---|---|---|---|
-| D − A | +0.27 | [+0.131, +0.395] | **0.0004** |
-| D − C | +0.15 | [−0.023, +0.302] | 0.100 |
-| D − E | +0.11 | [−0.089, +0.279] | 0.304 |
+| D − A | +27 | 13.9 | **0.0004** |
+| D − C | +15 | 17.3 | 0.100 |
+| D − E | +11 | 19.9 | 0.304 |
 
-E versus A is also robust under the same framework: +0.16
-[+0.04, +0.29], clustered p=0.012 (exact McNemar 24/8, p=0.007). The
+E versus A is also robust under the same framework: +16 ± 13.4
+points (95% confidence), clustered p=0.012 (exact McNemar 24/8, p=0.007). The
 same clustered framework was run on every A-floor and D/E/C contrast
 reported as significant in §§4.2–4.3 below, and all survive it
 (`v3_gate_fixes.json`); the remaining p-values there are unclustered
@@ -450,10 +462,10 @@ confirmatory.** The story has three layers.
 
 **Layer 1 — the inversion.** On judge-evaluated equivalence
 (mathematical equivalence at high confidence), the five arms score:
-A 17.0% [10.9, 25.6] · B 16.0% [10.1, 24.4] · C 51.0% [41.3, 60.6] ·
-D 19.0% [12.5, 27.8] · E 53.0% [43.3, 62.5]. D sits at the no-tools
+A 17.0% ± 8.6 · B 16.0% ± 8.4 · C 51.0% ± 9.7 · D 19.0% ± 8.8 ·
+E 53.0% ± 9.7 points (95% confidence). D sits at the no-tools
 floor (D-vs-A McNemar 7/5, p=0.77) while C and E sit far above it
-(D-vs-E clustered −0.34 [−0.46, −0.22], p=0.0002). Taken alone this
+(D-vs-E clustered −34 ± 12.2 points, 95% confidence; p=0.0002). Taken alone this
 says the unjoined arms produce far more faithful statements — and that
 the Brain arm does not beat no tools at all on this endpoint.
 
@@ -495,16 +507,16 @@ The table below counts runs with ≥1 repaired-oracle-flagged citation —
 an upper bound on true hallucination, per the held-out precision in
 §4.1 — at n=100 per arm:
 
-| arm | runs with ≥1 hallucination | Wilson 95% CI |
+| arm | runs with ≥1 hallucination | ± (95% confidence) |
 |---|---|---|
-| A no tools | 37/100 | [28.2, 46.8] |
-| B informal | 30/100 | [21.9, 39.6] |
-| C formal | 11/100 | [6.3, 18.6] |
-| D wikibrain | **6/100** | [2.8, 12.5] |
-| E B+C unjoined | 10/100 | [5.5, 17.4] |
+| A no tools | 37/100 | 9.8 |
+| B informal | 30/100 | 9.6 |
+| C formal | 11/100 | 7.6 |
+| D wikibrain | **6/100** | 6.5 |
+| E B+C unjoined | 10/100 | 7.4 |
 
-Tools-versus-none survives everything: D-vs-A −0.31 [−0.45, −0.19],
-clustered p=0.0002 (E-vs-A −0.27, clustered p=0.0002; D-vs-B p=3.9e-5,
+Tools-versus-none survives everything: D-vs-A −31 ± 13.6 points
+(95% confidence), clustered p=0.0002 (E-vs-A −0.27, clustered p=0.0002; D-vs-B p=3.9e-5,
 unclustered). The between-tool contrasts dissolve: D-vs-E clustered
 p=0.44, D-vs-C clustered p=0.31 — direction preserved, but n=100
 cannot distinguish them. The
@@ -537,21 +549,22 @@ paired bootstrap (44 clusters, B=10,000, preregistered seed), α=0.05
 two-sided; the two main effects are the only confirmatory tests, the
 interaction and all secondaries are preregistered-exploratory.
 
-| arm | cell | grounded typecheck (repaired) | Wilson 95% CI |
+| arm | cell | grounded typecheck (repaired) | ± (95% confidence) |
 |---|---|---|---|
-| E′ | join−, verifier− | 31/100 = 31.0% | [22.8, 40.6] |
-| X | join−, verifier+ | 41/100 = 41.0% | [31.9, 50.8] |
-| J | join+, verifier− | 39/100 = 39.0% | [30.0, 48.8] |
-| D′ | join+, verifier+ | 39/100 = 39.0% | [30.0, 48.8] |
+| E′ | join−, verifier− | 31/100 = 31.0% | 9.6 |
+| X | join−, verifier+ | 41/100 = 41.0% | 9.8 |
+| J | join+, verifier− | 39/100 = 39.0% | 9.8 |
+| D′ | join+, verifier+ | 39/100 = 39.0% | 9.8 |
 
 **Both preregistered hypotheses are unsupported — the main effects are
-null.** The JOIN main effect is **+0.030** (95% CI [−0.093, +0.139],
-p=0.65): at this sample size the joined surface does not detectably
+null.** The JOIN main effect is **+3.0 ± 12.3 points** (95%
+confidence; p=0.65): at this sample size the joined surface does not detectably
 improve grounded typecheck beyond what explicit verification provides.
-The VERIFIER main effect is **+0.050** ([−0.029, +0.121], p=0.23):
+The VERIFIER main effect is **+5.0 ± 7.9 points** (95%
+confidence; p=0.23):
 explicit generate-then-verify existence checking likewise shows no
-detectable main effect. The interaction (exploratory) is **−0.100**
-([−0.245, +0.047], p=0.20): the factors look redundant, not synergistic
+detectable main effect. The interaction (exploratory) is **−10.0 ± 14.7
+points** (95% confidence; p=0.20): the factors look redundant, not synergistic
 — the verifier's pairwise gain appears only without the join (X−E′
 +0.100, p=0.13) and vanishes on top of it (D′−J +0.000, p=1.0), exactly
 the pattern the preregistered factor-purity caveat anticipated (the
@@ -581,8 +594,8 @@ identical to §4.2's pass; 400/400 graded, 0 errors; self-consistency
 on a 40-item re-grade: evaluated 100%, strict 97.5%) reproduce §4.2's
 contamination-by-endpoint inversion under the yoked interface:
 evaluated equivalence runs E′ 46 / X 42 / J 20 / D′ 15 per 100 — a
-strongly negative exploratory JOIN effect (−0.265 [−0.368, −0.154],
-p=0.0002) concentrated exactly where the unjoined arms can transcribe
+strongly negative exploratory JOIN effect (−26.5 ± 11.1 points, 95%
+confidence; p=0.0002) concentrated exactly where the unjoined arms can transcribe
 the gold from the exposed checkout (E′/X evaluated at .59/.67 on the
 51 exposed tasks against .33/.16 unexposed, while J/D′ are flat) —
 and the conjunction (grounded typecheck ∧ evaluated) returns to
@@ -636,26 +649,27 @@ pre-run design notes, `docs/research/BRIDGE-V2-BENCHMARKS.md`.)
 
 **MathlibQR fair-810 — concept retrieval:**
 
-| system | R@10 | decl-clustered 95% CI | nDCG@10 | 95% CI | $/query | tool calls/query |
+| system | R@10 | ± (95% confidence) | nDCG@10 | ± (95% confidence) | $/query | tool calls/query |
 |---|---|---|---|---|---|---|
 | published: TheoremGraph | 0.775 | — | 0.548 | — | — | 1 |
 | published: LSv2 retriever+reranker | 0.780 | — | 0.623 | — | — | 1 |
 | system-mode `brain_bridge` (one call, no LLM) | 0.036 | — | 0.031 | — | ~0 | 1 |
-| agent N (no tools) | 0.633 | [0.581, 0.684] | 0.598 | [0.547, 0.647] | 0.08 | 0 |
-| agent F (formal) | 0.846 | [0.808, 0.880] | 0.809 | [0.771, 0.845] | 0.14 | 2.8 |
-| agent W (Brain) | 0.816 | [0.767, 0.862] | 0.781 | [0.731, 0.827] | 0.20 | 3.5 |
-| agent U (bare union, no manual) | 0.830 | [0.789, 0.868] | 0.799 | [0.758, 0.838] | 0.20 | 3.1 |
-| agent WF (union + manual; post-hoc) | 0.885 | [0.849, 0.919] | 0.839 | [0.801, 0.874] | 0.21 | 4.2 |
+| agent N (no tools) | 0.633 | 0.052 | 0.598 | 0.051 | 0.08 | 0 |
+| agent F (formal) | 0.846 | 0.037 | 0.809 | 0.038 | 0.14 | 2.8 |
+| agent W (Brain) | 0.816 | 0.049 | 0.781 | 0.049 | 0.20 | 3.5 |
+| agent U (bare union, no manual) | 0.830 | 0.040 | 0.799 | 0.041 | 0.20 | 3.1 |
+| agent WF (union + manual; post-hoc) | 0.885 | 0.036 | 0.839 | 0.038 | 0.21 | 4.2 |
 
 Declaration-clustered paired contrasts on the repaired grid: **F − W
-is a null** (R@10 +0.030 [−0.015, +0.076], Wilcoxon p=0.086, sign
-34/35) with different textures — W wins the special-case paraphrase
-style (nDCG 0.522 vs 0.356), F the Lean-syntax styles. WF − F is
-+0.040 [+0.015, +0.064] (p=0.0097) and WF − W +0.069 [+0.031, +0.108]
-(p=0.0003), but WF carries the post-hoc label — and the U ablation now
-decomposes it: U, holding the identical W ∪ F toolset with no manual,
-is indistinguishable from F (U − F −0.016 [−0.039, +0.005], p=0.13),
-while WF − U is +0.056 [+0.032, +0.080] (p=1.3e-4). Note also that
+is a null** (R@10 +0.030 ± 0.046, 95% confidence; Wilcoxon p=0.086,
+sign 34/35) with different textures — W wins the special-case
+paraphrase style (nDCG 0.522 vs 0.356), F the Lean-syntax styles.
+WF − F is +0.040 ± 0.025 (95% confidence; p=0.0097) and WF − W
++0.069 ± 0.039 (95% confidence; p=0.0003), but WF carries the post-hoc
+label — and the U ablation now decomposes it: U, holding the identical
+W ∪ F toolset with no manual, is indistinguishable from F (U − F
+−0.016 ± 0.022, 95% confidence; p=0.13), while WF − U is
++0.056 ± 0.025 (95% confidence; p=1.3e-4). Note also that
 repaired F alone already exceeds both published QR anchors (R@10 0.846
 vs 0.780/0.775) — single-call systems against a multi-call agent, so
 context, not a controlled comparison. The
@@ -697,20 +711,20 @@ generation beats selection-RAG. WF's higher surfaced share (38.1%) is
 the routing half: it greps and loogles when holding syntax, bridges when
 holding words.
 
-**MathlibMPR — premise retrieval** (group-recall@10, task-bootstrap
-CIs): N 0.203 [0.131, 0.282] · W 0.272 [0.196, 0.354] · F 0.547
-[0.463, 0.632] · U 0.549 [0.464, 0.633] · WF 0.557 [0.472, 0.642];
+**MathlibMPR — premise retrieval** (group-recall@10; ± are 95%
+confidence, task-bootstrap): N 0.203 ± 0.080 · W 0.272 ± 0.082 ·
+F 0.547 ± 0.085 · U 0.549 ± 0.084 · WF 0.557 ± 0.085;
 published anchors LSv2 reasoning-mode 0.461, DIVER 0.380, TheoremGraph
 0.165; system-mode Brain 0.000. A generic Sonnet agent with grep and
 loogle *exceeds* the specialist system's reasoning mode (0.547 vs
 0.461) —
 the as-run 0.453 had been deflated by F's 15 race rows. W trails F by
-27 points (F − W +0.275 [+0.185, +0.369], p=2.3e-6) — the
+27 points (F − W +0.275 ± 0.094, 95% confidence; p=2.3e-6) — the
 preregistered concept ≠ premise boundary measured on our own tools,
 and the one decisive between-package retrieval contrast, in formal
 search's favor. The as-run grid's marginal WF − F advantage (+0.104,
-Wilcoxon p=0.049) was a race artifact: repaired, WF − F is +0.010
-[−0.068, +0.088] (p=0.73) and WF − U +0.009 (p=0.82) — neither the
+Wilcoxon p=0.049) was a race artifact: repaired, WF − F is
++0.010 ± 0.078 (95% confidence; p=0.73) and WF − U +0.009 (p=0.82) — neither the
 manual nor the union adds anything on MPR.
 
 **The bare-union ablation and the final contrast set.** U holds the
@@ -721,20 +735,23 @@ cold-start race, §3.4). The repaired-grid contrasts
 (declaration-clustered on QR, task-paired on MPR;
 `grid_repaired.py`, seed 20260727, B=10,000):
 
-| contrast | metric | diff | 95% CI | excl. 0 | Wilcoxon p |
+| contrast | metric | diff | ± (95% confidence) | excl. 0 | Wilcoxon p |
 |---|---|---|---|---|---|
-| WF − F | QR R@10 | +0.0395 | [+0.0148, +0.0636] | **yes** | 9.7e-3 |
-| WF − F | QR nDCG@10 | +0.0305 | [+0.0099, +0.0515] | **yes** | 6.4e-3 |
-| WF − F | MPR gR@10 | +0.0101 | [−0.0679, +0.0882] | no | 0.73 |
-| WF − U | QR R@10 | +0.0556 | [+0.0320, +0.0802] | **yes** | 1.3e-4 |
-| WF − U | QR nDCG@10 | +0.0402 | [+0.0187, +0.0628] | **yes** | 1.2e-3 |
-| WF − U | MPR gR@10 | +0.0085 | [−0.0664, +0.0833] | no | 0.82 |
-| U − F | QR R@10 | −0.0161 | [−0.0385, +0.0050] | no | 0.13 |
-| U − F | QR nDCG@10 | −0.0097 | [−0.0294, +0.0095] | no | 0.50 |
-| U − F | MPR gR@10 | +0.0017 | [−0.0725, +0.0713] | no | 0.83 |
-| F − W | QR R@10 | +0.0297 | [−0.0150, +0.0756] | no | 0.086 |
-| F − W | QR nDCG@10 | +0.0283 | [−0.0110, +0.0684] | no | 0.28 |
-| F − W | MPR gR@10 | +0.2747 | [+0.1851, +0.3688] | **yes** | 2.3e-6 |
+| WF − F | QR R@10 | +0.0395 | 0.0247 | **yes** | 9.7e-3 |
+| WF − F | QR nDCG@10 | +0.0305 | 0.0210 | **yes** | 6.4e-3 |
+| WF − F | MPR gR@10 | +0.0101 | 0.0781 | no | 0.73 |
+| WF − U | QR R@10 | +0.0556 | 0.0246 | **yes** | 1.3e-4 |
+| WF − U | QR nDCG@10 | +0.0402 | 0.0226 | **yes** | 1.2e-3 |
+| WF − U | MPR gR@10 | +0.0085 | 0.0749 | no | 0.82 |
+| U − F | QR R@10 | −0.0161 | 0.0224 | no | 0.13 |
+| U − F | QR nDCG@10 | −0.0097 | 0.0197 | no | 0.50 |
+| U − F | MPR gR@10 | +0.0017 | 0.0742 | no | 0.83 |
+| F − W | QR R@10 | +0.0297 | 0.0459 | no | 0.086 |
+| F − W | QR nDCG@10 | +0.0283 | 0.0401 | no | 0.28 |
+| F − W | MPR gR@10 | +0.2747 | 0.0941 | **yes** | 2.3e-6 |
+
+("excl. 0" is read off the exact asymmetric bounds, which are in the
+supplement.)
 
 The decomposition is clean. On concept retrieval the active ingredient
 is the manual — a test-set-tuned upper bound (§S8), not a portable
@@ -755,14 +772,16 @@ pass/fail, plus 19 unspliceable rows and 1 verify-timeout that never
 reached the kernel. (Denominators reconciled: 171 frozen tasks; run
 rows N 168 / F 169 / WF 171 — 3 N and 2 F runner losses; candidates
 N 58 + F 71 + WF 74 = 203.) Results: N 2/171
-= 1.2% [0.3, 4.2] · F 9/171 = 5.3% [2.8, 9.7] · WF 10/171 = 5.8%
-[3.2, 10.4] (Wilson); repo-clustered bootstrap CIs are [0.0, 2.7] /
-[0.0, 10.7] / [0.0, 12.2] — F's and WF's widen, while N's upper bound
-tightens because both N successes sit in 2 of the 10 repo clusters.
+= 1.2% ± 3.0 · F 9/171 = 5.3% ± 4.4 · WF 10/171 = 5.8% ± 4.6 points
+(95% confidence, Wilson); under the repo-clustered bootstrap the same
+rates read 1.2% ± 1.6 · 5.3% ± 5.4 · 5.8% ± 6.4 points (95%
+confidence) — F's and WF's widen, while N's tightens because both N
+successes sit in 2 of the 10 repo clusters.
 
 **WF versus F is indistinguishable**: one
-proof apart, exact McNemar 4/3 p=1.0, repo-clustered difference +0.58pp
-[+0.0, +1.85] with 34% of resamples at or below zero — and WF routed
+proof apart, exact McNemar 4/3 p=1.0, repo-clustered difference
++0.58 ± 1.27 points (95% confidence) with 34% of resamples at or below
+zero — and WF routed
 94% of its tool calls to formal search anyway, so SorryDB says
 essentially nothing about the Brain. The Brain-only arm W, present in
 every other phase, was never run here — a design gap, and precisely
@@ -786,8 +805,8 @@ Supplement §S7, §S9).
 
 **Statistical scope.** One model per phase, one seed per (task, arm), no
 run-to-run variance estimate anywhere. n=100 tasks in 44 commit clusters
-is underpowered for between-package contrasts — the D−E interval spans
-−0.09 to +0.28 — and nothing in this paper ranks tool packages in the
+is underpowered for between-package contrasts — the D−E estimate is
++11 ± 19.9 points (95% confidence) — and nothing in this paper ranks tool packages in the
 join's favor; the one decisive between-package contrast (F over W on
 premise retrieval, §5) runs the other way and is exploratory. The
 ProofNet# eval split was not re-typechecked under the repaired oracle:

@@ -1,0 +1,1309 @@
+{
+ "generated_by": "bench/analysis/ci_pm_conversion.py",
+ "what": "Conversion table for the ± (95% confidence) restyle of the main Bridge paper (v3.1). pm = wider half-width of the exact asymmetric interval; supplement retains exact bounds.",
+ "n_entries": 76,
+ "assertions": {
+  "point_in_interval_failures": 0,
+  "pm_covers_both_half_widths_failures": 0,
+  "note": "hard-asserted per entry at generation time"
+ },
+ "rounding": "pm printed ROUND_HALF_UP at each table's display precision",
+ "entries": [
+  {
+   "id": "abs_gtc_D_vs_A",
+   "section": "Abstract",
+   "quantity": "grounded typecheck RD, D − A (commit-clustered)",
+   "source": "success_repaired.json#commit_clustered_bootstrap.repaired_oracle.D_vs_A",
+   "point_exact": 0.27,
+   "ci95_exact": [
+    0.130952,
+    0.394737
+   ],
+   "half_width_lo": 0.139048,
+   "half_width_hi": 0.124737,
+   "pm_exact_wider_half_width": 0.139048,
+   "unit": "points",
+   "printed": "+27 ± 14 points",
+   "pm_printed": 14.0
+  },
+  {
+   "id": "abs_join_main",
+   "section": "Abstract",
+   "quantity": "factorial JOIN main effect",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.effects.join",
+   "point_exact": 0.03,
+   "ci95_exact": [
+    -0.093407,
+    0.139175
+   ],
+   "half_width_lo": 0.123407,
+   "half_width_hi": 0.109175,
+   "pm_exact_wider_half_width": 0.123407,
+   "unit": "points",
+   "printed": "+3 ± 12 points",
+   "pm_printed": 12.0
+  },
+  {
+   "id": "abs_verifier_main",
+   "section": "Abstract",
+   "quantity": "factorial VERIFIER main effect",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.effects.verifier",
+   "point_exact": 0.05,
+   "ci95_exact": [
+    -0.028736,
+    0.120968
+   ],
+   "half_width_lo": 0.078736,
+   "half_width_hi": 0.070968,
+   "pm_exact_wider_half_width": 0.078736,
+   "unit": "points",
+   "printed": "+5 ± 8 points",
+   "pm_printed": 8.0
+  },
+  {
+   "id": "s41_audit_precision_insample",
+   "section": "4.1",
+   "quantity": "raw-oracle flagged-class precision, in-sample blinded audit (4/30)",
+   "source": "halluc_validation.json#blinded_validation.strict_noise_as_FP (tp=4, tp+fp=30; Wilson z=1.96 recomputed from counts)",
+   "point_exact": 0.13333333333333333,
+   "ci95_exact": [
+    0.05309569424218104,
+    0.2968168394441695
+   ],
+   "half_width_lo": 0.080238,
+   "half_width_hi": 0.163484,
+   "pm_exact_wider_half_width": 0.163484,
+   "unit": "points",
+   "printed": "13.3% ± 16.3 points",
+   "pm_printed": 16.3,
+   "note": "bounds recomputed Wilson from stored counts; matches previously printed [5.3, 29.7]"
+  },
+  {
+   "id": "s41_holdout_agreement",
+   "section": "4.1",
+   "quantity": "repaired-oracle binary agreement, held-out blinded sample (36/40)",
+   "source": "halluc_holdout.json#supplementary.binary_agreement_like_for_like.repaired.wilson95",
+   "point_exact": 0.9,
+   "ci95_exact": [
+    0.7695,
+    0.9604
+   ],
+   "half_width_lo": 0.1305,
+   "half_width_hi": 0.0604,
+   "pm_exact_wider_half_width": 0.1305,
+   "unit": "points",
+   "printed": "90% ± 13.1 points",
+   "pm_printed": 13.1
+  },
+  {
+   "id": "s41_gtc_arm_A",
+   "section": "4.1",
+   "quantity": "grounded typecheck rate (repaired), arm A no tools (21/100)",
+   "source": "success_repaired.json#fresh_100_table_both_instruments.repaired_oracle.A.wilson95",
+   "point_exact": 0.21,
+   "ci95_exact": [
+    0.1417,
+    0.2998
+   ],
+   "half_width_lo": 0.0683,
+   "half_width_hi": 0.0898,
+   "pm_exact_wider_half_width": 0.0898,
+   "unit": "points",
+   "printed": "21.0% ± 9.0 points",
+   "pm_printed": 9.0
+  },
+  {
+   "id": "s41_gtc_arm_B",
+   "section": "4.1",
+   "quantity": "grounded typecheck rate (repaired), arm B informal (22/100)",
+   "source": "success_repaired.json#fresh_100_table_both_instruments.repaired_oracle.B.wilson95",
+   "point_exact": 0.22,
+   "ci95_exact": [
+    0.15,
+    0.3107
+   ],
+   "half_width_lo": 0.07,
+   "half_width_hi": 0.0907,
+   "pm_exact_wider_half_width": 0.0907,
+   "unit": "points",
+   "printed": "22.0% ± 9.1 points",
+   "pm_printed": 9.1
+  },
+  {
+   "id": "s41_gtc_arm_C",
+   "section": "4.1",
+   "quantity": "grounded typecheck rate (repaired), arm C formal (33/100)",
+   "source": "success_repaired.json#fresh_100_table_both_instruments.repaired_oracle.C.wilson95",
+   "point_exact": 0.33,
+   "ci95_exact": [
+    0.2456,
+    0.4269
+   ],
+   "half_width_lo": 0.0844,
+   "half_width_hi": 0.0969,
+   "pm_exact_wider_half_width": 0.0969,
+   "unit": "points",
+   "printed": "33.0% ± 9.7 points",
+   "pm_printed": 9.7
+  },
+  {
+   "id": "s41_gtc_arm_D",
+   "section": "4.1",
+   "quantity": "grounded typecheck rate (repaired), arm D wikibrain (48/100)",
+   "source": "success_repaired.json#fresh_100_table_both_instruments.repaired_oracle.D.wilson95",
+   "point_exact": 0.48,
+   "ci95_exact": [
+    0.3846,
+    0.5768
+   ],
+   "half_width_lo": 0.0954,
+   "half_width_hi": 0.0968,
+   "pm_exact_wider_half_width": 0.0968,
+   "unit": "points",
+   "printed": "48.0% ± 9.7 points",
+   "pm_printed": 9.7
+  },
+  {
+   "id": "s41_gtc_arm_E",
+   "section": "4.1",
+   "quantity": "grounded typecheck rate (repaired), arm E B+C unjoined (37/100)",
+   "source": "success_repaired.json#fresh_100_table_both_instruments.repaired_oracle.E.wilson95",
+   "point_exact": 0.37,
+   "ci95_exact": [
+    0.2818,
+    0.4678
+   ],
+   "half_width_lo": 0.0882,
+   "half_width_hi": 0.0978,
+   "pm_exact_wider_half_width": 0.0978,
+   "unit": "points",
+   "printed": "37.0% ± 9.8 points",
+   "pm_printed": 9.8
+  },
+  {
+   "id": "s41_ccb_D_vs_A",
+   "section": "4.1",
+   "quantity": "grounded typecheck RD, D − A (commit-clustered bootstrap)",
+   "source": "success_repaired.json#commit_clustered_bootstrap.repaired_oracle.D_vs_A",
+   "point_exact": 0.27,
+   "ci95_exact": [
+    0.130952,
+    0.394737
+   ],
+   "half_width_lo": 0.139048,
+   "half_width_hi": 0.124737,
+   "pm_exact_wider_half_width": 0.139048,
+   "unit": "points",
+   "printed": "+27 ± 13.9 points",
+   "pm_printed": 13.9
+  },
+  {
+   "id": "s41_ccb_D_vs_C",
+   "section": "4.1",
+   "quantity": "grounded typecheck RD, D − C (commit-clustered bootstrap)",
+   "source": "success_repaired.json#commit_clustered_bootstrap.repaired_oracle.D_vs_C",
+   "point_exact": 0.15,
+   "ci95_exact": [
+    -0.022727,
+    0.301724
+   ],
+   "half_width_lo": 0.172727,
+   "half_width_hi": 0.151724,
+   "pm_exact_wider_half_width": 0.172727,
+   "unit": "points",
+   "printed": "+15 ± 17.3 points",
+   "pm_printed": 17.3
+  },
+  {
+   "id": "s41_ccb_D_vs_E",
+   "section": "4.1",
+   "quantity": "grounded typecheck RD, D − E (commit-clustered bootstrap)",
+   "source": "success_repaired.json#commit_clustered_bootstrap.repaired_oracle.D_vs_E",
+   "point_exact": 0.11,
+   "ci95_exact": [
+    -0.088889,
+    0.278846
+   ],
+   "half_width_lo": 0.198889,
+   "half_width_hi": 0.168846,
+   "pm_exact_wider_half_width": 0.198889,
+   "unit": "points",
+   "printed": "+11 ± 19.9 points",
+   "pm_printed": 19.9
+  },
+  {
+   "id": "s41_ccb_E_vs_A",
+   "section": "4.1",
+   "quantity": "grounded typecheck RD, E − A (commit-clustered bootstrap)",
+   "source": "v3_gate_fixes.json#2_commit_clustered_bootstraps.gtc_repaired.E_vs_A.commit_clustered_bootstrap",
+   "point_exact": 0.16,
+   "ci95_exact": [
+    0.03999,
+    0.294118
+   ],
+   "half_width_lo": 0.12001,
+   "half_width_hi": 0.134118,
+   "pm_exact_wider_half_width": 0.134118,
+   "unit": "points",
+   "printed": "+16 ± 13.4 points",
+   "pm_printed": 13.4
+  },
+  {
+   "id": "s42_judge_eval_arm_A",
+   "section": "4.2",
+   "quantity": "judge-evaluated equivalence rate, arm A (17/100)",
+   "source": "judge_fresh_summary.json#fresh_100.evaluated_table.A.wilson95",
+   "point_exact": 0.17,
+   "ci95_exact": [
+    0.1089,
+    0.2555
+   ],
+   "half_width_lo": 0.0611,
+   "half_width_hi": 0.0855,
+   "pm_exact_wider_half_width": 0.0855,
+   "unit": "points",
+   "printed": "17.0% ± 8.6 points",
+   "pm_printed": 8.6
+  },
+  {
+   "id": "s42_judge_eval_arm_B",
+   "section": "4.2",
+   "quantity": "judge-evaluated equivalence rate, arm B (16/100)",
+   "source": "judge_fresh_summary.json#fresh_100.evaluated_table.B.wilson95",
+   "point_exact": 0.16,
+   "ci95_exact": [
+    0.101,
+    0.2442
+   ],
+   "half_width_lo": 0.059,
+   "half_width_hi": 0.0842,
+   "pm_exact_wider_half_width": 0.0842,
+   "unit": "points",
+   "printed": "16.0% ± 8.4 points",
+   "pm_printed": 8.4
+  },
+  {
+   "id": "s42_judge_eval_arm_C",
+   "section": "4.2",
+   "quantity": "judge-evaluated equivalence rate, arm C (51/100)",
+   "source": "judge_fresh_summary.json#fresh_100.evaluated_table.C.wilson95",
+   "point_exact": 0.51,
+   "ci95_exact": [
+    0.4135,
+    0.6058
+   ],
+   "half_width_lo": 0.0965,
+   "half_width_hi": 0.0958,
+   "pm_exact_wider_half_width": 0.0965,
+   "unit": "points",
+   "printed": "51.0% ± 9.7 points",
+   "pm_printed": 9.7
+  },
+  {
+   "id": "s42_judge_eval_arm_D",
+   "section": "4.2",
+   "quantity": "judge-evaluated equivalence rate, arm D (19/100)",
+   "source": "judge_fresh_summary.json#fresh_100.evaluated_table.D.wilson95",
+   "point_exact": 0.19,
+   "ci95_exact": [
+    0.1251,
+    0.2778
+   ],
+   "half_width_lo": 0.0649,
+   "half_width_hi": 0.0878,
+   "pm_exact_wider_half_width": 0.0878,
+   "unit": "points",
+   "printed": "19.0% ± 8.8 points",
+   "pm_printed": 8.8
+  },
+  {
+   "id": "s42_judge_eval_arm_E",
+   "section": "4.2",
+   "quantity": "judge-evaluated equivalence rate, arm E (53/100)",
+   "source": "judge_fresh_summary.json#fresh_100.evaluated_table.E.wilson95",
+   "point_exact": 0.53,
+   "ci95_exact": [
+    0.4329,
+    0.6249
+   ],
+   "half_width_lo": 0.0971,
+   "half_width_hi": 0.0949,
+   "pm_exact_wider_half_width": 0.0971,
+   "unit": "points",
+   "printed": "53.0% ± 9.7 points",
+   "pm_printed": 9.7
+  },
+  {
+   "id": "s42_judge_D_vs_E",
+   "section": "4.2",
+   "quantity": "judge-evaluated RD, D − E (commit-clustered bootstrap)",
+   "source": "v3_gate_fixes.json#2_commit_clustered_bootstraps.judge_evaluated.D_vs_E.commit_clustered_bootstrap",
+   "point_exact": -0.34,
+   "ci95_exact": [
+    -0.461538,
+    -0.21978
+   ],
+   "half_width_lo": 0.121538,
+   "half_width_hi": 0.12022,
+   "pm_exact_wider_half_width": 0.121538,
+   "unit": "points",
+   "printed": "−34 ± 12.2 points",
+   "pm_printed": 12.2
+  },
+  {
+   "id": "s43_halluc_arm_A",
+   "section": "4.3",
+   "quantity": "runs with ≥1 repaired-flagged citation, arm A no tools (37/100)",
+   "source": "halluc_validation.json#adjusted_oracle_sensitivity.per_arm.A.run_wilson95",
+   "point_exact": 0.37,
+   "ci95_exact": [
+    0.2818,
+    0.4678
+   ],
+   "half_width_lo": 0.0882,
+   "half_width_hi": 0.0978,
+   "pm_exact_wider_half_width": 0.0978,
+   "unit": "points",
+   "printed": "37% ± 9.8 points",
+   "pm_printed": 9.8
+  },
+  {
+   "id": "s43_halluc_arm_B",
+   "section": "4.3",
+   "quantity": "runs with ≥1 repaired-flagged citation, arm B informal (30/100)",
+   "source": "halluc_validation.json#adjusted_oracle_sensitivity.per_arm.B.run_wilson95",
+   "point_exact": 0.3,
+   "ci95_exact": [
+    0.2189,
+    0.3958
+   ],
+   "half_width_lo": 0.0811,
+   "half_width_hi": 0.0958,
+   "pm_exact_wider_half_width": 0.0958,
+   "unit": "points",
+   "printed": "30% ± 9.6 points",
+   "pm_printed": 9.6
+  },
+  {
+   "id": "s43_halluc_arm_C",
+   "section": "4.3",
+   "quantity": "runs with ≥1 repaired-flagged citation, arm C formal (11/100)",
+   "source": "halluc_validation.json#adjusted_oracle_sensitivity.per_arm.C.run_wilson95",
+   "point_exact": 0.11,
+   "ci95_exact": [
+    0.0625,
+    0.1863
+   ],
+   "half_width_lo": 0.0475,
+   "half_width_hi": 0.0763,
+   "pm_exact_wider_half_width": 0.0763,
+   "unit": "points",
+   "printed": "11% ± 7.6 points",
+   "pm_printed": 7.6
+  },
+  {
+   "id": "s43_halluc_arm_D",
+   "section": "4.3",
+   "quantity": "runs with ≥1 repaired-flagged citation, arm D wikibrain (6/100)",
+   "source": "halluc_validation.json#adjusted_oracle_sensitivity.per_arm.D.run_wilson95",
+   "point_exact": 0.06,
+   "ci95_exact": [
+    0.0278,
+    0.1248
+   ],
+   "half_width_lo": 0.0322,
+   "half_width_hi": 0.0648,
+   "pm_exact_wider_half_width": 0.0648,
+   "unit": "points",
+   "printed": "6% ± 6.5 points",
+   "pm_printed": 6.5
+  },
+  {
+   "id": "s43_halluc_arm_E",
+   "section": "4.3",
+   "quantity": "runs with ≥1 repaired-flagged citation, arm E B+C unjoined (10/100)",
+   "source": "halluc_validation.json#adjusted_oracle_sensitivity.per_arm.E.run_wilson95",
+   "point_exact": 0.1,
+   "ci95_exact": [
+    0.0552,
+    0.1744
+   ],
+   "half_width_lo": 0.0448,
+   "half_width_hi": 0.0744,
+   "pm_exact_wider_half_width": 0.0744,
+   "unit": "points",
+   "printed": "10% ± 7.4 points",
+   "pm_printed": 7.4
+  },
+  {
+   "id": "s43_halluc_D_vs_A",
+   "section": "4.3",
+   "quantity": "repaired hallucination RD, D − A (commit-clustered bootstrap)",
+   "source": "v3_gate_fixes.json#2_commit_clustered_bootstraps.halluc_repaired.D_vs_A.commit_clustered_bootstrap",
+   "point_exact": -0.31,
+   "ci95_exact": [
+    -0.446438,
+    -0.192977
+   ],
+   "half_width_lo": 0.136438,
+   "half_width_hi": 0.117023,
+   "pm_exact_wider_half_width": 0.136438,
+   "unit": "points",
+   "printed": "−31 ± 13.6 points",
+   "pm_printed": 13.6
+  },
+  {
+   "id": "s44_gtc_arm_Ep",
+   "section": "4.4",
+   "quantity": "factorial grounded typecheck rate (repaired), E′ (join−, verifier−) (31/100)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.four_arm_table_wilson95.Ep.wilson95",
+   "point_exact": 0.31,
+   "ci95_exact": [
+    0.2278,
+    0.4063
+   ],
+   "half_width_lo": 0.0822,
+   "half_width_hi": 0.0963,
+   "pm_exact_wider_half_width": 0.0963,
+   "unit": "points",
+   "printed": "31.0% ± 9.6 points",
+   "pm_printed": 9.6
+  },
+  {
+   "id": "s44_gtc_arm_X",
+   "section": "4.4",
+   "quantity": "factorial grounded typecheck rate (repaired), X (join−, verifier+) (41/100)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.four_arm_table_wilson95.X.wilson95",
+   "point_exact": 0.41,
+   "ci95_exact": [
+    0.3187,
+    0.508
+   ],
+   "half_width_lo": 0.0913,
+   "half_width_hi": 0.098,
+   "pm_exact_wider_half_width": 0.098,
+   "unit": "points",
+   "printed": "41.0% ± 9.8 points",
+   "pm_printed": 9.8
+  },
+  {
+   "id": "s44_gtc_arm_J",
+   "section": "4.4",
+   "quantity": "factorial grounded typecheck rate (repaired), J (join+, verifier−) (39/100)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.four_arm_table_wilson95.J.wilson95",
+   "point_exact": 0.39,
+   "ci95_exact": [
+    0.3002,
+    0.488
+   ],
+   "half_width_lo": 0.0898,
+   "half_width_hi": 0.098,
+   "pm_exact_wider_half_width": 0.098,
+   "unit": "points",
+   "printed": "39.0% ± 9.8 points",
+   "pm_printed": 9.8
+  },
+  {
+   "id": "s44_gtc_arm_Dp",
+   "section": "4.4",
+   "quantity": "factorial grounded typecheck rate (repaired), D′ (join+, verifier+) (39/100)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.four_arm_table_wilson95.Dp.wilson95",
+   "point_exact": 0.39,
+   "ci95_exact": [
+    0.3002,
+    0.488
+   ],
+   "half_width_lo": 0.0898,
+   "half_width_hi": 0.098,
+   "pm_exact_wider_half_width": 0.098,
+   "unit": "points",
+   "printed": "39.0% ± 9.8 points",
+   "pm_printed": 9.8
+  },
+  {
+   "id": "s44_effect_join",
+   "section": "4.4",
+   "quantity": "factorial join effect (commit-clustered bootstrap)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.effects.join",
+   "point_exact": 0.03,
+   "ci95_exact": [
+    -0.093407,
+    0.139175
+   ],
+   "half_width_lo": 0.123407,
+   "half_width_hi": 0.109175,
+   "pm_exact_wider_half_width": 0.123407,
+   "unit": "points",
+   "printed": "+3.0 ± 12.3 points",
+   "pm_printed": 12.3
+  },
+  {
+   "id": "s44_effect_verifier",
+   "section": "4.4",
+   "quantity": "factorial verifier effect (commit-clustered bootstrap)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.effects.verifier",
+   "point_exact": 0.05,
+   "ci95_exact": [
+    -0.028736,
+    0.120968
+   ],
+   "half_width_lo": 0.078736,
+   "half_width_hi": 0.070968,
+   "pm_exact_wider_half_width": 0.078736,
+   "unit": "points",
+   "printed": "+5.0 ± 7.9 points",
+   "pm_printed": 7.9
+  },
+  {
+   "id": "s44_effect_interaction",
+   "section": "4.4",
+   "quantity": "factorial interaction effect (commit-clustered bootstrap)",
+   "source": "factorial_analysis.json#PRIMARY_grounded_tc_repaired.effects.interaction",
+   "point_exact": -0.1,
+   "ci95_exact": [
+    -0.244898,
+    0.04717
+   ],
+   "half_width_lo": 0.144898,
+   "half_width_hi": 0.14717,
+   "pm_exact_wider_half_width": 0.14717,
+   "unit": "points",
+   "printed": "−10.0 ± 14.7 points",
+   "pm_printed": 14.7
+  },
+  {
+   "id": "s44_judge_join",
+   "section": "4.4",
+   "quantity": "factorial JOIN effect on judge-evaluated equivalence (exploratory)",
+   "source": "factorial_analysis.json#secondary_judge_evaluated.effects.join",
+   "point_exact": -0.265,
+   "ci95_exact": [
+    -0.368421,
+    -0.153846
+   ],
+   "half_width_lo": 0.103421,
+   "half_width_hi": 0.111154,
+   "pm_exact_wider_half_width": 0.111154,
+   "unit": "points",
+   "printed": "−26.5 ± 11.1 points",
+   "pm_printed": 11.1
+  },
+  {
+   "id": "s5_qr_recall_arm_N",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 R@10, agent N (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.recall@10.arms.N.ci95",
+   "point_exact": 0.6333,
+   "ci95_exact": [
+    0.5813,
+    0.6839
+   ],
+   "half_width_lo": 0.052,
+   "half_width_hi": 0.0506,
+   "pm_exact_wider_half_width": 0.052,
+   "unit": "metric",
+   "printed": "0.633 ± 0.052",
+   "pm_printed": 0.052
+  },
+  {
+   "id": "s5_qr_ndcg_arm_N",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 nDCG@10, agent N (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.ndcg@10.arms.N.ci95",
+   "point_exact": 0.5975,
+   "ci95_exact": [
+    0.5469,
+    0.6472
+   ],
+   "half_width_lo": 0.0506,
+   "half_width_hi": 0.0497,
+   "pm_exact_wider_half_width": 0.0506,
+   "unit": "metric",
+   "printed": "0.598 ± 0.051",
+   "pm_printed": 0.051
+  },
+  {
+   "id": "s5_qr_recall_arm_F",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 R@10, agent F (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.recall@10.arms.F.ci95",
+   "point_exact": 0.8457,
+   "ci95_exact": [
+    0.8084,
+    0.8803
+   ],
+   "half_width_lo": 0.0373,
+   "half_width_hi": 0.0346,
+   "pm_exact_wider_half_width": 0.0373,
+   "unit": "metric",
+   "printed": "0.846 ± 0.037",
+   "pm_printed": 0.037
+  },
+  {
+   "id": "s5_qr_ndcg_arm_F",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 nDCG@10, agent F (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.ndcg@10.arms.F.ci95",
+   "point_exact": 0.8089,
+   "ci95_exact": [
+    0.7709,
+    0.8451
+   ],
+   "half_width_lo": 0.038,
+   "half_width_hi": 0.0362,
+   "pm_exact_wider_half_width": 0.038,
+   "unit": "metric",
+   "printed": "0.809 ± 0.038",
+   "pm_printed": 0.038
+  },
+  {
+   "id": "s5_qr_recall_arm_W",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 R@10, agent W (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.recall@10.arms.W.ci95",
+   "point_exact": 0.816,
+   "ci95_exact": [
+    0.7666,
+    0.8622
+   ],
+   "half_width_lo": 0.0494,
+   "half_width_hi": 0.0462,
+   "pm_exact_wider_half_width": 0.0494,
+   "unit": "metric",
+   "printed": "0.816 ± 0.049",
+   "pm_printed": 0.049
+  },
+  {
+   "id": "s5_qr_ndcg_arm_W",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 nDCG@10, agent W (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.ndcg@10.arms.W.ci95",
+   "point_exact": 0.7806,
+   "ci95_exact": [
+    0.7314,
+    0.8269
+   ],
+   "half_width_lo": 0.0492,
+   "half_width_hi": 0.0463,
+   "pm_exact_wider_half_width": 0.0492,
+   "unit": "metric",
+   "printed": "0.781 ± 0.049",
+   "pm_printed": 0.049
+  },
+  {
+   "id": "s5_qr_recall_arm_U",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 R@10, agent U (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.recall@10.arms.U.ci95",
+   "point_exact": 0.8296,
+   "ci95_exact": [
+    0.7893,
+    0.8675
+   ],
+   "half_width_lo": 0.0403,
+   "half_width_hi": 0.0379,
+   "pm_exact_wider_half_width": 0.0403,
+   "unit": "metric",
+   "printed": "0.830 ± 0.040",
+   "pm_printed": 0.04
+  },
+  {
+   "id": "s5_qr_ndcg_arm_U",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 nDCG@10, agent U (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.ndcg@10.arms.U.ci95",
+   "point_exact": 0.7992,
+   "ci95_exact": [
+    0.7578,
+    0.838
+   ],
+   "half_width_lo": 0.0414,
+   "half_width_hi": 0.0388,
+   "pm_exact_wider_half_width": 0.0414,
+   "unit": "metric",
+   "printed": "0.799 ± 0.041",
+   "pm_printed": 0.041
+  },
+  {
+   "id": "s5_qr_recall_arm_WF",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 R@10, agent WF (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.recall@10.arms.WF.ci95",
+   "point_exact": 0.8852,
+   "ci95_exact": [
+    0.849,
+    0.9185
+   ],
+   "half_width_lo": 0.0362,
+   "half_width_hi": 0.0333,
+   "pm_exact_wider_half_width": 0.0362,
+   "unit": "metric",
+   "printed": "0.885 ± 0.036",
+   "pm_printed": 0.036
+  },
+  {
+   "id": "s5_qr_ndcg_arm_WF",
+   "section": "5",
+   "quantity": "MathlibQR fair-810 nDCG@10, agent WF (decl-clustered)",
+   "source": "union_ablation.json#qr810.cluster_bootstrap.ndcg@10.arms.WF.ci95",
+   "point_exact": 0.8394,
+   "ci95_exact": [
+    0.8013,
+    0.8743
+   ],
+   "half_width_lo": 0.0381,
+   "half_width_hi": 0.0349,
+   "pm_exact_wider_half_width": 0.0381,
+   "unit": "metric",
+   "printed": "0.839 ± 0.038",
+   "pm_printed": 0.038
+  },
+  {
+   "id": "s5_prose_FW_recall",
+   "section": "5",
+   "quantity": "F − W, QR R@10 (decl-clustered; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.F_vs_W.qr810_recall@10",
+   "point_exact": 0.0297,
+   "ci95_exact": [
+    -0.015,
+    0.0756
+   ],
+   "half_width_lo": 0.0447,
+   "half_width_hi": 0.0459,
+   "pm_exact_wider_half_width": 0.0459,
+   "unit": "metric",
+   "printed": "+0.030 ± 0.046",
+   "pm_printed": 0.046
+  },
+  {
+   "id": "s5_prose_WFF_recall",
+   "section": "5",
+   "quantity": "WF − F, QR R@10 (decl-clustered; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_F.qr810_recall@10",
+   "point_exact": 0.0395,
+   "ci95_exact": [
+    0.0148,
+    0.0636
+   ],
+   "half_width_lo": 0.0247,
+   "half_width_hi": 0.0241,
+   "pm_exact_wider_half_width": 0.0247,
+   "unit": "metric",
+   "printed": "+0.040 ± 0.025",
+   "pm_printed": 0.025
+  },
+  {
+   "id": "s5_prose_WFW_recall",
+   "section": "5",
+   "quantity": "WF − W, QR R@10 (decl-clustered; prose)",
+   "source": "union_ablation.json#race_row_sensitivity.qr810_WF_vs_W.diff_ci95",
+   "point_exact": 0.0691,
+   "ci95_exact": [
+    0.0312,
+    0.1082
+   ],
+   "half_width_lo": 0.0379,
+   "half_width_hi": 0.0391,
+   "pm_exact_wider_half_width": 0.0391,
+   "unit": "metric",
+   "printed": "+0.069 ± 0.039",
+   "pm_printed": 0.039
+  },
+  {
+   "id": "s5_prose_UF_recall",
+   "section": "5",
+   "quantity": "U − F, QR R@10 (decl-clustered; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.U_vs_F.qr810_recall@10",
+   "point_exact": -0.0161,
+   "ci95_exact": [
+    -0.0385,
+    0.005
+   ],
+   "half_width_lo": 0.0224,
+   "half_width_hi": 0.0211,
+   "pm_exact_wider_half_width": 0.0224,
+   "unit": "metric",
+   "printed": "−0.016 ± 0.022",
+   "pm_printed": 0.022
+  },
+  {
+   "id": "s5_prose_WFU_recall",
+   "section": "5",
+   "quantity": "WF − U, QR R@10 (decl-clustered; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_U.qr810_recall@10",
+   "point_exact": 0.0556,
+   "ci95_exact": [
+    0.032,
+    0.0802
+   ],
+   "half_width_lo": 0.0236,
+   "half_width_hi": 0.0246,
+   "pm_exact_wider_half_width": 0.0246,
+   "unit": "metric",
+   "printed": "+0.056 ± 0.025",
+   "pm_printed": 0.025
+  },
+  {
+   "id": "s5_mpr_arm_N",
+   "section": "5",
+   "quantity": "MathlibMPR group-recall@10, agent N (task-bootstrap)",
+   "source": "union_ablation.json#mpr.arms.N.per_task_mean_boot_ci95",
+   "point_exact": 0.2025,
+   "ci95_exact": [
+    0.1309,
+    0.2824
+   ],
+   "half_width_lo": 0.0716,
+   "half_width_hi": 0.0799,
+   "pm_exact_wider_half_width": 0.0799,
+   "unit": "metric",
+   "printed": "0.203 ± 0.080",
+   "pm_printed": 0.08
+  },
+  {
+   "id": "s5_mpr_arm_W",
+   "section": "5",
+   "quantity": "MathlibMPR group-recall@10, agent W (task-bootstrap)",
+   "source": "union_ablation.json#mpr.arms.W.per_task_mean_boot_ci95",
+   "point_exact": 0.2721,
+   "ci95_exact": [
+    0.1964,
+    0.3536
+   ],
+   "half_width_lo": 0.0757,
+   "half_width_hi": 0.0815,
+   "pm_exact_wider_half_width": 0.0815,
+   "unit": "metric",
+   "printed": "0.272 ± 0.082",
+   "pm_printed": 0.082
+  },
+  {
+   "id": "s5_mpr_arm_F",
+   "section": "5",
+   "quantity": "MathlibMPR group-recall@10, agent F (task-bootstrap)",
+   "source": "union_ablation.json#mpr.arms.F.per_task_mean_boot_ci95",
+   "point_exact": 0.5468,
+   "ci95_exact": [
+    0.4632,
+    0.6318
+   ],
+   "half_width_lo": 0.0836,
+   "half_width_hi": 0.085,
+   "pm_exact_wider_half_width": 0.085,
+   "unit": "metric",
+   "printed": "0.547 ± 0.085",
+   "pm_printed": 0.085
+  },
+  {
+   "id": "s5_mpr_arm_U",
+   "section": "5",
+   "quantity": "MathlibMPR group-recall@10, agent U (task-bootstrap)",
+   "source": "union_ablation.json#mpr.arms.U.per_task_mean_boot_ci95",
+   "point_exact": 0.5485,
+   "ci95_exact": [
+    0.4642,
+    0.6326
+   ],
+   "half_width_lo": 0.0843,
+   "half_width_hi": 0.0841,
+   "pm_exact_wider_half_width": 0.0843,
+   "unit": "metric",
+   "printed": "0.549 ± 0.084",
+   "pm_printed": 0.084
+  },
+  {
+   "id": "s5_mpr_arm_WF",
+   "section": "5",
+   "quantity": "MathlibMPR group-recall@10, agent WF (task-bootstrap)",
+   "source": "union_ablation.json#mpr.arms.WF.per_task_mean_boot_ci95",
+   "point_exact": 0.5569,
+   "ci95_exact": [
+    0.472,
+    0.6415
+   ],
+   "half_width_lo": 0.0849,
+   "half_width_hi": 0.0846,
+   "pm_exact_wider_half_width": 0.0849,
+   "unit": "metric",
+   "printed": "0.557 ± 0.085",
+   "pm_printed": 0.085
+  },
+  {
+   "id": "s5_prose_FW_mpr",
+   "section": "5",
+   "quantity": "F − W, MPR gR@10 (task-paired; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.F_vs_W.mpr_group_recall@10",
+   "point_exact": 0.2747,
+   "ci95_exact": [
+    0.1851,
+    0.3688
+   ],
+   "half_width_lo": 0.0896,
+   "half_width_hi": 0.0941,
+   "pm_exact_wider_half_width": 0.0941,
+   "unit": "metric",
+   "printed": "+0.275 ± 0.094",
+   "pm_printed": 0.094
+  },
+  {
+   "id": "s5_prose_WFF_mpr",
+   "section": "5",
+   "quantity": "WF − F, MPR gR@10 (task-paired; prose)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_F.mpr_group_recall@10",
+   "point_exact": 0.0101,
+   "ci95_exact": [
+    -0.0679,
+    0.0882
+   ],
+   "half_width_lo": 0.078,
+   "half_width_hi": 0.0781,
+   "pm_exact_wider_half_width": 0.0781,
+   "unit": "metric",
+   "printed": "+0.010 ± 0.078",
+   "pm_printed": 0.078
+  },
+  {
+   "id": "s5_tbl_WF_vs_F_qr810_recall@10",
+   "section": "5",
+   "quantity": "WF − F, QR R@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_F.qr810_recall@10",
+   "point_exact": 0.0395,
+   "ci95_exact": [
+    0.0148,
+    0.0636
+   ],
+   "half_width_lo": 0.0247,
+   "half_width_hi": 0.0241,
+   "pm_exact_wider_half_width": 0.0247,
+   "unit": "metric",
+   "printed": "+0.0395 ± 0.0247",
+   "pm_printed": 0.0247
+  },
+  {
+   "id": "s5_tbl_WF_vs_F_qr810_ndcg@10",
+   "section": "5",
+   "quantity": "WF − F, QR nDCG@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_F.qr810_ndcg@10",
+   "point_exact": 0.0305,
+   "ci95_exact": [
+    0.0099,
+    0.0515
+   ],
+   "half_width_lo": 0.0206,
+   "half_width_hi": 0.021,
+   "pm_exact_wider_half_width": 0.021,
+   "unit": "metric",
+   "printed": "+0.0305 ± 0.0210",
+   "pm_printed": 0.021
+  },
+  {
+   "id": "s5_tbl_WF_vs_F_mpr_group_recall@10",
+   "section": "5",
+   "quantity": "WF − F, MPR gR@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_F.mpr_group_recall@10",
+   "point_exact": 0.0101,
+   "ci95_exact": [
+    -0.0679,
+    0.0882
+   ],
+   "half_width_lo": 0.078,
+   "half_width_hi": 0.0781,
+   "pm_exact_wider_half_width": 0.0781,
+   "unit": "metric",
+   "printed": "+0.0101 ± 0.0781",
+   "pm_printed": 0.0781
+  },
+  {
+   "id": "s5_tbl_WF_vs_U_qr810_recall@10",
+   "section": "5",
+   "quantity": "WF − U, QR R@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_U.qr810_recall@10",
+   "point_exact": 0.0556,
+   "ci95_exact": [
+    0.032,
+    0.0802
+   ],
+   "half_width_lo": 0.0236,
+   "half_width_hi": 0.0246,
+   "pm_exact_wider_half_width": 0.0246,
+   "unit": "metric",
+   "printed": "+0.0556 ± 0.0246",
+   "pm_printed": 0.0246
+  },
+  {
+   "id": "s5_tbl_WF_vs_U_qr810_ndcg@10",
+   "section": "5",
+   "quantity": "WF − U, QR nDCG@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_U.qr810_ndcg@10",
+   "point_exact": 0.0402,
+   "ci95_exact": [
+    0.0187,
+    0.0628
+   ],
+   "half_width_lo": 0.0215,
+   "half_width_hi": 0.0226,
+   "pm_exact_wider_half_width": 0.0226,
+   "unit": "metric",
+   "printed": "+0.0402 ± 0.0226",
+   "pm_printed": 0.0226
+  },
+  {
+   "id": "s5_tbl_WF_vs_U_mpr_group_recall@10",
+   "section": "5",
+   "quantity": "WF − U, MPR gR@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.WF_vs_U.mpr_group_recall@10",
+   "point_exact": 0.0085,
+   "ci95_exact": [
+    -0.0664,
+    0.0833
+   ],
+   "half_width_lo": 0.0749,
+   "half_width_hi": 0.0748,
+   "pm_exact_wider_half_width": 0.0749,
+   "unit": "metric",
+   "printed": "+0.0085 ± 0.0749",
+   "pm_printed": 0.0749
+  },
+  {
+   "id": "s5_tbl_U_vs_F_qr810_recall@10",
+   "section": "5",
+   "quantity": "U − F, QR R@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.U_vs_F.qr810_recall@10",
+   "point_exact": -0.0161,
+   "ci95_exact": [
+    -0.0385,
+    0.005
+   ],
+   "half_width_lo": 0.0224,
+   "half_width_hi": 0.0211,
+   "pm_exact_wider_half_width": 0.0224,
+   "unit": "metric",
+   "printed": "-0.0161 ± 0.0224",
+   "pm_printed": 0.0224
+  },
+  {
+   "id": "s5_tbl_U_vs_F_qr810_ndcg@10",
+   "section": "5",
+   "quantity": "U − F, QR nDCG@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.U_vs_F.qr810_ndcg@10",
+   "point_exact": -0.0097,
+   "ci95_exact": [
+    -0.0294,
+    0.0095
+   ],
+   "half_width_lo": 0.0197,
+   "half_width_hi": 0.0192,
+   "pm_exact_wider_half_width": 0.0197,
+   "unit": "metric",
+   "printed": "-0.0097 ± 0.0197",
+   "pm_printed": 0.0197
+  },
+  {
+   "id": "s5_tbl_U_vs_F_mpr_group_recall@10",
+   "section": "5",
+   "quantity": "U − F, MPR gR@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.U_vs_F.mpr_group_recall@10",
+   "point_exact": 0.0017,
+   "ci95_exact": [
+    -0.0725,
+    0.0713
+   ],
+   "half_width_lo": 0.0742,
+   "half_width_hi": 0.0696,
+   "pm_exact_wider_half_width": 0.0742,
+   "unit": "metric",
+   "printed": "+0.0017 ± 0.0742",
+   "pm_printed": 0.0742
+  },
+  {
+   "id": "s5_tbl_F_vs_W_qr810_recall@10",
+   "section": "5",
+   "quantity": "F − W, QR R@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.F_vs_W.qr810_recall@10",
+   "point_exact": 0.0297,
+   "ci95_exact": [
+    -0.015,
+    0.0756
+   ],
+   "half_width_lo": 0.0447,
+   "half_width_hi": 0.0459,
+   "pm_exact_wider_half_width": 0.0459,
+   "unit": "metric",
+   "printed": "+0.0297 ± 0.0459",
+   "pm_printed": 0.0459
+  },
+  {
+   "id": "s5_tbl_F_vs_W_qr810_ndcg@10",
+   "section": "5",
+   "quantity": "F − W, QR nDCG@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.F_vs_W.qr810_ndcg@10",
+   "point_exact": 0.0283,
+   "ci95_exact": [
+    -0.011,
+    0.0684
+   ],
+   "half_width_lo": 0.0393,
+   "half_width_hi": 0.0401,
+   "pm_exact_wider_half_width": 0.0401,
+   "unit": "metric",
+   "printed": "+0.0283 ± 0.0401",
+   "pm_printed": 0.0401
+  },
+  {
+   "id": "s5_tbl_F_vs_W_mpr_group_recall@10",
+   "section": "5",
+   "quantity": "F − W, MPR gR@10 (final contrast table)",
+   "source": "grid_repaired.json#contrasts_repaired.F_vs_W.mpr_group_recall@10",
+   "point_exact": 0.2747,
+   "ci95_exact": [
+    0.1851,
+    0.3688
+   ],
+   "half_width_lo": 0.0896,
+   "half_width_hi": 0.0941,
+   "pm_exact_wider_half_width": 0.0941,
+   "unit": "metric",
+   "printed": "+0.2747 ± 0.0941",
+   "pm_printed": 0.0941
+  },
+  {
+   "id": "s6_wilson_arm_N",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm N (2/171; Wilson)",
+   "source": "retrieval_clustered.json#sorrydb.arms.N (proved k/n; Wilson z=1.96 recomputed from counts)",
+   "point_exact": 0.011695906432748537,
+   "ci95_exact": [
+    0.00321325400608612,
+    0.041636484271303245
+   ],
+   "half_width_lo": 0.008483,
+   "half_width_hi": 0.029941,
+   "pm_exact_wider_half_width": 0.029941,
+   "unit": "points",
+   "printed": "1.2% ± 3.0 points",
+   "pm_printed": 3.0,
+   "note": "bounds recomputed Wilson from stored counts"
+  },
+  {
+   "id": "s6_repoclust_arm_N",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm N (repo-clustered bootstrap)",
+   "source": "retrieval_clustered.json#sorrydb.arms.N.repo_boot_ci95",
+   "point_exact": 0.011695906432748537,
+   "ci95_exact": [
+    0.0,
+    0.0272
+   ],
+   "half_width_lo": 0.011696,
+   "half_width_hi": 0.015504,
+   "pm_exact_wider_half_width": 0.015504,
+   "unit": "points",
+   "printed": "1.2% ± 1.6 points",
+   "pm_printed": 1.6
+  },
+  {
+   "id": "s6_wilson_arm_F",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm F (9/171; Wilson)",
+   "source": "retrieval_clustered.json#sorrydb.arms.F (proved k/n; Wilson z=1.96 recomputed from counts)",
+   "point_exact": 0.05263157894736842,
+   "ci95_exact": [
+    0.027933280880335587,
+    0.09698893442769177
+   ],
+   "half_width_lo": 0.024698,
+   "half_width_hi": 0.044357,
+   "pm_exact_wider_half_width": 0.044357,
+   "unit": "points",
+   "printed": "5.3% ± 4.4 points",
+   "pm_printed": 4.4,
+   "note": "bounds recomputed Wilson from stored counts"
+  },
+  {
+   "id": "s6_repoclust_arm_F",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm F (repo-clustered bootstrap)",
+   "source": "retrieval_clustered.json#sorrydb.arms.F.repo_boot_ci95",
+   "point_exact": 0.05263157894736842,
+   "ci95_exact": [
+    0.0,
+    0.1065
+   ],
+   "half_width_lo": 0.052632,
+   "half_width_hi": 0.053868,
+   "pm_exact_wider_half_width": 0.053868,
+   "unit": "points",
+   "printed": "5.3% ± 5.4 points",
+   "pm_printed": 5.4
+  },
+  {
+   "id": "s6_wilson_arm_WF",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm WF (10/171; Wilson)",
+   "source": "retrieval_clustered.json#sorrydb.arms.WF (proved k/n; Wilson z=1.96 recomputed from counts)",
+   "point_exact": 0.05847953216374269,
+   "ci95_exact": [
+    0.032071358604502866,
+    0.10428978199361566
+   ],
+   "half_width_lo": 0.026408,
+   "half_width_hi": 0.04581,
+   "pm_exact_wider_half_width": 0.04581,
+   "unit": "points",
+   "printed": "5.8% ± 4.6 points",
+   "pm_printed": 4.6,
+   "note": "bounds recomputed Wilson from stored counts"
+  },
+  {
+   "id": "s6_repoclust_arm_WF",
+   "section": "6",
+   "quantity": "SorryDB proved rate, arm WF (repo-clustered bootstrap)",
+   "source": "retrieval_clustered.json#sorrydb.arms.WF.repo_boot_ci95",
+   "point_exact": 0.05847953216374269,
+   "ci95_exact": [
+    0.0,
+    0.1223
+   ],
+   "half_width_lo": 0.05848,
+   "half_width_hi": 0.06382,
+   "pm_exact_wider_half_width": 0.06382,
+   "unit": "points",
+   "printed": "5.8% ± 6.4 points",
+   "pm_printed": 6.4
+  },
+  {
+   "id": "s6_WF_minus_F",
+   "section": "6",
+   "quantity": "SorryDB WF − F (repo-clustered bootstrap)",
+   "source": "retrieval_clustered.json#sorrydb.WF_minus_F.repo_boot_ci95",
+   "point_exact": 0.0058,
+   "ci95_exact": [
+    0.0,
+    0.0185
+   ],
+   "half_width_lo": 0.0058,
+   "half_width_hi": 0.0127,
+   "pm_exact_wider_half_width": 0.0127,
+   "unit": "points",
+   "printed": "+0.58 ± 1.27 points",
+   "pm_printed": 1.27
+  },
+  {
+   "id": "s7_D_vs_E_span",
+   "section": "7",
+   "quantity": "grounded typecheck RD, D − E (limitations restatement)",
+   "source": "success_repaired.json#commit_clustered_bootstrap.repaired_oracle.D_vs_E",
+   "point_exact": 0.11,
+   "ci95_exact": [
+    -0.088889,
+    0.278846
+   ],
+   "half_width_lo": 0.198889,
+   "half_width_hi": 0.168846,
+   "pm_exact_wider_half_width": 0.198889,
+   "unit": "points",
+   "printed": "+11 ± 19.9 points",
+   "pm_printed": 19.9
+  }
+ ]
+}
