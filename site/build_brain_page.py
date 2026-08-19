@@ -266,6 +266,50 @@ section.kind.community h3 { border-bottom-color:#c9b98a; }
 /* frontier: sector rim labels are CLICKABLE (the .blabel default is pointer-events:none) */
 text.rimlab { pointer-events:auto; cursor:pointer; }
 text.rimlab:hover { fill:#38bdf8; }
+/* the frontier QUEUE: a ranked list filling the stage (#__frontier__ is the
+   DEFAULT; the polar map moved to #__frontier__:map). Rows are WINDOWED — the
+   DOM holds only the viewport slice; the scrollbar + the "N concepts" total
+   prove the full set (no-silent-filter rule). */
+#flist { position:absolute; inset:0; z-index:3; display:none; overflow-y:auto;
+  background:#0b0e14; cursor:default; touch-action:pan-y; outline:none;
+  overscroll-behavior:contain;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+#flhead { position:sticky; top:0; z-index:2; background:#0d1119;
+  border-bottom:1px solid #1c2230; padding:8px 12px 0; }
+#flctl { display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  padding-right:118px; }   /* room for the list|map toggle overlay at top-right */
+#fltotal { color:#e6e4de; font-size:.88rem; font-weight:600; }
+#flq { padding:3px 9px; border:1px solid #33405c; border-radius:6px; background:#0b0e14;
+  color:#e6e4de; font-size:.8rem; width:170px; }
+#flq:focus { outline:2px solid #38bdf855; }
+#flareas { display:flex; gap:6px; overflow-x:auto; padding:7px 0 6px;
+  scrollbar-width:thin; }   /* the 46 area chips, size-desc, as a scrollable strip */
+#flareas .fchip { flex:0 0 auto; }
+.flcols, .flrow { display:grid; gap:8px; align-items:center;
+  grid-template-columns:42px minmax(150px,1.6fr) 118px 96px 110px minmax(100px,0.9fr); }
+.flcols { padding:5px 0; color:#6b7488; font-size:.68rem; text-transform:uppercase;
+  letter-spacing:.06em; }
+#flbody { position:relative; margin:0 12px; }
+.flrow { position:absolute; left:0; right:0; height:34px; cursor:pointer;
+  border-bottom:1px solid #131826; font-size:.82rem; color:#c8cdd8; }
+.flrow:hover { background:#141a28; }
+.flrow.sel { background:#173753; }
+.flrow.act { box-shadow:inset 0 0 0 1px #38bdf8; }
+.flrank { color:#556074; font-size:.72rem; text-align:right; }
+.fllabel { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#e6e4de; }
+.flareabtn { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;
+  text-align:left; }
+.flprox { position:relative; height:8px; background:#1a2233; border-radius:4px;
+  overflow:hidden; }
+.flprox i { position:absolute; left:0; top:0; bottom:0; border-radius:4px;
+  background:linear-gradient(90deg,#3b82f6,#38bdf8); }
+.flev { display:flex; gap:3px; align-items:center; }
+.flev i { width:9px; height:9px; border-radius:50%; display:inline-block; flex:0 0 auto; }
+.flnear { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.74rem; }
+.flnear a { color:#7cb3ff; cursor:pointer; }
+/* the list|map toggle at the frontier level (the areas|halo fchip precedent:
+   a stage overlay of two .fchip buttons, shown only on the frontier views) */
+#fviewtoggle { position:absolute; top:10px; right:16px; z-index:5; display:none; gap:6px; }
 /* the Libraries control — ONE component, rendered by the root panel AND the frontier panel */
 .libctl { display:flex; flex-direction:column; gap:4px; margin:6px 0; }
 .librow { display:flex; gap:7px; align-items:center; font-size:.84rem; cursor:pointer;
@@ -393,6 +437,11 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
       <span style="color:#fb923c">literature</span> ·
       <span style="color:#2dd4bf">shared statement</span> ·
       tinted cells = logical communities</div>
+    <div id="flist" tabindex="0" aria-label="frontier queue"></div>
+    <div id="fviewtoggle">
+      <button id="fv-list" class="fchip" title="the frontier as a ranked queue — every homeless concept ordered by its formal proximity">list</button>
+      <button id="fv-map" class="fchip" title="the frontier as a polar map — areas as angular sectors, radius = formal-proximity percentile">map</button>
+    </div>
   </div>
   <div id="panel"><p class="note">The Brain as cells: every atom fuses a Wikidata
     concept, the Lean declaration that formalizes it, its entries in nLab / LMFDB /
@@ -426,15 +475,29 @@ const FRONTIER_ID = "__frontier__";   // pseudo-focus: the Frontier group — th
                                       // replaced the old undifferentiated
                                       // "no formal home" blob
 const isFrontierId = id => typeof id === "string" && id.startsWith("frontier:");
-// "#__frontier__:<Area>" — the frontier view focused on ONE area's sector (its
-// cells alone, spread over the full circle). The token after ":" is the
-// frontier row's <Area> id segment (hash-safe by the frontier id grammar
-// ^[A-Za-z][A-Za-z0-9_]{0,63}$), NOT its display label.
+// "#__frontier__:<token>" — a frontier sub-view. The token is either "map"
+// (the polar map), "map:<Area>" (the map with one sector focused) or a bare
+// frontier <Area> id segment (hash-safe by the frontier id grammar
+// ^[A-Za-z][A-Za-z0-9_]{0,63}$, NOT its display label) — the QUEUE filtered to
+// that area, which is where every pre-queue sector deep link now lands.
 const isSectorId = id => typeof id === "string" && id.startsWith(FRONTIER_ID + ":");
-// a sector focus → the frontier:<Area> row it names (null otherwise)
-const sectorAreaOf = id => isSectorId(id)
-  ? "frontier:" + id.slice(FRONTIER_ID.length + 1) : null;
-// the ONE frontier view (full circle or a sector focus)
+// The frontier's TWO surfaces share one grammar (the queue is the DEFAULT):
+//   __frontier__            → the ranked LIST (the queue)
+//   __frontier__:<Area>     → the queue filtered to that area (old sector links)
+//   __frontier__:map        → the polar map, full circle
+//   __frontier__:map:<Area> → the polar map, one sector focused
+// "map" is matched AHEAD of the area grammar: no frontier area is named "map"
+// today, and reserving the token keeps the routing unambiguous if one ever is.
+const FRONTIER_MAP_ID = FRONTIER_ID + ":map";
+function frontierViewOf(id) {
+  if (id === FRONTIER_ID) return {mode: "list", area: null};
+  if (!isSectorId(id)) return null;
+  const tok = id.slice(FRONTIER_ID.length + 1);
+  if (tok === "map") return {mode: "map", area: null};
+  if (tok.startsWith("map:")) return {mode: "map", area: "frontier:" + tok.slice(4)};
+  return {mode: "list", area: "frontier:" + tok};
+}
+// the ONE frontier surface pair (queue or map, full or focused)
 const isFrontierViewId = id => id === FRONTIER_ID || isSectorId(id);
 let manifest = null, labels = null, labelById = null, tree = null, aliases = null;
 const shardCache = new Map(), entryCache = new Map();
@@ -619,11 +682,13 @@ async function resolveId(id) {
     id = id === "__halo__" ? FRONTIER_ID
       : FRONTIER_ID + ":" + id.slice("__halo__:".length);
   if (id === FRONTIER_ID) return id;
-  // a sector id whose area vanished from this build resolves to the FULL
-  // frontier view, never to a dead canvas
+  // a frontier sub-view whose area vanished from this build resolves to the
+  // FULL view of the same surface (queue or map), never to a dead canvas
   if (isSectorId(id)) {
-    const area = sectorAreaOf(id);
-    return (tree.sc[area] || {}).frontier ? id : FRONTIER_ID;
+    const v = frontierViewOf(id);
+    if (v.mode === "map")
+      return !v.area || (tree.sc[v.area] || {}).frontier ? id : FRONTIER_MAP_ID;
+    return (tree.sc[v.area] || {}).frontier ? id : FRONTIER_ID;
   }
   if (isFrontierId(id)) return tree.sc[id] ? id : null;
   if (id.startsWith(STRAYS_PREFIX))
@@ -1370,9 +1435,15 @@ async function renderFocus(anim, opts) {
   await ensureTree();
   if (seq !== renderSeq) return;
   if (isFrontierViewId(focusId)) {
-    if (tree.prox) return renderFrontier(seq, anim);
+    if (tree.prox) {
+      const fv = frontierViewOf(focusId);
+      if (fv.mode === "list") return renderFrontierList(seq, anim);
+      flistShow(false);
+      return renderFrontier(seq, anim);
+    }
     focusId = FRONTIER_ID;   // fail-soft: a prox-less build renders area bubbles
   }
+  flistShow(false);   // every non-queue view: the list overlay is gone
   if (isCellId(focusId)) {
     const fe = await getEntry(focusId);
     if (seq !== renderSeq) return;
@@ -1671,10 +1742,11 @@ async function renderFrontier(seq, anim, moveAnim) {
     if (seq !== renderSeq) return;
   }
   if (libsFiltered()) ensureClientProx();   // no-op when the graph is missing
-  // sector focus (#__frontier__:<Area>): that area's cells alone, spread over
-  // the full circle. An area this build doesn't carry falls back to the full view.
-  let sector = sectorAreaOf(focusId);
-  if (sector && !((tree.sc[sector] || {}).frontier)) { sector = null; focusId = FRONTIER_ID; }
+  // sector focus (#__frontier__:map:<Area>): that area's cells alone, spread
+  // over the full circle. An area this build doesn't carry falls back to the
+  // full map view.
+  let sector = (frontierViewOf(focusId) || {}).area || null;
+  if (sector && !((tree.sc[sector] || {}).frontier)) { sector = null; focusId = FRONTIER_MAP_ID; }
   // a re-score ANIMATES: remember where every dot sits now, move it after
   const oldPos = moveAnim && layout && layout.frontier
     ? new Map([...layout.items.values()].map(l => [l.data.id, [l.x, l.y]])) : null;
@@ -1745,7 +1817,7 @@ async function renderFrontier(seq, anim, moveAnim) {
   const parityNote = parity.ran && !parity.ok
     ? " · ⚠ client scores disagree with the build (see console)" : "";
   statusEl.textContent = `${totalCells.toLocaleString()}${filterMask
-      ? ` of ${totalRaw.toLocaleString()} cells shown` : " cells"} · frontier view` +
+      ? ` of ${totalRaw.toLocaleString()} cells shown` : " cells"} · frontier map` +
     (sector ? ` · ${frontierName(sector)} sector` : "") +
     ` · ${nDirect.toLocaleString()} bond formal code directly · ` +
     `${nBridged.toLocaleString()} bridged only · ` +
@@ -1908,8 +1980,10 @@ async function renderFrontier(seq, anim, moveAnim) {
       .style("text-anchor", Math.cos(mid) > 0.25 ? "start"
         : Math.cos(mid) < -0.25 ? "end" : "middle")
       .text(frontierName(A.p))
+      // map mode stays in map mode: a rim label focuses the SECTOR on the map
+      // (#__frontier__:map:<Area>); the queue's area filter is the list's own
       .on("click", ev => { ev.stopPropagation();
-        gotoFrontierView(FRONTIER_ID + ":" + A.p.slice(9)); });
+        gotoFrontierView(FRONTIER_MAP_ID + ":" + A.p.slice(9)); });
     inked(t);
     const nRaw = ((tree.sc[A.p] || {}).cells || []).length;
     t.append("title").text(`focus this sector — ${frontierName(A.p)}'s cells alone, ` +
@@ -1996,6 +2070,369 @@ function updateFrontierLabels(k) {
 zoomBehav.on("zoom.frontier", ev => {
   if (layout && layout.frontier) applyFrontierScale(ev.transform.k);
 });
+// ---- the frontier QUEUE (#__frontier__, the DEFAULT frontier surface) -------
+// A virtualized ranked table of EVERY frontier cell passing the shared (V)
+// predicate — an HTML overlay in the stage (the explorer's xcanvasShow
+// precedent: a non-SVG surface swaps in over the empty SVG). Scoring is
+// activeProxFor — the SAME path the map and the cell cards read (shipped prox
+// all-on, scoreCells re-score under a library subset; the parity law rides
+// along untouched). Rows are WINDOWED: the DOM holds only the viewport slice,
+// the scrollbar + the "N concepts" total prove the full set, and nothing is
+// ever dropped silently (every narrowing is counted in the header + status).
+const FL_ROW_H = 34;      // fixed row height — the windowing arithmetic's anchor
+const FL_OVERSCAN = 8;    // rows rendered beyond each viewport edge
+// evidence badges, one per f-bit the labels rows carry (contract order; the
+// toolbar chips' own bit table — there is NO Wikipedia-sitelink bit, so the
+// article badge is the annotated WIKILEAN article organ, named honestly)
+const EVIDENCE_BADGES = [
+  [64,    "WikiLean article", "#7cb3ff", "an annotated WikiLean article organ"],
+  [1024,  "nLab",             "#4ade80", "an nLab page organ (Wikidata P4215)"],
+  [2048,  "MathWorld",        "#f87171", "a MathWorld page organ (Wikidata P2812)"],
+  [4096,  "ProofWiki",        "#60a5fa", "a ProofWiki page organ (Wikidata P6781)"],
+  [512,   "LMFDB",            "#facc15", "an LMFDB knowl organ (Wikidata P12987)"],
+  [16384, "OEIS",             "#a3e635", "an OEIS sequence organ (Wikidata P829)"],
+  [128,   "literature",       "#fb923c", "cited in / matched to the literature (\u22651 cites or matches bond \u2014 TheoremGraph)"],
+];
+function evidenceKindCount(f) {
+  let n = 0;
+  for (const [b] of EVIDENCE_BADGES) if (f & b) n++;
+  return n;
+}
+// queue state — session-local (sort/query/multi-area); a SINGLE selected area
+// also rides the hash as #__frontier__:<Area> so old sector links deep-link in
+let flSort = "readiness";   // "readiness" | "evidence" | "az"
+let flQuery = "";
+let flAreas = new Set();    // selected frontier:<Area> ids; empty = all areas
+let flRows = [];            // the CURRENT sorted+filtered contract rows
+let flUniverseN = 0;        // every prox-scored frontier cell (the honest M)
+let flActive = -1;          // keyboard cursor (index into flRows)
+let flWindowLo = -1, flWindowHi = -1, flWindowPending = false, flQT = 0;
+window.__flstats = {rows: 0, universe: 0, assembleMs: 0, sortMs: 0, windowMs: 0,
+                    rowsInDom: 0, firstPaintMs: 0};
+function flistShow(on) {
+  const el = $("#flist");
+  if (!el) return;
+  el.style.display = on ? "block" : "none";
+  if (!on && el.innerHTML) {
+    el.innerHTML = "";
+    el.scrollTop = 0;
+    flRows = []; flActive = -1; flWindowLo = flWindowHi = -1;
+  }
+}
+// the list|map toggle (the destroyed areas|halo #viewtoggle precedent):
+// visible only on the frontier surfaces, state = the hash id
+function updateFrontierToggle() {
+  const el = $("#fviewtoggle");
+  if (!el) return;
+  const on = tree && tree.prox && isFrontierViewId(focusId) && !explorerOn;
+  el.style.display = on ? "flex" : "none";
+  if (!on) return;
+  const v = frontierViewOf(focusId) || {mode: "list"};
+  $("#fv-list").classList.toggle("on", v.mode === "list");
+  $("#fv-map").classList.toggle("on", v.mode === "map");
+}
+async function renderFrontierList(seq, anim) {
+  const t0 = performance.now();
+  // same lazy-graph discipline as the map: a filtered library set needs the
+  // frontier graph BEFORE scoring; all-on renders the shipped prox immediately
+  const graphP = fetchFrontierGraph();
+  if (libsFiltered() && !fgraph && !fgraphFail) {
+    await graphP;
+    if (seq !== renderSeq) return;
+  }
+  if (libsFiltered()) ensureClientProx();
+  // a hash-carried area (#__frontier__:<Area> — every old sector link) seeds
+  // the chip selection; multi-select beyond one area is session state
+  const v = frontierViewOf(focusId) || {mode: "list", area: null};
+  if (v.area && !flAreas.has(v.area)) flAreas = new Set([v.area]);
+  for (const a of [...flAreas]) if (!((tree.sc[a] || {}).frontier)) flAreas.delete(a);
+  // the queue owns the stage: no SVG scene behind it, no stale selection ring
+  layout = {items: new Map(), leaves: [], frontierList: true};
+  edgeStore = [];
+  gEdges.selectAll("*").remove();
+  gOverlay.selectAll("*").remove();
+  gBubbles.selectAll("*").remove();
+  gLabels.selectAll("*").remove();
+  const el = $("#flist");
+  // an in-place re-render (re-score, resize, facet reshape) keeps the reader's
+  // scroll; a fresh entry starts at the top (flistShow(false) reset it to 0)
+  const prevScroll = el.style.display !== "none" ? el.scrollTop : 0;
+  el.innerHTML = flHeaderHtml();
+  flistShow(true);
+  wireFlHeader();
+  flRebuildRows(false);
+  el.scrollTop = prevScroll;
+  renderCrumb();   // crumb + the list|map toggle (synchronous on this path)
+  const stat = $("#structstat");
+  if (stat) stat.textContent =
+    "ranked queue — proximity client-scored, parity-checked against the build";
+  webState = {shown: 0, cells: flRows.length, capped: false};
+  // keyboard: the stage focus ring is the list itself (arrows + enter)
+  if (document.activeElement === document.body) el.focus({preventScroll: true});
+  window.__flstats.firstPaintMs = performance.now() - t0;
+}
+function flHeaderHtml() {
+  const sorts = [["readiness", "readiness",
+      "formal proximity, best-evidenced first (score desc, ties by id — deterministic)"],
+    ["evidence", "evidence",
+      "distinct evidence kinds (article / nLab / MathWorld / ProofWiki / LMFDB / OEIS / literature) desc, then proximity"],
+    ["az", "A–Z", "label, alphabetically"]];
+  let h = `<div id="flhead"><div id="flctl"><span id="fltotal"></span>
+    <span class="fgrouplabel">sort:</span>`;
+  for (const [k, lbl, why] of sorts)
+    h += `<button class="fchip flsort${flSort === k ? " on" : ""}" data-sort="${k}"
+      title="${esc(why)}">${esc(lbl)}</button>`;
+  h += `<input id="flq" type="search" placeholder="filter by name or aka…"
+    value="${esc(flQuery)}" autocomplete="off"></div><div id="flareas"></div>
+    <div class="flcols"><span style="text-align:right">#</span><span>concept</span>
+    <span>area</span>
+    <span title="bar = formal-proximity percentile over the whole frontier (client-scored under the current library set); hover a row's bar for the direct + bridged breakdown">proximity</span>
+    <span title="which evidence organs the cell carries — hover a dot to name it">evidence</span>
+    <span title="the area's nearest formal home — the library module a formalization would most likely land in">nearest formal home</span></div></div>
+    <div id="flbody"></div>`;
+  return h;
+}
+function flAreaChipsHtml() {
+  // tree.frontier is already (size desc, id) — the contract's chip order
+  let h = flAreas.size
+    ? `<button class="fchip on" id="flareaclear" title="clear the area filter">× clear (${flAreas.size} area${flAreas.size > 1 ? "s" : ""})</button>`
+    : "";
+  for (const p of tree.frontier) {
+    const nAll = ((tree.sc[p] || {}).cells || []).length;
+    const nv = filtersActive() ? countVisible(p) : nAll;
+    const on = flAreas.has(p);
+    h += `<button class="fchip flareachip${on ? " on" : ""}" data-area="${esc(p)}"
+      title="${esc(frontierName(p))} — ${nv !== nAll
+        ? `${nv.toLocaleString()} of ${nAll.toLocaleString()} cells shown`
+        : `${nAll.toLocaleString()} cells`} · click to ${on ? "remove from" : "add to"} the area filter">${
+      esc(frontierName(p))} <small>${nv !== nAll ? `${nv}/${nAll}` : nAll}</small></button>`;
+  }
+  return h;
+}
+function wireFlHeader() {
+  const el = $("#flist");
+  el.querySelectorAll(".flsort").forEach(b => b.addEventListener("click", () => {
+    if (flSort === b.dataset.sort) return;
+    flSort = b.dataset.sort;
+    el.querySelectorAll(".flsort").forEach(x =>
+      x.classList.toggle("on", x.dataset.sort === flSort));
+    flRebuildRows(true);
+  }));
+  const qi = $("#flq");
+  if (qi) qi.addEventListener("input", () => {
+    clearTimeout(flQT);
+    flQT = setTimeout(() => { flQuery = qi.value; flRebuildRows(true); }, 120);
+  });
+  flSyncAreaChips();
+}
+function flSyncAreaChips() {
+  const strip = $("#flareas");
+  if (!strip) return;
+  strip.innerHTML = flAreaChipsHtml();
+  strip.querySelectorAll(".flareachip").forEach(b =>
+    b.addEventListener("click", () => flToggleArea(b.dataset.area)));
+  const clr = $("#flareaclear");
+  if (clr) clr.addEventListener("click", () => {
+    flAreas = new Set();
+    flSyncFocusHash();
+    flRebuildRows(true);
+    flSyncAreaChips();
+  });
+}
+function flToggleArea(p) {
+  if (flAreas.has(p)) flAreas.delete(p); else flAreas.add(p);
+  flSyncFocusHash();
+  flRebuildRows(true);
+  flSyncAreaChips();
+}
+// ONE selected area is shareable state (#__frontier__:<Area>); zero or many
+// collapse the hash to the full queue — the chips carry the rest visibly
+function flSyncFocusHash() {
+  focusId = flAreas.size === 1
+    ? FRONTIER_ID + ":" + [...flAreas][0].slice(9) : FRONTIER_ID;
+  setHash(focusId);
+  renderCrumb();
+  // the panel tracks the view like every other travel path — unless a cell
+  // card is open (then the reader is mid-inspection; leave it alone)
+  if (isFrontierViewId(lastPanelId)) renderPanel(focusId);
+}
+// assemble + sort + window the contract rows under the CURRENT state. Every
+// narrowing is COUNTED (skipped prox drift, predicate-hidden, area filter,
+// quick filter) — the header + status always name N of M.
+function flRebuildRows(resetScroll) {
+  const el = $("#flist"), body = $("#flbody");
+  if (!el || !body) return;
+  const tA = performance.now();
+  const q = flQuery.trim().toLowerCase();
+  let universe = 0, skipped = 0, facetHidden = 0;
+  const rows = [];
+  for (const p of tree.frontier) {
+    const sc = tree.sc[p] || {};
+    const near = sc.near || null;
+    const aname = frontierName(p);
+    const areaOff = flAreas.size > 0 && !flAreas.has(p);
+    for (const cid of sc.cells || []) {
+      const px = activeProxFor(cid);
+      if (!px) { skipped++; continue; }   // no prox data — counted, never silent
+      universe++;
+      // (H) the shared (V) predicate governs membership — the library set acts
+      // on homeless cells through the re-SCORE (activeProxFor), never removal
+      if (!cellVisible(cid)) { facetHidden++; continue; }
+      if (areaOff) continue;   // counted via universe vs rows.length below
+      const r = labelById.get(cid) || {};
+      if (q) {
+        const lbl = r.label || cid;
+        if (!lbl.toLowerCase().includes(q) &&
+            !(r.aka || []).some(a => a.toLowerCase().includes(q))) continue;
+      }
+      rows.push({cid, label: r.label || cid, f: r.f || 0, area: p, aname, near,
+                 px, ek: evidenceKindCount(r.f || 0)});
+    }
+  }
+  const tS = performance.now();
+  // deterministic ties everywhere: score desc, then id (contract H)
+  const byId = (a, b) => (a.cid < b.cid ? -1 : a.cid > b.cid ? 1 : 0);
+  if (flSort === "az")
+    rows.sort((a, b) => a.label.localeCompare(b.label) || byId(a, b));
+  else if (flSort === "evidence")
+    rows.sort((a, b) => (b.ek - a.ek) || (b.px.s - a.px.s) || byId(a, b));
+  else
+    rows.sort((a, b) => (b.px.s - a.px.s) || byId(a, b));
+  const tW = performance.now();
+  flRows = rows;
+  flUniverseN = universe;
+  if (flActive >= rows.length) flActive = -1;
+  body.style.height = (rows.length * FL_ROW_H) + "px";
+  const tot = $("#fltotal");
+  if (tot) tot.textContent = rows.length === universe
+    ? `${universe.toLocaleString()} concepts`
+    : `${rows.length.toLocaleString()} of ${universe.toLocaleString()} shown`;
+  // chrome: the same honesty surfaces every frontier render writes
+  updateFilterStat({active: !!filterMask, shown: universe - facetHidden, total: universe});
+  updateHiddenChip(facetHidden);
+  const en = enabledLibs();
+  const libNote = !libsFiltered() ? ""
+    : clientProx
+      ? ` · libraries: ${en.length === 0 ? "none"
+          : en.length <= 3 ? en.join(" + ")
+          : `${en.length} of ${libRoots().length}`}`
+      : " · ⚠ library filter inactive (frontier_graph.json unavailable)";
+  const parityNote = parity.ran && !parity.ok
+    ? " · ⚠ client scores disagree with the build (see console)" : "";
+  statusEl.textContent = `${rows.length.toLocaleString()}${rows.length !== universe
+      ? ` of ${universe.toLocaleString()} cells shown` : " cells"} · frontier queue · ` +
+    `sorted by ${flSort === "az" ? "name"
+      : flSort === "evidence" ? "evidence breadth, then proximity"
+      : "formal proximity"}` +
+    (skipped > 0 ? ` · ${skipped} cells lack proximity data (drift — see console)` : "") +
+    libNote + parityNote;
+  if (skipped > 0)
+    console.warn(`[brain frontier] ${skipped} frontier cell(s) missing from prox — ` +
+      `the queue lists only what this build's prox arrays cover`);
+  if (resetScroll) el.scrollTop = 0;
+  flWindowLo = flWindowHi = -1;   // force a fresh window over the new rows
+  flWindow(true);
+  const st = window.__flstats;
+  st.rows = rows.length; st.universe = universe;
+  st.assembleMs = tS - tA; st.sortMs = tW - tS;
+}
+// ---- windowed rendering: the viewport slice only, absolute-positioned -------
+function flWindow(force) {
+  const el = $("#flist"), body = $("#flbody"), head = $("#flhead");
+  if (!el || !body) return;
+  const t0 = performance.now();
+  const headH = head ? head.offsetHeight : 0;
+  const st = el.scrollTop, vh = el.clientHeight || 600;
+  const lo = Math.max(0, Math.floor((st - headH) / FL_ROW_H) - FL_OVERSCAN);
+  const hi = Math.min(flRows.length, Math.ceil((st - headH + vh) / FL_ROW_H) + FL_OVERSCAN);
+  if (!force && lo === flWindowLo && hi === flWindowHi) return;
+  flWindowLo = lo; flWindowHi = hi;
+  let h = "";
+  for (let i = lo; i < hi; i++) h += flRowHtml(flRows[i], i);
+  body.innerHTML = h;
+  body.querySelectorAll(".flrow").forEach(rEl => rEl.addEventListener("click", ev => {
+    const areaBtn = ev.target.closest(".flareabtn");
+    if (areaBtn) { flToggleArea(areaBtn.dataset.area); return; }
+    const nav = ev.target.closest("[data-nav]");
+    if (nav) { navigate(nav.dataset.nav); return; }
+    flOpenRow(Number(rEl.dataset.i));
+  }));
+  const stx = window.__flstats;
+  stx.rowsInDom = hi - lo;
+  stx.windowMs = performance.now() - t0;
+}
+let flWindowTimer = 0;
+function scheduleFlWindow() {
+  if (flWindowPending) return;
+  flWindowPending = true;
+  const run = () => {
+    if (!flWindowPending) return;
+    flWindowPending = false;
+    clearTimeout(flWindowTimer);
+    flWindow(false);
+  };
+  requestAnimationFrame(run);
+  // rAF pauses in hidden tabs/panes (the scheduleXDraw trap) — a timer keeps a
+  // programmatic scroll from leaving the window stale; still one coalesced pass
+  flWindowTimer = setTimeout(run, 120);
+}
+function flRowHtml(row, i) {
+  const px = row.px;
+  const pct = px.r !== undefined ? Math.max(0, Math.min(1, 1 - px.r)) : 0;
+  const badges = EVIDENCE_BADGES.filter(([b]) => row.f & b).map(([b, name, col, why]) =>
+    `<i style="background:${col}" title="${esc(name + " — " + why)}"></i>`).join("");
+  const near = row.near
+    ? `<a data-nav="${esc(row.near)}" title="${esc(`the ${row.aname} frontier's nearest formal home — the library area its cells' synapse neighborhoods vote for`)}">${esc(row.near.slice(5))}</a>`
+    : `<span style="color:#556074" title="no formal home votes for this area (DeepFrontier/Unsorted)">—</span>`;
+  const ptitle = `formal proximity ${(+px.s).toLocaleString()} — ${proxSummary(px)}` +
+    (px.r !== undefined
+      ? ` · closer to formal code than ${Math.floor((1 - px.r) * 100)}% of the frontier` : "");
+  return `<div class="flrow${row.cid === selectedId ? " sel" : ""}${i === flActive ? " act" : ""}"
+      style="top:${i * FL_ROW_H}px" data-i="${i}" data-cid="${esc(row.cid)}">
+    <span class="flrank">${(i + 1).toLocaleString()}</span>
+    <span class="fllabel" title="${esc(row.label)} — click for the cell's card">${esc(row.label)}</span>
+    <button class="fchip flareabtn${flAreas.has(row.area) ? " on" : ""}" data-area="${esc(row.area)}"
+      title="area: ${esc(row.aname)} — click to toggle the area filter">${esc(row.aname)}</button>
+    <span class="flprox" title="${esc(ptitle)}"><i style="width:${(pct * 100).toFixed(1)}%"></i></span>
+    <span class="flev">${badges || `<small style="color:#556074">none</small>`}</span>
+    <span class="flnear">${near}</span></div>`;
+}
+// a row opens the cell's EXISTING side-panel card (renderPanel → the cell card
+// with its organs, snippets, synapses — and the Build-on-these section)
+function flOpenRow(i) {
+  const row = flRows[i];
+  if (!row) return;
+  flActive = i;
+  selectedId = row.cid;
+  renderPanel(row.cid);
+  flWindow(true);   // refresh the .sel/.act row highlights
+}
+function flEnsureVisible(i) {
+  const el = $("#flist"), head = $("#flhead");
+  if (!el) return;
+  const headH = head ? head.offsetHeight : 0;
+  const top = headH + i * FL_ROW_H, bot = top + FL_ROW_H;
+  if (top < el.scrollTop + headH) el.scrollTop = top - headH;
+  else if (bot > el.scrollTop + el.clientHeight) el.scrollTop = bot - el.clientHeight;
+}
+$("#flist").addEventListener("scroll", () => {
+  if (layout && layout.frontierList) scheduleFlWindow();
+});
+$("#flist").addEventListener("keydown", ev => {
+  if (!layout || !layout.frontierList || !flRows.length) return;
+  if (ev.target && ev.target.id === "flq" && ev.key !== "Escape") return;
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+    ev.preventDefault();
+    const d = ev.key === "ArrowDown" ? 1 : -1;
+    flActive = flActive < 0 ? (d > 0 ? 0 : flRows.length - 1)
+      : Math.max(0, Math.min(flRows.length - 1, flActive + d));
+    flEnsureVisible(flActive);
+    flWindow(true);
+  } else if (ev.key === "Enter" && flActive >= 0) {
+    ev.preventDefault();
+    flOpenRow(flActive);
+  }
+});
 // searching while in the frontier view keeps the view for hits that are ON it:
 // spotlight-pulse the dot + open its card. Anything not on the current view
 // (areas, formalized cells, another sector's cells) navigates exactly as today.
@@ -2031,8 +2468,15 @@ async function searchGo(rawId) {
   navigate(rawId);
 }
 // ---- the Libraries control (root panel + frontier panel, ONE component) -----
+// ONE re-score path for BOTH frontier surfaces (never fork scoring): the queue
+// re-assembles + re-ranks its rows through the same activeProxFor the map's
+// dots read; the map animates its dots to the new radii.
 async function reScoreFrontier() {
   const seq = ++renderSeq;
+  if (layout && layout.frontierList) {
+    await renderFrontierList(seq, false);   // in place: rows re-rank, scroll kept
+    return;
+  }
   await renderFrontier(seq, false, true);   // instant: no refetch, no zoom reset; dots animate
 }
 async function setLibEnabled(name, on) {
@@ -2207,7 +2651,18 @@ function setExplorer(on) {
   }
 }
 
+// Explicit travel to the FULL frontier drops the queue's session-local area
+// multi-select (the chips' state): the hash is the state that survives travel,
+// and it can carry at most ONE area — landing on #__frontier__ and silently
+// keeping a stale area filter would show a filtered list under a full-view
+// hash. Re-renders (re-score, resize, facet reshape) never pass through these
+// entry points, so live narrowing keeps its chips.
+function flClearAreasOnFullTravel(id) {
+  if (id === FRONTIER_ID) flAreas = new Set();
+}
+
 async function zoomInto(id) {
+  flClearAreasOnFullTravel(id);
   // slick part: scale the clicked bubble up to fill the stage, then swap levels.
   // Drive it through the pan/zoom transform so it composes with (and replaces)
   // any manual pan the user has applied — L.x/L.y are always identity-space.
@@ -2258,12 +2713,15 @@ async function zoomOut() {
     await renderFocus(true);
     return;
   }
-  const parent = isSectorId(focusId) ? FRONTIER_ID   // sector → full frontier view
+  const fvUp = isSectorId(focusId) ? frontierViewOf(focusId) : null;
+  const parent = fvUp   // map sector → full map; map → roots; area queue → full queue
+    ? (fvUp.mode === "map" ? (fvUp.area ? FRONTIER_MAP_ID : ROOTS_ID) : FRONTIER_ID)
     : focusId === FRONTIER_ID ? ROOTS_ID
     : isFrontierId(focusId) ? FRONTIER_ID
     : focusId === UNPLACED_ID ? (tree.frontier.length ? FRONTIER_ID : ROOTS_ID)
     : focusId.startsWith(STRAYS_PREFIX) ? focusId.slice(STRAYS_PREFIX.length)
     : ((tree.sc[focusId] || {}).parent || ROOTS_ID);
+  flClearAreasOnFullTravel(parent);   // zoom-out is full travel: stale area chips clear
   focusId = parent;
   selectedId = null;
   setHash(parent);
@@ -2298,6 +2756,7 @@ async function navigate(rawId) {
   if (explorerOn) setExplorer(false);   // navigation = travel to the atom's home
   const id = await resolveId(rawId);
   if (!id) { renderPanel(rawId); return; }
+  flClearAreasOnFullTravel(id);
   focusId = id;
   selectedId = isCellId(id) ? id : null;
   setHash(id);
@@ -2317,9 +2776,15 @@ function pathChain(p) {
 async function renderCrumb() {
   let html = `<a data-nav="${ROOTS_ID}">all libraries</a>`;
   if (isSectorId(focusId)) {
-    const sec = sectorAreaOf(focusId);
-    html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>` +
-      ` <span class="sep">/</span> <b>${esc(frontierName(sec))} sector</b>`;
+    const v = frontierViewOf(focusId);
+    html += ` <span class="sep">/</span> <a data-nav="${FRONTIER_ID}">Frontier</a>`;
+    if (v.mode === "map")
+      html += v.area
+        ? ` <span class="sep">/</span> <a data-nav="${FRONTIER_MAP_ID}">map</a>` +
+          ` <span class="sep">/</span> <b>${esc(frontierName(v.area))} sector</b>`
+        : ` <span class="sep">/</span> <b>map</b>`;
+    else
+      html += ` <span class="sep">/</span> <b>${esc(frontierName(v.area))} · queue</b>`;
   } else if (focusId === FRONTIER_ID) {
     html += ` <span class="sep">/</span> <b>Frontier</b>`;
   } else if (isFrontierId(focusId)) {
@@ -2364,6 +2829,7 @@ async function renderCrumb() {
         setHash(""); renderFocus(true); renderPanel(ROOTS_ID); }
       else navigate(a.dataset.nav);
     }));
+  updateFrontierToggle();   // every view renders the crumb — the toggle rides it
 }
 // ============================ panel ==========================================
 const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
@@ -2956,6 +3422,64 @@ async function renderCellPanel(id, e) {
       libsFiltered() && clientProx
         ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
 
+  // (D) 'Build on these': a FRONTIER cell's formalized neighbor cells — the
+  // concrete formal anchors a formalization of this concept could build on.
+  // Neighbors come from the cell's own synapses; "formalized" is the labels
+  // row's `p` (placed in the containment tree ⇔ has a decl organ — the same
+  // test the dots' blue/grey fill uses), restricted to the enabled libraries
+  // (the (V) table's library half — facets never gate a formal anchor). The
+  // concrete decl name + module need each neighbor's shard entry, filled in
+  // asynchronously below; the partner label, bond kinds and weight are free.
+  const isFrontierCell = tree && tree.cellArea && tree.cellArea.has(c.id);
+  let buildNbs = [], bodRowRef = null;
+  if (isFrontierCell) {
+    buildNbs = (e.syn || []).filter(s => isCellId(s.id) &&
+      ((labelById && labelById.get(s.id)) || {}).p && libOkById(s.id));
+    if (buildNbs.length) {   // syn ships weight-sorted — heaviest anchors first
+      const shown = buildNbs.slice(0, 8);
+      // px.db (shipped, all-libraries) is the build's own neighbor count; a
+      // client re-score carries no db, and the shard's synapse cap can hide
+      // lighter neighbors — name the honest total whenever it exceeds the list
+      const totalFormal = !libsFiltered() && px && px.db !== undefined
+        ? Math.max(px.db, buildNbs.length) : buildNbs.length;
+      html += `<section class="kind" id="buildon"><h3 title="formalized neighbor cells — the declarations this concept's synapses bond to, i.e. the formal anchors a formalization could build on">Build on these
+        <span class="cnt">(${shown.length}${totalFormal > shown.length
+          ? ` of ${totalFormal} formalized neighbors — this card shows the heaviest-bonded`
+          : ""})</span></h3>`;
+      const bodRow = bodRowRef = s => {
+        const kinds = Object.keys(s.kinds || {});
+        return `<div class="edge"><div class="row" style="cursor:default">
+          <span class="nav" data-nav="${esc(s.id)}"
+            style="color:#1a4b8f;cursor:pointer;font-weight:600">${esc(synLabel(s.id))}</span>
+          ${kinds.map(k => {
+            const st = EDGE_STYLE[k] || {color: SYN_COLOR, label: k};
+            return `<span class="mk" title="${esc(st.label)}"><span style="color:${
+              st.color}">●</span> ${esc(k)}</span>`;
+          }).join(" ")}
+          <span class="prov" title="the number of constituent bonds">weight ${s.w}</span>
+          <span class="lit-ref" data-bod="${esc(s.id)}" style="flex-basis:100%">resolving its declaration…</span>
+        </div></div>`;
+      };
+      html += shown.map(bodRow).join("");
+      if (buildNbs.length > shown.length)
+        html += `<div class="edge" id="bod-more-row"><a id="bod-more" style="cursor:pointer"
+          title="the shard ships this cell's heaviest ${buildNbs.length} synapses — render every bonded formalized neighbor">show
+          all ${buildNbs.length} bonded</a></div>`;
+      html += `</section>`;
+    } else {
+      const area = tree.cellArea.get(c.id);
+      const near = area ? (tree.sc[area] || {}).near : null;
+      html += `<section class="kind" id="buildon"><h3>Build on these</h3>
+        <p class="note">deep frontier — no formal anchor yet: none of this cell's
+        synapses reach a formalized cell${libsFiltered() ? " in the enabled libraries" : ""}${
+        near
+          ? `; nearest area home: <a data-nav="${esc(near)}">${esc(near.slice(5))}</a>`
+          : area
+            ? `, and its area (${esc(frontierName(area))}) has no formal home either`
+            : ""}.</p></section>`;
+    }
+  }
+
   // organs, grouped by kind: the informal identity, the formal identity, the
   // article, the outside world, the literature — in that order
   const byKind = new Map();
@@ -3002,6 +3526,40 @@ async function renderCellPanel(id, e) {
   html += `<div id="community-slot"></div>`;
   panelEl.innerHTML = html;
   wirePanel();
+  // Build-on-these, 'show all N bonded': swap the link row for the remaining
+  // neighbors, re-wire nav, re-run the decl fill for the fresh [data-bod]s
+  const moreBtn = panelEl.querySelector("#bod-more");
+  if (moreBtn) moreBtn.addEventListener("click", () => {
+    const row = panelEl.querySelector("#bod-more-row");
+    if (!row || !bodRowRef) return;
+    row.outerHTML = buildNbs.slice(8).map(bodRowRef).join("");
+    wirePanel();
+    fillBuildonDecls();
+  });
+  // Build-on-these, phase 2: each anchor's concrete DECL NAME + module lives in
+  // the neighbor's own shard entry — parallel cached fetches, filled in
+  // place. A miss is said out loud, never left as a spinner.
+  function fillBuildonDecls() {
+  panelEl.querySelectorAll("[data-bod]").forEach(async elx => {
+    const nid = elx.dataset.bod;
+    const ne = await getEntry(nid);
+    if (lastPanelId !== id || !panelEl.contains(elx)) return;
+    elx.removeAttribute("data-bod");   // one-shot, like enrichEvidence's data-lbl
+    const decls = ne ? (ne.organs || []).filter(o => o.kind === "decl") : [];
+    if (decls.length) {
+      const d = decls[0];
+      elx.innerHTML = `<code>${esc(d.label || d.id)}</code>${
+        d.module ? ` · <code>${esc(d.module)}</code>` : ""}${
+        decls.length > 1 ? ` · +${decls.length - 1} more decl${
+          decls.length > 2 ? "s" : ""} on its card` : ""}`;
+    } else {
+      elx.textContent = ne
+        ? "no decl organ in its shard (drift — the labels index says it has one)"
+        : "neighbor entry unavailable";
+    }
+  });
+  }
+  fillBuildonDecls();
   // clicking a synapse row opens its drawer in the panel
   panelEl.querySelectorAll("[data-syn]").forEach(r =>
     r.addEventListener("click", ev => {
@@ -3338,11 +3896,17 @@ function rootsPanel() {
         ? `${frVis.toLocaleString()} of ${frAll.toLocaleString()} shown`
         : frAll.toLocaleString()})</span></h3>
       <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
-      formalizes them yet. <a data-nav="${FRONTIER_ID}">Open the frontier</a>: the
-      ${tree.frontier.length} areas as sectors around the formal core${tree.prox
-        ? `, every cell placed by its <b>formal proximity</b> — the bond-weighted
-        evidence tying it to formalized code, so a concept riding hundreds of bonds
-        hugs the core while one with no formal signal sits outermost` : ""}.</p></section>`;
+      formalizes them yet. ${tree.prox
+        ? `<a data-nav="${FRONTIER_ID}">Browse the queue</a>: every frontier concept
+        ranked by its <b>formal proximity</b> — the bond-weighted evidence tying it to
+        formalized code, so a concept riding hundreds of bonds ranks above one with no
+        formal signal — with its evidence, its area and the formal anchors to build
+        on. Or open the <a data-nav="${FRONTIER_MAP_ID}">polar map</a>: the
+        ${tree.frontier.length} areas as sectors around the formal core, every cell
+        placed by that same proximity`
+        : `<a data-nav="${FRONTIER_ID}">Open the frontier</a>: the
+        ${tree.frontier.length} frontier areas (this build ships no proximity data,
+        so they render as dive-able bubbles)`}.</p></section>`;
   else if (tree.unplaced.length)
     html += `<section class="kind"><h3>No formal home <span class="cnt">(${
       filtersActive() && unplacedVisibleN() !== tree.unplaced.length
@@ -3355,16 +3919,18 @@ function rootsPanel() {
   wirePanel();
 }
 // ---- the Frontier group + its areas (frontier:<Area> rows on the tree) ------
-// ONE panel for the ONE frontier view: the full circle (#__frontier__) and a
-// sector focus (#__frontier__:<Area>). Counts reflect the prox ON SCREEN — the
-// client re-score when the library set is filtered, the shipped arrays
-// otherwise.
+// ONE panel for BOTH frontier surfaces: the queue (#__frontier__, optionally
+// #__frontier__:<Area>) and the map (#__frontier__:map[:<Area>]). Counts
+// reflect the prox ON SCREEN — the client re-score when the library set is
+// filtered, the shipped arrays otherwise.
 async function frontierPanel(id) {
   id = id || FRONTIER_ID;
   await ensureTree();
   if (lastPanelId !== id) return;
-  const sector = sectorAreaOf(id);
-  const areas = sector && (tree.sc[sector] || {}).frontier ? [sector] : tree.frontier;
+  const fv = frontierViewOf(id) || {mode: "list", area: null};
+  const base = fv.mode === "map" ? FRONTIER_MAP_ID : FRONTIER_ID;
+  const sector = fv.area && (tree.sc[fv.area] || {}).frontier ? fv.area : null;
+  const areas = sector ? [sector] : tree.frontier;
   // counts run under the SAME (V) predicate the canvas renders: membership =
   // prox'd AND cellVisible; the library set acts through the re-score
   let total = 0, totalRaw = 0, nDirect = 0, nBridged = 0, nZero = 0;
@@ -3379,26 +3945,33 @@ async function frontierPanel(id) {
       if (px.dw > 0) nDirect++; else if (px.iw > 0) nBridged++; else nZero++;
     }
   let html = `<div class="crumb"><a data-nav="${ROOTS_ID}">all libraries</a> /
-      ${sector
-        ? `<a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(sector))} sector`
-        : "Frontier"}</div>
-    <h2>${sector ? `${esc(frontierName(sector))} — frontier sector` : "The Frontier"}</h2>
+      ${fv.mode === "map"
+        ? `<a data-nav="${FRONTIER_ID}">Frontier</a> / ${sector
+            ? `<a data-nav="${FRONTIER_MAP_ID}">map</a> / ${esc(frontierName(sector))} sector`
+            : "map"}`
+        : sector
+          ? `<a data-nav="${FRONTIER_ID}">Frontier</a> / ${esc(frontierName(sector))}`
+          : "Frontier"}</div>
+    <h2>${sector
+      ? `${esc(frontierName(sector))} — frontier ${fv.mode === "map" ? "sector" : "queue"}`
+      : "The Frontier"}</h2>
     <div class="sub">${filterMask && total !== totalRaw
       ? `${total.toLocaleString()} of ${totalRaw.toLocaleString()} cells shown`
       : `${total.toLocaleString()} cells`} · ${sector ? "one area"
       : `${tree.frontier.length} areas`} · atoms with no Lean declaration${
       libsFiltered() && clientProx
         ? ` · libraries: ${esc(enabledLibs().join(" + ") || "none")}` : ""}</div>`;
-  html += sector
+  if (fv.mode === "map") html += sector
     ? `<p class="note">One frontier area's cells, spread over the full circle — dot
        labels render where they fit, and zooming reveals more. Each dot's distance
        from the center is its <b>formal proximity</b>: the trace weight of its bonds
        straight into formalized cells, plus ¼ of what its frontier neighbors can
        bridge (each bridge capped by both the bond and the neighbor's own direct
        evidence), rank-mapped over the whole frontier. Click the canvas background
-       (or <a data-nav="${FRONTIER_ID}">here</a>) to return to the full view, or open
-       <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a> as dive-able
-       dots.</p>`
+       (or <a data-nav="${FRONTIER_MAP_ID}">here</a>) to return to the full map,
+       browse <a data-nav="${FRONTIER_ID + ":" + sector.slice(9)}">this area in the
+       queue</a>, or open <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a>
+       as dive-able dots.</p>`
     : `<p class="note">Nothing formalizes these atoms yet, so the containment tree
        cannot place them. Each is filed under the <b>library area its synapse
        neighborhood points at</b> — a weighted vote of its formalized neighbors
@@ -3409,15 +3982,30 @@ async function frontierPanel(id) {
        bridge capped by both the bond and the neighbor's own direct evidence),
        rank-mapped over the whole frontier — a concept riding hundreds of bonds hugs
        the core; one thread to an isolated node sits far out. Click a sector's rim
-       label to focus it.</p>`;
+       label to focus it, or <a data-nav="${FRONTIER_ID}">browse the queue</a> — the
+       same cells as a ranked list.</p>`;
+  else html += `<p class="note">${sector
+      ? `One frontier area's cells as a ranked queue — the rest of the frontier is
+         one chip-click away. `
+      : `Nothing formalizes these atoms yet. The queue ranks every frontier cell by
+         its `}<b>formal proximity</b>${sector ? " orders the rows" : ""}: the trace
+       weight of ${sector ? "each cell's" : "its"} bonds straight into formalized
+       cells, plus ¼ of what its frontier neighbors can bridge (each bridge capped
+       by both the bond and the neighbor's own direct evidence). Sort by readiness,
+       evidence breadth or name; the chips filter by area; click a row for the
+       cell's full card, with the formal anchors to build on. Or open the
+       <a data-nav="${sector ? FRONTIER_MAP_ID + ":" + sector.slice(9) : FRONTIER_MAP_ID}">polar
+       map</a> — the same proximity as radius.</p>`;
   if (tree.prox)
     html += `<section class="kind"><h3>Formal proximity</h3><div class="chips">
       <span class="chip" title="cells with at least one synapse straight into a formalized cell">bond formal code directly <b>${nDirect.toLocaleString()}</b></span>
       <span class="chip" title="cells whose only formal evidence bridges through a frontier neighbor (¼-damped, capped by the neighbor's own direct evidence)">bridged only <b>${nBridged.toLocaleString()}</b></span>
       <span class="chip" title="no bonds into formalized cells and no bridging neighbor with any — zero formal evidence">no formal signal <b>${nZero.toLocaleString()}</b></span></div>
-      <p class="note">The central disc is the enabled formal libraries; click it to
-      open them. The outermost dots carry no formal signal at all — the deepest
-      frontier.</p></section>`;
+      <p class="note">${fv.mode === "map"
+        ? `The central disc is the enabled formal libraries; click it to open them.
+           The outermost dots carry no formal signal at all — the deepest frontier.`
+        : `The top of the readiness sort is the strongest formal evidence; the
+           zero-signal cells sit at the bottom — the deepest frontier.`}</p></section>`;
   if (!sector) {
     html += `<section class="kind"><h3>Areas <span class="cnt">(${
       tree.frontier.length})</span></h3><div class="chips">`;
@@ -3501,8 +4089,9 @@ async function frontierAreaPanel(id) {
       trace weight + ¼ of what frontier neighbors can bridge, each bridge capped by
       both the bond and the neighbor's own direct evidence) — the dive and the list
       below run best-evidenced first.
-      <a data-nav="${FRONTIER_ID + ":" + id.slice(9)}">See this area as a sector on
-      the frontier view</a>.</p></section>`;
+      <a data-nav="${FRONTIER_ID + ":" + id.slice(9)}">See this area in the frontier
+      queue</a> · <a data-nav="${FRONTIER_MAP_ID + ":" + id.slice(9)}">as a sector on
+      the polar map</a>.</p></section>`;
   }
   if ((sc.top || []).length) {
     const topVis = filtersActive() ? sc.top.filter(t => cellVisible(t.cell)) : sc.top;
@@ -4604,6 +5193,7 @@ async function renderExplorer(anim) {
   gBubbles.selectAll("*").remove();
   gLabels.selectAll("*").remove();
   buildXState(leaves);
+  flistShow(false);   // the explorer's canvas owns the stage — the queue is gone
   xcanvasShow(true);
   scheduleXDraw();   // even a 0-leaf scope paints (clears) a frame — never stale pixels
   // Fit the camera to where the cells actually ARE, not to the bounding box.
@@ -4651,6 +5241,7 @@ async function renderExplorer(anim) {
       setExplorer(false); focusId = ROOTS_ID; selectedId = null;
       setHash(""); renderFocus(true); renderPanel(ROOTS_ID);
     }));
+  updateFrontierToggle();   // the explorer writes its own crumb — hide the toggle here too
   const statusBase = `explorer: ${leaves.length.toLocaleString()}${filtered
       ? ` of ${universeN.toLocaleString()}` : ""} cells${filtered ? " shown" : ""} · ${
     xEdges.length.toLocaleString()} synapses · ${scopeLabel} · `;
@@ -4712,8 +5303,8 @@ async function filtersChanged() {
   if (explorerOn) {
     xInputT = performance.now();   // (P) filter-toggle → first-frame telemetry (i2f)
     await renderExplorer(false);
-  } else if (layout && layout.frontier && isFrontierViewId(focusId)) {
-    await reScoreFrontier();   // in place: membership + radii; surviving dots glide
+  } else if (layout && (layout.frontier || layout.frontierList) && isFrontierViewId(focusId)) {
+    await reScoreFrontier();   // in place: membership + radii/ranks; surviving dots glide
   } else if (layout && layout.ego) {
     await renderFocus(false, {keepZoom: true});
   } else {
@@ -4743,12 +5334,26 @@ $("#explorerbtn").addEventListener("click", () => {
   if (explorerOn) renderExplorer(true);
   else renderFocus(true);
 });
+// the list|map toggle: travel within the ONE frontier surface pair; a focused
+// area carries across (map sector ↔ queue filtered to that area)
+$("#fv-list").addEventListener("click", () => {
+  const v = frontierViewOf(focusId);
+  if (!v || v.mode === "list") return;
+  gotoFrontierView(v.area ? FRONTIER_ID + ":" + v.area.slice(9) : FRONTIER_ID);
+});
+$("#fv-map").addEventListener("click", () => {
+  const v = frontierViewOf(focusId);
+  if (!v || v.mode === "map") return;
+  const one = flAreas.size === 1 ? [...flAreas][0] : v.area;
+  gotoFrontierView(one ? FRONTIER_MAP_ID + ":" + one.slice(9) : FRONTIER_MAP_ID);
+});
 
 // travel within the ONE frontier view (full circle ↔ a sector focus) — the
 // state IS the hash id (#__frontier__ / #__frontier__:<Area>), so both deep-link
 function gotoFrontierView(id) {
   if (focusId === id) return;
   if (explorerOn) setExplorer(false);
+  flClearAreasOnFullTravel(id);
   focusId = id;
   selectedId = null;
   setHash(id);
@@ -4812,6 +5417,7 @@ if (typeof ResizeObserver !== "undefined") {
     clearTimeout(stageRT);
     stageRT = setTimeout(() => {
       if (layout && layout.explorer) { scheduleXDraw(); return; }
+      if (layout && layout.frontierList) { flWindow(true); return; }   // re-window only
       if (!layout || !layout.frontier) return;
       const w = stageEl.clientWidth, h = stageEl.clientHeight;
       if (Math.abs(w - (layout.fvW || 0)) < 2 &&
