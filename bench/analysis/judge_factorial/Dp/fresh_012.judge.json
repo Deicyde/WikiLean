@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Critical: b_F is only required to be a Basis (Fin n) ℝ F, not orthonormal — without orthonormality of b_F, det(M)^2 = det(G) is false in general (det G = det(M)^2 * det(Gram matrix of b_F), which is 1 only if b_F is orthonormal). Counterexample: E=F=ℝ, f=id, b_E={1} orthonormal, b_F={2}: (det M)^2 = 0.25 ≠ det G = 1. This makes the produced statement mathematically false as a universally quantified claim, not just differently formalized.",
+  "Restricts the field to ℝ, whereas gold is stated for general RCLike 𝕜 (covering ℝ and ℂ).",
+  "Forces F (=V) to be finite-dimensional with the same dimension n as E (via Basis (Fin n) ℝ F), whereas gold's V has no finite-dimensionality requirement and need not share U's dimension — normDet/Gram-determinant formulation in gold is intrinsic and works even when V is infinite-dimensional.",
+  "Introduces an extra hypothesis (arbitrary basis b_F of F) not present in gold; gold's formulation needs no basis of V at all, only the images of U's orthonormal basis under f.",
+  "Uses a continuous linear map (E →L[ℝ] F) instead of a general linear map (U →ₗ[𝕜] V) as in gold; only harmless because finite-dimensionality is assumed, but is a type-level deviation from gold.",
+  "Replaces the intrinsic 'normDet' invariant (defined independent of any target basis) with det of a basis-dependent matrix representation, which is not the same mathematical object without further constraints."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_012",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 57.0,
+ "judge_cost_usd": 0.173552,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e298e5f8b3f4a534908f1a1a4043913a683943333e32bd6f22e0a5e3a8bddcf3"
+}

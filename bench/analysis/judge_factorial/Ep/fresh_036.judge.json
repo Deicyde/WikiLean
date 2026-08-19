@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition direction is reversed: the produced statement composes with an immersion g : M'' → M mapping INTO the domain M (precomposition f ∘ g), whereas the informal statement and gold compose with an immersion φ : N → N' mapping FROM the codomain into a further manifold (postcomposition φ ∘ f). These are different mathematical claims.",
+  "The produced statement universally quantifies over ALL immersions g (and all possible source manifolds M'') inside the iff's right-hand side, whereas the gold fixes a single given immersion φ as an external hypothesis (hφ : IsImmersionOfComplement F J J' n φ). This changes the logical structure and strength of the theorem.",
+  "The produced statement uses the weaker/generic 'IsImmersion' predicate, dropping the 'complement' structure required by the gold's 'IsImmersionOfComplement' (which also carries an extra type parameter F for the complement space) — this hypothesis appears essential to the actual theorem and is missing/weakened.",
+  "As a result of the reversed composition direction and universal quantification, the produced statement is not the same proposition as, nor confidently equivalent to, the informal statement or the gold statement."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 41.4,
+ "judge_cost_usd": 0.13649,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d07ecd57d0ba109f7c64235b4ef8d597e0080e0fcd69d843b08f3f3604de0f62"
+}

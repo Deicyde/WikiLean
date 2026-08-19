@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Predicate is typed as p : α → Prop with an added [DecidablePred p] instance instead of gold's p : α → Bool; List.find? in Lean 4 core has signature (α → Bool) → List α → Option α, so passing a Prop-valued p relies on an implicit Bool-coercion mechanism that may not directly typecheck, and it introduces a typeclass constraint (DecidablePred p) that has no counterpart in the gold statement",
+  "The subsingleton condition 'at most one element of l satisfies p' is expressed via a raw double-∀ implication (∀ x ∈ l, ∀ y ∈ l, p x → p y → x = y) rather than gold's Set.Subsingleton on {x ∈ l₁ | p x}; equivalent in content but tied to the Prop/Bool predicate mismatch above, reducing confidence the two statements are interchangeable as written"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_033",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 145.7,
+ "judge_cost_usd": 0.37879,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2c8cdcd538f6bc83861c78e5fc1d13996209ac98c4c486e8ff2dafcb308d7a57"
+}

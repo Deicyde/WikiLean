@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis `[MeasurableSet i]` that is not present in the gold statement, restricting the claim to measurable sets whereas the gold holds for arbitrary sets `i` (signed measures return 0 on non-measurable sets by definition, but the produced statement doesn't state this generality)",
+  "States `MeasurableSet i` as an instance-implicit argument `[...]` rather than an ordinary hypothesis, which is non-idiomatic use of a Prop as a typeclass and changes how it must be discharged (instance synthesis) compared to an explicit proof term"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_057",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 41.8,
+ "judge_cost_usd": 0.131296,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b7b12862304de021a40d722b434f4a072719cc63a981b9309dd2f5d874359e1c"
+}

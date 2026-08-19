@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Antitone hypothesis is global (`Antitone f`) rather than restricted to `Icc 0 N` as in gold's `AntitoneOn f (Icc 0 (N:ℝ))`, over-restricting f",
+  "Nonnegativity hypothesis is global (`∀ x, 0 ≤ f x`) rather than restricted to `Ioi 0` as in gold's `∀ t ∈ Ioi 0, 0 ≤ f t`",
+  "Integrability hypothesis is global (`MeasureTheory.Integrable f`, integrable on all of ℝ) rather than `IntegrableOn f (Ioi 0)` as in gold",
+  "Conclusion integrates over all of ℝ (`∫ x, f x`) instead of over `Ioi 0` as in gold (`∫ x in Ioi 0, f x`)",
+  "Combining global antitone + global nonneg + global integrable on ℝ forces f ≡ 0 (since a nonneg antitone function that is not eventually 0 cannot be integrable over (-∞, a] for any a where f(a)>0), making the produced statement a degenerate/trivial special case rather than the general integral-test theorem expressed by the gold statement"
+ ],
+ "arm": "J",
+ "task_id": "fresh_023",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 39.3,
+ "judge_cost_usd": 0.310267,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "3bffc95369a49cd7312ed37003bc1dda54b1b5b40f779e0063d96764633dca58"
+}

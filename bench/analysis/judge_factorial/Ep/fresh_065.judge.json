@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `[w.1.LiesOver v.1]` instead of `[w.LiesOver v]`: `w.1`/`v.1` project `InfinitePlace L`/`InfinitePlace K` down to the underlying `AbsoluteValue L ℝ`/`AbsoluteValue K ℝ` (since `InfinitePlace` is a subtype of `AbsoluteValue`). The `LiesOver` relation used here (per the gold's `open scoped NumberField.LiesOver`) is defined specifically for `InfinitePlace`, analogous to `Ideal.LiesOver` being defined only for `Ideal` and not for a generic underlying structure, so applying it to the raw `AbsoluteValue` projections is very likely a type error / references a nonexistent instance rather than an equivalent unbundled spelling of the same class."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_065",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 89.7,
+ "judge_cost_usd": 0.264146,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8c6d215eb4f51d9eb0ce067c140715164fd7423092341bd253646fbec366890d"
+}

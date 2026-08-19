@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Missing the integrability hypothesis (gold's IntegrableOn f (Ioi a)): the produced statement is actually false without it, since Mathlib's integral defaults to 0 for non-integrable functions. Counterexample: f(x)=1 for x≀0, f(x)=1/(1+x) for x>0 is globally antitone and nonneg, but not integrable on Ioi 0, so the RHS becomes just f(0)=1 while the LHS harmonic-like partial sums diverge, violating the claimed inequality for large n.",
+  "Antitone hypothesis strengthened from gold's local AntitoneOn f (Icc a b) to a global Antitone f over all of ℝ, an unnecessary and unjustified extra constraint (e.g. on negative reals).",
+  "Nonnegativity hypothesis strengthened from gold's ∀ t ∈ Ioi a, 0 ≀ f t to ∀ x, 0 ≀ f x over all reals, again adding an unneeded constraint.",
+  "Loses gold's generality over the ray's starting point a : β„•; the produced statement hardcodes the ray to start at 0 rather than an arbitrary a."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_022",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 56.3,
+ "judge_cost_usd": 0.17489,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "46a20c2f7bc08b25e4503ec497ea1ca5e7e0238cc9b94846e9f656d19e94bd12"
+}

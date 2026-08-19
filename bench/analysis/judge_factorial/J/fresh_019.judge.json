@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "tsum f sums over the domain type of f (ℝ), not over ℕ as in the gold's ∑' (n : ℕ), f n — since f : ℝ → ℝ is not summable over the uncountable index set ℝ, tsum f is a completely different (junk-valued) object, not the intended infinite sum over natural numbers",
+  "hf_nonneg (∀ x, 0 ≤ f x) requires non-negativity on all of ℝ, not just on (N-1, ∞) as in gold's nonneg hypothesis — an unjustified strengthening/change of hypothesis",
+  "hf_antitone (Antitone f) requires antitonicity on all of ℝ, not just on [N-1, ∞) as in gold's AntitoneOn f (Ici (N-1)) — an unjustified strengthening/change of hypothesis",
+  "Uses Set.Ioo (N - 1 : ℝ) ∞ for both the integrability domain and the integral, but ℝ has no literal '∞' element (no OrderTop instance), so this does not correspond to Mathlib's Set.Ioi (N - 1 : ℝ) used in the gold and likely fails to typecheck or means something other than the intended open ray"
+ ],
+ "arm": "J",
+ "task_id": "fresh_019",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 32.2,
+ "judge_cost_usd": 0.111608,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "858b75ba226fcf80367aa808b212cfec54101e3584fecd64908a52cd736fdeaa"
+}

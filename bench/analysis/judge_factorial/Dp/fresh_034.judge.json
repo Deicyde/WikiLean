@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition direction is reversed: the gold composes the immersion after f (φ∘f : M → N′, φ mapping from the codomain N into a further manifold N′), matching 'composition with an immersion into a further manifold'; the produced statement instead composes before f (f∘φ), with φ mapping into the domain M, not out of the codomain — this is a different construction.",
+  "The gold takes a single fixed C^n immersion φ as a hypothesis (as in 'a C^n immersion'), while the produced statement universally quantifies over all immersions φ : P → M, changing the logical structure of the claim.",
+  "Produced statement forces all manifolds (M, N, and the auxiliary P) to share the same model I : ModelWithCorners 𝕜 E H, collapsing the gold's distinct models I, I′, J, J′ for the domain, codomain, and 'further manifold' — losing generality needed for a genuinely different further manifold.",
+  "No 'further manifold' beyond N is ever introduced in the produced statement (φ maps P → M, staying within/around the domain), whereas the informal/gold statement requires composing into an additional manifold beyond the codomain N.",
+  "Because the identity map on M is itself a C^n immersion, instantiating the produced ∀-clause at φ = id trivializes the equivalence (the ∀ clause alone already forces ContMDiff n f via composition with identity), so the produced statement does not capture the intended nontrivial content of testing smoothness of f via post-composition with an immersion into a larger manifold."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 52.7,
+ "judge_cost_usd": 0.160502,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "33425a0e95f800b1eec33743a69913fed2e124205d504c9b51f4af5ef226ff00"
+}

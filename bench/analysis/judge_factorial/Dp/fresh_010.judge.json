@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces the canonical `normDet` (defined once via orthonormal bases, independent of the particular basis chosen) with an ad hoc formulation that explicitly quantifies over chosen orthonormal bases b, b' and takes Matrix.det of the coordinate matrix — a different (though related) statement rather than the same proposition about the pre-defined normDet function.",
+  "Adds a hypothesis not present in gold: codomain E' must be FiniteDimensional, whereas gold only requires the domain U to be finite-dimensional and leaves V (the codomain) of arbitrary dimension, including possibly infinite-dimensional.",
+  "Uses index types Fin (finrank 𝕜 E) and Fin (finrank 𝕜 E') for the two bases, so LinearMap.toMatrix b b' f.toLinearMap has type Matrix (Fin (finrank E')) (Fin (finrank E)) 𝕜; applying Matrix.det to this requires the row and column index types to match, i.e. silently forces finrank 𝕜 E = finrank 𝕜 E'. This is not guaranteed for a general (possibly non-surjective) linear isometry as in gold, so the statement either fails to elaborate for the general case or implicitly restricts to isometric equivalences, narrowing/altering gold's generality.",
+  "Missing explicit [NormedAddCommGroup E] and [NormedAddCommGroup E'] instance hypotheses required for [InnerProductSpace 𝕜 E] / [InnerProductSpace 𝕜 E'] to elaborate, since InnerProductSpace requires NormedAddCommGroup as a prior instance argument."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_010",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 102.8,
+ "judge_cost_usd": 0.287409,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8055d7c01e3be0a96c270ce5321c859979bb23226ec56f11c2a303e34a470a48"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Domain set is written as `u '' range (n + 1)` (Finset.range, coerced to a Set of naturals) instead of gold's `u '' Iic n`; these denote the same set of indices {0,...,n} but are differently-constructed terms rather than a purely notational variant of the same structure.",
+  "`n` is implicit `{n : ℕ}` in the produced statement versus explicit `(n : ℕ)` in gold, changing the binder mode/usability though not the underlying proposition.",
+  "Arguments to `edist` are swapped (`edist (f (u (i+1))) (f (u i))` vs gold's `edist (f (u i)) (f (u (i+1)))`); mathematically equal by symmetry of edist, but not syntactically identical."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_090",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 68.2,
+ "judge_cost_usd": 0.392567,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "089f34fd82e7d3241f05698fa4056aedbb6e433349adb7b48712473beaac3987"
+}

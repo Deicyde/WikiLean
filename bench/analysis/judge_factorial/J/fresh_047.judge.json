@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`Matrix.rank F M` is not a valid application of Mathlib's `Matrix.rank`, which takes a single explicit argument (the matrix, e.g. `M.rank`) with the field/ring inferred from the matrix's type — the gold statement itself confirms this via `M.rank`. As written this term likely fails to elaborate.",
+  "Restricts the carrier/index type to `Fin n` instead of gold's arbitrary finite type `m` (with `[Fintype m] [DecidableEq m]`), so the statement is less general than the gold (though for fixed n it captures essentially the same content via the standard Fintype-to-Fin n relabeling).",
+  "Replaces gold's general target `(fromBlocks 1 0 0 0).submatrix e e`, which existentially quantifies over a reindexing equivalence e, with a fixed canonical diagonal indicator `i.val < rank`; while this can be shown equivalent (since invertible P, Q can absorb any needed permutation), it is a different, less explicit structural formulation rather than the same expression."
+ ],
+ "arm": "J",
+ "task_id": "fresh_047",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 128.7,
+ "judge_cost_usd": 0.347621,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "efdacb1e35b5b1de9402b7500bebca535e232cbf3cd0e14daf046a1c1af20aa9"
+}

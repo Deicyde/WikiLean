@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis uses `BoundedVariationOn f s` (global bounded variation) instead of `LocallyBoundedVariationOn f s`, a strictly stronger assumption than the informal statement (\"locally bounded variation\") and gold require.",
+  "Uses `Monotone p`, `Monotone n` (monotonicity required over the entire type α) instead of `MonotoneOn p s`, `MonotoneOn q s` (monotonicity only on s), imposing an unwarranted stronger requirement not supported by the informal statement or provable from mere local bounded variation on s.",
+  "Equality is only required pointwise on s (`∀ x ∈ s, f x = p x - n x`) rather than the global function equality `f = p - q` from gold, changing what is actually being asserted about p, n outside s.",
+  "The 'combined increments equal the total variation' clause is weakened to a single aggregate equation `eVariationOn p s + eVariationOn n s = eVariationOn f s` instead of gold's pointwise-for-every-pair condition `∀ x ∈ s, ∀ y ∈ s, (p y - p x) + (q y - q x) = variationOnFromTo f s x y`, losing the stronger subinterval-additivity content.",
+  "Uses `eVariationOn` (ℝ≥0∞-valued, unsigned total variation) instead of `variationOnFromTo` (ℝ-valued signed variation between two points), a different mathematical object than gold's, not just a notational variant."
+ ],
+ "arm": "J",
+ "task_id": "fresh_095",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 63.0,
+ "judge_cost_usd": 0.194371,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "c8f228bbe3176afee69d52b68e2ea7b42fb5176835d055a850b192c8a3be3d91"
+}

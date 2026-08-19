@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis h_contmdiff : ContMDiff n f that is identical to the conclusion, making the theorem a trivial tautology (assumes what it should prove) instead of deriving ContMDiff from the immersion hypothesis alone",
+  "Uses undefined/nonexistent 'Manifold.IsImmersion f' (unary immersion predicate) instead of gold's 'IsImmersionOfComplement F I J n f', dropping the model-with-corners structure (I, J), the complement space F, and the smoothness class n from the immersion hypothesis",
+  "Fixes both manifolds' model space to ℝ via ChartedSpace ℝ M / ChartedSpace ℝ N instead of general model-with-corners I : ModelWithCorners 𝕜 E H, J : ModelWithCorners 𝕜 E'' G over a general field 𝕜",
+  "Conclusion trivially follows from the added hypothesis rather than expressing the actual content that immersions of class C^n are themselves C^n"
+ ],
+ "arm": "J",
+ "task_id": "fresh_037",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 9.3,
+ "judge_cost_usd": 0.053102,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "eff7582cfc77ca8c9bf3b5f78b104a0bc6003573c54164f83872a21febe917f7"
+}

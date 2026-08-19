@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "`{n : ℕ}` is used directly as the index type in `Matrix n n F`, but `Matrix` requires its index arguments to be `Type*`, not a term of type `ℕ` — this does not typecheck as written (presumably `Fin n` was intended).",
+  "Even granting `n` is meant to index via `Fin n`, the quantifier `∀ i j : Fin n` is used while `A : Matrix n n F` is indexed by `n` itself, so `A i j` / `(P.val * A * Q.val) i j` would not type-check — the index types don't match.",
+  "`Matrix.GeneralLinearGroup n F` requires `[Fintype n] [DecidableEq n] [CommRing F]` instances on the index type `n`; with `n : ℕ` these instances don't apply, compounding the type error.",
+  "`Matrix.rank F A` passes the field/ring as an explicit separate argument, which does not match Mathlib's actual signature for `Matrix.rank` (rank is a function of the matrix alone, `A.rank`, with the ring implicit).",
+  "Drops the gold's generality over an arbitrary finite index type `m` (with `Fintype m`, `DecidableEq m`), instead (attempting to) restrict to `Fin n`, and correspondingly drops the existential reindexing equivalence `e : m ≃ Fin rank ⊕ Fin (card - rank)` that the gold uses to place the identity block after an arbitrary reindexing.",
+  "Overall the statement as given is not well-formed Lean (fails to elaborate), so it cannot be judged as expressing the same or an equivalent proposition to the gold with confidence."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_047",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 71.9,
+ "judge_cost_usd": 0.204309,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d1b74d06cea078bdcc0fe18bce923b7843fef5496abb1b22eac67c5ba0f39ec3"
+}

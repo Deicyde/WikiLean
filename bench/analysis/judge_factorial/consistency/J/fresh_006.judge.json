@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra explicit hypothesis h_smul : ∀ b₁ b₂, b₁ ≤ b₂ → a • b₁ ≤ a • b₂ that is not present in the gold statement; the gold derives this monotonicity fact from the PosSMulMono α β typeclass (a structural property of the ordered scalar action) together with ha : 0 ≤ a, rather than assuming it directly",
+  "This makes the produced theorem nearly trivial (a direct consequence of composition), whereas the gold's real content is that PosSMulMono + 0 ≤ a suffices to conclude monotonicity of a • f — the produced statement fails to capture this",
+  "Missing the PosSMulMono α β (or equivalent) typeclass assumption that ties monotonicity of scalar multiplication to nonnegativity of the scalar for all elements, not just a hypothesized fact about the particular a"
+ ],
+ "arm": "J",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 24.6,
+ "judge_cost_usd": 0.084266,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "b0e248a69f1ee6c2854b2c56ff80a7499ec281c0b50b699ee7218882c9464e80"
+}

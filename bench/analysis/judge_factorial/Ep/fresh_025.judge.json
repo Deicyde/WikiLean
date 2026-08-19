@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis `hant : Antitone f` requires monotonicity on all of ℝ, whereas gold only requires `AntitoneOn f (Ici 0)` (antitone on [0,∞)); this strictly strengthens the hypothesis, restricting the theorem to a narrower class of functions than gold covers.",
+  "Hypothesis `hnn : ∀ x, 0 ≤ f x` requires nonnegativity on all of ℝ, whereas gold only requires nonnegativity on (0,∞) (`∀ t ∈ Ioi 0, 0 ≤ f t`); this strictly strengthens the hypothesis compared to gold.",
+  "IntegrableOn is stated on `Ici 0` instead of `Ioi 0`; while measure-theoretically equivalent (since {0} is null) given f's implied measurability, it is a differently-scoped domain than gold's Ioi 0."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_025",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.0,
+ "judge_cost_usd": 0.094127,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "32d1f864213a7d620e53356a8a7e3f21ae4b570ff3de861c66f425720a0dea43"
+}

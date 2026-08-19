@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Defines 'exact' as the conjunction (map₂ ∘ map₁ = 0 ∧ Injective map₁ ∧ Surjective map₂), i.e. a full short exact sequence condition, instead of the standard middle-exactness (image of map₁ = kernel of map₂) used by Mathlib's `ShortComplex.Exact`; this is a strictly stronger/different notion than the gold's categorical `Exact`.",
+  "Does not use an actual restriction functor (resFunctor) to construct the restricted complex from the original; instead introduces an independent variable `C_restricted` constrained only by ad hoc equivariance-compatibility hypotheses, which does not faithfully encode 'S.map (resFunctor f)' and could be satisfied by complexes that are not literally the restriction.",
+  "Uses `Representation H R` (raw representation type) rather than the bundled category `Rep k G` with a `Category` instance; `Representation` in Mathlib requires a module-type parameter (Representation k G V), so `Representation H R` / `Representation G R` is malformed or at best an incomplete/nonstandard application, and there is no evident `ShortComplex` category structure on this type.",
+  "Adds explicit equivariance hypotheses for C.map₁, C.map₂, C_restricted.map₁, C_restricted.map₂ as extra universally quantified premises, which in the gold are automatically guaranteed by working in the category Rep k G / Rep k H (morphisms are already equivariant); this changes the logical structure of the statement by adding hypotheses not present in the gold.",
+  "Conclusion is stated as an iff between two explicit conjunctions rather than the gold's `(S.map (resFunctor f)).Exact ↔ S.Exact`, obscuring whether it captures the same abstract categorical exactness notion.",
+  "Group/Monoid assumptions differ ([Group G] [Group H] with Semiring R) vs gold's [Monoid G] [Monoid H] with the exactness lemma requiring [CommRing k]; not a strict match though possibly a weaker/stronger typeclass substitution."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 46.3,
+ "judge_cost_usd": 0.139402,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e1cc0a845c7d647a822c2ec1cf344f0d916a3155322d5626b21af341b793e81a"
+}

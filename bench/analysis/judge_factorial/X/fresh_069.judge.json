@@ -1,0 +1,15 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Does not introduce an explicit base prime ideal p (as in gold's `p : Ideal R` with `P.LiesOver p`); instead relies on `Ideal.inertiaDeg`'s convention of implicitly using the prime lying under q (i.e., comap (algebraMap R S) q, aka q.under R) as the base prime. This is mathematically equivalent since `LiesOver p` forces p = comap q, but it changes the hypothesis/parameter structure relative to gold (one fewer explicit index variable and no LiesOver instance), so it is not a strict match even though the resulting proposition is equivalent."
+ ],
+ "arm": "X",
+ "task_id": "fresh_069",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 150.2,
+ "judge_cost_usd": 0.400827,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "419d98e4bc6c83bed26d7d58c720ea25938239dbfe71bd9d39ac5a5bc31e5201"
+}

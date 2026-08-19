@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds an extra hypothesis [I.IsMaximal] not present in the gold statement, which only assumes p and P (q) are maximal plus the LiesOver relations — this narrows the theorem's applicability relative to gold",
+  "Uses the standard Mathlib Ideal.inertiaDeg (dot-notation, `I.inertiaDeg R`) rather than the gold's custom `inertiaDeg'` — these are differently-named declarations and there is no guarantee they coincide definitionally or in required hypotheses",
+  "Conclusion is phrased with the base ideal argument implicit/derived via LiesOver instances rather than explicit as in gold, compounding the uncertainty about whether it matches gold's inertiaDeg' p I formulation exactly"
+ ],
+ "arm": "X",
+ "task_id": "fresh_068",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 152.8,
+ "judge_cost_usd": 0.425615,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9035fa63ac8640e2f184c162d807ca12857cdb2df028f9b493ad327e6e8325c7"
+}

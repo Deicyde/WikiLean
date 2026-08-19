@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Requires CompleteLinearOrder α instead of LinearOrder α, restricting the theorem to complete lattices and losing gold's generality (gold applies to any LinearOrder with OrderTopology, complete or not, e.g. ℚ)",
+  "Requires CompleteLinearOrder β instead of LinearOrder β, same unnecessary restriction on the codomain",
+  "Adds an extra hypothesis hbot : f ⊥ = ⊥ that is not part of the gold statement; this fact should follow from continuity+monotonicity (it's part of what LeftOrdContinuous implies at s = ∅), not be assumed as a premise",
+  "Uses OrderClosedTopology β instead of OrderTopology β, a different (weaker) topological hypothesis on β than gold's",
+  "Conclusion is reformulated as an unconditional sSup equality f (sSup s) = sSup (f '' s) for all sets s (relying on completeness so sSup is always defined), rather than gold's LeftOrdContinuous f, which via IsLUB only asserts the property for sets that actually possess a supremum — this changes the scope/generality of the claim, not just its packaging"
+ ],
+ "arm": "X",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 52.4,
+ "judge_cost_usd": 0.165102,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "21e961562f89a6855ac92f5be78dc2bde9206f503a8ecfa9402a8a8c2e06927c"
+}

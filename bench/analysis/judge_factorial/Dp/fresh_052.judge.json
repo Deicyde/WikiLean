@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds hypothesis `hg : Continuous g` not present in the gold statement, which is unconditional",
+  "Adds integrability hypotheses `h_left` and `h_right` not present in gold; the gold theorem holds unconditionally (Mathlib integrals default to 0 when not integrable, and integrability transfers across the exp substitution)",
+  "Restricts codomain to `g : ℝ → ℝ` instead of the general Banach space `g : ℝ → E` with `[NormedAddCommGroup E] [NormedSpace ℝ E]`, losing the generality of the gold statement",
+  "Uses multiplication `Real.exp x * g (Real.exp x)` instead of scalar multiplication `exp x • g (exp x)`, consistent only with the narrowed real-valued case rather than the general vector-valued formulation"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 13.5,
+ "judge_cost_usd": 0.096979,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "97917e5a1763000b4272f7083c95dd3f416a1c0b519dcecc67058dfa6fdc4508"
+}

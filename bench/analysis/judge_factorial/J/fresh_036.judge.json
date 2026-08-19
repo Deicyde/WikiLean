@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition direction is reversed: gold postcomposes f with an immersion φ of the codomain N into a further manifold N' (φ ∘ f : M → N'), matching 'composition with an immersion into a further manifold'; produced instead precomposes with an immersion i into the domain M (f ∘ i : P → M → N), which is a different construction (extending the domain, not the codomain).",
+  "In gold, φ is a single fixed C^n immersion given as a hypothesis; in produced, the immersion i is universally quantified over all P and all immersions i : P → M. This changes the logical structure and (since the identity map M → M is an immersion) trivializes the backward direction of the iff, making the produced statement not capture the intended content.",
+  "Produced constrains the auxiliary manifold P to share the exact same chart model type H as M (ChartedSpace H P) rather than allowing a genuinely different/further model as gold's J, J' do for N, N', which conflicts with the 'further manifold' framing.",
+  "Produced's hypothesis uses a generic 'IsImmersion i' instead of the more specific 'IsImmersionOfComplement' structure with order n used in gold, and does not clearly tie the immersion's smoothness order to n, so it does not faithfully capture 'a C^n immersion'.",
+  "Gold's further manifold N' carries its own independent model/typeclass data (E''', J') distinct from M and N; produced has no such target manifold and structure for the composition's codomain, since composition is precomposition rather than postcomposition."
+ ],
+ "arm": "J",
+ "task_id": "fresh_036",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 48.9,
+ "judge_cost_usd": 0.148427,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "9eb98e1a1a7c082f1997ab6add4feb49b7256ee96d1b4a1255908de08592d5bb"
+}

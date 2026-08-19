@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses CovariantClass R β (· • ·) (· ≤ ·), which asserts monotonicity of scalar multiplication for EVERY a : R (positive or negative), not just for a ≥ 0. This does not correctly encode the informal 'for a ≥ 0' hypothesis — it makes `ha : 0 ≤ a` a redundant, unused premise, unlike gold's PosSMulMono α β, which is precisely the sign-conditional monotonicity class matching the informal statement.",
+  "The typeclass assumption is strictly stronger than needed: CovariantClass R β (•) (≤) for all a implies PosSMulMono, but not conversely, so the produced statement applies to a narrower class of scalar actions (e.g. it excludes standard cases like ℤ acting on itself by multiplication, which satisfies PosSMulMono but not unconditional covariance). This makes the produced statement a genuinely different, non-equivalent proposition.",
+  "Adds unnecessary algebraic structure not present in gold: requires [Monoid R] and [DistribMulAction R β] (which itself requires AddMonoid β and distributivity of • over addition), whereas gold only needs [SMul α β] [Zero α] with no additive/multiplicative structure on the scalar or target type.",
+  "Missing [Zero R] instance: `0 ≤ a` for a : R requires a Zero R instance, but none of the declared typeclasses (Monoid R, Preorder R) provide one, so the statement likely fails to elaborate as written.",
+  "Missing [AddMonoid β] instance required by [DistribMulAction R β] — only [Preorder β] is declared for β, so this typeclass hypothesis likely cannot be synthesized/fails to elaborate."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 74.4,
+ "judge_cost_usd": 0.216346,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "07ea7a2e7b0ef3e8746126f1191f8e8913a5690ddaf3a2af98dbc0cc6e414111"
+}

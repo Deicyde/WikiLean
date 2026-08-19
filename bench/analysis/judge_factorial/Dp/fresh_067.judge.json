@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses `Algebra.Unramified ℚ K`, a global ring-map/field-extension property (finite type + vanishing Kähler differentials), not the arithmetic notion of a rational prime ramifying in the ring of integers — this is a fundamentally different mathematical object from the gold's `Algebra.IsUnramifiedIn 𝒪 (Ideal.span {p})`",
+  "Drops the existential quantifier over a rational prime p entirely; the gold's core content (∃ p, p.Prime ∧ ¬IsUnramifiedIn ...) is replaced by a blanket claim about the field extension ℚ→K",
+  "Omits the ring of integers 𝒪 and its IsIntegralClosure structure altogether, even though the gold statement's entire content concerns ramification behavior in 𝒪, not in K/ℚ as fields",
+  "Since any finite extension of ℚ is automatically separable (characteristic 0), `Algebra.Unramified ℚ K` is true for every number field K, making the produced conclusion `¬Algebra.Unramified ℚ K` false/unprovable for all K — the statement does not capture the intended theorem and is not equivalent to it"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_067",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 23.3,
+ "judge_cost_usd": 0.084552,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a19fb1d2cdb83caf8baee522373fba0ffb81adb309ba5c2134aed5bc6728b50c"
+}

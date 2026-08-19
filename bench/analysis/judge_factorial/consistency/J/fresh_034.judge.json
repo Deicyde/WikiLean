@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "The produced statement quantifies over ALL immersions g inside the RHS of the iff (`∀ g, IsImmersion g → ContMDiff g → ContMDiff (g∘f)`), rather than fixing a single given C^n immersion φ as an external hypothesis of the theorem the way the gold does (φ is an implicit variable with hφ : IsImmersion J J' n φ, so the iff is proven for an arbitrary but fixed immersion). This changes the logical content: gold's backward direction only needs ONE immersion's composition to be C^n to conclude f is C^n, which is a much stronger/more useful fact than needing ALL immersions' compositions to be C^n as required by the produced version.",
+  "The immersion in the produced statement maps N → N (an endomorphism of the same manifold), not into a distinct 'further manifold' N' as explicitly stated in the informal statement and as present in the gold (φ : N → N', with separate model J' and manifold N'). This drops the generality of composing with an immersion into a different target manifold.",
+  "Because IsImmersion in the produced statement is apparently not parametrized by the smoothness degree n (unlike gold's IsImmersion J J' n φ), an extra separate hypothesis ContMDiff I' I' n g had to be added; combined with the universal quantification defect, the overall proposition is not equivalent to the gold's fixed-immersion characterization."
+ ],
+ "arm": "J",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 44.5,
+ "judge_cost_usd": 0.143516,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d883a8562fcc5f28265be40a65b3e6b18741c221b75658288f72038b16decd07"
+}

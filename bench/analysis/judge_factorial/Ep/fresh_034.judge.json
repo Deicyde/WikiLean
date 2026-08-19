@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Composition direction is reversed: the theorem should test f via post-composition with an immersion φ mapping the codomain into a *further* manifold (φ ∘ f), matching the informal statement; instead the produced statement uses pre-composition with maps g into the domain M (f ∘ g), which is a structurally different (and mathematically different) claim.",
+  "The 'further manifold' N' from the informal statement (and gold's J', φ : N → N') is entirely absent; instead a manifold P mapping into the source M is introduced, which does not correspond to 'immersion into a further manifold'.",
+  "Quantifier structure differs: gold treats the immersion φ as a fixed hypothesis for which the iff holds (for a given/arbitrary immersion), whereas produced buries a universal quantifier over all immersions g : P → M inside the right-hand conjunct of the iff, yielding a different logical statement.",
+  "As a consequence of the reversed composition, the produced iff is nearly trivial/different in content: the forward direction holds regardless of any immersion property (composition of C^n maps is C^n), and the backward direction can be obtained just by choosing g = id (identity is always a valid immersion), so the produced statement does not capture the substantive classical theorem about detecting C^n-ness via composition with an immersion into a further manifold.",
+  "Possible model-space mismatch: M' is declared with ChartedSpace H M' (reusing H, the model for M) rather than the presumably intended H' paired with I' : ModelWithCorners 𝕜 E' H', which is inconsistent with the ambient variables used elsewhere (I I' in ContMDiff I I' n f).",
+  "The gold's explicit immersion predicate IsImmersion J J' n φ is replaced by an ad hoc unbundled encoding (ContMDiff ∧ pointwise injective mfderiv) attached to the wrong map (g into M rather than a map out of the codomain), compounding the directional error."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 65.3,
+ "judge_cost_usd": 0.331742,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "fd77d04cc9fed857b2a85017abdd3b0e9ee41b9671f970d224893e82862fcdd0"
+}

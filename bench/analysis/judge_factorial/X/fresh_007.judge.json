@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Collapses the gold's three independent types (scalar type α, codomain β, domain γ) into a single type M₀, replacing the general SMul action a • f x with plain multiplication a * f x — this is a much narrower special case, not an equivalent spelling of the same structure",
+  "Uses PosMulStrictMono M₀ instead of PosSMulStrictMono α β, losing the generality of scalar multiplication between distinct types that the gold captures",
+  "PosMulStrictMono M₀ requires prerequisite instances [Mul M₀] [Zero M₀] [Preorder M₀] which are not declared for the generic M₀, so the statement as written likely fails to elaborate",
+  "Domain of f (γ in gold, arbitrary Preorder type) is forced to equal M₀ (the scalar/multiplication type), which is an unjustified restriction not present in the gold"
+ ],
+ "arm": "X",
+ "task_id": "fresh_007",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 36.5,
+ "judge_cost_usd": 0.122771,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "22725ce6fd6723ed9a906b6f75c0afec039cfac7ac61940bbc8de6dd3b39887b"
+}

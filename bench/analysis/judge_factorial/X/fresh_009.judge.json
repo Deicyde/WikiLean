@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Codomain topology is wrong: gold uses `(i : ι) → WithAbs (v i)`, where each factor carries the topology induced by the corresponding absolute value v_i, but the produced statement uses a single arbitrary `[TopologicalSpace F]` instance applied uniformly to all copies via `ι → F`, with no link between this topology and `v` at all",
+  "Adds an extraneous hypothesis `[TopologicalSpace F]` not present in the gold statement, making the produced theorem depend on an arbitrary unrelated topology rather than the one determined by the absolute values",
+  "Because the topology is disconnected from v, the produced statement is a materially different (and generally false for arbitrary topologies) claim, not just a reshaping of the gold",
+  "Uses `Fintype ι` instead of `Finite ι` (minor, roughly equivalent for this purpose but not identical)"
+ ],
+ "arm": "X",
+ "task_id": "fresh_009",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 29.0,
+ "judge_cost_usd": 0.096727,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e4ce2d43b9597e9b74dffd7f4ec86903e1cccd58c11591b40069e5a8cbffb237"
+}

@@ -41,7 +41,19 @@ Rates: Ep 9/100, X 5/100, J 11/100, Dp 10/100.
 - verifier: -0.025 [-0.081, +0.025] p=0.3812
 - interaction: +0.030 [-0.082, +0.142] p=0.6663
 
-## Secondary: judge + conjunction — PENDING Stage 2
+## Secondary: judge evaluated-equivalence
+
+Rates: Ep 46/100, X 42/100, J 20/100, Dp 15/100.
+- join: -0.265 [-0.368, -0.154] p=0.0002
+- verifier: -0.045 [-0.117, +0.029] p=0.2636
+- interaction: -0.010 [-0.152, +0.117] p=0.9145
+
+## Secondary: conjunction (grounded typecheck AND evaluated)
+
+Rates: Ep 20/100, X 25/100, J 17/100, Dp 14/100.
+- join: -0.070 [-0.161, +0.021] p=0.1408
+- verifier: +0.010 [-0.053, +0.065] p=0.8221
+- interaction: -0.080 [-0.176, +0.011] p=0.1078
 
 ## Manipulation checks
 

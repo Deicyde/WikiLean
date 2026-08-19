@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "hpartial is built via `Nat.succ (n v) :: n.erase v`, using list-cons notation `::` on a `Finsupp` (`n.erase v : σ →₀ ℕ`); `List.cons`/`Finsupp.cons` do not apply to an arbitrary index type σ, so this does not typecheck in general — the statement as written is essentially ill-typed for generic σ",
+  "hpartial encodes raw coefficient equality at the shifted multi-index (f.coeff at n with v incremented) directly, instead of using MvPowerSeries.pderiv as in gold; it omits the (n v + 1) multiplicative factor that appears in pderiv's coefficient formula, so it is a different, non-idiomatic low-level formalization of 'same partial derivative' rather than the same proposition (even though under a torsion-free hypothesis the two could be shown equivalent, this is not evidently 'the same structure, different spelling')",
+  "uses `Module.IsTorsionFree R R` instead of gold's `IsAddTorsionFree R`; it is not established that this class exists with the intended meaning ('additively torsion-free, cancellation of addition') or is equivalent to IsAddTorsionFree — an unverified typeclass substitution",
+  "`f.constantCoeff` dot-notation likely fails to elaborate since `MvPowerSeries.constantCoeff` is a bundled RingHom parameterized by (σ R : Type*), not a function taking f as an argument to dot into; gold uses `constantCoeff f` directly",
+  "f g are made explicit arguments rather than implicit as in gold (minor stylistic deviation)"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_080",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 112.0,
+ "judge_cost_usd": 0.314852,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5f790df098901b93519a1f0132ff9cdb864dc63338d6644f2132b6da3872f83e"
+}

@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Rank hypothesis is quantified over ALL prime ideals q (Ideal.IsPrime q) instead of only MAXIMAL ideals m as in gold — this is a strictly stronger/different hypothesis (every maximal ideal is prime but not conversely), changing the class of ideals the constant-rank condition ranges over, not a mere restatement",
+  "M is required to be only an AddCommMonoid rather than an AddCommGroup as in gold, a weaker/different base typeclass assumption than the gold statement",
+  "Uses Module.rank (Cardinal-valued) applied to Localization.AtPrime tensor products instead of gold's rankAtStalk invariant — a different (though plausibly compatible for finite modules) formalization of 'rank at a stalk'",
+  "Conclusion is stated via M ⊗[R] Localization.Away a instead of gold's LocalizedModule.Away a M — a different (though likely isomorphic) construction for the localized module"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_079",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 134.4,
+ "judge_cost_usd": 0.356002,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8a1047f34f6b1679ee99911192da18e45ffb3341d93ee2d25b8d9033dcfd74ab"
+}

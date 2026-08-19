@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Ring hypothesis is `NoZeroSMulDivisors ℕ R` instead of `IsAddTorsionFree R`; these are plausibly equivalent for a CommRing (which is an additive group) since nsmul-injectivity for n≠0 and n•a=0→a=0 coincide in a group, but they are genuinely different named typeclasses, not a mere bundled/unbundled spelling of the same one, and the equivalence is not certain enough to treat them as interchangeable.",
+  "Uses `f.partialDeriv i` (implying a declaration `MvPowerSeries.partialDeriv`) instead of `pderiv R i f`; `partialDeriv` does not match the actual Mathlib identifier `pderiv`, so it may reference a nonexistent or differently-defined operator rather than being confirmed to compute the same partial derivative.",
+  "Constant term condition is stated as `f 0 = g 0` rather than via `constantCoeff f = constantCoeff g`; likely definitionally equal but relies on an unstated identification rather than the gold's named function.",
+  "f, g are explicit arguments rather than implicit as in the gold (minor, non-semantic difference)."
+ ],
+ "arm": "J",
+ "task_id": "fresh_080",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 159.4,
+ "judge_cost_usd": 0.440421,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7c26771cda4b022aa67eb87dbc5fd0fc41e242de0cb3a5a8b3aca17088dc92b3"
+}

@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds the extra conjuncts `a0 ∈ f.coeff.support ∧ b0 ∈ g.coeff.support` to the hypothesis; the gold's `UniqueMul f.coeff.support g.coeff.support a0 b0` is purely the uniqueness clause (∀ a∈supp f, b∈supp g, a*b=a0*b0 → a=a0∧b=b0) and does NOT require a0,b0 to themselves lie in the supports — it also covers the vacuous case where a0∉supp f or b0∉supp g (where both sides of the conclusion are 0). The produced statement therefore only proves a strict special case, not the same/equivalent general proposition.",
+  "Adds an unnecessary `[DecidableEq M]` typeclass hypothesis not present in the gold statement; MonoidAlgebra multiplication and Finsupp.support in Mathlib do not require this as an explicit instance argument (handled via classical decidability internally)."
+ ],
+ "arm": "X",
+ "task_id": "fresh_003",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 101.7,
+ "judge_cost_usd": 0.296334,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ab46bcd9cc60fc674efb3a9de3877983c0c350eb83e4aba8662939d66770543b"
+}

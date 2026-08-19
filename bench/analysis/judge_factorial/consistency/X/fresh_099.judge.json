@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Replaces general `LinearOrder α` (with `OrderTopology`) with `CompleteLinearOrder α`, an added structural hypothesis not in the informal statement or gold, restricting the theorem to complete linear orders and excluding ordinary cases like ℝ or bounded intervals without completeness assumed elsewhere.",
+  "Replaces general `LinearOrder β` with `CompleteLinearOrder β`, same unjustified strengthening for the codomain.",
+  "Adds an extra, unjustified hypothesis `hbot : f ⊥ = ⊥` that is not part of the informal statement or the gold theorem; this hypothesis is in fact necessary for the produced equational conclusion to be true in the empty-set case (e.g. a constant continuous monotone function with f ⊥ ≠ ⊥ is a counterexample without it), showing the produced statement is a genuinely different, more restrictive theorem.",
+  "Uses `OrderClosedTopology β` for the codomain instead of gold's `OrderTopology β`, a different topological hypothesis.",
+  "Conclusion is phrased as a blanket equation `f (sSup s) = sSup (f '' s)` for every set s (relying on completeness so sSup is always defined), rather than gold's `LeftOrdContinuous f`, which only asserts the sup-preserving property for sets that actually possess a least upper bound (via `IsLUB`); these only coincide once the extra CompleteLinearOrder + hbot assumptions are in place, so the conclusion is not a faithful restatement of 'any set that has one' from the informal statement."
+ ],
+ "arm": "X",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 104.7,
+ "judge_cost_usd": 0.292128,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "21e961562f89a6855ac92f5be78dc2bde9206f503a8ecfa9402a8a8c2e06927c"
+}

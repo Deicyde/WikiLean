@@ -1,0 +1,22 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Specializes the base ring to k = ℂ specifically, whereas the gold statement holds for an arbitrary commutative ring k",
+  "Requires G and H to be Groups ([Group G] [Group H]), whereas gold only requires Monoid G, Monoid H — a stronger (narrower) hypothesis than the gold statement",
+  "'Representation H ℂ' is malformed: Mathlib's Representation takes three explicit type parameters (k, G, V), so this only supplies k and G and omits the underlying module/vector-space type V, meaning the term as written does not typecheck",
+  "Uses '.restrictScalars' to model restriction of a representation along a group homomorphism, but restrictScalars in Mathlib is the ring/scalar-restriction operation, not the correct operation for pulling back a representation along a monoid/group hom (which gold expresses via resFunctor); this conflates two distinct constructions",
+  "Uses ad hoc notation 'f →+[H] g' (suggestive of DistribMulActionHom) for morphisms between representations, which is not the actual morphism type in the Rep/Action category (k-linear G-equivariant maps), so it doesn't correspond to gold's categorical morphisms",
+  "The anonymous constructor '⟨α, β⟩' for ShortComplex omits the required proof that the composite is zero, so the short complex is not well-formed as stated",
+  "Restates the exactness equivalence via a universally quantified triple of representations and two maps rather than an actual ShortComplex object S and its image under a restriction functor (S.map (resFunctor f)) as in gold, changing the logical shape of the statement",
+  "Loses the universe generality (Rep.{w} k G) present in gold by fixing the representation category to ℂ-representations without the analogous universe parameter"
+ ],
+ "arm": "J",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 79.0,
+ "judge_cost_usd": 0.22069,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5d0e8eb71b875a3b34b754003442ca741135f48ecf961b4a549c6001ac41772a"
+}

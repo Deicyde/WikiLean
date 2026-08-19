@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Drops the essential hypothesis that M is finitely presented (Module.FinitePresentation R M), which is explicitly required in the informal statement and in the gold; without it the theorem is not generally true.",
+  "M and N are given only [Module R M] [Module R N] with no [AddCommGroup M] [AddCommGroup N] (or AddCommMonoid) instances in scope, so Module R M / Module R N cannot actually be synthesized — the statement as written does not type-check.",
+  "The conclusion misuses LocalizedModule.lift: its real signature takes a submonoid, a linear map, and a proof that S acts by units on the target, not a bare function 'fun _ _ => g m'; as written this is not a well-formed application.",
+  "f : LocalizedModule S M →ₗ[R] LocalizedModule S N expects an element of LocalizedModule S M, but 'LocalizedModule.lift (fun _ _ => g m)' would produce a linear map, not an element of LocalizedModule S M, making 'f (LocalizedModule.lift ...)' a type mismatch.",
+  "No proper localized version of g (e.g. via IsLocalizedModule.map/LocalizedModule.map) is constructed and compared to f; the gold's key content — that the localization of the lift equals f up to a scalar s ∈ S and is itself surjective — is not expressed.",
+  "Overall the existential conclusion does not correspond to 'g becomes surjective after localizing at S', so the produced statement fails to capture the theorem's actual conclusion."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_000",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 48.7,
+ "judge_cost_usd": 0.264841,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "d36b11f92590b08477a75f4e79353930698cf422bab71466b0e2a0551f1d53c1"
+}

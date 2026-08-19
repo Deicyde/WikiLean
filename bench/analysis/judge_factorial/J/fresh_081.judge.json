@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Wrong mathematical object entirely: uses `lineDeriv` (classical directional/Fréchet derivative on normed spaces) instead of `pderiv` (formal algebraic partial derivative on multivariate power series)",
+  "g is typed as a function E → 𝕜 between normed spaces, not as an `MvPowerSeries σ R`; the statement is not about power series at all",
+  "No index set σ for the multiple variables and no `i : σ` selecting which variable to differentiate with respect to (aside from unrelated reuse of x, v as evaluation point/direction)",
+  "Introduces extraneous hypotheses not in gold: NormedField 𝕜, NormedAddCommGroup E, NormedSpace 𝕜 E, plus extra free variables x and v",
+  "Drops gold's CommSemiring R hypothesis entirely, replacing the algebraic setting with an analytic one",
+  "Conclusion is about directional derivatives at a point in the direction v, not the formal derivative operator equality in gold"
+ ],
+ "arm": "J",
+ "task_id": "fresh_081",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 12.3,
+ "judge_cost_usd": 0.056865,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "f1144fd2f61c8e5b72acf6e786b7eca085834d0759fd125965379d12a04a0a37"
+}

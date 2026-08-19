@@ -14,3 +14,16 @@ Primary outcome (repaired oracle): produced AND zero classify_adjusted-hallucina
 decl_exists manipulation check: X 213 calls (94/100 runs), Dp 536 calls (92/100 runs); J/Ep 0 by construction (manifest-verified).
 Informal-tool touches: Ep 2/100 runs, X 4/100 runs.
 Run-phase cost: $40.91.
+
+## Judge (blinded claude-sonnet-5, Stage 2)
+
+| arm | evaluated | Wilson 95% | strict | conjunction (grounded ∧ eval) |
+|---|---|---|---|---|
+| Ep | 46/100 (0.460) | [0.366, 0.557] | 39/100 | 20/100 |
+| X | 42/100 (0.420) | [0.328, 0.518] | 36/100 | 25/100 |
+| J | 20/100 (0.200) | [0.133, 0.289] | 13/100 | 17/100 |
+| Dp | 15/100 (0.150) | [0.093, 0.233] | 12/100 | 14/100 |
+
+Self-consistency re-grade (n=40, seed 20260727): evaluated agreement 100.00%, strict agreement 97.50%.
+
+Judge cost: $52.32.

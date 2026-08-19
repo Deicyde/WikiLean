@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Boundedness conditions on the two hypotheses are swapped relative to the gold's LeftOrdContinuous/RightOrdContinuous: hsupr (preservation of sSup) is guarded by `BddBelow s` when it should require `BddAbove s` (suprema are only well-behaved/non-junk for sets bounded above), and hinf (preservation of sInf) is guarded by `BddAbove s` when it should require `BddBelow s`. This is not a cosmetic difference: e.g. f(x) = x+1 on ℝ satisfies LeftOrdContinuous/RightOrdContinuous (gold's hypotheses) but fails hsupr as stated, since for s = Set.Ici 0 (BddBelow, not BddAbove) sSup s is a junk value and f(sSup s) ≠ sSup(f '' s) in general — so the produced hypotheses pick out a different, much more restrictive/inequivalent class of functions.",
+  "Missing `[TopologicalSpace α]` and `[TopologicalSpace β]` instance arguments: Mathlib's `OrderTopology` class is parameterized as `OrderTopology (α) [TopologicalSpace α] [Preorder α]`, so `[OrderTopology α]`/`[OrderTopology β]` cannot be elaborated without an ambient `TopologicalSpace` instance already in scope, which the produced statement never introduces (unlike gold's explicit `[TopologicalSpace X] [OrderTopology X]` / `[TopologicalSpace Y] [OrderTopology Y]`); as written this likely fails to type-check.",
+  "hsupr/hinf are stated as concrete sSup/sInf equalities on nonempty bounded sets rather than gold's IsLUB/IsGLB-based LeftOrdContinuous/RightOrdContinuous predicates; even after correcting the boundedness swap, full equivalence to the gold predicates is not immediate (would need e.g. that images of bounded sets stay bounded), so the reformulation is not manifestly the same proposition."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_096",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 189.5,
+ "judge_cost_usd": 0.512565,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ed1d1f42633bf49e33eab70e59d58cf589417b4db9c53fd50d78ec610d3728d3"
+}

@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Gold fixes a single, arbitrary but given, C^n immersion φ : N → N' as an explicit hypothesis of the lemma (yielding a result for that particular immersion); the produced statement instead moves the immersion into a universal quantifier ('∀ g immersion into any P') nested inside the right-hand side of the iff, which is a different (strictly weaker) proposition, not an equivalent restatement.",
+  "Because the universal quantifier ranges over all immersions including the trivial identity map (g = id : N → N is always a valid C^n immersion), the produced RHS already forces ContMDiff I I' n f via the g = id instance (id ∘ f = f), making the stated iff essentially trivial/circular and no longer capturing the substantive immersion-theoretic content (the real difficulty — that continuity plus smoothness of one composite with an immersion forces smoothness of f) that the gold lemma states.",
+  "Produced's backward direction does not follow from a single application of the gold lemma (knowing g∘f is C^n for only one immersion g is insufficient to conclude f is C^n under produced's own statement, since produced demands this for ALL immersions), so produced is not derivable from, nor does it derive, gold in the intended (non-trivial) sense — the two statements are logically inequivalent in general.",
+  "Minor: produced locally re-declares M and N as new bound variables with different ChartedSpace instances (H M, H' N) than the outer section's same-named variables (which use G, not H'), shadowing them in a way that obscures the variable correspondence with gold (I' in produced corresponds to gold's J, and produced's fresh J corresponds to gold's J')."
+ ],
+ "arm": "X",
+ "task_id": "fresh_034",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 131.0,
+ "judge_cost_usd": 0.350871,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "2d3baa69d4a8b48e9bad66045bcaddedd19ed538606a496fba7bd31bc09ed3be"
+}

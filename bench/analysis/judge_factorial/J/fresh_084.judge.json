@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "f is required to be a continuous linear map (E →L[K] F) instead of gold's general, possibly-discontinuous linear map (E →ₗ[𝕜] F) — adds a hypothesis not present in the gold statement and changes the theorem's content",
+  "The scalar field K is only assumed to be a plain Field with no topology at all, dropping gold's NontriviallyNormedField 𝕜 and CompleteSpace 𝕜 — loses the topological-field/completeness structure essential to the theorem",
+  "Uses ContinuousConstSMul K E/F (continuity only in the vector argument) instead of gold's ContinuousSMul 𝕜 E/F (joint continuity of scalar multiplication), which is a strictly weaker/different structure especially since K has no topology in the produced version",
+  "TopologicalAddCommGroup is used instead of gold's IsTopologicalAddGroup — likely just a renamed/equivalent class, not a real defect, but combined with the above the overall algebraic/topological setting no longer matches"
+ ],
+ "arm": "J",
+ "task_id": "fresh_084",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 43.6,
+ "judge_cost_usd": 0.13819,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "a284cbd92ed9544ebf7302eb04c7769385e346a4b6e34af40e1e72837c408f70"
+}

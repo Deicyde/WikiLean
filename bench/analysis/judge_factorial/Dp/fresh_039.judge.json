@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion is wrong: uses `Finite {x : G // orderOf x ≠ 1}` (excludes only the identity, order 1) instead of the torsion subgroup `Finite (torsion G)` / `{x : G // orderOf x ≠ 0}` (finite-order elements); `orderOf x ≠ 1` is not equivalent to torsion membership and generally yields a different (often infinite) set.",
+  "Adds an extra hypothesis `h_nn : ∀ x, 0 ≤ h x` (non-negativity of h) that is not present in the informal statement or the gold statement, unjustifiably strengthening the hypotheses.",
+  "Redundantly states finite-sublevel-sets both as an explicit hypothesis `h_fin_sublevel` and via the `[Northcott h]` typeclass, whereas gold relies solely on `[Northcott h]` to capture this property — duplicated/overlapping hypothesis not matching gold's structure."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_039",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 40.1,
+ "judge_cost_usd": 0.28833,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "d49881beb3bba1a795ef7b89fd95b59195ce515114fdd11ca2b46b67da0239ca"
+}

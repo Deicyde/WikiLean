@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "States [AddCommMonoid M] instead of gold's [AddCommGroup M]; a different (weaker-looking) ambient typeclass on the module, not a mere spelling variant of the same class.",
+  "Rank hypothesis is reshaped: gold only compares rankAtStalk at every MAXIMAL ideal m against rankAtStalk at p (using the dedicated rankAtStalk function), whereas produced asserts a single cardinal c with Module.rank S (M ⊗[R] S) = c for EVERY prime ideal q (not just maximal), via an ad hoc existential localization ring. This is a structurally different quantifier domain and encoding whose equivalence to the gold hypothesis relies on nontrivial unstated facts (local constancy of rank for finite flat modules across all of Spec R, not just closed points), so it cannot be confidently verified as the same condition.",
+  "Conclusion is reformulated using an abstract localization ring S with instance IsLocalization.Away a S and M ⊗[R] S, instead of gold's canonical Localization.Away a and LocalizedModule.Away a M — a paraphrase whose exact equivalence again rests on uniqueness-of-localization facts not explicit in either statement.",
+  "Finite/Flat hypotheses are passed as explicit Prop arguments (hfinite, hflat) rather than instance-implicit typeclass assumptions as in gold — a structural (not just cosmetic) difference in how the hypotheses are packaged."
+ ],
+ "arm": "X",
+ "task_id": "fresh_079",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 248.3,
+ "judge_cost_usd": 0.638602,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8b8e99ea43efd976668768d208f34e5009d1e49bf5ad1122c86ec7dc6a238da9"
+}

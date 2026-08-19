@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Produced statement replaces the general scalar-multiplication action (SMul α β with PosSMulMono α β, allowing the scalar type α and the codomain type β to differ) with plain multiplication within a single type M₀ (Mul M₀ with PosMulMono M₀), forcing the scalar a and the values f x to lie in the same type — this is a strictly less general special case (β = α, SMul = Mul), not the same proposition as the gold's generic scalar-action statement.",
+  "Missing the separate scalar type α (with its own Preorder α, Zero α) that gold uses for the coefficient a; in the produced statement the coefficient a is drawn from the same type M₀ as the function's codomain instead of an independent scalar type."
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_006",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 25.6,
+ "judge_cost_usd": 0.08984,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "74074f206b3354a940efc6fcf2d1428acc8e55a2557013767bb065492c8677e7"
+}

@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds a hypothesis `a ≤ b` not present in the gold statement (or the informal statement), which should hold for an arbitrary unordered pair a, b",
+  "Uses `variationOnFromTo` (a real-valued, orientation-sensitive variation between two endpoints restricted to `Icc a b`) instead of `eVariationOn` (the total ℝ≥0∞-valued variation over the whole set), changing which mathematical object is being characterized",
+  "Conclusion applies `.toReal` to `edist (f a) (f b)`, truncating a possible `⊤` value to `0` in a `PseudoEMetricSpace` where infinite distances are allowed, so it is not a faithful/equivalent restatement of the gold's `ℝ≥0∞`-valued equality"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_091",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 24.0,
+ "judge_cost_usd": 0.09009,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "0efcdcd4cfc6b8b0452ed6261104e5321179080c505bf218d80483f34689f67f"
+}

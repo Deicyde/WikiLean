@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Codomain uses plain `ι → F` with a single arbitrary `[TopologicalSpace F]` instance shared across all coordinates, instead of `(i : ι) → WithAbs (v i)` where each coordinate carries the distinct topology induced by its own absolute value v i — this changes the meaning of DenseRange entirely, since in the produced version every factor has the same topology (unrelated to any v i), whereas the gold statement crucially relies on each factor having a different, v_i-induced topology",
+  "Adds an unconstrained hypothesis `[TopologicalSpace F]` that has no connection to the absolute values v, which is not present in the gold statement and makes the produced statement a different (and generally not equivalent, likely trivial/false as intended) proposition",
+  "The diagonal map is expressed as a bare lambda `fun x i => x` into `ι → F` rather than as `algebraMap F ((i : ι) → WithAbs (v i))`, consistent with the wrong topology structure above"
+ ],
+ "arm": "X",
+ "task_id": "fresh_009",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 24.9,
+ "judge_cost_usd": 0.087178,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e4ce2d43b9597e9b74dffd7f4ec86903e1cccd58c11591b40069e5a8cbffb237"
+}

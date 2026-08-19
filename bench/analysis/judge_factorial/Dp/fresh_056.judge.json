@@ -1,0 +1,17 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `s.posPart`/`s.negPart` directly on the SignedMeasure, but `posPart`/`negPart` are fields of `JordanDecomposition`, not `SignedMeasure` — the gold correctly routes through `s.toJordanDecomposition.posPart`/`.negPart`; as written `s.posPart`/`s.negPart` do not resolve via dot notation on `SignedMeasure`.",
+  "Missing the `.real` conversion: even if posPart/negPart resolved to the Jordan decomposition's measures, applying them to a set yields `ℝ≥0∞`, and subtraction on `ℝ≥0∞` is truncated (non-negative) subtraction rather than real subtraction, so the equation would not type-check against `s t : ℝ` and would not be mathematically equivalent when negPart t > posPart t.",
+  "Overall RHS type mismatches LHS type (`ℝ` vs `ℝ≥0∞`), making the produced statement ill-typed / a different proposition from the gold's real-valued subtraction."
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_056",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 31.7,
+ "judge_cost_usd": 0.112121,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "1a8302564ce88d8861c1fc4366d4991ade3ccc82fbfdb69f44cd4e1a6dbda2b9"
+}

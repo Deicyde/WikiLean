@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Produced statement only assumes [Preorder α] [TopologicalSpace α], dropping the gold's [ConditionallyCompleteLinearOrder α] [OrderTopology α] [DenselyOrdered α] — a Preorder is far weaker than a linear order and lacks the order-completeness needed for the fixed-point argument; the statement is not even total-order, so 'Icc a b' need not behave as an interval and the theorem is false/unprovable in this generality",
+  "No LinearOrder assumption at all, so a ≤ b and Icc a b lack the totality the informal statement (and gold) implicitly rely on",
+  "Missing OrderTopology linking the order and topology, so ContinuousOn has no guaranteed relationship to order structure",
+  "Missing DenselyOrdered, which is needed for the density argument underlying the classical proof of this fixed-point result"
+ ],
+ "arm": "J",
+ "task_id": "fresh_097",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 12.3,
+ "judge_cost_usd": 0.16438,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "848925b59b0da77a486d49b81e3d0ac78b932f3a35ab8610428bec697f2a8b9f"
+}

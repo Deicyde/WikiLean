@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Does not use the actual restriction functor (resFunctor/Rep.res); C_restricted is an independent parameter not constrained to equal S.map(resFunctor f), so the theorem doesn't actually express 'restrict along f' as a functorial operation",
+  "Redefines exactness as (map₂ ∘ map₁ = 0 ∧ Injective map₁ ∧ Surjective map₂), i.e. a short exact sequence, which is strictly stronger than the general ShortComplex.Exact notion (im = ker at the middle object) used in gold — changes the mathematical content of 'exact'",
+  "Uses raw Representation H R / Representation G R with a bare .ρ field and unbundled linear maps instead of the bundled Rep k G category objects and morphisms used in gold, so equivariance of map₁/map₂ must be smuggled in as extra hypotheses rather than being part of the morphism structure",
+  "Adds four extraneous antecedent hypotheses (equivariance of C.map₁, C.map₂ under H, and of C_restricted.map₁, C_restricted.map₂ under G) that are not part of the original statement and are stated as implications preceding the iff rather than as a clean biconditional, obscuring whether this is a well-formed single proposition",
+  "The linking between C and C_restricted is only via ad hoc mixed conditions like C_restricted.map₁.comp (C.X₁.ρ (φ g)) = (C.X₂.ρ (φ g)).comp C_restricted.map₁, which conflates the two complexes' representation spaces instead of stating C_restricted is literally the image of C under a restriction functor",
+  "Drops the general ring/semiring generality structure of gold (k a commutative ring, general categorical Exact) in favor of a hand-rolled injective/surjective condition tied to Function.Injective/Function.Surjective on modules"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_076",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 47.0,
+ "judge_cost_usd": 0.139922,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e1cc0a845c7d647a822c2ec1cf344f0d916a3155322d5626b21af341b793e81a"
+}

@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `V →L[K] V` (ContinuousLinearMap) but no TopologicalSpace/continuity instances are given for V, so this likely fails to elaborate; gold uses plain `End R M`",
+  "Hypothesis `Semisimple K f` is not the Mathlib declaration for semisimplicity of an endomorphism (which is `Module.End.IsSemisimple f`, no separate field argument) — appears fabricated",
+  "Restricts to a field K instead of gold's general commutative ring R",
+  "Restricts to spaces admitting a finite basis (Fin n), i.e. finite-dimensional, whereas gold's statement holds for general (possibly infinite-dimensional) modules M",
+  "Formalizes the conclusion via existence of a basis making the matrix upper-triangular / diagonal (triangularizable vs diagonalizable), not via the gold's actual target: supremum of maxGenEigenspace equal to ⊤ iff supremum of eigenspace equal to ⊤",
+  "Conclusion is an outer iff between two existential basis statements rather than the gold's iff between two supremum-equals-⊤ statements — different mathematical formalization not shown to be equivalent for the stated general setting"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_045",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 29.8,
+ "judge_cost_usd": 0.103452,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "8add3b228cd361c3957fddaf6858b0dfbe131a58f1ad647583dd1df9c7e60f39"
+}

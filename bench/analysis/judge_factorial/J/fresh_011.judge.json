@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion uses f.opNorm (the operator norm, i.e. largest singular value) instead of the gold's f.normDet (the determinant-norm, i.e. product of singular values / norm of top exterior power) — these are different mathematical quantities in general (e.g. diag(2,3) has opNorm=3 but |det|=6), so the produced statement asserts a different, generally false proposition rather than the gold's true fact",
+  "Changes the map type from a plain linear map U →ₗ[𝕜] U to a bundled continuous linear map E →L[𝕜] E, an unjustified structural change",
+  "Uses [SeminormedAddCommGroup E] together with [InnerProductSpace 𝕜 E], but InnerProductSpace in Mathlib requires [NormedAddCommGroup E], not the weaker seminormed class — likely does not typecheck as stated",
+  "Drops the extra ambient spaces V, W present in gold's context (minor, since unused, but reflects a narrower/altered signature)"
+ ],
+ "arm": "J",
+ "task_id": "fresh_011",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 26.8,
+ "judge_cost_usd": 0.094827,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "562a62aa9f30c569d15532fdba8cc180365e177b241105411a7fc8ed7dcefc9f"
+}

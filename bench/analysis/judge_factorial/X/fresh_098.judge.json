@@ -1,0 +1,18 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `Set.range_restrict f (Set.Icc a b) ⊆ Set.Icc a b`, but `Set.range_restrict` is a Mathlib *lemma* (an equality `Set.range (s.restrict f) = f '' s`), not a function producing a set — this expression does not typecheck / is not a valid way to state 'f maps the interval into itself' (should be `Set.MapsTo f (Set.Icc a b) (Set.Icc a b)` or `f '' Set.Icc a b ⊆ Set.Icc a b`)",
+  "Specializes the gold's general ordered/topological setting (ConditionallyCompleteLinearOrder, OrderTopology, DenselyOrdered α) to the concrete type ℝ, losing generality present in gold",
+  "Uses `Set.Icc a b` instead of gold's `uIcc a b` (unordered interval), and correspondingly adds an extra hypothesis `a ≤ b` that is not present in (and not needed by) the gold statement",
+  "Conclusion `f x = x` vs gold's `IsFixedPt f c` is only a defeq spelling difference, not a defect on its own, but combined with the above the statement is not a faithful match"
+ ],
+ "arm": "X",
+ "task_id": "fresh_098",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 41.7,
+ "judge_cost_usd": 0.132802,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "7e987a472239754c3f8aac8198a5af33ceed32bffdcb973840cb01648e2ae9a5"
+}

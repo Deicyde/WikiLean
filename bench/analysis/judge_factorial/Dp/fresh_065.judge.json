@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion `FiniteDimensional.finrank ℝ ℂ = 2` is a fixed fact about the abstract fields ℝ and ℂ, and never references v.Completion or w.Completion (or even v, w, K, L) at all — it does not state that the completion at w has dimension 2 over the completion at v, only an unrelated always-true fact",
+  "Because the conclusion is independent of all hypotheses, the theorem is vacuous/trivial and does not actually formalize the informal statement's content",
+  "Adds extra hypotheses [NumberField K] [NumberField L] not present in the gold statement",
+  "Does not use the `w.LiesOver v` typeclass; instead encodes 'lies over' via an ad hoc existential over embeddings φ, ψ agreeing on restriction (hextends), which is a nonstandard and unverified substitute",
+  "Does not use `w.IsRamified K`; instead substitutes hv : v.IsReal and hw : ¬ w.IsReal, a derived characterization rather than the actual ramification hypothesis, and loses the explicit dependence on K",
+  "Uses `FiniteDimensional.finrank` instead of `Module.finrank ℝ-over-ℝ/ℂ` framing consistent with gold's `Module.finrank v.Completion w.Completion`"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_065",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 36.8,
+ "judge_cost_usd": 0.120952,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "eaac73b8542f6fea6527d736bfe4cb6cda6f2d9a6b0177e5f8edca5d3c79d4ec"
+}

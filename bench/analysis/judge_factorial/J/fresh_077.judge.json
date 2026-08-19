@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `Ext R i N M` with an argument signature (ring R first, then index, then modules) that does not match Mathlib's actual `Ext` API (`Ext X Y n` for objects `X Y` of an abelian category such as `ModuleCat R`), and asserts `= 0` rather than the gold's `Subsingleton (Ext N M i)`; since M and N here are raw `Type*` with `Module R M` (not `ModuleCat R` objects), this usage looks ill-typed/fabricated.",
+  "`I.vanishing_set` is not a standard Mathlib identifier and does not follow Mathlib4 camelCase naming; the gold correctly uses `PrimeSpectrum.zeroLocus I`. This looks like a fabricated/nonexistent declaration.",
+  "`Module.support N` omits the explicit ring argument `R` that gold's `Module.support R N` supplies, which likely fails to elaborate/typecheck.",
+  "`IsRegularSeq M seq` (applied to `seq : Fin n → R`) is not a verified/standard Mathlib declaration; gold uses `IsRegular M rs` (from the opened `RingTheory.Sequence` namespace) applied to `rs : List R`.",
+  "Replaces gold's `List R` encoding (`rs.length = n`) with `Fin n → R`; a plausible equivalent encoding in principle, but combined with the unverified `IsRegularSeq` name this is not confidently the same structure.",
+  "Uses unbundled `Type*`/`Module R M` objects for M and N instead of gold's `ModuleCat.{v} R` objects, and drops the `[Small.{v} R]` universe hypothesis gold requires for its categorical Ext construction — a structural change whose faithfulness cannot be confirmed given the questionable `Ext` usage."
+ ],
+ "arm": "J",
+ "task_id": "fresh_077",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 95.6,
+ "judge_cost_usd": 0.274971,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "e232f45d1a87cee4b79158f24dea9a1ac7ba25e5dac96ae0b75f26598c6a7085"
+}

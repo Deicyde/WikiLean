@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Uses `sSup` and `f '' s` sSup equality with only `[Preorder α] [Preorder β]` in scope — no `SupSet`/`ConditionallyCompleteLattice` instance is provided, so `sSup` is not even well-defined/typecheckable as stated",
+  "Drops `LinearOrder α`, `OrderTopology α`, `LinearOrder β`, `OrderTopology β` required by gold for continuity to interact meaningfully with the order structure; replaced with bare `Preorder`+`TopologicalSpace`, which is an unrelated/insufficient hypothesis set",
+  "Conclusion is a concrete sSup equality instead of gold's general `LeftOrdContinuous f` (defined via `IsLUB s x → IsLUB (f '' s) (f x)` for arbitrary x), so it only handles the case where the bound witness is literally `sSup s` rather than any least upper bound x",
+  "Hypothesis `∃ x, ∀ y ∈ s, y ≤ x` only states s is bounded above, not that s has a supremum (IsLUB); doesn't require s nonempty or that x is the least such bound, so it is weaker/different from gold's `IsLUB s x` hypothesis",
+  "Theorem name/shape (`Monotone.continuous_iff_left_continuous`) suggests an iff, but statement is only a one-directional implication, mismatching gold's direct conditional theorem structure"
+ ],
+ "arm": "J",
+ "task_id": "fresh_099",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 39.5,
+ "judge_cost_usd": 0.127058,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "eb6977b73af521118f51a72bf92262ce6017931761fe76f715a9a2ccd3f9780c"
+}

@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Adds a continuity hypothesis on g (ContinuousOn g (exp '' Ioi a)) that is absent from the gold's unconditional statement",
+  "Adds an integrability hypothesis hg1 (IntegrableOn g (exp '' Ici a)) not present in gold",
+  "Adds an integrability hypothesis hg2 (IntegrableOn (fun x => g (exp x) * exp x) (Ici a)) not present in gold, largely redundant with hg1 given the change of variables",
+  "Restricts the general normed space codomain E in gold to ℝ, replacing scalar action • with plain multiplication *, losing the stated generality",
+  "Hypotheses hg1/hg2 use domain Ici a (closed ray) inconsistently with the theorem's Ioi a (open ray) domain",
+  "Overall the produced statement is a weaker special-case corollary (provable from gold by discarding the extra hypotheses) rather than the same proposition, since gold holds with no hypotheses on g at all"
+ ],
+ "arm": "Ep",
+ "task_id": "fresh_052",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 33.4,
+ "judge_cost_usd": 0.111628,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "668b1420d78ab500b8c7f048aa843f337e67a861dd46d75cbf9daea7aa092dd5"
+}

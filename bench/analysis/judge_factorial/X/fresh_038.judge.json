@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Gold uses a `[Northcott h]` typeclass instance to express the finite-sublevel-sets condition, while the produced statement spells it out as an explicit hypothesis `∀ B : ℝ, Set.Finite {x : G | h x ≤ B}`; content-equivalent (assuming `Northcott` encodes exactly this finite-sublevel-set/Northcott property, which its name strongly suggests) but a different structural encoding than gold, not just notation.",
+  "Gold quantifies n, b, c₀ as universal (implicit) parameters of the theorem with separate hypotheses `hb` and `H`, whereas the produced statement bundles them into a single existential hypothesis `h_growth : ∃ n b c, 1 < b ∧ ∀ x, ...`. This is logically equivalent here (the conclusion doesn't mention n, b, c, so ∀x,P(x)→Q ⟺ (∃x,P(x))→Q), but it is a genuine restructuring of the hypothesis/parameter shape rather than mere renaming or reordering."
+ ],
+ "arm": "X",
+ "task_id": "fresh_038",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 69.8,
+ "judge_cost_usd": 0.472642,
+ "num_turns": 1,
+ "attempts": 2,
+ "prompt_sha256": "42c005b463fbb972d74dcd9ee80baa9b538ee2504f8f53b92cefe5b576060f5d"
+}

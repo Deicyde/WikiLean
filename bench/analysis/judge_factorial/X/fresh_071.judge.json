@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": true,
+ "defects": [
+  "Reconstructs the generated relation inline via `Relation.EqvGen` applied to a locally-defined `moves` predicate rather than using the pre-existing `Iso` relation referenced in the gold statement; their equivalence is assumed, not stated, so the produced statement is not literally the same proposition even though it is very likely mathematically equivalent.",
+  "Bundles reflexivity/symmetry/transitivity as `Equivalence r` instead of gold's separate `h_refl`/`h_symm`/`h_trans` hypotheses — a benign structural variant, not a mathematical defect, but noted as a shape difference."
+ ],
+ "arm": "X",
+ "task_id": "fresh_071",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 184.9,
+ "judge_cost_usd": 0.526831,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6a7f57ce8381faa732645349c5dcf841d00c4788ffc06eddb6f5e677dfb867b8"
+}

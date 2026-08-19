@@ -1,0 +1,16 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Conclusion is stated with `Module.rank` (Cardinal-valued dimension) instead of `Module.finrank`/`finrank` (ℕ-valued dimension) as in the gold theorem `IsFractionRing.finrank_right_eq`; rank equality is strictly stronger than and not equivalent to finrank equality in general (finrank truncates infinite cardinals to 0, so finrank-equal modules need not be rank-equal), so this changes the proposition being stated.",
+  "Uses the concrete canonical type `FractionRing R` for S instead of an abstract type S with `[IsFractionRing R S]` as in the gold statement; while essentially canonical (any such S is uniquely isomorphic to FractionRing R), it narrows the statement from 'for all fraction fields S of R' to 'for the specific construction FractionRing R'."
+ ],
+ "arm": "X",
+ "task_id": "fresh_041",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 98.3,
+ "judge_cost_usd": 0.270908,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "ad9280ae68f8ef06a4faa9ebb409b6199abcb65ae07e4bf037973b72ff7d31cc"
+}

@@ -1,0 +1,19 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "CommSq argument order is swapped (3rd/4th args) in h_front, h_right, h_left, and the conclusion, so these do not type-check against Mathlib's `CommSq (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z)` signature — e.g. h_front's third argument f₅ : V₄ ⟶ V₅ cannot serve as `h : V₁ ⟶ Z` since V₄ ≠ V₁; only h_bottom and h_top are well-typed",
+  "The mono hypothesis is on the wrong edge: f₉ : V₀ ⟶ V₄ shares no vertex with the conclusion face {V₂,V₃,V₆,V₇}, whereas gold's mono edge f11x : M110 ⟶ M111 starts at M110, a vertex of the missing face",
+  "f₉ is unusable for the required mono-cancellation since nothing in the diagram maps into its domain V₀ (the global source), so the mono hypothesis cannot actually be used to derive the conclusion",
+  "The chosen conclusion face {V₂,V₃,V₆,V₇} includes the cube's global sink V₇, unlike gold's missing face {M000,M010,M100,M110}, which excludes the sink M111 — a structural mismatch in which face is treated as unproven relative to the mono edge",
+  "Overall the hypothesis/mono configuration does not match gold's and likely does not suffice to prove the stated conclusion (different, non-equivalent theorem)"
+ ],
+ "arm": "J",
+ "task_id": "fresh_029",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 221.2,
+ "judge_cost_usd": 0.633246,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "6fe26618203d3fdb718e1532a2457b3d7330369cfe987dc88432e39194545ad8"
+}

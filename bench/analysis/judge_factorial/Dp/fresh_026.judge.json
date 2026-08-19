@@ -1,0 +1,20 @@
+{
+ "strict": false,
+ "evaluated": false,
+ "defects": [
+  "Hypothesis strengthened from AntitoneOn f (Ici 0) to global Antitone f (unrestricted monotonicity assumption)",
+  "Hypothesis strengthened from nonnegativity only on Ioi 0 to nonnegativity on all of ℝ",
+  "Hypothesis strengthened from IntegrableOn f (Ioi 0) to global Integrable f (integrability over all ℝ)",
+  "Conclusion integrates f over the whole real line (MeasureTheory.integral f) instead of over Ioi 0 (∫ x in Ioi 0, f x), changing the meaning of the RHS",
+  "MeasureTheory.integral f is missing the measure argument (MeasureTheory.integral has signature (μ : Measure α) (f : α → E) : E), so as written it does not correctly denote the intended volume-measure integral",
+  "Combination of global antitone + global nonneg + global integrability forces f to be a.e. zero, making the produced statement essentially vacuous/degenerate rather than the meaningful bound stated in the gold theorem"
+ ],
+ "arm": "Dp",
+ "task_id": "fresh_026",
+ "judge_model": "claude-sonnet-5",
+ "judge_wall_s": 44.7,
+ "judge_cost_usd": 0.145765,
+ "num_turns": 1,
+ "attempts": 1,
+ "prompt_sha256": "5a387c4cc2609356643bce767c2f04dc2334f31345ec813a4376a4674baee07e"
+}
