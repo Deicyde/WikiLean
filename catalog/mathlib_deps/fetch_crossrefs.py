@@ -41,7 +41,10 @@ def load_props() -> dict[str, str]:
     @[stacks]/@[kerodon] attributes, no Wikidata property exists) are skipped."""
     sources = json.loads(SOURCE_REGISTRY.read_text())["crossref_sources"]
     return {pid: key for key, entry in sources.items()
-            for pid in entry.get("wikidata_property", "").split("/") if pid}
+            # an explicit null (erdos: no Wikidata property exists) must read as
+            # "no property", not crash the whole fetch — .get's default only
+            # covers a MISSING key
+            for pid in (entry.get("wikidata_property") or "").split("/") if pid}
 
 
 def load_qids() -> list[str]:
