@@ -16,6 +16,16 @@
 #   /opt/homebrew -> gh, git, python
 set -uo pipefail
 
+# DISABLED 2026-08-23: the poller runs on GitHub Actions (wikidata-poll.yml) — this
+# laptop copy ran in PARALLEL with divergent bot_state and its stale state clobbered
+# PR #42608 (batch 7): the Actions runner re-opened the batch over SnirBroshi's
+# reviewed tags, 11 force-pushes over 8 days. One runner only. Set
+# WIKILEAN_LAPTOP_POLL=1 for a deliberate manual local tick; also unload the
+# launchd job: launchctl bootout gui/$(id -u)/org.wikilean.poll
+if [ "${WIKILEAN_LAPTOP_POLL:-0}" != "1" ]; then
+  exit 0
+fi
+
 REPO="/Users/jack/Desktop/LEAN/WikiLean"
 PY="$REPO/catalog/.venv/bin/python3"
 MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"

@@ -127,7 +127,17 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     (freshen_master) is what kept hitting unresolvable conflicts on doc-attr PRs."""
     cls = settle.classify(pr, REPO)
     bn = json.loads(STATE.read_text()).get("batch_num")
-    approved = json.loads((HERE / "state" / f"batch{bn}_approved.json").read_text())
+    apath = HERE / "state" / f"batch{bn}_approved.json"
+    if not apath.exists():
+        # An ADOPTED batch (open_batch adopt guard) heals bot_state but cannot
+        # conjure the approved file another runner assembled. Without it we can't
+        # map green qids back to decl/file, so we cannot rebuild — wait loudly
+        # for a human instead of crash-looping every tick.
+        print(f"  RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
+              f"cannot rebuild without decl/file per green tag; reconstruct it by "
+              f"hand from the PR diff, then re-tick.")
+        return
+    approved = json.loads(apath.read_text())
     # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
     # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
     # minus recycled, which would wrongly re-add the trimmed tags). decl/file from approved.

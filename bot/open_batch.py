@@ -66,6 +66,10 @@ def brain_tags_for_batch(limit, exclude=()):
     return tags
 
 
+def branch_name(batch_num):
+    return f"wikilean/wikidata-batch-{batch_num}"
+
+
 def assemble(batch_num):
     """approved JSON for the next batch, to pool.BATCH_SIZE (10)."""
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []
@@ -73,7 +77,13 @@ def assemble(batch_num):
     # A requeued tag may correct the declaration, the QID (too-broad concept), or
     # both. Use the triage's suggested_qid/suggested_decl, falling back to the
     # originals; skip any entry with neither a usable decl nor a real change.
-    tags = []
+    # Dedupe against what is ALREADY tagged on master, per (qid, file) — QID-only
+    # would wrongly drop a same-QID second-decl requeue (e.g. tagging both
+    # SimpleGraph.induce and Subgraph.induce with Q24743362). Without this,
+    # landed retargets rode along in batches 4→7, silently skipped at apply and
+    # wasting batch slots (batch 7 planned 10, the diff carried 7).
+    pairs = pool.tagged_pairs()
+    tags, deduped = [], []
     for e in requeued:
         tr = e.get("triage", {})
         if not (tr.get("suggested_decl") or tr.get("suggested_qid")):
@@ -81,7 +91,15 @@ def assemble(batch_num):
         decl = tr.get("suggested_decl") or e.get("decl")
         if not decl:                       # can't tag without a target declaration
             continue
-        tags.append({"qid": tr.get("suggested_qid") or e["qid"], "file": e["file"], "decl": decl})
+        qid = tr.get("suggested_qid") or e["qid"]
+        if (qid, e["file"]) in pairs:
+            deduped.append(f"{qid} ({decl} @ {e['file']})")
+            continue
+        tags.append({"qid": qid, "file": e["file"], "decl": decl})
+    if deduped:
+        print(f"  requeue-dedupe: dropped {len(deduped)} already-tagged-on-master requeue(s):")
+        for d in deduped:
+            print(f"    - {d}")
     n_requeued = len(tags)
     # Exclude both the original and corrected QIDs so the pool fill never re-proposes them.
     exclude = {t["qid"] for t in tags} | {e["qid"] for e in requeued} | cut
@@ -93,7 +111,7 @@ def assemble(batch_num):
     # would then slice from the end and pull a huge fresh set instead of none.
     fresh = pool.candidates(max(0, pool.BATCH_SIZE - len(tags)), exclude=exclude)
     tags += [{"qid": c["qid"], "file": c["file"], "decl": c["decl"]} for c in fresh]
-    branch = f"wikilean/wikidata-batch-{batch_num}"
+    branch = branch_name(batch_num)
     return {"batch": batch_num, "title": TITLE, "branch": branch,
             "source": "requeued retargets + Brain queue + Brain-ranked pool",
             "tags": tags}, n_requeued, len(brain), len(fresh)
@@ -136,6 +154,59 @@ def main():
     if cur and not merged(cur):
         print(f"current PR #{cur} is not merged yet — waiting. (nothing to open)")
         return
+
+    # ADOPT GUARD — never open over an already-existing batch. If a PR for the
+    # next batch's branch already exists, our bot_state is simply BEHIND (another
+    # runner opened it, or a previous open here crashed after the push but before
+    # the state advance). Regenerating + force-pushing would clobber content
+    # reviewers may have already reviewed — exactly the #42608 incident, where a
+    # stale-state Actions runner force-pushed over SnirBroshi's reviewed batch-7
+    # tags 90 minutes after his review, 11 times over 8 days. Adopt the open PR
+    # into state instead; a closed/merged PR on that branch means the state is
+    # off by a whole batch — stop for a human rather than guess.
+    branch = branch_name(nxt)
+    r = subprocess.run(["gh", "pr", "list", "--repo", REPO, "--head", branch,
+                        "--author", "@me", "--state", "all",
+                        "--json", "number,state,headRefName"],
+                       capture_output=True, text=True)
+    # FAIL CLOSED: an errored/unparseable gh call must never read as "no PR
+    # exists" — with stale state that is precisely the input that force-pushes
+    # over a reviewed branch. Only exit-0 + valid JSON is an authoritative answer.
+    if r.returncode != 0:
+        sys.exit(f"ADOPT GUARD: gh pr list failed (rc={r.returncode}): "
+                 f"{(r.stderr or r.stdout).strip()[:300]} — refusing to open blind.")
+    try:
+        existing = json.loads(r.stdout) if r.stdout.strip() else []
+        assert isinstance(existing, list)
+    except (json.JSONDecodeError, AssertionError):
+        sys.exit(f"ADOPT GUARD: unparseable gh pr list output — refusing to open blind: "
+                 f"{r.stdout.strip()[:300]}")
+    # gh routes this query through the search API, whose head: matching can be
+    # loose — keep only exact branch matches.
+    existing = [p for p in existing if p.get("headRefName") == branch]
+    opened = [p for p in existing if p.get("state") == "OPEN"]
+    if opened:
+        prn = opened[0]["number"]
+        print(f"ADOPT: PR #{prn} already exists (OPEN) for {branch} — state was behind; "
+              f"adopting it, NOT regenerating or force-pushing.")
+        apath = HERE / "state" / f"batch{nxt}_approved.json"
+        if not apath.exists():
+            print(f"ADOPT WARNING: {apath.name} does not exist on this runner — the "
+                  f"settle can still classify from the PR diff, but a conflict-rebuild "
+                  f"needs it (decl/file per tag); reconstruct it from the PR diff "
+                  f"before the batch falls behind master.")
+        if not dry:
+            st.update({"current_pr": int(prn), "batch_num": nxt, "branch": branch})
+            st.pop("settled_pr", None)
+            st.pop("retriggered_pr", None)
+            STATE.write_text(json.dumps(st, indent=1))
+        return
+    if existing:
+        listed = ", ".join("#%s %s" % (p.get("number"), p.get("state")) for p in existing)
+        sys.exit(f"ADOPT GUARD: {branch} already has a non-open PR ({listed}) — "
+                 f"bot_state (current_pr={cur}, batch_num={batch_num}) is behind by a "
+                 f"full batch; fix state by hand before opening anything.")
+
     print(f"PR #{cur} is MERGED ✓ — assembling batch {nxt}")
 
     approved, nq, nb, nf = assemble(nxt)
