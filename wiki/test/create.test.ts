@@ -195,6 +195,7 @@ describe("PUT /api/article/:slug (create)", () => {
       { wikipedia_title: "X", revid: "777", annotations: [] }, // F16: must be a number
       { wikipedia_title: "X", revid: 777 }, // no annotations array
       { wikipedia_title: "X", revid: 777, annotations: [{ status: "bogus" }] }, // same validator as saves
+      { wikipedia_title: "X", revid: 777, annotations: [{ anchor: { section: "(lead)", snippet: "X" } }] },
       { wikipedia_title: "X", revid: 777, display_title: "", annotations: [] },
       { wikipedia_title: "X", revid: 777, meta: "not-an-object", annotations: [] },
     ];

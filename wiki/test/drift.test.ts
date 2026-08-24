@@ -164,7 +164,7 @@ describe("staleness banner (injectAuthAndEditor)", () => {
     expect(html).toContain("wl-stale-banner");
     // v=16: editor save-UX niceties (selects / comment clear / alt-click /
     // re-anchor) — keep in lockstep with pages.ts.
-    expect(html).toContain("/assets/editor.js?v=16");
+    expect(html).toContain("/assets/editor.js?v=17");
     expect(html).not.toContain("editor.js?v=10");
   });
 });
