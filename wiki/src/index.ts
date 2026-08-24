@@ -163,7 +163,8 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // body — CSS-only so anchor signatures are untouched).
   // v16: trust signals (P2) — the N/M human-reviewed header badge + the "?"
   // legend popover (engine/page.ts; CSS/JS inline in the page shell).
-  const cacheKey = `render:v16:${slug}:${row.version}`;
+  // v17: attribution links are always underlined so they do not rely on color.
+  const cacheKey = `render:v17:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
