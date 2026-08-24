@@ -167,8 +167,8 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
    dark mode along with the rest of the chrome. */
 .wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; line-height: 1.5; }
 .wl-attribution p { margin: 4px 0; }
-.wl-attribution a { color: var(--accent); text-decoration: none; }
-.wl-attribution a:hover { text-decoration: underline; }
+.wl-attribution a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.wl-attribution a:hover { text-decoration-thickness: 2px; }
 /* Trust signals (P2): the human-reviewed badge + the header legend popover.
    Styled with the stylesheet's tokens only, so dark mode recolors them for
    free ([data-theme="dark"] remaps every var used here). */
