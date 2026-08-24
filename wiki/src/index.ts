@@ -446,6 +446,23 @@ function isArticleVersionStaleError(error: unknown): boolean {
   return false;
 }
 
+function guardedBotSaveVersion(
+  slug: string,
+  expectedVersion: number,
+  nextVersion: number,
+  expectedProposalJson: string | null,
+): SQL<number> {
+  return sql<number>`CASE WHEN
+    ${articles.version} = ${expectedVersion}
+    AND (
+      SELECT ${moderationState.proposal} FROM ${moderationState}
+      WHERE ${moderationState.slug} = ${slug}
+    ) IS ${expectedProposalJson}
+    THEN ${nextVersion}
+    ELSE NULL
+  END`;
+}
+
 function guardedProposalDecisionVersion(
   slug: string,
   proposalId: string,
@@ -1804,13 +1821,16 @@ app.post("/api/article/:slug", async (c) => {
       ? (posted.meta as { ladder?: { proposals?: unknown } }).ladder?.proposals
       : undefined;
   let proposalReconciliationStatements: BatchItem<"sqlite">[] = [];
+  let expectedProposalJson: string | null = null;
+  // Runs on EVERY bot save
   // Runs on EVERY bot save (not only ones carrying new proposals): the
   // staleness sweep below must fire even when meta.ladder.proposals is empty,
   // or a dead-target pending proposal survives until someone clicks approve.
   if (isBot) {
     const pnow = Date.now();
     const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
-    const existingPending = parsePending(ms?.proposal);
+    expectedProposalJson = ms?.proposal ?? null;
+    const existingPending = parsePending(expectedProposalJson);
     // Exclude tombstones: a `rejected` annotation is a human veto and must
     // never be a proposal target (else an approved proposal could resurrect a
     // veto). mergeProposals drops any proposal whose id isn't in this set.
@@ -1928,7 +1948,9 @@ app.post("/api/article/:slug", async (c) => {
       const noopBatch: WriteBatch = [
         db
           .update(articles)
-          .set({ version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${row.version} ELSE NULL END` })
+          .set({
+            version: guardedBotSaveVersion(slug, row.version, row.version, expectedProposalJson),
+          })
           .where(eq(articles.slug, slug)),
         ...proposalReconciliationStatements,
         db
@@ -1977,7 +1999,9 @@ app.post("/api/article/:slug", async (c) => {
       .update(articles)
       .set({
         annotations: annJson,
-        version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+        version: isBot
+          ? guardedBotSaveVersion(slug, row.version, newVersion, expectedProposalJson)
+          : sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
         updatedAt: now,
         revid: newRevid,
         ...statusCounts(finalAnnotations),

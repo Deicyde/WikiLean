@@ -163,6 +163,61 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(pending(db)).toHaveLength(0);
   });
 
+  it("does not overwrite a proposal queue changed by a concurrent bot save", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    const articleBefore = articleRow(db)!;
+    const competing: PendingProposal = {
+      proposalId: "dddddddddddd",
+      annotationId: HUMAN_ID,
+      fields: { note: "concurrent proposal" },
+      reason: "concurrent review",
+      createdAt: 123,
+    };
+
+    const d1 = env.DB as unknown as { batch: (statements: unknown[]) => Promise<unknown> };
+    const originalBatch = d1.batch.bind(d1);
+    let raced = false;
+    d1.batch = async (statements) => {
+      if (!raced) {
+        raced = true;
+        db.prepare("INSERT INTO moderation_state (slug, proposal, updated_at) VALUES (?,?,?)")
+          .run(SLUG, JSON.stringify([competing]), Date.now());
+        db.prepare("INSERT INTO proposals (id, slug, annotation_id, fields, fields_sig, reason, status, created_at) VALUES (?,?,?,?,?,?,?,?)")
+          .run(
+            competing.proposalId,
+            SLUG,
+            HUMAN_ID,
+            JSON.stringify(competing.fields),
+            fieldsSig(competing.fields),
+            competing.reason,
+            "pending",
+            competing.createdAt,
+          );
+      }
+      return originalBatch(statements);
+    };
+
+    const response = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 2,
+      meta: {
+        ladder: {
+          proposals: [{ annotationId: HUMAN_ID, fields: PROP_FIELDS, reason: "stale review" }],
+        },
+      },
+    });
+
+    expect(response.status).toBe(409);
+    expect(articleRow(db)).toEqual(articleBefore);
+    expect(pending(db)).toEqual([competing]);
+    const rows = db.prepare("SELECT id, status FROM proposals ORDER BY id").all() as Array<{
+      id: string;
+      status: string;
+    }>;
+    expect(rows).toEqual([{ id: competing.proposalId, status: "pending" }]);
+  });
+
   it("does not apply an approval after a concurrent rejection wins", async () => {
     const { db, env } = setup();
     await seedProposal(env);
