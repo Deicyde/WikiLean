@@ -446,6 +446,30 @@ function isArticleVersionStaleError(error: unknown): boolean {
   return false;
 }
 
+function guardedProposalDecisionVersion(
+  slug: string,
+  proposalId: string,
+  expectedVersion: number,
+  nextVersion: number,
+  expectedProposalJson: string | null,
+): SQL<number> {
+  return sql<number>`CASE WHEN
+    ${articles.version} = ${expectedVersion}
+    AND EXISTS (
+      SELECT 1 FROM ${proposals}
+      WHERE ${proposals.id} = ${proposalId}
+        AND ${proposals.status} = 'pending'
+    )
+    AND EXISTS (
+      SELECT 1 FROM ${moderationState}
+      WHERE ${moderationState.slug} = ${slug}
+        AND ${moderationState.proposal} IS ${expectedProposalJson}
+    )
+    THEN ${nextVersion}
+    ELSE NULL
+  END`;
+}
+
 async function runGuardedArticleBatch(
   c: Context<{ Bindings: Env }>,
   db: DrizzleDB,
@@ -1442,12 +1466,13 @@ app.post("/api/article/:slug", async (c) => {
       }
       if (!isProposalId(posted.proposal_id)) return c.json({ ok: false, error: "bad proposal_id" }, 400);
       const proposalId = posted.proposal_id;
-      // NB: this read → the batch below is a small TOCTOU window against a
-      // concurrent bot-save merge on the same slug (D1 has no read-in-batch).
-      // The window is kept minimal here, and the bot-save sweep self-heals
-      // both divergence directions (zombie table rows ↔ decided blob entries).
+      // D1 has no read-in-batch, so the decision batch below revalidates both
+      // this exact proposal blob and the lifecycle row's pending status before
+      // it changes article or moderation state. A concurrent merge or decision
+      // aborts the whole transaction through the fail-closed article guard.
       const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
-      const pending = parsePending(ms?.proposal);
+      const expectedProposalJson = ms?.proposal ?? null;
+      const pending = parsePending(expectedProposalJson);
       const prop = pending.find((p) => p.proposalId === proposalId);
       if (!prop) return c.json({ ok: false, error: "proposal not found" }, 404);
       const now = Date.now();
@@ -1458,7 +1483,19 @@ app.post("/api/article/:slug", async (c) => {
         const rejected = parseRejected(ms?.rejectedProposals);
         rejected.push({ annotationId: prop.annotationId, fieldsSig: fieldsSig(prop.fields) });
         const rejectReason = validRejectReason((posted as { reject_reason?: unknown }).reject_reason);
-        await db.batch([
+        const rejectBatch: WriteBatch = [
+          db
+            .update(articles)
+            .set({
+              version: guardedProposalDecisionVersion(
+                slug,
+                proposalId,
+                row.version,
+                row.version,
+                expectedProposalJson,
+              ),
+            })
+            .where(eq(articles.slug, slug)),
           db
             .update(moderationState)
             .set({ proposal: remainingJson, rejectedProposals: JSON.stringify(rejected.slice(-500)), updatedAt: now })
@@ -1468,7 +1505,9 @@ app.post("/api/article/:slug", async (c) => {
             .update(proposals)
             .set({ status: "rejected", rejectReason, decidedAt: now, decidedBy: user.id })
             .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
-        ]);
+        ];
+        const stale = await runGuardedArticleBatch(c, db, slug, row, rejectBatch);
+        if (stale) return stale;
         console.log(JSON.stringify({ event: "proposal-reject", slug, user_id: user.id, actor: isBot ? "ai" : "human", proposal_id: proposalId, reject_reason: rejectReason, t: now }));
         return c.json({ ok: true, rejected: true });
       }
@@ -1486,26 +1525,54 @@ app.post("/api/article/:slug", async (c) => {
       const idx = stored.findIndex((a) => a.id === prop.annotationId && a.status !== "rejected");
       if (idx === -1) {
         // Target annotation gone — drop the stale proposal, no content write.
-        await db.batch([
+        const staleTargetBatch: WriteBatch = [
+          db
+            .update(articles)
+            .set({
+              version: guardedProposalDecisionVersion(
+                slug,
+                proposalId,
+                row.version,
+                row.version,
+                expectedProposalJson,
+              ),
+            })
+            .where(eq(articles.slug, slug)),
           db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
           db
             .update(proposals)
             .set({ status: "stale", decidedAt: now, decidedBy: user.id })
             .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
-        ]);
+        ];
+        const stale = await runGuardedArticleBatch(c, db, slug, row, staleTargetBatch);
+        if (stale) return stale;
         return c.json({ ok: false, error: "annotation gone", dropped: true }, 409);
       }
       const { next, changed } = applyProposalFields(stored[idx], prop.fields);
       if (changed.length === 0) {
         // Already matches (e.g. applied by an earlier edit) — just clear it.
         // Lifecycle: approved (the human accepted it; the delta is in effect).
-        await db.batch([
+        const noopApprovalBatch: WriteBatch = [
+          db
+            .update(articles)
+            .set({
+              version: guardedProposalDecisionVersion(
+                slug,
+                proposalId,
+                row.version,
+                row.version,
+                expectedProposalJson,
+              ),
+            })
+            .where(eq(articles.slug, slug)),
           db.update(moderationState).set({ proposal: remainingJson, updatedAt: now }).where(eq(moderationState.slug, slug)),
           db
             .update(proposals)
             .set({ status: "approved", decidedAt: now, decidedBy: user.id })
             .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
-        ]);
+        ];
+        const stale = await runGuardedArticleBatch(c, db, slug, row, noopApprovalBatch);
+        if (stale) return stale;
         return c.json({ ok: true, noop: true, version: row.version });
       }
       if (isBot) {
@@ -1530,7 +1597,13 @@ app.post("/api/article/:slug", async (c) => {
           .update(articles)
           .set({
             annotations: finalsJson,
-            version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+            version: guardedProposalDecisionVersion(
+              slug,
+              proposalId,
+              row.version,
+              newVersion,
+              expectedProposalJson,
+            ),
             updatedAt: now,
             ...statusCounts(finals),
           })
