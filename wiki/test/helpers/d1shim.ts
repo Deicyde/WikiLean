@@ -10,12 +10,10 @@
 //       `{ results }` as row objects.
 //   client.prepare(sql).bind(...params).raw()   → typed selects; needs rows
 //       as positional value arrays in SELECT-clause order.
-//   client.batch(statements)                    → F9: the write paths bundle
-//       their post-CAS writes (and drift.ts its sweep bookkeeping) into one
-//       batch. The shim executes statements sequentially on the shared
-//       connection and returns one D1Result-shaped object per statement
-//       (real D1 batch is also sequential, plus transactional — the shim
-//       skips the transaction; no test asserts on mid-batch rollback).
+//   client.batch(statements)                    → the write paths bundle each
+//       mutation unit into one transaction. The shim executes statements
+//       sequentially under BEGIN IMMEDIATE and returns one D1Result-shaped
+//       object per statement, matching D1's commit-or-rollback behavior.
 // exec()/first() are not exercised by the app and throw loudly.
 
 import { DatabaseSync, type StatementSync } from "node:sqlite";
@@ -123,11 +121,24 @@ function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]): D1
 export function makeD1(db: DatabaseSync) {
   return {
     prepare: (sql: string) => makeStatement(db, sql, []),
-    // Sequential (per-statement) execution — see the header note.
     batch: async (stmts: D1ShimStatement[]) => {
       const out: D1ShimResult[] = [];
-      for (const s of stmts) out.push(await s._batchExec());
-      return out;
+      db.exec("BEGIN IMMEDIATE");
+      try {
+        for (const s of stmts) out.push(await s._batchExec());
+        db.exec("COMMIT");
+        return out;
+      } catch (error) {
+        // A statement using SQLite's ROLLBACK conflict action may already have
+        // ended the transaction. Never let a second rollback mask the original
+        // failure that production D1 would report to the caller.
+        try {
+          db.exec("ROLLBACK");
+        } catch {
+          // Transaction already rolled back by the failing statement.
+        }
+        throw error;
+      }
     },
     exec: () => {
       throw new Error("d1shim: exec() not implemented");

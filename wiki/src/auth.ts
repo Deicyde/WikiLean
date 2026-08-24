@@ -27,6 +27,27 @@ const DEV_COOKIE = "wl_dev_user";
 const PIPELINE_USER_ID = "pipeline";
 type Ctx = Context<{ Bindings: Env }>;
 
+const CONTROL_CHAR_RE = /[\u0000-\u001f\u007f-\u009f]/;
+
+// Only permit same-origin browser navigation targets. A single leading slash
+// distinguishes local paths from protocol-relative URLs such as //evil.test.
+export function internalReturnPath(value: string | null | undefined, fallback: string): string {
+  if (!value || value[0] !== "/" || value[1] === "/" || value.includes("\\") || CONTROL_CHAR_RE.test(value)) {
+    return fallback;
+  }
+  return value;
+}
+
+// JSON alone is not safe in an inline script: the HTML parser recognizes
+// </script> before JavaScript parses the string. Escape that delimiter starter
+// and the two JavaScript line separators that are unsafe in older engines.
+export function scriptSafeJson(value: string): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 // Per-request better-auth instance (Workers bindings are only available per request).
 export function makeAuth(env: Env) {
   const db = drizzle(env.DB);
@@ -164,7 +185,7 @@ h1{font-size:1.2rem;margin:0 0 6px}p{color:#5f594e;font-size:.9rem;margin:0 0 18
 ${buttons || "<p>No login providers are configured.</p>"}
 <p style="margin-top:16px"><a href="${htmlEscape(returnTo, true)}">← back</a></p></div>
 <script>
-var ret=${JSON.stringify(returnTo)};
+var ret=${scriptSafeJson(returnTo)};
 document.querySelectorAll(".prov").forEach(function(b){b.addEventListener("click",function(){
   b.disabled=true;b.textContent="redirecting…";
   fetch("/api/auth/sign-in/social",{method:"POST",headers:{"Content-Type":"application/json"},
@@ -191,7 +212,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
     const now = new Date();
     await db.insert(users).values({ id, name, role: "user", createdAt: now, updatedAt: now }).onConflictDoNothing();
     setCookie(c, DEV_COOKIE, id, { path: "/", httpOnly: true, sameSite: "Lax", maxAge: 60 * 60 * 24 * 30 });
-    return c.redirect(c.req.query("returnTo") || "/");
+    return c.redirect(internalReturnPath(c.req.query("returnTo"), "/"));
   });
 
   app.get("/api/auth/me", async (c) => c.json({ user: await getUser(c) }));
@@ -205,7 +226,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // Sign-in page.
   app.get("/login", (c) => {
-    const ret = c.req.query("returnTo") || "/";
+    const ret = internalReturnPath(c.req.query("returnTo"), "/");
     if (c.env.AUTH_MODE !== "oauth") {
       const u = new URL("/api/auth/dev-login", c.req.url);
       u.searchParams.set("returnTo", ret);
@@ -216,7 +237,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // Sign-out (both modes).
   app.get("/logout", (c) => {
-    const ret = c.req.query("returnTo") || "/";
+    const ret = internalReturnPath(c.req.query("returnTo"), "/");
     if (c.env.AUTH_MODE === "oauth") {
       // Styled to the warm palette so the flash page matches the site (W3 fix #6c).
       return c.html(
@@ -224,7 +245,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
           `<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>` +
           `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}` +
           `[data-theme="dark"] body{background:#1a1816;color:#9a9081}</style>` +
-          `<script>fetch("/api/auth/sign-out",{method:"POST"}).then(function(){location.href=${JSON.stringify(ret)}}).catch(function(){location.href=${JSON.stringify(ret)}});</script>` +
+          `<script>fetch("/api/auth/sign-out",{method:"POST"}).then(function(){location.href=${scriptSafeJson(ret)}}).catch(function(){location.href=${scriptSafeJson(ret)}});</script>` +
           `Signing out…`,
       );
     }

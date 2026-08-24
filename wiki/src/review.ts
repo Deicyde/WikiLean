@@ -23,7 +23,7 @@
 import type { Context, Hono } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { Env } from "./env.js";
-import { getUser } from "./auth.js";
+import { getUser, internalReturnPath } from "./auth.js";
 
 const GH_API = "https://api.github.com";
 const UA = "WikiLean-review/0.1 (+https://wikilean.jackmccarthy.org)";
@@ -1232,8 +1232,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!cid || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
       return c.text("Review OAuth app not configured (set REVIEW_GITHUB_CLIENT_ID/SECRET).", 503);
     }
-    const returnTo = c.req.query("returnTo") || "/review";
-    const safeReturn = returnTo.startsWith("/") ? returnTo : "/review"; // same-origin only
+    const safeReturn = internalReturnPath(c.req.query("returnTo"), "/review");
     const state = crypto.randomUUID();
     setCookie(c, REVIEW_STATE_COOKIE, state + "|" + safeReturn, {
       path: "/review/auth",
@@ -1282,7 +1281,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       sameSite: "Lax",
       maxAge: REVIEW_TOK_TTL,
     });
-    return c.redirect((returnTo || "/review").startsWith("/") ? returnTo : "/review");
+    return c.redirect(internalReturnPath(returnTo, "/review"));
   });
 
   // Disconnect: drop the stored token + cookie.
@@ -1290,7 +1289,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const id = getCookie(c, REVIEW_COOKIE);
     if (id) await c.env.RENDER_CACHE.delete(`reviewtok:${id}`);
     deleteCookie(c, REVIEW_COOKIE, { path: "/" });
-    return c.redirect(c.req.query("returnTo") || "/review");
+    return c.redirect(internalReturnPath(c.req.query("returnTo"), "/review"));
   });
 
   // The review page (shell + client script). no-cache so a deploy's updated

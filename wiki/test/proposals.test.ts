@@ -12,6 +12,7 @@ import {
   articleRow,
   storedAnnotations,
   latestRevision,
+  revisionCount,
   eventRows,
   blockNetwork,
   echo,
@@ -119,7 +120,7 @@ describe("proposals — inline banner injection", () => {
     });
     expect(html).toContain("window.__WL_PROPOSALS__=");
     expect(html).toContain("abc123abc123");
-    expect(html).toContain("editor.js?v=16");
+    expect(html).toContain("editor.js?v=17");
 
     const anon = injectAuthAndEditor("<main></main>", { slug: "Foo", user: null, annotations: [], proposals });
     expect(anon).not.toContain("__WL_PROPOSALS__");
@@ -160,6 +161,101 @@ describe("POST /api/article/:slug (proposals)", () => {
 
     // Proposal consumed.
     expect(pending(db)).toHaveLength(0);
+  });
+
+  it("does not overwrite a proposal queue changed by a concurrent bot save", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    const articleBefore = articleRow(db)!;
+    const competing: PendingProposal = {
+      proposalId: "dddddddddddd",
+      annotationId: HUMAN_ID,
+      fields: { note: "concurrent proposal" },
+      reason: "concurrent review",
+      createdAt: 123,
+    };
+
+    const d1 = env.DB as unknown as { batch: (statements: unknown[]) => Promise<unknown> };
+    const originalBatch = d1.batch.bind(d1);
+    let raced = false;
+    d1.batch = async (statements) => {
+      if (!raced) {
+        raced = true;
+        db.prepare("INSERT INTO moderation_state (slug, proposal, updated_at) VALUES (?,?,?)")
+          .run(SLUG, JSON.stringify([competing]), Date.now());
+        db.prepare("INSERT INTO proposals (id, slug, annotation_id, fields, fields_sig, reason, status, created_at) VALUES (?,?,?,?,?,?,?,?)")
+          .run(
+            competing.proposalId,
+            SLUG,
+            HUMAN_ID,
+            JSON.stringify(competing.fields),
+            fieldsSig(competing.fields),
+            competing.reason,
+            "pending",
+            competing.createdAt,
+          );
+      }
+      return originalBatch(statements);
+    };
+
+    const response = await botSave(env, {
+      annotations: storedAnnotations(db).map(echo),
+      base_version: 2,
+      meta: {
+        ladder: {
+          proposals: [{ annotationId: HUMAN_ID, fields: PROP_FIELDS, reason: "stale review" }],
+        },
+      },
+    });
+
+    expect(response.status).toBe(409);
+    expect(articleRow(db)).toEqual(articleBefore);
+    expect(pending(db)).toEqual([competing]);
+    const rows = db.prepare("SELECT id, status FROM proposals ORDER BY id").all() as Array<{
+      id: string;
+      status: string;
+    }>;
+    expect(rows).toEqual([{ id: competing.proposalId, status: "pending" }]);
+  });
+
+  it("does not apply an approval after a concurrent rejection wins", async () => {
+    const { db, env } = setup();
+    await seedProposal(env);
+    await storeProposal(env, db, 2);
+    const proposal = pending(db)[0];
+    const revisionsBefore = revisionCount(db);
+    const articleBefore = articleRow(db)!;
+
+    const d1 = env.DB as unknown as { batch: (statements: unknown[]) => Promise<unknown> };
+    const originalBatch = d1.batch.bind(d1);
+    let raced = false;
+    d1.batch = async (statements) => {
+      if (!raced) {
+        raced = true;
+        db.prepare("UPDATE proposals SET status = 'rejected', reject_reason = 'incorrect', decided_at = ?, decided_by = ? WHERE id = ?")
+          .run(Date.now(), "u-admin", proposal.proposalId);
+        db.prepare("UPDATE moderation_state SET proposal = NULL, rejected_proposals = ? WHERE slug = ?")
+          .run(JSON.stringify([{ annotationId: HUMAN_ID, fieldsSig: fieldsSig(PROP_FIELDS) }]), SLUG);
+      }
+      return originalBatch(statements);
+    };
+
+    const response = await save(
+      env,
+      { action: "approve_proposal", proposal_id: proposal.proposalId, base_version: 2 },
+      { user: "u-patroller" },
+    );
+
+    expect(response.status).toBe(409);
+    expect(articleRow(db)).toEqual(articleBefore);
+    expect(revisionCount(db)).toBe(revisionsBefore);
+    expect(storedAnnotations(db).find((a) => a.id === HUMAN_ID)!.status).toBe("partial");
+    const lifecycle = db.prepare("SELECT status, decided_by FROM proposals WHERE id = ?").get(proposal.proposalId) as {
+      status: string;
+      decided_by: string | null;
+    };
+    expect(lifecycle).toEqual({ status: "rejected", decided_by: "u-admin" });
+    expect(pending(db)).toEqual([]);
   });
 
   it("dual-writes the lifecycle table: pending on store, approved/rejected(+reason) on decision", async () => {
