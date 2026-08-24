@@ -141,8 +141,10 @@ describe("homePage", () => {
     // The toggle button.
     expect(html).toContain('id="wl-theme-toggle"');
     expect(html).toContain('class="wl-theme-toggle"');
-    // At least one dark-theme rule, and the shared dark palette anchor color.
-    expect(html).toContain('[data-theme="dark"]');
+    // Theme tokens live on the root element that receives data-theme. A
+    // descendant selector can never match because :root is the document root.
+    expect(html).toContain(':root[data-theme="dark"] {');
+    expect(html).not.toContain('[data-theme="dark"] :root');
     expect(html).toContain("--paper:#1a1816");
   });
 

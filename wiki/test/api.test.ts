@@ -354,6 +354,17 @@ describe("POST /api/article/:slug (save)", () => {
     expect(((await res.json()) as { error: string }).error).toBe("invalid status");
   });
 
+  it("validation: missing status → 400", async () => {
+    const { env } = setup();
+    const res = await save(
+      env,
+      { annotations: [{ anchor: { section: "(lead)", snippet: "abelian group" } }], base_version: 1 },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { error: string }).error).toBe("invalid status");
+  });
+
   it("validation: >2000 annotations → 413", async () => {
     const { env } = setup();
     const annotations = Array.from({ length: 2001 }, () => ({ status: "formalized" }));

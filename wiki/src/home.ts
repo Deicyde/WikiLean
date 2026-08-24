@@ -305,7 +305,7 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
 /* Dark mode — remap the warm-light token palette to the shared dark scheme
    (matches pages.ts / style.css). One override block recolors everything that
    uses the vars; the few hardcoded colors below get explicit dark overrides. */
-[data-theme="dark"] :root {
+:root[data-theme="dark"] {
   --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#9a9081;
   --line:#3a3530; --line-strong:#4d4742; --accent:#6e9adf; --accent-dark:#8fb4e8;
   --green:#8fd4ad; --yellow:#e2bf78; --red:#f08e85;

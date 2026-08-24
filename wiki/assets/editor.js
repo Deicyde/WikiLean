@@ -226,24 +226,24 @@
     // Each click opens the next hidden annotation in the editor panel,
     // cycling through all of them (fix #2).
     let hiddenCursor = 0;
-    bar.querySelector("#wlr-hidden").addEventListener("click", function () {
-      openEditor(rejectedIdxs[hiddenCursor % rejectedIdxs.length]);
+    bar.querySelector("#wlr-hidden").addEventListener("click", function (e) {
+      openEditor(rejectedIdxs[hiddenCursor % rejectedIdxs.length], e.currentTarget);
       hiddenCursor++;
     });
   }
   if (suppressedIdxs.length) {
     // Same cycling pattern for overlap-suppressed annotations.
     let suppressedCursor = 0;
-    bar.querySelector("#wlr-suppressed").addEventListener("click", function () {
-      openEditor(suppressedIdxs[suppressedCursor % suppressedIdxs.length]);
+    bar.querySelector("#wlr-suppressed").addEventListener("click", function (e) {
+      openEditor(suppressedIdxs[suppressedCursor % suppressedIdxs.length], e.currentTarget);
       suppressedCursor++;
     });
   }
   if (orphanIdxs.length) {
     // Same cycling pattern for orphaned (anchor-rot) annotations.
     let orphanCursor = 0;
-    bar.querySelector("#wlr-orphans").addEventListener("click", function () {
-      openEditor(orphanIdxs[orphanCursor % orphanIdxs.length]);
+    bar.querySelector("#wlr-orphans").addEventListener("click", function (e) {
+      openEditor(orphanIdxs[orphanCursor % orphanIdxs.length], e.currentTarget);
       orphanCursor++;
     });
   }
@@ -358,6 +358,79 @@
 
   const $ = (id) => document.getElementById(id);
 
+  // Dialog focus lifecycle. Capture the launch point before focus moves into
+  // the panel, keep it stable while the panel is open, and restore it after a
+  // confirmed close. Picker rows and the hidden FAB are deliberately excluded:
+  // both are ephemeral launch controls, so their annotation/article target is
+  // passed explicitly by those call sites instead.
+  let dialogOpener = null;
+  let dialogFallback = null;
+  function isStableFocusTarget(el) {
+    return el instanceof HTMLElement && el.isConnected && !panel.contains(el) &&
+      !el.closest("#wlr-picker") && el !== fab && !el.closest("#wlr-intro");
+  }
+  function defaultDialogFallback() {
+    return bar.querySelector("button:not([disabled]),a[href]") ||
+      document.querySelector(".wl-article-body");
+  }
+  function rememberDialogOpener(preferred, fallback) {
+    // Opening another annotation while the dialog is already open must not
+    // replace the original launch point with the currently focused form field.
+    if (panel.classList.contains("open")) return;
+    const active = document.activeElement;
+    dialogOpener = isStableFocusTarget(preferred)
+      ? preferred
+      : isStableFocusTarget(active)
+        ? active
+        : null;
+    dialogFallback = isStableFocusTarget(fallback) ? fallback : defaultDialogFallback();
+  }
+  function focusProgrammatically(el) {
+    if (!isStableFocusTarget(el)) return false;
+    if (!el.matches("a[href],button,input,select,textarea,[tabindex]")) {
+      el.setAttribute("tabindex", "-1");
+    }
+    try {
+      el.focus({ preventScroll: true });
+    } catch (_) {
+      el.focus();
+    }
+    return true;
+  }
+  function restoreDialogFocus() {
+    const target = isStableFocusTarget(dialogOpener) ? dialogOpener : dialogFallback;
+    dialogOpener = null;
+    dialogFallback = null;
+    focusProgrammatically(target);
+  }
+  function focusableDialogControls() {
+    const selector = 'a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])';
+    return Array.from(panel.querySelectorAll(selector)).filter((el) => {
+      if (el.disabled || el.hidden || el.getAttribute("aria-hidden") === "true") return false;
+      const style = window.getComputedStyle(el);
+      return style.display !== "none" && style.visibility !== "hidden" && el.getClientRects().length > 0;
+    });
+  }
+  function trapDialogTab(e) {
+    const controls = focusableDialogControls();
+    if (!controls.length) {
+      e.preventDefault();
+      panel.setAttribute("tabindex", "-1");
+      panel.focus();
+      return;
+    }
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || !panel.contains(active))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (active === last || !panel.contains(active))) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   document.querySelectorAll(".anno").forEach((el) => {
     el.addEventListener("click", (e) => {
       const sel = window.getSelection();
@@ -390,7 +463,7 @@
       document.querySelectorAll(".anno.wlr-selected").forEach((n) => n.classList.remove("wlr-selected"));
       el.classList.add("wlr-selected");
       if (idxs.length === 1) {
-        maybeShowIntro(() => openEditor(idxs[0]));
+        maybeShowIntro(() => openEditor(idxs[0], el));
       } else {
         maybeShowIntro(() => showPicker(el, idxs));
       }
@@ -740,7 +813,9 @@
       row.addEventListener("click", (ev) => {
         ev.stopPropagation();
         dismissPicker();
-        openEditor(i);
+        // The row is removed before the dialog opens, so return focus to the
+        // stable annotation element rather than this ephemeral picker button.
+        openEditor(i, annoEl);
       });
       pickerEl.appendChild(row);
     });
@@ -757,6 +832,8 @@
     if (e.key === "Escape") {
       dismissPicker();
       if (panel.classList.contains("open")) requestClose();
+    } else if (e.key === "Tab" && panel.classList.contains("open")) {
+      trapDialogTab(e);
     } else if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && panel.classList.contains("open")) {
       // Cmd/Ctrl+Enter saves, matching the Save button.
       e.preventDefault();
@@ -835,7 +912,9 @@
   fab.addEventListener("click", () => {
     if (!pendingSel) return;
     fab.style.display = "none";
-    openAdder(pendingSel.text, pendingSel.section);
+    // The FAB is hidden as the dialog opens; the article body is the stable,
+    // relevant return point for an annotation created from a text selection.
+    openAdder(pendingSel.text, pendingSel.section, articleBody);
   });
 
   function mathlib(a) {
@@ -946,7 +1025,8 @@
     });
   }
 
-  function openEditor(idx) {
+  function openEditor(idx, opener) {
+    rememberDialogOpener(opener);
     editingIndex = idx;
     const a = annos[idx];
     const m = mathlib(a);
@@ -993,7 +1073,8 @@
     $("wlr-f-status").focus();
   }
 
-  function openAdder(text, section) {
+  function openAdder(text, section, opener) {
+    rememberDialogOpener(opener);
     editingIndex = null;
     panel.dataset.newSnippet = text;
     panel.dataset.newSection = section;
@@ -1038,6 +1119,7 @@
     delete panel.dataset.reanchor;
     document.querySelectorAll(".anno.wlr-selected").forEach((n) => n.classList.remove("wlr-selected"));
     $("wlr-status-msg").textContent = "";
+    restoreDialogFocus();
   }
   // Escape/× with unsaved changes ask before discarding (fix #11c).
   function requestClose() {
