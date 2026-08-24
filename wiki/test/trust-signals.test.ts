@@ -1,5 +1,5 @@
 // Trust signals (P2): the N/M human-reviewed header badge + the "?" legend
-// popover on article pages (engine/page.ts, render:v16), and the landing
+// popover on article pages (engine/page.ts, render:v17), and the landing
 // page's "Least recently reviewed" strip (home.ts brainLanding via GET /,
 // page:home:v10). Badge/legend math is unit-tested on renderArticlePage
 // directly; the strip's query (NULLS FIRST ordering, parked-state exclusion,
@@ -113,7 +113,7 @@ describe("legend popover (P2)", () => {
 describe("trust signals through the app", () => {
   blockNetwork();
 
-  it("article pages carry the badge and cache under render:v16", async () => {
+  it("article pages carry the badge and cache under render:v17", async () => {
     const h = setup();
     const res = await get(h.env, `/${SLUG}`);
     expect(res.status).toBe(200);
@@ -122,8 +122,8 @@ describe("trust signals through the app", () => {
     expect(html).toContain(">0/2 human-reviewed<");
     expect(html).toContain('id="wl-legend-btn"');
     const keys = [...h.renderCache.store.keys()];
-    expect(keys.some((k) => k.startsWith("render:v16:"))).toBe(true);
-    expect(keys.some((k) => k.startsWith("render:v15:"))).toBe(false);
+    expect(keys.some((k) => k.startsWith("render:v17:"))).toBe(true);
+    expect(keys.some((k) => k.startsWith("render:v16:"))).toBe(false);
   });
 
   it("landing strip orders NULLS FIRST, excludes parked states, caches under page:home:v10", async () => {
