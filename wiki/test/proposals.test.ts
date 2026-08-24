@@ -119,7 +119,7 @@ describe("proposals — inline banner injection", () => {
     });
     expect(html).toContain("window.__WL_PROPOSALS__=");
     expect(html).toContain("abc123abc123");
-    expect(html).toContain("editor.js?v=16");
+    expect(html).toContain("editor.js?v=17");
 
     const anon = injectAuthAndEditor("<main></main>", { slug: "Foo", user: null, annotations: [], proposals });
     expect(anon).not.toContain("__WL_PROPOSALS__");

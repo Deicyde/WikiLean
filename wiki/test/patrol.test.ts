@@ -93,6 +93,29 @@ describe("GET /recent-changes?kind=", () => {
     expect(html).not.toContain('class="wl-unpatrolled"'); // (bare substring would hit the shell CSS)
     expect(html).not.toContain(`data-rev="${pipelineId}"`);
   });
+
+  it("filters watched slugs before applying the result limit", async () => {
+    const h = setup();
+    h.db.prepare("INSERT INTO watchlist (user_id, slug, created_at) VALUES (?,?,?)").run(
+      "u-human",
+      SLUG,
+      Date.now(),
+    );
+    h.db
+      .prepare("UPDATE revisions SET comment = ?, created_at = ? WHERE id = 1")
+      .run("older-watched-change", 1);
+    for (let i = 0; i < 501; i += 1) {
+      insertRevision(h.db, `Unwatched_${i}`, {
+        kind: "edit",
+        comment: `newer-unwatched-${i}`,
+        createdAt: i + 2,
+      });
+    }
+
+    const html = await (await get(h.env, "/recent-changes?watching=1", { user: "u-human" })).text();
+    expect(html).toContain("older-watched-change");
+    expect(html).not.toContain("newer-unwatched-500");
+  });
 });
 
 describe("POST /api/revision/:id/patrol", () => {

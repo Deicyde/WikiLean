@@ -296,7 +296,7 @@ function validateAnnotations(
       return c.json({ ok: false, error: "annotation must be an object" }, 400);
     }
     const ann = a as Record<string, unknown>;
-    if (ann.status !== undefined && (typeof ann.status !== "string" || !STATUS_SET.has(ann.status))) {
+    if (typeof ann.status !== "string" || !STATUS_SET.has(ann.status)) {
       return c.json({ ok: false, error: "invalid status" }, 400);
     }
     // C1: ids are optional (absent → lazily healed on save) but when present
@@ -374,11 +374,10 @@ async function sha256Hex(s: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// F9: each write path bundles its post-CAS writes (revision insert + events
-// + moderation_state bookkeeping) into ONE db.batch() so a mid-write crash
-// can't leave a revision without its events (or vice versa). D1 executes a
-// batch sequentially in one transaction; the test shim (d1shim) executes it
-// sequentially on one connection. The events' revision_id can't be bound
+// Each mutation unit bundles its guarded article write, revision, events, and
+// moderation/proposal bookkeeping into ONE db.batch(). D1 executes a batch
+// sequentially in one transaction, and the test shim mirrors that behavior.
+// The events' revision_id can't be bound
 // before the batch runs, so event rows reference the batch's own revision
 // insert via a per-slug MAX(id) subquery — valid because the revision insert
 // precedes the event inserts in the same sequential batch.
@@ -433,6 +432,43 @@ function eventInsertStatements(db: DrizzleDB, rows: EventRowInsert[]): BatchItem
 }
 
 type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
+
+// A guarded article write deliberately assigns NULL to the NOT NULL version
+// column on a lost CAS. D1 aborts the whole batch, so revision/events and
+// moderation/proposal lifecycle writes cannot commit without the article.
+function isArticleVersionStaleError(error: unknown): boolean {
+  let current: unknown = error;
+  for (let depth = 0; depth < 5 && current !== null; depth += 1) {
+    const message = current instanceof Error ? current.message : typeof current === "string" ? current : "";
+    if (message.includes("NOT NULL constraint failed: articles.version")) return true;
+    current = typeof current === "object" && "cause" in current ? (current as { cause?: unknown }).cause : null;
+  }
+  return false;
+}
+
+async function runGuardedArticleBatch(
+  c: Context<{ Bindings: Env }>,
+  db: DrizzleDB,
+  slug: string,
+  fallback: { version: number; annotations: string },
+  batch: WriteBatch,
+): Promise<Response | null> {
+  try {
+    await db.batch(batch);
+    return null;
+  } catch (error) {
+    if (!isArticleVersionStaleError(error)) throw error;
+    const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+    return c.json(
+      {
+        error: "stale",
+        version: fresh ? fresh.version : fallback.version,
+        annotations: JSON.parse(fresh ? fresh.annotations : fallback.annotations),
+      },
+      409,
+    );
+  }
+}
 
 // ---- dynamic homepage + sitemap (D-C7) ----
 // Both are D1-driven (new articles appear without a redeploy) and KV-cached
@@ -755,24 +791,13 @@ app.get("/recent-changes", async (c) => {
 
   const db = drizzle(c.env.DB);
   const patrollers = alias(users, "patrollers");
-  let watchedSlugs: Set<string> | null = null;
-  if (watching) {
-    const ws = await db
-      .select({ slug: watchlist.slug })
-      .from(watchlist)
-      .where(eq(watchlist.userId, user!.id));
-    watchedSlugs = new Set(ws.map((r) => r.slug));
-    if (watchedSlugs.size === 0) {
-      // No watched slugs → no rows, skip the query entirely.
-      const html = recentChangesPage([], {
-        kind,
-        canPatrol: user.role === "patroller" || user.role === "admin",
-        watching: true,
-        loggedIn: true,
-      });
-      return c.html(html);
-    }
-  }
+  const watchedOnly = watching
+    ? sql`EXISTS (
+        SELECT 1 FROM ${watchlist}
+        WHERE ${watchlist.userId} = ${user!.id}
+          AND ${watchlist.slug} = ${revisions.slug}
+      )`
+    : undefined;
 
   const rows = await db
     .select({
@@ -792,13 +817,17 @@ app.get("/recent-changes", async (c) => {
     .leftJoin(articles, eq(articles.slug, revisions.slug))
     .leftJoin(users, eq(users.id, revisions.userId))
     .leftJoin(patrollers, eq(patrollers.id, revisions.patrolledBy))
-    .where(kind === null ? undefined : eq(revisions.kind, kind))
+    .where(
+      and(
+        kind === null ? undefined : eq(revisions.kind, kind),
+        watchedOnly,
+      ),
+    )
     .orderBy(desc(revisions.createdAt))
-    .limit(watching ? 500 : 100); // wider pre-filter window when filtering watchlist
+    .limit(100);
   const canPatrol = user !== null && (user.role === "patroller" || user.role === "admin");
-  const filteredRows = watchedSlugs ? rows.filter((r) => watchedSlugs!.has(r.slug)).slice(0, 100) : rows;
   const html = recentChangesPage(
-    filteredRows.map((r) => ({
+    rows.map((r) => ({
       slug: r.slug,
       displayTitle: r.displayTitle ?? r.slug,
       id: r.id,
@@ -1493,18 +1522,19 @@ app.post("/api/article/:slug", async (c) => {
       const validationErr = validateAnnotations(c, finals, finalsJson);
       if (validationErr) return validationErr;
       const newVersion = row.version + 1;
-      const updated = await db
-        .update(articles)
-        .set({ annotations: finalsJson, version: newVersion, updatedAt: now, ...statusCounts(finals) })
-        .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
-      if (updated.meta.changes === 0) {
-        const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
-        return c.json({ error: "stale", version: fresh ? fresh.version : row.version, annotations: fresh ? JSON.parse(fresh.annotations) : [] }, 409);
-      }
       const prior = (
         await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
       )[0];
-      await db.batch([
+      const approvalBatch: WriteBatch = [
+        db
+          .update(articles)
+          .set({
+            annotations: finalsJson,
+            version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+            updatedAt: now,
+            ...statusCounts(finals),
+          })
+          .where(eq(articles.slug, slug)),
         db.insert(revisions).values({
           slug,
           userId: user.id,
@@ -1537,7 +1567,9 @@ app.post("/api/article/:slug", async (c) => {
           .update(proposals)
           .set({ status: "approved", decidedAt: now, decidedBy: user.id })
           .where(and(eq(proposals.id, proposalId), eq(proposals.status, "pending"))),
-      ]);
+      ];
+      const stale = await runGuardedArticleBatch(c, db, slug, row, approvalBatch);
+      if (stale) return stale;
       console.log(JSON.stringify({ event: "proposal-approve", slug, user_id: user.id, actor: isBot ? "ai" : "human", proposal_id: proposalId, version: newVersion, t: now }));
       return c.json({ ok: true, version: newVersion });
     }
@@ -1568,26 +1600,19 @@ app.post("/api/article/:slug", async (c) => {
     const annJson = JSON.stringify(finals);
     const now = Date.now();
     const newVersion = row.version + 1;
-    const updated = await db
-      .update(articles)
-      .set({ annotations: annJson, version: newVersion, updatedAt: now, ...statusCounts(finals) })
-      .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
-    if (updated.meta.changes === 0) {
-      const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
-      return c.json(
-        {
-          error: "stale",
-          version: fresh ? fresh.version : row.version,
-          annotations: fresh ? JSON.parse(fresh.annotations) : [],
-        },
-        409,
-      );
-    }
     const prior = (
       await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
     )[0];
-    // F9: revision + endorse event land atomically.
     const endorseBatch: WriteBatch = [
+      db
+        .update(articles)
+        .set({
+          annotations: annJson,
+          version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+          updatedAt: now,
+          ...statusCounts(finals),
+        })
+        .where(eq(articles.slug, slug)),
       db.insert(revisions).values({
         slug,
         userId: user.id,
@@ -1612,7 +1637,8 @@ app.post("/api/article/:slug", async (c) => {
         },
       ]),
     ];
-    await db.batch(endorseBatch);
+    const stale = await runGuardedArticleBatch(c, db, slug, row, endorseBatch);
+    if (stale) return stale;
     console.log(
       JSON.stringify({
         event: "endorse",
@@ -1704,6 +1730,7 @@ app.post("/api/article/:slug", async (c) => {
     isBot && posted.meta && typeof posted.meta === "object"
       ? (posted.meta as { ladder?: { proposals?: unknown } }).ladder?.proposals
       : undefined;
+  let proposalReconciliationStatements: BatchItem<"sqlite">[] = [];
   // Runs on EVERY bot save (not only ones carrying new proposals): the
   // staleness sweep below must fire even when meta.ladder.proposals is empty,
   // or a dead-target pending proposal survives until someone clicks approve.
@@ -1782,7 +1809,7 @@ app.post("/api/article/:slug", async (c) => {
     if (blobChanged || staleNow.length > 0 || noDeltaNow.length > 0 || zombies.length > 0) {
       const proposalJson = merged.length ? JSON.stringify(merged) : null;
       const newOnes = merged.slice(stillPending.length);
-      await db.batch([
+      proposalReconciliationStatements = [
         db
           .insert(moderationState)
           .values({ slug, proposal: proposalJson, updatedAt: pnow })
@@ -1810,7 +1837,7 @@ app.post("/api/article/:slug", async (c) => {
             .set({ status: "stale", decidedAt: pnow })
             .where(and(eq(proposals.id, pid), eq(proposals.status, "pending"))),
         ),
-      ]);
+      ];
     }
   }
 
@@ -1825,13 +1852,22 @@ app.post("/api/article/:slug", async (c) => {
   if (deepEqual(stored, finalAnnotations) && (postedRevid === null || postedRevid === row.revid)) {
     if (isBot) {
       const now = Date.now();
-      await db
-        .insert(moderationState)
-        .values({ slug, lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now })
-        .onConflictDoUpdate({
-          target: moderationState.slug,
-          set: { lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now },
-        });
+      const noopBatch: WriteBatch = [
+        db
+          .update(articles)
+          .set({ version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${row.version} ELSE NULL END` })
+          .where(eq(articles.slug, slug)),
+        ...proposalReconciliationStatements,
+        db
+          .insert(moderationState)
+          .values({ slug, lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now })
+          .onConflictDoUpdate({
+            target: moderationState.slug,
+            set: { lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now },
+          }),
+      ];
+      const stale = await runGuardedArticleBatch(c, db, slug, row, noopBatch);
+      if (stale) return stale;
     }
     console.log(
       JSON.stringify({
@@ -1860,42 +1896,20 @@ app.post("/api/article/:slug", async (c) => {
   // Revid policy: articles.revid advances only atomically with the annotations
   // payload — a bot-posted revid re-pins in this same UPDATE, never separately.
   const newRevid = postedRevid ?? wp.revid ?? row.revid;
-  // Guard the UPDATE on the version we read (CAS) to close the TOCTOU between
-  // the read above and this write. If a concurrent save bumped the version,
-  // 0 rows change → treat as stale (same 409 contract).
-  const updated = await db
-    .update(articles)
-    .set({
-      annotations: annJson,
-      version: newVersion,
-      updatedAt: now,
-      revid: newRevid,
-      ...statusCounts(finalAnnotations),
-    })
-    .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
-  if (updated.meta.changes === 0) {
-    const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
-    return c.json(
-      {
-        error: "stale",
-        version: fresh ? fresh.version : row.version,
-        annotations: fresh ? JSON.parse(fresh.annotations) : [],
-      },
-      409,
-    );
-  }
-  // D-C8b: a bot re-pin (old revid ≠ new) supersedes the old revision's cached
-  // Wikipedia HTML — drop the stale WP_HTML key (fire-and-forget; the 90d TTL
-  // is the backstop if the delete is lost).
-  if (postedRevid !== null && row.revid !== null && postedRevid !== row.revid) {
-    void c.env.WP_HTML.delete(`wp:${slug}:${row.revid}`).catch(() => {});
-  }
   const prior = (
     await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
   )[0];
-  // F9: revision + events + moderation bookkeeping land in one atomic batch.
-  // The article UPDATE above stays separate — its CAS result gates all this.
   const saveBatch: WriteBatch = [
+    db
+      .update(articles)
+      .set({
+        annotations: annJson,
+        version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+        updatedAt: now,
+        revid: newRevid,
+        ...statusCounts(finalAnnotations),
+      })
+      .where(eq(articles.slug, slug)),
     db.insert(revisions).values({
       slug,
       userId: user.id,
@@ -1918,6 +1932,7 @@ app.post("/api/article/:slug", async (c) => {
         now,
       }),
     ),
+    ...proposalReconciliationStatements,
   ];
   if (isBot) {
     // Bookkeep the review in moderation_state (feeds /api/work priority).
@@ -1945,7 +1960,13 @@ app.post("/api/article/:slug", async (c) => {
         }),
     );
   }
-  await db.batch(saveBatch);
+  const stale = await runGuardedArticleBatch(c, db, slug, row, saveBatch);
+  if (stale) return stale;
+  // A successful re-pin supersedes the old revision's cached Wikipedia HTML.
+  // Delete only after the complete mutation batch commits.
+  if (postedRevid !== null && row.revid !== null && postedRevid !== row.revid) {
+    void c.env.WP_HTML.delete(`wp:${slug}:${row.revid}`).catch(() => {});
+  }
   console.log(
     JSON.stringify({
       event: "save",
@@ -1996,34 +2017,19 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
 
   const now = Date.now();
   const newVersion = row.version + 1;
-  // F5: same CAS contract as the save path — guard the UPDATE on the version
-  // we read; a concurrent write between the read and this UPDATE leaves
-  // 0 rows changed → 409 stale with the current state.
-  const updated = await db
-    .update(articles)
-    .set({
-      annotations: rev.annotations,
-      version: newVersion,
-      updatedAt: now,
-      ...statusCounts(revAnnotations as AnnRecord[]),
-    })
-    .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
-  if (updated.meta.changes === 0) {
-    const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
-    return c.json(
-      {
-        error: "stale",
-        version: fresh ? fresh.version : row.version,
-        annotations: fresh ? JSON.parse(fresh.annotations) : [],
-      },
-      409,
-    );
-  }
   const prior = (
     await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
   )[0];
-  // F9: revision + revert_restore events land atomically.
   const revertBatch: WriteBatch = [
+    db
+      .update(articles)
+      .set({
+        annotations: rev.annotations,
+        version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+        updatedAt: now,
+        ...statusCounts(revAnnotations as AnnRecord[]),
+      })
+      .where(eq(articles.slug, slug)),
     db.insert(revisions).values({
       slug,
       userId: user.id,
@@ -2049,7 +2055,8 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
       }),
     ),
   ];
-  await db.batch(revertBatch);
+  const stale = await runGuardedArticleBatch(c, db, slug, row, revertBatch);
+  if (stale) return stale;
   console.log(
     JSON.stringify({
       event: "revert",
@@ -2210,21 +2217,6 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
 
     const now = Date.now();
     const newVersion = row.version + 1;
-    // Same CAS contract as the single-revision revert: guard the UPDATE on the
-    // version we read; 0 rows changed = a concurrent write raced us → 'conflict'.
-    const updated = await db
-      .update(articles)
-      .set({
-        annotations: preAnnJson,
-        version: newVersion,
-        updatedAt: now,
-        ...statusCounts(preAnnotations),
-      })
-      .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
-    if (updated.meta.changes === 0) {
-      skipped.push({ slug, reason: "conflict" });
-      continue;
-    }
     const prior = (
       await db
         .select({ id: revisions.id })
@@ -2233,8 +2225,16 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
         .orderBy(desc(revisions.id))
         .limit(1)
     )[0];
-    // F9: revision + revert_restore events land in one atomic batch (per slug).
     const revertBatch: WriteBatch = [
+      db
+        .update(articles)
+        .set({
+          annotations: preAnnJson,
+          version: sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
+          updatedAt: now,
+          ...statusCounts(preAnnotations),
+        })
+        .where(eq(articles.slug, slug)),
       db.insert(revisions).values({
         slug,
         userId: user.id,
@@ -2257,7 +2257,13 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
         }),
       ),
     ];
-    await db.batch(revertBatch);
+    try {
+      await db.batch(revertBatch);
+    } catch (error) {
+      if (!isArticleVersionStaleError(error)) throw error;
+      skipped.push({ slug, reason: "conflict" });
+      continue;
+    }
     reverted.push(slug);
   }
 
