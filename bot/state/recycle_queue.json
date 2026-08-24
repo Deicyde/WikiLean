@@ -1,28 +1,21 @@
 [
  {
-  "qid": "Q24743362",
-  "file": "Mathlib/Combinatorics/SimpleGraph/Maps.lean",
+  "qid": "Q191849",
+  "file": "Mathlib/SetTheory/ZFC/Basic.lean",
   "verdicts": {
-   "SnirBroshi": "approve",
-   "Deicyde": "approve",
-   "faenuccio": "reject"
+   "Deicyde": "reject"
   },
-  "reason": "maintainer rejected/revised",
-  "notes": [
-   {
-    "login": "faenuccio",
-    "status": "reject",
-    "text": "Can we add both following @SnirBroshi's suggestion?"
-   }
-  ],
-  "decl": "SimpleGraph.Subgraph.induce",
+  "reason": "objection (reject/revise)",
+  "notes": [],
+  "decl": "ZFSet",
   "triage": {
    "decision": "requeue",
-   "reason": "Mathlib's own docstrings cross-reference SimpleGraph.induce (Maps.lean) and SimpleGraph.Subgraph.induce (Subgraph.lean) as the two 'induced subgraph' definitions, confirming faenuccio's ask to tag both rather than just the Subgraph one.",
-   "suggested_decl": "SimpleGraph.induce",
-   "suggested_qid": "",
-   "fix_hint": "Tag SimpleGraph.induce (Maps.lean `abbrev induce`) with Q24743362 too, per SnirBroshi's suggestion that faenuccio endorsed; Subgraph.induce is already tagged in batch 7. File corrected 2026-08-23: it pointed at Subgraph.lean, where the short-name fallback would re-match Subgraph.induce.",
-   "decl_exists": true
+   "reason": "Q191849 is the axiom system 'Zermelo–Fraenkel set theory' (a theory), not the object-level universe it axiomatizes, whereas Mathlib's `ZFSet` docstring literally defines it as 'the ZFC universe of sets' — the correct object-level match is Q77887 'von Neumann universe' (the collection of sets built by transfinite recursion via powerset), matching an established theory-vs-object mismatch precedent already flagged elsewhere in the catalog (Q903783 naive-set-theory vs Q36161 Set).",
+   "suggested_decl": "ZFSet",
+   "suggested_qid": "Q77887",
+   "fix_hint": "Retag `ZFSet` (Mathlib/SetTheory/ZFC/Basic.lean) with Q77887 (von Neumann universe) instead of Q191849 (Zermelo–Fraenkel set theory, the axiom system) — ZFSet formalizes the universe of ZFC sets, not the theory itself.",
+   "decl_exists": true,
+   "qid_exists": true
   }
  },
  {
@@ -101,6 +94,32 @@
    "suggested_qid": "Q565186",
    "suggested_decl": null,
    "fix_hint": "Retarget to `Hausdorff dimension (Q565186)`"
+  }
+ },
+ {
+  "qid": "Q24743362",
+  "file": "Mathlib/Combinatorics/SimpleGraph/Maps.lean",
+  "decl": "SimpleGraph.induce",
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q24743362)",
+   "suggested_qid": "Q24743362",
+   "suggested_decl": "SimpleGraph.induce",
+   "fix_hint": "Can we add both following @SnirBroshi's suggestion? [= also tag SimpleGraph.induce (Maps.lean) with Q24743362; recorded manually 2026-08-23 so the ask survives queue regeneration — the original triage"
+  }
+ },
+ {
+  "qid": "Q474715",
+  "file": "Mathlib/Order/Defs/PartialOrder.lean",
+  "decl": null,
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q1069998)",
+   "suggested_qid": "Q1069998",
+   "suggested_decl": null,
+   "fix_hint": "This should be Q1069998 instead"
   }
  }
 ]
