@@ -19,6 +19,7 @@ Run after harvest_corrections.py, before the next batch is assembled.
 """
 import argparse, json
 from pathlib import Path
+import pool
 
 HERE = Path(__file__).resolve().parent
 CORRECTIONS = HERE / "data" / "corrections.jsonl"
@@ -64,9 +65,17 @@ def apply_corrections(corrections, queue, cut_qids):
     for fixes whose tag was dropped. Returns (queue, n_enriched, n_added)."""
     fixes = best_correction_per_qid(corrections)
     by_qid = {e["qid"]: e for e in queue}
+    # A correction whose fix already LANDED on master must not be recovered again:
+    # the landed Basis/Dual/trapezoidal retargets were re-added here every settle
+    # and rode along in batches 4→7, silently skipped at apply (wasted slots).
+    # Per (qid, file), matching open_batch.assemble's requeue dedupe.
+    pairs = pool.tagged_pairs()
     enriched = added = 0
     for qid, c in fixes.items():
         sug_qid, sug_decl = c.get("suggested_qid"), c.get("suggested_decl")
+        if (sug_qid, c.get("file")) in pairs:
+            print(f"  skip {qid} -> {sug_qid}: already tagged on master ({c.get('file')})")
+            continue
         if qid in by_qid:
             tr = by_qid[qid].setdefault("triage", {})
             if not tr.get("suggested_qid"):           # don't clobber an existing fix

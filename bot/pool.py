@@ -22,6 +22,22 @@ CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_
            ROOT / "catalog/data/refresh_tagged.jsonl"]
 MOST_USED = ROOT / "bot/data/most_used_qids.json"
 TAGGED = ROOT / "bot/data/tagged_in_master.txt"
+TAGGED_PAIRS = ROOT / "bot/data/tagged_pairs.txt"
+
+
+def tagged_pairs():
+    """(qid, file) pairs already tagged on upstream master — the per-file sidecar
+    refresh_tagged.py writes next to tagged_in_master.txt. Per-file (not per-QID)
+    so a same-QID second-decl requeue in a DIFFERENT file still goes through.
+    Empty set when the sidecar hasn't been generated yet (behaves as before)."""
+    if not TAGGED_PAIRS.exists():
+        return set()
+    out = set()
+    for line in TAGGED_PAIRS.read_text().splitlines():
+        if "\t" in line:
+            q, f = line.split("\t", 1)
+            out.add((q.strip(), f.strip()))
+    return out
 PIPELINE_WORKLIST = ROOT / "manage/data/pipeline_worklist.json"
 WD_API = "https://www.wikidata.org/w/api.php"
 # Tags per batch PR — the single knob for batch size. Mathlib maintainers asked
