@@ -70,10 +70,65 @@ See [catalog/README.md](catalog/README.md) for full details.
 - Cloudflare Worker, Hono framework, Drizzle ORM, D1, KV, R2.
 - See [wiki/README.md](wiki/README.md) for setup and deploy instructions.
 
+### Development setup and checks
+
+Use **Node 22** and **Python 3.12**, matching `.github/workflows/ci.yml`. Install the locked JavaScript dependencies from the package directory; use `npm ci`, not `npm install`, when reproducing CI:
+
+```sh
+cd wiki
+npm ci
+```
+
+The named Worker commands are:
+
+```sh
+npm test              # alias for the hermetic Vitest suite (`test:unit`)
+npm run test:unit     # Worker tests that need no generated/private corpus
+npm run typecheck     # TypeScript, including the browser harness
+npm run test:ci       # required Worker gate: typecheck + hermetic tests
+```
+
+The deterministic Python gate runs from the repository root. It installs the exact packages in `requirements-ci.txt`, asserts Python 3.12, removes credential variables from its environment, and runs the moderation, parity, offline-evaluation, and hermetic Brain fixture checks:
+
+```sh
+python3.12 -m pip install --requirement requirements-ci.txt
+./scripts/ci-python.sh
+```
+
+The offline moderation evaluation uses planted fixtures and no agents, network, or tokens. Never run its `--live` mode in CI.
+
+#### Browser tests
+
+The Playwright suite runs Chromium against a loopback-only server backed by the same in-memory D1/KV fixture as the Worker tests; both the browser and server reject external requests. Install the pinned npm dependencies first, then install and run Chromium:
+
+```sh
+cd wiki
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
+Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
+
+The browser job currently runs on every CI trigger as a **non-required soak**. Branch protection should require only the aggregate `required` job, which covers the Worker and Python jobs. Promote browser testing into that aggregate only through a reviewed workflow change after its run history is stable; there is no automatic promotion threshold.
+
+#### Corpus-dependent checks
+
+Corpus checks are opt-in because their large/generated or private inputs are not available in a fresh checkout. From `wiki/`, run:
+
+```sh
+npm run test:corpus
+```
+
+Its preflight requires more than 200 cached Wikipedia pages in `site/cache/*.html`, more than 200 Python renderer outputs in `site/out/*.html`, more than 250 annotations in `site/annotations/*.json`, and the generated declaration-index manifest at `wiki/public/assets/decl-index/manifest.json`. The command then runs the render golden, declaration-index, and seed corpus suites.
+
+`python3 brain/test_fold_xref.py` is also corpus-dependent, not part of required Python CI. It uses the real catalog plus the private declaration cache at `.claude/skills/mathlib-search/.cache/declaration-data.json` (and may fall back to the Mathlib checkout configured by `BRAIN_MATHLIB_CHECKOUT`). Run it only after those local inputs exist.
+
 ### Pull requests
 - Branch from `main`, push, open a PR against `Deicyde/WikiLean`.
 - For substantive changes, open an issue first to discuss scope.
-- Tests: `cd wiki && npm test` for the Worker side; the Python side has no test suite yet, contributions welcome.
+- `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It has read-only repository permissions, checks out without persisted credentials, receives no secrets, and contains no deployment, production write, or token-consuming step.
+- The required `worker` and `python` jobs use Node 22 and Python 3.12 respectively. The `required` aggregate is the branch-protection target; the separate `browser` job is the soak described above.
 
 ---
 

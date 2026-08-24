@@ -35,16 +35,6 @@ describe("declShardFor", () => {
   });
 });
 
-describe("declShardFor against the REAL manifest", () => {
-  it("resolves every decl the review found missing (padded-leaf names)", async () => {
-    const { readFileSync } = await import("node:fs");
-    const manifest = JSON.parse(readFileSync(new URL("../public/assets/decl-index/manifest.json", import.meta.url), "utf8"));
-    for (const name of ["Set", "Int", "Fin", "Add", "LE", "Algebra", "Continuous", "CategoryTheory.Functor", "Group", "Real"]) {
-      expect(declShardFor(manifest, name), `shard for ${name}`).not.toBeNull();
-    }
-  });
-});
-
 describe("lookupInShard", () => {
   const pairs: Array<[string, string]> = [
     ["Nat.Prime", "Mathlib.Data.Nat.Prime.Defs"],

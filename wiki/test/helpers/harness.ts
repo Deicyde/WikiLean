@@ -4,69 +4,27 @@
 // re-declare it. api.test.ts keeps its own copy deliberately — it pins the
 // pre-Wave-D contracts and must stay independently readable.
 
-import { readFileSync, readdirSync } from "node:fs";
-import { resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { beforeAll, afterAll } from "vitest";
 import { app } from "../../src/index.js";
 import type { Env } from "../../src/env.js";
-import { makeD1, makeKV, type KVShim } from "./d1shim.js";
+import { ORIGIN, PIPELINE_TOKEN, SLUG } from "./fixture.js";
 
-export const SLUG = "Test_Article";
-export const REVID = 12345;
-export const NEW_REVID = 67890;
-export const PIPELINE_TOKEN = "test-pipeline-token";
-export const ORIGIN = "http://localhost"; // app.request() URLs resolve against this
-export const ID_RE = /^[0-9a-f]{12}$/;
-export const TEST_IP = "203.0.113.7"; // RFC 5737 documentation range
-
-const MIGRATIONS_DIR = resolve(process.cwd(), "migrations");
-const MIGRATIONS = readdirSync(MIGRATIONS_DIR)
-  .filter((f) => f.endsWith(".sql"))
-  .sort();
-
-export const WP_FIXTURE = [
-  '<p>In mathematics, an <b>abelian group</b> is a <a href="/wiki/Group_(mathematics)">group</a> whose operation is commutative.</p>',
-  "<h2>Properties</h2>",
-  "<p>Every subgroup of an abelian group is normal. The fundamental theorem of finite abelian groups classifies them completely.</p>",
-].join("\n");
-
-// Unlike the api.test.ts fixtures, these carry explicit ids (the production
-// state since the C1 backfill) so by-id event diffs are exercised directly —
-// a modify reads as 'modify', not as a fresh-id 'add'.
-export const SEED_ANNOTATIONS = [
-  {
-    id: "aaaaaaaaaaaa",
-    status: "formalized",
-    kind: "definition",
-    label: "Abelian group",
-    provenance: "ai",
-    anchor: { section: "(lead)", snippet: "abelian group" },
-    mathlib: { decl: "AddCommGroup", module: "Mathlib.Algebra.Group.Defs", match_kind: "exact" },
-  },
-  {
-    id: "bbbbbbbbbbbb",
-    status: "partial",
-    kind: "theorem",
-    label: "Fundamental theorem of finite abelian groups",
-    provenance: "ai",
-    anchor: { section: "Properties", snippet: "fundamental theorem of finite abelian groups" },
-    mathlib: { decl: null, module: null, match_kind: null },
-  },
-];
-
-// A third annotation a test can add (anchors in WP_FIXTURE's Properties section).
-export const EXTRA_ANNOTATION = {
-  status: "formalized",
-  kind: "theorem",
-  label: "Subgroups of abelian groups are normal",
-  provenance: "ai",
-  anchor: { section: "Properties", snippet: "Every subgroup of an abelian group is normal" },
-  mathlib: { decl: "Subgroup.Normal", module: "Mathlib.GroupTheory.Subgroup.Basic", match_kind: "exact" },
-};
-
-// Deep clone via JSON round-trip: what a client posts after reading state.
-export const echo = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
+export {
+  EXTRA_ANNOTATION,
+  ID_RE,
+  NEW_REVID,
+  ORIGIN,
+  PIPELINE_TOKEN,
+  REVID,
+  SEED_ANNOTATIONS,
+  SLUG,
+  TEST_IP,
+  WP_FIXTURE,
+  echo,
+  setup,
+  type Harness,
+} from "./fixture.js";
 
 // No test may hit the network. Call once per test file at describe scope.
 export function blockNetwork(): void {
@@ -79,55 +37,6 @@ export function blockNetwork(): void {
   afterAll(() => {
     globalThis.fetch = realFetch;
   });
-}
-
-export interface Harness {
-  db: DatabaseSync;
-  env: Env;
-  renderCache: KVShim;
-  wpHtml: KVShim;
-}
-
-export function setup(
-  opts: { limiterAllows?: boolean; flagLimiterAllows?: boolean; brainApiLimiterAllows?: boolean } = {},
-): Harness {
-  const db = new DatabaseSync(":memory:");
-  for (const f of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"));
-
-  const now = Date.now();
-  db.prepare(
-    "INSERT INTO articles (slug, wikipedia_title, display_title, wikidata_qid, revid, annotations, version, created_at, updated_at) VALUES (?,?,?,?,?,?,1,?,?)",
-  ).run(SLUG, "Test Article", "Test Article", null, REVID, JSON.stringify(SEED_ANNOTATIONS), now, now);
-  db.prepare("INSERT INTO revisions (slug, user_id, annotations, comment, created_at) VALUES (?,NULL,?,?,?)").run(
-    SLUG,
-    JSON.stringify(SEED_ANNOTATIONS),
-    "seed import",
-    now,
-  );
-
-  // users.created_at/updated_at are timestamp-mode (integer seconds).
-  const nowSec = Math.floor(now / 1000);
-  const insUser = db.prepare("INSERT INTO users (id, name, email, role, created_at, updated_at) VALUES (?,?,?,?,?,?)");
-  insUser.run("u-human", "Human Tester", "human@example.org", "user", nowSec, nowSec);
-  insUser.run("u-patroller", "Pat Roller", "pat@example.org", "patroller", nowSec, nowSec);
-  insUser.run("u-admin", "Ad Min", "admin@example.org", "admin", nowSec, nowSec);
-  insUser.run("u-blocked", "Block Ed", "blocked@example.org", "blocked", nowSec, nowSec);
-  insUser.run("pipeline", "WikiLean Pipeline", null, "bot", nowSec, nowSec);
-
-  const renderCache = makeKV();
-  const wpHtml = makeKV({ [`wp:${SLUG}:${REVID}`]: WP_FIXTURE, [`wp:${SLUG}:${NEW_REVID}`]: WP_FIXTURE });
-  const env = {
-    DB: makeD1(db),
-    RENDER_CACHE: renderCache,
-    WP_HTML: wpHtml,
-    ASSETS: { fetch: async () => new Response("not found", { status: 404 }) },
-    EDIT_LIMITER: { limit: async () => ({ success: opts.limiterAllows ?? true }) },
-    FLAG_LIMITER: { limit: async () => ({ success: opts.flagLimiterAllows ?? true }) },
-    BRAIN_API_LIMITER: { limit: async () => ({ success: opts.brainApiLimiterAllows ?? true }) },
-    AUTH_MODE: "dev",
-    PIPELINE_TOKEN,
-  } as unknown as Env;
-  return { db, env, renderCache, wpHtml };
 }
 
 export interface ReqOpts {
@@ -278,6 +187,10 @@ export function insertRevision(
   slug: string,
   opts: { userId?: string | null; kind?: string; comment?: string | null; meta?: string | null; createdAt?: number } = {},
 ): number {
+  const createdAt = opts.createdAt ?? Date.now();
+  db.prepare(
+    "INSERT OR IGNORE INTO articles (slug, wikipedia_title, display_title, annotations, version, created_at, updated_at) VALUES (?,?,?,'[]',1,?,?)",
+  ).run(slug, slug, slug, createdAt, createdAt);
   const r = db
     .prepare(
       "INSERT INTO revisions (slug, user_id, annotations, comment, kind, meta, created_at) VALUES (?,?,?,?,?,?,?)",
@@ -289,7 +202,7 @@ export function insertRevision(
       opts.comment ?? null,
       opts.kind ?? "edit",
       opts.meta ?? null,
-      opts.createdAt ?? Date.now(),
+      createdAt,
     );
   return Number(r.lastInsertRowid);
 }

@@ -40,11 +40,25 @@ Repo remote: `origin` = `Deicyde/WikiLean`. Branch from `main`; PRs → `Deicyde
 
 ## Commands
 
+Use Node 22 and Python 3.12. The JavaScript package root is `wiki/`; use `npm ci`
+there to reproduce the lockfile exactly.
+
 ```bash
+# Required, hermetic CI checks
+cd wiki && npm ci
+cd wiki && npm run test:ci         # typecheck + hermetic Worker tests
+./scripts/ci-python.sh             # deterministic Python checks (run at repo root)
+
+# Browser soak (Chromium; local loopback only, no external requests)
+cd wiki && npx playwright install chromium
+cd wiki && npm run test:e2e
+
+# Corpus-dependent local checks (not required fresh-checkout CI)
+cd wiki && npm run test:corpus     # renderer/annotation/decl-index corpora
+python3 brain/test_fold_xref.py    # real catalog + private decl cache/Mathlib checkout
+
 # Site (wiki/)
 cd wiki && npm run deploy          # deploy the Worker (bundles ALL of wiki/src)
-cd wiki && npx tsc --noEmit        # typecheck
-cd wiki && npm test                # Worker tests
 cd wiki && node --experimental-strip-types scripts/build-public.ts   # rebuild static assets (RUN FROM wiki/)
 # Tagging bot
 gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean
@@ -64,7 +78,7 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
   path outside the Worker must bump `version`, or readers see stale pages for up to 30 days.
 - **`findLostHuman` 422 is the floor** — a bot save that drops/alters any `provenance:"human"`
   annotation (tombstones included) must 422. Bots can't approve/endorse (session-only; 403).
-- **Render-cache keys are manually versioned + load-bearing** (currently `render:v16:`,
+- **Render-cache keys are manually versioned + load-bearing** (currently `render:v17:`,
   `page:home:v10`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
   `page:sitemap:v4`, `page:stats:v4`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
@@ -82,12 +96,31 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
   FETCH_HEAD` (never `reset --hard`); **never `git add -A`** (stage explicit paths + leak guard).
 
 **Security / credentials**
+- `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
+  credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
+  agent calls. Its `required` job aggregates only the `worker` and `python` hermetic gates.
+- The separate Playwright `browser` job is a non-required soak on every CI trigger. Failures upload
+  `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts` for 7 days.
+  Promote it into `required` only through a reviewed workflow change after stable run history; there
+  is no automatic threshold.
 - `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
   secrets via `wrangler secret put` / `gh secret set`.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout — do Lean work in
   `wikifunctions/lean/`.
+
+## CI test boundaries
+- `npm test` / `npm run test:unit` excludes corpus-dependent Vitest files. `npm run test:ci` is
+  the named Worker gate; `./scripts/ci-python.sh` is the Python 3.12 gate and unsets credential
+  variables before running all five offline commands with required SDK coverage.
+- `npm run test:corpus` preflights `site/cache/*.html`, `site/out/*.html`,
+  `site/annotations/*.json`, and `wiki/public/assets/decl-index/manifest.json`, then runs the
+  render-golden, decl-index, and seed suites. `brain/test_fold_xref.py` is also corpus-only because
+  it needs the private declaration cache at `.claude/skills/mathlib-search/.cache/declaration-data.json`
+  (with `BRAIN_MATHLIB_CHECKOUT` as its checkout override).
+- Playwright uses Chromium. Local install is `npx playwright install chromium`; Linux CI uses
+  `npx playwright install --with-deps chromium`.
 
 ## Deploy notes
 - `npm run deploy` bundles **all** of `wiki/src` — don't leave unreleased Worker WIP committed
