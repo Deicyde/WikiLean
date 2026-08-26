@@ -461,13 +461,13 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
 
     groups = dsu.groups()
 
-    # Rule 5 — `field` / concept->container: the concept is an organ of the
-    # SUPERCELL, **never a cell** ("Linear algebra" is the LinearAlgebra folder, not
-    # the `Module` atom, and not an atom of its own — searching it should land on the
-    # folder). A concept that ALSO merged into a cell keeps the cell as its owner and
+    # Rule 5 — concept->container: the concept is an organ of the SUPERCELL,
+    # **never a cell** ("Linear algebra" is the LinearAlgebra folder, not the
+    # `Module` atom; "Function" is the Function namespace area, not a missing
+    # decl). A concept that ALSO merged into a cell keeps the cell as its owner and
     # is merely listed on the supercell too.
     supercell_organs: dict[str, list] = defaultdict(list)
-    field_only: set[str] = set()
+    supercell_only: set[str] = set()
     for edge in formalizes:
         if not edge["dst"].startswith("path:"):
             continue
@@ -481,16 +481,17 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
         if edge["src"] not in dsu.parent:
             # Its only home is the supercell. It owns no cell — but it keeps its
             # edges: they now hang off the SUPERCELL (see owner[] below). These are
-            # field-level hubs ("Linear algebra", "manifold"), so dropping their
-            # relates/mentions/links instead would cost ~10.8k synapses.
-            field_only.add(edge["src"])
+            # high-altitude hubs, so dropping their relates/mentions/links instead
+            # would cost ~10.8k synapses.
+            supercell_only.add(edge["src"])
 
     # Lone particles: a concept or decl that merged with nothing is still an atom —
     # unless rule 5 already gave it a supercell home.
     for nid, node in nodes.items():
         if node["type"] in ("concept", "decl") and nid not in dsu.parent:
-            if nid in field_only:
+            if nid in supercell_only:
                 stats["field_concept_no_cell"] += 1
+                stats["supercell_concept_no_cell"] += 1
                 continue
             groups[nid] = [nid]
 
@@ -533,14 +534,14 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
             cell["f"] = facets
         cells[cid] = cell
 
-    # A rule-5 field concept owns no cell, but its bonds are real: route them to the
-    # supercell that DOES hold it, so a synapse may legitimately land on a module
-    # ("this atom relates to the whole of LinearAlgebra"). v2 already drew
-    # container-level rollup edges between bubbles, so this is a shape the renderer
-    # understands.
+    # A rule-5 supercell-only concept owns no cell, but its bonds are real: route
+    # them to the supercell that DOES hold it, so a synapse may legitimately land
+    # on a module ("this atom relates to the whole of LinearAlgebra"). v2 already
+    # drew container-level rollup edges between bubbles, so this is a shape the
+    # renderer understands.
     for path, organs in supercell_organs.items():
         for organ in organs:
-            if organ["kind"] == "concept" and organ["id"] in field_only:
+            if organ["kind"] == "concept" and organ["id"] in supercell_only:
                 owner[organ["id"]] = path
 
     return cells, owner, supercell_organs, merged_pairs

@@ -120,7 +120,9 @@ Reads  brain/data/{cells,synapses}.jsonl (required),
        brain/data/edges.jsonl (phase-2 msc xrefs; fail-soft),
        manage/data/halo.json (stateability; fail-soft).
 Writes brain/data/frontier.jsonl + brain/data/frontier_graph.json
-       (each atomic tmp+rename).
+       (each atomic tmp+rename), plus brain/data/frontier_review.jsonl as a
+       NON-GATING wrong-altitude worklist for broad concepts that may belong on
+       supercells instead of in the frontier queue.
 
 Every bound and every fallback tier LOGS what it drops and why — a silent
 filter deciding what renders is the 'extreme minority' bug class.
@@ -144,6 +146,7 @@ EDGES_IN = HERE / "data" / "edges.jsonl"
 HALO_IN = ROOT / "manage" / "data" / "halo.json"
 OUT = HERE / "data" / "frontier.jsonl"
 GRAPH_OUT = HERE / "data" / "frontier_graph.json"
+REVIEW_OUT = HERE / "data" / "frontier_review.jsonl"
 
 AREA_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 TOP_CAP = 12                      # contract: up to 12 `top` rows per area
@@ -211,6 +214,90 @@ def area_label(area: str, lib: str | None, top: str | None) -> str:
     if lib and top and lib != "Mathlib":
         return f"{lib} · {top} frontier"
     return f"{(top or lib or area)} frontier"
+
+
+BROAD_CLASSES = {"Q1936384", "Q11862829", "Q20026918", "Q17524420"}
+BROAD_LABEL_RE = re.compile(
+    r"\b(history of|timeline of|list of|outline of|mathematics|theory|"
+    r"analysis|geometry|algebra|calculus)\b",
+    re.I,
+)
+SECONDARY_ONLY = ROOT / "catalog" / "data" / "concept_layer.jsonl"
+UNIVERSE_INPUTS = (ROOT / "catalog" / "data" / "wikidata_universe.jsonl",
+                   ROOT / "catalog" / "data" / "universe_extension.jsonl")
+
+
+def load_secondary_only() -> set[str]:
+    out = set()
+    if not SECONDARY_ONLY.exists():
+        return out
+    for row in iter_jsonl(SECONDARY_ONLY):
+        if not row.get("primary_decl") and row.get("secondary_decls"):
+            out.add(row.get("qid"))
+    return out
+
+
+def load_classes() -> dict[str, list[str]]:
+    out: dict[str, list[str]] = {}
+    for path in UNIVERSE_INPUTS:
+        if not path.exists():
+            continue
+        for row in iter_jsonl(path):
+            qid = row.get("qid")
+            if qid and qid not in out:
+                out[qid] = row.get("classes") or []
+    return out
+
+
+def write_frontier_review(cells: dict[str, dict], homeless: list[str], score: dict[str, float],
+                          direct_w: Counter, bridge_w: dict[str, int], nbrs: dict[str, list],
+                          assigned: dict[str, str], generated_at: str) -> None:
+    secondary_only = load_secondary_only()
+    classes = load_classes()
+    by_score = sorted(homeless, key=lambda c: (-score.get(c, 0), c))
+    rank = {cid: i + 1 for i, cid in enumerate(by_score)}
+    rows = []
+    for cid in homeless:
+        cell = cells[cid]
+        qids = [o.get("id") for o in cell.get("organs", []) if o.get("kind") == "concept"]
+        qid = qids[0] if qids else None
+        label = cell.get("label") or cid
+        signals = []
+        if qid in secondary_only:
+            signals.append("secondary_only")
+        if qid and BROAD_CLASSES & set(classes.get(qid, [])):
+            signals.append("broad_wikidata_class")
+        if BROAD_LABEL_RE.search(label):
+            signals.append("broad_label")
+        if direct_w.get(cid, 0) >= 500 and len(nbrs.get(cid, [])) >= 100:
+            signals.append("high_proximity_hub")
+        if not signals:
+            continue
+        rows.append({
+            "cell": cid,
+            "qid": qid,
+            "label": label,
+            "area": "frontier:" + assigned[cid],
+            "rank": rank[cid],
+            "score": score.get(cid, 0),
+            "direct_weight": direct_w.get(cid, 0),
+            "bridge_weight": bridge_w.get(cid, 0),
+            "degree": len(nbrs.get(cid, [])),
+            "signals": signals,
+            "suggested_action": "container_link_review",
+        })
+    rows.sort(key=lambda r: (r["rank"], r["cell"]))
+    meta = {"_meta": {"generated_at": generated_at,
+                       "method": "non-gating review of frontier cells likely to belong at supercell altitude",
+                       "counts": {"candidates": len(rows),
+                                  "homeless": len(homeless)}}}
+    tmp = REVIEW_OUT.with_suffix(".jsonl.tmp")
+    with tmp.open("w") as fh:
+        fh.write(json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n")
+        for row in rows:
+            fh.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
+    tmp.rename(REVIEW_OUT)
+    print(f"-> {REVIEW_OUT} ({len(rows)} supercell-altitude review candidates)")
 
 
 def main() -> int:
@@ -735,6 +822,8 @@ def main() -> int:
     gtmp.write_text(json.dumps(graph, ensure_ascii=False, separators=(",", ":")))
     gtmp.rename(GRAPH_OUT)
     print(f"-> {GRAPH_OUT} ({GRAPH_OUT.stat().st_size / 1000:.0f} KB)")
+    write_frontier_review(cells, homeless, score, direct_w, bridge_w, nbrs,
+                          assigned, generated_at)
     return 0
 
 

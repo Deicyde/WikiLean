@@ -1703,10 +1703,14 @@ def build() -> tuple[list[dict], list[dict], dict]:
     p = OPTIONAL_INPUTS["container_links.jsonl"]
     if p.exists():
         pin_c = _pin("container_links.jsonl")
+        n_container_skipped_review = 0
         for line in p.read_text().splitlines():
             if not line.strip():
                 continue
             rec = json.loads(line)
+            if rec.get("skeptic") not in (None, "accept"):
+                n_container_skipped_review += 1
+                continue
             path = rec["path"].removeprefix("path:").replace(".", "/")
             cid = f"path:{path}"
             if not ensure_concept(rec["qid"]) or cid not in containers:
@@ -1718,6 +1722,9 @@ def build() -> tuple[list[dict], list[dict], dict]:
                                rec.get("confidence") or "medium",
                                {"match_kind": rec.get("match_kind", "field"),
                                 "note": rec.get("evidence")}))
+        if n_container_skipped_review:
+            print(f"WARNING: skipped {n_container_skipped_review} container_links "
+                  f"row(s) without skeptic=accept", file=sys.stderr)
     else:
         print("NOTE: brain/data/container_links.jsonl missing — "
               "concept→container formalizes layer skipped", file=sys.stderr)
