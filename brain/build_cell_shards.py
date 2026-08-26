@@ -895,6 +895,7 @@ def main() -> int:
               "toggle has no client re-scoring input; run "
               "python3 brain/build_frontier.py first", file=sys.stderr)
 
+    OUT_DIR.parent.mkdir(parents=True, exist_ok=True)
     if OUT_DIR.exists():
         OUT_DIR.rename(old)
     tmp.rename(OUT_DIR)

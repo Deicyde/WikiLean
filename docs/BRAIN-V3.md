@@ -43,11 +43,12 @@ cell holds `riemannZeta` *and* `completedRiemannZeta` once its tag lands).
 
 ### Supercell — a module/folder. The containment altitude.
 
-`path:Mathlib/Algebra` &c. Supercells carry organs too: **field-of-study
-concepts** (Q82571 "Linear algebra" belongs to `Mathlib/LinearAlgebra`, NOT the
-`Module` cell; "Category Theory" the module vs "Category" the object) and
-**area-level pages** (DLMF §1.9 "Calculus of a Complex Variable" belongs to
-`Mathlib/Analysis/Complex`, not to the "complex number" cell). Cells render
+`path:Mathlib/Algebra` &c. Supercells carry organs too: **field/scope/
+primitive concepts** (Q82571 "Linear algebra" belongs to `Mathlib/LinearAlgebra`,
+NOT the `Module` cell; "Function" belongs to the function namespace area, not to
+a missing leaf declaration; "Category Theory" the module vs "Category" the
+object) and **area-level pages** (DLMF §1.9 "Calculus of a Complex Variable"
+belongs to `Mathlib/Analysis/Complex`, not to the "complex number" cell). Cells render
 *inside* their supercell exactly as decls render inside folders today. A cell
 spanning multiple modules (rare — only cells with several decls) renders inside
 **each** of them.
@@ -104,7 +105,9 @@ rather than fixed by weakening the rule.
 4. **Pages never bridge.** A page claimed by exactly one cell attaches as an
    organ. A page claimed by >1 cell is an **area page** ⇒ organ of the supercell
    (the common module ancestor), and the claimant cells get a weak synapse.
-5. **`field` match_kind / concept→container ⇒ supercell organ**, never a cell.
+5. **concept→container ⇒ supercell organ**, never a cell. Match kinds such as
+   `field`, `scope`, `primitive`, `namespace`, and `survey` are the altitude answer
+   for broad concepts whose formal content is distributed across a folder/namespace.
 
 Measured on live data: **8,914 cells, largest 17 organs, no blob.** (The 8,960/16
 figures were the pre-build validation experiment; the shipped builder adds tag-queue
@@ -398,13 +401,12 @@ named reason. `wiki/scripts/build-public.ts` copies an allow-list only:
   scalar multiplication → `Module`** — not yet audited.
 - ☑ **Tag queue local read path:** `load_tag_queue()` reads `bot/state/*.json`
   directly (mirroring `bot/publish_queue.py`), fail-soft, no network.
-- **The 23 flagged cells in `cell_review.jsonl` need re-grading** (18
-  `rule2-absorption` + 5 `rule1-exact-weld`) — this is the
+- **The flagged cells in `cell_review.jsonl` need re-grading** — this is the
   first real worklist for the tag-quality loop under Jack's "ballooning = bad
-  tagger" rule. Worst offenders: `Real.binEntropy` absorbing Information /
-  Information theory / Entropy; `Module.Dual` absorbing Duality (mathematics);
-  `Configuration.ProjectivePlane` absorbing finite geometry / synthetic geometry.
-  Several look like `field` concepts that should be supercell organs (rule 5).
+  tagger" rule. `frontier_review.jsonl` is the companion wrong-altitude worklist:
+  high-level concepts such as fields, surveys, primitive namespaces, and umbrella
+  topics should usually become `container_links.jsonl` supercell organs (rule 5)
+  rather than frontier queue cells.
 - The upstream `catalog/build_graph_v2.py` also applies `grounding_overrides.jsonl`;
   `build_cells.py` applies it again late (idempotent) so a curated fix lands without
   a heavy upstream rebuild. If the two ever disagree, upstream wins on the next

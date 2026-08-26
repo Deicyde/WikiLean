@@ -54,7 +54,7 @@ Prerequisites on a fresh clone (all gitignored, all fetchable):
 
 ```bash
 python3 catalog/fetch_math_graph.py          # statement_formal + formal_dependency CSVs (~1.1 GB)
-python3 .claude/skills/mathlib-search/mathlib_search.py --live decl Nat.add_comm  # warms the decl oracle cache
+python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live  # warms the decl oracle cache
 # plus a mathlib4 checkout (default /Users/jack/Desktop/LEAN/mathlib4; override
 # with BRAIN_MATHLIB_CHECKOUT) — build_graph_v2 and fold_proposals FAIL HARD
 # when the oracle/checkout are missing rather than silently dropping data.

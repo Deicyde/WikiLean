@@ -16,11 +16,13 @@ Run: python3 brain/test_cells.py        (exit 0 = green; the nightly aborts on r
 """
 from __future__ import annotations
 
+import json
 import sys
 from collections import Counter
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 
 from build_cells import (ATTACH, CELL_MAX_ORGANS, FUSE, build,  # noqa: E402
@@ -42,6 +44,11 @@ def check(name: str, ok: bool, detail: str = "") -> None:
 
 def organ_ids(cell: dict, kind: str | None = None) -> set[str]:
     return {o["id"] for o in cell["organs"] if kind is None or o["kind"] == kind}
+
+
+def container_links() -> list[dict]:
+    path = HERE / "data" / "container_links.jsonl"
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
 def check_layout() -> None:
@@ -257,10 +264,10 @@ def main() -> int:
     leaked = [p for p in area_pages if any(p in organ_ids(c, "page") for c in cells.values())]
     check("C5 area pages live on supercells, not cells", not leaked,
           f"leaked onto cells: {leaked[:5]}")
-    check("C5 supercells carry field concepts",
+    check("C5 supercells carry high-altitude concepts",
           any(o["kind"] == "concept" for organs in supercell_organs.values()
               for o in organs),
-          "no field concept reached a supercell")
+          "no concept reached a supercell")
     # Jack's example: "Linear algebra" belongs to the folder, not to the Module atom.
     la = [p for p, organs in supercell_organs.items()
           if any(o["id"] == "Q82571" for o in organs)]
@@ -269,17 +276,28 @@ def main() -> int:
     if module:
         check("C5 'Linear algebra' is NOT in the Module atom",
               "Q82571" not in organ_ids(module))
-    # Rule 5 says "never a cell", not merely "not in that cell": a field concept whose
+    fn = [p for p, organs in supercell_organs.items()
+          if any(o["id"] == "Q11348" for o in organs)]
+    if fn:
+        check("C5 'Function' (Q11348) is a supercell organ",
+              fn == ["path:Mathlib/Logic/Function"], f"got {fn!r}")
+    else:
+        print("  SKIP C5 Function supercell regression — container_links not folded into edges")
+    # Rule 5 says "never a cell", not merely "not in that cell": a concept whose
     # only home is a supercell must not also become a lone-particle atom, or searching
-    # "linear algebra" lands on a stray cell instead of the LinearAlgebra folder.
+    # it lands on a stray cell instead of the intended folder.
     check("C5 'Linear algebra' is not a cell of its own",
           "cell:Q82571" not in cells,
-          "field concept became a lone-particle cell — rule 5 says never a cell")
-    field_cells = [p for p, organs in supercell_organs.items() for o in organs
-                   if o["kind"] == "concept" and f"cell:{o['id']}" in cells
-                   and len(cells[f"cell:{o['id']}"]["organs"]) == 1]
-    check("C5 no field concept is a lone-particle cell", not field_cells,
-          f"{len(field_cells)} field concepts also became cells, e.g. {field_cells[:3]}")
+          "supercell concept became a lone-particle cell — rule 5 says never a cell")
+    if fn:
+        check("C5 'Function' is not a cell of its own",
+              "cell:Q11348" not in cells,
+              "supercell concept became a lone-particle cell — rule 5 says never a cell")
+    supercell_cells = [p for p, organs in supercell_organs.items() for o in organs
+                       if o["kind"] == "concept" and f"cell:{o['id']}" in cells
+                       and len(cells[f"cell:{o['id']}"]["organs"]) == 1]
+    check("C5 no supercell-only concept is a lone-particle cell", not supercell_cells,
+          f"{len(supercell_cells)} supercell concepts also became cells, e.g. {supercell_cells[:3]}")
 
     # ---- C6: synapse hygiene
     pairs = Counter((s["src"], s["dst"]) for s in synapses)
@@ -355,6 +373,14 @@ def main() -> int:
     check("Q13471665 'Vector' keeps its own cell (grounding override applied)",
           vector is not None and "decl:Mathlib:Module" not in organ_ids(vector),
           "Vector was absorbed into a decl atom — override not applied?")
+
+    function_links = [r for r in container_links() if r.get("qid") == "Q11348"]
+    check("C5 source data maps Function to the Function supercell",
+          any(r.get("path") == "Mathlib/Logic/Function"
+              and r.get("match_kind") == "primitive"
+              and r.get("skeptic") == "accept"
+              for r in function_links),
+          f"got {function_links!r}")
 
     check_layout()
 

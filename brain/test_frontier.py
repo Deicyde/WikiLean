@@ -84,7 +84,7 @@ PROX_KEYS = ("db", "dw", "ib", "iw", "s", "r")
 # one cell per assignment tier. If the data drifts and a pin stops being
 # homeless, the check SKIPS with a note rather than failing on stale ground.
 PINS = [
-    ("cell:Q903783", "frontier:Analysis", "phase-1 vote (Naive set theory)"),
+    ("cell:Q1063054", "frontier:Analysis", "phase-1 vote (Morphism)"),
     ("cell:Q979829", "frontier:DeepFrontier_IntegralTransforms",
      "phase-2 MSC 44 (Radon transform)"),
     ("cell:Q1006428", "frontier:Geometry",
@@ -98,7 +98,7 @@ UNSORTED_CEILING = 0.192 + 0.02   # recon-predicted share (309/1612) + 2pp
 # within two hops. If the data drifts these MUST be re-measured (the F9
 # failure detail says how) — the contract pins the exact counts against the
 # current build.
-PROX_PIN = {"direct": 855, "bridged": 454, "zero": 303}
+PROX_PIN = {"direct": 852, "bridged": 451, "zero": 311}
 
 FAILURES: list[str] = []
 CHECKS = 0
@@ -179,6 +179,19 @@ def main() -> int:
           and counts.get("unsorted") == n_unsorted,
           f"sum={sum(r['n'] for r in rows)} homeless={len(homeless)} "
           f"counts={counts} unsorted_row={n_unsorted}")
+    supercell_organs = cells_meta.get("supercell_organs", {})
+    function_folded = any(o.get("id") == "Q11348" for organs in supercell_organs.values()
+                          for o in organs)
+    if function_folded:
+        check("F2 Function is not a frontier cell",
+              "cell:Q11348" not in set(seen),
+              "Function should resolve to path:Mathlib/Logic/Function, not the frontier queue")
+        bad_function_top = [(r["id"], t) for r in rows for t in r.get("top", [])
+                            if t.get("cell") == "cell:Q11348"]
+        check("F2 Function is not a frontier top target", not bad_function_top,
+              f"found in top rows: {bad_function_top[:3]}")
+    else:
+        print("  SKIP F2 Function frontier regression — container_links not folded into cells")
 
     # ---- F3: row shape ------------------------------------------------------
     bad_ids = [r["id"] for r in rows if not AREA_RE.match(r["id"])]
