@@ -313,6 +313,40 @@ builder never hardcodes these, only the test pins them). Zero-scored cells
 that look broad or wrong-altitude and may need `container_links.jsonl` review;
 it never filters `frontier.jsonl`.
 
+**Queue suitability** (SUITABILITY CONTRACT) is separate from both structural
+Frontier membership and formal proximity. Every area row carries two arrays
+parallel to its sorted `cells`:
+
+```json
+"suitability": {
+  "candidate": [true, false],
+  "reason": [null, "existing_formal_coverage"]
+}
+```
+
+A candidate is a bounded formalization gap according to the current Brain data.
+A deprioritized cell remains in the same area, searchable and selectable, but
+sorts below candidates because it already has partial/formal coverage, has broad
+or ambiguous scope, is elementary, is not itself a formal target, lacks a concept
+organ, or needs review as an extreme graph hub. The closed reason vocabulary is
+`existing_formal_coverage`, `not_formalization_target`, `broad_scope`,
+`ambiguous_scope`, `too_elementary`, `review_needed`, and `no_concept_target`.
+
+The deterministic policy lives in `brain/frontier_suitability.py`. It treats the
+CURRENT node `display.status` as authoritative, uses identity-bearing `unit.decls`
+only when status is absent, and reads `altitude_evidence.p31`; the legacy binary
+`catalog/data/concept_layer.jsonl` status is not authoritative.
+Reviewed exceptions live in `brain/data/frontier_suitability_overrides.jsonl`,
+keyed by QID with a required rationale. For a multi-concept cell, one viable
+concept keeps the cell actionable. `_meta.suitability.counts` reconciles every
+candidate and every demotion reason.
+
+Suitability NEVER changes the complete homeless-cell partition, area assignment,
+`prox`, radius, `frontier_graph.json`, polar-map geometry, or library-subset
+re-scoring. The queue sorts by suitability first and the selected criterion
+second, so a library toggle may reorder candidates by proximity but cannot alter
+their suitability tier.
+
 **Frontier graph** (FRONTIER GRAPH contract — the CLIENT-side re-scoring
 input for the Libraries toggle): `build_frontier.py` also emits
 `brain/data/frontier_graph.json`, and `build_cell_shards.py` ships it
@@ -362,11 +396,11 @@ difference is logged by the builder, never silent.
 
 **Shard emission** (`build_cell_shards.py`): each area becomes a PARENTLESS
 `supercells.json` row `{label, frontier: true, cells, fa?, near?,
-stateability?, top?, prox?}` (field order as emitted; `prox` last) — `prox`
-passes through from frontier.jsonl VERBATIM (asserted in
-`test_cell_shards.py` S5), so the UI renders the exact scores the frontier
-tests proved (`fa` emitted only when the member-OR is nonzero; `_meta` also
-carries `frontier_*` count keys and frontier.jsonl's `phases`/`inputs`
+stateability?, top?, prox?, suitability?}` — both parallel-array objects pass
+through from frontier.jsonl VERBATIM (asserted in `test_cell_shards.py` S5), so
+the UI renders the exact scores and assessments the frontier tests proved (`fa`
+is emitted only when the member-OR is nonzero; `_meta` also carries
+`frontier_*` count keys and frontier.jsonl's `phases`/`inputs`
 diagnostics) — so it joins `roots`, renders beside the library roots, and
 drains the client's DERIVED "no formal home" bucket (unplaced = labels minus
 the union of every row's `cells`) down to the few decl-carrying cells whose
@@ -374,9 +408,9 @@ decls have no `contains` parent (5 Mathlib-Archive names today).
 `manifest.roots` lists the areas with `frontier: true` so library metadata
 never blurs with frontier rows. Stale frontier rows are validated against the
 CURRENT cell set: vanished or newly-formalized cells are dropped LOUDLY
-(counted in `supercells.json` `_meta.counts.frontier_*`), their `prox` arrays
-re-aligned by index to the kept cells (misaligned arrays NEVER ship — a score
-on the wrong cell is worse than no score; malformed sets are dropped loudly),
+(counted in `supercells.json` `_meta.counts.frontier_*`), their `prox` and
+`suitability` arrays re-aligned by index to the kept cells (misaligned arrays
+NEVER ship — metadata on the wrong cell is worse than none; malformed sets are dropped loudly),
 and unclaimed homeless cells are reported — a cap or filter is never silent.
 Frontier ids live only in the tree: they never enter the cell shards,
 aliases.json or explorer.json, and `path:`/organ-id resolution is untouched.
@@ -443,6 +477,36 @@ reproduce byte-identically. Status: **56/56 green**.
 > `synthesis.join_fabric`, `synthesis.anti_slop_doctrine`) and the roadmap of
 > `docs/BRAIN.md`. Where this doc contradicts those, this doc wins — it is the buildable
 > subset.
+
+## Local persistence projection
+
+The JSON object schemas in this document remain authoritative. The committed
+`nodes.jsonl`, `edges.jsonl`, and small derived JSONL artifacts are the reviewable
+interchange and recovery representation. `brain/data/brain.sqlite3` is a generated,
+gitignored local projection built with `python3 brain/build_snapshot.py`; it is not
+an editable source of truth, a Cloudflare asset, or the D1 community overlay.
+
+SQLite stores stable identity/traversal columns plus each complete canonical JSON
+payload. Its `nodes`, `edges`, `cells`, `organ_owners`, and `synapses` tables index
+ID, type/kind, endpoints, ownership, and stable JSONL ordinals. Evidence,
+provenance, unit cards, facets, and traces remain in payload JSON so an evidence
+schema change does not silently reinterpret the graph. Incoming and outgoing edge
+and synapse indexes make degree-local queries proportional to the neighborhood
+rather than the full corpus.
+
+Every imported artifact records its `_meta`, row count, canonical digest, raw-file
+SHA-256, and generation. The database carries a schema version and
+`building|complete` state, is constructed at a temporary path under one transaction,
+passes SQLite integrity checks, and is published by atomic rename. Base JSONL
+publication uses rollback copies for ordinary errors; a hard interruption between
+its separate renames is rejected through generation/snapshot-ID mismatch. Readers open it
+read-only and accept it only when every adjacent JSONL raw hash matches; `auto` then
+falls back to a mutually consistent JSONL generation on absence or staleness, while
+explicit `sqlite` fails loudly. This freshness rule is load-bearing because ignored
+files survive branch switches.
+
+The production Worker, REST API, MCP tools, and browser continue reading derived
+static cell shards. D1 continues to hold the mutable community graph overlay only.
 
 ## Design laws (non-negotiable)
 
@@ -700,11 +764,12 @@ catalog/data/wikidata_descriptions.json               (v2: brain/ingest/wikidata
 catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
         │
         ▼
-brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
-brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT links; committed)
+brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
+                          + brain/data/edges.jsonl     (every kind EXCEPT links; committed)
                           + brain/data/edges_links.jsonl (links only — ~390k rows keeps the
                             joint file over GitHub's 100MB limit; gitignored, rebuilt from
                             the committed external inputs; readers merge both files)
+                          + brain/data/brain.sqlite3   (gitignored local query index)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json (via wiki
                             build-public; the v2 per-node shard layer is retired —

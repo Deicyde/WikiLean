@@ -273,34 +273,30 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
                 if len(out["top"]) != n_top:
                     stats["stale_top"] = stats.get("stale_top", 0) + \
                         (n_top - len(out["top"]))
-            # prox arrays are PARALLEL to the row's cells — a stale-drop must
-            # re-align them by index or every score lands on the wrong cell
-            # (worse than missing data). Malformed arrays (length mismatch)
-            # never ship: dropped LOUDLY, counted.
-            prox = row.get("prox")
-            if prox:
-                src_cells = row.get("cells", [])
+            # Per-cell objects are PARALLEL to the row's cells — a stale-drop
+            # must re-align them by index or metadata lands on the wrong cell.
+            # Malformed arrays never ship: dropped LOUDLY, counted.
+            src_cells = row.get("cells", [])
+            pos = {cid: i for i, cid in enumerate(src_cells)}
+            idx = [pos[cid] for cid in out["cells"]]
+            for field in ("prox", "suitability"):
+                values = row.get(field)
+                if not values:
+                    continue
                 if all(isinstance(v, list) and len(v) == len(src_cells)
-                       for v in prox.values()):
-                    # Re-align to the FINAL emitted order (out["cells"] is
-                    # sorted), never to source order: parallel-array
-                    # correctness must not silently depend on the frontier
-                    # row already being sorted. Identity permutation (the
-                    # normal case) ships prox verbatim, preserving the S8
-                    # byte-copy pin.
-                    pos = {cid: i for i, cid in enumerate(src_cells)}
-                    idx = [pos[cid] for cid in out["cells"]]
+                       for v in values.values()):
                     if idx != list(range(len(src_cells))):
-                        out["prox"] = {k: [v[i] for i in idx]
-                                       for k, v in prox.items()}
+                        out[field] = {k: [v[i] for i in idx]
+                                      for k, v in values.items()}
                     if len(keep) != len(src_cells):
-                        stats["stale_prox"] = stats.get("stale_prox", 0) + \
-                            (len(src_cells) - len(keep))
+                        key = f"stale_{field}"
+                        stats[key] = stats.get(key, 0) + (len(src_cells) - len(keep))
                 else:
-                    out.pop("prox", None)
-                    stats["malformed_prox"] = stats.get("malformed_prox", 0) + 1
-                    print(f"  ! MALFORMED prox on {row.get('id')}: array "
-                          f"lengths != len(cells) — prox NOT shipped for this "
+                    out.pop(field, None)
+                    key = f"malformed_{field}"
+                    stats[key] = stats.get(key, 0) + 1
+                    print(f"  ! MALFORMED {field} on {row.get('id')}: array "
+                          f"lengths != len(cells) — {field} NOT shipped for this "
                           f"area; rerun python3 brain/build_frontier.py",
                           file=sys.stderr)
             rows.append(out)
@@ -567,7 +563,7 @@ def main() -> int:
     # `fa` is computed here (the ancestor walk above only sees `supercells` on
     # cell rows, which homeless cells don't have) so facet chips never grey a
     # frontier folder that holds matching cells.
-    misaligned_prox = []
+    misaligned_parallel = []
     for row in frontier_rows:
         entry = {"label": row.get("label") or row["id"].split(":", 1)[1],
                  "frontier": True, "cells": row["cells"]}
@@ -582,22 +578,27 @@ def main() -> int:
             entry["stateability"] = row["mean_stateability"]
         if row.get("top"):
             entry["top"] = row["top"]
-        # formal-proximity arrays pass through VERBATIM (PROXIMITY CONTRACT:
-        # the shard row ships frontier.jsonl's per-cell scores unchanged —
+        # Per-cell proximity and suitability arrays pass through VERBATIM.
         # load_frontier already re-aligned them if stale members dropped;
-        # test_cell_shards S5 asserts the pass-through). Belt over braces: a
-        # misaligned array set must NEVER ship (scores on the wrong cells).
+        # test_cell_shards S5 asserts the pass-through. Belt over braces: a
+        # misaligned array set must NEVER ship metadata on the wrong cells.
         if row.get("prox"):
             if all(isinstance(v, list) and len(v) == len(row["cells"])
                    for v in row["prox"].values()):
                 entry["prox"] = row["prox"]
             else:
-                misaligned_prox.append(row["id"])
+                misaligned_parallel.append(row["id"] + " prox")
+        if row.get("suitability"):
+            if all(isinstance(v, list) and len(v) == len(row["cells"])
+                   for v in row["suitability"].values()):
+                entry["suitability"] = row["suitability"]
+            else:
+                misaligned_parallel.append(row["id"] + " suitability")
         supercells[row["id"]] = entry
-    if misaligned_prox:
-        print(f"  ! MISALIGNED frontier prox on {len(misaligned_prox)} area(s) "
-              f"(array lengths != the kept cells after stale-drop) — prox NOT "
-              f"shipped for: {misaligned_prox[:3]}; rerun "
+    if misaligned_parallel:
+        print(f"  ! MISALIGNED frontier arrays on {len(misaligned_parallel)} area(s) "
+              f"(array lengths != the kept cells after stale-drop) — field NOT "
+              f"shipped for: {misaligned_parallel[:3]}; rerun "
               f"python3 brain/build_frontier.py", file=sys.stderr)
     n_sup_syn = sum(len(r.get("syn") or []) for r in supercells.values())
     sup_doc = {"_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,

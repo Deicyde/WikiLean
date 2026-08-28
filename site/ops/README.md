@@ -25,7 +25,7 @@ proofwiki / oeis / stacks / tag-harvest / crossrefs; weekly: lmfdb / eom /
 planetmath / wikidata descriptions; monthly: kerodon / dlmf / mathworld —
 cadence stamp files live in `site/ops/logs/`) → **agent team**
 (`brain/sync_agents.py`, gated `WIKILEAN_BRAIN_AGENTS=1`, OFF by default;
-writes `brain/proposals/*.jsonl` only) → **fold → build_nodes → build_edges →
+writes `brain/proposals/*.jsonl` only) → **fold → build_snapshot →
 test_acceptance** (RED aborts the publish, old shards stay live) →
 **build_shards** → **clean-tree-gated deploy** (gated `WIKILEAN_BRAIN_DEPLOY=1`,
 OFF by default; deploys ONLY if `git status --porcelain -- wiki/src

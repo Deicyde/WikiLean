@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Acceptance for the v3 cell SHARDS — S1..S7.
+"""Acceptance for the v3 cell SHARDS — S1..S8.
 
 test_cells.py proves the atom layer (brain/data/*.jsonl). This proves the artifact
 the browser and the Worker actually read: site/assets/brain/cells/. They can drift
@@ -11,8 +11,8 @@ are checked against the shipped bytes, not against the builder's intent.
   S3  a cell entry is SELF-CONTAINED — one fetch renders the whole card
   S4  explorer.json indices are in range, and its omissions are accounted for
   S5  supercells.json is a consistent tree whose leaves are cells, and its
-      frontier rows carry frontier.jsonl's formal-proximity `prox` arrays
-      VERBATIM (per-cell aligned when the stale-drop trimmed members)
+      frontier rows carry frontier.jsonl's formal-proximity `prox` and queue
+      `suitability` arrays VERBATIM (per-cell aligned after stale trimming)
   S6  no licensed snippet ships without its licence
   S7  the trace SIDECAR (traces/<key>.json) covers every supercell-involving
       synapse, its documented lookup resolves every pair, tt counts every trim,
@@ -281,12 +281,9 @@ def main() -> int:
                       for c in r["cells"][:3])]
     check("S5 a supercell holding a faceted cell has fa", not leaked,
           f"{len(leaked)} folders would dim wrongly, e.g. {leaked[:3]}")
-    # PROXIMITY CONTRACT: a frontier row's `prox` (the per-cell formal-
-    # proximity arrays the UI renders) passes through from frontier.jsonl —
-    # VERBATIM on a fresh build; when the stale-drop trimmed members, each
-    # kept cell must still carry the SOURCE's values at its original index
-    # (a misalignment silently scores the wrong cells). Any rewrite here
-    # would let the shard drift from the tested scores.
+    # PARALLEL-ARRAY CONTRACT: `prox` and `suitability` pass through from
+    # frontier.jsonl VERBATIM on a fresh build. When stale members are trimmed,
+    # every kept cell must retain the source values at its original index.
     frontier_src = ROOT / "brain" / "data" / "frontier.jsonl"
     if frontier_src.exists():
         src_rows = {}
@@ -299,7 +296,7 @@ def main() -> int:
                     continue
                 if row.get("prox") is not None:
                     src_rows[row["id"]] = row
-        bad_prox, no_prox = [], []
+        bad_prox, no_prox, bad_suitability, no_suitability = [], [], [], []
         for fid, src in src_rows.items():
             got = tree.get(fid)
             if got is None:
@@ -315,11 +312,24 @@ def main() -> int:
             want = {k: [v[i] for i in idx] for k, v in src["prox"].items()}
             if got["prox"] != want:
                 bad_prox.append(fid)
+            if not got.get("suitability"):
+                no_suitability.append(fid)
+            else:
+                want_suitability = {
+                    k: [v[i] for i in idx] for k, v in src["suitability"].items()
+                }
+                if got["suitability"] != want_suitability:
+                    bad_suitability.append(fid)
         check(f"S5 frontier rows' prox == frontier.jsonl per cell "
               f"({len(src_rows)} areas; verbatim when nothing was stale-"
               f"dropped)", not bad_prox and not no_prox,
               f"{len(bad_prox)} rewritten/misaligned (e.g. {bad_prox[:3]}), "
               f"{len(no_prox)} missing prox in the tree (e.g. {no_prox[:3]})")
+        check(f"S5 frontier rows' suitability == frontier.jsonl per cell",
+              not bad_suitability and not no_suitability,
+              f"{len(bad_suitability)} rewritten/misaligned "
+              f"(e.g. {bad_suitability[:3]}), {len(no_suitability)} missing "
+              f"suitability in the tree (e.g. {no_suitability[:3]})")
     else:
         print("  SKIP S5 prox pass-through (brain/data/frontier.jsonl absent "
               "— artifact-only run)")
