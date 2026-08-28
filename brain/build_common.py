@@ -2313,6 +2313,7 @@ def write_edges(edges: list[dict], meta: dict,
     links_meta = {
         "schema": meta.get("schema", "brain/SCHEMA.md"),
         "generated_at": meta.get("generated_at"),
+        **({"snapshot_id": meta["snapshot_id"]} if meta.get("snapshot_id") else {}),
         "split_from": out.name,
         "note": "kind=='links' rows split out of edges.jsonl (GitHub 100 MB "
                 "per-file limit). Gitignored — rebuild deterministically with "

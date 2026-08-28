@@ -24,9 +24,10 @@ brain/proposals/*.jsonl (agent fleets)  ─┐
         │                brain/fold_proposals.py   → data/container_links.jsonl
         │                (deterministic verifier)    data/discovery_proposals.jsonl
         ▼                                            data/discovery_rejected.jsonl
-brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
-brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT links)
+brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
+        │                 → brain/data/edges.jsonl     (every kind EXCEPT links)
         │                 + brain/data/edges_links.jsonl (ONLY kind=links; gitignored)
+        │                 + brain/data/brain.sqlite3   (generated local index; gitignored)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json  (the two
         │                    live survivors; the v2 per-node shards + manifest +
@@ -64,27 +65,32 @@ python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live
 cd /Users/jack/Desktop/LEAN/WikiLean
 python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
 python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
-python3 brain/build_nodes.py       # nodes.jsonl (concepts + containers + decls + ext + literature)
-python3 brain/build_edges.py       # edges.jsonl (all kinds EXCEPT links) + edges_links.jsonl (links only)
+python3 brain/build_snapshot.py    # one graph build → nodes + both edge streams + local SQLite index
 python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (streams the 1 GB CSV)
 python3 brain/test_acceptance.py   # exit 0 = green (reads edges.jsonl + edges_links.jsonl)
 cd brain && python3 build_shards.py && cd ..          # xref_index.json + sources.json only
 cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship cells/ + the two files
 ```
 
-All writers are atomic (tmp file + rename), so a crashed build never leaves a torn
-artifact. The rollups and the shards are gitignored derived data (rebuild in
-seconds–minutes); `nodes.jsonl` + `edges.jsonl` are committed — they ARE the dataset.
+Writers publish through temporary files + rename; ordinary publication errors roll
+back the full base generation, and snapshot IDs make a hard interruption between
+multi-file renames detectable rather than silently readable. The rollups, shards,
+and `brain.sqlite3` are gitignored
+derived data; `nodes.jsonl` + `edges.jsonl` remain the committed, reviewable dataset.
+SQLite is an indexed local projection, never an editable source of truth and never a
+Cloudflare asset. Re-index current JSONL without rewriting it with
+`python3 brain/build_snapshot.py --from-jsonl`.
 
 > **⚠️ The edge set ships as TWO files.** The v2 external layer's `links` edges
 > (page→page hyperlinks + concept projections, ~393k rows / ~83 MB) pushed the joint
-> `edges.jsonl` past GitHub's **100 MB per-file hard limit**, so `build_edges.py`
+> `edges.jsonl` past GitHub's **100 MB per-file hard limit**, so `build_snapshot.py`
+> splits:
 > splits: **`edges.jsonl` = every kind except `links`** (~42 MB, committed; its
 > `_meta` line still counts the FULL edge set, and its rows are byte-compatible with
 > the historical joint file minus the links rows) and **`edges_links.jsonl` = only
 > `kind=="links"` rows** (same row schema, its own `_meta`). `edges_links.jsonl` is
 > **GITIGNORED — never commit it** — and deterministically rebuildable with
-> `python3 brain/build_edges.py` from the committed `catalog/data/external/` inputs
+> `python3 brain/build_snapshot.py` from the committed `catalog/data/external/` inputs
 > (plus the `catalog/.cache` pins). Every reader (`build_shards.py`,
 > `test_acceptance.py`, `query.py --full`) merges both files transparently and
 > treats a missing `edges_links.jsonl` as empty.
@@ -166,9 +172,11 @@ python3 brain/test_v2.py           # fixture unit tests for all of the above
 LIVE `site/annotations/*.json` working tree — which is a cache of D1, the canonical
 store. A rebuild therefore reflects the current annotation state, not the one the
 committed dataset was built from; bit-exact reproduction of a committed
-`edges.jsonl` requires the same annotation snapshot (~10% of `depends` edges shift
+  `edges.jsonl` requires the same annotation snapshot (~10% of `depends` edges shift
 otherwise). This is by design (D1 is canonical); treat committed brain/data as the
-pinned dataset and rebuilds as newer snapshots.
+pinned dataset and rebuilds as newer snapshots. The ignored SQLite file validates
+raw artifact hashes before use, so a branch switch or corpus update falls back to
+JSONL rather than silently serving an old index.
 
 ## Query surfaces
 
@@ -185,8 +193,10 @@ pinned dataset and rebuilds as newer snapshots.
   longer built; every v2 node id is an organ id and resolves on `/cell`).
 - **UI:** `/brain` (site/build_brain_page.py → brain.html) — Miller-column drill-down
   through the containment tree, per-node panel with every edge's provenance one click
-  away, layer toggles per edge family, label search. One shard fetch per interaction;
-  the whole graph never ships.
+  away, layer toggles per edge family, label search. The Frontier queue preserves every
+  declaration-less cell but sorts bounded formalization candidates before broad,
+  ambiguous, elementary, already-covered, or non-target rows, with a visible reason for
+  every demotion. One shard fetch per interaction; the whole graph never ships.
 
 ## Shards
 
@@ -195,7 +205,9 @@ The shipped shard tree is `site/assets/brain/cells/` (`build_cell_shards.py`),
 which reuses `wiki/scripts/build-decl-index.ts`'s longest-prefix scheme
 (normalize to `[a-z0-9_]`, start at 2-char keys, split shards over 150 KB): a
 client loads `cells/manifest.json` once, then any ATOM is one fetch away, and
-`cells/aliases.json` maps every organ id to its owning atom. `build_shards.py`
+`cells/aliases.json` maps every organ id to its owning atom. Frontier area rows also
+carry aligned `prox` and `suitability` arrays; suitability changes queue ordering only,
+never the complete structural partition or the library-dependent score. `build_shards.py`
 still runs, emitting only the two live top-level assets: `xref_index.json`
 (external-page → node-ids reverse index; the Worker's community-edge
 cross-pollination inverts it) and `sources.json` (the /brain Sources legend).
@@ -224,7 +236,7 @@ when `catalog/data/external/` lacks the needed ingest file (P6–P8) or when
 | `brain/SCHEMA.md` | the binding data contract | 15 KB | yes |
 | `brain/data/nodes.jsonl` | 45,642 nodes (2,674 concepts / 9,052 containers / 7,051 decls / 24,370 ext / 2,495 literature) | 15.3 MB | yes |
 | `brain/data/edges.jsonl` | 127,996 edges — every kind EXCEPT `links` (contains 16,064 / formalizes 1,721 / mentions 10,471 / depends 85,824 / relates 2,557 / xref 3,740 / cites 4,857 / matches 2,762); `_meta` counts span BOTH edge files | 41.8 MB | yes |
-| `brain/data/edges_links.jsonl` | 392,990 `links` edges (386,565 page-level + 6,425 projected) — split out for GitHub's 100 MB limit | 83.2 MB | **gitignored** — rebuild via `brain/build_edges.py` from committed `catalog/data/external/` |
+| `brain/data/edges_links.jsonl` | 392,990 `links` edges (386,565 page-level + 6,425 projected) — split out for GitHub's 100 MB limit | 83.2 MB | **gitignored** — rebuild via `brain/build_snapshot.py` from committed `catalog/data/external/` |
 | `brain/data/rollup_edges.module.jsonl` | `depends` @ library/top-module grain | 2.1 MB | **gitignored** (rebuild via build_rollups.py) |
 | `brain/data/rollup_edges.{file,dir,tree}.jsonl` | `depends` @ file/dir/tree grain | 173/114/100 MB | **gitignored** (rebuild ~15 s) |
 | `brain/data/hub_stats.json` | per grain, top-50 inbound-weight hubs (render pruning) | 20 KB | yes |

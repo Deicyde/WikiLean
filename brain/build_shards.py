@@ -79,7 +79,7 @@ def main() -> int:
     t0 = time.monotonic()
     edges_path = BRAIN_DATA / "edges.jsonl"
     if not edges_path.exists():
-        raise SystemExit(f"missing {edges_path} — run the earlier brain/build_*.py steps")
+        raise SystemExit(f"missing {edges_path} — run python3 brain/build_snapshot.py")
 
     # ---- xref_index.json: external-page -> [node ids that xref it] ----------
     xref_index: dict[str, list[str]] = defaultdict(list)
