@@ -478,6 +478,36 @@ reproduce byte-identically. Status: **56/56 green**.
 > `docs/BRAIN.md`. Where this doc contradicts those, this doc wins — it is the buildable
 > subset.
 
+## Local persistence projection
+
+The JSON object schemas in this document remain authoritative. The committed
+`nodes.jsonl`, `edges.jsonl`, and small derived JSONL artifacts are the reviewable
+interchange and recovery representation. `brain/data/brain.sqlite3` is a generated,
+gitignored local projection built with `python3 brain/build_snapshot.py`; it is not
+an editable source of truth, a Cloudflare asset, or the D1 community overlay.
+
+SQLite stores stable identity/traversal columns plus each complete canonical JSON
+payload. Its `nodes`, `edges`, `cells`, `organ_owners`, and `synapses` tables index
+ID, type/kind, endpoints, ownership, and stable JSONL ordinals. Evidence,
+provenance, unit cards, facets, and traces remain in payload JSON so an evidence
+schema change does not silently reinterpret the graph. Incoming and outgoing edge
+and synapse indexes make degree-local queries proportional to the neighborhood
+rather than the full corpus.
+
+Every imported artifact records its `_meta`, row count, canonical digest, raw-file
+SHA-256, and generation. The database carries a schema version and
+`building|complete` state, is constructed at a temporary path under one transaction,
+passes SQLite integrity checks, and is published by atomic rename. Base JSONL
+publication uses rollback copies for ordinary errors; a hard interruption between
+its separate renames is rejected through generation/snapshot-ID mismatch. Readers open it
+read-only and accept it only when every adjacent JSONL raw hash matches; `auto` then
+falls back to a mutually consistent JSONL generation on absence or staleness, while
+explicit `sqlite` fails loudly. This freshness rule is load-bearing because ignored
+files survive branch switches.
+
+The production Worker, REST API, MCP tools, and browser continue reading derived
+static cell shards. D1 continues to hold the mutable community graph overlay only.
+
 ## Design laws (non-negotiable)
 
 1. **The formal graph is ground truth; the informal graph is a legible index over it;
@@ -734,11 +764,12 @@ catalog/data/wikidata_descriptions.json               (v2: brain/ingest/wikidata
 catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
         │
         ▼
-brain/build_nodes.py      → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
-brain/build_edges.py      → brain/data/edges.jsonl     (every kind EXCEPT links; committed)
+brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
+                          + brain/data/edges.jsonl     (every kind EXCEPT links; committed)
                           + brain/data/edges_links.jsonl (links only — ~390k rows keeps the
                             joint file over GitHub's 100MB limit; gitignored, rebuilt from
                             the committed external inputs; readers merge both files)
+                          + brain/data/brain.sqlite3   (gitignored local query index)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json (via wiki
                             build-public; the v2 per-node shard layer is retired —

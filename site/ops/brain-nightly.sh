@@ -12,8 +12,9 @@
 #      previous *_pages.jsonl intact.
 #   2. AGENTS (WIKILEAN_BRAIN_AGENTS=1, off by default): brain/sync_agents.py
 #      writes brain/proposals/*.jsonl ONLY — never brain/data.
-#   3. FOLD + BUILD: fold_proposals -> build_nodes -> build_edges ->
-#      test_acceptance (RED = abort publish, keep old shards) -> build_shards ->
+#   3. FOLD + BUILD: fold_proposals -> build_snapshot (nodes + both edge
+#      streams + the local SQLite index in one generation) -> test_acceptance
+#      (RED = abort publish, keep old shards) -> build_shards ->
 #      build_cells -> test_cells -> build_frontier (the homeless-cell partition,
 #      brain/data/frontier.jsonl) -> build_cell_shards -> test_cell_shards ->
 #      test_frontier (the v3 atom layer; any RED aborts the publish the same way) ->
@@ -183,12 +184,8 @@ cd "$REPO" || exit 1
   echo
   PUBLISH_OK=1
   echo "=== rebuild brain graph (rollups are pinned — not rebuilt nightly) ==="
-  if ! python3 "$REPO/brain/build_nodes.py"; then
-    echo "!!! build_nodes FAILED — publish aborted (old nodes.jsonl intact)"
-    PUBLISH_OK=0
-  fi
-  if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_edges.py"; then
-    echo "!!! build_edges FAILED — publish aborted (old edges.jsonl intact)"
+  if ! python3 "$REPO/brain/build_snapshot.py"; then
+    echo "!!! build_snapshot FAILED — publish aborted (previous complete snapshot retained)"
     PUBLISH_OK=0
   fi
   if [ "$PUBLISH_OK" = "1" ]; then
@@ -211,6 +208,13 @@ cd "$REPO" || exit 1
   # client no longer simulates anything.
   if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_cells.py"; then
     echo "!!! build_cells FAILED — publish aborted (old cells.jsonl intact)"
+    PUBLISH_OK=0
+  fi
+  # Add the freshly built cell/synapse layer to the generated local index. This
+  # imports existing JSONL only; it never rewrites the tracked dataset.
+  if [ "$PUBLISH_OK" = "1" ] \
+      && ! python3 "$REPO/brain/build_snapshot.py" --from-jsonl; then
+    echo "!!! derived SQLite refresh FAILED — publish aborted (previous complete index retained)"
     PUBLISH_OK=0
   fi
   if [ "$PUBLISH_OK" = "1" ]; then
