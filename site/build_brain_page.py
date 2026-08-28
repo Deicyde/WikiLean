@@ -286,7 +286,7 @@ text.rimlab:hover { fill:#38bdf8; }
   scrollbar-width:thin; }   /* the 46 area chips, size-desc, as a scrollable strip */
 #flareas .fchip { flex:0 0 auto; }
 .flcols, .flrow { display:grid; gap:8px; align-items:center;
-  grid-template-columns:42px minmax(150px,1.6fr) 118px 96px 110px minmax(100px,0.9fr); }
+  grid-template-columns:42px minmax(150px,1.5fr) 118px 96px 110px 132px minmax(100px,0.8fr); }
 .flcols { padding:5px 0; color:#6b7488; font-size:.68rem; text-transform:uppercase;
   letter-spacing:.06em; }
 #flbody { position:relative; margin:0 12px; }
@@ -305,6 +305,11 @@ text.rimlab:hover { fill:#38bdf8; }
   background:linear-gradient(90deg,#3b82f6,#38bdf8); }
 .flev { display:flex; gap:3px; align-items:center; }
 .flev i { width:9px; height:9px; border-radius:50%; display:inline-block; flex:0 0 auto; }
+.flsuit { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.7rem; }
+.flsuit.candidate { color:#4ade80; }
+.flsuit.deprioritized { color:#fbbf24; }
+.flrow.deprioritized { color:#8d96a7; }
+.flrow.deprioritized .fllabel { color:#aeb5c2; }
 .flnear { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.74rem; }
 .flnear a { color:#7cb3ff; cursor:pointer; }
 /* the list|map toggle at the frontier level (the areas|halo fchip precedent:
@@ -355,7 +360,11 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
   body { height:auto; }
   .main { flex-direction:column; }
   #stage { min-height:52vh; border-left:none; touch-action:auto; }
-  #panel { border-left:none; border-top:1px solid #262c3a; max-height:none; } }
+  #panel { border-left:none; border-top:1px solid #262c3a; max-height:none; }
+  .flcols, .flrow { grid-template-columns:34px minmax(130px,1.5fr) 100px 82px 118px; }
+  .flcols > :nth-child(5), .flrow > :nth-child(5),
+  .flcols > :nth-child(7), .flrow > :nth-child(7) { display:none; }
+}
 </style>
 </head>
 <body>
@@ -588,7 +597,8 @@ async function ensureTree() {
   if (!j) { tree = {roots: [], frontier: [], frontierFa: 0, frontierN: 0,
                     cellArea: new Map(), sc: {}, unplaced: [], unplacedFa: 0,
                     prox: false, proxDrift: 0, cellProx: new Map(),
-                    count: () => 0}; return tree; }
+                    suitability: false, suitabilityDrift: 0,
+                    cellSuitability: new Map(), count: () => 0}; return tree; }
   const sc = j.supercells || {};
   const memo = new Map();
   const count = p => {
@@ -652,13 +662,33 @@ async function ensureTree() {
   }
   if (proxDrift)
     console.warn(`[brain frontier] prox drift: ${proxDrift} cell(s) in area(s) whose prox arrays and cells disagree — dropped, not trusted`);
+  let suitability = false, suitabilityDrift = 0;
+  const cellSuitability = new Map();
+  for (const p of frontier) {
+    const su = sc[p].suitability;
+    if (!su) continue;
+    const cs = sc[p].cells || [];
+    if (!Array.isArray(su.candidate) || !Array.isArray(su.reason) ||
+        su.candidate.length !== cs.length || su.reason.length !== cs.length) {
+      suitabilityDrift += cs.length;
+      continue;
+    }
+    suitability = true;
+    cs.forEach((c, i) => cellSuitability.set(c, {
+      candidate: su.candidate[i] === true,
+      reason: su.reason[i] || null,
+    }));
+  }
+  if (suitabilityDrift)
+    console.warn(`[brain frontier] suitability drift: ${suitabilityDrift} cell(s) in area(s) whose suitability arrays and cells disagree — treated as review-needed`);
   if (prox) {
     const noProx = frontier.filter(p => !sc[p].prox);
     if (noProx.length)
       console.warn(`[brain frontier] ${noProx.length} frontier area(s) ship no prox: ${noProx.join(", ")}`);
   }
   tree = {roots, frontier, frontierFa, frontierN, cellArea, sc,
-          unplaced, unplacedFa, prox, proxDrift, cellProx, count};
+          unplaced, unplacedFa, prox, proxDrift, cellProx,
+          suitability, suitabilityDrift, cellSuitability, count};
   buildCellLibs();   // the (V) predicate's cell → owning-libraries table
   return tree;
 }
@@ -915,7 +945,7 @@ const extValueOf = id => id.split(":").slice(2).join(":");
 
 const SHADE = "#22304d";              // supercell fill — the canvas is always dark
 const CELL_FORMAL = "#3b82f6";        // the atom has a decl organ (a formal home)
-const CELL_INFORMAL = "#8c959f";      // concept-only atom — nothing formalizes it yet
+const CELL_INFORMAL = "#8c959f";      // atom with no attached declaration organ
 const GOLD = "#eab308";               // a hand-written @[wikidata] tag rides in this atom
 function fillFor(item) {
   // a frontier area's tint IS its mean stateability, on the SAME grey→blue
@@ -2098,6 +2128,18 @@ function evidenceKindCount(f) {
   for (const [b] of EVIDENCE_BADGES) if (f & b) n++;
   return n;
 }
+const SUITABILITY_LABELS = {
+  existing_formal_coverage: "coverage exists",
+  not_formalization_target: "not a formal target",
+  broad_scope: "scope too broad",
+  ambiguous_scope: "scope unclear",
+  too_elementary: "too elementary",
+  review_needed: "needs review",
+  no_concept_target: "no concept target",
+};
+function suitabilityFor(cid) {
+  return tree.cellSuitability.get(cid) || {candidate: false, reason: "review_needed"};
+}
 // queue state — session-local (sort/query/multi-area); a SINGLE selected area
 // also rides the hash as #__frontier__:<Area> so old sector links deep-link in
 let flSort = "readiness";   // "readiness" | "evidence" | "az"
@@ -2165,7 +2207,7 @@ async function renderFrontierList(seq, anim) {
   renderCrumb();   // crumb + the list|map toggle (synchronous on this path)
   const stat = $("#structstat");
   if (stat) stat.textContent =
-    "ranked queue — proximity client-scored, parity-checked against the build";
+    "actionable candidates first — proximity client-scored within each tier";
   webState = {shown: 0, cells: flRows.length, capped: false};
   // keyboard: the stage focus ring is the list itself (arrows + enter)
   if (document.activeElement === document.body) el.focus({preventScroll: true});
@@ -2173,10 +2215,10 @@ async function renderFrontierList(seq, anim) {
 }
 function flHeaderHtml() {
   const sorts = [["readiness", "readiness",
-      "formal proximity, best-evidenced first (score desc, ties by id — deterministic)"],
+      "actionable candidates first, then formal proximity (score desc, ties by id)"],
     ["evidence", "evidence",
-      "distinct evidence kinds (article / nLab / MathWorld / ProofWiki / LMFDB / OEIS / literature) desc, then proximity"],
-    ["az", "A–Z", "label, alphabetically"]];
+      "actionable candidates first, then distinct evidence kinds and proximity"],
+    ["az", "A–Z", "actionable candidates first, then label alphabetically"]];
   let h = `<div id="flhead"><div id="flctl"><span id="fltotal"></span>
     <span class="fgrouplabel">sort:</span>`;
   for (const [k, lbl, why] of sorts)
@@ -2188,6 +2230,7 @@ function flHeaderHtml() {
     <span>area</span>
     <span title="bar = formal-proximity percentile over the whole frontier (client-scored under the current library set); hover a row's bar for the direct + bridged breakdown">proximity</span>
     <span title="which evidence organs the cell carries — hover a dot to name it">evidence</span>
+    <span title="candidate or the reason this row needs review before it is treated as a formalization task">assessment</span>
     <span title="the area's nearest formal home — the library module a formalization would most likely land in">nearest formal home</span></div></div>
     <div id="flbody"></div>`;
   return h;
@@ -2285,28 +2328,35 @@ function flRebuildRows(resetScroll) {
         if (!lbl.toLowerCase().includes(q) &&
             !(r.aka || []).some(a => a.toLowerCase().includes(q))) continue;
       }
+      const suitability = suitabilityFor(cid);
       rows.push({cid, label: r.label || cid, f: r.f || 0, area: p, aname, near,
-                 px, ek: evidenceKindCount(r.f || 0)});
+                 px, suitability, ek: evidenceKindCount(r.f || 0)});
     }
   }
   const tS = performance.now();
   // deterministic ties everywhere: score desc, then id (contract H)
   const byId = (a, b) => (a.cid < b.cid ? -1 : a.cid > b.cid ? 1 : 0);
+  const bySuitability = (a, b) =>
+    Number(b.suitability.candidate) - Number(a.suitability.candidate);
   if (flSort === "az")
-    rows.sort((a, b) => a.label.localeCompare(b.label) || byId(a, b));
+    rows.sort((a, b) => bySuitability(a, b) || a.label.localeCompare(b.label) || byId(a, b));
   else if (flSort === "evidence")
-    rows.sort((a, b) => (b.ek - a.ek) || (b.px.s - a.px.s) || byId(a, b));
+    rows.sort((a, b) => bySuitability(a, b) || (b.ek - a.ek) ||
+      (b.px.s - a.px.s) || byId(a, b));
   else
-    rows.sort((a, b) => (b.px.s - a.px.s) || byId(a, b));
+    rows.sort((a, b) => bySuitability(a, b) || (b.px.s - a.px.s) || byId(a, b));
   const tW = performance.now();
   flRows = rows;
   flUniverseN = universe;
   if (flActive >= rows.length) flActive = -1;
   body.style.height = (rows.length * FL_ROW_H) + "px";
   const tot = $("#fltotal");
-  if (tot) tot.textContent = rows.length === universe
-    ? `${universe.toLocaleString()} concepts`
-    : `${rows.length.toLocaleString()} of ${universe.toLocaleString()} shown`;
+  const candidateN = rows.filter(row => row.suitability.candidate).length;
+  const reviewN = rows.length - candidateN;
+  if (tot) tot.textContent = `${rows.length === universe
+    ? universe.toLocaleString()
+    : `${rows.length.toLocaleString()} of ${universe.toLocaleString()}`} concepts · ` +
+    `${candidateN.toLocaleString()} candidates · ${reviewN.toLocaleString()} review needed`;
   // chrome: the same honesty surfaces every frontier render writes
   updateFilterStat({active: !!filterMask, shown: universe - facetHidden, total: universe});
   updateHiddenChip(facetHidden);
@@ -2321,7 +2371,8 @@ function flRebuildRows(resetScroll) {
     ? " · ⚠ client scores disagree with the build (see console)" : "";
   statusEl.textContent = `${rows.length.toLocaleString()}${rows.length !== universe
       ? ` of ${universe.toLocaleString()} cells shown` : " cells"} · frontier queue · ` +
-    `sorted by ${flSort === "az" ? "name"
+    `${candidateN.toLocaleString()} actionable first · sorted within tiers by ${
+      flSort === "az" ? "name"
       : flSort === "evidence" ? "evidence breadth, then proximity"
       : "formal proximity"}` +
     (skipped > 0 ? ` · ${skipped} cells lack proximity data (drift — see console)` : "") +
@@ -2384,10 +2435,14 @@ function flRowHtml(row, i) {
   const near = row.near
     ? `<a data-nav="${esc(row.near)}" title="${esc(`the ${row.aname} frontier's nearest formal home — the library area its cells' synapse neighborhoods vote for`)}">${esc(row.near.slice(5))}</a>`
     : `<span style="color:#556074" title="no formal home votes for this area (DeepFrontier/Unsorted)">—</span>`;
+  const assessment = row.suitability.candidate
+    ? {label: "candidate", detail: "a bounded gap according to current Brain metadata"}
+    : {label: SUITABILITY_LABELS[row.suitability.reason] || "needs review",
+       detail: "deprioritized: " + (SUITABILITY_LABELS[row.suitability.reason] || row.suitability.reason)};
   const ptitle = `formal proximity ${(+px.s).toLocaleString()} — ${proxSummary(px)}` +
     (px.r !== undefined
       ? ` · closer to formal code than ${Math.floor((1 - px.r) * 100)}% of the frontier` : "");
-  return `<div class="flrow${row.cid === selectedId ? " sel" : ""}${i === flActive ? " act" : ""}"
+  return `<div class="flrow${row.cid === selectedId ? " sel" : ""}${i === flActive ? " act" : ""}${row.suitability.candidate ? "" : " deprioritized"}"
       style="top:${i * FL_ROW_H}px" data-i="${i}" data-cid="${esc(row.cid)}">
     <span class="flrank">${(i + 1).toLocaleString()}</span>
     <span class="fllabel" title="${esc(row.label)} — click for the cell's card">${esc(row.label)}</span>
@@ -2395,6 +2450,8 @@ function flRowHtml(row, i) {
       title="area: ${esc(row.aname)} — click to toggle the area filter">${esc(row.aname)}</button>
     <span class="flprox" title="${esc(ptitle)}"><i style="width:${(pct * 100).toFixed(1)}%"></i></span>
     <span class="flev">${badges || `<small style="color:#556074">none</small>`}</span>
+    <span class="flsuit ${row.suitability.candidate ? "candidate" : "deprioritized"}"
+      title="${esc(assessment.detail)}">${esc(assessment.label)}</span>
     <span class="flnear">${near}</span></div>`;
 }
 // a row opens the cell's EXISTING side-panel card (renderPanel → the cell card
@@ -3895,15 +3952,16 @@ function rootsPanel() {
       filtersActive() && frVis !== frAll
         ? `${frVis.toLocaleString()} of ${frAll.toLocaleString()} shown`
         : frAll.toLocaleString()})</span></h3>
-      <p class="note">Atoms with no Lean declaration have no module to nest in — nothing
-      formalizes them yet. ${tree.prox
+      <p class="note">Atoms with no attached Lean declaration have no module to nest in;
+      that structural fact does not by itself mean Mathlib lacks the concept. ${tree.prox
         ? `<a data-nav="${FRONTIER_ID}">Browse the queue</a>: every frontier concept
         ranked by its <b>formal proximity</b> — the bond-weighted evidence tying it to
         formalized code, so a concept riding hundreds of bonds ranks above one with no
         formal signal — with its evidence, its area and the formal anchors to build
         on. Or open the <a data-nav="${FRONTIER_MAP_ID}">polar map</a>: the
         ${tree.frontier.length} areas as sectors around the formal core, every cell
-        placed by that same proximity`
+        placed by that same proximity; the queue separates actionable candidates from
+        cells that need scope or coverage review`
         : `<a data-nav="${FRONTIER_ID}">Open the frontier</a>: the
         ${tree.frontier.length} frontier areas (this build ships no proximity data,
         so they render as dive-able bubbles)`}.</p></section>`;
@@ -3972,8 +4030,8 @@ async function frontierPanel(id) {
        browse <a data-nav="${FRONTIER_ID + ":" + sector.slice(9)}">this area in the
        queue</a>, or open <a data-nav="${esc(sector)}">${esc(frontierName(sector))}</a>
        as dive-able dots.</p>`
-    : `<p class="note">Nothing formalizes these atoms yet, so the containment tree
-       cannot place them. Each is filed under the <b>library area its synapse
+    : `<p class="note">These atoms have no attached Lean declaration, so the
+       containment tree cannot place them. Each is filed under the <b>library area its synapse
        neighborhood points at</b> — a weighted vote of its formalized neighbors
        (deterministic, no LLM; <code>brain/build_frontier.py</code>) — and the areas
        are the angular sectors. Each dot's distance from the central formal disc is
@@ -3981,19 +4039,22 @@ async function frontierPanel(id) {
        formalized cells, plus ¼ of what its frontier neighbors can bridge (each
        bridge capped by both the bond and the neighbor's own direct evidence),
        rank-mapped over the whole frontier — a concept riding hundreds of bonds hugs
-       the core; one thread to an isolated node sits far out. Click a sector's rim
+       the core; one thread to an isolated node sits far out. A missing declaration
+       organ does not by itself prove that Mathlib lacks the concept. Click a sector's rim
        label to focus it, or <a data-nav="${FRONTIER_ID}">browse the queue</a> — the
        same cells as a ranked list.</p>`;
   else html += `<p class="note">${sector
       ? `One frontier area's cells as a ranked queue — the rest of the frontier is
-         one chip-click away. `
-      : `Nothing formalizes these atoms yet. The queue ranks every frontier cell by
-         its `}<b>formal proximity</b>${sector ? " orders the rows" : ""}: the trace
+         one chip-click away. Within this area, `
+      : `These atoms have no attached Lean declaration. The queue puts
+         <b>actionable candidates first</b>, then rows that need coverage or scope review;
+         within each tier, `}<b>formal proximity</b>${sector ? "" : " orders the rows"}: the trace
        weight of ${sector ? "each cell's" : "its"} bonds straight into formalized
        cells, plus ¼ of what its frontier neighbors can bridge (each bridge capped
        by both the bond and the neighbor's own direct evidence). Sort by readiness,
        evidence breadth or name; the chips filter by area; click a row for the
-       cell's full card, with the formal anchors to build on. Or open the
+       cell's full card; the queue row keeps its assessment reason visible beside the
+       formal anchors. Every structural frontier cell remains searchable. Or open the
        <a data-nav="${sector ? FRONTIER_MAP_ID + ":" + sector.slice(9) : FRONTIER_MAP_ID}">polar
        map</a> — the same proximity as radius.</p>`;
   if (tree.prox)
@@ -4004,8 +4065,8 @@ async function frontierPanel(id) {
       <p class="note">${fv.mode === "map"
         ? `The central disc is the enabled formal libraries; click it to open them.
            The outermost dots carry no formal signal at all — the deepest frontier.`
-        : `The top of the readiness sort is the strongest formal evidence; the
-           zero-signal cells sit at the bottom — the deepest frontier.`}</p></section>`;
+        : `The readiness sort places actionable candidates first and orders each
+           tier by formal proximity; review-needed rows stay visible below them.`}</p></section>`;
   if (!sector) {
     html += `<section class="kind"><h3>Areas <span class="cnt">(${
       tree.frontier.length})</span></h3><div class="chips">`;
@@ -4050,7 +4111,7 @@ async function frontierAreaPanel(id) {
     <div class="sub">frontier area · <code>${esc(id)}</code> ·
       ${visCells.length !== cells.length
         ? `${visCells.length.toLocaleString()} of ${cells.length.toLocaleString()} cells shown`
-        : `${cells.length.toLocaleString()} cells`}, none formalized yet</div>`;
+        : `${cells.length.toLocaleString()} cells`}, none with a declaration organ</div>`;
   html += `<section class="kind"><h3>Nearest formal home</h3>` + (near
     ? `<div class="chips"><span class="chip"><a data-nav="${esc(near)}">${esc(near.slice(5))}</a>
         <small>${esc(((tree.sc[near] || {}).label) || "")}</small></span></div>

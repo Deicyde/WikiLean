@@ -29,5 +29,7 @@ run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
+run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
+run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 5 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 7 commands passed; all required offline scenarios ran.\n'

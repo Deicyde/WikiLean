@@ -19,6 +19,7 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
       {"id": "frontier:<Area>", "label", "cells": [cell ids], "n",
        "prox": {"db": [...], "dw": [...], "ib": [...], "iw": [...],
                 "s": [...], "r": [...]},   # six arrays parallel to `cells`
+       "suitability": {"candidate": [...], "reason": [...]},
        "near": "path:<Lib>/<Dir>"|null, "mean_stateability": float|null,
        "top": [up to 12 {"cell", "label", "score"}]}
     <Area> matches ^[A-Za-z][A-Za-z0-9_]{0,63}$.
@@ -59,6 +60,11 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
          mapping), ties share r, 0 ~ most proximal. Computed at build time;
          the client never re-fits (for library subsets it re-ranks with this
          same one-line formula).
+
+  SUITABILITY (deterministic, independent of proximity): every homeless cell
+  remains in the partition, while the queue receives parallel `candidate` and
+  `reason` arrays derived from current Brain coverage, broad/wrong-altitude
+  signals, and reviewed QID overrides. This is ordering metadata, never a filter.
 
   ASSIGNMENT (deterministic, seedless, no LLM):
     1. weighted vote of the cell's synapse neighbors that have decl organs —
@@ -138,15 +144,19 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from frontier_suitability import classify_cell, load_overrides, review_signals
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 CELLS_IN = HERE / "data" / "cells.jsonl"
+NODES_IN = HERE / "data" / "nodes.jsonl"
 SYNAPSES_IN = HERE / "data" / "synapses.jsonl"
 EDGES_IN = HERE / "data" / "edges.jsonl"
 HALO_IN = ROOT / "manage" / "data" / "halo.json"
 OUT = HERE / "data" / "frontier.jsonl"
 GRAPH_OUT = HERE / "data" / "frontier_graph.json"
 REVIEW_OUT = HERE / "data" / "frontier_review.jsonl"
+SUITABILITY_OVERRIDES = HERE / "data" / "frontier_suitability_overrides.jsonl"
 
 AREA_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 TOP_CAP = 12                      # contract: up to 12 `top` rows per area
@@ -216,15 +226,7 @@ def area_label(area: str, lib: str | None, top: str | None) -> str:
     return f"{(top or lib or area)} frontier"
 
 
-BROAD_CLASSES = {"Q1936384", "Q11862829", "Q20026918", "Q17524420"}
-BROAD_LABEL_RE = re.compile(
-    r"\b(history of|timeline of|list of|outline of|mathematics|theory|"
-    r"analysis|geometry|algebra|calculus)\b",
-    re.I,
-)
 SECONDARY_ONLY = ROOT / "catalog" / "data" / "concept_layer.jsonl"
-UNIVERSE_INPUTS = (ROOT / "catalog" / "data" / "wikidata_universe.jsonl",
-                   ROOT / "catalog" / "data" / "universe_extension.jsonl")
 
 
 def load_secondary_only() -> set[str]:
@@ -237,23 +239,11 @@ def load_secondary_only() -> set[str]:
     return out
 
 
-def load_classes() -> dict[str, list[str]]:
-    out: dict[str, list[str]] = {}
-    for path in UNIVERSE_INPUTS:
-        if not path.exists():
-            continue
-        for row in iter_jsonl(path):
-            qid = row.get("qid")
-            if qid and qid not in out:
-                out[qid] = row.get("classes") or []
-    return out
-
-
-def write_frontier_review(cells: dict[str, dict], homeless: list[str], score: dict[str, float],
+def write_frontier_review(cells: dict[str, dict], nodes: dict[str, dict],
+                          homeless: list[str], score: dict[str, float],
                           direct_w: Counter, bridge_w: dict[str, int], nbrs: dict[str, list],
                           assigned: dict[str, str], generated_at: str) -> None:
     secondary_only = load_secondary_only()
-    classes = load_classes()
     by_score = sorted(homeless, key=lambda c: (-score.get(c, 0), c))
     rank = {cid: i + 1 for i, cid in enumerate(by_score)}
     rows = []
@@ -262,15 +252,9 @@ def write_frontier_review(cells: dict[str, dict], homeless: list[str], score: di
         qids = [o.get("id") for o in cell.get("organs", []) if o.get("kind") == "concept"]
         qid = qids[0] if qids else None
         label = cell.get("label") or cid
-        signals = []
-        if qid in secondary_only:
-            signals.append("secondary_only")
-        if qid and BROAD_CLASSES & set(classes.get(qid, [])):
-            signals.append("broad_wikidata_class")
-        if BROAD_LABEL_RE.search(label):
-            signals.append("broad_label")
-        if direct_w.get(cid, 0) >= 500 and len(nbrs.get(cid, [])) >= 100:
-            signals.append("high_proximity_hub")
+        classes = set((nodes.get(qid) or {}).get("altitude_evidence", {}).get("p31") or [])
+        signals = review_signals(qid, label, classes, secondary_only,
+                                 direct_w.get(cid, 0), len(nbrs.get(cid, [])))
         if not signals:
             continue
         rows.append({
@@ -302,7 +286,7 @@ def write_frontier_review(cells: dict[str, dict], homeless: list[str], score: di
 
 def main() -> int:
     t0 = time.monotonic()
-    for path in (CELLS_IN, SYNAPSES_IN):
+    for path in (CELLS_IN, NODES_IN, SYNAPSES_IN, SUITABILITY_OVERRIDES):
         if not path.exists():
             raise SystemExit(f"missing {path} — run python3 brain/build_cells.py first")
 
@@ -314,6 +298,9 @@ def main() -> int:
     cells: dict[str, dict] = {}
     for row in iter_jsonl(CELLS_IN):
         cells[row["id"]] = row
+    nodes = {row["id"]: row for row in iter_jsonl(NODES_IN)}
+    known_qids = {nid for nid, node in nodes.items() if node.get("type") == "concept"}
+    suitability_overrides = load_overrides(SUITABILITY_OVERRIDES, known_qids)
     decl_cells = {cid for cid, c in cells.items()
                   if any(o.get("kind") == "decl" for o in c.get("organs", []))}
     homeless = sorted(set(cells) - decl_cells)
@@ -591,6 +578,17 @@ def main() -> int:
         bridge_w[c] = iw
         bridge_b[c] = ib
     score = {c: direct_w.get(c, 0) + bridge_w[c] * LAMBDA for c in homeless}
+    suitability = {
+        c: classify_cell(cells[c], nodes, suitability_overrides,
+                         direct_weight=direct_w.get(c, 0),
+                         degree=len(nbrs.get(c, [])))
+        for c in homeless
+    }
+    suitability_counts = Counter(
+        "candidate" if v["candidate"] else v["reason"] for v in suitability.values()
+    )
+    print(f"  queue suitability: {suitability_counts['candidate']} candidates, "
+          f"{len(homeless) - suitability_counts['candidate']} review-needed")
 
     # radius: midrank percentile of the score over the WHOLE frontier
     # population — rank-based (the robust-fit rule: a 900-weight hub cannot
@@ -664,12 +662,17 @@ def main() -> int:
                 "iw": [bridge_w[c] for c in cell_ids],
                 "s": [score[c] for c in cell_ids],
                 "r": [radius[c] for c in cell_ids]}
+        suitable = {
+            "candidate": [suitability[c]["candidate"] for c in cell_ids],
+            "reason": [suitability[c]["reason"] for c in cell_ids],
+        }
         rows.append({
             "id": f"frontier:{area}",
             "label": area_label(area, info["lib"], info["top"]),
             "cells": cell_ids,
             "n": len(cell_ids),
             "prox": prox,
+            "suitability": suitable,
             "near": info["near"],
             "mean_stateability":
                 round(sum(fracs) / len(fracs), 4) if fracs else None,
@@ -701,6 +704,18 @@ def main() -> int:
         "counts": {"homeless": len(homeless),
                    "assigned": len(homeless) - len(unsorted),
                    "unsorted": len(unsorted)},
+        "suitability": {
+            "method": "candidate-first queue classification from current Brain "
+                      "coverage metadata, reviewed broadness signals, and QID "
+                      "overrides; independent of proximity and library filters",
+            "counts": {
+                "candidate": suitability_counts["candidate"],
+                "deprioritized": len(homeless) - suitability_counts["candidate"],
+                "reasons": {reason: suitability_counts[reason]
+                            for reason in sorted(suitability_counts)
+                            if reason != "candidate"},
+            },
+        },
         "proximity": {
             "method": "score = direct + bridge/4 over RAW synapse weights: "
                       "direct = summed weight of the cell's synapses into "
@@ -822,7 +837,7 @@ def main() -> int:
     gtmp.write_text(json.dumps(graph, ensure_ascii=False, separators=(",", ":")))
     gtmp.rename(GRAPH_OUT)
     print(f"-> {GRAPH_OUT} ({GRAPH_OUT.stat().st_size / 1000:.0f} KB)")
-    write_frontier_review(cells, homeless, score, direct_w, bridge_w, nbrs,
+    write_frontier_review(cells, nodes, homeless, score, direct_w, bridge_w, nbrs,
                           assigned, generated_at)
     return 0
 
