@@ -10,10 +10,11 @@ field-of-study concepts. Weak bonds between two atoms aggregate into one
 SYNAPSE carrying every trace. Contract: brain/SCHEMA.md#v3.
 
 Fast path: the prefix shards in site/assets/brain/cells (one file read per
-atom, the same artifact /brain and the live API read). Full path:
-brain/data/{cells,synapses}.jsonl — the shards trim each synapse to 6 traces
-(`traces_total` says how many exist) and cap the synapse list itself, so
-`--full` is how you get the untruncated set. JSON to stdout, always.
+atom, the same artifact /brain and the live API read). Full path: the store
+selected by `--backend` (or WIKILEAN_BRAIN_BACKEND) —
+the shards trim each synapse to 6 traces (`traces_total` says how many exist)
+and cap the synapse list itself, so `--full` is how you get the untruncated
+set. JSON to stdout, always.
 
   python3 brain/query.py cell <key>                ANY organ id → the owning
                                                    atom's card (organs with
@@ -22,8 +23,7 @@ brain/data/{cells,synapses}.jsonl — the shards trim each synapse to 6 traces
   python3 brain/query.py organs <key> [--kind decl|concept|page|article|statement]
   python3 brain/query.py neighborhood <key> [--kinds depends,links]
                                             [--full]  untruncated synapses +
-                                                   FULL traces (scans
-                                                   synapses.jsonl)
+                                                   FULL traces (via the store)
   python3 brain/query.py path <key>                containment breadcrumb only
   python3 brain/query.py search <text> [--type cell|supercell]
                                                    label + `aka` (organ-label)
@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -120,12 +121,56 @@ def iter_jsonl(path: Path):
                 yield r
 
 
-def resolve_key(key: str) -> str | None:
+def _backend(args) -> str:
+    return getattr(args, "backend", os.environ.get("WIKILEAN_BRAIN_BACKEND", "auto"))
+
+
+def _store(args):
+    """Open the configured store once, and only when a static shard cannot answer."""
+    opened = getattr(args, "_store", None)
+    if opened is not None:
+        return opened
+    try:
+        if __package__:
+            from .store import open_store
+        else:
+            from store import open_store
+        opened = open_store(
+            data_dir=DATA, backend=_backend(args), require_derived=True
+        )
+    except Exception as exc:
+        raise RuntimeError(f"brain store unavailable: {exc}") from exc
+    args._store = opened
+    return opened
+
+
+def _metadata(store, artifact: str) -> dict:
+    """Read store metadata while tolerating the planned accessor variants."""
+    accessor = getattr(store, "metadata", None)
+    if accessor is None:
+        accessor = getattr(store, "get_metadata", None)
+    if accessor is None:
+        return {}
+    if callable(accessor):
+        try:
+            meta = accessor(artifact)
+        except TypeError:
+            meta = accessor()
+    else:
+        meta = accessor
+    if not isinstance(meta, dict):
+        return {}
+    nested = meta.get(artifact, meta.get(f"{artifact}.jsonl"))
+    if isinstance(nested, dict):
+        return nested.get("_meta", nested)
+    return meta.get("_meta", meta)
+
+
+def resolve_key(key: str, args=None) -> str | None:
     """ANY organ id (or atom id) → the atom that owns it.
 
-    Fast path: site/assets/brain/cells/aliases.json — THE compat layer, and a
-    function (SCHEMA C4: every organ resolves to exactly one atom). Slow path:
-    scan cells.jsonl, so the command works before the shards are built.
+    The shipped aliases remain the fast path. A store lookup handles an alias
+    miss so stale or not-yet-built shards do not require a cells.jsonl scan.
     """
     if key.startswith(("cell:", "path:")):
         return key
@@ -140,22 +185,9 @@ def resolve_key(key: str) -> str | None:
             if hit:
                 return hit
         # aliases exist but miss: fall through — the shards may lag the data
-    cells = DATA / "cells.jsonl"
-    if not cells.exists():
-        return None
-    name = key.split(":", 2)[2] if key.startswith("decl:") else key
-    for c in iter_jsonl(cells):
-        for o in c.get("organs", []):
-            if o["id"] == key or (o["kind"] == "decl" and o["id"].split(":", 2)[2] == name):
-                return c["id"]
-        if c.get("label") == key:
-            return c["id"]
-    # rule 5: a field concept is an organ of a SUPERCELL, never of a cell
-    meta, _ = _first_meta(cells)
-    for path, organs in (meta.get("supercell_organs") or {}).items():
-        if any(o["id"] == key for o in organs):
-            return path
-    return None
+    if args is None:
+        args = argparse.Namespace(backend=os.environ.get("WIKILEAN_BRAIN_BACKEND", "auto"))
+    return _store(args).resolve_owner(key)
 
 
 def _first_meta(path: Path) -> tuple[dict, None]:
@@ -167,9 +199,9 @@ def _first_meta(path: Path) -> tuple[dict, None]:
     return {}, None
 
 
-def atom(key: str) -> tuple[str, dict] | None:
+def atom(key: str, args=None) -> tuple[str, dict] | None:
     """(atom id, entry) for any key, or None."""
-    aid = resolve_key(key)
+    aid = resolve_key(key, args)
     if aid is None:
         return None
     e = supercell_entry(aid) if aid.startswith("path:") else shard_entry(aid)
@@ -182,7 +214,7 @@ def _fail(msg: str, **kw) -> int:
 
 
 def cmd_cell(args) -> int:
-    got = atom(args.key)
+    got = atom(args.key, args)
     if got is None:
         return _fail("unresolvable key (no atom owns it)", key=args.key)
     aid, e = got
@@ -191,7 +223,7 @@ def cmd_cell(args) -> int:
 
 
 def cmd_organs(args) -> int:
-    got = atom(args.key)
+    got = atom(args.key, args)
     if got is None:
         return _fail("unresolvable key (no atom owns it)", key=args.key)
     aid, e = got
@@ -205,7 +237,7 @@ def cmd_organs(args) -> int:
 
 def cmd_neighborhood(args) -> int:
     kinds = set(args.kinds.split(",")) if args.kinds else None
-    got = atom(args.key)
+    got = atom(args.key, args)
     if got is None:
         return _fail("unresolvable key (no atom owns it)", key=args.key)
     aid, e = got
@@ -225,34 +257,43 @@ def cmd_neighborhood(args) -> int:
                           "_prov_table": e.get("_prov_table")}, ensure_ascii=False))
         return 0
 
-    # --full: the untruncated set, straight from the atom layer.
-    src = DATA / "synapses.jsonl"
-    if not src.exists():
-        return _fail("brain/data/synapses.jsonl absent — run brain/build_cells.py", id=aid)
+    # --full: the untruncated set from the selected store. Keep normalization
+    # here so JSONL and SQLite backends cannot change the public response shape.
+    store = _store(args)
     out = []
-    for s in iter_jsonl(src):
-        if s["src"] != aid and s["dst"] != aid:
-            continue
+    for s in store.iter_synapses(endpoint=aid, kinds=kinds):
+        if "id" in s:
+            neighbor = s["id"]
+        else:
+            src, dst = s.get("src"), s.get("dst")
+            if src != aid and dst != aid:
+                continue
+            neighbor = dst if src == aid else src
         if kinds and not (set(s.get("kinds", {})) & kinds):
             continue
         traces = s.get("traces", [])
         if kinds:
             traces = [t for t in traces if t["kind"] in kinds]
-        out.append({"id": s["dst"] if s["src"] == aid else s["src"],
-                    "w": s["weight"], "kinds": s["kinds"], "traces": traces,
-                    **({"truncated": s["truncated"]} if s.get("truncated") else {})})
+        weight = s.get("w", s.get("weight"))
+        if neighbor is None or weight is None or "kinds" not in s:
+            raise ValueError("brain store returned a malformed synapse")
+        row = {"id": neighbor, "w": weight,
+               "kinds": s["kinds"], "traces": traces}
+        if s.get("truncated"):
+            row["truncated"] = s["truncated"]
+        out.append(row)
     out.sort(key=lambda s: (-s["w"], s["id"]))
     if not out:
         return _fail("no synapses (or unknown atom)", id=aid)
-    meta, _ = _first_meta(src)
     print(json.dumps({"ok": True, "id": aid, "synapses": out, "returned": len(out),
-                      "full": True, "_prov_table": meta.get("prov")},
+                      "full": True,
+                      "_prov_table": _metadata(store, "synapses").get("prov")},
                      ensure_ascii=False))
     return 0
 
 
 def cmd_path(args) -> int:
-    got = atom(args.key)
+    got = atom(args.key, args)
     if got is None:
         return _fail("unresolvable key (no atom owns it)", key=args.key)
     aid, e = got
@@ -300,30 +341,53 @@ def cmd_search(args) -> int:
     return 0
 
 
+def _add_backend_argument(parser, *, default=argparse.SUPPRESS) -> None:
+    parser.add_argument(
+        "--backend", choices=["auto", "sqlite", "jsonl"], default=default,
+        help="store backend (default: WIKILEAN_BRAIN_BACKEND or auto)",
+    )
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    _add_backend_argument(
+        ap, default=os.environ.get("WIKILEAN_BRAIN_BACKEND", "auto"),
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
     # `unit`/`node` are v2 entry points kept alive: the unit card became the cell
     # card, and v3 has no particle nodes — an organ id resolves to its atom.
     for name in ("cell", "unit", "node"):
         p = sub.add_parser(name)
         p.add_argument("key")
+        _add_backend_argument(p)
         p.set_defaults(fn=cmd_cell)
     p = sub.add_parser("organs"); p.add_argument("key")
+    _add_backend_argument(p)
     p.add_argument("--kind", choices=["concept", "decl", "page", "article", "statement"])
     p.set_defaults(fn=cmd_organs)
     p = sub.add_parser("neighborhood"); p.add_argument("key")
+    _add_backend_argument(p)
     p.add_argument("--kinds"); p.add_argument("--full", action="store_true")
     p.set_defaults(fn=cmd_neighborhood)
-    p = sub.add_parser("path"); p.add_argument("key"); p.set_defaults(fn=cmd_path)
-    p = sub.add_parser("supercell"); p.add_argument("path"); p.set_defaults(fn=cmd_supercell)
-    p = sub.add_parser("search"); p.add_argument("text")
+    p = sub.add_parser("path"); p.add_argument("key"); _add_backend_argument(p)
+    p.set_defaults(fn=cmd_path)
+    p = sub.add_parser("supercell"); p.add_argument("path"); _add_backend_argument(p)
+    p.set_defaults(fn=cmd_supercell)
+    p = sub.add_parser("search"); p.add_argument("text"); _add_backend_argument(p)
     p.add_argument("--type", choices=["cell", "supercell"])
     p.add_argument("--limit", type=int, default=25)
     p.set_defaults(fn=cmd_search)
     args = ap.parse_args()
-    return args.fn(args)
+    try:
+        return args.fn(args)
+    except (ImportError, OSError, RuntimeError, ValueError) as exc:
+        return _fail(str(exc))
+    finally:
+        store = getattr(args, "_store", None)
+        close = getattr(store, "close", None)
+        if callable(close):
+            close()
 
 
 if __name__ == "__main__":

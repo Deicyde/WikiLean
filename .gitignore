@@ -78,6 +78,13 @@ brain/data/rollup_edges.module.jsonl
 # joint file); rebuilt deterministically by brain/build_edges.py from the
 # committed catalog/data/external/ inputs. Non-links edges.jsonl stays tracked.
 brain/data/edges_links.jsonl
+# Generated local Brain query snapshot. JSONL remains the committed interchange
+# format; rebuild the SQLite index with `python3 brain/build_snapshot.py --from-jsonl`.
+brain/data/brain.sqlite3
+brain/data/brain.sqlite3-*
+brain/data/.brain.sqlite3.*.tmp
+brain/.brain-snapshot.*/
+# v3 synapses
 # v3 synapses (~34MB, 87k rows carrying every trace) — same call as edges_links
 # above: it is the big derived artifact and it churns on every nightly rebuild.
 # Rebuilt deterministically by brain/build_cells.py from the committed nodes.jsonl

@@ -92,6 +92,15 @@ def _iter_jsonl(path: Path, *, skip_meta: bool = True):
             yield row
 
 
+def _jsonl_meta(path: Path) -> dict:
+    with path.open() as fh:
+        row = json.loads(next(fh))
+    meta = row.get("_meta")
+    if not isinstance(meta, dict):
+        raise ValueError(f"{path} has no first-line _meta object")
+    return meta
+
+
 def _bare(decl_id: str) -> str:
     """`decl:Mathlib:Foo.bar` -> `Foo.bar`."""
     parts = decl_id.split(":", 2)
@@ -829,7 +838,7 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
         # LOUD: this file is gitignored (146MB), so a fresh clone silently loses every
         # external-DB link synapse — the whole point of ingesting internal links.
         print(f"  ! {links_path.name} absent — NO link synapses will be built "
-              f"(rebuild: python3 brain/build_edges.py)", file=sys.stderr)
+              f"(rebuild: python3 brain/build_snapshot.py)", file=sys.stderr)
         stats["links_file_missing"] = 1
 
     consumed: set[tuple[str, str]] = set()
@@ -937,10 +946,14 @@ def cell_review(cells: dict[str, dict], nodes: dict[str, dict],
 # ---- output -----------------------------------------------------------------
 
 def write_jsonl(path: Path, meta: dict, rows: list[dict]) -> None:
-    with path.open("w") as fh:
+    """Atomically publish a derived JSONL artifact."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w") as fh:
         fh.write(json.dumps({"_meta": meta}, separators=(",", ":")) + "\n")
         for row in rows:
             fh.write(json.dumps(row, separators=(",", ":")) + "\n")
+    tmp.replace(path)
 
 
 def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
@@ -990,9 +1003,13 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
         layout_cells(cells, synapses)
 
     rows = [cells[k] for k in sorted(cells)]
+    base_meta = _jsonl_meta(NODES_IN)
     meta = {
         "schema": "brain/SCHEMA.md#v3",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "base_generated_at": base_meta.get("generated_at"),
+        **({"base_snapshot_id": base_meta["snapshot_id"]}
+           if base_meta.get("snapshot_id") else {}),
         "prov": prov.table,
         "supercell_organs": {k: v for k, v in sorted(supercell_organs.items())},
         "counts": {
@@ -1034,8 +1051,15 @@ def main() -> None:
         return
 
     write_jsonl(CELLS_OUT, meta, cells)
-    write_jsonl(SYNAPSES_OUT, {k: meta[k] for k in ("schema", "generated_at", "prov")}
-                | {"counts": meta["counts"]}, synapses)
+    synapse_meta_keys = (
+        "schema", "generated_at", "base_generated_at", "base_snapshot_id", "prov"
+    )
+    write_jsonl(
+        SYNAPSES_OUT,
+        {k: meta[k] for k in synapse_meta_keys if k in meta}
+        | {"counts": meta["counts"]},
+        synapses,
+    )
     rule_counts = Counter(r["rule"] for r in review)
     write_jsonl(REVIEW_OUT, {"schema": "brain/SCHEMA.md#v3",
                              "generated_at": meta["generated_at"],
