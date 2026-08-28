@@ -115,11 +115,14 @@ through rules 2–5, which is what produced the measured 28-organ Module↔Eucli
    between claimants; a shared arXiv statement becomes a synapse alone. Applies to
    pages AND statements — TheoremGraph matches 219 statements to decls in different
    cells, and attaching those would put one organ in two cells, breaking C4.
-5. `field` match_kind / concept→container ⇒ supercell organ, **never a cell** — not
-   even a lone-particle one, so "Linear algebra" resolves to
-   `path:Mathlib/LinearAlgebra` and not to a stray atom. It still keeps its bonds:
-   they hang off that supercell, so **a synapse endpoint may be a cell OR a
-   supercell** (field concepts are hubs — dropping their bonds cost 10,801 synapses).
+5. concept→container `formalizes` (`match_kind` such as `field`, `scope`,
+   `primitive`, `namespace`, or `survey`) ⇒ supercell organ, **never a cell** —
+   not even a lone-particle one, so "Linear algebra" resolves to
+   `path:Mathlib/LinearAlgebra`, while broad infrastructure concepts such as
+   "Function" resolve to their namespace supercell instead of a stray frontier atom.
+   It still keeps its bonds: they hang off that supercell, so **a synapse endpoint
+   may be a cell OR a supercell** (supercell-level concepts are hubs — dropping
+   their bonds cost 10,801 synapses).
 
 A transitive closure over rules 2–5 is FORBIDDEN: measured, it fuses
 Module↔EuclideanSpace↔plane (28 organs) and, via coarse DLMF pages, produces a
@@ -135,16 +138,19 @@ bad data; instead cell size is EMITTED as a diagnostic. `brain/data/cell_review.
 ranks cells by how many home-less concepts they absorbed and names the exact claim
 to re-grade, shaped to drop into `catalog/data/grounding_overrides.jsonl`.
 
-It works: of 8,914 cells only **23** flag, and they are exactly the mis-grades —
+It works: the emitted worklist stays small and targets the bad grades —
 `Real.binEntropy` (the binary entropy *function*) absorbing "Information",
 "Information theory" AND "Entropy"; `Module.Dual` absorbing "Duality (mathematics)".
 Fix the grade, not the rule.
 
 Two flavours, because there are two ways a grade goes wrong:
-- `rule2-absorption` (18) — one decl absorbs ≥2 home-less concepts.
-- `rule1-exact-weld` (5) — ≥2 concepts `exact`-claim ≥2 decls, welding them into one
+- `rule2-absorption` — one decl absorbs ≥2 home-less concepts.
+- `rule1-exact-weld` — ≥2 concepts `exact`-claim ≥2 decls, welding them into one
   atom (rule 1 is transitive by design, above). Scoping the worklist to rule 2 left
   this — the only chaining that actually occurs — invisible.
+
+The `cell_review.jsonl` metadata reports both per-rule counts so readers do not have
+to infer the worklist shape from row bodies.
 
 ### Strong-bond sources (organ attach)
 
@@ -215,14 +221,17 @@ Status: **36/36 green** (`python3 brain/test_cells.py`; the nightly aborts on re
 
 A cell with no decl organ has no module to nest in; the bubble view used to pool
 all of them (1,612 of 20,880 on 2026-08-01) into one grey "no formal home" bucket.
-The frontier layer partitions them into named AREAS — `brain/data/frontier.jsonl`:
+The frontier layer partitions them into named AREAS — `brain/data/frontier.jsonl`.
+Broad concepts whose formal content lives at module/folder altitude should enter as
+concept→container links and become supercell organs first; they are then not
+homeless cells and do not pollute the frontier queue:
 
 ```json
 {"_meta": {"generated_at": "<the cell build's stamp>", "method": "...",
-           "counts": {"homeless": 1612, "assigned": 1303, "unsorted": 309},
+           "counts": {"homeless": 1614, "assigned": 1299, "unsorted": 315},
            "proximity": {"method": "score = direct + bridge/4 …",
                          "lambda": 0.25,
-                         "counts": {"direct": 855, "bridged": 454, "zero": 303}}}}
+                         "counts": {"direct": 852, "bridged": 451, "zero": 311}}}}
 {"id": "frontier:Analysis", "label": "Analysis frontier", "cells": ["cell:Q…"],
  "n": 509,
  "prox": {"db": [3], "dw": [7], "ib": [2], "iw": [4], "s": [8.0], "r": [0.2081]},
@@ -295,11 +304,14 @@ proximal. `r` is RANK-based per the robust-fit rule (a 900-weight hub cannot
 stretch the mapping) and computed at build time — the client never re-fits;
 for library subsets it re-ranks with the same one-line formula.
 `_meta.proximity` = `{method, lambda, counts: {direct, bridged, zero}}`
-(2026-08-01 ground truth: direct 855, bridged 454, zero 303 — pinned in
+(2026-08-26 ground truth: direct 852, bridged 451, zero 311 — pinned in
 `test_frontier.py` `PROX_PIN`; re-measure on legitimate data drift; the
 builder never hardcodes these, only the test pins them). Zero-scored cells
 (no formal evidence within two hops) are counted LOUDLY by the builder — on
 2026-08-01 data: 35 still carry synapses, 268 are fully synapse-less.
+`brain/data/frontier_review.jsonl` is a NON-GATING worklist for homeless cells
+that look broad or wrong-altitude and may need `container_links.jsonl` review;
+it never filters `frontier.jsonl`.
 
 **Frontier graph** (FRONTIER GRAPH contract — the CLIENT-side re-scoring
 input for the Libraries toggle): `build_frontier.py` also emits
@@ -309,7 +321,7 @@ byte-copied VERBATIM as `site/assets/brain/cells/frontier_graph.json`
 
 ```json
 {"_meta": {"generated_at": "<the cell build's stamp>", "method": "…",
-           "counts": {"cells": 1612, "formal": 855, "edges": 7042,
+           "counts": {"cells": 1614, "formal": 852, "edges": 7324,
                       "libs": {"Mathlib": 672, "Init": 322, "…": 1}}},
  "cells":  ["cell:Q1000660", "…"],
  "formal": {"cell:Q1008566": {"Init": 2, "Init|Mathlib": 5, "Mathlib": 41}},
@@ -614,9 +626,11 @@ render text, per the existing ingest gate).
   point-fixes applied by build_graph_v2 AFTER loading the grounding (the grounding
   file itself is the immutable agent audit trail). Seeded with the 6 field-of-study
   `exact`→`invocation` downgrades and the History_of_trigonometry contradiction.
-- **`brain/data/container_links.jsonl`** (`{qid, path, match_kind:"field",
-  confidence, evidence}`) — concept→container `formalizes` edges (the Q217413 class),
-  paths validated against `hierarchy.json`.
+- **`brain/data/container_links.jsonl`** (`{qid, path, match_kind, confidence,
+  evidence, skeptic}`) — reviewed concept→container `formalizes` edges (the Q217413
+  class, plus broad/scope/primitive concepts such as Q11348 Function). Accepted rows
+  are validated against `hierarchy.json`; rows with `skeptic` set to a non-`accept`
+  value do not fold.
 - **`brain/data/discovery_proposals.jsonl`** — agent-proposed new links/nodes; folded
   only after the deterministic verifier passes (QID exists upstream, decl passes the
   oracle). Rejected rows stay with a `rejected_reason`.
