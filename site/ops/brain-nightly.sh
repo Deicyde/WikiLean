@@ -264,10 +264,11 @@ cd "$REPO" || exit 1
   # failed acceptance we do NOT refresh the page either, so the old page and the old
   # shards stay live TOGETHER (consistent), which is the whole point of the gate.
   if [ "$PUBLISH_OK" = "1" ]; then
-    if python3 "$REPO/site/build_brain_page.py" && [ -s "$REPO/site/out/brain.html" ]; then
-      echo "(brain page rebuilt: $(wc -c <"$REPO/site/out/brain.html" | tr -d ' ') B)"
+    if python3 "$REPO/site/build_brain_page.py" && [ -s "$REPO/site/out/brain.html" ] \
+        && python3 "$REPO/site/test_frontier_page.py"; then
+      echo "(brain page rebuilt and checked: $(wc -c <"$REPO/site/out/brain.html" | tr -d ' ') B)"
     else
-      echo "!!! build_brain_page FAILED (or wrote no page) — publish aborted, the live page stays"
+      echo "!!! build_brain_page or Frontier page contract FAILED — publish aborted, the live page stays"
       PUBLISH_OK=0
     fi
   fi

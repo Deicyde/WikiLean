@@ -185,8 +185,10 @@ pinned dataset and rebuilds as newer snapshots.
   longer built; every v2 node id is an organ id and resolves on `/cell`).
 - **UI:** `/brain` (site/build_brain_page.py → brain.html) — Miller-column drill-down
   through the containment tree, per-node panel with every edge's provenance one click
-  away, layer toggles per edge family, label search. One shard fetch per interaction;
-  the whole graph never ships.
+  away, layer toggles per edge family, label search. The Frontier queue preserves every
+  declaration-less cell but sorts bounded formalization candidates before broad,
+  ambiguous, elementary, already-covered, or non-target rows, with a visible reason for
+  every demotion. One shard fetch per interaction; the whole graph never ships.
 
 ## Shards
 
@@ -195,7 +197,9 @@ The shipped shard tree is `site/assets/brain/cells/` (`build_cell_shards.py`),
 which reuses `wiki/scripts/build-decl-index.ts`'s longest-prefix scheme
 (normalize to `[a-z0-9_]`, start at 2-char keys, split shards over 150 KB): a
 client loads `cells/manifest.json` once, then any ATOM is one fetch away, and
-`cells/aliases.json` maps every organ id to its owning atom. `build_shards.py`
+`cells/aliases.json` maps every organ id to its owning atom. Frontier area rows also
+carry aligned `prox` and `suitability` arrays; suitability changes queue ordering only,
+never the complete structural partition or the library-dependent score. `build_shards.py`
 still runs, emitting only the two live top-level assets: `xref_index.json`
 (external-page → node-ids reverse index; the Worker's community-edge
 cross-pollination inverts it) and `sources.json` (the /brain Sources legend).

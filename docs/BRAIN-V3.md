@@ -270,6 +270,11 @@ site/assets/brain/cells/
   pages that became organs of an atom; the rest are the deliberate frontier drop),
   article annotation counts. That is axis 3's "clicking a concept shows the Lean
   code, the article, the LMFDB knowl, the Stacks description" — in a single request.
+- **The Frontier queue separates structure from actionability.** Every cell without a
+  declaration organ still appears in exactly one Frontier area. A deterministic
+  suitability layer ranks bounded candidates before cells that are broad, ambiguous,
+  elementary, already covered, or not formalization targets, and displays the reason;
+  the polar map and library-dependent proximity score remain unchanged.
 - **The explorer ships COMPLETE.** Edges are index triples `[i, j, w]` into `nodes`,
   not `{src,dst}` id objects — ids average ~11 chars and repeat twice per edge, so
   objects cost ~4x. That is the difference between shipping all 76,083 synapses (2.3 MB)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Acceptance for the FRONTIER layer — F1..F10 (brain/SCHEMA.md "Frontier layer").
+"""Acceptance for the FRONTIER layer — F1..F11 (brain/SCHEMA.md "Frontier layer").
 
 The frontier partitions the HOMELESS cells (no decl organ) into named areas so
 the bubble view's grey "no formal home" blob drains into legible territories,
@@ -31,8 +31,8 @@ as test_cell_shards' shard_key.
       weight into decl-organ cells; bridge = sum of min(bond, direct(u)) over
       frontier neighbors; s = direct + bridge/4 EXACTLY; r = midrank
       percentile of s, ties share); no NaN, nothing negative; the
-      _meta.proximity counts reconcile AND match the 2026-08-01 ground truth
-      855/454/303 (direct/bridged/zero over 1,612 homeless); MONOTONICITY on
+      _meta.proximity counts reconcile AND match the current pinned ground truth
+      852/451/311 (direct/bridged/zero over 1,614 homeless); MONOTONICITY on
       the real data (more direct weight at >= equal bridge weight => strictly
       higher score, full pairwise); and the JACK REGRESSION: a cell with
       hundreds of direct bonds scores >= 100x a weakest-direct cell, which
@@ -51,6 +51,9 @@ as test_cell_shards' shard_key.
       an independent raw-synapse restriction) — the build-side proof that the
       Libraries toggle can never drift from the tested scores (F6 also pins
       the file byte-identical across rebuilds)
+  F11 SUITABILITY: every cell has an aligned candidate/reason pair; counts
+      reconcile; the reported bad top ten stay present but are deprioritized;
+      proximity and hub degree never remove a cell from the structural Frontier
 
 Run: python3 brain/test_frontier.py
      (after brain/build_frontier.py + brain/build_cell_shards.py)
@@ -79,6 +82,11 @@ AREA_RE = re.compile(r"^frontier:[A-Za-z][A-Za-z0-9_]{0,63}$")
 KIND_MULT = {"depends": 3, "invocation": 3}   # the vote contract's 3x kinds
 LAMBDA = 0.25                                 # the PROXIMITY CONTRACT damping
 PROX_KEYS = ("db", "dw", "ib", "iw", "s", "r")
+SUITABILITY_KEYS = ("candidate", "reason")
+SUITABILITY_REASONS = {
+    "existing_formal_coverage", "not_formalization_target", "broad_scope",
+    "ambiguous_scope", "too_elementary", "review_needed", "no_concept_target",
+}
 
 # Pinned from the 2026-08-01 recon simulation (RECON FINDINGS + census script) —
 # one cell per assignment tier. If the data drifts and a pin stops being
@@ -707,6 +715,83 @@ def main() -> int:
               gcounts.get("libs") == dict(sorted(want_libs.items())),
               f"_meta says {gcounts.get('libs')}, spec says "
               f"{dict(sorted(want_libs.items()))}")
+
+    # ---- F11: SUITABILITY is aligned queue metadata, never membership --------
+    cell_suitability = {}
+    bad_suitability = []
+    for row in rows:
+        su = row.get("suitability")
+        if not isinstance(su, dict) or set(su) != set(SUITABILITY_KEYS):
+            bad_suitability.append((row["id"], "keys"))
+            continue
+        if any(not isinstance(su[k], list) or len(su[k]) != row["n"]
+               for k in SUITABILITY_KEYS):
+            bad_suitability.append((row["id"], "alignment"))
+            continue
+        for i, cid in enumerate(row["cells"]):
+            candidate, reason = su["candidate"][i], su["reason"][i]
+            if not isinstance(candidate, bool) or (candidate and reason is not None) \
+                    or (not candidate and reason not in SUITABILITY_REASONS):
+                bad_suitability.append((cid, candidate, reason))
+            cell_suitability[cid] = (candidate, reason)
+    check("F11 every area carries aligned candidate/reason suitability arrays",
+          not bad_suitability, f"{bad_suitability[:3]}")
+    check("F11 suitability classifies the complete structural Frontier",
+          set(cell_suitability) == homeless,
+          f"missing={len(homeless - set(cell_suitability))}, "
+          f"extra={len(set(cell_suitability) - homeless)}")
+    suitability_meta = meta.get("suitability", {}).get("counts", {})
+    candidate_n = sum(1 for candidate, _ in cell_suitability.values() if candidate)
+    reason_counts = Counter(reason for candidate, reason in cell_suitability.values()
+                            if not candidate)
+    check("F11 suitability metadata counts reconcile",
+          suitability_meta.get("candidate") == candidate_n
+          and suitability_meta.get("deprioritized") == len(homeless) - candidate_n
+          and suitability_meta.get("reasons") == dict(sorted(reason_counts.items())),
+          f"meta={suitability_meta}, candidates={candidate_n}, reasons={reason_counts}")
+
+    reported = {
+        "cell:Q854531", "cell:Q12485", "cell:Q185264", "cell:Q44528",
+        "cell:Q837863", "cell:Q172891", "cell:Q33456", "cell:Q200227",
+        "cell:Q901718", "cell:Q44946",
+    }
+    missing_reported = sorted(reported - homeless)
+    still_candidates = sorted(c for c in reported
+                              if cell_suitability.get(c, (True, None))[0])
+    check("F11 the reported top ten remain present but are all deprioritized",
+          not missing_reported and not still_candidates,
+          f"missing={missing_reported}, still candidates={still_candidates}")
+    expected_reasons = {
+        "cell:Q854531": "existing_formal_coverage",
+        "cell:Q12485": "existing_formal_coverage",
+        "cell:Q185264": "broad_scope",
+        "cell:Q44528": "existing_formal_coverage",
+        "cell:Q837863": "broad_scope",
+        "cell:Q172891": "not_formalization_target",
+        "cell:Q33456": "review_needed",
+        "cell:Q200227": "existing_formal_coverage",
+        "cell:Q901718": "existing_formal_coverage",
+        "cell:Q44946": "ambiguous_scope",
+    }
+    wrong_reasons = [(cid, cell_suitability.get(cid), want)
+                     for cid, want in expected_reasons.items()
+                     if cell_suitability.get(cid) != (False, want)]
+    check("F11 the reported top ten carry evidence-backed review reasons",
+          not wrong_reasons, f"{wrong_reasons}")
+    check("F11 actionable candidates remain after policy classification",
+          candidate_n > 0, "every Frontier cell was deprioritized")
+    representative_candidates = {
+        "cell:Q864145",   # Split-complex number
+        "cell:Q203218",   # Spherical coordinate system
+        "cell:Q576072",   # Student's t-distribution
+        "cell:Q165498",   # Schrödinger equation
+        "cell:Q751290",   # Euler angles
+        "cell:Q753035",   # Riemann surface
+    }
+    lost_candidates = sorted(c for c in representative_candidates
+                             if cell_suitability.get(c) != (True, None))
+    check("F11 representative bounded gaps remain actionable",
+          not lost_candidates, f"deprioritized unexpectedly: {lost_candidates}")
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
