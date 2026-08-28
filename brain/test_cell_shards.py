@@ -100,6 +100,7 @@ def main() -> int:
     # ---- S2: aliases is the compat layer. It MUST be a function (C4) and must
     # resolve the entry points v2 exposed, or /brain#Q..., the API and MCP 404.
     organs = aliases["organs"]
+    slugs = aliases["slugs"]
     # "Exactly one owner" is free — a JSON object cannot map a key to two values — so
     # asserting it proves nothing. The property with teeth is that the owner is a
     # STRING NAMING SOMETHING THAT EXISTS, checked against both owner kinds below.
@@ -119,6 +120,9 @@ def main() -> int:
         check("S2 Q11348 resolves to path:Mathlib/Logic/Function",
               organs.get("Q11348") == "path:Mathlib/Logic/Function",
               f"got {organs.get('Q11348')!r}")
+        check("S2 Function_mathematics slug resolves to path:Mathlib/Logic/Function",
+              slugs.get("Function_mathematics") == "path:Mathlib/Logic/Function",
+              f"got {slugs.get('Function_mathematics')!r}")
     else:
         print("  SKIP S2 Function alias regression — container_links not folded into shards")
     dangling = [o for o, owner in organs.items()

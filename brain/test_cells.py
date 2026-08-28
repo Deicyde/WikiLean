@@ -215,6 +215,16 @@ def main() -> int:
     cells = {c["id"]: c for c in cells_list}
     print(f"\n{len(cells)} cells / {len(synapses)} synapses\n")
 
+    rules = Counter(r["rule"] for r in review)
+    check("cell_review emits both rule2 absorption and rule1 exact-weld diagnostics",
+          rules["rule2-absorption"] > 0 and rules["rule1-exact-weld"] > 0,
+          f"rules={dict(rules)}")
+    check("cell_review stats reconcile with emitted rows",
+          meta["stats"].get("cells_flagged_rule2") == rules["rule2-absorption"]
+          and meta["stats"].get("cells_flagged_rule1") == rules["rule1-exact-weld"]
+          and meta["stats"].get("cells_flagged_for_review") == len(review),
+          f"stats={meta['stats']}, rows={dict(rules)}")
+
     # ---- C1: the Module atom (Jack's example — Module and Vector space are ONE atom)
     module = cells.get("cell:Q18848")
     if module is None:
@@ -374,7 +384,12 @@ def main() -> int:
           vector is not None and "decl:Mathlib:Module" not in organ_ids(vector),
           "Vector was absorbed into a decl atom — override not applied?")
 
-    function_links = [r for r in container_links() if r.get("qid") == "Q11348"]
+    container_rows = container_links()
+    bad_container_links = [r for r in container_rows if r.get("skeptic") != "accept"]
+    check("C5 every folded container_links row is skeptic-accepted",
+          not bad_container_links,
+          f"{len(bad_container_links)} non-accepted rows, e.g. {bad_container_links[:3]}")
+    function_links = [r for r in container_rows if r.get("qid") == "Q11348"]
     check("C5 source data maps Function to the Function supercell",
           any(r.get("path") == "Mathlib/Logic/Function"
               and r.get("match_kind") == "primitive"

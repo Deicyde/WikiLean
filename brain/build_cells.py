@@ -928,6 +928,7 @@ def cell_review(cells: dict[str, dict], nodes: dict[str, dict],
             "note": note + " — fix via catalog/data/grounding_overrides.jsonl",
         })
     review.sort(key=lambda r: (-r["n_absorbed"], -r["n_organs"], r["cell"]))
+    stats["cells_flagged_rule2"] = sum(1 for r in review if r["rule"] == "rule2-absorption")
     stats["cells_flagged_rule1"] = sum(1 for r in review if r["rule"] == "rule1-exact-weld")
     stats["cells_flagged_for_review"] = len(review)
     return review
@@ -1035,11 +1036,15 @@ def main() -> None:
     write_jsonl(CELLS_OUT, meta, cells)
     write_jsonl(SYNAPSES_OUT, {k: meta[k] for k in ("schema", "generated_at", "prov")}
                 | {"counts": meta["counts"]}, synapses)
+    rule_counts = Counter(r["rule"] for r in review)
     write_jsonl(REVIEW_OUT, {"schema": "brain/SCHEMA.md#v3",
                              "generated_at": meta["generated_at"],
-                             "note": "cells that ballooned via SCHEMA rule 2 — suspect "
-                                     "AI tagger grades; fix via grounding_overrides.jsonl",
-                             "counts": {"flagged": len(review)}}, review)
+                             "note": "cells flagged as tagger-quality worklist items: "
+                                     "rule-2 absorptions and rule-1 exact welds; fix "
+                                     "via grounding_overrides.jsonl",
+                             "counts": {"flagged": len(review),
+                                        "rule2_absorption": rule_counts["rule2-absorption"],
+                                        "rule1_exact_weld": rule_counts["rule1-exact-weld"]}}, review)
     print(json.dumps(meta["counts"], indent=1), file=sys.stderr)
     print(f"wrote {CELLS_OUT.relative_to(ROOT)} + {SYNAPSES_OUT.relative_to(ROOT)}"
           f" + {REVIEW_OUT.relative_to(ROOT)}", file=sys.stderr)
