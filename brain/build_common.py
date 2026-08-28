@@ -1708,7 +1708,7 @@ def build() -> tuple[list[dict], list[dict], dict]:
             if not line.strip():
                 continue
             rec = json.loads(line)
-            if rec.get("skeptic") not in (None, "accept"):
+            if rec.get("skeptic") != "accept":
                 n_container_skipped_review += 1
                 continue
             path = rec["path"].removeprefix("path:").replace(".", "/")

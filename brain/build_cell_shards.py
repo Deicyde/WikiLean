@@ -438,11 +438,16 @@ def main() -> int:
             # a supercell organ resolves to its SUPERCELL (rule 5): "Linear algebra"
             # must land on path:Mathlib/LinearAlgebra, not on any cell
             organ_to_cell.setdefault(organ["id"], path)
+            if organ.get("kind") == "concept":
+                node = nodes.get(organ["id"]) or {}
+                if node.get("slug"):
+                    slugs.setdefault(node["slug"], path)
 
     aliases = {
         "_meta": {"schema": "brain/SCHEMA.md#v3", "generated_at": gen,
-                  "note": "organs -> the cell that owns it (a supercell for rule-5 "
-                          "organs); decls/slugs are convenience indexes",
+                  "note": "organs -> the owner that holds it (a cell, or a "
+                          "supercell for rule-5 organs); decls/slugs are "
+                          "convenience indexes",
                   "counts": {"organs": len(organ_to_cell), "decls": len(decls),
                              "slugs": len(slugs)}},
         "organs": {k: organ_to_cell[k] for k in sorted(organ_to_cell)},

@@ -138,16 +138,19 @@ bad data; instead cell size is EMITTED as a diagnostic. `brain/data/cell_review.
 ranks cells by how many home-less concepts they absorbed and names the exact claim
 to re-grade, shaped to drop into `catalog/data/grounding_overrides.jsonl`.
 
-It works: of 8,914 cells only **23** flag, and they are exactly the mis-grades —
+It works: the emitted worklist stays small and targets the bad grades —
 `Real.binEntropy` (the binary entropy *function*) absorbing "Information",
 "Information theory" AND "Entropy"; `Module.Dual` absorbing "Duality (mathematics)".
 Fix the grade, not the rule.
 
 Two flavours, because there are two ways a grade goes wrong:
-- `rule2-absorption` (18) — one decl absorbs ≥2 home-less concepts.
-- `rule1-exact-weld` (5) — ≥2 concepts `exact`-claim ≥2 decls, welding them into one
+- `rule2-absorption` — one decl absorbs ≥2 home-less concepts.
+- `rule1-exact-weld` — ≥2 concepts `exact`-claim ≥2 decls, welding them into one
   atom (rule 1 is transitive by design, above). Scoping the worklist to rule 2 left
   this — the only chaining that actually occurs — invisible.
+
+The `cell_review.jsonl` metadata reports both per-rule counts so readers do not have
+to infer the worklist shape from row bodies.
 
 ### Strong-bond sources (organ attach)
 
