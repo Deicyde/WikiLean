@@ -461,13 +461,13 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
 
     groups = dsu.groups()
 
-    # Rule 5 — `field` / concept->container: the concept is an organ of the
-    # SUPERCELL, **never a cell** ("Linear algebra" is the LinearAlgebra folder, not
-    # the `Module` atom, and not an atom of its own — searching it should land on the
-    # folder). A concept that ALSO merged into a cell keeps the cell as its owner and
+    # Rule 5 — concept->container: the concept is an organ of the SUPERCELL,
+    # **never a cell** ("Linear algebra" is the LinearAlgebra folder, not the
+    # `Module` atom; "Function" is the Function namespace area, not a missing
+    # decl). A concept that ALSO merged into a cell keeps the cell as its owner and
     # is merely listed on the supercell too.
     supercell_organs: dict[str, list] = defaultdict(list)
-    field_only: set[str] = set()
+    supercell_only: set[str] = set()
     for edge in formalizes:
         if not edge["dst"].startswith("path:"):
             continue
@@ -481,16 +481,17 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
         if edge["src"] not in dsu.parent:
             # Its only home is the supercell. It owns no cell — but it keeps its
             # edges: they now hang off the SUPERCELL (see owner[] below). These are
-            # field-level hubs ("Linear algebra", "manifold"), so dropping their
-            # relates/mentions/links instead would cost ~10.8k synapses.
-            field_only.add(edge["src"])
+            # high-altitude hubs, so dropping their relates/mentions/links instead
+            # would cost ~10.8k synapses.
+            supercell_only.add(edge["src"])
 
     # Lone particles: a concept or decl that merged with nothing is still an atom —
     # unless rule 5 already gave it a supercell home.
     for nid, node in nodes.items():
         if node["type"] in ("concept", "decl") and nid not in dsu.parent:
-            if nid in field_only:
+            if nid in supercell_only:
                 stats["field_concept_no_cell"] += 1
+                stats["supercell_concept_no_cell"] += 1
                 continue
             groups[nid] = [nid]
 
@@ -533,14 +534,14 @@ def build_cells(nodes: dict[str, dict], edges_by_kind: dict[str, list],
             cell["f"] = facets
         cells[cid] = cell
 
-    # A rule-5 field concept owns no cell, but its bonds are real: route them to the
-    # supercell that DOES hold it, so a synapse may legitimately land on a module
-    # ("this atom relates to the whole of LinearAlgebra"). v2 already drew
-    # container-level rollup edges between bubbles, so this is a shape the renderer
-    # understands.
+    # A rule-5 supercell-only concept owns no cell, but its bonds are real: route
+    # them to the supercell that DOES hold it, so a synapse may legitimately land
+    # on a module ("this atom relates to the whole of LinearAlgebra"). v2 already
+    # drew container-level rollup edges between bubbles, so this is a shape the
+    # renderer understands.
     for path, organs in supercell_organs.items():
         for organ in organs:
-            if organ["kind"] == "concept" and organ["id"] in field_only:
+            if organ["kind"] == "concept" and organ["id"] in supercell_only:
                 owner[organ["id"]] = path
 
     return cells, owner, supercell_organs, merged_pairs
@@ -927,6 +928,7 @@ def cell_review(cells: dict[str, dict], nodes: dict[str, dict],
             "note": note + " — fix via catalog/data/grounding_overrides.jsonl",
         })
     review.sort(key=lambda r: (-r["n_absorbed"], -r["n_organs"], r["cell"]))
+    stats["cells_flagged_rule2"] = sum(1 for r in review if r["rule"] == "rule2-absorption")
     stats["cells_flagged_rule1"] = sum(1 for r in review if r["rule"] == "rule1-exact-weld")
     stats["cells_flagged_for_review"] = len(review)
     return review
@@ -1034,11 +1036,15 @@ def main() -> None:
     write_jsonl(CELLS_OUT, meta, cells)
     write_jsonl(SYNAPSES_OUT, {k: meta[k] for k in ("schema", "generated_at", "prov")}
                 | {"counts": meta["counts"]}, synapses)
+    rule_counts = Counter(r["rule"] for r in review)
     write_jsonl(REVIEW_OUT, {"schema": "brain/SCHEMA.md#v3",
                              "generated_at": meta["generated_at"],
-                             "note": "cells that ballooned via SCHEMA rule 2 — suspect "
-                                     "AI tagger grades; fix via grounding_overrides.jsonl",
-                             "counts": {"flagged": len(review)}}, review)
+                             "note": "cells flagged as tagger-quality worklist items: "
+                                     "rule-2 absorptions and rule-1 exact welds; fix "
+                                     "via grounding_overrides.jsonl",
+                             "counts": {"flagged": len(review),
+                                        "rule2_absorption": rule_counts["rule2-absorption"],
+                                        "rule1_exact_weld": rule_counts["rule1-exact-weld"]}}, review)
     print(json.dumps(meta["counts"], indent=1), file=sys.stderr)
     print(f"wrote {CELLS_OUT.relative_to(ROOT)} + {SYNAPSES_OUT.relative_to(ROOT)}"
           f" + {REVIEW_OUT.relative_to(ROOT)}", file=sys.stderr)
