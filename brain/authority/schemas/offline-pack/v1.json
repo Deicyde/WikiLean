@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/offline-pack/v1.json",
+  "title": "WikiLean offline pack v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "offline_pack_id",
+    "source_set_root",
+    "source_manifests",
+    "objects",
+    "reducer",
+    "configuration",
+    "schemas"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.offline-pack/v1"},
+    "offline_pack_id": {"$ref": "#/$defs/hash"},
+    "source_set_root": {"$ref": "#/$defs/hash"},
+    "source_manifests": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/manifestRef"},
+      "minItems": 1
+    },
+    "objects": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/fileRef"},
+      "minItems": 1
+    },
+    "reducer": {"$ref": "#/$defs/fileRef"},
+    "configuration": {"$ref": "#/$defs/fileRef"},
+    "schemas": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/fileRef"},
+      "minItems": 1
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {"type": "string", "format": "date-time"},
+        "note": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "fileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"}
+      }
+    },
+    "manifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type", "source_manifest_id"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "source_manifest_id": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}
