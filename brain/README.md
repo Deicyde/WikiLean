@@ -8,9 +8,11 @@ container, decl, literature, object, and — v2 — `ext` external-DB pages) and
 families (a strict `contains` tree plus typed, weighted ontology edges: `formalizes`,
 `mentions`, `depends`, `matches`, `xref`, `relates`, `cites`, and — v2 — `links`),
 every edge with `{kind, provenance, confidence, evidence}` and a version pin.
-`brain/SCHEMA.md` is the binding contract; agents extend the graph only through
+`brain/SCHEMA.md` is the binding graph contract; agents extend the graph only through
 `brain/proposals/` and a deterministic verifier, mirroring the site's
-propose-then-approve moderation stack.
+propose-then-approve moderation stack. Versioned source-pack, canonical-hash, release,
+and attestation contracts live in `brain/authority/`; their offline verification
+commands are documented in `brain/authority/README.md`.
 
 ## Pipeline
 
