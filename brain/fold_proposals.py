@@ -233,6 +233,37 @@ def fc_decl_names() -> set[str] | None:
     return frontier_decl_names("formal_conjectures")
 
 
+def _hashable_key(value: object) -> object:
+    if isinstance(value, (str, int, float, bool, type(None))):
+        return value
+    try:
+        return json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
+    except (TypeError, ValueError):
+        return repr(value)
+
+
+def _completed_retract_key(
+    qid: object,
+    decl: object,
+    names: set[str] | None,
+) -> tuple[object, object]:
+    """Return the same identity used by a successfully folded declaration row.
+
+    Malformed rows are left unchanged so normal validation can reject them later;
+    veto collection must not crash before producing the audit rejection.
+    """
+    if isinstance(decl, str) and names and decl not in names:
+        cands = [n for n in names if n.endswith("." + decl)]
+        if len(cands) == 1:
+            decl = cands[0]
+    # Veto identities must remain hashable even for malformed external rows.
+    # JSON canonicalization is deterministic and preserves the invalid value for
+    # the later audit rejection without letting it abort the whole fold.
+    return (_hashable_key(qid), _hashable_key(decl))
+
+
 def known_qids() -> dict[str, dict]:
     """qid -> {label, aliases?} from the universe + extension (labels only)."""
     out: dict[str, dict] = {}
@@ -407,24 +438,49 @@ def main() -> int:
         if r.get("verdict") == "reject":
             t = rtype(r)
             if t == "container":
-                vetoed.add(("container", r.get("qid"),
-                            (r.get("path") or "").removeprefix("path:")))
+                path = r.get("path")
+                normalized_path = path.removeprefix("path:") if isinstance(path, str) else _hashable_key(path)
+                vetoed.add(("container", _hashable_key(r.get("qid")), normalized_path))
             elif t in ("discover", "replace_decl"):
-                vetoed.add(("discover", r.get("qid"),
-                            r.get("decl") or r.get("new_decl")))
+                vetoed.add(("discover", _hashable_key(r.get("qid")),
+                            _hashable_key(r.get("decl") or r.get("new_decl"))))
             elif t == "xref":
-                x = r.get("xref") or {}
-                vetoed.add(("xref", r.get("qid"), x.get("db"),
+                x = r.get("xref") if isinstance(r.get("xref"), dict) else {}
+                vetoed.add(("xref", _hashable_key(r.get("qid")), _hashable_key(x.get("db")),
                             str(x["id"]) if x.get("id") is not None else None))
             elif t == "fc_link":
-                vetoed.add(("fc_link", r.get("qid"), r.get("decl")))
+                qid, decl = _completed_retract_key(
+                    r.get("qid"), r.get("decl"), fc_names)
+                vetoed.add(("fc_link", qid, decl))
             elif t == "repo_link":
-                vetoed.add(("repo_link", r.get("repo"), r.get("qid"),
-                            r.get("decl")))
+                repo = r.get("repo")
+                qid, decl = _completed_retract_key(
+                    r.get("qid"), r.get("decl"),
+                    frontier_decl_names(repo) if repo in repo_keys else None)
+                vetoed.add(("repo_link", repo, qid, decl))
 
     for r in rows:
         t = rtype(r)
         verdict = r.get("verdict")
+        qid_value = r.get("qid")
+        if t in {"container", "discover", "replace_decl", "xref", "fc_link", "repo_link"} \
+                and not isinstance(qid_value, str):
+            reject(r, "fold-check: qid must be a string")
+            continue
+        if t == "container" and not isinstance(r.get("path"), str):
+            reject(r, "fold-check: path must be a string")
+            continue
+        if t in {"discover", "replace_decl", "fc_link", "repo_link"} and not isinstance(
+            r.get("decl") or r.get("new_decl"), str
+        ):
+            reject(r, "fold-check: decl must be a string")
+            continue
+        if t == "xref" and not isinstance(r.get("xref"), dict):
+            reject(r, "fold-check: xref must be an object")
+            continue
+        if t == "repo_link" and not isinstance(r.get("repo"), str):
+            reject(r, "fold-check: repo must be a string")
+            continue
         if verdict == "reject":
             # A rejected 'ok' audit means the skeptic disputes an ALREADY-
             # SHIPPED grounding grade — that needs a correction surface, not a
@@ -435,32 +491,41 @@ def main() -> int:
                                  ("qid", "decl", "note", "verify_note", "_shard")})
             reject(r, f"skeptic: {r.get('verify_note') or 'rejected'}")
             continue
-        if t == "container" and ("container", r.get("qid"),
-                                 (r.get("path") or "").removeprefix("path:")) in vetoed:
+        path_value = r.get("path")
+        veto_path = path_value.removeprefix("path:") if isinstance(path_value, str) else _hashable_key(path_value)
+        if t == "container" and ("container", _hashable_key(r.get("qid")), veto_path) in vetoed:
             reject(r, "fold-check: conflicting skeptic verdicts across batches "
                       "(any-reject wins)")
             continue
         if t in ("discover", "replace_decl") and \
-                ("discover", r.get("qid"), r.get("decl") or r.get("new_decl")) in vetoed:
+                ("discover", _hashable_key(r.get("qid")),
+                 _hashable_key(r.get("decl") or r.get("new_decl"))) in vetoed:
             reject(r, "fold-check: conflicting skeptic verdicts across batches "
                       "(any-reject wins)")
             continue
         if t == "xref":
-            x = r.get("xref") or {}
-            if ("xref", r.get("qid"), x.get("db"),
+            x = r.get("xref") if isinstance(r.get("xref"), dict) else {}
+            if ("xref", _hashable_key(r.get("qid")), _hashable_key(x.get("db")),
                     str(x["id"]) if x.get("id") is not None else None) in vetoed:
                 reject(r, "fold-check: conflicting skeptic verdicts across batches "
                           "(any-reject wins)")
                 continue
-        if t == "fc_link" and ("fc_link", r.get("qid"), r.get("decl")) in vetoed:
-            reject(r, "fold-check: conflicting skeptic verdicts across batches "
-                      "(any-reject wins)")
-            continue
-        if t == "repo_link" and ("repo_link", r.get("repo"), r.get("qid"),
-                                 r.get("decl")) in vetoed:
-            reject(r, "fold-check: conflicting skeptic verdicts across batches "
-                      "(any-reject wins)")
-            continue
+        if t == "fc_link":
+            qid, decl = _completed_retract_key(
+                r.get("qid"), r.get("decl"), fc_names)
+            if ("fc_link", qid, decl) in vetoed:
+                reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                          "(any-reject wins)")
+                continue
+        if t == "repo_link":
+            repo = r.get("repo")
+            qid, decl = _completed_retract_key(
+                r.get("qid"), r.get("decl"),
+                frontier_decl_names(repo) if repo in repo_keys else None)
+            if ("repo_link", repo, qid, decl) in vetoed:
+                reject(r, "fold-check: conflicting skeptic verdicts across batches "
+                          "(any-reject wins)")
+                continue
         skeptic = "accept" if verdict == "accept" else "pending"
         conf = r.get("confidence") or "medium"
         if skeptic == "pending" and CONF_ORDER.get(conf, 1) > CONF_ORDER["medium"]:
@@ -471,8 +536,9 @@ def main() -> int:
             continue
 
         if t == "container":
-            qid, path = r.get("qid"), (r.get("path") or "").removeprefix("path:")
-            if not (qid and QID_RE.match(qid)):
+            qid, raw_path = r.get("qid"), r.get("path")
+            path = raw_path.removeprefix("path:") if isinstance(raw_path, str) else None
+            if not (isinstance(qid, str) and QID_RE.match(qid)):
                 reject(r, "fold-check: bad qid")
                 continue
             if path not in paths:
@@ -517,7 +583,7 @@ def main() -> int:
         if t in ("discover", "replace_decl"):
             d = r.get("decl") or r.get("new_decl")
             qid = r.get("qid")
-            if not (qid and QID_RE.match(qid)):
+            if not (isinstance(qid, str) and QID_RE.match(qid)):
                 reject(r, "fold-check: bad qid")
                 continue
             if not d or not decl_ok(d):
@@ -555,11 +621,14 @@ def main() -> int:
                 reject(r, "fold-check: ext anchor requires a skeptic verdict — "
                           "left in proposals for the next skeptic pass")
                 continue
-            x = r.get("xref") or {}
+            x = r.get("xref")
+            if not isinstance(x, dict):
+                reject(r, "fold-check: xref must be an object")
+                continue
             db = x.get("db")
             pid = str(x["id"]) if x.get("id") is not None else None
             qid = r.get("qid")
-            if not (qid and QID_RE.match(qid)):
+            if not (isinstance(qid, str) and QID_RE.match(qid)):
                 reject(r, "fold-check: bad qid")
                 continue
             if not db or db not in xref_dbs:
@@ -604,7 +673,7 @@ def main() -> int:
             # welds two atoms downstream); mentions folds pending at capped
             # medium like discover rows.
             qid, d, kind = r.get("qid"), r.get("decl"), r.get("kind")
-            if not (qid and QID_RE.match(qid)):
+            if not (isinstance(qid, str) and QID_RE.match(qid)):
                 reject(r, "fold-check: bad qid")
                 continue
             if kind not in ("formalizes", "mentions"):
@@ -615,6 +684,9 @@ def main() -> int:
                           "(run brain/ingest/formal_conjectures.py)")
                 continue
             d_orig = d
+            if not isinstance(d, str):
+                reject(r, "fold-check: decl must be a string")
+                continue
             if d and d not in fc_names:
                 # taggers sometimes drop the file's top-level namespace
                 # (erdos_1095.variants.x for Erdos1095.erdos_1095.variants.x).
@@ -681,10 +753,13 @@ def main() -> int:
                           f"(AI joins never mint identity claims — moderation "
                           f"contract), got {r.get('kind')!r}")
                 continue
-            if not (qid and QID_RE.match(qid)):
+            if not (isinstance(qid, str) and QID_RE.match(qid)):
                 reject(r, "fold-check: bad qid")
                 continue
-            if not (r.get("evidence") or "").strip():
+            if not isinstance(d, str):
+                reject(r, "fold-check: decl must be a string")
+                continue
+            if not isinstance(r.get("evidence"), str) or not r["evidence"].strip():
                 reject(r, "fold-check: repo_link requires evidence text")
                 continue
             if not (r.get("qid_label") or "").strip():
@@ -772,17 +847,6 @@ def main() -> int:
                           "n_rows": n_xref}}
         dump(xa_path, [meta] + [merged[k] for k in sorted(merged)])
 
-
-def _completed_retract_key(qid: str, decl: str, names: set[str] | None) -> tuple[str, str]:
-    """Retraction keys must match FOLDED rows, whose decl may have been
-    namespace-suffix-completed at fold time — apply the identical completion
-    (unique dotted-suffix, ambiguity leaves the name as-proposed) so a
-    refuted join is always withdrawable."""
-    if names and decl not in names:
-        cands = [n for n in names if n.endswith("." + decl)]
-        if len(cands) == 1:
-            return (qid, cands[0])
-    return (qid, decl)
 
     # fc links: same merge/retraction semantics as ext anchors — regenerated
     # from all verified proposals, merged with the existing file, minus every
