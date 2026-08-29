@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/release/v1.json",
+  "title": "WikiLean current-artifact release manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "profile",
+    "release_id",
+    "authority",
+    "source_set_root",
+    "semantic_epoch",
+    "reducer",
+    "artifacts",
+    "attestations",
+    "compatible_overlay_generation_ids"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.release/v1"},
+    "profile": {"const": "brain-current-v1"},
+    "release_id": {"$ref": "#/$defs/hash"},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["git_commit", "semantic_state_root"],
+      "properties": {
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "semantic_state_root": {"$ref": "#/$defs/hash"},
+        "through_changeset": {"type": ["string", "null"]}
+      }
+    },
+    "source_set_root": {"$ref": "#/$defs/hash"},
+    "semantic_epoch": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"},
+    "reducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schedule", "version", "git_commit", "configuration_sha256", "environment_sha256"],
+      "properties": {
+        "schedule": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "configuration_sha256": {"$ref": "#/$defs/digest"},
+        "environment_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/artifact"}
+    },
+    "attestations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/attestationRef"}
+    },
+    "compatible_overlay_generation_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_name", "path", "media_type", "sha256", "bytes", "logical_format", "logical_root"],
+      "properties": {
+        "logical_name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+        "path": {"$ref": "#/$defs/relativePath"},
+        "uri": {"type": ["string", "null"]},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "logical_format": {"enum": ["json", "jsonl-rowset", "opaque"]},
+        "logical_root": {"oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]}
+      }
+    },
+    "attestationRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "sha256", "bytes"],
+      "properties": {
+        "kind": {"enum": ["build", "validation"]},
+        "path": {"$ref": "#/$defs/relativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/source-manifest/v1.json",
+  "title": "WikiLean source manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_manifest_id",
+    "source",
+    "pin",
+    "objects",
+    "license",
+    "acquisition",
+    "normalization"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.source-manifest/v1"},
+    "source_manifest_id": {"$ref": "#/$defs/hash"},
+    "source": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "enum": [
+            "git_commit",
+            "content_sha256",
+            "dataset_revision",
+            "http_etag",
+            "database_snapshot"
+          ]
+        },
+        "value": {"type": "string", "minLength": 1, "maxLength": 512}
+      }
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/sourceObject"}
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expression", "redistribution"],
+      "properties": {
+        "expression": {"type": "string", "minLength": 1},
+        "redistribution": {"enum": ["allowed", "restricted", "link-only", "unknown"]},
+        "attribution": {"type": ["string", "null"]},
+        "notice": {"type": ["string", "null"]}
+      }
+    },
+    "acquisition": {"$ref": "#/$defs/tool"},
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "tool"],
+      "properties": {
+        "schema": {"type": "string", "minLength": 1},
+        "tool": {"$ref": "#/$defs/tool"}
+      }
+    },
+    "previous_source_manifest_id": {"oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]},
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "expected_semantic_effects"],
+      "properties": {
+        "summary": {"type": "string"},
+        "expected_semantic_effects": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "acquired_at": {"type": "string", "format": "date-time"},
+        "upstream_uri": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "sourceObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "path", "media_type", "sha256", "bytes"],
+      "properties": {
+        "role": {"enum": ["raw", "normalized"]},
+        "path": {"$ref": "#/$defs/relativePath"},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+      }
+    }
+  }
+}

@@ -58,6 +58,7 @@ LOGDIR="$REPO/site/ops/logs"
 mkdir -p "$LOGDIR"
 TS="$(date +%Y%m%dT%H%M%S)"
 LOG="$LOGDIR/brain-$TS.log"
+RUN_STATUS=0
 
 if [ "$BRAIN_REFRESH" != "1" ]; then
   echo "[$TS] brain refresh disabled (WIKILEAN_BRAIN_REFRESH=$BRAIN_REFRESH) — skipping" >>"$LOGDIR/skips.log"
@@ -178,13 +179,17 @@ cd "$REPO" || exit 1
   echo
 
   # ---- 3. FOLD + BUILD (abort publish on failure, keep old shards) -----------
-  echo "=== fold proposals (deterministic verifier; network: Wikidata) ==="
-  python3 "$REPO/brain/fold_proposals.py" \
-    || echo "(fold returned $? — building from the last folded outputs)"
-  echo
   PUBLISH_OK=1
+  echo "=== fold proposals (deterministic verifier; network: Wikidata) ==="
+  if python3 "$REPO/brain/fold_proposals.py"; then
+    echo "(fold GREEN)"
+  else
+    echo "!!! fold_proposals FAILED — build and publish aborted; see fold output above"
+    PUBLISH_OK=0
+  fi
+  echo
   echo "=== rebuild brain graph (rollups are pinned — not rebuilt nightly) ==="
-  if ! python3 "$REPO/brain/build_snapshot.py"; then
+  if [ "$PUBLISH_OK" = "1" ] && ! python3 "$REPO/brain/build_snapshot.py"; then
     echo "!!! build_snapshot FAILED — publish aborted (previous complete snapshot retained)"
     PUBLISH_OK=0
   fi
@@ -296,8 +301,10 @@ cd "$REPO" || exit 1
     if [ ! -s "$REPO/site/out/brain.html" ]; then
       echo "!!! SKIPPED-DEPLOY: site/out/brain.html missing/empty — build-public would"
       echo "    silently ship the previous page against tonight's shards"
+      RUN_STATUS=1
     elif ! (cd "$REPO/wiki" && node --experimental-strip-types scripts/build-public.ts); then
       echo "!!! SKIPPED-DEPLOY: build-public failed — shards rebuilt on disk but NOT shipped"
+      RUN_STATUS=1
     else
       # Deploy gate: main-branch only, no rebase/merge in flight, and a clean
       # tree across everything the deploy bakes in — wiki/ (npm run deploy
@@ -308,26 +315,33 @@ cd "$REPO" || exit 1
       DIRTY="$(git -C "$REPO" status --porcelain -- wiki/ site/assets site/build_brain_page.py)"
       if [ "$BRANCH" != "main" ]; then
         echo "!!! SKIPPED-DEPLOY: checked-out branch is '${BRANCH:-unknown}', not 'main' (detached HEAD reports 'HEAD') — not deploying"
+        RUN_STATUS=1
       elif [ -d "$GITDIR/rebase-merge" ] || [ -d "$GITDIR/rebase-apply" ] || [ -f "$GITDIR/MERGE_HEAD" ]; then
         echo "!!! SKIPPED-DEPLOY: rebase/merge in progress ($GITDIR) — not deploying"
+        RUN_STATUS=1
       elif [ -n "$DIRTY" ]; then
         echo "!!! SKIPPED-DEPLOY: uncommitted wiki//site-asset changes would ship — commit or stash first:"
         echo "$DIRTY"
+        RUN_STATUS=1
       elif ! (cd "$REPO/wiki" && npx tsc --noEmit); then
         echo "!!! SKIPPED-DEPLOY: npx tsc --noEmit failed — fix wiki/src before the nightly can deploy"
+        RUN_STATUS=1
       elif (cd "$REPO/wiki" && npm run deploy); then
         echo "(deployed — rebuilt brain shards are live)"
       else
         echo "!!! DEPLOY FAILED (npm run deploy) — production keeps the previous shards"
+        RUN_STATUS=1
       fi
     fi
   elif [ "$PUBLISH_OK" = "1" ]; then
     echo "(deploy disabled — WIKILEAN_BRAIN_DEPLOY=0; rebuilt shards stay local until the next manual deploy)"
   else
     echo "!!! PUBLISH ABORTED — see the build/acceptance failure above; live shards unchanged"
+    RUN_STATUS=1
   fi
   echo "=== done $(date +%Y%m%dT%H%M%S) ==="
 } >>"$LOG" 2>&1
 
 # Retain the last 30 run logs.
 ls -1t "$LOGDIR"/brain-*.log 2>/dev/null | tail -n +31 | xargs rm -f 2>/dev/null || true
+exit "$RUN_STATUS"
