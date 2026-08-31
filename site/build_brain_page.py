@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Generate /brain — the cell map over the BRAIN v3 dataset.
 
-One zoomable canvas, zero baked-in data: everything is fetched on demand from
-the prefix shards in /assets/brain/cells/ (manifest.json → one shard fetch per
+One zoomable canvas, zero baked-in data: at startup the page selects one
+immutable release through /assets/brain/current.json, then everything is fetched
+on demand from that release's prefix shards (manifest.json → one shard fetch per
 cell), so the client never loads the whole graph — brain/SCHEMA.md's locality
 law as UX.
 
@@ -37,8 +38,8 @@ bonds between two cells collapse to ONE **synapse** carrying every trace.
   · Search   — label + `aka` (every organ label) over labels.json, so searching
                "Vector space" surfaces the Module atom.
 
-Run: python3 site/build_brain_page.py   (writes site/out/brain.html; build-public
-copies it + site/assets/brain/ into the Worker's static assets)
+Run: python3 site/build_brain_page.py   (writes the release-neutral
+site/out/brain.html; build-public stages it and an explicitly verified release)
 """
 from pathlib import Path
 
@@ -97,6 +98,7 @@ a:hover { text-decoration:underline; }
 #crumbside { margin-left:auto; display:flex; gap:14px; align-items:center;
   white-space:nowrap; overflow:hidden; min-width:0; flex:0 1 auto; }
 #crumbside .note { overflow:hidden; text-overflow:ellipsis; }
+#release-id { color:#7f8a9c; font-size:.72rem; }
 #crumbbar .sep { color:#556074; }
 #crumbbar b { color:#e6e4de; }
 .main { display:flex; flex:1 1 auto; min-height:0; }   /* fills the space the chrome leaves — no magic numbers */
@@ -427,6 +429,7 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 </div>
 <div id="crumbbar"><span id="crumbpath"></span><span id="crumbside"><a id="srcbtn2" style="cursor:pointer"
   title="every external database the brain links to — layer, provenance, license">Sources</a><span
+  id="release-id" title="selected immutable Brain release"></span><span
   class="note" id="status">loading manifest…</span></span></div>
 <div class="main">
   <div id="stage"><svg id="svg"></svg>
@@ -463,10 +466,76 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 <script>
 "use strict";
 // ============================ data layer ====================================
-// v3 lives in its OWN namespace: cells/ ships the atoms, the containment tree,
-// the flat map, the organ→atom alias table and the search index.
-const BASE = "/assets/brain/cells/";
-const SOURCES_URL = "/assets/brain/sources.json";   // the legend is v-agnostic
+// The page is release-neutral on disk. boot() resolves the selector once, checks
+// the immutable release manifest identity, and pins every Brain data read in this
+// tab to that namespace. It never falls back to mutable compatibility aliases.
+const RELEASE_SELECTOR_URL = "/assets/brain/current.json";
+const RELEASE_ID_RE = /^sha256:([0-9a-f]{64})$/;
+let RELEASE_ID = "", RELEASE_HEX = "", RELEASE_BASE = "", BASE = "", SOURCES_URL = "";
+function canonicalIdentityJson(value) {
+  if (value === null || typeof value === "boolean" || typeof value === "string")
+    return JSON.stringify(value);
+  if (typeof value === "number" && Number.isSafeInteger(value)) return String(value);
+  if (Array.isArray(value)) return "[" + value.map(canonicalIdentityJson).join(",") + "]";
+  if (value && typeof value === "object") {
+    return "{" + Object.keys(value).sort().map(key =>
+      JSON.stringify(key) + ":" + canonicalIdentityJson(value[key])).join(",") + "}";
+  }
+  throw new Error("unsupported release identity value");
+}
+async function domainIdentity(domain, value, excluded) {
+  const identityValue = {...value};
+  excluded.forEach(key => delete identityValue[key]);
+  const bytes = new TextEncoder().encode(
+    "wikilean\0" + domain + "\0canonical-json-v1\0" + canonicalIdentityJson(identityValue));
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  return "sha256:" + Array.from(digest, byte => byte.toString(16).padStart(2, "0")).join("");
+}
+async function selectRelease() {
+  const response = await fetch(RELEASE_SELECTOR_URL, {cache: "no-cache"});
+  if (!response.ok) throw new Error("release selector HTTP " + response.status);
+  const selector = await response.json();
+  const required = ["schema", "release_id", "release", "manifest"];
+  const previousKeys = ["previous_release_id", "previous_release", "previous_manifest"];
+  const allowed = new Set([...required, ...previousKeys, "audited_at"]);
+  if (!selector || typeof selector !== "object" || Array.isArray(selector) ||
+      required.some(key => !(key in selector)) || Object.keys(selector).some(key => !allowed.has(key)))
+    throw new Error("invalid release selector shape");
+  const presentPrevious = previousKeys.filter(key => key in selector);
+  if (presentPrevious.length !== 0 && presentPrevious.length !== previousKeys.length)
+    throw new Error("invalid previous release selector");
+  if (presentPrevious.length) {
+    const previousMatch = typeof selector.previous_release_id === "string"
+      ? RELEASE_ID_RE.exec(selector.previous_release_id) : null;
+    if (!previousMatch || selector.previous_release !== previousMatch[1] ||
+        selector.previous_manifest !== "/assets/brain/releases/" + previousMatch[1] + "/release.json" ||
+        selector.previous_release_id === selector.release_id)
+      throw new Error("invalid previous release selector");
+  }
+  if ("audited_at" in selector &&
+      (typeof selector.audited_at !== "string" || !selector.audited_at))
+    throw new Error("invalid release selector audit timestamp");
+  const match = typeof selector.release_id === "string"
+    ? RELEASE_ID_RE.exec(selector.release_id) : null;
+  if (!match || selector.schema !== "wikilean.release-selector/v1" || selector.release !== match[1])
+    throw new Error("invalid release selector");
+  const releaseBase = "/assets/brain/releases/" + match[1] + "/";
+  if (selector.manifest !== releaseBase + "release.json")
+    throw new Error("release selector manifest mismatch");
+  const manifestResponse = await fetch(selector.manifest);
+  if (!manifestResponse.ok) throw new Error("release manifest HTTP " + manifestResponse.status);
+  const releaseManifest = await manifestResponse.json();
+  if (!releaseManifest || releaseManifest.schema !== "wikilean.release/v1" ||
+      releaseManifest.release_id !== selector.release_id ||
+      releaseManifest.release_id !== await domainIdentity(
+        "wikilean.release.v1", releaseManifest, ["release_id", "attestations", "created_at"]))
+    throw new Error("release manifest identity mismatch");
+  RELEASE_ID = selector.release_id;
+  RELEASE_HEX = match[1];
+  RELEASE_BASE = releaseBase;
+  BASE = releaseBase + "cells/";
+  SOURCES_URL = releaseBase + "sources.json";
+}
 const ROOTS_ID = "__libs__";          // pseudo-focus: the library roots
 const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells neither the tree nor
                                       // the frontier partition places — with the
@@ -529,10 +598,9 @@ function shardFor(id) {
   }
   return null;
 }
-// Every data fetch is pinned to the manifest's data version: shard KEY NAMES
-// change across rebuilds, so a cached manifest + fresh shards (or vice versa)
-// silently 404s — the "Unknown cell" ghost bug. The manifest revalidates
-// (no-cache) and a missing shard triggers one manifest re-sync + retry.
+// Every data fetch is pinned to one immutable release namespace. dataV remains
+// a useful cache/debug key, but a failed shard never re-resolves the selector or
+// crosses into a newer release during this page session.
 let dataV = "";
 const vq = () => (dataV ? "?v=" + dataV : "");
 async function fetchManifest() {
@@ -543,7 +611,7 @@ async function fetchManifest() {
 }
 // ONE fetch renders a whole card: the shard entry embeds every organ payload
 // (Lean code, the Wikidata description, licensed DB snippets) + the synapses.
-async function getEntry(id, canRetry = true) {
+async function getEntry(id) {
   if (entryCache.has(id)) return entryCache.get(id);
   const key = shardFor(id);
   if (key === null) return null;
@@ -554,14 +622,11 @@ async function getEntry(id, canRetry = true) {
   }
   const res = await shardCache.get(key);
   const e = res.j[id] || null;
-  if (e === null && !res.ok && canRetry) {
-    // the shard key vanished under us — the data version moved (nightly
-    // rebuild / redeploy while this tab was open). Re-sync once and retry.
-    try { await fetchManifest(); } catch { return null; }
-    shardCache.clear();
-    entryCache.clear();
-    traceBucketCache.clear();   // sidecar buckets are versioned with the same dataV
-    return getEntry(id, false);
+  if (!res.ok) {
+    // Immutable namespace means a retry must stay on this release, but a
+    // transient asset failure must not poison the entry cache for the session.
+    shardCache.delete(key);
+    return null;
   }
   entryCache.set(id, e);
   return e;
@@ -569,6 +634,7 @@ async function getEntry(id, canRetry = true) {
 
 const $ = s => document.querySelector(s);
 const stageEl = $("#stage"), panelEl = $("#panel"), statusEl = $("#status");
+const releaseEl = $("#release-id");
 const crumbEl = $("#crumbpath");   // the bar also holds Sources + the status (right side)
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -4492,11 +4558,7 @@ async function fetchExplorerData() {
   if (xdata) return xdata;
   const get = () => fetch(BASE + "explorer.json" + vq())
     .then(r => (r.ok ? r.json() : null)).catch(() => null);
-  let j = await get();
-  if (!j) {   // stale manifest → one re-sync + retry, same as getEntry
-    try { await fetchManifest(); } catch (e) { return null; }
-    j = await get();
-  }
+  const j = await get();
   xdata = j;
   return j;
 }
@@ -5771,10 +5833,11 @@ function wireCommunity(apiId, panelId) {
   }
   fetchMe();   // login state for the community-edit affordances (non-blocking)
   try {
+    await selectRelease();
     await fetchManifest();
   } catch (e) {
-    statusEl.textContent = "brain data unavailable (" + e.message +
-      ") — run brain/build_cell_shards.py + build-public";
+    statusEl.textContent = "brain release unavailable (" + e.message + ")";
+    panelEl.innerHTML = `<p class="note">This page could not verify one consistent Brain release. Reload after publication completes.</p>`;
     return;
   }
   const c = manifest._meta.counts || {};
@@ -5782,6 +5845,8 @@ function wireCommunity(apiId, panelId) {
     `${(c.organs || 0).toLocaleString()} organs · ` +
     `${(c.synapses || 0).toLocaleString()} synapses · ` +
     `data ${manifest._meta.generated_at.slice(0, 10)}`;
+  releaseEl.textContent = `release ${RELEASE_HEX.slice(0, 12)}`;
+  releaseEl.title = RELEASE_ID;
   await ensureTree();
   const h = parseHash();
   filterMask = h.f;

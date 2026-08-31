@@ -1,84 +1,180 @@
 // Populates wiki/public/ (the Worker's static-asset dir) from the existing
 // static-site build: shared CSS/JS and the shell pages (index/concepts/about/
 // 404/sitemap/robots). Article pages are served dynamically by the Worker.
-import { mkdirSync, copyFileSync, cpSync, existsSync, rmSync, lstatSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { buildMathlibIndex } from "./build-mathlib-index.ts";
+import {
+  stageBrainPublicRelease,
+  type StageBrainPublicOptions,
+  type StageBrainPublicResult,
+} from "./brain-release-public.ts";
 
-const wiki = process.cwd();
-const site = resolve(wiki, "..", "site");
-const pub = resolve(wiki, "public");
-const pubAssets = resolve(pub, "assets");
-
-mkdirSync(pubAssets, { recursive: true });
-
-// Shared article assets + editor styles come from the static site; the live
-// editor logic is wiki-specific.
-const fromSite = ["style.css", "script.js", "review.css"];
-for (const f of fromSite) {
-  const src = resolve(site, "assets", f);
-  if (existsSync(src)) copyFileSync(src, resolve(pubAssets, f));
-}
-const fromWiki = ["editor.js"];
-for (const f of fromWiki) {
-  const src = resolve(wiki, "assets", f);
-  if (existsSync(src)) copyFileSync(src, resolve(pubAssets, f));
+export interface BuildPublicOptions {
+  wikiDir: string;
+  brain: Omit<StageBrainPublicOptions, "destination">;
 }
 
-// index.html + sitemap.xml + about.html are served dynamically from D1 (src/
-// home.ts via GET /, GET /sitemap.xml, GET /about) — copying them here would
-// let the asset layer shadow the Worker routes; the lead deletes the stale
-// copies already in wiki/public/.
-const shellFiles = [
-  "concepts.html", "404.html", "robots.txt", "wikilean.ttl",
-  // The brain explorer (reserved route /brain, site/build_brain_page.py); its
-  // data ships as the v3 cell shards in assets/brain/cells/ (copied below).
-  "brain.html",
-  // (The old graph stack — graph_data.json / atlas_data.json / article-graph.*
-  // / map.* — is deleted; the Brain supersedes it, and src/index.ts's RESERVED
-  // set only squats the old names so the /:slug catch-all 404s them.)
-];
-for (const f of shellFiles) {
-  const src = resolve(site, "out", f);
-  if (existsSync(src)) copyFileSync(src, resolve(pub, f));
+export interface BuildPublicResult {
+  schema: "wikilean.public-build-result/v1";
+  publicDir: string;
+  mathlibDeclarations: number;
+  brain: StageBrainPublicResult;
+  duration_ms: number;
+  max_rss_bytes: number;
 }
 
-// BRAIN assets (site/assets/brain/): ALLOW-LIST copy — the v3 cell shards
-// (brain/build_cell_shards.py → cells/) plus the two live build_shards.py
-// outputs (sources.json legend, xref_index.json cross-pollination index).
-// The retired v2 per-node layer (q*/decl_*/xref_*/path_*/lit_* shards,
-// manifest.json, labels.json, aliases.json, views/) is deliberately NOT
-// copied, whatever is still lying in site/assets/brain — nothing serves it
-// (GET /api/brain/node is deleted) and it was ~340 MB of deploy tax.
-// Wipe-then-copy so renamed shard keys never leave stale files behind, the
-// same discipline as build-decl-index.ts. Scoped strictly to assets/brain/.
-const brainSrc = resolve(site, "assets", "brain");
-const brainDst = resolve(pubAssets, "brain");
-if (existsSync(brainSrc)) {
-  rmSync(brainDst, { recursive: true, force: true });
-  mkdirSync(brainDst, { recursive: true });
-  // Skip symlinks: a stray self-referencing link here (seen 2026-08-03:
-  // assets/brain/brain -> assets/brain) would otherwise be copied verbatim
-  // and wrangler's asset walk dies on it with ELOOP at deploy time.
-  const noSymlink = (src: string) => !lstatSync(src).isSymbolicLink();
-  const cellsSrc = resolve(brainSrc, "cells");
-  if (existsSync(cellsSrc) && noSymlink(cellsSrc)) {
-    cpSync(cellsSrc, resolve(brainDst, "cells"), { recursive: true, filter: noSymlink });
+export function buildPublic(options: BuildPublicOptions): BuildPublicResult {
+  const started = process.hrtime.bigint();
+  const wiki = resolve(options.wikiDir);
+  const site = resolve(wiki, "..", "site");
+  const pub = resolve(wiki, "public");
+  const pubAssets = resolve(pub, "assets");
+
+  mkdirSync(pubAssets, { recursive: true });
+
+  // Shared article assets + editor styles come from the static site; the live
+  // editor logic is wiki-specific.
+  const fromSite = ["style.css", "script.js", "review.css"];
+  for (const file of fromSite) {
+    const source = resolve(site, "assets", file);
+    if (existsSync(source)) copyFileSync(source, resolve(pubAssets, file));
   }
-  for (const f of ["sources.json", "xref_index.json"]) {
-    const src = resolve(brainSrc, f);
-    if (existsSync(src) && noSymlink(src)) copyFileSync(src, resolve(brainDst, f));
+  for (const file of ["editor.js"]) {
+    const source = resolve(wiki, "assets", file);
+    if (existsSync(source)) copyFileSync(source, resolve(pubAssets, file));
   }
+
+  // index.html + sitemap.xml + about.html are served dynamically from D1 (src/
+  // home.ts via GET /, GET /sitemap.xml, GET /about) and must not shadow Worker routes.
+  const shellFiles = [
+    "concepts.html", "404.html", "robots.txt", "wikilean.ttl",
+  ];
+  for (const file of shellFiles) {
+    const source = resolve(site, "out", file);
+    if (existsSync(source)) copyFileSync(source, resolve(pub, file));
+  }
+
+  // Brain assets come only from one explicit, verified frozen release. The staging
+  // module publishes immutable current/previous namespaces and byte-identical
+  // compatibility aliases as one filesystem transaction.
+  const brain = stageBrainPublicRelease({
+    ...options.brain,
+    destination: resolve(pubAssets, "brain"),
+    // The page is release-coupled too: copy it from the frozen release, never
+    // from mutable site/out, and activate it with the matching asset tree.
+    brainPageDestination: resolve(pub, "brain.html"),
+  });
+
+  // public/ is generated-but-never-wiped: an older checkout may have left pages
+  // that would shadow the Worker's intended routes.
+  for (const file of [
+    "map.html", "graph.html", "atlas.html", "about.html", "map_data.json", "map_data_v2.json",
+  ]) {
+    rmSync(resolve(pub, file), { force: true });
+  }
+
+  const mathlibDeclarations = buildMathlibIndex(site, resolve(pubAssets, "mathlib-index.json"));
+  return {
+    schema: "wikilean.public-build-result/v1",
+    publicDir: pub,
+    mathlibDeclarations,
+    brain,
+    duration_ms: Math.round(Number(process.hrtime.bigint() - started) / 1e3) / 1e3,
+    max_rss_bytes: Math.round(process.resourceUsage().maxRSS * 1024),
+  };
 }
 
-// public/ is generated-but-never-wiped: a deploy from an older checkout could
-// still carry pre-2026-07-10 graph-stack pages, which the asset layer would
-// serve at 200 and shadow the intended 404s. One line of insurance, not a
-// deprecation surface.
-for (const f of ["map.html", "graph.html", "atlas.html", "about.html",
-                 "map_data.json", "map_data_v2.json"]) {
-  rmSync(resolve(pub, f), { force: true });
+function option(args: string[], name: string, env: string): string | undefined {
+  const index = args.indexOf(name);
+  if (index !== -1) {
+    const value = args[index + 1];
+    if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+    return value;
+  }
+  return process.env[env];
 }
 
-const n = buildMathlibIndex(site, resolve(pubAssets, "mathlib-index.json"));
-console.log(`built ${pub} (mathlib index: ${n} decls)`);
+function positiveOption(args: string[], name: string, env: string): number | undefined {
+  const raw = option(args, name, env);
+  if (raw === undefined || raw === "") return undefined;
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || value <= 0) throw new Error(`${name} must be a positive safe integer`);
+  return value;
+}
+
+function nonNegativeOption(args: string[], name: string, env: string): number | undefined {
+  const raw = option(args, name, env);
+  if (raw === undefined || raw === "") return undefined;
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${name} must be a non-negative safe integer`);
+  return value;
+}
+
+export function buildPublicFromArgs(args: string[], wikiDir = process.cwd()): BuildPublicResult {
+  const known = new Set([
+    "--brain-release-manifest",
+    "--brain-release-dir",
+    "--brain-previous-release-manifest",
+    "--brain-previous-release-dir",
+    "--brain-max-objects",
+    "--brain-max-bytes",
+    "--brain-max-file-bytes",
+    "--brain-min-free-bytes",
+  ]);
+  const seen = new Set<string>();
+  for (let index = 0; index < args.length; index += 2) {
+    const flag = args[index];
+    if (!known.has(flag)) throw new Error(`unknown option ${flag}`);
+    if (seen.has(flag)) throw new Error(`option ${flag} may be supplied only once`);
+    if (index + 1 >= args.length || args[index + 1].startsWith("--")) {
+      throw new Error(`${flag} requires a value`);
+    }
+    seen.add(flag);
+  }
+  const brainManifest = option(args, "--brain-release-manifest", "BRAIN_RELEASE_MANIFEST");
+  const brainReleaseDir = option(args, "--brain-release-dir", "BRAIN_RELEASE_DIR");
+  if (!brainManifest || !brainReleaseDir) {
+    throw new Error("--brain-release-manifest and --brain-release-dir are required for verified Brain staging");
+  }
+  const previousManifestPath = option(
+    args,
+    "--brain-previous-release-manifest",
+    "BRAIN_PREVIOUS_RELEASE_MANIFEST",
+  );
+  const previousReleaseDir = option(
+    args,
+    "--brain-previous-release-dir",
+    "BRAIN_PREVIOUS_RELEASE_DIR",
+  );
+  if ((previousManifestPath === undefined) !== (previousReleaseDir === undefined)) {
+    throw new Error("previous Brain manifest and release directory must be supplied together");
+  }
+
+  return buildPublic({
+    wikiDir,
+    brain: {
+      manifestPath: brainManifest,
+      releaseDir: brainReleaseDir,
+      previousManifestPath,
+      previousReleaseDir,
+      maxObjects: positiveOption(args, "--brain-max-objects", "BRAIN_PUBLIC_MAX_OBJECTS"),
+      maxBytes: positiveOption(args, "--brain-max-bytes", "BRAIN_PUBLIC_MAX_BYTES"),
+      maxFileBytes: positiveOption(args, "--brain-max-file-bytes", "BRAIN_PUBLIC_MAX_FILE_BYTES"),
+      minFreeBytes: nonNegativeOption(args, "--brain-min-free-bytes", "BRAIN_PUBLIC_MIN_FREE_BYTES"),
+    },
+  });
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const result = buildPublicFromArgs(process.argv.slice(2));
+  console.log(JSON.stringify({
+    schema: result.schema,
+    public_dir: result.publicDir,
+    mathlib_declarations: result.mathlibDeclarations,
+    duration_ms: result.duration_ms,
+    max_rss_bytes: result.max_rss_bytes,
+    brain: result.brain,
+  }));
+}
