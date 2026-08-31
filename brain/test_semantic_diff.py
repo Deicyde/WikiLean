@@ -517,14 +517,34 @@ class SemanticDiffTest(unittest.TestCase):
             if not path.exists():
                 path.write_bytes(b"fixture")
             digest, size = contracts.digest_file(path)
+            if relative.endswith(".jsonl"):
+                media_type, logical_format, logical_root = (
+                    "application/x-ndjson",
+                    "jsonl-rowset",
+                    ZERO_HASH,
+                )
+            elif relative.endswith(".json"):
+                media_type, logical_format, logical_root = (
+                    "application/json",
+                    "json",
+                    ZERO_HASH,
+                )
+            elif relative.endswith(".html"):
+                media_type, logical_format, logical_root = "text/html", "opaque", None
+            else:
+                media_type, logical_format, logical_root = (
+                    "application/vnd.sqlite3",
+                    "opaque",
+                    None,
+                )
             artifacts.append({
                 "logical_name": f"artifact-{index:02d}",
                 "path": relative,
-                "media_type": "application/x-ndjson" if relative.endswith(".jsonl") else "application/octet-stream",
+                "media_type": media_type,
                 "sha256": digest,
                 "bytes": size,
-                "logical_format": "opaque",
-                "logical_root": None,
+                "logical_format": logical_format,
+                "logical_root": logical_root,
             })
         release = {
             "schema": contracts.RELEASE_SCHEMA,

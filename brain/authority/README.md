@@ -14,6 +14,10 @@ path, D1 overlay, or serving topology.
   source objects, reducer code, configuration, and schemas needed for offline replay.
     Its verification root must contain exactly those files plus the pack manifest.
 - `schemas/release/v1.json` describes one release over the current artifact topology.
+- `schemas/release-selector/v1.json` describes the public current/previous selector.
+  Current release fields are required; the flat `previous_*` fields are all-or-none, and
+  each release hex and immutable manifest URL must agree with its full `sha256:` ID.
+  Optional `audited_at` records publication audit time without changing release identity.
 - `schemas/attestation/build-v1.json` and
   `schemas/attestation/validation-v1.json` describe immutable build and validation
   evidence. Attestations bind a timestamp-independent release ID; they do not embed
@@ -53,10 +57,27 @@ reducer attestation linkage, exact SQLite payload/index/owner/metadata parity wi
 exact static cell-card, alias, label, and trace projections with no stale files, and current
 graph/cell generation consistency.
 
+Until accepted changeset replay lands, production releases use the compatibility
+semantic epoch `brain-v3-current` with `authority.through_changeset` null. The semantic
+state root is domain-separated over that epoch, the shared 64-hex graph `snapshot_id`,
+and the verified logical roots of the seven graph, cell, synapse, and frontier outputs.
+The compatibility `source_set_root` is separately domain-separated over the canonical
+`reducer-inputs-v1.json` digest and every exact present/absent path or glob member in
+that inventory. This is a declared-input bridge, not a claim that Phase 2 accepted
+source-manifest transitions already exist.
+
 The `brain-current-v1` release profile requires both current graph edge streams
 (`edges.jsonl` and `edges_links.jsonl`), nodes, SQLite, cells, synapses, frontier files,
 the sealed source registry and community-edge
 input, complete static cell tree, top-level source and xref indexes, and generated Brain
 page. Review/worklist outputs remain build or
 validation diagnostics rather than serving artifacts. This profile deliberately does
-not require R2, PostgreSQL, release-qualified serving paths, or a deployment change.
+not require R2, PostgreSQL, or a database topology change.
+
+`brain/tools/build_release.py` reads only completed mutable outputs, freezes their exact
+closure under a temporary sibling of the output store, derives all hashes from the
+frozen bytes, creates canonical build and validation attestations after release identity,
+verifies the complete candidate, and atomically renames it to
+`site/out/brain-releases/<release-hex>/`. Existing content-addressed releases are reused
+only after full verification and byte equality. The CLI prints one JSON object containing
+`release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
