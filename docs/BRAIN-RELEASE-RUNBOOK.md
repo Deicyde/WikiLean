@@ -1,10 +1,14 @@
 # Brain release runbook
 
-This runbook covers Phase 1 static Brain releases for `wikilean`. The release path is deployment-disabled by default. A normal nightly run freezes, independently verifies, stages, typechecks, and tests a release locally; it changes production only when `WIKILEAN_BRAIN_DEPLOY=1`.
+This runbook covers Phase 1 static Brain releases for `wikilean`. Shadow release
+construction is ready, but production activation is blocked until roadmap milestone P1A
+can promote an exact reviewed release without rebuilding. Keep
+`WIKILEAN_BRAIN_DEPLOY=0`.
 
 ## Safety model
 
-A deployment is eligible only after all existing data/page gates and these release gates pass:
+After P1A lands, an exact frozen release is eligible only after all existing data/page
+gates and these release gates pass:
 
 1. `brain/tools/build_release.py` freezes a content-addressed release in `site/out/brain-releases/<64hex>/`.
 2. `brain/tools/verify_release.py` independently verifies the frozen bytes and attestations.
@@ -22,12 +26,15 @@ A deployment is eligible only after all existing data/page gates and these relea
    records production as Worker status A → exact selector → Worker status A.
 7. Wrangler runs once with `--strict`, a release tag, and a release message. The
    emitted candidate Worker version B is polled for 100% traffic before and after
-   the canary. If version parsing/control-plane polling fails after a successful
-   deploy, the release-content canary still runs and rollback is disabled.
+   the canary. Once Wrangler is invoked, the release-content canary still runs if
+   the command returns nonzero or version parsing/control-plane polling fails;
+   rollback is disabled unless candidate ownership was proven.
 8. `site/ops/brain-canary.py` waits for selector, manifest, required view assets,
    cell manifest/shard, `/brain`, `/brain.html`, REST API/cursor, MCP, and aliases to agree.
 
-The nightly script derives the repository root from its own physical location. Do not copy `brain-nightly.sh` outside the checkout and invoke that copy.
+The nightly script derives the repository root from its own physical location. Do not copy
+`brain-nightly.sh` outside the checkout and invoke that copy. Until P1A is complete, these
+gates describe the target promotion protocol rather than authorization to deploy.
 
 ## Activation prerequisites
 
@@ -50,10 +57,8 @@ export WIKILEAN_PYTHON=/absolute/path/to/python3.12
 The job fails closed before fold/build if the Mathlib tree is unset or missing.
 The optional proposal agents use a separate interpreter
 (`WIKILEAN_BRAIN_AGENT_PYTHON`, default `catalog/.venv/bin/python3`) and are
-skipped with an explicit warning if that environment is absent. On the current
-host, `/Users/jack/Desktop/LEAN/mathlib4/Mathlib` and `catalog/.venv/bin/python3`
-are not present, so production activation must not be enabled until those paths
-are deliberately provisioned or replaced.
+skipped with an explicit warning if that environment is absent. Verify all configured
+paths from the same launch context that will run the job; missing paths fail closed.
 
 ## Shadow release
 
@@ -90,19 +95,60 @@ To verify a frozen release independently:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
-python3 brain/tools/verify_release.py \
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" brain/tools/verify_release.py \
   --manifest /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<release-hex>/release.json \
   --root /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<release-hex>
 ```
 
 ## Deploy
 
-Enable deployment for one run only after reviewing the shadow result:
+> **Activation is currently blocked.** The nightly deploy flag rebuilds before it
+> deploys, while `generated_at` is still nondeterministic, so it cannot yet promote the
+> exact frozen release that was reviewed in a prior shadow run. Do not enable
+> `WIKILEAN_BRAIN_DEPLOY` until roadmap milestone P1A adds exact-release promotion and a
+> canary TLS preflight.
+
+The legacy deploy-enabled nightly is not an approved activation interface. It rebuilds
+before deploying and may therefore publish a release other than the reviewed candidate.
+Keep the nightly in shadow mode.
+
+The planned P1A interface is shown for review only; it is not available until that
+milestone is implemented and verified:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
-WIKILEAN_BRAIN_DEPLOY=1 bash site/ops/brain-nightly.sh
+# Run only after Jack approves this exact sha256:<64hex> and deployment window.
+bash site/ops/brain-promote-release.sh sha256:<64hex> \
+  --release-root /absolute/path/to/brain-releases/<64hex>
 ```
+
+Run the promoter from a separate clean checkout/worktree at the frozen release's recorded
+authority commit. Point it at the explicit read-only release root/store produced by the
+isolated shadow build. The current shadow reducer writes timestamp-bearing tracked outputs,
+so building and promoting from one checkout would violate the clean-tree gate; do not solve
+that by ignoring generated dirtiness.
+
+If production has no release-qualified selector, the promoter must fail unless the
+operator also supplies `--allow-first-deploy-without-selector`. That exception requires
+Jack's approval for the exact window and must be written into the deployment intent record.
+TLS, DNS, and timeout failures are never an acceptable substitute for the explicit flag.
+
+Every promotion uses a crash-safe append-only event journal. Before any mutating Wrangler
+call, the promoter fsyncs an intent record containing the attempt ID, requested/prior
+release IDs, authority commit, and predeploy Worker version. It then appends immutable
+deploy-result, canary, rollback, and final-state records linked to that attempt. A derived
+summary may be generated but never replaces or mutates the evidence records.
+
+Gitignored `site/out` is not a durable journal sink. Set
+`WIKILEAN_BRAIN_RECEIPT_DIR` to an absolute directory outside the checkout; the promoter
+must fail if it is unset or unwritable. Never garbage-collect these records automatically,
+include the directory in host backups, and attach each event-chain hash to the rollout
+review or incident record. On startup, the promoter refuses another mutation until every
+incomplete attempt has been reconciled against live Wrangler and selector state.
+
+The P1A `--dry-run` may call read-only Wrangler status/history commands to validate the
+account and record the current sole 100% Worker version. It must never invoke deploy or
+rollback.
 
 Before staging, the script fetches the production `/assets/brain/current.json`. If production names a prior qualified release, its exact frozen directory must still exist and independently verify locally. This prevents a deployment-disabled shadow run from accidentally becoming the retained `previous` release. Immediately before the deploy, the selector must still be byte-identical and the Worker version must remain stable across the status/selector/status sandwich.
 
@@ -138,7 +184,7 @@ Run the same release-qualified canary manually with the full release ID:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
-python3 site/ops/brain-canary.py \
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain-canary.py \
   --base-url https://wikilean.jackmccarthy.org \
   --expected-release-id sha256:<release-hex> \
   --timeout 300 \
@@ -148,7 +194,8 @@ python3 site/ops/brain-canary.py \
 Every request carries a unique cache-busting query parameter and `Cache-Control: no-cache`.
 Each response is capped at 32 MiB. Success prints versioned JSON including
 `attempts`, measured `convergence_seconds`, request/byte counts, and maximum RSS;
-the nightly stores that exact result. The initial operational target is
+the shadow nightly stores that result under `site/out`, while the promoter appends it to
+the durable attempt journal. The initial operational target is
 convergence within five minutes; this is a target, not a measured rollback SLO.
 
 The canary requires all of the following to agree on the expected release:
@@ -166,7 +213,12 @@ The canary requires all of the following to agree on the expected release:
 
 ## Wrangler rollback
 
-These commands were verified against the repository-pinned Wrangler `4.120.0` (`wiki/package.json` and `wiki/package-lock.json`) using `npx --no-install wrangler --help`, `deployments --help`, `deployments status --help`, and `rollback --help`. Run `npm ci` first when `wiki/node_modules` is absent. `--no-install` is deliberate: it prevents `npx` from downloading a newer Wrangler during a recovery.
+These commands were verified against the repository-pinned Wrangler `4.120.0`
+(`wiki/package.json` and `wiki/package-lock.json`) using `npx --no-install wrangler
+--help`, `deployments --help`, `deployments status --help`, `deployments list --help`,
+`versions list --help`, and `rollback --help`. Run `npm ci` first when
+`wiki/node_modules` is absent. `--no-install` is deliberate: it prevents `npx` from
+downloading a newer Wrangler during a recovery.
 
 Inspect the current production deployment as machine-readable JSON:
 
@@ -199,13 +251,18 @@ npx --no-install wrangler rollback <version-id> --yes \
   --message "Rollback Brain release sha256:<failed-release-hex>"
 ```
 
-`<version-id>` is the UUID from `npx --no-install wrangler deployments status --json`; it is not a release ID. Never substitute a Brain release hash for a Worker version ID.
+`<version-id>` is the predeploy Worker A UUID/release pair from the fsynced intent record;
+it is not the current version returned after B is live and it is not a Brain release ID.
+Cross-check that UUID against `npx --no-install wrangler deployments list --json` and
+`npx --no-install wrangler versions list --json`. Use `deployments status --json` only to
+confirm that candidate B still owns 100% of traffic before mutation. Never substitute a
+Brain release hash for a Worker version ID.
 
 After rollback, run the canary against the predeploy Brain release:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
-python3 site/ops/brain-canary.py \
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain-canary.py \
   --base-url https://wikilean.jackmccarthy.org \
   --expected-release-id sha256:<predeploy-release-hex> \
   --timeout 300 \
@@ -216,16 +273,24 @@ Record the emitted `convergence_seconds` in the incident or rollout notes. Do no
 
 ## Recovery cases
 
-If the post-deploy canary fails, the default nightly behavior is to leave the
-failed candidate in place, return nonzero, and print the manual recovery path.
+The P1A promoter must leave a failed candidate in place when automatic rollback is off,
+append the observed failure state, return nonzero, and print the manual recovery path.
 This avoids blindly overwriting an unrelated newer deployment.
 
-When the explicit automatic-rollback opt-in is active, the nightly first requires
+When the explicit automatic-rollback opt-in is active, the promoter first requires
 candidate version B → candidate selector → candidate version B, then runs the
 exact rollback command above, confirms the recorded version A owns 100% traffic,
 and polls for the prior selector, assets, API, page, and aliases. Because Wrangler
 does not expose a CAS, this mode is still restricted to an exclusive deploy window.
 
-If the prior Worker version is ambiguous, the script does not guess. Inspect `npx --no-install wrangler deployments status --json`, establish the intended prior version from deployment history and release records, then run `npx --no-install wrangler rollback <version-id> --yes` and canary the matching prior Brain release.
+If the prior Worker version is absent or ambiguous in the durable intent record, the
+promoter does not guess. Inspect `npx --no-install wrangler deployments list --json` and
+`versions list --json`, reconcile the intended prior Worker/release pair with the selector
+and release records, then run `npx --no-install wrangler rollback <version-id> --yes` and
+canary the matching prior Brain release.
+
+After a rollback, roll forward only by restoring the recorded candidate Worker version or
+by promoting the same exact frozen release through the approved promoter. Do not rerun the
+nightly for roll-forward: it rebuilds and may introduce an unreviewed release.
 
 If the rollback command succeeds but the prior release does not converge, keep the run failed. Reinspect deployment status, fetch `/assets/brain/current.json` with `Cache-Control: no-cache`, confirm the prior immutable namespace exists, and rerun the canary. Escalate rather than repeatedly deploying or deleting release directories.
