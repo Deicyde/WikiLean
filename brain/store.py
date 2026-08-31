@@ -16,7 +16,8 @@ from collections.abc import Iterable, Iterator, Mapping
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+APPLICATION_ID = 0x574C424E  # "WLBN"
 DEFAULT_SQLITE_NAME = "brain.sqlite3"
 DEFAULT_ARTIFACT_FILES = {
     "nodes": "nodes.jsonl",
@@ -116,9 +117,13 @@ def _handle_metadata(handle, path: Path) -> dict[str, Any]:
     raise StoreError(f"{path} is empty")
 
 
-def _iter_handle(handle, path: Path) -> Iterator[dict[str, Any]]:
+def _iter_handle(
+    handle, path: Path, *, raw_hasher: Any | None = None
+) -> Iterator[dict[str, Any]]:
     handle.seek(0)
     for lineno, line in enumerate(handle, 1):
+        if raw_hasher is not None:
+            raw_hasher.update(line)
         if not line.strip():
             continue
         try:
@@ -251,25 +256,81 @@ def artifact_digests(
 ) -> dict[str, str]:
     out: dict[str, str] = {}
     for name, (meta, rows) in artifacts.items():
-        digest = hashlib.sha256()
-        digest.update(canonical_json(dict(meta)).encode("utf-8"))
-        digest.update(b"\n")
-        digest.update(digest_rows(rows).encode("ascii"))
-        out[name] = digest.hexdigest()
+        out[name] = _artifact_digest(meta, digest_rows(rows))
     return out
+
+
+def _artifact_digest(meta: Mapping[str, Any], rows_digest: str) -> str:
+    digest = hashlib.sha256()
+    digest.update(canonical_json(dict(meta)).encode("utf-8"))
+    digest.update(b"\n")
+    digest.update(rows_digest.encode("ascii"))
+    return digest.hexdigest()
+
+
+def _identity_from_digests(
+    domain: str,
+    names: Iterable[str],
+    digests: Mapping[str, str],
+) -> str:
+    """Return a domain-separated identity over ordered logical artifacts."""
+    preimage = {
+        "domain": domain,
+        "artifacts": [[name, digests[name]] for name in names],
+    }
+    return hashlib.sha256(canonical_json(preimage).encode("utf-8")).hexdigest()
+
+
+def base_snapshot_id_for(
+    artifacts: Mapping[str, tuple[Mapping[str, Any], list[dict[str, Any]]]],
+    digests: Mapping[str, str] | None = None,
+) -> str:
+    """Return the published organ snapshot ID or a legacy logical equivalent."""
+    names = ("nodes", "edges", "edges_links")
+    published = {
+        artifacts[name][0].get("snapshot_id")
+        for name in names
+        if artifacts[name][0].get("snapshot_id")
+    }
+    if published:
+        # validate_generations() rejects mixed or partially populated IDs.
+        return str(next(iter(published)))
+    logical = dict(digests or artifact_digests(artifacts))
+    return _identity_from_digests("wikilean-brain-base-v1", names, logical)
+
+
+def projection_id_for(
+    artifacts: Mapping[str, tuple[Mapping[str, Any], list[dict[str, Any]]]],
+    digests: Mapping[str, str] | None = None,
+) -> str:
+    """Identify the complete logical SQLite projection, including derived layers."""
+    logical = dict(digests or artifact_digests(artifacts))
+    names = tuple(
+        name
+        for name in ("nodes", "edges", "edges_links", "cells", "synapses")
+        if name in artifacts
+    )
+    return _identity_from_digests("wikilean-brain-projection-v1", names, logical)
 
 
 def snapshot_id_for(
     artifacts: Mapping[str, tuple[Mapping[str, Any], list[dict[str, Any]]]],
 ) -> str:
-    digest = hashlib.sha256()
-    for name in ("nodes", "edges", "edges_links"):
-        meta, rows = artifacts[name]
-        identity_meta = {k: v for k, v in meta.items() if k != "snapshot_id"}
-        digest.update(name.encode("ascii"))
-        digest.update(canonical_json(identity_meta).encode("utf-8"))
-        digest.update(digest_rows(rows).encode("ascii"))
-    return digest.hexdigest()
+    """Backward-compatible name for the base organ snapshot identity."""
+    return base_snapshot_id_for(artifacts)
+
+
+def _owner_fields(
+    organ_id: str, organ: Mapping[str, Any]
+) -> tuple[str | None, str | None]:
+    """Return the indexed kind and bare declaration name for one organ."""
+    kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
+    bare = (
+        organ_id.split(":", 2)[2]
+        if kind == "decl" and organ_id.count(":") >= 2
+        else None
+    )
+    return kind, bare
 
 
 def _derive_owners(
@@ -281,12 +342,7 @@ def _derive_owners(
         organ_id = organ.get("id")
         if not isinstance(organ_id, str):
             return
-        kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
-        bare = (
-            organ_id.split(":", 2)[2]
-            if kind == "decl" and organ_id.count(":") >= 2
-            else None
-        )
+        kind, bare = _owner_fields(organ_id, organ)
         previous = owners.setdefault(organ_id, (owner, kind, bare))
         if previous[0] != owner:
             raise StoreError(
@@ -316,15 +372,27 @@ CREATE TABLE snapshot (
   schema_version INTEGER NOT NULL,
   build_state TEXT NOT NULL CHECK (build_state IN ('building','complete')),
   snapshot_id TEXT NOT NULL,
-  metadata_json TEXT NOT NULL
+  base_snapshot_id TEXT NOT NULL,
+  projection_id TEXT NOT NULL,
+  metadata_json TEXT NOT NULL,
+  CHECK (snapshot_id = base_snapshot_id)
 );
 CREATE TABLE artifacts (
   name TEXT PRIMARY KEY,
   generated_at TEXT,
   row_count INTEGER NOT NULL,
   digest TEXT NOT NULL,
-  source_digest TEXT NOT NULL,
-  metadata_json TEXT NOT NULL
+  source_digest TEXT,
+  logical_digest TEXT NOT NULL,
+  raw_digest TEXT,
+  source_present INTEGER NOT NULL CHECK (source_present IN (0, 1)),
+  metadata_json TEXT NOT NULL,
+  CHECK (digest = logical_digest),
+  CHECK (source_digest IS raw_digest),
+  CHECK (
+    (source_present = 1 AND raw_digest IS NOT NULL) OR
+    (source_present = 0 AND raw_digest IS NULL)
+  )
 ) WITHOUT ROWID;
 CREATE TABLE nodes (
   ordinal INTEGER PRIMARY KEY,
@@ -377,18 +445,37 @@ CREATE INDEX synapses_dst_idx ON synapses(dst);
 """
 
 
+def _publish_sqlite(temp: Path, target: Path) -> None:
+    """Durably publish a completed database and its directory entry."""
+    with temp.open("rb") as handle:
+        os.fsync(handle.fileno())
+    os.replace(temp, target)
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+    directory_fd = os.open(target.parent, flags)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+
+
 def write_sqlite_snapshot(
     path: str | os.PathLike[str],
     artifacts: Mapping[str, tuple[Mapping[str, Any], list[dict[str, Any]]]],
     *,
-    source_digests: Mapping[str, str] | None = None,
+    source_digests: Mapping[str, str | None] | None = None,
 ) -> Path:
-    """Build and atomically publish a complete SQLite projection."""
+    """Build and atomically publish a complete SQLite projection.
+
+    ``source_digests`` binds rows to exact adjacent JSONL bytes. Omitting an
+    entry records that no raw source was supplied, so freshness-checked readers
+    will reject that projection beside a present source file.
+    """
     validate_generations(artifacts)
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
-    snapshot_id = snapshot_id_for(artifacts)
     digests = artifact_digests(artifacts)
+    base_snapshot_id = base_snapshot_id_for(artifacts, digests)
+    projection_id = projection_id_for(artifacts, digests)
     fd, temp_name = tempfile.mkstemp(
         prefix=f".{target.name}.", suffix=".tmp", dir=target.parent
     )
@@ -400,21 +487,32 @@ def write_sqlite_snapshot(
         connection.execute("PRAGMA journal_mode = DELETE")
         connection.execute("PRAGMA synchronous = FULL")
         connection.executescript(_SCHEMA_SQL)
+        connection.execute(f"PRAGMA application_id = {APPLICATION_ID}")
         connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
         base_meta = dict(artifacts["nodes"][0])
         connection.execute(
-            "INSERT INTO snapshot VALUES (1, ?, 'building', ?, ?)",
-            (SCHEMA_VERSION, snapshot_id, canonical_json(base_meta)),
+            "INSERT INTO snapshot VALUES (1, ?, 'building', ?, ?, ?, ?)",
+            (
+                SCHEMA_VERSION,
+                base_snapshot_id,
+                base_snapshot_id,
+                projection_id,
+                canonical_json(base_meta),
+            ),
         )
         for name, (meta, rows) in artifacts.items():
+            raw_digest = (source_digests or {}).get(name)
             connection.execute(
-                "INSERT INTO artifacts VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO artifacts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     name,
                     meta.get("generated_at"),
                     len(rows),
                     digests[name],
-                    (source_digests or {}).get(name, digests[name]),
+                    raw_digest,
+                    digests[name],
+                    raw_digest,
+                    int(raw_digest is not None),
                     canonical_json(dict(meta)),
                 ),
             )
@@ -474,25 +572,14 @@ def write_sqlite_snapshot(
                     for i, row in enumerate(artifacts["synapses"][1])
                 ],
             )
-        connection.execute(
-            "UPDATE snapshot SET build_state = 'complete' WHERE singleton = 1"
-        )
+        connection.execute("ANALYZE")
+        connection.execute("UPDATE snapshot SET build_state = 'complete' WHERE singleton = 1")
         connection.commit()
         if connection.execute("PRAGMA integrity_check").fetchone() != ("ok",):
             raise StoreError("SQLite integrity_check failed")
         connection.close()
         connection = None
-        with temp.open("rb") as handle:
-            os.fsync(handle.fileno())
-        os.replace(temp, target)
-        try:
-            directory_fd = os.open(target.parent, os.O_RDONLY)
-            try:
-                os.fsync(directory_fd)
-            finally:
-                os.close(directory_fd)
-        except OSError:
-            pass
+        _publish_sqlite(temp, target)
         return target
     except (KeyError, sqlite3.Error) as exc:
         raise StoreError(f"could not build SQLite snapshot: {exc}") from exc
@@ -502,30 +589,100 @@ def write_sqlite_snapshot(
         temp.unlink(missing_ok=True)
 
 
+def _inspect_source_handle(
+    handle, path: Path
+) -> tuple[dict[str, Any], int, str, str]:
+    """Inspect metadata, row count, raw bytes, and logical rows in one pass."""
+    raw = hashlib.sha256()
+    rows = hashlib.sha256()
+    metadata: dict[str, Any] | None = None
+    count = 0
+    handle.seek(0)
+    for lineno, line in enumerate(handle, 1):
+        raw.update(line)
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            raise StoreError(f"{path}:{lineno}: invalid JSON: {exc}") from exc
+        if not isinstance(row, dict):
+            raise StoreError(f"{path}:{lineno}: expected a JSON object")
+        if "_meta" in row:
+            if (
+                metadata is not None
+                or lineno != 1
+                or not isinstance(row["_meta"], dict)
+            ):
+                raise StoreError(f"{path}:{lineno}: invalid metadata row")
+            metadata = row["_meta"]
+            continue
+        count += 1
+        rows.update(canonical_json(row).encode("utf-8"))
+        rows.update(b"\n")
+    if metadata is None:
+        raise StoreError(f"{path} has no first-line _meta object")
+    return metadata, count, raw.hexdigest(), _artifact_digest(metadata, rows.hexdigest())
+
+
+def _source_handles(paths: Mapping[str, Path]) -> dict[str, Any | None]:
+    """Open one immutable view of all source paths, including optional layers."""
+    handles: dict[str, Any | None] = {}
+    try:
+        for name in ("nodes", "edges"):
+            try:
+                handles[name] = paths[name].open("rb")
+            except FileNotFoundError as exc:
+                raise StoreError(f"missing Brain artifact: {paths[name]}") from exc
+        try:
+            handles["edges_links"] = paths["edges_links"].open("rb")
+        except FileNotFoundError:
+            handles["edges_links"] = None
+
+        derived = []
+        for name in ("cells", "synapses"):
+            try:
+                handles[name] = paths[name].open("rb")
+                derived.append(name)
+            except FileNotFoundError:
+                handles[name] = None
+        if len(derived) == 1:
+            raise StoreError("Brain cell JSONL generation is incomplete")
+        return handles
+    except Exception:
+        for handle in handles.values():
+            if handle is not None:
+                handle.close()
+        raise
+
+
+def _sources_unchanged(
+    paths: Mapping[str, Path],
+    handles: Mapping[str, Any | None],
+    signatures: Mapping[str, tuple[int, int, int] | None],
+) -> None:
+    """Fail a build if a pinned source was replaced or changed in place."""
+    for name, handle in handles.items():
+        if handle is None:
+            if paths[name].exists():
+                raise StoreError(f"{paths[name]} appeared while building SQLite")
+            continue
+        try:
+            path_stat = paths[name].stat()
+        except FileNotFoundError as exc:
+            raise StoreError(f"{paths[name]} disappeared while building SQLite") from exc
+        if not os.path.samestat(os.fstat(handle.fileno()), path_stat):
+            raise StoreError(f"{paths[name]} was replaced while building SQLite")
+        current = os.fstat(handle.fileno())
+        signature = (current.st_size, current.st_mtime_ns, current.st_ctime_ns)
+        if signature != signatures[name]:
+            raise StoreError(f"{paths[name]} changed while building SQLite")
+
+
 def write_sqlite_from_jsonl(path: Path, data_dir: Path) -> Path:
-    """Stream a consistent JSONL generation into an atomic SQLite index."""
+    """Stream one pinned, self-consistent JSONL generation into SQLite."""
     paths = _paths(data_dir)
-    metadata = {
-        "nodes": read_metadata(paths["nodes"]),
-        "edges": read_metadata(paths["edges"]),
-        "edges_links": read_metadata(paths["edges_links"], optional=True),
-    }
-    if paths["cells"].exists() or paths["synapses"].exists():
-        metadata["cells"] = read_metadata(paths["cells"])
-        metadata["synapses"] = read_metadata(paths["synapses"])
-    validate_generations({name: (meta, []) for name, meta in metadata.items()})
-
-    source_digests = {
-        name: digest_file(paths[name]) if paths[name].exists()
-        else artifact_digests({name: ({}, [])})[name]
-        for name in metadata
-    }
-    identity = hashlib.sha256()
-    for name in ("nodes", "edges", "edges_links"):
-        identity.update(name.encode("ascii"))
-        identity.update(source_digests[name].encode("ascii"))
-    snapshot_id = identity.hexdigest()
-
+    handles = _source_handles(paths)
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     fd, temp_name = tempfile.mkstemp(
@@ -534,112 +691,217 @@ def write_sqlite_from_jsonl(path: Path, data_dir: Path) -> Path:
     os.close(fd)
     temp = Path(temp_name)
     connection: sqlite3.Connection | None = None
-    counts: dict[str, int] = {}
     try:
+        inspected: dict[str, tuple[dict[str, Any], int, str | None, str]] = {}
+        for name, handle in handles.items():
+            if handle is None:
+                empty_rows = hashlib.sha256().hexdigest()
+                inspected[name] = ({}, 0, None, _artifact_digest({}, empty_rows))
+            else:
+                inspected[name] = _inspect_source_handle(handle, paths[name])
+
+        names = ["nodes", "edges", "edges_links"]
+        if handles["cells"] is not None:
+            names.extend(("cells", "synapses"))
+        metadata = {name: inspected[name][0] for name in names}
+        counts = {name: inspected[name][1] for name in names}
+        raw_digests = {name: inspected[name][2] for name in names}
+        logical_digests = {name: inspected[name][3] for name in names}
+        signatures = {
+            name: (
+                None
+                if handles[name] is None
+                else (
+                    os.fstat(handles[name].fileno()).st_size,
+                    os.fstat(handles[name].fileno()).st_mtime_ns,
+                    os.fstat(handles[name].fileno()).st_ctime_ns,
+                )
+            )
+            for name in handles
+        }
+        identity_artifacts = {
+            name: (metadata[name], [])
+            for name in names
+        }
+        validate_generations(identity_artifacts)
+        base_snapshot_id = base_snapshot_id_for(
+            identity_artifacts, logical_digests
+        )
+        projection_id = projection_id_for(identity_artifacts, logical_digests)
+
         connection = sqlite3.connect(temp)
         connection.execute("PRAGMA journal_mode = DELETE")
         connection.execute("PRAGMA synchronous = FULL")
         connection.executescript(_SCHEMA_SQL)
+        connection.execute(f"PRAGMA application_id = {APPLICATION_ID}")
         connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
         connection.execute(
-            "INSERT INTO snapshot VALUES (1, ?, 'building', ?, ?)",
-            (SCHEMA_VERSION, snapshot_id, canonical_json(metadata["nodes"])),
+            "INSERT INTO snapshot VALUES (1, ?, 'building', ?, ?, ?, ?)",
+            (
+                SCHEMA_VERSION,
+                base_snapshot_id,
+                base_snapshot_id,
+                projection_id,
+                canonical_json(metadata["nodes"]),
+            ),
         )
 
-        def insert_nodes() -> Iterator[tuple[Any, ...]]:
-            count = 0
-            for count, row in enumerate(iter_jsonl(paths["nodes"]), 1):
-                yield (count - 1, row["id"], row["type"], row.get("label"), canonical_json(row))
-            counts["nodes"] = count
+        imported_digests: dict[str, str] = {}
 
-        connection.executemany("INSERT INTO nodes VALUES (?, ?, ?, ?, ?)", insert_nodes())
+        def tracked_rows(name: str) -> Iterator[dict[str, Any]]:
+            rows = hashlib.sha256()
+            raw = hashlib.sha256()
+            count = 0
+            handle = handles[name]
+            if handle is not None:
+                for count, row in enumerate(
+                    _iter_handle(handle, paths[name], raw_hasher=raw), 1
+                ):
+                    rows.update(canonical_json(row).encode("utf-8"))
+                    rows.update(b"\n")
+                    yield row
+            if count != counts[name]:
+                raise StoreError(f"{paths[name]} changed row count while building SQLite")
+            imported_digests[name] = _artifact_digest(
+                metadata[name], rows.hexdigest()
+            )
+            if handle is not None and raw.hexdigest() != raw_digests[name]:
+                raise StoreError(f"{paths[name]} changed while building SQLite")
+
+        connection.executemany(
+            "INSERT INTO nodes VALUES (?, ?, ?, ?, ?)",
+            (
+                (i, row["id"], row["type"], row.get("label"), canonical_json(row))
+                for i, row in enumerate(tracked_rows("nodes"))
+            ),
+        )
 
         for stream, name in (("main", "edges"), ("links", "edges_links")):
-            def insert_edges(stream=stream, name=name) -> Iterator[tuple[Any, ...]]:
-                count = 0
-                for count, row in enumerate(
-                    iter_jsonl(paths[name], optional=name == "edges_links"), 1
-                ):
+            def insert_edges(
+                stream: str = stream, name: str = name
+            ) -> Iterator[tuple[Any, ...]]:
+                for i, row in enumerate(tracked_rows(name)):
                     provenance = row.get("provenance") or {}
                     yield (
-                        stream, count - 1, row["src"], row["dst"], row["kind"],
-                        row.get("confidence"), provenance.get("source"), canonical_json(row),
+                        stream,
+                        i,
+                        row["src"],
+                        row["dst"],
+                        row["kind"],
+                        row.get("confidence"),
+                        provenance.get("source"),
+                        canonical_json(row),
                     )
-                counts[name] = count
 
             connection.executemany(
                 "INSERT INTO edges VALUES (?, ?, ?, ?, ?, ?, ?, ?)", insert_edges()
             )
 
         if "cells" in metadata:
-            def insert_cells() -> Iterator[tuple[Any, ...]]:
-                count = 0
-                for count, row in enumerate(iter_jsonl(paths["cells"]), 1):
-                    yield (count - 1, row["id"], row.get("anchor"), row.get("label"), canonical_json(row))
-                counts["cells"] = count
+            owners: dict[str, tuple[str, str | None, str | None]] = {}
 
-            connection.executemany("INSERT INTO cells VALUES (?, ?, ?, ?, ?)", insert_cells())
+            def insert_cells() -> Iterator[tuple[Any, ...]]:
+                for i, row in enumerate(tracked_rows("cells")):
+                    owner = row["id"]
+                    for organ in row.get("organs") or []:
+                        organ_id = organ.get("id")
+                        if not isinstance(organ_id, str):
+                            continue
+                        kind, bare = _owner_fields(organ_id, organ)
+                        previous = owners.setdefault(
+                            organ_id, (owner, kind, bare)
+                        )
+                        if previous[0] != owner:
+                            raise StoreError(
+                                f"organ {organ_id!r} has two owners: "
+                                f"{previous[0]!r} and {owner!r}"
+                            )
+                    yield (
+                        i,
+                        owner,
+                        row.get("anchor"),
+                        row.get("label"),
+                        canonical_json(row),
+                    )
+
+            connection.executemany(
+                "INSERT INTO cells VALUES (?, ?, ?, ?, ?)",
+                insert_cells(),
+            )
 
             # Cell ownership wins over a supercell listing for the same concept.
-            owner_count = 0
-            for cell in iter_jsonl(paths["cells"]):
-                for organ in cell.get("organs") or []:
-                    organ_id = organ.get("id")
-                    if not isinstance(organ_id, str):
-                        continue
-                    kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
-                    bare = organ_id.split(":", 2)[2] if kind == "decl" and organ_id.count(":") >= 2 else None
-                    connection.execute(
-                        "INSERT INTO organ_owners VALUES (?, ?, ?, ?)",
-                        (organ_id, cell["id"], kind, bare),
-                    )
-                    owner_count += 1
-            for owner, organs in (metadata["cells"].get("supercell_organs") or {}).items():
+            for owner, organs in (
+                metadata["cells"].get("supercell_organs") or {}
+            ).items():
                 for organ in organs:
                     organ_id = organ.get("id")
                     if not isinstance(organ_id, str):
                         continue
-                    before = connection.total_changes
-                    connection.execute(
-                        "INSERT OR IGNORE INTO organ_owners VALUES (?, ?, ?, NULL)",
-                        (organ_id, owner, organ.get("kind")),
+                    kind, bare = _owner_fields(organ_id, organ)
+                    owners.setdefault(
+                        organ_id, (owner, kind, bare)
                     )
-                    owner_count += connection.total_changes - before
-            counts["owners"] = owner_count
-
-            def insert_synapses() -> Iterator[tuple[Any, ...]]:
-                count = 0
-                for count, row in enumerate(iter_jsonl(paths["synapses"]), 1):
-                    yield (count - 1, row["src"], row["dst"], row["weight"], canonical_json(row))
-                counts["synapses"] = count
+            connection.executemany(
+                "INSERT INTO organ_owners VALUES (?, ?, ?, ?)",
+                [
+                    (organ, owner, kind, bare)
+                    for organ, (owner, kind, bare) in sorted(owners.items())
+                ],
+            )
 
             connection.executemany(
-                "INSERT INTO synapses VALUES (?, ?, ?, ?, ?)", insert_synapses()
-            )
-
-        for name, meta in metadata.items():
-            connection.execute(
-                "INSERT INTO artifacts VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO synapses VALUES (?, ?, ?, ?, ?)",
                 (
-                    name, meta.get("generated_at"), counts.get(name, 0),
-                    source_digests[name], source_digests[name], canonical_json(meta),
+                    (
+                        i,
+                        row["src"],
+                        row["dst"],
+                        row["weight"],
+                        canonical_json(row),
+                    )
+                    for i, row in enumerate(tracked_rows("synapses"))
                 ),
             )
-        connection.execute("UPDATE snapshot SET build_state = 'complete' WHERE singleton = 1")
+
+        if imported_digests != logical_digests:
+            raise StoreError("Brain JSONL logical content changed while building SQLite")
+        _sources_unchanged(paths, handles, signatures)
+
+        for name, meta in metadata.items():
+            raw_digest = raw_digests[name]
+            connection.execute(
+                "INSERT INTO artifacts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    name,
+                    meta.get("generated_at"),
+                    counts[name],
+                    logical_digests[name],
+                    raw_digest,
+                    logical_digests[name],
+                    raw_digest,
+                    int(raw_digest is not None),
+                    canonical_json(meta),
+                ),
+            )
+        connection.execute("ANALYZE")
+        connection.execute(
+            "UPDATE snapshot SET build_state = 'complete' WHERE singleton = 1"
+        )
         connection.commit()
         if connection.execute("PRAGMA integrity_check").fetchone() != ("ok",):
             raise StoreError("SQLite integrity_check failed")
         connection.close()
         connection = None
-        with temp.open("rb") as handle:
-            os.fsync(handle.fileno())
-        os.replace(temp, target)
+        _publish_sqlite(temp, target)
         return target
     except (KeyError, sqlite3.Error) as exc:
         raise StoreError(f"could not import JSONL snapshot: {exc}") from exc
     finally:
         if connection is not None:
             connection.close()
+        for handle in handles.values():
+            if handle is not None:
+                handle.close()
         temp.unlink(missing_ok=True)
 
 
@@ -765,28 +1027,67 @@ class SQLiteStore:
     backend = "sqlite"
 
     def __init__(self, path: Path, data_dir: Path, artifact_paths=None,
-                 *, require_derived: bool = False) -> None:
+        *, require_derived: bool = False) -> None:
         if not path.exists():
             raise StoreError(f"SQLite Brain snapshot is absent: {path}")
-        uri = f"file:{path.resolve()}?mode=ro"
+        uri = path.resolve().as_uri() + "?mode=ro&immutable=1"
         self.connection: sqlite3.Connection | None = None
         try:
             self.connection = sqlite3.connect(uri, uri=True)
+            application_id = self.connection.execute(
+                "PRAGMA application_id"
+            ).fetchone()[0]
+            if application_id != APPLICATION_ID:
+                raise StoreError(
+                    f"not a Brain SQLite database (application_id={application_id})"
+                )
             version = self.connection.execute("PRAGMA user_version").fetchone()[0]
             if version != SCHEMA_VERSION:
                 raise StoreError(
                     f"unsupported Brain SQLite schema {version}; expected {SCHEMA_VERSION}"
                 )
             row = self.connection.execute(
-                "SELECT build_state, snapshot_id FROM snapshot WHERE singleton = 1"
+                "SELECT schema_version, build_state, snapshot_id, base_snapshot_id, "
+                "projection_id "
+                "FROM snapshot WHERE singleton = 1"
             ).fetchone()
-            if row is None or row[0] != "complete":
+            if row is None or row[1] != "complete":
                 raise StoreError("Brain SQLite snapshot is incomplete")
-            self.snapshot_id = row[1]
+            if row[0] != version:
+                raise StoreError("Brain SQLite schema version markers disagree")
+            if row[2] != row[3]:
+                raise StoreError("Brain SQLite snapshot identity aliases disagree")
+            self.snapshot_id = row[2]
+            self.base_snapshot_id = row[3]
+            self.projection_id = row[4]
             paths = _paths(data_dir, artifact_paths)
-            recorded = dict(
-                self.connection.execute("SELECT name, source_digest FROM artifacts")
+            artifact_rows = list(
+                self.connection.execute(
+                    "SELECT name, digest, source_digest, logical_digest, raw_digest, "
+                    "source_present, metadata_json FROM artifacts"
+                )
             )
+            recorded: dict[str, str | None] = {}
+            logical_digests: dict[str, str] = {}
+            stored_metadata: dict[str, dict[str, Any]] = {}
+            source_presence: dict[str, bool] = {}
+            for (
+                name,
+                digest,
+                source_digest,
+                logical_digest,
+                raw_digest,
+                source_present,
+                metadata_json,
+            ) in artifact_rows:
+                if digest != logical_digest or source_digest != raw_digest:
+                    raise StoreError(
+                        f"Brain SQLite digest aliases disagree for {name}"
+                    )
+                recorded[name] = raw_digest
+                logical_digests[name] = logical_digest
+                source_presence[name] = bool(source_present)
+                stored_metadata[name] = json.loads(metadata_json)
             present = {"nodes", "edges", "edges_links"}
             if paths["cells"].exists() or paths["synapses"].exists():
                 if not paths["cells"].exists() or not paths["synapses"].exists():
@@ -794,7 +1095,7 @@ class SQLiteStore:
                 present.update(("cells", "synapses"))
             recorded_names = set(recorded)
             base_required = {"nodes", "edges", "edges_links"}
-            if not base_required <= recorded_names or recorded_names - present:
+            if not base_required <= recorded_names or recorded_names != present:
                 raise StaleSnapshotError(
                     "Brain SQLite snapshot has a different artifact set; rebuild it"
                 )
@@ -803,20 +1104,37 @@ class SQLiteStore:
                     "Brain SQLite snapshot has no derived cell layer; rebuild it"
                 )
             for name in sorted(recorded_names):
-                current_digest = (
-                    digest_file(paths[name])
-                    if paths[name].exists()
-                    else artifact_digests({name: ({}, [])})[name]
-                )
+                path_present = paths[name].exists()
+                if path_present != source_presence[name]:
+                    raise StaleSnapshotError(
+                        f"Brain SQLite source presence differs for {paths[name].name}; "
+                        "rebuild it"
+                    )
+                current_digest = digest_file(paths[name]) if path_present else None
                 if current_digest != recorded[name]:
                     raise StaleSnapshotError(
-                        f"Brain SQLite snapshot is stale relative to {paths[name].name}; rebuild it"
+                        "Brain SQLite snapshot is stale relative to "
+                        f"{paths[name].name}; rebuild it"
                     )
+            identity_artifacts = {
+                name: (stored_metadata[name], []) for name in recorded_names
+            }
+            validate_generations(identity_artifacts)
+            expected_base = base_snapshot_id_for(
+                identity_artifacts, logical_digests
+            )
+            expected_projection = projection_id_for(
+                identity_artifacts, logical_digests
+            )
+            if self.base_snapshot_id != expected_base:
+                raise StoreError("Brain SQLite base snapshot identity is invalid")
+            if self.projection_id != expected_projection:
+                raise StoreError("Brain SQLite projection identity is invalid")
         except StoreError:
             if self.connection is not None:
                 self.connection.close()
             raise
-        except sqlite3.Error as exc:
+        except (json.JSONDecodeError, sqlite3.Error) as exc:
             if self.connection is not None:
                 self.connection.close()
             raise StoreError(f"invalid Brain SQLite snapshot: {exc}") from exc
@@ -846,25 +1164,65 @@ class SQLiteStore:
         ):
             yield json.loads(payload)
 
-    def iter_edges(self, endpoint=None, direction="both", kinds=None, stream=None):
+    @staticmethod
+    def _edge_query(endpoint=None, direction="both", kinds=None, stream=None):
         if direction not in {"in", "out", "both"}:
             raise ValueError("direction must be in, out, or both")
+        values = sorted(kinds) if kinds else []
+
+        if endpoint is not None:
+            def branch(
+                endpoint_column: str,
+                index_name: str,
+                *,
+                exclude_self_loop: bool = False,
+            ) -> tuple[str, list[Any]]:
+                clauses = [f"{endpoint_column} = ?"]
+                params: list[Any] = [endpoint]
+                if exclude_self_loop:
+                    clauses.append("src <> ?")
+                    params.append(endpoint)
+                if stream is not None:
+                    clauses.append("stream = ?")
+                    params.append(stream)
+                if values:
+                    clauses.append(
+                        f"kind IN ({','.join('?' for _ in values)})"
+                    )
+                    params.extend(values)
+                return (
+                    "SELECT payload_json, stream, ordinal "
+                    f"FROM edges INDEXED BY {index_name} WHERE "
+                    + " AND ".join(clauses),
+                    params,
+                )
+
+            if direction == "out":
+                branches = [branch("src", "edges_src_kind_idx")]
+            elif direction == "in":
+                branches = [branch("dst", "edges_dst_kind_idx")]
+            else:
+                # The incoming branch excludes self-loops already returned by src.
+                branches = [
+                    branch("src", "edges_src_kind_idx"),
+                    branch(
+                        "dst",
+                        "edges_dst_kind_idx",
+                        exclude_self_loop=True,
+                    ),
+                ]
+            sql = (
+                "SELECT payload_json FROM ("
+                + " UNION ALL ".join(part[0] for part in branches)
+                + ") ORDER BY CASE stream WHEN 'main' THEN 0 ELSE 1 END, ordinal"
+            )
+            return sql, [param for part in branches for param in part[1]]
+
         clauses, params = [], []
         if stream is not None:
             clauses.append("stream = ?")
             params.append(stream)
-        if endpoint is not None:
-            if direction == "out":
-                clauses.append("src = ?")
-                params.append(endpoint)
-            elif direction == "in":
-                clauses.append("dst = ?")
-                params.append(endpoint)
-            else:
-                clauses.append("(src = ? OR dst = ?)")
-                params.extend((endpoint, endpoint))
-        if kinds:
-            values = sorted(kinds)
+        if values:
             clauses.append(f"kind IN ({','.join('?' for _ in values)})")
             params.extend(values)
         where = " WHERE " + " AND ".join(clauses) if clauses else ""
@@ -873,8 +1231,22 @@ class SQLiteStore:
             + where
             + " ORDER BY CASE stream WHEN 'main' THEN 0 ELSE 1 END, ordinal"
         )
+        return sql, params
+
+    def iter_edges(self, endpoint=None, direction="both", kinds=None, stream=None):
+        sql, params = self._edge_query(endpoint, direction, kinds, stream)
         for (payload,) in self.connection.execute(sql, params):
             yield json.loads(payload)
+
+    def edge_query_plan(
+        self, endpoint=None, direction="both", kinds=None, stream=None
+    ) -> tuple[str, ...]:
+        """Return deterministic SQLite plan details for diagnostics and canaries."""
+        sql, params = self._edge_query(endpoint, direction, kinds, stream)
+        return tuple(
+            row[3]
+            for row in self.connection.execute("EXPLAIN QUERY PLAN " + sql, params)
+        )
 
     def iter_cells(self):
         for (payload,) in self.connection.execute(

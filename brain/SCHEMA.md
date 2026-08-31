@@ -494,16 +494,32 @@ schema change does not silently reinterpret the graph. Incoming and outgoing edg
 and synapse indexes make degree-local queries proportional to the neighborhood
 rather than the full corpus.
 
-Every imported artifact records its `_meta`, row count, canonical digest, raw-file
-SHA-256, and generation. The database carries a schema version and
-`building|complete` state, is constructed at a temporary path under one transaction,
-passes SQLite integrity checks, and is published by atomic rename. Base JSONL
-publication uses rollback copies for ordinary errors; a hard interruption between
-its separate renames is rejected through generation/snapshot-ID mismatch. Readers open it
-read-only and accept it only when every adjacent JSONL raw hash matches; `auto` then
-falls back to a mutually consistent JSONL generation on absence or staleness, while
-explicit `sqlite` fails loudly. This freshness rule is load-bearing because ignored
-files survive branch switches.
+SQLite schema v2 has application ID `0x574c424e` (`WLBN`). Its `base_snapshot_id`
+identifies only the organ graph (`nodes` plus both edge streams), while
+`projection_id` identifies every logical artifact present, including cells and
+synapses; the legacy `snapshot_id` column is a checked alias of
+`base_snapshot_id`.
+Every artifact records its `_meta`, row count, canonical `logical_digest`, exact-file
+`raw_digest`, source-presence bit, and generation. The legacy `digest` and
+`source_digest` columns are checked aliases of the logical and raw digests during the
+v1-to-v2 transition. Logical digests and the projection identity are independent of
+SQLite page layout and JSONL whitespace; raw digests enforce freshness against the
+adjacent interchange files.
+
+The database carries a schema version and `building|complete` state, is constructed
+at a temporary path under one transaction, persists `ANALYZE` statistics, passes
+SQLite integrity checks, and is published by atomic rename followed by an `fsync`
+of the parent directory. The streaming builder opens all JSONL inputs before inspection,
+imports through those pinned handles, and rejects replacement or in-place mutation
+before publication. Base JSONL publication uses rollback copies for ordinary errors;
+a hard interruption between its separate renames is rejected through
+generation/snapshot-ID mismatch. Readers open SQLite read-only and accept it only
+when every adjacent JSONL presence bit and raw hash match; `auto` then falls back to
+a mutually consistent JSONL generation on absence or staleness, while explicit
+`sqlite` fails loudly. This freshness rule is load-bearing because ignored files
+survive branch switches. Bidirectional endpoint queries use an indexed `UNION ALL`
+over the source and destination indexes, exclude the incoming copy of self-loops,
+and restore JSONL stream/ordinal order.
 
 The production Worker, REST API, MCP tools, and browser continue reading derived
 static cell shards. D1 continues to hold the mutable community graph overlay only.

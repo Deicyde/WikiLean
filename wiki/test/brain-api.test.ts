@@ -9,6 +9,7 @@
 import { beforeEach, describe, it, expect } from "vitest";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import { FETCH_CAPS, SYNAPSE_KINDS, SYNAPSE_KINDS_CSV } from "../src/brain-api.js";
+import { declShardKey } from "../src/decl.js";
 import { setup, get, put, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import {
   installBrainFixture,
@@ -34,6 +35,8 @@ import {
   MW_PAGE,
   LIT_STMT,
   UNKNOWN_XREF,
+  FIXTURE_RELEASE_ID,
+  DEFAULT_ALIASES,
   type BrainFixtureOpts,
 } from "./helpers/brain-fixture.js";
 
@@ -56,6 +59,140 @@ const q = encodeURIComponent;
 
 // the isolate-lifetime asset memo must not leak fixtures across tests
 beforeEach(() => _resetBrainAssetMemo());
+
+describe("Brain release selection", () => {
+  it("revalidates the selector per request and memoizes a verified immutable manifest", async () => {
+    const paths: string[] = [];
+    const h = harness({ onAssetPath: (path) => paths.push(path) });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(200);
+    expect(j.release_id).toBe(FIXTURE_RELEASE_ID);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect(paths.filter((path) => path === "/assets/brain/current.json")).toHaveLength(2);
+    expect(paths.filter((path) => path.endsWith("/release.json"))).toHaveLength(1);
+    expect(paths.filter((path) => path.startsWith("/assets/brain/") && path !== "/assets/brain/current.json")
+      .every((path) => path.includes("/assets/brain/releases/"))).toBe(true);
+  });
+
+  it("fails closed when selector and immutable manifest identities disagree", async () => {
+    const h = harness({ manifestReleaseId: `sha256:${"b".repeat(64)}` });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(503);
+    expect(j).toMatchObject({ ok: false, release_id: null, snapshot: null });
+  });
+
+  it("fails closed when immutable manifest content is changed without a new identity", async () => {
+    const h = harness({
+      mutateReleaseManifest: (manifest) => { manifest.semantic_epoch = "fixture-tampered"; },
+    });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(503);
+    expect(j).toMatchObject({ ok: false, release_id: null, snapshot: null });
+  });
+
+  it("retries a transient malformed immutable manifest instead of poisoning the isolate", async () => {
+    const h = harness();
+    const assets = h.env.ASSETS as unknown as { fetch: (request: Request) => Promise<Response> };
+    const originalFetch = assets.fetch.bind(assets);
+    let malformed = true;
+    assets.fetch = async (request: Request) => {
+      if (malformed && new URL(request.url).pathname.endsWith("/release.json")) {
+        malformed = false;
+        return new Response("{}", { status: 200 });
+      }
+      return originalFetch(request);
+    };
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+  });
+
+  it("retries when manifest validation itself throws on malformed identity data", async () => {
+    const h = harness();
+    const assets = h.env.ASSETS as unknown as { fetch: (request: Request) => Promise<Response> };
+    const originalFetch = assets.fetch.bind(assets);
+    let malformed = true;
+    assets.fetch = async (request: Request) => {
+      const response = await originalFetch(request);
+      if (malformed && new URL(request.url).pathname.endsWith("/release.json")) {
+        malformed = false;
+        const manifest = await response.json() as { artifacts: Array<Record<string, unknown>> };
+        manifest.artifacts[0].bytes = 0.5;
+        return new Response(JSON.stringify(manifest), { status: 200 });
+      }
+      return response;
+    };
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+  });
+
+  it("rejects tampered immutable asset bytes and retries the asset on the next request", async () => {
+    const h = harness();
+    const assets = h.env.ASSETS as unknown as { fetch: (request: Request) => Promise<Response> };
+    const originalFetch = assets.fetch.bind(assets);
+    let tampered = true;
+    assets.fetch = async (request: Request) => {
+      if (tampered && new URL(request.url).pathname.endsWith("/cells/aliases.json")) {
+        tampered = false;
+        return new Response(JSON.stringify({ organs: {}, decls: {}, slugs: {} }), { status: 200 });
+      }
+      return originalFetch(request);
+    };
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+  });
+
+  it("fails closed when a self-consistent release omits a required runtime artifact", async () => {
+    const h = harness({ omitReleaseArtifacts: ["site/assets/brain/cells/aliases.json"] });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(503);
+    expect(j).toMatchObject({ ok: false, release_id: null, snapshot: null });
+  });
+
+  it("fails closed on a changeset claim until replay verification is implemented", async () => {
+    const h = harness({ throughChangeset: "accepted-change-1" });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(503);
+    expect(j).toMatchObject({ ok: false, release_id: null, snapshot: null });
+  });
+
+  it("isolates immutable memo entries across selector rollover", async () => {
+    const h = harness();
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).j.release_id).toBe(FIXTURE_RELEASE_ID);
+    const second = installBrainFixture(h.env, { releaseVariant: "second" });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).j.release_id).toBe(second.releaseId);
+  });
+
+  it("evicts the least-recently-used Brain release while retaining fixed asset memos", async () => {
+    const paths: string[] = [];
+    const observed = (path: string) => paths.push(path);
+    const h = harness({ releaseVariant: "lru-a", onAssetPath: observed });
+    const first = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(first.status).toBe(200);
+    const releaseA = first.j.release_id as string;
+    const releaseAHex = releaseA.slice("sha256:".length);
+    expect((await getJson(h, "/api/brain/decl?name=CommGroup")).status).toBe(200);
+
+    const releaseB = installBrainFixture(h.env, { releaseVariant: "lru-b", onAssetPath: observed });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    // Refresh A, making B the least-recently-used release.
+    installBrainFixture(h.env, { releaseVariant: "lru-a", onAssetPath: observed });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    installBrainFixture(h.env, { releaseVariant: "lru-c", onAssetPath: observed });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+
+    installBrainFixture(h.env, { releaseVariant: "lru-b", onAssetPath: observed });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect((await getJson(h, "/api/brain/decl?name=CommGroup")).status).toBe(200);
+
+    const releaseABase = `/assets/brain/releases/${releaseAHex}`;
+    const releaseBBase = `/assets/brain/releases/${releaseB.releaseHex}`;
+    expect(paths.filter((path) => path === `${releaseABase}/release.json`)).toHaveLength(1);
+    expect(paths.filter((path) => path === `${releaseABase}/cells/aliases.json`)).toHaveLength(1);
+    expect(paths.filter((path) => path === `${releaseBBase}/release.json`)).toHaveLength(2);
+    expect(paths.filter((path) => path === `${releaseBBase}/cells/aliases.json`)).toHaveLength(2);
+    expect(paths.filter((path) => path === "/assets/decl-index/manifest.json")).toHaveLength(1);
+  });
+});
 
 describe("GET /api/brain/cell — every organ id resolves to its atom", () => {
   // The headline of the v3 cut: Module and Vector space are ONE atom, so every
@@ -119,9 +256,9 @@ describe("GET /api/brain/cell — every organ id resolves to its atom", () => {
       { id: ALGEBRA_SUPER, label: "Algebra" },
     ]);
     expect(j.cell).toMatchObject({ anchor: ABELIAN, supercells: ["path:Mathlib/Algebra/Group/Defs"] });
-    // caches at the nightly cadence
+    // Unqualified current-selector responses must revalidate across promotions.
     const res = await get(h.env, `/api/brain/cell?key=${COMM_DECL}`);
-    expect(res.headers.get("Cache-Control")).toBe("public, max-age=3600");
+    expect(res.headers.get("Cache-Control")).toBe("public, max-age=0, must-revalidate");
   });
 
   it("summarizes synapses and previews the strongest partners", async () => {
@@ -167,11 +304,20 @@ describe("GET /api/brain/cell — every organ id resolves to its atom", () => {
     expect((await get(h.env, "/api/brain/cell")).status).toBe(400);
   });
 
-  it("without aliases.json only atom ids and labels resolve (it IS the compat layer)", async () => {
+  it("fails closed instead of treating a missing aliases.json as a semantic miss", async () => {
     const h = harness({ aliases: null });
     expect((await getJson(h, `/api/brain/cell?key=${MODULE_CELL}`)).status).toBe(200);
-    expect((await getJson(h, `/api/brain/cell?key=${q("Vector space")}`)).j.id).toBe(MODULE_CELL);
-    expect((await getJson(h, `/api/brain/cell?key=${VSPACE_Q}`)).status).toBe(404);
+    const missing = await getJson(h, `/api/brain/cell?key=${VSPACE_Q}`);
+    expect(missing.status).toBe(503);
+    expect(missing.j).toMatchObject({ ok: false, error: "brain release unavailable" });
+  });
+
+  it("fails closed when a declared cell shard cannot be loaded", async () => {
+    const shard = declShardKey(MODULE_CELL, 6);
+    const h = harness({ missingAssets: [`cells/${shard}.json`] });
+    const missing = await getJson(h, `/api/brain/cell?key=${MODULE_CELL}`);
+    expect(missing.status).toBe(503);
+    expect(missing.j).toMatchObject({ ok: false, error: "brain release unavailable" });
   });
 });
 
@@ -583,7 +729,32 @@ describe("GET /api/brain/filter — facet mask math + paging", () => {
     expect(ids(p1.j)).toEqual([ABELIAN_CELL]);
     const p2 = await getJson(h, `/api/brain/filter?f=1&limit=1&cursor=${p1.j.next_cursor}`);
     expect(ids(p2.j)).toEqual([MODULE_CELL]);
-    expect((await getJson(h, `/api/brain/filter?f=1&limit=10&cursor=${p2.j.next_cursor}`)).j.next_cursor).toBeNull();
+    expect(p1.j.next_cursor).toEqual(expect.any(String));
+    expect(p2.j.next_cursor).toBeNull();
+    // Pre-release integer offsets cannot identify an immutable generation.
+    const legacy = await getJson(h, "/api/brain/filter?f=1&limit=1&cursor=1");
+    expect(legacy.status).toBe(400);
+    expect(legacy.j.error).toBe("bad cursor");
+  });
+
+  it("rejects a filter cursor reused for a different same-release query", async () => {
+    const h = harness();
+    const p1 = await getJson(h, "/api/brain/filter?f=1&limit=1");
+    const changedMask = await getJson(h, `/api/brain/filter?f=0&limit=1&cursor=${p1.j.next_cursor}`);
+    expect(changedMask.status).toBe(400);
+    expect(changedMask.j.error).toContain("different Brain query");
+    const changedType = await getJson(h, `/api/brain/filter?f=1&type=supercell&limit=1&cursor=${p1.j.next_cursor}`);
+    expect(changedType.status).toBe(400);
+    expect(changedType.j.error).toContain("different Brain query");
+  });
+
+  it("rejects a structurally valid filter cursor from another release", async () => {
+    const h = harness();
+    const p1 = await getJson(h, "/api/brain/filter?f=1&limit=1");
+    installBrainFixture(h.env, { releaseVariant: "filter-rollover" });
+    const p2 = await getJson(h, `/api/brain/filter?f=1&limit=1&cursor=${p1.j.next_cursor}`);
+    expect(p2.status).toBe(400);
+    expect(p2.j.error).toContain("different Brain release");
   });
 
   it("400s a missing/negative/garbage mask, and a v2 node type", async () => {
@@ -1125,6 +1296,63 @@ describe("GET /api/brain/neighborhood — cursor, min_w, min_conf", () => {
     // the Abelian synapse's traces carry no confidence, so they are KEPT
     const abelian = (j.synapses as Array<Record<string, unknown>>).find((s) => s.id === ABELIAN_CELL)!;
     expect((abelian.traces as unknown[]).length).toBeGreaterThan(0);
+  });
+
+  it("round-trips opaque cursors for Unicode organ ids", async () => {
+    const aliases = {
+      ...DEFAULT_ALIASES,
+      organs: { ...DEFAULT_ALIASES.organs, "α-module": MODULE_CELL },
+    };
+    const h = harness({ aliases });
+    const p1 = await getJson(h, `/api/brain/neighborhood?id=${q("α-module")}&limit=1&traces=0`);
+    expect(p1.status).toBe(200);
+    expect(p1.j.next_cursor).toEqual(expect.any(String));
+    const p2 = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${q("α-module")}&limit=1&traces=0&cursor=${q(String(p1.j.next_cursor))}`,
+    );
+    expect(p2.status).toBe(200);
+    expect((p2.j.synapses as Array<{ id: string }>)[0].id).toBe(LINALG_SUPER);
+  });
+
+  it("rejects a pre-release {w,id} cursor", async () => {
+    const h = harness();
+    const legacy = btoa(JSON.stringify({ w: 15, id: ABELIAN_CELL }));
+    const { status, j } = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0&cursor=${q(legacy)}`,
+    );
+    expect(status).toBe(400);
+    expect(j.error).toContain("different Brain release");
+  });
+
+  it("rejects a neighborhood cursor reused for a different same-release query", async () => {
+    const h = harness();
+    const p1 = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0`);
+    const changedAtom = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${ABELIAN_CELL}&limit=1&traces=0&cursor=${q(String(p1.j.next_cursor))}`,
+    );
+    expect(changedAtom.status).toBe(400);
+    expect(changedAtom.j.error).toContain("different Brain query");
+    const changedFilter = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0&min_w=9&cursor=${q(String(p1.j.next_cursor))}`,
+    );
+    expect(changedFilter.status).toBe(400);
+    expect(changedFilter.j.error).toContain("different Brain query");
+  });
+
+  it("rejects a structurally valid neighborhood cursor from another release", async () => {
+    const h = harness();
+    const p1 = await getJson(h, `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0`);
+    installBrainFixture(h.env, { releaseVariant: "neighborhood-rollover" });
+    const p2 = await getJson(
+      h,
+      `/api/brain/neighborhood?id=${MODULE_CELL}&limit=1&traces=0&cursor=${q(String(p1.j.next_cursor))}`,
+    );
+    expect(p2.status).toBe(400);
+    expect(p2.j.error).toContain("different Brain release");
   });
 
   it("a garbage cursor restarts from the top rather than throwing", async () => {

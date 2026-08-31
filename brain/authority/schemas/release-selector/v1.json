@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/release-selector/v1.json",
+  "title": "WikiLean public Brain release selector v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "release_id", "release", "manifest"],
+  "properties": {
+    "schema": {"const": "wikilean.release-selector/v1"},
+    "release_id": {"$ref": "#/$defs/hash"},
+    "release": {"$ref": "#/$defs/digest"},
+    "manifest": {"$ref": "#/$defs/manifestPath"},
+    "previous_release_id": {"$ref": "#/$defs/hash"},
+    "previous_release": {"$ref": "#/$defs/digest"},
+    "previous_manifest": {"$ref": "#/$defs/manifestPath"},
+    "audited_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {"required": ["previous_release_id"]},
+          {"required": ["previous_release"]},
+          {"required": ["previous_manifest"]}
+        ]
+      },
+      "then": {
+        "required": ["previous_release_id", "previous_release", "previous_manifest"]
+      }
+    }
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "manifestPath": {
+      "type": "string",
+      "pattern": "^/assets/brain/releases/[0-9a-f]{64}/release\\.json$"
+    }
+  }
+}

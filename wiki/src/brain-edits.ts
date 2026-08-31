@@ -14,7 +14,16 @@ import { and, eq, or, inArray } from "drizzle-orm";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
-import { brainNodeExists, BRAIN_ID_RE } from "./brain.js";
+import {
+  BrainReleaseUnavailableError,
+  brainNodeExists,
+  isBrainReleaseUnavailableError,
+  registerBrainReleaseCacheEvictor,
+  requiredBrainAssetJson,
+  resolveBrainRelease,
+  BRAIN_ID_RE,
+  type BrainReleaseContext,
+} from "./brain.js";
 import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
@@ -75,40 +84,101 @@ function safeParse(s: string): unknown {
 }
 
 // Static external-page → nodes reverse index (built by build_shards.py →
-// /assets/brain/xref_index.json). Cached for the isolate lifetime: it changes
-// only on nightly rebuilds, and community (D1) partners are queried live, so a
-// few minutes of staleness on the STATIC side is harmless.
-let _xrefIndex: Record<string, string[]> | null = null;
-// its inversion, node id → [pages the node statically xrefs]: the v2 per-node
-// shard entries used to carry this as edges.{out,in} kind==="xref"; the shards
-// are retired, and inverting the (already-loaded) index is the same data.
-let _xrefPagesByNode: Record<string, string[]> | null = null;
+// <release>/xref_index.json). Cached by immutable release within the shared
+// two-release overlap window; community (D1) partners are still queried live.
+const _xrefIndex = new Map<string, Promise<Record<string, string[]>>>();
+// Its inversion, node id → [pages the node statically xrefs]. Both caches are
+// keyed by release because one isolate may overlap two current selectors.
+const _xrefPagesByNode = new Map<string, Promise<Record<string, string[]>>>();
+registerBrainReleaseCacheEvictor((releaseId) => {
+  _xrefIndex.delete(releaseId);
+  _xrefPagesByNode.delete(releaseId);
+});
 /** test-only: clear the isolate-lifetime static-index caches between cases */
 export function _resetBrainEditCaches(): void {
-  _xrefIndex = null;
-  _xrefPagesByNode = null;
+  _xrefIndex.clear();
+  _xrefPagesByNode.clear();
 }
-async function getXrefIndex(c: Context<{ Bindings: Env }>): Promise<Record<string, string[]>> {
-  if (_xrefIndex) return _xrefIndex;
-  try {
-    const res = await c.env.ASSETS.fetch(new Request(new URL("/assets/brain/xref_index.json", c.req.url)));
-    _xrefIndex = res.ok ? ((await res.json()) as Record<string, string[]>) : {};
-  } catch {
-    _xrefIndex = {};
-  }
-  return _xrefIndex;
+/** test-only: expose release keys so the overlap bound can be asserted */
+export function _brainEditCacheReleaseIds(): {
+  xrefIndex: string[];
+  xrefPagesByNode: string[];
+} {
+  return {
+    xrefIndex: [..._xrefIndex.keys()],
+    xrefPagesByNode: [..._xrefPagesByNode.keys()],
+  };
 }
-async function getXrefPagesByNode(c: Context<{ Bindings: Env }>): Promise<Record<string, string[]>> {
-  if (_xrefPagesByNode) return _xrefPagesByNode;
-  const idx = await getXrefIndex(c);
-  // null-prototype: the focus id is caller input, and a plain object would
-  // serve inherited names ("__proto__", "constructor") as truthy rows
-  const inv: Record<string, string[]> = Object.create(null);
-  for (const [page, nodes] of Object.entries(idx)) {
-    for (const n of nodes) (inv[n] ??= []).push(page);
+async function getXrefIndex(
+  c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
+): Promise<Record<string, string[]>> {
+  let hit = _xrefIndex.get(release.releaseId);
+  if (!hit) {
+    let pending: Promise<Record<string, string[]>>;
+    pending = requiredBrainAssetJson<unknown>(c, release, "xref_index.json")
+      .then((value) => {
+        if (typeof value !== "object" || value === null || Array.isArray(value)) {
+          throw new BrainReleaseUnavailableError(
+            release.releaseId,
+            "xref_index.json",
+            "declared asset has an invalid shape",
+          );
+        }
+        for (const nodes of Object.values(value)) {
+          if (!Array.isArray(nodes) || nodes.some((node) => typeof node !== "string")) {
+            throw new BrainReleaseUnavailableError(
+              release.releaseId,
+              "xref_index.json",
+              "declared asset has an invalid shape",
+            );
+          }
+        }
+        return value as Record<string, string[]>;
+      })
+      .catch((error) => {
+        if (_xrefIndex.get(release.releaseId) === pending) _xrefIndex.delete(release.releaseId);
+        throw error;
+      });
+    hit = pending;
+    _xrefIndex.set(release.releaseId, pending);
   }
-  _xrefPagesByNode = inv;
-  return inv;
+  return hit;
+}
+async function getXrefPagesByNode(
+  c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
+): Promise<Record<string, string[]>> {
+  let hit = _xrefPagesByNode.get(release.releaseId);
+  if (!hit) {
+    let pending: Promise<Record<string, string[]>>;
+    pending = getXrefIndex(c, release).then((idx) => {
+      const inv: Record<string, string[]> = Object.create(null);
+      for (const [page, nodes] of Object.entries(idx)) {
+        for (const n of nodes) (inv[n] ??= []).push(page);
+      }
+      return inv;
+    }).catch((error) => {
+      if (_xrefPagesByNode.get(release.releaseId) === pending) {
+        _xrefPagesByNode.delete(release.releaseId);
+      }
+      throw error;
+    });
+    hit = pending;
+    _xrefPagesByNode.set(release.releaseId, pending);
+  }
+  return hit;
+}
+
+function unavailableReleaseResponse(
+  c: Context<{ Bindings: Env }>,
+  error: BrainReleaseUnavailableError,
+): Response {
+  return c.json(
+    { ok: false, error: "brain release unavailable", release_id: error.releaseId },
+    503,
+    { "Cache-Control": "no-store" },
+  );
 }
 
 // user.role 'bot' is the shared PIPELINE_TOKEN bearer (site/moderate.py + scripts).
@@ -187,8 +257,12 @@ function droppedEndpointError(id: string): string | null {
 // validated Wikidata QID (which the caller then mints as a community node).
 // Anything else is rejected — the constrained "new nodes" rule: only real
 // Wikidata items.
-async function resolveNodeEndpoint(c: Context<{ Bindings: Env }>, id: string): Promise<EndpointResult> {
-  if (await brainNodeExists(c, id)) return { node: true };
+async function resolveNodeEndpoint(
+  c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
+  id: string,
+): Promise<EndpointResult> {
+  if (await brainNodeExists(c, release, id)) return { node: true };
   if (QID_RE.test(id)) {
     const wd = await validateWikidataQid(c, id);
     if (wd) return { node: false, mint: { id, label: wd.label, description: wd.description } };
@@ -561,10 +635,14 @@ function quickRowsFromBody(body: Record<string, unknown>, specs: QuickDbSpec[]):
 // The owning atom of a v2-grammar node id, ONE shard fetch: an atom id goes
 // straight to the shards; an organ id resolves through the strict oracle
 // (alias lookup, no fetch) and then fetches its atom. Null = not in the brain.
-async function atomForNode(c: Context<{ Bindings: Env }>, id: string): Promise<Atom | null> {
-  if (id.startsWith("cell:") || id.startsWith("path:")) return atomFor(c, id);
-  const atomId = await atomIdForOrgan(c, id);
-  return atomId ? atomFor(c, atomId) : null;
+async function atomForNode(
+  c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
+  id: string,
+): Promise<Atom | null> {
+  if (id.startsWith("cell:") || id.startsWith("path:")) return atomFor(c, release, id);
+  const atomId = await atomIdForOrgan(c, release, id);
+  return atomId ? atomFor(c, release, atomId) : null;
 }
 
 // v3 label reader: the organ's own label, falling back to the atom's label
@@ -596,6 +674,7 @@ function externalValue(raw: string, sp: QuickDbSpec): string | { error: string }
 
 async function endpointForDb(
   c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
   row: QuickInputRow,
   sp: QuickDbSpec,
 ): Promise<QuickEndpoint | { error: string } | null> {
@@ -605,7 +684,7 @@ async function endpointForDb(
     const decl = normalizeDecl(raw);
     if (!decl) return { error: "bad Mathlib declaration name" };
     const nodeId = `decl:Mathlib:${decl}`;
-    const atom = await atomForNode(c, nodeId);
+    const atom = await atomForNode(c, release, nodeId);
     if (!atom) return { error: "Mathlib declaration is not in the Brain" };
     const file = normalizeFile(row) || fileForDeclOrgan(atom, nodeId);
     if (!file) return { error: "Mathlib file is required when the Brain node has no module" };
@@ -614,17 +693,17 @@ async function endpointForDb(
   if (sp.key === "wikidata") {
     const qid = normalizeQid(raw);
     if (!qid || !QID_RE.test(qid)) return { error: "bad Wikidata QID" };
-    const res = await resolveNodeEndpoint(c, qid);
+    const res = await resolveNodeEndpoint(c, release, qid);
     if ("error" in res) return { error: "qid: " + res.error };
-    const displayLabel = res.node ? labelForNode(await atomForNode(c, qid), qid, qid) : res.mint.label;
+    const displayLabel = res.node ? labelForNode(await atomForNode(c, release, qid), qid, qid) : res.mint.label;
     return { db: sp.key, label: sp.label, value: qid, nodeId: qid, qid, displayLabel, mint: res.node ? undefined : res.mint };
   }
   if (sp.key === "brain") {
     const nodeId = normalizeEndpointId(raw.trim());
     if (!BRAIN_ID_RE.test(nodeId)) return { error: "bad Brain node id" };
-    const res = await resolveNodeEndpoint(c, nodeId);
+    const res = await resolveNodeEndpoint(c, release, nodeId);
     if ("error" in res) return { error: "brain node: " + res.error };
-    const displayLabel = res.node ? labelForNode(await atomForNode(c, nodeId), nodeId, nodeId) : res.mint.label;
+    const displayLabel = res.node ? labelForNode(await atomForNode(c, release, nodeId), nodeId, nodeId) : res.mint.label;
     return { db: sp.key, label: sp.label, value: nodeId, nodeId, displayLabel, mint: res.node ? undefined : res.mint };
   }
   const value = externalValue(raw, sp);
@@ -664,6 +743,7 @@ function nodePairKind(a: QuickEndpoint, b: QuickEndpoint): { kind: string; src: 
 
 async function processQuickRow(
   c: Context<{ Bindings: Env }>,
+  release: BrainReleaseContext,
   user: AuthUser,
   actorType: ActorType,
   specs: QuickDbSpec[],
@@ -673,7 +753,7 @@ async function processQuickRow(
   const line = typeof row.line === "number" ? row.line : fallbackLine;
   const endpoints: QuickEndpoint[] = [];
   for (const sp of specs) {
-    const ep = await endpointForDb(c, row, sp);
+    const ep = await endpointForDb(c, release, row, sp);
     if (!ep) continue;
     if ("error" in ep) return { result: { ok: false, line, error: ep.error } };
     endpoints.push(ep);
@@ -1051,6 +1131,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     } catch {
       return c.json({ ok: false, error: "bad JSON body" }, 400);
     }
+    const release = await resolveBrainRelease(c);
+    if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
     const actor = actorTypeFor(bearer, body);
     if (actor !== "human" && actor !== "ai") return c.json({ ok: false, error: actor }, 400);
     const specs = selectedQuickDbs(body);
@@ -1068,10 +1150,11 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const items: QueueItem[] = [];
     for (let i = 0; i < rows.length; i++) {
       try {
-        const out = await processQuickRow(c, user, actor, specs, rows[i], i + 1);
+        const out = await processQuickRow(c, release, user, actor, specs, rows[i], i + 1);
         results.push(out.result);
         if (out.item) items.push(out.item);
-      } catch {
+      } catch (error) {
+        if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
         results.push({ ok: false, line: i + 1, error: "could not save row" });
       }
     }
@@ -1087,7 +1170,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const accepted = results.filter((r) => r.ok).length;
     const failed = results.length - accepted;
     return c.json(
-      { ok: accepted > 0, databases: specs.map((sp) => sp.key), accepted, failed, queue_count: queueCount, rows: results },
+      { ok: accepted > 0, release_id: release.releaseId, databases: specs.map((sp) => sp.key), accepted, failed, queue_count: queueCount, rows: results },
       accepted > 0 ? 200 : 400,
     );
   });
@@ -1138,6 +1221,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       actorType = "human";
     }
 
+    const release = await resolveBrainRelease(c);
+    if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
+
     if (!COMMUNITY_KINDS.has(kind)) {
       return c.json({ ok: false, error: `kind must be one of: ${[...COMMUNITY_KINDS].join(", ")}` }, 400);
     }
@@ -1148,7 +1234,13 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     // Endpoints must be an existing brain node OR a validated Wikidata QID (which
     // we mint as a community node). Collect any mints to persist after the edge.
     const mints: Array<{ id: string; label: string; description: string }> = [];
-    const srcRes = await resolveNodeEndpoint(c, src);
+    let srcRes: EndpointResult;
+    try {
+      srcRes = await resolveNodeEndpoint(c, release, src);
+    } catch (error) {
+      if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+      throw error;
+    }
     if ("error" in srcRes) return c.json({ ok: false, error: "src: " + srcRes.error, src }, 400);
     if (!srcRes.node) mints.push(srcRes.mint);
 
@@ -1165,7 +1257,13 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       evidence = { note, db: xdb, value };
     } else {
       if (!BRAIN_ID_RE.test(dst)) return c.json({ ok: false, error: "bad dst id" }, 400);
-      const dstRes = await resolveNodeEndpoint(c, dst);
+      let dstRes: EndpointResult;
+      try {
+        dstRes = await resolveNodeEndpoint(c, release, dst);
+      } catch (error) {
+        if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+        throw error;
+      }
       if ("error" in dstRes) return c.json({ ok: false, error: "dst: " + dstRes.error, dst }, 400);
       if (!dstRes.node) mints.push(dstRes.mint);
     }
@@ -1205,7 +1303,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         )
         .limit(1)
     )[0];
-    if (dup) return c.json({ ok: true, id: dup.id, duplicate: true }, 200);
+    if (dup) return c.json({ ok: true, id: dup.id, duplicate: true, release_id: release.releaseId }, 200);
 
     const id = freshEdgeId();
     try {
@@ -1237,10 +1335,10 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
           )
           .limit(1)
       )[0];
-      if (ex) return c.json({ ok: true, id: ex.id, duplicate: true }, 200);
+      if (ex) return c.json({ ok: true, id: ex.id, duplicate: true, release_id: release.releaseId }, 200);
       return c.json({ ok: false, error: "could not save edge" }, 500);
     }
-    return c.json({ ok: true, id, actor_type: actorType, added_by: user.id }, 201);
+    return c.json({ ok: true, id, actor_type: actorType, added_by: user.id, release_id: release.releaseId }, 201);
   });
 
   // POST /api/brain/node — introduce a NEW concept node (a validated Wikidata
@@ -1272,8 +1370,19 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       actorType = "human";
     }
     if (!QID_RE.test(qid)) return c.json({ ok: false, error: "node must be a Wikidata Q-id" }, 400);
+    const release = await resolveBrainRelease(c);
+    if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
     // already a static node → nothing to add
-    if (await brainNodeExists(c, qid)) return c.json({ ok: true, id: qid, existing: true }, 200);
+    let staticNode: boolean;
+    try {
+      staticNode = await brainNodeExists(c, release, qid);
+    } catch (error) {
+      if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+      throw error;
+    }
+    if (staticNode) {
+      return c.json({ ok: true, id: qid, existing: true, release_id: release.releaseId }, 200);
+    }
     const wd = await validateWikidataQid(c, qid);
     if (!wd) return c.json({ ok: false, error: `${qid} is not a resolvable Wikidata item` }, 400);
     const db = drizzle(c.env.DB);
@@ -1291,7 +1400,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         version: 1,
       })
       .onConflictDoNothing();
-    return c.json({ ok: true, id: qid, label: wd.label, actor_type: actorType, added_by: user.id }, 201);
+    return c.json({ ok: true, id: qid, label: wd.label, actor_type: actorType, added_by: user.id, release_id: release.releaseId }, 201);
   });
 
   // DELETE a community node (soft-delete gravestone). Only community-added nodes
@@ -1303,6 +1412,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/brain/edges", async (c) => {
     const id = str(c.req.query("id"));
     if (!BRAIN_ID_RE.test(id)) return c.json({ ok: false, error: "bad node id" }, 400);
+    const release = await resolveBrainRelease(c);
+    if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
     const db = drizzle(c.env.DB);
     const rows = await db
       .select()
@@ -1320,6 +1431,18 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       created_at: r.createdAt,
     }));
 
+    let staticIndex: Record<string, string[]>;
+    let staticPagesByNode: Record<string, string[]>;
+    try {
+      [staticIndex, staticPagesByNode] = await Promise.all([
+        getXrefIndex(c, release),
+        getXrefPagesByNode(c, release),
+      ]);
+    } catch (error) {
+      if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+      throw error;
+    }
+
     // ---- cross-pollination: inferred xref-shared partners --------------------
     // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs.
     // The static side reads the INVERTED xref_index.json (page → nodes becomes
@@ -1330,7 +1453,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     // xref-shared link nobody drew explicitly).
     const pages = new Set<string>();
     for (const r of rows) if (r.kind === "xref" && r.src === id) pages.add(r.dst);
-    for (const p of (await getXrefPagesByNode(c))[id] || []) pages.add(p);
+    for (const p of staticPagesByNode[id] || []) pages.add(p);
     const shared: Array<{ node: string; via: string; db: string; value: string; source: string }> = [];
     if (pages.size) {
       const pageArr = [...pages].slice(0, 40);
@@ -1343,8 +1466,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         const parts = page.split(":");
         shared.push({ node, via: page, db: parts[1] || "", value: parts.slice(2).join(":"), source });
       };
-      const idx = await getXrefIndex(c);
-      for (const p of pageArr) for (const n of idx[p] || []) addPartner(n, p, "static");
+      for (const p of pageArr) for (const n of staticIndex[p] || []) addPartner(n, p, "static");
       const comm = await db
         .select({ src: brainEdges.src, dst: brainEdges.dst })
         .from(brainEdges)
@@ -1384,7 +1506,11 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     }
 
     // live tail — never cache
-    return c.json({ ok: true, id, edges, shared, node_labels: nodeLabels, self }, 200, { "Cache-Control": "no-store" });
+    return c.json(
+      { ok: true, release_id: release.releaseId, id, edges, shared, node_labels: nodeLabels, self },
+      200,
+      { "Cache-Control": "no-store" },
+    );
   });
 
   // DELETE /api/brain/edge/:id — soft-delete (gravestone). Any logged-in user

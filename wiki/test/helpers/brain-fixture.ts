@@ -12,6 +12,7 @@
 
 import { declShardKey } from "../../src/decl.js";
 import type { Env } from "../../src/env.js";
+import { createHash } from "node:crypto";
 
 // atoms
 export const ABELIAN_CELL = "cell:Q181296"; // concept ∘ decl ∘ pages ∘ article
@@ -556,9 +557,54 @@ export interface BrainFixtureOpts {
   // override the suffix manifest's source_sha_or_etag (a mismatch with the decl
   // manifest must degrade namespace suggestions to none)
   suffixEtag?: string;
+  // Perturb a valid manifest's identity to model selector rollover.
+  releaseVariant?: string;
+  // Override only the manifest claim after its identity is computed.
+  manifestReleaseId?: string;
+  // Mutate a complete manifest after its identity is computed, to model tampering.
+  mutateReleaseManifest?: (manifest: Record<string, unknown>) => void;
+  // Omit paths before computing identity, producing a self-consistent but incomplete release.
+  omitReleaseArtifacts?: string[];
+  // Set before computing identity; current runtime profile must reject non-null
+  // changeset claims until accepted-changeset replay verification exists.
+  throughChangeset?: string;
+  xrefIndex?: Record<string, string[]>;
+  // Return a transient 404 this many times before serving xref_index.json.
+  xrefIndexFailures?: number;
+  // Return 404 for a declared release-relative asset (for example cells/mo____.json).
+  missingAssets?: string[];
+  onAssetPath?: (path: string) => void;
 }
 
-export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void {
+interface FixtureRelease {
+  assetBodies: Map<string, string>;
+  manifest: Record<string, unknown>;
+  releaseId: string;
+  releaseHex: string;
+}
+
+function fixtureDigest(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number" && Number.isSafeInteger(value)) return String(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  const object = value as Record<string, unknown>;
+  return `{${Object.keys(object).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(",")}}`;
+}
+
+function fixtureReleaseIdentity(manifest: Record<string, unknown>): string {
+  const identityValue = { ...manifest };
+  delete identityValue.release_id;
+  delete identityValue.attestations;
+  delete identityValue.created_at;
+  const payload = `wikilean\0wikilean.release.v1\0canonical-json-v1\0${canonicalJson(identityValue)}`;
+  return `sha256:${fixtureDigest(payload)}`;
+}
+
+function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
   const cells = fixtureCells();
   const shards: Record<string, number> = {};
   const data: Record<string, Record<string, unknown>> = {};
@@ -575,7 +621,7 @@ export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void
       ...(spec.breadcrumb ? { breadcrumb: spec.breadcrumb } : {}),
     };
   }
-  const manifest = {
+  const cellsManifest = {
     scheme: { kind: "prefix", min_len: KEY_LEN, max_len: KEY_LEN, pad: "_" },
     shards,
     prov: [
@@ -592,15 +638,106 @@ export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void
     },
   };
   const aliases = opts.aliases === undefined ? DEFAULT_ALIASES : opts.aliases;
+  const xrefIndex = opts.xrefIndex ?? {};
+  const assetValues = new Map<string, unknown>([
+    ["sources.json", {}],
+    ["xref_index.json", xrefIndex],
+    ["cells/manifest.json", cellsManifest],
+    ["cells/aliases.json", aliases ?? DEFAULT_ALIASES],
+    ["cells/labels.json", LABELS],
+    ["cells/supercells.json", SUPERCELLS],
+    ["cells/explorer.json", {}],
+    ["cells/frontier_graph.json", {}],
+  ]);
+  for (const [key, shard] of Object.entries(data)) assetValues.set(`cells/${key}.json`, shard);
+  const assetBodies = new Map(
+    [...assetValues].map(([path, value]) => [path, JSON.stringify(value)]),
+  );
+  const artifactBodies = new Map<string, string>(
+    [...assetBodies].map(([path, bytes]) => [`site/assets/brain/${path}`, bytes]),
+  );
+  artifactBodies.set("site/out/brain.html", "<!doctype html><title>Fixture Brain</title>");
+  const omitted = new Set(opts.omitReleaseArtifacts ?? []);
+  const artifacts = [...artifactBodies]
+    .filter(([path]) => !omitted.has(path))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([path, bytes], index) => ({
+      logical_name: `fixture_${index}`,
+      path,
+      media_type: path.endsWith(".json") ? "application/json" : "text/html",
+      sha256: fixtureDigest(bytes),
+      bytes: new TextEncoder().encode(bytes).byteLength,
+      logical_format: path.endsWith(".json") ? "json" : "opaque",
+      logical_root: path.endsWith(".json") ? `sha256:${fixtureDigest(bytes)}` : null,
+    }));
+  const variant = fixtureDigest(opts.releaseVariant ?? "default").slice(0, 16);
+  const releaseManifest: Record<string, unknown> = {
+    schema: "wikilean.release/v1",
+    profile: "brain-current-v1",
+    authority: {
+      git_commit: "0".repeat(40),
+      semantic_state_root: `sha256:${"1".repeat(64)}`,
+      through_changeset: opts.throughChangeset ?? null,
+    },
+    source_set_root: `sha256:${"2".repeat(64)}`,
+    semantic_epoch: `fixture-${variant}`,
+    reducer: {
+      schedule: "fixture",
+      version: "1",
+      git_commit: "0".repeat(40),
+      configuration_sha256: "3".repeat(64),
+      environment_sha256: "4".repeat(64),
+    },
+    artifacts,
+    attestations: [],
+    compatible_overlay_generation_ids: [],
+    created_at: "2026-07-15T00:00:00Z",
+  };
+  const releaseId = fixtureReleaseIdentity(releaseManifest);
+  releaseManifest.release_id = opts.manifestReleaseId ?? releaseId;
+  opts.mutateReleaseManifest?.(releaseManifest);
+  return { assetBodies, manifest: releaseManifest, releaseId, releaseHex: releaseId.slice("sha256:".length) };
+}
+
+const DEFAULT_FIXTURE_RELEASE = buildFixtureRelease({});
+export const FIXTURE_RELEASE_ID = DEFAULT_FIXTURE_RELEASE.releaseId;
+export const FIXTURE_RELEASE_HEX = DEFAULT_FIXTURE_RELEASE.releaseHex;
+
+export function installBrainFixture(
+  env: Env,
+  opts: BrainFixtureOpts = {},
+): { releaseId: string; releaseHex: string } {
+  const fixture = buildFixtureRelease(opts);
+  const { releaseId, releaseHex } = fixture;
+  const releaseBase = `/assets/brain/releases/${releaseHex}`;
+  const selector = {
+    schema: "wikilean.release-selector/v1",
+    release_id: releaseId,
+    release: releaseHex,
+    manifest: `${releaseBase}/release.json`,
+    audited_at: "2026-07-15T00:00:00Z",
+  };
+  let remainingXrefFailures = opts.xrefIndexFailures ?? 0;
+  const missingAssets = new Set(opts.missingAssets ?? []);
   (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } }).ASSETS = {
     fetch: async (req: Request) => {
       const path = new URL(req.url).pathname;
+      opts.onAssetPath?.(path);
       const json = (o: unknown) => new Response(JSON.stringify(o), { status: 200 });
-      if (path === "/assets/brain/cells/manifest.json") return json(manifest);
-      if (path === "/assets/brain/cells/labels.json") return json(LABELS);
-      if (path === "/assets/brain/cells/supercells.json") return json(SUPERCELLS);
-      if (path === "/assets/brain/cells/aliases.json")
-        return aliases ? json(aliases) : new Response("not found", { status: 404 });
+      if (path === "/assets/brain/current.json") return json(selector);
+      if (path === `${releaseBase}/release.json`) return json(fixture.manifest);
+      if (path.startsWith(`${releaseBase}/`)) {
+        const relative = path.slice(releaseBase.length + 1);
+        if (
+          missingAssets.has(relative) ||
+          (relative === "cells/aliases.json" && opts.aliases === null) ||
+          (relative === "xref_index.json" && remainingXrefFailures-- > 0)
+        ) {
+          return new Response("not found", { status: 404 });
+        }
+        const body = fixture.assetBodies.get(relative);
+        if (body !== undefined) return new Response(body, { status: 200 });
+      }
       if (path === "/assets/decl-index/manifest.json") return json(DECL_MANIFEST);
       const dm = /^\/assets\/decl-index\/([a-z0-9_]+)\.json$/.exec(path);
       if (dm && DECL_SHARDS[dm[1]]) return json(DECL_SHARDS[dm[1]]);
@@ -622,9 +759,8 @@ export function installBrainFixture(env: Env, opts: BrainFixtureOpts = {}): void
         const pm = /^\/assets\/premise-index\/([a-z0-9_]+)\.json$/.exec(path);
         if (pm && PREMISE_SHARDS[pm[1]]) return json(PREMISE_SHARDS[pm[1]]);
       }
-      const m = /^\/assets\/brain\/cells\/([a-z0-9_]+)\.json$/.exec(path);
-      if (m && data[m[1]]) return json(data[m[1]]);
       return new Response("not found", { status: 404 });
     },
   };
+  return { releaseId, releaseHex };
 }

@@ -71,7 +71,10 @@ python3 brain/build_snapshot.py    # one graph build → nodes + both edge strea
 python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (streams the 1 GB CSV)
 python3 brain/test_acceptance.py   # exit 0 = green (reads edges.jsonl + edges_links.jsonl)
 cd brain && python3 build_shards.py && cd ..          # xref_index.json + sources.json only
-cd wiki && node --experimental-strip-types scripts/build-public.ts   # ship cells/ + the two files
+# Freeze + verify a release per docs/BRAIN-RELEASE-RUNBOOK.md, then:
+cd wiki && node --experimental-strip-types scripts/build-public.ts \
+  --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
+  --brain-release-dir ../site/out/brain-releases/<release-hex>
 ```
 
 Writers publish through temporary files + rename; ordinary publication errors roll

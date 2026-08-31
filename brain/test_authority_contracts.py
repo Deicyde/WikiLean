@@ -13,6 +13,7 @@ import tempfile
 import unittest
 import unicodedata
 from pathlib import Path
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 TOOLS = HERE / "tools"
@@ -112,6 +113,142 @@ class CanonicalJsonTest(unittest.TestCase):
                 contracts.logical_jsonl_root(first),
                 contracts.logical_jsonl_root(second),
             )
+
+    def test_sqlite_payload_root_sorts_canonical_numeric_spellings(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "numbers.jsonl"
+            path.write_text(
+                '{"_meta":{}}\n{"n":0.0}\n{"n":1e-7}\n',
+                encoding="utf-8",
+            )
+            connection = sqlite3.connect(":memory:")
+            try:
+                connection.execute("CREATE TABLE payloads (payload_json TEXT NOT NULL)")
+                connection.executemany(
+                    "INSERT INTO payloads VALUES (?)",
+                    [('{"n":0.0}',), ('{"n":1e-7}',)],
+                )
+                self.assertEqual(
+                    contracts._sqlite_payload_root(
+                        connection,
+                        "SELECT payload_json FROM payloads ORDER BY payload_json",
+                    ),
+                    contracts.logical_jsonl_root(path),
+                )
+            finally:
+                connection.close()
+
+    def test_routed_shard_checks_distinct_prefix_lengths_longest_first(self) -> None:
+        keys = {"ab", "abc", "abcd"}
+        with mock.patch.object(
+            contracts,
+            "_normalized_prefix",
+            wraps=contracts._normalized_prefix,
+        ) as normalized:
+            self.assertEqual(
+                contracts._routed_shard("ABCD-tail", keys, "_", (4, 3, 2)),
+                "abcd",
+            )
+        normalized.assert_called_once_with("ABCD-tail", 4, "_")
+        self.assertEqual(
+            contracts._routed_shard("ABCD-tail", keys, "_", (3, 2)),
+            "abc",
+        )
+        self.assertIsNone(
+            contracts._routed_shard("xy", keys, "_", (4, 3, 2))
+        )
+
+
+class CompatibilityRootAndSelectorTest(unittest.TestCase):
+    def test_compatibility_roots_are_domain_separated_and_order_stable(self) -> None:
+        roots = {path: "sha256:" + format(index, "064x") for index, path in enumerate(contracts.COMPATIBILITY_SEMANTIC_PATHS, 1)}
+        semantic = contracts.compatibility_semantic_state_root("brain-v3-current", "a" * 64, roots)
+        self.assertTrue(semantic.startswith("sha256:"))
+        self.assertNotEqual(semantic, contracts.domain_hash("unrelated", roots))
+
+        inputs = [
+            {"declaration": "path", "path": "b.json", "present": False},
+            {"declaration": "path_pattern", "path": "a.json", "present": True, "sha256": "b" * 64, "bytes": 2},
+        ]
+        self.assertEqual(
+            contracts.legacy_declared_input_root("c" * 64, inputs),
+            contracts.legacy_declared_input_root("c" * 64, list(reversed(inputs))),
+        )
+        changed = copy.deepcopy(inputs)
+        changed[1]["bytes"] = 3
+        self.assertNotEqual(
+            contracts.legacy_declared_input_root("c" * 64, inputs),
+            contracts.legacy_declared_input_root("c" * 64, changed),
+        )
+
+    def test_release_selector_validation(self) -> None:
+        current = "a" * 64
+        previous = "b" * 64
+        selector = {
+            "schema": contracts.RELEASE_SELECTOR_SCHEMA,
+            "release_id": f"sha256:{current}",
+            "release": current,
+            "manifest": f"/assets/brain/releases/{current}/release.json",
+            "previous_release_id": f"sha256:{previous}",
+            "previous_release": previous,
+            "previous_manifest": f"/assets/brain/releases/{previous}/release.json",
+            "audited_at": "2030-01-01T00:00:00Z",
+        }
+        self.assertIs(contracts.validate_release_selector(selector), selector)
+
+        current_only = {key: selector[key] for key in ("schema", "release_id", "release", "manifest")}
+        self.assertIs(contracts.validate_release_selector(current_only), current_only)
+
+        partial = copy.deepcopy(selector)
+        del partial["previous_manifest"]
+        with self.assertRaisesRegex(contracts.VerificationError, "present together"):
+            contracts.validate_release_selector(partial)
+
+        wrong_manifest = copy.deepcopy(selector)
+        wrong_manifest["manifest"] = f"/assets/brain/releases/{previous}/release.json"
+        with self.assertRaisesRegex(contracts.VerificationError, "expected"):
+            contracts.validate_release_selector(wrong_manifest)
+
+        same_previous = copy.deepcopy(selector)
+        same_previous.update({
+            "previous_release_id": selector["release_id"],
+            "previous_release": selector["release"],
+            "previous_manifest": selector["manifest"],
+        })
+        with self.assertRaisesRegex(contracts.VerificationError, "must differ"):
+            contracts.validate_release_selector(same_previous)
+
+    def test_release_selector_schema_matches_strict_validator_shape(self) -> None:
+        schema = json.loads(
+            (HERE / "authority/schemas/release-selector/v1.json").read_text(encoding="utf-8")
+        )
+        self.assertFalse(schema["additionalProperties"])
+        self.assertEqual(
+            schema["required"],
+            ["schema", "release_id", "release", "manifest"],
+        )
+        self.assertIn("audited_at", schema["properties"])
+        self.assertIn("previous_release_id", schema["properties"])
+        self.assertIn("previous_release", schema["properties"])
+        self.assertIn("previous_manifest", schema["properties"])
+        self.assertNotIn("selector_id", schema["properties"])
+        self.assertNotIn("previous", schema["properties"])
+        self.assertNotIn("updated_at", schema["properties"])
+
+        release = "a" * 64
+        obsolete = {
+            "schema": contracts.RELEASE_SELECTOR_SCHEMA,
+            "release_id": f"sha256:{release}",
+            "release": release,
+            "manifest": f"/assets/brain/releases/{release}/release.json",
+            "previous": {
+                "release_id": f"sha256:{'b' * 64}",
+                "release": "b" * 64,
+                "manifest": f"/assets/brain/releases/{'b' * 64}/release.json",
+            },
+        }
+        with self.assertRaisesRegex(contracts.VerificationError, "unknown members"):
+            contracts.validate_release_selector(obsolete)
 
 
 class SourceSetVerificationTest(unittest.TestCase):
@@ -358,9 +495,10 @@ class ReleaseVerificationTest(unittest.TestCase):
     def write_release_artifacts(self) -> list[dict[str, object]]:
         base_generation = "2030-01-01T00:00:00Z"
         cell_generation = "2030-01-01T00:01:00Z"
-        base_meta = f'{{"generated_at":"{base_generation}","snapshot_id":"fixture-snapshot"}}'
+        snapshot_id = "f" * 64
+        base_meta = f'{{"generated_at":"{base_generation}","snapshot_id":"{snapshot_id}"}}'
         cell_meta = (
-            f'{{"base_generated_at":"{base_generation}","base_snapshot_id":"fixture-snapshot",'
+            f'{{"base_generated_at":"{base_generation}","base_snapshot_id":"{snapshot_id}",'
             f'"generated_at":"{cell_generation}"}}'
         )
         contents: dict[str, bytes] = {
@@ -432,11 +570,23 @@ class ReleaseVerificationTest(unittest.TestCase):
 
     def make_release(self) -> tuple[dict[str, object], Path]:
         artifacts = self.write_release_artifacts()
+        semantic_root = contracts.compatibility_semantic_state_root(
+            "brain-v3",
+            "f" * 64,
+            {
+                path: next(
+                    artifact["logical_root"]
+                    for artifact in artifacts
+                    if artifact["path"] == path
+                )
+                for path in contracts.COMPATIBILITY_SEMANTIC_PATHS
+            },
+        )
         release: dict[str, object] = {
             "schema": contracts.RELEASE_SCHEMA,
             "profile": contracts.RELEASE_PROFILE,
             "release_id": ZERO_HASH,
-            "authority": {"git_commit": GIT_COMMIT, "semantic_state_root": ZERO_HASH},
+            "authority": {"git_commit": GIT_COMMIT, "semantic_state_root": semantic_root},
             "source_set_root": "sha256:" + "1" * 64,
             "semantic_epoch": "brain-v3",
             "reducer": {
@@ -466,11 +616,11 @@ class ReleaseVerificationTest(unittest.TestCase):
                 "network": "disabled",
             },
             "input_roots": {
-                "authority": ZERO_HASH,
+                "authority": semantic_root,
                 "source_set": "sha256:" + "1" * 64,
                 "prior_state": None,
             },
-            "output_root": ZERO_HASH,
+            "output_root": semantic_root,
             "artifacts": [
                 {key: artifact[key] for key in ("logical_name", "sha256", "bytes", "logical_root")}
                 for artifact in artifacts
@@ -516,6 +666,15 @@ class ReleaseVerificationTest(unittest.TestCase):
         write_canonical(manifest_path, release)
         return release, manifest_path
 
+    def refresh_sqlite_ref(self, release: dict[str, object]) -> None:
+        sqlite_path = self.root / "brain/data/brain.sqlite3"
+        for artifact in release["artifacts"]:
+            if artifact["path"] == "brain/data/brain.sqlite3":
+                artifact["sha256"], artifact["bytes"] = contracts.digest_file(
+                    sqlite_path
+                )
+        release["release_id"] = contracts.release_identity(release)
+
     def test_verifies_release_cli_and_timestamp_independent_identity(self) -> None:
         release, manifest_path = self.make_release()
         result = contracts.verify_release_files(contracts.validate_release_manifest(release), self.root)
@@ -534,6 +693,145 @@ class ReleaseVerificationTest(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["artifacts"], 21)
+
+    def test_rejects_non_null_authority_changeset_without_replay(self) -> None:
+        release, _ = self.make_release()
+        release["authority"]["through_changeset"] = "accepted-change-1"
+        release["release_id"] = contracts.release_identity(release)
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            "accepted changeset replay verification is not implemented",
+        ):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(release), self.root
+            )
+
+    def test_sqlite_payload_must_match_its_ordinal_and_index_row(self) -> None:
+        source = self.root / "nodes.jsonl"
+        metadata = {"generated_at": "2030-01-01T00:00:00Z"}
+        rows = [
+            {"id": "Q1", "type": "concept", "label": "One"},
+            {"id": "Q2", "type": "concept", "label": "Two"},
+        ]
+        source.write_text(
+            "\n".join(
+                json.dumps(value, sort_keys=True, separators=(",", ":"))
+                for value in ({"_meta": metadata}, *rows)
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        artifact = {
+            "path": "nodes.jsonl",
+            "sha256": contracts.digest_file(source)[0],
+            "bytes": source.stat().st_size,
+        }
+        connection = sqlite3.connect(":memory:")
+        try:
+            connection.execute(
+                "CREATE TABLE nodes ("
+                "ordinal INTEGER, id TEXT, type TEXT, label TEXT, payload_json TEXT)"
+            )
+            connection.executemany(
+                "INSERT INTO nodes VALUES (?, ?, ?, ?, ?)",
+                [
+                    (0, "Q1", "concept", "One", json.dumps(rows[1], sort_keys=True)),
+                    (1, "Q2", "concept", "Two", json.dumps(rows[0], sort_keys=True)),
+                ],
+            )
+            with self.assertRaisesRegex(
+                contracts.VerificationError,
+                "paired with the wrong ordinal/index row",
+            ):
+                contracts._verify_sqlite_artifact_rows(
+                    connection,
+                    self.root,
+                    artifact,
+                    "nodes",
+                    "SELECT id, type, label, payload_json FROM nodes ORDER BY ordinal",
+                    json.dumps(metadata, sort_keys=True, separators=(",", ":")),
+                )
+        finally:
+            connection.close()
+
+    def test_sqlite_payload_pairing_is_json_type_strict(self) -> None:
+        source = self.root / "nodes.jsonl"
+        metadata = {"generated_at": "2030-01-01T00:00:00Z"}
+        rows = [
+            {"id": "Q1", "type": "concept", "label": "One", "flag": True},
+            {"id": "Q1", "type": "concept", "label": "One", "flag": 1},
+        ]
+        source.write_text(
+            "\n".join(
+                json.dumps(value, sort_keys=True, separators=(",", ":"))
+                for value in ({"_meta": metadata}, *rows)
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        artifact = {
+            "path": "nodes.jsonl",
+            "sha256": contracts.digest_file(source)[0],
+            "bytes": source.stat().st_size,
+        }
+        connection = sqlite3.connect(":memory:")
+        try:
+            connection.execute(
+                "CREATE TABLE nodes ("
+                "ordinal INTEGER, id TEXT, type TEXT, label TEXT, payload_json TEXT)"
+            )
+            connection.executemany(
+                "INSERT INTO nodes VALUES (?, ?, ?, ?, ?)",
+                [
+                    (0, "Q1", "concept", "One", json.dumps(rows[1], sort_keys=True)),
+                    (1, "Q1", "concept", "One", json.dumps(rows[0], sort_keys=True)),
+                ],
+            )
+            with self.assertRaisesRegex(
+                contracts.VerificationError,
+                "paired with the wrong ordinal/index row",
+            ):
+                contracts._verify_sqlite_artifact_rows(
+                    connection,
+                    self.root,
+                    artifact,
+                    "nodes",
+                    "SELECT id, type, label, payload_json FROM nodes ORDER BY ordinal",
+                    json.dumps(metadata, sort_keys=True, separators=(",", ":")),
+                )
+        finally:
+            connection.close()
+
+    def test_rejects_sqlite_inventory_metadata_drift(self) -> None:
+        mutations = (
+            (
+                "row_count",
+                "UPDATE artifacts SET row_count = row_count + 1 WHERE name = 'nodes'",
+                "row_count disagrees",
+            ),
+            (
+                "generated_at",
+                "UPDATE artifacts SET generated_at = '2040-01-01T00:00:00Z' "
+                "WHERE name = 'nodes'",
+                "generated_at disagrees",
+            ),
+            (
+                "snapshot_metadata",
+                "UPDATE snapshot SET metadata_json = '{\"generated_at\":\"2040-01-01T00:00:00Z\"}'",
+                "snapshot metadata disagrees",
+            ),
+        )
+        for name, statement, expected in mutations:
+            with self.subTest(name=name):
+                release, _ = self.make_release()
+                sqlite_path = self.root / "brain/data/brain.sqlite3"
+                with sqlite3.connect(sqlite_path) as connection:
+                    connection.execute(statement)
+                self.refresh_sqlite_ref(release)
+                with self.assertRaisesRegex(contracts.VerificationError, expected):
+                    contracts.verify_release_files(
+                        contracts.validate_release_manifest(release), self.root
+                    )
 
     def test_rejects_missing_shard_wrong_digest_and_mixed_generation(self) -> None:
         release, _ = self.make_release()
@@ -635,7 +933,16 @@ class ReleaseVerificationTest(unittest.TestCase):
         release, _ = self.make_release()
         sqlite_path = self.root / "brain/data/brain.sqlite3"
         connection = sqlite3.connect(sqlite_path)
-        connection.execute("UPDATE artifacts SET source_digest = ? WHERE name = 'nodes'", (ZERO_DIGEST,))
+        if connection.execute("PRAGMA user_version").fetchone()[0] == 1:
+            connection.execute(
+                "UPDATE artifacts SET source_digest = ? WHERE name = 'nodes'",
+                (ZERO_DIGEST,),
+            )
+        else:
+            connection.execute(
+                "UPDATE artifacts SET source_digest = ?, raw_digest = ? WHERE name = 'nodes'",
+                (ZERO_DIGEST, ZERO_DIGEST),
+            )
         connection.commit()
         connection.close()
         stale = copy.deepcopy(release)
@@ -677,6 +984,120 @@ class ReleaseVerificationTest(unittest.TestCase):
             contracts.verify_release_files(
                 contracts.validate_release_manifest(corrupt_index), self.root
             )
+
+    def test_rejects_structurally_corrupt_sqlite(self) -> None:
+        release, _ = self.make_release()
+        sqlite_path = self.root / "brain/data/brain.sqlite3"
+        connection = sqlite3.connect(sqlite_path)
+        page_size = connection.execute("PRAGMA page_size").fetchone()[0]
+        index_page = connection.execute(
+            "SELECT rootpage FROM sqlite_schema "
+            "WHERE type = 'index' AND rootpage > 0 ORDER BY rootpage LIMIT 1"
+        ).fetchone()[0]
+        connection.close()
+
+        # Destroy an index b-tree page without touching the schema/header. The
+        # database still opens, but a full integrity_check must reject it.
+        with sqlite_path.open("r+b") as handle:
+            handle.seek((index_page - 1) * page_size)
+            self.assertIn(handle.read(1), {b"\x02", b"\x05", b"\x0a", b"\x0d"})
+            handle.seek((index_page - 1) * page_size)
+            handle.write(b"\x00")
+
+        corrupt = copy.deepcopy(release)
+        for artifact in corrupt["artifacts"]:
+            if artifact["path"] == "brain/data/brain.sqlite3":
+                artifact["sha256"], artifact["bytes"] = contracts.digest_file(sqlite_path)
+        corrupt["release_id"] = contracts.release_identity(corrupt)
+        with self.assertRaisesRegex(contracts.VerificationError, "integrity check failed"):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(corrupt), self.root
+            )
+
+    def test_rejects_v2_sqlite_identity_contract_mismatches(self) -> None:
+        release, _ = self.make_release()
+        sqlite_path = self.root / "brain/data/brain.sqlite3"
+        connection = sqlite3.connect(sqlite_path)
+        self.assertEqual(connection.execute("PRAGMA user_version").fetchone()[0], 2)
+        connection.execute("PRAGMA application_id = 0")
+        connection.close()
+        wrong_application = copy.deepcopy(release)
+        for artifact in wrong_application["artifacts"]:
+            if artifact["path"] == "brain/data/brain.sqlite3":
+                artifact["sha256"], artifact["bytes"] = contracts.digest_file(sqlite_path)
+        wrong_application["release_id"] = contracts.release_identity(wrong_application)
+        with self.assertRaisesRegex(contracts.VerificationError, "application_id"):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(wrong_application), self.root
+            )
+
+        release, _ = self.make_release()
+        connection = sqlite3.connect(sqlite_path)
+        connection.execute(
+            "UPDATE snapshot SET projection_id = ?",
+            (ZERO_DIGEST,),
+        )
+        connection.commit()
+        connection.close()
+        wrong_projection = copy.deepcopy(release)
+        for artifact in wrong_projection["artifacts"]:
+            if artifact["path"] == "brain/data/brain.sqlite3":
+                artifact["sha256"], artifact["bytes"] = contracts.digest_file(sqlite_path)
+        wrong_projection["release_id"] = contracts.release_identity(wrong_projection)
+        with self.assertRaisesRegex(contracts.VerificationError, "projection_id"):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(wrong_projection), self.root
+            )
+
+    def test_current_release_profile_requires_sqlite_schema_v2(self) -> None:
+        release, _ = self.make_release()
+        sqlite_path = self.root / "brain/data/brain.sqlite3"
+        with sqlite3.connect(sqlite_path) as connection:
+            connection.execute("PRAGMA user_version = 1")
+        self.refresh_sqlite_ref(release)
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            "requires Brain SQLite schema 2",
+        ):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(release), self.root
+            )
+
+    def test_current_release_profile_requires_sqlite_v2_endpoint_indexes(self) -> None:
+        for index in ("edges_src_kind_idx", "edges_dst_kind_idx"):
+            with self.subTest(index=index):
+                release, _ = self.make_release()
+                sqlite_path = self.root / "brain/data/brain.sqlite3"
+                with sqlite3.connect(sqlite_path) as connection:
+                    connection.execute(f'DROP INDEX "{index}"')
+                self.refresh_sqlite_ref(release)
+                with self.assertRaisesRegex(
+                    contracts.VerificationError,
+                    f"missing required index '{index}'",
+                ):
+                    contracts.verify_release_files(
+                        contracts.validate_release_manifest(release), self.root
+                    )
+
+    def test_release_profile_binds_artifact_format_to_path(self) -> None:
+        release, _ = self.make_release()
+        for field, value, expected in (
+            ("media_type", "application/json", "application/vnd.sqlite3"),
+            ("logical_format", "json", "opaque"),
+        ):
+            with self.subTest(field=field):
+                mutated = copy.deepcopy(release)
+                artifact = next(
+                    item
+                    for item in mutated["artifacts"]
+                    if item["path"] == "brain/data/brain.sqlite3"
+                )
+                artifact[field] = value
+                if field == "logical_format":
+                    artifact["logical_root"] = "sha256:" + "0" * 64
+                mutated["release_id"] = contracts.release_identity(mutated)
+                with self.assertRaisesRegex(contracts.VerificationError, expected):
+                    contracts.validate_release_manifest(mutated)
 
     def test_rejects_unknown_release_version_and_failed_attestation(self) -> None:
         release, _ = self.make_release()

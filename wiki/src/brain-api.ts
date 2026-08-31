@@ -1,6 +1,6 @@
 // Wikibrain agent API (BRAIN v3 — docs/BRAIN-API.md, docs/BRAIN-V3.md).
 //
-// Read-only query routes over the CELL shards (/assets/brain/cells/). The
+// Read-only query routes over immutable release-qualified CELL shards. The
 // addressable thing is the **cell** — an atom of organs — not the v2 particle:
 // a Mathlib decl, a Wikidata concept, an external DB page, a WikiLean article
 // and an arXiv statement that all denote ONE object are organs of one cell.
@@ -44,15 +44,20 @@
 // (aliases ∪ supercells, no fuzzy resolution).
 //
 // Everything here is shard/asset-backed and safe to cache for the nightly
-// rebuild cadence (Cache-Control public, max-age=3600).
+// release cadence (current-selector responses must revalidate).
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
   assetJson,
+  BrainReleaseUnavailableError,
+  isBrainReleaseUnavailableError,
   memoAssetJson,
+  requiredBrainAssetJson,
+  resolveBrainRelease,
   searchLabels,
   BRAIN_ID_RE,
   type BrainLabelRow,
+  type BrainReleaseContext,
 } from "./brain.js";
 import {
   bucketEntries,
@@ -77,7 +82,6 @@ export interface ApiResult {
 }
 
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
-const CELLS = "/assets/brain/cells"; // the v3 asset namespace
 const QID_RE = /^Q[1-9][0-9]{0,11}$/;
 const XREF_ID_RE = /^xref:([a-z0-9_]+):(.+)$/i;
 const KEY_HINT =
@@ -286,20 +290,54 @@ function noteForBond(bond: string | null, declName: string, cellLabel: string | 
 
 // ---- asset loaders (all memoized — see brain.ts memoAssetJson) ----------------
 
-function cellsManifest(c: Ctx): Promise<CellsManifest | null> {
-  return memoAssetJson<CellsManifest>(c, `${CELLS}/manifest.json`);
+function dataRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
 }
 
-function cellAliases(c: Ctx): Promise<CellAliases | null> {
-  return memoAssetJson<CellAliases>(c, `${CELLS}/aliases.json`);
+function badReleaseData(release: BrainReleaseContext, path: string): never {
+  throw new BrainReleaseUnavailableError(release.releaseId, path, "declared asset has an invalid shape");
 }
 
-function cellLabels(c: Ctx): Promise<BrainLabelRow[] | null> {
-  return memoAssetJson<BrainLabelRow[]>(c, `${CELLS}/labels.json`);
+async function cellsManifest(c: Ctx, release: BrainReleaseContext): Promise<CellsManifest> {
+  const path = "cells/manifest.json";
+  const value = await requiredBrainAssetJson<unknown>(c, release, path);
+  const manifest = dataRecord(value);
+  const scheme = dataRecord(manifest?.scheme);
+  const shards = dataRecord(manifest?.shards);
+  if (
+    !manifest || !scheme || !shards || !Array.isArray(manifest.prov) ||
+    !Number.isSafeInteger(scheme.min_len) || !Number.isSafeInteger(scheme.max_len) ||
+    typeof scheme.pad !== "string" ||
+    Object.values(shards).some((count) => !Number.isSafeInteger(count) || (count as number) < 0)
+  ) badReleaseData(release, path);
+  return value as CellsManifest;
 }
 
-function supercellsFile(c: Ctx): Promise<SupercellsFile | null> {
-  return memoAssetJson<SupercellsFile>(c, `${CELLS}/supercells.json`);
+async function cellAliases(c: Ctx, release: BrainReleaseContext): Promise<CellAliases> {
+  const path = "cells/aliases.json";
+  const value = await requiredBrainAssetJson<unknown>(c, release, path);
+  const aliases = dataRecord(value);
+  if (!aliases || !dataRecord(aliases.organs) || !dataRecord(aliases.decls) || !dataRecord(aliases.slugs)) {
+    badReleaseData(release, path);
+  }
+  return value as CellAliases;
+}
+
+async function cellLabels(c: Ctx, release: BrainReleaseContext): Promise<BrainLabelRow[]> {
+  const path = "cells/labels.json";
+  const value = await requiredBrainAssetJson<unknown>(c, release, path);
+  if (!Array.isArray(value)) badReleaseData(release, path);
+  return value as BrainLabelRow[];
+}
+
+async function supercellsFile(c: Ctx, release: BrainReleaseContext): Promise<SupercellsFile> {
+  const path = "cells/supercells.json";
+  const value = await requiredBrainAssetJson<unknown>(c, release, path);
+  const file = dataRecord(value);
+  if (!file || !dataRecord(file.supercells)) badReleaseData(release, path);
+  return value as SupercellsFile;
 }
 
 // ---- snapshot echo (SCHEMA v3; held-out evaluation is dishonest without it) ----
@@ -332,25 +370,26 @@ export interface Snapshot {
 // EVERY brain API/MCP response echoes this. Zero EXTRA fetches: the cells
 // manifest is memoized and already loaded on every cell-backed path; the
 // derivation (a 39-row scan) is trivial, so it recomputes rather than adding a
-// second memo the tests would have to reset separately. `null` when the manifest
-// is unavailable — the echo is honest about a missing snapshot, not silent.
-export async function snapshotFor(c: Ctx): Promise<Snapshot | null> {
-  const manifest = await cellsManifest(c);
-  if (!manifest) return null;
+// second memo the tests would have to reset separately. A missing manifest is a
+// release outage (503), never a response with an ambiguous null snapshot.
+export async function snapshotFor(c: Ctx, release: BrainReleaseContext): Promise<Snapshot> {
+  const manifest = await cellsManifest(c, release);
   const generatedAt = (manifest._meta?.generated_at as string | undefined) ?? null;
   return { generated_at: generatedAt, pin: mathlibPin(manifest.prov) };
 }
 
 // One cell shard entry, via the manifest's documented prefix scheme (identical
 // to the decl-index scheme, so declShardFor resolves it verbatim).
-async function cellEntry(c: Ctx, id: string): Promise<CellEntry | null> {
-  const manifest = await cellsManifest(c);
-  if (!manifest?.shards) return null;
+async function cellEntry(c: Ctx, release: BrainReleaseContext, id: string): Promise<CellEntry | null> {
+  const manifest = await cellsManifest(c, release);
   const key = declShardFor(
     { scheme: manifest.scheme, shards: manifest.shards },
     id,
   );
-  const shard = key ? await assetJson<Record<string, unknown>>(c, `${CELLS}/${key}.json`) : null;
+  const shard = key
+    ? await requiredBrainAssetJson<Record<string, unknown>>(c, release, `cells/${key}.json`)
+    : null;
+  if (shard && !dataRecord(shard)) badReleaseData(release, `cells/${key}.json`);
   const entry = shard ? own(shard, id) : undefined;
   return entry ? (entry as CellEntry) : null;
 }
@@ -358,10 +397,9 @@ async function cellEntry(c: Ctx, id: string): Promise<CellEntry | null> {
 // Many cell entries at once, grouped by shard so N partners living in ONE shard
 // cost ONE fetch (the supercell-trace hydration below is the only caller, and
 // its fan-out is what has to stay bounded).
-async function cellEntries(c: Ctx, ids: string[]): Promise<Map<string, CellEntry>> {
+async function cellEntries(c: Ctx, release: BrainReleaseContext, ids: string[]): Promise<Map<string, CellEntry>> {
   const out = new Map<string, CellEntry>();
-  const manifest = await cellsManifest(c);
-  if (!manifest?.shards) return out;
+  const manifest = await cellsManifest(c, release);
   const byShard = new Map<string, string[]>();
   for (const id of ids) {
     const key = declShardFor({ scheme: manifest.scheme, shards: manifest.shards }, id);
@@ -372,8 +410,8 @@ async function cellEntries(c: Ctx, ids: string[]): Promise<Map<string, CellEntry
   }
   await Promise.all(
     [...byShard].map(async ([key, want]) => {
-      const shard = await assetJson<Record<string, unknown>>(c, `${CELLS}/${key}.json`);
-      if (!shard) return;
+      const shard = await requiredBrainAssetJson<Record<string, unknown>>(c, release, `cells/${key}.json`);
+      if (!dataRecord(shard)) badReleaseData(release, `cells/${key}.json`);
       for (const id of want) {
         const e = own(shard, id);
         if (e) out.set(id, e as CellEntry);
@@ -433,10 +471,10 @@ function supercellBreadcrumb(
 
 // Fetch an atom by its OWN id (cell:… | path:…). Callers that hold an organ id
 // must go through resolveAtomKey first.
-export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
+export async function atomFor(c: Ctx, release: BrainReleaseContext, id: string): Promise<Atom | null> {
   if (!BRAIN_ID_RE.test(id)) return null;
   if (id.startsWith("path:")) {
-    const file = await supercellsFile(c);
+    const file = await supercellsFile(c, release);
     const map = file?.supercells;
     const e = map ? own(map, id) : undefined;
     if (!e || !map) return null;
@@ -466,7 +504,7 @@ export async function atomFor(c: Ctx, id: string): Promise<Atom | null> {
       },
     };
   }
-  const e = await cellEntry(c, id);
+  const e = await cellEntry(c, release, id);
   if (!e?.cell) return null;
   const organs = (e.organs ?? []).map(safeOrgan);
   const syn = e.syn ?? [];
@@ -506,17 +544,17 @@ export interface ResolvedKey {
 // atom). aliases.json IS the compat layer, so a miss there is a real miss: the
 // v2 fallbacks (shard in-edges, ext-node `qid`) have no v3 analogue — organs
 // carry no inbound edges, they ARE the atom's content.
-export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKey | null> {
+export async function resolveAtomKey(c: Ctx, release: BrainReleaseContext, keyRaw: string): Promise<ResolvedKey | null> {
   const key = keyRaw.trim();
   if (!key || !BRAIN_ID_RE.test(key)) return null;
 
   if (isAtomId(key)) {
-    const atom = await atomFor(c, key);
+    const atom = await atomFor(c, release, key);
     if (atom) return { id: atom.id, resolved_from: atom.kind, atom };
     return null; // an explicit atom id must not fall through to label search
   }
 
-  const aliases = await cellAliases(c);
+  const aliases = await cellAliases(c, release);
 
   // Every organ id — QID, decl:<Lib>:<Name>, xref:<db>:<id>, slug, lit:… —
   // lands here. The value may be a supercell path (rule-5 field concepts).
@@ -535,7 +573,7 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
   if (viaSlug) return { id: viaSlug, resolved_from: "slug" };
 
   // exact label / aka, case-insensitive, over the atom label index
-  const labels = await cellLabels(c);
+  const labels = await cellLabels(c, release);
   const kl = key.toLowerCase();
   const byLabel = labels?.find(
     (r) =>
@@ -560,7 +598,7 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
   // concept QID"), so undo that and the organ label matches. Cells are matched
   // first, above, and so still win any collision.
   const kSlug = kl.replace(/_/g, " ");
-  const file = await supercellsFile(c);
+  const file = await supercellsFile(c, release);
   for (const [path, e] of Object.entries(file?.supercells ?? {})) {
     if (
       (e.organs ?? []).some((o) => {
@@ -586,13 +624,13 @@ export async function resolveAtomKey(c: Ctx, keyRaw: string): Promise<ResolvedKe
 //   any exact organ-id key of aliases.json `organs` (QID, decl:<Lib>:<Name>,
 //                     xref page id, article slug, lit statement)
 // Returns the owning atom id, or null.
-export async function atomIdForOrgan(c: Ctx, id: string): Promise<string | null> {
+export async function atomIdForOrgan(c: Ctx, release: BrainReleaseContext, id: string): Promise<string | null> {
   if (!id || !BRAIN_ID_RE.test(id)) return null;
   if (isAtomId(id)) {
-    const atom = await atomFor(c, id);
+    const atom = await atomFor(c, release, id);
     return atom ? atom.id : null;
   }
-  const aliases = await cellAliases(c);
+  const aliases = await cellAliases(c, release);
   return own(aliases?.organs, id) ?? null;
 }
 
@@ -631,10 +669,10 @@ function pickSuggestion(r: BrainLabelRow): Record<string, unknown> {
   };
 }
 
-async function suggestionsFor(c: Ctx, text: string): Promise<Record<string, unknown>[]> {
+async function suggestionsFor(c: Ctx, release: BrainReleaseContext, text: string): Promise<Record<string, unknown>[]> {
   const q = text.trim().toLowerCase();
   if (q.length < 2) return [];
-  const labels = await cellLabels(c);
+  const labels = await cellLabels(c, release);
   return labels ? searchLabels(labels, q, "", 5).map(pickSuggestion) : [];
 }
 
@@ -679,12 +717,12 @@ function synapsesSummary(atom: Atom): Record<string, number> {
 // counts), the containment breadcrumb, and a synapse summary + strongest
 // partners. Traces are deliberately NOT here — /api/brain/neighborhood serves
 // them, so the card stays an identity answer rather than a graph dump.
-export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
+export async function cellFor(c: Ctx, release: BrainReleaseContext, keyRaw: string): Promise<ApiResult> {
   const key = (keyRaw || "").trim();
   if (!key || !BRAIN_ID_RE.test(key)) {
     return { status: 400, body: { ok: false, error: "missing or malformed ?key=", hint: KEY_HINT } };
   }
-  const resolved = await resolveAtomKey(c, key);
+  const resolved = await resolveAtomKey(c, release, key);
   if (!resolved) {
     const dropped = droppedInV3(key);
     return {
@@ -698,7 +736,7 @@ export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
       },
     };
   }
-  const atom = resolved.atom ?? (await atomFor(c, resolved.id));
+  const atom = resolved.atom ?? (await atomFor(c, release, resolved.id));
   if (!atom) {
     return {
       status: 404,
@@ -736,6 +774,7 @@ export async function cellFor(c: Ctx, keyRaw: string): Promise<ApiResult> {
 
 export async function transferFor(
   c: Ctx,
+  release: BrainReleaseContext,
   qRaw: string,
   direction: string,
   limitRaw?: unknown,
@@ -743,8 +782,8 @@ export async function transferFor(
   const q = (qRaw || "").trim();
   if (!q) return { status: 400, body: { ok: false, error: "missing ?q=" } };
   const limit = clampLimit(limitRaw, 10, 50);
-  if (direction === "informal_to_formal") return informalToFormal(c, q, limit);
-  if (direction === "formal_to_informal") return formalToInformal(c, q, limit);
+  if (direction === "informal_to_formal") return informalToFormal(c, release, q, limit);
+  if (direction === "formal_to_informal") return formalToInformal(c, release, q, limit);
   return {
     status: 400,
     body: { ok: false, error: "direction must be informal_to_formal or formal_to_informal" },
@@ -790,12 +829,12 @@ function queryConceptBond(atom: Atom, key: string): { bond: string | null; label
 // decl organs" — no edge walk: an atom's decls ARE its own organs by the merge
 // function (`exact` fuses both ways), which is exactly why Vector space and
 // Module answer identically.
-async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiResult> {
-  let resolved = await resolveAtomKey(c, q);
+async function informalToFormal(c: Ctx, release: BrainReleaseContext, q: string, limit: number): Promise<ApiResult> {
+  let resolved = await resolveAtomKey(c, release, q);
   let resolvedFrom: string | null = resolved?.resolved_from ?? null;
   if (!resolved && q.length >= 2) {
     // free text: best label/aka search hit
-    const labels = await cellLabels(c);
+    const labels = await cellLabels(c, release);
     const hits = labels ? searchLabels(labels, q.toLowerCase(), "", 5) : [];
     if (hits.length) {
       resolved = { id: hits[0].id, resolved_from: "label" };
@@ -809,12 +848,12 @@ async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiRe
         ok: false,
         error: "no atom matched q",
         q,
-        suggestions: await suggestionsFor(c, q),
+        suggestions: await suggestionsFor(c, release, q),
         hint: "try /api/brain/search?q= for fuzzy lookup",
       },
     };
   }
-  const atom = resolved.atom ?? (await atomFor(c, resolved.id));
+  const atom = resolved.atom ?? (await atomFor(c, release, resolved.id));
   if (!atom) {
     return { status: 404, body: { ok: false, error: "atom not in the brain shards", id: resolved.id } };
   }
@@ -846,7 +885,7 @@ async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiRe
     body.hits = [];
     body.note = "no Mathlib declaration is an organ of this atom";
     if (atom.cell?.supercells?.length) body.containers = atom.cell.supercells;
-    body.suggestions = await suggestionsFor(c, q);
+    body.suggestions = await suggestionsFor(c, release, q);
   } else {
     // item 3: did the query resolve through a generalization/special_case concept
     // organ? Then the atom's exact decls formalize a MORE GENERAL / narrower object
@@ -888,11 +927,11 @@ async function informalToFormal(c: Ctx, q: string, limit: number): Promise<ApiRe
 // resolves to exactly ONE atom (aliases.json is a function — SCHEMA C4), and
 // that atom's concept organs are the multi-to-multi answer v2 walked in-edges
 // for (Module → Q18848 AND Q125977, one fetch).
-async function formalToInformal(c: Ctx, q: string, limit: number): Promise<ApiResult> {
+async function formalToInformal(c: Ctx, release: BrainReleaseContext, q: string, limit: number): Promise<ApiResult> {
   const name = q.startsWith("decl:") ? q.split(":").slice(2).join(":") : q;
-  const resolved = await resolveAtomKey(c, q.startsWith("decl:") ? q : `decl:Mathlib:${q}`)
-    ?? (await resolveAtomKey(c, name));
-  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
+  const resolved = await resolveAtomKey(c, release, q.startsWith("decl:") ? q : `decl:Mathlib:${q}`)
+    ?? (await resolveAtomKey(c, release, name));
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, release, resolved.id)) : null;
   const hits: Record<string, unknown>[] = [];
   if (atom) {
     const pages = organsOf(atom, "page");
@@ -922,7 +961,7 @@ async function formalToInformal(c: Ctx, q: string, limit: number): Promise<ApiRe
     body.note = atom
       ? "the decl's atom holds no concept organ — it is a formal-only cell (see organs on /api/brain/cell)"
       : "decl is not an organ of any atom — it may still exist in Mathlib (check decl_exists or /decl/<name>)";
-    body.suggestions = await suggestionsFor(c, name.split(".").pop() ?? name);
+    body.suggestions = await suggestionsFor(c, release, name.split(".").pop() ?? name);
   }
   return { status: 200, body };
 }
@@ -986,6 +1025,7 @@ const TRACES_ELSEWHERE = "brain/query.py --full serves the untruncated set";
 // key plus a reason — never `traces: []`, which reads as "no evidence exists".
 async function hydrateSupercellTraces(
   c: Ctx,
+  release: BrainReleaseContext,
   atomId: string,
   rows: Synapse[],
 ): Promise<Map<string, Synapse>> {
@@ -993,7 +1033,7 @@ async function hydrateSupercellTraces(
     .filter((s) => !s.id.startsWith("path:") && !s.traces?.length)
     .slice(0, TRACE_HYDRATION_MAX)
     .map((s) => s.id);
-  const entries = await cellEntries(c, want);
+  const entries = await cellEntries(c, release, want);
   const out = new Map<string, Synapse>();
   for (const id of want) {
     const mirror = entries.get(id)?.syn?.find((s) => s.id === atomId);
@@ -1010,25 +1050,59 @@ async function hydrateSupercellTraces(
 function synCmp(a: Synapse, b: Synapse): number {
   return b.w - a.w || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
-function encodeCursor(s: Synapse): string {
-  return btoa(JSON.stringify({ w: s.w, id: s.id }));
+interface NeighborhoodCursor { w: number; id: string }
+type CursorDecode<T> = { value: T | null; releaseMismatch: boolean; queryMismatch: boolean };
+
+function encodeCursorJson(value: unknown): string {
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
 }
-function afterCursor(s: Synapse, cur: { w: number; id: string }): boolean {
+
+function decodeCursorJson(raw: string): unknown {
+  const binary = atob(raw);
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(bytes));
+}
+
+function encodeCursor(release: BrainReleaseContext, query: string, s: Synapse): string {
+  return encodeCursorJson({ v: 2, r: release.releaseId, q: query, w: s.w, id: s.id });
+}
+function afterCursor(s: Synapse, cur: NeighborhoodCursor): boolean {
   return s.w < cur.w || (s.w === cur.w && s.id > cur.id);
 }
-function decodeCursor(raw: unknown): { w: number; id: string } | null {
-  if (typeof raw !== "string" || !raw) return null;
+function decodeCursor(raw: unknown, release: BrainReleaseContext, query: string): CursorDecode<NeighborhoodCursor> {
+  const empty = { value: null, releaseMismatch: false, queryMismatch: false };
+  if (typeof raw !== "string" || !raw) return empty;
   try {
-    const o = JSON.parse(atob(raw)) as { w?: unknown; id?: unknown };
-    if (o && typeof o.w === "number" && typeof o.id === "string") return { w: o.w, id: o.id };
+    const o = decodeCursorJson(raw) as { v?: unknown; r?: unknown; q?: unknown; w?: unknown; id?: unknown };
+    if (o && o.v === 2 && typeof o.r === "string" && typeof o.q === "string" && typeof o.w === "number" && typeof o.id === "string") {
+      if (o.r !== release.releaseId) return { ...empty, releaseMismatch: true };
+      return o.q === query
+        ? { value: { w: o.w, id: o.id }, releaseMismatch: false, queryMismatch: false }
+        : { ...empty, queryMismatch: true };
+    }
+    // Phase 1 compatibility: v1 tokens still identify a release, but do not
+    // carry the normalized query. Pre-release tokens are deliberately rejected:
+    // resuming one after a selector switch could silently mix generations.
+    if (o && o.v === 1 && typeof o.r === "string" && typeof o.w === "number" && typeof o.id === "string") {
+      return o.r === release.releaseId
+        ? { value: { w: o.w, id: o.id }, releaseMismatch: false, queryMismatch: false }
+        : { ...empty, releaseMismatch: true };
+    }
+    if (o && o.v === undefined && o.r === undefined && typeof o.w === "number" && typeof o.id === "string") {
+      return { ...empty, releaseMismatch: true };
+    }
   } catch {
-    /* opaque token: a malformed one restarts from the top rather than throwing */
+    /* Historical behavior: a malformed neighborhood cursor restarts at the top. */
   }
-  return null;
+  return empty;
 }
 
 export async function neighborhoodFor(
   c: Ctx,
+  release: BrainReleaseContext,
   id: string,
   kindsCsv?: string,
   limitRaw?: unknown,
@@ -1050,18 +1124,26 @@ export async function neighborhoodFor(
       : typeof minConfRaw === "string" && minConfRaw.trim() !== "" && Number.isFinite(Number(minConfRaw))
         ? Number(minConfRaw)
         : null;
-  const cursor = decodeCursor(cursorRaw);
   const wantTraces = !(tracesRaw === "0" || tracesRaw === false || tracesRaw === "false");
   const kinds = kindsCsv
     ? new Set(kindsCsv.split(",").map((s) => s.trim()).filter(Boolean))
     : null;
+  const cursorQuery = JSON.stringify({ id, kinds: kinds ? [...kinds].sort() : [], min_w: minW });
+  const decodedCursor = decodeCursor(cursorRaw, release, cursorQuery);
+  if (decodedCursor.releaseMismatch) {
+    return { status: 400, body: { ok: false, error: "cursor belongs to a different Brain release" } };
+  }
+  if (decodedCursor.queryMismatch) {
+    return { status: 400, body: { ok: false, error: "cursor belongs to a different Brain query" } };
+  }
+  const cursor = decodedCursor.value;
   // A kind that is not a synapse kind matches nothing, and "0 rows" reads as
   // "no such bond exists" — the exact failure the old enum caused. Name it.
   const unknownKinds = kinds
     ? [...kinds].filter((k) => !(SYNAPSE_KINDS as readonly string[]).includes(k))
     : [];
-  const resolved = await resolveAtomKey(c, id);
-  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
+  const resolved = await resolveAtomKey(c, release, id);
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, release, resolved.id)) : null;
   if (!atom) {
     const dropped = droppedInV3(id);
     return {
@@ -1088,12 +1170,14 @@ export async function neighborhoodFor(
   const from = startIdx < 0 ? filtered.length : startIdx;
   const picked = filtered.slice(from, from + limit);
   const nextCursor =
-    picked.length > 0 && from + picked.length < filtered.length ? encodeCursor(picked[picked.length - 1]) : null;
+    picked.length > 0 && from + picked.length < filtered.length
+      ? encodeCursor(release, cursorQuery, picked[picked.length - 1])
+      : null;
 
   // A supercell's rows arrive traceless; fetch them from the partner cells.
   const hydrated =
     wantTraces && atom.kind === "supercell"
-      ? await hydrateSupercellTraces(c, atom.id, picked)
+      ? await hydrateSupercellTraces(c, release, atom.id, picked)
       : null;
 
   let confFiltered = 0;
@@ -1183,10 +1267,10 @@ export async function neighborhoodFor(
 // v2 fanned out one shard fetch per xref target; v3 reads the EMBEDDED organ
 // payloads — one shard fetch answers the whole call. Every row carries its
 // licence; `safeOrgan` has already dropped any snippet that lost one.
-export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
+export async function snippetsFor(c: Ctx, release: BrainReleaseContext, id: string): Promise<ApiResult> {
   if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
-  const resolved = await resolveAtomKey(c, id);
-  const atom = resolved ? resolved.atom ?? (await atomFor(c, resolved.id)) : null;
+  const resolved = await resolveAtomKey(c, release, id);
+  const atom = resolved ? resolved.atom ?? (await atomFor(c, release, resolved.id)) : null;
   if (!atom) {
     const dropped = droppedInV3(id);
     return {
@@ -1252,12 +1336,42 @@ export async function snippetsFor(c: Ctx, id: string): Promise<ApiResult> {
 
 // ---- filter: facet-bitmask enumeration ----------------------------------------
 
+function encodeFilterCursor(release: BrainReleaseContext, query: string, index: number): string {
+  return encodeCursorJson({ v: 2, r: release.releaseId, q: query, i: index });
+}
+
+function decodeFilterCursor(raw: unknown, release: BrainReleaseContext, query: string): CursorDecode<number> {
+  const empty = { value: null, releaseMismatch: false, queryMismatch: false };
+  if (raw === undefined || raw === null || raw === "") return { value: 0, releaseMismatch: false, queryMismatch: false };
+  // Pre-release integer cursors are intentionally invalid. They cannot prove
+  // which immutable generation they paginate.
+  if (typeof raw !== "string") return empty;
+  try {
+    const o = decodeCursorJson(raw) as { v?: unknown; r?: unknown; q?: unknown; i?: unknown };
+    if (o?.v === 2 && typeof o.r === "string" && typeof o.q === "string" && Number.isSafeInteger(o.i) && (o.i as number) >= 0) {
+      if (o.r !== release.releaseId) return { ...empty, releaseMismatch: true };
+      return o.q === query
+        ? { value: o.i as number, releaseMismatch: false, queryMismatch: false }
+        : { ...empty, queryMismatch: true };
+    }
+    if (o?.v === 1 && typeof o.r === "string" && Number.isSafeInteger(o.i) && (o.i as number) >= 0) {
+      return o.r === release.releaseId
+        ? { value: o.i as number, releaseMismatch: false, queryMismatch: false }
+        : { ...empty, releaseMismatch: true };
+    }
+  } catch {
+    // Unlike the historical neighborhood token, filter cursors always rejected malformed input.
+  }
+  return empty;
+}
+
 // `type=cell` (default) enumerates labels.json — one row per atom, `f` = the
 // cell's OWN facets. `type=supercell` enumerates supercells.json by `fa`, the
 // subtree-AGGREGATE mask ("something under this folder matches"), which is a
 // deliberately different question — hence a separate type rather than a mixed list.
 export async function filterFor(
   c: Ctx,
+  release: BrainReleaseContext,
   fRaw: unknown,
   type?: string,
   limitRaw?: unknown,
@@ -1283,12 +1397,21 @@ export async function filterFor(
     };
   }
   const limit = clampLimit(limitRaw, 100, 500);
-  const cursor = intOr(cursorRaw, 0);
-  if (cursor < 0) return { status: 400, body: { ok: false, error: "bad cursor" } };
+  const prefix = (under || "").trim();
+  const cursorQuery = JSON.stringify({ f: mask, type: kind, under: prefix });
+  const decodedCursor = decodeFilterCursor(cursorRaw, release, cursorQuery);
+  if (decodedCursor.releaseMismatch) {
+    return { status: 400, body: { ok: false, error: "cursor belongs to a different Brain release" } };
+  }
+  if (decodedCursor.queryMismatch) {
+    return { status: 400, body: { ok: false, error: "cursor belongs to a different Brain query" } };
+  }
+  if (decodedCursor.value === null) return { status: 400, body: { ok: false, error: "bad cursor" } };
+  const cursor = decodedCursor.value;
 
   let pool: Array<{ id: string; f?: number; row: Record<string, unknown> }>;
   if (kind === "supercell") {
-    const file = await supercellsFile(c);
+    const file = await supercellsFile(c, release);
     if (!file?.supercells) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
     pool = Object.entries(file.supercells).map(([path, e]) => ({
       id: path,
@@ -1302,7 +1425,7 @@ export async function filterFor(
       },
     }));
   } else {
-    const labels = await cellLabels(c);
+    const labels = await cellLabels(c, release);
     if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
     pool = labels.map((r) => ({ id: r.id, f: r.f, row: r as unknown as Record<string, unknown> }));
   }
@@ -1322,12 +1445,11 @@ export async function filterFor(
   // is sufficient evidence of containment, so a union cannot over-match, and it
   // keeps the enumeration whole if either index drifts (today they agree
   // exactly: 7,398 cells carry `p`, the same 7,398 are listed).
-  const prefix = (under || "").trim();
   const inPrefix = (p: string) => p === prefix || p.startsWith(prefix + "/");
   const underSet =
     prefix && kind === "cell"
       ? await (async () => {
-          const file = await supercellsFile(c);
+          const file = await supercellsFile(c, release);
           const ids = new Set<string>();
           for (const [path, e] of Object.entries(file?.supercells ?? {})) {
             if (!inPrefix(path)) continue;
@@ -1364,7 +1486,7 @@ export async function filterFor(
       hits,
       returned: hits.length,
       cursor,
-      next_cursor: nextCursor,
+      next_cursor: nextCursor === null ? null : encodeFilterCursor(release, cursorQuery, nextCursor),
     },
   };
 }
@@ -1376,7 +1498,7 @@ export async function filterFor(
 // A key that resolves exactly (QID, decl name, slug, xref id) is promoted to the
 // top hit, which keeps the v2 "a bare QID query matches by id" behavior alive
 // even though cell ids are now `cell:<anchor>`.
-export async function searchFor(c: Ctx, qRaw: string, type?: string, limitRaw?: unknown): Promise<ApiResult> {
+export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: string, type?: string, limitRaw?: unknown): Promise<ApiResult> {
   const q = (qRaw || "").trim();
   if (q.length < 2) return { status: 400, body: { ok: false, error: "query too short (min 2 chars)" } };
   const limit = clampLimit(limitRaw, 25, 100);
@@ -1392,11 +1514,11 @@ export async function searchFor(c: Ctx, qRaw: string, type?: string, limitRaw?: 
     };
   }
   const ql = q.toLowerCase();
-  const labels = await cellLabels(c);
+  const labels = await cellLabels(c, release);
   if (!labels && kind !== "supercell") {
     return { status: 503, body: { ok: false, error: "brain data unavailable" } };
   }
-  const file = await supercellsFile(c);
+  const file = await supercellsFile(c, release);
   if (!file?.supercells && kind === "supercell") {
     return { status: 503, body: { ok: false, error: "brain data unavailable" } };
   }
@@ -1422,7 +1544,7 @@ export async function searchFor(c: Ctx, qRaw: string, type?: string, limitRaw?: 
   // This is how a bare QID still "matches by id" now that atom ids are
   // cell:<anchor> — and it is the ONLY way q=Q82571 (or its exact label "Linear
   // algebra") finds its folder, since labels.json indexes cells alone.
-  const exact = await resolveAtomKey(c, q);
+  const exact = await resolveAtomKey(c, release, q);
   if (exact?.id.startsWith("cell:") && kind !== "supercell") {
     const row = labels?.find((r) => r.id === exact.id);
     if (row) push({ ...pickSuggestion(row), matched: exact.resolved_from });
@@ -1642,6 +1764,7 @@ function nsHint(n: number, suffix: string, normalized: boolean): string {
 //                          normalized count + hint.
 async function suggestRename(
   c: Ctx,
+  release: BrainReleaseContext,
   name: string,
   manifest: DeclManifest,
   shardCache: DeclShardCache,
@@ -1651,10 +1774,10 @@ async function suggestRename(
   const bare = bareDeclName(name);
   // (a) verified rename via the owning cell's organ. aliases.json (4.6MB) is
   // loaded only on this miss path — the all-exists hot path never pays it.
-  const aliases = await cellAliases(c);
+  const aliases = await cellAliases(c, release);
   const cellId = own(aliases?.decls, bare);
   if (cellId) {
-    const atom = await atomFor(c, cellId);
+    const atom = await atomFor(c, release, cellId);
     const organ = atom?.organs.find(
       (o) => o.kind === "decl" && o.renamed_to && (o.label ?? bareDeclName(o.id)) === bare,
     );
@@ -1736,6 +1859,7 @@ async function suggestRename(
 // only import_line/docs_url are derived here.
 async function declVerdict(
   c: Ctx,
+  release: BrainReleaseContext,
   name: string,
   manifest: DeclManifest,
   shardCache: DeclShardCache,
@@ -1753,7 +1877,7 @@ async function declVerdict(
       docs_url: docsUrlFor(hit.module, name),
     };
   }
-  const sugg = await suggestRename(c, name, manifest, shardCache, suffixShardCache, budget);
+  const sugg = await suggestRename(c, release, name, manifest, shardCache, suffixShardCache, budget);
   if (!sugg) return { decl: name, exists: false, hint: DECL_MISS_HINT };
   return {
     decl: name,
@@ -1768,7 +1892,7 @@ async function declVerdict(
 // Single `name` OR batch `names` (cap 16). Per name: exact existence, and when a
 // name is dead, a CLEARLY-LABELLED rename suggestion (never a fact) so an agent
 // that drafted 3–8 names fixes them in one round trip (BRIDGE item 1).
-export async function declExistsFor(c: Ctx, nameRaw: string, namesRaw?: unknown): Promise<ApiResult> {
+export async function declExistsFor(c: Ctx, release: BrainReleaseContext, nameRaw: string, namesRaw?: unknown): Promise<ApiResult> {
   const names = normalizeNames(nameRaw, namesRaw);
   if ("error" in names) return { status: 400, body: names.error };
   const manifest = await memoAssetJson<DeclManifest>(c, "/assets/decl-index/manifest.json");
@@ -1781,11 +1905,11 @@ export async function declExistsFor(c: Ctx, nameRaw: string, namesRaw?: unknown)
 
   if (!names.batch) {
     // single-name shape preserved for back-compat (adds renamed_to/import_line)
-    const body = await declVerdict(c, names.list[0], manifest, shardCache, suffixShardCache, budget);
+    const body = await declVerdict(c, release, names.list[0], manifest, shardCache, suffixShardCache, budget);
     return { status: 200, body: { ok: true, ...body } };
   }
   const results = await Promise.all(
-    names.list.map((n) => declVerdict(c, n, manifest, shardCache, suffixShardCache, budget)),
+    names.list.map((n) => declVerdict(c, release, n, manifest, shardCache, suffixShardCache, budget)),
   );
   const counts = { total: results.length, exists: 0, renamed: 0, missing: 0 };
   for (const r of results) {
@@ -1902,7 +2026,7 @@ function premiseShard(
 // and exact-segment-unique namespace resolutions both recover, noted via
 // `resolved_via` — anything else lands in seeds_unknown rather than failing
 // the call.
-export async function premisesFor(c: Ctx, seedsRaw: unknown, limitRaw?: unknown): Promise<ApiResult> {
+export async function premisesFor(c: Ctx, release: BrainReleaseContext, seedsRaw: unknown, limitRaw?: unknown): Promise<ApiResult> {
   const seeds = normalizeSeeds(seedsRaw);
   if ("error" in seeds) return { status: 400, body: seeds.error };
   const limit = clampLimit(limitRaw, PREMISE_LIMIT_DEFAULT, PREMISE_LIMIT_CAP);
@@ -1940,7 +2064,7 @@ export async function premisesFor(c: Ctx, seedsRaw: unknown, limitRaw?: unknown)
     seeds.list.map(async (seed) => {
       const hit = await declLookup(c, seed, declManifest, shardCache, budget);
       if (hit.exists) return { seed, decl: seed as string | null, resolved_via: undefined as string | undefined };
-      const sugg = await suggestRename(c, seed, declManifest, shardCache, suffixShardCache, budget);
+      const sugg = await suggestRename(c, release, seed, declManifest, shardCache, suffixShardCache, budget);
       return sugg?.renamed_to && sugg.module && sugg.renamed_to !== seed
         ? { seed, decl: sugg.renamed_to as string | null, resolved_via: sugg.suggestion_basis as string | undefined }
         : { seed, decl: null, resolved_via: undefined };
@@ -2083,11 +2207,11 @@ const BRIDGE_DEPENDS_CAP = 12; // one-hop depends partners inlined; the rest cou
 // Build an id→label map for depends partners (cells from labels.json, supercells
 // from supercells.json — both memoized). Labels only; the bridge never inlines a
 // partner's whole neighborhood.
-async function partnerLabels(c: Ctx): Promise<Map<string, string | null>> {
+async function partnerLabels(c: Ctx, release: BrainReleaseContext): Promise<Map<string, string | null>> {
   const map = new Map<string, string | null>();
-  const labels = await cellLabels(c);
+  const labels = await cellLabels(c, release);
   for (const r of labels ?? []) map.set(r.id, r.label ?? null);
-  const file = await supercellsFile(c);
+  const file = await supercellsFile(c, release);
   for (const [p, e] of Object.entries(file?.supercells ?? {})) map.set(p, e.label ?? null);
   return map;
 }
@@ -2153,7 +2277,7 @@ function atomsInStatement(labels: BrainLabelRow[], ql: string): Array<{ id: stri
 // call of an autoformalization loop, ending in `next_tools` hints. Honest
 // abstention (item 4): under the confidence floor it returns match:"none" +
 // nearest rather than a forced grounding.
-export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promise<ApiResult> {
+export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: string, limitRaw?: unknown): Promise<ApiResult> {
   const q = (qRaw || "").trim();
   if (!q) return { status: 400, body: { ok: false, error: "missing ?q= (an informal statement or concept)" } };
   const limit = clampLimit(limitRaw, 8, BATCH_CAP);
@@ -2161,12 +2285,12 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
   // 1. candidate atoms — an exact id/label first (identity), then label+aka search
   const considered: Array<{ id: string; resolved_from: string }> = [];
   const seen = new Set<string>();
-  const exact = await resolveAtomKey(c, q);
+  const exact = await resolveAtomKey(c, release, q);
   if (exact) {
     considered.push({ id: exact.id, resolved_from: exact.resolved_from });
     seen.add(exact.id);
   }
-  const labels = await cellLabels(c);
+  const labels = await cellLabels(c, release);
   const ql = q.toLowerCase();
   if (labels) {
     // labels CONTAINING the query (short concept queries)…
@@ -2192,14 +2316,14 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
         error: "no atom matched q",
         q,
         match: "none",
-        suggestions: await suggestionsFor(c, q),
+        suggestions: await suggestionsFor(c, release, q),
         hint: "try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell",
       },
     };
   }
 
   const top = considered.slice(0, 3);
-  const fetched = await Promise.all(top.map((a) => atomFor(c, a.id)));
+  const fetched = await Promise.all(top.map((a) => atomFor(c, release, a.id)));
   const atomsOut = top.map((a, i) => ({
     id: a.id,
     kind: fetched[i]?.kind ?? null,
@@ -2249,7 +2373,7 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
       };
       // a dead cited name gets the same labelled suggestion decl_exists serves
       if (exists === false && manifest) {
-        const sugg = await suggestRename(c, name, manifest, shardCache, suffixShardCache, suggestBudget);
+        const sugg = await suggestRename(c, release, name, manifest, shardCache, suffixShardCache, suggestBudget);
         if (sugg?.renamed_to) {
           hit.renamed_to = sugg.renamed_to;
           hit.suggestion_basis = sugg.suggestion_basis;
@@ -2268,7 +2392,7 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
 
   // 4. one-hop depends from the PRIMARY atom + honest abstention
   const primary = fetched[0];
-  const labelMap = await partnerLabels(c);
+  const labelMap = await partnerLabels(c, release);
   const depends = primary ? oneHopDepends(primary, labelMap) : { partners: [], returned: 0, total: 0, truncated: false };
 
   const bestBond = (chosen[0]?.o.bond as string | null) ?? null;
@@ -2305,15 +2429,40 @@ export async function bridgeFor(c: Ctx, qRaw: string, limitRaw?: unknown): Promi
 
 // ---- routes -------------------------------------------------------------------
 
-const CACHE_HEADERS = { "Cache-Control": "public, max-age=3600" }; // nightly-rebuild cadence
+const CACHE_HEADERS = { "Cache-Control": "public, max-age=0, must-revalidate" };
+const PAGE_CACHE_HEADERS = { "Cache-Control": "public, max-age=3600" };
 
-// EVERY response echoes the snapshot (item 6). The manifest is already loaded on
-// every cell-backed path, so this is zero extra fetches there; decl-only paths
-// pay one memoized fetch. `snapshot: null` when the manifest is unavailable —
-// honest about a missing snapshot rather than omitting it silently.
-async function send(c: Ctx, r: ApiResult): Promise<Response> {
-  r.body.snapshot = await snapshotFor(c);
+// The unqualified compatibility URLs must revalidate so an edge cache cannot
+// label an old body as the new current release. Immutable assets remain freely
+// cacheable under their release-qualified URLs.
+async function send(c: Ctx, release: BrainReleaseContext, r: ApiResult): Promise<Response> {
+  r.body.snapshot = await snapshotFor(c, release);
+  r.body.release_id = release.releaseId;
   return c.json(r.body, r.status, r.status === 200 ? CACHE_HEADERS : undefined);
+}
+
+async function withRelease(
+  c: Ctx,
+  run: (release: BrainReleaseContext) => Promise<Response>,
+): Promise<Response> {
+  try {
+    const release = await resolveBrainRelease(c);
+    if (!release) {
+      return c.json(
+        { ok: false, error: "brain release unavailable", snapshot: null, release_id: null },
+        503,
+      );
+    }
+    return await run(release);
+  } catch (error) {
+    if (isBrainReleaseUnavailableError(error)) {
+      return c.json(
+        { ok: false, error: "brain release unavailable", snapshot: null, release_id: error.releaseId },
+        503,
+      );
+    }
+    throw error;
+  }
 }
 
 // Same anonymous budget as /mcp (review finding: the REST twins of the MCP
@@ -2343,72 +2492,67 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
   app.use("/api/brain/premises", rateLimitGate);
   app.use("/api/brain/bridge", rateLimitGate);
 
-  app.get("/api/brain/cell", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
+  app.get("/api/brain/cell", async (c) => withRelease(c, async (release) =>
+    send(c, release, await cellFor(c, release, c.req.query("key") ?? ""))));
 
   // v2 entry point. The unit card became the CELL card (the atom subsumes it —
   // a unit was QID ∘ article ∘ decls ∘ xrefs, which is exactly a cell's organs),
   // so this is a true alias rather than a shim: nothing that resolved before 404s.
-  app.get("/api/brain/unit", async (c) => send(c, await cellFor(c, c.req.query("key") ?? "")));
+  app.get("/api/brain/unit", async (c) => withRelease(c, async (release) =>
+    send(c, release, await cellFor(c, release, c.req.query("key") ?? ""))));
 
-  app.get("/api/brain/transfer", async (c) =>
-    send(
+  app.get("/api/brain/transfer", async (c) => withRelease(c, async (release) =>
+    send(c, release, await transferFor(
+      c, release, c.req.query("q") ?? "", c.req.query("direction") ?? "", c.req.query("limit"),
+    ))));
+
+  app.get("/api/brain/neighborhood", async (c) => withRelease(c, async (release) =>
+    send(c, release, await neighborhoodFor(
       c,
-      await transferFor(c, c.req.query("q") ?? "", c.req.query("direction") ?? "", c.req.query("limit")),
-    ),
-  );
+      release,
+      c.req.query("id") ?? "",
+      c.req.query("kinds"),
+      c.req.query("limit"),
+      c.req.query("traces"),
+      c.req.query("min_w"),
+      c.req.query("cursor"),
+      c.req.query("min_conf"),
+    ))));
 
-  app.get("/api/brain/neighborhood", async (c) =>
-    send(
-      c,
-      await neighborhoodFor(
-        c,
-        c.req.query("id") ?? "",
-        c.req.query("kinds"),
-        c.req.query("limit"),
-        c.req.query("traces"),
-        c.req.query("min_w"),
-        c.req.query("cursor"),
-        c.req.query("min_conf"),
-      ),
-    ),
-  );
-
-  app.get("/api/brain/snippets", async (c) => send(c, await snippetsFor(c, c.req.query("id") ?? "")));
+  app.get("/api/brain/snippets", async (c) => withRelease(c, async (release) =>
+    send(c, release, await snippetsFor(c, release, c.req.query("id") ?? ""))));
 
   // Batch decl existence + labelled rename suggestions (BRIDGE item 1). `names`
   // is comma-separated over REST (cap 16); `name` stays the single-decl form.
-  app.get("/api/brain/decl", async (c) =>
-    send(c, await declExistsFor(c, c.req.query("name") ?? "", c.req.query("names"))),
-  );
+  app.get("/api/brain/decl", async (c) => withRelease(c, async (release) =>
+    send(c, release, await declExistsFor(c, release, c.req.query("name") ?? "", c.req.query("names")))));
 
   // Stored-premise retrieval: `seeds` is comma-separated over REST (cap 8).
-  app.get("/api/brain/premises", async (c) =>
-    send(c, await premisesFor(c, c.req.query("seeds"), c.req.query("limit"))),
-  );
+  app.get("/api/brain/premises", async (c) => withRelease(c, async (release) =>
+    send(c, release, await premisesFor(c, release, c.req.query("seeds"), c.req.query("limit")))));
 
   // The composite first call of an autoformalization loop (BRIDGE item 7).
-  app.get("/api/brain/bridge", async (c) => send(c, await bridgeFor(c, c.req.query("q") ?? "", c.req.query("limit"))));
+  app.get("/api/brain/bridge", async (c) => withRelease(c, async (release) =>
+    send(c, release, await bridgeFor(c, release, c.req.query("q") ?? "", c.req.query("limit")))));
 
-  app.get("/api/brain/filter", async (c) =>
-    send(
+  app.get("/api/brain/filter", async (c) => withRelease(c, async (release) =>
+    send(c, release, await filterFor(
       c,
-      await filterFor(
-        c,
-        c.req.query("f"),
-        c.req.query("type"),
-        c.req.query("limit"),
-        c.req.query("cursor"),
-        c.req.query("under"),
-      ),
-    ),
-  );
+      release,
+      c.req.query("f"),
+      c.req.query("type"),
+      c.req.query("limit"),
+      c.req.query("cursor"),
+      c.req.query("under"),
+    ))));
 
-  app.get("/api/brain/search", async (c) =>
-    send(c, await searchFor(c, c.req.query("q") ?? "", c.req.query("type"), c.req.query("limit"))),
-  );
+  app.get("/api/brain/search", async (c) => withRelease(c, async (release) =>
+    send(c, release, await searchFor(
+      c, release, c.req.query("q") ?? "", c.req.query("type"), c.req.query("limit"),
+    ))));
 
   // The human-readable reference for everything above + the MCP endpoint.
-  app.get("/brain/api", (c) => c.html(API_REFERENCE_HTML, 200, CACHE_HEADERS));
+  app.get("/brain/api", (c) => c.html(API_REFERENCE_HTML, 200, PAGE_CACHE_HEADERS));
 }
 
 // ---- /brain/api reference page (self-contained; style matches the dark /brain
@@ -2462,8 +2606,9 @@ th { color:#9aa3b2; font-weight:600; }
 </header>
 <main>
 <h1>Wikibrain API <span class="pill">v3 — cells</span></h1>
-<p class="muted">Read-only, unauthenticated, cached (<code>Cache-Control: public, max-age=3600</code> —
-data rebuilds nightly). Base URL <code>https://wikilean.jackmccarthy.org</code>.
+<p class="muted">Read-only and unauthenticated. Current-selector responses revalidate
+(<code>Cache-Control: public, max-age=0, must-revalidate</code>); immutable release assets remain cacheable.
+Base URL <code>https://wikilean.jackmccarthy.org</code>.
 Full reference with response schemas: <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/BRAIN-API.md">docs/BRAIN-API.md</a>.</p>
 
 <h2>The model: cells, organs, supercells, synapses</h2>
@@ -2513,7 +2658,7 @@ mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_premises</code>.
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
 card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
-<code>snapshot:{generated_at,pin}</code>.</p>
+<code>release_id</code> and <code>snapshot:{generated_at,pin}</code>.</p>
 
 <h2>Id grammar</h2>
 <table>
