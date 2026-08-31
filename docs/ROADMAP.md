@@ -125,7 +125,7 @@ never independent semantic writers.
 - [x] **Phase 0 contracts** — canonical encoding/logical roots, reducer-input
   inventory, source/offline-pack schemas, release/attestation schemas, offline
   verification runner, and semantic snapshot diff landed 2026-08-29.
-- [ ] **Finish Phase 0 reproducibility** — seal real source manifests/objects,
+- [ ] **Finish Phase 0 reproducibility (P0-R below)** — seal real source manifests/objects,
   eliminate ambient checkout/mtime/cache identity from authoritative reduction,
   and prove two network-disabled clean-room builds produce the same logical roots.
 - [x] **Phase 1 immutable-release implementation** — landed locally 2026-08-31.
@@ -135,7 +135,7 @@ never independent semantic writers.
   and previous immutable namespaces plus byte-identical compatibility aliases;
   canary and guarded Worker rollback are wired. Deployment and the non-CAS
   automatic rollback escape hatch remain independently opt-in.
-- [ ] **Phase 1 production activation and rollback drill** — review one shadow
+- [ ] **Phase 1 production activation and rollback drill (P1A–P1C below)** — review one shadow
   result, enable one production release from a clean `main`, measure CDN/isolate
   convergence, deliberately exercise the documented rollback path, and record
   the observed recovery time before claiming a rollback SLO.
@@ -144,17 +144,265 @@ never independent semantic writers.
   durable atomic publication, persisted planner statistics, indexed bounded
   endpoint probes, streamed release verification, and machine-readable
   performance/resource metrics are implemented.
-- [ ] **Phase 2 Git authority** — immutable curated changesets and reviewed source
+- [ ] **Phase 2 Git authority (P2A–P2D below)** — immutable curated changesets and reviewed source
   transitions, first-parent/CAS validation, semantic migrations, deterministic
   replay, and a reviewed genesis import. Do not expand deterministic source facts
   into one Git operation per edge.
-- [ ] **Phase 3 release-pinned D1 overlay** — append-only operations and decisions,
+- [ ] **Phase 3 release-pinned D1 overlay (P3A–P3D below)** — append-only operations and decisions,
   stable assertion IDs/tombstones, monotonic sequences, deterministic rebase,
   exactly-once promotion receipts, compatible rollback generations, and proven
   backup RPO/RTO.
 - [ ] **Phase 4 generated-artifact retirement from Git** — publish generated
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
+
+### Current Brain execution queue (updated 2026-08-31)
+
+The next implementation ticket is P1A: promote one already-reviewed immutable release
+without rebuilding it. In parallel, P0-R is the main architecture workstream. P2A is a
+safe third, shadow-only workstream, but P2B and later wait for P0-R's source/build
+contracts. Do not start a Phase 3 D1 schema cutover until all Phase 2 contracts and the
+reviewed genesis are complete.
+
+#### P1A — exact frozen-release promotion `[NEXT]`
+
+- [ ] Add `site/ops/brain-promote-release.sh <release-id> --release-root <absolute-path>`,
+  where `<release-id>` is the complete `sha256:<64hex>` identity. It must never run
+  ingest or reduction: verify the named immutable release, require its recorded authority
+  commit to equal a clean `main` HEAD, retain the exact live release, stage the named
+  current/previous pair, run Worker checks, fence production as
+  status A → selector A → status A, deploy once, and canary the requested release ID.
+  Run promotion from a separate clean checkout/worktree at the release's authority commit
+  and read the candidate through an explicit read-only release-root/store path produced by
+  the isolated build. Do not weaken the clean-tree gate by ignoring generated dirtiness.
+  Provide a no-mutation `--dry-run` that executes all local checks, live transport
+  preflight, and read-only Wrangler identity/status/history calls, but never invokes deploy
+  or rollback.
+- [ ] Write a crash-safe append-only deployment journal. Before any mutating Wrangler call,
+  fsync an intent record containing the attempt ID, requested/prior release IDs, authority
+  commit, and predeploy Worker version. Append immutable deploy-result, canary, rollback,
+  and final-state records linked to that attempt; a derived summary may be generated but
+  never overwrites evidence.
+  Require an absolute `WIKILEAN_BRAIN_RECEIPT_DIR` outside the checkout and gitignored
+  `site/out`; fail if it is unset or unwritable, never garbage-collect it automatically,
+  include it in host backups, and attach the event-chain hash to the rollout review. On
+  startup, refuse another mutation until every incomplete attempt is reconciled against
+  live Wrangler and selector state.
+- [ ] Fix Python TLS trust for the canary using a maintained CA source (`truststore` or
+  `certifi`); never disable certificate verification. Run a transport preflight with the
+  same opener before invoking Wrangler. HTTP 200 proves the normal path. A missing selector
+  is accepted only with `--allow-first-deploy-without-selector`, Jack's approval for that
+  exact window, and the exception recorded in the intent journal. TLS, DNS, and timeout failures
+  fail closed.
+- [ ] Add failure-injection tests for exact-ID mismatch, dirty/wrong Git authority,
+  selector/version races, Wrangler returning nonzero after a possible remote commit,
+  malformed or unwritable journals, crash/SIGKILL after Wrangler, first-deploy flag misuse,
+  canary timeout, and rollback ownership loss.
+
+**Done when:** a reviewed shadow release can be promoted without rebuilding, the requested,
+staged, deployed, and canaried release IDs are identical, and every attempt either has a
+complete immutable event chain or is detected and reconciled before any later mutation.
+Keep deployment and automatic rollback disabled while this milestone is open. The legacy
+`WIKILEAN_BRAIN_DEPLOY=1` nightly path is not an approved activation path because it
+rebuilds before deployment.
+
+#### P1B — activation evidence bundle `[PREP; NO PRODUCTION]`
+
+- [ ] **Jack prerequisite:** review and merge the final Phase 1/P1A pull request onto a
+  clean `main`, and authorize the read-only Mathlib checkout and interpreter paths used by
+  the launch job.
+- [ ] Provision and verify those paths plus gitignored `site/ops/nightly.local.env` in the
+  same launch context used by the job. Keep agents, deploy, and automatic rollback disabled.
+- [ ] At the reviewed tip, run `(cd wiki && npm ci && npm run test:ci)` followed from the
+  repository root by `PYTHON=.venv/bin/python3 ./scripts/ci-python.sh`.
+- [ ] Run the shadow nightly in an isolated build worktree/output context so its
+  timestamp-bearing generated files cannot dirty the clean promotion checkout.
+- [ ] Freeze or identify a complete trusted pre-activation baseline bundle, and
+  store the release/store/public metrics plus JSON from this command:
+
+  ```bash
+  "${WIKILEAN_PYTHON:-.venv/bin/python3}" brain/tools/semantic_diff.py \
+    --from <baseline-release-root-or-manifest> \
+    --to <candidate-release-root-or-manifest> \
+    > <review-bundle>/semantic-diff.json
+  ```
+
+  The bundle must cover graph JSONL (including `edges_links.jsonl` and `synapses.jsonl`),
+  SQLite, and release-coupled static artifacts. If no complete trustworthy baseline exists,
+  a sealed `brain/data` comparison is explicitly partial evidence; proceeding requires
+  Jack's waiver in the deployment journal and does not satisfy P0-R semantic parity.
+- [ ] Run the exact promoter through local verification and transport dry-run, then review
+  its proposed intent record without invoking a mutating Wrangler command.
+
+**Done when:** exact release A and a self-contained review bundle are ready, all automated
+checks pass, and production has not changed.
+
+#### P1C — production activation and rollback drill `[JACK GATE]`
+
+- [ ] Jack approves the exact release A ID, exclusive deployment window, journal location,
+  and (only if applicable) the first-deploy missing-selector exception.
+- [ ] Promote release A with automatic rollback off and record end-to-end canary
+  convergence. A first compatibility deployment does not by itself prove rollback.
+- [ ] Build and review exact release B. Jack separately approves B's exact ID and promotion
+  window before it is promoted.
+- [ ] Jack separately approves the rollback action/window; manually roll B back to the
+  Worker A version/release pair recorded before B, canary A, and record convergence.
+- [ ] Jack chooses and approves the final A-or-B state before any final mutation. Roll
+  forward only with the already-recorded
+  Worker B version or the exact frozen release B; never rerun the nightly and accidentally
+  introduce an unreviewed release C.
+- [ ] Keep unattended deployment off until P0-R is complete and the drill evidence has
+  been reviewed. Installing the LaunchAgent in shadow-only mode is safe after host setup.
+
+**Done when:** two release-qualified versions have been exercised in production, rollback
+and roll-forward both converge across selector, page, REST, MCP, cursor, and alias checks,
+and the measured recovery time is recorded. Production changes always require Jack's
+explicit approval.
+
+#### P0-R — sealed inputs and deterministic clean-room replay `[PRIMARY ENGINEERING]`
+
+- [ ] **Evolve the contracts explicitly.** Add new, versioned source-manifest,
+  offline-pack, and build-attestation contracts rather than loosening v1 in place. They
+  must represent raw plus normalized source objects, curated Git trees, the complete
+  multi-file reducer DAG, `offline_pack_id`, `source_set_root`, and required-versus-absent
+  optional inputs.
+- [ ] **Repair input closure.** Replace the ineffective Python brace glob
+  `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; add
+  consumed `brain/data/discovery_rejected.jsonl`, optional
+  `catalog/data/tauceti_links.jsonl`, and reducer code `brain/layout.py`; represent the
+  external Mathlib tree explicitly; distinguish required inputs from deliberately absent
+  optional inputs.
+- [ ] **Separate acquisition from replay.** Network-enabled acquisition, including
+  Wikidata checks used by `fold_proposals.py`, ends by sealing normalized/folded objects.
+  The authoritative full-DAG replay begins after that boundary and performs no network or
+  live D1 reads.
+- [ ] **Introduce an explicit build context.** Add one full-DAG replay entry point with
+  separate read-only input and output roots. Route builders through explicit file lists,
+  source pins, generation identity, and versioned reducer configuration instead of
+  repository globals, live `BRAIN_*` environment lookups, or discovered glob members.
+- [ ] **Remove ambient identity.** Replace filesystem-mtime provenance and wall-clock
+  `generated_at` values with source-manifest pins and a pack-derived deterministic
+  generation ID. Keep observation/build times only in audit attestations, outside logical
+  roots and snapshot IDs.
+- [ ] **Pin the execution environment.** Record an exact Python, NumPy, SQLite, dependency
+  lock, locale, and runner/container identity. A floating `numpy>=1.24` environment is not
+  sufficient evidence for release-ID reproducibility.
+- [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source
+  object store for the pinned Mathlib tree and declaration oracle, TheoremGraph inputs,
+  sealed D1 annotations/community data, external normalized files, and curated Git inputs.
+  Restricted or link-only raw objects remain local/non-exportable while their digests,
+  acquisition receipts, normalization outputs, and policy still close the pack.
+  Bind the verified `offline_pack_id` and real `source_set_root` into release attestations;
+  retire the compatibility `legacy_declared_input_root` from authoritative releases.
+- [ ] **Prove cross-object coherence.** Verify Mathlib archive ↔ declared commit,
+  declaration oracle ↔ Mathlib revision, paired external pages/links ↔ one
+  acquisition, TheoremGraph objects ↔ declared dataset revisions, and folded outputs ↔
+  sealed proposal/source inputs.
+- [ ] **Add the dual-build gate.** Build the same pack in two different absolute paths
+  with randomized mtimes, isolated temp/cache roots, and adversarial `BRAIN_*` values, with
+  network disabled at the runner/container boundary. Mount the verified pack as the only
+  readable data input and use a separate writable output mount, then require byte-identical
+  JSON/JSONL/static output plus equal base snapshot, projection, semantic, and release IDs.
+- [ ] **Prove compatibility, not only repeatability.** Compare the clean-room result with
+  the approved pre-refactor baseline and require zero graph/topology/content changes. Since
+  replacing mtime/date pins intentionally changes provenance, require either a documented
+  legacy-pin normalization comparison or an explicitly reviewed provenance-only migration
+  report. Include fixtures for prior snippet-loss and fold/source-mismatch regressions.
+- [ ] **Define a reproducibility attestation schema.** Record both build identities, pack
+  and environment IDs, compared roots/digests, normalized provenance result, and pass/fail;
+  the existing validation attestation is not a substitute.
+- [ ] **Close provenance/license coverage.** Require every emitted provenance source to
+  resolve to a sealed source manifest and policy entry. Resolve the current `tag-queue` and
+  `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
+  differently licensed TheoremGraph object before making this gate strict.
+
+**Done when:** two clean-room full-corpus builds from one verified pack are identical;
+touching files changes nothing; undeclared, missing-required, substituted, or silently
+appearing optional inputs fail before reduction; graph/content parity plus the reviewed
+provenance migration are proven; and the reproducibility attestation is stored with the
+release.
+
+#### P2A — shadow assertion kernel `[PARALLEL, SHADOW ONLY]`
+
+- [ ] Freeze the v1 operation envelope and assertion state plus the minimal
+  operation family: entity assertion, relationship assertion, assertion retraction, and
+  exact-retraction restoration. Use an explicitly experimental fixture wrapper and fixture
+  relationship-kind policy—not accepted `changeset/v1`—so source transitions, reducer
+  schedules, semantic migrations, and authoritative kind policy can wait for P0-R without
+  mutating a frozen schema. Do not conflate authored kinds with generated `depends`/bulk
+  `links` edges.
+- [ ] Implement `brain/tools/validate_authority.py` and
+  `brain/tools/replay_authority.py` using the existing canonical JSON/hash primitives.
+  The semantic root must bind inactive assertions and exact retraction history, not only
+  the currently active graph.
+- [ ] Add stable operation/assertion IDs, assertion revisions, predecessor/root checks,
+  tombstone state transitions, derived conflict footprints, and deterministic full plus
+  incremental replay.
+- [ ] Shadow-import `brain/data/container_links.jsonl` and
+  `brain/data/discovery_proposals.jsonl` first. Prove canonical source-contribution parity
+  against those legacy rows; leave runtime inputs and `authority.through_changeset`
+  unchanged. Full graph semantic parity waits for P2B's compatibility exporter and P0-R
+  build context.
+- [ ] Add adversarial fixtures for unknown versions/fields, duplicate or reused IDs,
+  authored `cell:` endpoints, stale expected revisions, bad predecessor roots, invalid
+  retract/restore chains, and equivalent independent assertions. Prove independence from
+  physical file enumeration and JSON serialization order; permute only operation classes
+  whose commutativity is explicitly registered and tested.
+
+**Done when:** fixture full/incremental roots converge, the pilot legacy-vs-shadow semantic
+contribution diff is empty, and no production bytes/routes change. Genesis acceptance and
+cutover remain blocked on P0-R and the P1C rollback drill.
+
+#### Later authority and overlay milestones
+
+- [ ] **P2B — complete authority semantics (depends on P0-R):** freeze accepted
+  `changeset/v1`, source-transition, reducer-schedule, semantic-migration, and authority
+  policy contracts; add `attach_evidence`, curated attributes, proposal accept/reject,
+  verification/veto, supersession with cycle prevention, and alias/merge/split identity
+  operations. Test source-name-to-manifest state, prior-manifest continuity, missing
+  objects/manifests, duplicate transitions, source-set-root convergence, migration fixtures,
+  and the compatibility exporter that feeds the P0-R build context.
+- [ ] **P2C — protected genesis:** inventory every legacy input family as assertion,
+  decision/evidence, source transition, compatibility-only archive, or excluded with a
+  rationale. Compile a candidate genesis outside accepted `changesets/`; preserve
+  independent equivalent assertions and avoid original/verified/folded double counting.
+  Put first-parent validation, exactly one changeset in
+  authority-changing commits (otherwise an explicit no-transition declaration), protected
+  append-only paths, and the duplicate-ID registry in read-only CI. Account for shallow
+  GitHub checkouts. Implement the actual landing-head CAS in branch protection/merge queue
+  or a separately reviewed authorized landing tool—never broaden validation-only
+  `.github/workflows/ci.yml`. Review the candidate and full semantic parity, but do not land
+  genesis yet.
+- [ ] **P2D — authority cutover:** quiesce every named legacy curated writer, seal the
+  inclusive watermark/digest, regenerate or verify the candidate against that exact
+  watermark, then CAS-land genesis and enable authority validation. Make replay emit
+  deterministic legacy compatibility exports for derived/folded inputs. Preserve original
+  proposals, verified decisions, and other evidence under an explicit immutable archival
+  disposition rather than regenerating them. Route
+  `build_common.py`, `build_cells.py`, and `build_shards.py` only through replay state or
+  those exports; order the nightly as replay → exports → release. Stop hardcoding
+  `through_changeset: null`; verify the non-null chain/root before accepting a release, and
+  retain old derived/folded files only as generated compatibility outputs.
+- [ ] **P3A — append-only overlay foundation:** only after complete Phase 2 contracts, add
+  a new ordered migration after `0012` (never edit applied migrations `0010`/`0011`) for
+  operation, changeset, decision, rebase, promotion, and receipt tables. Deterministically
+  backfill all `brain_nodes` plus live and deleted `brain_edges`, preserve legacy IDs as
+  origin references and tombstones, do not collapse independently sourced equivalent
+  assertions through `(src,dst,kind)` uniqueness, expose a compatibility current view, and
+  require shadow read parity before writer cutover.
+- [ ] **P3B — release-pinned atomic writes:** make node, edge, and bulk submissions one
+  atomic changeset with base release, monotonic sequence, stable IDs, expected absence or
+  revision checks, and idempotent retry receipts.
+- [ ] **P3C — overlay generations and rebase:** implement deterministic classifications,
+  immutable per-base materializations, atomic compatible release/generation selection, and
+  retained rollback generations. Every overlay response exposes base release, generation,
+  sequence, and effective graph token. Define the post-promotion hook that rebases remaining
+  overlay operations against the new accepted base and prepares the next generation.
+- [ ] **P3D — exactly-once promotion and recovery:** add fenced reservation/receipt,
+  duplicate-promotion handling, crash-after-Git-before-receipt adoption, backup checksums,
+  and measured restore/reconciliation RPO/RTO drills. Every successful or adopted promotion
+  must run P3C's deterministic rebase, expose conflicts/orphans/quarantine, and atomically
+  switch to the compatible new overlay generation.
 
 PostgreSQL, R2, and graph-native serving remain measurement-triggered projections,
 not current dependencies. Start PostgreSQL shadowing only for a demonstrated shared
