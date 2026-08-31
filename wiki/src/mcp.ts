@@ -15,6 +15,11 @@
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
+  isBrainReleaseUnavailableError,
+  resolveBrainRelease,
+  type BrainReleaseContext,
+} from "./brain.js";
+import {
   bridgeFor,
   cellFor,
   declExistsFor,
@@ -246,7 +251,10 @@ export const TOOLS: ToolDef[] = [
         type: { type: "string", enum: ["cell", "supercell"], description: "default cell" },
         under: { type: "string", description: "restrict to a subtree, e.g. path:Mathlib/Algebra" },
         limit: { type: "number", description: "max rows (default 100, cap 500)" },
-        cursor: { type: "number", description: "resume cursor from a previous call's next_cursor" },
+        cursor: {
+          anyOf: [{ type: "string" }, { type: "number" }],
+          description: "opaque release-bound cursor",
+        },
       },
       ["f"],
     ),
@@ -300,30 +308,27 @@ function argStr(v: unknown): string {
   return typeof v === "string" ? v : typeof v === "number" ? String(v) : "";
 }
 
-const IMPLS = new Map<string, (c: Ctx, a: Record<string, unknown>) => Promise<ApiResult>>([
-  ["brain_bridge", (c, a) => bridgeFor(c, argStr(a.q), a.limit)],
-  ["brain_search", (c, a) => searchFor(c, argStr(a.q), argStr(a.type) || undefined, a.limit)],
-  ["brain_cell", (c, a) => cellFor(c, argStr(a.key))],
-  ["brain_transfer", (c, a) => transferFor(c, argStr(a.q), argStr(a.direction), a.limit)],
-  ["brain_neighborhood", (c, a) =>
-    neighborhoodFor(c, argStr(a.id), argStr(a.kinds) || undefined, a.limit, a.traces, a.min_w, a.cursor, a.min_conf)],
-  ["brain_snippets", (c, a) => snippetsFor(c, argStr(a.id))],
-  ["brain_filter", (c, a) => filterFor(c, a.f, argStr(a.type) || undefined, a.limit, a.cursor, argStr(a.under) || undefined)],
+type ToolImpl = (c: Ctx, release: BrainReleaseContext, a: Record<string, unknown>) => Promise<ApiResult>;
+const IMPLS = new Map<string, ToolImpl>([
+  ["brain_bridge", (c, release, a) => bridgeFor(c, release, argStr(a.q), a.limit)],
+  ["brain_search", (c, release, a) => searchFor(c, release, argStr(a.q), argStr(a.type) || undefined, a.limit)],
+  ["brain_cell", (c, release, a) => cellFor(c, release, argStr(a.key))],
+  ["brain_transfer", (c, release, a) => transferFor(c, release, argStr(a.q), argStr(a.direction), a.limit)],
+  ["brain_neighborhood", (c, release, a) =>
+    neighborhoodFor(c, release, argStr(a.id), argStr(a.kinds) || undefined, a.limit, a.traces, a.min_w, a.cursor, a.min_conf)],
+  ["brain_snippets", (c, release, a) => snippetsFor(c, release, argStr(a.id))],
+  ["brain_filter", (c, release, a) => filterFor(c, release, a.f, argStr(a.type) || undefined, a.limit, a.cursor, argStr(a.under) || undefined)],
   // decl_exists: `names` (array) OR `name` (single) — the batch verifies a drafted
   // statement's 3–8 citations in one round trip (BRIDGE item 1).
-  ["decl_exists", (c, a) => declExistsFor(c, argStr(a.name), a.names)],
+  ["decl_exists", (c, release, a) => declExistsFor(c, release, argStr(a.name), a.names)],
   // brain_premises: stored-premise retrieval, seeded with theorems found via
   // search — joins the loop AFTER formal search (the Bridge finding).
-  ["brain_premises", (c, a) => premisesFor(c, a.seeds, a.limit)],
+  ["brain_premises", (c, release, a) => premisesFor(c, release, a.seeds, a.limit)],
 
   // v2 alias — dispatch-only, deliberately NOT advertised in TOOLS. An agent
   // session that connected before the cell cut holds the old catalog and will
   // keep calling it; it answers with the atom rather than hard-failing.
-  // brain_unit: the unit card BECAME the cell card (a unit was QID ∘ article ∘
-  // decls ∘ xrefs — exactly a cell's organs). Accepts `key` or `id`, since the
-  // v2 tools disagreed on the argument name. (The brain_node alias was deleted
-  // 2026-08-04 with the rest of the v2 particle layer — unknown tool, -32602.)
-  ["brain_unit", (c, a) => cellFor(c, argStr(a.key) || argStr(a.id))],
+  ["brain_unit", (c, release, a) => cellFor(c, release, argStr(a.key) || argStr(a.id))],
 ]);
 
 // {status, body} → MCP tool result. Failures are isError tool results (the
@@ -444,10 +449,29 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
           ? params.arguments
           : {}) as Record<string, unknown>;
         try {
-          const r = await impl(c, args);
-          r.body.snapshot = await snapshotFor(c); // item 6: every response echoes the snapshot
+          const release = await resolveBrainRelease(c);
+          if (!release) {
+            return c.json(rpcResult(id, toolResult({
+              status: 503,
+              body: { ok: false, error: "brain release unavailable", snapshot: null, release_id: null },
+            })));
+          }
+          const r = await impl(c, release, args);
+          r.body.snapshot = await snapshotFor(c, release);
+          r.body.release_id = release.releaseId;
           return c.json(rpcResult(id, toolResult(r)));
         } catch (err) {
+          if (isBrainReleaseUnavailableError(err)) {
+            return c.json(rpcResult(id, toolResult({
+              status: 503,
+              body: {
+                ok: false,
+                error: "brain release unavailable",
+                snapshot: null,
+                release_id: err.releaseId,
+              },
+            })));
+          }
           // an unexpected throw must not become a protocol error — the tool
           // "executed and failed", which the spec wants surfaced via isError.
           // Log it (Workers tail/observability) or internal failures are

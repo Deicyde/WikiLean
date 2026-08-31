@@ -109,6 +109,61 @@ These resolved real conflicts between competing proposals. Build each thing **on
 
 ---
 
+## Brain authority, storage, and release
+
+The binding design is [`docs/BRAIN-ARCHITECTURE.plan.md`](BRAIN-ARCHITECTURE.plan.md).
+The Brain keeps separate representations for separate jobs: reviewed Git authority and
+sealed source transitions; deterministic JSONL compatibility exports; an immutable,
+generated SQLite projection for complete offline queries; static release-qualified
+cell shards for bounded public reads; and a release-pinned D1 overlay for immediate
+community edits. SQLite, D1, static assets, and any future PostgreSQL projection are
+never independent semantic writers.
+
+- [x] **Indexed local SQLite projection** — landed 2026-08-28. Atomic rebuild,
+  JSONL parity/freshness checks, cells, organ ownership, synapses, and indexed
+  endpoint traversal are implemented; JSONL remains reviewable interchange.
+- [x] **Phase 0 contracts** — canonical encoding/logical roots, reducer-input
+  inventory, source/offline-pack schemas, release/attestation schemas, offline
+  verification runner, and semantic snapshot diff landed 2026-08-29.
+- [ ] **Finish Phase 0 reproducibility** — seal real source manifests/objects,
+  eliminate ambient checkout/mtime/cache identity from authoritative reduction,
+  and prove two network-disabled clean-room builds produce the same logical roots.
+- [x] **Phase 1 immutable-release implementation** — landed locally 2026-08-31.
+  Graph, SQLite, cells, frontier, shards, traces, xrefs, and the Brain page now
+  freeze under one release ID; Worker reads and cursors are release-qualified;
+  independent verification checks full closure; public staging retains current
+  and previous immutable namespaces plus byte-identical compatibility aliases;
+  canary and guarded Worker rollback are wired. Deployment and the non-CAS
+  automatic rollback escape hatch remain independently opt-in.
+- [ ] **Phase 1 production activation and rollback drill** — review one shadow
+  result, enable one production release from a clean `main`, measure CDN/isolate
+  convergence, deliberately exercise the documented rollback path, and record
+  the observed recovery time before claiming a rollback SLO.
+- [x] **SQLite v2 hardening** — landed 2026-08-31. Stable base/projection/release
+  identities, distinct logical and raw-file digests, pinned-source/race checks,
+  durable atomic publication, persisted planner statistics, indexed bounded
+  endpoint probes, streamed release verification, and machine-readable
+  performance/resource metrics are implemented.
+- [ ] **Phase 2 Git authority** — immutable curated changesets and reviewed source
+  transitions, first-parent/CAS validation, semantic migrations, deterministic
+  replay, and a reviewed genesis import. Do not expand deterministic source facts
+  into one Git operation per edge.
+- [ ] **Phase 3 release-pinned D1 overlay** — append-only operations and decisions,
+  stable assertion IDs/tombstones, monotonic sequences, deterministic rebase,
+  exactly-once promotion receipts, compatible rollback generations, and proven
+  backup RPO/RTO.
+- [ ] **Phase 4 generated-artifact retirement from Git** — publish generated
+  JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
+  compatibility-export commands.
+
+PostgreSQL, R2, and graph-native serving remain measurement-triggered projections,
+not current dependencies. Start PostgreSQL shadowing only for a demonstrated shared
+history/concurrency need or after optimized representative queries miss 500 ms p95.
+Start R2 shadowing when compressed releases exceed 500 MB, releases exceed 10,000
+objects, deploys exceed five minutes p95, or Worker retention/rollback limits bind.
+
+---
+
 ## P0 — Before public announcement  `[DEPLOYED 2026-06-10 — version 99a27390]`
 
 Security + embarrassment fixes. Shipped to production via 4 parallel agents (disjoint
@@ -167,8 +222,9 @@ file ownership) + adversarial integration review + live smoke test.
 
 **P0 asset pipeline note:** canonical sources are `site/assets/{script.js,review.css,
 style.css}` and `wiki/assets/editor.js`; `wiki/scripts/build-public.ts` copies them
-into `wiki/public/assets/`. Edit sources, then run build-public, never edit
-`wiki/public/assets/` directly.
+into `wiki/public/assets/`. Brain assets and `brain.html` are the exception: they
+must come from one explicit verified frozen release. Edit sources, freeze/verify,
+then run build-public with that release; never edit `wiki/public/assets/` directly.
 
 ## P1 — Close the loop (the core re-architecture)
 
