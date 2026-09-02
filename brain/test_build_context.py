@@ -429,6 +429,21 @@ class BuildContextTest(unittest.TestCase):
         with self.assertRaisesRegex(BuildContextError, "bound more than once"):
             self.context(duplicate)
 
+    def test_rejects_input_member_ancestry_collision_within_a_root(self) -> None:
+        bad = copy.deepcopy(self.document)
+        binding = next(
+            item
+            for item in bad["bindings"]
+            if item["input_id"] == "mathlib-source-tree"
+        )
+        binding["members"][1]["path"] = "Mathlib/A.lean/Child.lean"
+        binding["members"][1]["materialized_path"] = str(
+            self.base / "input/mathlib/Mathlib/A.lean/Child.lean"
+        )
+        bad["generation_id"] = generation_identity(bad)
+        with self.assertRaisesRegex(BuildContextError, "overlaps by ancestry"):
+            self.context(bad)
+
     def test_rejects_invalid_presence_and_cardinality(self) -> None:
         required_absent = copy.deepcopy(self.document)
         required_absent["bindings"][0]["state"] = "absent"
