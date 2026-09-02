@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import base64
+import contextlib
 import hashlib
 import importlib.util
+import io
 import json
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
@@ -37,10 +40,18 @@ def make_selector(release: str, previous: str | None = None) -> dict[str, object
 
 
 class FakeResponse:
-    def __init__(self, body: bytes, content_type: str = "application/json", status: int = 200):
+    def __init__(
+        self,
+        body: bytes,
+        content_type: str = "application/json",
+        status: int = 200,
+        location: str | None = None,
+    ):
         self._body = body
         self.status = status
         self.headers = {"Content-Type": content_type}
+        if location is not None:
+            self.headers["Location"] = location
 
     def read(self, size: int = -1) -> bytes:
         return self._body if size < 0 else self._body[:size]
@@ -144,7 +155,12 @@ class Fixture:
         self.add_json("/assets/brain/sources.json", sources)
         self.add_json("/assets/brain/xref_index.json", xref)
         self.routes["/brain"] = FakeResponse(page, "text/html; charset=utf-8")
-        self.routes["/brain.html"] = FakeResponse(page, "text/html; charset=utf-8")
+        self.routes["/brain.html"] = FakeResponse(
+            b"",
+            "text/html; charset=utf-8",
+            307,
+            "/brain?__brain_canary=test-nonce",
+        )
         self.add_json("/api/brain/filter?f=0&limit=1", api1)
         self.add_json(f"/api/brain/filter?f=0&limit=1&cursor={cursor_one}", api2)
         self.add_json(
@@ -200,6 +216,7 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertEqual(result["release_id"], fixture.release_id)
         self.assertEqual(result["shard"], "cells/aa.json")
         self.assertEqual(result["pages_checked"], ["/brain", "/brain.html"])
+        self.assertEqual(result["brain_html_delivery"], "same-origin-307")
         self.assertEqual(result["mcp_tool"], "brain_filter")
         self.assertIn("cells/aliases.json", result["aliases_checked"])
         self.assertIn("cells/supercells.json", result["aliases_checked"])
@@ -209,9 +226,61 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertIn("xref_index.json", result["aliases_checked"])
         self.assertGreater(result["requests"], 0)
         self.assertGreater(result["response_bytes"], 0)
+        self.assertEqual(result["trust_source"], "injected")
         self.assertGreaterEqual(result["check_duration_ms"], 0)
         self.assertGreater(result["max_rss_bytes"], 0)
         self.assertIn("POST", fixture.requested_methods)
+
+    def test_public_baseline_assets_are_checked_by_digest(self):
+        fixture = Fixture()
+        paths = set(brain_canary.CRITICAL_PATHS)
+        for prefix in brain_canary.INDEX_FAMILIES:
+            paths.add(prefix + "fixture.json")
+        files = []
+        for path in sorted(paths):
+            body = f"baseline:{path}\n".encode()
+            if path == "concepts.html":
+                route = "/concepts"
+                status = 200
+            elif path == "404.html":
+                route = "/map"
+                status = 404
+            else:
+                route = "/" + path
+                status = 200
+            fixture.routes[route] = FakeResponse(
+                body, "application/octet-stream", status
+            )
+            files.append(
+                brain_canary.PublicAssetFile(
+                    path,
+                    hashlib.sha256(body).hexdigest(),
+                    len(body),
+                )
+            )
+        baseline = brain_canary.PublicAssetBaseline(
+            Path("/tmp/baseline"),
+            Path("/tmp/baseline/manifest.json"),
+            "sha256:" + "d" * 64,
+            "d" * 64,
+            "c" * 40,
+            tuple(files),
+            sum(item.bytes for item in files),
+        )
+        canary = brain_canary.BrainCanary(
+            BASE,
+            fixture.release_id,
+            public_baseline=baseline,
+            opener=fixture.open,
+            nonce=lambda: "test-nonce",
+        )
+        result = canary.check_once()
+        self.assertEqual(result["public_baseline_id"], baseline.baseline_id)
+        self.assertEqual(set(result["public_assets_checked"]), paths)
+
+        fixture.routes["/assets/style.css"] = FakeResponse(b"tampered")
+        with self.assertRaisesRegex(brain_canary.CanaryError, "frozen baseline"):
+            canary.check_once()
 
     def test_selector_mismatch_fails(self):
         fixture = Fixture()
@@ -269,6 +338,17 @@ class BrainCanaryTest(unittest.TestCase):
             "text/html; charset=utf-8",
         )
         with self.assertRaisesRegex(brain_canary.CanaryError, "/brain.html"):
+            self.canary(fixture).check_once()
+
+    def test_brain_html_redirect_must_target_exact_same_origin_canonical_path(self):
+        fixture = Fixture()
+        fixture.routes["/brain.html"] = FakeResponse(
+            b"",
+            "text/html; charset=utf-8",
+            307,
+            "https://evil.example/brain?__brain_canary=test-nonce",
+        )
+        with self.assertRaisesRegex(brain_canary.CanaryError, "exact same-origin"):
             self.canary(fixture).check_once()
 
     def test_actual_brain_route_must_match_frozen_release_bytes(self):
@@ -365,6 +445,27 @@ class BrainCanaryTest(unittest.TestCase):
     def test_invalid_expected_release_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "expected release id"):
             brain_canary.BrainCanary(BASE, "not-a-release")
+        with self.assertRaisesRegex(ValueError, "absolute HTTPS"):
+            brain_canary.BrainCanary(
+                "http://example.test",
+                "sha256:" + "a" * 64,
+                opener=lambda *_args, **_kwargs: None,
+            )
+
+    def test_nonfinite_canary_intervals_are_rejected(self):
+        fixture = Fixture()
+        with self.assertRaisesRegex(ValueError, "finite"):
+            brain_canary.BrainCanary(
+                BASE,
+                fixture.release_id,
+                request_timeout=float("nan"),
+                opener=fixture.open,
+            )
+        canary = self.canary(fixture)
+        for timeout, interval in ((float("inf"), 0), (0, float("nan"))):
+            with self.subTest(timeout=timeout, interval=interval):
+                with self.assertRaisesRegex(ValueError, "finite"):
+                    brain_canary.poll(canary, timeout, interval)
 
     def test_response_size_is_bounded(self):
         fixture = Fixture()
@@ -377,6 +478,64 @@ class BrainCanaryTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(brain_canary.CanaryError, "response limit"):
             canary.check_once()
+
+    def test_timeout_failure_json_contains_release_qualified_aggregate_metrics(self):
+        release_id = "sha256:" + "a" * 64
+
+        class FailingCanary:
+            expected_release_id = release_id
+            request_count = 0
+            response_bytes = 0
+            trust_source = "fixture-ca:1"
+
+            def check_once(self):
+                self.request_count = 2
+                self.response_bytes = 17
+                raise brain_canary.CanaryError("still stale")
+
+        stderr = io.StringIO()
+        with mock.patch.object(brain_canary, "BrainCanary", return_value=FailingCanary()):
+            with contextlib.redirect_stderr(stderr):
+                code = brain_canary.main([
+                    "--expected-release-id", release_id,
+                    "--timeout", "0",
+                ])
+
+        self.assertEqual(code, 1)
+        result = json.loads(stderr.getvalue())
+        self.assertEqual(result["schema"], "wikilean.brain-canary-result/v1")
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["release_id"], release_id)
+        self.assertEqual(result["attempts"], 1)
+        self.assertGreaterEqual(result["convergence_seconds"], 0)
+        self.assertEqual(result["requests"], 2)
+        self.assertEqual(result["response_bytes"], 17)
+        self.assertGreater(result["max_rss_bytes"], 0)
+        self.assertEqual(result["trust_source"], "fixture-ca:1")
+
+    def test_poll_aggregates_requests_across_failed_attempts(self):
+        class FlakyCanary:
+            expected_release_id = "sha256:" + "a" * 64
+            request_count = 0
+            response_bytes = 0
+            trust_source = "fixture-ca:1"
+            calls = 0
+
+            def check_once(self):
+                self.calls += 1
+                self.request_count = self.calls + 1
+                self.response_bytes = self.calls * 10
+                if self.calls == 1:
+                    raise brain_canary.CanaryError("not converged")
+                return {
+                    "requests": self.request_count,
+                    "response_bytes": self.response_bytes,
+                }
+
+        result = brain_canary.poll(FlakyCanary(), timeout=1, interval=0)
+        self.assertEqual(result["attempts"], 2)
+        self.assertEqual(result["requests"], 5)
+        self.assertEqual(result["response_bytes"], 30)
 
 
 if __name__ == "__main__":

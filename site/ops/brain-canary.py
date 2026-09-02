@@ -6,15 +6,31 @@ import argparse
 import base64
 import hashlib
 import json
+import math
 import re
 import resource
 import sys
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable
+
+from brain_http import (
+    HttpResult,
+    TransportError,
+    fetch_bounded,
+    require_https_base_url,
+    trusted_urlopen,
+)
+from brain_public_baseline import (
+    BaselineValidationError,
+    CRITICAL_PATHS,
+    INDEX_FAMILIES,
+    PublicAssetFile,
+    PublicAssetBaseline,
+    verify_public_baseline,
+)
 
 RELEASE_ID_RE = re.compile(r"^sha256:([0-9a-f]{64})$")
 SELECTOR_SCHEMA = "wikilean.release-selector/v1"
@@ -36,12 +52,9 @@ MAX_CURSOR_BYTES = 4096
 class CanaryError(RuntimeError):
     """A retryable release-convergence failure."""
 
-
-@dataclass(frozen=True)
-class HttpResult:
-    body: bytes
-    content_type: str
-    status: int
+    def __init__(self, message: str, *, details: dict[str, object] | None = None) -> None:
+        super().__init__(message)
+        self.details = details or {}
 
 
 class BrainCanary:
@@ -52,25 +65,37 @@ class BrainCanary:
         *,
         request_timeout: float = 20.0,
         max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
-        opener: Callable[..., object] = urllib.request.urlopen,
+        public_baseline: PublicAssetBaseline | None = None,
+        opener: Callable[..., object] | None = None,
         nonce: Callable[[], str] | None = None,
     ) -> None:
         match = RELEASE_ID_RE.fullmatch(expected_release_id)
         if not match:
             raise ValueError("expected release id must be sha256:<64 lowercase hex>")
-        parsed = urllib.parse.urlsplit(base_url)
-        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-            raise ValueError("base URL must be an absolute http(s) URL")
-        if request_timeout <= 0:
-            raise ValueError("request timeout must be positive")
-        if isinstance(max_response_bytes, bool) or max_response_bytes <= 0:
+        if not math.isfinite(request_timeout) or request_timeout <= 0:
+            raise ValueError("request timeout must be finite and positive")
+        if (
+            isinstance(max_response_bytes, bool)
+            or not isinstance(max_response_bytes, int)
+            or max_response_bytes <= 0
+        ):
             raise ValueError("maximum response bytes must be positive")
-        self.base_url = base_url.rstrip("/")
+        self.base_url = require_https_base_url(base_url)
         self.expected_release_id = expected_release_id
         self.release = match.group(1)
         self.request_timeout = request_timeout
         self.max_response_bytes = max_response_bytes
-        self.opener = opener
+        self.public_baseline = public_baseline
+        try:
+            transport = trusted_urlopen() if opener is None else None
+        except TransportError as exc:
+            raise CanaryError(f"cannot initialize trusted HTTPS transport: {exc}") from exc
+        self.opener = transport if transport is not None else opener
+        self.trust_source = (
+            transport.trust_source
+            if transport is not None
+            else str(getattr(opener, "trust_source", "injected"))
+        )
         self.nonce = nonce or (lambda: str(time.time_ns()))
         self.request_count = 0
         self.response_bytes = 0
@@ -85,7 +110,14 @@ class BrainCanary:
             (parts.scheme, parts.netloc, parts.path, urllib.parse.urlencode(query), parts.fragment)
         )
 
-    def fetch(self, path: str, *, body: bytes | None = None) -> HttpResult:
+    def fetch(
+        self,
+        path: str,
+        *,
+        body: bytes | None = None,
+        allowed_statuses: tuple[int, ...] = (200,),
+        require_body: bool = True,
+    ) -> HttpResult:
         method = "POST" if body is not None else "GET"
         headers = {
             "Accept": "application/json,text/html;q=0.9,*/*;q=0.1",
@@ -101,24 +133,44 @@ class BrainCanary:
             method=method,
         )
         try:
-            response = self.opener(request, timeout=self.request_timeout)
-            with response:
-                status = int(getattr(response, "status", response.getcode()))
-                body = response.read(self.max_response_bytes + 1)
-                content_type = response.headers.get("Content-Type", "")
-        except (OSError, urllib.error.URLError) as exc:
-            raise CanaryError(f"{method} {path} failed: {exc}") from exc
-        if status != 200:
-            raise CanaryError(f"{method} {path} returned HTTP {status}")
-        if len(body) > self.max_response_bytes:
-            raise CanaryError(
-                f"{method} {path} exceeded the {self.max_response_bytes} byte response limit"
+            result = fetch_bounded(
+                request,
+                opener=self.opener,
+                timeout=self.request_timeout,
+                max_response_bytes=self.max_response_bytes,
+                allowed_statuses=allowed_statuses,
             )
-        if not body:
+        except TransportError as exc:
+            raise CanaryError(f"{method} {path} failed: {exc}") from exc
+        if require_body and not result.body:
             raise CanaryError(f"{method} {path} returned an empty body")
         self.request_count += 1
-        self.response_bytes += len(body)
-        return HttpResult(body=body, content_type=content_type, status=status)
+        self.response_bytes += len(result.body)
+        return result
+
+    @staticmethod
+    def _require_exact_same_origin_redirect(
+        result: HttpResult,
+        canonical_path: str,
+    ) -> None:
+        if result.status != 307 or not result.location:
+            raise CanaryError(
+                f"expected an HTTP 307 redirect to {canonical_path}, got {result.status}"
+            )
+        source = urllib.parse.urlsplit(result.url)
+        target = urllib.parse.urlsplit(
+            urllib.parse.urljoin(result.url, result.location)
+        )
+        if (
+            target.scheme != source.scheme
+            or target.netloc != source.netloc
+            or target.path != canonical_path
+            or target.query != source.query
+            or target.fragment
+        ):
+            raise CanaryError(
+                f"redirect target is not the exact same-origin {canonical_path} alias"
+            )
 
     def fetch_json(self, path: str) -> tuple[object, bytes]:
         result = self.fetch(path)
@@ -177,6 +229,39 @@ class BrainCanary:
         declared_size, declared_digest = declared
         if len(body) != declared_size or hashlib.sha256(body).hexdigest() != declared_digest:
             raise CanaryError(f"immutable asset does not match release manifest: {public_path}")
+
+    def _verify_public_baseline(self) -> list[str]:
+        if self.public_baseline is None:
+            return []
+        by_path = {item.path: item for item in self.public_baseline.files}
+        paths = set(CRITICAL_PATHS)
+        for prefix in INDEX_FAMILIES:
+            payload = sorted(
+                path
+                for path in by_path
+                if path.startswith(prefix) and path != prefix + "manifest.json"
+            )
+            if not payload:
+                raise CanaryError(f"public baseline has no payload in {prefix.rstrip('/')}")
+            paths.add(payload[0])
+        checked: list[str] = []
+        for path in sorted(paths):
+            expected = by_path.get(path)
+            if expected is None:
+                raise CanaryError(f"public baseline omitted required canary asset {path}")
+            if path == "concepts.html":
+                body = self.fetch("/concepts").body
+            elif path == "404.html":
+                body = self.fetch(
+                    "/map",
+                    allowed_statuses=(404,),
+                ).body
+            else:
+                body = self.fetch("/" + path).body
+            if len(body) != expected.bytes or hashlib.sha256(body).hexdigest() != expected.sha256:
+                raise CanaryError(f"public asset differs from frozen baseline: /{path}")
+            checked.append(path)
+        return checked
 
     def check_once(self) -> dict[str, object]:
         started = time.monotonic()
@@ -283,22 +368,39 @@ class BrainCanary:
             shard_bytes,
         )
 
-        page_bodies: dict[str, bytes] = {}
-        for page_path in ("/brain", "/brain.html"):
-            page = self.fetch(page_path)
-            if "text/html" not in page.content_type.lower() and b"<html" not in page.body[:1024].lower():
-                raise CanaryError(f"{page_path} is not HTML")
-            if b"/assets/brain/current.json" not in page.body:
-                raise CanaryError(f"{page_path} does not bootstrap the Brain release selector")
+        page = self.fetch("/brain")
+        if "text/html" not in page.content_type.lower() and b"<html" not in page.body[:1024].lower():
+            raise CanaryError("/brain is not HTML")
+        if b"/assets/brain/current.json" not in page.body:
+            raise CanaryError("/brain does not bootstrap the Brain release selector")
+        self._verify_artifact(
+            artifacts,
+            "site/out/brain.html",
+            "/brain",
+            page.body,
+        )
+        html_alias = self.fetch(
+            "/brain.html",
+            allowed_statuses=(200, 307),
+            require_body=False,
+        )
+        if html_alias.status == 307:
+            self._require_exact_same_origin_redirect(html_alias, "/brain")
+            brain_html_delivery = "same-origin-307"
+        else:
+            if not html_alias.body:
+                raise CanaryError("GET /brain.html returned an empty body")
             self._verify_artifact(
                 artifacts,
                 "site/out/brain.html",
-                page_path,
-                page.body,
+                "/brain.html",
+                html_alias.body,
             )
-            page_bodies[page_path] = page.body
-        if page_bodies["/brain"] != page_bodies["/brain.html"]:
-            raise CanaryError("/brain and /brain.html do not serve the same frozen release page")
+            if html_alias.body != page.body:
+                raise CanaryError(
+                    "/brain and /brain.html do not serve the same frozen release page"
+                )
+            brain_html_delivery = "byte-identical-200"
 
         api_raw, _ = self.fetch_json("/api/brain/filter?f=0&limit=1")
         api = self._object(api_raw, "Brain API response")
@@ -383,6 +485,8 @@ class BrainCanary:
             if mutable != immutable:
                 raise CanaryError(f"mutable compatibility alias differs from immutable {relative}")
 
+        public_assets_checked = self._verify_public_baseline()
+
         return {
             "schema": "wikilean.brain-canary-result/v1",
             "ok": True,
@@ -392,20 +496,33 @@ class BrainCanary:
             "shard": shard_path,
             "cursor": cursor,
             "mcp_tool": "brain_filter",
-            "pages_checked": sorted(page_bodies),
+            "pages_checked": ["/brain", "/brain.html"],
+            "brain_html_delivery": brain_html_delivery,
             "aliases_checked": [relative for relative, _ in alias_pairs],
+            "public_baseline_id": (
+                self.public_baseline.baseline_id if self.public_baseline is not None else None
+            ),
+            "public_assets_checked": public_assets_checked,
             "requests": self.request_count,
             "response_bytes": self.response_bytes,
+            "trust_source": self.trust_source,
             "check_duration_ms": round((time.monotonic() - started) * 1000, 3),
             "max_rss_bytes": _max_rss_bytes(),
         }
 
 
 def poll(canary: BrainCanary, timeout: float, interval: float) -> dict[str, object]:
-    if timeout < 0 or interval < 0:
-        raise ValueError("timeout and interval must be non-negative")
+    if (
+        not math.isfinite(timeout)
+        or not math.isfinite(interval)
+        or timeout < 0
+        or interval < 0
+    ):
+        raise ValueError("timeout and interval must be finite and non-negative")
     started = time.monotonic()
     attempts = 0
+    failed_requests = 0
+    failed_response_bytes = 0
     last_error = "canary did not run"
     while True:
         attempts += 1
@@ -413,13 +530,26 @@ def poll(canary: BrainCanary, timeout: float, interval: float) -> dict[str, obje
             result = canary.check_once()
             result["attempts"] = attempts
             result["convergence_seconds"] = round(time.monotonic() - started, 3)
+            result["requests"] = int(result["requests"]) + failed_requests
+            result["response_bytes"] = int(result["response_bytes"]) + failed_response_bytes
             return result
         except CanaryError as exc:
             last_error = str(exc)
+            failed_requests += canary.request_count
+            failed_response_bytes += canary.response_bytes
         elapsed = time.monotonic() - started
         if elapsed >= timeout:
             raise CanaryError(
-                f"release did not converge within {timeout:g}s after {attempts} attempt(s): {last_error}"
+                f"release did not converge within {timeout:g}s after {attempts} attempt(s): {last_error}",
+                details={
+                    "release_id": canary.expected_release_id,
+                    "attempts": attempts,
+                    "convergence_seconds": round(elapsed, 3),
+                    "requests": failed_requests,
+                    "response_bytes": failed_response_bytes,
+                    "max_rss_bytes": _max_rss_bytes(),
+                    "trust_source": canary.trust_source,
+                },
             )
         time.sleep(min(interval, max(timeout - elapsed, 0)))
 
@@ -437,24 +567,48 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--interval", type=float, default=5.0)
     parser.add_argument("--request-timeout", type=float, default=20.0)
     parser.add_argument("--max-response-bytes", type=int, default=DEFAULT_MAX_RESPONSE_BYTES)
+    parser.add_argument("--public-baseline-id")
+    parser.add_argument("--public-baseline-root", type=Path)
     args = parser.parse_args(argv)
     try:
+        if (args.public_baseline_id is None) != (args.public_baseline_root is None):
+            raise ValueError(
+                "--public-baseline-id and --public-baseline-root must be supplied together"
+            )
+        public_baseline = (
+            verify_public_baseline(
+                args.public_baseline_root,
+                Path(__file__).resolve().parents[2],
+                expected_baseline_id=args.public_baseline_id,
+            )
+            if args.public_baseline_root is not None
+            else None
+        )
         result = poll(
             BrainCanary(
                 args.base_url,
                 args.expected_release_id,
                 request_timeout=args.request_timeout,
                 max_response_bytes=args.max_response_bytes,
+                public_baseline=public_baseline,
             ),
             args.timeout,
             args.interval,
         )
-    except (CanaryError, ValueError) as exc:
+    except (BaselineValidationError, CanaryError, ValueError) as exc:
+        details = exc.details if isinstance(exc, CanaryError) else {}
         print(
             json.dumps({
                 "schema": "wikilean.brain-canary-result/v1",
                 "ok": False,
                 "error": str(exc),
+                "release_id": args.expected_release_id,
+                "attempts": 0,
+                "convergence_seconds": 0.0,
+                "requests": 0,
+                "response_bytes": 0,
+                "max_rss_bytes": _max_rss_bytes(),
+                **details,
             }, sort_keys=True),
             file=sys.stderr,
         )
