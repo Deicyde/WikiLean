@@ -9,10 +9,14 @@ from pathlib import Path
 
 from authority_contracts import (
     PACK_SCHEMA,
+    PACK_SCHEMA_V2,
+    REDUCER_INPUT_INVENTORY_SCHEMA_V2,
     SOURCE_SCHEMA,
+    SOURCE_SCHEMA_V2,
     VerificationError,
     load_canonical_json,
     validate_offline_pack,
+    validate_reducer_input_inventory,
     validate_source_manifest,
     verify_offline_pack_files,
     verify_source_manifest_files,
@@ -26,7 +30,7 @@ def verify(manifest_path: Path, root: Path | None = None) -> dict[str, object]:
     if not isinstance(document, dict):
         raise VerificationError(f"{manifest_path}: manifest must be an object")
     schema = document.get("schema")
-    if schema == SOURCE_SCHEMA:
+    if schema in {SOURCE_SCHEMA, SOURCE_SCHEMA_V2}:
         manifest = validate_source_manifest(document)
         files = verify_source_manifest_files(manifest, verification_root)
         return {
@@ -35,7 +39,7 @@ def verify(manifest_path: Path, root: Path | None = None) -> dict[str, object]:
             "source_manifest_id": manifest["source_manifest_id"],
             "files": files,
         }
-    if schema == PACK_SCHEMA:
+    if schema in {PACK_SCHEMA, PACK_SCHEMA_V2}:
         pack = validate_offline_pack(document)
         counts = verify_offline_pack_files(pack, verification_root, manifest_path=manifest_path)
         return {
@@ -44,6 +48,15 @@ def verify(manifest_path: Path, root: Path | None = None) -> dict[str, object]:
             "offline_pack_id": pack["offline_pack_id"],
             "source_set_root": pack["source_set_root"],
             **counts,
+        }
+    if schema == REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+        inventory = validate_reducer_input_inventory(document)
+        return {
+            "ok": True,
+            "schema": schema,
+            "inventory_id": inventory["inventory_id"],
+            "inputs": len(inventory["inputs"]),
+            "stages": len(inventory["stages"]),
         }
     raise VerificationError(f"$.schema: unknown schema/version {schema!r}")
 
