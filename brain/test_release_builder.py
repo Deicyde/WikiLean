@@ -410,6 +410,7 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
                 "brain/build_cell_shards.py",
                 "brain/build_cells.py",
                 "brain/build_common.py",
+                "brain/build_context.py",
                 "brain/build_frontier.py",
                 "brain/build_shards.py",
                 "brain/build_snapshot.py",
@@ -430,7 +431,12 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
                 for stage in self.v2["stages"]
             ],
             [
-                ("base-graph", "brain/build_snapshot.py", [], []),
+                (
+                    "base-graph",
+                    "brain/build_snapshot.py",
+                    ["--jsonl-only"],
+                    [],
+                ),
                 (
                     "top-level-shards",
                     "brain/build_shards.py",
@@ -458,6 +464,39 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
                     ["cell-shards"],
                 ),
             ],
+        )
+        self.assertEqual(
+            {
+                stage["id"]: [
+                    (output["path"], output["kind"])
+                    for output in stage["outputs"]
+                ]
+                for stage in self.v2["stages"]
+            },
+            {
+                "base-graph": [
+                    ("brain/data/edges.jsonl", "file"),
+                    ("brain/data/edges_links.jsonl", "file"),
+                    ("brain/data/nodes.jsonl", "file"),
+                ],
+                "top-level-shards": [
+                    ("site/assets/brain/sources.json", "file"),
+                    ("site/assets/brain/xref_index.json", "file"),
+                ],
+                "cells": [
+                    ("brain/data/cell_review.jsonl", "file"),
+                    ("brain/data/cells.jsonl", "file"),
+                    ("brain/data/synapses.jsonl", "file"),
+                ],
+                "sqlite-with-cells": [("brain/data/brain.sqlite3", "file")],
+                "frontier": [
+                    ("brain/data/frontier.jsonl", "file"),
+                    ("brain/data/frontier_graph.json", "file"),
+                    ("brain/data/frontier_review.jsonl", "file"),
+                ],
+                "cell-shards": [("site/assets/brain/cells", "tree")],
+                "brain-page": [("site/out/brain.html", "file")],
+            },
         )
 
 

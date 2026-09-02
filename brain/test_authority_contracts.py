@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -21,6 +22,7 @@ TOOLS = HERE / "tools"
 sys.path.insert(0, str(TOOLS))
 
 import authority_contracts as contracts  # noqa: E402
+import build_context  # noqa: E402
 import store  # noqa: E402
 
 ZERO_DIGEST = "0" * 64
@@ -505,6 +507,12 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         build_schema = json.loads(
             (schema_root / "attestation/build-v2.json").read_text()
         )
+        context_schema = json.loads(
+            (schema_root / "build-context/v1.json").read_text()
+        )
+        reducer_config_schema = json.loads(
+            (schema_root / "reducer-config/v1.json").read_text()
+        )
         self.assertEqual(
             inventory_schema["properties"]["schema"]["const"],
             contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V2,
@@ -530,6 +538,14 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             ["path_pattern"]["$ref"],
             "#/$defs/pathPattern",
         )
+        self.assertIn(
+            "outputs",
+            inventory_schema["properties"]["stages"]["items"]["required"],
+        )
+        self.assertEqual(
+            inventory_schema["$defs"]["stageOutput"]["properties"]["kind"]["enum"],
+            ["file", "tree"],
+        )
         self.assertEqual(
             inventory_schema["properties"]["forbidden_ambient"]["items"]
             ["properties"]["consumers"]["items"]["oneOf"][1]["$ref"],
@@ -541,6 +557,43 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertEqual(len(source_schema["properties"]["pin"]["allOf"]), 3)
         self.assertEqual(len(pack_schema["$defs"]["inputBinding"]["allOf"]), 2)
+        self.assertEqual(
+            context_schema["properties"]["schema"]["const"],
+            build_context.BUILD_CONTEXT_SCHEMA,
+        )
+        self.assertEqual(
+            set(context_schema["required"]),
+            {
+                "schema",
+                "generation_id",
+                "replay",
+                "roots",
+                "bindings",
+                "stages",
+                "configuration",
+            },
+        )
+        self.assertEqual(
+            context_schema["properties"]["configuration"]["$ref"],
+            "../reducer-config/v1.json",
+        )
+        self.assertIn("outputs", context_schema["$defs"]["stage"]["required"])
+        self.assertEqual(
+            reducer_config_schema["properties"]["schema"]["const"],
+            build_context.REDUCER_CONFIGURATION_SCHEMA,
+        )
+        self.assertEqual(
+            set(reducer_config_schema["required"]),
+            {"schema", "external_node_cap", "cell_attach_kinds", "layout"},
+        )
+        self.assertEqual(
+            build_context.GENERATION_DOMAIN,
+            "wikilean.brain-generation.v1",
+        )
+        absolute_path = re.compile(context_schema["$defs"]["absolutePath"]["pattern"])
+        self.assertIsNotNone(absolute_path.fullmatch("/safe/root"))
+        self.assertIsNone(absolute_path.fullmatch("/../escape"))
+        self.assertIsNone(absolute_path.fullmatch("/./escape"))
         inventory, _ = contracts.load_canonical_json(
             HERE / "authority/reducer-inputs-v2.json"
         )
@@ -564,6 +617,58 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             contracts._matches_relative_pattern(
                 "/".join(["segment"] * 1_500 + ["leaf"]), "**/leaf"
             )
+        )
+
+    def test_v2_inventory_rejects_invalid_stage_output_ownership(self) -> None:
+        inventory, _ = self.make_inventory()
+
+        def reject(mutator, message: str) -> None:
+            bad = copy.deepcopy(inventory)
+            mutator(bad)
+            bad["inventory_id"] = contracts.reducer_input_inventory_identity(bad)
+            with self.assertRaisesRegex(contracts.VerificationError, message):
+                contracts.validate_reducer_input_inventory(bad)
+
+        reject(
+            lambda value: value["stages"][0].update(outputs=[]),
+            "array must not be empty",
+        )
+        reject(
+            lambda value: value["stages"][0].update(
+                outputs=[
+                    {"path": "z.json", "kind": "file"},
+                    {"path": "a.json", "kind": "file"},
+                ]
+            ),
+            "sorted by path",
+        )
+        reject(
+            lambda value: value["stages"][1].update(
+                outputs=[{"path": "intermediate/prepared.json", "kind": "file"}]
+            ),
+            "already owned",
+        )
+
+        def overlap(value: dict[str, object]) -> None:
+            value["stages"][0]["outputs"] = [{"path": "artifacts", "kind": "tree"}]
+            value["stages"][1]["outputs"] = [
+                {"path": "artifacts/result.json", "kind": "file"}
+            ]
+
+        reject(overlap, "output ownership overlaps")
+        reject(
+            lambda value: value["stages"][0].update(
+                outputs=[{"path": "artifacts/*.json", "kind": "file"}]
+            ),
+            "glob metacharacters",
+        )
+        reject(
+            lambda value: value["stages"][0]["outputs"][0].update(kind="directory"),
+            "expected file or tree",
+        )
+        reject(
+            lambda value: value["stages"][0].update(needs=["replay"]),
+            "dependencies must name earlier stages",
         )
 
     def write_object(self, data: bytes, media_type: str) -> dict[str, object]:
@@ -604,8 +709,20 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             ],
             "scope": ["brain/helper.py", "brain/replay.py"],
             "stages": [
-                {"id": "prepare", "program": "brain/helper.py", "argv": [], "needs": []},
-                {"id": "replay", "program": "brain/replay.py", "argv": [], "needs": ["prepare"]},
+                {
+                    "id": "prepare",
+                    "program": "brain/helper.py",
+                    "argv": [],
+                    "needs": [],
+                    "outputs": [{"path": "intermediate/prepared.json", "kind": "file"}],
+                },
+                {
+                    "id": "replay",
+                    "program": "brain/replay.py",
+                    "argv": [],
+                    "needs": ["prepare"],
+                    "outputs": [{"path": "artifacts", "kind": "tree"}],
+                },
             ],
             "inputs": [
                 {
