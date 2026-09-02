@@ -40,21 +40,18 @@
     "reducer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entrypoint", "files"],
+      "required": ["entrypoint", "files", "git_commit"],
       "properties": {
         "entrypoint": {"$ref": "#/$defs/literalRelativePath"},
         "files": {
           "type": "array",
           "minItems": 1,
           "items": {"$ref": "#/$defs/reducerFileRef"}
-        }
+        },
+        "git_commit": {"$ref": "#/$defs/gitCommit"}
       }
     },
-    "configuration": {
-      "type": "array",
-      "minItems": 1,
-      "items": {"$ref": "#/$defs/fileRef"}
-    },
+    "configuration": {"$ref": "#/$defs/jsonFileRef"},
     "environment": {"$ref": "#/$defs/fileRef"},
     "schemas": {
       "type": "array",
@@ -73,6 +70,7 @@
   "$defs": {
     "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
     "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
     "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
     "relativePath": {
       "type": "string",
@@ -94,6 +92,17 @@
         "sha256": {"$ref": "#/$defs/digest"},
         "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
         "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"}
+      }
+    },
+    "jsonFileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"const": "application/json"}
       }
     },
     "inventoryRef": {

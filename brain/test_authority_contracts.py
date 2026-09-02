@@ -555,6 +555,19 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             pack_schema["$defs"]["bindingMember"]["properties"]["path"]["$ref"],
             "#/$defs/literalRelativePath",
         )
+        self.assertIn("git_commit", pack_schema["properties"]["reducer"]["required"])
+        self.assertEqual(
+            pack_schema["properties"]["reducer"]["properties"]["git_commit"]["$ref"],
+            "#/$defs/gitCommit",
+        )
+        self.assertEqual(
+            pack_schema["properties"]["configuration"]["$ref"],
+            "#/$defs/jsonFileRef",
+        )
+        self.assertEqual(
+            pack_schema["$defs"]["jsonFileRef"]["properties"]["media_type"]["const"],
+            "application/json",
+        )
         self.assertEqual(len(source_schema["properties"]["pin"]["allOf"]), 3)
         self.assertEqual(len(pack_schema["$defs"]["inputBinding"]["allOf"]), 2)
         self.assertEqual(
@@ -900,8 +913,12 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             "source_manifests": [ref for _, ref in manifests],
             "objects": [packed_objects[path] for path in sorted(packed_objects)],
             "input_bindings": bindings,
-            "reducer": {"entrypoint": "brain/replay.py", "files": reducer_files},
-            "configuration": [file_ref(self.root, "config/reducer.json", "application/json")],
+            "reducer": {
+                "entrypoint": "brain/replay.py",
+                "files": reducer_files,
+                "git_commit": GIT_COMMIT,
+            },
+            "configuration": file_ref(self.root, "config/reducer.json", "application/json"),
             "environment": file_ref(self.root, "environment/python.json", "application/json"),
             "schemas": [file_ref(self.root, "schemas/input.json", "application/schema+json")],
             "audit": {"created_at": "2030-01-01T00:00:00Z"},
@@ -1042,6 +1059,81 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         wrong_media["offline_pack_id"] = contracts.offline_pack_identity(wrong_media)
         with self.assertRaisesRegex(contracts.VerificationError, "application/json"):
             contracts.validate_offline_pack(wrong_media)
+
+        bad_reducer_commit = copy.deepcopy(pack)
+        bad_reducer_commit["reducer"]["git_commit"] = "a" * 39
+        with self.assertRaisesRegex(contracts.VerificationError, "full lowercase Git commit"):
+            contracts.validate_offline_pack(bad_reducer_commit)
+
+        configuration_array = copy.deepcopy(pack)
+        configuration_array["configuration"] = [configuration_array["configuration"]]
+        with self.assertRaisesRegex(
+            contracts.VerificationError, r"\$\.configuration: expected an object"
+        ):
+            contracts.validate_offline_pack(configuration_array)
+
+        wrong_config_media = copy.deepcopy(pack)
+        wrong_config_media["configuration"]["media_type"] = "text/plain"
+        with self.assertRaisesRegex(contracts.VerificationError, "application/json"):
+            contracts.validate_offline_pack(wrong_config_media)
+
+    def test_v2_rejects_logical_path_ancestry_collisions(self) -> None:
+        pack, pack_path = self.make_pack()
+
+        reducer_overlap = copy.deepcopy(pack)
+        reducer_overlap["reducer"]["files"][0]["logical_path"] = "brain"
+        reducer_overlap["offline_pack_id"] = contracts.offline_pack_identity(reducer_overlap)
+        with self.assertRaisesRegex(contracts.VerificationError, "overlaps by ancestry"):
+            contracts.validate_offline_pack(reducer_overlap)
+
+        inventory, _ = contracts.load_canonical_json(self.root / "inventory.json")
+        source_input = next(
+            item for item in inventory["inputs"] if item["id"] == "source"
+        )
+        source_input["path"] = "input.json/child"
+        inventory["inputs"].append(
+            {
+                "id": "source-parent",
+                "root": "external",
+                "path": "input.json",
+                "cardinality": "one",
+                "requirement": "required",
+                "class": "immutable_source_object",
+                "consumers": ["brain/replay.py"],
+                "purpose": "invalid ancestor fixture input",
+            }
+        )
+        inventory["inventory_id"] = contracts.reducer_input_inventory_identity(inventory)
+        write_canonical(self.root / "inventory.json", inventory)
+        pack["inventory"] = {
+            **file_ref(self.root, "inventory.json", "application/json"),
+            "inventory_id": inventory["inventory_id"],
+        }
+        source_binding = next(
+            item for item in pack["input_bindings"] if item["input_id"] == "source"
+        )
+        source_binding["members"][0]["path"] = "input.json/child"
+        pack["input_bindings"].append(
+            {
+                "input_id": "source-parent",
+                "state": "present",
+                "members": [
+                    {
+                        **source_binding["members"][0],
+                        "path": "input.json",
+                    }
+                ],
+            }
+        )
+        pack["source_set_root"] = contracts.source_set_root_v2(
+            inventory["inventory_id"],
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            pack["input_bindings"],
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        contracts.validate_offline_pack(pack)
+        with self.assertRaisesRegex(contracts.VerificationError, "overlaps by ancestry"):
+            contracts.verify_offline_pack_files(pack, self.root, manifest_path=pack_path)
 
     def test_v2_rejects_incomplete_and_undeclared_physical_closure(self) -> None:
         pack, pack_path = self.make_pack()
