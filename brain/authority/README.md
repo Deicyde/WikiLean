@@ -23,7 +23,8 @@ overlay, or serving topology.
   an exact sorted member list or to explicit absence, and its source-set root covers
   the inventory ID, all source-manifest IDs, and those bindings. The pack separately
   closes all source objects, reducer files, configuration, environment descriptor,
-  and schemas.
+  and schemas. Reducer code is additionally bound to a full Git commit. The reducer
+  configuration is one canonical JSON document rather than an ambiguous file list.
 - `schemas/release/v1.json` describes one release over the current artifact topology.
 - `schemas/release-selector/v1.json` describes the public current/previous selector.
   Current release fields are required; the flat `previous_*` fields are all-or-none, and
@@ -64,18 +65,32 @@ cd /Users/jackmccarthy/projects/WikiLean
 python3 brain/tools/verify_source_set.py --manifest /path/to/source-manifest.json --root /path/to/object-root
 python3 brain/tools/verify_source_set.py --manifest /path/to/offline-pack.json --root /path/to/pack-root
 python3 brain/tools/verify_source_set.py --manifest brain/authority/reducer-inputs-v2.json --root brain/authority
+python3 brain/tools/prepare_replay_v2.py \
+  --manifest /path/to/offline-pack-v2.json --root /path/to/pack-root \
+  --workspace /path/to/new-workspace --authority-git-commit <40hex> \
+  --authority-root sha256:<64hex> --semantic-epoch <epoch>
 python3 brain/tools/run_offline.py --manifest /path/to/offline-pack.json --root /path/to/pack-root -- <reducer arguments>
 python3 brain/tools/verify_release.py --manifest /path/to/release.json --root /path/to/release-root
 ```
+
+`prepare_replay_v2.py` is prepare-only. It reopens and verifies every copied byte,
+copies rather than links the exact normalized input and reducer closures into a private
+sibling staging directory, emits the canonical build context with final workspace paths,
+makes code/input read-only, synchronizes the tree, and publishes with an atomic
+no-replace rename. Caller environment and caller-supplied source paths cannot select
+runtime inputs. The tool prints one canonical JSON result and never executes a reducer.
+These permission modes are an integrity convention for preparation, not a sandbox; the
+future runner must enforce read-only mounts or privilege separation while executing code.
 
 `run_offline.py` remains the cooperative single-program v1 fixture runner. It first
 verifies complete v1 pack closure, then executes a Python reducer with fixed
 locale/timezone/hash settings, an allowlisted environment, and a fail-fast socket
 monkeypatch. This catches accidental Python network calls but is not a security sandbox;
 authoritative CI/build runners must additionally disable networking at the OS or container
-layer. It rejects `offline-pack/v2` explicitly until the full-DAG replay entry point and
-separate read-only input/writable output build context exist. Verifying a v2 pack proves
-contract and byte closure only; it is not evidence that replay has occurred.
+layer. It rejects `offline-pack/v2` explicitly until all seven stages consume the
+prepared context through one fail-closed full-DAG entry point. Verifying or preparing a
+v2 pack proves contract, byte, and materialization closure only; it is not evidence that
+replay has occurred.
 It also does not yet prove a declared Git commit/tree produced the packed bytes or that a
 multi-file binding exhausts an upstream tree. Those coherence/exhaustiveness checks belong
 to the future pack compiler before any v2 build attestation may be emitted.

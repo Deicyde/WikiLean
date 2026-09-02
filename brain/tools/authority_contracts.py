@@ -506,6 +506,41 @@ def _relative_paths_overlap(left: str, right: str) -> bool:
     return left_parts[:common] == right_parts[:common]
 
 
+_PATH_TRIE_TERMINAL = object()
+
+
+def _insert_relative_path(
+    trie: dict[object, Any], path: str
+) -> str | None:
+    """Insert ``path`` or return an existing equal/ancestor/descendant path.
+
+    Runtime input packs can contain hundreds of thousands of members, so path
+    closure checks must scale with total path components rather than comparing
+    every member with every earlier member.
+    """
+    node = trie
+    for part in PurePosixPath(path).parts:
+        if _PATH_TRIE_TERMINAL in node:
+            return node[_PATH_TRIE_TERMINAL]
+        child = node.get(part)
+        if child is None:
+            child = {}
+            node[part] = child
+        node = child
+    if _PATH_TRIE_TERMINAL in node:
+        return node[_PATH_TRIE_TERMINAL]
+    if node:
+        descendant = node
+        while _PATH_TRIE_TERMINAL not in descendant:
+            child_key = next(
+                key for key in descendant if key is not _PATH_TRIE_TERMINAL
+            )
+            descendant = descendant[child_key]
+        return descendant[_PATH_TRIE_TERMINAL]
+    node[_PATH_TRIE_TERMINAL] = path
+    return None
+
+
 def _tool(value: Any, location: str) -> None:
     obj = _expect_object(value, location)
     _keys(obj, location, {"name", "version", "sha256"})
@@ -1302,7 +1337,13 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
         _fail("$.input_bindings", "entries must have unique IDs and be sorted by input_id")
 
     reducer = _expect_object(obj["reducer"], "$.reducer")
-    _keys(reducer, "$.reducer", {"entrypoint", "files"})
+    _keys(reducer, "$.reducer", {"entrypoint", "files", "git_commit"})
+    _expect_pattern(
+        reducer["git_commit"],
+        "$.reducer.git_commit",
+        GIT_COMMIT_RE,
+        "a full lowercase Git commit",
+    )
     entrypoint = validate_literal_relative_path(
         reducer["entrypoint"], "$.reducer.entrypoint"
     )
@@ -1318,16 +1359,26 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
         )
     if reducer_logical_paths != sorted(set(reducer_logical_paths)):
         _fail("$.reducer.files", "entries must have unique logical paths and be sorted by logical_path")
+    reducer_path_trie: dict[object, Any] = {}
+    for index, logical_path in enumerate(reducer_logical_paths):
+        conflict = _insert_relative_path(reducer_path_trie, logical_path)
+        if conflict is not None:
+            _fail(
+                f"$.reducer.files[{index}].logical_path",
+                f"logical reducer path overlaps by ancestry with {conflict!r}",
+            )
     if entrypoint not in reducer_logical_paths:
         _fail("$.reducer.entrypoint", "entrypoint is absent from reducer.files")
 
-    for field in ("configuration", "schemas"):
-        refs = _expect_array(obj[field], f"$.{field}", nonempty=True)
-        paths: list[str] = []
-        for index, item in enumerate(refs):
-            paths.append(_literal_file_ref(item, f"$.{field}[{index}]")["path"])
-        if paths != sorted(set(paths)):
-            _fail(f"$.{field}", "entries must have unique paths and be sorted by path")
+    configuration = _literal_file_ref(obj["configuration"], "$.configuration")
+    if configuration["media_type"] != "application/json":
+        _fail("$.configuration.media_type", "expected 'application/json'")
+    refs = _expect_array(obj["schemas"], "$.schemas", nonempty=True)
+    paths: list[str] = []
+    for index, item in enumerate(refs):
+        paths.append(_literal_file_ref(item, f"$.schemas[{index}]")["path"])
+    if paths != sorted(set(paths)):
+        _fail("$.schemas", "entries must have unique paths and be sorted by path")
     _literal_file_ref(obj["environment"], "$.environment")
 
     if "audit" in obj:
@@ -1343,44 +1394,88 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
 
 
 @contextmanager
-def open_verified_file(root: Path, ref: dict[str, Any], location: str) -> Iterator[BinaryIO]:
-    """Open a regular file beneath root without following any symlink component."""
-    relative = validate_relative_path(ref["path"], f"{location}.path")
-    root = root.resolve(strict=True)
+def open_regular_file(
+    root: Path, relative_path: str, location: str
+) -> Iterator[BinaryIO]:
+    """Securely open a regular file beneath ``root`` without pre-reading it."""
+    relative = validate_relative_path(relative_path, f"{location}.path")
+    try:
+        root = root.resolve(strict=True)
+    except OSError as exc:
+        raise VerificationError(
+            f"{location}.path: cannot resolve verification root: {exc}"
+        ) from exc
     directory_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
     file_flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
     descriptors: list[int] = []
+    file_descriptor: int | None = None
     try:
-        descriptors.append(os.open(root, directory_flags))
-        for part in PurePosixPath(relative).parts[:-1]:
-            descriptors.append(os.open(part, directory_flags, dir_fd=descriptors[-1]))
-        fd = os.open(PurePosixPath(relative).name, file_flags, dir_fd=descriptors[-1])
-        file_stat = os.fstat(fd)
-        if not stat.S_ISREG(file_stat.st_mode):
-            os.close(fd)
-            _fail(f"{location}.path", f"not a regular file: {relative}")
-        handle = os.fdopen(fd, "rb")
         try:
-            digest = hashlib.sha256()
-            size = 0
-            while chunk := handle.read(1024 * 1024):
-                digest.update(chunk)
-                size += len(chunk)
-            if size != ref["bytes"]:
-                _fail(f"{location}.bytes", f"expected {ref['bytes']}, found {size} for {relative}")
-            if digest.hexdigest() != ref["sha256"]:
-                _fail(f"{location}.sha256", f"expected {ref['sha256']}, found {digest.hexdigest()} for {relative}")
-            handle.seek(0)
+            descriptors.append(os.open(root, directory_flags))
+            for part in PurePosixPath(relative).parts[:-1]:
+                descriptors.append(
+                    os.open(part, directory_flags, dir_fd=descriptors[-1])
+                )
+            file_descriptor = os.open(
+                PurePosixPath(relative).name,
+                file_flags,
+                dir_fd=descriptors[-1],
+            )
+            file_stat = os.fstat(file_descriptor)
+            if not stat.S_ISREG(file_stat.st_mode):
+                _fail(f"{location}.path", f"not a regular file: {relative}")
+        except (FileNotFoundError, NotADirectoryError) as exc:
+            raise VerificationError(
+                f"{location}.path: missing file or directory in {relative}"
+            ) from exc
+        except OSError as exc:
+            raise VerificationError(
+                f"{location}.path: cannot safely open {relative}: "
+                f"{exc.strerror or exc}"
+            ) from exc
+
+        try:
+            handle = os.fdopen(file_descriptor, "rb")
+        except OSError as exc:
+            raise VerificationError(
+                f"{location}.path: cannot safely read {relative}: "
+                f"{exc.strerror or exc}"
+            ) from exc
+        file_descriptor = None
+        try:
             yield handle
         finally:
             handle.close()
-    except (FileNotFoundError, NotADirectoryError) as exc:
-        raise VerificationError(f"{location}.path: missing file or directory in {relative}") from exc
-    except OSError as exc:
-        raise VerificationError(f"{location}.path: cannot safely open {relative}: {exc.strerror or exc}") from exc
     finally:
+        if file_descriptor is not None:
+            os.close(file_descriptor)
         for descriptor in reversed(descriptors):
             os.close(descriptor)
+
+
+@contextmanager
+def open_verified_file(root: Path, ref: dict[str, Any], location: str) -> Iterator[BinaryIO]:
+    """Open and hash-verify a regular file beneath root without symlinks."""
+    relative = ref["path"]
+    with open_regular_file(root, relative, location) as handle:
+        digest = hashlib.sha256()
+        size = 0
+        while chunk := handle.read(1024 * 1024):
+            digest.update(chunk)
+            size += len(chunk)
+        if size != ref["bytes"]:
+            _fail(
+                f"{location}.bytes",
+                f"expected {ref['bytes']}, found {size} for {relative}",
+            )
+        actual_digest = digest.hexdigest()
+        if actual_digest != ref["sha256"]:
+            _fail(
+                f"{location}.sha256",
+                f"expected {ref['sha256']}, found {actual_digest} for {relative}",
+            )
+        handle.seek(0)
+        yield handle
 
 
 def digest_file(path: Path) -> tuple[str, int]:
@@ -1553,6 +1648,7 @@ def _verify_offline_pack_files_v2(
             f"unknown={sorted(set(bindings) - set(inventory_inputs))})",
         )
     logical_members: set[tuple[str, str]] = set()
+    logical_path_tries: dict[str, dict[object, Any]] = defaultdict(dict)
     bound_manifest_ids: set[str] = set()
     for input_id, declaration in inventory_inputs.items():
         binding_index, binding = indexed_bindings[input_id]
@@ -1575,6 +1671,15 @@ def _verify_offline_pack_files_v2(
             logical_key = (declaration["root"], member["path"])
             if logical_key in logical_members:
                 _fail(member_location, "logical input path is bound more than once")
+            conflict = _insert_relative_path(
+                logical_path_tries[declaration["root"]], member["path"]
+            )
+            if conflict is not None:
+                _fail(
+                    member_location,
+                    "logical input path overlaps by ancestry with "
+                    f"{conflict!r} in root {declaration['root']!r}",
+                )
             logical_members.add(logical_key)
             source_key = (member["source_manifest_id"], member["object"])
             source_ref = source_objects.get(source_key)
@@ -1614,7 +1719,7 @@ def _verify_offline_pack_files_v2(
     refs: list[tuple[str, dict[str, Any]]] = []
     refs.extend((f"$.objects[{i}]", ref) for i, ref in enumerate(pack["objects"]))
     refs.extend((f"$.reducer.files[{i}]", ref) for i, ref in enumerate(pack["reducer"]["files"]))
-    refs.extend((f"$.configuration[{i}]", ref) for i, ref in enumerate(pack["configuration"]))
+    refs.append(("$.configuration", pack["configuration"]))
     refs.append(("$.environment", pack["environment"]))
     refs.extend((f"$.schemas[{i}]", ref) for i, ref in enumerate(pack["schemas"]))
     for location, ref in refs:

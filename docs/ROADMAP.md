@@ -169,12 +169,14 @@ production. In parallel, P0-R remains the main architecture workstream. Its firs
 contract/input-closure tranche is implemented: versioned v2 source-manifest,
 offline-pack, reducer-input-inventory, and full-offline-replay build-attestation
 contracts describe the current seven-stage post-acquisition build DAG, explicit logical
-roots, and required-versus-absent inputs. This is contract groundwork only.
+roots, and required-versus-absent inputs. No real pack or replay is claimed yet.
 `verify_source_set.py` can validate v2 documents, while `run_offline.py` deliberately
-rejects v2 packs until the builders have one explicit full-DAG replay entry point with
-separate read-only input and writable output roots. The runtime build-context contract,
-per-stage output ownership, and a JSONL-only base-graph mode now establish that boundary,
-but no builder consumes it yet. P2A is a safe third, shadow-only workstream, but P2B and
+rejects v2 packs until the builders have one explicit full-DAG replay entry point. The
+runtime build-context contract, per-stage output ownership, JSONL-only base-graph mode,
+and prepare-only materializer now establish that boundary: bound normalized input and reducer bytes
+are copied into atomically published read-only views and a canonical context is generated
+without caller paths or environment configuration. No reducer consumes it yet. P2A is a
+safe third, shadow-only workstream, but P2B and
 later wait for P0-R's source/build contracts. Do not start a Phase 3 D1 schema cutover
 until all Phase 2 contracts and the reviewed genesis are complete.
 
@@ -349,10 +351,13 @@ explicit approval.
     roots, and stage-scoped output/scratch accessors.
   - [x] Assign every DAG output to one non-overlapping stage and give the base-graph stage
     a JSONL-only mode so SQLite has one owner.
-  - [ ] Materialize verified pack objects and reducer files into read-only input/code
+  - [x] Materialize bound normalized pack objects and reducer files into read-only input/code
     views, then generate the runtime context without trusting caller paths or environment.
+    Preparation uses copy-only private staging, exact modes, fsync, case/Unicode and ancestry
+    checks, and atomic no-replace publication; it never executes reducer code.
   - [ ] Route all seven stages through the context and add the single fail-closed replay
-    entry point; keep v2 rejected by `run_offline.py` until this is complete.
+    entry point; enforce read-only mounts or privilege separation because preparation-time
+    modes are not a security boundary. Keep v2 rejected by `run_offline.py` until this is complete.
 - [ ] **Remove ambient identity.** Replace filesystem-mtime provenance and wall-clock
   `generated_at` values with source-manifest pins and a pack-derived deterministic
   generation ID. Keep observation/build times only in audit attestations, outside logical
@@ -389,10 +394,10 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) add the explicit build context and one full-DAG
-replay entry point; (2) route every builder through its declared roots and output directory,
-then replace mtime-derived provenance and wall-clock generation stamps with the pack-derived
-generation identity; (3) compile the first real pack and prove source-object coherence; (4)
+**Next P0-R implementation order:** (1) route all seven builders through the prepared
+context and add one fail-closed full-DAG replay entry point; (2) replace mtime-derived
+provenance and wall-clock generation stamps with the pack-derived generation identity;
+(3) compile the first real pack and prove source-object coherence; (4)
 pin the complete execution environment and add the two-path randomized-mtime/adversarial-env
 clean-room gate; (5) run the approved-baseline semantic compatibility review and emit the
 separate two-build reproducibility attestation. Network acquisition, live D1 snapshots,

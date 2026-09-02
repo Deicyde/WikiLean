@@ -171,6 +171,36 @@ def _relative_paths_overlap(left: str, right: str) -> bool:
     return left_parts[:common] == right_parts[:common]
 
 
+_PATH_TRIE_TERMINAL = object()
+
+
+def _insert_relative_path(
+    trie: dict[object, Any], path: str
+) -> str | None:
+    """Insert a path or return an existing ancestry collision."""
+    node = trie
+    for part in PurePosixPath(path).parts:
+        if _PATH_TRIE_TERMINAL in node:
+            return node[_PATH_TRIE_TERMINAL]
+        child = node.get(part)
+        if child is None:
+            child = {}
+            node[part] = child
+        node = child
+    if _PATH_TRIE_TERMINAL in node:
+        return node[_PATH_TRIE_TERMINAL]
+    if node:
+        descendant = node
+        while _PATH_TRIE_TERMINAL not in descendant:
+            child_key = next(
+                key for key in descendant if key is not _PATH_TRIE_TERMINAL
+            )
+            descendant = descendant[child_key]
+        return descendant[_PATH_TRIE_TERMINAL]
+    node[_PATH_TRIE_TERMINAL] = path
+    return None
+
+
 def _matches_relative_pattern(path: str, pattern: str) -> bool:
     """Match POSIX glob segments with ``**`` crossing directories only."""
     path_parts = PurePosixPath(path).parts
@@ -844,12 +874,20 @@ class BuildContext:
         if input_ids != sorted(set(input_ids)):
             _fail("$.bindings", "bindings must have unique input IDs sorted by input_id")
         logical_members: set[tuple[str, str]] = set()
+        logical_path_tries: dict[str, dict[object, Any]] = {}
         for binding in self.bindings:
             root = self.input_root(binding.root)
             for member in binding.members:
                 key = (binding.root, member.logical_path)
                 if key in logical_members:
                     _fail("$.bindings", f"logical input {key!r} is bound more than once")
+                trie = logical_path_tries.setdefault(binding.root, {})
+                conflict = _insert_relative_path(trie, member.logical_path)
+                if conflict is not None:
+                    _fail(
+                        "$.bindings",
+                        f"logical input {key!r} overlaps by ancestry with {conflict!r}",
+                    )
                 logical_members.add(key)
                 expected = self._contained(root, member.logical_path, "$.bindings[].members[].path")
                 if member.materialized_path is not None and member.materialized_path != expected:
