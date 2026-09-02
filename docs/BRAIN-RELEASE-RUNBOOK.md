@@ -27,13 +27,22 @@ release gates pass:
 5. Worker typecheck/unit tests run, Wrangler emits a reviewed bundle in dry-run mode,
    and a second no-bundle dry-run proves the sealed bundle and external asset tree are
    accepted together. Node 22 and the installed Wrangler version must match the lockfile.
-6. The promoter atomically publishes a durable intent, then re-verifies the releases,
+6. The promoter's no-mutation dry-run retains its exact sealed public tree, Worker
+   bundle, Wrangler configuration, and raw selector/status/history responses in a
+   separate content-addressed, read-only store. The proposed intent is rebased to those
+   durable bytes instead of the temporary promotion workspace.
+7. `site/ops/brain_activation_bundle.py freeze` runs the exact Worker and Python CI gates
+   itself from the clean promotion checkout using explicitly approved absolute Git,
+   Node, npm, and Python executables. It reruns the fixed nightly SQLite probe and freezes
+   that fresh measurement, then binds the receipt plus ten other evidence documents into
+   one immutable, content-addressed review bundle. Neither operation deploys.
+8. The promoter atomically publishes a durable intent, then re-verifies the releases,
    baseline, sealed public tree, sealed bundle, configuration, clean `main`, and
    production as Worker status A → exact selector A → Worker status A.
-7. Wrangler runs once from the sealed bundle with `--no-bundle --strict`, an attempt-unique
+9. Wrangler runs once from the sealed bundle with `--no-bundle --strict`, an attempt-unique
    tag, and an attempt-unique message. The candidate version is adopted only when those
    annotations, 100% traffic, the exact staged selector bytes, and the canary agree.
-8. `site/ops/brain-canary.py` waits for selector, manifest, required view assets,
+10. `site/ops/brain-canary.py` waits for selector, manifest, required view assets,
    cell manifest/shard, `/brain`, `/brain.html`, REST API/cursor, MCP, aliases, and
    representative files from the frozen non-Brain baseline to agree.
 
@@ -44,8 +53,9 @@ is not authorization to deploy; P1C remains an explicit Jack gate.
 ## Activation prerequisites
 
 Before running even a shadow build, create the gitignored
-`site/ops/nightly.local.env` with a readable, read-only Mathlib tree and Python
-3.12+ (or set the same variables in the invoking environment):
+`site/ops/nightly.local.env` with a readable, read-only Mathlib tree, Python 3.12+,
+and the reviewed absolute activation-tool paths (or set the same variables in the
+invoking environment):
 
 ```bash
 cp site/ops/nightly.local.env.example site/ops/nightly.local.env
@@ -59,6 +69,11 @@ export BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib
 export WIKILEAN_PYTHON=/absolute/path/to/python3.12
 export WIKILEAN_BRAIN_RECEIPT_DIR=/absolute/private/backed-up/deploy-receipts
 export WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE=/absolute/path/to/public-baselines
+export WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE=/absolute/private/promoter-dry-runs
+export WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE=/absolute/path/to/activation-bundles
+export WIKILEAN_BRAIN_GIT=/absolute/path/to/git
+export WIKILEAN_BRAIN_NODE=/absolute/path/to/node
+export WIKILEAN_BRAIN_NPM=/absolute/path/to/npm
 ```
 
 Initialize the one canonical deployment journal root once, before any dry-run or
@@ -78,6 +93,11 @@ The optional proposal agents use a separate interpreter
 (`WIKILEAN_BRAIN_AGENT_PYTHON`, default `catalog/.venv/bin/python3`) and are
 skipped with an explicit warning if that environment is absent. Verify all configured
 paths from the same launch context that will run the job; missing paths fail closed.
+
+The tooling is ready, but evidence generation is not yet authorized: Jack must first merge
+the reviewed P1A changes onto `main` and approve the exact read-only Mathlib checkout and
+Git/Node/npm/Python executable paths. Do not substitute this feature branch or an arbitrary
+project-local Mathlib dependency for that reviewed host context.
 
 ## Shadow release
 
@@ -169,6 +189,141 @@ manifest plus its complete read-only inventory. Confirm the shadow release resul
 baseline both name C as their authority commit. This repository intentionally does not yet contain the
 first attestation; freeze and verify therefore fail closed until P1B completes this workflow.
 
+## Build the P1B activation evidence bundle
+
+Use two non-overlapping worktrees at the same reviewed authority commit: an isolated build
+worktree for the shadow nightly and generated assets, and a clean promotion worktree whose
+`HEAD` and `refs/heads/main` both equal that commit. Keep all evidence and the final bundle
+outside both checkouts:
+
+```bash
+export BUILD_WORKTREE=/absolute/path/to/wikilean-p1b-build
+export PROMOTION_WORKTREE=/absolute/path/to/wikilean-p1b-promotion
+export EVIDENCE_DIR=/absolute/private/p1b-evidence
+export WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE=/absolute/private/promoter-dry-runs
+export WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE=/absolute/private/activation-bundles
+export WIKILEAN_BRAIN_GIT=/absolute/path/to/git
+export WIKILEAN_BRAIN_NODE=/absolute/path/to/node
+export WIKILEAN_BRAIN_NPM=/absolute/path/to/npm
+```
+
+After the shadow release, public baseline, and semantic comparison have been produced,
+run the promoter's no-mutation path with retention enabled. The retained store must be an
+absolute path outside every checkout, release, baseline, receipt, and temporary promotion
+workspace:
+
+```bash
+cd "$PROMOTION_WORKTREE"
+bash site/ops/brain-promote-release.sh sha256:<candidate-hex> \
+  --release-root /absolute/releases/<candidate-hex> \
+  --public-baseline-id sha256:<public-baseline-hex> \
+  --public-baseline-root /absolute/public-baselines/<public-baseline-hex> \
+  --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
+  --dry-run \
+  --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE" \
+  > "$EVIDENCE_DIR/promoter-dry-run.json"
+```
+
+This publishes a read-only, content-addressed copy of the exact staged public and Worker
+trees, Wrangler configuration, and raw selector/status/history responses. Retain that root
+alongside the activation bundle; the freezer verifies it before writing the bundle and
+again at the final publication fence.
+
+Record the two-worktree context from the promotion checkout:
+
+```bash
+cd "$PROMOTION_WORKTREE"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py context \
+  --build-worktree "$BUILD_WORKTREE" \
+  --promotion-worktree "$PROMOTION_WORKTREE" \
+  --git "$WIKILEAN_BRAIN_GIT" \
+  > "$EVIDENCE_DIR/build-context.json"
+```
+
+The bundle freezer invokes the CI recorder in-process immediately before validation, so a
+caller-authored or stale CI JSON file cannot be substituted. Git, Node, npm, and Python
+are explicit reviewed absolute paths; the caller's `PATH` is discarded and child-tool
+resolution uses private shims to those approved executables. It requires Node 22 and
+Python 3.12, a credential-free allowlisted environment, bounded process groups, and
+pre/post clean-authority fences. It runs exactly `npm ci`, `npm run test:ci`, and
+`PYTHON=<selected> ./scripts/ci-python.sh`; the generated canonical
+`wikilean.brain-activation-ci/v2` evidence retains the exact argv, working directory,
+return code, tool-version probes, and complete stdout/stderr for every successful gate.
+`brain_activation_ci.py` remains useful as a standalone preview, but its output is not a
+freeze input.
+
+Generate `semantic-diff.json` with `brain/tools/semantic_diff.py`. Its
+`wikilean.semantic-diff/v2` coverage must include exactly these seven release paths:
+
+- `brain/data/nodes.jsonl`
+- `brain/data/edges.jsonl`
+- `brain/data/edges_links.jsonl`
+- `brain/data/cells.jsonl`
+- `brain/data/synapses.jsonl`
+- `brain/data/frontier.jsonl`
+- `brain/data/frontier_graph.json`
+
+Freeze the completed review set from the promotion checkout:
+
+```bash
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py freeze \
+  --release-manifest /absolute/releases/<candidate-hex>/release.json \
+  --semantic-baseline-manifest /absolute/releases/<baseline-release-hex>/release.json \
+  --expected-semantic-baseline-id sha256:<baseline-release-hex> \
+  --public-baseline-manifest /absolute/public-baselines/<baseline-hex>/manifest.json \
+  --source-attestation "$PROMOTION_WORKTREE/wiki/public-asset-source-attestation.json" \
+  --release-result "$EVIDENCE_DIR/release-result.json" \
+  --release-metrics "$EVIDENCE_DIR/release-metrics.json" \
+  --shadow-public-result "$EVIDENCE_DIR/shadow-public-result.json" \
+  --semantic-diff "$EVIDENCE_DIR/semantic-diff.json" \
+  --promoter-dry-run "$EVIDENCE_DIR/promoter-dry-run.json" \
+  --build-context "$EVIDENCE_DIR/build-context.json" \
+  --git "$WIKILEAN_BRAIN_GIT" \
+  --node "$WIKILEAN_BRAIN_NODE" \
+  --npm "$WIKILEAN_BRAIN_NPM" \
+  --python "${WIKILEAN_PYTHON:-.venv/bin/python3}" \
+  --output-store "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE"
+```
+
+The bundle contains exactly 11 canonical evidence files:
+
+1. `candidate-release.json`
+2. `semantic-baseline-release.json`
+3. `public-baseline.json`
+4. `public-asset-source-attestation.json`
+5. `release-result.json`
+6. `release-metrics.json`
+7. `shadow-public-result.json`
+8. `semantic-diff.json`
+9. `promoter-dry-run.json`
+10. `build-context.json`
+11. `ci-evidence.json`
+
+The freezer checks complete releases, baseline/source identity, a fresh fixed
+`--limit 100 --iterations 5 --warmup 1 --check-limit 100` SQLite measurement,
+semantic detail and summaries, retained dry-run bytes, clean worktree separation, and its
+fresh CI receipt before atomically publishing a read-only content-addressed directory. It
+rejects a candidate self-diff and requires the reviewed prior release ID as an external
+trust anchor. Verify the returned root independently with both returned IDs and retain its
+bundle ID/root for review:
+
+```bash
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py verify \
+  --bundle-root "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE/<bundle-hex>" \
+  --expected-bundle-id sha256:<bundle-hex> \
+  --expected-semantic-baseline-id sha256:<baseline-release-hex>
+```
+
+This entire section is P1B preparation only. `context`, the CI recorder, `freeze`, and
+`verify` do not authorize or perform a production deployment. Actual evidence generation
+remains blocked until Jack merges P1A and authorizes the host paths above.
+
+The review artifact is an attested two-root set: the 11-file activation bundle plus the
+content-addressed retained promoter root named by `promoter-dry-run.json`. Normal `verify`
+requires and revalidates that companion root, including every non-Brain public-baseline
+file, the Brain release bytes, Worker/config bytes, and raw read-only production probes.
+Do not delete or relocate either root after review.
+
 ## Deploy
 
 > **Production activation is currently blocked on P1B/P1C review and approval.** The
@@ -187,7 +342,8 @@ bash site/ops/brain-promote-release.sh sha256:<64hex> \
   --public-baseline-id sha256:<baseline-hex> \
   --public-baseline-root /absolute/public-baselines/<baseline-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
-  --dry-run
+  --dry-run \
+  --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE"
 ```
 
 Run the promoter from a separate clean checkout/worktree at the frozen release's recorded

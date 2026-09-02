@@ -296,6 +296,12 @@ def _decimal_json(value: Any) -> bytes:
     _fail("$", f"unsupported logical artifact type {type(value).__name__}")
 
 
+def canonical_artifact_json_bytes(value: Any) -> bytes:
+    """Render parsed artifact JSON without losing finite decimal precision."""
+    _check_unicode(value, require_nfc=False)
+    return _decimal_json(value)
+
+
 def _same_logical_json(left: Any, right: Any) -> bool:
     """Compare logical JSON recursively without materializing whole documents."""
     if left is None or right is None:

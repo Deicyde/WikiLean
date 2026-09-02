@@ -117,17 +117,40 @@ def base_fixture() -> dict[str, list[dict]]:
     }
 
 
-def write_fixture(root: Path, fixture: dict[str, list[dict]], *, meta: dict | None = None) -> None:
+def write_fixture(root: Path, fixture: dict[str, object], *, meta: dict | None = None) -> None:
     base_meta = meta or META
     cell_meta = dict(base_meta)
     cell_meta.setdefault("base_generated_at", base_meta.get("generated_at"))
     cell_meta.setdefault("base_snapshot_id", base_meta.get("snapshot_id"))
     for key in ("nodes", "edges"):
-        write_jsonl(root / f"{key}.jsonl", fixture[key], base_meta)
+        write_jsonl(root / f"{key}.jsonl", fixture[key], base_meta)  # type: ignore[arg-type]
     for key in ("cells", "frontier"):
-        write_jsonl(root / f"{key}.jsonl", fixture[key], cell_meta)
+        write_jsonl(root / f"{key}.jsonl", fixture[key], cell_meta)  # type: ignore[arg-type]
     if "edges_links" in fixture:
-        write_jsonl(root / "edges_links.jsonl", fixture["edges_links"], base_meta)
+        write_jsonl(
+            root / "edges_links.jsonl",
+            fixture["edges_links"],  # type: ignore[arg-type]
+            base_meta,
+        )
+    write_jsonl(
+        root / "synapses.jsonl",
+        fixture.get("synapses", []),  # type: ignore[arg-type]
+        cell_meta,
+    )
+    frontier_graph = fixture.get(
+        "frontier_graph",
+        {"cells": [], "formal": {}, "edges": []},
+    )
+    if not isinstance(frontier_graph, dict):
+        raise TypeError("frontier_graph fixture must be an object")
+    (root / "frontier_graph.json").write_text(
+        json.dumps(
+            {"_meta": cell_meta, **frontier_graph},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ),
+        encoding="utf-8",
+    )
 
 
 def run_diff(before: Path, after: Path) -> subprocess.CompletedProcess[str]:
@@ -186,6 +209,16 @@ class SemanticDiffTest(unittest.TestCase):
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertEqual(first.stdout, second.stdout)
         report = json.loads(first.stdout)
+        self.assertEqual(report["schema"], "wikilean.semantic-diff/v2")
+        self.assertTrue(report["coverage"]["complete"])
+        self.assertEqual(
+            report["coverage"]["required"],
+            list(contracts.COMPATIBILITY_SEMANTIC_PATHS),
+        )
+        self.assertEqual(
+            report["coverage"]["compared"],
+            list(contracts.COMPATIBILITY_SEMANTIC_PATHS),
+        )
         self.assertFalse(report["different"])
         self.assertTrue(all(not any(counts.values()) for counts in report["summary"].values()))
 
@@ -350,6 +383,34 @@ class SemanticDiffTest(unittest.TestCase):
             {"source": "source-b", "kind": "relates", "added": 0, "removed": 1, "changed": 0},
         ])
 
+    def test_moving_an_edge_between_streams_is_detected(self) -> None:
+        before = base_fixture()
+        moved = {
+            "src": "Q1",
+            "dst": "xref:nlab:alpha",
+            "kind": "xref",
+            "provenance": PROV_A,
+            "confidence": "high",
+            "evidence": {"property": "P1"},
+        }
+        before["edges_links"].append(moved)
+        after = copy.deepcopy(before)
+        after["edges_links"].clear()
+        after["edges"].append(copy.deepcopy(moved))
+
+        report, _ = self.compare(before, after)
+        self.assertTrue(report["different"])
+        self.assertEqual(report["summary"]["edges"]["added"], 1)
+        self.assertEqual(report["summary"]["edges"]["removed"], 1)
+        self.assertEqual(
+            report["edges"]["removed"][0]["artifact"],
+            "brain/data/edges_links.jsonl",
+        )
+        self.assertEqual(
+            report["edges"]["added"][0]["artifact"],
+            "brain/data/edges.jsonl",
+        )
+
     def test_edge_semantic_and_duplicate_count_changes_are_not_provenance_only(self) -> None:
         before = base_fixture()
         before["edges"].append(copy.deepcopy(before["edges"][0]))
@@ -479,11 +540,77 @@ class SemanticDiffTest(unittest.TestCase):
         changed = report["frontier"]["changed"][0]
         self.assertEqual(changed["id"], "frontier:Algebra")
 
-    def test_optional_edges_links_absent_means_empty(self) -> None:
+    def test_missing_edges_links_is_explicit_partial_coverage(self) -> None:
         fixture = base_fixture()
         fixture.pop("edges_links")
         report, _ = self.compare(fixture, fixture)
         self.assertFalse(report["different"])
+        expected = "brain/data/edges_links.jsonl"
+        self.assertFalse(report["coverage"]["complete"])
+        self.assertEqual(report["coverage"]["from"]["missing"], [expected])
+        self.assertEqual(report["coverage"]["to"]["missing"], [expected])
+        self.assertFalse(report["coverage"]["from"]["complete"])
+        self.assertFalse(report["coverage"]["to"]["complete"])
+        self.assertNotIn(expected, report["coverage"]["compared"])
+        self.assertEqual(
+            report["semantic_artifacts"][expected],
+            {"from": None, "to": None, "compared": False, "different": None},
+        )
+        self.assertEqual(
+            report["edges"]["compared_artifacts"],
+            ["brain/data/edges.jsonl"],
+        )
+
+    def test_synapse_difference_is_detected(self) -> None:
+        fixture = base_fixture()
+        write_fixture(self.before, fixture)
+        write_fixture(self.after, fixture)
+        synapse = {
+            "src": "cell:Q1",
+            "dst": "cell:Q2",
+            "weight": 1,
+            "kinds": {"depends": 1},
+            "traces": [],
+        }
+        cell_meta = {
+            **META,
+            "base_generated_at": META["generated_at"],
+            "base_snapshot_id": META["snapshot_id"],
+        }
+        write_jsonl(self.after / "synapses.jsonl", [synapse], cell_meta)
+
+        process = run_diff(self.before, self.after)
+        self.assertEqual(process.returncode, 0, process.stderr)
+        report = json.loads(process.stdout)
+        self.assertTrue(report["coverage"]["complete"])
+        self.assertTrue(report["different"])
+        self.assertTrue(report["synapses"]["different"])
+        self.assertEqual(report["summary"]["synapses"], {"changed": 1})
+        self.assertTrue(
+            report["semantic_artifacts"]["brain/data/synapses.jsonl"]["different"]
+        )
+
+    def test_frontier_graph_difference_is_detected(self) -> None:
+        fixture = base_fixture()
+        write_fixture(self.before, fixture)
+        changed = copy.deepcopy(fixture)
+        changed["frontier_graph"] = {
+            "cells": ["cell:Q2"],
+            "formal": {"cell:Q2": {"Mathlib": 1}},
+            "edges": [],
+        }
+        write_fixture(self.after, changed)
+
+        process = run_diff(self.before, self.after)
+        self.assertEqual(process.returncode, 0, process.stderr)
+        report = json.loads(process.stdout)
+        self.assertTrue(report["coverage"]["complete"])
+        self.assertTrue(report["different"])
+        self.assertTrue(report["frontier_graph"]["different"])
+        self.assertEqual(report["summary"]["frontier_graph"], {"changed": 1})
+        self.assertTrue(
+            report["semantic_artifacts"]["brain/data/frontier_graph.json"]["different"]
+        )
 
     def test_manifest_addressed_release_and_digest_validation(self) -> None:
         fixture = base_fixture()
@@ -506,6 +633,26 @@ class SemanticDiffTest(unittest.TestCase):
         self.assertEqual(failed.returncode, 2)
         self.assertEqual(failed.stdout, "")
         self.assertIn("bytes", failed.stderr)
+
+    def test_release_manifest_requires_all_semantic_artifacts(self) -> None:
+        fixture = base_fixture()
+        write_fixture(self.before, fixture)
+        release_root = self.root / "release-missing-synapses"
+        write_fixture(release_root / "brain" / "data", fixture)
+        manifest = self._write_release_manifest(release_root)
+        document = json.loads(manifest.read_text())
+        document["artifacts"] = [
+            artifact
+            for artifact in document["artifacts"]
+            if artifact["path"] != "brain/data/synapses.jsonl"
+        ]
+        document["release_id"] = contracts.release_identity(document)
+        manifest.write_bytes(contracts.canonical_json_bytes(document))
+
+        process = run_diff(self.before, manifest)
+        self.assertEqual(process.returncode, 2)
+        self.assertEqual(process.stdout, "")
+        self.assertIn("brain/data/synapses.jsonl", process.stderr)
 
     def _write_release_manifest(self, root: Path) -> Path:
         required_paths = set(contracts.REQUIRED_RELEASE_PATHS)

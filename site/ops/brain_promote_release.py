@@ -9,6 +9,9 @@ release-aware control-plane and content canaries.
 from __future__ import annotations
 
 import argparse
+import contextlib
+import copy
+import fcntl
 import hashlib
 import json
 import math
@@ -16,6 +19,7 @@ import os
 import re
 import signal
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -46,10 +50,12 @@ GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 UUID_RE = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 )
-ATTEMPT_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_.-]{0,127}$")
+ATTEMPT_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SELECTOR_SCHEMA = "wikilean.release-selector/v1"
 RELEASE_SCHEMA = "wikilean.release/v1"
 DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v1"
+DRY_RUN_ARTIFACT_SCHEMA = "wikilean.brain-promotion-dry-run-artifacts/v1"
+DRY_RUN_ARTIFACT_DOMAIN = "wikilean.brain-promotion-dry-run-artifacts.v1"
 RESULT_SCHEMA = "wikilean.brain-promotion-result/v1"
 MAX_COMMAND_EVIDENCE_BYTES = 4 * 1024 * 1024
 PRODUCTION_ORIGIN = "https://wikilean.jackmccarthy.org"
@@ -183,6 +189,29 @@ class PreparedPromotion:
     wrangler_version: str
     trust_source: str
     history: dict[str, object]
+    history_raw: Mapping[str, bytes] | None = None
+
+
+@dataclass(frozen=True)
+class RetainedDryRunArtifacts:
+    artifact_id: str
+    artifact_hex: str
+    root: Path
+    manifest: Path
+    manifest_sha256: str
+    public_dir: Path
+    worker_dir: Path
+    worker_entry: Path
+    config: Path
+
+    def reference(self) -> dict[str, str]:
+        return {
+            "schema": DRY_RUN_ARTIFACT_SCHEMA,
+            "artifact_id": self.artifact_id,
+            "root": str(self.root),
+            "manifest": str(self.manifest),
+            "manifest_sha256": self.manifest_sha256,
+        }
 
 
 @dataclass(frozen=True)
@@ -359,6 +388,525 @@ def remove_sealed_tree(root: Path) -> None:
     shutil.rmtree(root, ignore_errors=True)
 
 
+_DRY_RUN_EVIDENCE_PATHS = {
+    "initial_selector": "evidence/initial-selector.body",
+    "status_before": "evidence/status-before.body",
+    "status_after": "evidence/status-after.body",
+    "deployments_history": "evidence/deployments-history.body",
+    "versions_history": "evidence/versions-history.body",
+}
+
+
+def _relative_tree_inventory(root: Path, relative: str) -> dict[str, object]:
+    inventory = inventory_tree(root)
+    return {
+        "schema": inventory["schema"],
+        "path": relative,
+        "directories": _tree_directories(root),
+        "objects": inventory["objects"],
+        "bytes": inventory["bytes"],
+        "sha256": inventory["sha256"],
+    }
+
+
+def _tree_directories(root: Path) -> list[str]:
+    resolved = root.resolve(strict=True)
+    directories: list[str] = []
+    for path in sorted(
+        resolved.rglob("*"), key=lambda value: value.relative_to(resolved).as_posix()
+    ):
+        relative = path.relative_to(resolved).as_posix()
+        if path.is_symlink():
+            raise PromotionError(f"tree contains a symlink: {relative}")
+        if path.is_dir():
+            directories.append(relative)
+        elif not path.is_file():
+            raise PromotionError(f"tree contains a non-regular entry: {relative}")
+    return directories
+
+
+def _file_evidence(path: str, body: bytes) -> dict[str, object]:
+    return {"path": path, "bytes": len(body), "sha256": sha256_bytes(body)}
+
+
+def _dry_run_artifact_id(identity: Mapping[str, object]) -> str:
+    payload = (
+        b"wikilean\0"
+        + DRY_RUN_ARTIFACT_DOMAIN.encode("ascii")
+        + b"\0canonical-json-v1\0"
+        + canonical_json_bytes(identity).removesuffix(b"\n")
+    )
+    return "sha256:" + sha256_bytes(payload)
+
+
+def _fsync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _write_exclusive(path: Path, body: bytes) -> None:
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    descriptor = os.open(
+        path,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
+        0o600,
+    )
+    try:
+        view = memoryview(body)
+        while view:
+            written = os.write(descriptor, view)
+            if written <= 0:
+                raise PromotionError(f"short write while retaining {path.name}")
+            view = view[written:]
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _copy_sealed_tree(source: Path, destination: Path, expected: Mapping[str, object]) -> None:
+    before = inventory_tree(source)
+    directories_before = _tree_directories(source)
+    if before != dict(expected):
+        raise PromotionError("sealed source tree changed before dry-run retention")
+    shutil.copytree(source, destination, symlinks=True, copy_function=shutil.copyfile)
+    after = inventory_tree(source)
+    copied = inventory_tree(destination)
+    directories_after = _tree_directories(source)
+    directories_copied = _tree_directories(destination)
+    if after != before or directories_after != directories_before:
+        raise PromotionError("sealed source tree changed while retaining dry-run artifacts")
+    if (
+        any(copied[key] != before[key] for key in ("objects", "bytes", "sha256"))
+        or directories_copied != directories_before
+    ):
+        raise PromotionError("retained dry-run tree differs from its sealed source")
+
+
+def _seal_retained_tree(root: Path) -> None:
+    entries = sorted(root.rglob("*"), key=lambda value: len(value.parts), reverse=True)
+    for path in entries:
+        info = path.lstat()
+        if path.is_symlink() or (not path.is_file() and not path.is_dir()):
+            raise PromotionError(f"retained dry-run artifact contains an unsafe entry: {path}")
+        if path.is_file():
+            if info.st_nlink != 1:
+                raise PromotionError(f"retained dry-run artifact is hard-linked: {path}")
+            path.chmod(0o444)
+            descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+            try:
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
+        else:
+            path.chmod(0o555)
+            _fsync_directory(path)
+    root.chmod(0o555)
+    _fsync_directory(root)
+
+
+def _remove_pending_tree(root: Path) -> None:
+    try:
+        root_info = root.lstat()
+    except FileNotFoundError:
+        return
+    if stat.S_ISLNK(root_info.st_mode) or not stat.S_ISDIR(root_info.st_mode):
+        with contextlib.suppress(OSError):
+            root.unlink()
+        return
+    for path in sorted(root.rglob("*"), key=lambda value: len(value.parts)):
+        info = path.lstat()
+        if stat.S_ISDIR(info.st_mode):
+            with contextlib.suppress(OSError):
+                path.chmod(0o700)
+        elif stat.S_ISREG(info.st_mode):
+            with contextlib.suppress(OSError):
+                path.chmod(0o600)
+    with contextlib.suppress(OSError):
+        root.chmod(0o700)
+    shutil.rmtree(root, ignore_errors=True)
+
+
+def _physical_path_is_within(path: Path, boundary: Path) -> bool:
+    """Compare existing path components by identity, including case-folding filesystems."""
+    current = path
+    while True:
+        if current.exists() or current.is_symlink():
+            try:
+                if os.path.samefile(current, boundary):
+                    return True
+            except OSError:
+                pass
+        parent = current.parent
+        if parent == current:
+            return False
+        current = parent
+
+
+def _assert_external_dry_run_store(store: Path, protected: Sequence[Path]) -> None:
+    if store.is_symlink() or not store.is_dir():
+        raise PromotionError("dry-run artifact store must be a real directory")
+    info = store.stat()
+    mode = stat.S_IMODE(info.st_mode)
+    if (
+        info.st_uid != os.geteuid()
+        or mode & 0o077
+        or (mode & 0o700) != 0o700
+    ):
+        raise PromotionError(
+            "dry-run artifact store must be user-owned and private (mode 0700)"
+        )
+    for boundary in protected:
+        physical = boundary.resolve(strict=True)
+        if _physical_path_is_within(store, physical) or _physical_path_is_within(
+            physical, store
+        ):
+            raise PromotionError(
+                "dry-run artifact store must be outside checkout, release, baseline, "
+                "receipt, and promotion workspace roots"
+            )
+
+
+def _prepare_dry_run_store(raw: Path, protected: Sequence[Path]) -> Path:
+    if not raw.is_absolute():
+        raise PromotionError("--retain-dry-run-store must be an absolute path")
+    if raw.exists() or raw.is_symlink():
+        if raw.is_symlink() or not raw.is_dir():
+            raise PromotionError("dry-run artifact store must be a real directory")
+        store = raw.resolve(strict=True)
+        if store != raw:
+            raise PromotionError("dry-run artifact store must use its physical path")
+    else:
+        parent = raw.parent.resolve(strict=True)
+        store = parent / raw.name
+        if store != raw:
+            raise PromotionError("dry-run artifact store must use its physical path")
+        for boundary in protected:
+            physical = boundary.resolve(strict=True)
+            if _physical_path_is_within(store, physical) or _physical_path_is_within(
+                physical, store
+            ):
+                raise PromotionError(
+                    "dry-run artifact store must be outside checkout, release, baseline, "
+                    "receipt, and promotion workspace roots"
+                )
+        store.mkdir(mode=0o700)
+        store.chmod(0o700)
+        _fsync_directory(parent)
+    _assert_external_dry_run_store(store, protected)
+    return store
+
+
+@contextlib.contextmanager
+def _dry_run_store_lock(store: Path):
+    path = store / ".retain.lock"
+    descriptor = os.open(
+        path,
+        os.O_RDWR | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0),
+        0o600,
+    )
+    try:
+        info = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != os.geteuid()
+            or info.st_nlink != 1
+        ):
+            raise PromotionError(
+                "dry-run artifact store lock must be a user-owned single-link regular file"
+            )
+        os.fchmod(descriptor, 0o600)
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+    finally:
+        os.close(descriptor)
+
+
+def _load_canonical_manifest(path: Path) -> dict[str, object]:
+    raw = path.read_bytes()
+    try:
+        value = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=lambda pairs: _object_without_duplicates(
+                pairs, label="retained dry-run artifact manifest"
+            ),
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise PromotionError(f"retained dry-run artifact manifest is invalid: {exc}") from exc
+    if not isinstance(value, dict) or canonical_json_bytes(value) != raw:
+        raise PromotionError("retained dry-run artifact manifest is not canonical JSON")
+    return value
+
+
+def verify_retained_dry_run_artifacts(
+    root_input: Path,
+    *,
+    expected_artifact_id: str | None = None,
+) -> RetainedDryRunArtifacts:
+    if not root_input.is_absolute() or root_input.is_symlink():
+        raise PromotionError("retained dry-run root must be an absolute non-symlink path")
+    root = root_input.resolve(strict=True)
+    if root != root_input or not root.is_dir() or stat.S_IMODE(root.stat().st_mode) != 0o555:
+        raise PromotionError("retained dry-run root must be a physical 0555 directory")
+    expected_top = {"manifest.json", "public", "worker", "wrangler.jsonc", "evidence"}
+    if {path.name for path in root.iterdir()} != expected_top:
+        raise PromotionError("retained dry-run root has an unexpected top-level closure")
+    for name in ("public", "worker", "evidence"):
+        if not (root / name).is_dir() or (root / name).is_symlink():
+            raise PromotionError(f"retained dry-run {name} path must be a directory")
+    for name in ("manifest.json", "wrangler.jsonc"):
+        if not (root / name).is_file() or (root / name).is_symlink():
+            raise PromotionError(f"retained dry-run {name} path must be a regular file")
+    for path in root.rglob("*"):
+        info = path.lstat()
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink():
+            raise PromotionError(
+                f"retained dry-run artifact contains a symlink: {relative}"
+            )
+        if not path.is_file() and not path.is_dir():
+            raise PromotionError(f"retained dry-run artifact contains an unsafe entry: {relative}")
+        expected_mode = 0o555 if path.is_dir() else 0o444
+        if stat.S_IMODE(info.st_mode) != expected_mode:
+            raise PromotionError(f"retained dry-run artifact has wrong mode: {relative}")
+        if path.is_file() and info.st_nlink != 1:
+            raise PromotionError(f"retained dry-run artifact is hard-linked: {relative}")
+
+    manifest_path = root / "manifest.json"
+    manifest = _load_canonical_manifest(manifest_path)
+    required = {
+        "schema",
+        "artifact_id",
+        "attempt_id",
+        "release_id",
+        "authority_git_commit",
+        "public_tree",
+        "worker_bundle",
+        "wrangler_config",
+        "evidence",
+    }
+    if set(manifest) != required or manifest.get("schema") != DRY_RUN_ARTIFACT_SCHEMA:
+        raise PromotionError("retained dry-run artifact manifest fields/schema are invalid")
+    artifact_id = manifest.get("artifact_id")
+    match = RELEASE_ID_RE.fullmatch(str(artifact_id or ""))
+    if match is None or root.name != match.group(1):
+        raise PromotionError("retained dry-run artifact identity/root mismatch")
+    if expected_artifact_id is not None and artifact_id != expected_artifact_id:
+        raise PromotionError("retained dry-run artifact identity differs from the expected ID")
+    if ATTEMPT_ID_RE.fullmatch(str(manifest.get("attempt_id") or "")) is None:
+        raise PromotionError("retained dry-run artifact attempt identity is invalid")
+    if RELEASE_ID_RE.fullmatch(str(manifest.get("release_id") or "")) is None:
+        raise PromotionError("retained dry-run artifact release identity is invalid")
+    if GIT_COMMIT_RE.fullmatch(str(manifest.get("authority_git_commit") or "")) is None:
+        raise PromotionError("retained dry-run artifact authority identity is invalid")
+
+    def validate_tree(raw: object, name: str, expected_path: str) -> dict[str, object]:
+        if not isinstance(raw, dict) or set(raw) != {
+            "schema", "path", "directories", "objects", "bytes", "sha256"
+        }:
+            raise PromotionError(f"retained {name} inventory fields are invalid")
+        if raw.get("schema") != "wikilean.file-tree-inventory/v1" or raw.get("path") != expected_path:
+            raise PromotionError(f"retained {name} inventory identity is invalid")
+        if (
+            isinstance(raw.get("objects"), bool)
+            or not isinstance(raw.get("objects"), int)
+            or raw["objects"] < 0
+            or isinstance(raw.get("bytes"), bool)
+            or not isinstance(raw.get("bytes"), int)
+            or raw["bytes"] < 0
+            or not isinstance(raw.get("sha256"), str)
+            or re.fullmatch(r"[0-9a-f]{64}", raw["sha256"]) is None
+        ):
+            raise PromotionError(f"retained {name} inventory metrics are invalid")
+        actual = _relative_tree_inventory(root / expected_path, expected_path)
+        if raw != actual:
+            raise PromotionError(f"retained {name} tree differs from its inventory")
+        return raw
+
+    validate_tree(manifest.get("public_tree"), "public", "public")
+    worker = manifest.get("worker_bundle")
+    if not isinstance(worker, dict) or set(worker) != {
+        "schema", "path", "directories", "entry", "objects", "bytes", "sha256"
+    }:
+        raise PromotionError("retained worker bundle inventory fields are invalid")
+    worker_tree = {
+        key: worker[key]
+        for key in ("schema", "path", "directories", "objects", "bytes", "sha256")
+    }
+    validate_tree(worker_tree, "worker", "worker")
+    entry = worker.get("entry")
+    if (
+        not isinstance(entry, str)
+        or not entry.startswith("worker/")
+        or Path(entry).is_absolute()
+        or ".." in Path(entry).parts
+        or Path(entry).as_posix() != entry
+    ):
+        raise PromotionError("retained worker entry path is invalid")
+    worker_entry = root / entry
+    if (
+        worker_entry.is_symlink()
+        or not worker_entry.is_file()
+        or not _is_relative_to(
+            worker_entry.resolve(strict=True), (root / "worker").resolve(strict=True)
+        )
+    ):
+        raise PromotionError("retained worker entry is missing")
+
+    def validate_file(raw: object, label: str, expected_path: str) -> None:
+        if not isinstance(raw, dict) or set(raw) != {"path", "bytes", "sha256"}:
+            raise PromotionError(f"retained {label} evidence fields are invalid")
+        if raw.get("path") != expected_path:
+            raise PromotionError(f"retained {label} path is invalid")
+        if (
+            isinstance(raw.get("bytes"), bool)
+            or not isinstance(raw.get("bytes"), int)
+            or raw["bytes"] < 0
+            or not isinstance(raw.get("sha256"), str)
+            or re.fullmatch(r"[0-9a-f]{64}", raw["sha256"]) is None
+        ):
+            raise PromotionError(f"retained {label} evidence metrics are invalid")
+        path = root / expected_path
+        body = path.read_bytes()
+        if raw.get("bytes") != len(body) or raw.get("sha256") != sha256_bytes(body):
+            raise PromotionError(f"retained {label} bytes differ from the manifest")
+
+    validate_file(manifest.get("wrangler_config"), "Wrangler config", "wrangler.jsonc")
+    evidence = manifest.get("evidence")
+    if not isinstance(evidence, dict) or set(evidence) != set(_DRY_RUN_EVIDENCE_PATHS):
+        raise PromotionError("retained dry-run evidence closure is invalid")
+    expected_evidence_files = set()
+    for key, relative in _DRY_RUN_EVIDENCE_PATHS.items():
+        validate_file(evidence[key], key, relative)
+        expected_evidence_files.add(Path(relative).name)
+    if {path.name for path in (root / "evidence").iterdir()} != expected_evidence_files:
+        raise PromotionError("retained dry-run evidence directory has extra or missing files")
+
+    identity = dict(manifest)
+    identity.pop("artifact_id")
+    computed = _dry_run_artifact_id(identity)
+    if artifact_id != computed:
+        raise PromotionError(f"retained dry-run artifact ID mismatch: expected {computed}")
+    manifest_sha256 = sha256_bytes(manifest_path.read_bytes())
+    return RetainedDryRunArtifacts(
+        artifact_id=str(artifact_id),
+        artifact_hex=match.group(1),
+        root=root,
+        manifest=manifest_path,
+        manifest_sha256=manifest_sha256,
+        public_dir=root / "public",
+        worker_dir=root / "worker",
+        worker_entry=worker_entry,
+        config=root / "wrangler.jsonc",
+    )
+
+
+def retain_dry_run_artifacts(
+    prepared: PreparedPromotion,
+    store_input: Path,
+    *,
+    repo_root: Path,
+    receipt_root: Path,
+) -> RetainedDryRunArtifacts:
+    if prepared.history_raw is None or set(prepared.history_raw) != {"deployments", "versions"}:
+        raise PromotionError("raw Wrangler deployment/version history is unavailable for retention")
+    if sha256_bytes(prepared.initial_selector.body) != prepared.initial_selector.body_sha256:
+        raise PromotionError("initial selector body differs from its recorded digest")
+    if sha256_bytes(prepared.predeploy_status_before) != prepared.predeploy.raw_sha256:
+        raise PromotionError("status-before body differs from its recorded deployment digest")
+    for key in ("deployments", "versions"):
+        body = prepared.history_raw[key]
+        if not isinstance(body, bytes):
+            raise PromotionError(f"raw Wrangler {key} history must be bytes")
+        recorded = prepared.history.get(key)
+        if (
+            not isinstance(recorded, dict)
+            or recorded.get("sha256") != sha256_bytes(body)
+            or recorded.get("bytes") != len(body)
+        ):
+            raise PromotionError(f"raw Wrangler {key} history differs from its evidence")
+    protected = [
+        repo_root,
+        prepared.candidate.root,
+        prepared.public_baseline.root,
+        receipt_root,
+        prepared.public_dir.parent,
+    ]
+    if prepared.prior is not None:
+        protected.append(prepared.prior.root)
+    store = _prepare_dry_run_store(store_input, protected)
+    pending = store / f".pending-{os.getpid()}-{uuid.uuid4().hex}"
+    with _dry_run_store_lock(store):
+        _assert_external_dry_run_store(store, protected)
+        try:
+            pending.mkdir(mode=0o700)
+            _copy_sealed_tree(prepared.public_dir, pending / "public", prepared.public_inventory)
+            _copy_sealed_tree(prepared.bundle_dir, pending / "worker", prepared.bundle_inventory)
+            config_body = prepared.deploy_config.read_bytes()
+            if sha256_bytes(config_body) != prepared.deploy_config_sha256:
+                raise PromotionError("sealed Wrangler config changed before dry-run retention")
+            _write_exclusive(pending / "wrangler.jsonc", config_body)
+            raw_evidence = {
+                "initial_selector": prepared.initial_selector.body,
+                "status_before": prepared.predeploy_status_before,
+                "status_after": prepared.predeploy_status_after,
+                "deployments_history": prepared.history_raw["deployments"],
+                "versions_history": prepared.history_raw["versions"],
+            }
+            evidence_manifest: dict[str, object] = {}
+            for key, relative in _DRY_RUN_EVIDENCE_PATHS.items():
+                body = raw_evidence[key]
+                _write_exclusive(pending / relative, body)
+                evidence_manifest[key] = _file_evidence(relative, body)
+            entry_relative = prepared.bundle_entry.relative_to(prepared.bundle_dir).as_posix()
+            identity: dict[str, object] = {
+                "schema": DRY_RUN_ARTIFACT_SCHEMA,
+                "attempt_id": prepared.attempt_id,
+                "release_id": prepared.candidate.release_id,
+                "authority_git_commit": prepared.candidate.authority_commit,
+                "public_tree": _relative_tree_inventory(pending / "public", "public"),
+                "worker_bundle": {
+                    **_relative_tree_inventory(pending / "worker", "worker"),
+                    "entry": f"worker/{entry_relative}",
+                },
+                "wrangler_config": _file_evidence("wrangler.jsonc", config_body),
+                "evidence": evidence_manifest,
+            }
+            artifact_id = _dry_run_artifact_id(identity)
+            artifact_hex = artifact_id.removeprefix("sha256:")
+            manifest = {**identity, "artifact_id": artifact_id}
+            _write_exclusive(pending / "manifest.json", canonical_json_bytes(manifest))
+            _seal_retained_tree(pending)
+            final = store / artifact_hex
+            if final.exists() or final.is_symlink():
+                existing = verify_retained_dry_run_artifacts(
+                    final, expected_artifact_id=artifact_id
+                )
+                _remove_pending_tree(pending)
+                return existing
+            try:
+                os.rename(pending, final)
+            except OSError:
+                if final.is_symlink() or not final.is_dir():
+                    raise
+                existing = verify_retained_dry_run_artifacts(
+                    final, expected_artifact_id=artifact_id
+                )
+                _remove_pending_tree(pending)
+                return existing
+            _fsync_directory(store)
+            return verify_retained_dry_run_artifacts(
+                final, expected_artifact_id=artifact_id
+            )
+        finally:
+            _remove_pending_tree(pending)
+
+
 def selector_from_probe(
     probe: SelectorProbe,
     candidate_release_id: str,
@@ -516,6 +1064,7 @@ class BrainPromoter:
         attempt_id: str | None = None,
         audited_at: str | None = None,
         selector_opener: Callable[..., object] | None = None,
+        retain_dry_run_store: Path | None = None,
     ) -> None:
         self.repo = repo_root.absolute()
         self.python = python.absolute()
@@ -547,6 +1096,7 @@ class BrainPromoter:
         self.attempt_id = attempt_id or self._new_attempt_id(release_id)
         self.audited_at = audited_at or utc_now()
         self.selector_opener = selector_opener
+        self.retain_dry_run_store = retain_dry_run_store
         self._selector_probe_count = 0
         self.wiki = self.repo / "wiki"
         self.receipt_root: Path | None = None
@@ -574,6 +1124,11 @@ class BrainPromoter:
                 raise PromotionError(f"repository marker is missing: {marker}")
         if self.mode not in {"dry-run", "execute", "reconcile"}:
             raise PromotionError(f"unsupported promotion mode: {self.mode}")
+        if self.retain_dry_run_store is not None:
+            if self.mode != "dry-run":
+                raise PromotionError("--retain-dry-run-store is valid only with --dry-run")
+            if not self.retain_dry_run_store.is_absolute():
+                raise PromotionError("--retain-dry-run-store must be an absolute path")
         if self.base_url != self.production_origin:
             raise PromotionError(
                 f"promotion target must be the pinned production origin {self.production_origin}"
@@ -940,8 +1495,11 @@ class BrainPromoter:
             if isinstance(key, str) and isinstance(item, str)
         }, result
 
-    def _history_evidence(self, config: Path | None = None) -> dict[str, object]:
+    def _history_evidence(
+        self, config: Path | None = None
+    ) -> tuple[dict[str, object], dict[str, bytes]]:
         evidence: dict[str, object] = {}
+        raw: dict[str, bytes] = {}
         for key, parts in (
             ("deployments", ["deployments", "list"]),
             ("versions", ["versions", "list"]),
@@ -959,7 +1517,8 @@ class BrainPromoter:
                 "bytes": len(result.stdout),
                 "entries": len(value) if isinstance(value, list) else None,
             }
-        return evidence
+            raw[key] = result.stdout
+        return evidence, raw
 
     def _attempt_history(
         self, tag: str, message: str, config: Path | None = None
@@ -1387,7 +1946,7 @@ class BrainPromoter:
                     raise PromotionError("prior frozen release changed during preparation")
             self._check_git_authority(candidate.authority_commit)
 
-            history = self._history_evidence(deploy_config)
+            history, history_raw = self._history_evidence(deploy_config)
             status_before, status_before_result = self._wrangler_status(deploy_config)
             final_probe, final_trust_source = self._probe_selector("final")
             if final_trust_source != trust_source:
@@ -1428,6 +1987,7 @@ class BrainPromoter:
                 wrangler_version,
                 trust_source,
                 history,
+                history_raw,
             )
         except BaseException:
             remove_sealed_tree(work_root)
@@ -1731,6 +2291,36 @@ class BrainPromoter:
             "first_deploy_approval": self.first_deploy_approval,
             "history": prepared.history,
         }
+
+    def _retained_intent_payload(
+        self,
+        prepared: PreparedPromotion,
+        retained: RetainedDryRunArtifacts,
+    ) -> dict[str, object]:
+        payload = copy.deepcopy(self._intent_payload(prepared))
+        payload["public_tree"] = inventory_tree(retained.public_dir)
+        public_result = payload.get("public_result")
+        if not isinstance(public_result, dict):
+            raise PromotionError("public staging result is unavailable for retained dry-run output")
+        public_result["public_dir"] = str(retained.public_dir)
+        brain = public_result.get("brain")
+        if not isinstance(brain, dict):
+            raise PromotionError("Brain staging result is unavailable for retained dry-run output")
+        brain["destination"] = str(retained.public_dir / "assets" / "brain")
+        page = brain.get("brain_page")
+        if not isinstance(page, dict):
+            raise PromotionError("Brain page evidence is unavailable for retained dry-run output")
+        page["destination"] = str(retained.public_dir / "brain.html")
+
+        worker = payload.get("worker_bundle")
+        if not isinstance(worker, dict):
+            raise PromotionError("Worker bundle evidence is unavailable for retained dry-run output")
+        worker["tree"] = inventory_tree(retained.worker_dir)
+        worker["entry"] = str(retained.worker_entry)
+        worker["config"] = str(retained.config)
+        worker["config_sha256"] = sha256_bytes(retained.config.read_bytes())
+        payload["retained_artifacts"] = retained.reference()
+        return payload
 
     def _final_predeploy_fence(
         self,
@@ -2609,13 +3199,26 @@ class BrainPromoter:
             work_root = prepared.public_dir.parent
             try:
                 if self.mode == "dry-run":
+                    if self.retain_dry_run_store is not None:
+                        assert self.receipt_root is not None
+                        retained = retain_dry_run_artifacts(
+                            prepared,
+                            self.retain_dry_run_store,
+                            repo_root=self.repo.resolve(strict=True),
+                            receipt_root=self.receipt_root,
+                        )
+                        proposed_intent = self._retained_intent_payload(
+                            prepared, retained
+                        )
+                    else:
+                        proposed_intent = self._intent_payload(prepared)
                     print(
                         json.dumps(
                             {
                                 "schema": DRY_RUN_SCHEMA,
                                 "ok": True,
                                 "attempt_id": prepared.attempt_id,
-                                "proposed_intent": self._intent_payload(prepared),
+                                "proposed_intent": proposed_intent,
                                 "production_mutated": False,
                             },
                             sort_keys=True,
@@ -2690,6 +3293,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     modes.add_argument("--dry-run", action="store_true")
     modes.add_argument("--execute", action="store_true")
     modes.add_argument("--reconcile-attempt")
+    parser.add_argument(
+        "--retain-dry-run-store",
+        type=Path,
+        help=(
+            "dry-run only: atomically retain sealed deploy inputs and raw preflight "
+            "evidence in this absolute external content-addressed store"
+        ),
+    )
     parser.add_argument("--allow-first-deploy-without-selector", action="store_true")
     parser.add_argument("--first-deploy-approval")
     parser.add_argument("--approval-note")
@@ -2761,6 +3372,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "promotion requires release_id, --release-root, --public-baseline-id, "
             "and --public-baseline-root"
         )
+    if args.retain_dry_run_store is not None and not args.dry_run:
+        parser.error("--retain-dry-run-store is valid only with --dry-run")
     if args.execute and os.environ.get("WIKILEAN_BRAIN_DEPLOY") != "1":
         parser.error("--execute requires WIKILEAN_BRAIN_DEPLOY=1")
     return args
@@ -2797,6 +3410,7 @@ def main(argv: list[str] | None = None) -> int:
             command_timeout=args.command_timeout,
             attempt_id=args.attempt_id,
             audited_at=args.audited_at,
+            retain_dry_run_store=args.retain_dry_run_store,
         )
         return promoter.run()
     except KeyboardInterrupt:
