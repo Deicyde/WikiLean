@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import decimal
+import fnmatch
 import hashlib
 import json
 import os
@@ -24,13 +25,21 @@ NAME_RE = re.compile(r"^[a-z][a-z0-9_.-]{0,127}$")
 EPOCH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 MEDIA_TYPE_RE = re.compile(r"^[^/\s]+/[^/\s]+$")
 
-SOURCE_SCHEMA = "wikilean.source-manifest/v1"
-PACK_SCHEMA = "wikilean.offline-pack/v1"
+SOURCE_SCHEMA_V1 = "wikilean.source-manifest/v1"
+SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
+PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
+PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
+REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
 RELEASE_SCHEMA = "wikilean.release/v1"
-BUILD_ATTESTATION_SCHEMA = "wikilean.build-attestation/v1"
+BUILD_ATTESTATION_SCHEMA_V1 = "wikilean.build-attestation/v1"
+BUILD_ATTESTATION_SCHEMA_V2 = "wikilean.build-attestation/v2"
 VALIDATION_ATTESTATION_SCHEMA = "wikilean.validation-attestation/v1"
 RELEASE_SELECTOR_SCHEMA = "wikilean.release-selector/v1"
 RELEASE_PROFILE = "brain-current-v1"
+# Compatibility aliases retained for every existing v1 caller and release.
+SOURCE_SCHEMA = SOURCE_SCHEMA_V1
+PACK_SCHEMA = PACK_SCHEMA_V1
+BUILD_ATTESTATION_SCHEMA = BUILD_ATTESTATION_SCHEMA_V1
 BRAIN_SQLITE_APPLICATION_ID = 0x574C424E  # ASCII "WLBN"
 
 BRAIN_SQLITE_V2_TABLE_COLUMNS = {
@@ -81,12 +90,22 @@ BRAIN_SQLITE_V2_INDEXES = {
     "synapses_dst_idx": ("synapses", ("dst",)),
 }
 
-SOURCE_DOMAIN = "wikilean.source-manifest.v1"
-SOURCE_SET_DOMAIN = "wikilean.source-set.v1"
-PACK_DOMAIN = "wikilean.offline-pack.v1"
+SOURCE_DOMAIN_V1 = "wikilean.source-manifest.v1"
+SOURCE_DOMAIN_V2 = "wikilean.source-manifest.v2"
+SOURCE_SET_DOMAIN_V1 = "wikilean.source-set.v1"
+SOURCE_SET_DOMAIN_V2 = "wikilean.source-set.v2"
+PACK_DOMAIN_V1 = "wikilean.offline-pack.v1"
+PACK_DOMAIN_V2 = "wikilean.offline-pack.v2"
+REDUCER_INPUT_INVENTORY_DOMAIN_V2 = "wikilean.reducer-input-inventory.v2"
 RELEASE_DOMAIN = "wikilean.release.v1"
-BUILD_ATTESTATION_DOMAIN = "wikilean.build-attestation.v1"
+BUILD_ATTESTATION_DOMAIN_V1 = "wikilean.build-attestation.v1"
+BUILD_ATTESTATION_DOMAIN_V2 = "wikilean.build-attestation.v2"
 VALIDATION_ATTESTATION_DOMAIN = "wikilean.validation-attestation.v1"
+# Compatibility aliases retained for callers that intentionally construct v1.
+SOURCE_DOMAIN = SOURCE_DOMAIN_V1
+SOURCE_SET_DOMAIN = SOURCE_SET_DOMAIN_V1
+PACK_DOMAIN = PACK_DOMAIN_V1
+BUILD_ATTESTATION_DOMAIN = BUILD_ATTESTATION_DOMAIN_V1
 LOGICAL_JSON_DOMAIN = "wikilean.logical-json.v1"
 LOGICAL_JSONL_DOMAIN = "wikilean.logical-jsonl-rowset.v1"
 COMPATIBILITY_SEMANTIC_STATE_DOMAIN = "wikilean.compatibility-semantic-state.v1"
@@ -451,6 +470,34 @@ def validate_relative_path(value: Any, location: str) -> str:
     return text
 
 
+def _matches_relative_pattern(path: str, pattern: str) -> bool:
+    """Match POSIX glob segments with ``**`` crossing directories only."""
+    path_parts = PurePosixPath(path).parts
+    pattern_parts = PurePosixPath(pattern).parts
+    previous = [False] * (len(path_parts) + 1)
+    previous[0] = True
+    for part in pattern_parts:
+        current = [False] * (len(path_parts) + 1)
+        if part == "**":
+            current[0] = previous[0]
+            for path_index in range(1, len(path_parts) + 1):
+                current[path_index] = previous[path_index] or current[path_index - 1]
+        else:
+            for path_index, path_part in enumerate(path_parts, start=1):
+                current[path_index] = previous[path_index - 1] and fnmatch.fnmatchcase(
+                    path_part, part
+                )
+        previous = current
+    return previous[-1]
+
+
+def validate_literal_relative_path(value: Any, location: str) -> str:
+    text = validate_relative_path(value, location)
+    if any(character in text for character in "*?[]{}"):
+        _fail(location, "literal paths must not contain glob metacharacters")
+    return text
+
+
 def _tool(value: Any, location: str) -> None:
     obj = _expect_object(value, location)
     _keys(obj, location, {"name", "version", "sha256"})
@@ -469,22 +516,146 @@ def _file_ref(value: Any, location: str, *, extra: set[str] = frozenset()) -> di
     return obj
 
 
+def _literal_file_ref(
+    value: Any,
+    location: str,
+    *,
+    extra: set[str] = frozenset(),
+) -> dict[str, Any]:
+    obj = _file_ref(value, location, extra=extra)
+    validate_literal_relative_path(obj["path"], f"{location}.path")
+    return obj
+
+
+def _sorted_unique_strings(
+    value: Any,
+    location: str,
+    *,
+    nonempty: bool = False,
+) -> list[str]:
+    values = _expect_array(value, location, nonempty=nonempty)
+    for index, item in enumerate(values):
+        _expect_string(item, f"{location}[{index}]")
+    if values != sorted(set(values)):
+        _fail(location, "entries must be unique and sorted")
+    return values
+
+
 def source_manifest_identity(manifest: dict[str, Any]) -> str:
+    domains = {
+        SOURCE_SCHEMA_V1: SOURCE_DOMAIN_V1,
+        SOURCE_SCHEMA_V2: SOURCE_DOMAIN_V2,
+    }
+    schema = manifest.get("schema")
+    if schema not in domains:
+        _fail("$.schema", f"unknown source-manifest schema/version {schema!r}")
     value = copy.deepcopy(manifest)
     value.pop("source_manifest_id", None)
     value.pop("audit", None)
-    return domain_hash(SOURCE_DOMAIN, value)
+    return domain_hash(domains[schema], value)
 
 
 def source_set_root(manifest_ids: list[str]) -> str:
-    return domain_hash(SOURCE_SET_DOMAIN, sorted(manifest_ids))
+    return domain_hash(SOURCE_SET_DOMAIN_V1, sorted(manifest_ids))
+
+
+def source_set_root_v2(
+    inventory_id: str,
+    manifest_ids: list[str],
+    input_bindings: list[dict[str, Any]],
+) -> str:
+    """Bind v2 sources to their exact logical present/absent input mapping."""
+    _hash(inventory_id, "$.inventory_id")
+    normalized_manifests = sorted(manifest_ids)
+    if len(normalized_manifests) != len(set(normalized_manifests)):
+        _fail("$.source_manifests", "source manifest IDs must be unique")
+    for index, manifest_id in enumerate(normalized_manifests):
+        _hash(manifest_id, f"$.source_manifests[{index}]")
+
+    normalized_bindings: list[dict[str, Any]] = []
+    seen_inputs: set[str] = set()
+    for index, value in enumerate(input_bindings):
+        location = f"$.input_bindings[{index}]"
+        binding = _expect_object(value, location)
+        _keys(binding, location, {"input_id", "state", "members"})
+        input_id = _expect_pattern(
+            binding["input_id"], f"{location}.input_id", NAME_RE, "a lowercase input ID"
+        )
+        if input_id in seen_inputs:
+            _fail(f"{location}.input_id", "duplicate input binding")
+        seen_inputs.add(input_id)
+        if binding["state"] not in {"present", "absent"}:
+            _fail(f"{location}.state", "expected present or absent")
+        members = _expect_array(binding["members"], f"{location}.members")
+        normalized_members: list[dict[str, str]] = []
+        member_paths: set[str] = set()
+        for member_index, raw_member in enumerate(members):
+            member_location = f"{location}.members[{member_index}]"
+            member = _expect_object(raw_member, member_location)
+            _keys(member, member_location, {"path", "source_manifest_id", "object"})
+            path = validate_literal_relative_path(
+                member["path"], f"{member_location}.path"
+            )
+            if path in member_paths:
+                _fail(f"{member_location}.path", "duplicate logical member path")
+            member_paths.add(path)
+            normalized_members.append({
+                "path": path,
+                "source_manifest_id": _hash(
+                    member["source_manifest_id"],
+                    f"{member_location}.source_manifest_id",
+                ),
+                "object": _expect_pattern(
+                    member["object"],
+                    f"{member_location}.object",
+                    NAME_RE,
+                    "a lowercase source object name",
+                ),
+            })
+        normalized_members.sort(key=lambda item: item["path"])
+        if binding["state"] == "absent" and normalized_members:
+            _fail(f"{location}.members", "absent bindings must have no members")
+        if binding["state"] == "present" and not normalized_members:
+            _fail(f"{location}.members", "present bindings must have at least one member")
+        normalized_bindings.append({
+            "input_id": input_id,
+            "state": binding["state"],
+            "members": normalized_members,
+        })
+    normalized_bindings.sort(key=lambda item: item["input_id"])
+    return domain_hash(
+        SOURCE_SET_DOMAIN_V2,
+        {
+            "inventory_id": inventory_id,
+            "source_manifests": normalized_manifests,
+            "input_bindings": normalized_bindings,
+        },
+    )
+
+
+def reducer_input_inventory_identity(inventory: dict[str, Any]) -> str:
+    if inventory.get("schema") != REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+        _fail(
+            "$.schema",
+            f"unknown reducer-input inventory schema/version {inventory.get('schema')!r}",
+        )
+    value = copy.deepcopy(inventory)
+    value.pop("inventory_id", None)
+    return domain_hash(REDUCER_INPUT_INVENTORY_DOMAIN_V2, value)
 
 
 def offline_pack_identity(pack: dict[str, Any]) -> str:
+    domains = {
+        PACK_SCHEMA_V1: PACK_DOMAIN_V1,
+        PACK_SCHEMA_V2: PACK_DOMAIN_V2,
+    }
+    schema = pack.get("schema")
+    if schema not in domains:
+        _fail("$.schema", f"unknown offline-pack schema/version {schema!r}")
     value = copy.deepcopy(pack)
     value.pop("offline_pack_id", None)
     value.pop("audit", None)
-    return domain_hash(PACK_DOMAIN, value)
+    return domain_hash(domains[schema], value)
 
 
 def release_identity(manifest: dict[str, Any]) -> str:
@@ -551,7 +722,8 @@ def legacy_declared_input_root(inventory_sha256: str, inputs: list[dict[str, Any
 def attestation_identity(attestation: dict[str, Any]) -> str:
     schema = attestation.get("schema")
     domains = {
-        BUILD_ATTESTATION_SCHEMA: BUILD_ATTESTATION_DOMAIN,
+        BUILD_ATTESTATION_SCHEMA_V1: BUILD_ATTESTATION_DOMAIN_V1,
+        BUILD_ATTESTATION_SCHEMA_V2: BUILD_ATTESTATION_DOMAIN_V2,
         VALIDATION_ATTESTATION_SCHEMA: VALIDATION_ATTESTATION_DOMAIN,
     }
     if schema not in domains:
@@ -562,7 +734,161 @@ def attestation_identity(attestation: dict[str, Any]) -> str:
     return domain_hash(domains[schema], value)
 
 
+def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
+    """Validate the v2 logical input and reducer-DAG inventory."""
+    obj = _expect_object(inventory, "$")
+    _keys(
+        obj,
+        "$",
+        {
+            "schema",
+            "inventory_id",
+            "boundary",
+            "roots",
+            "scope",
+            "stages",
+            "inputs",
+            "forbidden_ambient",
+        },
+    )
+    if obj["schema"] != REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["inventory_id"], "$.inventory_id")
+    if obj["boundary"] != "post-acquisition-fold":
+        _fail("$.boundary", "expected 'post-acquisition-fold'")
+
+    roots = _expect_array(obj["roots"], "$.roots", nonempty=True)
+    root_ids: list[str] = []
+    for index, value in enumerate(roots):
+        location = f"$.roots[{index}]"
+        root = _expect_object(value, location)
+        _keys(root, location, {"id", "kind"})
+        root_ids.append(
+            _expect_pattern(root["id"], f"{location}.id", NAME_RE, "a lowercase root ID")
+        )
+        if root["kind"] not in {"repository", "external_tree", "external_file"}:
+            _fail(f"{location}.kind", "unknown logical root kind")
+    if root_ids != sorted(set(root_ids)):
+        _fail("$.roots", "entries must have unique IDs and be sorted by id")
+    root_id_set = set(root_ids)
+
+    scope = _sorted_unique_strings(obj["scope"], "$.scope", nonempty=True)
+    for index, path in enumerate(scope):
+        validate_literal_relative_path(path, f"$.scope[{index}]")
+    scope_set = set(scope)
+
+    stages = _expect_array(obj["stages"], "$.stages", nonempty=True)
+    prior_stages: set[str] = set()
+    for index, value in enumerate(stages):
+        location = f"$.stages[{index}]"
+        stage = _expect_object(value, location)
+        _keys(stage, location, {"id", "program", "argv", "needs"})
+        stage_id = _expect_pattern(
+            stage["id"], f"{location}.id", NAME_RE, "a lowercase stage ID"
+        )
+        if stage_id in prior_stages:
+            _fail(f"{location}.id", "duplicate stage ID")
+        program = validate_literal_relative_path(stage["program"], f"{location}.program")
+        if program not in scope_set:
+            _fail(f"{location}.program", "stage program is absent from scope")
+        argv = _expect_array(stage["argv"], f"{location}.argv")
+        for argv_index, argument in enumerate(argv):
+            _expect_string(argument, f"{location}.argv[{argv_index}]", nonempty=False)
+        needs = _sorted_unique_strings(stage["needs"], f"{location}.needs")
+        unknown_needs = sorted(set(needs) - prior_stages)
+        if unknown_needs:
+            _fail(
+                f"{location}.needs",
+                "dependencies must name earlier stages: " + ", ".join(unknown_needs),
+            )
+        prior_stages.add(stage_id)
+
+    inputs = _expect_array(obj["inputs"], "$.inputs", nonempty=True)
+    input_ids: list[str] = []
+    for index, value in enumerate(inputs):
+        location = f"$.inputs[{index}]"
+        item = _expect_object(value, location)
+        selector_keys = {key for key in ("path", "path_pattern") if key in item}
+        required = {
+            "id",
+            "root",
+            "cardinality",
+            "requirement",
+            "class",
+            "consumers",
+            "purpose",
+        } | selector_keys
+        _keys(item, location, required)
+        if len(selector_keys) != 1:
+            _fail(location, "must declare exactly one of path or path_pattern")
+        input_ids.append(
+            _expect_pattern(item["id"], f"{location}.id", NAME_RE, "a lowercase input ID")
+        )
+        root_id = _expect_pattern(
+            item["root"], f"{location}.root", NAME_RE, "a lowercase root ID"
+        )
+        if root_id not in root_id_set:
+            _fail(f"{location}.root", "unknown logical root")
+        selector = next(iter(selector_keys))
+        declared_path = validate_relative_path(item[selector], f"{location}.{selector}")
+        if selector == "path":
+            validate_literal_relative_path(declared_path, f"{location}.path")
+        if selector == "path_pattern" and ("{" in declared_path or "}" in declared_path):
+            _fail(f"{location}.path_pattern", "brace expansion is not supported")
+        if item["cardinality"] not in {"one", "many"}:
+            _fail(f"{location}.cardinality", "expected one or many")
+        if item["cardinality"] == "one" and selector != "path":
+            _fail(location, "cardinality 'one' requires path")
+        if item["cardinality"] == "many" and selector != "path_pattern":
+            _fail(location, "cardinality 'many' requires path_pattern")
+        if item["requirement"] not in {"required", "optional"}:
+            _fail(f"{location}.requirement", "expected required or optional")
+        if item["class"] not in {"curated_git_input", "immutable_source_object"}:
+            _fail(f"{location}.class", "unknown input class")
+        consumers = _sorted_unique_strings(
+            item["consumers"], f"{location}.consumers", nonempty=True
+        )
+        unknown_consumers = sorted(set(consumers) - scope_set)
+        if unknown_consumers:
+            _fail(
+                f"{location}.consumers",
+                "consumers are absent from scope: " + ", ".join(unknown_consumers),
+            )
+        _expect_string(item["purpose"], f"{location}.purpose")
+    if input_ids != sorted(set(input_ids)):
+        _fail("$.inputs", "entries must have unique IDs and be sorted by id")
+
+    forbidden = _expect_array(obj["forbidden_ambient"], "$.forbidden_ambient")
+    forbidden_names: list[str] = []
+    for index, value in enumerate(forbidden):
+        location = f"$.forbidden_ambient[{index}]"
+        item = _expect_object(value, location)
+        _keys(item, location, {"name", "consumers", "replacement"})
+        forbidden_names.append(_expect_string(item["name"], f"{location}.name"))
+        consumers = _sorted_unique_strings(
+            item["consumers"], f"{location}.consumers", nonempty=True
+        )
+        if "*" in consumers and consumers != ["*"]:
+            _fail(f"{location}.consumers", "'*' must be the only consumer")
+        unknown_consumers = sorted(set(consumers) - scope_set - {"*"})
+        if unknown_consumers:
+            _fail(
+                f"{location}.consumers",
+                "consumers are absent from scope: " + ", ".join(unknown_consumers),
+            )
+        _expect_string(item["replacement"], f"{location}.replacement")
+    if forbidden_names != sorted(set(forbidden_names)):
+        _fail("$.forbidden_ambient", "entries must have unique names and be sorted by name")
+
+    expected = reducer_input_inventory_identity(obj)
+    if obj["inventory_id"] != expected:
+        _fail("$.inventory_id", f"expected {expected}")
+    return obj
+
+
 def validate_source_manifest(manifest: Any) -> dict[str, Any]:
+    if isinstance(manifest, dict) and manifest.get("schema") == SOURCE_SCHEMA_V2:
+        return _validate_source_manifest_v2(manifest)
     obj = _expect_object(manifest, "$")
     _keys(
         obj,
@@ -635,7 +961,150 @@ def validate_source_manifest(manifest: Any) -> dict[str, Any]:
     return obj
 
 
+def _validate_source_manifest_v2(manifest: Any) -> dict[str, Any]:
+    obj = _expect_object(manifest, "$")
+    _keys(
+        obj,
+        "$",
+        {
+            "schema",
+            "source_manifest_id",
+            "source",
+            "source_kind",
+            "pin",
+            "objects",
+            "license",
+            "acquisition",
+            "normalization",
+        },
+        {"previous_source_manifest_id", "review", "audit"},
+    )
+    if obj["schema"] != SOURCE_SCHEMA_V2:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["source_manifest_id"], "$.source_manifest_id")
+    _expect_pattern(obj["source"], "$.source", NAME_RE, "a lowercase source name")
+    if obj["source_kind"] not in {
+        "acquired_dataset",
+        "curated_git_tree",
+        "sealed_snapshot",
+    }:
+        _fail("$.source_kind", "unknown source kind")
+
+    pin = _expect_object(obj["pin"], "$.pin")
+    _keys(pin, "$.pin", {"type", "value"}, {"tree"})
+    if pin["type"] not in {
+        "git_commit",
+        "content_sha256",
+        "dataset_revision",
+        "http_etag",
+        "database_snapshot",
+    }:
+        _fail("$.pin.type", f"unknown pin type {pin['type']!r}")
+    pin_value = _expect_string(pin["value"], "$.pin.value")
+    if len(pin_value) > 512:
+        _fail("$.pin.value", "must contain at most 512 characters")
+    if pin["type"] == "git_commit" and not GIT_COMMIT_RE.fullmatch(pin_value):
+        _fail("$.pin.value", "git_commit pins must be full 40-character lowercase hashes")
+    if pin["type"] == "content_sha256" and not DIGEST_RE.fullmatch(pin_value):
+        _fail("$.pin.value", "content_sha256 pins must be 64 lowercase hex digits")
+    if "tree" in pin:
+        _expect_pattern(pin["tree"], "$.pin.tree", GIT_COMMIT_RE, "a full lowercase Git tree hash")
+        if pin["type"] != "git_commit":
+            _fail("$.pin.tree", "tree is permitted only with a git_commit pin")
+    if obj["source_kind"] == "curated_git_tree":
+        if pin["type"] != "git_commit" or "tree" not in pin:
+            _fail("$.pin", "curated_git_tree sources require git_commit value and tree")
+
+    objects = _expect_array(obj["objects"], "$.objects", nonempty=True)
+    object_names: list[str] = []
+    object_paths: set[str] = set()
+    objects_by_name: dict[str, dict[str, Any]] = {}
+    roles: set[str] = set()
+    for index, item in enumerate(objects):
+        location = f"$.objects[{index}]"
+        ref = _file_ref(
+            item,
+            location,
+            extra={"name", "roles", "redistribution"},
+        )
+        name = _expect_pattern(
+            ref["name"], f"{location}.name", NAME_RE, "a lowercase source object name"
+        )
+        object_roles = _sorted_unique_strings(
+            ref["roles"], f"{location}.roles", nonempty=True
+        )
+        unknown_roles = sorted(set(object_roles) - {"raw", "normalized", "receipt"})
+        if unknown_roles:
+            _fail(f"{location}.roles", "unknown source object roles: " + ", ".join(unknown_roles))
+        if ref["redistribution"] not in {"allowed", "restricted", "link-only", "unknown"}:
+            _fail(f"{location}.redistribution", "unknown redistribution policy")
+        expected_path = f"objects/sha256/{ref['sha256']}"
+        if ref["path"] != expected_path:
+            _fail(f"{location}.path", f"expected content-addressed path {expected_path!r}")
+        if name in objects_by_name or ref["path"] in object_paths:
+            _fail(location, "duplicate source object name or path")
+        object_names.append(name)
+        object_paths.add(ref["path"])
+        objects_by_name[name] = ref
+        roles.update(object_roles)
+    if object_names != sorted(object_names):
+        _fail("$.objects", "entries must be sorted by name")
+    if not {"raw", "normalized"}.issubset(roles):
+        _fail("$.objects", "must contain at least one raw and one normalized object")
+
+    license_obj = _expect_object(obj["license"], "$.license")
+    _keys(license_obj, "$.license", {"expression", "redistribution"}, {"attribution", "notice"})
+    _expect_string(license_obj["expression"], "$.license.expression")
+    if license_obj["redistribution"] not in {"allowed", "restricted", "link-only", "unknown"}:
+        _fail("$.license.redistribution", "unknown redistribution policy")
+    for key in ("attribution", "notice"):
+        if key in license_obj and license_obj[key] is not None:
+            _expect_string(license_obj[key], f"$.license.{key}", nonempty=False)
+
+    _tool(obj["acquisition"], "$.acquisition")
+    normalization = _expect_object(obj["normalization"], "$.normalization")
+    _keys(normalization, "$.normalization", {"schema", "tool", "inputs", "outputs"})
+    _expect_string(normalization["schema"], "$.normalization.schema")
+    _tool(normalization["tool"], "$.normalization.tool")
+    normalization_inputs = _sorted_unique_strings(
+        normalization["inputs"], "$.normalization.inputs", nonempty=True
+    )
+    normalization_outputs = _sorted_unique_strings(
+        normalization["outputs"], "$.normalization.outputs", nonempty=True
+    )
+    raw_names = sorted(name for name, ref in objects_by_name.items() if "raw" in ref["roles"])
+    normalized_names = sorted(
+        name for name, ref in objects_by_name.items() if "normalized" in ref["roles"]
+    )
+    if normalization_inputs != raw_names:
+        _fail("$.normalization.inputs", "must name every raw object exactly once")
+    if normalization_outputs != normalized_names:
+        _fail("$.normalization.outputs", "must name every normalized object exactly once")
+
+    if "previous_source_manifest_id" in obj and obj["previous_source_manifest_id"] is not None:
+        _hash(obj["previous_source_manifest_id"], "$.previous_source_manifest_id")
+    if "review" in obj:
+        review = _expect_object(obj["review"], "$.review")
+        _keys(review, "$.review", {"summary", "expected_semantic_effects"})
+        _expect_string(review["summary"], "$.review.summary", nonempty=False)
+        effects = _expect_array(review["expected_semantic_effects"], "$.review.expected_semantic_effects")
+        for index, effect in enumerate(effects):
+            _expect_string(effect, f"$.review.expected_semantic_effects[{index}]", nonempty=False)
+    if "audit" in obj:
+        audit = _expect_object(obj["audit"], "$.audit")
+        _keys(audit, "$.audit", set(), {"acquired_at", "upstream_uri"})
+        for key, value in audit.items():
+            _expect_string(value, f"$.audit.{key}")
+
+    expected = source_manifest_identity(obj)
+    if obj["source_manifest_id"] != expected:
+        _fail("$.source_manifest_id", f"expected {expected}")
+    return obj
+
+
 def validate_offline_pack(pack: Any) -> dict[str, Any]:
+    if isinstance(pack, dict) and pack.get("schema") == PACK_SCHEMA_V2:
+        return _validate_offline_pack_v2(pack)
     obj = _expect_object(pack, "$")
     _keys(
         obj,
@@ -683,6 +1152,144 @@ def validate_offline_pack(pack: Any) -> dict[str, Any]:
         schema_paths.add(ref["path"])
     if [item["path"] for item in schemas] != sorted(schema_paths):
         _fail("$.schemas", "entries must be sorted by path")
+
+    if "audit" in obj:
+        audit = _expect_object(obj["audit"], "$.audit")
+        _keys(audit, "$.audit", set(), {"created_at", "note"})
+        for key, value in audit.items():
+            _expect_string(value, f"$.audit.{key}", nonempty=False)
+
+    expected = offline_pack_identity(obj)
+    if obj["offline_pack_id"] != expected:
+        _fail("$.offline_pack_id", f"expected {expected}")
+    return obj
+
+
+def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
+    obj = _expect_object(pack, "$")
+    _keys(
+        obj,
+        "$",
+        {
+            "schema",
+            "offline_pack_id",
+            "source_set_root",
+            "inventory",
+            "source_manifests",
+            "objects",
+            "input_bindings",
+            "reducer",
+            "configuration",
+            "environment",
+            "schemas",
+        },
+        {"audit"},
+    )
+    if obj["schema"] != PACK_SCHEMA_V2:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["offline_pack_id"], "$.offline_pack_id")
+    _hash(obj["source_set_root"], "$.source_set_root")
+
+    inventory = _literal_file_ref(
+        obj["inventory"], "$.inventory", extra={"inventory_id"}
+    )
+    _hash(inventory["inventory_id"], "$.inventory.inventory_id")
+    if inventory["media_type"] != "application/json":
+        _fail("$.inventory.media_type", "expected 'application/json'")
+
+    manifests = _expect_array(obj["source_manifests"], "$.source_manifests", nonempty=True)
+    manifest_ids: list[str] = []
+    manifest_paths: set[str] = set()
+    for index, item in enumerate(manifests):
+        location = f"$.source_manifests[{index}]"
+        ref = _literal_file_ref(item, location, extra={"source_manifest_id"})
+        manifest_id = _hash(ref["source_manifest_id"], f"{location}.source_manifest_id")
+        if ref["media_type"] != "application/json":
+            _fail(f"{location}.media_type", "expected 'application/json'")
+        if manifest_id in manifest_ids or ref["path"] in manifest_paths:
+            _fail(location, "duplicate source manifest ID or path")
+        manifest_ids.append(manifest_id)
+        manifest_paths.add(ref["path"])
+    if manifest_ids != sorted(manifest_ids):
+        _fail("$.source_manifests", "entries must be sorted by source_manifest_id")
+
+    objects = _expect_array(obj["objects"], "$.objects", nonempty=True)
+    object_paths: list[str] = []
+    for index, item in enumerate(objects):
+        ref = _literal_file_ref(item, f"$.objects[{index}]")
+        expected_path = f"objects/sha256/{ref['sha256']}"
+        if ref["path"] != expected_path:
+            _fail(f"$.objects[{index}].path", f"expected content-addressed path {expected_path!r}")
+        object_paths.append(ref["path"])
+    if object_paths != sorted(set(object_paths)):
+        _fail("$.objects", "entries must have unique paths and be sorted by path")
+
+    bindings = _expect_array(obj["input_bindings"], "$.input_bindings", nonempty=True)
+    binding_ids: list[str] = []
+    for index, value in enumerate(bindings):
+        location = f"$.input_bindings[{index}]"
+        binding = _expect_object(value, location)
+        _keys(binding, location, {"input_id", "state", "members"})
+        binding_ids.append(
+            _expect_pattern(
+                binding["input_id"], f"{location}.input_id", NAME_RE, "a lowercase input ID"
+            )
+        )
+        if binding["state"] not in {"present", "absent"}:
+            _fail(f"{location}.state", "expected present or absent")
+        members = _expect_array(binding["members"], f"{location}.members")
+        paths: list[str] = []
+        for member_index, raw_member in enumerate(members):
+            member_location = f"{location}.members[{member_index}]"
+            member = _expect_object(raw_member, member_location)
+            _keys(member, member_location, {"path", "source_manifest_id", "object"})
+            paths.append(
+                validate_literal_relative_path(member["path"], f"{member_location}.path")
+            )
+            _hash(member["source_manifest_id"], f"{member_location}.source_manifest_id")
+            _expect_pattern(
+                member["object"],
+                f"{member_location}.object",
+                NAME_RE,
+                "a lowercase source object name",
+            )
+        if paths != sorted(set(paths)):
+            _fail(f"{location}.members", "entries must have unique paths and be sorted by path")
+        if binding["state"] == "absent" and members:
+            _fail(f"{location}.members", "absent bindings must have no members")
+        if binding["state"] == "present" and not members:
+            _fail(f"{location}.members", "present bindings must have at least one member")
+    if binding_ids != sorted(set(binding_ids)):
+        _fail("$.input_bindings", "entries must have unique IDs and be sorted by input_id")
+
+    reducer = _expect_object(obj["reducer"], "$.reducer")
+    _keys(reducer, "$.reducer", {"entrypoint", "files"})
+    entrypoint = validate_literal_relative_path(
+        reducer["entrypoint"], "$.reducer.entrypoint"
+    )
+    reducer_files = _expect_array(reducer["files"], "$.reducer.files", nonempty=True)
+    reducer_logical_paths: list[str] = []
+    for index, item in enumerate(reducer_files):
+        location = f"$.reducer.files[{index}]"
+        ref = _literal_file_ref(item, location, extra={"logical_path"})
+        reducer_logical_paths.append(
+            validate_literal_relative_path(
+                ref["logical_path"], f"{location}.logical_path"
+            )
+        )
+    if reducer_logical_paths != sorted(set(reducer_logical_paths)):
+        _fail("$.reducer.files", "entries must have unique logical paths and be sorted by logical_path")
+    if entrypoint not in reducer_logical_paths:
+        _fail("$.reducer.entrypoint", "entrypoint is absent from reducer.files")
+
+    for field in ("configuration", "schemas"):
+        refs = _expect_array(obj[field], f"$.{field}", nonempty=True)
+        paths: list[str] = []
+        for index, item in enumerate(refs):
+            paths.append(_literal_file_ref(item, f"$.{field}[{index}]")["path"])
+        if paths != sorted(set(paths)):
+            _fail(f"$.{field}", "entries must have unique paths and be sorted by path")
+    _literal_file_ref(obj["environment"], "$.environment")
 
     if "audit" in obj:
         audit = _expect_object(obj["audit"], "$.audit")
@@ -761,6 +1368,8 @@ def verify_source_manifest_files(manifest: dict[str, Any], root: Path) -> int:
 def verify_offline_pack_files(
     pack: dict[str, Any], root: Path, *, manifest_path: Path | None = None
 ) -> dict[str, int]:
+    if pack.get("schema") == PACK_SCHEMA_V2:
+        return _verify_offline_pack_files_v2(pack, root, manifest_path=manifest_path)
     verified_paths: set[str] = set()
     object_refs = {ref["path"]: ref for ref in pack["objects"]}
     referenced_object_paths: set[str] = set()
@@ -831,6 +1440,176 @@ def verify_offline_pack_files(
     return {
         "source_manifests": len(pack["source_manifests"]),
         "source_objects": source_object_count,
+        "files": len(verified_paths),
+    }
+
+
+def _verify_offline_pack_files_v2(
+    pack: dict[str, Any], root: Path, *, manifest_path: Path | None = None
+) -> dict[str, int]:
+    verified_paths: set[str] = set()
+
+    inventory_ref = pack["inventory"]
+    inventory_bytes = verify_file_ref(root, inventory_ref, "$.inventory")
+    inventory = parse_json_bytes(inventory_bytes, location=inventory_ref["path"])
+    if inventory_bytes != canonical_json_bytes(inventory):
+        _fail("$.inventory", "reducer input inventory is not canonical-json-v1 bytes")
+    validate_reducer_input_inventory(inventory)
+    if inventory["inventory_id"] != inventory_ref["inventory_id"]:
+        _fail("$.inventory.inventory_id", "does not match referenced inventory")
+    verified_paths.add(inventory_ref["path"])
+
+    source_manifests: dict[str, dict[str, Any]] = {}
+    source_objects: dict[tuple[str, str], dict[str, Any]] = {}
+    referenced_object_paths: set[str] = set()
+    for index, ref in enumerate(pack["source_manifests"]):
+        location = f"$.source_manifests[{index}]"
+        manifest_bytes = verify_file_ref(root, ref, location)
+        source_manifest = parse_json_bytes(manifest_bytes, location=ref["path"])
+        if manifest_bytes != canonical_json_bytes(source_manifest):
+            _fail(location, "source manifest is not canonical-json-v1 bytes")
+        validate_source_manifest(source_manifest)
+        if source_manifest["schema"] != SOURCE_SCHEMA_V2:
+            _fail(location, "offline-pack/v2 requires source-manifest/v2")
+        manifest_id = ref["source_manifest_id"]
+        if source_manifest["source_manifest_id"] != manifest_id:
+            _fail(f"{location}.source_manifest_id", "does not match referenced manifest")
+        if ref["path"] in verified_paths:
+            _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
+        source_manifests[manifest_id] = source_manifest
+        verified_paths.add(ref["path"])
+        for object_ref in source_manifest["objects"]:
+            key = (manifest_id, object_ref["name"])
+            source_objects[key] = object_ref
+            referenced_object_paths.add(object_ref["path"])
+
+    packed_objects = {ref["path"]: ref for ref in pack["objects"]}
+    missing_objects = sorted(referenced_object_paths - set(packed_objects))
+    extra_objects = sorted(set(packed_objects) - referenced_object_paths)
+    if missing_objects or extra_objects:
+        _fail(
+            "$.objects",
+            f"source object closure mismatch (missing={missing_objects}, unreferenced={extra_objects})",
+        )
+    for (manifest_id, object_name), source_ref in source_objects.items():
+        packed_ref = packed_objects[source_ref["path"]]
+        for field in ("path", "sha256", "bytes", "media_type"):
+            if packed_ref[field] != source_ref[field]:
+                _fail(
+                    "$.objects",
+                    f"source object {manifest_id}/{object_name} disagrees on {field}",
+                )
+
+    inventory_inputs = {item["id"]: item for item in inventory["inputs"]}
+    indexed_bindings = {
+        item["input_id"]: (index, item)
+        for index, item in enumerate(pack["input_bindings"])
+    }
+    bindings = {input_id: item for input_id, (_index, item) in indexed_bindings.items()}
+    if set(bindings) != set(inventory_inputs):
+        _fail(
+            "$.input_bindings",
+            "must bind every inventory input exactly once "
+            f"(missing={sorted(set(inventory_inputs) - set(bindings))}, "
+            f"unknown={sorted(set(bindings) - set(inventory_inputs))})",
+        )
+    logical_members: set[tuple[str, str]] = set()
+    bound_manifest_ids: set[str] = set()
+    for input_id, declaration in inventory_inputs.items():
+        binding_index, binding = indexed_bindings[input_id]
+        location = f"$.input_bindings[{binding_index}]"
+        if declaration["requirement"] == "required" and binding["state"] != "present":
+            _fail(location, "required inputs must be present")
+        members = binding["members"]
+        if declaration["cardinality"] == "one" and binding["state"] == "present" and len(members) != 1:
+            _fail(f"{location}.members", "cardinality 'one' requires exactly one member")
+        for member_index, member in enumerate(members):
+            member_location = f"{location}.members[{member_index}]"
+            if declaration["cardinality"] == "one":
+                matches = member["path"] == declaration["path"]
+            else:
+                matches = _matches_relative_pattern(
+                    member["path"], declaration["path_pattern"]
+                )
+            if not matches:
+                _fail(member_location, "logical member path does not match its inventory declaration")
+            logical_key = (declaration["root"], member["path"])
+            if logical_key in logical_members:
+                _fail(member_location, "logical input path is bound more than once")
+            logical_members.add(logical_key)
+            source_key = (member["source_manifest_id"], member["object"])
+            source_ref = source_objects.get(source_key)
+            if source_ref is None:
+                _fail(member_location, "references an unknown source manifest object")
+            if "normalized" not in source_ref["roles"]:
+                _fail(member_location, "reducer inputs must bind normalized source objects")
+            bound_manifest_ids.add(member["source_manifest_id"])
+            if declaration["class"] == "curated_git_input":
+                source_manifest = source_manifests[member["source_manifest_id"]]
+                if source_manifest["source_kind"] != "curated_git_tree":
+                    _fail(member_location, "curated Git inputs require a curated_git_tree source manifest")
+    unused_manifests = sorted(set(source_manifests) - bound_manifest_ids)
+    if unused_manifests:
+        _fail(
+            "$.source_manifests",
+            "source manifests are not bound to any reducer input: " + ", ".join(unused_manifests),
+        )
+
+    expected_source_root = source_set_root_v2(
+        inventory["inventory_id"],
+        list(source_manifests),
+        pack["input_bindings"],
+    )
+    if pack["source_set_root"] != expected_source_root:
+        _fail("$.source_set_root", f"expected {expected_source_root}")
+
+    reducer_paths = {ref["logical_path"] for ref in pack["reducer"]["files"]}
+    if reducer_paths != set(inventory["scope"]):
+        _fail(
+            "$.reducer.files",
+            "logical reducer closure must equal inventory scope "
+            f"(missing={sorted(set(inventory['scope']) - reducer_paths)}, "
+            f"unknown={sorted(reducer_paths - set(inventory['scope']))})",
+        )
+
+    refs: list[tuple[str, dict[str, Any]]] = []
+    refs.extend((f"$.objects[{i}]", ref) for i, ref in enumerate(pack["objects"]))
+    refs.extend((f"$.reducer.files[{i}]", ref) for i, ref in enumerate(pack["reducer"]["files"]))
+    refs.extend((f"$.configuration[{i}]", ref) for i, ref in enumerate(pack["configuration"]))
+    refs.append(("$.environment", pack["environment"]))
+    refs.extend((f"$.schemas[{i}]", ref) for i, ref in enumerate(pack["schemas"]))
+    for location, ref in refs:
+        if ref["path"] in verified_paths:
+            _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
+        verify_file_ref(root, ref, location)
+        verified_paths.add(ref["path"])
+
+    actual_paths: set[str] = set()
+    for path in root.rglob("*"):
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink():
+            _fail("$", f"offline pack contains a symlink: {relative}")
+        if path.is_file():
+            actual_paths.add(relative)
+        elif not path.is_dir():
+            _fail("$", f"offline pack contains a non-regular entry: {relative}")
+    if manifest_path is not None:
+        try:
+            manifest_relative = manifest_path.resolve(strict=True).relative_to(
+                root.resolve(strict=True)
+            ).as_posix()
+        except ValueError as exc:
+            _fail("$", "offline-pack manifest must reside beneath the verification root")
+        actual_paths.discard(manifest_relative)
+    undeclared = sorted(actual_paths - verified_paths)
+    if undeclared:
+        _fail("$", f"offline pack contains undeclared files: {', '.join(undeclared)}")
+
+    return {
+        "source_manifests": len(source_manifests),
+        "source_objects": len(packed_objects),
+        "input_bindings": len(bindings),
+        "reducer_files": len(pack["reducer"]["files"]),
         "files": len(verified_paths),
     }
 
@@ -1080,6 +1859,8 @@ def validate_release_selector(selector: Any) -> dict[str, Any]:
 
 
 def validate_build_attestation(attestation: Any) -> dict[str, Any]:
+    if isinstance(attestation, dict) and attestation.get("schema") == BUILD_ATTESTATION_SCHEMA_V2:
+        return _validate_build_attestation_v2(attestation)
     obj = _expect_object(attestation, "$")
     _keys(
         obj,
@@ -1126,6 +1907,113 @@ def validate_build_attestation(attestation: Any) -> dict[str, Any]:
         names.add(name)
     if [item["logical_name"] for item in artifacts] != sorted(names):
         _fail("$.artifacts", "entries must be sorted by logical_name")
+
+    metrics = _expect_object(obj["metrics"], "$.metrics")
+    for key, value in metrics.items():
+        _expect_string(key, "$.metrics.<key>")
+        _expect_int(value, f"$.metrics.{key}")
+    if "recorded_at" in obj:
+        _expect_string(obj["recorded_at"], "$.recorded_at")
+    expected = attestation_identity(obj)
+    if obj["attestation_id"] != expected:
+        _fail("$.attestation_id", f"expected {expected}")
+    return obj
+
+
+def _validate_build_attestation_v2(attestation: Any) -> dict[str, Any]:
+    obj = _expect_object(attestation, "$")
+    _keys(
+        obj,
+        "$",
+        {
+            "schema",
+            "attestation_id",
+            "release_id",
+            "build_kind",
+            "builder",
+            "inputs",
+            "output_root",
+            "artifacts",
+            "metrics",
+        },
+        {"recorded_at"},
+    )
+    if obj["schema"] != BUILD_ATTESTATION_SCHEMA_V2:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["attestation_id"], "$.attestation_id")
+    _hash(obj["release_id"], "$.release_id")
+    if obj["build_kind"] != "full-offline-replay":
+        _fail("$.build_kind", "expected 'full-offline-replay'")
+
+    builder = _expect_object(obj["builder"], "$.builder")
+    _keys(
+        builder,
+        "$.builder",
+        {
+            "name",
+            "version",
+            "git_commit",
+            "configuration_sha256",
+            "environment_sha256",
+            "network",
+        },
+    )
+    _expect_string(builder["name"], "$.builder.name")
+    _expect_string(builder["version"], "$.builder.version")
+    _expect_pattern(
+        builder["git_commit"],
+        "$.builder.git_commit",
+        GIT_COMMIT_RE,
+        "a full lowercase Git commit",
+    )
+    _digest(builder["configuration_sha256"], "$.builder.configuration_sha256")
+    _digest(builder["environment_sha256"], "$.builder.environment_sha256")
+    if builder["network"] != "disabled":
+        _fail("$.builder.network", "full offline replay requires network='disabled'")
+
+    inputs = _expect_object(obj["inputs"], "$.inputs")
+    _keys(
+        inputs,
+        "$.inputs",
+        {
+            "authority_root",
+            "source_set_root",
+            "offline_pack_id",
+            "reducer_inventory_id",
+            "prior_state_root",
+        },
+    )
+    for key in (
+        "authority_root",
+        "source_set_root",
+        "offline_pack_id",
+        "reducer_inventory_id",
+    ):
+        _hash(inputs[key], f"$.inputs.{key}")
+    if inputs["prior_state_root"] is not None:
+        _hash(inputs["prior_state_root"], "$.inputs.prior_state_root")
+    _hash(obj["output_root"], "$.output_root")
+
+    artifacts = _expect_array(obj["artifacts"], "$.artifacts", nonempty=True)
+    names: list[str] = []
+    for index, item in enumerate(artifacts):
+        location = f"$.artifacts[{index}]"
+        ref = _expect_object(item, location)
+        _keys(ref, location, {"logical_name", "sha256", "bytes"}, {"logical_root"})
+        names.append(
+            _expect_pattern(
+                ref["logical_name"],
+                f"{location}.logical_name",
+                NAME_RE,
+                "a logical name",
+            )
+        )
+        _digest(ref["sha256"], f"{location}.sha256")
+        _expect_int(ref["bytes"], f"{location}.bytes")
+        if "logical_root" in ref and ref["logical_root"] is not None:
+            _hash(ref["logical_root"], f"{location}.logical_root")
+    if names != sorted(set(names)):
+        _fail("$.artifacts", "entries must have unique logical names and be sorted")
 
     metrics = _expect_object(obj["metrics"], "$.metrics")
     for key, value in metrics.items():
@@ -2564,6 +3452,12 @@ def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]
         if attestation_bytes != canonical_json_bytes(attestation):
             _fail(location, "attestation is not canonical-json-v1 bytes")
         if ref["kind"] == "build":
+            if attestation.get("schema") != BUILD_ATTESTATION_SCHEMA_V1:
+                _fail(
+                    location,
+                    f"{RELEASE_PROFILE} requires build-attestation/v1; "
+                    "offline replay attestations are not integrated yet",
+                )
             validate_build_attestation(attestation)
             by_name = {item["logical_name"]: item for item in attestation["artifacts"]}
             if set(by_name) != set(artifact_by_name):

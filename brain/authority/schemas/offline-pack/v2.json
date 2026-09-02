@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/offline-pack/v2.json",
+  "title": "WikiLean offline pack v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "offline_pack_id",
+    "source_set_root",
+    "inventory",
+    "source_manifests",
+    "objects",
+    "input_bindings",
+    "reducer",
+    "configuration",
+    "environment",
+    "schemas"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.offline-pack/v2"},
+    "offline_pack_id": {"$ref": "#/$defs/hash"},
+    "source_set_root": {"$ref": "#/$defs/hash"},
+    "inventory": {"$ref": "#/$defs/inventoryRef"},
+    "source_manifests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/manifestRef"}
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/fileRef"}
+    },
+    "input_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/inputBinding"}
+    },
+    "reducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entrypoint", "files"],
+      "properties": {
+        "entrypoint": {"$ref": "#/$defs/literalRelativePath"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/reducerFileRef"}
+        }
+      }
+    },
+    "configuration": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/fileRef"}
+    },
+    "environment": {"$ref": "#/$defs/fileRef"},
+    "schemas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/fileRef"}
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {"type": "string", "format": "date-time"},
+        "note": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "literalRelativePath": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^*?\\[\\]{}]+$"}
+      ]
+    },
+    "fileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"}
+      }
+    },
+    "inventoryRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type", "inventory_id"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"const": "application/json"},
+        "inventory_id": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "manifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type", "source_manifest_id"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"const": "application/json"},
+        "source_manifest_id": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "bindingMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "source_manifest_id", "object"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "source_manifest_id": {"$ref": "#/$defs/hash"},
+        "object": {"$ref": "#/$defs/name"}
+      }
+    },
+    "inputBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_id", "state", "members"],
+      "properties": {
+        "input_id": {"$ref": "#/$defs/name"},
+        "state": {"enum": ["present", "absent"]},
+        "members": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/bindingMember"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["state"],
+            "properties": {"state": {"const": "present"}}
+          },
+          "then": {"properties": {"members": {"minItems": 1}}}
+        },
+        {
+          "if": {
+            "required": ["state"],
+            "properties": {"state": {"const": "absent"}}
+          },
+          "then": {"properties": {"members": {"maxItems": 0}}}
+        }
+      ]
+    },
+    "reducerFileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logical_path", "path", "sha256", "bytes", "media_type"],
+      "properties": {
+        "logical_path": {"$ref": "#/$defs/literalRelativePath"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"}
+      }
+    }
+  }
+}

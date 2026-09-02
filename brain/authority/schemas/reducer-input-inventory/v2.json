@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/reducer-input-inventory/v2.json",
+  "title": "WikiLean reducer input inventory v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "inventory_id",
+    "boundary",
+    "roots",
+    "scope",
+    "stages",
+    "inputs",
+    "forbidden_ambient"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.reducer-input-inventory/v2"},
+    "inventory_id": {"$ref": "#/$defs/hash"},
+    "boundary": {"const": "post-acquisition-fold"},
+    "roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind"],
+        "properties": {
+          "id": {"$ref": "#/$defs/name"},
+          "kind": {"enum": ["repository", "external_tree", "external_file"]}
+        }
+      }
+    },
+    "scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/literalRelativePath"}
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "program", "argv", "needs"],
+        "properties": {
+          "id": {"$ref": "#/$defs/name"},
+          "program": {"$ref": "#/$defs/literalRelativePath"},
+          "argv": {"type": "array", "items": {"type": "string"}},
+          "needs": {"type": "array", "items": {"$ref": "#/$defs/name"}}
+        }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "root",
+          "cardinality",
+          "requirement",
+          "class",
+          "consumers",
+          "purpose"
+        ],
+        "properties": {
+          "id": {"$ref": "#/$defs/name"},
+          "root": {"$ref": "#/$defs/name"},
+          "path": {"$ref": "#/$defs/literalRelativePath"},
+          "path_pattern": {"$ref": "#/$defs/pathPattern"},
+          "cardinality": {"enum": ["one", "many"]},
+          "requirement": {"enum": ["required", "optional"]},
+          "class": {"enum": ["curated_git_input", "immutable_source_object"]},
+          "consumers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"$ref": "#/$defs/literalRelativePath"}
+          },
+          "purpose": {"type": "string", "minLength": 1}
+        },
+        "oneOf": [
+          {"required": ["path"], "not": {"required": ["path_pattern"]}},
+          {"required": ["path_pattern"], "not": {"required": ["path"]}}
+        ],
+        "allOf": [
+          {
+            "if": {
+              "required": ["cardinality"],
+              "properties": {"cardinality": {"const": "one"}}
+            },
+            "then": {"required": ["path"]}
+          },
+          {
+            "if": {
+              "required": ["cardinality"],
+              "properties": {"cardinality": {"const": "many"}}
+            },
+            "then": {"required": ["path_pattern"]}
+          }
+        ]
+      }
+    },
+    "forbidden_ambient": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "consumers", "replacement"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "consumers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "oneOf": [
+                {"const": "*"},
+                {"$ref": "#/$defs/literalRelativePath"}
+              ]
+            }
+          },
+          "replacement": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "literalRelativePath": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^*?\\[\\]{}]+$"}
+      ]
+    },
+    "pathPattern": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^{}]+$"}
+      ]
+    }
+  }
+}

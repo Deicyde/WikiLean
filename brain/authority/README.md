@@ -1,8 +1,8 @@
 # Brain authority contracts
 
-This directory contains the first versioned contracts for sealing reducer inputs and
-describing immutable releases. It does not change the current reducer, publication
-path, D1 overlay, or serving topology.
+This directory contains versioned contracts for sealing reducer inputs and describing
+immutable releases. It does not change the current reducer, publication path, D1
+overlay, or serving topology.
 
 ## Contracts
 
@@ -12,7 +12,17 @@ path, D1 overlay, or serving topology.
   raw and normalized objects, licensing, and exact tool identities.
 - `schemas/offline-pack/v1.json` describes the closed local set of source manifests,
   source objects, reducer code, configuration, and schemas needed for offline replay.
-    Its verification root must contain exactly those files plus the pack manifest.
+  Its verification root must contain exactly those files plus the pack manifest.
+- `schemas/reducer-input-inventory/v2.json`, `schemas/source-manifest/v2.json`, and
+  `schemas/offline-pack/v2.json` are the P0-R contract foundation. The inventory names
+  logical repository/external roots, exact required or optional inputs, the complete
+  reducer code scope, and a topologically ordered stage DAG. A v2 source object may
+  carry both `raw` and `normalized` roles when normalization is byte-identical; every
+  object lives at `objects/sha256/<digest>`. A v2 pack binds every inventory input to
+  an exact sorted member list or to explicit absence, and its source-set root covers
+  the inventory ID, all source-manifest IDs, and those bindings. The pack separately
+  closes all source objects, reducer files, configuration, environment descriptor,
+  and schemas.
 - `schemas/release/v1.json` describes one release over the current artifact topology.
 - `schemas/release-selector/v1.json` describes the public current/previous selector.
   Current release fields are required; the flat `previous_*` fields are all-or-none, and
@@ -22,13 +32,18 @@ path, D1 overlay, or serving topology.
   `schemas/attestation/validation-v1.json` describe immutable build and validation
   evidence. Attestations bind a timestamp-independent release ID; they do not embed
   the final manifest digest, which would create a manifest/attestation hash cycle.
+- `schemas/attestation/build-v2.json` is reserved for a real
+  `full-offline-replay`. It requires the exact offline-pack ID, source-set root,
+  reducer-inventory ID, and `network: "disabled"`; the compatibility release freezer
+  does not emit it.
 - `reducer-inputs-v1.json` classifies current reducer inputs as curated Git inputs,
   immutable source objects, or forbidden ambient state.
+- `reducer-inputs-v2.json` is the strict post-acquisition-fold logical inventory. Its
+  external roots are names in the contract, never host paths or environment values.
 
 The JSON Schema files are portable documentation. The standard-library Python
-validator is the executable authority for v1 and intentionally rejects unknown
-members and unknown schema versions without requiring the third-party `jsonschema`
-package.
+validator is the executable authority and intentionally rejects unknown members and
+unknown schema versions without requiring the third-party `jsonschema` package.
 
 ## Verification
 
@@ -40,15 +55,22 @@ path components are rejected. `uri` is descriptive and is never fetched.
 cd /Users/jackmccarthy/projects/WikiLean
 python3 brain/tools/verify_source_set.py --manifest /path/to/source-manifest.json --root /path/to/object-root
 python3 brain/tools/verify_source_set.py --manifest /path/to/offline-pack.json --root /path/to/pack-root
+python3 brain/tools/verify_source_set.py --manifest brain/authority/reducer-inputs-v2.json --root brain/authority
 python3 brain/tools/run_offline.py --manifest /path/to/offline-pack.json --root /path/to/pack-root -- <reducer arguments>
 python3 brain/tools/verify_release.py --manifest /path/to/release.json --root /path/to/release-root
 ```
 
-`run_offline.py` first verifies complete pack closure, then executes a Python reducer with
-fixed locale/timezone/hash settings, an allowlisted environment, and a fail-fast socket
+`run_offline.py` remains the cooperative single-program v1 fixture runner. It first
+verifies complete v1 pack closure, then executes a Python reducer with fixed
+locale/timezone/hash settings, an allowlisted environment, and a fail-fast socket
 monkeypatch. This catches accidental Python network calls but is not a security sandbox;
 authoritative CI/build runners must additionally disable networking at the OS or container
-layer.
+layer. It rejects `offline-pack/v2` explicitly until the full-DAG replay entry point and
+separate read-only input/writable output build context exist. Verifying a v2 pack proves
+contract and byte closure only; it is not evidence that replay has occurred.
+It also does not yet prove a declared Git commit/tree produced the packed bytes or that a
+multi-file binding exhausts an upstream tree. Those coherence/exhaustiveness checks belong
+to the future pack compiler before any v2 build attestation may be emitted.
 
 Verification includes canonical encoding, schema/version and unknown-field checks,
 self-identities, source-set closure, exact SHA-256 and byte lengths, offline-pack
@@ -81,6 +103,9 @@ verifies the complete candidate, and atomically renames it to
 `site/out/brain-releases/<release-hex>/`. Existing content-addressed releases are reused
 only after full verification and byte equality. The CLI prints one JSON object containing
 `release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
+Its `build-attestation/v1` records compatibility release assembly, not a clean-room graph
+replay. `release/v1` continues to require that v1 attestation until the v2 replay path is
+implemented and independently verified.
 
 ## Phase 1 activation evidence
 
