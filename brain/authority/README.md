@@ -81,3 +81,37 @@ verifies the complete candidate, and atomically renames it to
 `site/out/brain-releases/<release-hex>/`. Existing content-addressed releases are reused
 only after full verification and byte equality. The CLI prints one JSON object containing
 `release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
+
+## Phase 1 activation evidence
+
+The promoter's retained dry-run mode freezes the exact sealed public tree, Worker bundle,
+Wrangler configuration, and raw read-only selector/status/history responses into an
+external content-addressed root. The proposed intent refers to those durable bytes.
+
+`site/ops/brain_activation_ci.py` emits canonical
+`wikilean.brain-activation-ci/v2` evidence for the exact required CI commands. Bundle
+`freeze` invokes it in-process, so caller-authored CI evidence is not accepted. It requires
+a clean promotion checkout whose `HEAD` and `refs/heads/main` equal the candidate authority.
+Git, Node, npm, and Python are explicit absolute paths; caller `PATH` is discarded and a
+private shim directory pins child-tool resolution. The recorder checks Node 22 and Python
+3.12, removes inherited credentials and Git overrides, bounds and cleans up every process
+group, and repeats the Git authority/cleanliness fence afterward.
+
+`site/ops/brain_activation_bundle.py context|freeze|verify` creates the immutable P1B
+review artifact. `context` proves the isolated build and clean promotion worktrees are
+distinct and share the candidate authority. `freeze` validates and atomically publishes
+exactly 11 canonical evidence files to the external
+`WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`; `verify` rechecks the frozen bundle without the
+original mutable worktrees or release stores, but it requires the referenced retained
+promoter-artifact companion root. Freeze records a fresh fixed-setting candidate SQLite
+measurement, requires a reviewed non-self semantic baseline ID, proves the retained
+non-Brain public closure equals the baseline, and re-verifies the retained promoter
+artifacts before and immediately before publication.
+
+The included `wikilean.semantic-diff/v2` report must completely bind the logical roots for
+the seven compatibility paths: `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`,
+`cells.jsonl`, `synapses.jsonl`, `frontier.jsonl`, and `frontier_graph.json`. Complete
+release verification separately covers SQLite and release-coupled static artifacts.
+Tooling completion is not activation: generating the first P1B bundle remains blocked on
+Jack merging P1A to `main` and authorizing the host Mathlib/interpreter paths, and P1C still
+requires separate deployment approval.
