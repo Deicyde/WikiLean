@@ -46,6 +46,7 @@ are not interchangeable.
 | Reducer-input inventory v2 | `wikilean.reducer-input-inventory.v2` | Remove top-level `inventory_id`. |
 | Source set root v2 | `wikilean.source-set.v2` | Object containing the inventory ID, sorted source-manifest IDs, and input-ID-sorted exact present/absent logical bindings whose members are path-sorted. |
 | Offline pack v2 | `wikilean.offline-pack.v2` | Remove top-level `offline_pack_id` and `audit`. |
+| Brain replay generation | `wikilean.brain-generation.v1` | Build-context object containing `schema`, `replay`, logical `bindings`, `stages`, and `configuration`; omit top-level `generation_id`, `roots`, and `audit`, and omit every binding member's `materialized_path`. |
 | Release | `wikilean.release.v1` | Remove top-level `release_id`, `attestations`, and `created_at`. |
 | Build attestation | `wikilean.build-attestation.v1` | Remove top-level `attestation_id` and `recorded_at`. |
 | Full-replay build attestation | `wikilean.build-attestation.v2` | Remove top-level `attestation_id` and `recorded_at`. |
@@ -59,6 +60,11 @@ must not embed the final manifest digest, because the manifest embeds the attest
 digest; exact manifest bytes are instead content-addressed by the registry or caller
 that stores the manifest. Changing an attestation reference therefore requires a new
 immutable manifest object but does not rename the release's logical content.
+
+The `wikilean.brain-reducer-config/v1` document has no separate domain identifier.
+`replay.reducer.configuration_sha256` is the lowercase bare SHA-256 digest of that
+document's exact canonical JSON bytes; the configuration is also included directly in
+the `wikilean.brain-generation.v1` preimage.
 
 ## Logical artifact and rowset roots
 

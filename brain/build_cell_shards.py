@@ -829,9 +829,10 @@ def main() -> int:
     # with no filter — so an interrupted build left .cells.tmp behind and the next
     # deploy shipped a duplicate half-written shard set (+1,463 files against
     # Cloudflare's 20,000-file assets ceiling) at a live URL. site/assets is NOT
-    # copied wholesale (build-public names individual files there), same filesystem
-    # so the renames stay atomic, and build_shards.py's swap of site/assets/brain —
-    # which carries cells/ across via its NESTED tuple — never sees them.
+    # copied wholesale (build-public names individual files there), and it is on
+    # the same filesystem so the final cells/ rename stays atomic. The top-level
+    # shard builder owns only sources.json and xref_index.json and never touches
+    # this tree.
     tmp = SCRATCH_DIR / ".cells.tmp"
     old = SCRATCH_DIR / ".cells.old"
     for stale in (tmp, old):

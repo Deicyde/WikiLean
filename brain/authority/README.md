@@ -16,7 +16,8 @@ overlay, or serving topology.
 - `schemas/reducer-input-inventory/v2.json`, `schemas/source-manifest/v2.json`, and
   `schemas/offline-pack/v2.json` are the P0-R contract foundation. The inventory names
   logical repository/external roots, exact required or optional inputs, the complete
-  reducer code scope, and a topologically ordered stage DAG. A v2 source object may
+  reducer code scope, and a topologically ordered stage DAG whose sorted output lists
+  assign every file or tree to one disjoint owner. A v2 source object may
   carry both `raw` and `normalized` roles when normalization is byte-identical; every
   object lives at `objects/sha256/<digest>`. A v2 pack binds every inventory input to
   an exact sorted member list or to explicit absence, and its source-set root covers
@@ -36,6 +37,13 @@ overlay, or serving topology.
   `full-offline-replay`. It requires the exact offline-pack ID, source-set root,
   reducer-inventory ID, and `network: "disabled"`; the compatibility release freezer
   does not emit it.
+- `schemas/build-context/v1.json` documents the strict runtime-only context assembled
+  after pack verification: disjoint absolute code/input/output/scratch roots, exact
+  materialized bindings and native source pins, the inventory stage schedule, replay
+  roots, and reducer configuration. Physical roots, materialized paths, and audit data
+  are excluded from its `generation_id`.
+- `schemas/reducer-config/v1.json` closes the current semantic reducer knobs: external
+  node cap, allowed cell attachment kinds, and layout enablement/iteration count.
 - `reducer-inputs-v1.json` classifies current reducer inputs as curated Git inputs,
   immutable source objects, or forbidden ambient state.
 - `reducer-inputs-v2.json` is the strict post-acquisition-fold logical inventory. Its
