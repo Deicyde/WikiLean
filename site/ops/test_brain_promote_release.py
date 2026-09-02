@@ -7,6 +7,7 @@ import importlib.util
 import io
 import json
 import os
+import stat
 import sys
 import tempfile
 import time
@@ -197,6 +198,76 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
         "4.120.0",
         "fixture-ca",
         {},
+        {"deployments": b'[{"id":"deployment"}]\n', "versions": b'[{"id":"version"}]\n'},
+    )
+
+
+def prepared_for_retention(base: Path) -> promote.PreparedPromotion:
+    prepared = make_prepared(base)
+    selector_body = prepared.initial_selector.body
+    status_before = prepared.predeploy_status_before
+    histories = prepared.history_raw or {}
+    history = {
+        key: {
+            "sha256": hashlib.sha256(histories[key]).hexdigest(),
+            "bytes": len(histories[key]),
+            "entries": 1,
+        }
+        for key in ("deployments", "versions")
+    }
+    page = prepared.public_dir / "brain.html"
+    public_result = {
+        "schema": "wikilean.public-build-result/v1",
+        "public_dir": str(prepared.public_dir),
+        "mathlib_declarations": 1,
+        "public_baseline": {
+            "schema": "wikilean.public-asset-baseline/v1",
+            "baseline_id": prepared.public_baseline.baseline_id,
+            "authority_commit": prepared.public_baseline.authority_git_commit,
+            "root": str(prepared.public_baseline.root),
+            "files": 0,
+            "bytes": 0,
+        },
+        "brain": {
+            "schema": "wikilean.public-stage-result/v1",
+            "release_id": prepared.candidate.release_id,
+            "release": prepared.candidate.release_hex,
+            "previous_release_id": prepared.prior.release_id if prepared.prior else None,
+            "retained_release_ids": [
+                prepared.candidate.release_id,
+                *([prepared.prior.release_id] if prepared.prior else []),
+            ],
+            "destination": str(prepared.public_dir / "assets/brain"),
+            "objects": 1,
+            "bytes": page.stat().st_size,
+            "largest_file_bytes": page.stat().st_size,
+            "copy_buffer_bytes": 1024,
+            "duration_ms": 1.0,
+            "max_rss_bytes": 1024,
+            "free_bytes_before": 100,
+            "free_bytes_after": 99,
+            "brain_page": {
+                "destination": str(page),
+                "bytes": page.stat().st_size,
+                "sha256": hashlib.sha256(page.read_bytes()).hexdigest(),
+            },
+            "warnings": [],
+        },
+        "duration_ms": 1.25,
+        "max_rss_bytes": 2048,
+    }
+    return replace(
+        prepared,
+        initial_selector=replace(
+            prepared.initial_selector,
+            body_sha256=hashlib.sha256(selector_body).hexdigest(),
+        ),
+        predeploy=replace(
+            prepared.predeploy,
+            raw_sha256=hashlib.sha256(status_before).hexdigest(),
+        ),
+        public_result=public_result,
+        history=history,
     )
 
 
@@ -543,6 +614,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
             **kwargs,
         )
 
+    def test_generated_attempt_id_is_accepted_by_the_promoter_contract(self):
+        attempt_id = promote.BrainPromoter._new_attempt_id(RELEASE_A)
+        self.assertIsNotNone(promote.ATTEMPT_ID_RE.fullmatch(attempt_id))
+
     def test_command_timeout_kills_the_entire_child_process_group(self):
         sentinel = self.base / "orphan-child-ran"
         child = (
@@ -688,6 +763,25 @@ class BrainPromotionUnitTest(unittest.TestCase):
             first_wrangler[first_wrangler.index("--config") + 1],
             str(deploy_config),
         )
+
+    def test_history_evidence_preserves_raw_wrangler_bodies(self):
+        bodies = [b'[{"id":"deployment"}]\n', b'[{"id":"version"}]\n']
+
+        class HistoryRunner(promote.CommandRunner):
+            def __init__(inner):
+                inner.index = 0
+
+            def run(inner, args, *, cwd, timeout=None, env=None):
+                del cwd, timeout, env
+                body = bodies[inner.index]
+                inner.index += 1
+                return promote.RunResult(tuple(args), 0, body, b"")
+
+        evidence, raw = self.promoter(runner=HistoryRunner())._history_evidence()
+        self.assertEqual(raw, {"deployments": bodies[0], "versions": bodies[1]})
+        for key in ("deployments", "versions"):
+            self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
+            self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
     def test_selector_404_requires_flag_and_approval(self):
         probe = selector_probe(status=404, body=b"missing")
@@ -860,7 +954,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
             def _history_evidence(inner, config=None):
                 del config
-                return {}
+                return {}, {"deployments": b"[]\n", "versions": b"[]\n"}
 
             def _wrangler_status(inner, config=None):
                 del config
@@ -1571,6 +1665,369 @@ class BrainPromotionDryRunTest(unittest.TestCase):
             self.assertFalse(value["production_mutated"])
             attempts = receipt.resolve() / "attempts"
             self.assertFalse(attempts.exists())
+
+    def test_retained_dry_run_is_atomic_read_only_and_rebases_intent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            retained_store = base / "retained"
+
+            class DryPromoter(promote.BrainPromoter):
+                def prepare(inner):
+                    return prepared
+
+                def _deploy(inner, prepared_value, journal):
+                    raise AssertionError((prepared_value, journal))
+
+            instance = DryPromoter(
+                repo_root=repo,
+                python=Path(sys.executable),
+                release_id=RELEASE_A,
+                release_root=prepared.candidate.root,
+                public_baseline_id=prepared.public_baseline.baseline_id,
+                public_baseline_root=prepared.public_baseline.root,
+                receipt_root=receipt,
+                base_url="https://example.test",
+                production_origin="https://example.test",
+                mode="dry-run",
+                attempt_id="retained-dry-run",
+                retain_dry_run_store=retained_store,
+            )
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                self.assertEqual(instance.run(), 0)
+            value = json.loads(output.getvalue())
+            intent = value["proposed_intent"]
+            retained = intent["retained_artifacts"]
+            root = Path(retained["root"])
+            verified = promote.verify_retained_dry_run_artifacts(
+                root, expected_artifact_id=retained["artifact_id"]
+            )
+            self.assertEqual(verified.reference(), retained)
+            self.assertEqual(intent["public_tree"]["root"], str(root / "public"))
+            self.assertEqual(intent["public_result"]["public_dir"], str(root / "public"))
+            self.assertEqual(
+                intent["public_result"]["brain"]["destination"],
+                str(root / "public/assets/brain"),
+            )
+            self.assertEqual(
+                intent["public_result"]["brain"]["brain_page"]["destination"],
+                str(root / "public/brain.html"),
+            )
+            self.assertEqual(intent["worker_bundle"]["tree"]["root"], str(root / "worker"))
+            self.assertEqual(intent["worker_bundle"]["entry"], str(root / "worker/index.js"))
+            self.assertEqual(intent["worker_bundle"]["config"], str(root / "wrangler.jsonc"))
+            self.assertFalse((base / "workspace").exists())
+            self.assertTrue(root.is_dir())
+            self.assertEqual(stat.S_IMODE(root.stat().st_mode), 0o555)
+            manifest = json.loads((root / "manifest.json").read_bytes())
+            self.assertEqual(
+                set(manifest),
+                {
+                    "schema",
+                    "artifact_id",
+                    "attempt_id",
+                    "release_id",
+                    "authority_git_commit",
+                    "public_tree",
+                    "worker_bundle",
+                    "wrangler_config",
+                    "evidence",
+                },
+            )
+            self.assertEqual(manifest["schema"], promote.DRY_RUN_ARTIFACT_SCHEMA)
+            self.assertEqual(manifest["public_tree"]["directories"], [])
+            self.assertEqual(manifest["worker_bundle"]["directories"], [])
+            self.assertEqual(
+                set(manifest["evidence"]),
+                {
+                    "initial_selector",
+                    "status_before",
+                    "status_after",
+                    "deployments_history",
+                    "versions_history",
+                },
+            )
+            self.assertEqual(
+                (root / manifest["evidence"]["deployments_history"]["path"]).read_bytes(),
+                prepared.history_raw["deployments"],
+            )
+            self.assertEqual(
+                (root / manifest["evidence"]["versions_history"]["path"]).read_bytes(),
+                prepared.history_raw["versions"],
+            )
+            for path in root.rglob("*"):
+                self.assertFalse(path.is_symlink())
+                self.assertEqual(
+                    stat.S_IMODE(path.stat().st_mode), 0o555 if path.is_dir() else 0o444
+                )
+                if path.is_file():
+                    self.assertEqual(path.stat().st_nlink, 1)
+            promote.remove_sealed_tree(root)
+
+    def test_retention_rejects_overlapping_stores_before_creation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            forbidden = (
+                repo / "retained",
+                prepared.candidate.root / "retained",
+                prepared.public_baseline.root / "retained",
+                receipt / "retained",
+                prepared.public_dir.parent / "retained",
+            )
+            for path in forbidden:
+                with self.subTest(path=path):
+                    with self.assertRaisesRegex(promote.PromotionError, "outside"):
+                        promote.retain_dry_run_artifacts(
+                            prepared,
+                            path,
+                            repo_root=repo,
+                            receipt_root=receipt,
+                        )
+                    self.assertFalse(path.exists())
+
+    def test_retention_rejects_case_folded_protected_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            alias = repo.with_name(repo.name.upper())
+            if not alias.exists() or not os.path.samefile(alias, repo):
+                self.skipTest("filesystem is case-sensitive")
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            with self.assertRaisesRegex(promote.PromotionError, "outside"):
+                promote.retain_dry_run_artifacts(
+                    prepared,
+                    alias / "retained",
+                    repo_root=repo,
+                    receipt_root=receipt,
+                )
+            self.assertFalse((repo / "retained").exists())
+
+    def test_retention_rejects_insecure_store_and_hardlinked_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            store = base / "retained"
+            store.mkdir(mode=0o700)
+            store.chmod(0o770)
+            with self.assertRaisesRegex(promote.PromotionError, "private"):
+                promote.retain_dry_run_artifacts(
+                    prepared,
+                    store,
+                    repo_root=repo,
+                    receipt_root=receipt,
+                )
+
+            store.chmod(0o700)
+            outside_lock = base / "outside-lock"
+            outside_lock.write_bytes(b"")
+            os.link(outside_lock, store / ".retain.lock")
+            with self.assertRaisesRegex(promote.PromotionError, "single-link"):
+                promote.retain_dry_run_artifacts(
+                    prepared,
+                    store,
+                    repo_root=repo,
+                    receipt_root=receipt,
+                )
+            self.assertFalse(
+                any(path.name.startswith(".pending-") for path in store.iterdir())
+            )
+
+    def test_retention_failure_removes_pending_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            store = base / "retained"
+            with mock.patch.object(
+                promote.shutil, "copytree", side_effect=OSError("injected copy failure")
+            ):
+                with self.assertRaisesRegex(OSError, "injected copy failure"):
+                    promote.retain_dry_run_artifacts(
+                        prepared,
+                        store,
+                        repo_root=repo,
+                        receipt_root=receipt,
+                    )
+            self.assertTrue(store.is_dir())
+            self.assertFalse(
+                any(path.name.startswith(".pending-") for path in store.iterdir())
+            )
+
+    def test_retention_rejects_missing_or_inconsistent_raw_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            for broken in (
+                replace(prepared, history_raw=None),
+                replace(
+                    prepared,
+                    history_raw={"deployments": b"changed", "versions": b"[]\n"},
+                ),
+            ):
+                with self.subTest(raw=broken.history_raw):
+                    with self.assertRaisesRegex(promote.PromotionError, "history"):
+                        promote.retain_dry_run_artifacts(
+                            broken,
+                            base / f"retained-{len(list(base.glob('retained-*')))}",
+                            repo_root=repo,
+                            receipt_root=receipt,
+                        )
+
+    def test_retained_artifact_verifier_rejects_tampering_and_extra_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            retained = promote.retain_dry_run_artifacts(
+                prepared,
+                base / "retained",
+                repo_root=repo,
+                receipt_root=receipt,
+            )
+            retained.root.chmod(0o755)
+            extra = retained.root / "extra"
+            extra.write_bytes(b"extra")
+            extra.chmod(0o444)
+            retained.root.chmod(0o555)
+            with self.assertRaisesRegex(promote.PromotionError, "top-level closure"):
+                promote.verify_retained_dry_run_artifacts(retained.root)
+
+            retained.root.chmod(0o755)
+            extra.unlink()
+            target = retained.root / "evidence/status-before.body"
+            target.chmod(0o644)
+            target.write_bytes(b"tampered")
+            target.chmod(0o444)
+            retained.root.chmod(0o555)
+            with self.assertRaisesRegex(promote.PromotionError, "bytes differ"):
+                promote.verify_retained_dry_run_artifacts(retained.root)
+            promote.remove_sealed_tree(retained.root)
+
+    def test_retained_artifact_verifier_rejects_extra_empty_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            retained = promote.retain_dry_run_artifacts(
+                prepared,
+                base / "retained",
+                repo_root=repo,
+                receipt_root=receipt,
+            )
+            retained.public_dir.chmod(0o755)
+            extra = retained.public_dir / "unexpected-empty-directory"
+            extra.mkdir(mode=0o555)
+            retained.public_dir.chmod(0o555)
+            with self.assertRaisesRegex(promote.PromotionError, "tree differs"):
+                promote.verify_retained_dry_run_artifacts(retained.root)
+            promote.remove_sealed_tree(retained.root)
+
+    def test_pending_cleanup_unlinks_symlink_without_touching_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            outside = base / "outside"
+            outside.mkdir(mode=0o755)
+            outside.chmod(0o755)
+            pending = base / ".pending-fixture"
+            pending.symlink_to(outside, target_is_directory=True)
+            promote._remove_pending_tree(pending)
+            self.assertFalse(pending.exists())
+            self.assertEqual(stat.S_IMODE(outside.stat().st_mode), 0o755)
+
+    def test_retained_artifact_verifier_rejects_symlinks_and_hardlinks(self):
+        for link_kind in ("symlink", "hardlink"):
+            with self.subTest(link_kind=link_kind), tempfile.TemporaryDirectory() as directory:
+                base = Path(directory).resolve()
+                repo = make_repo(base)
+                receipt = initialize_target_receipt_root(
+                    base / "receipts", repo, "https://example.test"
+                )
+                prepared = prepared_for_retention(base / "workspace")
+                retained = promote.retain_dry_run_artifacts(
+                    prepared,
+                    base / "retained",
+                    repo_root=repo,
+                    receipt_root=receipt,
+                )
+                target = retained.root / "evidence/status-before.body"
+                retained.root.chmod(0o755)
+                target.parent.chmod(0o755)
+                target.unlink()
+                outside = base / "outside-body"
+                outside.write_bytes(b"outside")
+                if link_kind == "symlink":
+                    target.symlink_to(outside)
+                else:
+                    os.link(outside, target)
+                    target.chmod(0o444)
+                target.parent.chmod(0o555)
+                retained.root.chmod(0o555)
+                expected = "symlink" if link_kind == "symlink" else "hard-linked"
+                with self.assertRaisesRegex(promote.PromotionError, expected):
+                    promote.verify_retained_dry_run_artifacts(retained.root)
+                promote.remove_sealed_tree(retained.root)
+
+    def test_retain_option_is_dry_run_only_and_requires_absolute_store(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            with self.assertRaisesRegex(promote.PromotionError, "only with --dry-run"):
+                promote.BrainPromoter(
+                    repo_root=repo,
+                    python=Path(sys.executable),
+                    release_id=RELEASE_A,
+                    release_root=base / "release" / ("a" * 64),
+                    public_baseline_id=BASELINE_ID,
+                    public_baseline_root=base / "baseline" / ("d" * 64),
+                    receipt_root=base / "receipts",
+                    base_url="https://example.test",
+                    production_origin="https://example.test",
+                    mode="execute",
+                    retain_dry_run_store=base / "retained",
+                )._validate_options()
+            with self.assertRaisesRegex(promote.PromotionError, "absolute"):
+                promote.BrainPromoter(
+                    repo_root=repo,
+                    python=Path(sys.executable),
+                    release_id=RELEASE_A,
+                    release_root=base / "release" / ("a" * 64),
+                    public_baseline_id=BASELINE_ID,
+                    public_baseline_root=base / "baseline" / ("d" * 64),
+                    receipt_root=base / "receipts",
+                    base_url="https://example.test",
+                    production_origin="https://example.test",
+                    mode="dry-run",
+                    retain_dry_run_store=Path("relative-store"),
+                )._validate_options()
 
 
 if __name__ == "__main__":

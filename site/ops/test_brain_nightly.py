@@ -148,6 +148,10 @@ class BrainNightlyShellTest(unittest.TestCase):
         self.assertIn('"$PYTHON_BIN" "$REPO/brain/tools/measure_store.py"', text)
         self.assertIn('STORE_METRICS_RELEASE_ID="$(store_metrics_release_id', text)
         self.assertIn('PUBLIC_STAGE_RELEASE_ID="$(public_result_release_id', text)
+        self.assertIn(
+            "schema public_dir mathlib_declarations public_baseline brain duration_ms max_rss_bytes",
+            text,
+        )
         self.assertIn('[ "$PUBLIC_STAGE_RELEASE_ID" = "$RELEASE_ID" ]', text)
         self.assertIn('"duration_ms", "max_rss_bytes", "free_bytes_before", "free_bytes_after"', text)
 
