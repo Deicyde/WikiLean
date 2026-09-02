@@ -22,21 +22,30 @@ from typing import Any
 
 import authority_contracts as contracts
 
-SCHEMA = "wikilean.semantic-diff/v1"
+SCHEMA = "wikilean.semantic-diff/v2"
 DIRECT_REQUIRED = {
     "nodes": "nodes.jsonl",
     "edges": "edges.jsonl",
     "cells": "cells.jsonl",
     "frontier": "frontier.jsonl",
 }
-DIRECT_OPTIONAL = {"edges_links": "edges_links.jsonl"}
+DIRECT_OPTIONAL = {
+    "edges_links": "edges_links.jsonl",
+    "synapses": "synapses.jsonl",
+    "frontier_graph": "frontier_graph.json",
+}
+DIRECT_PATHS = {**DIRECT_REQUIRED, **DIRECT_OPTIONAL}
 RELEASE_PATHS = {
     "nodes": "brain/data/nodes.jsonl",
     "edges": "brain/data/edges.jsonl",
     "edges_links": "brain/data/edges_links.jsonl",
     "cells": "brain/data/cells.jsonl",
+    "synapses": "brain/data/synapses.jsonl",
     "frontier": "brain/data/frontier.jsonl",
+    "frontier_graph": "brain/data/frontier_graph.json",
 }
+if tuple(RELEASE_PATHS.values()) != contracts.COMPATIBILITY_SEMANTIC_PATHS:
+    raise RuntimeError("semantic diff artifact map drifted from the release contract")
 MANIFEST_NAMES = ("release.json", "release-manifest.json", "manifest.json")
 MISSING_SOURCE = "<missing>"
 
@@ -83,7 +92,7 @@ def _parse_json(text: str, location: str) -> Any:
 
 def _canonical(value: Any) -> str:
     try:
-        return contracts._decimal_json(value).decode("utf-8")
+        return contracts.canonical_artifact_json_bytes(value).decode("utf-8")
     except contracts.VerificationError as exc:
         raise SemanticDiffError(f"value is not canonical artifact JSON: {exc}") from exc
 
@@ -156,6 +165,101 @@ def _read_meta(path: Path) -> dict[str, Any]:
     raise SemanticDiffError(f"{path}: empty file or missing leading _meta object")
 
 
+def _read_json_object(path: Path) -> dict[str, Any]:
+    try:
+        raw = path.read_bytes()
+    except FileNotFoundError as exc:
+        raise SemanticDiffError(f"missing Brain artifact: {path}") from exc
+    try:
+        value = contracts.parse_artifact_json_bytes(raw, location=str(path))
+    except contracts.VerificationError as exc:
+        raise SemanticDiffError(str(exc)) from exc
+    if not isinstance(value, dict):
+        raise SemanticDiffError(f"{path}: expected a JSON object")
+    return value
+
+
+def _artifact_meta(name: str, path: Path) -> dict[str, Any]:
+    if name == "frontier_graph":
+        value = _read_json_object(path)
+        metadata = value.get("_meta")
+        if not isinstance(metadata, dict):
+            raise SemanticDiffError(f"{path}: missing object-valued _meta")
+        return metadata
+    return _read_meta(path)
+
+
+def _artifact_logical_root(name: str, path: Path) -> str:
+    logical_format = "json" if name == "frontier_graph" else "jsonl-rowset"
+    try:
+        with path.open("rb") as handle:
+            root = contracts._artifact_logical_root_handle(
+                handle, logical_format, str(path)
+            )
+    except FileNotFoundError as exc:
+        raise SemanticDiffError(f"missing Brain artifact: {path}") from exc
+    except contracts.VerificationError as exc:
+        raise SemanticDiffError(str(exc)) from exc
+    if not isinstance(root, str):
+        raise SemanticDiffError(f"{path}: semantic artifact has no logical root")
+    return root
+
+
+def _coverage_and_artifacts(
+    before: Snapshot,
+    after: Snapshot,
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    required = list(contracts.COMPATIBILITY_SEMANTIC_PATHS)
+
+    def describe(snapshot: Snapshot) -> dict[str, Any]:
+        present = [
+            relative
+            for name, relative in RELEASE_PATHS.items()
+            if name in snapshot.artifacts
+        ]
+        missing = [relative for relative in required if relative not in present]
+        return {"present": present, "missing": missing, "complete": not missing}
+
+    before_coverage = describe(before)
+    after_coverage = describe(after)
+    compared = [
+        relative
+        for name, relative in RELEASE_PATHS.items()
+        if name in before.artifacts and name in after.artifacts
+    ]
+    artifacts: dict[str, dict[str, Any]] = {}
+    for name, relative in RELEASE_PATHS.items():
+        before_path = before.artifacts.get(name)
+        after_path = after.artifacts.get(name)
+        before_root = (
+            _artifact_logical_root(name, before_path)
+            if before_path is not None
+            else None
+        )
+        after_root = (
+            _artifact_logical_root(name, after_path)
+            if after_path is not None
+            else None
+        )
+        is_compared = before_root is not None and after_root is not None
+        artifacts[relative] = {
+            "from": before_root,
+            "to": after_root,
+            "compared": is_compared,
+            "different": before_root != after_root if is_compared else None,
+        }
+    return (
+        {
+            "required": required,
+            "from": before_coverage,
+            "to": after_coverage,
+            "compared": compared,
+            "complete": before_coverage["complete"] and after_coverage["complete"],
+        },
+        artifacts,
+    )
+
+
 def _resolve_manifest(path: Path) -> tuple[Path, Path]:
     if path.is_file():
         return path.resolve(strict=True), path.parent.resolve(strict=True)
@@ -175,8 +279,10 @@ def _resolve_manifest(path: Path) -> tuple[Path, Path]:
 def _resolve_snapshot(raw: Path) -> Snapshot:
     path = raw.expanduser()
     if path.is_dir():
-        present = {key for key, name in DIRECT_REQUIRED.items() if (path / name).is_file()}
-        if present == set(DIRECT_REQUIRED):
+        present = {
+            key for key, name in DIRECT_PATHS.items() if (path / name).is_file()
+        }
+        if set(DIRECT_REQUIRED) <= present:
             root = path.resolve(strict=True)
             artifacts = {key: root / name for key, name in DIRECT_REQUIRED.items()}
             for key, name in DIRECT_OPTIONAL.items():
@@ -270,12 +376,15 @@ def _edge_identity(row: Mapping[str, Any], location: str) -> tuple[str, str, str
     return src, dst, kind
 
 
-def _index_edges(connection: sqlite3.Connection, snapshot: Snapshot, side: str) -> None:
-    pending: list[tuple[str, str, str, str, str, str, str, int]] = []
-    for artifact in ("edges", "edges_links"):
-        path = snapshot.artifacts.get(artifact)
-        if path is None:
-            continue
+def _index_edges(
+    connection: sqlite3.Connection,
+    snapshot: Snapshot,
+    side: str,
+    artifact_names: Iterable[str],
+) -> None:
+    pending: list[tuple[str, str, str, str, str, str, str, str, int]] = []
+    for artifact in artifact_names:
+        path = snapshot.artifacts[artifact]
         for line_number, row in _iter_jsonl(path):
             location = f"{path}:{line_number}"
             src, dst, kind = _edge_identity(row, location)
@@ -284,6 +393,7 @@ def _index_edges(connection: sqlite3.Connection, snapshot: Snapshot, side: str) 
             source = row["provenance"].get("source")
             pending.append((
                 side,
+                artifact,
                 src,
                 dst,
                 kind,
@@ -295,9 +405,9 @@ def _index_edges(connection: sqlite3.Connection, snapshot: Snapshot, side: str) 
             if len(pending) >= 10_000:
                 connection.executemany(
                     """INSERT INTO edge_variants
-                       (side, src, dst, kind, full, semantic, source, count)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                       ON CONFLICT(side, src, dst, kind, full)
+                       (side, artifact, src, dst, kind, full, semantic, source, count)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                       ON CONFLICT(side, artifact, src, dst, kind, full)
                        DO UPDATE SET count = count + excluded.count""",
                     pending,
                 )
@@ -305,9 +415,9 @@ def _index_edges(connection: sqlite3.Connection, snapshot: Snapshot, side: str) 
     if pending:
         connection.executemany(
             """INSERT INTO edge_variants
-               (side, src, dst, kind, full, semantic, source, count)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-               ON CONFLICT(side, src, dst, kind, full)
+               (side, artifact, src, dst, kind, full, semantic, source, count)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(side, artifact, src, dst, kind, full)
                DO UPDATE SET count = count + excluded.count""",
             pending,
         )
@@ -316,13 +426,13 @@ def _index_edges(connection: sqlite3.Connection, snapshot: Snapshot, side: str) 
 def _db_variants(
     connection: sqlite3.Connection,
     side: str,
-    identity: tuple[str, str, str],
+    identity: tuple[str, str, str, str],
 ) -> Counter[str]:
     return Counter({
         full: count
         for full, count in connection.execute(
             """SELECT full, count FROM edge_variants
-               WHERE side = ? AND src = ? AND dst = ? AND kind = ?
+               WHERE side = ? AND artifact = ? AND src = ? AND dst = ? AND kind = ?
                ORDER BY full""",
             (side, *identity),
         )
@@ -421,11 +531,21 @@ def _record_source_delta(
             grouped[(source, kind)]["changed"] += min(before[source], after[source])
 
 
-def _identity_json(identity: tuple[str, str, str]) -> dict[str, str]:
-    return {"src": identity[0], "dst": identity[1], "kind": identity[2]}
+def _identity_json(identity: tuple[str, str, str, str]) -> dict[str, str]:
+    return {
+        "artifact": RELEASE_PATHS[identity[0]],
+        "src": identity[1],
+        "dst": identity[2],
+        "kind": identity[3],
+    }
 
 
 def _compare_edges(before: Snapshot, after: Snapshot) -> dict[str, Any]:
+    artifact_names = tuple(
+        name
+        for name in ("edges", "edges_links")
+        if name in before.artifacts and name in after.artifacts
+    )
     with tempfile.TemporaryDirectory(prefix="wikilean-semantic-diff-") as temp:
         connection = sqlite3.connect(Path(temp) / "edges.sqlite3")
         connection.executescript(
@@ -433,6 +553,7 @@ def _compare_edges(before: Snapshot, after: Snapshot) -> dict[str, Any]:
                PRAGMA synchronous = OFF;
                CREATE TABLE edge_variants (
                  side TEXT NOT NULL,
+                 artifact TEXT NOT NULL,
                  src TEXT NOT NULL,
                  dst TEXT NOT NULL,
                  kind TEXT NOT NULL,
@@ -440,25 +561,29 @@ def _compare_edges(before: Snapshot, after: Snapshot) -> dict[str, Any]:
                  semantic TEXT NOT NULL,
                  source TEXT NOT NULL,
                  count INTEGER NOT NULL,
-                 PRIMARY KEY (side, src, dst, kind, full)
+                 PRIMARY KEY (side, artifact, src, dst, kind, full)
                ) WITHOUT ROWID;
                CREATE INDEX edge_identity
-                 ON edge_variants(src, dst, kind, side);"""
+                 ON edge_variants(artifact, src, dst, kind, side);"""
         )
-        _index_edges(connection, before, "before")
-        _index_edges(connection, after, "after")
+        _index_edges(connection, before, "before", artifact_names)
+        _index_edges(connection, after, "after", artifact_names)
         connection.commit()
         identities = connection.execute(
-            "SELECT DISTINCT src, dst, kind FROM edge_variants ORDER BY src, dst, kind"
+            "SELECT DISTINCT artifact, src, dst, kind FROM edge_variants "
+            "ORDER BY artifact, src, dst, kind"
         )
         result = _compare_indexed_edges(connection, identities)
         connection.close()
+        result["compared_artifacts"] = [
+            RELEASE_PATHS[name] for name in artifact_names
+        ]
         return result
 
 
 def _compare_indexed_edges(
     connection: sqlite3.Connection,
-    identities: Iterable[tuple[str, str, str]],
+    identities: Iterable[tuple[str, str, str, str]],
 ) -> dict[str, Any]:
     added = []
     removed = []
@@ -472,12 +597,12 @@ def _compare_indexed_edges(
         if not before_variants:
             added.append({**_identity_json(identity), "variants": _row_variants(after_variants)})
             for source, count in _edge_sources(after_variants).items():
-                grouped[(source, identity[2])]["added"] += count
+                grouped[(source, identity[3])]["added"] += count
             continue
         if not after_variants:
             removed.append({**_identity_json(identity), "variants": _row_variants(before_variants)})
             for source, count in _edge_sources(before_variants).items():
-                grouped[(source, identity[2])]["removed"] += count
+                grouped[(source, identity[3])]["removed"] += count
             continue
         if before_variants == after_variants:
             continue
@@ -495,7 +620,7 @@ def _compare_indexed_edges(
             })
             _record_source_delta(
                 grouped,
-                identity[2],
+                identity[3],
                 _edge_sources(same_source_before),
                 _edge_sources(same_source_after),
                 changed=True,
@@ -511,7 +636,7 @@ def _compare_indexed_edges(
             })
             _record_source_delta(
                 grouped,
-                identity[2],
+                identity[3],
                 _edge_sources(provenance_before),
                 _edge_sources(provenance_after),
                 changed=True,
@@ -527,7 +652,7 @@ def _compare_indexed_edges(
             })
             _record_source_delta(
                 grouped,
-                identity[2],
+                identity[3],
                 _edge_sources(paired_before),
                 _edge_sources(paired_after),
                 changed=True,
@@ -538,14 +663,14 @@ def _compare_indexed_edges(
                 "variants": _row_variants(removed_variants),
             })
             for source, count in _edge_sources(removed_variants).items():
-                grouped[(source, identity[2])]["removed"] += count
+                grouped[(source, identity[3])]["removed"] += count
         if added_variants:
             added.append({
                 **_identity_json(identity),
                 "variants": _row_variants(added_variants),
             })
             for source, count in _edge_sources(added_variants).items():
-                grouped[(source, identity[2])]["added"] += count
+                grouped[(source, identity[3])]["added"] += count
 
     groups = [
         {
@@ -832,8 +957,24 @@ def _load_frontier(path: Path) -> dict[str, dict[str, Any]]:
     return result
 
 
+def _compare_root_artifact(
+    artifacts: Mapping[str, Mapping[str, Any]],
+    relative: str,
+) -> dict[str, Any]:
+    comparison = artifacts[relative]
+    return {
+        "compared": comparison["compared"],
+        "from": comparison["from"],
+        "to": comparison["to"],
+        "different": comparison["different"],
+    }
+
+
 def _validate_generation(snapshot: Snapshot) -> None:
-    meta = {name: _read_meta(path) for name, path in snapshot.artifacts.items()}
+    meta = {
+        name: _artifact_meta(name, path)
+        for name, path in snapshot.artifacts.items()
+    }
     base_names = [name for name in ("nodes", "edges", "edges_links") if name in meta]
     base_generations = {meta[name].get("generated_at") for name in base_names}
     base_snapshot_ids = {meta[name].get("snapshot_id") for name in base_names}
@@ -849,23 +990,33 @@ def _validate_generation(snapshot: Snapshot) -> None:
             f"{snapshot.label}: organ graph artifacts have mixed snapshot_id values"
         )
 
-    cell_generation = meta["cells"].get("generated_at")
-    frontier_generation = meta["frontier"].get("generated_at")
-    if cell_generation is None or frontier_generation is None or cell_generation != frontier_generation:
+    cell_names = [
+        name
+        for name in ("cells", "synapses", "frontier", "frontier_graph")
+        if name in meta
+    ]
+    cell_generations = {meta[name].get("generated_at") for name in cell_names}
+    if len(cell_generations) != 1 or None in cell_generations:
         raise SemanticDiffError(
             f"{snapshot.label}: cell/frontier artifacts have mixed or missing generated_at values"
         )
     base_generation = next(iter(base_generations))
-    if meta["cells"].get("base_generated_at") not in (None, base_generation):
-        raise SemanticDiffError(
-            f"{snapshot.label}: cells.jsonl does not name the organ graph generated_at"
-        )
+    for name in ("cells", "synapses"):
+        if name not in meta:
+            continue
+        if meta[name].get("base_generated_at") not in (None, base_generation):
+            raise SemanticDiffError(
+                f"{snapshot.label}: {DIRECT_PATHS[name]} does not name the organ graph generated_at"
+            )
     if present_snapshot_ids:
         base_snapshot_id = next(iter(present_snapshot_ids))
-        if meta["cells"].get("base_snapshot_id") not in (None, base_snapshot_id):
-            raise SemanticDiffError(
-                f"{snapshot.label}: cells.jsonl does not name the organ graph snapshot_id"
-            )
+        for name in ("cells", "synapses"):
+            if name not in meta:
+                continue
+            if meta[name].get("base_snapshot_id") not in (None, base_snapshot_id):
+                raise SemanticDiffError(
+                    f"{snapshot.label}: {DIRECT_PATHS[name]} does not name the organ graph snapshot_id"
+                )
 
 
 def _edge_record_count(record: Mapping[str, Any], status: str) -> int:
@@ -901,6 +1052,12 @@ def _summary(report: Mapping[str, Any]) -> dict[str, Any]:
         "frontier": {
             key: len(report["frontier"][key]) for key in ("added", "removed", "changed")
         },
+        "synapses": {
+            "changed": int(report["synapses"]["different"] is True),
+        },
+        "frontier_graph": {
+            "changed": int(report["frontier_graph"]["different"] is True),
+        },
     }
 
 
@@ -910,6 +1067,16 @@ def _has_differences(summary: Mapping[str, Any]) -> bool:
         for section in summary.values()
         for count in section.values()
     )
+
+
+def summarize_report(report: Mapping[str, Any]) -> dict[str, Any]:
+    """Recompute the compact v2 summary from the detailed comparison sections."""
+    return _summary(report)
+
+
+def summary_has_differences(summary: Mapping[str, Any]) -> bool:
+    """Return whether a validated v2 summary contains a semantic change."""
+    return _has_differences(summary)
 
 
 def compare(before: Snapshot, after: Snapshot) -> dict[str, Any]:
@@ -923,24 +1090,63 @@ def compare(before: Snapshot, after: Snapshot) -> dict[str, Any]:
     after_cells, after_organs = _load_cells(after.artifacts["cells"])
     before_frontier = _load_frontier(before.artifacts["frontier"])
     after_frontier = _load_frontier(after.artifacts["frontier"])
+    coverage, semantic_artifacts = _coverage_and_artifacts(before, after)
     edges = _compare_edges(before, after)
     _validate_generation(before)
     _validate_generation(after)
+
+    node_comparison = _compare_unique(before_nodes, after_nodes, "id")
+    cell_comparison = _compare_unique(before_cells, after_cells, "id")
+    organ_comparison = _compare_organs(before_organs, after_organs)
+    frontier_comparison = _compare_unique(before_frontier, after_frontier, "id")
+    semantic_artifacts[RELEASE_PATHS["nodes"]]["different"] = any(
+        node_comparison[key] for key in ("added", "removed", "changed")
+    )
+    semantic_artifacts[RELEASE_PATHS["cells"]]["different"] = any(
+        cell_comparison[key] for key in ("added", "removed", "changed")
+    ) or any(
+        organ_comparison[key]
+        for key in (
+            "added",
+            "removed",
+            "moved",
+            "changed",
+            "provenance_only",
+            "splits",
+            "merges",
+        )
+    )
+    semantic_artifacts[RELEASE_PATHS["frontier"]]["different"] = any(
+        frontier_comparison[key] for key in ("added", "removed", "changed")
+    )
 
     report: dict[str, Any] = {
         "schema": SCHEMA,
         "from": before.description(),
         "to": after.description(),
-        "nodes": _compare_unique(before_nodes, after_nodes, "id"),
+        "coverage": coverage,
+        "semantic_artifacts": semantic_artifacts,
+        "nodes": node_comparison,
         "edges": edges,
         "snippets": _compare_snippets(before_nodes, after_nodes),
-        "cells": _compare_unique(before_cells, after_cells, "id"),
-        "organ_membership": _compare_organs(before_organs, after_organs),
-        "frontier": _compare_unique(before_frontier, after_frontier, "id"),
+        "cells": cell_comparison,
+        "organ_membership": organ_comparison,
+        "frontier": frontier_comparison,
+        "synapses": _compare_root_artifact(
+            semantic_artifacts, RELEASE_PATHS["synapses"]
+        ),
+        "frontier_graph": _compare_root_artifact(
+            semantic_artifacts, RELEASE_PATHS["frontier_graph"]
+        ),
     }
-    report["summary"] = _summary(report)
-    report["different"] = _has_differences(report["summary"])
+    report["summary"] = summarize_report(report)
+    report["different"] = summary_has_differences(report["summary"])
     return report
+
+
+def compare_paths(before: Path, after: Path) -> dict[str, Any]:
+    """Resolve and compare two data directories or release manifests."""
+    return compare(_resolve_snapshot(before), _resolve_snapshot(after))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -949,7 +1155,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--to", dest="after", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        report = compare(_resolve_snapshot(args.before), _resolve_snapshot(args.after))
+        report = compare_paths(args.before, args.after)
     except (OSError, SemanticDiffError) as exc:
         print(f"semantic_diff: {exc}", file=sys.stderr)
         return 2
