@@ -5,6 +5,7 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   renameSync,
   rmSync,
   symlinkSync,
@@ -170,6 +171,116 @@ function makeRelease(
   const manifestPath = join(releaseDir, "release.json");
   writeFileSync(manifestPath, JSON.stringify(manifest) + "\n");
   return { releaseDir, manifestPath, releaseId, hex };
+}
+
+const PUBLIC_BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1";
+const PUBLIC_BASELINE_DOMAIN = "wikilean.public-asset-baseline.v1";
+const PUBLIC_BASELINE_AUTHORITY = "d".repeat(40);
+const PUBLIC_BASELINE_CONTENTS: Record<string, string> = {
+  "404.html": "baseline-404\n",
+  "robots.txt": "User-agent: *\nAllow: /\n",
+  "wikilean.ttl": "@prefix wl: <https://wikilean.example/> .\n",
+  "concepts.html": "<html>baseline-concepts</html>\n",
+  "assets/style.css": "body { color: baseline; }\n",
+  "assets/script.js": "globalThis.baseline = true;\n",
+  "assets/review.css": ".review { display: block; }\n",
+  "assets/editor.js": "globalThis.baselineEditor = true;\n",
+  "assets/mathlib-index.json": JSON.stringify([
+    ["Nat.add", "Mathlib.Data.Nat.Basic"],
+    ["Nat.mul", "Mathlib.Data.Nat.Basic"],
+  ]),
+  "assets/decl-index/manifest.json": "{\"schema\":\"fixture-decl-index\"}\n",
+  "assets/decl-index/aa.json": "[\"Nat.add\"]\n",
+  "assets/suffix-index/manifest.json": "{\"schema\":\"fixture-suffix-index\"}\n",
+  "assets/suffix-index/aa.json": "[\"add\"]\n",
+  "assets/premise-index/manifest.json": "{\"schema\":\"fixture-premise-index\"}\n",
+  "assets/premise-index/aa.json": "[\"Nat.add_comm\"]\n",
+  "assets/icons/wiki.svg": "<svg>baseline-icon</svg>\n",
+};
+
+interface PublicBaselineFixture {
+  root: string;
+  manifestPath: string;
+  baselineId: string;
+  hex: string;
+  authorityCommit: string;
+  files: Array<{ path: string; sha256: string; bytes: number }>;
+  contents: Map<string, Buffer>;
+  totalBytes: number;
+}
+
+function makePublicBaseline(
+  store: string,
+  options: {
+    omit?: string[];
+    manifestOnly?: Array<{ path: string; bytes: Buffer }>;
+  } = {},
+): PublicBaselineFixture {
+  const omitted = new Set(options.omit ?? []);
+  const contents = new Map(
+    Object.entries(PUBLIC_BASELINE_CONTENTS)
+      .filter(([path]) => !omitted.has(path))
+      .map(([path, value]) => [path, Buffer.from(value)]),
+  );
+  const files = [
+    ...[...contents].map(([path, bytes]) => ({
+      path,
+      sha256: digest(bytes),
+      bytes: bytes.byteLength,
+    })),
+    ...(options.manifestOnly ?? []).map(item => ({
+      path: item.path,
+      sha256: digest(item.bytes),
+      bytes: item.bytes.byteLength,
+    })),
+  ].sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
+  const identityValue = {
+    schema: PUBLIC_BASELINE_SCHEMA,
+    authority: { git_commit: PUBLIC_BASELINE_AUTHORITY },
+    files,
+  };
+  const baselineId = `sha256:${digest(Buffer.from(
+    `wikilean\0${PUBLIC_BASELINE_DOMAIN}\0canonical-json-v1\0${canonicalJson(identityValue)}`,
+  ))}`;
+  const hex = baselineId.slice("sha256:".length);
+  const root = join(store, hex);
+  mkdirSync(root, { recursive: true });
+  for (const [path, bytes] of contents) {
+    const target = join(root, ...path.split("/"));
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, bytes);
+  }
+  const manifestPath = join(root, "manifest.json");
+  writeFileSync(manifestPath, `${canonicalJson({ ...identityValue, baseline_id: baselineId })}\n`);
+  return {
+    root,
+    manifestPath,
+    baselineId,
+    hex,
+    authorityCommit: PUBLIC_BASELINE_AUTHORITY,
+    files,
+    contents,
+    totalBytes: files.reduce((sum, file) => sum + file.bytes, 0),
+  };
+}
+
+const buildPublicScript = resolve(import.meta.dirname, "..", "scripts", "build-public.ts");
+
+function invokeBuildPublic(wiki: string, args: string[]): string {
+  return execFileSync(process.execPath, [
+    "--experimental-strip-types",
+    buildPublicScript,
+    ...args,
+  ], { cwd: wiki, encoding: "utf8", stdio: "pipe" });
+}
+
+function baselineArgs(baseline: PublicBaselineFixture): string[] {
+  return [
+    "--public-baseline-manifest",
+    baseline.manifestPath,
+    "--public-baseline-dir",
+    baseline.root,
+  ];
 }
 
 function stage(release: ReturnType<typeof makeRelease>, destination: string, overrides = {}) {
@@ -511,7 +622,7 @@ describe("stageBrainPublicRelease", () => {
 });
 
 describe("buildPublic", () => {
-  it("copies shell assets and stages only the explicit frozen Brain release", () => {
+  it("keeps the legacy wiki/public default for shadow builds", () => {
     const root = tempRoot();
     const wiki = join(root, "wiki");
     const site = join(root, "site");
@@ -522,24 +633,25 @@ describe("buildPublic", () => {
     mkdirSync(join(site, "annotations"), { recursive: true });
     writeFileSync(join(site, "assets", "style.css"), "style");
     writeFileSync(join(site, "out", "brain.html"), "mutable-page-must-not-ship");
+    for (const file of ["concepts.html", "404.html", "robots.txt", "wikilean.ttl", "junk.txt"]) {
+      writeFileSync(join(site, "out", file), `ignored-${file}`);
+    }
     writeFileSync(join(wiki, "assets", "editor.js"), "editor");
     writeFileSync(join(wiki, "public", "about.html"), "stale");
     const release = makeRelease(join(root, "store"), "A");
 
-    const script = resolve(import.meta.dirname, "..", "scripts", "build-public.ts");
-    const output = execFileSync(process.execPath, [
-      "--experimental-strip-types",
-      script,
+    const output = invokeBuildPublic(wiki, [
       "--brain-release-manifest",
       release.manifestPath,
       "--brain-release-dir",
       release.releaseDir,
-    ], { cwd: wiki, encoding: "utf8" });
+    ]);
 
     const metrics = JSON.parse(output);
     expect(metrics).toMatchObject({
       schema: "wikilean.public-build-result/v1",
       mathlib_declarations: 0,
+      public_baseline: null,
       brain: {
         schema: "wikilean.public-stage-result/v1",
         release_id: release.releaseId,
@@ -555,9 +667,218 @@ describe("buildPublic", () => {
     expect(readFileSync(join(wiki, "public", "assets", "style.css"), "utf8")).toBe("style");
     expect(readFileSync(join(wiki, "public", "assets", "editor.js"), "utf8")).toBe("editor");
     expect(existsSync(join(wiki, "public", "about.html"))).toBe(false);
+    for (const file of ["concepts.html", "404.html", "robots.txt", "wikilean.ttl"]) {
+      expect(readFileSync(join(wiki, "public", file), "utf8")).toBe(`ignored-${file}`);
+    }
+    expect(existsSync(join(wiki, "public", "junk.txt"))).toBe(false);
     expect(readFileSync(join(wiki, "public", "assets", "brain", "sources.json"))).toEqual(
       readFileSync(join(wiki, "public", "assets", "brain", "releases", release.hex, "sources.json")),
     );
     expect(JSON.parse(readFileSync(join(wiki, "public", "assets", "mathlib-index.json"), "utf8"))).toEqual([]);
+  });
+
+  it("builds a fresh external public tree with a fixed selector audit timestamp", () => {
+    const root = tempRoot();
+    const checkout = join(root, "checkout");
+    const wiki = join(checkout, "wiki");
+    const site = join(checkout, "site");
+    const publicDir = join(root, "promotion", "public");
+    mkdirSync(join(wiki, "assets"), { recursive: true });
+    mkdirSync(join(wiki, "public"), { recursive: true });
+    mkdirSync(publicDir, { recursive: true });
+    mkdirSync(join(site, "assets"), { recursive: true });
+    mkdirSync(join(site, "out"), { recursive: true });
+    mkdirSync(join(site, "annotations"), { recursive: true });
+    writeFileSync(join(site, "assets", "style.css"), "style");
+    writeFileSync(join(site, "out", "brain.html"), "mutable-page-must-not-ship");
+    for (const file of ["concepts.html", "404.html", "robots.txt", "wikilean.ttl", "junk.txt"]) {
+      writeFileSync(join(site, "out", file), `ignored-${file}`);
+    }
+    writeFileSync(join(wiki, "assets", "editor.js"), "editor");
+    writeFileSync(join(wiki, "public", "stale.txt"), "must remain isolated");
+    const release = makeRelease(join(root, "store"), "A");
+    const baseline = makePublicBaseline(join(root, "baselines"));
+
+    const output = invokeBuildPublic(wiki, [
+      "--public-dir",
+      publicDir,
+      ...baselineArgs(baseline),
+      "--brain-release-manifest",
+      release.manifestPath,
+      "--brain-release-dir",
+      release.releaseDir,
+      "--brain-audited-at",
+      "2031-02-03T04:05:06Z",
+    ]);
+
+    const metrics = JSON.parse(output);
+    const physicalPublicDir = realpathSync(publicDir);
+    expect(metrics.public_dir).toBe(physicalPublicDir);
+    expect(metrics.mathlib_declarations).toBe(2);
+    expect(metrics.public_baseline).toEqual({
+      schema: PUBLIC_BASELINE_SCHEMA,
+      baseline_id: baseline.baselineId,
+      authority_commit: baseline.authorityCommit,
+      root: realpathSync(baseline.root),
+      files: baseline.files.length,
+      bytes: baseline.totalBytes,
+    });
+    expect(metrics.brain).toMatchObject({
+      release_id: release.releaseId,
+      destination: join(physicalPublicDir, "assets", "brain"),
+      brain_page: { destination: join(physicalPublicDir, "brain.html") },
+    });
+    expect(JSON.parse(readFileSync(join(publicDir, "assets", "brain", "current.json"), "utf8")))
+      .toMatchObject({
+        release_id: release.releaseId,
+        audited_at: "2031-02-03T04:05:06Z",
+      });
+    expect(existsSync(join(publicDir, "stale.txt"))).toBe(false);
+    expect(existsSync(join(publicDir, "junk.txt"))).toBe(false);
+    expect(existsSync(join(publicDir, "manifest.json"))).toBe(false);
+    for (const [path, bytes] of baseline.contents) {
+      expect(readFileSync(join(publicDir, ...path.split("/")))).toEqual(bytes);
+    }
+    expect(readFileSync(join(publicDir, "assets", "style.css"), "utf8"))
+      .not.toBe(readFileSync(join(site, "assets", "style.css"), "utf8"));
+    expect(readFileSync(join(publicDir, "assets", "editor.js"), "utf8"))
+      .not.toBe(readFileSync(join(wiki, "assets", "editor.js"), "utf8"));
+    expect(readFileSync(join(publicDir, "concepts.html"), "utf8"))
+      .not.toBe(readFileSync(join(site, "out", "concepts.html"), "utf8"));
+    expect(readFileSync(join(wiki, "public", "stale.txt"), "utf8")).toBe("must remain isolated");
+    expect(readFileSync(join(publicDir, "brain.html"), "utf8")).toContain("frozen-A");
+  });
+
+  it("requires a complete immutable baseline for explicit public staging", () => {
+    const root = tempRoot();
+    const checkout = join(root, "checkout");
+    const wiki = join(checkout, "wiki");
+    mkdirSync(wiki, { recursive: true });
+    const release = makeRelease(join(root, "store"), "A");
+    const publicDir = join(root, "promotion", "public");
+    const brain = [
+      "--brain-release-manifest",
+      release.manifestPath,
+      "--brain-release-dir",
+      release.releaseDir,
+    ];
+
+    expect(() => invokeBuildPublic(wiki, ["--public-dir", publicDir, ...brain]))
+      .toThrow(/requires --public-baseline-manifest and --public-baseline-dir/);
+    expect(existsSync(publicDir)).toBe(false);
+
+    const baseline = makePublicBaseline(join(root, "baselines"));
+    expect(() => invokeBuildPublic(wiki, [
+      "--public-dir",
+      publicDir,
+      "--public-baseline-manifest",
+      baseline.manifestPath,
+      ...brain,
+    ])).toThrow(/manifest and directory must be supplied together/);
+    expect(() => invokeBuildPublic(wiki, [...baselineArgs(baseline), ...brain]))
+      .toThrow(/require an explicit --public-dir/);
+  });
+
+  it("rejects incomplete, tampered, unsafe, symlinked, or unlisted baseline entries", () => {
+    const root = tempRoot();
+    const checkout = join(root, "checkout");
+    const wiki = join(checkout, "wiki");
+    mkdirSync(wiki, { recursive: true });
+    const release = makeRelease(join(root, "store"), "A");
+    const brain = [
+      "--brain-release-manifest",
+      release.manifestPath,
+      "--brain-release-dir",
+      release.releaseDir,
+    ];
+    let attempt = 0;
+    const invoke = (baseline: PublicBaselineFixture) => invokeBuildPublic(wiki, [
+      "--public-dir",
+      join(root, "promotion", `public-${attempt += 1}`),
+      ...baselineArgs(baseline),
+      ...brain,
+    ]);
+
+    const incomplete = makePublicBaseline(join(root, "baselines-incomplete"), {
+      omit: ["assets/style.css"],
+    });
+    expect(() => invoke(incomplete)).toThrow(/missing required assets.*assets\/style\.css/);
+
+    const omitted = makePublicBaseline(join(root, "baselines-omitted"));
+    rmSync(join(omitted.root, "assets", "decl-index", "aa.json"));
+    expect(() => invoke(omitted)).toThrow(/tree does not match its complete inventory/);
+
+    const tampered = makePublicBaseline(join(root, "baselines-tampered"));
+    const stylePath = join(tampered.root, "assets", "style.css");
+    writeFileSync(stylePath, Buffer.alloc(readFileSync(stylePath).byteLength, 0x78));
+    expect(() => invoke(tampered)).toThrow(/digest mismatch.*assets\/style\.css/);
+
+    const traversal = makePublicBaseline(join(root, "baselines-traversal"), {
+      manifestOnly: [{ path: "../escape", bytes: Buffer.from("escape") }],
+    });
+    expect(() => invoke(traversal)).toThrow(/not a normalized relative POSIX path/);
+
+    const brainOwned = makePublicBaseline(join(root, "baselines-brain-owned"), {
+      manifestOnly: [{ path: "brain.html", bytes: Buffer.from("not-release-coupled") }],
+    });
+    expect(() => invoke(brainOwned)).toThrow(/Brain-owned path must not enter/);
+
+    const routeShadow = makePublicBaseline(join(root, "baselines-route-shadow"), {
+      manifestOnly: [{ path: "about.html", bytes: Buffer.from("stale dynamic route") }],
+    });
+    expect(() => invoke(routeShadow)).toThrow(/route-shadowing or retired path/);
+
+    const symlinked = makePublicBaseline(join(root, "baselines-symlinked"));
+    const externalStyle = join(root, "external-style.css");
+    writeFileSync(externalStyle, PUBLIC_BASELINE_CONTENTS["assets/style.css"]);
+    rmSync(join(symlinked.root, "assets", "style.css"));
+    symlinkSync(externalStyle, join(symlinked.root, "assets", "style.css"));
+    expect(() => invoke(symlinked)).toThrow(/contains a symlink/);
+
+    const unlisted = makePublicBaseline(join(root, "baselines-unlisted"));
+    writeFileSync(join(unlisted.root, "unlisted.txt"), "not in manifest");
+    expect(() => invoke(unlisted)).toThrow(/unlisted unlisted\.txt/);
+  });
+
+  it("rejects unsafe or stale explicit public directories without deleting them", () => {
+    const root = tempRoot();
+    const checkout = join(root, "checkout");
+    const wiki = join(checkout, "wiki");
+    const site = join(checkout, "site");
+    mkdirSync(join(wiki, "assets"), { recursive: true });
+    mkdirSync(join(site, "assets"), { recursive: true });
+    mkdirSync(join(site, "out"), { recursive: true });
+    mkdirSync(join(site, "annotations"), { recursive: true });
+    const release = makeRelease(join(root, "store"), "A");
+    const baseline = makePublicBaseline(join(root, "baselines"));
+    const baseArgs = [
+      ...baselineArgs(baseline),
+      "--brain-release-manifest",
+      release.manifestPath,
+      "--brain-release-dir",
+      release.releaseDir,
+    ];
+    const invoke = (args: string[]) => invokeBuildPublic(wiki, args);
+
+    expect(() => invoke(["--public-dir", "relative-public", ...baseArgs]))
+      .toThrow(/absolute path/);
+    expect(() => invoke(["--public-dir", join(wiki, "promotion-public"), ...baseArgs]))
+      .toThrow(/outside the repository checkout/);
+    expect(() => invoke(["--public-dir", join(site, "out", "promotion-public"), ...baseArgs]))
+      .toThrow(/outside the repository checkout/);
+
+    const stale = join(root, "stale-public");
+    mkdirSync(stale);
+    writeFileSync(join(stale, "keep.txt"), "do not delete");
+    expect(() => invoke(["--public-dir", stale, ...baseArgs]))
+      .toThrow(/absent or empty/);
+    expect(readFileSync(join(stale, "keep.txt"), "utf8")).toBe("do not delete");
+
+    const real = join(root, "real-public");
+    const linked = join(root, "linked-public");
+    mkdirSync(real);
+    symlinkSync(real, linked, "dir");
+    expect(() => invoke(["--public-dir", linked, ...baseArgs]))
+      .toThrow(/must not be a symlink/);
   });
 });
