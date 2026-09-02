@@ -1,6 +1,7 @@
 # WikiLean canonical JSON and logical hashes, version 1
 
-Status: normative for `brain/authority` schema version 1 documents.
+Status: normative for every `brain/authority` contract that names
+`canonical-json-v1`, including the version 1 and version 2 schemas below.
 
 ## Canonical JSON bytes
 
@@ -41,8 +42,13 @@ are not interchangeable.
 | Source manifest | `wikilean.source-manifest.v1` | Remove top-level `source_manifest_id` and `audit`. |
 | Source set root | `wikilean.source-set.v1` | Sorted array of source-manifest IDs. |
 | Offline pack | `wikilean.offline-pack.v1` | Remove top-level `offline_pack_id` and `audit`. |
+| Source manifest v2 | `wikilean.source-manifest.v2` | Remove top-level `source_manifest_id` and `audit`. |
+| Reducer-input inventory v2 | `wikilean.reducer-input-inventory.v2` | Remove top-level `inventory_id`. |
+| Source set root v2 | `wikilean.source-set.v2` | Object containing the inventory ID, sorted source-manifest IDs, and input-ID-sorted exact present/absent logical bindings whose members are path-sorted. |
+| Offline pack v2 | `wikilean.offline-pack.v2` | Remove top-level `offline_pack_id` and `audit`. |
 | Release | `wikilean.release.v1` | Remove top-level `release_id`, `attestations`, and `created_at`. |
 | Build attestation | `wikilean.build-attestation.v1` | Remove top-level `attestation_id` and `recorded_at`. |
+| Full-replay build attestation | `wikilean.build-attestation.v2` | Remove top-level `attestation_id` and `recorded_at`. |
 | Validation attestation | `wikilean.validation-attestation.v1` | Remove top-level `attestation_id` and `recorded_at`. |
 | Logical JSON artifact | `wikilean.logical-json.v1` | Remove a top-level `_meta` member, if present. |
 | Logical JSONL rowset | `wikilean.logical-jsonl-rowset.v1` | See below. |

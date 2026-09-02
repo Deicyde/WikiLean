@@ -14,6 +14,8 @@ import sys
 from pathlib import Path, PurePosixPath
 
 from authority_contracts import (
+    PACK_SCHEMA,
+    PACK_SCHEMA_V2,
     VerificationError,
     load_canonical_json,
     validate_offline_pack,
@@ -30,6 +32,14 @@ def run(
     manifest_path = manifest_path.resolve(strict=True)
     verification_root = (root or manifest_path.parent).resolve(strict=True)
     document, _ = load_canonical_json(manifest_path)
+    if isinstance(document, dict) and document.get("schema") == PACK_SCHEMA_V2:
+        raise VerificationError(
+            "$.schema: offline-pack/v2 full-DAG replay is not implemented; "
+            "verify it with verify_source_set.py only"
+        )
+    if not isinstance(document, dict) or document.get("schema") != PACK_SCHEMA:
+        schema = document.get("schema") if isinstance(document, dict) else None
+        raise VerificationError(f"$.schema: unknown schema/version {schema!r}")
     pack = validate_offline_pack(document)
     verify_offline_pack_files(pack, verification_root, manifest_path=manifest_path)
 
