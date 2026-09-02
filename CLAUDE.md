@@ -32,7 +32,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
 | The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **deleted** (retired 2026-07-10, tombstones destroyed 2026-08-04): `/map`, `/map-v2`, `/graph`, `/atlas`, `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas` and `GET /api/brain/node` answer plain 404s — `RESERVED` (index.ts) only squats the names; agents use `/api/brain/*` + `POST /mcp` (docs: GET `/mcp`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
 | Wikibrain agent API + MCP | `wiki/src/brain-api.ts` (`/api/brain/{unit,transfer,neighborhood,snippets,filter}`) + `wiki/src/mcp.ts` (stateless streamable-HTTP MCP at `POST /mcp`, 9 tools); reference `docs/BRAIN-API.md` + live `/brain/api`; benchmark harness `bench/` (no_tools vs wikibrain arms) |
-| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tunables in `site/ops/nightly.env`. Brain nightly = `brain-nightly.sh`: cadenced ingest → `fold_proposals` → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → clean-tree+main-branch-gated deploy (`WIKILEAN_BRAIN_DEPLOY=1`); the Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
+| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tunables in `site/ops/nightly.env`. Brain nightly = `brain-nightly.sh`: cadenced ingest → `fold_proposals` → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → frozen-release verification + shadow staging/Worker checks only; nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected. Exact production promotion is a separate approved operator action via `site/ops/brain-promote-release.sh`, an attested immutable public baseline, and a durable external journal. The Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | `/Users/jack/Desktop/LEAN/mathlib4` — **read-only; the bot's; don't edit** |
 
@@ -130,8 +130,9 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 
 ## Deploy notes
 - `npm run deploy` bundles **all** of `wiki/src` — don't leave unreleased Worker WIP committed
-  if the nightly may deploy. (The 03:20 nightly never deploys; the 02:20 brain
-  nightly deploys only behind `WIKILEAN_BRAIN_DEPLOY=1` + clean-tree + main-branch gates.)
+  before an operator-approved deployment. Nightly jobs never deploy: the 02:20 Brain job is
+  shadow-only and rejects nonzero `WIKILEAN_BRAIN_DEPLOY`; exact promotion uses
+  `site/ops/brain-promote-release.sh` and the reviewed release runbook.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen

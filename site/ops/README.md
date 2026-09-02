@@ -29,16 +29,18 @@ writes `brain/proposals/*.jsonl` only) → **fold → snapshot/cells/frontier/pa
 builds and acceptance tests** → **content-addressed release freeze and independent
 verification** → **atomic current/previous public staging** → **Worker typecheck
 and unit tests**. The Brain page is copied from the same frozen release as its
-assets, never from mutable `site/out`. With `WIKILEAN_BRAIN_DEPLOY=1` it deploys exactly once only from
-`main`, outside a merge/rebase, with clean Worker/static/release source inputs and
-a stable Worker-version/selector prestate. The strict tagged deploy is bound to
-Wrangler's emitted candidate version. The post-deploy canary checks the selector,
-frozen manifest and page bytes (`/brain` and `/brain.html`), required explorer
-assets, a deterministic shard, REST/MCP release identity, cursor behavior, and
-compatibility aliases. The gitignored public tree is restaged from the frozen
-release immediately before Wrangler reads it.
-Deployment and automatic rollback are independently OFF by default; automatic
-rollback remains an exclusive-window escape hatch because Wrangler has no CAS.
+assets, never from mutable `site/out`. The nightly is shadow-only and rejects the
+retired `WIKILEAN_BRAIN_DEPLOY` path before ingest/build work. Production activation
+uses `brain-promote-release.sh` with one exact external release and one exact immutable
+non-Brain public baseline whose bytes match the reviewed Git-native source attestation.
+It requires one externally backed-up, production-pinned receipt root, seals the staged
+assets and dry-run Worker bundle,
+atomically journals intent, repeats the Git/status/selector fence, and deploys the
+sealed bundle with `--no-bundle` exactly once. The post-deploy canary checks the
+selector, frozen manifest/page, required explorer assets, a deterministic shard,
+REST/MCP release identity, cursor behavior, compatibility aliases, and representative
+shell/search-index baseline files. Deployment requires an explicit approved invocation;
+automatic rollback is not implemented because Wrangler has no compare-and-swap primitive.
 Ingest is fail-soft, but every build/release/deploy
 gate fails closed and logs loudly. See `docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
 Public staging hashes and copies through a fixed 1 MiB buffer, enforces object,

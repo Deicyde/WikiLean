@@ -133,8 +133,8 @@ never independent semantic writers.
   freeze under one release ID; Worker reads and cursors are release-qualified;
   independent verification checks full closure; public staging retains current
   and previous immutable namespaces plus byte-identical compatibility aliases;
-  canary and guarded Worker rollback are wired. Deployment and the non-CAS
-  automatic rollback escape hatch remain independently opt-in.
+  release-aware canaries are wired. Deployment remains explicitly gated, and
+  rollback is manual-only because Wrangler exposes no compare-and-swap primitive.
 - [ ] **Phase 1 production activation and rollback drill (P1A–P1C below)** — review one shadow
   result, enable one production release from a clean `main`, measure CDN/isolate
   convergence, deliberately exercise the documented rollback path, and record
@@ -156,17 +156,21 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-08-31)
+### Current Brain execution queue (updated 2026-09-02)
 
-The next implementation ticket is P1A: promote one already-reviewed immutable release
-without rebuilding it. In parallel, P0-R is the main architecture workstream. P2A is a
-safe third, shadow-only workstream, but P2B and later wait for P0-R's source/build
-contracts. Do not start a Phase 3 D1 schema cutover until all Phase 2 contracts and the
-reviewed genesis are complete.
+P1A's exact-release promoter tooling is implemented and remains production-inactive. The
+current commit intentionally has no `wiki/public-asset-source-attestation.json`, so public
+baseline freeze/verify fails closed until P1B creates and reviews the first complete
+attestation. The next operational ticket is P1B: produce and review one complete activation
+evidence bundle, including the immutable non-Brain public baseline, without changing production. In
+parallel, P0-R remains the main architecture workstream. P2A is a safe third,
+shadow-only workstream, but P2B and later wait for P0-R's source/build contracts. Do not
+start a Phase 3 D1 schema cutover until all Phase 2 contracts and the reviewed genesis
+are complete.
 
-#### P1A — exact frozen-release promotion `[NEXT]`
+#### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; NOT ACTIVATED]`
 
-- [ ] Add `site/ops/brain-promote-release.sh <release-id> --release-root <absolute-path>`,
+- [x] Add `site/ops/brain-promote-release.sh <release-id> --release-root <absolute-path>`,
   where `<release-id>` is the complete `sha256:<64hex>` identity. It must never run
   ingest or reduction: verify the named immutable release, require its recorded authority
   commit to equal a clean `main` HEAD, retain the exact live release, stage the named
@@ -175,36 +179,40 @@ reviewed genesis are complete.
   Run promotion from a separate clean checkout/worktree at the release's authority commit
   and read the candidate through an explicit read-only release-root/store path produced by
   the isolated build. Do not weaken the clean-tree gate by ignoring generated dirtiness.
-  Provide a no-mutation `--dry-run` that executes all local checks, live transport
-  preflight, and read-only Wrangler identity/status/history calls, but never invokes deploy
-  or rollback.
-- [ ] Write a crash-safe append-only deployment journal. Before any mutating Wrangler call,
+  Require a separately frozen, content-addressed non-Brain public-asset baseline, and deploy
+  only the sealed dry-run Worker bundle plus the sealed external asset tree. Provide a
+  no-mutation `--dry-run` that executes all local checks, live transport preflight,
+  read-only Wrangler identity/status/history calls, and Wrangler's local no-upload compile
+  validation, but never invokes a mutating deploy or rollback.
+- [x] Write a crash-safe append-only deployment journal. Before any mutating Wrangler call,
   fsync an intent record containing the attempt ID, requested/prior release IDs, authority
-  commit, and predeploy Worker version. Append immutable deploy-result, canary, rollback,
-  and final-state records linked to that attempt; a derived summary may be generated but
+  commit, and predeploy Worker version. Append immutable invocation, deploy-result, canary,
+  reconciliation, and final-state records linked to that attempt; a derived summary may be generated but
   never overwrites evidence.
   Require an absolute `WIKILEAN_BRAIN_RECEIPT_DIR` outside the checkout and gitignored
   `site/out`; fail if it is unset or unwritable, never garbage-collect it automatically,
   include it in host backups, and attach the event-chain hash to the rollout review. On
   startup, refuse another mutation until every incomplete attempt is reconciled against
   live Wrangler and selector state.
-- [ ] Fix Python TLS trust for the canary using a maintained CA source (`truststore` or
+- [x] Fix Python TLS trust for the canary using a maintained CA source (`truststore` or
   `certifi`); never disable certificate verification. Run a transport preflight with the
   same opener before invoking Wrangler. HTTP 200 proves the normal path. A missing selector
   is accepted only with `--allow-first-deploy-without-selector`, Jack's approval for that
   exact window, and the exception recorded in the intent journal. TLS, DNS, and timeout failures
   fail closed.
-- [ ] Add failure-injection tests for exact-ID mismatch, dirty/wrong Git authority,
-  selector/version races, Wrangler returning nonzero after a possible remote commit,
+- [x] Add failure-injection tests for exact-ID mismatch, dirty/wrong Git authority,
+  unattested public bytes, incomplete index families, selector/version races, Wrangler
+  returning nonzero after a possible remote commit, interrupted child-process cleanup,
   malformed or unwritable journals, crash/SIGKILL after Wrangler, first-deploy flag misuse,
-  canary timeout, and rollback ownership loss.
+  canary timeout, and uncertain-command reconciliation.
 
 **Done when:** a reviewed shadow release can be promoted without rebuilding, the requested,
 staged, deployed, and canaried release IDs are identical, and every attempt either has a
 complete immutable event chain or is detected and reconciled before any later mutation.
-Keep deployment and automatic rollback disabled while this milestone is open. The legacy
-`WIKILEAN_BRAIN_DEPLOY=1` nightly path is not an approved activation path because it
-rebuilds before deployment.
+Keep deployment disabled through P1B and until the explicit P1C approval window. Automatic
+rollback is not implemented; recovery is manual and independently approved. The legacy
+`WIKILEAN_BRAIN_DEPLOY=1` nightly path and its deployment code are deleted because it rebuilt
+before deployment.
 
 #### P1B — activation evidence bundle `[PREP; NO PRODUCTION]`
 
@@ -212,12 +220,20 @@ rebuilds before deployment.
   clean `main`, and authorize the read-only Mathlib checkout and interpreter paths used by
   the launch job.
 - [ ] Provision and verify those paths plus gitignored `site/ops/nightly.local.env` in the
-  same launch context used by the job. Keep agents, deploy, and automatic rollback disabled.
+  same launch context used by the job. Keep agents and deploy disabled.
 - [ ] At the reviewed tip, run `(cd wiki && npm ci && npm run test:ci)` followed from the
   repository root by `PYTHON=.venv/bin/python3 ./scripts/ci-python.sh`.
 - [ ] Run the shadow nightly in an isolated build worktree/output context so its
   timestamp-bearing generated files cannot dirty the clean promotion checkout.
-- [ ] Freeze or identify a complete trusted pre-activation baseline bundle, and
+- [ ] Build all non-Brain Worker assets once (including declaration/suffix/premise indexes
+  and shell files generated by `site/export_wikidata_rdf.py` followed by
+  `site/build_static_pages.py`), render `brain_public_baseline.py attest` into the fixed
+  `wiki/public-asset-source-attestation.json`, review and commit that exact inventory, then
+  freeze the unchanged ignored public tree against the resulting authority commit. Never
+  rebuild the timestamp-bearing indexes between attestation and freeze. Record the exact
+  baseline ID/root beside the exact Brain release ID/root, and verify the promoter's
+  baseline-aware canary samples every required family.
+- [ ] Freeze or identify a complete trusted semantic pre-activation comparison bundle, and
   store the release/store/public metrics plus JSON from this command:
 
   ```bash
@@ -241,7 +257,7 @@ checks pass, and production has not changed.
 
 - [ ] Jack approves the exact release A ID, exclusive deployment window, journal location,
   and (only if applicable) the first-deploy missing-selector exception.
-- [ ] Promote release A with automatic rollback off and record end-to-end canary
+- [ ] Promote release A through the manual-only recovery path and record end-to-end canary
   convergence. A first compatibility deployment does not by itself prove rollback.
 - [ ] Build and review exact release B. Jack separately approves B's exact ID and promotion
   window before it is promoted.
