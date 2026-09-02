@@ -4,6 +4,7 @@
 Expected public API::
 
     build_snapshot.build_snapshot(*, data_dir: Path, output: Path) -> Path
+    build_snapshot.build_jsonl_only(*, data_dir: Path) -> str
     store.open_store(*, data_dir: Path, backend: str,
                      sqlite_path: Path | None = None) -> store
 
@@ -196,6 +197,134 @@ class HybridStoreTest(unittest.TestCase):
         result = self.build_snapshot(data_dir=self.data_dir, output=self.db_path)
         self.assertTrue(self.db_path.exists(), "build_snapshot did not create output")
         return Path(result) if result is not None else self.db_path
+
+    def test_jsonl_only_matches_default_bytes_without_touching_sqlite(self) -> None:
+        jsonl_only_dir = self.root / "jsonl-only"
+        default_dir = self.root / "default"
+        expected_dir = self.root / "expected-without-snapshot-id"
+        jsonl_only_dir.mkdir()
+        expected_dir.mkdir()
+
+        sqlite_sentinel = jsonl_only_dir / self.snapshot_module.DEFAULT_SQLITE_NAME
+        sqlite_sentinel.write_bytes(b"existing sqlite must remain byte-identical")
+        sentinel_stat = sqlite_sentinel.stat()
+
+        meta = {
+            "schema": "brain/SCHEMA.md",
+            "generated_at": ORGAN_GENERATION,
+            "counts": {"nodes": 2, "edges": {"formalizes": 1, "links": 1}},
+        }
+        nodes = [NODES[0], NODES[3]]
+        edges = [MAIN_EDGES[0], LINK_EDGES[0]]
+
+        expected_nodes = expected_dir / "nodes.jsonl"
+        expected_edges = expected_dir / "edges.jsonl"
+        expected_links = expected_dir / "edges_links.jsonl"
+        self.snapshot_module.write_jsonl(expected_nodes, meta, nodes)
+        self.snapshot_module.write_edges(
+            edges, meta, expected_edges, expected_links,
+        )
+        identity = hashlib.sha256()
+        for path in (expected_nodes, expected_edges, expected_links):
+            identity.update(self.snapshot_module.digest_file(path).encode("ascii"))
+        expected_snapshot_id = identity.hexdigest()
+
+        def fake_sqlite_builder(output: Path, _data_dir: Path) -> Path:
+            output = Path(output)
+            output.write_bytes(b"sqlite projection")
+            return output
+
+        with (
+            mock.patch.object(
+                self.snapshot_module,
+                "build",
+                side_effect=[(nodes, edges, meta), (nodes, edges, meta)],
+            ),
+            mock.patch.object(
+                self.snapshot_module,
+                "write_sqlite_from_jsonl",
+                side_effect=fake_sqlite_builder,
+            ) as sqlite_builder,
+        ):
+            snapshot_id = self.snapshot_module.build_jsonl_only(
+                data_dir=jsonl_only_dir,
+            )
+            default_db = default_dir / self.snapshot_module.DEFAULT_SQLITE_NAME
+            result = self.snapshot_module.build_live_snapshot(
+                data_dir=default_dir,
+                output=default_db,
+            )
+
+        self.assertEqual(snapshot_id, expected_snapshot_id)
+        self.assertEqual(result, default_db)
+        self.assertEqual(sqlite_builder.call_count, 1)
+        self.assertEqual(sqlite_sentinel.read_bytes(),
+                         b"existing sqlite must remain byte-identical")
+        self.assertEqual(sqlite_sentinel.stat().st_ino, sentinel_stat.st_ino)
+        self.assertEqual(sqlite_sentinel.stat().st_mtime_ns, sentinel_stat.st_mtime_ns)
+
+        for name in ("nodes.jsonl", "edges.jsonl", "edges_links.jsonl"):
+            jsonl_only_bytes = (jsonl_only_dir / name).read_bytes()
+            self.assertEqual(jsonl_only_bytes, (default_dir / name).read_bytes())
+            metadata = json.loads(jsonl_only_bytes.splitlines()[0])["_meta"]
+            self.assertEqual(metadata["snapshot_id"], expected_snapshot_id)
+
+    def test_jsonl_only_cli_dispatches_without_sqlite_builder(self) -> None:
+        snapshot_id = "a" * 64
+        with (
+            mock.patch.object(
+                self.snapshot_module, "build_jsonl_only", return_value=snapshot_id,
+            ) as jsonl_builder,
+            mock.patch.object(self.snapshot_module, "build_live_snapshot") as live_builder,
+            mock.patch.object(self.snapshot_module, "build_snapshot") as sqlite_builder,
+            mock.patch.object(
+                sys,
+                "argv",
+                [
+                    "build_snapshot.py",
+                    "--data-dir",
+                    str(self.data_dir),
+                    "--jsonl-only",
+                ],
+            ),
+            mock.patch("builtins.print") as output,
+        ):
+            self.assertEqual(self.snapshot_module.main(), 0)
+
+        jsonl_builder.assert_called_once_with(data_dir=self.data_dir)
+        live_builder.assert_not_called()
+        sqlite_builder.assert_not_called()
+        payload = json.loads(output.call_args.args[0])
+        self.assertEqual(payload, {
+            "data_dir": str(self.data_dir),
+            "snapshot_id": snapshot_id,
+        })
+
+    def test_jsonl_only_creates_a_fresh_nested_data_root(self) -> None:
+        data_dir = self.root / "fresh" / "nested" / "data"
+        meta = {
+            "schema": "brain/SCHEMA.md",
+            "generated_at": ORGAN_GENERATION,
+            "counts": {"nodes": 1, "edges": {"formalizes": 1}},
+        }
+        with (
+            mock.patch.object(
+                self.snapshot_module,
+                "build",
+                return_value=([NODES[0]], [MAIN_EDGES[0]], meta),
+            ),
+            mock.patch.object(
+                self.snapshot_module, "write_sqlite_from_jsonl",
+            ) as sqlite_builder,
+        ):
+            snapshot_id = self.snapshot_module.build_jsonl_only(data_dir=data_dir)
+
+        self.assertRegex(snapshot_id, r"^[0-9a-f]{64}$")
+        self.assertEqual(
+            {path.name for path in data_dir.iterdir()},
+            {"nodes.jsonl", "edges.jsonl", "edges_links.jsonl"},
+        )
+        sqlite_builder.assert_not_called()
 
     def open(self, backend: str):
         return self.open_store(data_dir=self.data_dir, backend=backend,
