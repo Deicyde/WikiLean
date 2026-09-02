@@ -9,8 +9,9 @@ labels.json, aliases.json and views/xref_explorer.json, ~340 MB. BRAIN v3
 endpoint oracle validates against cells/aliases.json ∪ cells/supercells.json
 (wiki/src/brain-api.ts atomIdForOrgan), so the per-node layer is retired
 (the GET /api/brain/node route is deleted outright — plain 404) and none of
-those artifacts are emitted any more. The atomic swap below also prunes any stale copies of them
-out of site/assets/brain/ on the first run.
+those artifacts are emitted any more. Historical files are outside this
+builder's ownership and must be removed by an explicit migration, not as a
+side effect of rebuilding these two assets.
 
 Two outputs from this builder are still LIVE and remain:
 
@@ -29,19 +30,21 @@ edges_links.jsonl holds only kind=="links" rows by construction and is not
 read) and brain/data/community_edges.jsonl (graduated community xrefs,
 optional). Both files' xref rows fold into the index.
 
-The swap stays atomic and still CARRIES the nested cells/ tree (the v3 atom
-layer) across — build_cell_shards.py writes it into the same directory, and a
-plain swap would delete it.
+Publication owns only those two files. It never swaps or prunes their parent
+directory, so the independently built cells/ tree and unrelated assets remain
+untouched.
 
 Run: python3 brain/build_shards.py
 """
 from __future__ import annotations
 
 import json
+import os
 import shutil
-import sys
+import tempfile
 import time
 from collections import defaultdict
+from pathlib import Path
 
 from build_common import BRAIN_DATA, ROOT
 
@@ -68,11 +71,44 @@ def shard_key(node_id: str, length: int) -> str:
             k += PAD
     return k
 
-# Subdirectories of OUT_DIR owned by OTHER builders, carried across the swap.
-# cells/ is the v3 atom layer (brain/build_cell_shards.py): the /brain page and
-# the whole agent API read it, so deleting it here would take the site down
-# until the next cell build.
-NESTED = ("cells",)
+
+def _publish_outputs(xref_blob: str, sources_blob: str) -> None:
+    """Publish this stage's two files via atomic replaces, with pair rollback."""
+    OUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".brain-shards.", dir=OUT_DIR.parent))
+    try:
+        staged = (
+            (staging / "xref_index.json", OUT_DIR / "xref_index.json", xref_blob),
+            (staging / "sources.json", OUT_DIR / "sources.json", sources_blob),
+        )
+        for source, _destination, blob in staged:
+            source.write_text(blob, encoding="utf-8")
+
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        backups: list[tuple[Path, Path | None]] = []
+        for index, (_source, destination, _blob) in enumerate(staged):
+            backup = staging / f"previous-{index}"
+            if destination.exists():
+                try:
+                    os.link(destination, backup)
+                except OSError:
+                    shutil.copy2(destination, backup)
+                backups.append((destination, backup))
+            else:
+                backups.append((destination, None))
+
+        try:
+            for source, destination, _blob in staged:
+                os.replace(source, destination)
+        except BaseException:
+            for destination, backup in reversed(backups):
+                if backup is None:
+                    destination.unlink(missing_ok=True)
+                elif backup.exists():
+                    os.replace(backup, destination)
+            raise
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
 
 
 def main() -> int:
@@ -127,33 +163,23 @@ def main() -> int:
         for k, e in reg.get(grp, {}).items():
             _add(k, e, grp)
 
-    # ---- atomic directory swap (carrying the nested v3 tree) ----------------
-    # Renaming OUT_DIR aside and rmtree()ing it is also what PRUNES any stale
-    # v2 per-node files still on disk: only the two files above + the carried
-    # NESTED trees survive a run.
-    tmp = OUT_DIR.parent / ".brain.tmp"
-    old = OUT_DIR.parent / ".brain.old"
-    for stale in (tmp, old):
-        if stale.exists():
-            shutil.rmtree(stale)
-    tmp.mkdir(parents=True)
-    (tmp / "xref_index.json").write_text(
-        json.dumps({p: ns for p, ns in xref_index.items()},
-                   ensure_ascii=False, separators=(",", ":")))
-    (tmp / "sources.json").write_text(json.dumps(
-        {"layers": reg["layers"], "our_data_license": reg["our_data_license"],
-         "sources": src_out}, ensure_ascii=False, separators=(",", ":")))
-    if OUT_DIR.exists():
-        OUT_DIR.rename(old)
-        for name in NESTED:
-            keep = old / name
-            if keep.exists():
-                keep.rename(tmp / name)
-                print(f"  carried {name}/ across the swap (v3 atom layer)",
-                      file=sys.stderr)
-    tmp.rename(OUT_DIR)
-    if old.exists():
-        shutil.rmtree(old)
+    # ---- owned two-file publication -----------------------------------------
+    _publish_outputs(
+        json.dumps(
+            {p: ns for p, ns in xref_index.items()},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ),
+        json.dumps(
+            {
+                "layers": reg["layers"],
+                "our_data_license": reg["our_data_license"],
+                "sources": src_out,
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ),
+    )
 
     print(f"xref_index.json: {len(xref_index)} pages, "
           f"{sum(len(v) for v in xref_index.values())} node links "

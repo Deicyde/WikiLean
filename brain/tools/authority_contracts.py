@@ -498,6 +498,14 @@ def validate_literal_relative_path(value: Any, location: str) -> str:
     return text
 
 
+def _relative_paths_overlap(left: str, right: str) -> bool:
+    """Return whether either normalized relative path contains the other."""
+    left_parts = PurePosixPath(left).parts
+    right_parts = PurePosixPath(right).parts
+    common = min(len(left_parts), len(right_parts))
+    return left_parts[:common] == right_parts[:common]
+
+
 def _tool(value: Any, location: str) -> None:
     obj = _expect_object(value, location)
     _keys(obj, location, {"name", "version", "sha256"})
@@ -779,10 +787,11 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
 
     stages = _expect_array(obj["stages"], "$.stages", nonempty=True)
     prior_stages: set[str] = set()
+    output_owners: dict[str, tuple[str, str]] = {}
     for index, value in enumerate(stages):
         location = f"$.stages[{index}]"
         stage = _expect_object(value, location)
-        _keys(stage, location, {"id", "program", "argv", "needs"})
+        _keys(stage, location, {"id", "program", "argv", "needs", "outputs"})
         stage_id = _expect_pattern(
             stage["id"], f"{location}.id", NAME_RE, "a lowercase stage ID"
         )
@@ -800,6 +809,36 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
             _fail(
                 f"{location}.needs",
                 "dependencies must name earlier stages: " + ", ".join(unknown_needs),
+            )
+        outputs = _expect_array(stage["outputs"], f"{location}.outputs", nonempty=True)
+        output_paths: list[str] = []
+        for output_index, value in enumerate(outputs):
+            output_location = f"{location}.outputs[{output_index}]"
+            output = _expect_object(value, output_location)
+            _keys(output, output_location, {"path", "kind"})
+            output_path = validate_literal_relative_path(
+                output["path"], f"{output_location}.path"
+            )
+            if output["kind"] not in {"file", "tree"}:
+                _fail(f"{output_location}.kind", "expected file or tree")
+            for owned_path, (owned_stage, owned_kind) in output_owners.items():
+                if output_path == owned_path:
+                    _fail(
+                        f"{output_location}.path",
+                        f"output path is already owned by stage {owned_stage!r}",
+                    )
+                if _relative_paths_overlap(output_path, owned_path):
+                    _fail(
+                        f"{output_location}.path",
+                        "output ownership overlaps "
+                        f"{owned_kind} {owned_path!r} owned by stage {owned_stage!r}",
+                    )
+            output_paths.append(output_path)
+            output_owners[output_path] = (stage_id, output["kind"])
+        if output_paths != sorted(set(output_paths)):
+            _fail(
+                f"{location}.outputs",
+                "entries must have unique paths and be sorted by path",
             )
         prior_stages.add(stage_id)
 

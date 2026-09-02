@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/build-context/v1.json",
+  "title": "WikiLean Brain runtime build context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generation_id",
+    "replay",
+    "roots",
+    "bindings",
+    "stages",
+    "configuration"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.brain-build-context/v1"},
+    "generation_id": {"$ref": "#/$defs/hash"},
+    "replay": {"$ref": "#/$defs/replay"},
+    "roots": {"$ref": "#/$defs/roots"},
+    "bindings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/inputBinding"}
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/stage"}
+    },
+    "configuration": {"$ref": "../reducer-config/v1.json"},
+    "audit": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/canonicalValue"}
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "epoch": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"},
+    "mediaType": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+    "absolutePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)/[^\\u0000]*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)[^\\u0000]+$"
+    },
+    "literalRelativePath": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^*?\\[\\]{}]+$"}
+      ]
+    },
+    "pathPattern": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^{}]+$"}
+      ]
+    },
+    "sourcePin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "enum": [
+            "git_commit",
+            "content_sha256",
+            "dataset_revision",
+            "http_etag",
+            "database_snapshot"
+          ]
+        },
+        "value": {"type": "string", "minLength": 1, "maxLength": 512},
+        "tree": {"$ref": "#/$defs/gitCommit"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["type"],
+            "properties": {"type": {"const": "git_commit"}}
+          },
+          "then": {"properties": {"value": {"pattern": "^[0-9a-f]{40}$"}}}
+        },
+        {
+          "if": {
+            "required": ["type"],
+            "properties": {"type": {"const": "content_sha256"}}
+          },
+          "then": {"properties": {"value": {"pattern": "^[0-9a-f]{64}$"}}}
+        },
+        {
+          "if": {"required": ["tree"]},
+          "then": {"properties": {"type": {"const": "git_commit"}}}
+        }
+      ]
+    },
+    "inputMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "source_manifest_id",
+        "object",
+        "sha256",
+        "bytes",
+        "media_type",
+        "pin"
+      ],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "source_manifest_id": {"$ref": "#/$defs/hash"},
+        "object": {"$ref": "#/$defs/name"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "media_type": {"$ref": "#/$defs/mediaType"},
+        "pin": {"$ref": "#/$defs/sourcePin"},
+        "materialized_path": {"$ref": "#/$defs/absolutePath"}
+      }
+    },
+    "inputBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_id",
+        "root",
+        "cardinality",
+        "requirement",
+        "class",
+        "state",
+        "members"
+      ],
+      "properties": {
+        "input_id": {"$ref": "#/$defs/name"},
+        "root": {"enum": ["repo", "external", "mathlib", "decl_oracle"]},
+        "cardinality": {"enum": ["one", "many"]},
+        "requirement": {"enum": ["required", "optional"]},
+        "class": {"enum": ["curated_git_input", "immutable_source_object"]},
+        "state": {"enum": ["present", "absent"]},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "path_pattern": {"$ref": "#/$defs/pathPattern"},
+        "members": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/inputMember"}
+        }
+      },
+      "oneOf": [
+        {"required": ["path"], "not": {"required": ["path_pattern"]}},
+        {"required": ["path_pattern"], "not": {"required": ["path"]}}
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": ["cardinality"],
+            "properties": {"cardinality": {"const": "one"}}
+          },
+          "then": {"required": ["path"]}
+        },
+        {
+          "if": {
+            "required": ["cardinality"],
+            "properties": {"cardinality": {"const": "many"}}
+          },
+          "then": {"required": ["path_pattern"]}
+        },
+        {
+          "if": {
+            "required": ["requirement"],
+            "properties": {"requirement": {"const": "required"}}
+          },
+          "then": {"properties": {"state": {"const": "present"}}}
+        },
+        {
+          "if": {
+            "required": ["state"],
+            "properties": {"state": {"const": "present"}}
+          },
+          "then": {"properties": {"members": {"minItems": 1}}}
+        },
+        {
+          "if": {
+            "required": ["state"],
+            "properties": {"state": {"const": "absent"}}
+          },
+          "then": {"properties": {"members": {"maxItems": 0}}}
+        },
+        {
+          "if": {
+            "required": ["cardinality", "state"],
+            "properties": {
+              "cardinality": {"const": "one"},
+              "state": {"const": "present"}
+            }
+          },
+          "then": {"properties": {"members": {"minItems": 1, "maxItems": 1}}}
+        },
+        {
+          "if": {
+            "required": ["class"],
+            "properties": {"class": {"const": "curated_git_input"}}
+          },
+          "then": {
+            "properties": {
+              "members": {
+                "items": {
+                  "properties": {
+                    "pin": {
+                      "required": ["type", "value", "tree"],
+                      "properties": {"type": {"const": "git_commit"}}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stageOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path"],
+      "properties": {
+        "kind": {"enum": ["file", "tree"]},
+        "path": {"$ref": "#/$defs/literalRelativePath"}
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "program", "argv", "needs", "outputs"],
+      "properties": {
+        "id": {"$ref": "#/$defs/name"},
+        "program": {"$ref": "#/$defs/literalRelativePath"},
+        "argv": {"type": "array", "items": {"type": "string"}},
+        "needs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/name"}
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stageOutput"}
+        }
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "offline_pack_id",
+        "source_set_root",
+        "reducer_inventory_id",
+        "authority",
+        "prior_state_root",
+        "semantic_epoch",
+        "reducer"
+      ],
+      "properties": {
+        "offline_pack_id": {"$ref": "#/$defs/hash"},
+        "source_set_root": {"$ref": "#/$defs/hash"},
+        "reducer_inventory_id": {"$ref": "#/$defs/hash"},
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["git_commit", "authority_root"],
+          "properties": {
+            "git_commit": {"$ref": "#/$defs/gitCommit"},
+            "authority_root": {"$ref": "#/$defs/hash"}
+          }
+        },
+        "prior_state_root": {
+          "oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]
+        },
+        "semantic_epoch": {"$ref": "#/$defs/epoch"},
+        "reducer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "git_commit",
+            "configuration_sha256",
+            "environment_sha256"
+          ],
+          "properties": {
+            "git_commit": {"$ref": "#/$defs/gitCommit"},
+            "configuration_sha256": {"$ref": "#/$defs/digest"},
+            "environment_sha256": {"$ref": "#/$defs/digest"}
+          }
+        }
+      }
+    },
+    "roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "input", "output", "scratch"],
+      "properties": {
+        "code": {"$ref": "#/$defs/absolutePath"},
+        "input": {"$ref": "#/$defs/absolutePath"},
+        "output": {"$ref": "#/$defs/absolutePath"},
+        "scratch": {"$ref": "#/$defs/absolutePath"}
+      }
+    },
+    "canonicalValue": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "boolean"},
+        {"type": "string"},
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {"type": "array", "items": {"$ref": "#/$defs/canonicalValue"}},
+        {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/canonicalValue"}
+        }
+      ]
+    }
+  }
+}

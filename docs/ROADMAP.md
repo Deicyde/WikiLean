@@ -172,10 +172,11 @@ contracts describe the current seven-stage post-acquisition build DAG, explicit 
 roots, and required-versus-absent inputs. This is contract groundwork only.
 `verify_source_set.py` can validate v2 documents, while `run_offline.py` deliberately
 rejects v2 packs until the builders have one explicit full-DAG replay entry point with
-separate read-only input and writable output roots. P2A is a safe third, shadow-only
-workstream, but P2B and later wait for P0-R's source/build contracts. Do not start a
-Phase 3 D1 schema cutover until all Phase 2 contracts and the reviewed genesis are
-complete.
+separate read-only input and writable output roots. The runtime build-context contract,
+per-stage output ownership, and a JSONL-only base-graph mode now establish that boundary,
+but no builder consumes it yet. P2A is a safe third, shadow-only workstream, but P2B and
+later wait for P0-R's source/build contracts. Do not start a Phase 3 D1 schema cutover
+until all Phase 2 contracts and the reviewed genesis are complete.
 
 #### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; NOT ACTIVATED]`
 
@@ -339,9 +340,19 @@ explicit approval.
   The authoritative full-DAG replay begins after that boundary and performs no network or
   live D1 reads.
 - [ ] **Introduce an explicit build context.** Add one full-DAG replay entry point with
-  separate read-only input and output roots. Route builders through explicit file lists,
-  source pins, generation identity, and versioned reducer configuration instead of
-  repository globals, live `BRAIN_*` environment lookups, or discovered glob members.
+  separate read-only input and writable output roots. Route builders through explicit
+  file lists, source pins, generation identity, and versioned reducer configuration
+  instead of repository globals, live `BRAIN_*` environment lookups, or discovered glob
+  members.
+  - [x] Define a strict immutable runtime context with relocation-independent generation
+    identity, exact input bindings/source pins, versioned reducer knobs, disjoint physical
+    roots, and stage-scoped output/scratch accessors.
+  - [x] Assign every DAG output to one non-overlapping stage and give the base-graph stage
+    a JSONL-only mode so SQLite has one owner.
+  - [ ] Materialize verified pack objects and reducer files into read-only input/code
+    views, then generate the runtime context without trusting caller paths or environment.
+  - [ ] Route all seven stages through the context and add the single fail-closed replay
+    entry point; keep v2 rejected by `run_offline.py` until this is complete.
 - [ ] **Remove ambient identity.** Replace filesystem-mtime provenance and wall-clock
   `generated_at` values with source-manifest pins and a pack-derived deterministic
   generation ID. Keep observation/build times only in audit attestations, outside logical
