@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
 import shutil
@@ -360,7 +361,7 @@ class SourceSetVerificationTest(unittest.TestCase):
             contracts.verify_offline_pack_files(contracts.validate_offline_pack(bad_length), self.root)
 
         bad_version = copy.deepcopy(pack)
-        bad_version["schema"] = "wikilean.offline-pack/v2"
+        bad_version["schema"] = "wikilean.offline-pack/v99"
         with self.assertRaisesRegex(contracts.VerificationError, "unknown schema/version"):
             contracts.validate_offline_pack(bad_version)
 
@@ -482,6 +483,537 @@ class SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("network access is disabled", blocked.stderr)
+
+
+class V2SourceSetVerificationTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_v2_schema_documents_match_executable_contracts(self) -> None:
+        schema_root = HERE / "authority/schemas"
+        inventory_schema = json.loads(
+            (schema_root / "reducer-input-inventory/v2.json").read_text()
+        )
+        source_schema = json.loads(
+            (schema_root / "source-manifest/v2.json").read_text()
+        )
+        pack_schema = json.loads((schema_root / "offline-pack/v2.json").read_text())
+        build_schema = json.loads(
+            (schema_root / "attestation/build-v2.json").read_text()
+        )
+        self.assertEqual(
+            inventory_schema["properties"]["schema"]["const"],
+            contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V2,
+        )
+        self.assertEqual(source_schema["properties"]["schema"]["const"], contracts.SOURCE_SCHEMA_V2)
+        self.assertEqual(source_schema["properties"]["objects"]["minItems"], 1)
+        self.assertIn("roles", source_schema["$defs"]["sourceObject"]["required"])
+        self.assertEqual(pack_schema["properties"]["schema"]["const"], contracts.PACK_SCHEMA_V2)
+        self.assertEqual(
+            build_schema["properties"]["schema"]["const"],
+            contracts.BUILD_ATTESTATION_SCHEMA_V2,
+        )
+        self.assertEqual(
+            build_schema["properties"]["build_kind"]["const"],
+            "full-offline-replay",
+        )
+        self.assertEqual(
+            inventory_schema["properties"]["scope"]["items"]["$ref"],
+            "#/$defs/literalRelativePath",
+        )
+        self.assertEqual(
+            inventory_schema["properties"]["inputs"]["items"]["properties"]
+            ["path_pattern"]["$ref"],
+            "#/$defs/pathPattern",
+        )
+        self.assertEqual(
+            inventory_schema["properties"]["forbidden_ambient"]["items"]
+            ["properties"]["consumers"]["items"]["oneOf"][1]["$ref"],
+            "#/$defs/literalRelativePath",
+        )
+        self.assertEqual(
+            pack_schema["$defs"]["bindingMember"]["properties"]["path"]["$ref"],
+            "#/$defs/literalRelativePath",
+        )
+        self.assertEqual(len(source_schema["properties"]["pin"]["allOf"]), 3)
+        self.assertEqual(len(pack_schema["$defs"]["inputBinding"]["allOf"]), 2)
+        inventory, _ = contracts.load_canonical_json(
+            HERE / "authority/reducer-inputs-v2.json"
+        )
+        contracts.validate_reducer_input_inventory(inventory)
+        self.assertTrue(contracts._matches_relative_pattern("x_pages.jsonl", "*_pages.jsonl"))
+        self.assertFalse(
+            contracts._matches_relative_pattern("nested/x_pages.jsonl", "*_pages.jsonl")
+        )
+        self.assertTrue(
+            contracts._matches_relative_pattern("Mathlib/Foo.lean", "Mathlib/**/*.lean")
+        )
+        self.assertTrue(
+            contracts._matches_relative_pattern("Mathlib/A/Foo.lean", "Mathlib/**/*.lean")
+        )
+        self.assertFalse(
+            contracts._matches_relative_pattern(
+                "prefix/Mathlib/Foo.lean", "Mathlib/**/*.lean"
+            )
+        )
+        self.assertTrue(
+            contracts._matches_relative_pattern(
+                "/".join(["segment"] * 1_500 + ["leaf"]), "**/leaf"
+            )
+        )
+
+    def write_object(self, data: bytes, media_type: str) -> dict[str, object]:
+        digest = hashlib.sha256(data).hexdigest()
+        relative = f"objects/sha256/{digest}"
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            self.assertEqual(path.read_bytes(), data)
+        else:
+            path.write_bytes(data)
+        return {
+            "path": relative,
+            "sha256": digest,
+            "bytes": len(data),
+            "media_type": media_type,
+        }
+
+    def make_inventory(self) -> tuple[dict[str, object], dict[str, object]]:
+        for relative, data in {
+            "reducer/brain/helper.py": b"VALUE = 1\n",
+            "reducer/brain/replay.py": b"print('not wired')\n",
+            "config/reducer.json": b'{"cap":8}',
+            "environment/python.json": b'{"python":"3.12"}',
+            "schemas/input.json": b'{"type":"object"}',
+        }.items():
+            path = self.root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+
+        inventory: dict[str, object] = {
+            "schema": contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V2,
+            "inventory_id": ZERO_HASH,
+            "boundary": "post-acquisition-fold",
+            "roots": [
+                {"id": "external", "kind": "external_tree"},
+                {"id": "repo", "kind": "repository"},
+            ],
+            "scope": ["brain/helper.py", "brain/replay.py"],
+            "stages": [
+                {"id": "prepare", "program": "brain/helper.py", "argv": [], "needs": []},
+                {"id": "replay", "program": "brain/replay.py", "argv": [], "needs": ["prepare"]},
+            ],
+            "inputs": [
+                {
+                    "id": "curated",
+                    "root": "repo",
+                    "path": "catalog/curated.json",
+                    "cardinality": "one",
+                    "requirement": "required",
+                    "class": "curated_git_input",
+                    "consumers": ["brain/replay.py"],
+                    "purpose": "reviewed fixture",
+                },
+                {
+                    "id": "optional_external",
+                    "root": "external",
+                    "path_pattern": "*_pages.jsonl",
+                    "cardinality": "many",
+                    "requirement": "optional",
+                    "class": "immutable_source_object",
+                    "consumers": ["brain/replay.py"],
+                    "purpose": "explicitly absent fixture set",
+                },
+                {
+                    "id": "source",
+                    "root": "external",
+                    "path": "input.json",
+                    "cardinality": "one",
+                    "requirement": "required",
+                    "class": "immutable_source_object",
+                    "consumers": ["brain/helper.py", "brain/replay.py"],
+                    "purpose": "normalized fixture input",
+                },
+            ],
+            "forbidden_ambient": [
+                {
+                    "name": "network access",
+                    "consumers": ["*"],
+                    "replacement": "sealed source objects",
+                }
+            ],
+        }
+        inventory["inventory_id"] = contracts.reducer_input_inventory_identity(inventory)
+        write_canonical(self.root / "inventory.json", inventory)
+        return inventory, {
+            **file_ref(self.root, "inventory.json", "application/json"),
+            "inventory_id": inventory["inventory_id"],
+        }
+
+    def make_source_manifest(
+        self,
+        *,
+        source: str,
+        source_kind: str,
+        normalized: bytes,
+        identity_normalization: bool = False,
+    ) -> tuple[dict[str, object], dict[str, object]]:
+        raw = normalized if identity_normalization else b"raw:" + normalized
+        raw_ref = self.write_object(raw, "application/json")
+        normalized_ref = self.write_object(normalized, "application/json")
+        if identity_normalization:
+            objects = [{
+                "name": "identity",
+                "roles": ["normalized", "raw"],
+                "redistribution": "allowed",
+                **normalized_ref,
+            }]
+            inputs = outputs = ["identity"]
+        else:
+            objects = [
+                {
+                    "name": "normalized",
+                    "roles": ["normalized"],
+                    "redistribution": "allowed",
+                    **normalized_ref,
+                },
+                {
+                    "name": "raw",
+                    "roles": ["raw"],
+                    "redistribution": "allowed",
+                    **raw_ref,
+                },
+            ]
+            inputs, outputs = ["raw"], ["normalized"]
+        pin = (
+            {"type": "git_commit", "value": GIT_COMMIT, "tree": "b" * 40}
+            if source_kind == "curated_git_tree"
+            else {"type": "content_sha256", "value": raw_ref["sha256"]}
+        )
+        manifest: dict[str, object] = {
+            "schema": contracts.SOURCE_SCHEMA_V2,
+            "source_manifest_id": ZERO_HASH,
+            "source": source,
+            "source_kind": source_kind,
+            "pin": pin,
+            "objects": objects,
+            "license": {"expression": "CC0-1.0", "redistribution": "allowed"},
+            "acquisition": {"name": "fixture-fetch", "version": "1", "sha256": ZERO_DIGEST},
+            "normalization": {
+                "schema": "fixture/v1",
+                "tool": {"name": "fixture-normalize", "version": "1", "sha256": ZERO_DIGEST},
+                "inputs": inputs,
+                "outputs": outputs,
+            },
+            "audit": {"acquired_at": "2030-01-01T00:00:00Z"},
+        }
+        manifest["source_manifest_id"] = contracts.source_manifest_identity(manifest)
+        relative = f"manifests/{source}.json"
+        write_canonical(self.root / relative, manifest)
+        return manifest, {
+            **file_ref(self.root, relative, "application/json"),
+            "source_manifest_id": manifest["source_manifest_id"],
+        }
+
+    def make_pack(self) -> tuple[dict[str, object], Path]:
+        inventory, inventory_ref = self.make_inventory()
+        curated, curated_ref = self.make_source_manifest(
+            source="curated-fixture",
+            source_kind="curated_git_tree",
+            normalized=b'{"curated":true}',
+            identity_normalization=True,
+        )
+        source, source_ref = self.make_source_manifest(
+            source="external-fixture",
+            source_kind="acquired_dataset",
+            normalized=b'{"rows":[1,2]}',
+        )
+        manifests = sorted(
+            [(curated, curated_ref), (source, source_ref)],
+            key=lambda item: item[0]["source_manifest_id"],
+        )
+        packed_objects: dict[str, dict[str, object]] = {}
+        for manifest, _ in manifests:
+            for item in manifest["objects"]:
+                packed_objects[item["path"]] = {
+                    key: item[key] for key in ("path", "sha256", "bytes", "media_type")
+                }
+        curated_object = curated["objects"][0]["name"]
+        source_object = next(
+            item["name"] for item in source["objects"] if "normalized" in item["roles"]
+        )
+        bindings = [
+            {
+                "input_id": "curated",
+                "state": "present",
+                "members": [{
+                    "path": "catalog/curated.json",
+                    "source_manifest_id": curated["source_manifest_id"],
+                    "object": curated_object,
+                }],
+            },
+            {"input_id": "optional_external", "state": "absent", "members": []},
+            {
+                "input_id": "source",
+                "state": "present",
+                "members": [{
+                    "path": "input.json",
+                    "source_manifest_id": source["source_manifest_id"],
+                    "object": source_object,
+                }],
+            },
+        ]
+        reducer_files = [
+            {"logical_path": "brain/helper.py", **file_ref(self.root, "reducer/brain/helper.py", "text/x-python")},
+            {"logical_path": "brain/replay.py", **file_ref(self.root, "reducer/brain/replay.py", "text/x-python")},
+        ]
+        pack: dict[str, object] = {
+            "schema": contracts.PACK_SCHEMA_V2,
+            "offline_pack_id": ZERO_HASH,
+            "source_set_root": contracts.source_set_root_v2(
+                inventory["inventory_id"],
+                [manifest["source_manifest_id"] for manifest, _ in manifests],
+                bindings,
+            ),
+            "inventory": inventory_ref,
+            "source_manifests": [ref for _, ref in manifests],
+            "objects": [packed_objects[path] for path in sorted(packed_objects)],
+            "input_bindings": bindings,
+            "reducer": {"entrypoint": "brain/replay.py", "files": reducer_files},
+            "configuration": [file_ref(self.root, "config/reducer.json", "application/json")],
+            "environment": file_ref(self.root, "environment/python.json", "application/json"),
+            "schemas": [file_ref(self.root, "schemas/input.json", "application/schema+json")],
+            "audit": {"created_at": "2030-01-01T00:00:00Z"},
+        }
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        path = self.root / "pack.json"
+        write_canonical(path, pack)
+        return pack, path
+
+    def test_v2_verifies_inventory_sources_pack_and_identity_normalization(self) -> None:
+        pack, pack_path = self.make_pack()
+        result = contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack), self.root, manifest_path=pack_path
+        )
+        self.assertEqual(result["source_manifests"], 2)
+        self.assertEqual(result["input_bindings"], 3)
+        curated_path = next(
+            ref["path"] for ref in pack["source_manifests"]
+            if json.loads((self.root / ref["path"]).read_text())["source"] == "curated-fixture"
+        )
+        curated = json.loads((self.root / curated_path).read_text())
+        self.assertEqual(curated["objects"][0]["roles"], ["normalized", "raw"])
+
+        changed = copy.deepcopy(pack)
+        changed["audit"]["created_at"] = "2040-01-01T00:00:00Z"
+        self.assertEqual(
+            contracts.offline_pack_identity(pack),
+            contracts.offline_pack_identity(changed),
+        )
+        self.assertEqual(
+            contracts.source_set_root_v2(
+                pack["inventory"]["inventory_id"],
+                [ref["source_manifest_id"] for ref in reversed(pack["source_manifests"])],
+                list(reversed(pack["input_bindings"])),
+            ),
+            pack["source_set_root"],
+        )
+        changed_bindings = copy.deepcopy(pack["input_bindings"])
+        source_binding = next(
+            item for item in changed_bindings if item["input_id"] == "source"
+        )
+        source_binding["members"][0]["object"] = "different-object"
+        self.assertNotEqual(
+            contracts.source_set_root_v2(
+                pack["inventory"]["inventory_id"],
+                [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+                changed_bindings,
+            ),
+            pack["source_set_root"],
+        )
+        self.assertNotEqual(
+            contracts.source_set_root_v2(
+                "sha256:" + "f" * 64,
+                [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+                pack["input_bindings"],
+            ),
+            pack["source_set_root"],
+        )
+
+        process = subprocess.run(
+            [sys.executable, str(TOOLS / "verify_source_set.py"), "--manifest", str(pack_path), "--root", str(self.root)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(process.returncode, 0, process.stderr)
+        self.assertEqual(json.loads(process.stdout)["offline_pack_id"], pack["offline_pack_id"])
+
+    def test_v2_rejects_missing_required_wrong_role_and_bad_inventory_pattern(self) -> None:
+        pack, pack_path = self.make_pack()
+        required_absent = copy.deepcopy(pack)
+        binding = next(item for item in required_absent["input_bindings"] if item["input_id"] == "source")
+        binding.update({"state": "absent", "members": []})
+        required_absent["source_set_root"] = contracts.source_set_root_v2(
+            required_absent["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in required_absent["source_manifests"]],
+            required_absent["input_bindings"],
+        )
+        required_absent["offline_pack_id"] = contracts.offline_pack_identity(required_absent)
+        with self.assertRaisesRegex(contracts.VerificationError, "required inputs must be present"):
+            contracts.verify_offline_pack_files(required_absent, self.root, manifest_path=pack_path)
+
+        wrong_role = copy.deepcopy(pack)
+        source_ref = next(
+            ref for ref in wrong_role["source_manifests"]
+            if json.loads((self.root / ref["path"]).read_text())["source"] == "external-fixture"
+        )
+        source_manifest = json.loads((self.root / source_ref["path"]).read_text())
+        raw_name = next(item["name"] for item in source_manifest["objects"] if item["roles"] == ["raw"])
+        binding = next(item for item in wrong_role["input_bindings"] if item["input_id"] == "source")
+        binding["members"][0]["object"] = raw_name
+        wrong_role["source_set_root"] = contracts.source_set_root_v2(
+            wrong_role["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in wrong_role["source_manifests"]],
+            wrong_role["input_bindings"],
+        )
+        wrong_role["offline_pack_id"] = contracts.offline_pack_identity(wrong_role)
+        with self.assertRaisesRegex(contracts.VerificationError, "normalized source objects"):
+            contracts.verify_offline_pack_files(wrong_role, self.root, manifest_path=pack_path)
+
+        inventory, _ = contracts.load_canonical_json(self.root / "inventory.json")
+        bad_pattern = copy.deepcopy(inventory)
+        item = next(entry for entry in bad_pattern["inputs"] if entry["id"] == "optional_external")
+        item["path_pattern"] = "*_{pages,links}.jsonl"
+        bad_pattern["inventory_id"] = contracts.reducer_input_inventory_identity(bad_pattern)
+        with self.assertRaisesRegex(contracts.VerificationError, "brace expansion"):
+            contracts.validate_reducer_input_inventory(bad_pattern)
+
+        wildcard_scope = copy.deepcopy(inventory)
+        wildcard_scope["scope"][0] = "brain/*.py"
+        wildcard_scope["inventory_id"] = contracts.reducer_input_inventory_identity(
+            wildcard_scope
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "glob metacharacters"):
+            contracts.validate_reducer_input_inventory(wildcard_scope)
+
+        wildcard_member = copy.deepcopy(pack)
+        binding = next(
+            item for item in wildcard_member["input_bindings"]
+            if item["input_id"] == "source"
+        )
+        binding["members"][0]["path"] = "*.json"
+        with self.assertRaisesRegex(contracts.VerificationError, "glob metacharacters"):
+            contracts.validate_offline_pack(wildcard_member)
+
+        long_pin, _ = self.make_source_manifest(
+            source="long-pin-fixture",
+            source_kind="acquired_dataset",
+            normalized=b'{}',
+        )
+        long_pin["pin"] = {"type": "dataset_revision", "value": "x" * 513}
+        long_pin["source_manifest_id"] = contracts.source_manifest_identity(long_pin)
+        with self.assertRaisesRegex(contracts.VerificationError, "at most 512"):
+            contracts.validate_source_manifest(long_pin)
+
+        wrong_media = copy.deepcopy(pack)
+        wrong_media["source_manifests"][0]["media_type"] = "text/plain"
+        wrong_media["offline_pack_id"] = contracts.offline_pack_identity(wrong_media)
+        with self.assertRaisesRegex(contracts.VerificationError, "application/json"):
+            contracts.validate_offline_pack(wrong_media)
+
+    def test_v2_rejects_incomplete_and_undeclared_physical_closure(self) -> None:
+        pack, pack_path = self.make_pack()
+        missing_object = copy.deepcopy(pack)
+        missing_object["objects"].pop(0)
+        missing_object["offline_pack_id"] = contracts.offline_pack_identity(
+            missing_object
+        )
+        contracts.validate_offline_pack(missing_object)
+        with self.assertRaisesRegex(
+            contracts.VerificationError, "source object closure mismatch"
+        ):
+            contracts.verify_offline_pack_files(
+                missing_object, self.root, manifest_path=pack_path
+            )
+
+        extra = self.root / "undeclared.txt"
+        extra.write_text("not in the pack")
+        with self.assertRaisesRegex(contracts.VerificationError, "undeclared files"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v2_build_attestation_requires_pack_and_offline_replay(self) -> None:
+        attestation: dict[str, object] = {
+            "schema": contracts.BUILD_ATTESTATION_SCHEMA_V2,
+            "attestation_id": ZERO_HASH,
+            "release_id": "sha256:" + "1" * 64,
+            "build_kind": "full-offline-replay",
+            "builder": {
+                "name": "fixture-replay",
+                "version": "1",
+                "git_commit": GIT_COMMIT,
+                "configuration_sha256": "2" * 64,
+                "environment_sha256": "3" * 64,
+                "network": "disabled",
+            },
+            "inputs": {
+                "authority_root": "sha256:" + "4" * 64,
+                "source_set_root": "sha256:" + "5" * 64,
+                "offline_pack_id": "sha256:" + "6" * 64,
+                "reducer_inventory_id": "sha256:" + "7" * 64,
+                "prior_state_root": None,
+            },
+            "output_root": "sha256:" + "8" * 64,
+            "artifacts": [
+                {"logical_name": "nodes", "sha256": "9" * 64, "bytes": 4, "logical_root": "sha256:" + "a" * 64}
+            ],
+            "metrics": {"artifact_count": 1},
+            "recorded_at": "2030-01-01T00:00:00Z",
+        }
+        attestation["attestation_id"] = contracts.attestation_identity(attestation)
+        contracts.validate_build_attestation(attestation)
+        changed = copy.deepcopy(attestation)
+        changed["recorded_at"] = "2040-01-01T00:00:00Z"
+        self.assertEqual(
+            contracts.attestation_identity(attestation),
+            contracts.attestation_identity(changed),
+        )
+        for mutation, expected in (
+            (("builder", "network", "enabled"), "network='disabled'"),
+            ((None, "build_kind", "compatibility-freeze"), "full-offline-replay"),
+        ):
+            bad = copy.deepcopy(attestation)
+            parent, key, value = mutation
+            if parent is None:
+                bad[key] = value
+            else:
+                bad[parent][key] = value
+            bad["attestation_id"] = contracts.attestation_identity(bad)
+            with self.assertRaisesRegex(contracts.VerificationError, expected):
+                contracts.validate_build_attestation(bad)
+        missing_pack = copy.deepcopy(attestation)
+        del missing_pack["inputs"]["offline_pack_id"]
+        with self.assertRaisesRegex(contracts.VerificationError, "offline_pack_id"):
+            contracts.validate_build_attestation(missing_pack)
+
+    def test_v2_offline_runner_fails_closed_until_replay_exists(self) -> None:
+        _pack, pack_path = self.make_pack()
+        process = subprocess.run(
+            [sys.executable, str(TOOLS / "run_offline.py"), "--manifest", str(pack_path), "--root", str(self.root)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertNotEqual(process.returncode, 0)
+        self.assertIn("full-DAG replay is not implemented", process.stderr)
 
 
 class ReleaseVerificationTest(unittest.TestCase):
@@ -983,6 +1515,24 @@ class ReleaseVerificationTest(unittest.TestCase):
         with self.assertRaisesRegex(contracts.VerificationError, "indexed columns disagree"):
             contracts.verify_release_files(
                 contracts.validate_release_manifest(corrupt_index), self.root
+            )
+
+    def test_current_release_profile_does_not_claim_v2_offline_replay(self) -> None:
+        release, _ = self.make_release()
+        build_path = self.root / "attestations/build.json"
+        build, _ = contracts.load_canonical_json(build_path)
+        build["schema"] = contracts.BUILD_ATTESTATION_SCHEMA_V2
+        build["attestation_id"] = contracts.attestation_identity(build)
+        write_canonical(build_path, build)
+        for ref in release["attestations"]:
+            if ref["kind"] == "build":
+                ref["sha256"], ref["bytes"] = contracts.digest_file(build_path)
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            "offline replay attestations are not integrated yet",
+        ):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(release), self.root
             )
 
     def test_rejects_structurally_corrupt_sqlite(self) -> None:

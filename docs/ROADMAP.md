@@ -165,10 +165,17 @@ until the first complete attestation is created and reviewed. Actual P1B evidenc
 is blocked on Jack merging P1A onto `main` and authorizing the launch-context Mathlib and
 Git/Node/npm/Python paths. The next operational ticket is to produce and review one complete activation
 evidence bundle, including the immutable non-Brain public baseline, without changing
-production. In parallel, P0-R remains the main architecture workstream. P2A is a safe third,
-shadow-only workstream, but P2B and later wait for P0-R's source/build contracts. Do not
-start a Phase 3 D1 schema cutover until all Phase 2 contracts and the reviewed genesis
-are complete.
+production. In parallel, P0-R remains the main architecture workstream. Its first
+contract/input-closure tranche is implemented: versioned v2 source-manifest,
+offline-pack, reducer-input-inventory, and full-offline-replay build-attestation
+contracts describe the current seven-stage post-acquisition build DAG, explicit logical
+roots, and required-versus-absent inputs. This is contract groundwork only.
+`verify_source_set.py` can validate v2 documents, while `run_offline.py` deliberately
+rejects v2 packs until the builders have one explicit full-DAG replay entry point with
+separate read-only input and writable output roots. P2A is a safe third, shadow-only
+workstream, but P2B and later wait for P0-R's source/build contracts. Do not start a
+Phase 3 D1 schema cutover until all Phase 2 contracts and the reviewed genesis are
+complete.
 
 #### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; NOT ACTIVATED]`
 
@@ -313,16 +320,19 @@ explicit approval.
 
 #### P0-R — sealed inputs and deterministic clean-room replay `[PRIMARY ENGINEERING]`
 
-- [ ] **Evolve the contracts explicitly.** Add new, versioned source-manifest,
-  offline-pack, and build-attestation contracts rather than loosening v1 in place. They
-  must represent raw plus normalized source objects, curated Git trees, the complete
-  multi-file reducer DAG, `offline_pack_id`, `source_set_root`, and required-versus-absent
-  optional inputs.
-- [ ] **Repair input closure.** Replace the ineffective Python brace glob
-  `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; add
+- [x] **Evolve the contracts explicitly.** Added new, versioned source-manifest,
+  offline-pack, reducer-input-inventory, and build-attestation contracts rather than
+  loosening v1 in place. The v2 contracts represent raw plus normalized source objects,
+  curated Git trees, the complete multi-file reducer DAG, `offline_pack_id`,
+  `source_set_root`, and required-versus-absent optional inputs. The v2 document shapes are
+  validation-ready, but no real pack or replay is claimed: execution is intentionally
+  refused until the explicit full-DAG replay entry point exists, and current release
+  creation continues to use the v1 compatibility contracts.
+- [x] **Repair declared input-inventory closure.** Replaced the ineffective Python brace glob
+  `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; added
   consumed `brain/data/discovery_rejected.jsonl`, optional
-  `catalog/data/tauceti_links.jsonl`, and reducer code `brain/layout.py`; represent the
-  external Mathlib tree explicitly; distinguish required inputs from deliberately absent
+  `catalog/data/tauceti_links.jsonl`, and reducer code `brain/layout.py`; represented the
+  external Mathlib tree explicitly; distinguished required inputs from deliberately absent
   optional inputs.
 - [ ] **Separate acquisition from replay.** Network-enabled acquisition, including
   Wikidata checks used by `fold_proposals.py`, ends by sealing normalized/folded objects.
@@ -367,6 +377,15 @@ explicit approval.
   resolve to a sealed source manifest and policy entry. Resolve the current `tag-queue` and
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
+
+**Next P0-R implementation order:** (1) add the explicit build context and one full-DAG
+replay entry point; (2) route every builder through its declared roots and output directory,
+then replace mtime-derived provenance and wall-clock generation stamps with the pack-derived
+generation identity; (3) compile the first real pack and prove source-object coherence; (4)
+pin the complete execution environment and add the two-path randomized-mtime/adversarial-env
+clean-room gate; (5) run the approved-baseline semantic compatibility review and emit the
+separate two-build reproducibility attestation. Network acquisition, live D1 snapshots,
+and proposal folding remain outside the replay boundary throughout.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently
