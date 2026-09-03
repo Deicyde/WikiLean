@@ -275,6 +275,8 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
 
     def test_v1_compatibility_inventory_closes_known_consumer_gaps(self) -> None:
         self.assertIn("brain/layout.py", self.v1["scope"])
+        self.assertIn("brain/build_context.py", self.v1["scope"])
+        self.assertIn("brain/stage_io.py", self.v1["scope"])
         exact_paths = {entry["path"] for entry in self.v1["inputs"] if "path" in entry}
         self.assertIn("brain/data/discovery_rejected.jsonl", exact_paths)
         self.assertIn("catalog/data/tauceti_links.jsonl", exact_paths)
@@ -416,6 +418,7 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
                 "brain/build_snapshot.py",
                 "brain/frontier_suitability.py",
                 "brain/layout.py",
+                "brain/stage_io.py",
                 "brain/store.py",
                 "site/build_brain_page.py",
             ],
@@ -450,18 +453,23 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
                     ["--from-jsonl"],
                     ["base-graph", "cells"],
                 ),
-                ("frontier", "brain/build_frontier.py", [], ["cells"]),
+                (
+                    "frontier",
+                    "brain/build_frontier.py",
+                    [],
+                    ["base-graph", "cells"],
+                ),
                 (
                     "cell-shards",
                     "brain/build_cell_shards.py",
                     [],
-                    ["cells", "frontier", "top-level-shards"],
+                    ["base-graph", "cells", "frontier"],
                 ),
                 (
                     "brain-page",
                     "site/build_brain_page.py",
                     [],
-                    ["cell-shards"],
+                    [],
                 ),
             ],
         )

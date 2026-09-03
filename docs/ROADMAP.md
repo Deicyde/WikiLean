@@ -175,7 +175,10 @@ rejects v2 packs until the builders have one explicit full-DAG replay entry poin
 runtime build-context contract, per-stage output ownership, JSONL-only base-graph mode,
 and prepare-only materializer now establish that boundary: bound normalized input and reducer bytes
 are copied into atomically published read-only views and a canonical context is generated
-without caller paths or environment configuration. No reducer consumes it yet. P2A is a
+without caller paths or environment configuration. Three stages now consume that context:
+top-level shards, the SQLite projection, and the input-free Brain page. Their shared stage-I/O
+path creates deterministic private directories, refuses replacement, rolls back partial
+multi-file publication, and refuses cross-filesystem publication. P2A is a
 safe third, shadow-only workstream, but P2B and
 later wait for P0-R's source/build contracts. Do not start a Phase 3 D1 schema cutover
 until all Phase 2 contracts and the reviewed genesis are complete.
@@ -356,8 +359,20 @@ explicit approval.
     Preparation uses copy-only private staging, exact modes, fsync, case/Unicode and ancestry
     checks, and atomic no-replace publication; it never executes reducer code.
   - [ ] Route all seven stages through the context and add the single fail-closed replay
-    entry point; enforce read-only mounts or privilege separation because preparation-time
-    modes are not a security boundary. Keep v2 rejected by `run_offline.py` until this is complete.
+    entry point. `needs` records direct generated-byte dependencies; the future runner must
+    execute every stage in inventory order, including independent leaves.
+    - [x] Route `top-level-shards` through exact base-graph and sealed source inputs.
+    - [x] Route `sqlite-with-cells` through all five exact JSONL predecessor outputs.
+    - [x] Route the input-free `brain-page` stage without claiming a false shard dependency.
+    - [x] Add shared deterministic-mode, durable, atomic no-replace file publication with
+      pair rollback and stage-owned scratch cleanup.
+    - [ ] Route `base-graph` through an explicit adapter over `build_common.py` inputs and
+      eliminate its repository globals, environment reads, globs, and mtime discovery.
+    - [ ] Route `cells`, `frontier`, and `cell-shards` through exact context inputs and
+      predecessor outputs; generated inputs that replay requires must fail closed.
+    - [ ] Add the single replay runner and enforce read-only code/input mounts or privilege
+      separation because preparation-time modes are not a security boundary. Keep v2
+      rejected by `run_offline.py` until this is complete.
 - [ ] **Remove ambient identity.** Replace filesystem-mtime provenance and wall-clock
   `generated_at` values with source-manifest pins and a pack-derived deterministic
   generation ID. Keep observation/build times only in audit attestations, outside logical
@@ -394,8 +409,9 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) route all seven builders through the prepared
-context and add one fail-closed full-DAG replay entry point; (2) replace mtime-derived
+**Next P0-R implementation order:** (1) route the remaining base-graph, cells, frontier,
+and cell-shards stages through the prepared context, then add one fail-closed full-DAG
+replay entry point; (2) replace mtime-derived
 provenance and wall-clock generation stamps with the pack-derived generation identity;
 (3) compile the first real pack and prove source-object coherence; (4)
 pin the complete execution environment and add the two-path randomized-mtime/adversarial-env
