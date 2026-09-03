@@ -1005,6 +1005,7 @@ def write_sqlite_from_jsonl(
             _publish_sqlite(temp, target)
         else:
             publisher(temp, target)
+        temp = None
         return target
     except (KeyError, sqlite3.Error) as exc:
         raise StoreError(f"could not import JSONL snapshot: {exc}") from exc
