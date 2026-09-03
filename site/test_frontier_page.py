@@ -2,16 +2,28 @@
 """Contract checks for the generated Frontier queue UI."""
 from __future__ import annotations
 
+import copy
+import os
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
+BRAIN = ROOT / "brain"
+if str(BRAIN) not in sys.path:
+    sys.path.insert(0, str(BRAIN))
 BUILDER = HERE / "build_brain_page.py"
 PAGE = HERE / "out" / "brain.html"
+
+import build_brain_page  # noqa: E402
+import build_context  # noqa: E402
+import stage_io  # noqa: E402
+from test_build_context import _document  # noqa: E402
 
 
 class FrontierPageTest(unittest.TestCase):
@@ -88,6 +100,114 @@ class FrontierPageTest(unittest.TestCase):
         result = subprocess.run(["node", "--check", str(script_path)],
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_context_mode_writes_only_the_owned_output(self):
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw)
+            context_path = base / "build-context.json"
+            document = _document(base)
+            context_path.write_bytes(build_context.canonical_json_bytes(document))
+            for root in ("code", "input", "output", "scratch"):
+                (base / root).mkdir()
+
+            previous_umask = os.umask(0o777)
+            try:
+                self.assertEqual(
+                    build_brain_page._cli(
+                        [
+                            "--build-context",
+                            str(context_path),
+                            "--stage-id",
+                            "brain-page",
+                        ]
+                    ),
+                    0,
+                )
+            finally:
+                os.umask(previous_umask)
+            output = base / "output/site/out/brain.html"
+            self.assertEqual(output.read_text(encoding="utf-8"), build_brain_page.HTML)
+            self.assertEqual(output.stat().st_mode & 0o777, 0o644)
+            self.assertEqual((base / "output/site").stat().st_mode & 0o777, 0o700)
+            self.assertEqual(
+                (base / "scratch/brain-page").stat().st_mode & 0o777,
+                0o700,
+            )
+            self.assertFalse((base / "scratch/brain-page/publish").exists())
+
+            output.write_text("competitor", encoding="utf-8")
+            with self.assertRaisesRegex(FileExistsError, "already exists"):
+                build_brain_page._cli(
+                    [
+                        "--build-context",
+                        str(context_path),
+                        "--stage-id",
+                        "brain-page",
+                    ]
+                )
+            self.assertEqual(output.read_text(encoding="utf-8"), "competitor")
+
+    def test_context_mode_rejects_stage_contract_drift(self):
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw)
+            document = copy.deepcopy(_document(base))
+            stage = next(item for item in document["stages"] if item["id"] == "brain-page")
+            stage["program"] = "site/not-the-page-builder.py"
+            document["generation_id"] = build_context.generation_identity(document)
+            context_path = base / "build-context.json"
+            context_path.write_bytes(build_context.canonical_json_bytes(document))
+            for root in ("code", "input", "output", "scratch"):
+                (base / root).mkdir()
+
+            with self.assertRaisesRegex(build_context.BuildContextError, "program is"):
+                build_brain_page._cli(
+                    [
+                        "--build-context",
+                        str(context_path),
+                        "--stage-id",
+                        "brain-page",
+                    ]
+                )
+
+    def test_context_mode_rolls_back_when_directory_sync_fails(self):
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw)
+            context_path = base / "build-context.json"
+            context_path.write_bytes(
+                build_context.canonical_json_bytes(_document(base))
+            )
+            for root in ("code", "input", "output", "scratch"):
+                (base / root).mkdir()
+            output = base / "output/site/out/brain.html"
+            real_fsync_directory = stage_io.fsync_directory
+            failed = False
+
+            def fail_after_publish(path: Path) -> None:
+                nonlocal failed
+                if (
+                    not failed
+                    and Path(path).resolve() == output.parent.resolve()
+                    and output.exists()
+                ):
+                    failed = True
+                    raise OSError("injected output directory fsync failure")
+                real_fsync_directory(path)
+
+            with mock.patch.object(
+                stage_io, "fsync_directory", side_effect=fail_after_publish
+            ), self.assertRaisesRegex(OSError, "injected output"):
+                build_brain_page._cli(
+                    [
+                        "--build-context",
+                        str(context_path),
+                        "--stage-id",
+                        "brain-page",
+                    ]
+                )
+
+            self.assertTrue(failed)
+            self.assertFalse(output.exists())
+            self.assertFalse((base / "scratch/brain-page/publish").exists())
 
 
 if __name__ == "__main__":

@@ -101,7 +101,7 @@ def _stages() -> list[dict]:
         {
             "argv": [],
             "id": "frontier",
-            "needs": ["cells"],
+            "needs": ["base-graph", "cells"],
             "outputs": [
                 {"kind": "file", "path": "brain/data/frontier.jsonl"},
                 {"kind": "file", "path": "brain/data/frontier_graph.json"},
@@ -112,14 +112,14 @@ def _stages() -> list[dict]:
         {
             "argv": [],
             "id": "cell-shards",
-            "needs": ["cells", "frontier", "top-level-shards"],
+            "needs": ["base-graph", "cells", "frontier"],
             "outputs": [{"kind": "tree", "path": "site/assets/brain/cells"}],
             "program": "brain/build_cell_shards.py",
         },
         {
             "argv": [],
             "id": "brain-page",
-            "needs": ["cell-shards"],
+            "needs": [],
             "outputs": [{"kind": "file", "path": "site/out/brain.html"}],
             "program": "site/build_brain_page.py",
         },
@@ -257,8 +257,28 @@ class BuildContextTest(unittest.TestCase):
         )
         self.assertEqual(context.stage("cells").program, "brain/build_cells.py")
         self.assertEqual(
+            context.require_stage(
+                "base-graph",
+                program="brain/build_snapshot.py",
+                argv=["--jsonl-only"],
+                needs=[],
+                outputs=[
+                    ("file", "brain/data/edges.jsonl"),
+                    ("file", "brain/data/edges_links.jsonl"),
+                    ("file", "brain/data/nodes.jsonl"),
+                ],
+            ).id,
+            "base-graph",
+        )
+        self.assertEqual(
             context.output_for("cells", "brain/data/cells.jsonl"),
             (self.base / "output/brain/data/cells.jsonl").resolve(),
+        )
+        self.assertEqual(
+            context.dependency_output_for(
+                "cells", "base-graph", "brain/data/nodes.jsonl"
+            ),
+            (self.base / "output/brain/data/nodes.jsonl").resolve(),
         )
         self.assertEqual(
             context.output_for("cell-shards", "site/assets/brain/cells/a.json"),
@@ -486,6 +506,32 @@ class BuildContextTest(unittest.TestCase):
             context.members("not-declared")
         with self.assertRaisesRegex(BuildContextError, "unknown stage"):
             context.stage("not-a-stage")
+        with self.assertRaisesRegex(BuildContextError, "program is"):
+            context.require_stage(
+                "cells", program="brain/build_frontier.py", argv=[]
+            )
+        with self.assertRaisesRegex(BuildContextError, "argv is"):
+            context.require_stage(
+                "base-graph", program="brain/build_snapshot.py", argv=[]
+            )
+        with self.assertRaisesRegex(BuildContextError, "needs are"):
+            context.require_stage(
+                "cells",
+                program="brain/build_cells.py",
+                argv=[],
+                needs=[],
+            )
+        with self.assertRaisesRegex(BuildContextError, "outputs are"):
+            context.require_stage(
+                "brain-page",
+                program="site/build_brain_page.py",
+                argv=[],
+                outputs=[("file", "site/out/not-brain.html")],
+            )
+        with self.assertRaisesRegex(BuildContextError, "does not directly depend"):
+            context.dependency_output_for(
+                "brain-page", "base-graph", "brain/data/nodes.jsonl"
+            )
 
     def test_stage_schedule_rejects_forward_needs_and_output_overlap(self) -> None:
         forward = copy.deepcopy(self.document)

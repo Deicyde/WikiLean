@@ -35,6 +35,9 @@ from unittest import mock
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import build_context as context_module  # noqa: E402
+import stage_io  # noqa: E402
+
 ORGAN_GENERATION = "2030-01-01T00:00:00+00:00"
 CELL_GENERATION = "2030-01-01T00:01:00+00:00"
 NEXT_ORGAN_GENERATION = "2030-01-02T00:00:00+00:00"
@@ -140,6 +143,111 @@ def make_fixture(
         "generated_at": synapse_generation or cell_generation,
         "prov": PROV, "counts": {"cells": len(CELLS), "synapses": len(SYNAPSES)},
     }, SYNAPSES)
+
+
+def make_context(
+    root: Path,
+    *,
+    sqlite_program: str = "brain/build_snapshot.py",
+    sqlite_argv: Iterable[str] = ("--from-jsonl",),
+    sqlite_needs: Iterable[str] = ("base-graph", "cells"),
+    sqlite_output: str = "brain/data/brain.sqlite3",
+    base_nodes_output: str = "brain/data/nodes.jsonl",
+) -> context_module.BuildContext:
+    roots = {
+        "code": str(root / "code"),
+        "input": str(root / "input"),
+        "output": str(root / "output"),
+        "scratch": str(root / "scratch"),
+    }
+    for path in roots.values():
+        Path(path).mkdir(parents=True, exist_ok=True)
+    config = {
+        "cell_attach_kinds": ["generalization", "invocation", "related", "special_case"],
+        "external_node_cap": 8000,
+        "layout": {"enabled": True, "iterations": 100},
+        "schema": context_module.REDUCER_CONFIGURATION_SCHEMA,
+    }
+    config_digest = hashlib.sha256(
+        context_module.canonical_json_bytes(config)
+    ).hexdigest()
+    document = {
+        "bindings": [
+            {
+                "cardinality": "one",
+                "class": "immutable_source_object",
+                "input_id": "fixture-input",
+                "members": [
+                    {
+                        "bytes": 0,
+                        "media_type": "application/json",
+                        "object": "fixture",
+                        "path": "fixture.json",
+                        "pin": {"type": "content_sha256", "value": "1" * 64},
+                        "sha256": "1" * 64,
+                        "source_manifest_id": "sha256:" + "2" * 64,
+                    }
+                ],
+                "path": "fixture.json",
+                "requirement": "required",
+                "root": "repo",
+                "state": "present",
+            }
+        ],
+        "configuration": config,
+        "generation_id": "sha256:" + "0" * 64,
+        "replay": {
+            "authority": {
+                "authority_root": "sha256:" + "3" * 64,
+                "git_commit": "4" * 40,
+            },
+            "offline_pack_id": "sha256:" + "5" * 64,
+            "prior_state_root": None,
+            "reducer": {
+                "configuration_sha256": config_digest,
+                "environment_sha256": "6" * 64,
+                "git_commit": "7" * 40,
+            },
+            "reducer_inventory_id": "sha256:" + "8" * 64,
+            "semantic_epoch": "test-v1",
+            "source_set_root": "sha256:" + "9" * 64,
+        },
+        "roots": roots,
+        "schema": context_module.BUILD_CONTEXT_SCHEMA,
+        "stages": [
+            {
+                "argv": ["--jsonl-only"],
+                "id": "base-graph",
+                "needs": [],
+                "outputs": [
+                    {"kind": "file", "path": "brain/data/edges.jsonl"},
+                    {"kind": "file", "path": "brain/data/edges_links.jsonl"},
+                    {"kind": "file", "path": base_nodes_output},
+                ],
+                "program": "brain/build_snapshot.py",
+            },
+            {
+                "argv": [],
+                "id": "cells",
+                "needs": ["base-graph"],
+                "outputs": [
+                    {"kind": "file", "path": "brain/data/cell_review.jsonl"},
+                    {"kind": "file", "path": "brain/data/cells.jsonl"},
+                    {"kind": "file", "path": "brain/data/synapses.jsonl"},
+                ],
+                "program": "brain/build_cells.py",
+            },
+            {
+                "argv": list(sqlite_argv),
+                "id": "sqlite-with-cells",
+                "needs": list(sqlite_needs),
+                "outputs": [{"kind": "file", "path": sqlite_output}],
+                "program": sqlite_program,
+            },
+        ],
+    }
+    document["generation_id"] = context_module.generation_identity(document)
+    return context_module.BuildContext.from_document(document)
 
 
 def canonical(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -325,6 +433,224 @@ class HybridStoreTest(unittest.TestCase):
             {"nodes.jsonl", "edges.jsonl", "edges_links.jsonl"},
         )
         sqlite_builder.assert_not_called()
+
+    def test_context_sqlite_build_uses_exact_dependencies_and_stage_scratch(self) -> None:
+        context = make_context(self.root / "context-success")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+        sources = {
+            name: data_dir / filename
+            for name, filename in self.store_module.DEFAULT_ARTIFACT_FILES.items()
+        }
+        before = {
+            name: (
+                path.read_bytes(),
+                path.stat().st_ino,
+                path.stat().st_mtime_ns,
+            )
+            for name, path in sources.items()
+        }
+
+        result = self.snapshot_module.build_sqlite_from_context(context)
+
+        expected = data_dir / self.store_module.DEFAULT_SQLITE_NAME
+        self.assertEqual(result, expected)
+        self.assertTrue(expected.is_file())
+        self.assertEqual(
+            {path.name for path in data_dir.iterdir()},
+            {*[path.name for path in sources.values()], expected.name},
+        )
+        for name, path in sources.items():
+            self.assertEqual(
+                (path.read_bytes(), path.stat().st_ino, path.stat().st_mtime_ns),
+                before[name],
+            )
+        scratch = context.scratch_for("sqlite-with-cells", "sqlite")
+        self.assertFalse(scratch.exists())
+        self.assertTrue(scratch.parent.is_dir())
+        with closing(sqlite3.connect(expected)) as connection:
+            self.assertEqual(
+                connection.execute("SELECT build_state FROM snapshot").fetchone(),
+                ("complete",),
+            )
+            self.assertEqual(
+                connection.execute("SELECT count(*) FROM cells").fetchone()[0],
+                len(CELLS),
+            )
+
+    def test_context_sqlite_build_is_umask_stable_and_no_replace(self) -> None:
+        context = make_context(self.root / "context-umask")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+        output = data_dir / "brain.sqlite3"
+
+        previous_umask = os.umask(0o777)
+        try:
+            self.snapshot_module.build_sqlite_from_context(context)
+        finally:
+            os.umask(previous_umask)
+
+        self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(
+            (context.roots.scratch / "sqlite-with-cells").stat().st_mode & 0o777,
+            0o700,
+        )
+        self.assertFalse(
+            (context.roots.scratch / "sqlite-with-cells/sqlite").exists()
+        )
+
+        output.unlink()
+        output.write_bytes(b"competitor")
+        before = (output.read_bytes(), output.stat().st_ino)
+        with self.assertRaisesRegex(FileExistsError, "already exists"):
+            self.snapshot_module.build_sqlite_from_context(context)
+        self.assertEqual((output.read_bytes(), output.stat().st_ino), before)
+
+    def test_context_sqlite_publish_race_preserves_competitor(self) -> None:
+        context = make_context(self.root / "context-race")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+        output = data_dir / "brain.sqlite3"
+        real_link = stage_io.os.link
+        injected = False
+
+        def race(source, destination, *, follow_symlinks=True):
+            nonlocal injected
+            if Path(destination) == output and not injected:
+                injected = True
+                output.write_bytes(b"competitor")
+            return real_link(
+                source,
+                destination,
+                follow_symlinks=follow_symlinks,
+            )
+
+        with mock.patch.object(stage_io.os, "link", side_effect=race):
+            with self.assertRaises(FileExistsError):
+                self.snapshot_module.build_sqlite_from_context(context)
+
+        self.assertTrue(injected)
+        self.assertEqual(output.read_bytes(), b"competitor")
+        self.assertFalse(
+            (context.roots.scratch / "sqlite-with-cells/sqlite").exists()
+        )
+
+    def test_context_sqlite_rejects_cross_filesystem_before_build(self) -> None:
+        context = make_context(self.root / "context-cross-device")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+
+        with (
+            mock.patch.object(
+                self.snapshot_module,
+                "require_same_filesystem",
+                side_effect=OSError("injected cross-device workspace"),
+            ),
+            mock.patch.object(
+                self.snapshot_module, "write_sqlite_from_jsonl"
+            ) as sqlite_builder,
+            self.assertRaisesRegex(OSError, "cross-device"),
+        ):
+            self.snapshot_module.build_sqlite_from_context(context)
+
+        sqlite_builder.assert_not_called()
+        self.assertFalse(
+            (context.roots.scratch / "sqlite-with-cells/sqlite").exists()
+        )
+
+    def test_context_sqlite_build_requires_all_five_regular_non_symlink_inputs(self) -> None:
+        required = tuple(self.store_module.DEFAULT_ARTIFACT_FILES.values())
+        for missing in required:
+            with self.subTest(missing=missing):
+                case_root = self.root / f"missing-{missing}"
+                context = make_context(case_root)
+                data_dir = context.roots.output / "brain/data"
+                make_fixture(data_dir)
+                (data_dir / missing).unlink()
+                with self.assertRaisesRegex(Exception, "missing Brain artifact"):
+                    self.snapshot_module.build_sqlite_from_context(context)
+                self.assertFalse((data_dir / "brain.sqlite3").exists())
+
+        context = make_context(self.root / "symlink-source")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+        original = data_dir / "nodes.jsonl"
+        moved = self.root / "nodes-outside.jsonl"
+        original.replace(moved)
+        original.symlink_to(moved)
+        with self.assertRaisesRegex(Exception, "symlink"):
+            self.snapshot_module.build_sqlite_from_context(context)
+        self.assertFalse((data_dir / "brain.sqlite3").exists())
+
+        context = make_context(self.root / "directory-source")
+        data_dir = context.roots.output / "brain/data"
+        make_fixture(data_dir)
+        original = data_dir / "nodes.jsonl"
+        original.unlink()
+        original.mkdir()
+        with self.assertRaisesRegex(Exception, "not a regular file"):
+            self.snapshot_module.build_sqlite_from_context(context)
+        self.assertFalse((data_dir / "brain.sqlite3").exists())
+
+    def test_context_sqlite_build_rejects_stage_contract_drift(self) -> None:
+        cases = (
+            (
+                "program",
+                {"sqlite_program": "brain/not-the-snapshot-builder.py"},
+                "program is",
+            ),
+            ("argv", {"sqlite_argv": ()}, "argv is"),
+            ("needs", {"sqlite_needs": ("base-graph",)}, "needs are"),
+            (
+                "output",
+                {"sqlite_output": "brain/data/not-brain.sqlite3"},
+                "outputs are",
+            ),
+            (
+                "dependency-output",
+                {"base_nodes_output": "brain/data/nodes-other.jsonl"},
+                "does not own output path",
+            ),
+        )
+        for label, changes, message in cases:
+            with self.subTest(case=label):
+                context = make_context(self.root / f"contract-{label}", **changes)
+                with self.assertRaisesRegex(
+                    context_module.BuildContextError, message
+                ):
+                    self.snapshot_module.build_sqlite_from_context(context)
+
+    def test_context_cli_rejects_legacy_overrides_and_mode_mismatch(self) -> None:
+        context = make_context(self.root / "context-cli")
+        context_path = self.root / "build-context.json"
+        context_path.write_bytes(
+            context_module.canonical_json_bytes(context.to_document())
+        )
+        cases = (
+            ["--build-context", str(context_path), "--stage-id", "sqlite-with-cells"],
+            [
+                "--build-context", str(context_path), "--stage-id", "sqlite-with-cells",
+                "--jsonl-only",
+            ],
+            [
+                "--build-context", str(context_path), "--stage-id", "sqlite-with-cells",
+                "--from-jsonl", "--data-dir", str(self.data_dir),
+            ],
+            [
+                "--build-context", str(context_path), "--stage-id", "sqlite-with-cells",
+                "--from-jsonl", "--output", str(self.db_path),
+            ],
+            [
+                "--build-context", str(context_path), "--stage-id", "base-graph",
+                "--from-jsonl",
+            ],
+        )
+        for index, arguments in enumerate(cases):
+            with self.subTest(case=index), mock.patch.object(
+                sys, "argv", ["build_snapshot.py", *arguments]
+            ), self.assertRaises(SystemExit) as raised:
+                self.snapshot_module.main()
+            self.assertEqual(raised.exception.code, 2)
 
     def open(self, backend: str):
         return self.open_store(data_dir=self.data_dir, backend=backend,
@@ -806,6 +1132,50 @@ class HybridStoreTest(unittest.TestCase):
         ):
             self.build()
         self.assertEqual(kinds[-2:], ["file", "directory"])
+
+    def test_streaming_builder_closes_sources_when_temp_setup_fails(self) -> None:
+        paths = self.store_module._paths(self.data_dir)
+        handles = self.store_module._source_handles(paths)
+        with (
+            mock.patch.object(
+                self.store_module, "_source_handles", return_value=handles
+            ),
+            mock.patch.object(
+                self.store_module.tempfile,
+                "mkstemp",
+                side_effect=OSError("injected temp setup failure"),
+            ),
+            self.assertRaisesRegex(OSError, "injected temp setup failure"),
+        ):
+            self.store_module.write_sqlite_from_jsonl(self.db_path, self.data_dir)
+        self.assertTrue(
+            all(handle is None or handle.closed for handle in handles.values())
+        )
+
+    def test_streaming_builder_removes_temp_when_mode_setup_fails(self) -> None:
+        created: list[Path] = []
+        real_mkstemp = tempfile.mkstemp
+
+        def track_temp(*args, **kwargs):
+            descriptor, name = real_mkstemp(*args, **kwargs)
+            created.append(Path(name))
+            return descriptor, name
+
+        with (
+            mock.patch.object(
+                self.store_module.tempfile, "mkstemp", side_effect=track_temp
+            ),
+            mock.patch.object(
+                self.store_module.os,
+                "fchmod",
+                side_effect=OSError("injected chmod failure"),
+            ),
+            self.assertRaisesRegex(OSError, "injected chmod failure"),
+        ):
+            self.store_module.write_sqlite_from_jsonl(self.db_path, self.data_dir)
+
+        self.assertEqual(len(created), 1)
+        self.assertFalse(created[0].exists())
 
     def test_failed_rebuild_preserves_previous_database(self) -> None:
         self.build()
