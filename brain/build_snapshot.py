@@ -18,7 +18,13 @@ import tempfile
 from pathlib import Path
 
 import build_context
-from build_common import BRAIN_DATA, build, write_edges, write_jsonl
+from build_common import (
+    BRAIN_DATA,
+    ContextBuildInputs,
+    build,
+    write_edges,
+    write_jsonl,
+)
 from stage_io import (
     assert_outputs_absent,
     ensure_private_directory,
@@ -28,6 +34,16 @@ from stage_io import (
 )
 from store import DEFAULT_SQLITE_NAME, digest_file, write_sqlite_from_jsonl
 
+
+BASE_CONTEXT_STAGE = "base-graph"
+BASE_CONTEXT_PROGRAM = "brain/build_snapshot.py"
+BASE_CONTEXT_ARGV = ("--jsonl-only",)
+BASE_CONTEXT_NEEDS: tuple[str, ...] = ()
+BASE_CONTEXT_OUTPUTS = (
+    "brain/data/edges.jsonl",
+    "brain/data/edges_links.jsonl",
+    "brain/data/nodes.jsonl",
+)
 
 SQLITE_CONTEXT_STAGE = "sqlite-with-cells"
 SQLITE_CONTEXT_PROGRAM = "brain/build_snapshot.py"
@@ -46,6 +62,67 @@ SQLITE_CONTEXT_INPUTS = (
 def build_snapshot(*, data_dir: Path, output: Path) -> Path:
     """Index existing JSONL artifacts into an atomic SQLite snapshot."""
     return write_sqlite_from_jsonl(Path(output), Path(data_dir))
+
+
+def build_base_graph_from_context(context: build_context.BuildContext) -> str:
+    """Build and publish the three exact base-graph outputs from sealed inputs."""
+    context.require_stage(
+        BASE_CONTEXT_STAGE,
+        program=BASE_CONTEXT_PROGRAM,
+        argv=BASE_CONTEXT_ARGV,
+        needs=BASE_CONTEXT_NEEDS,
+        outputs=[("file", relative) for relative in BASE_CONTEXT_OUTPUTS],
+    )
+    outputs = {
+        Path(relative).name: context.output_for(BASE_CONTEXT_STAGE, relative)
+        for relative in BASE_CONTEXT_OUTPUTS
+    }
+    targets = tuple(outputs.values())
+    assert_outputs_absent(targets)
+    for parent in {target.parent for target in targets}:
+        ensure_private_directory(context.roots.output, parent)
+
+    scratch = context.scratch_for(BASE_CONTEXT_STAGE, "jsonl")
+    with owned_directory(context.roots.scratch, scratch) as ownership:
+        for parent in {target.parent for target in targets}:
+            require_same_filesystem(scratch, parent)
+
+        sources = ContextBuildInputs.from_context(
+            context,
+            materialize_root=scratch / "inputs",
+        )
+        nodes, edges, meta = build(source_set=sources)
+        # Reverify both the private reducer copies and their bound sources after
+        # final use, before any output bytes are written or published.
+        sources.verify()
+        sources.verify_sources()
+        staged_nodes = scratch / "nodes.jsonl"
+        staged_edges = scratch / "edges.jsonl"
+        staged_links = scratch / "edges_links.jsonl"
+        write_jsonl(staged_nodes, meta, nodes)
+        write_edges(edges, meta, staged_edges, staged_links)
+
+        # The legacy writers inherit umask. Normalize before re-opening the
+        # staged files so even a hostile 0777 umask cannot make them unreadable.
+        for artifact in (staged_nodes, staged_edges, staged_links):
+            artifact.chmod(0o644)
+        identity = hashlib.sha256()
+        for artifact in (staged_nodes, staged_edges, staged_links):
+            identity.update(digest_file(artifact).encode("ascii"))
+        snapshot_id = identity.hexdigest()
+        meta_with_id = {**meta, "snapshot_id": snapshot_id}
+        write_jsonl(staged_nodes, meta_with_id, nodes)
+        write_edges(edges, meta_with_id, staged_edges, staged_links)
+
+        publications = (
+            (staged_edges, outputs["edges.jsonl"]),
+            (staged_links, outputs["edges_links.jsonl"]),
+            (staged_nodes, outputs["nodes.jsonl"]),
+        )
+        for source, _target in publications:
+            source.chmod(0o644)
+        publish_files_no_replace(publications, scratch=ownership)
+        return snapshot_id
 
 
 def build_sqlite_from_context(context: build_context.BuildContext) -> Path:
@@ -164,7 +241,7 @@ def build_live_snapshot(*, data_dir: Path = BRAIN_DATA, output: Path | None = No
     return output
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path)
     parser.add_argument("--output", type=Path)
@@ -181,21 +258,27 @@ def main() -> int:
         action="store_true",
         help="build and atomically publish nodes/edges JSONL without touching SQLite",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.build_context is not None or args.stage_id is not None:
         if args.build_context is None or args.stage_id is None:
             parser.error("--build-context and --stage-id must be provided together")
         if args.data_dir is not None or args.output is not None:
             parser.error("context mode forbids --data-dir and --output")
-        if not args.from_jsonl or args.jsonl_only:
-            parser.error("sqlite-with-cells context mode requires --from-jsonl")
-        if args.stage_id != SQLITE_CONTEXT_STAGE:
-            parser.error(f"this reducer only supports context stage {SQLITE_CONTEXT_STAGE!r}")
         context = build_context.load_build_context(args.build_context)
-        result = build_sqlite_from_context(context)
-        size_mb = result.stat().st_size / 1024 / 1024
-        print(json.dumps({"sqlite": str(result), "size_mb": round(size_mb, 1)}))
-        return 0
+        if args.stage_id == BASE_CONTEXT_STAGE:
+            if not args.jsonl_only or args.from_jsonl:
+                parser.error("base-graph context mode requires --jsonl-only")
+            build_base_graph_from_context(context)
+            return 0
+        if args.stage_id == SQLITE_CONTEXT_STAGE:
+            if not args.from_jsonl or args.jsonl_only:
+                parser.error("sqlite-with-cells context mode requires --from-jsonl")
+            build_sqlite_from_context(context)
+            return 0
+        parser.error(
+            "this reducer supports context stages "
+            f"{BASE_CONTEXT_STAGE!r} and {SQLITE_CONTEXT_STAGE!r}"
+        )
 
     data_dir = args.data_dir or BRAIN_DATA
     if args.jsonl_only:

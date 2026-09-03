@@ -1213,16 +1213,16 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         with self.assertRaisesRegex(contracts.VerificationError, "offline_pack_id"):
             contracts.validate_build_attestation(missing_pack)
 
-    def test_v2_offline_runner_fails_closed_until_replay_exists(self) -> None:
+    def test_v2_offline_runner_requires_explicit_replay_authority(self) -> None:
         _pack, pack_path = self.make_pack()
         process = subprocess.run(
-            [sys.executable, str(TOOLS / "run_offline.py"), "--manifest", str(pack_path), "--root", str(self.root)],
+            [sys.executable, "-I", str(TOOLS / "run_offline.py"), "--manifest", str(pack_path), "--root", str(self.root)],
             capture_output=True,
             text=True,
             check=False,
         )
         self.assertNotEqual(process.returncode, 0)
-        self.assertIn("full-DAG replay is not implemented", process.stderr)
+        self.assertIn("offline-pack/v2 requires --workspace", process.stderr)
 
 
 class ReleaseVerificationTest(unittest.TestCase):

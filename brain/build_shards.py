@@ -274,6 +274,9 @@ def build_top_level_shards_from_context(context: BuildContext) -> int:
         community_edges_path=community_edges_path,
         source_registry_path=source_registry_path,
     )
+    # Keep publication as the final fallible operation so a logging failure
+    # cannot leave a complete output set behind while reporting stage failure.
+    _print_summary(meta, n_edges, n_community, xref_blob, sources_blob, t0)
     _publish_context_outputs(
         xref_blob,
         sources_blob,
@@ -283,7 +286,6 @@ def build_top_level_shards_from_context(context: BuildContext) -> int:
         output_root=context.roots.output,
         scratch_root=context.roots.scratch,
     )
-    _print_summary(meta, n_edges, n_community, xref_blob, sources_blob, t0)
     return 0
 
 

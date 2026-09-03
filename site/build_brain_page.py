@@ -5935,8 +5935,7 @@ def _cli(argv: list[str] | None = None) -> int:
     if args.stage_id != "brain-page":
         parser.error("--stage-id must be 'brain-page' with --build-context")
     context = BuildContext.load(args.build_context)
-    output = build_brain_page_from_context(context)
-    print(f"wrote {output} ({len(HTML) / 1024:.0f} KB)")
+    build_brain_page_from_context(context)
     return 0
 
 

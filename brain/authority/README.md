@@ -70,6 +70,10 @@ python3 brain/tools/prepare_replay_v2.py \
   --workspace /path/to/new-workspace --authority-git-commit <40hex> \
   --authority-root sha256:<64hex> --semantic-epoch <epoch>
 python3 brain/tools/run_offline.py --manifest /path/to/offline-pack.json --root /path/to/pack-root -- <reducer arguments>
+python3 -I brain/tools/run_offline.py \
+  --manifest /path/to/offline-pack-v2.json --root /path/to/pack-root \
+  --workspace /path/to/new-workspace --authority-git-commit <40hex> \
+  --authority-root sha256:<64hex> --semantic-epoch <epoch>
 python3 brain/tools/verify_release.py --manifest /path/to/release.json --root /path/to/release-root
 ```
 
@@ -80,20 +84,37 @@ makes code/input read-only, synchronizes the tree, and publishes with an atomic
 no-replace rename. Caller environment and caller-supplied source paths cannot select
 runtime inputs. The tool prints one canonical JSON result and never executes a reducer.
 These permission modes are an integrity convention for preparation, not a sandbox; the
-future runner must enforce read-only mounts or privilege separation while executing code.
+executor must still enforce an operating-system boundary while running reducer code.
 
-`run_offline.py` remains the cooperative single-program v1 fixture runner. It first
-verifies complete v1 pack closure, then executes a Python reducer with fixed
-locale/timezone/hash settings, an allowlisted environment, and a fail-fast socket
-monkeypatch. This catches accidental Python network calls but is not a security sandbox;
-authoritative CI/build runners must additionally disable networking at the OS or container
-layer. It rejects `offline-pack/v2` explicitly until all seven stages consume the
-prepared context through one fail-closed full-DAG entry point. Verifying or preparing a
-v2 pack proves contract, byte, and materialization closure only; it is not evidence that
-replay has occurred.
+`run_offline.py` supports both contract generations. For v1 it remains the cooperative
+single-program fixture runner: it verifies complete pack closure, then executes one Python
+reducer with fixed locale/timezone/hash settings, an allowlisted environment, and a
+fail-fast socket monkeypatch. This catches accidental Python network calls but is not a
+security sandbox.
+
+For v2, `run_offline.py` requires a fresh workspace and explicit authority identity,
+prepares the sealed context, and delegates to `run_replay_v2.py`. That executor verifies
+the exact input and reducer closures before execution, rechecks reducer bytes after each
+stage, executes all seven stages in inventory order (including independent leaves), rejects
+caller-supplied stage arguments, and validates stage-owned outputs, scratch cleanup, and
+predecessor immutability after every stage. Reducer processes
+must run inside the supported Darwin sandbox or Linux bubblewrap boundary; missing or
+unsupported isolation fails closed, networking is denied, and host writes are confined to
+output/scratch. Linux additionally provides an ephemeral isolated `/tmp`; it exposes the
+exact prepared workspace plus selected runtime roots rather than
+the host root; Darwin limits reads to those roots plus Apple's standard system runtime
+profile and denies process forks. The interpreter/runtime bytes and OS policy are not yet
+pinned, and these policies still require clean-host integration tests before this can count
+as authoritative clean-room evidence. The v2 CLI requires Python isolated startup; the
+original invocation must use `python3 -I ...` because Python startup hooks run
+before application code can sanitize its own process.
+
+Executing fixtures through this path is not by itself a `full-offline-replay` attestation.
+No real full-corpus v2 pack, pinned execution environment, two-path deterministic build, or
+approved-baseline compatibility result is claimed yet.
 It also does not yet prove a declared Git commit/tree produced the packed bytes or that a
 multi-file binding exhausts an upstream tree. Those coherence/exhaustiveness checks belong
-to the future pack compiler before any v2 build attestation may be emitted.
+to the pack compiler before any v2 build attestation may be emitted.
 
 Verification includes canonical encoding, schema/version and unknown-field checks,
 self-identities, source-set closure, exact SHA-256 and byte lengths, offline-pack
@@ -128,7 +149,8 @@ only after full verification and byte equality. The CLI prints one JSON object c
 `release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
 Its `build-attestation/v1` records compatibility release assembly, not a clean-room graph
 replay. `release/v1` continues to require that v1 attestation until the v2 replay path is
-implemented and independently verified.
+exercised with a real pack, the execution environment and pack-only isolation are pinned,
+and the resulting dual build is independently verified.
 
 ## Phase 1 activation evidence
 
