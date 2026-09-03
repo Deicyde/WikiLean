@@ -41,10 +41,27 @@ bonds between two cells collapse to ONE **synapse** carrying every trace.
 Run: python3 site/build_brain_page.py   (writes the release-neutral
 site/out/brain.html; build-public stages it and an explicitly verified release)
 """
+import argparse
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 OUT_DIR = HERE / "out"
+
+BRAIN_DIR = ROOT / "brain"
+if str(BRAIN_DIR) not in sys.path:
+    sys.path.insert(0, str(BRAIN_DIR))
+
+from build_context import BuildContext  # noqa: E402
+from stage_io import (  # noqa: E402
+    assert_outputs_absent,
+    ensure_private_directory,
+    owned_directory,
+    publish_files_no_replace,
+    require_same_filesystem,
+    write_bytes_exclusive,
+)
 
 HTML = r"""<!doctype html>
 <html lang="en">
@@ -5870,11 +5887,58 @@ function wireCommunity(apiId, panelId) {
 """
 
 
+def write_page(output: Path) -> Path:
+    """Write the historical repository-local page output."""
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(HTML, encoding="utf-8", newline="\n")
+    return output
+
+
+def build_brain_page_from_context(context: BuildContext) -> Path:
+    """Publish the exact page output owned by the sealed replay stage."""
+    context.require_stage(
+        "brain-page",
+        program="site/build_brain_page.py",
+        argv=[],
+        needs=[],
+        outputs=[("file", "site/out/brain.html")],
+    )
+    output = context.output_for("brain-page", "site/out/brain.html")
+    scratch = context.scratch_for("brain-page", "publish")
+    scratch_file = scratch / "brain.html"
+    assert_outputs_absent([output])
+    ensure_private_directory(context.roots.output, output.parent)
+    with owned_directory(context.roots.scratch, scratch) as ownership:
+        write_bytes_exclusive(scratch_file, HTML.encode("utf-8"), mode=0o644)
+        require_same_filesystem(scratch, output.parent)
+        publish_files_no_replace([(scratch_file, output)], scratch=ownership)
+    return output
+
+
 def main() -> None:
-    OUT_DIR.mkdir(exist_ok=True)
-    (OUT_DIR / "brain.html").write_text(HTML)
-    print(f"wrote {OUT_DIR / 'brain.html'} ({len(HTML) / 1024:.0f} KB)")
+    output = write_page(OUT_DIR / "brain.html")
+    print(f"wrote {output} ({len(HTML) / 1024:.0f} KB)")
+
+
+def _cli(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build-context", type=Path)
+    parser.add_argument("--stage-id")
+    args = parser.parse_args(argv)
+
+    if args.build_context is None:
+        if args.stage_id is not None:
+            parser.error("--stage-id requires --build-context")
+        main()
+        return 0
+    if args.stage_id != "brain-page":
+        parser.error("--stage-id must be 'brain-page' with --build-context")
+    context = BuildContext.load(args.build_context)
+    output = build_brain_page_from_context(context)
+    print(f"wrote {output} ({len(HTML) / 1024:.0f} KB)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(_cli())

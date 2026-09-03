@@ -1042,6 +1042,59 @@ class BuildContext:
                 return stage
         raise BuildContextError(f"unknown stage {stage_id!r}")
 
+    def require_stage(
+        self,
+        stage_id: str,
+        *,
+        program: str,
+        argv: tuple[str, ...] | list[str],
+        needs: tuple[str, ...] | list[str] | None = None,
+        outputs: tuple[tuple[str, str], ...] | list[tuple[str, str]] | None = None,
+    ) -> Stage:
+        """Return a stage only when its executable contract matches exactly."""
+        stage = self.stage(stage_id)
+        expected_program = _relative_path(program, "expected stage program")
+        expected_argv = tuple(
+            _string(argument, "expected stage argv", nonempty=False)
+            for argument in argv
+        )
+        if stage.program != expected_program:
+            raise BuildContextError(
+                f"stage {stage_id!r} program is {stage.program!r}, "
+                f"expected {expected_program!r}"
+            )
+        if stage.argv != expected_argv:
+            raise BuildContextError(
+                f"stage {stage_id!r} argv is {list(stage.argv)!r}, "
+                f"expected {list(expected_argv)!r}"
+            )
+        if needs is not None:
+            expected_needs = tuple(
+                _name(need, "expected stage dependency") for need in needs
+            )
+            if stage.needs != expected_needs:
+                raise BuildContextError(
+                    f"stage {stage_id!r} needs are {list(stage.needs)!r}, "
+                    f"expected {list(expected_needs)!r}"
+                )
+        if outputs is not None:
+            expected_outputs = tuple(
+                (
+                    _string(kind, "expected stage output kind"),
+                    _relative_path(path, "expected stage output path"),
+                )
+                for kind, path in outputs
+            )
+            actual_outputs = tuple(
+                (output.kind, output.path) for output in stage.outputs
+            )
+            if actual_outputs != expected_outputs:
+                raise BuildContextError(
+                    f"stage {stage_id!r} outputs are {actual_outputs!r}, "
+                    f"expected {expected_outputs!r}"
+                )
+        return stage
+
     def input_root(self, root_id: str) -> Path:
         if root_id not in INPUT_ROOT_IDS:
             raise BuildContextError(f"unknown input root {root_id!r}")
@@ -1131,6 +1184,21 @@ class BuildContext:
                 f"stage {stage_id!r} does not own output path {logical!r}"
             )
         return self._contained(self.roots.output, logical, "output path")
+
+    def dependency_output_for(
+        self,
+        consumer_stage_id: str,
+        producer_stage_id: str,
+        relative: str,
+    ) -> Path:
+        """Resolve one output from a directly declared predecessor stage."""
+        consumer = self.stage(consumer_stage_id)
+        if producer_stage_id not in consumer.needs:
+            raise BuildContextError(
+                f"stage {consumer_stage_id!r} does not directly depend on "
+                f"stage {producer_stage_id!r}"
+            )
+        return self.output_for(producer_stage_id, relative)
 
     def scratch_for(self, stage_id: str, relative: str) -> Path:
         self.stage(stage_id)
