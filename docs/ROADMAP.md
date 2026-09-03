@@ -169,16 +169,27 @@ production. In parallel, P0-R remains the main architecture workstream. Its firs
 contract/input-closure tranche is implemented: versioned v2 source-manifest,
 offline-pack, reducer-input-inventory, and full-offline-replay build-attestation
 contracts describe the current seven-stage post-acquisition build DAG, explicit logical
-roots, and required-versus-absent inputs. No real pack or replay is claimed yet.
-`verify_source_set.py` can validate v2 documents, while `run_offline.py` deliberately
-rejects v2 packs until the builders have one explicit full-DAG replay entry point. The
-runtime build-context contract, per-stage output ownership, JSONL-only base-graph mode,
-and prepare-only materializer now establish that boundary: bound normalized input and reducer bytes
-are copied into atomically published read-only views and a canonical context is generated
-without caller paths or environment configuration. Three stages now consume that context:
-top-level shards, the SQLite projection, and the input-free Brain page. Their shared stage-I/O
-path creates deterministic private directories, refuses replacement, rolls back partial
-multi-file publication, and refuses cross-filesystem publication. P2A is a
+roots, and required-versus-absent inputs. All seven stages now consume the immutable runtime
+context: base graph, top-level shards, cells, SQLite-with-cells, frontier, cell shards, and
+the input-free Brain page. Bound normalized input and reducer bytes are copied into atomically
+published read-only views; builders use exact context bindings, predecessor outputs, source
+pins, reducer configuration, and the pack-derived generation identity rather than caller paths
+or environment configuration. Shared stage I/O provides deterministic private scratch,
+durable atomic no-replace publication for files and trees, rollback of partial multi-output
+publication, and cross-filesystem refusal.
+
+`run_offline.py` now accepts v2 packs, prepares a fresh workspace, and delegates to the
+single fail-closed `run_replay_v2.py` executor. The executor re-verifies the sealed input and
+reducer closures, runs every inventory stage in order (including independent leaves), requires
+a supported OS isolation boundary with networking denied, and rejects undeclared output,
+scratch residue, or predecessor mutation. This is not yet a production reproducibility claim:
+there is no real full-corpus pack, the Python/NumPy/SQLite runtime is not pinned, and the
+generated sandbox policies have not yet been exercised on clean supported hosts. Linux no
+longer bind-mounts the host root: reducers see the exact prepared workspace, an empty temp
+directory, kernel-local `/proc` and `/dev`, and the selected runtime roots. Darwin grants
+reads only to the exact workspace, selected runtime roots, and Apple's standard system
+runtime profile; process forking and networking are denied. Current release creation
+therefore continues to use the v1 compatibility authority. P2A is a
 safe third, shadow-only workstream, but P2B and
 later wait for P0-R's source/build contracts. Do not start a Phase 3 D1 schema cutover
 until all Phase 2 contracts and the reviewed genesis are complete.
@@ -331,9 +342,10 @@ explicit approval.
   loosening v1 in place. The v2 contracts represent raw plus normalized source objects,
   curated Git trees, the complete multi-file reducer DAG, `offline_pack_id`,
   `source_set_root`, and required-versus-absent optional inputs. The v2 document shapes are
-  validation-ready, but no real pack or replay is claimed: execution is intentionally
-  refused until the explicit full-DAG replay entry point exists, and current release
-  creation continues to use the v1 compatibility contracts.
+  validation-ready and the fixture replay path is implemented. No real full-corpus pack or
+  authoritative replay is claimed, and current release creation continues to use the v1
+  compatibility contracts until environment pinning, clean-room dual-build evidence, and
+  independent verification land.
 - [x] **Repair declared input-inventory closure.** Replaced the ineffective Python brace glob
   `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; added
   consumed `brain/data/discovery_rejected.jsonl`, optional
@@ -344,7 +356,7 @@ explicit approval.
   Wikidata checks used by `fold_proposals.py`, ends by sealing normalized/folded objects.
   The authoritative full-DAG replay begins after that boundary and performs no network or
   live D1 reads.
-- [ ] **Introduce an explicit build context.** Add one full-DAG replay entry point with
+- [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
   instead of repository globals, live `BRAIN_*` environment lookups, or discovered glob
@@ -358,25 +370,39 @@ explicit approval.
     views, then generate the runtime context without trusting caller paths or environment.
     Preparation uses copy-only private staging, exact modes, fsync, case/Unicode and ancestry
     checks, and atomic no-replace publication; it never executes reducer code.
-  - [ ] Route all seven stages through the context and add the single fail-closed replay
-    entry point. `needs` records direct generated-byte dependencies; the future runner must
-    execute every stage in inventory order, including independent leaves.
+  - [x] Route all seven stages through the context and add the single fail-closed replay
+    entry point. `needs` records direct generated-byte dependencies; the runner executes
+    every stage in inventory order, including independent leaves.
     - [x] Route `top-level-shards` through exact base-graph and sealed source inputs.
     - [x] Route `sqlite-with-cells` through all five exact JSONL predecessor outputs.
     - [x] Route the input-free `brain-page` stage without claiming a false shard dependency.
     - [x] Add shared deterministic-mode, durable, atomic no-replace file publication with
       pair rollback and stage-owned scratch cleanup.
-    - [ ] Route `base-graph` through an explicit adapter over `build_common.py` inputs and
+    - [x] Route `base-graph` through an explicit adapter over `build_common.py` inputs and
       eliminate its repository globals, environment reads, globs, and mtime discovery.
-    - [ ] Route `cells`, `frontier`, and `cell-shards` through exact context inputs and
+    - [x] Route `cells`, `frontier`, and `cell-shards` through exact context inputs and
       predecessor outputs; generated inputs that replay requires must fail closed.
-    - [ ] Add the single replay runner and enforce read-only code/input mounts or privilege
-      separation because preparation-time modes are not a security boundary. Keep v2
-      rejected by `run_offline.py` until this is complete.
-- [ ] **Remove ambient identity.** Replace filesystem-mtime provenance and wall-clock
-  `generated_at` values with source-manifest pins and a pack-derived deterministic
-  generation ID. Keep observation/build times only in audit attestations, outside logical
-  roots and snapshot IDs.
+    - [x] Add the single replay runner, make `run_offline.py` dispatch verified v2 packs to
+      it, and require supported OS isolation with network disabled and writes confined to
+      output/scratch on the host (Linux also gets an isolated ephemeral `/tmp`). The runner
+      verifies the sealed input and reducer closures before
+      execution, rechecks reducer bytes after every stage, and enforces output ownership and
+      predecessor immutability. Its CLI refuses execution unless the original Python process
+      was launched with `-I`, so caller `PYTHONPATH`, user-site, and startup hooks cannot run
+      before the replay boundary is established.
+- [ ] **Prove the narrowed execution namespace on supported clean hosts.** The generated
+  Linux boundary now replaces the former host-root bind with only the exact prepared
+  workspace, selected Python runtime roots, isolated `/tmp`, and namespace-local `/proc`
+  and `/dev`; Darwin grants only the workspace, selected runtime roots, and Apple's standard
+  system runtime reads, while denying process forks and networking. Add real kernel-level
+  integration tests for both policies, then bind them to the pinned runtime identity before
+  treating this as clean-room evidence. Completed predecessor outputs are still protected by
+  cryptographic post-stage checks rather than stage-specific read-only mounts.
+- [x] **Remove ambient identity from the v2 replay path.** Context-mode reducers use exact
+  source-manifest pins and the pack-derived generation ID for logical `generated_at` values;
+  they do not consult input mtimes or the wall clock. Legacy live-build entry points retain
+  their compatibility timestamps and are not authoritative replay evidence. Observation and
+  build times remain outside v2 logical roots and snapshot IDs.
 - [ ] **Pin the execution environment.** Record an exact Python, NumPy, SQLite, dependency
   lock, locale, and runner/container identity. A floating `numpy>=1.24` environment is not
   sufficient evidence for release-ID reproducibility.
@@ -409,15 +435,13 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) route the remaining base-graph, cells, frontier,
-and cell-shards stages through the prepared context, then add one fail-closed full-DAG
-replay entry point; (2) replace mtime-derived
-provenance and wall-clock generation stamps with the pack-derived generation identity;
-(3) compile the first real pack and prove source-object coherence; (4)
-pin the complete execution environment and add the two-path randomized-mtime/adversarial-env
-clean-room gate; (5) run the approved-baseline semantic compatibility review and emit the
-separate two-build reproducibility attestation. Network acquisition, live D1 snapshots,
-and proposal folding remain outside the replay boundary throughout.
+**Next P0-R implementation order:** (1) pin the complete Python/NumPy/SQLite/container
+execution environment and exercise the narrowed sandbox on supported clean hosts; (2) compile
+the first real full-corpus pack and prove cross-object/source-revision coherence; (3) add the
+two-path randomized-mtime/adversarial-environment clean-room gate using the real OS boundary;
+(4) run the approved-baseline semantic compatibility review and emit the separate two-build
+reproducibility attestation. Network acquisition, live D1 snapshots, and proposal folding
+remain outside the replay boundary throughout.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently

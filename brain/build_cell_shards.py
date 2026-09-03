@@ -45,21 +45,50 @@ Run: python3 brain/build_cell_shards.py   (after brain/build_cells.py)
 """
 from __future__ import annotations
 
+import argparse
 import json
+import math
+import re
 import shutil
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from build_shards import (MAX_KEY_LEN, MAX_SHARD_BYTES, MIN_KEY_LEN, PAD,  # noqa: F401
                           shard_key)
+from build_context import BuildContext
+from stage_io import (
+    OwnedDirectory,
+    assert_outputs_absent,
+    ensure_private_directory,
+    owned_directory,
+    publish_directory_no_replace,
+    require_same_filesystem,
+    write_bytes_exclusive,
+)
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 BRAIN_DATA = HERE / "data"
 OUT_DIR = ROOT / "site" / "assets" / "brain" / "cells"
 SCRATCH_DIR = ROOT / "site" / "assets"   # scratch swap dirs — OUTSIDE the copied tree
+STAGE_ID = "cell-shards"
+STAGE_PROGRAM = "brain/build_cell_shards.py"
+STAGE_ARGV: tuple[str, ...] = ()
+FRONTIER_ID_RE = re.compile(r"^frontier:[A-Za-z][A-Za-z0-9_]{0,63}$")
+FRONTIER_PROX_KEYS = ("db", "dw", "ib", "iw", "s", "r")
+FRONTIER_SUITABILITY_KEYS = ("candidate", "reason")
+FRONTIER_SUITABILITY_REASONS = {
+    "existing_formal_coverage",
+    "not_formalization_target",
+    "broad_scope",
+    "ambiguous_scope",
+    "too_elementary",
+    "review_needed",
+    "no_concept_target",
+}
+FRONTIER_LAMBDA = 0.25
 
 SYN_CAP = 200         # synapses kept per cell entry (every KIND first: pick_synapses)
 SHARD_TRACE_CAP = 6   # traces kept per synapse IN THE SHARD (full set: query.py)
@@ -80,7 +109,7 @@ AKA_SEARCHABLE = ("concept", "decl", "article", "page")
 def _iter(path: Path):
     if not path.exists():
         raise SystemExit(f"missing {path} — run python3 brain/build_cells.py first")
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         meta = json.loads(next(fh)).get("_meta", {})
         for line in fh:
             if line.strip():
@@ -92,6 +121,407 @@ def load_jsonl(path: Path) -> tuple[dict, list]:
     for meta, row in _iter(path):
         rows.append(row)
     return meta, rows
+
+
+def _is_int(value: object) -> bool:
+    return type(value) is int
+
+
+def _is_finite_number(value: object) -> bool:
+    return (
+        not isinstance(value, bool)
+        and isinstance(value, (int, float))
+        and math.isfinite(value)
+    )
+
+
+def _load_frontier_document(path: Path) -> tuple[dict, list[dict]]:
+    """Load the Frontier JSONL without losing metadata when it has zero rows."""
+    try:
+        with path.open(encoding="utf-8") as handle:
+            first = json.loads(next(handle))
+            if not isinstance(first, dict) or set(first) != {"_meta"} \
+                    or not isinstance(first["_meta"], dict):
+                raise ValueError("first line must be exactly an _meta object")
+            rows = []
+            for line_number, line in enumerate(handle, start=2):
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if not isinstance(row, dict):
+                    raise ValueError(f"line {line_number} must be an object")
+                rows.append(row)
+    except StopIteration as exc:
+        raise ValueError("frontier JSONL is empty") from exc
+    return first["_meta"], rows
+
+
+def _validate_frontier_row(row: dict, *, row_number: int) -> None:
+    """Validate one sealed Frontier area before any fail-soft normalization."""
+    area_id = row.get("id")
+    label = f"row {row_number} ({area_id!r})"
+    expected_keys = {
+        "id", "label", "cells", "n", "prox", "suitability", "near",
+        "mean_stateability", "top",
+    }
+    if set(row) != expected_keys:
+        raise ValueError(
+            f"sealed frontier {label} keys are {sorted(row)}, expected "
+            f"{sorted(expected_keys)}"
+        )
+    if not isinstance(area_id, str) or not FRONTIER_ID_RE.fullmatch(area_id):
+        raise ValueError(f"sealed frontier {label} has a malformed area id")
+    if not isinstance(row["label"], str) or not row["label"].strip():
+        raise ValueError(f"sealed frontier {label} has a malformed label")
+    raw_cells = row["cells"]
+    if not isinstance(raw_cells, list) or not all(
+        isinstance(cell_id, str) and cell_id for cell_id in raw_cells
+    ):
+        raise ValueError(f"sealed frontier {label} cells must be strings")
+    if raw_cells != sorted(set(raw_cells)):
+        raise ValueError(
+            f"sealed frontier {label} cells must be sorted and unique"
+        )
+    if not _is_int(row["n"]) or row["n"] != len(raw_cells):
+        raise ValueError(
+            f"sealed frontier {label} n must equal len(cells)"
+        )
+
+    prox = row["prox"]
+    if not isinstance(prox, dict) or set(prox) != set(FRONTIER_PROX_KEYS):
+        raise ValueError(
+            f"sealed frontier {label} prox must have exactly "
+            f"{list(FRONTIER_PROX_KEYS)}"
+        )
+    if any(
+        not isinstance(prox[key], list) or len(prox[key]) != len(raw_cells)
+        for key in FRONTIER_PROX_KEYS
+    ):
+        raise ValueError(
+            f"sealed frontier {label} prox arrays must be parallel to cells"
+        )
+    for index, cell_id in enumerate(raw_cells):
+        if any(
+            not _is_int(prox[key][index]) or prox[key][index] < 0
+            for key in ("db", "dw", "ib", "iw")
+        ):
+            raise ValueError(
+                f"sealed frontier {label} has invalid integer proximity for "
+                f"{cell_id}"
+            )
+        score = prox["s"][index]
+        radius = prox["r"][index]
+        if not _is_finite_number(score) or score < 0:
+            raise ValueError(
+                f"sealed frontier {label} has invalid score for {cell_id}"
+            )
+        if not _is_finite_number(radius) or not 0 <= radius <= 1:
+            raise ValueError(
+                f"sealed frontier {label} has invalid radius for {cell_id}"
+            )
+        if score != prox["dw"][index] + prox["iw"][index] * FRONTIER_LAMBDA:
+            raise ValueError(
+                f"sealed frontier {label} has incoherent score for {cell_id}"
+            )
+
+    suitability = row["suitability"]
+    if not isinstance(suitability, dict) \
+            or set(suitability) != set(FRONTIER_SUITABILITY_KEYS):
+        raise ValueError(
+            f"sealed frontier {label} suitability must have exactly "
+            f"{list(FRONTIER_SUITABILITY_KEYS)}"
+        )
+    if any(
+        not isinstance(suitability[key], list)
+        or len(suitability[key]) != len(raw_cells)
+        for key in FRONTIER_SUITABILITY_KEYS
+    ):
+        raise ValueError(
+            f"sealed frontier {label} suitability arrays must be parallel to cells"
+        )
+    for index, cell_id in enumerate(raw_cells):
+        candidate = suitability["candidate"][index]
+        reason = suitability["reason"][index]
+        if not isinstance(candidate, bool) \
+                or (candidate and reason is not None) \
+                or (not candidate and reason not in FRONTIER_SUITABILITY_REASONS):
+            raise ValueError(
+                f"sealed frontier {label} has invalid suitability for {cell_id}"
+            )
+
+    near = row["near"]
+    if near is not None and (
+        not isinstance(near, str) or not near.startswith("path:")
+    ):
+        raise ValueError(f"sealed frontier {label} has malformed near metadata")
+    stateability = row["mean_stateability"]
+    if stateability is not None and (
+        not _is_finite_number(stateability) or not 0 <= stateability <= 1
+    ):
+        raise ValueError(
+            f"sealed frontier {label} has malformed stateability metadata"
+        )
+    top = row["top"]
+    if not isinstance(top, list) or len(top) > 12:
+        raise ValueError(f"sealed frontier {label} has malformed top metadata")
+    top_cells: set[str] = set()
+    for item in top:
+        if not isinstance(item, dict) or set(item) != {"cell", "label", "score"}:
+            raise ValueError(f"sealed frontier {label} has malformed top metadata")
+        if item["cell"] not in raw_cells or item["cell"] in top_cells \
+                or not isinstance(item["label"], str) \
+                or not _is_int(item["score"]) or item["score"] < 0:
+            raise ValueError(f"sealed frontier {label} has malformed top metadata")
+        top_cells.add(item["cell"])
+
+
+def _validate_frontier_metadata(
+    meta: dict,
+    rows: list[dict],
+    *,
+    homeless: set[str],
+    expected_generation_id: str,
+) -> None:
+    """Reconcile sealed Frontier metadata with the validated partition rows."""
+    for key in ("generated_at", "generation_id"):
+        if meta.get(key) != expected_generation_id:
+            raise ValueError(
+                f"sealed frontier generation mismatch: _meta.{key} is "
+                f"{meta.get(key)!r}, expected {expected_generation_id!r}"
+            )
+    counts = meta.get("counts")
+    unsorted = sum(
+        row["n"] for row in rows if row["id"] == "frontier:Unsorted"
+    )
+    expected_counts = {
+        "homeless": len(homeless),
+        "assigned": len(homeless) - unsorted,
+        "unsorted": unsorted,
+    }
+    if counts != expected_counts:
+        raise ValueError(
+            "sealed frontier _meta.counts do not reconcile: "
+            f"{counts!r} != {expected_counts!r}"
+        )
+
+    proximity = meta.get("proximity")
+    if not isinstance(proximity, dict) or proximity.get("lambda") != FRONTIER_LAMBDA:
+        raise ValueError("sealed frontier _meta.proximity is malformed")
+    direct = bridged = zero = 0
+    candidates = 0
+    reasons: Counter[str] = Counter()
+    scores: list[tuple[float, float, str]] = []
+    for row in rows:
+        for index, cell_id in enumerate(row["cells"]):
+            dw = row["prox"]["dw"][index]
+            iw = row["prox"]["iw"][index]
+            if dw > 0:
+                direct += 1
+            elif iw > 0:
+                bridged += 1
+            else:
+                zero += 1
+            scores.append((row["prox"]["s"][index], row["prox"]["r"][index], cell_id))
+            if row["suitability"]["candidate"][index]:
+                candidates += 1
+            else:
+                reasons[row["suitability"]["reason"][index]] += 1
+    expected_proximity_counts = {
+        "direct": direct,
+        "bridged": bridged,
+        "zero": zero,
+    }
+    if proximity.get("counts") != expected_proximity_counts:
+        raise ValueError(
+            "sealed frontier _meta.proximity.counts do not reconcile"
+        )
+
+    suitability = meta.get("suitability")
+    expected_suitability_counts = {
+        "candidate": candidates,
+        "deprioritized": len(homeless) - candidates,
+        "reasons": dict(sorted(reasons.items())),
+    }
+    if not isinstance(suitability, dict) \
+            or suitability.get("counts") != expected_suitability_counts:
+        raise ValueError(
+            "sealed frontier _meta.suitability.counts do not reconcile"
+        )
+
+    by_score = Counter(score for score, _radius, _cell_id in scores)
+    higher: dict[float, int] = {}
+    above = 0
+    for score in sorted(by_score, reverse=True):
+        higher[score] = above
+        above += by_score[score]
+    population = len(scores)
+    bad_radii = [
+        cell_id
+        for score, radius, cell_id in scores
+        if radius != round(
+            (higher[score] + by_score[score] / 2) / population, 4
+        )
+    ] if population else []
+    if bad_radii:
+        raise ValueError(
+            "sealed frontier radius metadata does not match the global score "
+            f"midranks: {bad_radii[:3]}"
+        )
+
+
+def _validate_frontier_graph(
+    graph: object,
+    *,
+    cells: dict[str, dict],
+    frontier_rows: list[dict],
+    expected_generation_id: str,
+) -> None:
+    """Validate the sealed client re-scoring graph and its row-level parity."""
+    if not isinstance(graph, dict) or set(graph) != {
+        "_meta", "cells", "formal", "edges"
+    }:
+        raise ValueError("sealed frontier_graph must have exact graph keys")
+    meta = graph["_meta"]
+    if not isinstance(meta, dict):
+        raise ValueError("sealed frontier_graph _meta must be an object")
+    for key in ("generated_at", "generation_id"):
+        if meta.get(key) != expected_generation_id:
+            raise ValueError(
+                f"sealed frontier_graph generation mismatch: _meta.{key} is "
+                f"{meta.get(key)!r}, expected {expected_generation_id!r}"
+            )
+
+    graph_cells = graph["cells"]
+    homeless = sorted(
+        cid
+        for cid, cell in cells.items()
+        if not any(organ.get("kind") == "decl" for organ in cell["organs"])
+    )
+    if graph_cells != homeless:
+        raise ValueError(
+            "sealed STALE frontier_graph.json: cells must exactly equal the "
+            "sorted homeless partition"
+        )
+    graph_index = {cell_id: index for index, cell_id in enumerate(graph_cells)}
+
+    formal = graph["formal"]
+    if not isinstance(formal, dict):
+        raise ValueError("sealed frontier_graph formal must be an object")
+    valid_libraries: set[str] = set()
+    for cell in cells.values():
+        if not any(organ.get("kind") == "decl" for organ in cell["organs"]):
+            continue
+        roots = {
+            supercell.split(":", 1)[1].split("/", 1)[0]
+            for supercell in cell.get("supercells") or []
+            if isinstance(supercell, str) and supercell.startswith("path:")
+        }
+        if not roots:
+            roots = {
+                organ["id"].split(":", 2)[1]
+                for organ in cell["organs"]
+                if organ.get("kind") == "decl"
+                and isinstance(organ.get("id"), str)
+                and organ["id"].count(":") >= 2
+            }
+        valid_libraries.update(roots)
+    direct: dict[str, int] = {}
+    library_cells: Counter[str] = Counter()
+    for cell_id, library_weights in formal.items():
+        if cell_id not in graph_index or not isinstance(library_weights, dict) \
+                or not library_weights:
+            raise ValueError(
+                f"sealed frontier_graph formal metadata is malformed for {cell_id!r}"
+            )
+        total = 0
+        roots_for_cell: set[str] = set()
+        for root_set, weight in library_weights.items():
+            if not isinstance(root_set, str):
+                raise ValueError("sealed frontier_graph formal root key is malformed")
+            roots = root_set.split("|")
+            if roots != sorted(set(roots)) or not roots \
+                    or any(not root or root not in valid_libraries for root in roots) \
+                    or not _is_int(weight) or weight <= 0:
+                raise ValueError(
+                    f"sealed frontier_graph formal metadata is malformed for "
+                    f"{cell_id!r}"
+                )
+            total += weight
+            roots_for_cell.update(roots)
+        direct[cell_id] = total
+        for root in roots_for_cell:
+            library_cells[root] += 1
+
+    edges = graph["edges"]
+    if not isinstance(edges, list):
+        raise ValueError("sealed frontier_graph edges must be an array")
+    normalized_edges: list[tuple[int, int, int]] = []
+    pairs: set[tuple[int, int]] = set()
+    for edge in edges:
+        if not isinstance(edge, list) or len(edge) != 3 \
+                or any(not _is_int(value) for value in edge):
+            raise ValueError("sealed frontier_graph edge is not an integer triple")
+        source, destination, weight = edge
+        if not 0 <= source < destination < len(graph_cells) or weight <= 0 \
+                or (source, destination) in pairs:
+            raise ValueError("sealed frontier_graph edge metadata is malformed")
+        pairs.add((source, destination))
+        normalized_edges.append((source, destination, weight))
+    if normalized_edges != sorted(normalized_edges):
+        raise ValueError("sealed frontier_graph edges must be sorted")
+
+    shipped_proximity: dict[str, tuple[int, int, int, float]] = {}
+    for row in frontier_rows:
+        for index, cell_id in enumerate(row["cells"]):
+            shipped_proximity[cell_id] = (
+                row["prox"]["dw"][index],
+                row["prox"]["ib"][index],
+                row["prox"]["iw"][index],
+                row["prox"]["s"][index],
+            )
+    expected_formal_cells = {
+        cell_id for cell_id, values in shipped_proximity.items() if values[0] > 0
+    }
+    if set(formal) != expected_formal_cells:
+        raise ValueError(
+            "sealed frontier_graph formal keys do not match direct frontier cells"
+        )
+    adjacency: dict[int, list[tuple[int, int]]] = defaultdict(list)
+    for source, destination, weight in normalized_edges:
+        adjacency[source].append((destination, weight))
+        adjacency[destination].append((source, weight))
+    for cell_id, index in graph_index.items():
+        direct_weight = direct.get(cell_id, 0)
+        bridge_count = 0
+        bridge_weight = 0
+        for neighbor_index, edge_weight in adjacency.get(index, []):
+            neighbor_direct = direct.get(graph_cells[neighbor_index], 0)
+            if neighbor_direct:
+                bridge_count += 1
+                bridge_weight += min(edge_weight, neighbor_direct)
+        expected = (
+            direct_weight,
+            bridge_count,
+            bridge_weight,
+            direct_weight + bridge_weight * FRONTIER_LAMBDA,
+        )
+        if shipped_proximity.get(cell_id) != expected:
+            raise ValueError(
+                f"sealed frontier_graph parity metadata diverges for {cell_id}"
+            )
+
+    counts = meta.get("counts")
+    expected_counts = {
+        "cells": len(graph_cells),
+        "formal": len(formal),
+        "edges": len(edges),
+        "libs": dict(sorted(library_cells.items())),
+    }
+    if counts != expected_counts:
+        raise ValueError(
+            "sealed frontier_graph _meta.counts do not reconcile: "
+            f"{counts!r} != {expected_counts!r}"
+        )
 
 
 def organ_payload(organ: dict, nodes: dict[str, dict]) -> dict:
@@ -232,7 +662,13 @@ def pick_synapses(syns: list[dict], cap: int) -> list[dict]:
     return sorted(picked.values(), key=lambda e: (-e["w"], e["id"]))
 
 
-def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
+def load_frontier(
+    cells: dict[str, dict],
+    path: Path | None = None,
+    *,
+    required: bool = False,
+    expected_generation_id: str | None = None,
+) -> tuple[list[dict], dict]:
     """Read brain/data/frontier.jsonl (build_frontier.py), validated against the
     CURRENT cell set — fail-soft when absent (the tree just keeps the old blob).
 
@@ -242,20 +678,59 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
     with the coverage the partition contract promises: every currently-homeless
     cell claimed by exactly one area.
     """
-    path = BRAIN_DATA / "frontier.jsonl"
-    stats = {"areas": 0, "cells": 0, "unknown_dropped": 0, "formalized_dropped": 0,
-             "homeless": 0, "unclaimed": 0}
+    path = Path(path) if path is not None else BRAIN_DATA / "frontier.jsonl"
+    stats = {
+        "areas": 0,
+        "cells": 0,
+        "duplicate_areas": 0,
+        "duplicate_claims": 0,
+        "empty_areas": 0,
+        "malformed_areas": 0,
+        "malformed_cells": 0,
+        "unknown_dropped": 0,
+        "formalized_dropped": 0,
+        "homeless": 0,
+        "unclaimed": 0,
+    }
     if not path.exists():
+        if required:
+            raise SystemExit(f"missing required replay input: {path}")
         print("  ! no brain/data/frontier.jsonl — frontier areas not emitted; "
               "run python3 brain/build_frontier.py first", file=sys.stderr)
         return [], stats
     homeless = {cid for cid, c in cells.items()
                 if not any(o.get("kind") == "decl" for o in c["organs"])}
     stats["homeless"] = len(homeless)
-    rows, claimed = [], set()
-    for _, row in _iter(path):
+    rows, claimed, area_ids = [], set(), set()
+    if required:
+        if expected_generation_id is None:
+            raise ValueError(
+                "sealed frontier validation requires an expected generation id"
+            )
+        frontier_meta, source_rows = _load_frontier_document(path)
+        for row_number, row in enumerate(source_rows, start=2):
+            _validate_frontier_row(row, row_number=row_number)
+    else:
+        frontier_meta = {}
+        source_rows = [row for _, row in _iter(path)]
+    for row in source_rows:
+        area_id = row.get("id")
+        if not isinstance(area_id, str) or not FRONTIER_ID_RE.fullmatch(area_id):
+            stats["malformed_areas"] += 1
+        else:
+            if area_id in area_ids:
+                stats["duplicate_areas"] += 1
+            area_ids.add(area_id)
+        raw_cells = row.get("cells", [])
+        if not isinstance(raw_cells, list) or not all(
+            isinstance(cell_id, str) for cell_id in raw_cells
+        ):
+            stats["malformed_cells"] += 1
+            raw_cells = []
         keep = []
-        for cid in row.get("cells", []):
+        for cid in raw_cells:
+            if cid in claimed or cid in keep:
+                stats["duplicate_claims"] += 1
             if cid not in cells:
                 stats["unknown_dropped"] += 1
             elif cid not in homeless:
@@ -276,7 +751,7 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
             # Per-cell objects are PARALLEL to the row's cells — a stale-drop
             # must re-align them by index or metadata lands on the wrong cell.
             # Malformed arrays never ship: dropped LOUDLY, counted.
-            src_cells = row.get("cells", [])
+            src_cells = raw_cells
             pos = {cid: i for i, cid in enumerate(src_cells)}
             idx = [pos[cid] for cid in out["cells"]]
             for field in ("prox", "suitability"):
@@ -300,6 +775,8 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
                           f"area; rerun python3 brain/build_frontier.py",
                           file=sys.stderr)
             rows.append(out)
+        else:
+            stats["empty_areas"] += 1
         stats["areas"] += 1
         stats["cells"] += len(keep)
     stats["unclaimed"] = len(homeless - claimed)
@@ -312,23 +789,96 @@ def load_frontier(cells: dict[str, dict]) -> tuple[list[dict], dict]:
         if stats[key]:
             print(f"  ! STALE frontier.jsonl: {stats[key]} {why} — rerun "
                   f"python3 brain/build_frontier.py", file=sys.stderr)
+    if required:
+        invalid = {
+            key: value
+            for key, value in stats.items()
+            if value
+            and (
+                key in {
+                    "duplicate_areas",
+                    "duplicate_claims",
+                    "empty_areas",
+                    "unknown_dropped",
+                    "formalized_dropped",
+                    "malformed_areas",
+                    "malformed_cells",
+                    "unclaimed",
+                }
+                or key.startswith("stale_")
+                or key.startswith("malformed_")
+            )
+        }
+        if invalid:
+            raise ValueError(
+                "sealed frontier partition is stale or malformed: "
+                + json.dumps(invalid, sort_keys=True)
+            )
+        _validate_frontier_metadata(
+            frontier_meta,
+            rows,
+            homeless=homeless,
+            expected_generation_id=expected_generation_id,
+        )
     return rows, stats
 
 
-def main() -> int:
+def build_cell_shards(
+    *,
+    cells_path: Path,
+    synapses_path: Path,
+    nodes_path: Path,
+    edges_path: Path,
+    frontier_path: Path,
+    frontier_graph_path: Path,
+    output_dir: Path,
+    scratch_parent: Path,
+    context_scratch: OwnedDirectory | None = None,
+    require_frontier: bool = False,
+    expected_generation_id: str | None = None,
+) -> int:
     t0 = time.monotonic()
-    cell_meta, cell_rows = load_jsonl(BRAIN_DATA / "cells.jsonl")
-    syn_meta, synapses = load_jsonl(BRAIN_DATA / "synapses.jsonl")
+    cell_meta, cell_rows = load_jsonl(cells_path)
+    syn_meta, synapses = load_jsonl(synapses_path)
     cells = {c["id"]: c for c in cell_rows}
     print(f"{len(cells)} cells / {len(synapses)} synapses", file=sys.stderr)
-    frontier_rows, frontier_stats = load_frontier(cells)
+    frontier_rows, frontier_stats = load_frontier(
+        cells,
+        frontier_path,
+        required=require_frontier,
+        expected_generation_id=expected_generation_id,
+    )
+    sealed_frontier_graph_blob: bytes | None = None
+    if require_frontier:
+        try:
+            sealed_frontier_graph_blob = frontier_graph_path.read_bytes()
+        except FileNotFoundError as exc:
+            raise SystemExit(
+                f"missing required replay input: {frontier_graph_path}"
+            ) from exc
+        try:
+            sealed_frontier_graph = json.loads(sealed_frontier_graph_blob)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                "sealed frontier_graph is not valid JSON"
+            ) from exc
+        if expected_generation_id is None:
+            raise ValueError(
+                "sealed frontier validation requires an expected generation id"
+            )
+        _validate_frontier_graph(
+            sealed_frontier_graph,
+            cells=cells,
+            frontier_rows=frontier_rows,
+            expected_generation_id=expected_generation_id,
+        )
 
     nodes: dict[str, dict] = {}
-    for _, node in _iter(BRAIN_DATA / "nodes.jsonl"):
+    for _, node in _iter(nodes_path):
         nodes[node["id"]] = node
 
     parent: dict[str, str] = {}
-    for _, edge in _iter(BRAIN_DATA / "edges.jsonl"):
+    for _, edge in _iter(edges_path):
         if edge["kind"] == "contains" and edge["dst"].startswith("path:"):
             parent[edge["dst"]] = edge["src"]
 
@@ -823,119 +1373,235 @@ def main() -> int:
         "traces": sidecar_meta,
     }
 
-    # ---- atomic directory swap ------------------------------------------------
-    # The scratch dirs live OUTSIDE the published tree. They used to sit in
-    # OUT_DIR.parent (site/assets/brain), which build-public.ts cpSyncs wholesale
-    # with no filter — so an interrupted build left .cells.tmp behind and the next
-    # deploy shipped a duplicate half-written shard set (+1,463 files against
-    # Cloudflare's 20,000-file assets ceiling) at a live URL. site/assets is NOT
-    # copied wholesale (build-public names individual files there), and it is on
-    # the same filesystem so the final cells/ rename stays atomic. The top-level
-    # shard builder owns only sources.json and xref_index.json and never touches
-    # this tree.
-    tmp = SCRATCH_DIR / ".cells.tmp"
-    old = SCRATCH_DIR / ".cells.old"
-    for stale in (tmp, old):
-        if stale.exists():
-            shutil.rmtree(stale)
-    tmp.mkdir(parents=True)
+    def write_tree(tmp: Path, *, sealed: bool) -> tuple[dict, dict, int, int, int, int]:
+        def write_bytes(path: Path, payload: bytes) -> None:
+            if sealed:
+                write_bytes_exclusive(path, payload, mode=0o644)
+            else:
+                path.write_bytes(payload)
 
-    sizes = {}
-    for key, ids in leaves.items():
-        payload = shard_json(ids).encode()
-        sizes[key] = len(payload)
-        (tmp / f"{key}.json").write_bytes(payload)
+        sizes = {}
+        for key, ids in leaves.items():
+            payload = shard_json(ids).encode()
+            sizes[key] = len(payload)
+            write_bytes(tmp / f"{key}.json", payload)
 
-    # sidecar buckets live in a SUBDIRECTORY: pair keys normalize into the same
-    # cell_/path_ prefix space as the cell shards, so a flat layout could collide
-    # a bucket filename with a shard filename.
-    trace_dir = tmp / "traces"
-    trace_dir.mkdir()
-    trace_sizes: dict[str, int] = {}
-    for key, pairs in trace_leaves.items():
-        payload = bucket_json(pairs).encode()
-        trace_sizes[key] = len(payload)
-        (trace_dir / f"{key}.json").write_bytes(payload)
-    t_oversize = [k for k, s in trace_sizes.items() if s > MAX_SHARD_BYTES]
-    if t_oversize:
-        print(f"  ! {len(t_oversize)} trace bucket(s) over {MAX_SHARD_BYTES} bytes "
-              f"(unsplittable key collisions): {t_oversize[:5]} — "
-              f"test_cell_shards.py will go RED", file=sys.stderr)
+        # Sidecar buckets live in a subdirectory so pair keys cannot collide
+        # with a cell shard key.
+        trace_dir = tmp / "traces"
+        if sealed:
+            ensure_private_directory(tmp, trace_dir)
+        else:
+            trace_dir.mkdir()
+        trace_sizes: dict[str, int] = {}
+        for key, pairs in trace_leaves.items():
+            payload = bucket_json(pairs).encode()
+            trace_sizes[key] = len(payload)
+            write_bytes(trace_dir / f"{key}.json", payload)
+        t_oversize = [k for k, size in trace_sizes.items()
+                      if size > MAX_SHARD_BYTES]
+        if t_oversize:
+            print(f"  ! {len(t_oversize)} trace bucket(s) over "
+                  f"{MAX_SHARD_BYTES} bytes (unsplittable key collisions): "
+                  f"{t_oversize[:5]} — test_cell_shards.py will go RED",
+                  file=sys.stderr)
 
-    def dump(name: str, doc) -> int:
-        blob = json.dumps(doc, ensure_ascii=False, separators=(",", ":"))
-        (tmp / name).write_text(blob)
-        return len(blob.encode())
+        def dump(name: str, document) -> int:
+            blob = json.dumps(
+                document, ensure_ascii=False, separators=(",", ":")
+            ).encode()
+            write_bytes(tmp / name, blob)
+            return len(blob)
 
-    dump("manifest.json", manifest)
-    n_labels = dump("labels.json", labels)
-    n_alias = dump("aliases.json", aliases)
-    n_sup = dump("supercells.json", sup_doc)
-    (tmp / "explorer.json").write_text(explorer_blob)
+        dump("manifest.json", manifest)
+        n_labels = dump("labels.json", labels)
+        n_alias = dump("aliases.json", aliases)
+        n_sup = dump("supercells.json", sup_doc)
+        write_bytes(tmp / "explorer.json", explorer_blob.encode())
 
-    # frontier_graph.json ships VERBATIM (byte-copy, never re-serialized): the
-    # Libraries toggle's client-side re-scoring input must be exactly the file
-    # the frontier tests proved the parity law against (test_cell_shards S8
-    # pins the bytes).
-    # Fail-soft when absent, like frontier.jsonl — but LOUD, and stale-checked
-    # against the CURRENT homeless set so a drifted graph never ships silently.
-    graph_src = BRAIN_DATA / "frontier_graph.json"
-    n_graph = 0
-    if graph_src.exists():
-        graph_blob = graph_src.read_bytes()
-        (tmp / "frontier_graph.json").write_bytes(graph_blob)
-        n_graph = len(graph_blob)
-        homeless_now = {cid for cid, c in cells.items()
-                        if not any(o.get("kind") == "decl" for o in c["organs"])}
-        try:
-            graph_cells = set(json.loads(graph_blob).get("cells") or [])
-        except json.JSONDecodeError:
-            graph_cells = None
-        if graph_cells != homeless_now:
-            print(f"  ! STALE frontier_graph.json: its cells "
-                  f"({'unparseable' if graph_cells is None else len(graph_cells)}) "
-                  f"!= the current homeless set ({len(homeless_now)}) — the client "
-                  f"re-score will diverge from the shipped prox; rerun "
-                  f"python3 brain/build_frontier.py", file=sys.stderr)
+        # frontier_graph.json ships VERBATIM (byte-copy, never re-serialized):
+        # the Libraries toggle must receive exactly the graph whose parity law
+        # the frontier stage checked.
+        n_graph = 0
+        if require_frontier:
+            graph_blob = sealed_frontier_graph_blob
+        elif frontier_graph_path.exists():
+            graph_blob = frontier_graph_path.read_bytes()
+        else:
+            graph_blob = None
+        if graph_blob is not None:
+            n_graph = len(graph_blob)
+            homeless_now = {
+                cid
+                for cid, cell in cells.items()
+                if not any(organ.get("kind") == "decl" for organ in cell["organs"])
+            }
+            try:
+                graph_document = json.loads(graph_blob)
+            except json.JSONDecodeError:
+                graph_document = None
+            try:
+                raw_graph_cells = graph_document.get("cells")
+                if not isinstance(raw_graph_cells, list) or not all(
+                    isinstance(cell_id, str) for cell_id in raw_graph_cells
+                ):
+                    raise ValueError("cells must be an array of strings")
+                graph_cells = set(raw_graph_cells)
+                if len(graph_cells) != len(raw_graph_cells):
+                    raise ValueError("cells must not contain duplicates")
+            except (AttributeError, TypeError, ValueError):
+                graph_cells = None
+            if graph_cells != homeless_now:
+                message = (
+                    f"STALE frontier_graph.json: its cells "
+                    f"({'unparseable' if graph_cells is None else len(graph_cells)}) "
+                    f"!= the current homeless set ({len(homeless_now)}) — the "
+                    "client re-score will diverge from the shipped prox; rerun "
+                    "python3 brain/build_frontier.py"
+                )
+                if require_frontier:
+                    raise ValueError(f"sealed {message}")
+                print(f"  ! {message}", file=sys.stderr)
+            write_bytes(tmp / "frontier_graph.json", graph_blob)
+        else:
+            print("  ! no brain/data/frontier_graph.json — the Libraries "
+                  "toggle has no client re-scoring input; run "
+                  "python3 brain/build_frontier.py first", file=sys.stderr)
+        return sizes, trace_sizes, n_labels, n_alias, n_sup, n_graph
+
+    def emit_summary(
+        sizes: dict[str, int],
+        trace_sizes: dict[str, int],
+        n_labels: int,
+        n_alias: int,
+        n_sup: int,
+        n_graph: int,
+    ) -> None:
+        total = sum(sizes.values())
+        print(f"shards:    {len(cells)} cells -> {len(leaves)} shards "
+              f"({total / 1e6:.1f} MB), largest "
+              f"{max(sizes.values()) / 1000:.0f} KB", file=sys.stderr)
+        print(f"aliases:   {len(organ_to_cell)} organs -> cells "
+              f"({n_alias / 1e6:.1f} MB)", file=sys.stderr)
+        print(f"labels:    {len(labels)} atoms ({n_labels / 1e6:.1f} MB)",
+              file=sys.stderr)
+        print(f"supercells:{len(supercells)} ({n_sup / 1e6:.1f} MB), "
+              f"{sup_doc['_meta']['counts']['with_cells']} hold cells, "
+              f"{len(frontier_rows)} frontier areas "
+              f"({frontier_stats['cells']} homeless cells claimed, "
+              f"{frontier_stats['unclaimed']} unclaimed)", file=sys.stderr)
+        print(f"explorer:  {len(cells)} nodes + {len(rows)} edges, complete "
+              f"({len(explorer_blob.encode()) / 1e6:.1f} MB)", file=sys.stderr)
+        print(f"frontier_graph: "
+              + (f"shipped verbatim ({n_graph / 1000:.0f} KB)" if n_graph
+                 else "NOT SHIPPED (source missing)"), file=sys.stderr)
+        print(f"traces:    {len(sidecar)} supercell-synapse rows -> "
+              f"{len(trace_leaves)} bucket files "
+              f"({sum(trace_sizes.values()) / 1e6:.1f} MB), largest "
+              f"{max(trace_sizes.values(), default=0) / 1000:.0f} KB; "
+              f"{sidecar_trimmed} rows trimmed to cap {SIDECAR_TRACE_CAP} "
+              f"(per-row tt keeps true totals)", file=sys.stderr)
+        print(f"-> {output_dir} in {time.monotonic() - t0:.1f}s", file=sys.stderr)
+
+    # ---- atomic directory publication ---------------------------------------
+    if context_scratch is None:
+        # Legacy builds retain their replace-in-place behavior.
+        tmp = scratch_parent / ".cells.tmp"
+        old = scratch_parent / ".cells.old"
+        for stale in (tmp, old):
+            if stale.exists():
+                shutil.rmtree(stale)
+        tmp.mkdir(parents=True)
+        sizes, trace_sizes, n_labels, n_alias, n_sup, n_graph = write_tree(
+            tmp, sealed=False
+        )
+        output_dir.parent.mkdir(parents=True, exist_ok=True)
+        if output_dir.exists():
+            output_dir.rename(old)
+        tmp.rename(output_dir)
+        if old.exists():
+            shutil.rmtree(old)
+        emit_summary(sizes, trace_sizes, n_labels, n_alias, n_sup, n_graph)
     else:
-        print("  ! no brain/data/frontier_graph.json — the Libraries "
-              "toggle has no client re-scoring input; run "
-              "python3 brain/build_frontier.py first", file=sys.stderr)
-
-    OUT_DIR.parent.mkdir(parents=True, exist_ok=True)
-    if OUT_DIR.exists():
-        OUT_DIR.rename(old)
-    tmp.rename(OUT_DIR)
-    if old.exists():
-        shutil.rmtree(old)
-
-    total = sum(sizes.values())
-    print(f"shards:    {len(cells)} cells -> {len(leaves)} shards "
-          f"({total / 1e6:.1f} MB), largest {max(sizes.values()) / 1000:.0f} KB",
-          file=sys.stderr)
-    print(f"aliases:   {len(organ_to_cell)} organs -> cells ({n_alias / 1e6:.1f} MB)",
-          file=sys.stderr)
-    print(f"labels:    {len(labels)} atoms ({n_labels / 1e6:.1f} MB)", file=sys.stderr)
-    print(f"supercells:{len(supercells)} ({n_sup / 1e6:.1f} MB), "
-          f"{sup_doc['_meta']['counts']['with_cells']} hold cells, "
-          f"{len(frontier_rows)} frontier areas "
-          f"({frontier_stats['cells']} homeless cells claimed, "
-          f"{frontier_stats['unclaimed']} unclaimed)", file=sys.stderr)
-    print(f"explorer:  {len(cells)} nodes + {len(rows)} edges, complete "
-          f"({len(explorer_blob.encode()) / 1e6:.1f} MB)", file=sys.stderr)
-    print(f"frontier_graph: "
-          + (f"shipped verbatim ({n_graph / 1000:.0f} KB)" if n_graph
-             else "NOT SHIPPED (source missing)"), file=sys.stderr)
-    print(f"traces:    {len(sidecar)} supercell-synapse rows -> "
-          f"{len(trace_leaves)} bucket files "
-          f"({sum(trace_sizes.values()) / 1e6:.1f} MB), largest "
-          f"{max(trace_sizes.values(), default=0) / 1000:.0f} KB; "
-          f"{sidecar_trimmed} rows trimmed to cap {SIDECAR_TRACE_CAP} "
-          f"(per-row tt keeps true totals)", file=sys.stderr)
-    print(f"-> {OUT_DIR} in {time.monotonic() - t0:.1f}s", file=sys.stderr)
+        sizes, trace_sizes, n_labels, n_alias, n_sup, n_graph = write_tree(
+            context_scratch.path, sealed=True
+        )
+        # Publication is the final fallible action in sealed mode. A logging or
+        # summary failure therefore leaves no committed tree that blocks retry.
+        emit_summary(sizes, trace_sizes, n_labels, n_alias, n_sup, n_graph)
+        publish_directory_no_replace(context_scratch, output_dir)
     return 0
+
+
+def build_cell_shards_from_context(context: BuildContext) -> int:
+    """Build the exact cell-shard tree declared by a sealed replay context."""
+    context.require_stage(
+        STAGE_ID,
+        program=STAGE_PROGRAM,
+        argv=STAGE_ARGV,
+        needs=["base-graph", "cells", "frontier"],
+        outputs=[("tree", "site/assets/brain/cells")],
+    )
+    output_dir = context.output_for(STAGE_ID, "site/assets/brain/cells")
+    assert_outputs_absent([output_dir])
+    ensure_private_directory(context.roots.output, output_dir.parent)
+    scratch = context.scratch_for(STAGE_ID, "cells")
+    with owned_directory(context.roots.scratch, scratch) as ownership:
+        require_same_filesystem(scratch, output_dir.parent)
+        return build_cell_shards(
+            cells_path=context.dependency_output_for(
+                STAGE_ID, "cells", "brain/data/cells.jsonl"
+            ),
+            synapses_path=context.dependency_output_for(
+                STAGE_ID, "cells", "brain/data/synapses.jsonl"
+            ),
+            nodes_path=context.dependency_output_for(
+                STAGE_ID, "base-graph", "brain/data/nodes.jsonl"
+            ),
+            edges_path=context.dependency_output_for(
+                STAGE_ID, "base-graph", "brain/data/edges.jsonl"
+            ),
+            frontier_path=context.dependency_output_for(
+                STAGE_ID, "frontier", "brain/data/frontier.jsonl"
+            ),
+            frontier_graph_path=context.dependency_output_for(
+                STAGE_ID, "frontier", "brain/data/frontier_graph.json"
+            ),
+            output_dir=output_dir,
+            scratch_parent=context.roots.scratch,
+            context_scratch=ownership,
+            require_frontier=True,
+            expected_generation_id=context.generation_id,
+        )
+
+
+def main() -> int:
+    return build_cell_shards(
+        cells_path=BRAIN_DATA / "cells.jsonl",
+        synapses_path=BRAIN_DATA / "synapses.jsonl",
+        nodes_path=BRAIN_DATA / "nodes.jsonl",
+        edges_path=BRAIN_DATA / "edges.jsonl",
+        frontier_path=BRAIN_DATA / "frontier.jsonl",
+        frontier_graph_path=BRAIN_DATA / "frontier_graph.json",
+        output_dir=OUT_DIR,
+        scratch_parent=SCRATCH_DIR,
+    )
+
+
+def _cli(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build-context", type=Path)
+    parser.add_argument("--stage-id")
+    args = parser.parse_args(argv)
+    if args.build_context is None:
+        if args.stage_id is not None:
+            parser.error("--stage-id requires --build-context")
+        return main()
+    if args.stage_id != STAGE_ID:
+        parser.error(f"--stage-id must be {STAGE_ID!r} with --build-context")
+    return build_cell_shards_from_context(BuildContext.load(args.build_context))
 
 
 if __name__ == "__main__":
     sys.path.insert(0, str(HERE))
-    sys.exit(main())
+    sys.exit(_cli())

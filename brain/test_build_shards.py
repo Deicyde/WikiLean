@@ -256,9 +256,19 @@ class StageIOOwnershipTest(unittest.TestCase):
                     [(source, output)], scratch=ownership
                 )
                 ownership.path.mkdir()
+                replacement = ownership.path / "replacement.json"
+                replacement.write_bytes(b"competitor")
+                with self.assertRaisesRegex(
+                    RuntimeError, "replaced stage directory"
+                ):
+                    stage_io.publish_files_no_replace(
+                        [(replacement, output_root / "second.json")],
+                        scratch=ownership,
+                    )
 
             self.assertEqual(output.read_bytes(), b"ours")
             self.assertTrue(ownership.path.is_dir())
+            self.assertFalse((output_root / "second.json").exists())
 
 
 class ContextTopLevelShardTest(unittest.TestCase):
