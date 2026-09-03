@@ -9,10 +9,12 @@ isolated writable output workspace.
 """
 from __future__ import annotations
 
+import ctypes
 import errno
 import os
 import shutil
 import stat
+import sys
 from collections.abc import Iterable
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -215,7 +217,14 @@ def assert_outputs_absent(paths: Iterable[Path]) -> tuple[Path, ...]:
 
 
 def _regular_metadata(path: Path) -> os.stat_result:
-    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    initial = path.lstat()
+    if stat.S_ISLNK(initial.st_mode) or not stat.S_ISREG(initial.st_mode):
+        raise OSError(f"stage publication source is not a regular file: {path}")
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
     descriptor = os.open(path, flags)
     try:
         metadata = os.fstat(descriptor)
@@ -223,6 +232,7 @@ def _regular_metadata(path: Path) -> os.stat_result:
         if (
             not stat.S_ISREG(metadata.st_mode)
             or stat.S_ISLNK(current.st_mode)
+            or not os.path.samestat(initial, metadata)
             or not os.path.samestat(metadata, current)
         ):
             raise OSError(f"stage publication source is not a stable regular file: {path}")
@@ -260,6 +270,15 @@ def publish_files_no_replace(
     )
     if not pairs:
         raise ValueError("stage publication must contain at least one file")
+    scratch_metadata = _require_real_directory(scratch.path)
+    if (
+        scratch.removed
+        or scratch_metadata.st_dev != scratch.device
+        or scratch_metadata.st_ino != scratch.inode
+    ):
+        raise RuntimeError(
+            f"refusing to publish from a replaced stage directory: {scratch.path}"
+        )
     destinations = assert_outputs_absent(destination for _source, destination in pairs)
     source_metadata: dict[Path, os.stat_result] = {}
     output_directories: list[Path] = []
@@ -312,6 +331,193 @@ def publish_files_no_replace(
         raise
 
 
+def _rename_no_replace(source: Path, destination: Path) -> None:
+    """Atomically rename without replacing an existing destination."""
+    source_bytes = os.fsencode(source)
+    destination_bytes = os.fsencode(destination)
+    library = ctypes.CDLL(None, use_errno=True)
+    result: int
+    if sys.platform == "darwin" and hasattr(library, "renamex_np"):
+        renamex_np = library.renamex_np
+        renamex_np.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+        renamex_np.restype = ctypes.c_int
+        result = renamex_np(source_bytes, destination_bytes, 0x00000004)
+    elif sys.platform.startswith("linux") and hasattr(library, "renameat2"):
+        renameat2 = library.renameat2
+        renameat2.argtypes = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+        renameat2.restype = ctypes.c_int
+        result = renameat2(-100, source_bytes, -100, destination_bytes, 0x00000001)
+    elif os.name == "nt":
+        os.rename(source, destination)
+        return
+    else:
+        raise OSError(
+            errno.ENOTSUP,
+            "platform lacks atomic no-replace directory publication",
+            str(destination),
+        )
+    if result == 0:
+        return
+    error_number = ctypes.get_errno()
+    if error_number in {errno.EEXIST, errno.ENOTEMPTY}:
+        raise FileExistsError(
+            error_number,
+            "context-owned output already exists",
+            str(destination),
+        )
+    raise OSError(error_number, os.strerror(error_number), str(destination))
+
+
+def _tree_entry(metadata: os.stat_result) -> tuple[int, int, int, int, int, int]:
+    return (
+        stat.S_IFMT(metadata.st_mode),
+        stat.S_IMODE(metadata.st_mode),
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_size,
+        metadata.st_ctime_ns,
+    )
+
+
+def _snapshot_directory_tree(
+    root: Path,
+    *,
+    synchronize: bool,
+) -> dict[str, tuple[int, int, int, int, int, int]]:
+    """Validate a regular-file tree, optionally syncing it, and record identity."""
+    state: dict[str, tuple[int, int, int, int, int, int]] = {}
+    directories: list[Path] = []
+
+    def fail_walk(error: OSError) -> None:
+        raise error
+
+    for directory, names, filenames in os.walk(
+        root,
+        topdown=True,
+        onerror=fail_walk,
+        followlinks=False,
+    ):
+        directory_path = Path(directory)
+        directory_metadata = _require_real_directory(directory_path)
+        if stat.S_IMODE(directory_metadata.st_mode) != 0o700:
+            raise OSError(
+                f"stage output directory must have mode 0o700: {directory_path}"
+            )
+        directories.append(directory_path)
+        names.sort()
+        filenames.sort()
+        for name in names:
+            child = directory_path / name
+            metadata = child.lstat()
+            if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+                raise OSError(f"stage output tree contains a non-directory: {child}")
+            if stat.S_IMODE(metadata.st_mode) != 0o700:
+                raise OSError(f"stage output directory must have mode 0o700: {child}")
+            state[child.relative_to(root).as_posix()] = _tree_entry(metadata)
+        for name in filenames:
+            child = directory_path / name
+            metadata = _regular_metadata(child)
+            if stat.S_IMODE(metadata.st_mode) != 0o644:
+                raise OSError(f"stage output file must have mode 0o644: {child}")
+            state[child.relative_to(root).as_posix()] = _tree_entry(metadata)
+    if synchronize:
+        for directory in reversed(directories):
+            fsync_directory(directory)
+    return state
+
+
+def publish_directory_no_replace(
+    scratch: OwnedDirectory,
+    destination: Path,
+) -> Path:
+    """Atomically publish one complete owned directory without replacement."""
+    destination = assert_outputs_absent([destination])[0]
+    destination_parent = destination.parent
+    source_metadata = _require_real_directory(scratch.path)
+    if (
+        scratch.removed
+        or source_metadata.st_dev != scratch.device
+        or source_metadata.st_ino != scratch.inode
+    ):
+        raise RuntimeError(
+            f"refusing to publish a replaced stage directory: {scratch.path}"
+        )
+    parent_metadata = _require_real_directory(destination_parent)
+    if source_metadata.st_dev != parent_metadata.st_dev:
+        raise OSError(
+            errno.EXDEV,
+            "stage scratch and output must be on the same filesystem",
+            f"{scratch.path} -> {destination}",
+        )
+    source_state = _snapshot_directory_tree(scratch.path, synchronize=True)
+    moved = False
+    try:
+        _rename_no_replace(scratch.path, destination)
+        moved = True
+        current = destination.lstat()
+        if (
+            not stat.S_ISDIR(current.st_mode)
+            or not os.path.samestat(source_metadata, current)
+        ):
+            raise RuntimeError(
+                f"published output directory does not match its source: {destination}"
+            )
+        if _snapshot_directory_tree(destination, synchronize=False) != source_state:
+            raise RuntimeError(
+                f"published output tree changed during publication: {destination}"
+            )
+        fsync_directory(destination_parent)
+        if scratch.path.parent != destination_parent:
+            fsync_directory(scratch.path.parent)
+        scratch.removed = True
+        return destination
+    except BaseException as exc:
+        rollback_errors: list[str] = []
+        if moved:
+            try:
+                current = destination.lstat()
+                if not (
+                    stat.S_ISDIR(current.st_mode)
+                    and os.path.samestat(source_metadata, current)
+                ):
+                    raise RuntimeError(
+                        f"refusing to remove replaced stage output: {destination}"
+                    )
+                _rename_no_replace(destination, scratch.path)
+                restored = scratch.path.lstat()
+                if (
+                    not stat.S_ISDIR(restored.st_mode)
+                    or not os.path.samestat(source_metadata, restored)
+                ):
+                    raise RuntimeError(
+                        f"rolled-back stage directory changed identity: {scratch.path}"
+                    )
+                remove_owned_directory(scratch)
+            except BaseException as rollback_error:
+                rollback_errors.append(f"{destination}: {rollback_error}")
+            for parent in dict.fromkeys((destination_parent, scratch.path.parent)):
+                try:
+                    fsync_directory(parent)
+                except BaseException as rollback_error:
+                    rollback_errors.append(f"fsync {parent}: {rollback_error}")
+        if rollback_errors and hasattr(exc, "add_note"):
+            exc.add_note(
+                "stage directory publication rollback issues: "
+                + "; ".join(rollback_errors)
+            )
+        raise
+
+
 __all__ = [
     "OwnedDirectory",
     "assert_outputs_absent",
@@ -319,6 +525,7 @@ __all__ = [
     "ensure_private_directory",
     "fsync_directory",
     "owned_directory",
+    "publish_directory_no_replace",
     "publish_files_no_replace",
     "remove_owned_directory",
     "require_same_filesystem",

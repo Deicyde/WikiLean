@@ -44,6 +44,7 @@ class PreparedReplay:
     offline_pack_id: str
     source_set_root: str
     reducer_inventory_id: str
+    reducer_files: tuple[tuple[str, int, str], ...]
 
     def to_document(self) -> dict[str, Any]:
         return {
@@ -668,6 +669,14 @@ def prepare_replay_v2(
             offline_pack_id=pack["offline_pack_id"],
             source_set_root=pack["source_set_root"],
             reducer_inventory_id=inventory["inventory_id"],
+            reducer_files=tuple(
+                (
+                    reducer_ref["logical_path"],
+                    reducer_ref["bytes"],
+                    reducer_ref["sha256"],
+                )
+                for reducer_ref in pack["reducer"]["files"]
+            ),
         )
         _publish_no_replace(staging, target)
         published = True

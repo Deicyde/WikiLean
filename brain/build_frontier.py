@@ -137,14 +137,25 @@ Run: python3 brain/build_frontier.py     (after brain/build_cells.py)
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
+import stat
 import sys
 import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from build_context import BuildContext, BuildContextError
 from frontier_suitability import classify_cell, load_overrides, review_signals
+from stage_io import (
+    assert_outputs_absent,
+    ensure_private_directory,
+    owned_directory,
+    publish_files_no_replace,
+    require_same_filesystem,
+    write_bytes_exclusive,
+)
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -157,6 +168,15 @@ OUT = HERE / "data" / "frontier.jsonl"
 GRAPH_OUT = HERE / "data" / "frontier_graph.json"
 REVIEW_OUT = HERE / "data" / "frontier_review.jsonl"
 SUITABILITY_OVERRIDES = HERE / "data" / "frontier_suitability_overrides.jsonl"
+STAGE_ID = "frontier"
+STAGE_PROGRAM = "brain/build_frontier.py"
+STAGE_ARGV: tuple[str, ...] = ()
+STAGE_NEEDS = ("base-graph", "cells")
+STAGE_OUTPUTS = (
+    ("file", "brain/data/frontier.jsonl"),
+    ("file", "brain/data/frontier_graph.json"),
+    ("file", "brain/data/frontier_review.jsonl"),
+)
 
 AREA_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 TOP_CAP = 12                      # contract: up to 12 `top` rows per area
@@ -194,7 +214,7 @@ MSC_NAME = {
 
 def iter_jsonl(path: Path):
     """Yield data rows of a brain JSONL, skipping the leading `_meta` line."""
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:
@@ -206,7 +226,7 @@ def iter_jsonl(path: Path):
 
 
 def read_meta(path: Path) -> dict:
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         first = json.loads(next(fh))
     return first.get("_meta", {})
 
@@ -229,21 +249,31 @@ def area_label(area: str, lib: str | None, top: str | None) -> str:
 SECONDARY_ONLY = ROOT / "catalog" / "data" / "concept_layer.jsonl"
 
 
-def load_secondary_only() -> set[str]:
+def load_secondary_only(path: Path | None) -> set[str]:
     out = set()
-    if not SECONDARY_ONLY.exists():
+    if path is None:
         return out
-    for row in iter_jsonl(SECONDARY_ONLY):
+    for row in iter_jsonl(path):
         if not row.get("primary_decl") and row.get("secondary_decls"):
             out.add(row.get("qid"))
     return out
 
 
-def write_frontier_review(cells: dict[str, dict], nodes: dict[str, dict],
-                          homeless: list[str], score: dict[str, float],
-                          direct_w: Counter, bridge_w: dict[str, int], nbrs: dict[str, list],
-                          assigned: dict[str, str], generated_at: str) -> None:
-    secondary_only = load_secondary_only()
+def render_frontier_review(
+    cells: dict[str, dict],
+    nodes: dict[str, dict],
+    homeless: list[str],
+    score: dict[str, float],
+    direct_w: Counter,
+    bridge_w: dict[str, int],
+    nbrs: dict[str, list],
+    assigned: dict[str, str],
+    generated_at: str,
+    *,
+    secondary_only_path: Path | None,
+    generation_id: str | None,
+) -> tuple[str, int]:
+    secondary_only = load_secondary_only(secondary_only_path)
     by_score = sorted(homeless, key=lambda c: (-score.get(c, 0), c))
     rank = {cid: i + 1 for i, cid in enumerate(by_score)}
     rows = []
@@ -271,36 +301,71 @@ def write_frontier_review(cells: dict[str, dict], nodes: dict[str, dict],
             "suggested_action": "container_link_review",
         })
     rows.sort(key=lambda r: (r["rank"], r["cell"]))
-    meta = {"_meta": {"generated_at": generated_at,
-                       "method": "non-gating review of frontier cells likely to belong at supercell altitude",
-                       "counts": {"candidates": len(rows),
-                                  "homeless": len(homeless)}}}
-    tmp = REVIEW_OUT.with_suffix(".jsonl.tmp")
-    with tmp.open("w") as fh:
-        fh.write(json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n")
-        for row in rows:
-            fh.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
-    tmp.rename(REVIEW_OUT)
-    print(f"-> {REVIEW_OUT} ({len(rows)} supercell-altitude review candidates)")
+    review_meta = {
+        "generated_at": generated_at,
+        "method": "non-gating review of frontier cells likely to belong at supercell altitude",
+        "counts": {"candidates": len(rows), "homeless": len(homeless)},
+    }
+    if generation_id is not None:
+        review_meta["generation_id"] = generation_id
+    lines = [
+        json.dumps(
+            {"_meta": review_meta},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+    ]
+    lines.extend(
+        json.dumps(row, ensure_ascii=False, separators=(",", ":")) for row in rows
+    )
+    return "\n".join(lines) + "\n", len(rows)
 
 
-def main() -> int:
+def _write_artifact(path: Path, data: bytes, *, sealed: bool) -> None:
+    if sealed:
+        write_bytes_exclusive(path, data, mode=0o644)
+        return
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_bytes(data)
+    temporary.replace(path)
+
+
+def build_frontier(
+    *,
+    cells_path: Path,
+    nodes_path: Path,
+    synapses_path: Path,
+    edges_path: Path | None,
+    halo_path: Path | None,
+    suitability_overrides_path: Path,
+    secondary_only_path: Path | None,
+    frontier_output: Path,
+    graph_output: Path,
+    review_output: Path,
+    strict_inputs: bool = False,
+    generated_at: str | None = None,
+    generation_id: str | None = None,
+    sealed_outputs: bool = False,
+) -> int:
+    """Build Frontier artifacts from explicit inputs and output destinations."""
     t0 = time.monotonic()
-    for path in (CELLS_IN, NODES_IN, SYNAPSES_IN, SUITABILITY_OVERRIDES):
+    for path in (cells_path, nodes_path, synapses_path, suitability_overrides_path):
         if not path.exists():
             raise SystemExit(f"missing {path} — run python3 brain/build_cells.py first")
 
-    cells_meta = read_meta(CELLS_IN)
-    generated_at = cells_meta.get("generated_at", "")  # input stamp, NOT wall clock:
+    cells_meta = read_meta(cells_path)
+    if generated_at is None:
+        generated_at = cells_meta.get("generated_at", "")
+    # input/context stamp, NOT wall clock:
     # the output must be byte-identical across reruns on the same inputs (tested)
 
     # ---- cells: who is formalized, who is homeless ---------------------------
     cells: dict[str, dict] = {}
-    for row in iter_jsonl(CELLS_IN):
+    for row in iter_jsonl(cells_path):
         cells[row["id"]] = row
-    nodes = {row["id"]: row for row in iter_jsonl(NODES_IN)}
+    nodes = {row["id"]: row for row in iter_jsonl(nodes_path)}
     known_qids = {nid for nid, node in nodes.items() if node.get("type") == "concept"}
-    suitability_overrides = load_overrides(SUITABILITY_OVERRIDES, known_qids)
+    suitability_overrides = load_overrides(suitability_overrides_path, known_qids)
     decl_cells = {cid for cid, c in cells.items()
                   if any(o.get("kind") == "decl" for o in c.get("organs", []))}
     homeless = sorted(set(cells) - decl_cells)
@@ -326,7 +391,7 @@ def main() -> int:
     # raw (src, dst, weight) rows touching >=1 homeless endpoint — the frontier
     # graph's input (frontier<->frontier edges + formalized-neighbor weights)
     raw_frontier_syn: list[tuple[str, str, int]] = []
-    for row in iter_jsonl(SYNAPSES_IN):
+    for row in iter_jsonl(synapses_path):
         n_syn += 1
         kinds = row.get("kinds", {})
         eff = sum(cnt * KIND_MULT.get(k, 1) for k, cnt in kinds.items())
@@ -417,13 +482,17 @@ def main() -> int:
 
     # ---- phase 2: MSC top-level class ----------------------------------------
     msc_by_concept: dict[str, set] = defaultdict(set)
-    if EDGES_IN.exists():
-        for row in iter_jsonl(EDGES_IN):
+    if edges_path is not None:
+        if strict_inputs and not edges_path.exists():
+            raise FileNotFoundError(f"missing required replay input: {edges_path}")
+        for row in iter_jsonl(edges_path):
             if row.get("kind") == "xref" and \
                     str(row.get("dst", "")).startswith("xref:msc:"):
                 msc_by_concept[row["src"]].add(row["dst"][len("xref:msc:"):])
     else:
-        print(f"  ! {EDGES_IN} missing — phase 2 sees msc ORGANS only (fail-soft)")
+        if strict_inputs:
+            raise FileNotFoundError("missing required replay input: edges.jsonl")
+        print("  ! edges.jsonl missing — phase 2 sees msc ORGANS only (fail-soft)")
     n_organ_hits = 0
     n_msc = 0
     for cid in zero_formal:
@@ -621,9 +690,9 @@ def main() -> int:
 
     # ---- halo join: mean_stateability ----------------------------------------
     halo_frac: dict[str, float] = {}
-    if HALO_IN.exists():
+    if halo_path is not None:
         try:
-            halo = json.loads(HALO_IN.read_text())
+            halo = json.loads(halo_path.read_text(encoding="utf-8"))
             for item in halo.get("items", []):
                 if item.get("all_frac") is not None:
                     halo_frac[item["cell"]] = item["all_frac"]
@@ -632,11 +701,12 @@ def main() -> int:
                   f"{len(homeless)} homeless cells join with a non-null all_frac "
                   f"({100 * joined / max(len(homeless), 1):.1f}%)")
         except (json.JSONDecodeError, OSError) as exc:
+            if strict_inputs:
+                raise
             print(f"  ! halo.json unreadable ({exc}) — mean_stateability null "
                   f"everywhere (fail-soft)")
     else:
-        print(f"  ! {HALO_IN} missing — mean_stateability null everywhere "
-              f"(fail-soft)")
+        print("  ! halo.json absent — mean_stateability null everywhere")
 
     # ---- rows ----------------------------------------------------------------
     members: dict[str, list[str]] = defaultdict(list)
@@ -696,7 +766,7 @@ def main() -> int:
               f"{nd}/{nb}/{r['n'] - nd - nb}  {max(p['s']):g}")
 
     # ---- write (atomic) ------------------------------------------------------
-    meta = {"_meta": {
+    meta_payload = {
         "generated_at": generated_at,
         "method": "synapse-vote(depends/invocation x3) -> msc-xref -> "
                   "relates-propagation -> unsorted; deterministic, seedless, "
@@ -733,14 +803,22 @@ def main() -> int:
                    "unsorted": n_by_tier["unsorted"]},
         "inputs": {"cells": len(cells), "synapses": n_syn,
                    "halo_joined": sum(1 for c in homeless if c in halo_frac)},
-    }}
-    tmp = OUT.with_suffix(".jsonl.tmp")
-    with tmp.open("w") as fh:
-        fh.write(json.dumps(meta, ensure_ascii=False, separators=(",", ":")) + "\n")
-        for r in rows:
-            fh.write(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n")
-    tmp.rename(OUT)
-    print(f"\n-> {OUT} ({len(rows)} areas over {len(homeless)} homeless cells) "
+    }
+    if generation_id is not None:
+        meta_payload["generation_id"] = generation_id
+    frontier_lines = [
+        json.dumps(
+            {"_meta": meta_payload},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+    ]
+    frontier_lines.extend(
+        json.dumps(row, ensure_ascii=False, separators=(",", ":")) for row in rows
+    )
+    frontier_blob = ("\n".join(frontier_lines) + "\n").encode("utf-8")
+    _write_artifact(frontier_output, frontier_blob, sealed=sealed_outputs)
+    print(f"\n-> {frontier_output} ({len(rows)} areas over {len(homeless)} homeless cells) "
           f"in {time.monotonic() - t0:.1f}s")
 
     # ---- frontier graph: the client-side re-scoring input --------------------
@@ -802,6 +880,8 @@ def main() -> int:
                    for c in sorted(formal)},
         "edges": edges_out,
     }
+    if generation_id is not None:
+        graph["_meta"]["generation_id"] = generation_id
 
     # PARITY LAW, asserted at build time from the GRAPH OBJECT alone (the
     # client's view of the world): formal's keys are exactly the direct>0
@@ -833,14 +913,150 @@ def main() -> int:
     print("  parity law holds: all-libraries client re-score == shipped s "
           f"({len(homeless)} cells, exact float equality)")
 
-    gtmp = GRAPH_OUT.with_suffix(".json.tmp")
-    gtmp.write_text(json.dumps(graph, ensure_ascii=False, separators=(",", ":")))
-    gtmp.rename(GRAPH_OUT)
-    print(f"-> {GRAPH_OUT} ({GRAPH_OUT.stat().st_size / 1000:.0f} KB)")
-    write_frontier_review(cells, nodes, homeless, score, direct_w, bridge_w, nbrs,
-                          assigned, generated_at)
+    graph_blob = json.dumps(
+        graph, ensure_ascii=False, separators=(",", ":")
+    ).encode("utf-8")
+    _write_artifact(graph_output, graph_blob, sealed=sealed_outputs)
+    print(f"-> {graph_output} ({len(graph_blob) / 1000:.0f} KB)")
+    review_blob, review_count = render_frontier_review(
+        cells,
+        nodes,
+        homeless,
+        score,
+        direct_w,
+        bridge_w,
+        nbrs,
+        assigned,
+        generated_at,
+        secondary_only_path=secondary_only_path,
+        generation_id=generation_id,
+    )
+    _write_artifact(
+        review_output,
+        review_blob.encode("utf-8"),
+        sealed=sealed_outputs,
+    )
+    print(
+        f"-> {review_output} ({review_count} supercell-altitude review candidates)"
+    )
+    return 0
+
+
+def _require_context_file(path: Path, label: str) -> Path:
+    try:
+        metadata = path.lstat()
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(f"missing required replay input {label}: {path}") from exc
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
+        raise BuildContextError(f"replay input {label!r} is not a regular file: {path}")
+    return path
+
+
+def build_frontier_from_context(context: BuildContext) -> tuple[Path, ...]:
+    """Build and publish the exact Frontier files declared by ``context``."""
+    context.require_stage(
+        STAGE_ID,
+        program=STAGE_PROGRAM,
+        argv=STAGE_ARGV,
+        needs=STAGE_NEEDS,
+        outputs=STAGE_OUTPUTS,
+    )
+    cells_path = context.dependency_output_for(
+        STAGE_ID, "cells", "brain/data/cells.jsonl"
+    )
+    synapses_path = context.dependency_output_for(
+        STAGE_ID, "cells", "brain/data/synapses.jsonl"
+    )
+    nodes_path = context.dependency_output_for(
+        STAGE_ID, "base-graph", "brain/data/nodes.jsonl"
+    )
+    edges_path = context.dependency_output_for(
+        STAGE_ID, "base-graph", "brain/data/edges.jsonl"
+    )
+    suitability_overrides_path = context.require_one(
+        "brain-frontier-suitability-overrides"
+    )
+    secondary_only_path = context.optional_one("concept-layer")
+    halo_path = context.optional_one("halo")
+    required_inputs = (
+        (cells_path, "cells"),
+        (synapses_path, "synapses"),
+        (nodes_path, "nodes"),
+        (edges_path, "edges"),
+        (suitability_overrides_path, "brain-frontier-suitability-overrides"),
+    )
+    for path, label in required_inputs:
+        _require_context_file(path, label)
+    for path, label in (
+        (secondary_only_path, "concept-layer"),
+        (halo_path, "halo"),
+    ):
+        if path is not None:
+            _require_context_file(path, label)
+
+    outputs = tuple(
+        context.output_for(STAGE_ID, relative) for _kind, relative in STAGE_OUTPUTS
+    )
+    assert_outputs_absent(outputs)
+    output_parent = outputs[0].parent
+    if any(output.parent != output_parent for output in outputs):
+        raise BuildContextError("frontier outputs must share one directory")
+    ensure_private_directory(context.roots.output, output_parent)
+    require_same_filesystem(context.roots.scratch, output_parent)
+    scratch = context.scratch_for(STAGE_ID, "publish")
+    with owned_directory(context.roots.scratch, scratch) as ownership:
+        staged = tuple(scratch / output.name for output in outputs)
+        build_frontier(
+            cells_path=cells_path,
+            nodes_path=nodes_path,
+            synapses_path=synapses_path,
+            edges_path=edges_path,
+            halo_path=halo_path,
+            suitability_overrides_path=suitability_overrides_path,
+            secondary_only_path=secondary_only_path,
+            frontier_output=staged[0],
+            graph_output=staged[1],
+            review_output=staged[2],
+            strict_inputs=True,
+            generated_at=context.generation_id,
+            generation_id=context.generation_id,
+            sealed_outputs=True,
+        )
+        require_same_filesystem(scratch, output_parent)
+        publish_files_no_replace(zip(staged, outputs), scratch=ownership)
+    return outputs
+
+
+def main() -> int:
+    """Run the historical repository-local Frontier builder."""
+    return build_frontier(
+        cells_path=CELLS_IN,
+        nodes_path=NODES_IN,
+        synapses_path=SYNAPSES_IN,
+        edges_path=EDGES_IN if EDGES_IN.exists() else None,
+        halo_path=HALO_IN if HALO_IN.exists() else None,
+        suitability_overrides_path=SUITABILITY_OVERRIDES,
+        secondary_only_path=SECONDARY_ONLY if SECONDARY_ONLY.exists() else None,
+        frontier_output=OUT,
+        graph_output=GRAPH_OUT,
+        review_output=REVIEW_OUT,
+    )
+
+
+def _cli(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build-context", type=Path)
+    parser.add_argument("--stage-id")
+    args = parser.parse_args(argv)
+    if args.build_context is None:
+        if args.stage_id is not None:
+            parser.error("--stage-id requires --build-context")
+        return main()
+    if args.stage_id != STAGE_ID:
+        parser.error(f"--stage-id must be {STAGE_ID!r} with --build-context")
+    build_frontier_from_context(BuildContext.load(args.build_context))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_cli())

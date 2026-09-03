@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
-"""Verify an offline pack, then run its Python reducer with a fail-fast network guard.
+"""Verify and execute an offline pack.
 
-This is a cooperative Python boundary. Use runner/container network isolation as an
-additional enforcement layer for authoritative builds.
+Version 1 retains its cooperative single-reducer network guard. Version 2 prepares a
+sealed workspace and executes the complete DAG through the mandatory OS-isolated runner.
 """
 from __future__ import annotations
 
+import os
+import sys
 import argparse
 import json
-import os
 import subprocess
-import sys
 from pathlib import Path, PurePosixPath
+
+HERE = Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+
+import prepare_replay_v2
+import run_replay_v2
 
 from authority_contracts import (
     PACK_SCHEMA,
@@ -28,18 +35,71 @@ def run(
     *,
     root: Path | None = None,
     arguments: list[str] | None = None,
+    workspace: Path | None = None,
+    authority_git_commit: str | None = None,
+    authority_root: str | None = None,
+    semantic_epoch: str | None = None,
+    prior_state_root: str | None = None,
+    interpreter: Path | None = None,
 ) -> int:
     manifest_path = manifest_path.resolve(strict=True)
     verification_root = (root or manifest_path.parent).resolve(strict=True)
     document, _ = load_canonical_json(manifest_path)
     if isinstance(document, dict) and document.get("schema") == PACK_SCHEMA_V2:
-        raise VerificationError(
-            "$.schema: offline-pack/v2 full-DAG replay is not implemented; "
-            "verify it with verify_source_set.py only"
+        run_replay_v2.require_isolated_startup()
+        if arguments:
+            raise VerificationError(
+                "offline-pack/v2 stage arguments are sealed by its reducer inventory"
+            )
+        missing = [
+            name
+            for name, value in (
+                ("--workspace", workspace),
+                ("--authority-git-commit", authority_git_commit),
+                ("--authority-root", authority_root),
+                ("--semantic-epoch", semantic_epoch),
+            )
+            if value is None
+        ]
+        if missing:
+            raise VerificationError(
+                "offline-pack/v2 requires " + ", ".join(missing)
+            )
+        prepared = prepare_replay_v2.prepare_replay_v2(
+            manifest_path,
+            workspace,
+            pack_root=verification_root,
+            authority_git_commit=authority_git_commit,
+            authority_root=authority_root,
+            semantic_epoch=semantic_epoch,
+            prior_state_root=prior_state_root,
         )
+        run_replay_v2.run_replay_v2(
+            prepared.context_path,
+            reducer_files=prepared.reducer_files,
+            expected_generation_id=prepared.generation_id,
+            expected_offline_pack_id=prepared.offline_pack_id,
+            expected_source_set_root=prepared.source_set_root,
+            expected_reducer_inventory_id=prepared.reducer_inventory_id,
+            interpreter=interpreter or Path(sys.executable),
+        )
+        return 0
     if not isinstance(document, dict) or document.get("schema") != PACK_SCHEMA:
         schema = document.get("schema") if isinstance(document, dict) else None
         raise VerificationError(f"$.schema: unknown schema/version {schema!r}")
+    if any(
+        value is not None
+        for value in (
+            workspace,
+            authority_git_commit,
+            authority_root,
+            semantic_epoch,
+            prior_state_root,
+        )
+    ):
+        raise VerificationError(
+            "offline-pack/v2 replay options are not valid for offline-pack/v1"
+        )
     pack = validate_offline_pack(document)
     verify_offline_pack_files(pack, verification_root, manifest_path=manifest_path)
 
@@ -93,14 +153,40 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="offline-pack root (default: directory containing --manifest)",
     )
+    parser.add_argument(
+        "--workspace",
+        type=Path,
+        help="fresh replay workspace (required for offline-pack/v2)",
+    )
+    parser.add_argument("--authority-git-commit")
+    parser.add_argument("--authority-root")
+    parser.add_argument("--semantic-epoch")
+    parser.add_argument("--prior-state-root")
+    parser.add_argument("--python", type=Path, default=Path(sys.executable))
     parser.add_argument("reducer_args", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
     reducer_args = args.reducer_args
     if reducer_args[:1] == ["--"]:
         reducer_args = reducer_args[1:]
     try:
-        return run(args.manifest, root=args.root, arguments=reducer_args)
-    except (OSError, VerificationError) as exc:
+        return run(
+            args.manifest,
+            root=args.root,
+            arguments=reducer_args,
+            workspace=args.workspace,
+            authority_git_commit=args.authority_git_commit,
+            authority_root=args.authority_root,
+            semantic_epoch=args.semantic_epoch,
+            prior_state_root=args.prior_state_root,
+            interpreter=args.python,
+        )
+    except (
+        OSError,
+        VerificationError,
+        prepare_replay_v2.ReplayPreparationError,
+        run_replay_v2.ReplayExecutionError,
+        run_replay_v2.build_context.BuildContextError,
+    ) as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, sort_keys=True), file=sys.stderr)
         return 1
 
