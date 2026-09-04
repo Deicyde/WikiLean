@@ -23,6 +23,7 @@ sys.path.insert(0, str(TOOLS))
 
 import authority_contracts as contracts  # noqa: E402
 import build_context  # noqa: E402
+import execution_environment as execution_env  # noqa: E402
 import store  # noqa: E402
 
 ZERO_DIGEST = "0" * 64
@@ -40,6 +41,80 @@ def write_canonical(path: Path, value: object) -> bytes:
 def file_ref(root: Path, relative: str, media_type: str = "application/octet-stream") -> dict[str, object]:
     digest, size = contracts.digest_file(root / relative)
     return {"path": relative, "sha256": digest, "bytes": size, "media_type": media_type}
+
+
+def execution_environment_fixture(
+    profile: str = execution_env.DEVELOPMENT_HOST_PROFILE,
+) -> dict[str, object]:
+    runtime: dict[str, object]
+    if profile == execution_env.AUTHORITATIVE_OCI_PROFILE:
+        runtime = {
+            "kind": "oci-image",
+            "os": "linux",
+            "architecture": "x86_64",
+            "image_digest": "sha256:" + "1" * 64,
+        }
+    else:
+        runtime = {
+            "kind": "development-host",
+            "os": "linux",
+            "architecture": "x86_64",
+            "runtime_root": "sha256:" + "1" * 64,
+        }
+    value: dict[str, object] = {
+        "schema": execution_env.EXECUTION_ENVIRONMENT_SCHEMA,
+        "environment_id": ZERO_HASH,
+        "profile": profile,
+        "runtime": runtime,
+        "runner": {
+            "name": "wikilean-replay",
+            "version": "2.0.0",
+            "git_commit": GIT_COMMIT,
+            "files_root": "sha256:" + "2" * 64,
+        },
+        "python": {
+            "implementation": "CPython",
+            "version": "3.12.11",
+            "cache_tag": "cpython-312",
+            "soabi": "cpython-312-fixture",
+            "executable_sha256": "3" * 64,
+        },
+        "dependency_lock": {
+            "schema": execution_env.DEPENDENCY_LOCK_SCHEMA,
+            "packages": [
+                {
+                    "name": "numpy",
+                    "version": "2.3.2",
+                    "artifact_sha256": "4" * 64,
+                    "installed_files_root": "sha256:" + "5" * 64,
+                }
+            ],
+        },
+        "sqlite": {
+            "version": "3.50.4",
+            "source_id": "2030-01-02 03:04:05 " + "6" * 64,
+            "binary_sha256": "7" * 64,
+            "compile_options": ["ENABLE_FTS5", "THREADSAFE=1"],
+        },
+        "locale": {
+            "lang": "C.UTF-8",
+            "lc_all": "C.UTF-8",
+            "timezone": "UTC",
+            "preferred_encoding": "utf-8",
+            "filesystem_encoding": "utf-8",
+            "utf8_mode": 0,
+            "python_hash_seed": "0",
+        },
+        "sandbox": {
+            "backend": "linux-bubblewrap",
+            "version": "0.11.0",
+            "executable_sha256": "8" * 64,
+            "policy_id": "brain-replay-v1",
+            "policy_sha256": "9" * 64,
+            "network": "disabled",
+        },
+    }
+    return execution_env.seal_execution_environment(value)
 
 
 class CanonicalJsonTest(unittest.TestCase):
@@ -513,6 +588,9 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         reducer_config_schema = json.loads(
             (schema_root / "reducer-config/v1.json").read_text()
         )
+        environment_schema = json.loads(
+            (schema_root / "execution-environment/v1.json").read_text()
+        )
         self.assertEqual(
             inventory_schema["properties"]["schema"]["const"],
             contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V2,
@@ -522,12 +600,45 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         self.assertIn("roles", source_schema["$defs"]["sourceObject"]["required"])
         self.assertEqual(pack_schema["properties"]["schema"]["const"], contracts.PACK_SCHEMA_V2)
         self.assertEqual(
+            pack_schema["properties"]["environment"]["$ref"],
+            "#/$defs/jsonFileRef",
+        )
+        self.assertEqual(
             build_schema["properties"]["schema"]["const"],
             contracts.BUILD_ATTESTATION_SCHEMA_V2,
         )
         self.assertEqual(
             build_schema["properties"]["build_kind"]["const"],
             "full-offline-replay",
+        )
+        self.assertEqual(
+            environment_schema["properties"]["schema"]["const"],
+            contracts.EXECUTION_ENVIRONMENT_SCHEMA,
+        )
+        self.assertEqual(
+            environment_schema["properties"]["profile"]["enum"],
+            ["development-host", "authoritative-oci"],
+        )
+        self.assertEqual(
+            environment_schema["$defs"]["package"]["properties"]["name"]["const"],
+            "numpy",
+        )
+        self.assertTrue(
+            environment_schema["$defs"]["sqlite"]["properties"]["compile_options"][
+                "uniqueItems"
+            ]
+        )
+        sandbox_backends = {
+            clause["then"]["properties"]["sandbox"]["properties"]["backend"][
+                "const"
+            ]
+            for clause in environment_schema["allOf"]
+            if "properties"
+            in clause.get("then", {}).get("properties", {}).get("sandbox", {})
+        }
+        self.assertEqual(
+            sandbox_backends,
+            {"darwin-sandbox-exec", "linux-bubblewrap"},
         )
         self.assertEqual(
             inventory_schema["properties"]["scope"]["items"]["$ref"],
@@ -700,17 +811,38 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             "media_type": media_type,
         }
 
+    def rewrite_environment(
+        self,
+        pack: dict[str, object],
+        pack_path: Path,
+        environment: dict[str, object],
+        *,
+        raw: bytes | None = None,
+    ) -> None:
+        environment_path = self.root / "environment/python.json"
+        environment_path.write_bytes(
+            contracts.canonical_json_bytes(environment) if raw is None else raw
+        )
+        pack["environment"] = file_ref(
+            self.root, "environment/python.json", "application/json"
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+
     def make_inventory(self) -> tuple[dict[str, object], dict[str, object]]:
         for relative, data in {
             "reducer/brain/helper.py": b"VALUE = 1\n",
             "reducer/brain/replay.py": b"print('not wired')\n",
             "config/reducer.json": b'{"cap":8}',
-            "environment/python.json": b'{"python":"3.12"}',
             "schemas/input.json": b'{"type":"object"}',
         }.items():
             path = self.root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+        write_canonical(
+            self.root / "environment/python.json",
+            execution_environment_fixture(),
+        )
 
         inventory: dict[str, object] = {
             "schema": contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V2,
@@ -987,6 +1119,74 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["offline_pack_id"], pack["offline_pack_id"])
 
+    def test_v2_environment_is_canonical_valid_and_identity_bound(self) -> None:
+        pack, pack_path = self.make_pack()
+        original_pack_id = pack["offline_pack_id"]
+        original_source_root = pack["source_set_root"]
+        environment = json.loads(
+            (self.root / pack["environment"]["path"]).read_text()
+        )
+        environment["runner"]["version"] = "2.0.1"
+        environment = execution_env.seal_execution_environment(environment)
+        self.rewrite_environment(pack, pack_path, environment)
+
+        self.assertNotEqual(pack["offline_pack_id"], original_pack_id)
+        self.assertEqual(pack["source_set_root"], original_source_root)
+        contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            self.root,
+            manifest_path=pack_path,
+        )
+
+        environment["environment_id"] = ZERO_HASH
+        self.rewrite_environment(pack, pack_path, environment)
+        with self.assertRaisesRegex(
+            contracts.VerificationError, r"environment_id: expected sha256:"
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+        environment = execution_env.seal_execution_environment(environment)
+        noncanonical = json.dumps(environment, indent=2, sort_keys=True).encode("utf-8")
+        self.rewrite_environment(
+            pack,
+            pack_path,
+            environment,
+            raw=noncanonical,
+        )
+        with self.assertRaisesRegex(
+            contracts.VerificationError, "execution environment is not canonical"
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v2_environment_runner_commit_must_match_reducer_commit(self) -> None:
+        pack, pack_path = self.make_pack()
+        environment = json.loads(
+            (self.root / pack["environment"]["path"]).read_text()
+        )
+        environment["runner"]["git_commit"] = "b" * 40
+        self.rewrite_environment(
+            pack,
+            pack_path,
+            execution_env.seal_execution_environment(environment),
+        )
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            r"runner\.git_commit: must equal \$\.reducer\.git_commit",
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
     def test_v2_rejects_missing_required_wrong_role_and_bad_inventory_pattern(self) -> None:
         pack, pack_path = self.make_pack()
         required_absent = copy.deepcopy(pack)
@@ -1076,6 +1276,11 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         wrong_config_media["configuration"]["media_type"] = "text/plain"
         with self.assertRaisesRegex(contracts.VerificationError, "application/json"):
             contracts.validate_offline_pack(wrong_config_media)
+
+        wrong_environment_media = copy.deepcopy(pack)
+        wrong_environment_media["environment"]["media_type"] = "text/plain"
+        with self.assertRaisesRegex(contracts.VerificationError, "application/json"):
+            contracts.validate_offline_pack(wrong_environment_media)
 
     def test_v2_rejects_logical_path_ancestry_collisions(self) -> None:
         pack, pack_path = self.make_pack()
