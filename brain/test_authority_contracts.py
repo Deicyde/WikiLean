@@ -421,6 +421,74 @@ class SourceSetVerificationTest(unittest.TestCase):
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["offline_pack_id"], pack["offline_pack_id"])
 
+    def test_v1_opaque_pack_members_are_stream_verified(self) -> None:
+        source = self.make_source_manifest()
+        pack = self.make_pack(source)
+        pack_path = self.root / "pack.json"
+        write_canonical(pack_path, pack)
+        opaque_paths = {
+            *(ref["path"] for ref in pack["objects"]),
+            pack["reducer"]["path"],
+            pack["configuration"]["path"],
+            *(ref["path"] for ref in pack["schemas"]),
+        }
+        materialized_paths: list[str] = []
+        materializing_verify = contracts.verify_file_ref
+
+        def guarded_verify(root, ref, location):
+            path = ref["path"]
+            if path in opaque_paths:
+                self.fail(f"opaque pack member was materialized: {path}")
+            materialized_paths.append(path)
+            return materializing_verify(root, ref, location)
+
+        with mock.patch.object(
+            contracts, "verify_file_ref", side_effect=guarded_verify
+        ):
+            result = contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+        self.assertEqual(result["files"], 6)
+        self.assertEqual(
+            materialized_paths,
+            [pack["source_manifests"][0]["path"]],
+        )
+
+        reducer_path = self.root / pack["reducer"]["path"]
+        reducer_bytes = reducer_path.read_bytes()
+        reducer_path.write_bytes(b"X" + reducer_bytes[1:])
+        with mock.patch.object(
+            contracts, "verify_file_ref", side_effect=guarded_verify
+        ), self.assertRaisesRegex(contracts.VerificationError, "sha256"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_source_manifest_objects_are_stream_verified(self) -> None:
+        source = self.make_source_manifest()
+        with mock.patch.object(
+            contracts,
+            "verify_file_ref",
+            side_effect=AssertionError("source objects must not be materialized"),
+        ):
+            self.assertEqual(
+                contracts.verify_source_manifest_files(source, self.root), 2
+            )
+
+        object_path = self.root / source["objects"][0]["path"]
+        object_bytes = object_path.read_bytes()
+        object_path.write_bytes(b"X" + object_bytes[1:])
+        with mock.patch.object(
+            contracts,
+            "verify_file_ref",
+            side_effect=AssertionError("source objects must not be materialized"),
+        ), self.assertRaisesRegex(contracts.VerificationError, "sha256"):
+            contracts.verify_source_manifest_files(source, self.root)
+
     def test_rejects_digest_length_unknown_version_and_noncanonical_bytes(self) -> None:
         source = self.make_source_manifest()
         pack = self.make_pack(source)
@@ -1118,6 +1186,53 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["offline_pack_id"], pack["offline_pack_id"])
+
+    def test_v2_opaque_pack_members_are_stream_verified(self) -> None:
+        pack, pack_path = self.make_pack()
+        opaque_paths = {
+            *(ref["path"] for ref in pack["objects"]),
+            *(ref["path"] for ref in pack["reducer"]["files"]),
+            pack["configuration"]["path"],
+            *(ref["path"] for ref in pack["schemas"]),
+        }
+        expected_materialized = {
+            pack["inventory"]["path"],
+            pack["environment"]["path"],
+            *(ref["path"] for ref in pack["source_manifests"]),
+        }
+        materialized_paths: list[str] = []
+        materializing_verify = contracts.verify_file_ref
+
+        def guarded_verify(root, ref, location):
+            path = ref["path"]
+            if path in opaque_paths:
+                self.fail(f"opaque pack member was materialized: {path}")
+            materialized_paths.append(path)
+            return materializing_verify(root, ref, location)
+
+        with mock.patch.object(
+            contracts, "verify_file_ref", side_effect=guarded_verify
+        ):
+            result = contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+        self.assertEqual(result["reducer_files"], 2)
+        self.assertEqual(set(materialized_paths), expected_materialized)
+
+        reducer_ref = pack["reducer"]["files"][0]
+        reducer_path = self.root / reducer_ref["path"]
+        reducer_bytes = reducer_path.read_bytes()
+        reducer_path.write_bytes(b"X" + reducer_bytes[1:])
+        with mock.patch.object(
+            contracts, "verify_file_ref", side_effect=guarded_verify
+        ), self.assertRaisesRegex(contracts.VerificationError, "sha256"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
 
     def test_v2_environment_is_canonical_valid_and_identity_bound(self) -> None:
         pack, pack_path = self.make_pack()

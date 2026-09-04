@@ -1528,9 +1528,17 @@ def verify_file_ref(root: Path, ref: dict[str, Any], location: str) -> bytes:
         return handle.read()
 
 
+def verify_file_ref_integrity(
+    root: Path, ref: dict[str, Any], location: str
+) -> None:
+    """Verify a referenced file's size and digest without materializing its bytes."""
+    with open_verified_file(root, ref, location):
+        pass
+
+
 def verify_source_manifest_files(manifest: dict[str, Any], root: Path) -> int:
     for index, ref in enumerate(manifest["objects"]):
-        verify_file_ref(root, ref, f"$.objects[{index}]")
+        verify_file_ref_integrity(root, ref, f"$.objects[{index}]")
     return len(manifest["objects"])
 
 
@@ -1582,7 +1590,7 @@ def verify_offline_pack_files(
     for location, ref in refs:
         if ref["path"] in verified_paths:
             _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
-        verify_file_ref(root, ref, location)
+        verify_file_ref_integrity(root, ref, location)
         verified_paths.add(ref["path"])
 
     actual_paths: set[str] = set()
@@ -1782,7 +1790,7 @@ def _verify_offline_pack_files_v2(
     for location, ref in refs:
         if ref["path"] in verified_paths:
             _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
-        verify_file_ref(root, ref, location)
+        verify_file_ref_integrity(root, ref, location)
         verified_paths.add(ref["path"])
 
     actual_paths: set[str] = set()

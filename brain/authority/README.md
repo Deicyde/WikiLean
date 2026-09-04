@@ -142,6 +142,11 @@ reducer attestation linkage, exact SQLite payload/index/owner/metadata parity wi
 exact static cell-card, alias, label, and trace projections with no stale files, and current
 graph/cell generation consistency.
 
+Opaque source objects, reducer files, and release artifacts are hash/size verified as
+bounded-memory streams. Only structured documents that must be parsed or compared are
+materialized in memory, so multi-gigabyte corpus members do not create equivalent peak
+allocations during pack or semantic-diff verification.
+
 Until accepted changeset replay lands, production releases use the compatibility
 semantic epoch `brain-v3-current` with `authority.through_changeset` null. The semantic
 state root is domain-separated over that epoch, the shared 64-hex graph `snapshot_id`,
