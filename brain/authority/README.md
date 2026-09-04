@@ -112,9 +112,12 @@ output/scratch. Linux additionally provides an ephemeral isolated `/tmp`; it exp
 exact prepared workspace plus selected runtime roots rather than
 the host root; Darwin limits reads to those roots plus Apple's standard system runtime
 profile and denies process forks. Offline-pack/v2 now requires a canonical
-`execution-environment/v1` descriptor, but workspace materialization and runtime probing
-still need to bind execution to it. The policies also require clean-host integration tests
-before this can count as authoritative clean-room evidence. The v2 CLI requires Python
+`execution-environment/v1` descriptor. Preparation copies those exact bytes into the
+workspace as a private, read-only file, and the runner revalidates its digest, canonical
+form, identity, and reducer Git binding before selecting a sandbox or executing a stage.
+Live runtime probing still needs to compare Python, NumPy, SQLite, locale, and sandbox facts
+to that descriptor. The policies also require clean-host integration tests before this can
+count as authoritative clean-room evidence. The v2 CLI requires Python
 isolated startup; the original invocation must use `python3 -I ...` because Python startup
 hooks run before application code can sanitize its own process.
 
