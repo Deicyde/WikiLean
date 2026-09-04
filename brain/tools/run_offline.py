@@ -81,6 +81,9 @@ def run(
             expected_offline_pack_id=prepared.offline_pack_id,
             expected_source_set_root=prepared.source_set_root,
             expected_reducer_inventory_id=prepared.reducer_inventory_id,
+            expected_reducer_git_commit=prepared.reducer_git_commit,
+            expected_configuration_sha256=prepared.configuration_sha256,
+            expected_environment_sha256=prepared.environment_sha256,
             interpreter=interpreter or Path(sys.executable),
         )
         return 0

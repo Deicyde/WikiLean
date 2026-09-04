@@ -62,6 +62,7 @@ Executor = Callable[
 ]
 ReducerFileSpec = tuple[str, int, str]
 OutputState = tuple[int, int, int, int, int, int, str | None]
+EXECUTION_ENVIRONMENT_NAME = "execution-environment.json"
 
 _RUN_STAGE = (
     "import os,runpy,sys;"
@@ -231,6 +232,106 @@ def _verify_code_closure(
     return tuple(sorted(expected))
 
 
+def _verify_execution_environment(
+    workspace: Path,
+    context: build_context.BuildContext,
+) -> dict[str, Any]:
+    """Read and validate the exact environment descriptor sealed at workspace root."""
+    path = workspace / EXECUTION_ENVIRONMENT_NAME
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exc:
+        raise ReplayExecutionError(
+            f"sealed execution environment is unavailable: {path}: {exc}"
+        ) from exc
+    try:
+        opened = os.fstat(descriptor)
+        current = path.lstat()
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or stat.S_ISLNK(current.st_mode)
+            or not os.path.samestat(opened, current)
+        ):
+            raise ReplayExecutionError(
+                f"sealed execution environment is not a stable regular file: {path}"
+            )
+        if opened.st_nlink != 1:
+            raise ReplayExecutionError(
+                f"sealed execution environment must not be hard-linked: {path}"
+            )
+        if stat.S_IMODE(opened.st_mode) != 0o444:
+            raise ReplayExecutionError(
+                f"sealed execution environment must have mode 0o444: {path}"
+            )
+        digest = hashlib.sha256()
+        chunks: list[bytes] = []
+        while chunk := os.read(descriptor, 1024 * 1024):
+            digest.update(chunk)
+            chunks.append(chunk)
+        finished = os.fstat(descriptor)
+        latest = path.lstat()
+        opened_state = (
+            opened.st_mode,
+            opened.st_nlink,
+            opened.st_size,
+            opened.st_mtime_ns,
+            opened.st_ctime_ns,
+        )
+        finished_state = (
+            finished.st_mode,
+            finished.st_nlink,
+            finished.st_size,
+            finished.st_mtime_ns,
+            finished.st_ctime_ns,
+        )
+        latest_state = (
+            latest.st_mode,
+            latest.st_nlink,
+            latest.st_size,
+            latest.st_mtime_ns,
+            latest.st_ctime_ns,
+        )
+        if (
+            not os.path.samestat(opened, finished)
+            or not os.path.samestat(finished, latest)
+            or opened_state != finished_state
+            or finished_state != latest_state
+        ):
+            raise ReplayExecutionError(
+                f"sealed execution environment changed while being read: {path}"
+            )
+    finally:
+        os.close(descriptor)
+
+    data = b"".join(chunks)
+    expected_digest = context.replay.environment_sha256
+    if digest.hexdigest() != expected_digest:
+        raise ReplayExecutionError(
+            "sealed execution environment does not match "
+            "context reducer.environment_sha256"
+        )
+    try:
+        document = contracts.parse_json_bytes(data, location=str(path))
+        if data != contracts.canonical_json_bytes(document):
+            raise ReplayExecutionError(
+                "sealed execution environment is not canonical-json-v1 bytes"
+            )
+        environment = contracts.validate_execution_environment(
+            document, location="$.execution_environment"
+        )
+    except contracts.VerificationError as exc:
+        raise ReplayExecutionError(
+            f"sealed execution environment is invalid: {exc}"
+        ) from exc
+    if environment["runner"]["git_commit"] != context.replay.reducer_git_commit:
+        raise ReplayExecutionError(
+            "sealed execution environment runner Git commit does not match "
+            "context reducer Git commit"
+        )
+    return environment
+
+
 def _validate_workspace(
     context_path: Path,
     context: build_context.BuildContext,
@@ -248,6 +349,7 @@ def _validate_workspace(
     expected_entries = {
         "build-context.json",
         "code",
+        EXECUTION_ENVIRONMENT_NAME,
         "input",
         "output",
         "scratch",
@@ -278,6 +380,7 @@ def _validate_workspace(
         raise ReplayExecutionError("build-context.json must not be hard-linked")
     if stat.S_IMODE(context_metadata.st_mode) != 0o444:
         raise ReplayExecutionError("build-context.json must have mode 0o444")
+    _verify_execution_environment(workspace, context)
     _verify_input_closure(context)
     code_files = set(_verify_code_closure(context, reducer_files))
     programs: list[Path] = []
@@ -704,6 +807,9 @@ def run_replay_v2(
     expected_offline_pack_id: str,
     expected_source_set_root: str,
     expected_reducer_inventory_id: str,
+    expected_reducer_git_commit: str,
+    expected_configuration_sha256: str,
+    expected_environment_sha256: str,
     interpreter: str | os.PathLike[str] = sys.executable,
     _executor: Executor | None = None,
     _isolation: IsolationBoundary | None = None,
@@ -717,12 +823,18 @@ def run_replay_v2(
         expected_offline_pack_id,
         expected_source_set_root,
         expected_reducer_inventory_id,
+        expected_reducer_git_commit,
+        expected_configuration_sha256,
+        expected_environment_sha256,
     )
     actual_identity = (
         context.generation_id,
         context.replay.offline_pack_id,
         context.replay.source_set_root,
         context.replay.reducer_inventory_id,
+        context.replay.reducer_git_commit,
+        context.replay.configuration_sha256,
+        context.replay.environment_sha256,
     )
     if actual_identity != expected_identity:
         raise ReplayExecutionError(
@@ -827,6 +939,9 @@ def main(argv: list[str] | None = None) -> int:
             expected_offline_pack_id=pack["offline_pack_id"],
             expected_source_set_root=pack["source_set_root"],
             expected_reducer_inventory_id=pack["inventory"]["inventory_id"],
+            expected_reducer_git_commit=pack["reducer"]["git_commit"],
+            expected_configuration_sha256=pack["configuration"]["sha256"],
+            expected_environment_sha256=pack["environment"]["sha256"],
             interpreter=args.python,
         )
     except (
