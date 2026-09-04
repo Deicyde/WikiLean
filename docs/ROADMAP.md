@@ -413,8 +413,11 @@ explicit approval.
   - [x] Define and enforce canonical `execution-environment/v1` descriptors in
     offline-pack/v2, with separate non-authoritative development-host and digest-pinned
     authoritative OCI profiles.
-  - [ ] Materialize the verified descriptor into the sealed workspace and fail closed when
-    the live Python, NumPy, SQLite, locale, runner, or sandbox identity disagrees.
+  - [x] Materialize the exact verified descriptor as a copy-only read-only workspace file;
+    make the runner reject missing, altered, linked, writable, noncanonical, invalid, or
+    reducer-commit-mismatched descriptors before sandbox selection or stage execution.
+  - [ ] Fail closed when the live Python, NumPy, SQLite, locale, runner-file closure, or
+    sandbox identity disagrees with that sealed descriptor.
   - [ ] Freeze the authoritative Linux OCI image and dependency artifacts by digest, then
     capture strict clean-host sandbox evidence under that exact identity.
 - [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source

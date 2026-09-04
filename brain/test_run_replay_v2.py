@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 import os
 import stat
 import subprocess
@@ -21,9 +22,77 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(TOOLS))
 
 import build_context  # noqa: E402
+import execution_environment as execution_env  # noqa: E402
 import run_offline  # noqa: E402
 import run_replay_v2 as runner  # noqa: E402
 from test_build_context import _document  # noqa: E402
+
+
+def _environment_document(reducer_git_commit: str) -> dict[str, object]:
+    operating_system = "darwin" if sys.platform == "darwin" else "linux"
+    value: dict[str, object] = {
+        "schema": execution_env.EXECUTION_ENVIRONMENT_SCHEMA,
+        "environment_id": "sha256:" + "0" * 64,
+        "profile": execution_env.DEVELOPMENT_HOST_PROFILE,
+        "runtime": {
+            "kind": "development-host",
+            "os": operating_system,
+            "architecture": "arm64" if operating_system == "darwin" else "x86_64",
+            "runtime_root": "sha256:" + "1" * 64,
+        },
+        "runner": {
+            "name": "wikilean-replay",
+            "version": "2.0.0",
+            "git_commit": reducer_git_commit,
+            "files_root": "sha256:" + "2" * 64,
+        },
+        "python": {
+            "implementation": "CPython",
+            "version": "3.12.11",
+            "cache_tag": "cpython-312",
+            "soabi": "cpython-312-fixture",
+            "executable_sha256": "3" * 64,
+        },
+        "dependency_lock": {
+            "schema": execution_env.DEPENDENCY_LOCK_SCHEMA,
+            "packages": [
+                {
+                    "name": "numpy",
+                    "version": "2.3.2",
+                    "artifact_sha256": "4" * 64,
+                    "installed_files_root": "sha256:" + "5" * 64,
+                }
+            ],
+        },
+        "sqlite": {
+            "version": "3.50.4",
+            "source_id": "2030-01-02 03:04:05 " + "6" * 64,
+            "binary_sha256": "7" * 64,
+            "compile_options": ["ENABLE_FTS5", "THREADSAFE=1"],
+        },
+        "locale": {
+            "lang": "C.UTF-8",
+            "lc_all": "C.UTF-8",
+            "timezone": "UTC",
+            "preferred_encoding": "utf-8",
+            "filesystem_encoding": "utf-8",
+            "utf8_mode": 0,
+            "python_hash_seed": "0",
+        },
+        "sandbox": {
+            "backend": (
+                "darwin-sandbox-exec"
+                if operating_system == "darwin"
+                else "linux-bubblewrap"
+            ),
+            "version": "1.0.0",
+            "executable_sha256": "8" * 64,
+            "policy_id": "brain-replay-v1",
+            "policy_sha256": "9" * 64,
+            "network": "disabled",
+        },
+    }
+    return execution_env.seal_execution_environment(value)
 
 
 class ReplayRunnerTest(unittest.TestCase):
@@ -62,6 +131,15 @@ class ReplayRunnerTest(unittest.TestCase):
             if path.is_file()
         )
 
+        self.environment_document = _environment_document(
+            document["replay"]["reducer"]["git_commit"]
+        )
+        self.environment_bytes = execution_env.canonical_json_bytes(
+            self.environment_document
+        )
+        document["replay"]["reducer"]["environment_sha256"] = hashlib.sha256(
+            self.environment_bytes
+        ).hexdigest()
         document["generation_id"] = build_context.generation_identity(document)
         self.context = build_context.BuildContext.from_document(document)
         self.context_path = self.base / "build-context.json"
@@ -69,6 +147,9 @@ class ReplayRunnerTest(unittest.TestCase):
             build_context.canonical_json_bytes(self.context.to_document())
         )
         self.context_path.chmod(0o444)
+        self.environment_path = self.base / runner.EXECUTION_ENVIRONMENT_NAME
+        self.environment_path.write_bytes(self.environment_bytes)
+        self.environment_path.chmod(0o444)
         self._make_read_only(self.base / "input")
         self._make_read_only(self.base / "code")
         self.isolation = runner.IsolationBoundary("fixture-kernel", ("fixture",))
@@ -143,10 +224,41 @@ class ReplayRunnerTest(unittest.TestCase):
             "expected_offline_pack_id": self.context.replay.offline_pack_id,
             "expected_source_set_root": self.context.replay.source_set_root,
             "expected_reducer_inventory_id": self.context.replay.reducer_inventory_id,
+            "expected_reducer_git_commit": self.context.replay.reducer_git_commit,
+            "expected_configuration_sha256": self.context.replay.configuration_sha256,
+            "expected_environment_sha256": self.context.replay.environment_sha256,
             **kwargs,
         }
         with mock.patch.object(runner, "require_isolated_startup"):
             return runner.run_replay_v2(self.context_path, **arguments)
+
+    def _replace_environment(self, data: bytes, *, rebind: bool) -> None:
+        if self.environment_path.exists() and not self.environment_path.is_symlink():
+            self.environment_path.chmod(0o600)
+        self.environment_path.write_bytes(data)
+        self.environment_path.chmod(0o444)
+        if not rebind:
+            return
+        document = self.context.to_document()
+        document["replay"]["reducer"]["environment_sha256"] = hashlib.sha256(
+            data
+        ).hexdigest()
+        document["generation_id"] = build_context.generation_identity(document)
+        self.context = build_context.BuildContext.from_document(document)
+        self.context_path.chmod(0o600)
+        self.context_path.write_bytes(
+            build_context.canonical_json_bytes(self.context.to_document())
+        )
+        self.context_path.chmod(0o444)
+
+    def _assert_pre_execution_rejected(self, pattern: str) -> None:
+        with mock.patch.object(runner, "_select_isolation") as select, mock.patch.object(
+            runner, "_execute"
+        ) as execute:
+            with self.assertRaisesRegex(runner.ReplayExecutionError, pattern):
+                self._run()
+        select.assert_not_called()
+        execute.assert_not_called()
 
     def test_executes_exact_schedule_with_sanitized_environment(self) -> None:
         calls: list[tuple[tuple[str, ...], dict[str, str], str]] = []
@@ -200,6 +312,69 @@ class ReplayRunnerTest(unittest.TestCase):
             )
             self.assertNotIn("/host/injection", environment["PYTHONPATH"])
         self.assertIn("brain-page", result.stages)
+
+    def test_environment_file_is_required_before_execution(self) -> None:
+        self.environment_path.unlink()
+        self._assert_pre_execution_rejected("prepared closure")
+
+    def test_environment_digest_tampering_is_rejected_before_execution(self) -> None:
+        self._replace_environment(self.environment_bytes + b"\n", rebind=False)
+        self._assert_pre_execution_rejected("does not match.*environment_sha256")
+
+    def test_noncanonical_environment_is_rejected_before_execution(self) -> None:
+        noncanonical = json.dumps(
+            self.environment_document,
+            indent=2,
+            sort_keys=True,
+        ).encode("utf-8")
+        self._replace_environment(noncanonical, rebind=True)
+        self._assert_pre_execution_rejected("not canonical-json-v1")
+
+    def test_invalid_environment_is_rejected_before_execution(self) -> None:
+        invalid = copy.deepcopy(self.environment_document)
+        invalid["environment_id"] = "sha256:" + "0" * 64
+        data = execution_env.canonical_json_bytes(invalid)
+        self._replace_environment(data, rebind=True)
+        self._assert_pre_execution_rejected("environment_id: expected")
+
+    def test_environment_runner_git_must_match_context(self) -> None:
+        mismatched = copy.deepcopy(self.environment_document)
+        mismatched["runner"]["git_commit"] = "c" * 40
+        data = execution_env.canonical_json_bytes(
+            execution_env.seal_execution_environment(mismatched)
+        )
+        self._replace_environment(data, rebind=True)
+        self._assert_pre_execution_rejected("runner Git commit does not match")
+
+    def test_environment_must_be_read_only_and_singly_linked(self) -> None:
+        self.environment_path.chmod(0o644)
+        self._assert_pre_execution_rejected("must have mode 0o444")
+
+    def test_environment_hardlink_is_rejected_before_execution(self) -> None:
+        source = self.base.parent / "environment-hardlink.json"
+        source.write_bytes(self.environment_bytes)
+        source.chmod(0o444)
+        self.environment_path.unlink()
+        os.link(source, self.environment_path)
+        self._assert_pre_execution_rejected("must not be hard-linked")
+
+    def test_environment_symlink_is_rejected_before_execution(self) -> None:
+        source = self.base.parent / "environment-symlink-target.json"
+        source.write_bytes(self.environment_bytes)
+        source.chmod(0o444)
+        self.environment_path.unlink()
+        self.environment_path.symlink_to(source)
+        self._assert_pre_execution_rejected(
+            "execution environment.*(unavailable|stable regular file)"
+        )
+
+    def test_environment_directory_is_rejected_before_execution(self) -> None:
+        self.environment_path.unlink()
+        self.environment_path.mkdir()
+        self.environment_path.chmod(0o444)
+        self._assert_pre_execution_rejected(
+            "execution environment.*(unavailable|stable regular file)"
+        )
 
     def test_fails_fast_on_stage_error(self) -> None:
         calls: list[str] = []
@@ -301,13 +476,7 @@ class ReplayRunnerTest(unittest.TestCase):
 
         extra = self.base / "ambient-secret"
         extra.write_bytes(b"not part of the prepared replay")
-        with self.assertRaisesRegex(
-            runner.ReplayExecutionError, "prepared closure"
-        ):
-            self._run(
-                _executor=lambda *_args: 0,
-                _isolation=self.isolation,
-            )
+        self._assert_pre_execution_rejected("prepared closure")
         extra.unlink()
 
     def test_rejects_input_tampering_and_writable_reducer_code(self) -> None:
@@ -411,6 +580,30 @@ class ReplayRunnerTest(unittest.TestCase):
                 _isolation=self.isolation,
             )
 
+    def test_rejects_pack_reducer_identity_mismatch_before_workspace_validation(
+        self,
+    ) -> None:
+        cases = (
+            ("expected_reducer_git_commit", "f" * 40),
+            ("expected_configuration_sha256", "e" * 64),
+            ("expected_environment_sha256", "d" * 64),
+        )
+        for argument, value in cases:
+            with self.subTest(argument=argument), mock.patch.object(
+                runner, "_validate_workspace"
+            ) as validate, mock.patch.object(
+                runner, "_select_isolation"
+            ) as select, mock.patch.object(
+                runner, "_execute"
+            ) as execute:
+                with self.assertRaisesRegex(
+                    runner.ReplayExecutionError, "requested replay identity"
+                ):
+                    self._run(**{argument: value})
+                validate.assert_not_called()
+                select.assert_not_called()
+                execute.assert_not_called()
+
     def test_hostile_startup_pythonpath_cannot_select_runtime_inputs(self) -> None:
         evil = self.base.parent / "evil" / "site-packages"
         evil.mkdir(parents=True)
@@ -457,6 +650,9 @@ class ReplayRunnerTest(unittest.TestCase):
             offline_pack_id="sha256:" + "2" * 64,
             source_set_root="sha256:" + "3" * 64,
             reducer_inventory_id="sha256:" + "4" * 64,
+            reducer_git_commit="a" * 40,
+            configuration_sha256="b" * 64,
+            environment_sha256="c" * 64,
             reducer_files=(("brain/replay.py", 7, "d" * 64),),
         )
         with mock.patch.object(
@@ -515,6 +711,9 @@ class ReplayRunnerTest(unittest.TestCase):
             expected_offline_pack_id=prepared.offline_pack_id,
             expected_source_set_root=prepared.source_set_root,
             expected_reducer_inventory_id=prepared.reducer_inventory_id,
+            expected_reducer_git_commit=prepared.reducer_git_commit,
+            expected_configuration_sha256=prepared.configuration_sha256,
+            expected_environment_sha256=prepared.environment_sha256,
             interpreter=Path(sys.executable),
         )
 

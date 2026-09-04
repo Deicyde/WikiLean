@@ -40,6 +40,11 @@ class ReplayPreparationError(ValueError):
 class PreparedReplay:
     workspace: Path
     context_path: Path
+    environment_path: Path
+    environment_id: str
+    environment_sha256: str
+    reducer_git_commit: str
+    configuration_sha256: str
     generation_id: str
     offline_pack_id: str
     source_set_root: str
@@ -49,9 +54,14 @@ class PreparedReplay:
     def to_document(self) -> dict[str, Any]:
         return {
             "context": str(self.context_path),
+            "environment_id": self.environment_id,
+            "environment_path": str(self.environment_path),
+            "environment_sha256": self.environment_sha256,
+            "configuration_sha256": self.configuration_sha256,
             "generation_id": self.generation_id,
             "offline_pack_id": self.offline_pack_id,
             "ok": True,
+            "reducer_git_commit": self.reducer_git_commit,
             "reducer_inventory_id": self.reducer_inventory_id,
             "source_set_root": self.source_set_root,
             "workspace": str(self.workspace),
@@ -451,6 +461,15 @@ def prepare_replay_v2(
         raise ReplayPreparationError("prepare_replay_v2 requires offline-pack/v2")
     contracts.verify_offline_pack_files(pack, root, manifest_path=manifest)
 
+    environment_ref = pack["environment"]
+    environment_document, environment_bytes = _load_verified_json(
+        root, environment_ref, "$.environment"
+    )
+    contracts.validate_execution_environment(
+        environment_document, location="$.environment.document"
+    )
+    environment_id = environment_document["environment_id"]
+
     inventory, _ = _load_verified_json(root, pack["inventory"], "$.inventory")
     contracts.validate_reducer_input_inventory(inventory)
     if inventory["inventory_id"] != pack["inventory"]["inventory_id"]:
@@ -589,6 +608,11 @@ def prepare_replay_v2(
         )
     _reject_destination_collisions(input_destinations, "input materialization")
     _reject_destination_collisions(reducer_destinations, "reducer materialization")
+    environment_copy_plan = _CopyPlan(
+        environment_ref,
+        "execution-environment.json",
+        "$.environment",
+    )
 
     replay_document = {
         "authority": {
@@ -649,6 +673,23 @@ def prepare_replay_v2(
             _copy_verified_file(root, plan, staging)
         for plan in reducer_copy_plans:
             _copy_verified_file(root, plan, staging)
+        _copy_verified_file(root, environment_copy_plan, staging)
+
+        staged_environment_path = staging / "execution-environment.json"
+        environment_metadata = staged_environment_path.lstat()
+        if (
+            not stat.S_ISREG(environment_metadata.st_mode)
+            or stat.S_ISLNK(environment_metadata.st_mode)
+            or stat.S_IMODE(environment_metadata.st_mode) != 0o444
+            or environment_metadata.st_nlink != 1
+        ):
+            raise ReplayPreparationError(
+                "materialized execution environment must be a private mode-0o444 regular file"
+            )
+        if staged_environment_path.read_bytes() != environment_bytes:
+            raise ReplayPreparationError(
+                "$.environment: source changed between validation and materialization"
+            )
 
         context_path = staging / "build-context.json"
         _write_exclusive(
@@ -665,6 +706,11 @@ def prepare_replay_v2(
         result = PreparedReplay(
             workspace=target,
             context_path=target / "build-context.json",
+            environment_path=target / "execution-environment.json",
+            environment_id=environment_id,
+            environment_sha256=environment_ref["sha256"],
+            reducer_git_commit=pack["reducer"]["git_commit"],
+            configuration_sha256=configuration_ref["sha256"],
             generation_id=context.generation_id,
             offline_pack_id=pack["offline_pack_id"],
             source_set_root=pack["source_set_root"],
