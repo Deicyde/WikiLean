@@ -427,6 +427,8 @@ explicit approval.
   acquisition receipts, normalization outputs, and policy still close the pack.
   Bind the verified `offline_pack_id` and real `source_set_root` into release attestations;
   retire the compatibility `legacy_declared_input_root` from authoritative releases.
+  - [x] Make source-pack and semantic-diff integrity verification stream opaque files so
+    large corpus objects do not require matching in-memory byte allocations.
 - [ ] **Prove cross-object coherence.** Verify Mathlib archive ↔ declared commit,
   declaration oracle ↔ Mathlib revision, paired external pages/links ↔ one
   acquisition, TheoremGraph objects ↔ declared dataset revisions, and folded outputs ↔
