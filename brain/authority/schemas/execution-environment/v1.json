@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/execution-environment/v1.json",
+  "title": "WikiLean execution environment v1",
+  "description": "Relocation-independent identity of the exact runtime used by an offline Brain replay. The environment_id is derived from canonical-json-v1 bytes after removing only environment_id. development-host is explicitly non-authoritative; authoritative-oci requires a digest-pinned Linux OCI image.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "environment_id",
+    "profile",
+    "runtime",
+    "runner",
+    "python",
+    "dependency_lock",
+    "sqlite",
+    "locale",
+    "sandbox"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.execution-environment/v1"},
+    "environment_id": {"$ref": "#/$defs/hash"},
+    "profile": {"enum": ["development-host", "authoritative-oci"]},
+    "runtime": {
+      "oneOf": [
+        {"$ref": "#/$defs/developmentRuntime"},
+        {"$ref": "#/$defs/ociRuntime"}
+      ]
+    },
+    "runner": {"$ref": "#/$defs/runner"},
+    "python": {"$ref": "#/$defs/python"},
+    "dependency_lock": {"$ref": "#/$defs/dependencyLock"},
+    "sqlite": {"$ref": "#/$defs/sqlite"},
+    "locale": {"$ref": "#/$defs/locale"},
+    "sandbox": {"$ref": "#/$defs/sandbox"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"profile": {"const": "development-host"}}},
+      "then": {"properties": {"runtime": {"$ref": "#/$defs/developmentRuntime"}}}
+    },
+    {
+      "if": {"properties": {"profile": {"const": "authoritative-oci"}}},
+      "then": {
+        "properties": {
+          "runtime": {"$ref": "#/$defs/ociRuntime"},
+          "sandbox": {
+            "allOf": [
+              {"$ref": "#/$defs/sandbox"},
+              {"properties": {"backend": {"const": "linux-bubblewrap"}}}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runtime": {
+            "properties": {"os": {"const": "darwin"}},
+            "required": ["os"]
+          }
+        },
+        "required": ["runtime"]
+      },
+      "then": {
+        "properties": {
+          "sandbox": {
+            "properties": {"backend": {"const": "darwin-sandbox-exec"}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runtime": {
+            "properties": {"os": {"const": "linux"}},
+            "required": ["os"]
+          }
+        },
+        "required": ["runtime"]
+      },
+      "then": {
+        "properties": {
+          "sandbox": {
+            "properties": {"backend": {"const": "linux-bubblewrap"}}
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+    },
+    "pythonToken": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.+-]{0,127}$"
+    },
+    "exactVersion": {
+      "type": "string",
+      "pattern": "^(?!.*[.!+_-](?:x|latest|stable|head|main|master)(?:[.!+_-]|$))[0-9](?:[0-9A-Za-z._+!-]{0,126}[0-9A-Za-z])?$"
+    },
+    "developmentRuntime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "os", "architecture", "runtime_root"],
+      "properties": {
+        "kind": {"const": "development-host"},
+        "os": {"enum": ["darwin", "linux"]},
+        "architecture": {"$ref": "#/$defs/token"},
+        "runtime_root": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "ociRuntime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "os", "architecture", "image_digest"],
+      "properties": {
+        "kind": {"const": "oci-image"},
+        "os": {"const": "linux"},
+        "architecture": {"$ref": "#/$defs/token"},
+        "image_digest": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "git_commit", "files_root"],
+      "properties": {
+        "name": {"$ref": "#/$defs/name"},
+        "version": {"$ref": "#/$defs/exactVersion"},
+        "git_commit": {"$ref": "#/$defs/gitCommit"},
+        "files_root": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "python": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation",
+        "version",
+        "cache_tag",
+        "soabi",
+        "executable_sha256"
+      ],
+      "properties": {
+        "implementation": {"const": "CPython"},
+        "version": {"$ref": "#/$defs/exactVersion"},
+        "cache_tag": {"$ref": "#/$defs/pythonToken"},
+        "soabi": {"$ref": "#/$defs/pythonToken"},
+        "executable_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "dependencyLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "packages"],
+      "properties": {
+        "schema": {"const": "wikilean.python-dependency-lock/v1"},
+        "packages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {"$ref": "#/$defs/package"}
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "artifact_sha256", "installed_files_root"],
+      "properties": {
+        "name": {"const": "numpy"},
+        "version": {"$ref": "#/$defs/exactVersion"},
+        "artifact_sha256": {"$ref": "#/$defs/digest"},
+        "installed_files_root": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "sqlite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "source_id", "binary_sha256", "compile_options"],
+      "properties": {
+        "version": {"$ref": "#/$defs/exactVersion"},
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[ -~]+$"
+        },
+        "binary_sha256": {"$ref": "#/$defs/digest"},
+        "compile_options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[ -~]+$"
+          }
+        }
+      }
+    },
+    "locale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lang",
+        "lc_all",
+        "timezone",
+        "preferred_encoding",
+        "filesystem_encoding",
+        "utf8_mode",
+        "python_hash_seed"
+      ],
+      "properties": {
+        "lang": {"const": "C.UTF-8"},
+        "lc_all": {"const": "C.UTF-8"},
+        "timezone": {"const": "UTC"},
+        "preferred_encoding": {"const": "utf-8"},
+        "filesystem_encoding": {"const": "utf-8"},
+        "utf8_mode": {"type": "integer", "enum": [0, 1]},
+        "python_hash_seed": {"const": "0"}
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend",
+        "version",
+        "executable_sha256",
+        "policy_id",
+        "policy_sha256",
+        "network"
+      ],
+      "properties": {
+        "backend": {"enum": ["darwin-sandbox-exec", "linux-bubblewrap"]},
+        "version": {"$ref": "#/$defs/exactVersion"},
+        "executable_sha256": {"$ref": "#/$defs/digest"},
+        "policy_id": {"$ref": "#/$defs/name"},
+        "policy_sha256": {"$ref": "#/$defs/digest"},
+        "network": {"const": "disabled"}
+      }
+    }
+  }
+}

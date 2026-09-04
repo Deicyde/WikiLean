@@ -25,6 +25,14 @@ overlay, or serving topology.
   closes all source objects, reducer files, configuration, environment descriptor,
   and schemas. Reducer code is additionally bound to a full Git commit. The reducer
   configuration is one canonical JSON document rather than an ambiguous file list.
+- `schemas/execution-environment/v1.json` gives the environment descriptor its own
+  strict, self-identifying contract. It pins the exact CPython, NumPy lock and installed
+  tree, SQLite library and compile options, locale, replay-runner closure, and sandbox
+  policy. `development-host` records are explicitly diagnostic; only a digest-pinned
+  Linux `authoritative-oci` profile can become release-grade evidence. The environment's
+  runner Git commit must equal the pack reducer commit. Other runtime byte/root recipes
+  become authoritative only when the runner probes them and the OCI profile is frozen;
+  descriptor validation alone is not execution evidence.
 - `schemas/release/v1.json` describes one release over the current artifact topology.
 - `schemas/release-selector/v1.json` describes the public current/previous selector.
   Current release fields are required; the flat `previous_*` fields are all-or-none, and
@@ -103,11 +111,19 @@ unsupported isolation fails closed, networking is denied, and host writes are co
 output/scratch. Linux additionally provides an ephemeral isolated `/tmp`; it exposes the
 exact prepared workspace plus selected runtime roots rather than
 the host root; Darwin limits reads to those roots plus Apple's standard system runtime
-profile and denies process forks. The interpreter/runtime bytes and OS policy are not yet
-pinned, and these policies still require clean-host integration tests before this can count
-as authoritative clean-room evidence. The v2 CLI requires Python isolated startup; the
-original invocation must use `python3 -I ...` because Python startup hooks run
-before application code can sanitize its own process.
+profile and denies process forks. Offline-pack/v2 now requires a canonical
+`execution-environment/v1` descriptor, but workspace materialization and runtime probing
+still need to bind execution to it. The policies also require clean-host integration tests
+before this can count as authoritative clean-room evidence. The v2 CLI requires Python
+isolated startup; the original invocation must use `python3 -I ...` because Python startup
+hooks run before application code can sanitize its own process.
+
+`brain/test_replay_sandbox.py` runs hostile probes through the production boundary: it
+checks read/write confinement, symlink escape, loopback networking, temporary storage,
+and platform-specific fork/capability behavior. Hosts that cannot create a nested sandbox
+report an explicit skip. Clean-host evidence runs set
+`WIKILEAN_REQUIRE_REPLAY_SANDBOX=darwin` or `linux`, which converts a missing, unusable,
+or mismatched boundary into a hard failure.
 
 Executing fixtures through this path is not by itself a `full-offline-replay` attestation.
 No real full-corpus v2 pack, pinned execution environment, two-path deterministic build, or

@@ -32,6 +32,7 @@ run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
+run_check "Brain execution environment tests" "$PYTHON_BIN" brain/test_execution_environment.py
 run_check "Brain build context tests" "$PYTHON_BIN" brain/test_build_context.py
 run_check "Brain replay preparation tests" "$PYTHON_BIN" brain/test_prepare_replay_v2.py
 run_check "Brain base graph context tests" "$PYTHON_BIN" brain/test_base_graph_context.py
@@ -40,6 +41,7 @@ run_check "Brain cells context tests" "$PYTHON_BIN" brain/test_build_cells_conte
 run_check "Brain frontier context tests" "$PYTHON_BIN" brain/test_build_frontier_context.py
 run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_shards_context.py
 run_check "Brain full-DAG replay tests" "$PYTHON_BIN" brain/test_run_replay_v2.py
+run_check "Brain replay sandbox kernel test" "$PYTHON_BIN" -I brain/test_replay_sandbox.py
 run_check "Brain release builder tests" "$PYTHON_BIN" brain/test_release_builder.py
 run_check "Brain store metrics tests" "$PYTHON_BIN" brain/test_store_metrics.py
 run_check "Brain semantic diff tests" "$PYTHON_BIN" brain/test_semantic_diff.py
@@ -55,4 +57,4 @@ run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 30 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 32 commands passed; all required offline scenarios ran.\n'

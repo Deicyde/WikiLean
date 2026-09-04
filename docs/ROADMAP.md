@@ -398,6 +398,10 @@ explicit approval.
   integration tests for both policies, then bind them to the pinned runtime identity before
   treating this as clean-room evidence. Completed predecessor outputs are still protected by
   cryptographic post-stage checks rather than stage-specific read-only mounts.
+  - [x] Add a kernel-level hostile-probe suite over the production sandbox command, with
+    explicit local skip reporting and fail-closed Darwin/Linux clean-host modes.
+  - [ ] Run and retain strict evidence on both supported clean-host policies under their
+    pinned environment identities.
 - [x] **Remove ambient identity from the v2 replay path.** Context-mode reducers use exact
   source-manifest pins and the pack-derived generation ID for logical `generated_at` values;
   they do not consult input mtimes or the wall clock. Legacy live-build entry points retain
@@ -406,6 +410,13 @@ explicit approval.
 - [ ] **Pin the execution environment.** Record an exact Python, NumPy, SQLite, dependency
   lock, locale, and runner/container identity. A floating `numpy>=1.24` environment is not
   sufficient evidence for release-ID reproducibility.
+  - [x] Define and enforce canonical `execution-environment/v1` descriptors in
+    offline-pack/v2, with separate non-authoritative development-host and digest-pinned
+    authoritative OCI profiles.
+  - [ ] Materialize the verified descriptor into the sealed workspace and fail closed when
+    the live Python, NumPy, SQLite, locale, runner, or sandbox identity disagrees.
+  - [ ] Freeze the authoritative Linux OCI image and dependency artifacts by digest, then
+    capture strict clean-host sandbox evidence under that exact identity.
 - [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source
   object store for the pinned Mathlib tree and declaration oracle, TheoremGraph inputs,
   sealed D1 annotations/community data, external normalized files, and curated Git inputs.

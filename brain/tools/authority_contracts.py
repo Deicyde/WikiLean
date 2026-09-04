@@ -17,6 +17,11 @@ from contextlib import contextmanager, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO, Iterator
 
+try:
+    from . import execution_environment as execution_environment_contract
+except ImportError:  # Direct script/test imports place brain/tools on sys.path.
+    import execution_environment as execution_environment_contract
+
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 HASH_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -30,6 +35,9 @@ SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
 PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
 PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
 REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
+EXECUTION_ENVIRONMENT_SCHEMA = (
+    execution_environment_contract.EXECUTION_ENVIRONMENT_SCHEMA
+)
 RELEASE_SCHEMA = "wikilean.release/v1"
 BUILD_ATTESTATION_SCHEMA_V1 = "wikilean.build-attestation/v1"
 BUILD_ATTESTATION_SCHEMA_V2 = "wikilean.build-attestation/v2"
@@ -162,6 +170,31 @@ class VerificationError(ValueError):
 
 def _fail(location: str, message: str) -> None:
     raise VerificationError(f"{location}: {message}")
+
+
+def _environment_contract_error(location: str, exc: Exception) -> VerificationError:
+    message = str(exc)
+    if message.startswith("$"):
+        return VerificationError(f"{location}{message[1:]}")
+    return VerificationError(f"{location}: {message}")
+
+
+def execution_environment_identity(environment: dict[str, Any]) -> str:
+    """Return the self-derived execution-environment/v1 identity."""
+    try:
+        return execution_environment_contract.execution_environment_identity(environment)
+    except execution_environment_contract.ExecutionEnvironmentError as exc:
+        raise _environment_contract_error("$", exc) from exc
+
+
+def validate_execution_environment(
+    environment: Any, *, location: str = "$"
+) -> dict[str, Any]:
+    """Validate an execution environment using the authority error type."""
+    try:
+        return execution_environment_contract.validate_execution_environment(environment)
+    except execution_environment_contract.ExecutionEnvironmentError as exc:
+        raise _environment_contract_error(location, exc) from exc
 
 
 def _parse_integer(raw: str) -> int:
@@ -1379,7 +1412,9 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
         paths.append(_literal_file_ref(item, f"$.schemas[{index}]")["path"])
     if paths != sorted(set(paths)):
         _fail("$.schemas", "entries must have unique paths and be sorted by path")
-    _literal_file_ref(obj["environment"], "$.environment")
+    environment = _literal_file_ref(obj["environment"], "$.environment")
+    if environment["media_type"] != "application/json":
+        _fail("$.environment.media_type", "expected 'application/json'")
 
     if "audit" in obj:
         audit = _expect_object(obj["audit"], "$.audit")
@@ -1593,6 +1628,29 @@ def _verify_offline_pack_files_v2(
         _fail("$.inventory.inventory_id", "does not match referenced inventory")
     verified_paths.add(inventory_ref["path"])
 
+    environment_ref = pack["environment"]
+    if environment_ref["path"] in verified_paths:
+        _fail(
+            "$.environment",
+            f"path {environment_ref['path']!r} is listed in more than one pack section",
+        )
+    environment_bytes = verify_file_ref(root, environment_ref, "$.environment")
+    environment = parse_json_bytes(
+        environment_bytes, location=environment_ref["path"]
+    )
+    if environment_bytes != canonical_json_bytes(environment):
+        _fail(
+            "$.environment",
+            "execution environment is not canonical-json-v1 bytes",
+        )
+    validate_execution_environment(environment, location="$.environment.document")
+    if environment["runner"]["git_commit"] != pack["reducer"]["git_commit"]:
+        _fail(
+            "$.environment.document.runner.git_commit",
+            "must equal $.reducer.git_commit",
+        )
+    verified_paths.add(environment_ref["path"])
+
     source_manifests: dict[str, dict[str, Any]] = {}
     source_objects: dict[tuple[str, str], dict[str, Any]] = {}
     referenced_object_paths: set[str] = set()
@@ -1720,7 +1778,6 @@ def _verify_offline_pack_files_v2(
     refs.extend((f"$.objects[{i}]", ref) for i, ref in enumerate(pack["objects"]))
     refs.extend((f"$.reducer.files[{i}]", ref) for i, ref in enumerate(pack["reducer"]["files"]))
     refs.append(("$.configuration", pack["configuration"]))
-    refs.append(("$.environment", pack["environment"]))
     refs.extend((f"$.schemas[{i}]", ref) for i, ref in enumerate(pack["schemas"]))
     for location, ref in refs:
         if ref["path"] in verified_paths:
