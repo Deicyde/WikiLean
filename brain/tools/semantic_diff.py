@@ -312,7 +312,9 @@ def _resolve_snapshot(raw: Path) -> Snapshot:
                 f"{manifest_path}: release manifest is missing required artifact {relative}"
             )
         try:
-            contracts.verify_file_ref(root, ref, f"$.artifacts[{relative!r}]")
+            contracts.verify_file_ref_integrity(
+                root, ref, f"$.artifacts[{relative!r}]"
+            )
             artifacts[key] = root.joinpath(*PurePosixPath(relative).parts)
         except (OSError, contracts.VerificationError) as exc:
             raise SemanticDiffError(str(exc)) from exc
