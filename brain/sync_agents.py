@@ -141,9 +141,21 @@ def load_concepts() -> tuple[dict[str, dict], dict[str, list[str]]]:
     if DESCRIPTIONS.exists():
         try:
             raw = json.loads(DESCRIPTIONS.read_text())
-            descriptions = {q: (d if isinstance(d, str) else d.get("description", ""))
-                            for q, d in raw.items()}
-        except (json.JSONDecodeError, AttributeError):
+            # Current files use an object envelope; retain compatibility with
+            # the original flat qid -> string/object map used by older snapshots.
+            raw = raw.get("descriptions", raw) if isinstance(raw, dict) else raw
+            if isinstance(raw, dict):
+                for qid, value in raw.items():
+                    if not isinstance(qid, str):
+                        continue
+                    if isinstance(value, str):
+                        descriptions[qid] = value
+                    elif isinstance(value, dict):
+                        description = value.get("description")
+                        descriptions[qid] = (
+                            description if isinstance(description, str) else ""
+                        )
+        except json.JSONDecodeError:
             pass
     concepts: dict[str, dict] = {}
     index: dict[str, list[str]] = {}
