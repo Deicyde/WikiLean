@@ -15,6 +15,7 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import acquire_d1_snapshot as acquisition  # noqa: E402
+import d1_snapshot_bundle as bundle_verifier  # noqa: E402
 import harvest_community_edges as harvest  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "tools"))
@@ -22,21 +23,28 @@ import authority_contracts as contracts  # noqa: E402
 
 AUDIT_TIME = "2026-09-05T00:00:00Z"
 FAKE_TOOLCHAIN = {
-    "schema": harvest.TOOLCHAIN_SCHEMA,
+    "schema": bundle_verifier.TOOLCHAIN_SCHEMA,
     "invocation": {
-        "config_sha256": harvest.CONFIG_SHA256,
-        "database_binding": harvest.D1_BINDING,
-        "forwarded_environment": harvest.FORWARDED_ENVIRONMENT,
-        "forced_environment": harvest.FORCED_ENVIRONMENT,
+        "config_sha256": bundle_verifier.CONFIG_SHA256,
+        "database_binding": bundle_verifier.D1_BINDING,
+        "forwarded_environment": bundle_verifier.FORWARDED_ENVIRONMENT,
+        "forced_environment": bundle_verifier.FORCED_ENVIRONMENT,
     },
     "node": {"version": "v22.0.0", "sha256": "1" * 64},
-    "wrangler": {
-        "version": harvest.WRANGLER_VERSION,
-        "package_integrity": harvest.WRANGLER_INTEGRITY,
-        "cli_sha256": harvest.WRANGLER_CLI_SHA256,
-        "package_lock_sha256": harvest.PACKAGE_LOCK_SHA256,
+    "python": {
+        "implementation": "CPython",
+        "version": "3.12.14+meta",
+        "sha256": "2" * 64,
+        "startup_flags": bundle_verifier.REQUIRED_PYTHON_STARTUP_FLAGS,
     },
-    "wrapper": {"sha256": harvest.ACQUIRER_WRAPPER_SHA256},
+    "local_dependencies": list(bundle_verifier.LOCAL_DEPENDENCY_PINS),
+    "wrangler": {
+        "version": bundle_verifier.WRANGLER_VERSION,
+        "package_integrity": bundle_verifier.WRANGLER_INTEGRITY,
+        "cli_sha256": bundle_verifier.WRANGLER_CLI_SHA256,
+        "package_lock_sha256": bundle_verifier.PACKAGE_LOCK_SHA256,
+    },
+    "wrapper": {"sha256": bundle_verifier.ACQUIRER_WRAPPER_SHA256},
 }
 FAKE_TOOL = {
     "name": "wikilean-d1-acquirer",
@@ -164,7 +172,7 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
     """Build a contract-valid bundle whose D1 row has one invalid trust value."""
     files = {
         relative: (bundle / relative).read_bytes()
-        for relative in harvest.EXPECTED_FILES
+        for relative in bundle_verifier.EXPECTED_FILES
     }
     raw_rows = []
     for line in files["acquired.jsonl"].splitlines():
@@ -191,7 +199,7 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
     )
 
     receipt = json.loads(files["acquisition-receipt.json"])
-    raw_ref = harvest._object_ref(
+    raw_ref = bundle_verifier._object_ref(
         "d1_raw", files["acquired.jsonl"], "application/x-ndjson"
     )
     receipt["outputs"] = [raw_ref]
@@ -212,7 +220,7 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
         "normalized/control.json": "control",
     }
     lineage["outputs"] = [
-        harvest._object_ref(
+        bundle_verifier._object_ref(
             object_names[path],
             files[path],
             "application/json" if path.endswith(".json") else "application/x-ndjson",
@@ -235,11 +243,128 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
     manifest["members"] = [
         {
             "path": path,
-            "sha256": harvest._sha256(files[path]),
+            "sha256": bundle_verifier._sha256(files[path]),
             "bytes": len(files[path]),
-            "media_type": harvest.MEMBER_MEDIA_TYPES[path],
+            "media_type": bundle_verifier.MEMBER_MEDIA_TYPES[path],
         }
-        for path in harvest.MANIFEST_MEMBER_ORDER
+        for path in bundle_verifier.MANIFEST_MEMBER_ORDER
+    ]
+    files["bundle.json"] = contracts.canonical_json_bytes(manifest)
+
+    target = root / lineage_id.removeprefix("sha256:")
+    target.mkdir(mode=0o700)
+    (target / "normalized").mkdir(mode=0o700)
+    for relative, data in files.items():
+        path = target / relative
+        path.write_bytes(data)
+        path.chmod(0o644)
+    return target
+
+
+def reseal_article_set(bundle: Path, root: Path, articles: list[dict]) -> Path:
+    """Reseal arbitrary article wrappers without using producer validation."""
+    files = {
+        relative: (bundle / relative).read_bytes()
+        for relative in bundle_verifier.EXPECTED_FILES
+    }
+    raw_rows = [
+        contracts.parse_artifact_json_bytes(line, location="test raw")
+        for line in files["acquired.jsonl"].splitlines()
+    ]
+    non_articles = [
+        row for row in raw_rows if row["record_type"] not in {"article", "control"}
+    ]
+    control_row = next(row for row in raw_rows if row["record_type"] == "control")
+    control_payload = contracts.parse_artifact_json_bytes(
+        control_row["payload"].encode(), location="test control"
+    )
+    control_payload["articles"] = len(articles)
+    control_payload["rows_total"] = (
+        len(articles)
+        + control_payload["brain_edges"]
+        + control_payload["brain_nodes"]
+    )
+    control_row["payload"] = _payload(control_payload)
+    raw_rows = [*articles, *non_articles, control_row]
+    raw_rows.sort(
+        key=lambda row: (
+            bundle_verifier.RECORD_ORDER[row["record_type"]],
+            row["record_key"].encode(),
+        )
+    )
+    files["acquired.jsonl"] = b"".join(
+        contracts.canonical_artifact_json_bytes(row) + b"\n" for row in raw_rows
+    )
+    normalized_articles = []
+    for row in articles:
+        payload = contracts.parse_artifact_json_bytes(
+            row["payload"].encode(), location="test article"
+        )
+        payload["annotations"] = contracts.parse_artifact_json_bytes(
+            payload["annotations"].encode(), location="test annotations"
+        )
+        normalized_articles.append(payload)
+    normalized_articles.sort(key=lambda row: row["slug"].encode())
+    files["normalized/articles.jsonl"] = b"".join(
+        contracts.canonical_artifact_json_bytes(row) + b"\n"
+        for row in normalized_articles
+    )
+    files["normalized/control.json"] = contracts.canonical_artifact_json_bytes(
+        control_payload
+    )
+
+    receipt = json.loads(files["acquisition-receipt.json"])
+    raw_ref = bundle_verifier._object_ref(
+        "d1_raw", files["acquired.jsonl"], "application/x-ndjson"
+    )
+    receipt["outputs"] = [raw_ref]
+    receipt["pin"] = {"type": "content_sha256", "value": raw_ref["sha256"]}
+    receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
+    files["acquisition-receipt.json"] = contracts.canonical_json_bytes(receipt)
+
+    lineage = json.loads(files["normalization-lineage.json"])
+    receipt_id = receipt["acquisition_receipt_id"]
+    lineage["acquisition_receipt_ids"] = [receipt_id]
+    lineage["inputs"] = [
+        {**raw_ref, "origin": {"kind": "acquisition_receipt", "id": receipt_id}}
+    ]
+    object_names = {
+        "normalized/articles.jsonl": "articles",
+        "normalized/brain_edges.jsonl": "brain_edges",
+        "normalized/brain_nodes.jsonl": "brain_nodes",
+        "normalized/control.json": "control",
+    }
+    lineage["outputs"] = [
+        bundle_verifier._object_ref(
+            object_names[path],
+            files[path],
+            "application/json" if path.endswith(".json") else "application/x-ndjson",
+        )
+        for path in (
+            "normalized/articles.jsonl",
+            "normalized/brain_edges.jsonl",
+            "normalized/brain_nodes.jsonl",
+            "normalized/control.json",
+        )
+    ]
+    lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(
+        lineage
+    )
+    files["normalization-lineage.json"] = contracts.canonical_json_bytes(lineage)
+
+    manifest = json.loads(files["bundle.json"])
+    lineage_id = lineage["normalization_lineage_id"]
+    manifest["bundle_id"] = lineage_id
+    manifest["normalization_lineage_id"] = lineage_id
+    manifest["acquisition_receipt_id"] = receipt_id
+    manifest["members"] = [
+        {
+            "path": path,
+            "sha256": bundle_verifier._sha256(files[path]),
+            "bytes": len(files[path]),
+            "media_type": bundle_verifier.MEMBER_MEDIA_TYPES[path],
+        }
+        for path in bundle_verifier.MANIFEST_MEMBER_ORDER
     ]
     files["bundle.json"] = contracts.canonical_json_bytes(manifest)
 
@@ -280,6 +405,8 @@ class HarvestTests(unittest.TestCase):
             kept, dropped, bundle = harvest.run(
                 bundle_path, output=output, static_nodes=nodes_path
             )
+            self.assertEqual(bundle.acquired_at, AUDIT_TIME)
+            self.assertEqual([row["slug"] for row in bundle.articles], ["Abelian_group"])
             self.assertEqual(len(bundle.edges), 2)
             self.assertEqual([row["status"] for row in bundle.edges], ["deleted", "live"])
             self.assertEqual(len(kept), 1)
@@ -305,6 +432,38 @@ class HarvestTests(unittest.TestCase):
                 harvest.run(bundle_path, output=output, static_nodes=nodes_path)
             self.assertFalse(output.exists())
             self.assertFalse(list(root.glob(".community.jsonl.*.tmp")))
+
+    def test_verifier_rejects_resealed_mirror_unsafe_article_sets(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_root = root / "source"
+            source_root.mkdir()
+            valid = publish_bundle(source_root, [], [])
+            cases = (
+                ("unsafe", [article("../escape")], "mirror-safe"),
+                ("reserved-case", [article("Draft.AGENT1")], "mirror-safe"),
+                ("control", [article("bad\tcontrol")], "mirror-safe"),
+                ("too-long", [article("a" * 251)], "exceeds 255"),
+                (
+                    "collision",
+                    [article("Abelian_group"), article("abelian_group")],
+                    "collide as mirror filenames",
+                ),
+                (
+                    "unicode-collision",
+                    [article("Café"), article("Cafe\u0301")],
+                    "collide as mirror filenames",
+                ),
+                ("empty", [], "at least one article"),
+            )
+            for name, articles, message in cases:
+                altered_root = root / name
+                altered_root.mkdir()
+                altered = reseal_article_set(valid, altered_root, articles)
+                with self.subTest(name=name), self.assertRaisesRegex(
+                    bundle_verifier.SnapshotBundleError, message
+                ):
+                    bundle_verifier.verify_snapshot_bundle(altered)
 
     def test_mixed_bundle_is_rejected_and_existing_output_is_unchanged(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -378,17 +537,13 @@ class HarvestTests(unittest.TestCase):
 
             kind_root = root / "unknown-kind"
             kind_root.mkdir()
-            bad_kind_bundle = publish_bundle(
-                kind_root, [edge("aaaaaaaaaaaa", kind="depends")], []
-            )
-            output = root / "community-kind.jsonl"
             with self.assertRaisesRegex(
-                harvest.HarvestError, "unknown community kind"
+                acquisition.D1SnapshotError, "unexpected community kind"
             ):
-                harvest.run(
-                    bad_kind_bundle, output=output, static_nodes=nodes_path
+                publish_bundle(
+                    kind_root, [edge("aaaaaaaaaaaa", kind="depends")], []
                 )
-            self.assertFalse(output.exists())
+            self.assertFalse(any(kind_root.iterdir()))
 
     def test_order_is_canonical_and_independent_of_input_order(self) -> None:
         pin = "sha256:" + "b" * 64
@@ -453,12 +608,25 @@ class HarvestTests(unittest.TestCase):
                 harvest.load_node_ids(duplicate)
 
     def test_toolchain_policy_is_exact_except_recorded_node_22_binary(self) -> None:
-        harvest._validate_toolchain(copy.deepcopy(FAKE_TOOLCHAIN))
+        bundle_verifier._validate_toolchain(copy.deepcopy(FAKE_TOOLCHAIN))
         cases = [
             (("schema",), "other", "unexpected schema"),
             (("invocation", "database_binding"), "OTHER", "acquisition policy"),
             (("node", "version"), "v20.0.0", "Node 22"),
             (("node", "sha256"), "short", "SHA-256"),
+            (("python", "implementation"), "PyPy", "CPython"),
+            (("python", "version"), "3.11.9", "Python 3.12"),
+            (("python", "sha256"), "short", "SHA-256"),
+            (
+                ("python", "startup_flags", "no_site"),
+                False,
+                "isolated -I -S",
+            ),
+            (
+                ("local_dependencies", 0, "sha256"),
+                "0" * 64,
+                "reviewed local pins",
+            ),
             (("wrangler", "version"), "4.121.0", "reviewed pins"),
             (("wrapper", "sha256"), "0" * 64, "unexpected acquirer wrapper"),
         ]
@@ -470,7 +638,7 @@ class HarvestTests(unittest.TestCase):
                     target = target[key]
                 target[keys[-1]] = value
                 with self.assertRaisesRegex(harvest.HarvestError, message):
-                    harvest._validate_toolchain(candidate)
+                    bundle_verifier._validate_toolchain(candidate)
 
     def test_root_symlink_swap_is_detected_while_dirfds_keep_reads_bound(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -486,7 +654,7 @@ class HarvestTests(unittest.TestCase):
                 attack_root, [edge("bbbbbbbbbbbb", kind="mentions")], []
             )
             moved = source_root / "original-after-swap"
-            real_open = harvest.os.open
+            real_open = bundle_verifier.os.open
             swapped = False
 
             def swapping_open(path, flags, mode=0o777, *, dir_fd=None):
@@ -498,12 +666,12 @@ class HarvestTests(unittest.TestCase):
                 return real_open(path, flags, mode, dir_fd=dir_fd)
 
             with (
-                mock.patch.object(harvest.os, "open", side_effect=swapping_open),
+                mock.patch.object(bundle_verifier.os, "open", side_effect=swapping_open),
                 self.assertRaisesRegex(
                     harvest.HarvestError, "directory changed while being read"
                 ),
             ):
-                harvest.verify_snapshot_bundle(bundle_path)
+                bundle_verifier.verify_snapshot_bundle(bundle_path)
             self.assertTrue(swapped)
 
     def test_atomic_replace_failure_preserves_prior_output_and_cleans_stage(self) -> None:

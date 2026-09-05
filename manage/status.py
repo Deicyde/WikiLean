@@ -98,7 +98,10 @@ def snapshot(live: bool = False) -> None:
         n = len(dirty.splitlines())
         alerts.append(f"{n} uncommitted file(s) in the working tree")
     if (time.time() - d.get("generated_at", 0)) / 3600 > STALE_DIGEST_HOURS:
-        alerts.append("digest is stale — `python3 manage/refresh.py --pull`")
+        alerts.append(
+            "digest is stale — run `python3 manage/refresh.py` (or add "
+            "`--snapshot-bundle /absolute/path` to refresh the D1 mirror)"
+        )
 
     print("\n  decisions waiting:" if alerts else "\n  nothing waiting.")
     for a in alerts:

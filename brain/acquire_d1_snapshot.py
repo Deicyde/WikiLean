@@ -16,6 +16,12 @@ values added by this program.  SIGKILL before the single atomic directory
 rename can leave a private ``.staging/*.tmp`` orphan, but can never expose a
 partial content address.  Such orphans are reported after later CLI runs and
 must only be removed when no acquisition process is active.
+
+Remote-command failures publish nothing.  Known Wrangler authentication and
+timeout JSON errors are reduced to fixed operator diagnostics; raw stdout and
+stderr are never echoed because they may contain query text or credentials.
+The supported launcher starts exact CPython 3.12 with ``-I -S``; acquisition
+refuses to reach Wrangler when those isolation flags are absent.
 """
 from __future__ import annotations
 
@@ -24,12 +30,14 @@ import datetime as dt
 import hashlib
 import json
 import os
+import platform
 import re
 import shutil
 import stat
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import uuid
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
@@ -39,12 +47,41 @@ ROOT = Path(__file__).resolve().parent.parent
 BRAIN = ROOT / "brain"
 TOOLS = ROOT / "brain" / "tools"
 if str(BRAIN) not in sys.path:
-    sys.path.insert(0, str(BRAIN))
+    sys.path.append(str(BRAIN))
 if str(TOOLS) not in sys.path:
-    sys.path.insert(0, str(TOOLS))
+    sys.path.append(str(TOOLS))
 
 import authority_contracts as contracts  # noqa: E402
 import stage_io  # noqa: E402
+
+
+def _module_origin_mismatch() -> str | None:
+    reviewed = (
+        ("authority_contracts", contracts, TOOLS / "authority_contracts.py"),
+        ("stage_io", stage_io, BRAIN / "stage_io.py"),
+        (
+            "execution_environment",
+            contracts.execution_environment_contract,
+            TOOLS / "execution_environment.py",
+        ),
+    )
+    for name, module, expected in reviewed:
+        origin = getattr(module, "__file__", None)
+        try:
+            actual = Path(origin).resolve(strict=True) if origin is not None else None
+            reviewed_path = expected.resolve(strict=True)
+        except OSError as exc:
+            return f"cannot resolve reviewed local module {name}: {exc}"
+        if actual != reviewed_path:
+            return (
+                f"local module {name} loaded from {actual}, expected {reviewed_path}"
+            )
+    return None
+
+
+_IMPORT_ORIGIN_MISMATCH = _module_origin_mismatch()
+if _IMPORT_ORIGIN_MISMATCH is not None:
+    raise ImportError(_IMPORT_ORIGIN_MISMATCH)
 
 
 REQUEST_PATH = (
@@ -76,6 +113,30 @@ PACKAGE_LOCK_SHA256 = (
     "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
 )
 DEFAULT_STORE = ROOT / "catalog" / ".cache" / "d1" / "snapshots"
+LOCAL_DEPENDENCIES = (
+    (
+        "brain/stage_io.py",
+        BRAIN / "stage_io.py",
+        "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf",
+    ),
+    (
+        "brain/tools/authority_contracts.py",
+        TOOLS / "authority_contracts.py",
+        "9cb0d246cce72c173b47bfe9247458ef4a92f1abf3e48a9db7d6484951541d63",
+    ),
+    (
+        "brain/tools/execution_environment.py",
+        TOOLS / "execution_environment.py",
+        "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd",
+    ),
+)
+REQUIRED_PYTHON_STARTUP_FLAGS = {
+    "ignore_environment": True,
+    "isolated": True,
+    "no_site": True,
+    "no_user_site": True,
+    "safe_path": True,
+}
 
 BUNDLE_SCHEMA = "wikilean.d1-acquisition-bundle/v1"
 CONTROL_SCHEMA = "wikilean.d1-snapshot-control/v1"
@@ -155,6 +216,60 @@ CONTROL_FIELDS = (
     "rows_total",
 )
 RECORD_ORDER = {"article": 1, "brain_edge": 2, "brain_node": 3, "control": 4}
+COMMUNITY_KINDS = frozenset(
+    {"relates", "xref", "formalizes", "mentions", "matches", "cites"}
+)
+ACTOR_TYPES = frozenset({"human", "ai"})
+ROW_STATUSES = frozenset({"live", "deleted"})
+COMMUNITY_NODE_TYPE = "concept"
+QID_RE = re.compile(r"^Q[1-9][0-9]{0,11}$")
+
+
+def _article_filename_key(slug: str, location: str) -> str:
+    """Validate a slug can name one unambiguous active mirror sidecar."""
+    normalized_filename = unicodedata.normalize("NFD", f"{slug}.json")
+    filename_key = normalized_filename.casefold()
+    if (
+        slug.startswith(".")
+        or ".." in slug
+        or "/" in slug
+        or "\\" in slug
+        or any(ord(char) < 0x20 or ord(char) == 0x7F for char in slug)
+        or any(0xD800 <= ord(char) <= 0xDFFF for char in slug)
+        or filename_key == "_meta.json"
+        or filename_key.endswith(".agent1.json")
+    ):
+        raise D1SnapshotError(f"{location}: slug is not mirror-safe")
+    if len(normalized_filename.encode("utf-8")) > 255:
+        raise D1SnapshotError(f"{location}: mirror filename exceeds 255 UTF-8 bytes")
+    return filename_key
+
+
+NORMALIZATION_SEMANTIC_POLICY = {
+    "schema": "wikilean.d1-snapshot-semantic-policy/v1",
+    "community": {
+        "actor_types": sorted(ACTOR_TYPES),
+        "edge_kinds": sorted(COMMUNITY_KINDS),
+        "node_id_pattern": QID_RE.pattern,
+        "node_type": COMMUNITY_NODE_TYPE,
+        "row_statuses": sorted(ROW_STATUSES),
+    },
+    "article_mirror": {
+        "filename_key": "unicode-nfd-then-casefold-slug-dot-json/v1",
+        "forbidden_slug_features": [
+            "leading-dot",
+            "double-dot",
+            "forward-slash",
+            "backslash",
+            "c0-or-del-control",
+            "unicode-surrogate",
+        ],
+        "maximum_nfd_filename_utf8_bytes": 255,
+        "minimum_articles": 1,
+        "reserved_filename_keys": ["_meta.json"],
+        "reserved_filename_suffixes": [".agent1.json"],
+    },
+}
 
 NORMALIZATION_CONFIGURATION = {
     "schema": NORMALIZATION_SCHEMA,
@@ -171,6 +286,7 @@ NORMALIZATION_CONFIGURATION = {
         "article": ["annotations"],
         "brain_edge": ["evidence"],
     },
+    "semantic_policy": NORMALIZATION_SEMANTIC_POLICY,
 }
 NORMALIZATION_CONFIGURATION_SHA256 = hashlib.sha256(
     contracts.canonical_json_bytes(NORMALIZATION_CONFIGURATION)
@@ -197,6 +313,29 @@ def _file_sha256(path: Path) -> str:
 
 
 LOADED_SCRIPT_SHA256 = _file_sha256(Path(__file__))
+
+
+def _python_startup_flags() -> dict[str, bool]:
+    return {
+        name: bool(getattr(sys.flags, name, False))
+        for name in REQUIRED_PYTHON_STARTUP_FLAGS
+    }
+
+
+def _verify_isolated_startup() -> dict[str, bool]:
+    flags = _python_startup_flags()
+    if flags != REQUIRED_PYTHON_STARTUP_FLAGS:
+        raise D1SnapshotError(
+            "D1 acquisition requires the supported isolated CPython 3.12 "
+            "launcher (-I -S)"
+        )
+    return flags
+
+
+def _verify_local_module_origins() -> None:
+    mismatch = _module_origin_mismatch()
+    if mismatch is not None:
+        raise D1SnapshotError(mismatch)
 
 
 def _verify_loaded_program() -> None:
@@ -337,7 +476,7 @@ def _embedded_json(value: Any, location: str, *, expected: type) -> Any:
 
 def _validate_deleted_state(record: Mapping[str, Any], location: str) -> None:
     status = record["status"]
-    if status not in {"live", "deleted"}:
+    if status not in ROW_STATUSES:
         raise D1SnapshotError(f"{location}.status: expected live or deleted")
     deleted_by = record["deleted_by"]
     deleted_at = record["deleted_at"]
@@ -350,6 +489,7 @@ def _validate_deleted_state(record: Mapping[str, Any], location: str) -> None:
 def _validate_article(record: Any, location: str) -> dict[str, Any]:
     obj = _exact_object(record, ARTICLE_FIELDS, location)
     _string(obj["slug"], f"{location}.slug")
+    _article_filename_key(obj["slug"], f"{location}.slug")
     _string(obj["wikipedia_title"], f"{location}.wikipedia_title")
     _string(obj["display_title"], f"{location}.display_title")
     _nullable_string(obj["wikidata_qid"], f"{location}.wikidata_qid")
@@ -376,7 +516,9 @@ def _validate_edge(record: Any, location: str) -> dict[str, Any]:
     obj = _exact_object(record, EDGE_FIELDS, location)
     for field in ("id", "src", "dst", "kind", "added_by"):
         _string(obj[field], f"{location}.{field}")
-    if obj["actor_type"] not in {"human", "ai"}:
+    if obj["kind"] not in COMMUNITY_KINDS:
+        raise D1SnapshotError(f"{location}.kind: unexpected community kind")
+    if obj["actor_type"] not in ACTOR_TYPES:
         raise D1SnapshotError(f"{location}.actor_type: expected human or ai")
     evidence = _embedded_json(
         obj["evidence"], f"{location}.evidence", expected=dict
@@ -396,8 +538,14 @@ def _validate_node(record: Any, location: str) -> dict[str, Any]:
     obj = _exact_object(record, NODE_FIELDS, location)
     for field in ("id", "label", "node_type", "added_by"):
         _string(obj[field], f"{location}.{field}")
+    if not QID_RE.fullmatch(obj["id"]):
+        raise D1SnapshotError(f"{location}.id: expected canonical QID")
+    if obj["node_type"] != COMMUNITY_NODE_TYPE:
+        raise D1SnapshotError(
+            f"{location}.node_type: expected {COMMUNITY_NODE_TYPE!r}"
+        )
     _nullable_string(obj["description"], f"{location}.description")
-    if obj["actor_type"] not in {"human", "ai"}:
+    if obj["actor_type"] not in ACTOR_TYPES:
         raise D1SnapshotError(f"{location}.actor_type: expected human or ai")
     _string(obj["status"], f"{location}.status")
     _integer(obj["created_at"], f"{location}.created_at")
@@ -452,6 +600,7 @@ def parse_wrangler_output(stdout: str) -> list[dict[str, Any]]:
         "brain_node": [],
         "control": [],
     }
+    article_filenames: dict[str, str] = {}
     for index, row in enumerate(rows):
         location = f"wrangler stdout[0].results[{index}]"
         obj = _exact_object(row, ("record_type", "record_key", "payload"), location)
@@ -475,6 +624,16 @@ def parse_wrangler_output(stdout: str) -> list[dict[str, Any]]:
             value = _validate_article(payload, f"{location}.payload")
             if value["slug"] != record_key:
                 raise D1SnapshotError(f"{location}: article key does not match slug")
+            filename_key = _article_filename_key(
+                value["slug"], f"{location}.payload.slug"
+            )
+            previous = article_filenames.get(filename_key)
+            if previous is not None:
+                raise D1SnapshotError(
+                    f"{location}: article slugs collide as mirror filenames: "
+                    f"{previous!r} and {value['slug']!r}"
+                )
+            article_filenames[filename_key] = value["slug"]
         elif record_type == "brain_edge":
             value = _validate_edge(payload, f"{location}.payload")
             if value["id"] != record_key:
@@ -512,6 +671,8 @@ def parse_wrangler_output(stdout: str) -> list[dict[str, Any]]:
             )
     if control["rows_total"] != sum(actual.values()):
         raise D1SnapshotError("count control rows_total does not match received rows")
+    if actual["articles"] < 1:
+        raise D1SnapshotError("wrangler result requires at least one article")
 
     canonical_rows.sort(
         key=lambda item: (
@@ -618,11 +779,68 @@ def _resolved_node() -> Path:
     return resolved
 
 
+def _resolved_python() -> Path:
+    if platform.python_implementation() != "CPython":
+        raise D1SnapshotError("D1 acquisition requires CPython 3.12")
+    if sys.version_info[:2] != (3, 12):
+        raise D1SnapshotError(
+            f"D1 acquisition requires Python 3.12, found {platform.python_version()}"
+        )
+    try:
+        resolved = Path(sys.executable).resolve(strict=True)
+        metadata = resolved.lstat()
+    except OSError as exc:
+        raise D1SnapshotError("cannot resolve the Python executable") from exc
+    if not stat.S_ISREG(metadata.st_mode) or not os.access(resolved, os.X_OK):
+        raise D1SnapshotError(
+            f"Python executable is not a regular executable: {resolved}"
+        )
+    return resolved
+
+
+def _local_dependency_records() -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    for relative, path, expected in LOCAL_DEPENDENCIES:
+        actual = _file_sha256(path)
+        if actual != expected:
+            raise D1SnapshotError(
+                f"D1 acquisition dependency changed: {relative}; "
+                f"expected {expected}, got {actual}"
+            )
+        records.append({"path": relative, "sha256": actual})
+    return records
+
+
+def _verify_runtime_closure(toolchain: Mapping[str, Any]) -> None:
+    """Recheck every Python-side executable/code byte bound by toolchain.json."""
+    _verify_loaded_program()
+    _verify_local_module_origins()
+    python = _resolved_python()
+    expected_python = {
+        "implementation": platform.python_implementation(),
+        "version": platform.python_version(),
+        "sha256": _file_sha256(python),
+    }
+    recorded_python = toolchain.get("python")
+    if not isinstance(recorded_python, Mapping) or {
+        key: recorded_python.get(key) for key in expected_python
+    } != expected_python:
+        raise D1SnapshotError("Python executable changed during D1 acquisition")
+    if recorded_python.get("startup_flags") != REQUIRED_PYTHON_STARTUP_FLAGS:
+        raise D1SnapshotError("D1 acquisition toolchain lacks isolated startup flags")
+    if toolchain.get("local_dependencies") != _local_dependency_records():
+        raise D1SnapshotError("local dependency closure changed during D1 acquisition")
+    if toolchain.get("wrapper") != {"sha256": LOADED_SCRIPT_SHA256}:
+        raise D1SnapshotError("D1 snapshot wrapper changed during acquisition")
+
+
 def _pinned_toolchain(
     *,
     probe_runner: Runner = subprocess.run,
     environment: Mapping[str, str],
 ) -> tuple[Path, dict[str, Any], dict[str, Any]]:
+    startup_flags = _verify_isolated_startup()
+    _verify_local_module_origins()
     if not PACKAGE_LOCK.is_file():
         raise D1SnapshotError(f"missing package lock: {PACKAGE_LOCK}")
     lock_bytes = PACKAGE_LOCK.read_bytes()
@@ -674,6 +892,7 @@ def _pinned_toolchain(
     node_version = probe.stdout.strip()
     if not re.fullmatch(r"v22\.[0-9]+\.[0-9]+", node_version):
         raise D1SnapshotError(f"Node 22 required, found {node_version!r}")
+    python = _resolved_python()
     toolchain = {
         "schema": "wikilean.d1-acquisition-toolchain/v1",
         "invocation": {
@@ -685,6 +904,13 @@ def _pinned_toolchain(
             "forced_environment": dict(_FORCED_ENVIRONMENT),
         },
         "node": {"version": node_version, "sha256": node_sha256},
+        "python": {
+            "implementation": platform.python_implementation(),
+            "version": platform.python_version(),
+            "sha256": _file_sha256(python),
+            "startup_flags": startup_flags,
+        },
+        "local_dependencies": _local_dependency_records(),
         "wrangler": {
             "version": WRANGLER_VERSION,
             "package_integrity": WRANGLER_INTEGRITY,
@@ -699,6 +925,7 @@ def _pinned_toolchain(
         "version": "1",
         "sha256": _sha256(toolchain_bytes),
     }
+    _verify_runtime_closure(toolchain)
     return node, tool, toolchain
 
 
@@ -735,12 +962,80 @@ def _same_regular_file(path: Path, expected: os.stat_result, expected_bytes: byt
     )
 
 
+def _wrangler_failure_diagnostic(stdout: object, returncode: int) -> str:
+    """Classify a narrow set of Wrangler JSON failures without reflecting data.
+
+    Wrangler writes its ``--json`` fatal envelope to stdout.  Only the documented
+    top-level error text is inspected, and the caller receives one of our fixed
+    messages.  Unknown, malformed, or unexpectedly large output is deliberately
+    suppressed rather than copied into logs.
+    """
+    text: str | None = None
+    if isinstance(stdout, str) and len(stdout) <= 64 * 1024:
+        try:
+            value = json.loads(stdout)
+        except (TypeError, ValueError):
+            value = None
+        if isinstance(value, dict) and set(value) == {"error"}:
+            error = value["error"]
+            if isinstance(error, str):
+                text = error
+            elif isinstance(error, dict):
+                candidate = error.get("text")
+                if not isinstance(candidate, str):
+                    candidate = error.get("message")
+                if isinstance(candidate, str):
+                    text = candidate
+
+    if text is not None:
+        folded = text.casefold()
+        missing_or_expired_auth = (
+            ("non-interactive" in folded and "cloudflare_api_token" in folded)
+            or ("no credentials" in folded and "cloudflare_api_token" in folded)
+            or "auth token has expired" in folded
+        )
+        rejected_auth = any(
+            marker in folded
+            for marker in (
+                "authentication error",
+                "invalid api token",
+                "permission denied",
+                "not authorized",
+                "not permitted",
+            )
+        )
+        timed_out = (
+            "timed out" in folded
+            or "timeout" in folded
+            or "exceeded its cpu time limit" in folded
+        )
+        if missing_or_expired_auth:
+            return (
+                "wrangler authentication failed before the D1 query: set a "
+                "D1 Read-scoped CLOUDFLARE_API_TOKEN; no bundle was published"
+            )
+        if rejected_auth:
+            return (
+                "wrangler authentication or authorization failed: verify a "
+                "D1 Read-scoped CLOUDFLARE_API_TOKEN for the configured account "
+                "and database; no bundle was published"
+            )
+        if timed_out:
+            return "wrangler D1 query timed out; no bundle was published"
+
+    return (
+        f"wrangler d1 execute failed (exit status {returncode}; diagnostic output "
+        "suppressed); no bundle was published"
+    )
+
+
 def run_wrangler(
     *,
     runner: Runner = subprocess.run,
     probe_runner: Runner = subprocess.run,
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
     """Run the reviewed query with a sealed config and sanitized environment."""
+    _verify_isolated_startup()
     request = _request_bytes().decode("utf-8")
     _request_descriptor_bytes()
     environment = _sanitized_subprocess_environment()
@@ -790,9 +1085,11 @@ def run_wrangler(
         raise D1SnapshotError("Node executable changed during acquisition")
     if _file_sha256(WRANGLER_CLI) != WRANGLER_CLI_SHA256:
         raise D1SnapshotError("Wrangler CLI changed during acquisition")
+    _verify_runtime_closure(toolchain)
     if result.returncode != 0:
-        stderr = result.stderr[-2000:] if isinstance(result.stderr, str) else ""
-        raise D1SnapshotError(f"wrangler d1 execute failed: {stderr}")
+        raise D1SnapshotError(
+            _wrangler_failure_diagnostic(result.stdout, result.returncode)
+        )
     if not isinstance(result.stdout, str):
         raise D1SnapshotError("wrangler returned non-text stdout")
     return result.stdout, tool, toolchain
@@ -1113,7 +1410,7 @@ def publish_response(
     before_publish: Callable[[Path, Path], None] | None = None,
 ) -> Path:
     """Validate one response and atomically publish its complete sealed bundle."""
-    _verify_loaded_program()
+    _verify_runtime_closure(acquisition_toolchain)
     canonical_rows = parse_wrangler_output(stdout)
     bundle_id, files = _bundle_files(
         canonical_rows,
@@ -1132,7 +1429,7 @@ def publish_response(
             _write_stage(scratch, files)
             if before_publish is not None:
                 before_publish(scratch.path, target)
-            _verify_loaded_program()
+            _verify_runtime_closure(acquisition_toolchain)
             try:
                 stage_io.publish_directory_no_replace(scratch, target)
                 published = True
@@ -1156,6 +1453,7 @@ def acquire_snapshot(
     probe_runner: Runner = subprocess.run,
     before_publish: Callable[[Path, Path], None] | None = None,
 ) -> Path:
+    _verify_isolated_startup()
     _verify_loaded_program()
     stdout, tool, toolchain = run_wrangler(
         runner=runner, probe_runner=probe_runner
@@ -1180,6 +1478,11 @@ def _now_utc() -> str:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    try:
+        _verify_isolated_startup()
+    except D1SnapshotError as exc:
+        print(f"FATAL: {exc}", file=sys.stderr)
+        return 2
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--store",
