@@ -110,11 +110,13 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
   including under proper library subsets. Deterministic bytes (sorted keys
   and lists, input-pinned stamp).
 
-  mean_stateability = mean of manage/data/halo.json items' all-bond
-  neighbor-formalization (`all_frac`) over the area's cells present in
-  halo.json — null if none. halo.json is OPTIONAL (fail-soft to null). KEPT
-  because the areas view tints each frontier bubble by it
-  (site/build_brain_page.py) — it is orthogonal to the destroyed hop shells.
+  mean_stateability = mean all-bond neighbor-formalization (`all_frac`) over
+  the area's ring-1 cells: homeless cells with >=1 external page organ and at
+  least one cell<->cell neighbor. It is derived here from the SAME bound cells
+  and synapses as the frontier partition, so an older operational halo report
+  can never make an authoritative replay stale. The areas view tints each
+  frontier bubble by it (site/build_brain_page.py); it is orthogonal to the
+  destroyed hop shells.
 
   `top` = the area's 12 most-connected cells, score = the cell's total
   effective synapse weight (sum over its synapses of per-kind count x the
@@ -123,8 +125,7 @@ FRONTIER CONTRACT (pinned across agents; documented in brain/SCHEMA.md):
   raw weights instead — two different questions.)
 
 Reads  brain/data/{cells,synapses}.jsonl (required),
-       brain/data/edges.jsonl (phase-2 msc xrefs; fail-soft),
-       manage/data/halo.json (stateability; fail-soft).
+       brain/data/edges.jsonl (phase-2 msc xrefs; fail-soft).
 Writes brain/data/frontier.jsonl + brain/data/frontier_graph.json
        (each atomic tmp+rename), plus brain/data/frontier_review.jsonl as a
        NON-GATING wrong-altitude worklist for broad concepts that may belong on
@@ -163,7 +164,6 @@ CELLS_IN = HERE / "data" / "cells.jsonl"
 NODES_IN = HERE / "data" / "nodes.jsonl"
 SYNAPSES_IN = HERE / "data" / "synapses.jsonl"
 EDGES_IN = HERE / "data" / "edges.jsonl"
-HALO_IN = ROOT / "manage" / "data" / "halo.json"
 OUT = HERE / "data" / "frontier.jsonl"
 GRAPH_OUT = HERE / "data" / "frontier_graph.json"
 REVIEW_OUT = HERE / "data" / "frontier_review.jsonl"
@@ -336,7 +336,6 @@ def build_frontier(
     nodes_path: Path,
     synapses_path: Path,
     edges_path: Path | None,
-    halo_path: Path | None,
     suitability_overrides_path: Path,
     secondary_only_path: Path | None,
     frontier_output: Path,
@@ -386,6 +385,7 @@ def build_frontier(
 
     # ---- synapses: undirected adjacency with effective weights ----------------
     nbrs: dict[str, list] = defaultdict(list)
+    cell_nbrs: dict[str, set[str]] = defaultdict(set)
     n_syn = 0
     homeless_set = set(homeless)
     # raw (src, dst, weight) rows touching >=1 homeless endpoint — the frontier
@@ -397,6 +397,9 @@ def build_frontier(
         eff = sum(cnt * KIND_MULT.get(k, 1) for k, cnt in kinds.items())
         nbrs[row["src"]].append((row["dst"], kinds, eff))
         nbrs[row["dst"]].append((row["src"], kinds, eff))
+        if row["src"] in cells and row["dst"] in cells:
+            cell_nbrs[row["src"]].add(row["dst"])
+            cell_nbrs[row["dst"]].add(row["src"])
         if row["src"] in homeless_set or row["dst"] in homeless_set:
             raw_frontier_syn.append((row["src"], row["dst"], row["weight"]))
     print(f"synapses: {n_syn} rows loaded")
@@ -688,25 +691,28 @@ def build_frontier(
     assert all(v >= 0 and v == v for v in score.values()), \
         "negative or NaN proximity score"
 
-    # ---- halo join: mean_stateability ----------------------------------------
-    halo_frac: dict[str, float] = {}
-    if halo_path is not None:
-        try:
-            halo = json.loads(halo_path.read_text(encoding="utf-8"))
-            for item in halo.get("items", []):
-                if item.get("all_frac") is not None:
-                    halo_frac[item["cell"]] = item["all_frac"]
-            joined = sum(1 for c in homeless if c in halo_frac)
-            print(f"halo.json: {len(halo.get('items', []))} items; {joined}/"
-                  f"{len(homeless)} homeless cells join with a non-null all_frac "
-                  f"({100 * joined / max(len(homeless), 1):.1f}%)")
-        except (json.JSONDecodeError, OSError) as exc:
-            if strict_inputs:
-                raise
-            print(f"  ! halo.json unreadable ({exc}) — mean_stateability null "
-                  f"everywhere (fail-soft)")
-    else:
-        print("  ! halo.json absent — mean_stateability null everywhere")
+    # ---- ring-1 stateability: derived from the bound cells + synapses --------
+    # This intentionally preserves manage/halo.py's historical `all_frac`
+    # semantics while removing its independently generated halo.json from the
+    # authoritative reducer DAG. A ring-1 cell is homeless with >=1 page organ;
+    # its fraction is the share of unique cell<->cell neighbors with a decl
+    # organ, rounded before area aggregation exactly as halo.py did.
+    stateability_frac: dict[str, float] = {}
+    n_ring1 = 0
+    n_ring1_isolated = 0
+    for cid in homeless:
+        if not any(o.get("kind") == "page" for o in cells[cid].get("organs", [])):
+            continue
+        n_ring1 += 1
+        neighbors = cell_nbrs.get(cid, set())
+        if not neighbors:
+            n_ring1_isolated += 1
+            continue
+        n_formal = sum(1 for other in neighbors if other in decl_cells)
+        stateability_frac[cid] = round(n_formal / len(neighbors), 4)
+    joined = len(stateability_frac)
+    print(f"ring-1 stateability: {n_ring1} homeless cells with page organs; "
+          f"{joined} have cell neighbors and {n_ring1_isolated} are isolated")
 
     # ---- rows ----------------------------------------------------------------
     members: dict[str, list[str]] = defaultdict(list)
@@ -721,7 +727,7 @@ def build_frontier(
         assert AREA_RE.match(area), f"area name breaks the contract regex: {area}"
         info = areas.get(area) or {"near": None, "lib": None, "top": None}
         cell_ids = sorted(members[area])
-        fracs = [halo_frac[c] for c in cell_ids if c in halo_frac]
+        fracs = [stateability_frac[c] for c in cell_ids if c in stateability_frac]
         top = sorted(((cell_score(c), c) for c in cell_ids),
                      key=lambda sc: (-sc[0], sc[1]))[:TOP_CAP]
         # prox: the six PROXIMITY CONTRACT arrays, parallel to cell_ids
@@ -753,7 +759,7 @@ def build_frontier(
 
     n_state = sum(1 for r in rows if r["mean_stateability"] is not None)
     print(f"\nareas: {len(rows)} ({n_state} with mean_stateability, "
-          f"{len(rows) - n_state} null — no halo-joined member)")
+          f"{len(rows) - n_state} null — no connected ring-1 member)")
     print(f"{'area':<44} {'n':>5}  {'near':<36} state  "
           f"direct/bridged/zero  max_s")
     for r in rows:
@@ -802,7 +808,7 @@ def build_frontier(
                    "relates": n_by_tier["relates"],
                    "unsorted": n_by_tier["unsorted"]},
         "inputs": {"cells": len(cells), "synapses": n_syn,
-                   "halo_joined": sum(1 for c in homeless if c in halo_frac)},
+                   "stateability_joined": joined},
     }
     if generation_id is not None:
         meta_payload["generation_id"] = generation_id
@@ -977,7 +983,6 @@ def build_frontier_from_context(context: BuildContext) -> tuple[Path, ...]:
         "brain-frontier-suitability-overrides"
     )
     secondary_only_path = context.optional_one("concept-layer")
-    halo_path = context.optional_one("halo")
     required_inputs = (
         (cells_path, "cells"),
         (synapses_path, "synapses"),
@@ -987,10 +992,7 @@ def build_frontier_from_context(context: BuildContext) -> tuple[Path, ...]:
     )
     for path, label in required_inputs:
         _require_context_file(path, label)
-    for path, label in (
-        (secondary_only_path, "concept-layer"),
-        (halo_path, "halo"),
-    ):
+    for path, label in ((secondary_only_path, "concept-layer"),):
         if path is not None:
             _require_context_file(path, label)
 
@@ -1011,7 +1013,6 @@ def build_frontier_from_context(context: BuildContext) -> tuple[Path, ...]:
             nodes_path=nodes_path,
             synapses_path=synapses_path,
             edges_path=edges_path,
-            halo_path=halo_path,
             suitability_overrides_path=suitability_overrides_path,
             secondary_only_path=secondary_only_path,
             frontier_output=staged[0],
@@ -1034,7 +1035,6 @@ def main() -> int:
         nodes_path=NODES_IN,
         synapses_path=SYNAPSES_IN,
         edges_path=EDGES_IN if EDGES_IN.exists() else None,
-        halo_path=HALO_IN if HALO_IN.exists() else None,
         suitability_overrides_path=SUITABILITY_OVERRIDES,
         secondary_only_path=SECONDARY_ONLY if SECONDARY_ONLY.exists() else None,
         frontier_output=OUT,

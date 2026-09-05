@@ -117,6 +117,14 @@ generated plists, and installs files without loading jobs. Community graduation 
 default and requires an absolute reviewed bundle path; the moderation job never acquires D1
 state implicitly.
 
+Frontier replay no longer accepts `manage/data/halo.json` as authority input.
+`mean_stateability` is deterministically re-derived from the exact bound cells and synapses
+with the historical ring-1 neighbor-fraction semantics. On the current corpus, all 47 area
+IDs, membership, proximity, suitability, ordering, and top-cell choices are unchanged; 22
+stateability summaries, the stateability input-count metadata field, and the reducer
+inventory identity changed. The operational halo report remains available for management
+worklists only.
+
 ## Verification state and required final commands
 
 Focused results recorded through 2026-09-05:
@@ -186,19 +194,19 @@ successful real source-plan preflight. No corpus payload was read or hashed for 
 
 | Measure | Current value |
 |---|---:|
-| Declared inputs | 44 |
-| Present / absent inputs | 38 / 6 |
+| Declared inputs | 43 |
+| Present / absent inputs | 37 / 6 |
 | Required inputs present | 14 of 15 |
-| Unique non-Mathlib files | 833 |
-| Non-Mathlib bytes | 1,529,705,955 bytes (1.425 GiB) |
+| Unique non-Mathlib files | 832 |
+| Non-Mathlib bytes | 1,529,390,053 bytes (1.424 GiB) |
 | Annotation members | 778 |
 | Required input missing | `mathlib-source-tree` |
 
 The six absent selectors are `bot-pool-candidates`, `brain-ext-anchor-links`,
 `mathlib-ilean-tree`, `mathlib-source-tree`, `tauceti-links`, and `user-repos`. Five are
 optional; `mathlib-source-tree` is required. The repository, external-harvest, and
-declaration-oracle roots are locally available. The configured Mathlib root
-`/Users/jack/Desktop/LEAN/mathlib4` is absent on this host.
+declaration-oracle roots are locally available. The required external Mathlib source root
+is absent on this host.
 
 ## External and authority blockers
 
@@ -221,9 +229,10 @@ the current checkout:
    explicit v3 source-manifest/source-plan/offline-pack contracts, including sealed
    request-parameter preimages. Current v2 receipt-like files still prove presence only,
    not complete batch success or output ancestry.
-6. Remove observation times and local paths from remaining external-harvest, halo,
-   community, and catalog-derived bytes. Hierarchy and theoremgraph-link outputs are now
-   immutable-revision-derived.
+6. Remove observation times and local paths from remaining external-harvest and
+   catalog-derived bytes. Hierarchy and theoremgraph-link outputs are immutable-revision-
+   derived; Frontier no longer consumes halo output, and community provenance now uses the
+   sealed D1 normalization-lineage identity.
 7. Finish acquisition separation before issuing evidence: move the now-fail-closed
    Wikidata lookup out of `fold_proposals.py`, make the remaining
    Wikidata harvesters reject partial results, and bind the reviewed Hugging Face revisions

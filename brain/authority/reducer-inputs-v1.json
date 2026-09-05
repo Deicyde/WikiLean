@@ -61,7 +61,6 @@
     {"path": "catalog/data/external/arxiv_citations.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "OpenAlex bibliography links"},
     {"path_pattern": "site/annotations/*.json", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "sealed D1 annotation snapshot; exact members must be enumerated in the pack"},
     {"path": "catalog/data/concept_layer.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_frontier.py"], "purpose": "secondary-only concept classification"},
-    {"path": "manage/data/halo.json", "class": "immutable_source_object", "consumers": ["brain/build_frontier.py"], "purpose": "optional stateability projection; presence or absence must be declared"},
     {"path_pattern": "mathlib4/Mathlib/**/*.lean", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "Mathlib statement snippets; seal the exact checkout tree at a full commit"},
     {"path_pattern": "mathlib4/.lake/build/lib/lean/**/*.ilean", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "compiled declaration index fallback; seal toolchain and exact members"},
     {"path": ".claude/skills/mathlib-search/.cache/declaration-data.json", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "doc-gen declaration oracle"},

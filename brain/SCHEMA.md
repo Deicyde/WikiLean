@@ -261,13 +261,17 @@ falls through and why:
 4. **`frontier:Unsorted`** — the honest remainder (mostly synapse-less cells).
 
 `near` = the area's formal home (`path:<Lib>[/<Dir>]`, null for DeepFrontier/
-Unsorted). `mean_stateability` = mean `all_frac` of `manage/data/halo.json`
-items over the area's cells (null when none joins; halo.json is an OPTIONAL
-input — fail-soft). It SURVIVED the 2026-08-04 shell destruction because the
-areas view tints each frontier bubble by it (`site/build_brain_page.py`) —
-per-area stateability is orthogonal to the destroyed hop tiering. `top` = the
-area's ≤12 most-connected cells (score = total effective synapse weight, same
-×3/×1 multipliers).
+Unsorted). `mean_stateability` is derived directly from the current bound
+`cells.jsonl` + `synapses.jsonl`: for each ring-1 member (no decl organ, at
+least one external page organ) with at least one unique cell↔cell neighbor,
+`all_frac` is the share of those neighbors with a decl organ (rounded to four
+places), and the area value is the four-place mean of its available member
+fractions. It is null when no member qualifies. `manage/data/halo.json` remains
+an operational worklist/report but is not an authoritative reducer input.
+Stateability survived the 2026-08-04 shell destruction because the areas view
+tints each frontier bubble by it (`site/build_brain_page.py`); it is orthogonal
+to the destroyed hop tiering. `top` = the area's ≤12 most-connected cells
+(score = total effective synapse weight, same ×3/×1 multipliers).
 
 **Formal proximity** (PROXIMITY CONTRACT — the granular replacement for the
 halo hop shells, which were DESTROYED 2026-08-04 on Jack's call: hop counts
@@ -421,7 +425,8 @@ warning + S8 red on drift; fail-soft-but-loud when the source is absent).
 Acceptance: **F1–F10 in `brain/test_frontier.py`** — the partition + count
 reconciliation, contract regex, a spec-re-derived vote on pinned + sampled
 cells, Unsorted share ceiling, byte-identical determinism (frontier.jsonl AND
-frontier_graph.json), stateability recomputation, the shard-side drain, the
+frontier_graph.json), current-cell/synapse stateability recomputation, the
+shard-side drain, the
 formal proximity (F9: six parallel arrays re-derived per cell from the spec —
 exact equality on db/dw/ib/iw/s/r — no-NaN/no-negative, the pinned
 direct/bridged/zero counts, full-pairwise MONOTONICITY on the real data, and
