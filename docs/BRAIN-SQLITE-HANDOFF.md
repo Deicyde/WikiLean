@@ -362,8 +362,8 @@ the current checkout:
    pairs through the sealed writer. Preserve the current WDQS and Action API semantics, record
    `independent-live-requests/no-snapshot`, and add a v3 inventory coherence group requiring
    universe, edges, and descriptions to name one source manifest. Resolve or bind the edge
-   collector's current dependency on prior `brain/data/nodes.jsonl`; also fix
-   `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope.
+   collector's current dependency on prior `brain/data/nodes.jsonl`. The descriptions-envelope
+   consumer bug in `brain/sync_agents.py` is fixed and covered by the hermetic gate.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
