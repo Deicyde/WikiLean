@@ -522,10 +522,16 @@ explicit approval.
     - [ ] Replace the absolute checkout path in `mathlib_tag_xrefs.jsonl` with logical root,
       Mathlib revision, and declaration-oracle digest, and canonicalize absolute
       `decl_renames.jsonl` source locations.
-    - [ ] Make the Formal Conjectures, Erdős, and generic Lean-repository harvesters read exact
-      blobs from one captured Git commit rather than a mutable worktree. A clean-tree check is
-      insufficient; use `ls-tree` plus one `cat-file --batch`, reject symlinks/gitlinks and
-      partial-clone lazy fetches, and test dirty/untracked/deleted/concurrent-worktree cases.
+    - [x] Make the Formal Conjectures, Erdős, and generic Lean-repository harvesters read exact
+      blobs from one captured Git commit rather than a mutable worktree. The shared reader
+      captures `HEAD^{commit}` once, enumerates a literal scope with `ls-tree`, reads selected
+      blobs through one `cat-file --batch`, scrubs inherited Git selectors, disables replacement
+      objects and lazy fetches, and rejects partial clones, symlinks, gitlinks, unsafe paths,
+      invalid UTF-8, and bounded-resource violations. All three producers now derive both rows
+      and commit metadata from that same snapshot; required tests cover dirty, staged, deleted,
+      untracked, and moving-HEAD cases. This proves exact local Git-object coherence, not that a
+      checkout came from its advertised remote; future acquisition evidence must bind origin and
+      fetch policy before these inputs become source-plan authority.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration

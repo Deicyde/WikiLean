@@ -9,19 +9,39 @@ the executable authority contracts are summarized in
 ## Laptop-transfer checkpoint
 
 Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest
-implementation checkpoint is `03129828 Preserve D1 evidence freshness`, after
-`34fd6ee3 Update Brain migration handoff`, `39632d33 Preserve Wikidata evidence freshness`,
-`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`, and
-`bc158cfd Integrate v3 Brain replay pipeline`. This handoff and roadmap update is committed
-immediately after that implementation history.
+implementation checkpoint is `f5373f26 Pin Git-backed Brain harvests to one commit`, after
+`fc052f7c Read immutable Git source snapshots`, `49ad4bb7 Remove ambient metadata from Brain
+inputs`, `7b2909da Make concept layer reproducible`, `8996c194 Make external pair output
+reproducible`, and `b0c2b02e Load enveloped Brain descriptions`. This handoff and roadmap
+update is committed immediately after that implementation history.
+
+On a fresh machine:
 
 ```bash
-git fetch origin
+git clone https://github.com/Deicyde/WikiLean.git
+cd WikiLean
 git switch --track origin/codex/brain-architecture-phase1
 git status --short --branch
 ```
 
+In an existing clone:
+
+```bash
+git fetch origin
+git switch codex/brain-architecture-phase1
+git pull --ff-only origin codex/brain-architecture-phase1
+git status --short --branch
+```
+
 The worktree should be clean before continuing.
+
+For a clean verification environment, use Node 22 and Python 3.12:
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-ci.txt
+cd wiki && npm ci && cd ..
+```
 
 Immediate continuation order:
 
@@ -29,16 +49,18 @@ Immediate continuation order:
    `brain/acquire-d1-snapshot.sh`, review the private bundle, and bind it into a v3 plan.
 2. Restore a read-only Mathlib source checkout and author the complete reviewed v3 source
    plan, including the pinned Hugging Face inputs and license decisions.
-3. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
-   headroom, then perform the two-path clean-room replay and semantic comparison.
-4. Replace the still-separate legacy Wikidata universe/edge/description reads with one shared
+3. Replace the still-separate legacy Wikidata universe/edge/description reads with one shared
    sealed observation generation, then bind it and the completed proposal-entity bundle into
    the reviewed v3 current-corpus source plan. Do not describe independent WDQS/Action API
    requests as a transactional upstream snapshot.
+4. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
+   headroom, then perform the two-path clean-room replay and semantic comparison.
 
 No Worker deployment, production promotion, D1 write, operator Wikidata bundle acquisition,
-or tracked-data regeneration was performed in this stabilization session. Read-only API
-compatibility probes published no artifact and changed no production state.
+or live source harvest was performed in this stabilization session. The tracked corpus edits
+were deterministic normalized-metadata cleanup plus the concept-layer regeneration described
+below; no tracked corpus was promoted as newly acquired authority. Read-only API compatibility
+probes published no artifact and changed no production state.
 
 ## Bottom line
 
@@ -73,7 +95,11 @@ Branch: `codex/brain-architecture-phase1`. At this handoff it contains:
 - copy-only sealed workspace preparation and a seven-stage, network-denied replay runner;
 - all seven reducers routed through explicit context bindings rather than ambient paths,
   mtimes, clocks, or `BRAIN_*` identity inputs; and
-- bounded-memory verification for large opaque source/release objects.
+- bounded-memory verification for large opaque source/release objects;
+- clock-free normalized metadata for the shared external-pair and standalone input writers,
+  plus a reproducible concept-layer artifact; and
+- a bounded immutable Git-object reader used by the Formal Conjectures, Erdős, TauCeti, and
+  user-repository harvesters so source rows and recorded commits come from one snapshot.
 
 The latest sealed-pack milestone adds:
 
@@ -155,8 +181,13 @@ The standalone normalized-input writer is now closed against run metadata. Forma
 Conjectures, Erdős joins, TauCeti/future user repositories, and OpenAlex citations no longer
 serialize acquisition clocks; OpenAlex also omits API-call and cache-dependent resolved/twin
 counts. The four checked-in artifacts were changed only in their metadata row, and a required
-regression prevents those fields from returning. Their Git-based producers still need to read
-exact committed blobs rather than mutable worktrees before their commit pins become authority.
+regression prevents those fields from returning. The three Git-based producer families now
+capture one exact local commit and read only its committed blobs through a bounded shared
+`ls-tree`/`cat-file --batch` reader. Dirty, staged, deleted, untracked, replacement-ref,
+moving-HEAD, partial-clone, symlink/gitlink, unsafe-path, missing-object, and invalid-UTF-8
+cases are covered and fail before publication. This closes local commit/content coherence;
+reviewed acquisition evidence still must prove that each local commit came from its claimed
+upstream repository before source-plan authority is asserted.
 
 The latest Wikidata safety milestone makes the universe, relation-edge, and description
 harvesters all-or-nothing and atomic. Typed response validation, deterministic
@@ -275,11 +306,12 @@ mirroring still buffer/clone the current corpus; bootstrap executable discovery 
 operator `PATH` before recording exact digests; and long-lived historical bundles would
 need an explicit versioned verifier profile rather than weakening the current v2 policy.
 
-Final branch-wide verification on the evidence-generation implementation passed the complete
-40-command Python gate and the Worker gate (37 files / 845 tests). The Python result includes
-the one expected local replay-sandbox skip; every required offline scenario ran. After the
-explicit D1 bundle-v2 version bump, the current focused results are 17 D1 acquisition,
-12 shared-verifier/harvester, and 19 annotation-mirror tests. The Wikidata-focused results
+Final branch-wide verification after the immutable Git-harvester milestone passed the complete
+46-command Python gate and the Worker gate (37 files / 845 tests). The Python result includes
+the one expected local replay-sandbox skip; every required offline scenario ran. New focused
+coverage is 12 shared Git-snapshot tests plus 4 Formal Conjectures/Erdős and 4 generic Lean-
+repository integration tests. The current D1 results are 17 acquisition,
+12 shared-verifier/harvester, and 19 annotation-mirror tests; the Wikidata-focused results
 remain 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before merging, or after any
 continuation changes, rerun exactly:
 
@@ -307,6 +339,9 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 -m unittest -v \
   brain.test_authority_contracts \
   brain.test_acquire_d1_snapshot \
   brain.test_harvest \
+  brain.test_git_snapshot \
+  brain.test_git_harvesters_fc_erdos \
+  brain.test_git_harvester_lean_repo \
   brain.test_execution_environment \
   brain.test_prepare_replay_v2 \
   brain.test_run_replay_v2 \
@@ -371,10 +406,12 @@ the current checkout:
 5. Author the reviewed current-corpus v3 plan and supply real receipt, lineage, and request-
    preimage files for every non-Git source. The contract/compiler/preflight/replay path is
    implemented, but historical v2 receipt-like files still prove presence only.
-6. Remove observation times and local paths from remaining external-harvest and
-   catalog-derived bytes. Hierarchy and theoremgraph-link outputs are immutable-revision-
-   derived; Frontier no longer consumes halo output, and community provenance now uses the
-   sealed D1 normalization-lineage identity.
+6. Remove local absolute paths and any remaining ambient values from catalog-derived bytes.
+   The shared external-pair writer, concept layer, standalone normalized inputs, hierarchy,
+   and theoremgraph-link outputs are now clock/path independent where documented; the
+   remaining concrete cleanup is `mathlib_tag_xrefs.jsonl` plus canonical
+   `decl_renames.jsonl` source locations. Do not rewrite either as authority without the
+   missing Mathlib revision/oracle evidence.
 7. Proposal-fold acquisition is separated and sealed. Before issuing authority evidence,
    replace the separately fail-closed Wikidata universe/edge/description harvesters with one
    shared sealed observation generation, bind that generation plus the proposal-entity bundle
@@ -394,7 +431,7 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had about 43 GiB free at the final 2026-09-05 handoff check, after temporarily
+The filesystem had about 41 GiB free at the final 2026-09-05 handoff check, after temporarily
 falling below 6 GiB during this work. The available non-Mathlib corpus occupies 1.425 GiB,
 before the required Mathlib source tree, content-addressed pack, compiler temporary
 duplication, or replay outputs.
@@ -415,11 +452,12 @@ the exact plan does not retain ample headroom.
    generation, and author the reviewed current-corpus v3 source plan with immutable pins,
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
-   The shared external-pair writer and concept-layer clock cleanups are complete. Next remove
-   the absolute checkout path in `mathlib_tag_xrefs.jsonl` and canonicalize absolute
-   `decl_renames.jsonl` `file_line` values. Then make the Git-backed harvesters consume exact
-   commit blobs instead of mutable worktrees. Add direct adapter cache/pagination fixtures and
-   carry removed telemetry into the future sealed receipts.
+   The shared external-pair writer, concept layer, standalone metadata, and exact local Git-
+   object harvest cleanups are complete. Next remove the absolute checkout path in
+   `mathlib_tag_xrefs.jsonl` and canonicalize absolute `decl_renames.jsonl` `file_line` values
+   once the Mathlib revision/oracle evidence is available. Add direct adapter cache/pagination
+   fixtures, bind repository origin/fetch evidence, and carry removed telemetry into the
+   future sealed receipts.
    Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
