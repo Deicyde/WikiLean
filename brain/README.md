@@ -59,7 +59,10 @@ rows do not create unnecessary network dependencies.
 Prerequisites on a fresh clone (all gitignored, all fetchable):
 
 ```bash
-python3 catalog/fetch_math_graph.py          # statement_formal + formal_dependency CSVs (~1.1 GB)
+python3 catalog/fetch_math_graph.py \
+  --revision ced4ca9de1bd9e5b67aa09d1d515e270e438fa1e # reviewed math-graph CSVs (~2.1 GB)
+python3 catalog/ingest_theorem_graph.py \
+  --revision 5caba941dd716f17dba4880bd7173edfb1cc36d1 # reviewed theorem-matching cache
 python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live  # warms the decl oracle cache
 # plus a mathlib4 checkout (default /Users/jack/Desktop/LEAN/mathlib4; override
 # with BRAIN_MATHLIB_CHECKOUT) — build_graph_v2 and fold_proposals FAIL HARD
@@ -67,7 +70,7 @@ python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live
 ```
 
 ```bash
-cd /Users/jack/Desktop/LEAN/WikiLean
+cd "$(git rev-parse --show-toplevel)"
 python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
 python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
 python3 brain/build_snapshot.py    # one graph build → nodes + both edge streams + local SQLite index
@@ -287,7 +290,9 @@ biases the BRAIN must correct for, and three of its findings are wired in:
   logical structure is visible at every zoom level.
 
 Their released dataset (MathNetwork/MathlibGraph, Apache-2.0) is now ingested:
-`catalog/fetch_mathlib_graph.py` → `catalog/.cache/mathnetwork/edges.csv`
+`catalog/fetch_mathlib_graph.py --revision
+8c706461fe266802197b62af324de12a3f1aa7fb` →
+`catalog/.cache/mathnetwork/edges.csv`
 (10.9M edges, 29.8% explicit — confirming the paper's 74.2%-synthesized figure),
 joined by decl name onto the pinned TheoremGraph substrate in
 `build_rollups.py`. Tree-grain rows carry **`w_types.exp`** — the count of
@@ -296,6 +301,13 @@ distinct EXPLICIT (source-visible) decl pairs, the paper's closest proxy for
 names (~9% of explicit rows, the fresher snapshot's drift) are counted and
 skipped, never guessed. Full snapshot adoption (replacing TheoremGraph as the
 substrate) remains open — it would need the informal-matching layer re-keyed.
+
+All three Hugging Face datasets are pinned in `catalog/huggingface_pins.json` by
+full commit, byte count, and SHA-256. Existing matching caches can be sealed
+without downloading via the corresponding `--adopt-existing` command. Readers
+hold a shared generation lock for their complete parse; downloads stage behind a
+separate writer lock and publish the complete reviewed generation through a
+durable journal.
 
 ## Provenance & licensing
 

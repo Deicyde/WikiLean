@@ -381,11 +381,18 @@ explicit approval.
   - [ ] Split Wikidata acquisition out of `fold_proposals.py` into sealed input evidence;
     universe/edge fetches and mixed-age description caches must likewise fail closed instead
     of publishing partial normalized data.
-  - [ ] Resolve exact Hugging Face dataset revisions before downloading TheoremGraph and
-    MathNetwork files; mutable `resolve/main` URLs are not authority evidence.
+  - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
+    `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
+    binds all six files by full commit, byte count, and SHA-256; acquisition rejects
+    branches/tags and mutable `resolve/main`, ignores user curl configuration, stages and
+    verifies complete datasets, and publishes through separate acquisition/publication
+    locks plus a durable recovery journal. Python and premise-index consumers hold a
+    verified generation for their full read. Sidecars prove local consistency; v3
+    receipt/lineage integration remains the authority boundary.
   - [ ] Remove observation time, local absolute paths, and other ambient values from
-    normalized data bytes. Current hierarchy, theoremgraph-links, external harvests, and
-    halo outputs embed such values; retain them only in audit/receipt evidence.
+    normalized data bytes. Hierarchy and theoremgraph-link outputs now use immutable
+    revision/hash lineage; external harvests, halo, community, and other catalog outputs
+    still embed ambient values that must move to audit/receipt evidence.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
@@ -483,8 +490,9 @@ explicit approval.
     pins, and add complete acquisition/normalization lineage before compilation.
     The 2026-09-04 census found 44 inputs, 38 present, six absent, and 14/15 required
     inputs present; 833 non-Mathlib files total about 1.425 GiB. The current D1 mirror is
-    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs follow mutable
-    `main`, and the theorem-matching redistribution license is unresolved.
+    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs now have exact
+    reviewed revisions but are not yet sealed into v3 receipt/lineage authority, and the
+    theorem-matching redistribution license is unresolved.
   - [x] Add a bounded source-plan preflight that reports availability, selector membership,
     pin strength, freshness against a configured age threshold, redistribution policy, lineage
     evidence, and required free space without copying or hashing large payloads. Structural
@@ -524,9 +532,10 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) remove audit/observation fields from normalized
-bytes, pin exact external revisions, build a coherent D1 export, and finish splitting live
-Wikidata acquisition from folding; (2) integrate the resulting receipt/lineage objects in
+**Next P0-R implementation order:** (1) finish removing audit/observation fields from
+normalized bytes, build a coherent D1 export, and finish splitting live Wikidata
+acquisition from folding; (2) integrate the resulting receipt/lineage objects, including
+the reviewed Hugging Face inputs, in
 explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
 current-corpus source plan on a volume with adequate space; (3) finish the trusted OCI
 launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
