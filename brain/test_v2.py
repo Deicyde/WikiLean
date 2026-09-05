@@ -133,15 +133,33 @@ def test_external_pair_publication(d: Path) -> None:
     registry = {"fixture": {"ingest": {"snippets": False}},
                 "emptydb": {"ingest": {"snippets": False}},
                 "first": {"ingest": {"snippets": False}},
+                "legacy": {"ingest": {"snippets": False}},
                 "unicode": {"ingest": {"snippets": False}}}
     pages = [page("fixture", "p1"), page("fixture", "p2")]
     links = [{"db": "fixture", "src": "p1", "dst": "p2",
               "context": "body"}]
     with mock.patch.object(ingest_common, "EXTERNAL_DIR", pair_dir):
-        ingest_common.emit("fixture", pages, links, {"source_pin": "old"})
+        with mock.patch.object(
+            ingest_common, "now_iso", return_value="2020-01-01T00:00:00+00:00"
+        ):
+            ingest_common.emit("fixture", pages, links, {"source_pin": "old"})
 
         pages_path = pair_dir / "fixture_pages.jsonl"
         links_path = pair_dir / "fixture_links.jsonl"
+        first_pair_bytes = (pages_path.read_bytes(), links_path.read_bytes())
+        with mock.patch.object(
+            ingest_common, "now_iso", return_value="2030-01-01T00:00:00+00:00"
+        ):
+            ingest_common.emit(
+                "fixture",
+                [dict(row) for row in pages],
+                [dict(row) for row in links],
+                {"source_pin": "old"},
+            )
+        check(
+            "pair: identical normalized rows emit byte-identically across clocks",
+            (pages_path.read_bytes(), links_path.read_bytes()) == first_pair_bytes,
+        )
         pages_meta = json.loads(pages_path.read_text().splitlines()[0])["_meta"]
         links_meta = json.loads(links_path.read_text().splitlines()[0])["_meta"]
         generation = pages_meta.get("pair_generation", "")
@@ -149,7 +167,8 @@ def test_external_pair_publication(d: Path) -> None:
               pages_meta == links_meta
               and pages_meta.get("pair_schema")
               == ingest_common.EXTERNAL_PAIR_SCHEMA
-              and generation.startswith("sha256:") and len(generation) == 71)
+              and generation.startswith("sha256:") and len(generation) == 71
+              and "fetched_at" not in pages_meta)
         page_rows = [json.loads(line) for line in pages_path.read_text().splitlines()[1:]]
         link_rows = [json.loads(line) for line in links_path.read_text().splitlines()[1:]]
         changed_audit = dict(pages_meta, fetched_at="2099-01-01T00:00:00+00:00",
@@ -157,12 +176,72 @@ def test_external_pair_publication(d: Path) -> None:
         check("pair: audit timestamps and run counters do not change identity",
               external_pair_generation(changed_audit, page_rows, link_rows)
               == generation)
+
+        prior_pair_bytes = (pages_path.read_bytes(), links_path.read_bytes())
+        rejected_meta = 0
+        for field, value in (
+            ("fetched_at", "2030-01-01T00:00:00+00:00"),
+            ("n_fetches_this_run", 1),
+            ("n_api_calls", 2),
+            ("fetch_budget_left", 3),
+            ("max_fetch", 4),
+            ("unknown_metadata", "ambient"),
+        ):
+            try:
+                ingest_common.emit(
+                    "fixture",
+                    [dict(row) for row in pages],
+                    [dict(row) for row in links],
+                    {"source_pin": "old", field: value},
+                )
+            except ValueError:
+                rejected_meta += 1
+        for extra in (
+            {},
+            {"source_pin": ""},
+            {"source_pin": "old", "n_with_qid": True},
+            {"source_pin": "old", "sitemap_inventory": -1},
+        ):
+            try:
+                ingest_common.emit(
+                    "fixture",
+                    [dict(row) for row in pages],
+                    [dict(row) for row in links],
+                    extra,
+                )
+            except ValueError:
+                rejected_meta += 1
+        check(
+            "pair: writer rejects audit, run-local, invalid, and unknown metadata",
+            rejected_meta == 10
+            and (pages_path.read_bytes(), links_path.read_bytes())
+            == prior_pair_bytes,
+        )
         check("pair: writer emits canonical JSON object ordering",
               pages_path.read_text().splitlines()[1]
               == json.dumps(page_rows[0], ensure_ascii=False, sort_keys=True,
                             separators=(",", ":"), allow_nan=False))
         check("pair: sealed output passes the build reader",
               len(bc.load_external(pair_dir, registry)["fixture"]["pages"]) == 2)
+
+        legacy_path = pair_dir / "legacy_pages.jsonl"
+        legacy_path.write_text(
+            json.dumps({
+                "_meta": {
+                    "db": "legacy",
+                    "fetched_at": "2020-01-01T00:00:00+00:00",
+                    "n_fetches_this_run": 7,
+                }
+            })
+            + "\n"
+            + json.dumps(page("legacy", "old"))
+            + "\n"
+        )
+        check(
+            "pair: reader retains unsealed legacy audit-metadata compatibility",
+            bc.load_external(pair_dir, registry)["legacy"]["pages"][0]["id"]
+            == "old",
+        )
 
         # A page-only source still publishes its links half as a meta-only file.
         ingest_common.emit("emptydb", [page("emptydb", "only")], [],
@@ -480,6 +559,29 @@ def test_minting(d: Path) -> None:
           and b["qid"] == "Q2" and b["kind_hint"] == "definition")
 
 
+def test_content_pin_ignores_path_and_mtime(d: Path) -> None:
+    first = d / "first.xml.gz"
+    second_dir = d / "relocated"
+    second_dir.mkdir()
+    second = second_dir / "second.xml.gz"
+    payload = b"same exact compressed source bytes\n"
+    first.write_bytes(payload)
+    second.write_bytes(payload)
+    os.utime(first, (1, 1))
+    os.utime(second, (2_000_000_000, 2_000_000_000))
+    first_pin = ingest_common.content_sha256_pin(first)
+    second_pin = ingest_common.content_sha256_pin(second)
+    check(
+        "pair: content source pin ignores path and mtime",
+        first_pin == second_pin and first_pin.startswith("sha256:"),
+    )
+    second.write_bytes(payload + b"changed")
+    check(
+        "pair: content source pin changes with bytes",
+        ingest_common.content_sha256_pin(second) != first_pin,
+    )
+
+
 def test_cap(d: Path) -> None:
     # cap 3: both anchored (a, b) + the frontier page with MOST inbound (e: 2)
     ext_nodes, _edges, stats = run_layer(d, cap=3)
@@ -768,6 +870,7 @@ def main() -> int:
         test_env_override()
         test_loading(d)
         test_external_pair_publication(d)
+        test_content_pin_ignores_path_and_mtime(d)
         test_minting(d)
         test_cap(d)
         test_snippet_guard(d)
