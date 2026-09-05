@@ -25,6 +25,7 @@ import sys
 import urllib.parse
 from collections import Counter, defaultdict
 from collections.abc import Mapping
+from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -1812,8 +1813,10 @@ def aggregate_facets(nodes: list[dict], edges: list[dict]) -> None:
             n["fa"] = fa[n["id"]]
 
 
-def build(
-    *, source_set: ContextBuildInputs | None = None
+def _build(
+    *,
+    source_set: ContextBuildInputs | None = None,
+    local_hf_metadata: Mapping[str, dict[str, object]] | None = None,
 ) -> tuple[list[dict], list[dict], dict]:
     """Returns (nodes, edges, meta) — both lists fully sorted, byte-deterministic."""
     if source_set is None:
@@ -1821,6 +1824,12 @@ def build(
         optional_inputs: dict[str, Path | None] = dict(OPTIONAL_INPUTS)
 
         def source_pin(name: str, _input_id: str) -> str:
+            if local_hf_metadata is not None and name in local_hf_metadata:
+                metadata = local_hf_metadata[name]
+                return (
+                    f"hf:{metadata['dataset']}@{metadata['revision']}"
+                    f"#sha256:{metadata['sha256']}"
+                )
             return _pin(name)
 
         annotations = tuple(sorted((ROOT / "site" / "annotations").glob("[!.]*.json"))) \
@@ -1891,6 +1900,31 @@ def build(
     roles = json.loads(inputs["decl_qid_roles_v2.json"].read_text(encoding="utf-8"))
     links_doc = json.loads(inputs["theoremgraph_links.json"].read_text(encoding="utf-8"))
     links, links_meta = links_doc["links"], links_doc["_meta"]
+    if source_set is None and local_hf_metadata is not None:
+        statement_metadata = local_hf_metadata["statement_formal.csv"]
+        hierarchy_meta = hierarchy.get("meta") or {}
+        if (
+            hierarchy_meta.get("source_revision")
+            != statement_metadata["revision"]
+            or hierarchy_meta.get("source_sha256")
+            != statement_metadata["sha256"]
+        ):
+            raise SystemExit(
+                "hierarchy.json is not derived from the reviewed math-graph "
+                "pin; rerun python3 catalog/build_hierarchy.py"
+            )
+        theorem_metadata = local_hf_metadata["theorem_matching.csv"]
+        if (
+            links_meta.get("source_revision")
+            != theorem_metadata["revision"]
+            or links_meta.get("source_sha256")
+            != theorem_metadata["sha256"]
+        ):
+            raise SystemExit(
+                "theoremgraph_links.json is not derived from the reviewed "
+                "theorem-matching pin; rerun "
+                "python3 catalog/ingest_theorem_graph.py"
+            )
 
     qids = {n["qid"] for n in graph["nodes"]}
 
@@ -3083,6 +3117,14 @@ def build(
             for k, v in sorted(present.items())
         }
         input_metadata.update(external_input_metadata)
+        if local_hf_metadata is not None:
+            for name, metadata in local_hf_metadata.items():
+                input_metadata[name] = {
+                    "bytes": metadata["size"],
+                    "sha256": metadata["sha256"],
+                    "source_revision": metadata["revision"],
+                    "source_url": metadata["file_url"],
+                }
         input_metadata = dict(sorted(input_metadata.items()))
     else:
         generated_at = source_set.generation_id
@@ -3205,6 +3247,57 @@ def build(
         },
     }
     return nodes, edges, meta
+
+
+def build(
+    *, source_set: ContextBuildInputs | None = None
+) -> tuple[list[dict], list[dict], dict]:
+    """Build from a sealed replay context or a locked, reviewed local cache."""
+    if source_set is not None:
+        return _build(source_set=source_set)
+    # Keep local acquisition policy outside the sealed reducer's import
+    # closure. Replay passes source_set and must remain runnable from only its
+    # v2-declared code inventory.
+    sys.path.insert(0, str(ROOT / "catalog"))
+    from huggingface_download import (
+        HuggingFaceArtifactError,
+        verified_reviewed_dataset,
+    )
+
+    try:
+        with ExitStack() as stack:
+            _, mathgraph_metadata = stack.enter_context(
+                verified_reviewed_dataset(
+                    "uw-math-ai/math-graph",
+                    {"statement_formal.csv": INPUTS["statement_formal.csv"]},
+                    optional_files={"slogan.csv": CACHE / "slogan.csv"},
+                )
+            )
+            _, theorem_metadata = stack.enter_context(
+                verified_reviewed_dataset(
+                    "uw-math-ai/theorem-matching",
+                    {"theorem_matching.csv": INPUTS["theorem_matching.csv"]},
+                )
+            )
+            local_hf_metadata = {
+                "statement_formal.csv": mathgraph_metadata[
+                    "statement_formal.csv"
+                ],
+                "theorem_matching.csv": theorem_metadata[
+                    "theorem_matching.csv"
+                ],
+                **(
+                    {"slogan.csv": mathgraph_metadata["slogan.csv"]}
+                    if "slogan.csv" in mathgraph_metadata
+                    else {}
+                ),
+            }
+            return _build(
+                source_set=None,
+                local_hf_metadata=local_hf_metadata,
+            )
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
 
 
 def write_jsonl(out: Path, meta: dict, rows: list[dict]) -> None:

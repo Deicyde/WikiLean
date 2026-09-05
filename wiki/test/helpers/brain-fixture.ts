@@ -218,7 +218,7 @@ const SUFFIX_SHARDS: Record<string, Record<string, unknown>> = {
 // names/<chunk>.json. The manifest mirrors the BUILDER's real shape
 // (build-premise-index.ts): `chunk_size` (the Worker validates it — a silent
 // divergence mis-decodes every int into a wrong-but-real name) and `pin` as
-// the {edges_mtime, edges_bytes, decl_index_etag} object.
+// the exact-revision source object (with a legacy-mtime fixture option).
 //   Module                   → [CommGroup, Finset.sum_comm, fourierCoeff]
 //   Module.Basis             → [Finset.sum_comm, Semiconj.exp_right]
 //   DoubleCoset.mk_out_eq_mul → [CommGroup, Ghost.gone, Finset.sum_comm,
@@ -228,6 +228,10 @@ const SUFFIX_SHARDS: Record<string, Record<string, unknown>> = {
 // Union of Module+Module.Basis ranks Finset.sum_comm first (multiplicity 2),
 // then CommGroup (rank 0) < Semiconj.exp_right (rank 1) < fourierCoeff (rank 2).
 export const FIXTURE_EDGES_MTIME = "2026-07-03T00:00:00.000Z";
+export const FIXTURE_DATASET_REVISION = "8c706461fe266802197b62af324de12a3f1aa7fb";
+export const FIXTURE_EDGES_SHA256 = "78b20d6311388159bdab03ddfb68d5ef5687ced629ee04a99d9880bcd043a08f";
+export const FIXTURE_EDGES_URL =
+  `https://huggingface.co/datasets/MathNetwork/MathlibGraph/resolve/${FIXTURE_DATASET_REVISION}/edges.csv`;
 const PREMISE_NAMES: string[][] = [
   ["CommGroup", "Module", "Finset.sum_comm", "Module.Basis", "fourierCoeff", "Semiconj.exp_right", "Ghost.gone"],
 ];
@@ -237,7 +241,13 @@ const PREMISE_MANIFEST = {
   chunk_size: 8192,
   chunks: 1,
   source: "MathNetwork/MathlibGraph (arXiv 2604.24797, Apache-2.0)",
-  pin: { edges_mtime: FIXTURE_EDGES_MTIME, edges_bytes: 753711915, decl_index_etag: FIXTURE_DECL_ETAG },
+  pin: {
+    dataset_revision: FIXTURE_DATASET_REVISION,
+    edges_sha256: FIXTURE_EDGES_SHA256,
+    edges_bytes: 753711915,
+    edges_url: FIXTURE_EDGES_URL,
+    decl_index_etag: FIXTURE_DECL_ETAG,
+  },
   filters: { explicit_only: true, per_decl_cap: 12 },
   hub_drop: ["Eq.mpr", "Eq.mp", "id"],
 };
@@ -554,6 +564,8 @@ export interface BrainFixtureOpts {
   // override the premise manifest's chunk_size (the Worker must 503 a mismatch
   // instead of mis-decoding every int)
   premiseChunkSize?: number;
+  // Serve the currently deployed pre-pin manifest shape for compatibility.
+  legacyPremisePin?: boolean;
   // override the suffix manifest's source_sha_or_etag (a mismatch with the decl
   // manifest must degrade namespace suggestions to none)
   suffixEtag?: string;
@@ -751,9 +763,19 @@ export function installBrainFixture(
       }
       if (opts.premiseIndex !== null) {
         if (path === "/assets/premise-index/manifest.json")
-          return json(
-            opts.premiseChunkSize ? { ...PREMISE_MANIFEST, chunk_size: opts.premiseChunkSize } : PREMISE_MANIFEST,
-          );
+          return json({
+            ...PREMISE_MANIFEST,
+            ...(opts.premiseChunkSize ? { chunk_size: opts.premiseChunkSize } : {}),
+            ...(opts.legacyPremisePin
+              ? {
+                  pin: {
+                    edges_mtime: FIXTURE_EDGES_MTIME,
+                    edges_bytes: 753711915,
+                    decl_index_etag: FIXTURE_DECL_ETAG,
+                  },
+                }
+              : {}),
+          });
         const pn = /^\/assets\/premise-index\/names\/(\d+)\.json$/.exec(path);
         if (pn && PREMISE_NAMES[Number(pn[1])]) return json(PREMISE_NAMES[Number(pn[1])]);
         const pm = /^\/assets\/premise-index\/([a-z0-9_]+)\.json$/.exec(path);
