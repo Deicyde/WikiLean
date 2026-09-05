@@ -187,6 +187,13 @@ Nightly LaunchAgents are now generated from the current checkout after a sparse-
 preflight seals the exact Python and Mathlib paths; no tracked host-specific plist remains,
 and installation never loads or starts a job.
 
+Frontier replay no longer consumes the separately generated `manage/data/halo.json`.
+Its historical `mean_stateability` value is recomputed from the exact bound cells and
+synapses using the same ring-1 neighbor-fraction semantics. The current corpus keeps all 47
+areas, membership, proximity, suitability, ordering, and top-cell choices unchanged; only
+22 stateability summaries, the stateability input-count metadata field, and the reducer
+inventory identity change.
+
 `run_offline.py` now accepts v2 packs, prepares a fresh workspace, and delegates to the
 single fail-closed `run_replay_v2.py` executor. The executor re-verifies the sealed input and
 reducer closures, runs every inventory stage in order (including independent leaves), requires
@@ -415,8 +422,10 @@ explicit approval.
     receipt/lineage integration remains the authority boundary.
   - [ ] Remove observation time, local absolute paths, and other ambient values from
     normalized data bytes. Hierarchy and theoremgraph-link outputs now use immutable
-    revision/hash lineage; external harvests, halo, community, and other catalog outputs
-    still embed ambient values that must move to audit/receipt evidence.
+    revision/hash lineage; external harvests and other catalog outputs still embed ambient
+    values that must move to audit/receipt evidence. Frontier stateability is now derived
+    from its bound cells/synapses, and community provenance is pinned to the sealed D1
+    normalization-lineage identity.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
@@ -512,8 +521,9 @@ explicit approval.
   - [ ] Author and review the current-corpus source plan, acquire a fresh canonical D1
     snapshot plus the missing Mathlib source tree, close the TheoremGraph/oracle revision
     pins, and add complete acquisition/normalization lineage before compilation.
-    The 2026-09-04 census found 44 inputs, 38 present, six absent, and 14/15 required
-    inputs present; 833 non-Mathlib files total about 1.425 GiB. The current D1 mirror is
+    The 2026-09-05 census found 43 inputs, 37 present, six absent, and 14/15 required
+    inputs present; 832 non-Mathlib files total 1,529,390,053 bytes (about 1.424 GiB).
+    The current D1 mirror is
     from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs now have exact
     reviewed revisions but are not yet sealed into v3 receipt/lineage authority, and the
     theorem-matching redistribution license is unresolved.
