@@ -280,6 +280,7 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
         exact_paths = {entry["path"] for entry in self.v1["inputs"] if "path" in entry}
         self.assertIn("brain/data/discovery_rejected.jsonl", exact_paths)
         self.assertIn("catalog/data/tauceti_links.jsonl", exact_paths)
+        self.assertNotIn("manage/data/halo.json", exact_paths)
 
         patterns = {
             entry["path_pattern"]
@@ -338,6 +339,7 @@ class ReducerInputInventoryRegressionTest(unittest.TestCase):
         )
 
         by_id = {entry["id"]: entry for entry in self.v2["inputs"]}
+        self.assertNotIn("halo", by_id)
         expected = {
             "brain-community-edges": (
                 "repo",

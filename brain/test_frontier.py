@@ -21,7 +21,9 @@ as test_cell_shards' shard_key.
       sample of phase-1 cells
   F5  Unsorted stays a minority: share <= the recon prediction (19.2%) + 2pp
   F6  determinism: two builder runs are byte-identical
-  F7  mean_stateability recomputes from halo.json (null when no member joins)
+  F7  mean_stateability recomputes from the current cells + synapses: for each
+      connected ring-1 cell (page organ, no decl organ), all_frac is the share
+      of unique cell-neighbors with a decl organ; null when no member joins
   F8  the SHARDS carry it: supercells.json frontier rows match frontier.jsonl,
       fa aggregates member facets, areas are roots, no double placement, and
       the derived "no formal home" bucket really drains (the whole point)
@@ -75,7 +77,6 @@ GRAPH = HERE / "data" / "frontier_graph.json"
 CELLS = HERE / "data" / "cells.jsonl"
 SYNAPSES = HERE / "data" / "synapses.jsonl"
 EDGES = HERE / "data" / "edges.jsonl"
-HALO = ROOT / "manage" / "data" / "halo.json"
 SHARD_DIR = ROOT / "site" / "assets" / "brain" / "cells"
 
 AREA_RE = re.compile(r"^frontier:[A-Za-z][A-Za-z0-9_]{0,63}$")
@@ -299,21 +300,36 @@ def main() -> int:
           "missing before the rebuild" if graph_before is None
           else "the rebuild changed its bytes")
 
-    # ---- F7: mean_stateability recomputes from halo.json --------------------
-    halo_frac: dict[str, float] = {}
-    if HALO.exists():
-        for item in json.loads(HALO.read_text()).get("items", []):
-            if item.get("all_frac") is not None:
-                halo_frac[item["cell"]] = item["all_frac"]
+    # ---- F7: mean_stateability re-derives from current cells + synapses -----
+    all_nb: dict[str, set[str]] = defaultdict(set)
+    for synapse in syn_rows:
+        src, dst = synapse.get("src", ""), synapse.get("dst", "")
+        if src in cells and dst in cells:
+            all_nb[src].add(dst)
+            all_nb[dst].add(src)
+    stateability_frac: dict[str, float] = {}
+    for cid in homeless:
+        if not any(o.get("kind") == "page" for o in cells[cid].get("organs", [])):
+            continue
+        neighbors = all_nb.get(cid, set())
+        if neighbors:
+            stateability_frac[cid] = round(
+                sum(1 for other in neighbors if other in decl_cells) / len(neighbors),
+                4,
+            )
     bad_state = []
     for r in rows:
-        fracs = [halo_frac[c] for c in r["cells"] if c in halo_frac]
+        fracs = [stateability_frac[c] for c in r["cells"] if c in stateability_frac]
         want = round(sum(fracs) / len(fracs), 4) if fracs else None
         if r["mean_stateability"] != want:
             bad_state.append((r["id"], r["mean_stateability"], want))
-    check("F7 mean_stateability == halo.json all_frac mean (null when no join)"
-          + ("" if HALO.exists() else " [halo.json absent: all null]"),
+    check("F7 mean_stateability == current ring-1 all_frac mean (null when no join)",
           not bad_state, f"{bad_state[:3]}")
+    inputs = meta.get("inputs", {})
+    check("F7 metadata counts the derived stateability population and names no halo",
+          inputs.get("stateability_joined") == len(stateability_frac)
+          and "halo_joined" not in inputs,
+          f"inputs={inputs}, derived={len(stateability_frac)}")
 
     # ---- F8: the shards carry it (the artifact the client reads) ------------
     sup_path = SHARD_DIR / "supercells.json"
@@ -332,6 +348,12 @@ def main() -> int:
                       and tree[r["id"]].get("cells") != r["cells"]]
         check("F8 shard rows list exactly the area's cells", not mismatched,
               f"{mismatched[:3]}")
+        stale_state = [
+            r["id"] for r in rows if r["id"] in tree
+            and tree[r["id"]].get("stateability") != r["mean_stateability"]
+        ]
+        check("F8 shard stateability matches frontier.jsonl exactly",
+              not stale_state, f"{stale_state[:3]}")
         not_root = [r["id"] for r in rows if r["id"] not in set(sup_doc["roots"])]
         check("F8 every frontier area is a ROOT (parentless, browsable)",
               not not_root, f"{not_root[:3]}")
