@@ -174,6 +174,7 @@ class FrontierContextTest(unittest.TestCase):
             "path": contract["path"],
             "requirement": contract["requirement"],
             "root": "repo",
+            "source_manifest_ids": [SOURCE_MANIFEST_ID],
             "state": "present" if present else "absent",
         }
 
