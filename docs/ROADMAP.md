@@ -511,10 +511,14 @@ explicit approval.
       telemetry in audit/receipt evidence, re-harvest the legacy pair files, and add direct
       adapter fixtures across cache states/API pagination plus a hostile ProofWiki source-swap
       test. Current static endpoint labels are not immutable upstream pins.
-    - [ ] Remove `concept_layer.jsonl`'s repeated `built_at`, replace the absolute checkout
-      path in `mathlib_tag_xrefs.jsonl` with logical root plus Mathlib revision, canonicalize
-      absolute `decl_renames.jsonl` source locations, and move timestamps/API counters out of
-      the standalone Erdos, formal-conjecture, Lean-repository, and OpenAlex inputs.
+    - [x] Remove the repeated `built_at` field from all 1,376 `concept_layer.jsonl` rows,
+      regenerate the tracked artifact with no other semantic change, and make the generator
+      atomic and reproducible across input location/mtime. The required CI check compares the
+      checked-in artifact byte-for-byte with a fresh generation.
+    - [ ] Replace the absolute checkout path in `mathlib_tag_xrefs.jsonl` with logical root,
+      Mathlib revision, and declaration-oracle digest; canonicalize absolute
+      `decl_renames.jsonl` source locations; and move timestamps/API counters out of the
+      standalone Erdos, formal-conjecture, Lean-repository, and OpenAlex inputs.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
