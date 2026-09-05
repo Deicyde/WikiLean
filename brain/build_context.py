@@ -624,9 +624,15 @@ class InputBinding:
     input_class: str
     state: str
     declared_path: str
+    source_manifest_ids: tuple[str, ...]
     members: tuple[InputMember, ...]
 
     def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "source_manifest_ids",
+            tuple(self.source_manifest_ids),
+        )
         object.__setattr__(self, "members", tuple(self.members))
         if not all(isinstance(member, InputMember) for member in self.members):
             _fail("$.bindings[].members", "expected InputMember entries")
@@ -641,6 +647,18 @@ class InputBinding:
             _fail("$.bindings[].class", "unknown input class")
         if self.state not in {"present", "absent"}:
             _fail("$.bindings[].state", "expected present or absent")
+        if not self.source_manifest_ids:
+            _fail("$.bindings[].source_manifest_ids", "must not be empty")
+        for index, manifest_id in enumerate(self.source_manifest_ids):
+            _hash(
+                manifest_id,
+                f"$.bindings[].source_manifest_ids[{index}]",
+            )
+        if list(self.source_manifest_ids) != sorted(set(self.source_manifest_ids)):
+            _fail(
+                "$.bindings[].source_manifest_ids",
+                "entries must be unique and sorted",
+            )
         declared = _relative_path(
             self.declared_path,
             "$.bindings[].path" if self.cardinality == "one" else "$.bindings[].path_pattern",
@@ -653,6 +671,13 @@ class InputBinding:
             _fail("$.bindings[].members", "absent bindings must have no members")
         if self.state == "present" and not self.members:
             _fail("$.bindings[].members", "present bindings must have members")
+        if self.state == "present" and list(self.source_manifest_ids) != sorted(
+            {member.source_manifest_id for member in self.members}
+        ):
+            _fail(
+                "$.bindings[].source_manifest_ids",
+                "present bindings must exactly name their member source manifests",
+            )
         if self.cardinality == "one" and self.state == "present" and len(self.members) != 1:
             _fail("$.bindings[].members", "cardinality one requires exactly one member")
         paths = [member.logical_path for member in self.members]
@@ -692,6 +717,7 @@ class InputBinding:
             "requirement",
             "class",
             "state",
+            "source_manifest_ids",
             "members",
             selector,
         }
@@ -706,6 +732,16 @@ class InputBinding:
             InputMember.from_document(member, f"{location}.members[{index}]")
             for index, member in enumerate(raw_members)
         )
+        source_manifest_ids = tuple(
+            _hash(manifest_id, f"{location}.source_manifest_ids[{index}]")
+            for index, manifest_id in enumerate(
+                _array(
+                    obj["source_manifest_ids"],
+                    f"{location}.source_manifest_ids",
+                    nonempty=True,
+                )
+            )
+        )
         return cls(
             input_id=_name(obj["input_id"], f"{location}.input_id"),
             root=_string(obj["root"], f"{location}.root"),
@@ -716,6 +752,7 @@ class InputBinding:
             declared_path=_relative_path(
                 obj[selector], f"{location}.{selector}", literal=selector == "path"
             ),
+            source_manifest_ids=source_manifest_ids,
             members=members,
         )
 
@@ -730,6 +767,7 @@ class InputBinding:
             ],
             "requirement": self.requirement,
             "root": self.root,
+            "source_manifest_ids": list(self.source_manifest_ids),
             "state": self.state,
         }
         result["path" if self.cardinality == "one" else "path_pattern"] = self.declared_path

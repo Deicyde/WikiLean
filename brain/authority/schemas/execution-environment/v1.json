@@ -47,7 +47,12 @@
           "sandbox": {
             "allOf": [
               {"$ref": "#/$defs/sandbox"},
-              {"properties": {"backend": {"const": "linux-bubblewrap"}}}
+              {
+                "properties": {
+                  "backend": {"const": "linux-bubblewrap"},
+                  "reported_version": {"$ref": "#/$defs/exactVersion"}
+                }
+              }
             ]
           }
         }
@@ -84,7 +89,10 @@
       "then": {
         "properties": {
           "sandbox": {
-            "properties": {"backend": {"const": "linux-bubblewrap"}}
+            "properties": {
+              "backend": {"const": "linux-bubblewrap"},
+              "reported_version": {"$ref": "#/$defs/exactVersion"}
+            }
           }
         }
       }
@@ -113,23 +121,23 @@
     "developmentRuntime": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "os", "architecture", "runtime_root"],
+      "required": ["kind", "os", "architecture", "host_fingerprint"],
       "properties": {
         "kind": {"const": "development-host"},
         "os": {"enum": ["darwin", "linux"]},
         "architecture": {"$ref": "#/$defs/token"},
-        "runtime_root": {"$ref": "#/$defs/hash"}
+        "host_fingerprint": {"$ref": "#/$defs/hash"}
       }
     },
     "ociRuntime": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "os", "architecture", "image_digest"],
+      "required": ["kind", "os", "architecture", "manifest_digest"],
       "properties": {
         "kind": {"const": "oci-image"},
         "os": {"const": "linux"},
         "architecture": {"$ref": "#/$defs/token"},
-        "image_digest": {"$ref": "#/$defs/hash"}
+        "manifest_digest": {"$ref": "#/$defs/hash"}
       }
     },
     "runner": {
@@ -151,14 +159,14 @@
         "version",
         "cache_tag",
         "soabi",
-        "executable_sha256"
+        "executable_file_sha256"
       ],
       "properties": {
         "implementation": {"const": "CPython"},
         "version": {"$ref": "#/$defs/exactVersion"},
         "cache_tag": {"$ref": "#/$defs/pythonToken"},
         "soabi": {"$ref": "#/$defs/pythonToken"},
-        "executable_sha256": {"$ref": "#/$defs/digest"}
+        "executable_file_sha256": {"$ref": "#/$defs/digest"}
       }
     },
     "dependencyLock": {
@@ -178,18 +186,28 @@
     "package": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "version", "artifact_sha256", "installed_files_root"],
+      "required": [
+        "name",
+        "version",
+        "locked_artifact_sha256",
+        "installed_tree_root"
+      ],
       "properties": {
         "name": {"const": "numpy"},
         "version": {"$ref": "#/$defs/exactVersion"},
-        "artifact_sha256": {"$ref": "#/$defs/digest"},
-        "installed_files_root": {"$ref": "#/$defs/hash"}
+        "locked_artifact_sha256": {"$ref": "#/$defs/digest"},
+        "installed_tree_root": {"$ref": "#/$defs/hash"}
       }
     },
     "sqlite": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["version", "source_id", "binary_sha256", "compile_options"],
+      "required": [
+        "version",
+        "source_id",
+        "extension_file_sha256",
+        "compile_options"
+      ],
       "properties": {
         "version": {"$ref": "#/$defs/exactVersion"},
         "source_id": {
@@ -198,7 +216,7 @@
           "maxLength": 512,
           "pattern": "^[ -~]+$"
         },
-        "binary_sha256": {"$ref": "#/$defs/digest"},
+        "extension_file_sha256": {"$ref": "#/$defs/digest"},
         "compile_options": {
           "type": "array",
           "minItems": 1,
@@ -223,7 +241,8 @@
         "preferred_encoding",
         "filesystem_encoding",
         "utf8_mode",
-        "python_hash_seed"
+        "python_hash_seed",
+        "hash_sentinel"
       ],
       "properties": {
         "lang": {"const": "C.UTF-8"},
@@ -231,8 +250,12 @@
         "timezone": {"const": "UTC"},
         "preferred_encoding": {"const": "utf-8"},
         "filesystem_encoding": {"const": "utf-8"},
-        "utf8_mode": {"type": "integer", "enum": [0, 1]},
-        "python_hash_seed": {"const": "0"}
+        "utf8_mode": {"const": 1},
+        "python_hash_seed": {"const": "0"},
+        "hash_sentinel": {
+          "type": "string",
+          "pattern": "^(?:0|-?[1-9][0-9]{0,31})$"
+        }
       }
     },
     "sandbox": {
@@ -240,18 +263,23 @@
       "additionalProperties": false,
       "required": [
         "backend",
-        "version",
+        "reported_version",
         "executable_sha256",
         "policy_id",
-        "policy_sha256",
+        "policy_root",
         "network"
       ],
       "properties": {
         "backend": {"enum": ["darwin-sandbox-exec", "linux-bubblewrap"]},
-        "version": {"$ref": "#/$defs/exactVersion"},
+        "reported_version": {
+          "oneOf": [
+            {"$ref": "#/$defs/exactVersion"},
+            {"type": "null"}
+          ]
+        },
         "executable_sha256": {"$ref": "#/$defs/digest"},
         "policy_id": {"$ref": "#/$defs/name"},
-        "policy_sha256": {"$ref": "#/$defs/digest"},
+        "policy_root": {"$ref": "#/$defs/hash"},
         "network": {"const": "disabled"}
       }
     }
