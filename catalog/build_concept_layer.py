@@ -19,14 +19,18 @@ collapse to one concept here). Records are provenance-tagged "ai"; human review
 can upgrade them in place later.
 
     python build_concept_layer.py            # → data/concept_layer.jsonl
+
+Output is clock/path independent and atomically replaced. Observation times
+belong in acquisition evidence, not these normalized concept rows.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import tempfile
 import unicodedata
-from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -100,44 +104,75 @@ def build_record(rec: dict) -> dict:
     }
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=str(OUT))
-    args = ap.parse_args()
+def build_rows(data_dir: Path = DATA) -> tuple[list[dict], int]:
+    """Return deterministic concept rows and the number of unkeyed inputs."""
+    data_dir = Path(data_dir)
 
     # Load tagged rows by title (last-wins per title).
     by_title: dict[str, dict] = {}
-    for f in TAGGED:
-        p = DATA / f
-        if not p.exists():
+    for filename in TAGGED:
+        path = data_dir / filename
+        if not path.exists():
             continue
-        for line in p.open():
-            r = json.loads(line)
-            by_title[r["title"]] = r
+        with path.open(encoding="utf-8") as handle:
+            for line in handle:
+                record = json.loads(line)
+                by_title[record["title"]] = record
 
     # Collapse to one concept record per QID.
     by_qid: dict[str, dict] = {}
     no_qid = 0
-    for rec in by_title.values():
-        qid = rec.get("wikidata_qid")
+    for record in by_title.values():
+        qid = record.get("wikidata_qid")
         if not qid:
             no_qid += 1
             continue
-        by_qid[qid] = merge(by_qid.get(qid), rec)
+        by_qid[qid] = merge(by_qid.get(qid), record)
+    return [record for _qid, record in sorted(by_qid.items())], no_qid
 
-    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    n_formalized = 0
-    with open(args.out, "w", encoding="utf-8") as f:
-        for qid, rec in sorted(by_qid.items()):
-            rec["built_at"] = stamp
-            if rec["status"] == "formalized":
-                n_formalized += 1
-            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+def write_rows(path: Path, rows: list[dict]) -> None:
+    """Atomically publish the deterministic JSONL bytes."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary_name = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
+    )
+    temporary = Path(temporary_name)
+    try:
+        os.fchmod(fd, 0o644)
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+            fd = -1
+            for record in rows:
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        if fd >= 0:
+            os.close(fd)
+        temporary.unlink(missing_ok=True)
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data-dir", type=Path, default=DATA)
+    ap.add_argument("--out", type=Path, default=OUT)
+    args = ap.parse_args(argv)
+
+    rows, no_qid = build_rows(args.data_dir)
+    write_rows(args.out, rows)
+    n_formalized = sum(record["status"] == "formalized" for record in rows)
 
     print(f"wrote {args.out}")
-    print(f"  concepts (by QID): {len(by_qid)}")
+    print(f"  concepts (by QID): {len(rows)}")
     print(f"    formalized:      {n_formalized}")
-    print(f"    not_formalized:  {len(by_qid) - n_formalized}")
+    print(f"    not_formalized:  {len(rows) - n_formalized}")
     print(f"  tagged rows dropped (no QID): {no_qid}")
     return 0
 
