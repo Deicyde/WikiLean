@@ -87,23 +87,36 @@ For the P0-R acquisition boundary, capture articles plus all community edge/node
 rows with one read-only D1 statement into a private content-addressed bundle:
 
 ```bash
-python3 brain/acquire_d1_snapshot.py
+brain/acquire-d1-snapshot.sh
 ```
 
-The command uses the repository-pinned Wrangler/Node closure, a private config
-bound to the production D1 UUID, and a sanitized subprocess environment. It emits
-validated acquisition-receipt and normalization-lineage documents under
-`catalog/.cache/d1/snapshots/`. It does not write D1. Graduate community edges only
-from one explicit bundle:
+The command uses isolated CPython 3.12, repository-pinned Wrangler, a digest-bound Node 22
+executable, a private config bound to the production D1 UUID, and a sanitized subprocess
+environment.
+It binds the exact Python executable/version and transitive local dependency closure, then
+emits validated acquisition-receipt and normalization-lineage documents under
+`catalog/.cache/d1/snapshots/`. It does not write D1. Graduate community edges only from
+one explicit bundle:
 
 ```bash
 python3 brain/harvest_community_edges.py --snapshot-bundle <bundle>
 ```
 
-The harvester independently verifies bundle closure, modes, toolchain/evidence,
-normalized rows, and tombstones, then pins output provenance to the normalization-lineage
-ID. Acquisition and graduation still do not make the annotation mirror or source plan
-authoritative, and this command has not been run against production in this branch.
+The harvester and annotation mirror share an independent verifier for bundle closure,
+modes, toolchain/evidence, normalized rows, and tombstones. Mirror the exact article
+generation only from that same kind of explicit bundle:
+
+```bash
+cd wiki
+npm run pull -- --snapshot-bundle /absolute/path/to/<bundle-id>
+```
+
+The mirror stages the complete cache, atomically exchanges generations, and quarantines
+disk-only recovery sidecars outside active selectors. These consumers do not confer
+source-plan authority: a production bundle still needs capture/review and explicit v3
+receipt/lineage binding. A 2026-09-05 attempt stopped before querying because no local
+D1-read credential was available; it created no snapshot store and made no production
+change.
 
 Writers publish through temporary files + rename; ordinary publication errors roll
 back the full base generation, and snapshot IDs make a hard interruption between

@@ -96,20 +96,25 @@ These pins do not by themselves make v2 authority-ready: acquisition receipts, l
 and request preimages still require explicit v3 source-plan/source-manifest/offline-pack
 integration.
 
-The sealed D1 acquisition foundation additionally exists, but has not been run against
-production in this branch. `brain/acquire_d1_snapshot.py` uses one checked-in read-only
-statement for articles, every community edge (including tombstones), and community nodes;
-checks row counts and exact migrated column inventories; binds the production account and
-database UUID plus the pinned Node/Wrangler closure; and atomically publishes a private,
-content-addressed bundle containing clock-free normalized objects and validated receipt/
-lineage evidence. No source-plan or release authority claim follows from the acquisition
-tool alone.
+The sealed D1 acquisition foundation additionally exists, but has not completed a production
+capture in this branch. Run it only through `brain/acquire-d1-snapshot.sh`, which selects
+CPython 3.12 and starts it with `-I -S`. One checked-in read-only statement covers articles,
+every community edge (including tombstones), and community nodes. The producer checks row
+counts and exact migrated column inventories; binds the production account/database UUID,
+pinned Wrangler package, digest-bound Node 22 executable, exact Python executable/version,
+and the local transitive Python dependency closure; then atomically publishes a private
+content-addressed bundle containing
+clock-free normalized objects and validated receipt/lineage evidence. No source-plan or
+release authority claim follows from the acquisition tool alone.
 
-Community graduation is now wired to that boundary: `harvest_community_edges.py` accepts
-only an explicit sealed bundle, independently re-verifies its closure, evidence, normalized
-rows, and tombstones, and pins output provenance to the normalization-lineage identity. It
-has no live-query or fixture bypass. The annotation mirror and source-plan authority are
-still not wired to the bundle, and no production bundle has been captured.
+Community graduation and the annotation mirror are now wired to that boundary through one
+shared independent bundle verifier. `harvest_community_edges.py` accepts only an explicit
+sealed bundle and pins output provenance to the normalization-lineage identity. `npm run
+pull -- --snapshot-bundle /absolute/path/to/<bundle-id>` builds the complete next annotation
+cache off to the side, preserves exact JSON numbers, atomically exchanges generations, and
+quarantines disk-only sidecars outside active selectors. Neither consumer can acquire live
+D1 data or use a fixture bypass. Source-plan v3 authority is still not wired to the bundle,
+and no production bundle has been captured.
 
 Nightly operations are portable across checkouts. `site/ops/nightly-launchd.py` validates a
 sparse launchd-like environment, seals the exact checked Python and Mathlib paths into
@@ -141,11 +146,18 @@ Focused results recorded through 2026-09-05:
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
 
-The latest continuation additionally passed 11 sealed-harvester tests, 8 D1-acquisition
-tests, 10 top-level-shard tests, 15 portable-launcher tests, and 13 Brain-nightly shell
-tests. The launcher/harvester integration received an independent clean P0/P1 audit.
+The latest continuation additionally passed 12 sealed-harvester/shared-verifier tests,
+15 D1-acquisition tests, 19 annotation-mirror tests, 10 top-level-shard tests, 15
+portable-launcher tests, and 13 Brain-nightly shell tests. The complete D1 acquisition and
+consumer slice received an independent clean P0/P1 audit.
 
-Final branch-wide verification after `c3d94243` passed the expanded Python gate (37
+The remaining D1-consumer audit notes are P2: a hard kill after the atomic exchange can
+leave a complete old-cache sibling for an operator to identify and remove; acquisition and
+mirroring still buffer/clone the current corpus; bootstrap executable discovery trusts the
+operator `PATH` before recording exact digests; and long-lived historical bundles would
+need an explicit versioned verifier profile rather than weakening the current v1 policy.
+
+Final branch-wide verification on 2026-09-05 passed the expanded Python gate (38
 commands) and the Worker gate (37 files / 845 tests). The Python result includes the one
 expected local replay-sandbox skip described below; every required offline scenario ran.
 Before merging, or after any continuation changes, rerun exactly:
@@ -171,10 +183,12 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 -m unittest -v \
   brain.test_preflight_offline_pack_v2 \
   brain.test_authority_contracts \
   brain.test_acquire_d1_snapshot \
+  brain.test_harvest \
   brain.test_execution_environment \
   brain.test_prepare_replay_v2 \
   brain.test_run_replay_v2 \
-  brain.test_base_graph_context
+  brain.test_base_graph_context \
+  wiki.scripts.test_pull_annotations
 ```
 
 Strict sandbox evidence is still outstanding. On a clean supported macOS host, require it
@@ -215,11 +229,13 @@ is absent on this host.
 The first real pack remains blocked on evidence or data that cannot be manufactured from
 the current checkout:
 
-1. Run and review the new sealed, read-only D1 annotation/community acquisition command,
-   then migrate the annotation mirror and source-plan authority to its one-generation
-   bundle. Community graduation already requires that bundle. The current pull manifest
-   records `2026-08-06T04:19:49.266Z`; D1 remains canonical and must never be re-seeded
-   from these disk files. No production D1 query was run while implementing the tool.
+1. Configure a locally held D1 Read-scoped Cloudflare token, then run and review the sealed,
+   read-only annotation/community acquisition command and bind that generation's receipt/
+   lineage into source-plan v3 authority. Community graduation and the annotation mirror
+   already require the bundle. The current pull manifest records
+   `2026-08-06T04:19:49.266Z`; D1 remains canonical and must never be re-seeded from these
+   disk files. A 2026-09-05 attempt stopped before the query because Wrangler had no
+   non-interactive token; no snapshot store was created and no production write occurred.
 2. Restore or reacquire the read-only Mathlib source tree and bind its full commit/tree.
    Also prove the declaration oracle belongs to that exact Mathlib revision.
 3. Bind the reviewed Hugging Face revisions and local consistency sidecars into canonical
@@ -249,25 +265,24 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had only about 6 GiB free at the latest check, after fluctuating as low as
-1.2–3.0 GiB during this work.
-The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
-Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
-outputs. This is not safe headroom for the first real pack.
+The filesystem had about 45 GiB free at the 2026-09-05 handoff check, after temporarily
+falling below 6 GiB during this work. The available non-Mathlib corpus occupies 1.425 GiB,
+before the required Mathlib source tree, content-addressed pack, compiler temporary
+duplication, or replay outputs.
 
-Do not start full compilation on this volume. Move the private pack/output stores to a
-larger current-user-owned `0700` filesystem, then use the reviewed source plan's preflight
-space report. Its estimate includes the pack, safety margin, and the compiler's largest
-duplicate temporary object; the real plan is required for an exact number.
+Do not infer compile readiness from the current free-space number. Run the reviewed source
+plan's bounded preflight first; its estimate includes the pack, safety margin, and largest
+duplicate temporary object. Prefer a larger current-user-owned `0700` pack/output store if
+the exact plan does not retain ample headroom.
 
 ## Prioritized next work
 
 1. Preserve both required hermetic gates for every continuation change; the branch now has
    independently reviewed compiler/runtime, evidence-contract, pair-publication, and fold
    fail-closed checkpoints.
-2. Run and review one sealed production D1 bundle, migrate the annotation and source-plan
-   consumers, remove remaining observation/run metadata from normalized bytes, finish
-   Wikidata acquisition separation, then design the explicit
+2. Configure the local D1 Read credential, run and review one sealed production D1 bundle,
+   bind it into source-plan authority, remove remaining observation/run metadata from
+   normalized bytes, finish Wikidata acquisition separation, then design the explicit
    v3 receipt/lineage pack integration
    (including the reviewed Hugging Face sources) and author the
    reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.

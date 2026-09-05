@@ -79,9 +79,10 @@ cd "$REPO/site" || exit 1
   echo "PY=$PY  wp=$WPUPDATE_LIMIT review=$REVIEW_LIMIT conc=$CONCURRENCY budget=$BUDGET_TOKENS"
   echo
   echo "--- refresh control plane: centrality + coverage + worklists (zero agent tokens) ---"
-  # Offline by default (computes from disk). Set WIKILEAN_MANAGE_PULL=1 to pull
-  # the live D1 annotation layer first (needs wrangler auth in this env — verify
-  # before enabling, or it fails soft and refresh falls back to disk).
+  # Offline by default (computes from disk). WIKILEAN_MANAGE_PULL=1 mirrors the
+  # already-acquired sealed bundle named by the absolute
+  # WIKILEAN_D1_SNAPSHOT_BUNDLE path; manage/refresh never queries D1 itself.
+  # A missing/invalid bundle fails soft here and leaves the prior cache intact.
   MANAGE_PULL=""; [ "${WIKILEAN_MANAGE_PULL:-0}" = "1" ] && MANAGE_PULL="--pull"
   "$PY" "$REPO/manage/refresh.py" $MANAGE_PULL || echo "(manage refresh returned $?)"
   echo
