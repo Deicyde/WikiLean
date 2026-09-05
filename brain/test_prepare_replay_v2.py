@@ -249,6 +249,22 @@ class PrepareReplayV2Test(unittest.TestCase):
         create.assert_not_called()
         self.assertFalse(workspace.exists())
 
+    def test_expected_pack_id_rejects_replacement_before_materialization(self) -> None:
+        self.use_v3_pack()
+        workspace = self.root / "replaced-v3"
+        with mock.patch.object(prepare, "_create_staging_directory") as create:
+            with self.assertRaisesRegex(
+                prepare.ReplayPreparationError,
+                "identity changed before replay preparation",
+            ):
+                self.prepare(
+                    workspace,
+                    expected_pack_schema=contracts.PACK_SCHEMA_V3,
+                    expected_offline_pack_id="sha256:" + "f" * 64,
+                )
+        create.assert_not_called()
+        self.assertFalse(workspace.exists())
+
     def test_materializes_only_declared_copies_and_canonical_context(self) -> None:
         workspace = self.root / "workspace"
         result = self.prepare(workspace)

@@ -23,6 +23,7 @@ import prepare_replay_v2
 import run_replay_v2
 
 from authority_contracts import (
+    HASH_RE,
     PACK_SCHEMA,
     PACK_SCHEMA_V2,
     PACK_SCHEMA_V3,
@@ -54,6 +55,13 @@ def run(
         PACK_SCHEMA_V2,
         PACK_SCHEMA_V3,
     ):
+        initial_pack_id = document.get("offline_pack_id")
+        if not isinstance(initial_pack_id, str) or not HASH_RE.fullmatch(
+            initial_pack_id
+        ):
+            raise VerificationError(
+                "$.offline_pack_id: expected sha256:<64 lowercase hex digits>"
+            )
         run_replay_v2.require_isolated_startup()
         if arguments:
             if replay_schema == PACK_SCHEMA_V2:
@@ -92,6 +100,7 @@ def run(
             workspace,
             pack_root=verification_root,
             expected_pack_schema=replay_schema,
+            expected_offline_pack_id=initial_pack_id,
             authority_git_commit=authority_git_commit,
             authority_root=authority_root,
             semantic_epoch=semantic_epoch,

@@ -444,6 +444,7 @@ def prepare_replay_v2(
     prior_state_root: str | None = None,
     pack_root: str | os.PathLike[str] | None = None,
     expected_pack_schema: str | None = None,
+    expected_offline_pack_id: str | None = None,
 ) -> PreparedReplay:
     """Verify ``manifest_path`` and copy its exact replay closure to ``workspace``."""
     manifest = _absolute_existing_file(manifest_path, "manifest")
@@ -476,6 +477,13 @@ def prepare_replay_v2(
             raise ReplayPreparationError(
                 "offline-pack schema changed before replay preparation"
             )
+    if (
+        expected_offline_pack_id is not None
+        and pack["offline_pack_id"] != expected_offline_pack_id
+    ):
+        raise ReplayPreparationError(
+            "offline-pack identity changed before replay preparation"
+        )
     contracts.verify_offline_pack_files(pack, root, manifest_path=manifest)
 
     environment_ref = pack["environment"]
