@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/normalization-lineage/v1.json",
+  "title": "WikiLean normalization lineage v1",
+  "$comment": "The Python authority validator is normative. It additionally checks canonical ordering, unique object names, exact input-origin coverage, identity-mode input/output equality, and the logical identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "normalization_lineage_id",
+    "source",
+    "mode",
+    "acquisition_receipt_ids",
+    "parent_source_manifest_ids",
+    "normalization_schema",
+    "configuration_sha256",
+    "tool",
+    "inputs",
+    "outputs",
+    "result",
+    "audit"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.normalization-lineage/v1"},
+    "normalization_lineage_id": {"$ref": "#/$defs/hash"},
+    "source": {"$ref": "#/$defs/name"},
+    "mode": {"enum": ["identity", "transform"]},
+    "acquisition_receipt_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/hash"}
+    },
+    "parent_source_manifest_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/hash"}
+    },
+    "normalization_schema": {"type": "string", "minLength": 1},
+    "configuration_sha256": {"$ref": "#/$defs/digest"},
+    "tool": {"$ref": "#/$defs/tool"},
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/lineageInput"}
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/objectDigest"}
+    },
+    "result": {"const": "complete"},
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["normalized_at"],
+      "properties": {
+        "normalized_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z$"
+        }
+      }
+    }
+  },
+  "anyOf": [
+    {"properties": {"acquisition_receipt_ids": {"minItems": 1}}},
+    {"properties": {"parent_source_manifest_ids": {"minItems": 1}}}
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "mediaType": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "objectDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object", "sha256", "bytes", "media_type"],
+      "properties": {
+        "object": {"$ref": "#/$defs/name"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"$ref": "#/$defs/mediaType"}
+      }
+    },
+    "lineageInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["object", "sha256", "bytes", "media_type", "origin"],
+      "properties": {
+        "object": {"$ref": "#/$defs/name"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"$ref": "#/$defs/mediaType"},
+        "origin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id"],
+          "properties": {
+            "kind": {"enum": ["acquisition_receipt", "source_manifest"]},
+            "id": {"$ref": "#/$defs/hash"}
+          }
+        }
+      }
+    }
+  }
+}

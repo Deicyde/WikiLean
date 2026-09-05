@@ -33,6 +33,9 @@ Branch: `codex/brain-architecture-phase1`. At this handoff it contains:
   evidence tooling, all production-inactive;
 - versioned source-manifest, `offline-pack/v2`, reducer-inventory, build-context,
   execution-environment, and build-attestation contracts;
+- standalone, self-identifying acquisition-receipt and normalization-lineage contracts
+  with fail-closed request accounting, query-free evidence URIs, hashed request parameters,
+  exact origins, and audit-only timestamps;
 - copy-only sealed workspace preparation and a seven-stage, network-denied replay runner;
 - all seven reducers routed through explicit context bindings rather than ambient paths,
   mtimes, clocks, or `BRAIN_*` identity inputs; and
@@ -53,8 +56,10 @@ readiness fields are not runtime, replay, release, or deployment claims. The pre
 returns `0` only when `source_publishable` is true, `2` for a valid but non-publishable source
 plan (including warning-class authority/publication concerns), and `1` for structural or
 argument errors. All report/error output is canonical JSON. Receipt-role detection is
-presence-only: until `acquisition-receipt/v1` and `normalization-lineage/v1` exist, a receipt
-cannot make a source authority-ready.
+presence-only in v2: standalone `acquisition-receipt/v1` and
+`normalization-lineage/v1` contracts now exist, but they cannot make a v2 source
+authority-ready until an explicit v3 pack/source-manifest integration seals and verifies
+their bytes.
 
 ## Verification state and required final commands
 
@@ -62,7 +67,7 @@ Focused results recorded on 2026-09-04:
 
 - offline-pack compiler: 22 tests passed;
 - source-plan preflight: 15 tests passed;
-- authority contracts: 56 tests passed;
+- authority contracts: 65 tests passed;
 - execution environment: 20 tests passed;
 - replay executor: 33 tests passed;
 - replay preparation: 24 tests passed;
@@ -146,21 +151,27 @@ the current checkout:
    TheoremGraph/MathNetwork inputs and prove paired objects came from one acquisition.
 4. Resolve the redistribution policy for `theorem_matching.csv` before publication. The
    registry text alone is not sufficient approval for pack redistribution.
-5. Define and validate canonical acquisition receipts and normalization lineage. Current
-   receipt-like files prove presence only, not complete batch success or output ancestry.
+5. Integrate the standalone acquisition-receipt and normalization-lineage contracts through
+   explicit v3 source-manifest/source-plan/offline-pack contracts, including sealed
+   request-parameter preimages. Current v2 receipt-like files still prove presence only,
+   not complete batch success or output ancestry.
 6. Remove observation times and local paths from remaining normalized hierarchy,
    theoremgraph-link, external-harvest, and halo bytes.
-7. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
+7. Repair acquisition consistency before issuing evidence: publish external page/link pairs
+   as one generation, export D1 rows from one snapshot, split Wikidata fetching out of
+   `fold_proposals.py`, fail closed on partial Wikidata batches, and replace Hugging Face
+   `resolve/main` URLs with exact revisions.
+8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
-8. The compiler now closes the reproduced publication, reuse, cleanup, and post-seal
+9. The compiler now closes the reproduced publication, reuse, cleanup, and post-seal
    mutation races. A hostile same-UID process can still theoretically perform an ABA path
    swap during path-based content verification; eliminate that residual either with fully
    dirfd-relative verification or by running compilation in an isolated privilege boundary.
 
 ## Disk warning
 
-The filesystem had only about 2.7 GiB free and reported 100% capacity at the final check.
+The filesystem had only about 1.2 GiB free and reported 100% capacity at the latest check.
 The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
 Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
 outputs. This is not safe headroom for the first real pack.
@@ -174,8 +185,9 @@ duplicate temporary object; the real plan is required for an exact number.
 
 1. Review this branch's green compiler/runtime checkpoint and preserve both required
    hermetic gates for every continuation change.
-2. Define the receipt/lineage contracts, then acquire/freeze the missing external inputs and
-   author the reviewed current-corpus source plan with immutable pins and licenses.
+2. Design the explicit v3 receipt/lineage pack integration, then acquire/freeze the missing
+   external inputs and author the reviewed current-corpus source plan with immutable pins,
+   licenses, receipts, and lineage.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,
