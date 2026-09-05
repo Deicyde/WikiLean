@@ -146,6 +146,11 @@ publish if those bytes change during normalization. Legacy unsealed readers rema
 This is normalized-output cleanup, not acquisition evidence: the removed telemetry still
 needs durable receipt/audit representation when the shared sealed generation is implemented.
 
+`catalog/build_concept_layer.py` is also clock/path independent and publishes atomically.
+The regenerated 1,376-row `concept_layer.jsonl` differs from its predecessor only by removal
+of the repeated `built_at` field; a required hermetic test now regenerates and compares the
+tracked artifact byte-for-byte. Frontier's 25 secondary-only QIDs are unchanged.
+
 The latest Wikidata safety milestone makes the universe, relation-edge, and description
 harvesters all-or-nothing and atomic. Typed response validation, deterministic
 canonicalization, redirect handling, prior-generation/input-relative volume floors, and
@@ -403,10 +408,10 @@ the exact plan does not retain ample headroom.
    generation, and author the reviewed current-corpus v3 source plan with immutable pins,
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
-   The shared external-pair writer clock cleanup is complete. Next remove
-   `concept_layer.jsonl`'s `built_at`, then the absolute checkout path in
-   `mathlib_tag_xrefs.jsonl`, absolute `decl_renames.jsonl` `file_line` values, and timestamps
-   in the standalone Erdos/formal-conjecture/Lean-repo/OpenAlex inputs. Add direct adapter
+   The shared external-pair writer and concept-layer clock cleanups are complete. Next remove
+   the absolute checkout path in `mathlib_tag_xrefs.jsonl`, canonicalize absolute
+   `decl_renames.jsonl` `file_line` values, and remove timestamps/API counters from the
+   standalone Erdos/formal-conjecture/Lean-repo/OpenAlex inputs. Add direct adapter
    cache/pagination fixtures and carry removed telemetry into the future sealed receipts.
    Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
