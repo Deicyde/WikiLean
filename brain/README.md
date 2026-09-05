@@ -237,7 +237,9 @@ JSONL rather than silently serving an old index.
   away, layer toggles per edge family, label search. The Frontier queue preserves every
   declaration-less cell but sorts bounded formalization candidates before broad,
   ambiguous, elementary, already-covered, or non-target rows, with a visible reason for
-  every demotion. One shard fetch per interaction; the whole graph never ships.
+  every demotion. Its stateability tint is derived from the same bound cells and synapses;
+  `manage/data/halo.json` is an operational report, not a replay input. One shard fetch per
+  interaction; the whole graph never ships.
 
 ## Shards
 
