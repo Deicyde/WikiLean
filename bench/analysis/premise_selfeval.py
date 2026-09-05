@@ -31,14 +31,23 @@ import csv
 import json
 import random
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "catalog"))
+
+from huggingface_download import (  # noqa: E402
+    HuggingFaceArtifactError,
+    verified_reviewed_dataset,
+)
+
 PREMISE_DIR = ROOT / "wiki/public/assets/premise-index"
 DECL_DIR = ROOT / "wiki/public/assets/decl-index"
 DECL_DATA = ROOT / "catalog/.cache/declaration-data.json"
 EDGES_CSV = ROOT / "catalog/.cache/mathnetwork/edges.csv"
+NODES_CSV = ROOT / "catalog/.cache/mathnetwork/nodes.csv"
 MPR_JSON = ROOT / "bench/v2/data/MathlibMPR.json"
 
 SEED = 20260818
@@ -186,7 +195,17 @@ def main() -> None:
     if args.mpr_check:
         mpr_check(args)
     else:
-        self_eval(args)
+        try:
+            with verified_reviewed_dataset(
+                "MathNetwork/MathlibGraph",
+                {
+                    "edges.csv": EDGES_CSV,
+                    "nodes.csv": NODES_CSV,
+                },
+            ):
+                self_eval(args)
+        except HuggingFaceArtifactError as exc:
+            raise SystemExit(f"FATAL: {exc}") from exc
 
 
 if __name__ == "__main__":

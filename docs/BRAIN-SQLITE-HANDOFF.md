@@ -1,4 +1,4 @@
-# Brain SQLite operational handoff — 2026-09-04
+# Brain SQLite operational handoff — 2026-09-05
 
 This is a branch-state and operator handoff, not the project plan. The canonical plan and
 completion criteria remain in [`ROADMAP.md`](ROADMAP.md), especially P0-R and P1A–P1C.
@@ -79,6 +79,23 @@ Wikidata is still fetched inside the fold command, and physical external JSONL b
 contain observation/run metadata even though that metadata is excluded from
 `pair_generation`.
 
+The immutable Hugging Face acquisition milestone additionally adds:
+
+- reviewed full-commit, byte-count, and SHA-256 pins for all six files across
+  `uw-math-ai/math-graph`, `uw-math-ai/theorem-matching`, and
+  `MathNetwork/MathlibGraph`;
+- exact-revision-only downloads, safe adoption of matching legacy caches, curl-config
+  isolation, complete-set staging, separate writer/publication locks, durable rollback,
+  and real `SIGKILL` plus concurrent-reader/writer coverage;
+- full-read verification in every current Python consumer and the TypeScript premise-index
+  builder, without adding acquisition policy to the sealed v2 reducer closure; and
+- deterministic hierarchy/theoremgraph-link lineage plus immutable premise-index API pins,
+  with backward compatibility for the deployed legacy mtime-shaped manifest.
+
+These pins do not by themselves make v2 authority-ready: acquisition receipts, lineage,
+and request preimages still require explicit v3 source-plan/source-manifest/offline-pack
+integration.
+
 ## Verification state and required final commands
 
 Focused results recorded on 2026-09-04:
@@ -95,8 +112,8 @@ Focused results recorded on 2026-09-04:
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
 
-The final checkpoint passed the full Python gate (34 commands) and the Worker gate
-(37 files / 844 tests). Before merging, or after any continuation changes, rerun exactly:
+The Hugging Face checkpoint passed the full Python gate (35 commands) and the Worker gate
+(37 files / 845 tests). Before merging, or after any continuation changes, rerun exactly:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -167,20 +184,22 @@ the current checkout:
    re-seeded from these disk files.
 2. Restore or reacquire the read-only Mathlib source tree and bind its full commit/tree.
    Also prove the declaration oracle belongs to that exact Mathlib revision.
-3. Replace Hugging Face `resolve/main` acquisition with immutable dataset revisions for
-   TheoremGraph/MathNetwork inputs and prove paired objects came from one acquisition.
+3. Bind the reviewed Hugging Face revisions and local consistency sidecars into canonical
+   acquisition receipts/normalization lineage, and prove each multi-file dataset belongs
+   to one acquisition, before treating the pins as source-pack authority.
 4. Resolve the redistribution policy for `theorem_matching.csv` before publication. The
    registry text alone is not sufficient approval for pack redistribution.
 5. Integrate the standalone acquisition-receipt and normalization-lineage contracts through
    explicit v3 source-manifest/source-plan/offline-pack contracts, including sealed
    request-parameter preimages. Current v2 receipt-like files still prove presence only,
    not complete batch success or output ancestry.
-6. Remove observation times and local paths from remaining normalized hierarchy,
-   theoremgraph-link, external-harvest, and halo bytes.
+6. Remove observation times and local paths from remaining external-harvest, halo,
+   community, and catalog-derived bytes. Hierarchy and theoremgraph-link outputs are now
+   immutable-revision-derived.
 7. Finish acquisition separation before issuing evidence: export D1 rows from one snapshot,
    move the now-fail-closed Wikidata lookup out of `fold_proposals.py`, make the remaining
-   Wikidata harvesters reject partial results, and replace Hugging Face `resolve/main` URLs
-   with exact revisions. Re-harvest legacy external pairs through the sealed writer.
+   Wikidata harvesters reject partial results, and bind the reviewed Hugging Face revisions
+   into v3 evidence. Re-harvest legacy external pairs through the sealed writer.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
@@ -191,7 +210,7 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had only about 1.2 GiB free and reported 100% capacity at the latest check.
+The filesystem had only about 3.0 GiB free and reported 100% capacity at the latest check.
 The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
 Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
 outputs. This is not safe headroom for the first real pack.
@@ -206,8 +225,9 @@ duplicate temporary object; the real plan is required for an exact number.
 1. Preserve both required hermetic gates for every continuation change; the branch now has
    independently reviewed compiler/runtime, evidence-contract, pair-publication, and fold
    fail-closed checkpoints.
-2. Remove observation/run metadata from normalized bytes, finish coherent D1/Wikidata/HF
-   acquisition, then design the explicit v3 receipt/lineage pack integration and author the
+2. Remove remaining observation/run metadata from normalized bytes, finish coherent
+   D1/Wikidata acquisition, then design the explicit v3 receipt/lineage pack integration
+   (including the reviewed Hugging Face sources) and author the
    reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.

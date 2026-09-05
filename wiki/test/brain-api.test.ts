@@ -20,6 +20,9 @@ import {
   BASIS_CELL,
   HUB_CELL,
   FIXTURE_DECL_ETAG,
+  FIXTURE_DATASET_REVISION,
+  FIXTURE_EDGES_SHA256,
+  FIXTURE_EDGES_URL,
   FIXTURE_EDGES_MTIME,
   LINALG_SUPER,
   ALGEBRA_SUPER,
@@ -1188,6 +1191,18 @@ describe("GET /api/brain/premises — ranked premise retrieval for seed decls", 
   // artifact on a different cadence.
   it("surfaces the premise build's own pin as index_pin", async () => {
     const h = harness();
+    const { j } = await getJson(h, "/api/brain/premises?seeds=Module");
+    expect(j.index_pin).toEqual({
+      dataset_revision: FIXTURE_DATASET_REVISION,
+      edges_sha256: FIXTURE_EDGES_SHA256,
+      edges_bytes: 753711915,
+      edges_url: FIXTURE_EDGES_URL,
+      decl_index_etag: FIXTURE_DECL_ETAG,
+    });
+  });
+
+  it("preserves the legacy mtime pin shape for deployed old assets", async () => {
+    const h = harness({ legacyPremisePin: true });
     const { j } = await getJson(h, "/api/brain/premises?seeds=Module");
     expect(j.index_pin).toEqual({
       edges_mtime: FIXTURE_EDGES_MTIME,

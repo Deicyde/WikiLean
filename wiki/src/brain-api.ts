@@ -1984,7 +1984,14 @@ interface PremiseManifest {
   shards: Record<string, number>;
   chunk_size?: number; // the builder's name-table chunk size (must equal PREMISE_NAME_CHUNK)
   source?: string;
-  pin?: { edges_mtime?: string; edges_bytes?: number; decl_index_etag?: string };
+  pin?: {
+    dataset_revision?: string;
+    edges_sha256?: string;
+    edges_bytes?: number;
+    edges_url?: string;
+    edges_mtime?: string; // legacy manifests only
+    decl_index_etag?: string;
+  };
   filters?: unknown;
   hub_drop?: unknown;
 }
@@ -2180,7 +2187,17 @@ export async function premisesFor(c: Ctx, release: BrainReleaseContext, seedsRaw
     // questions about premise data must read index_pin, not snapshot.
     index_pin: premiseManifest.pin
       ? {
-          edges_mtime: premiseManifest.pin.edges_mtime ?? null,
+          ...(premiseManifest.pin.dataset_revision
+            ? {
+                dataset_revision: premiseManifest.pin.dataset_revision,
+                edges_sha256: premiseManifest.pin.edges_sha256 ?? null,
+                edges_bytes: premiseManifest.pin.edges_bytes ?? null,
+                edges_url: premiseManifest.pin.edges_url ?? null,
+              }
+            : {}),
+          ...(premiseManifest.pin.edges_mtime
+            ? { edges_mtime: premiseManifest.pin.edges_mtime }
+            : {}),
           decl_index_etag: premiseManifest.pin.decl_index_etag ?? null,
         }
       : null,
