@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synthetic, network-free tests for the offline-pack/v2 compiler."""
+"""Synthetic, network-free tests for the offline-pack v2/v3 compiler."""
 from __future__ import annotations
 
 import copy
@@ -23,6 +23,7 @@ if str(TOOLS) not in sys.path:
 import authority_contracts as contracts  # noqa: E402
 import compile_offline_pack_v2 as compiler  # noqa: E402
 import execution_environment as environment  # noqa: E402
+import source_plan_contracts  # noqa: E402
 
 
 ZERO_HASH = "sha256:" + "0" * 64
@@ -412,6 +413,121 @@ class OfflinePackCompilerTest(unittest.TestCase):
             ],
         }
 
+    def _upgrade_plan_v3(
+        self,
+    ) -> tuple[dict[str, object], dict[str, object], dict[str, object], bytes]:
+        plan = copy.deepcopy(self.plan)
+        plan["schema"] = compiler.SOURCE_PLAN_SCHEMA_V3
+        source = next(
+            item for item in plan["sources"] if item["source"] == "external-fixture"
+        )
+        raw_object = next(item for item in source["objects"] if "raw" in item["roles"])
+        normalized_object = next(
+            item for item in source["objects"] if "normalized" in item["roles"]
+        )
+        preimage = b'{"query":"fixture"}'
+        preimage_digest = hashlib.sha256(preimage).hexdigest()
+        (self.external / "request.json").write_bytes(preimage)
+
+        def evidence_object(item: dict[str, object]) -> dict[str, object]:
+            return {
+                "object": item["name"],
+                "sha256": item["sha256"],
+                "bytes": item["bytes"],
+                "media_type": item["media_type"],
+            }
+
+        requests = [
+            {
+                "kind": "http_get",
+                "uri": "https://example.invalid/fixture",
+                "parameters_sha256": preimage_digest,
+            }
+        ]
+        receipt: dict[str, object] = {
+            "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+            "acquisition_receipt_id": ZERO_HASH,
+            "source": source["source"],
+            "upstream_uri": "https://example.invalid/fixture",
+            "pin": copy.deepcopy(source["pin"]),
+            "tool": copy.deepcopy(source["acquisition"]),
+            "requests": requests,
+            "batch": {
+                "status": "complete",
+                "request_set_root": contracts.acquisition_request_set_root(requests),
+                "requests_total": 1,
+                "requests_succeeded": 1,
+                "requests_failed": 0,
+            },
+            "outputs": [evidence_object(raw_object)],
+            "audit": {"acquired_at": "2030-01-01T00:00:00Z"},
+        }
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
+        _write_canonical(self.external / "receipt.json", receipt)
+
+        lineage: dict[str, object] = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": ZERO_HASH,
+            "source": source["source"],
+            "mode": "transform",
+            "acquisition_receipt_ids": [receipt["acquisition_receipt_id"]],
+            "parent_source_manifest_ids": [],
+            "normalization_schema": source["normalization"]["schema"],
+            "configuration_sha256": "5" * 64,
+            "tool": copy.deepcopy(source["normalization"]["tool"]),
+            "inputs": [
+                {
+                    **evidence_object(raw_object),
+                    "origin": {
+                        "kind": "acquisition_receipt",
+                        "id": receipt["acquisition_receipt_id"],
+                    },
+                }
+            ],
+            "outputs": [evidence_object(normalized_object)],
+            "result": "complete",
+            "audit": {"normalized_at": "2030-01-01T00:01:00Z"},
+        }
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(
+            lineage
+        )
+        _write_canonical(self.external / "lineage.json", lineage)
+
+        def planned_evidence_file(
+            relative: str,
+            media_type: str,
+        ) -> dict[str, object]:
+            raw = (self.external / relative).read_bytes()
+            return {
+                "root": "external",
+                "path": relative,
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "bytes": len(raw),
+                "media_type": media_type,
+            }
+
+        source["evidence"] = {
+            "acquisition_receipts": [
+                {
+                    **planned_evidence_file("receipt.json", "application/json"),
+                    "acquisition_receipt_id": receipt["acquisition_receipt_id"],
+                }
+            ],
+            "normalization_lineage": {
+                **planned_evidence_file("lineage.json", "application/json"),
+                "normalization_lineage_id": lineage["normalization_lineage_id"],
+            },
+            "request_parameter_preimages": [
+                {
+                    **planned_evidence_file("request.json", "application/json"),
+                    "parameters_sha256": preimage_digest,
+                }
+            ],
+        }
+        self.plan = plan
+        _write_canonical(self.plan_path, self.plan)
+        return plan, receipt, lineage, preimage
+
     def _compile(self, store_name: str = "store", **kwargs: object) -> compiler.CompiledPack:
         return compiler.compile_offline_pack_v2(
             self.plan_path,
@@ -432,6 +548,10 @@ class OfflinePackCompilerTest(unittest.TestCase):
 
         first = self._compile()
         self.assertFalse(first.reused)
+        self.assertEqual(
+            first.offline_pack_id,
+            "sha256:7b39cf25ec766b0c5623345c54a7b8f006b711c05251530fc7632975db188fbe",
+        )
         self.assertEqual(first.source_manifests, 2)
         self.assertEqual(first.source_objects, 2)
         self.assertEqual(
@@ -453,6 +573,239 @@ class OfflinePackCompilerTest(unittest.TestCase):
         self.assertTrue(second.reused)
         self.assertEqual(second.offline_pack_id, first.offline_pack_id)
         self.assertEqual(second.root, first.root)
+
+    def test_v3_compiles_verified_evidence_pack_and_reuses_it(self) -> None:
+        _plan, receipt, lineage, preimage = self._upgrade_plan_v3()
+        first = self._compile("store-v3")
+        self.assertFalse(first.reused)
+        pack, _ = contracts.load_canonical_json(first.manifest_path)
+        self.assertEqual(pack["schema"], contracts.PACK_SCHEMA_V3)
+        self.assertEqual(
+            pack["source_set_root"],
+            contracts.source_set_root_v3(
+                pack["inventory"]["inventory_id"],
+                [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+                pack["input_bindings"],
+            ),
+        )
+        receipt_ref = pack["evidence"]["acquisition_receipts"][0]
+        lineage_ref = pack["evidence"]["normalization_lineages"][0]
+        preimage_ref = pack["evidence"]["request_parameter_preimages"][0]
+        self.assertEqual(
+            receipt_ref["path"],
+            "evidence/acquisition-receipts/"
+            + receipt["acquisition_receipt_id"].removeprefix("sha256:")
+            + ".json",
+        )
+        self.assertEqual(
+            lineage_ref["path"],
+            "evidence/normalization-lineages/"
+            + lineage["normalization_lineage_id"].removeprefix("sha256:")
+            + ".json",
+        )
+        self.assertEqual(
+            preimage_ref["path"],
+            "evidence/request-parameters/sha256/"
+            + hashlib.sha256(preimage).hexdigest(),
+        )
+        self.assertEqual((first.root / preimage_ref["path"]).read_bytes(), preimage)
+        counts = contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            first.root,
+            manifest_path=first.manifest_path,
+        )
+        self.assertEqual(counts["acquisition_receipts"], 1)
+        self.assertEqual(counts["normalization_lineages"], 1)
+        self.assertEqual(counts["request_parameter_preimages"], 1)
+        manifests = [
+            contracts.load_canonical_json(first.root / ref["path"])[0]
+            for ref in pack["source_manifests"]
+        ]
+        acquired = next(
+            manifest
+            for manifest in manifests
+            if manifest["source"] == "external-fixture"
+        )
+        curated = next(
+            manifest
+            for manifest in manifests
+            if manifest["source"] == "curated-fixture"
+        )
+        self.assertEqual(acquired["schema"], contracts.SOURCE_SCHEMA_V3)
+        self.assertEqual(
+            acquired["evidence"]["acquisition_receipt_ids"],
+            [receipt["acquisition_receipt_id"]],
+        )
+        self.assertNotIn("evidence", curated)
+
+        second = self._compile("store-v3")
+        self.assertTrue(second.reused)
+        self.assertEqual(second.offline_pack_id, first.offline_pack_id)
+        self.assertEqual(second.manifest_path.read_bytes(), first.manifest_path.read_bytes())
+
+    def test_v3_compiles_evidence_only_parent_manifest(self) -> None:
+        self._upgrade_plan_v3()
+        prospective = source_plan_contracts.source_manifests_from_plan_v3(self.plan)
+        parent = next(
+            manifest
+            for manifest in prospective.values()
+            if manifest["source"] == "external-fixture"
+        )
+        identity_digest = hashlib.sha256(SHARED_BYTES).hexdigest()
+
+        def evidence_object() -> dict[str, object]:
+            return {
+                "object": "identity",
+                "sha256": identity_digest,
+                "bytes": len(SHARED_BYTES),
+                "media_type": "application/json",
+            }
+
+        lineage: dict[str, object] = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": ZERO_HASH,
+            "source": "derived-fixture",
+            "mode": "identity",
+            "acquisition_receipt_ids": [],
+            "parent_source_manifest_ids": [parent["source_manifest_id"]],
+            "normalization_schema": "fixture/derived-v1",
+            "configuration_sha256": "6" * 64,
+            "tool": {"name": "fixture", "sha256": ZERO_DIGEST, "version": "1.0.0"},
+            "inputs": [
+                {
+                    **evidence_object(),
+                    "origin": {
+                        "kind": "source_manifest",
+                        "id": parent["source_manifest_id"],
+                    },
+                }
+            ],
+            "outputs": [evidence_object()],
+            "result": "complete",
+            "audit": {"normalized_at": "2030-01-01T00:02:00Z"},
+        }
+        # The parent normalized object is named "normalized", so use that name
+        # consistently in the child identity lineage.
+        lineage["inputs"][0]["object"] = "normalized"
+        lineage["outputs"][0]["object"] = "normalized"
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(
+            lineage
+        )
+        _write_canonical(self.external / "derived-lineage.json", lineage)
+        lineage_raw = (self.external / "derived-lineage.json").read_bytes()
+        child = {
+            "source": "derived-fixture",
+            "source_kind": "sealed_snapshot",
+            "pin": {"type": "database_snapshot", "value": "derived-r1"},
+            "objects": [
+                {
+                    "name": "normalized",
+                    "roles": ["normalized", "raw"],
+                    "root": "external",
+                    "path": "input.json",
+                    "sha256": identity_digest,
+                    "bytes": len(SHARED_BYTES),
+                    "media_type": "application/json",
+                    "redistribution": "allowed",
+                }
+            ],
+            "license": {"expression": "CC0-1.0", "redistribution": "allowed"},
+            "acquisition": {"name": "fixture", "sha256": ZERO_DIGEST, "version": "1.0.0"},
+            "normalization": {
+                "schema": "fixture/derived-v1",
+                "tool": {"name": "fixture", "sha256": ZERO_DIGEST, "version": "1.0.0"},
+                "inputs": ["normalized"],
+                "outputs": ["normalized"],
+            },
+            "evidence": {
+                "acquisition_receipts": [],
+                "normalization_lineage": {
+                    "root": "external",
+                    "path": "derived-lineage.json",
+                    "sha256": hashlib.sha256(lineage_raw).hexdigest(),
+                    "bytes": len(lineage_raw),
+                    "media_type": "application/json",
+                    "normalization_lineage_id": lineage[
+                        "normalization_lineage_id"
+                    ],
+                },
+                "request_parameter_preimages": [],
+            },
+        }
+        self.plan["sources"].append(child)
+        self.plan["sources"].sort(key=lambda item: item["source"])
+        source_binding = next(
+            item for item in self.plan["input_bindings"] if item["input_id"] == "source"
+        )
+        source_binding["sources"] = ["derived-fixture"]
+        source_binding["members"][0]["source"] = "derived-fixture"
+        optional_binding = next(
+            item
+            for item in self.plan["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )
+        optional_binding["sources"] = ["derived-fixture"]
+        _write_canonical(self.plan_path, self.plan)
+
+        result = self._compile("store-v3-parent")
+        pack, _ = contracts.load_canonical_json(result.manifest_path)
+        self.assertEqual(pack["schema"], contracts.PACK_SCHEMA_V3)
+        self.assertEqual(result.source_manifests, 3)
+        contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            result.root,
+            manifest_path=result.manifest_path,
+        )
+
+    def test_v3_evidence_tampering_and_copy_races_fail_closed(self) -> None:
+        self._upgrade_plan_v3()
+        (self.external / "request.json").write_bytes(b"tampered-before-compile")
+        with self.assertRaisesRegex(compiler.PackCompilationError, "source plan evidence"):
+            self._compile("store-v3-tampered")
+        self.assertEqual(self._published_directories("store-v3-tampered"), [])
+
+        self._upgrade_plan_v3()
+        mutated_during_copy = False
+
+        def mutate_during_copy(location: str) -> None:
+            nonlocal mutated_during_copy
+            if not mutated_during_copy and "request_parameter_preimage" in location:
+                mutated_during_copy = True
+                (self.external / "request.json").write_bytes(b"changed-during-copy")
+
+        with self.assertRaisesRegex(compiler.PackCompilationError, "changed while"):
+            self._compile(
+                "store-v3-copy-race",
+                after_copy=mutate_during_copy,
+            )
+        self.assertTrue(mutated_during_copy)
+        self.assertEqual(self._published_directories("store-v3-copy-race"), [])
+
+        self._upgrade_plan_v3()
+
+        def mutate_before_seal() -> None:
+            (self.external / "receipt.json").write_bytes(b"changed-before-seal")
+
+        with self.assertRaisesRegex(compiler.PackCompilationError, "changed after validation"):
+            self._compile(
+                "store-v3-seal-race",
+                before_seal=mutate_before_seal,
+            )
+        self.assertEqual(self._published_directories("store-v3-seal-race"), [])
+
+    def test_v3_reuse_reverifies_evidence_bytes(self) -> None:
+        self._upgrade_plan_v3()
+        first = self._compile("store-v3-reuse")
+        pack, _ = contracts.load_canonical_json(first.manifest_path)
+        receipt_path = first.root / pack["evidence"]["acquisition_receipts"][0]["path"]
+        _make_writable(first.root)
+        receipt_path.write_bytes(b"tampered evidence")
+        compiler._make_read_only(first.root)
+        with self.assertRaisesRegex(
+            compiler.PackCompilationError,
+            "existing pack verification failed",
+        ):
+            self._compile("store-v3-reuse")
 
     def test_identity_is_independent_of_mount_paths_and_mtimes(self) -> None:
         first = self._compile("store-a")

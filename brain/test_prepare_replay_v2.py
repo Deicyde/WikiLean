@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused tests for sealed offline-pack/v2 workspace preparation."""
+"""Focused tests for sealed offline-pack/v2 and v3 workspace preparation."""
 from __future__ import annotations
 
 from contextlib import redirect_stderr, redirect_stdout
@@ -47,6 +47,24 @@ class ReplayPackFixture:
 
     def make(self) -> tuple[dict[str, object], Path]:
         pack, manifest = self.case.make_pack()
+        self._install_configuration(pack, manifest)
+        return pack, manifest
+
+    def make_v3(self) -> tuple[dict[str, object], Path]:
+        fixture = authority_tests.V3EvidenceClosureTest(methodName="runTest")
+        fixture.v2 = self.case
+        fixture.root = self.root
+        pack, manifest, _manifests, _receipt, _lineage, _preimage = (
+            fixture.make_v3_pack()
+        )
+        self._install_configuration(pack, manifest)
+        return pack, manifest
+
+    def _install_configuration(
+        self,
+        pack: dict[str, object],
+        manifest: Path,
+    ) -> None:
         authority_tests.write_canonical(
             self.root / "config/reducer.json", CONFIGURATION
         )
@@ -54,7 +72,6 @@ class ReplayPackFixture:
             self.root, "config/reducer.json", "application/json"
         )
         self.rewrite(pack, manifest)
-        return pack, manifest
 
     def rewrite(self, pack: dict[str, object], manifest: Path) -> None:
         pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
@@ -154,6 +171,83 @@ class PrepareReplayV2Test(unittest.TestCase):
             if item["name"] == member["object"]
         )
         return self.pack_root / source_object["path"], source_object
+
+    def use_v3_pack(self) -> None:
+        self.pack, self.manifest = self.fixture.make_v3()
+
+    def test_v3_materializes_with_the_unchanged_build_context_contract(self) -> None:
+        self.use_v3_pack()
+        workspace = self.root / "workspace-v3"
+        result = self.prepare(workspace)
+        context = build_context.BuildContext.load(result.context_path)
+
+        self.assertEqual(self.pack["schema"], contracts.PACK_SCHEMA_V3)
+        self.assertEqual(
+            context.to_document()["schema"], build_context.BUILD_CONTEXT_SCHEMA
+        )
+        self.assertEqual(result.offline_pack_id, self.pack["offline_pack_id"])
+        self.assertEqual(result.source_set_root, self.pack["source_set_root"])
+        self.assertEqual(context.replay.offline_pack_id, result.offline_pack_id)
+        self.assertEqual(context.replay.source_set_root, result.source_set_root)
+        inventory = json.loads(
+            (self.pack_root / self.pack["inventory"]["path"]).read_text()
+        )
+        self.assertEqual(context.to_document()["stages"], inventory["stages"])
+        self.assertEqual(context.configuration.to_document(), CONFIGURATION)
+        self.assertFalse((workspace / "evidence").exists())
+
+    def test_v3_evidence_tamper_fails_before_workspace_materialization(self) -> None:
+        self.use_v3_pack()
+        evidence_ref = self.pack["evidence"]["request_parameter_preimages"][0]
+        (self.pack_root / evidence_ref["path"]).write_bytes(b"tampered")
+        workspace = self.root / "tampered-v3"
+
+        with mock.patch.object(prepare, "_create_staging_directory") as create:
+            with self.assertRaisesRegex(contracts.VerificationError, "sha256"):
+                self.prepare(workspace)
+        create.assert_not_called()
+        self.assertFalse(workspace.exists())
+        self.assertEqual(list(self.root.glob(".tampered-v3.prepare-*")), [])
+
+    def test_v3_semantic_evidence_tamper_fails_before_materialization(self) -> None:
+        self.use_v3_pack()
+        receipt_ref = self.pack["evidence"]["acquisition_receipts"][0]
+        receipt_path = self.pack_root / receipt_ref["path"]
+        receipt = json.loads(receipt_path.read_text())
+        receipt["source"] = "tampered-source"
+        authority_tests.write_canonical(receipt_path, receipt)
+        receipt_ref.update(
+            authority_tests.file_ref(
+                self.pack_root,
+                receipt_ref["path"],
+                "application/json",
+            )
+        )
+        self.fixture.rewrite(self.pack, self.manifest)
+        workspace = self.root / "semantic-tamper-v3"
+
+        with mock.patch.object(prepare, "_create_staging_directory") as create:
+            with self.assertRaisesRegex(
+                contracts.VerificationError,
+                "acquisition_receipt_id: expected",
+            ):
+                self.prepare(workspace)
+        create.assert_not_called()
+        self.assertFalse(workspace.exists())
+
+    def test_expected_v3_schema_rejects_downgrade_before_materialization(self) -> None:
+        workspace = self.root / "downgraded-v3"
+        with mock.patch.object(prepare, "_create_staging_directory") as create:
+            with self.assertRaisesRegex(
+                prepare.ReplayPreparationError,
+                "schema changed before replay preparation",
+            ):
+                self.prepare(
+                    workspace,
+                    expected_pack_schema=contracts.PACK_SCHEMA_V3,
+                )
+        create.assert_not_called()
+        self.assertFalse(workspace.exists())
 
     def test_materializes_only_declared_copies_and_canonical_context(self) -> None:
         workspace = self.root / "workspace"

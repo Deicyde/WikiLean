@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify and materialize a sealed offline-pack/v2 replay workspace.
+"""Verify and materialize a sealed offline-pack/v2 or v3 replay workspace.
 
 This tool is intentionally narrower than a runner: it verifies authority
 documents, copies the exact reducer/input closure into a fresh workspace, and
@@ -443,6 +443,7 @@ def prepare_replay_v2(
     semantic_epoch: str,
     prior_state_root: str | None = None,
     pack_root: str | os.PathLike[str] | None = None,
+    expected_pack_schema: str | None = None,
 ) -> PreparedReplay:
     """Verify ``manifest_path`` and copy its exact replay closure to ``workspace``."""
     manifest = _absolute_existing_file(manifest_path, "manifest")
@@ -458,8 +459,23 @@ def prepare_replay_v2(
 
     pack_value, _ = contracts.load_canonical_json(manifest)
     pack = contracts.validate_offline_pack(pack_value)
-    if pack["schema"] != contracts.PACK_SCHEMA_V2:
-        raise ReplayPreparationError("prepare_replay_v2 requires offline-pack/v2")
+    supported_pack_schemas = {
+        contracts.PACK_SCHEMA_V2,
+        contracts.PACK_SCHEMA_V3,
+    }
+    if pack["schema"] not in supported_pack_schemas:
+        raise ReplayPreparationError(
+            "prepare_replay_v2 requires offline-pack/v2 or offline-pack/v3"
+        )
+    if expected_pack_schema is not None:
+        if expected_pack_schema not in supported_pack_schemas:
+            raise ReplayPreparationError(
+                f"unsupported expected pack schema {expected_pack_schema!r}"
+            )
+        if pack["schema"] != expected_pack_schema:
+            raise ReplayPreparationError(
+                "offline-pack schema changed before replay preparation"
+            )
     contracts.verify_offline_pack_files(pack, root, manifest_path=manifest)
 
     environment_ref = pack["environment"]
@@ -484,8 +500,15 @@ def prepare_replay_v2(
         source_manifest, _ = _load_verified_json(root, ref, location)
         contracts.validate_source_manifest(source_manifest)
         manifest_id = source_manifest["source_manifest_id"]
-        if source_manifest["schema"] != contracts.SOURCE_SCHEMA_V2:
-            raise ReplayPreparationError(f"{location}: expected source-manifest/v2")
+        expected_source_schema = (
+            contracts.SOURCE_SCHEMA_V3
+            if pack["schema"] == contracts.PACK_SCHEMA_V3
+            else contracts.SOURCE_SCHEMA_V2
+        )
+        if source_manifest["schema"] != expected_source_schema:
+            raise ReplayPreparationError(
+                f"{location}: expected {expected_source_schema}"
+            )
         if manifest_id != ref["source_manifest_id"]:
             raise ReplayPreparationError(f"{location}: source manifest ID mismatch")
         source_manifests[manifest_id] = source_manifest
@@ -754,7 +777,10 @@ class _JsonArgumentParser(argparse.ArgumentParser):
 
 def _parser() -> argparse.ArgumentParser:
     parser = _JsonArgumentParser(
-        description="Verify and materialize an offline-pack/v2 replay workspace."
+        description=(
+            "Verify and materialize an offline-pack/v2 or offline-pack/v3 "
+            "replay workspace."
+        )
     )
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument(

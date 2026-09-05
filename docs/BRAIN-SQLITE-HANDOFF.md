@@ -10,22 +10,22 @@ the executable authority contracts are summarized in
 
 Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest pushed
 history should include `Seal D1 annotation mirroring` followed by `Define v3 Brain evidence
-contracts` and `Harden Wikidata acquisition publication`. The worktree should be clean;
-verify that before doing anything else.
+contracts`, `Harden Wikidata acquisition publication`, and `Integrate v3 Brain replay
+pipeline`. The worktree should be clean; verify that before doing anything else.
 
 Immediate continuation order:
 
-1. Integrate source-plan/v3 into the pack compiler so v1 plans still emit byte-compatible
-   v2 packs and v3 plans emit evidence-closed v3 packs.
-2. Add v3 evidence/freshness/space handling to preflight, then allow v3 through preparation
-   and replay with tamper-before-execution tests.
-3. Configure a D1 Read-scoped Cloudflare token locally (never paste or commit it), run
+1. Configure a D1 Read-scoped Cloudflare token locally (never paste or commit it), run
    `brain/acquire-d1-snapshot.sh`, review the private bundle, and bind it into a v3 plan.
-4. Restore a read-only Mathlib source checkout and run the reviewed plan's bounded preflight
-   before attempting the first real pack.
-5. Replace the now-fail-closed legacy Wikidata live reads with one sealed evidence generation
+2. Restore a read-only Mathlib source checkout and author the complete reviewed v3 source
+   plan, including the pinned Hugging Face inputs and license decisions.
+3. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
+   headroom, then perform the two-path clean-room replay and semantic comparison.
+4. Replace the now-fail-closed legacy Wikidata live reads with one sealed evidence generation
    and make proposal folding consume it offline; no live acquisition or tracked data
    regeneration is required to resume the code work.
+5. Add the remaining same-schema `offline_pack_id` dispatch fence described below before
+   treating hostile same-UID path replacement as closed.
 
 No Worker deployment, production promotion, D1 write, or live Wikidata fetch was performed
 in this stabilization session.
@@ -36,10 +36,10 @@ The SQLite architecture and its fixture-scale sealed replay path are substantial
 implemented. This branch does **not** yet establish an authoritative full-corpus build:
 
 - no reviewed current-corpus source plan exists;
-- no real `offline-pack/v2` has been compiled;
+- no real `offline-pack/v3` has been compiled;
 - no full-corpus clean-room replay, dual-build equality result, or reproducibility
   attestation exists;
-- no v2 pack identity has been bound into an authoritative release; and
+- no verified v3 pack identity has been bound into an authoritative release; and
 - nothing in this work authorizes a Worker deployment or production promotion.
 
 Production remains on the compatibility authority path. P1 activation remains a separate,
@@ -69,8 +69,9 @@ The latest sealed-pack milestone adds:
 
 - stricter live environment probing for Python, NumPy's installed closure, SQLite, locale
   and hash settings, runner-file closure, development-host identity, and sandbox policy;
-- a canonical offline-pack source-plan schema and deterministic, network-free v2 compiler;
-- a bounded source-plan preflight that hashes and validates only small control documents,
+- canonical offline-pack source-plan schemas and a deterministic, network-free compiler
+  that preserves v1-plan→v2-pack identity and emits v3 packs only from validated v3 plans;
+- a bounded source-plan preflight that hashes and validates small control/evidence documents,
   uses Git/lstat sizes for corpus payloads, and reports separate `compile_ready`,
   `source_authority_ready`, and `source_publishable` states; and
 - source-selector and test-gate updates for the current reducer inventory.
@@ -82,8 +83,9 @@ plan (including warning-class authority/publication concerns), and `1` for struc
 argument errors. All report/error output is canonical JSON. Receipt-role detection remains
 presence-only in v2. The explicit v3 source-manifest, source-plan, and offline-pack contracts
 now validate and seal receipt, lineage, and request-preimage bytes with clock-free logical
-identities. Compiler, preflight, preparation, and replay integration remain the next step;
-current compilation is still v1 plan to v2 pack only.
+identities. The compiler preserves exact v1-plan→v2-pack compatibility while emitting
+evidence-closed v3 packs from v3 plans; preflight validates and accounts for evidence, and
+preparation/replay accept only fully verified v2 or v3 packs.
 
 The subsequent acquisition-integrity milestone adds:
 
@@ -167,14 +169,14 @@ worklists only.
 
 Focused results recorded through 2026-09-05:
 
-- offline-pack compiler: 22 tests passed;
-- source-plan preflight: 15 tests passed;
+- offline-pack compiler: 26 tests passed;
+- source-plan preflight: 21 tests passed;
 - authority contracts: 74 tests passed, including the v3 evidence and parent-DAG closure;
 - proposal-fold acquisition: 10 tests passed;
 - external pair publication/reader fixtures: all checks passed;
 - execution environment: 20 tests passed;
-- replay executor: 33 tests passed;
-- replay preparation: 24 tests passed;
+- replay executor: 36 tests passed;
+- replay preparation: 28 tests passed;
 - base-graph context: 11 tests passed after the annotation-selector fix; and
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
@@ -276,10 +278,9 @@ the current checkout:
    to one acquisition, before treating the pins as source-pack authority.
 4. Resolve the redistribution policy for `theorem_matching.csv` before publication. The
    registry text alone is not sufficient approval for pack redistribution.
-5. Integrate the standalone acquisition-receipt and normalization-lineage contracts through
-   explicit v3 source-manifest/source-plan/offline-pack contracts, including sealed
-   request-parameter preimages. Current v2 receipt-like files still prove presence only,
-   not complete batch success or output ancestry.
+5. Author the reviewed current-corpus v3 plan and supply real receipt, lineage, and request-
+   preimage files for every non-Git source. The contract/compiler/preflight/replay path is
+   implemented, but historical v2 receipt-like files still prove presence only.
 6. Remove observation times and local paths from remaining external-harvest and
    catalog-derived bytes. Hierarchy and theoremgraph-link outputs are immutable-revision-
    derived; Frontier no longer consumes halo output, and community provenance now uses the
@@ -295,6 +296,10 @@ the current checkout:
    mutation races. A hostile same-UID process can still theoretically perform an ABA path
    swap during path-based content verification; eliminate that residual either with fully
    dirfd-relative verification or by running compilation in an isolated privilege boundary.
+10. `run_offline` pins the selected pack schema across dispatch and preparation, but not the
+    initially observed `offline_pack_id`. Carry that ID into preparation to reject a
+    same-schema path replacement, even though the replacement is already required to be a
+    separately valid complete pack.
 
 ## Disk warning
 
@@ -315,10 +320,9 @@ the exact plan does not retain ample headroom.
    fail-closed checkpoints.
 2. Configure the local D1 Read credential, run and review one sealed production D1 bundle,
    bind it into source-plan authority, remove remaining observation/run metadata from
-   normalized bytes, finish Wikidata acquisition separation, then design the explicit
-   v3 receipt/lineage pack integration
-   (including the reviewed Hugging Face sources) and author the
-   reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.
+   normalized bytes, finish Wikidata acquisition separation, and author the reviewed
+   current-corpus v3 source plan with immutable pins, licenses, receipts, lineage, and the
+   reviewed Hugging Face sources.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,

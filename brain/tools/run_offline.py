@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Verify and execute an offline pack.
 
-Version 1 retains its cooperative single-reducer network guard. Version 2 prepares a
-sealed workspace and executes the complete DAG through the mandatory OS-isolated runner.
+Version 1 retains its cooperative single-reducer network guard. Versions 2 and 3
+prepare a sealed workspace and execute the same complete DAG through the mandatory
+OS-isolated runner; v3 additionally requires the authority verifier to accept its
+complete acquisition-evidence closure before workspace materialization.
 """
 from __future__ import annotations
 
@@ -23,6 +25,7 @@ import run_replay_v2
 from authority_contracts import (
     PACK_SCHEMA,
     PACK_SCHEMA_V2,
+    PACK_SCHEMA_V3,
     VerificationError,
     load_canonical_json,
     validate_offline_pack,
@@ -46,11 +49,19 @@ def run(
     manifest_path = manifest_path.resolve(strict=True)
     verification_root = (root or manifest_path.parent).resolve(strict=True)
     document, _ = load_canonical_json(manifest_path)
-    if isinstance(document, dict) and document.get("schema") == PACK_SCHEMA_V2:
+    replay_schema = document.get("schema") if isinstance(document, dict) else None
+    if replay_schema in (
+        PACK_SCHEMA_V2,
+        PACK_SCHEMA_V3,
+    ):
         run_replay_v2.require_isolated_startup()
         if arguments:
+            if replay_schema == PACK_SCHEMA_V2:
+                raise VerificationError(
+                    "offline-pack/v2 stage arguments are sealed by its reducer inventory"
+                )
             raise VerificationError(
-                "offline-pack/v2 stage arguments are sealed by its reducer inventory"
+                "offline-pack/v3 stage arguments are sealed by its reducer inventory"
             )
         missing = [
             name
@@ -63,9 +74,12 @@ def run(
             if value is None
         ]
         if missing:
-            raise VerificationError(
-                "offline-pack/v2 requires " + ", ".join(missing)
+            version = (
+                "offline-pack/v2"
+                if replay_schema == PACK_SCHEMA_V2
+                else "offline-pack/v3"
             )
+            raise VerificationError(version + " requires " + ", ".join(missing))
         replay_options = {}
         if stage_timeout_seconds is not None:
             replay_options["stage_timeout_seconds"] = (
@@ -77,6 +91,7 @@ def run(
             manifest_path,
             workspace,
             pack_root=verification_root,
+            expected_pack_schema=replay_schema,
             authority_git_commit=authority_git_commit,
             authority_root=authority_root,
             semantic_epoch=semantic_epoch,
@@ -169,7 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--workspace",
         type=Path,
-        help="fresh replay workspace (required for offline-pack/v2)",
+        help="fresh replay workspace (required for offline-pack/v2 or v3)",
     )
     parser.add_argument("--authority-git-commit")
     parser.add_argument("--authority-root")
