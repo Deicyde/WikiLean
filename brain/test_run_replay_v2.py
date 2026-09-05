@@ -1415,9 +1415,13 @@ class ReplayRunnerTest(unittest.TestCase):
 
     def test_offline_runner_v2_prepares_then_executes_without_extra_args(self) -> None:
         manifest = self.base / "pack-v2.json"
+        initial_pack_id = "sha256:" + "2" * 64
         manifest.write_bytes(
             build_context.canonical_json_bytes(
-                {"schema": run_offline.PACK_SCHEMA_V2}
+                {
+                    "schema": run_offline.PACK_SCHEMA_V2,
+                    "offline_pack_id": initial_pack_id,
+                }
             )
         )
         manifest.chmod(0o444)
@@ -1501,6 +1505,7 @@ class ReplayRunnerTest(unittest.TestCase):
             workspace,
             pack_root=self.base.resolve(),
             expected_pack_schema=run_offline.PACK_SCHEMA_V2,
+            expected_offline_pack_id=initial_pack_id,
             authority_git_commit="a" * 40,
             authority_root="sha256:" + "b" * 64,
             semantic_epoch="brain-v3",
