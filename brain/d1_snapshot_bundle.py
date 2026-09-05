@@ -42,7 +42,7 @@ WRANGLER_INTEGRITY = (
 )
 WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
 PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "8add497ed3c09a762d35ec2a66f8b077cb061315710a660c24804cee71eef620"
+ACQUIRER_WRAPPER_SHA256 = "0fe71d99df5aa47b98e29d9af6be163689ff925b9c8fe7e815e552ba58bd7552"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
@@ -50,7 +50,7 @@ LOCAL_DEPENDENCY_PINS = (
     },
     {
         "path": "brain/tools/authority_contracts.py",
-        "sha256": "9cb0d246cce72c173b47bfe9247458ef4a92f1abf3e48a9db7d6484951541d63",
+        "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
     },
     {
         "path": "brain/tools/execution_environment.py",

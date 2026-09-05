@@ -38,10 +38,13 @@ UTC_TIMESTAMP_RE = re.compile(
 
 SOURCE_SCHEMA_V1 = "wikilean.source-manifest/v1"
 SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
+SOURCE_SCHEMA_V3 = "wikilean.source-manifest/v3"
 ACQUISITION_RECEIPT_SCHEMA_V1 = "wikilean.acquisition-receipt/v1"
 NORMALIZATION_LINEAGE_SCHEMA_V1 = "wikilean.normalization-lineage/v1"
+OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3 = "wikilean.offline-pack-source-plan/v3"
 PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
 PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
+PACK_SCHEMA_V3 = "wikilean.offline-pack/v3"
 REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
 EXECUTION_ENVIRONMENT_SCHEMA = (
     execution_environment_contract.EXECUTION_ENVIRONMENT_SCHEMA
@@ -108,13 +111,16 @@ BRAIN_SQLITE_V2_INDEXES = {
 
 SOURCE_DOMAIN_V1 = "wikilean.source-manifest.v1"
 SOURCE_DOMAIN_V2 = "wikilean.source-manifest.v2"
+SOURCE_DOMAIN_V3 = "wikilean.source-manifest.v3"
 ACQUISITION_RECEIPT_DOMAIN_V1 = "wikilean.acquisition-receipt.v1"
 ACQUISITION_REQUEST_SET_DOMAIN_V1 = "wikilean.acquisition-request-set.v1"
 NORMALIZATION_LINEAGE_DOMAIN_V1 = "wikilean.normalization-lineage.v1"
 SOURCE_SET_DOMAIN_V1 = "wikilean.source-set.v1"
 SOURCE_SET_DOMAIN_V2 = "wikilean.source-set.v2"
+SOURCE_SET_DOMAIN_V3 = "wikilean.source-set.v3"
 PACK_DOMAIN_V1 = "wikilean.offline-pack.v1"
 PACK_DOMAIN_V2 = "wikilean.offline-pack.v2"
+PACK_DOMAIN_V3 = "wikilean.offline-pack.v3"
 REDUCER_INPUT_INVENTORY_DOMAIN_V2 = "wikilean.reducer-input-inventory.v2"
 RELEASE_DOMAIN = "wikilean.release.v1"
 BUILD_ATTESTATION_DOMAIN_V1 = "wikilean.build-attestation.v1"
@@ -756,6 +762,78 @@ def _literal_file_ref(
     return obj
 
 
+def _request_parameter_preimage_descriptor(
+    value: Any,
+    location: str,
+) -> dict[str, Any]:
+    descriptor = _expect_object(value, location)
+    _keys(
+        descriptor,
+        location,
+        {"parameters_sha256", "bytes", "media_type"},
+    )
+    parameters_sha256 = _digest(
+        descriptor["parameters_sha256"],
+        f"{location}.parameters_sha256",
+    )
+    _expect_int(descriptor["bytes"], f"{location}.bytes")
+    _expect_pattern(
+        descriptor["media_type"],
+        f"{location}.media_type",
+        MEDIA_TYPE_RE,
+        "a media type",
+    )
+    return descriptor
+
+
+def _validate_source_evidence_descriptor(
+    value: Any,
+    location: str,
+    *,
+    source_kind: str,
+) -> dict[str, Any]:
+    evidence = _expect_object(value, location)
+    _keys(
+        evidence,
+        location,
+        {
+            "acquisition_receipt_ids",
+            "normalization_lineage_id",
+            "request_parameter_preimages",
+        },
+    )
+    receipt_ids = _sorted_unique_strings(
+        evidence["acquisition_receipt_ids"],
+        f"{location}.acquisition_receipt_ids",
+        nonempty=source_kind == "acquired_dataset",
+    )
+    for index, receipt_id in enumerate(receipt_ids):
+        _hash(receipt_id, f"{location}.acquisition_receipt_ids[{index}]")
+    _hash(
+        evidence["normalization_lineage_id"],
+        f"{location}.normalization_lineage_id",
+    )
+
+    preimages = _expect_array(
+        evidence["request_parameter_preimages"],
+        f"{location}.request_parameter_preimages",
+        nonempty=source_kind == "acquired_dataset",
+    )
+    preimage_digests: list[str] = []
+    for index, item in enumerate(preimages):
+        descriptor = _request_parameter_preimage_descriptor(
+            item,
+            f"{location}.request_parameter_preimages[{index}]",
+        )
+        preimage_digests.append(descriptor["parameters_sha256"])
+    if preimage_digests != sorted(set(preimage_digests)):
+        _fail(
+            f"{location}.request_parameter_preimages",
+            "entries must have unique digests and be sorted by parameters_sha256",
+        )
+    return evidence
+
+
 def _sorted_unique_strings(
     value: Any,
     location: str,
@@ -774,6 +852,7 @@ def source_manifest_identity(manifest: dict[str, Any]) -> str:
     domains = {
         SOURCE_SCHEMA_V1: SOURCE_DOMAIN_V1,
         SOURCE_SCHEMA_V2: SOURCE_DOMAIN_V2,
+        SOURCE_SCHEMA_V3: SOURCE_DOMAIN_V3,
     }
     schema = manifest.get("schema")
     if schema not in domains:
@@ -822,12 +901,14 @@ def source_set_root(manifest_ids: list[str]) -> str:
     return domain_hash(SOURCE_SET_DOMAIN_V1, sorted(manifest_ids))
 
 
-def source_set_root_v2(
+def _source_set_root_modern(
     inventory_id: str,
     manifest_ids: list[str],
     input_bindings: list[dict[str, Any]],
+    *,
+    domain: str,
 ) -> str:
-    """Bind v2 sources to their exact logical present/absent input mapping."""
+    """Bind modern sources to their exact logical present/absent input mapping."""
     _hash(inventory_id, "$.inventory_id")
     normalized_manifests = sorted(manifest_ids)
     if len(normalized_manifests) != len(set(normalized_manifests)):
@@ -913,12 +994,40 @@ def source_set_root_v2(
         })
     normalized_bindings.sort(key=lambda item: item["input_id"])
     return domain_hash(
-        SOURCE_SET_DOMAIN_V2,
+        domain,
         {
             "inventory_id": inventory_id,
             "source_manifests": normalized_manifests,
             "input_bindings": normalized_bindings,
         },
+    )
+
+
+def source_set_root_v2(
+    inventory_id: str,
+    manifest_ids: list[str],
+    input_bindings: list[dict[str, Any]],
+) -> str:
+    """Bind v2 sources to their exact logical present/absent input mapping."""
+    return _source_set_root_modern(
+        inventory_id,
+        manifest_ids,
+        input_bindings,
+        domain=SOURCE_SET_DOMAIN_V2,
+    )
+
+
+def source_set_root_v3(
+    inventory_id: str,
+    manifest_ids: list[str],
+    input_bindings: list[dict[str, Any]],
+) -> str:
+    """Bind v3 evidence-bearing sources to their logical input mapping."""
+    return _source_set_root_modern(
+        inventory_id,
+        manifest_ids,
+        input_bindings,
+        domain=SOURCE_SET_DOMAIN_V3,
     )
 
 
@@ -937,6 +1046,7 @@ def offline_pack_identity(pack: dict[str, Any]) -> str:
     domains = {
         PACK_SCHEMA_V1: PACK_DOMAIN_V1,
         PACK_SCHEMA_V2: PACK_DOMAIN_V2,
+        PACK_SCHEMA_V3: PACK_DOMAIN_V3,
     }
     schema = pack.get("schema")
     if schema not in domains:
@@ -1460,6 +1570,8 @@ def validate_normalization_lineage(
 
 
 def validate_source_manifest(manifest: Any) -> dict[str, Any]:
+    if isinstance(manifest, dict) and manifest.get("schema") == SOURCE_SCHEMA_V3:
+        return _validate_source_manifest_v3(manifest)
     if isinstance(manifest, dict) and manifest.get("schema") == SOURCE_SCHEMA_V2:
         return _validate_source_manifest_v2(manifest)
     obj = _expect_object(manifest, "$")
@@ -1675,7 +1787,270 @@ def _validate_source_manifest_v2(manifest: Any) -> dict[str, Any]:
     return obj
 
 
+def _validate_source_manifest_v3(manifest: Any) -> dict[str, Any]:
+    """Validate v3 without changing the frozen v2 acceptance surface."""
+    obj = _expect_object(manifest, "$")
+    required = {
+        "schema",
+        "source_manifest_id",
+        "source",
+        "source_kind",
+        "pin",
+        "objects",
+        "license",
+        "acquisition",
+        "normalization",
+    }
+    _keys(
+        obj,
+        "$",
+        required,
+        {"evidence", "previous_source_manifest_id", "review", "audit"},
+    )
+    if obj["schema"] != SOURCE_SCHEMA_V3:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["source_manifest_id"], "$.source_manifest_id")
+
+    # Reuse the frozen v2 field semantics against a synthetic v2 identity.  The
+    # caller's v3 document is never rewritten and its identity is checked below.
+    compatibility = copy.deepcopy(obj)
+    compatibility.pop("evidence", None)
+    compatibility["schema"] = SOURCE_SCHEMA_V2
+    compatibility["source_manifest_id"] = source_manifest_identity(compatibility)
+    _validate_source_manifest_v2(compatibility)
+
+    source_kind = obj["source_kind"]
+    if source_kind == "curated_git_tree":
+        if "evidence" in obj:
+            _fail(
+                "$.evidence",
+                "curated_git_tree sources are sealed by their Git commit/tree and must not declare acquisition evidence",
+            )
+    else:
+        if "evidence" not in obj:
+            _fail(
+                "$.evidence",
+                "non-Git source-manifest/v3 requires acquisition receipts, normalization lineage, and request-parameter preimages",
+            )
+        _validate_source_evidence_descriptor(
+            obj["evidence"],
+            "$.evidence",
+            source_kind=source_kind,
+        )
+
+    expected = source_manifest_identity(obj)
+    if obj["source_manifest_id"] != expected:
+        _fail("$.source_manifest_id", f"expected {expected}")
+    return obj
+
+
+def _project_evidence_object(value: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: value[key]
+        for key in ("object", "sha256", "bytes", "media_type")
+    }
+
+
+def _project_manifest_object(value: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "object": value["name"],
+        "sha256": value["sha256"],
+        "bytes": value["bytes"],
+        "media_type": value["media_type"],
+    }
+
+
+def validate_source_manifest_evidence_documents(
+    manifest: dict[str, Any],
+    *,
+    receipts: dict[str, dict[str, Any]],
+    lineage: dict[str, Any],
+    request_parameter_preimages: dict[str, dict[str, Any]],
+    parent_source_manifests: dict[str, dict[str, Any]] | None = None,
+    location: str = "$",
+) -> None:
+    """Cross-check one v3 non-Git source against its complete evidence closure.
+
+    Receipt and lineage audit timestamps remain outside their logical IDs and
+    therefore outside the source identity.  The enclosing offline pack separately
+    seals their exact canonical bytes.  Request parameter bytes are bound directly
+    by the digest used in every receipt descriptor.
+    """
+    validate_source_manifest(manifest)
+    if manifest["schema"] != SOURCE_SCHEMA_V3:
+        _fail(location, "evidence verification requires source-manifest/v3")
+    if manifest["source_kind"] == "curated_git_tree":
+        _fail(location, "curated_git_tree sources have no acquisition evidence")
+
+    evidence = manifest["evidence"]
+    receipt_ids = evidence["acquisition_receipt_ids"]
+    if set(receipts) != set(receipt_ids):
+        _fail(
+            f"{location}.evidence.acquisition_receipt_ids",
+            "validated receipt documents must exactly match the declared receipt IDs",
+        )
+    validated_receipts: dict[str, dict[str, Any]] = {}
+    for receipt_id, receipt in receipts.items():
+        receipt_location = f"{location}.evidence.acquisition_receipt_ids[{receipt_id}]"
+        validate_acquisition_receipt(receipt, location=receipt_location)
+        if receipt["acquisition_receipt_id"] != receipt_id:
+            _fail(receipt_location, "receipt map key does not match document identity")
+        if receipt["source"] != manifest["source"]:
+            _fail(f"{receipt_location}.source", "must equal source manifest source")
+        if receipt["pin"] != manifest["pin"]:
+            _fail(f"{receipt_location}.pin", "must equal source manifest pin")
+        if receipt["tool"] != manifest["acquisition"]:
+            _fail(f"{receipt_location}.tool", "must equal source manifest acquisition tool")
+        validated_receipts[receipt_id] = receipt
+
+    validate_normalization_lineage(
+        lineage,
+        location=f"{location}.evidence.normalization_lineage",
+    )
+    lineage_id = evidence["normalization_lineage_id"]
+    if lineage["normalization_lineage_id"] != lineage_id:
+        _fail(
+            f"{location}.evidence.normalization_lineage_id",
+            "does not match the validated lineage document",
+        )
+    if lineage["source"] != manifest["source"]:
+        _fail(
+            f"{location}.evidence.normalization_lineage.source",
+            "must equal source manifest source",
+        )
+    if lineage["acquisition_receipt_ids"] != sorted(receipts):
+        _fail(
+            f"{location}.evidence.normalization_lineage.acquisition_receipt_ids",
+            "must exactly equal the source manifest receipt IDs",
+        )
+    if lineage["normalization_schema"] != manifest["normalization"]["schema"]:
+        _fail(
+            f"{location}.evidence.normalization_lineage.normalization_schema",
+            "must equal source manifest normalization schema",
+        )
+    if lineage["tool"] != manifest["normalization"]["tool"]:
+        _fail(
+            f"{location}.evidence.normalization_lineage.tool",
+            "must equal source manifest normalization tool",
+        )
+
+    parent_source_manifests = parent_source_manifests or {}
+    parent_ids = lineage["parent_source_manifest_ids"]
+    if set(parent_source_manifests) != set(parent_ids):
+        _fail(
+            f"{location}.evidence.normalization_lineage.parent_source_manifest_ids",
+            "parent source manifests must exactly match the lineage parent IDs",
+        )
+    if manifest["source_manifest_id"] in parent_source_manifests:
+        _fail(
+            f"{location}.evidence.normalization_lineage.parent_source_manifest_ids",
+            "a source manifest cannot be its own normalization parent",
+        )
+    for parent_id, parent in parent_source_manifests.items():
+        validate_source_manifest(parent)
+        if parent["schema"] != SOURCE_SCHEMA_V3:
+            _fail(
+                f"{location}.evidence.normalization_lineage.parent_source_manifest_ids",
+                "normalization parents must use source-manifest/v3",
+            )
+        if parent["source_manifest_id"] != parent_id:
+            _fail(
+                f"{location}.evidence.normalization_lineage.parent_source_manifest_ids",
+                "parent source manifest map key does not match its identity",
+            )
+
+    receipt_inputs: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    projected_lineage_inputs: list[dict[str, Any]] = []
+    for index, item in enumerate(lineage["inputs"]):
+        input_location = f"{location}.evidence.normalization_lineage.inputs[{index}]"
+        projected = _project_evidence_object(item)
+        projected_lineage_inputs.append(projected)
+        origin = item["origin"]
+        if origin["kind"] == "acquisition_receipt":
+            receipt = validated_receipts.get(origin["id"])
+            if receipt is None:
+                _fail(f"{input_location}.origin.id", "references an undeclared acquisition receipt")
+            receipt_inputs[origin["id"]].append(projected)
+        else:
+            parent = parent_source_manifests.get(origin["id"])
+            if parent is None:
+                _fail(f"{input_location}.origin.id", "references an undeclared parent source manifest")
+            parent_objects = {entry["name"]: entry for entry in parent["objects"]}
+            parent_object = parent_objects.get(item["object"])
+            if parent_object is None or _project_manifest_object(parent_object) != projected:
+                _fail(input_location, "does not match the named parent source object")
+            if "normalized" not in parent_object["roles"]:
+                _fail(input_location, "parent lineage inputs must reference normalized source objects")
+
+    for receipt_id, receipt in validated_receipts.items():
+        expected_outputs = sorted(receipt["outputs"], key=lambda item: item["object"])
+        actual_inputs = sorted(receipt_inputs[receipt_id], key=lambda item: item["object"])
+        if actual_inputs != expected_outputs:
+            _fail(
+                f"{location}.evidence.acquisition_receipts[{receipt_id}].outputs",
+                "must exactly equal the lineage inputs originating from this receipt",
+            )
+
+    raw_objects = sorted(
+        (
+            _project_manifest_object(item)
+            for item in manifest["objects"]
+            if "raw" in item["roles"]
+        ),
+        key=lambda item: item["object"],
+    )
+    projected_lineage_inputs.sort(key=lambda item: item["object"])
+    if projected_lineage_inputs != raw_objects:
+        _fail(
+            f"{location}.objects",
+            "raw source objects must exactly equal normalization lineage inputs",
+        )
+    normalized_objects = sorted(
+        (
+            _project_manifest_object(item)
+            for item in manifest["objects"]
+            if "normalized" in item["roles"]
+        ),
+        key=lambda item: item["object"],
+    )
+    if lineage["outputs"] != normalized_objects:
+        _fail(
+            f"{location}.objects",
+            "normalized source objects must exactly equal normalization lineage outputs",
+        )
+
+    declared_preimages = {
+        item["parameters_sha256"]: item
+        for item in evidence["request_parameter_preimages"]
+    }
+    requested_preimages = {
+        request["parameters_sha256"]
+        for receipt in validated_receipts.values()
+        for request in receipt["requests"]
+    }
+    if set(declared_preimages) != requested_preimages:
+        _fail(
+            f"{location}.evidence.request_parameter_preimages",
+            "must exactly cover every distinct receipt request parameters_sha256",
+        )
+    if set(request_parameter_preimages) != requested_preimages:
+        _fail(
+            f"{location}.evidence.request_parameter_preimages",
+            "verified preimage objects must exactly match the receipt request digest set",
+        )
+    for digest, descriptor in declared_preimages.items():
+        actual = request_parameter_preimages[digest]
+        for field in ("parameters_sha256", "bytes", "media_type"):
+            if actual[field] != descriptor[field]:
+                _fail(
+                    f"{location}.evidence.request_parameter_preimages[{digest}].{field}",
+                    "verified preimage metadata disagrees with source manifest",
+                )
+
+
 def validate_offline_pack(pack: Any) -> dict[str, Any]:
+    if isinstance(pack, dict) and pack.get("schema") == PACK_SCHEMA_V3:
+        return _validate_offline_pack_v3(pack)
     if isinstance(pack, dict) and pack.get("schema") == PACK_SCHEMA_V2:
         return _validate_offline_pack_v2(pack)
     obj = _expect_object(pack, "$")
@@ -1915,6 +2290,160 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
         _keys(audit, "$.audit", set(), {"created_at", "note"})
         for key, value in audit.items():
             _expect_string(value, f"$.audit.{key}", nonempty=False)
+
+    expected = offline_pack_identity(obj)
+    if obj["offline_pack_id"] != expected:
+        _fail("$.offline_pack_id", f"expected {expected}")
+    return obj
+
+
+def _validate_offline_pack_v3(pack: Any) -> dict[str, Any]:
+    """Validate the v3 evidence closure while preserving frozen v2 semantics."""
+    obj = _expect_object(pack, "$")
+    _keys(
+        obj,
+        "$",
+        {
+            "schema",
+            "offline_pack_id",
+            "source_set_root",
+            "inventory",
+            "source_manifests",
+            "objects",
+            "input_bindings",
+            "reducer",
+            "configuration",
+            "environment",
+            "schemas",
+            "evidence",
+        },
+        {"audit"},
+    )
+    if obj["schema"] != PACK_SCHEMA_V3:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["offline_pack_id"], "$.offline_pack_id")
+
+    compatibility = copy.deepcopy(obj)
+    compatibility.pop("evidence")
+    compatibility["schema"] = PACK_SCHEMA_V2
+    compatibility["offline_pack_id"] = offline_pack_identity(compatibility)
+    _validate_offline_pack_v2(compatibility)
+
+    evidence = _expect_object(obj["evidence"], "$.evidence")
+    _keys(
+        evidence,
+        "$.evidence",
+        {
+            "acquisition_receipts",
+            "normalization_lineages",
+            "request_parameter_preimages",
+        },
+    )
+
+    receipts = _expect_array(
+        evidence["acquisition_receipts"],
+        "$.evidence.acquisition_receipts",
+    )
+    receipt_ids: list[str] = []
+    evidence_paths: set[str] = set()
+    for index, item in enumerate(receipts):
+        location = f"$.evidence.acquisition_receipts[{index}]"
+        ref = _literal_file_ref(
+            item,
+            location,
+            extra={"acquisition_receipt_id"},
+        )
+        receipt_id = _hash(
+            ref["acquisition_receipt_id"],
+            f"{location}.acquisition_receipt_id",
+        )
+        if ref["media_type"] != "application/json":
+            _fail(f"{location}.media_type", "expected 'application/json'")
+        expected_path = (
+            "evidence/acquisition-receipts/"
+            + receipt_id.removeprefix("sha256:")
+            + ".json"
+        )
+        if ref["path"] != expected_path:
+            _fail(f"{location}.path", f"expected {expected_path!r}")
+        if ref["path"] in evidence_paths:
+            _fail(f"{location}.path", "duplicate evidence path")
+        evidence_paths.add(ref["path"])
+        receipt_ids.append(receipt_id)
+    if receipt_ids != sorted(set(receipt_ids)):
+        _fail(
+            "$.evidence.acquisition_receipts",
+            "entries must have unique IDs and be sorted by acquisition_receipt_id",
+        )
+
+    lineages = _expect_array(
+        evidence["normalization_lineages"],
+        "$.evidence.normalization_lineages",
+    )
+    lineage_ids: list[str] = []
+    for index, item in enumerate(lineages):
+        location = f"$.evidence.normalization_lineages[{index}]"
+        ref = _literal_file_ref(
+            item,
+            location,
+            extra={"normalization_lineage_id"},
+        )
+        lineage_id = _hash(
+            ref["normalization_lineage_id"],
+            f"{location}.normalization_lineage_id",
+        )
+        if ref["media_type"] != "application/json":
+            _fail(f"{location}.media_type", "expected 'application/json'")
+        expected_path = (
+            "evidence/normalization-lineages/"
+            + lineage_id.removeprefix("sha256:")
+            + ".json"
+        )
+        if ref["path"] != expected_path:
+            _fail(f"{location}.path", f"expected {expected_path!r}")
+        if ref["path"] in evidence_paths:
+            _fail(f"{location}.path", "duplicate evidence path")
+        evidence_paths.add(ref["path"])
+        lineage_ids.append(lineage_id)
+    if lineage_ids != sorted(set(lineage_ids)):
+        _fail(
+            "$.evidence.normalization_lineages",
+            "entries must have unique IDs and be sorted by normalization_lineage_id",
+        )
+
+    preimages = _expect_array(
+        evidence["request_parameter_preimages"],
+        "$.evidence.request_parameter_preimages",
+    )
+    preimage_digests: list[str] = []
+    for index, item in enumerate(preimages):
+        location = f"$.evidence.request_parameter_preimages[{index}]"
+        ref = _literal_file_ref(
+            item,
+            location,
+            extra={"parameters_sha256"},
+        )
+        parameters_sha256 = _digest(
+            ref["parameters_sha256"],
+            f"{location}.parameters_sha256",
+        )
+        if ref["sha256"] != parameters_sha256:
+            _fail(
+                f"{location}.sha256",
+                "must equal parameters_sha256 because it identifies the exact preimage bytes",
+            )
+        expected_path = f"evidence/request-parameters/sha256/{parameters_sha256}"
+        if ref["path"] != expected_path:
+            _fail(f"{location}.path", f"expected {expected_path!r}")
+        if ref["path"] in evidence_paths:
+            _fail(f"{location}.path", "duplicate evidence path")
+        evidence_paths.add(ref["path"])
+        preimage_digests.append(parameters_sha256)
+    if preimage_digests != sorted(set(preimage_digests)):
+        _fail(
+            "$.evidence.request_parameter_preimages",
+            "entries must have unique digests and be sorted by parameters_sha256",
+        )
 
     expected = offline_pack_identity(obj)
     if obj["offline_pack_id"] != expected:
@@ -2259,7 +2788,7 @@ def verify_source_manifest_files(manifest: dict[str, Any], root: Path) -> int:
 def verify_offline_pack_files(
     pack: dict[str, Any], root: Path, *, manifest_path: Path | None = None
 ) -> dict[str, int]:
-    if pack.get("schema") == PACK_SCHEMA_V2:
+    if pack.get("schema") in {PACK_SCHEMA_V2, PACK_SCHEMA_V3}:
         return _verify_offline_pack_files_v2(pack, root, manifest_path=manifest_path)
     initial_closure = _scan_file_closure(
         root, location="$", subject="offline pack"
@@ -2339,6 +2868,175 @@ def verify_offline_pack_files(
     }
 
 
+def _verify_offline_pack_v3_evidence(
+    pack: dict[str, Any],
+    root: Path,
+    *,
+    source_manifests: dict[str, dict[str, Any]],
+    verified_paths: set[str],
+) -> set[str]:
+    evidence = pack["evidence"]
+    receipts: dict[str, dict[str, Any]] = {}
+    for index, ref in enumerate(evidence["acquisition_receipts"]):
+        location = f"$.evidence.acquisition_receipts[{index}]"
+        if ref["path"] in verified_paths:
+            _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
+        raw = verify_file_ref(root, ref, location)
+        document = parse_json_bytes(raw, location=ref["path"])
+        if raw != canonical_json_bytes(document):
+            _fail(location, "acquisition receipt is not canonical-json-v1 bytes")
+        validate_acquisition_receipt(document, location=f"{location}.document")
+        receipt_id = ref["acquisition_receipt_id"]
+        if document["acquisition_receipt_id"] != receipt_id:
+            _fail(f"{location}.acquisition_receipt_id", "does not match receipt document")
+        receipts[receipt_id] = document
+        verified_paths.add(ref["path"])
+
+    lineages: dict[str, dict[str, Any]] = {}
+    for index, ref in enumerate(evidence["normalization_lineages"]):
+        location = f"$.evidence.normalization_lineages[{index}]"
+        if ref["path"] in verified_paths:
+            _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
+        raw = verify_file_ref(root, ref, location)
+        document = parse_json_bytes(raw, location=ref["path"])
+        if raw != canonical_json_bytes(document):
+            _fail(location, "normalization lineage is not canonical-json-v1 bytes")
+        validate_normalization_lineage(document, location=f"{location}.document")
+        lineage_id = ref["normalization_lineage_id"]
+        if document["normalization_lineage_id"] != lineage_id:
+            _fail(f"{location}.normalization_lineage_id", "does not match lineage document")
+        lineages[lineage_id] = document
+        verified_paths.add(ref["path"])
+
+    preimage_refs: dict[str, dict[str, Any]] = {}
+    for index, ref in enumerate(evidence["request_parameter_preimages"]):
+        location = f"$.evidence.request_parameter_preimages[{index}]"
+        if ref["path"] in verified_paths:
+            _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
+        verify_file_ref_integrity(root, ref, location)
+        digest = ref["parameters_sha256"]
+        preimage_refs[digest] = {
+            key: ref[key]
+            for key in ("parameters_sha256", "sha256", "bytes", "media_type")
+        }
+        verified_paths.add(ref["path"])
+
+    expected_receipts: set[str] = set()
+    expected_lineages: set[str] = set()
+    expected_preimages: dict[str, dict[str, Any]] = {}
+    parent_edges: dict[str, list[str]] = {}
+    parent_ids: set[str] = set()
+    for manifest_id, manifest in source_manifests.items():
+        if manifest["source_kind"] == "curated_git_tree":
+            parent_edges[manifest_id] = []
+            continue
+        manifest_location = f"$.source_manifests[{manifest_id}]"
+        source_evidence = manifest["evidence"]
+        receipt_ids = source_evidence["acquisition_receipt_ids"]
+        missing_receipts = sorted(set(receipt_ids) - set(receipts))
+        if missing_receipts:
+            _fail(
+                f"{manifest_location}.evidence.acquisition_receipt_ids",
+                "references receipts absent from pack evidence: " + ", ".join(missing_receipts),
+            )
+        lineage_id = source_evidence["normalization_lineage_id"]
+        if lineage_id not in lineages:
+            _fail(
+                f"{manifest_location}.evidence.normalization_lineage_id",
+                "references lineage absent from pack evidence",
+            )
+        preimage_digests = [
+            item["parameters_sha256"]
+            for item in source_evidence["request_parameter_preimages"]
+        ]
+        missing_preimages = sorted(set(preimage_digests) - set(preimage_refs))
+        if missing_preimages:
+            _fail(
+                f"{manifest_location}.evidence.request_parameter_preimages",
+                "references preimages absent from pack evidence: " + ", ".join(missing_preimages),
+            )
+
+        lineage = lineages[lineage_id]
+        parents = lineage["parent_source_manifest_ids"]
+        missing_parents = sorted(set(parents) - set(source_manifests))
+        if missing_parents:
+            _fail(
+                f"{manifest_location}.evidence.normalization_lineage",
+                "references parent source manifests absent from the pack: "
+                + ", ".join(missing_parents),
+            )
+        parent_edges[manifest_id] = parents
+        parent_ids.update(parents)
+        validate_source_manifest_evidence_documents(
+            manifest,
+            receipts={receipt_id: receipts[receipt_id] for receipt_id in receipt_ids},
+            lineage=lineage,
+            request_parameter_preimages={
+                digest: preimage_refs[digest] for digest in preimage_digests
+            },
+            parent_source_manifests={
+                parent_id: source_manifests[parent_id] for parent_id in parents
+            },
+            location=manifest_location,
+        )
+
+        expected_receipts.update(receipt_ids)
+        expected_lineages.add(lineage_id)
+        for descriptor in source_evidence["request_parameter_preimages"]:
+            digest = descriptor["parameters_sha256"]
+            pack_ref = preimage_refs[digest]
+            projected_pack_ref = {
+                key: pack_ref[key]
+                for key in ("parameters_sha256", "bytes", "media_type")
+            }
+            if descriptor != projected_pack_ref:
+                _fail(
+                    f"{manifest_location}.evidence.request_parameter_preimages",
+                    f"preimage {digest} disagrees with pack evidence",
+                )
+            prior_preimage = expected_preimages.setdefault(digest, descriptor)
+            if prior_preimage != descriptor:
+                _fail(
+                    f"{manifest_location}.evidence.request_parameter_preimages",
+                    f"preimage {digest} has conflicting source-manifest descriptors",
+                )
+
+    if set(receipts) != expected_receipts:
+        _fail("$.evidence.acquisition_receipts", "pack evidence contains unreferenced receipts")
+    if set(lineages) != expected_lineages:
+        _fail("$.evidence.normalization_lineages", "pack evidence contains unreferenced lineages")
+    if set(preimage_refs) != set(expected_preimages):
+        _fail("$.evidence.request_parameter_preimages", "pack evidence contains unreferenced preimages")
+
+    _validate_source_manifest_parent_dag(parent_edges)
+    return parent_ids
+
+
+def _validate_source_manifest_parent_dag(
+    parent_edges: dict[str, list[str]],
+    *,
+    location: str = "$.source_manifests",
+) -> None:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(manifest_id: str) -> None:
+        if manifest_id in visiting:
+            _fail(location, "normalization parent graph contains a cycle")
+        if manifest_id in visited:
+            return
+        visiting.add(manifest_id)
+        for parent_id in parent_edges.get(manifest_id, []):
+            if parent_id not in parent_edges:
+                _fail(location, f"normalization parent {parent_id!r} is absent")
+            visit(parent_id)
+        visiting.remove(manifest_id)
+        visited.add(manifest_id)
+
+    for manifest_id in parent_edges:
+        visit(manifest_id)
+
+
 def _verify_offline_pack_files_v2(
     pack: dict[str, Any], root: Path, *, manifest_path: Path | None = None
 ) -> dict[str, int]:
@@ -2390,8 +3088,14 @@ def _verify_offline_pack_files_v2(
         if manifest_bytes != canonical_json_bytes(source_manifest):
             _fail(location, "source manifest is not canonical-json-v1 bytes")
         validate_source_manifest(source_manifest)
-        if source_manifest["schema"] != SOURCE_SCHEMA_V2:
-            _fail(location, "offline-pack/v2 requires source-manifest/v2")
+        expected_source_schema = (
+            SOURCE_SCHEMA_V3 if pack["schema"] == PACK_SCHEMA_V3 else SOURCE_SCHEMA_V2
+        )
+        if source_manifest["schema"] != expected_source_schema:
+            _fail(
+                location,
+                f"{pack['schema']} requires {expected_source_schema}",
+            )
         manifest_id = ref["source_manifest_id"]
         if source_manifest["source_manifest_id"] != manifest_id:
             _fail(f"{location}.source_manifest_id", "does not match referenced manifest")
@@ -2421,6 +3125,15 @@ def _verify_offline_pack_files_v2(
                     f"source object {manifest_id}/{object_name} disagrees on {field}",
                 )
 
+    evidence_parent_ids: set[str] = set()
+    if pack["schema"] == PACK_SCHEMA_V3:
+        evidence_parent_ids = _verify_offline_pack_v3_evidence(
+            pack,
+            root,
+            source_manifests=source_manifests,
+            verified_paths=verified_paths,
+        )
+
     inventory_inputs = {item["id"]: item for item in inventory["inputs"]}
     indexed_bindings = {
         item["input_id"]: (index, item)
@@ -2436,7 +3149,7 @@ def _verify_offline_pack_files_v2(
         )
     logical_members: set[tuple[str, str]] = set()
     logical_path_tries: dict[str, dict[object, Any]] = defaultdict(dict)
-    bound_manifest_ids: set[str] = set()
+    bound_manifest_ids: set[str] = set(evidence_parent_ids)
     for input_id, declaration in inventory_inputs.items():
         binding_index, binding = indexed_bindings[input_id]
         location = f"$.input_bindings[{binding_index}]"
@@ -2497,7 +3210,12 @@ def _verify_offline_pack_files_v2(
             "source manifests are not bound to any reducer input: " + ", ".join(unused_manifests),
         )
 
-    expected_source_root = source_set_root_v2(
+    source_root_function = (
+        source_set_root_v3
+        if pack["schema"] == PACK_SCHEMA_V3
+        else source_set_root_v2
+    )
+    expected_source_root = source_root_function(
         inventory["inventory_id"],
         list(source_manifests),
         pack["input_bindings"],
@@ -2547,13 +3265,24 @@ def _verify_offline_pack_files_v2(
     if undeclared:
         _fail("$", f"offline pack contains undeclared files: {', '.join(undeclared)}")
 
-    return {
+    result = {
         "source_manifests": len(source_manifests),
         "source_objects": len(packed_objects),
         "input_bindings": len(bindings),
         "reducer_files": len(pack["reducer"]["files"]),
         "files": len(verified_paths),
     }
+    if pack["schema"] == PACK_SCHEMA_V3:
+        result.update(
+            {
+                "acquisition_receipts": len(pack["evidence"]["acquisition_receipts"]),
+                "normalization_lineages": len(pack["evidence"]["normalization_lineages"]),
+                "request_parameter_preimages": len(
+                    pack["evidence"]["request_parameter_preimages"]
+                ),
+            }
+        )
+    return result
 
 
 def _logical_json_bytes(data: bytes, location: str) -> str:
