@@ -33,6 +33,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common  # noqa: E402
+import git_snapshot  # noqa: E402
 
 REPO_URL = "https://github.com/teorth/erdosproblems.git"
 CHECKOUT = Path(os.environ.get(
@@ -41,7 +42,7 @@ PAGE_URL = "https://www.erdosproblems.com/{}"
 JOINS_OUT = common.REPO / "catalog" / "data" / "erdos_joins.jsonl"
 
 
-def ensure_checkout() -> str:
+def ensure_checkout() -> None:
     if not (CHECKOUT / ".git").exists():
         subprocess.run(["git", "clone", "--depth", "1", REPO_URL, str(CHECKOUT)],
                        check=True)
@@ -53,17 +54,19 @@ def ensure_checkout() -> str:
             if r.returncode != 0:
                 print(f"[erdos] pull failed (using existing checkout): "
                       f"{r.stderr.strip()[:200]}", file=sys.stderr)
-    out = subprocess.run(["git", "-C", str(CHECKOUT), "rev-parse", "HEAD"],
-                         capture_output=True, text=True)
-    return out.stdout.strip()
 
 
 def main() -> int:
-    commit = ensure_checkout()
-    src = CHECKOUT / "data" / "problems.yaml"
-    problems = yaml.safe_load(src.read_text())
+    ensure_checkout()
+    snapshot = git_snapshot.read_text_snapshot(
+        CHECKOUT,
+        scope="data/problems.yaml",
+    )
+    problems = yaml.safe_load(snapshot.files[0].text)
     if not isinstance(problems, list) or not problems:
-        raise RuntimeError(f"unexpected problems.yaml shape at {src}")
+        raise RuntimeError(
+            f"unexpected problems.yaml shape at {CHECKOUT}/data/problems.yaml"
+        )
 
     pages: list[dict] = []
     joins: list[dict] = []
@@ -86,22 +89,27 @@ def main() -> int:
             "formalized": (p.get("formalized") or {}).get("state") or None,
         }.items() if v is not None})
 
+    # Check every independent output's volume floor before publishing either
+    # one.  Snapshot and parse failures likewise occur above all write calls.
+    common._volume_guard(JOINS_OUT, "join", len(joins))
     common.emit("erdos", pages, [], extra_meta={
-        "source_pin": f"teorth/erdosproblems data/problems.yaml @ {commit}",
+        "source_pin": (
+            "teorth/erdosproblems data/problems.yaml @ "
+            f"{snapshot.commit}"
+        ),
         "source_license": "Apache-2.0 (github.com/teorth/erdosproblems); "
                           "erdosproblems.com prose is Thomas Bloom's and is "
                           "not redistributed — link facts and constructed "
                           "titles only",
     })
-    common._volume_guard(JOINS_OUT, "join", len(joins))
     common.write_jsonl(JOINS_OUT, {
         "source": "teorth/erdosproblems data/problems.yaml",
         "license": "Apache-2.0",
-        "commit": commit,
+        "commit": snapshot.commit,
         "n_problems": len(joins),
     }, joins)
     print(f"[erdos] wrote {len(pages)} pages + {len(joins)} join rows "
-          f"@ {commit[:12]}", file=sys.stderr)
+          f"@ {snapshot.commit[:12]}", file=sys.stderr)
     return 0
 
 
