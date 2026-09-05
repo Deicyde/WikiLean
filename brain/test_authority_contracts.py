@@ -17,6 +17,8 @@ import unicodedata
 from pathlib import Path
 from unittest import mock
 
+import jsonschema
+
 HERE = Path(__file__).resolve().parent
 TOOLS = HERE / "tools"
 sys.path.insert(0, str(TOOLS))
@@ -812,6 +814,523 @@ class SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("network access is disabled", blocked.stderr)
+
+
+class AcquisitionEvidenceContractTest(unittest.TestCase):
+    @staticmethod
+    def _object(
+        name: str,
+        digest: str,
+        *,
+        origin: dict[str, str] | None = None,
+    ) -> dict[str, object]:
+        result: dict[str, object] = {
+            "bytes": 12,
+            "media_type": "application/json",
+            "object": name,
+            "sha256": digest,
+        }
+        if origin is not None:
+            result["origin"] = origin
+        return result
+
+    def _receipt(self) -> dict[str, object]:
+        empty_parameters = hashlib.sha256(b"").hexdigest()
+        requests = [
+            {
+                "kind": "http_get",
+                "parameters_sha256": empty_parameters,
+                "uri": "https://example.invalid/dataset/metadata",
+            },
+            {
+                "kind": "http_get",
+                "parameters_sha256": empty_parameters,
+                "uri": "https://example.invalid/dataset/raw",
+            },
+        ]
+        receipt: dict[str, object] = {
+            "acquisition_receipt_id": ZERO_HASH,
+            "audit": {"acquired_at": "2030-01-02T03:04:05Z"},
+            "batch": {
+                "request_set_root": contracts.acquisition_request_set_root(requests),
+                "requests_failed": 0,
+                "requests_succeeded": 2,
+                "requests_total": 2,
+                "status": "complete",
+            },
+            "outputs": [self._object("raw", "2" * 64)],
+            "pin": {"type": "dataset_revision", "value": "fixture-r1"},
+            "requests": requests,
+            "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+            "source": "fixture-source",
+            "tool": {
+                "name": "fixture-fetch",
+                "sha256": "3" * 64,
+                "version": "1",
+            },
+            "upstream_uri": "https://example.invalid/dataset",
+        }
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        return receipt
+
+    def _lineage(
+        self,
+        receipt_id: str,
+        *,
+        mode: str = "transform",
+    ) -> dict[str, object]:
+        raw = self._object(
+            "raw",
+            "2" * 64,
+            origin={"id": receipt_id, "kind": "acquisition_receipt"},
+        )
+        output = (
+            self._object("raw", "2" * 64)
+            if mode == "identity"
+            else self._object("normalized", "4" * 64)
+        )
+        lineage: dict[str, object] = {
+            "acquisition_receipt_ids": [receipt_id],
+            "audit": {"normalized_at": "2030-01-02T03:05:00Z"},
+            "configuration_sha256": "5" * 64,
+            "inputs": [raw],
+            "mode": mode,
+            "normalization_lineage_id": ZERO_HASH,
+            "normalization_schema": "fixture/normalized-v1",
+            "outputs": [output],
+            "parent_source_manifest_ids": [],
+            "result": "complete",
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "source": "fixture-source",
+            "tool": {
+                "name": "fixture-normalize",
+                "sha256": "6" * 64,
+                "version": "1",
+            },
+        }
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        return lineage
+
+    def test_receipt_and_lineage_identities_exclude_audit_timestamps(self) -> None:
+        receipt = self._receipt()
+        contracts.validate_acquisition_receipt(receipt)
+        changed_receipt = copy.deepcopy(receipt)
+        changed_receipt["audit"]["acquired_at"] = "2031-02-03T04:05:06Z"
+        self.assertEqual(
+            contracts.acquisition_receipt_identity(changed_receipt),
+            receipt["acquisition_receipt_id"],
+        )
+        contracts.validate_acquisition_receipt(changed_receipt)
+
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        contracts.validate_normalization_lineage(lineage)
+        changed_lineage = copy.deepcopy(lineage)
+        changed_lineage["audit"]["normalized_at"] = "2031-02-03T04:06:00Z"
+        self.assertEqual(
+            contracts.normalization_lineage_identity(changed_lineage),
+            lineage["normalization_lineage_id"],
+        )
+        contracts.validate_normalization_lineage(changed_lineage)
+
+    def test_evidence_identities_bind_semantic_fields(self) -> None:
+        receipt = self._receipt()
+        receipt_id = receipt["acquisition_receipt_id"]
+        original_request_root = receipt["batch"]["request_set_root"]
+        changed_requests = copy.deepcopy(receipt["requests"])
+        changed_requests[1]["uri"] = "https://example.invalid/dataset/raw-v2"
+        changed_request_root = contracts.acquisition_request_set_root(changed_requests)
+        self.assertNotEqual(changed_request_root, original_request_root)
+        for mutate in (
+            lambda value: value["pin"].update(value="fixture-r2"),
+            lambda value: value["batch"].update(
+                request_set_root="sha256:" + "7" * 64
+            ),
+            lambda value: value["outputs"][0].update(sha256="8" * 64),
+        ):
+            changed = copy.deepcopy(receipt)
+            mutate(changed)
+            self.assertNotEqual(
+                contracts.acquisition_receipt_identity(changed), receipt_id
+            )
+
+        changed = copy.deepcopy(receipt)
+        changed["requests"] = changed_requests
+        changed["batch"]["request_set_root"] = changed_request_root
+        self.assertNotEqual(
+            contracts.acquisition_receipt_identity(changed), receipt_id
+        )
+
+        lineage = self._lineage(str(receipt_id))
+        lineage_id = lineage["normalization_lineage_id"]
+        changed = copy.deepcopy(lineage)
+        changed["configuration_sha256"] = "9" * 64
+        self.assertNotEqual(
+            contracts.normalization_lineage_identity(changed), lineage_id
+        )
+        changed = copy.deepcopy(lineage)
+        changed["inputs"][0]["origin"]["id"] = "sha256:" + "a" * 64
+        self.assertNotEqual(
+            contracts.normalization_lineage_identity(changed), lineage_id
+        )
+
+    def test_receipt_requires_complete_fail_closed_batch(self) -> None:
+        receipt = self._receipt()
+        receipt["batch"]["requests_succeeded"] = 1
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "requests_succeeded"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        receipt["batch"]["status"] = "partial"
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "expected 'complete'"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        receipt["batch"]["request_set_root"] = "sha256:" + "7" * 64
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "request_set_root"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        receipt["batch"]["requests_total"] = 3
+        receipt["batch"]["requests_succeeded"] = 3
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "descriptor count"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        with self.assertRaisesRegex(contracts.VerificationError, "unique"):
+            contracts.acquisition_request_set_root(
+                [self._receipt()["requests"][0]] * 2
+            )
+
+    def test_content_sha256_receipt_pin_binds_one_output(self) -> None:
+        receipt = self._receipt()
+        output = receipt["outputs"][0]
+        receipt["pin"] = {"type": "content_sha256", "value": output["sha256"]}
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        contracts.validate_acquisition_receipt(receipt)
+
+        mismatch = copy.deepcopy(receipt)
+        mismatch["pin"]["value"] = "7" * 64
+        mismatch["acquisition_receipt_id"] = (
+            contracts.acquisition_receipt_identity(mismatch)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "sole receipt output"):
+            contracts.validate_acquisition_receipt(mismatch)
+
+    def test_receipt_rejects_credentials_queries_and_noncanonical_uris(self) -> None:
+        for uri, message in (
+            (
+                "https://user:secret@example.invalid/dataset",
+                "userinfo credentials",
+            ),
+            ("d1://user@example.invalid/snapshot", "userinfo credentials"),
+            ("custom:opaque\u0007value", "control characters"),
+            ("http://example.invalid/data", "URI scheme"),
+            ("file:///tmp/source", "URI scheme"),
+            ("data:text/plain,source", "URI scheme"),
+            ("https://example.invalid/data#fragment", "fragments are forbidden"),
+            (
+                "https://example.invalid/data?X-Goog-Credential=secret",
+                "queries are forbidden",
+            ),
+            ("HTTPS://example.invalid/data", "canonical lowercase"),
+            ("https://[broken", "malformed URI"),
+        ):
+            receipt = self._receipt()
+            receipt["upstream_uri"] = uri
+            receipt["acquisition_receipt_id"] = (
+                contracts.acquisition_receipt_identity(receipt)
+            )
+            with self.assertRaisesRegex(contracts.VerificationError, message):
+                contracts.validate_acquisition_receipt(receipt)
+
+        for uri in (
+            "d1://wikilean/annotations",
+            "postgresql://devmirror.lmfdb.xyz/lmfdb",
+            "git+https://github.com/ncatlab/nlab-content",
+        ):
+            receipt = self._receipt()
+            receipt["upstream_uri"] = uri
+            receipt["acquisition_receipt_id"] = (
+                contracts.acquisition_receipt_identity(receipt)
+            )
+            contracts.validate_acquisition_receipt(receipt)
+
+        for request in (
+            {
+                "kind": "database_query",
+                "parameters_sha256": "7" * 64,
+                "uri": "d1://wikilean/annotations",
+            },
+            {
+                "kind": "snapshot_export",
+                "parameters_sha256": "8" * 64,
+                "uri": "postgresql://devmirror.lmfdb.xyz/lmfdb",
+            },
+            {
+                "kind": "snapshot_export",
+                "parameters_sha256": "9" * 64,
+                "uri": "git+https://github.com/ncatlab/nlab-content",
+            },
+        ):
+            self.assertRegex(
+                contracts.acquisition_request_set_root([request]),
+                r"^sha256:[0-9a-f]{64}$",
+            )
+
+    def test_lineage_requires_complete_result_and_exact_origins(self) -> None:
+        receipt = self._receipt()
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        lineage["result"] = "partial"
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "expected 'complete'"):
+            contracts.validate_normalization_lineage(lineage)
+
+        missing_result = self._lineage(str(receipt["acquisition_receipt_id"]))
+        missing_result.pop("result")
+        with self.assertRaisesRegex(contracts.VerificationError, "missing required.*result"):
+            contracts.validate_normalization_lineage(missing_result)
+
+        wrong_origin = self._lineage(str(receipt["acquisition_receipt_id"]))
+        wrong_origin["inputs"][0]["origin"]["id"] = "sha256:" + "7" * 64
+        wrong_origin["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(wrong_origin)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "origins must exactly"):
+            contracts.validate_normalization_lineage(wrong_origin)
+
+    def test_lineage_supports_parent_only_and_identity_modes(self) -> None:
+        receipt = self._receipt()
+        parent = "sha256:" + "8" * 64
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]), mode="identity")
+        lineage["acquisition_receipt_ids"] = []
+        lineage["parent_source_manifest_ids"] = [parent]
+        lineage["inputs"][0]["origin"] = {"id": parent, "kind": "source_manifest"}
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        contracts.validate_normalization_lineage(lineage)
+
+        lineage["outputs"][0]["sha256"] = "9" * 64
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "exactly equal inputs"):
+            contracts.validate_normalization_lineage(lineage)
+
+        second_parent = "sha256:" + "9" * 64
+        multi_parent = self._lineage(str(receipt["acquisition_receipt_id"]))
+        multi_parent["acquisition_receipt_ids"] = []
+        multi_parent["parent_source_manifest_ids"] = [parent, second_parent]
+        first_input = copy.deepcopy(multi_parent["inputs"][0])
+        first_input["origin"] = {"id": parent, "kind": "source_manifest"}
+        second_input = copy.deepcopy(first_input)
+        second_input["origin"] = {
+            "id": second_parent,
+            "kind": "source_manifest",
+        }
+        multi_parent["inputs"] = [first_input, second_input]
+        multi_parent["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(multi_parent)
+        )
+        contracts.validate_normalization_lineage(multi_parent)
+
+    def test_evidence_rejects_bad_timestamps_ordering_and_empty_origins(self) -> None:
+        receipt = self._receipt()
+        receipt["audit"]["acquired_at"] = "2030-01-02T03:04:05+00:00"
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "ending in Z"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        receipt["outputs"] = [
+            self._object("raw", "2" * 64),
+            self._object("alpha", "7" * 64),
+        ]
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "sorted by object"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        receipt["outputs"].append(copy.deepcopy(receipt["outputs"][0]))
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "unique object names"):
+            contracts.validate_acquisition_receipt(receipt)
+
+        receipt = self._receipt()
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        lineage["inputs"].append(copy.deepcopy(lineage["inputs"][0]))
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "origin kind"):
+            contracts.validate_normalization_lineage(lineage)
+
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        lineage["acquisition_receipt_ids"] = []
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "at least one"):
+            contracts.validate_normalization_lineage(lineage)
+
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        lineage["audit"]["normalized_at"] = "not-a-time"
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "UTC timestamp"):
+            contracts.validate_normalization_lineage(lineage)
+
+        receipt = self._receipt()
+        receipt["requests"] = list(reversed(receipt["requests"]))
+        receipt["batch"]["request_set_root"] = "sha256:" + "7" * 64
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "canonically sorted"):
+            contracts.validate_acquisition_receipt(receipt)
+
+    def test_evidence_schema_documents_validate_declared_shapes(self) -> None:
+        schema_root = HERE / "authority/schemas"
+        receipt_schema = json.loads(
+            (schema_root / "acquisition-receipt/v1.json").read_text()
+        )
+        lineage_schema = json.loads(
+            (schema_root / "normalization-lineage/v1.json").read_text()
+        )
+        jsonschema.Draft202012Validator.check_schema(receipt_schema)
+        jsonschema.Draft202012Validator.check_schema(lineage_schema)
+        receipt = self._receipt()
+        lineage = self._lineage(str(receipt["acquisition_receipt_id"]))
+        jsonschema.Draft202012Validator(receipt_schema).validate(receipt)
+        jsonschema.Draft202012Validator(lineage_schema).validate(lineage)
+        self.assertEqual(
+            receipt_schema["properties"]["schema"]["const"],
+            contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+        )
+        self.assertEqual(
+            lineage_schema["properties"]["schema"]["const"],
+            contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+        )
+        self.assertEqual(lineage_schema["properties"]["result"]["const"], "complete")
+
+        bad_status = copy.deepcopy(lineage)
+        bad_status["result"] = "partial"
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(lineage_schema).validate(bad_status)
+        bad_status["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(bad_status)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "expected 'complete'"):
+            contracts.validate_normalization_lineage(bad_status)
+        missing_status = copy.deepcopy(lineage)
+        missing_status.pop("result")
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(lineage_schema).validate(missing_status)
+        with self.assertRaisesRegex(contracts.VerificationError, "missing required.*result"):
+            contracts.validate_normalization_lineage(missing_status)
+
+        content_pinned = copy.deepcopy(receipt)
+        content_pinned["pin"] = {
+            "type": "content_sha256",
+            "value": content_pinned["outputs"][0]["sha256"],
+        }
+        content_pinned["outputs"].append(self._object("second", "7" * 64))
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(receipt_schema).validate(content_pinned)
+        content_pinned["acquisition_receipt_id"] = (
+            contracts.acquisition_receipt_identity(content_pinned)
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "exactly one output"):
+            contracts.validate_acquisition_receipt(content_pinned)
+
+        for uri in (
+            "https://user@example.invalid/data",
+            "https://example.invalid/data#fragment",
+            "https://example.invalid/data?code=secret",
+            "HTTPS://example.invalid/data",
+            "http://example.invalid/data",
+            "file:///tmp/data",
+        ):
+            invalid_uri = copy.deepcopy(receipt)
+            invalid_uri["upstream_uri"] = uri
+            with self.assertRaises(jsonschema.ValidationError):
+                jsonschema.Draft202012Validator(receipt_schema).validate(invalid_uri)
+            invalid_uri["acquisition_receipt_id"] = (
+                contracts.acquisition_receipt_identity(invalid_uri)
+            )
+            with self.assertRaises(contracts.VerificationError):
+                contracts.validate_acquisition_receipt(invalid_uri)
+
+        for request, message in (
+            (
+                {"kind": "http_post", "uri": "https://example.invalid/query"},
+                "missing required.*parameters_sha256",
+            ),
+            (
+                {
+                    "kind": "http_get",
+                    "uri": "https://example.invalid/data",
+                },
+                "missing required.*parameters_sha256",
+            ),
+        ):
+            invalid_request = copy.deepcopy(receipt)
+            invalid_request["requests"] = [request]
+            invalid_request["batch"]["requests_total"] = 1
+            invalid_request["batch"]["requests_succeeded"] = 1
+            with self.assertRaises(jsonschema.ValidationError):
+                jsonschema.Draft202012Validator(receipt_schema).validate(
+                    invalid_request
+                )
+            invalid_request["acquisition_receipt_id"] = (
+                contracts.acquisition_receipt_identity(invalid_request)
+            )
+            with self.assertRaisesRegex(contracts.VerificationError, message):
+                contracts.validate_acquisition_receipt(invalid_request)
+
+        duplicate_outputs = copy.deepcopy(receipt)
+        duplicate_outputs["outputs"].append(
+            copy.deepcopy(duplicate_outputs["outputs"][0])
+        )
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(receipt_schema).validate(
+                duplicate_outputs
+            )
+
+        duplicate_inputs = copy.deepcopy(lineage)
+        duplicate_inputs["inputs"].append(
+            copy.deepcopy(duplicate_inputs["inputs"][0])
+        )
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(lineage_schema).validate(
+                duplicate_inputs
+            )
 
 
 class V2SourceSetVerificationTest(unittest.TestCase):

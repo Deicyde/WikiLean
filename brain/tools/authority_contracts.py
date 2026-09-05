@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import decimal
 import fnmatch
 import hashlib
@@ -12,6 +13,7 @@ import re
 import sqlite3
 import stat
 import unicodedata
+import urllib.parse
 from collections import defaultdict
 from contextlib import contextmanager, suppress
 from pathlib import Path, PurePosixPath
@@ -29,9 +31,15 @@ GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_.-]{0,127}$")
 EPOCH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 MEDIA_TYPE_RE = re.compile(r"^[^/\s]+/[^/\s]+$")
+UTC_TIMESTAMP_RE = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    r"(?:\.[0-9]{1,9})?Z$"
+)
 
 SOURCE_SCHEMA_V1 = "wikilean.source-manifest/v1"
 SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
+ACQUISITION_RECEIPT_SCHEMA_V1 = "wikilean.acquisition-receipt/v1"
+NORMALIZATION_LINEAGE_SCHEMA_V1 = "wikilean.normalization-lineage/v1"
 PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
 PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
 REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
@@ -100,6 +108,9 @@ BRAIN_SQLITE_V2_INDEXES = {
 
 SOURCE_DOMAIN_V1 = "wikilean.source-manifest.v1"
 SOURCE_DOMAIN_V2 = "wikilean.source-manifest.v2"
+ACQUISITION_RECEIPT_DOMAIN_V1 = "wikilean.acquisition-receipt.v1"
+ACQUISITION_REQUEST_SET_DOMAIN_V1 = "wikilean.acquisition-request-set.v1"
+NORMALIZATION_LINEAGE_DOMAIN_V1 = "wikilean.normalization-lineage.v1"
 SOURCE_SET_DOMAIN_V1 = "wikilean.source-set.v1"
 SOURCE_SET_DOMAIN_V2 = "wikilean.source-set.v2"
 PACK_DOMAIN_V1 = "wikilean.offline-pack.v1"
@@ -118,7 +129,10 @@ LOGICAL_JSON_DOMAIN = "wikilean.logical-json.v1"
 LOGICAL_JSONL_DOMAIN = "wikilean.logical-jsonl-rowset.v1"
 COMPATIBILITY_SEMANTIC_STATE_DOMAIN = "wikilean.compatibility-semantic-state.v1"
 LEGACY_DECLARED_INPUT_DOMAIN = "wikilean.legacy-declared-inputs.v1"
-
+MAX_ACQUISITION_REQUESTS = 100_000
+ALLOWED_ACQUISITION_URI_SCHEMES = frozenset(
+    {"https", "d1", "postgresql", "git+https"}
+)
 REQUIRED_RELEASE_PATHS = frozenset({
     "brain/data/nodes.jsonl",
     "brain/data/edges.jsonl",
@@ -582,6 +596,145 @@ def _tool(value: Any, location: str) -> None:
     _digest(obj["sha256"], f"{location}.sha256")
 
 
+def _evidence_pin(value: Any, location: str) -> dict[str, Any]:
+    pin = _expect_object(value, location)
+    _keys(pin, location, {"type", "value"}, {"tree"})
+    if pin["type"] not in {
+        "git_commit",
+        "content_sha256",
+        "dataset_revision",
+        "http_etag",
+        "database_snapshot",
+    }:
+        _fail(f"{location}.type", f"unknown pin type {pin['type']!r}")
+    pin_value = _expect_string(pin["value"], f"{location}.value")
+    if len(pin_value) > 512:
+        _fail(f"{location}.value", "must contain at most 512 characters")
+    if pin["type"] == "git_commit" and not GIT_COMMIT_RE.fullmatch(pin_value):
+        _fail(
+            f"{location}.value",
+            "git_commit pins must be full 40-character lowercase hashes",
+        )
+    if pin["type"] == "content_sha256" and not DIGEST_RE.fullmatch(pin_value):
+        _fail(
+            f"{location}.value",
+            "content_sha256 pins must be 64 lowercase hex digits",
+        )
+    if "tree" in pin:
+        _expect_pattern(
+            pin["tree"],
+            f"{location}.tree",
+            GIT_COMMIT_RE,
+            "a full lowercase Git tree hash",
+        )
+        if pin["type"] != "git_commit":
+            _fail(f"{location}.tree", "tree is permitted only with a git_commit pin")
+    return pin
+
+
+def _utc_timestamp(value: Any, location: str) -> str:
+    text = _expect_pattern(
+        value,
+        location,
+        UTC_TIMESTAMP_RE,
+        "an RFC3339 UTC timestamp ending in Z",
+    )
+    try:
+        dt.datetime.fromisoformat(text[:-1] + "+00:00")
+    except ValueError as exc:
+        raise VerificationError(f"{location}: invalid calendar timestamp") from exc
+    return text
+
+
+def _upstream_uri(value: Any, location: str) -> str:
+    text = _expect_string(value, location)
+    if any(ord(character) < 32 or ord(character) == 127 for character in text):
+        _fail(location, "URI must not contain control characters")
+    if any(character.isspace() for character in text):
+        _fail(location, "URI must not contain whitespace")
+    if len(text) > 2048:
+        _fail(location, "must contain at most 2048 characters")
+    try:
+        parsed = urllib.parse.urlsplit(text)
+        hostname = parsed.hostname
+        parsed.port
+    except ValueError as exc:
+        raise VerificationError(f"{location}: malformed URI") from exc
+    if parsed.scheme not in ALLOWED_ACQUISITION_URI_SCHEMES:
+        _fail(
+            location,
+            "URI scheme must be one of https, d1, postgresql, or git+https",
+        )
+    if not text.startswith(f"{parsed.scheme}://"):
+        _fail(location, "URI scheme and separator must use canonical lowercase spelling")
+    if not parsed.netloc or hostname is None:
+        _fail(location, "URI must name a host")
+    if "@" in parsed.netloc or parsed.username is not None or parsed.password is not None:
+        _fail(location, "URI must not contain userinfo credentials")
+    if "#" in text:
+        _fail(location, "URI fragments are forbidden")
+    if "?" in text:
+        _fail(
+            location,
+            "URI queries are forbidden; seal request parameters by digest",
+        )
+    return text
+
+
+def _request_descriptor(value: Any, location: str) -> dict[str, Any]:
+    request = _expect_object(value, location)
+    _keys(request, location, {"kind", "uri", "parameters_sha256"})
+    if request["kind"] not in {
+        "http_get",
+        "http_post",
+        "database_query",
+        "snapshot_export",
+    }:
+        _fail(
+            f"{location}.kind",
+            "expected http_get, http_post, database_query, or snapshot_export",
+        )
+    _upstream_uri(request["uri"], f"{location}.uri")
+    _digest(request["parameters_sha256"], f"{location}.parameters_sha256")
+    return request
+
+
+def _validated_request_descriptors(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    requests = _expect_array(value, location, nonempty=True)
+    if len(requests) > MAX_ACQUISITION_REQUESTS:
+        _fail(location, f"must contain at most {MAX_ACQUISITION_REQUESTS} requests")
+    keys: list[bytes] = []
+    for index, item in enumerate(requests):
+        request = _request_descriptor(item, f"{location}[{index}]")
+        keys.append(canonical_json_bytes(request))
+    if keys != sorted(set(keys)):
+        _fail(location, "request descriptors must be unique and canonically sorted")
+    return requests
+
+
+def _evidence_object_digest(value: Any, location: str) -> dict[str, Any]:
+    obj = _expect_object(value, location)
+    _keys(obj, location, {"object", "sha256", "bytes", "media_type"})
+    _expect_pattern(
+        obj["object"],
+        f"{location}.object",
+        NAME_RE,
+        "a lowercase source object name",
+    )
+    _digest(obj["sha256"], f"{location}.sha256")
+    _expect_int(obj["bytes"], f"{location}.bytes")
+    _expect_pattern(
+        obj["media_type"],
+        f"{location}.media_type",
+        MEDIA_TYPE_RE,
+        "a media type",
+    )
+    return obj
+
+
 def _file_ref(value: Any, location: str, *, extra: set[str] = frozenset()) -> dict[str, Any]:
     obj = _expect_object(value, location)
     _keys(obj, location, {"path", "sha256", "bytes", "media_type"} | extra)
@@ -629,6 +782,40 @@ def source_manifest_identity(manifest: dict[str, Any]) -> str:
     value.pop("source_manifest_id", None)
     value.pop("audit", None)
     return domain_hash(domains[schema], value)
+
+
+def acquisition_receipt_identity(receipt: dict[str, Any]) -> str:
+    if receipt.get("schema") != ACQUISITION_RECEIPT_SCHEMA_V1:
+        _fail(
+            "$.schema",
+            "unknown acquisition-receipt schema/version "
+            f"{receipt.get('schema')!r}",
+        )
+    value = copy.deepcopy(receipt)
+    value.pop("acquisition_receipt_id", None)
+    value.pop("audit", None)
+    return domain_hash(ACQUISITION_RECEIPT_DOMAIN_V1, value)
+
+
+def acquisition_request_set_root(requests: list[dict[str, Any]]) -> str:
+    validated = _validated_request_descriptors(requests, "$.requests")
+    return domain_hash(
+        ACQUISITION_REQUEST_SET_DOMAIN_V1,
+        {"requests": copy.deepcopy(validated)},
+    )
+
+
+def normalization_lineage_identity(lineage: dict[str, Any]) -> str:
+    if lineage.get("schema") != NORMALIZATION_LINEAGE_SCHEMA_V1:
+        _fail(
+            "$.schema",
+            "unknown normalization-lineage schema/version "
+            f"{lineage.get('schema')!r}",
+        )
+    value = copy.deepcopy(lineage)
+    value.pop("normalization_lineage_id", None)
+    value.pop("audit", None)
+    return domain_hash(NORMALIZATION_LINEAGE_DOMAIN_V1, value)
 
 
 def source_set_root(manifest_ids: list[str]) -> str:
@@ -1016,6 +1203,259 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
     expected = reducer_input_inventory_identity(obj)
     if obj["inventory_id"] != expected:
         _fail("$.inventory_id", f"expected {expected}")
+    return obj
+
+
+def _validated_evidence_objects(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    objects = _expect_array(value, location, nonempty=True)
+    names: list[str] = []
+    for index, item in enumerate(objects):
+        ref = _evidence_object_digest(item, f"{location}[{index}]")
+        names.append(ref["object"])
+    if names != sorted(set(names)):
+        _fail(location, "entries must have unique object names and be sorted by object")
+    return objects
+
+
+def _validated_lineage_inputs(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    inputs = _expect_array(value, location, nonempty=True)
+    keys: list[tuple[str, str, str]] = []
+    for index, item in enumerate(inputs):
+        item_location = f"{location}[{index}]"
+        ref = _expect_object(item, item_location)
+        _keys(
+            ref,
+            item_location,
+            {"object", "sha256", "bytes", "media_type", "origin"},
+        )
+        _evidence_object_digest(
+            {key: ref[key] for key in ("object", "sha256", "bytes", "media_type")},
+            item_location,
+        )
+        origin = _expect_object(ref["origin"], f"{item_location}.origin")
+        _keys(origin, f"{item_location}.origin", {"kind", "id"})
+        if origin["kind"] not in {"acquisition_receipt", "source_manifest"}:
+            _fail(
+                f"{item_location}.origin.kind",
+                "expected acquisition_receipt or source_manifest",
+            )
+        _hash(origin["id"], f"{item_location}.origin.id")
+        keys.append((origin["kind"], origin["id"], ref["object"]))
+    if keys != sorted(set(keys)):
+        _fail(
+            location,
+            "entries must be unique and sorted by origin kind, origin ID, and object",
+        )
+    return inputs
+
+
+def validate_acquisition_receipt(
+    receipt: Any,
+    *,
+    location: str = "$",
+) -> dict[str, Any]:
+    obj = _expect_object(receipt, location)
+    _keys(
+        obj,
+        location,
+        {
+            "schema",
+            "acquisition_receipt_id",
+            "source",
+            "upstream_uri",
+            "pin",
+            "tool",
+            "requests",
+            "batch",
+            "outputs",
+            "audit",
+        },
+    )
+    if obj["schema"] != ACQUISITION_RECEIPT_SCHEMA_V1:
+        _fail(f"{location}.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["acquisition_receipt_id"], f"{location}.acquisition_receipt_id")
+    _expect_pattern(
+        obj["source"],
+        f"{location}.source",
+        NAME_RE,
+        "a lowercase source name",
+    )
+    _upstream_uri(obj["upstream_uri"], f"{location}.upstream_uri")
+    _evidence_pin(obj["pin"], f"{location}.pin")
+    _tool(obj["tool"], f"{location}.tool")
+    requests = _validated_request_descriptors(
+        obj["requests"], f"{location}.requests"
+    )
+    batch = _expect_object(obj["batch"], f"{location}.batch")
+    _keys(
+        batch,
+        f"{location}.batch",
+        {
+            "status",
+            "request_set_root",
+            "requests_total",
+            "requests_succeeded",
+            "requests_failed",
+        },
+    )
+    if batch["status"] != "complete":
+        _fail(f"{location}.batch.status", "expected 'complete'")
+    request_set_root = _hash(
+        batch["request_set_root"], f"{location}.batch.request_set_root"
+    )
+    total = _expect_int(
+        batch["requests_total"], f"{location}.batch.requests_total", minimum=1
+    )
+    succeeded = _expect_int(
+        batch["requests_succeeded"],
+        f"{location}.batch.requests_succeeded",
+        minimum=1,
+    )
+    failed = _expect_int(
+        batch["requests_failed"], f"{location}.batch.requests_failed"
+    )
+    if succeeded != total or failed != 0:
+        _fail(
+            f"{location}.batch",
+            "complete acquisition requires requests_succeeded == requests_total "
+            "and requests_failed == 0",
+        )
+    if total != len(requests):
+        _fail(
+            f"{location}.batch.requests_total",
+            "must equal the canonical request descriptor count",
+        )
+    expected_request_root = acquisition_request_set_root(requests)
+    if request_set_root != expected_request_root:
+        _fail(
+            f"{location}.batch.request_set_root",
+            f"expected {expected_request_root}",
+        )
+    outputs = _validated_evidence_objects(obj["outputs"], f"{location}.outputs")
+    if obj["pin"]["type"] == "content_sha256":
+        if len(outputs) != 1:
+            _fail(
+                f"{location}.outputs",
+                "content_sha256 receipts require exactly one output",
+            )
+        if outputs[0]["sha256"] != obj["pin"]["value"]:
+            _fail(
+                f"{location}.pin.value",
+                "must equal the sole receipt output sha256",
+            )
+    audit = _expect_object(obj["audit"], f"{location}.audit")
+    _keys(audit, f"{location}.audit", {"acquired_at"})
+    _utc_timestamp(audit["acquired_at"], f"{location}.audit.acquired_at")
+    expected = acquisition_receipt_identity(obj)
+    if obj["acquisition_receipt_id"] != expected:
+        _fail(f"{location}.acquisition_receipt_id", f"expected {expected}")
+    return obj
+
+
+def validate_normalization_lineage(
+    lineage: Any,
+    *,
+    location: str = "$",
+) -> dict[str, Any]:
+    obj = _expect_object(lineage, location)
+    _keys(
+        obj,
+        location,
+        {
+            "schema",
+            "normalization_lineage_id",
+            "source",
+            "mode",
+            "acquisition_receipt_ids",
+            "parent_source_manifest_ids",
+            "normalization_schema",
+            "configuration_sha256",
+            "tool",
+            "inputs",
+            "outputs",
+            "result",
+            "audit",
+        },
+    )
+    if obj["schema"] != NORMALIZATION_LINEAGE_SCHEMA_V1:
+        _fail(f"{location}.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["normalization_lineage_id"], f"{location}.normalization_lineage_id")
+    _expect_pattern(
+        obj["source"],
+        f"{location}.source",
+        NAME_RE,
+        "a lowercase source name",
+    )
+    if obj["mode"] not in {"identity", "transform"}:
+        _fail(f"{location}.mode", "expected identity or transform")
+    receipt_ids = _sorted_unique_strings(
+        obj["acquisition_receipt_ids"],
+        f"{location}.acquisition_receipt_ids",
+    )
+    for index, receipt_id in enumerate(receipt_ids):
+        _hash(receipt_id, f"{location}.acquisition_receipt_ids[{index}]")
+    parents = _sorted_unique_strings(
+        obj["parent_source_manifest_ids"],
+        f"{location}.parent_source_manifest_ids",
+    )
+    for index, manifest_id in enumerate(parents):
+        _hash(
+            manifest_id,
+            f"{location}.parent_source_manifest_ids[{index}]",
+        )
+    _expect_string(
+        obj["normalization_schema"], f"{location}.normalization_schema"
+    )
+    _digest(obj["configuration_sha256"], f"{location}.configuration_sha256")
+    _tool(obj["tool"], f"{location}.tool")
+    inputs = _validated_lineage_inputs(obj["inputs"], f"{location}.inputs")
+    outputs = _validated_evidence_objects(obj["outputs"], f"{location}.outputs")
+    permitted_origins = {
+        ("acquisition_receipt", item) for item in receipt_ids
+    }
+    permitted_origins.update(("source_manifest", item) for item in parents)
+    if not permitted_origins:
+        _fail(
+            location,
+            "lineage requires at least one acquisition receipt or parent source manifest",
+        )
+    actual_origins = {
+        (item["origin"]["kind"], item["origin"]["id"]) for item in inputs
+    }
+    if actual_origins != permitted_origins:
+        _fail(
+            f"{location}.inputs",
+            "input origins must exactly cover acquisition_receipt_ids and "
+            "parent_source_manifest_ids",
+        )
+    if obj["mode"] == "identity":
+        projected_inputs = [
+            {
+                key: item[key]
+                for key in ("object", "sha256", "bytes", "media_type")
+            }
+            for item in inputs
+        ]
+        projected_inputs.sort(key=lambda item: item["object"])
+        if projected_inputs != outputs:
+            _fail(
+                f"{location}.outputs",
+                "identity lineage outputs must exactly equal inputs",
+            )
+    if obj["result"] != "complete":
+        _fail(f"{location}.result", "expected 'complete'")
+    audit = _expect_object(obj["audit"], f"{location}.audit")
+    _keys(audit, f"{location}.audit", {"normalized_at"})
+    _utc_timestamp(audit["normalized_at"], f"{location}.audit.normalized_at")
+    expected = normalization_lineage_identity(obj)
+    if obj["normalization_lineage_id"] != expected:
+        _fail(f"{location}.normalization_lineage_id", f"expected {expected}")
     return obj
 
 

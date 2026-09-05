@@ -32,8 +32,26 @@ overlay, or serving topology.
   every source/configuration/environment/schema object to an expected SHA-256 and byte
   length, maps every reducer input member to its own source manifest (including
   mixed-provenance wildcard inputs) or records explicit absence, carries review/audit/
-  lineage fields into source-manifest/v2, and keeps relocation-dependent host roots
+  normalization metadata into source-manifest/v2, and keeps relocation-dependent host roots
   outside the canonical document.
+- `schemas/acquisition-receipt/v1.json` and
+  `schemas/normalization-lineage/v1.json` are standalone, self-identifying acquisition
+  evidence contracts. A receipt binds the upstream URI/native pin, acquisition tool,
+  complete request-set counts, and raw output hashes. A lineage record binds its exact
+  receipt/parent-manifest origins, normalization mode/schema/tool/configuration, and output
+  hashes. Their required audit timestamps are excluded from logical evidence identities.
+  The request-set root is domain-separated over a bounded, sorted, unique list of canonical
+  request descriptors. Acquisition URIs allow only canonical lowercase `https`, `d1`,
+  `postgresql`, and `git+https`; userinfo, queries, fragments, and control characters are
+  rejected. Every request kind, including `http_get`, binds the exact canonical
+  query/body/statement/export-parameter bytes through `parameters_sha256`; a
+  parameter-free request hashes the empty byte string. This keeps credentials out of the
+  receipt URI. The parameter preimage itself must be sealed by the future pack-integration
+  contract before the receipt can authorize replay. The executable Python validator is normative;
+  the portable JSON Schemas describe shape but cannot express root recomputation, count
+  equality, exact origin sets, or identity-mode equality.
+  These documents are not silently grafted onto source-manifest/v2 or offline-pack/v2;
+  fail-closed pack integration requires an explicit next contract version.
 - `schemas/execution-environment/v1.json` gives the environment descriptor its own
   strict, self-identifying contract. It pins the exact CPython, NumPy lock and installed
   tree, SQLite library and compile options, locale, replay-runner closure, and sandbox

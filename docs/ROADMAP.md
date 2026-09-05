@@ -356,11 +356,25 @@ explicit approval.
   Wikidata checks used by `fold_proposals.py`, ends by sealing normalized/folded objects.
   The authoritative full-DAG replay begins after that boundary and performs no network or
   live D1 reads.
-  - [ ] Define canonical `acquisition-receipt/v1` and `normalization-lineage/v1`
-    evidence: exact upstream URI/native pin, acquisition time, tool identity, complete
-    fail-closed batch status, parent source-manifest IDs, and output hashes. Require these
-    before approving non-Git source plans; do not synthesize receipt objects from incomplete
+  - [x] Define canonical `acquisition-receipt/v1` and `normalization-lineage/v1`
+    evidence: canonical query-free upstream URI plus hashed request parameters, native pin,
+    acquisition time, tool identity, complete fail-closed request-set status,
+    origin-tagged receipt/parent-manifest inputs, normalization configuration, and output
+    hashes. Required audit timestamps are excluded from logical evidence identities. The
+    Python validator is normative for semantic constraints JSON Schema cannot express.
+  - [ ] Add explicit source-manifest/offline-pack/source-plan v3 contracts that require and
+    seal validated receipt/lineage documents and request-parameter preimages for non-Git
+    sources. Do not silently tighten v2, and do not synthesize evidence from incomplete
     historical metadata.
+  - [ ] Make external `*_pages.jsonl` + `*_links.jsonl` publication generation-coherent;
+    two independent renames can currently expose a mixed pair after a crash.
+  - [ ] Acquire D1 annotations/community rows from one consistent export or snapshot rather
+    than separate live queries, then issue receipts before normalization.
+  - [ ] Split Wikidata acquisition out of `fold_proposals.py`; incomplete Wikidata batches,
+    universe/edge fetches, or mixed-age description caches must fail closed instead of
+    publishing partial normalized data.
+  - [ ] Resolve exact Hugging Face dataset revisions before downloading TheoremGraph and
+    MathNetwork files; mutable `resolve/main` URLs are not authority evidence.
   - [ ] Remove observation time, local absolute paths, and other ambient values from
     normalized data bytes. Current hierarchy, theoremgraph-links, external harvests, and
     halo outputs embed such values; retain them only in audit/receipt evidence.
