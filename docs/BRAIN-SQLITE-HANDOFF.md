@@ -190,7 +190,7 @@ mirroring still buffer/clone the current corpus; bootstrap executable discovery 
 operator `PATH` before recording exact digests; and long-lived historical bundles would
 need an explicit versioned verifier profile rather than weakening the current v1 policy.
 
-Final branch-wide verification on 2026-09-05 passed the expanded Python gate (38
+Final branch-wide verification on 2026-09-05 passed the expanded Python gate (39
 commands) and the Worker gate (37 files / 845 tests). The Python result includes the one
 expected local replay-sandbox skip described below; every required offline scenario ran.
 Before merging, or after any continuation changes, rerun exactly:
