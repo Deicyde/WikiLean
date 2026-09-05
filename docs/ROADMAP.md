@@ -366,13 +366,21 @@ explicit approval.
     seal validated receipt/lineage documents and request-parameter preimages for non-Git
     sources. Do not silently tighten v2, and do not synthesize evidence from incomplete
     historical metadata.
-  - [ ] Make external `*_pages.jsonl` + `*_links.jsonl` publication generation-coherent;
-    two independent renames can currently expose a mixed pair after a crash.
+  - [x] Make external `*_pages.jsonl` + `*_links.jsonl` publication
+    generation-coherent. New writes share a semantic generation, serialize publishers,
+    retain a hard-linked prior generation behind a durable journal, recover after caught
+    failures or `SIGKILL`, and make build/fold/agent/acceptance readers reject mixed,
+    orphaned, malformed, or unregistered bound inputs. Legacy unsealed pairs remain a
+    migration compatibility path, not authority evidence.
   - [ ] Acquire D1 annotations/community rows from one consistent export or snapshot rather
     than separate live queries, then issue receipts before normalization.
-  - [ ] Split Wikidata acquisition out of `fold_proposals.py`; incomplete Wikidata batches,
-    universe/edge fetches, or mixed-age description caches must fail closed instead of
-    publishing partial normalized data.
+  - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
+    output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
+    validates complete typed responses and redirects, and isolates ordinary missing QIDs
+    without allowing one bad ID to discard valid peers.
+  - [ ] Split Wikidata acquisition out of `fold_proposals.py` into sealed input evidence;
+    universe/edge fetches and mixed-age description caches must likewise fail closed instead
+    of publishing partial normalized data.
   - [ ] Resolve exact Hugging Face dataset revisions before downloading TheoremGraph and
     MathNetwork files; mutable `resolve/main` URLs are not authority evidence.
   - [ ] Remove observation time, local absolute paths, and other ambient values from
@@ -516,14 +524,17 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) define acquisition-receipt and normalization-lineage
-contracts, refresh/freeze the external inputs, and author the reviewed current-corpus source
-plan on a volume with adequate space; (2) finish the trusted OCI launcher, dependency and
-CPU-dispatch policy, and strict clean-host sandbox evidence; (3) compile the first real pack
-and prove cross-object/source-revision coherence; (4) add the two-path randomized-mtime/
-adversarial-environment clean-room gate; (5) run the approved-baseline semantic compatibility
-review and emit the separate two-build reproducibility attestation. Network acquisition,
-live D1 snapshots, and proposal folding remain outside the replay boundary throughout.
+**Next P0-R implementation order:** (1) remove audit/observation fields from normalized
+bytes, pin exact external revisions, build a coherent D1 export, and finish splitting live
+Wikidata acquisition from folding; (2) integrate the resulting receipt/lineage objects in
+explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
+current-corpus source plan on a volume with adequate space; (3) finish the trusted OCI
+launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
+compile the first real pack and prove cross-object/source-revision coherence; (5) add the
+two-path randomized-mtime/adversarial-environment clean-room gate; (6) run the approved-
+baseline semantic compatibility review and emit the separate two-build reproducibility
+attestation. Network acquisition, live D1 snapshots, and proposal folding remain outside
+the replay boundary throughout.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently

@@ -16,8 +16,9 @@ import json
 import os
 import re
 import stat
+import tempfile
 import unicodedata
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import MappingProxyType
@@ -27,6 +28,10 @@ from typing import Any
 BUILD_CONTEXT_SCHEMA = "wikilean.brain-build-context/v1"
 GENERATION_DOMAIN = "wikilean.brain-generation.v1"
 REDUCER_CONFIGURATION_SCHEMA = "wikilean.brain-reducer-config/v1"
+EXTERNAL_PAIR_SCHEMA = "wikilean.external-pair/v1"
+EXTERNAL_PAIR_META_FIELDS = frozenset({"pair_schema", "pair_generation"})
+EXTERNAL_PAIR_TRANSACTION_SCHEMA = "wikilean.external-pair-transaction/v1"
+EXTERNAL_DB_RE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 
 HASH_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
@@ -48,6 +53,10 @@ CELL_ATTACH_KINDS = frozenset(
 
 class BuildContextError(ValueError):
     """A runtime build-context document violates its closed-world contract."""
+
+
+class ExternalPairError(ValueError):
+    """An external pages/links pair is incomplete, mixed, or corrupted."""
 
 
 def _fail(location: str, message: str) -> None:
@@ -256,6 +265,195 @@ def canonical_json_bytes(value: Any) -> bytes:
         separators=(",", ":"),
         allow_nan=False,
     ).encode("utf-8")
+
+
+def _external_pair_canonical_json_bytes(value: Any, location: str = "$") -> bytes:
+    """Canonical JSON for harvested text, preserving upstream Unicode bytes."""
+    def normalize(item: Any, where: str) -> Any:
+        if item is None or isinstance(item, (str, bool)):
+            return item
+        if isinstance(item, int):
+            if not -MAX_SAFE_INTEGER <= item <= MAX_SAFE_INTEGER:
+                raise ExternalPairError(f"{where}: integer exceeds portable range")
+            return item
+        if isinstance(item, list):
+            return [normalize(child, f"{where}[{index}]")
+                    for index, child in enumerate(item)]
+        if isinstance(item, Mapping):
+            result: dict[str, Any] = {}
+            for key, child in item.items():
+                if not isinstance(key, str):
+                    raise ExternalPairError(f"{where}: object keys must be strings")
+                result[key] = normalize(child, f"{where}.{key}")
+            return result
+        raise ExternalPairError(
+            f"{where}: unsupported external-pair JSON type {type(item).__name__}"
+        )
+
+    return json.dumps(
+        normalize(value, location),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+
+
+def external_pair_generation(
+    meta: Mapping[str, Any],
+    pages: Sequence[Mapping[str, Any]],
+    links: Sequence[Mapping[str, Any]],
+) -> str:
+    """Return the content identity shared by one external pages/links pair."""
+    # Acquisition timestamps, retry counters, and other audit metadata must not
+    # change the semantic identity of identical normalized rows.
+    identity_meta = {"db": meta.get("db")}
+    digest = hashlib.sha256()
+    digest.update(EXTERNAL_PAIR_SCHEMA.encode("ascii") + b"\0")
+    for role, values in (("meta", [identity_meta]),
+                         ("pages", pages), ("links", links)):
+        digest.update(role.encode("ascii") + b"\0")
+        digest.update(len(values).to_bytes(8, "big"))
+        for value in values:
+            encoded = _external_pair_canonical_json_bytes(value)
+            digest.update(len(encoded).to_bytes(8, "big"))
+            digest.update(encoded)
+    return f"sha256:{digest.hexdigest()}"
+
+
+def seal_external_pair_meta(
+    meta: Mapping[str, Any],
+    pages: Sequence[Mapping[str, Any]],
+    links: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Add the non-overridable generation envelope used by both artifacts."""
+    _external_pair_canonical_json_bytes(meta)
+    conflicts = sorted(EXTERNAL_PAIR_META_FIELDS.intersection(meta))
+    if conflicts:
+        raise ExternalPairError(
+            "external pair metadata fields are writer-owned: "
+            + ", ".join(conflicts)
+        )
+    sealed = dict(meta)
+    sealed["pair_schema"] = EXTERNAL_PAIR_SCHEMA
+    sealed["pair_generation"] = external_pair_generation(meta, pages, links)
+    return sealed
+
+
+def validate_external_pair(
+    db: str,
+    pages_meta: Mapping[str, Any],
+    pages: Sequence[Mapping[str, Any]],
+    links_meta: Mapping[str, Any] | None,
+    links: Sequence[Mapping[str, Any]],
+) -> bool:
+    """Validate one pair; return False only for a wholly unsealed legacy pair."""
+    page_fields = EXTERNAL_PAIR_META_FIELDS.intersection(pages_meta)
+    link_fields = EXTERNAL_PAIR_META_FIELDS.intersection(links_meta or {})
+    if not page_fields and not link_fields:
+        return False
+    if page_fields != EXTERNAL_PAIR_META_FIELDS:
+        raise ExternalPairError(
+            f"{db}: pages metadata has an incomplete generation envelope"
+        )
+    if links_meta is None:
+        raise ExternalPairError(
+            f"{db}: generated pages require a generated links file, even when empty"
+        )
+    if link_fields != EXTERNAL_PAIR_META_FIELDS:
+        raise ExternalPairError(
+            f"{db}: links metadata has an incomplete generation envelope"
+        )
+    if pages_meta != links_meta:
+        raise ExternalPairError(f"{db}: pages and links metadata differ")
+    _external_pair_canonical_json_bytes(pages_meta)
+    if pages_meta.get("pair_schema") != EXTERNAL_PAIR_SCHEMA:
+        raise ExternalPairError(
+            f"{db}: unsupported external pair schema "
+            f"{pages_meta.get('pair_schema')!r}"
+        )
+    if pages_meta.get("db") != db:
+        raise ExternalPairError(
+            f"{db}: generated metadata names db {pages_meta.get('db')!r}"
+        )
+    if type(pages_meta.get("n_pages")) is not int \
+            or pages_meta["n_pages"] != len(pages):
+        raise ExternalPairError(f"{db}: generated page count does not match metadata")
+    if type(pages_meta.get("n_links")) is not int \
+            or pages_meta["n_links"] != len(links):
+        raise ExternalPairError(f"{db}: generated link count does not match metadata")
+    if not pages:
+        raise ExternalPairError(f"{db}: generated pair must contain at least one page")
+    for index, row in enumerate(pages, 1):
+        if (
+            "_meta" in row
+            or row.get("db") != db
+            or not isinstance(row.get("id"), str) or not row["id"]
+            or not isinstance(row.get("title"), str) or not row["title"]
+            or not isinstance(row.get("url"), str) or not row["url"]
+        ):
+            raise ExternalPairError(
+                f"{db}: generated page row {index} violates the ingest contract"
+            )
+        aliases = row.get("aliases")
+        if aliases is not None and (
+            not isinstance(aliases, list)
+            or any(not isinstance(alias, str) or not alias for alias in aliases)
+        ):
+            raise ExternalPairError(
+                f"{db}: generated page row {index} has invalid aliases"
+            )
+        for field in ("snippet", "snippet_license", "qid", "kind_hint"):
+            if field in row and not isinstance(row[field], str):
+                raise ExternalPairError(
+                    f"{db}: generated page row {index} has non-string {field}"
+                )
+    for index, row in enumerate(links, 1):
+        if (
+            "_meta" in row
+            or row.get("db") != db
+            or not isinstance(row.get("src"), str) or not row["src"]
+            or not isinstance(row.get("dst"), str) or not row["dst"]
+            or row.get("src") == row.get("dst")
+            or not isinstance(row.get("context"), str) or not row["context"]
+        ):
+            raise ExternalPairError(
+                f"{db}: generated link row {index} violates the ingest contract"
+            )
+    expected = external_pair_generation(pages_meta, pages, links)
+    if pages_meta.get("pair_generation") != expected:
+        raise ExternalPairError(
+            f"{db}: external pair content does not match pair_generation"
+        )
+    return True
+
+
+def external_pair_control_paths(directory: Path, db: str) -> dict[str, Path]:
+    """Return collision-resistant lock/journal/backup paths for one source."""
+    if not EXTERNAL_DB_RE.fullmatch(db):
+        raise ExternalPairError(f"invalid external database key {db!r}")
+    directory = Path(directory).resolve()
+    lock_key = hashlib.sha256(
+        f"{directory}\0{db}".encode("utf-8")
+    ).hexdigest()
+    prefix = f".wikilean-pair-{db}"
+    return {
+        "lock": Path(tempfile.gettempdir()) / "wikilean-external-pair-locks"
+        / f"{lock_key}.lock",
+        "journal": directory / f"{prefix}.transaction.json",
+        "pages_backup": directory / f"{prefix}.pages.previous",
+        "links_backup": directory / f"{prefix}.links.previous",
+    }
+
+
+def external_pair_db_from_journal(path: Path) -> str | None:
+    prefix = ".wikilean-pair-"
+    suffix = ".transaction.json"
+    name = Path(path).name
+    if not name.startswith(prefix) or not name.endswith(suffix):
+        return None
+    db = name[len(prefix):-len(suffix)]
+    return db if EXTERNAL_DB_RE.fullmatch(db) else None
 
 
 def _domain_hash(domain: str, value: Any) -> str:
@@ -1311,10 +1509,14 @@ def load_build_context(path: str | os.PathLike[str]) -> BuildContext:
 
 __all__ = [
     "BUILD_CONTEXT_SCHEMA",
+    "EXTERNAL_PAIR_META_FIELDS",
+    "EXTERNAL_PAIR_SCHEMA",
+    "EXTERNAL_PAIR_TRANSACTION_SCHEMA",
     "GENERATION_DOMAIN",
     "BuildContext",
     "BuildContextError",
     "BuildRoots",
+    "ExternalPairError",
     "InputBinding",
     "InputMember",
     "Replay",
@@ -1324,6 +1526,11 @@ __all__ = [
     "Stage",
     "StageOutput",
     "canonical_json_bytes",
+    "external_pair_control_paths",
+    "external_pair_db_from_journal",
+    "external_pair_generation",
     "generation_identity",
     "load_build_context",
+    "seal_external_pair_meta",
+    "validate_external_pair",
 ]
