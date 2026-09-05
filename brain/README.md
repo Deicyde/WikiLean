@@ -23,8 +23,9 @@ catalog/data/wikidata_descriptions.json        (v2: unit.description)
 catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
 brain/proposals/*.jsonl (agent fleets)  ─┐
         │                                ▼
+        │                fold plan → sealed Wikidata entity bundle
         │                brain/fold_proposals.py   → data/container_links.jsonl
-        │                (deterministic verifier)    data/discovery_proposals.jsonl
+        │                (offline verifier)          data/discovery_proposals.jsonl
         ▼                                            data/discovery_rejected.jsonl
 brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
         │                 → brain/data/edges.jsonl     (every kind EXCEPT links)
@@ -45,14 +46,16 @@ brain/test_v2.py          → fixture unit tests for the v2 external layer
 Everything on the build path is deterministic — no LLM calls. Agent discovery passes
 write `brain/proposals/*.jsonl` only; each shard gets an adversarial skeptic pass
 (`*.verified.jsonl`), then `fold_proposals.py` re-applies hard machine checks
-(hierarchy-path existence, decl oracle + checkout grep, live Wikidata entity + label
+(hierarchy-path existence, decl oracle + checkout grep, sealed Wikidata entity + label
 agreement) to every row regardless of verdict. Rejected rows land in
 `discovery_rejected.jsonl` with reasons — the audit trail. Rows folded before their
 skeptic ran carry `evidence.skeptic: "pending"` with confidence capped at medium; the
-2026-07-03 build has zero pending rows. The remaining inline Wikidata acquisition is
-fail-closed: request, response, parse, redirect, missing-entity isolation, or completeness
-failures abort before any fold output is written. Rejected, vetoed, and locally invalid
-rows do not create unnecessary network dependencies.
+2026-07-03 build has zero pending rows. Folding performs no network fallback. It first emits
+the exact canonical request plan for locally admissible unknown QIDs; a non-empty plan must
+be acquired separately and supplied as an explicit absolute sealed bundle. The independent
+verifier replays the request/bisection transcript, redirect and missing identity, normalized
+map, toolchain, receipt, and lineage before any fold output is written. Rejected, vetoed,
+locally invalid, and already-known rows do not create acquisition dependencies.
 
 ## Rebuild (ordered)
 
@@ -71,7 +74,17 @@ python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live
 
 ```bash
 cd "$(git rev-parse --show-toplevel)"
-python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
+# Only when proposals changed: plan first, skip acquisition if qids is empty,
+# otherwise acquire into a private store and pass the printed absolute bundle path.
+mkdir -m 0700 /absolute/private/wikidata-run
+python3 brain/fold_proposals.py \
+  --write-wikidata-request-plan /absolute/private/wikidata-run/request-plan.json
+# If the plan has qids:[], run `python3 brain/fold_proposals.py` and stop here.
+BUNDLE="$(brain/acquire-wikidata-entities.sh \
+  /absolute/private/wikidata-run/request-plan.json \
+  --store /absolute/private/wikidata-entity-store)"
+python3 brain/fold_proposals.py \
+  --wikidata-entity-bundle "$BUNDLE"
 python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
 python3 brain/build_snapshot.py    # one graph build → nodes + both edge streams + local SQLite index
 python3 brain/build_rollups.py     # rollup_edges.<grain>.jsonl (streams the 1 GB CSV)
@@ -81,6 +94,26 @@ cd brain && python3 build_shards.py && cd ..          # xref_index.json + source
 cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
   --brain-release-dir ../site/out/brain-releases/<release-hex>
+```
+
+`brain/acquire-wikidata-entities.sh` requires isolated CPython 3.12 and direct HTTPS
+egress. It deliberately ignores proxy/curl configuration, preserves exact request
+preimages and response bytes, and publishes by atomic no-replace rename. The per-response
+limit is 64 MiB, but aggregate transcript construction and verification are currently
+in-memory; keep request plans bounded until streaming lands. Receipt and normalization-
+lineage IDs intentionally exclude audit clocks, while the bundle directory ID hashes the
+exact canonical receipt and lineage bytes. Reacquiring unchanged source bytes therefore
+creates a distinct immutable evidence generation with a fresh audit time without changing
+the logical source identity. This bundle closes proposal folding only. The legacy Wikidata
+universe, relation-edge, and description harvesters still perform separate live
+acquisitions, and neither their outputs nor a proposal bundle become v3 source authority
+until explicitly bound into a reviewed source plan.
+
+Focused regression commands (current counts: 23 acquisition/verifier, 9 fold):
+
+```bash
+python3 brain/test_acquire_wikidata_entities.py
+python3 brain/test_fold_proposals.py
 ```
 
 For the P0-R acquisition boundary, capture articles plus all community edge/node
