@@ -156,7 +156,7 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-09-02)
+### Current Brain execution queue (updated 2026-09-05)
 
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
@@ -177,6 +177,15 @@ pins, reducer configuration, and the pack-derived generation identity rather tha
 or environment configuration. Shared stage I/O provides deterministic private scratch,
 durable atomic no-replace publication for files and trees, rollback of partial multi-output
 publication, and cross-filesystem refusal.
+
+The acquisition boundary now also has a sealed, read-only D1 snapshot command and a
+bundle-only community-edge consumer. The harvester independently verifies the bundle
+closure, toolchain and evidence chain, validates tombstones, and pins graduated provenance
+to the normalization-lineage identity; it has no live-query or fixture bypass. Scheduled
+graduation is disabled by default and requires an explicit absolute reviewed bundle path.
+Nightly LaunchAgents are now generated from the current checkout after a sparse-environment
+preflight seals the exact Python and Mathlib paths; no tracked host-specific plist remains,
+and installation never loads or starts a job.
 
 `run_offline.py` now accepts v2 packs, prepares a fresh workspace, and delegates to the
 single fail-closed `run_replay_v2.py` executor. The executor re-verifies the sealed input and
@@ -382,9 +391,13 @@ explicit approval.
       acquisition receipt and normalization lineage. Hermetic tests cover malformed,
       truncated, duplicate, reordered, concurrent, hostile-target, and real `SIGKILL`
       cases. No remote query was run while landing this tool.
-    - [ ] Capture and review a fresh canonical bundle, then make annotation/community
-      consumers use that same bundle instead of `pull-annotations.ts` and
-      `harvest_community_edges.py` issuing independent live queries.
+    - [x] Make community graduation consume only an explicitly supplied, independently
+      verified sealed bundle. The harvester has no live-query or fixture path, validates
+      the complete edge/node/tombstone generation, and nightly execution is disabled unless
+      an operator configures an absolute bundle directory.
+    - [ ] Capture and review a fresh canonical production bundle, migrate the annotation
+      consumer away from `pull-annotations.ts`, and bind the reviewed receipt/lineage into
+      source-plan authority. No production D1 query was run while implementing these tools.
   - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
     output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
     validates complete typed responses and redirects, and isolates ordinary missing QIDs
@@ -544,8 +557,9 @@ explicit approval.
   differently licensed TheoremGraph object before making this gate strict.
 
 **Next P0-R implementation order:** (1) finish removing audit/observation fields from
-normalized bytes, run and consume the sealed coherent D1 export, and finish splitting live Wikidata
-acquisition from folding; (2) integrate the resulting receipt/lineage objects, including
+normalized bytes, run and review the sealed coherent D1 export, migrate the remaining
+annotation consumer, and finish splitting live Wikidata acquisition from folding; (2) bind
+the resulting D1 receipt/lineage objects, including
 the reviewed Hugging Face inputs, in
 explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
 current-corpus source plan on a volume with adequate space; (3) finish the trusted OCI

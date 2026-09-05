@@ -5,17 +5,16 @@ logged-in user (the Claude **Max-plan** login the agent SDK uses lives in the
 user's login keychain — a cloud cron can't reach it).
 
 ## Files
-- `nightly-moderate.sh` — the wrapper launchd executes. Sets absolute PATH/env
-  (launchd gives a bare environment), takes a single-instance lock, runs
-  **flush → wp-update → review**, logs to `site/cache/cron/moderate-<ts>.log`.
-  Limits are env-overridable: `WIKILEAN_{WPUPDATE_LIMIT,REVIEW_LIMIT,CONCURRENCY,BUDGET_TOKENS}`
-  (defaults 300 / 15 / 2 / 700000).
-- `org.wikilean.moderate.plist` — the LaunchAgent. Fires `03:00` local; if the
-  Mac is asleep it runs once on next wake (and `flush` recovers any missed work).
-- `newtags-nightly.sh` + `org.wikilean.newtags.plist` — NEW-article tagging @
-  03:10 (own lock; see the script header).
-- `brain-nightly.sh` + `org.wikilean.brain.plist` — the BRAIN refresh @ 02:20
-  (see below).
+- `nightly-launchd.py` + `launchd-plist.template` — validate host-local runtime
+  paths and render/install all three absolute LaunchAgent plists without loading
+  them. Validation uses a sparse launchd-like environment, not interactive-shell
+  `WIKILEAN_*`/`BRAIN_*` exports.
+- `nightly-moderate.sh` — moderation at 03:20; if the Mac is asleep launchd runs
+  it once on next wake. It runs **flush → wp-update → review**, logs to
+  `site/cache/cron/moderate-<ts>.log`, and accepts the documented limit overrides.
+- `newtags-nightly.sh` — NEW-article tagging @ 03:10 (own lock; see the script
+  header).
+- `brain-nightly.sh` — the BRAIN refresh @ 02:20 (see below).
 
 ## Brain nightly (org.wikilean.brain @ 02:20)
 
@@ -51,6 +50,11 @@ stage metrics are written under `site/out/`. Logs live in
 The Brain job also requires Python 3.12+ and an explicit readable
 `BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`. Put host-local
 paths in the gitignored `site/ops/nightly.local.env`; see the runbook.
+Community-edge graduation is separately off by default. To enable it, set
+`WIKILEAN_COMMUNITY_HARVEST=1` and point `WIKILEAN_D1_SNAPSHOT_BUNDLE` at one
+absolute, existing, sealed bundle produced by the explicit D1 acquisition step.
+The moderation job never acquires live D1 state itself and preserves the prior
+`community_edges.jsonl` if that bundle is absent or invalid.
 
 P1B activation-review tooling is implemented but has not been run operationally.
 Promoter dry-run can retain its exact sealed public/Worker/config inputs and raw read-only
@@ -68,29 +72,36 @@ referenced companion retained-artifact root. These commands do not deploy.
 Generating the first real bundle remains blocked until Jack merges P1A onto `main` and
 authorizes the launch-context Mathlib and interpreter paths; see the release runbook.
 
-Install (same pattern as the moderate job; the Full Disk Access grant below
-covers this job too):
-
+## Install the three nightly jobs
 ```sh
-mkdir -p ~/Library/Logs/WikiLean
-cp site/ops/org.wikilean.brain.plist ~/Library/LaunchAgents/
+# First copy/edit the gitignored host-local config. Python and both Mathlib
+# settings must be absolute; the check runs from / with launchd-like isolation.
+cp site/ops/nightly.local.env.example site/ops/nightly.local.env
+python3 site/ops/nightly-launchd.py check
+python3 site/ops/nightly-launchd.py install
+
+# The installer seals the exact version-checked Python path into every plist,
+# including when it was auto-discovered from this checkout's .venv.
+
+# Equivalent one-time explicit path overrides are sealed into the rendered
+# plists (no token is ever written there):
+# python3 site/ops/nightly-launchd.py install \
+#   --python /absolute/path/to/python3 \
+#   --mathlib /absolute/path/to/mathlib4
+
+# Installation only writes validated absolute plists; loading remains an
+# explicit operator action.
 launchctl bootout  gui/$(id -u)/org.wikilean.brain 2>/dev/null
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.wikilean.brain.plist
-# run it now (instead of waiting for 02:20):
-launchctl kickstart -k gui/$(id -u)/org.wikilean.brain
-# watch:
-tail -f site/ops/logs/brain-*.log
-```
-
-## Install
-```sh
-cp site/ops/org.wikilean.moderate.plist ~/Library/LaunchAgents/
 launchctl bootout  gui/$(id -u)/org.wikilean.moderate 2>/dev/null
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.wikilean.moderate.plist
-# run it now (instead of waiting for 03:00):
+launchctl bootout  gui/$(id -u)/org.wikilean.newtags 2>/dev/null
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.wikilean.newtags.plist
+# run it now (instead of waiting for 03:20):
 launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate
 # watch:
 tail -f site/cache/cron/moderate-*.log
+tail -f site/ops/logs/brain-*.log
 ```
 
 ## Conditional one-time permission — Full Disk Access for `/bin/bash`
@@ -103,9 +114,9 @@ If a checkout lives under `~/Desktop`, macOS **TCC** shields it from background
 
 bash is the LaunchAgent's "responsible process", so the child processes (the
 venv Python → `claude` → node) inherit its disk + keychain access. A checkout
-under `~/projects`, including the current Brain plist target, normally does not
-need this grant. The moderation/newtags plists still carry their legacy Desktop
-paths and should be migrated separately before reinstalling those jobs.
+under `~/projects` normally does not need this grant. All three plists are
+rendered from the current checkout, so moving it requires rerunning
+`nightly-launchd.py install`.
 
 Note: the plist's `StandardOutPath`/`StandardErrorPath` point at
 `~/Library/Logs/WikiLean/` (off Desktop) — launchd itself can't write onto the
@@ -134,6 +145,6 @@ It runs in your login context (Max auth, no FDA needed), detaches (survives
 closing the terminal), and the runner aborts cleanly when the window is spent.
 Bind `run-now.sh` to a Raycast script or macOS Shortcut for a literal hotkey.
 
-The **nightly 3 AM launchd run stays installed as a fallback** for days you
-forget — both share the same wrapper + single-instance lock, so they never
-double-run.
+The **nightly 03:20 launchd run stays installed as a fallback** for days you
+forget — manual and scheduled moderation share the same wrapper +
+single-instance lock, so they never double-run.

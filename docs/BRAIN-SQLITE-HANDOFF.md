@@ -102,12 +102,24 @@ statement for articles, every community edge (including tombstones), and communi
 checks row counts and exact migrated column inventories; binds the production account and
 database UUID plus the pinned Node/Wrangler closure; and atomically publishes a private,
 content-addressed bundle containing clock-free normalized objects and validated receipt/
-lineage evidence. The legacy annotation pull and community harvester are not yet wired to
-consume it, so no source-plan or release authority claim follows from the tool alone.
+lineage evidence. No source-plan or release authority claim follows from the acquisition
+tool alone.
+
+Community graduation is now wired to that boundary: `harvest_community_edges.py` accepts
+only an explicit sealed bundle, independently re-verifies its closure, evidence, normalized
+rows, and tombstones, and pins output provenance to the normalization-lineage identity. It
+has no live-query or fixture bypass. The annotation mirror and source-plan authority are
+still not wired to the bundle, and no production bundle has been captured.
+
+Nightly operations are portable across checkouts. `site/ops/nightly-launchd.py` validates a
+sparse launchd-like environment, seals the exact checked Python and Mathlib paths into
+generated plists, and installs files without loading jobs. Community graduation is off by
+default and requires an absolute reviewed bundle path; the moderation job never acquires D1
+state implicitly.
 
 ## Verification state and required final commands
 
-Focused results recorded on 2026-09-04:
+Focused results recorded through 2026-09-05:
 
 - offline-pack compiler: 22 tests passed;
 - source-plan preflight: 15 tests passed;
@@ -120,6 +132,10 @@ Focused results recorded on 2026-09-04:
 - base-graph context: 11 tests passed after the annotation-selector fix; and
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
+
+The latest continuation additionally passed 11 sealed-harvester tests, 8 D1-acquisition
+tests, 10 top-level-shard tests, 15 portable-launcher tests, and 13 Brain-nightly shell
+tests. The launcher/harvester integration received an independent clean P0/P1 audit.
 
 The acquisition checkpoint passed the full Python gate (36 commands) and the Worker gate
 (37 files / 845 tests). Before merging, or after any continuation changes, rerun exactly:
@@ -190,7 +206,8 @@ The first real pack remains blocked on evidence or data that cannot be manufactu
 the current checkout:
 
 1. Run and review the new sealed, read-only D1 annotation/community acquisition command,
-   then migrate both consumers to its one-generation bundle. The current pull manifest
+   then migrate the annotation mirror and source-plan authority to its one-generation
+   bundle. Community graduation already requires that bundle. The current pull manifest
    records `2026-08-06T04:19:49.266Z`; D1 remains canonical and must never be re-seeded
    from these disk files. No production D1 query was run while implementing the tool.
 2. Restore or reacquire the read-only Mathlib source tree and bind its full commit/tree.
@@ -207,8 +224,8 @@ the current checkout:
 6. Remove observation times and local paths from remaining external-harvest, halo,
    community, and catalog-derived bytes. Hierarchy and theoremgraph-link outputs are now
    immutable-revision-derived.
-7. Finish acquisition separation before issuing evidence: export D1 rows from one snapshot,
-   move the now-fail-closed Wikidata lookup out of `fold_proposals.py`, make the remaining
+7. Finish acquisition separation before issuing evidence: move the now-fail-closed
+   Wikidata lookup out of `fold_proposals.py`, make the remaining
    Wikidata harvesters reject partial results, and bind the reviewed Hugging Face revisions
    into v3 evidence. Re-harvest legacy external pairs through the sealed writer.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
@@ -221,7 +238,7 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had about 10 GiB free at the latest check, after fluctuating as low as
+The filesystem had about 6.3 GiB free at the latest check, after fluctuating as low as
 1.2–3.0 GiB during this work.
 The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
 Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
@@ -237,8 +254,9 @@ duplicate temporary object; the real plan is required for an exact number.
 1. Preserve both required hermetic gates for every continuation change; the branch now has
    independently reviewed compiler/runtime, evidence-contract, pair-publication, and fold
    fail-closed checkpoints.
-2. Remove remaining observation/run metadata from normalized bytes, wire the sealed D1
-   bundle into consumers, finish Wikidata acquisition separation, then design the explicit
+2. Run and review one sealed production D1 bundle, migrate the annotation and source-plan
+   consumers, remove remaining observation/run metadata from normalized bytes, finish
+   Wikidata acquisition separation, then design the explicit
    v3 receipt/lineage pack integration
    (including the reviewed Hugging Face sources) and author the
    reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.

@@ -8,7 +8,8 @@
 # throughput / more parallel agents than the opus-pinned review cohort.
 #
 # Runs as the logged-in user so the Claude Max-plan login is available. launchd
-# hands a bare environment, so every path is absolute and PATH is explicit.
+# hands a bare environment, so the wrapper derives its checkout and validates
+# host-local paths before doing any work.
 #
 # COEXISTENCE with the 03:20 moderation job (org.wikilean.moderate): this job
 # uses its OWN lock (.lock.newtags.d), so it does NOT block the 03:20 run — both
@@ -18,20 +19,20 @@
 # LOCKDIR at "$LOGDIR/.lock.d" (the shared nightly lock).
 set -uo pipefail
 
-REPO="/Users/jack/Desktop/LEAN/WikiLean"
-PY="$REPO/catalog/.venv/bin/python3"
-export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-export WIKILEAN_MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"
-export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.vars")"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)" || exit 1
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/nightly-runtime.sh"
+wikilean_ops_init || exit 1
 
 # Force Max-subscription auth (see the moderate wrapper for the full rationale):
 # an inherited ANTHROPIC_API_KEY would bill an out-of-credits API account and
 # every agent call dies with 0 tokens. Scrub it so both launch paths use Max.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 
-# Editable tunables live in site/ops/nightly.env (sourced with ":=" so an env
-# override still wins). Missing file → the inline defaults below.
-[ -f "$REPO/site/ops/nightly.env" ] && . "$REPO/site/ops/nightly.env"
+if [ "${WIKILEAN_OPS_PREFLIGHT_ONLY:-0}" = "1" ]; then
+  wikilean_ops_print_check
+  exit 0
+fi
 
 # Tunables (fallback defaults if nightly.env is absent / silent on these).
 # NEWTAGS-only model var -> the WIKILEAN_AGENT_MODEL that batch_annotate reads,
@@ -50,7 +51,7 @@ LOG="$LOGDIR/newtags-$TS.log"
 
 # Retry an agent step across a Max-window reset — shared implementation
 # (reset-time-aware sleep, budget-stop detection): site/ops/retry-lib.sh.
-. "$(dirname "$0")/retry-lib.sh"
+. "$SCRIPT_DIR/retry-lib.sh"
 
 # Single-instance lock — SEPARATE from the moderation lock so this job coexists
 # with the 03:20 run (see the header). Atomic mkdir, 4h stale recovery.
