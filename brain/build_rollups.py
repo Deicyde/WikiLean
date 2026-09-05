@@ -25,15 +25,23 @@ Run: python3 brain/build_rollups.py
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 import sys
 import time
-from datetime import datetime, timezone
+from contextlib import ExitStack
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
+sys.path.insert(0, str(REPO / "catalog"))
+
+from huggingface_download import (  # noqa: E402
+    HuggingFaceArtifactError,
+    ReviewedDatasetPin,
+    optional_verified_reviewed_dataset,
+    verified_reviewed_dataset,
+)
+
 DEP = REPO / "catalog" / ".cache" / "formal_dependency.csv"
 STMT = REPO / "catalog" / ".cache" / "statement_formal.csv"
 HIER = REPO / "catalog" / "data" / "hierarchy.json"
@@ -41,6 +49,7 @@ HIER = REPO / "catalog" / "data" / "hierarchy.json"
 # flags — the explicit subgraph is the paper's proxy for human-intended
 # (non-elaborator-synthesized) dependencies. Optional; fetch_mathlib_graph.py.
 MNET = REPO / "catalog" / ".cache" / "mathnetwork" / "edges.csv"
+MNET_NODES = REPO / "catalog" / ".cache" / "mathnetwork" / "nodes.csv"
 OUTDIR = HERE / "data"
 
 GRAINS = ("file", "dir", "module", "tree")
@@ -51,14 +60,6 @@ SHIFT = 19          # decl indices fit in 19 bits (388,105 < 2^19); pair key = s
 TOP_WITNESSES = 3
 TOP_HUBS = 50
 csv.field_size_limit(10 ** 9)
-
-
-def sha16(path: Path) -> str:
-    sha = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            sha.update(chunk)
-    return sha.hexdigest()[:16]
 
 
 def load_decls() -> tuple[dict[str, int], list[str], tuple[list[str], list[str], list[str]]]:
@@ -200,7 +201,12 @@ def aggregate(pairs: dict[int, int],
     return edges
 
 
-def main() -> int:
+def _build_rollups(
+    *,
+    mathgraph_pin: ReviewedDatasetPin,
+    mathgraph_metadata: dict[str, dict[str, object]],
+    mathnetwork_metadata: dict[str, dict[str, object]] | None,
+) -> int:
     t0 = time.monotonic()
     for p in (DEP, STMT, HIER):
         if not p.exists():
@@ -220,7 +226,7 @@ def main() -> int:
     # counted, never guessed.
     exp_tree: dict[tuple[str, str], int] = {}
     mnet_stats = {"rows": 0, "explicit": 0, "unmatched": 0, "pairs": 0}
-    if MNET.exists():
+    if mathnetwork_metadata is not None:
         name2i: dict[str, int] = {}
         for i, nm in enumerate(names):
             if nm not in name2i:
@@ -260,19 +266,49 @@ def main() -> int:
     t_mnet = time.monotonic()
 
     hier_meta = json.loads(HIER.read_text())["meta"]
-    dep_st = DEP.stat()
+    dep_metadata = mathgraph_metadata["formal_dependency.csv"]
+    statement_metadata = mathgraph_metadata["statement_formal.csv"]
+    if (
+        hier_meta.get("source_revision") != mathgraph_pin.revision
+        or hier_meta.get("source_sha256") != statement_metadata["sha256"]
+    ):
+        raise SystemExit(
+            "hierarchy.json is not derived from the reviewed math-graph pin; "
+            "rerun python3 catalog/build_hierarchy.py first"
+        )
     base_meta = {
         "source": "uw-math-ai/math-graph formal_dependency.csv x statement_formal.csv "
                   "(TheoremGraph)",
-        "provenance_source": "theoremgraph",   # key in catalog/data/source_registry.json
-        # snapshot mtime, NOT build time — rebuilds of the same CSVs are byte-identical
-        "generated_at": datetime.fromtimestamp(dep_st.st_mtime, tz=timezone.utc)
-                        .isoformat(timespec="seconds"),
+        "provenance_source": "theoremgraph_dependencies",
+        "generated_at": f"hf:{mathgraph_pin.revision}",
         "pins": {
-            "formal_dependency": {"bytes": dep_st.st_size, "sha256": sha16(DEP)},
-            "statement_formal": {"bytes": STMT.stat().st_size, "sha256": sha16(STMT)},
-            "hierarchy": {"generated_at": hier_meta["generated_at"],
-                          "source_sha256": hier_meta["source_sha256"]},
+            "math_graph_revision": mathgraph_pin.revision,
+            "formal_dependency": {
+                "bytes": dep_metadata["size"],
+                "sha256": dep_metadata["sha256"],
+                "url": dep_metadata["file_url"],
+            },
+            "statement_formal": {
+                "bytes": statement_metadata["size"],
+                "sha256": statement_metadata["sha256"],
+                "url": statement_metadata["file_url"],
+            },
+            "hierarchy": {
+                "source_revision": hier_meta["source_revision"],
+                "source_sha256": hier_meta["source_sha256"],
+            },
+            **(
+                {
+                    "mathnetwork": {
+                        "revision": mathnetwork_metadata["edges.csv"]["revision"],
+                        "bytes": mathnetwork_metadata["edges.csv"]["size"],
+                        "sha256": mathnetwork_metadata["edges.csv"]["sha256"],
+                        "url": mathnetwork_metadata["edges.csv"]["file_url"],
+                    }
+                }
+                if mathnetwork_metadata is not None
+                else {}
+            ),
         },
         "kind": "depends",
         "license": "CC-BY-SA-4.0 (TheoremGraph-derived edge facts; attribution: "
@@ -380,6 +416,38 @@ def main() -> int:
           f"aggregate {t_agg - t_pairs:.1f}s + mnet {t_mnet - t_agg:.1f}s + "
           f"write {time.monotonic() - t_mnet:.1f}s = {time.monotonic() - t0:.1f}s")
     return 0
+
+
+def main() -> int:
+    try:
+        with ExitStack() as stack:
+            mathgraph_pin, mathgraph_metadata = stack.enter_context(
+                verified_reviewed_dataset(
+                    "uw-math-ai/math-graph",
+                    {
+                        "formal_dependency.csv": DEP,
+                        "statement_formal.csv": STMT,
+                    },
+                )
+            )
+            mathnetwork = stack.enter_context(
+                optional_verified_reviewed_dataset(
+                    "MathNetwork/MathlibGraph",
+                    {
+                        "edges.csv": MNET,
+                        "nodes.csv": MNET_NODES,
+                    },
+                )
+            )
+            return _build_rollups(
+                mathgraph_pin=mathgraph_pin,
+                mathgraph_metadata=mathgraph_metadata,
+                mathnetwork_metadata=(
+                    mathnetwork[1] if mathnetwork is not None else None
+                ),
+            )
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
 
 
 if __name__ == "__main__":

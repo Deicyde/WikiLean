@@ -54,7 +54,8 @@ site/cache/*
 !site/cache/*.meta.json
 site/out/
 
-# TheoremGraph match CSV cache (108MB; re-download via ingest_theorem_graph.py --download)
+# Hugging Face caches + reviewed sidecars (reacquire only at revisions in
+# catalog/huggingface_pins.json; legacy matching bytes may use --adopt-existing)
 catalog/.cache/
 
 # v2 graph rebuild — large derived artifacts (regenerate via build_graph_v2.py

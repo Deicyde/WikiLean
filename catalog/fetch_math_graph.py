@@ -14,44 +14,100 @@ self-review: a fresh clone had no way to obtain them):
 Mirrors catalog/ingest_theorem_graph.py's curl-based download (the system
 python's SSL trust store is broken on this machine). CC-BY-4.0 upstream.
 
-Usage: python3 catalog/fetch_math_graph.py [--force]
+Usage:
+  python3 catalog/fetch_math_graph.py --revision <40-hex-commit> [--force]
+  python3 catalog/fetch_math_graph.py --revision <commit> --adopt-existing
+
+The revision may instead be supplied through WIKILEAN_MATH_GRAPH_REVISION.
+Branches and tags (including main) are rejected.
+The adoption mode writes no dataset bytes; it seals a legacy cache only when
+all sizes and SHA-256 digests match the reviewed pin registry.
 """
 from __future__ import annotations
 
 import argparse
-import subprocess
-import sys
+import os
 from pathlib import Path
+
+from huggingface_download import (
+    HuggingFaceArtifactError,
+    adopt_existing_artifacts,
+    fetch_huggingface_artifacts,
+    load_reviewed_pin,
+    require_reviewed_revision,
+    resolve_revision,
+)
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
 DATASET = "uw-math-ai/math-graph"
 FILES = ["statement_formal.csv", "formal_dependency.csv", "slogan.csv"]
+REVISION_ENV = "WIKILEAN_MATH_GRAPH_REVISION"
 UA = "WikiLean-math-graph-fetch/1.0 (https://wikilean.jackmccarthy.org; jack.mccarthy.1@stonybrook.edu)"
 
 
-def main() -> int:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--force", action="store_true", help="re-download even if present")
-    args = ap.parse_args()
-    CACHE.mkdir(parents=True, exist_ok=True)
-    for name in FILES:
-        dst = CACHE / name
-        if dst.exists() and not args.force:
-            print(f"{name}: present ({dst.stat().st_size / 1e6:.0f} MB) — skipping "
-                  f"(--force to refresh)")
-            continue
-        url = f"https://huggingface.co/datasets/{DATASET}/resolve/main/{name}"
-        print(f"downloading {name} from {DATASET} …")
-        tmp = dst.with_suffix(".csv.tmp")
-        r = subprocess.run(["curl", "-sS", "-L", "-m", "3600", "--retry", "3",
-                            "-H", f"User-Agent: {UA}", "-o", str(tmp), url])
-        if r.returncode != 0 or not tmp.exists() or tmp.stat().st_size < 10 ** 6:
-            if tmp.exists():
-                tmp.unlink()
-            sys.exit(f"FATAL: download failed for {name} (rc={r.returncode})")
-        tmp.replace(dst)
-        print(f"  -> {dst} ({dst.stat().st_size / 1e6:.0f} MB)")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--force", action="store_true", help="re-download even if present"
+    )
+    mode.add_argument(
+        "--adopt-existing",
+        action="store_true",
+        help="write sidecars only after existing files match reviewed hashes",
+    )
+    ap.add_argument(
+        "--revision",
+        default=os.environ.get(REVISION_ENV),
+        help=f"exact 40-hex Hugging Face dataset commit (or {REVISION_ENV})",
+    )
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    try:
+        pin = load_reviewed_pin(DATASET)
+        revision = require_reviewed_revision(
+            resolve_revision(
+                args.revision, environment_variable=REVISION_ENV
+            ),
+            pin,
+        )
+        requests = [
+            pin.request(name, CACHE / name)
+            for name in FILES
+        ]
+        if args.adopt_existing:
+            results = adopt_existing_artifacts(
+                dataset=DATASET,
+                revision=revision,
+                requests=requests,
+            )
+        else:
+            results = fetch_huggingface_artifacts(
+                dataset=DATASET,
+                revision=revision,
+                requests=requests,
+                user_agent=UA,
+                force=args.force,
+            )
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
+    for result in results:
+        verb = (
+            "downloaded"
+            if result.downloaded
+            else "adopted/verified"
+            if args.adopt_existing
+            else "verified"
+        )
+        size = int(result.metadata["size"])
+        print(
+            f"{result.destination.name}: {verb} "
+            f"({size / 1e6:.0f} MB, revision {revision})"
+        )
     return 0
 
 
