@@ -83,6 +83,20 @@ cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-dir ../site/out/brain-releases/<release-hex>
 ```
 
+For the P0-R acquisition boundary, capture articles plus all community edge/node
+rows with one read-only D1 statement into a private content-addressed bundle:
+
+```bash
+python3 brain/acquire_d1_snapshot.py
+```
+
+The command uses the repository-pinned Wrangler/Node closure, a private config
+bound to the production D1 UUID, and a sanitized subprocess environment. It emits
+validated acquisition-receipt and normalization-lineage documents under
+`catalog/.cache/d1/snapshots/`. It does not write D1. The legacy community-edge
+harvester does not consume this bundle yet, so running it is acquisition evidence,
+not a source-plan or release cutover.
+
 Writers publish through temporary files + rename; ordinary publication errors roll
 back the full base generation, and snapshot IDs make a hard interruption between
 multi-file renames detectable rather than silently readable. The rollups, shards,
