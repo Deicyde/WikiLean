@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import copy
+from contextlib import redirect_stderr, redirect_stdout
 import hashlib
+import io
 import json
 import os
 import platform
@@ -29,6 +31,13 @@ import execution_environment as execution_env  # noqa: E402
 import run_offline  # noqa: E402
 import run_replay_v2 as runner  # noqa: E402
 from test_build_context import _document  # noqa: E402
+from test_prepare_replay_v2 import (  # noqa: E402
+    AUTHORITY_GIT,
+    AUTHORITY_ROOT,
+    PRIOR_ROOT,
+    ReplayPackFixture,
+    SEMANTIC_EPOCH,
+)
 
 
 def _environment_document(reducer_git_commit: str) -> dict[str, object]:
@@ -180,6 +189,12 @@ class ReplayRunnerTest(unittest.TestCase):
     def tearDown(self) -> None:
         self._make_writable(self.base)
         self.temp.cleanup()
+
+    def _make_v3_pack(self) -> tuple[Path, dict[str, object], Path]:
+        pack_root = self.base.parent / "pack-v3"
+        pack_root.mkdir()
+        pack, manifest = ReplayPackFixture(pack_root).make_v3()
+        return pack_root, pack, manifest
 
     @staticmethod
     def _make_read_only(root: Path) -> None:
@@ -1261,6 +1276,143 @@ class ReplayRunnerTest(unittest.TestCase):
         ):
             runner.require_isolated_startup()
 
+    def test_runner_cli_accepts_a_fully_verified_v3_pack(self) -> None:
+        pack_root, pack, manifest = self._make_v3_pack()
+        workspace = self.base.parent / "prepared-v3"
+        prepared = run_offline.prepare_replay_v2.prepare_replay_v2(
+            manifest,
+            workspace,
+            pack_root=pack_root,
+            authority_git_commit=AUTHORITY_GIT,
+            authority_root=AUTHORITY_ROOT,
+            semantic_epoch=SEMANTIC_EPOCH,
+            prior_state_root=PRIOR_ROOT,
+        )
+        result = runner.ReplayResult(
+            generation_id=prepared.generation_id,
+            isolation="fixture",
+            stages=(),
+        )
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with mock.patch.object(
+            runner, "require_isolated_startup"
+        ), mock.patch.object(
+            runner, "run_replay_v2", return_value=result
+        ) as execute, redirect_stdout(stdout), redirect_stderr(stderr):
+            status = runner.main(
+                [
+                    "--context",
+                    str(prepared.context_path),
+                    "--manifest",
+                    str(manifest),
+                    "--root",
+                    str(pack_root),
+                    "--expected-generation-id",
+                    prepared.generation_id,
+                ]
+            )
+        self.assertEqual(status, 0, stderr.getvalue())
+        self.assertTrue(json.loads(stdout.getvalue())["ok"])
+        call = execute.call_args
+        self.assertEqual(call.args, (prepared.context_path,))
+        self.assertEqual(call.kwargs["expected_offline_pack_id"], pack["offline_pack_id"])
+        self.assertEqual(call.kwargs["expected_source_set_root"], pack["source_set_root"])
+
+    def test_runner_cli_rejects_v3_evidence_tamper_before_execution(self) -> None:
+        pack_root, pack, manifest = self._make_v3_pack()
+        evidence_ref = pack["evidence"]["normalization_lineages"][0]
+        (pack_root / evidence_ref["path"]).write_bytes(b"tampered")
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with mock.patch.object(
+            runner, "require_isolated_startup"
+        ), mock.patch.object(
+            runner, "run_replay_v2"
+        ) as execute, redirect_stdout(stdout), redirect_stderr(stderr):
+            status = runner.main(
+                [
+                    "--context",
+                    str(self.base / "does-not-need-to-exist.json"),
+                    "--manifest",
+                    str(manifest),
+                    "--root",
+                    str(pack_root),
+                    "--expected-generation-id",
+                    "sha256:" + "1" * 64,
+                ]
+            )
+        self.assertEqual(status, 1)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertIn(
+            "$.evidence.normalization_lineages[0]",
+            json.loads(stderr.getvalue())["error"]["message"],
+        )
+        execute.assert_not_called()
+
+    def test_offline_runner_v3_verifies_before_materializing_or_executing(self) -> None:
+        pack_root, pack, manifest = self._make_v3_pack()
+        workspace = self.base.parent / "offline-v3"
+        with mock.patch.object(
+            run_offline.run_replay_v2, "require_isolated_startup"
+        ), mock.patch.object(
+            run_offline.run_replay_v2,
+            "run_replay_v2",
+            return_value=runner.ReplayResult(
+                generation_id="sha256:" + "1" * 64,
+                isolation="fixture",
+                stages=(),
+            ),
+        ) as execute:
+            self.assertEqual(
+                run_offline.run(
+                    manifest,
+                    root=pack_root,
+                    workspace=workspace,
+                    authority_git_commit=AUTHORITY_GIT,
+                    authority_root=AUTHORITY_ROOT,
+                    semantic_epoch=SEMANTIC_EPOCH,
+                    prior_state_root=PRIOR_ROOT,
+                ),
+                0,
+            )
+        self.assertTrue((workspace / "build-context.json").is_file())
+        self.assertEqual(
+            execute.call_args.kwargs["expected_offline_pack_id"],
+            pack["offline_pack_id"],
+        )
+
+        tampered_root = self.base.parent / "tampered-pack-v3"
+        tampered_root.mkdir()
+        tampered_pack, tampered_manifest = ReplayPackFixture(
+            tampered_root
+        ).make_v3()
+        evidence_ref = tampered_pack["evidence"]["acquisition_receipts"][0]
+        (tampered_root / evidence_ref["path"]).write_bytes(b"tampered")
+        rejected_workspace = self.base.parent / "rejected-offline-v3"
+        with mock.patch.object(
+            run_offline.run_replay_v2, "require_isolated_startup"
+        ), mock.patch.object(
+            run_offline.run_replay_v2, "run_replay_v2"
+        ) as rejected_execute, mock.patch.object(
+            run_offline.prepare_replay_v2, "_create_staging_directory"
+        ) as create:
+            with self.assertRaisesRegex(
+                run_offline.VerificationError,
+                r"\$\.evidence\.acquisition_receipts\[0\]",
+            ):
+                run_offline.run(
+                    tampered_manifest,
+                    root=tampered_root,
+                    workspace=rejected_workspace,
+                    authority_git_commit=AUTHORITY_GIT,
+                    authority_root=AUTHORITY_ROOT,
+                    semantic_epoch=SEMANTIC_EPOCH,
+                )
+        create.assert_not_called()
+        rejected_execute.assert_not_called()
+        self.assertFalse(rejected_workspace.exists())
+
     def test_offline_runner_v2_prepares_then_executes_without_extra_args(self) -> None:
         manifest = self.base / "pack-v2.json"
         manifest.write_bytes(
@@ -1348,6 +1500,7 @@ class ReplayRunnerTest(unittest.TestCase):
             manifest.resolve(),
             workspace,
             pack_root=self.base.resolve(),
+            expected_pack_schema=run_offline.PACK_SCHEMA_V2,
             authority_git_commit="a" * 40,
             authority_root="sha256:" + "b" * 64,
             semantic_epoch="brain-v3",
