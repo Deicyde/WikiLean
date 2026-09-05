@@ -483,8 +483,10 @@ explicit approval.
     on prior `brain/data/nodes.jsonl`. Their current implementations fail closed and publish
     atomically, but still perform separate live reads. Bind both that shared generation and
     the completed proposal-entity bundle evidence into the reviewed v3 current-corpus source
-    plan; neither bundle alone is an authority or production-release claim. During migration,
-    fix `brain/sync_agents.py` to unwrap the current descriptions envelope.
+    plan; neither bundle alone is an authority or production-release claim.
+    - [x] Fix `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope
+      while retaining its legacy flat-map reader, so agent candidates receive the 2,582
+      descriptions already present in the current corpus.
   - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
     `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
     binds all six files by full commit, byte count, and SHA-256; acquisition rejects

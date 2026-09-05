@@ -36,6 +36,7 @@ run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_sn
 run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikidata_entities.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
+run_check "Brain agent input tests" "$PYTHON_BIN" brain/test_sync_agents.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
 run_check "Brain offline-pack preflight tests" "$PYTHON_BIN" brain/test_preflight_offline_pack_v2.py
@@ -65,4 +66,4 @@ run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 40 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 41 commands passed; all required offline scenarios ran.\n'
