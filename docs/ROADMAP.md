@@ -430,9 +430,11 @@ explicit approval.
       exact schema columns. It binds the production account/database UUID, checked-in
       request preimage, pinned Wrangler/Node closure, and sanitized environment; publishes
       a private content-addressed bundle with clock-free normalized bytes plus validated
-      acquisition receipt and normalization lineage. Hermetic tests cover malformed,
-      truncated, duplicate, reordered, concurrent, hostile-target, and real `SIGKILL`
-      cases. No remote query was run while landing this tool.
+      acquisition receipt and normalization lineage. The logical receipt/lineage IDs stay
+      clock-free, while the directory identity binds their exact audit-bearing bytes so a
+      later unchanged read cannot silently inherit an older observation time. Hermetic tests
+      cover malformed, truncated, duplicate, reordered, concurrent, hostile-target,
+      freshness, and real `SIGKILL` cases. No remote query was run while landing this tool.
     - [x] Make community graduation consume only an explicitly supplied, independently
       verified sealed bundle. The harvester has no live-query or fixture path, validates
       the complete edge/node/tombstone generation, and nightly execution is disabled unless

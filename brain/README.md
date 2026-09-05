@@ -128,8 +128,11 @@ executable, a private config bound to the production D1 UUID, and a sanitized su
 environment.
 It binds the exact Python executable/version and transitive local dependency closure, then
 emits validated acquisition-receipt and normalization-lineage documents under
-`catalog/.cache/d1/snapshots/`. It does not write D1. Graduate community edges only from
-one explicit bundle:
+`catalog/.cache/d1/snapshots/`. Receipt and lineage logical IDs remain clock-free, while
+the bundle directory hashes their exact canonical bytes, including audit clocks. Repeating
+an unchanged read therefore preserves a fresh immutable observation rather than resolving
+to an older bundle. It does not write D1. Graduate community edges only from one explicit
+bundle:
 
 ```bash
 python3 brain/harvest_community_edges.py --snapshot-bundle <bundle>
@@ -150,6 +153,14 @@ source-plan authority: a production bundle still needs capture/review and explic
 receipt/lineage binding. A 2026-09-05 attempt stopped before querying because no local
 D1-read credential was available; it created no snapshot store and made no production
 change.
+
+Focused D1 regressions currently cover 17 acquisition/publication cases and 12 shared-
+verifier/harvester cases:
+
+```bash
+python3 brain/test_acquire_d1_snapshot.py
+python3 brain/test_harvest.py
+```
 
 Writers publish through temporary files + rename; ordinary publication errors roll
 back the full base generation, and snapshot IDs make a hard interruption between
