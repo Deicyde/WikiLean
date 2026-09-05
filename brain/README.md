@@ -49,7 +49,10 @@ write `brain/proposals/*.jsonl` only; each shard gets an adversarial skeptic pas
 agreement) to every row regardless of verdict. Rejected rows land in
 `discovery_rejected.jsonl` with reasons — the audit trail. Rows folded before their
 skeptic ran carry `evidence.skeptic: "pending"` with confidence capped at medium; the
-2026-07-03 build has zero pending rows.
+2026-07-03 build has zero pending rows. The remaining inline Wikidata acquisition is
+fail-closed: request, response, parse, redirect, missing-entity isolation, or completeness
+failures abort before any fold output is written. Rejected, vetoed, and locally invalid
+rows do not create unnecessary network dependencies.
 
 ## Rebuild (ordered)
 
@@ -105,6 +108,14 @@ Cloudflare asset. Re-index current JSONL without rewriting it with
 `build_common.py` consumes `catalog/data/external/<db>_{pages,links}.jsonl` (written
 by the `brain/ingest/<db>.py` adapters — never by the build) and degrades to an exact
 no-op when the directory is empty: zero ext nodes, zero `links` edges.
+
+Newly emitted page/link pairs carry one content-derived `pair_generation`. Publication is
+serialized per database and uses a durable journal plus hard-linked prior generation, so a
+caught failure or process kill cannot make readers consume a mixed pair. The build, agent
+candidate generator, proposal fold, and acceptance gate all validate the pair before use;
+explicit offline-pack bindings additionally reject orphan or unregistered inputs. Existing
+unsealed corpus files remain readable during migration, but do not satisfy future v3
+acquisition-evidence requirements.
 
 - **ext nodes** — id `xref:<db>:<value>`, byte-identical to the historical xref edge
   dst strings, so pre-v2 `xref` edges resolve to the new nodes with zero migration.

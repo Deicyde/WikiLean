@@ -46,7 +46,9 @@ REQUIRED_CONTENT = {
     "hierarchy": '{"libraries":{},"meta":{"source_sha256":"ambient-pin"}}\n',
     "mathlib-source-tree": "-- sealed fixture\n",
     "rebuild-grounding": "[]\n",
-    "source-registry": '{"crossref_sources":{}}\n',
+    "source-registry": (
+        '{"crossref_sources":{"fixture":{"ingest":{"snippets":false}}}}\n'
+    ),
     "statement-formal": "decl_name,statement_id,module,kind,docstring\n",
     "theorem-matching": (
         "formal_decl,formal_module,arxiv_id,license_open,gpt54_label,"

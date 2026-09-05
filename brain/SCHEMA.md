@@ -733,11 +733,23 @@ catalog/data/external/<db>_pages.jsonl  {"db","id","title","url","snippet"?,"ali
 catalog/data/external/<db>_links.jsonl  {"db","src","dst","context"}     # native page ids
 ```
 
-First line = `{"_meta":{"db","fetched_at","source_pin","n_pages","n_links",...}}`.
-Adapters are atomic-write and fail-soft (failed fetch leaves the previous file intact),
+First line =
+`{"_meta":{"db","fetched_at","source_pin","n_pages","n_links","pair_schema","pair_generation",...}}`.
+New adapter runs always publish both files, including a metadata-only links file when the
+source has no links. `pair_generation` is a domain-separated hash of the database key and
+the ordered normalized page/link rows; acquisition timestamps and run counters do not
+affect it. A per-database lock, durable transaction journal, hard-linked prior generation,
+fsync ordering, and a pages-last commit point keep concurrent writers serialized and let
+readers use the prior complete generation after interruption or `SIGKILL`. Generated
+orphans, mixed generations, malformed rows, and unregistered explicitly bound sources fail
+closed. Legacy unsealed pairs remain readable only for migration; authoritative v3 packs
+must require sealed acquisition and normalization evidence. The physical files still carry
+`fetched_at` and other run metadata, so byte-level reproducibility cleanup remains pending.
+
+Adapters otherwise fail soft (failed fetch leaves the previous readable generation intact)
 and honor each source's rate limits / robots policy. `qid` is set ONLY from CC0 Wikidata
-property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed —
-fuzzy anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
+property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed — fuzzy
+anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
 
 ## Unsolved-problems frontier (formal-conjectures + erdosproblems.com)
 
