@@ -394,9 +394,9 @@ explicit approval.
     retains its exact golden pack identity; v3 compilation copies/deduplicates the evidence
     closure, preflight derives freshness from validated receipts, and replay re-verifies the
     full pack before staging or execution.
-  - [ ] Carry the initially dispatched `offline_pack_id` into preparation as an additional
+  - [x] Carry the initially dispatched `offline_pack_id` into preparation as an additional
     same-schema path-swap fence. Current preparation still fully verifies whichever v2/v3
-    pack is present, so this is defense in depth rather than a validation bypass.
+    pack is present; dispatch now binds both the expected schema and exact pack identity.
   - [x] Make external `*_pages.jsonl` + `*_links.jsonl` publication
     generation-coherent. New writes share a semantic generation, serialize publishers,
     retain a hard-linked prior generation behind a durable journal, recover after caught

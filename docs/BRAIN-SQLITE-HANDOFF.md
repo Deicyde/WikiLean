@@ -24,8 +24,6 @@ Immediate continuation order:
 4. Replace the now-fail-closed legacy Wikidata live reads with one sealed evidence generation
    and make proposal folding consume it offline; no live acquisition or tracked data
    regeneration is required to resume the code work.
-5. Add the remaining same-schema `offline_pack_id` dispatch fence described below before
-   treating hostile same-UID path replacement as closed.
 
 No Worker deployment, production promotion, D1 write, or live Wikidata fetch was performed
 in this stabilization session.
@@ -176,7 +174,7 @@ Focused results recorded through 2026-09-05:
 - external pair publication/reader fixtures: all checks passed;
 - execution environment: 20 tests passed;
 - replay executor: 36 tests passed;
-- replay preparation: 28 tests passed;
+- replay preparation: 29 tests passed;
 - base-graph context: 11 tests passed after the annotation-selector fix; and
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
@@ -296,10 +294,6 @@ the current checkout:
    mutation races. A hostile same-UID process can still theoretically perform an ABA path
    swap during path-based content verification; eliminate that residual either with fully
    dirfd-relative verification or by running compilation in an isolated privilege boundary.
-10. `run_offline` pins the selected pack schema across dispatch and preparation, but not the
-    initially observed `offline_pack_id`. Carry that ID into preparation to reject a
-    same-schema path replacement, even though the replacement is already required to be a
-    separately valid complete pack.
 
 ## Disk warning
 
