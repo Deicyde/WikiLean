@@ -1708,8 +1708,13 @@ def main(argv: list[str] | None = None) -> int:
         pack_root = (args.root or manifest.parent).resolve(strict=True)
         document, _raw = contracts.load_canonical_json(manifest)
         pack = contracts.validate_offline_pack(document)
-        if pack["schema"] != contracts.PACK_SCHEMA_V2:
-            raise ReplayExecutionError("run_replay_v2 requires offline-pack/v2")
+        if pack["schema"] not in {
+            contracts.PACK_SCHEMA_V2,
+            contracts.PACK_SCHEMA_V3,
+        }:
+            raise ReplayExecutionError(
+                "run_replay_v2 requires offline-pack/v2 or offline-pack/v3"
+            )
         contracts.verify_offline_pack_files(
             pack, pack_root, manifest_path=manifest
         )

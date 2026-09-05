@@ -388,9 +388,15 @@ explicit approval.
     historical metadata. The validators enforce exact evidence closure, raw/normalized
     coherence, request-preimage coverage, and parent-manifest DAG semantics while keeping
     receipt audit clocks out of logical source identities.
-  - [ ] Integrate v3 plans through the compiler, bounded preflight, workspace preparation,
+  - [x] Integrate v3 plans through the compiler, bounded preflight, workspace preparation,
     and replay dispatch. Keep v1-plan→v2-pack byte compatibility unchanged; require evidence
-    tampering to fail before workspace materialization or reducer execution.
+    tampering to fail before workspace materialization or reducer execution. The v1 fixture
+    retains its exact golden pack identity; v3 compilation copies/deduplicates the evidence
+    closure, preflight derives freshness from validated receipts, and replay re-verifies the
+    full pack before staging or execution.
+  - [ ] Carry the initially dispatched `offline_pack_id` into preparation as an additional
+    same-schema path-swap fence. Current preparation still fully verifies whichever v2/v3
+    pack is present, so this is defense in depth rather than a validation bypass.
   - [x] Make external `*_pages.jsonl` + `*_links.jsonl` publication
     generation-coherent. New writes share a semantic generation, serialize publishers,
     retain a hard-linked prior generation behind a durable journal, recover after caught
@@ -593,11 +599,10 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) integrate the explicit v3 evidence contracts through
-compiler/preflight/replay while preserving v1→v2 compatibility; (2) finish removing
-audit/observation fields from normalized bytes, run and review the sealed coherent D1 export,
-finish splitting live Wikidata acquisition from folding, and bind the resulting D1 plus
-reviewed Hugging Face evidence into the v3 current-corpus source plan; (3) finish the trusted OCI
+**Next P0-R implementation order:** (1) finish removing audit/observation fields from
+normalized bytes, run and review the sealed coherent D1 export, finish splitting live
+Wikidata acquisition from folding, and bind the resulting D1 plus reviewed Hugging Face
+evidence into the v3 current-corpus source plan; (2) finish the trusted OCI
 launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
 compile the first real pack and prove cross-object/source-revision coherence; (5) add the
 two-path randomized-mtime/adversarial-environment clean-room gate; (6) run the approved-

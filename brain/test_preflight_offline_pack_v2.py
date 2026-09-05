@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tiny, network-free tests for the offline-pack/v2 source-plan preflight."""
+"""Tiny, network-free tests for the offline-pack source-plan preflight."""
 from __future__ import annotations
 
 import contextlib
@@ -30,6 +30,7 @@ import build_context  # noqa: E402
 import compile_offline_pack_v2 as compiler  # noqa: E402
 import execution_environment as environment  # noqa: E402
 import preflight_offline_pack_v2 as preflight  # noqa: E402
+import source_plan_contracts  # noqa: E402
 
 
 ZERO_HASH = "sha256:" + "0" * 64
@@ -422,6 +423,155 @@ class OfflinePackPreflightTest(unittest.TestCase):
             ],
         }
 
+    @staticmethod
+    def _evidence_object(item: dict[str, object]) -> dict[str, object]:
+        return {
+            "bytes": item["bytes"],
+            "media_type": item["media_type"],
+            "object": item["name"],
+            "sha256": item["sha256"],
+        }
+
+    def _evidence_ref(
+        self,
+        path: str,
+        raw: bytes,
+        *,
+        identity_field: str | None = None,
+        identity: str | None = None,
+        parameters_sha256: str | None = None,
+    ) -> dict[str, object]:
+        result: dict[str, object] = {
+            **self._ref("external", path, raw),
+            "media_type": "application/json",
+        }
+        if identity_field is not None:
+            assert identity is not None
+            result[identity_field] = identity
+        if parameters_sha256 is not None:
+            result["parameters_sha256"] = parameters_sha256
+        return result
+
+    def _upgrade_to_v3(
+        self,
+        *,
+        receipt_acquired_at: str = "2030-01-01T00:00:00Z",
+        source_acquired_at: str = "2020-01-01T00:00:00Z",
+    ) -> dict[str, object]:
+        source = next(
+            item for item in self.plan["sources"]
+            if item["source"] == "external-fixture"
+        )
+        source["objects"] = [
+            item for item in source["objects"] if item["name"] != "receipt"
+        ]
+        source["audit"]["acquired_at"] = source_acquired_at
+        raw_object = next(
+            item for item in source["objects"] if item["name"] == "raw"
+        )
+        normalized_object = next(
+            item for item in source["objects"] if item["name"] == "normalized"
+        )
+
+        preimage = contracts.canonical_json_bytes({"query": "fixture"})
+        preimage_digest = hashlib.sha256(preimage).hexdigest()
+        preimage_path = "request-parameters.json"
+        (self.external / preimage_path).write_bytes(preimage)
+        requests = [
+            {
+                "kind": "http_get",
+                "parameters_sha256": preimage_digest,
+                "uri": "https://example.invalid/fixture",
+            }
+        ]
+        receipt: dict[str, object] = {
+            "acquisition_receipt_id": ZERO_HASH,
+            "audit": {"acquired_at": receipt_acquired_at},
+            "batch": {
+                "request_set_root": contracts.acquisition_request_set_root(requests),
+                "requests_failed": 0,
+                "requests_succeeded": 1,
+                "requests_total": 1,
+                "status": "complete",
+            },
+            "outputs": [self._evidence_object(raw_object)],
+            "pin": copy.deepcopy(source["pin"]),
+            "requests": requests,
+            "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+            "source": source["source"],
+            "tool": copy.deepcopy(source["acquisition"]),
+            "upstream_uri": "https://example.invalid/fixture",
+        }
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(
+            receipt
+        )
+        receipt_raw = contracts.canonical_json_bytes(receipt)
+        receipt_path = "acquisition-receipt.json"
+        (self.external / receipt_path).write_bytes(receipt_raw)
+        receipt_ref = self._evidence_ref(
+            receipt_path,
+            receipt_raw,
+            identity_field="acquisition_receipt_id",
+            identity=receipt["acquisition_receipt_id"],
+        )
+
+        lineage: dict[str, object] = {
+            "acquisition_receipt_ids": [receipt["acquisition_receipt_id"]],
+            "audit": {"normalized_at": "2030-01-01T00:01:00Z"},
+            "configuration_sha256": "5" * 64,
+            "inputs": [
+                {
+                    **self._evidence_object(raw_object),
+                    "origin": {
+                        "id": receipt["acquisition_receipt_id"],
+                        "kind": "acquisition_receipt",
+                    },
+                }
+            ],
+            "mode": "transform",
+            "normalization_lineage_id": ZERO_HASH,
+            "normalization_schema": source["normalization"]["schema"],
+            "outputs": [self._evidence_object(normalized_object)],
+            "parent_source_manifest_ids": [],
+            "result": "complete",
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "source": source["source"],
+            "tool": copy.deepcopy(source["normalization"]["tool"]),
+        }
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        lineage_raw = contracts.canonical_json_bytes(lineage)
+        lineage_path = "normalization-lineage.json"
+        (self.external / lineage_path).write_bytes(lineage_raw)
+        lineage_ref = self._evidence_ref(
+            lineage_path,
+            lineage_raw,
+            identity_field="normalization_lineage_id",
+            identity=lineage["normalization_lineage_id"],
+        )
+
+        preimage_ref = self._evidence_ref(
+            preimage_path,
+            preimage,
+            parameters_sha256=preimage_digest,
+        )
+        source["evidence"] = {
+            "acquisition_receipts": [receipt_ref],
+            "normalization_lineage": lineage_ref,
+            "request_parameter_preimages": [preimage_ref],
+        }
+        self.plan["schema"] = contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
+        source_plan_contracts.validate_source_plan_v3(self.plan)
+        return {
+            "lineage": lineage,
+            "lineage_path": lineage_path,
+            "preimage": preimage,
+            "receipt": receipt,
+            "receipt_path": receipt_path,
+            "source": source,
+        }
+
     def _write_plan(self) -> None:
         _write_canonical(self.plan_path, self.plan)
 
@@ -474,6 +624,12 @@ class OfflinePackPreflightTest(unittest.TestCase):
         self.assertFalse(result["source_authority_ready"])
         self.assertFalse(result["source_publishable"])
         self.assertEqual(result["readiness_scope"], "source-plan-only")
+        self.assertNotIn("source_plan_schema", result)
+        self.assertNotIn("evidence", result)
+        self.assertEqual(
+            result["receipt_validation"],
+            "role presence only; receipt schema and normalization lineage are not yet validated",
+        )
         self.assertFalse(result["runtime_environment_checked"])
         self.assertEqual(result["source_plan_sha256"], expected_plan_sha)
         self.assertEqual(result["summary"]["inputs_total"], 3)
@@ -700,6 +856,158 @@ class OfflinePackPreflightTest(unittest.TestCase):
         self.assertTrue(result["compile_ready"])
         self.assertFalse(result["source_authority_ready"])
         self.assertFalse(result["source_publishable"])
+
+    def test_v3_validates_evidence_and_uses_receipt_freshness(self) -> None:
+        details = self._upgrade_to_v3(
+            receipt_acquired_at="2030-01-01T00:00:00Z",
+            source_acquired_at="2020-01-01T00:00:00Z",
+        )
+        self._write_plan()
+        result = self._run()
+        self.assertEqual(
+            result["source_plan_schema"],
+            contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3,
+        )
+        self.assertTrue(result["source_authority_ready"])
+        self.assertTrue(result["source_publishable"])
+        self.assertEqual(result["concerns"], [])
+        self.assertEqual(
+            result["receipt_validation"],
+            "complete v3 receipt, lineage, request-preimage, and parent closure validated",
+        )
+        self.assertEqual(
+            result["evidence"],
+            {
+                "acquisition_receipts": 1,
+                "bytes": sum(
+                    (self.external / name).stat().st_size
+                    for name in (
+                        details["receipt_path"],
+                        details["lineage_path"],
+                        "request-parameters.json",
+                    )
+                ),
+                "deduplicated_references": 0,
+                "normalization_lineages": 1,
+                "references": 3,
+                "request_parameter_preimages": 1,
+                "source_manifests": 2,
+                "unique_files": 3,
+            },
+        )
+        self.assertEqual(result["control_files"]["count"], 6)
+        external_report = next(
+            item for item in result["sources"]
+            if item["source"] == "external-fixture"
+        )
+        self.assertEqual(external_report["receipt_objects"], 1)
+        self.assertEqual(
+            external_report["receipt_validation"], "validated-v3-evidence"
+        )
+        self.assertEqual(
+            external_report["freshness_basis"], "acquisition-receipt-audit"
+        )
+        self.assertNotIn(
+            "receipt-role-presence-only",
+            {item["code"] for item in result["concerns"]},
+        )
+
+    def test_v3_staleness_comes_from_receipt_not_source_audit(self) -> None:
+        self._upgrade_to_v3(
+            receipt_acquired_at="2029-01-01T00:00:00Z",
+            source_acquired_at="2030-01-02T00:00:00Z",
+        )
+        self._write_plan()
+        result = self._run(max_age_days=30)
+        stale = [item for item in result["concerns"] if item["code"] == "stale-source"]
+        self.assertEqual(len(stale), 1)
+        self.assertIn(".evidence.acquisition_receipts[0].document.audit", stale[0]["location"])
+        self.assertNotIn(".audit.acquired_at", stale[0]["location"].split(".evidence", 1)[0])
+        self.assertFalse(result["source_authority_ready"])
+        self.assertFalse(result["source_publishable"])
+
+    def test_v3_hashes_every_evidence_control(self) -> None:
+        details = self._upgrade_to_v3()
+        self._write_plan()
+        for relative in (
+            details["receipt_path"],
+            details["lineage_path"],
+            "request-parameters.json",
+        ):
+            with self.subTest(relative=relative):
+                path = self.external / relative
+                original = path.read_bytes()
+                changed = bytes([original[0] ^ 1]) + original[1:]
+                path.write_bytes(changed)
+                try:
+                    with self.assertRaisesRegex(
+                        preflight.PreflightError, "sha256: expected .* found"
+                    ):
+                        self._run()
+                finally:
+                    path.write_bytes(original)
+
+    def test_v3_rejects_oversized_evidence_before_reading_it(self) -> None:
+        details = self._upgrade_to_v3()
+        source = details["source"]
+        source["evidence"]["request_parameter_preimages"][0]["bytes"] = (
+            preflight.MAX_CONTROL_FILE_BYTES + 1
+        )
+        self._write_plan()
+        with (
+            mock.patch.object(
+                contracts,
+                "open_verified_file",
+                side_effect=AssertionError("oversized evidence was opened"),
+            ),
+            self.assertRaisesRegex(preflight.PreflightError, "exceeds"),
+        ):
+            self._run()
+
+    def test_v3_invalid_lineage_never_downgrades_to_presence_only(self) -> None:
+        details = self._upgrade_to_v3()
+        lineage = details["lineage"]
+        lineage["outputs"][0]["sha256"] = "f" * 64
+        lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(lineage)
+        )
+        lineage_raw = contracts.canonical_json_bytes(lineage)
+        (self.external / details["lineage_path"]).write_bytes(lineage_raw)
+        source = details["source"]
+        source["evidence"]["normalization_lineage"] = self._evidence_ref(
+            details["lineage_path"],
+            lineage_raw,
+            identity_field="normalization_lineage_id",
+            identity=lineage["normalization_lineage_id"],
+        )
+        self._write_plan()
+        with self.assertRaisesRegex(
+            preflight.PreflightError, "normalized source objects"
+        ):
+            self._run()
+
+    def test_v3_evidence_capacity_deduplicates_shared_logical_files(self) -> None:
+        digest = hashlib.sha256(b"shared").hexdigest()
+        ref = {
+            "bytes": 6,
+            "media_type": "application/json",
+            "path": "shared.json",
+            "root": "external",
+            "sha256": digest,
+        }
+        references = [
+            (0, "alpha", "request_parameter_preimage", digest, ref, "$.alpha"),
+            (1, "beta", "request_parameter_preimage", digest, ref, "$.beta"),
+        ]
+        self.assertEqual(
+            preflight._v3_evidence_capacity(references),
+            {
+                "bytes": 6,
+                "deduplicated_references": 1,
+                "references": 2,
+                "unique_files": 1,
+            },
+        )
 
     def test_space_estimate_includes_largest_duplicate_object_temporary(self) -> None:
         duplicate = copy.deepcopy(self.plan["sources"][1])
