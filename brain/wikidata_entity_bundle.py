@@ -4,7 +4,8 @@
 This module performs no acquisition and does not import the acquisition
 wrapper.  It independently checks the exact request plan and request
 preimages, the complete response/bisection transcript, the pinned toolchain,
-the authority receipt/lineage chain, and the clock-free normalized entity map.
+the authority receipt/lineage chain, the clock-free normalized entity map, and
+the exact-evidence generation identity used for immutable publication.
 """
 from __future__ import annotations
 
@@ -33,6 +34,8 @@ import authority_contracts as contracts  # noqa: E402
 REQUEST_PLAN_SCHEMA = "wikilean.wikidata-entity-request-plan/v1"
 REQUESTED_QID_SET_DOMAIN = "wikilean.wikidata-requested-qid-set.v1"
 BUNDLE_SCHEMA = "wikilean.wikidata-entity-acquisition-bundle/v1"
+BUNDLE_GENERATION_DOMAIN = "wikilean.wikidata-entity-evidence-generation.v1"
+BUNDLE_IDENTITY_BASIS = "exact_receipt_and_lineage_bytes"
 NORMALIZATION_SCHEMA = "wikilean.wikidata-entity-map/v1"
 TOOLCHAIN_SCHEMA = "wikilean.wikidata-entity-acquisition-toolchain/v1"
 UPSTREAM_URI = "https://www.wikidata.org/w/api.php"
@@ -113,7 +116,7 @@ LOCAL_DEPENDENCY_PINS = (
     },
 )
 ACQUIRER_WRAPPER_SHA256 = (
-    "9a4d3b87ee1ebd85d46003d221f8ee3c6eef312961c283cc6feed6fb3c37651e"
+    "bccaef80927f34b5e4f6944843ef17d8a470171ba670e7d99d79dff9059e8c1c"
 )
 
 NORMALIZATION_CONFIGURATION = {
@@ -168,6 +171,22 @@ class WikidataEntityBundle:
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _evidence_generation_id(receipt_bytes: bytes, lineage_bytes: bytes) -> str:
+    """Independently derive the immutable target identity from evidence bytes."""
+    return contracts.domain_hash(BUNDLE_GENERATION_DOMAIN, [
+        {
+            "path": "acquisition-receipt.json",
+            "sha256": _sha256(receipt_bytes),
+            "bytes": len(receipt_bytes),
+        },
+        {
+            "path": "normalization-lineage.json",
+            "sha256": _sha256(lineage_bytes),
+            "bytes": len(lineage_bytes),
+        },
+    ])
 
 
 def _exact_object(
@@ -807,14 +826,18 @@ def verify_wikidata_entity_bundle(bundle_path: Path) -> WikidataEntityBundle:
         "bundle.json",
     )
     if manifest["schema"] != BUNDLE_SCHEMA \
-            or manifest["identity_basis"] != "normalization_lineage_id":
+            or manifest["identity_basis"] != BUNDLE_IDENTITY_BASIS:
         raise WikidataEntityBundleError("bundle.json: unexpected schema or identity basis")
     receipt_id = receipt["acquisition_receipt_id"]
     lineage_id = lineage["normalization_lineage_id"]
-    if manifest["bundle_id"] != lineage_id \
+    bundle_id = _evidence_generation_id(
+        files["acquisition-receipt.json"],
+        files["normalization-lineage.json"],
+    )
+    if manifest["bundle_id"] != bundle_id \
             or manifest["normalization_lineage_id"] != lineage_id \
             or manifest["acquisition_receipt_id"] != receipt_id \
-            or bundle_path.name != lineage_id.removeprefix("sha256:"):
+            or bundle_path.name != bundle_id.removeprefix("sha256:"):
         raise WikidataEntityBundleError("bundle identity closure mismatch")
     if manifest["evidence"] != {
         "acquisition_receipt": "acquisition-receipt.json",

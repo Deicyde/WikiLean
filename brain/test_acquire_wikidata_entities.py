@@ -162,6 +162,14 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
 
     def test_contract_constants_and_wrapper_pin_match(self) -> None:
         self.assertEqual(verifier.REQUEST_FIELDS, acquire.REQUEST_FIELDS)
+        self.assertEqual(
+            verifier.BUNDLE_GENERATION_DOMAIN,
+            acquire.BUNDLE_GENERATION_DOMAIN,
+        )
+        self.assertEqual(
+            verifier.BUNDLE_IDENTITY_BASIS,
+            acquire.BUNDLE_IDENTITY_BASIS,
+        )
         self.assertEqual(verifier.CURL_ARGUMENTS, acquire.CURL_ARGUMENTS)
         self.assertEqual(verifier.HTTP_RESPONSE_POLICY, acquire.HTTP_RESPONSE_POLICY)
         self.assertEqual(
@@ -510,7 +518,7 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
             )
         self.assertNotIn(secret, str(raised.exception))
 
-    def test_clock_changes_only_evidence_audit_bytes(self) -> None:
+    def test_clock_changes_evidence_generation_but_not_logical_ids(self) -> None:
         plan, transcript = complex_fixture()
         parsed = acquire.validate_request_plan_bytes(plan)
         iterator = iter(transcript)
@@ -533,13 +541,56 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
             acquisition_toolchain=self.toolchain,
             audit_time="2030-01-01T00:00:00Z",
         )
-        self.assertEqual(first_id, later_id)
-        for path in set(first) - {"acquisition-receipt.json", "normalization-lineage.json"}:
+        self.assertNotEqual(first_id, later_id)
+        for path in set(first) - {
+            "acquisition-receipt.json",
+            "normalization-lineage.json",
+            "bundle.json",
+        }:
             self.assertEqual(first[path], later[path], path)
         self.assertNotEqual(first["acquisition-receipt.json"], later["acquisition-receipt.json"])
+        self.assertNotEqual(first["normalization-lineage.json"], later["normalization-lineage.json"])
+        first_receipt = json.loads(first["acquisition-receipt.json"])
+        later_receipt = json.loads(later["acquisition-receipt.json"])
+        first_lineage = json.loads(first["normalization-lineage.json"])
+        later_lineage = json.loads(later["normalization-lineage.json"])
+        self.assertEqual(
+            first_receipt["acquisition_receipt_id"],
+            later_receipt["acquisition_receipt_id"],
+        )
+        self.assertEqual(
+            first_lineage["normalization_lineage_id"],
+            later_lineage["normalization_lineage_id"],
+        )
         self.assertEqual(
             first[acquire.NORMALIZED_PATH], later[acquire.NORMALIZED_PATH]
         )
+
+    def test_fresh_audit_evidence_gets_distinct_immutable_target(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            store = Path(temporary) / "store"
+            first = self.publish(store, audit_time="2020-01-01T00:00:00Z")
+            later = self.publish(store, audit_time="2030-01-01T00:00:00Z")
+            converged = self.publish(store, audit_time="2020-01-01T00:00:00Z")
+
+            self.assertNotEqual(first, later)
+            self.assertEqual(converged, first)
+            self.assertEqual(
+                verifier.verify_wikidata_entity_bundle(first).acquired_at,
+                "2020-01-01T00:00:00Z",
+            )
+            self.assertEqual(
+                verifier.verify_wikidata_entity_bundle(later).acquired_at,
+                "2030-01-01T00:00:00Z",
+            )
+            self.assertEqual(
+                sorted(
+                    path
+                    for path in store.iterdir()
+                    if path.name != ".staging"
+                ),
+                sorted([first, later]),
+            )
 
     def test_independent_verifier_rejects_tampering_and_extra_members(self) -> None:
         mutations = (
@@ -555,6 +606,25 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
                 mutate(target)
                 with self.subTest(index=index), self.assertRaises(
                     verifier.WikidataEntityBundleError
+                ):
+                    verifier.verify_wikidata_entity_bundle(target)
+
+    def test_independent_verifier_recomputes_exact_evidence_generation(self) -> None:
+        mutations = (
+            ("acquisition-receipt.json", "acquired_at"),
+            ("normalization-lineage.json", "normalized_at"),
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for index, (name, field) in enumerate(mutations):
+                target = self.publish(root / f"store-{index}")
+                path = target / name
+                document = json.loads(path.read_bytes())
+                document["audit"][field] = "2030-01-01T00:00:00Z"
+                path.write_bytes(contracts.canonical_json_bytes(document))
+                with self.subTest(name=name), self.assertRaisesRegex(
+                    verifier.WikidataEntityBundleError,
+                    "bundle identity closure mismatch",
                 ):
                     verifier.verify_wikidata_entity_bundle(target)
 
@@ -600,7 +670,7 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
             with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                 futures = [
                     executor.submit(publish, AUDIT_TIME),
-                    executor.submit(publish, "2030-01-01T00:00:00Z"),
+                    executor.submit(publish, AUDIT_TIME),
                 ]
                 targets = [future.result(timeout=30) for future in futures]
             self.assertEqual(targets[0], targets[1])

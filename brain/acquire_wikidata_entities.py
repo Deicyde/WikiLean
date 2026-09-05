@@ -6,9 +6,11 @@ sorted, unique list of canonical QIDs.  Requests are issued in deterministic
 batches of 50.  The exact form body for every HTTP request (including any
 deterministic ``no-such-entity`` bisection request) is preserved in the bundle.
 
-Publication is private and content addressed by the clock-free normalization
-lineage identity.  Audit timestamps are required evidence, but do not affect
-the bundle identity or normalized entity-map bytes.  A crash before the one
+Publication is private and content addressed by an exact-evidence generation
+identity.  The receipt and lineage logical IDs remain clock-free, while the
+published directory identity binds their complete canonical bytes so a newer
+acquisition cannot silently converge on an older immutable target.  Audit
+timestamps do not affect normalized entity-map bytes.  A crash before the one
 atomic no-replace directory rename can leave only a private staging orphan.
 
 The supported launcher runs CPython 3.12 with ``-I -S``.  Curl is invoked by
@@ -77,6 +79,8 @@ if _IMPORT_ORIGIN_MISMATCH is not None:
 REQUEST_PLAN_SCHEMA = "wikilean.wikidata-entity-request-plan/v1"
 REQUESTED_QID_SET_DOMAIN = "wikilean.wikidata-requested-qid-set.v1"
 BUNDLE_SCHEMA = "wikilean.wikidata-entity-acquisition-bundle/v1"
+BUNDLE_GENERATION_DOMAIN = "wikilean.wikidata-entity-evidence-generation.v1"
+BUNDLE_IDENTITY_BASIS = "exact_receipt_and_lineage_bytes"
 NORMALIZATION_SCHEMA = "wikilean.wikidata-entity-map/v1"
 TOOLCHAIN_SCHEMA = "wikilean.wikidata-entity-acquisition-toolchain/v1"
 UPSTREAM_URI = "https://www.wikidata.org/w/api.php"
@@ -935,6 +939,22 @@ def _object_ref(name: str, data: bytes, media_type: str) -> dict[str, Any]:
     }
 
 
+def _evidence_generation_id(receipt_bytes: bytes, lineage_bytes: bytes) -> str:
+    """Bind one immutable publication target to the exact evidence bytes."""
+    return contracts.domain_hash(BUNDLE_GENERATION_DOMAIN, [
+        {
+            "path": "acquisition-receipt.json",
+            "sha256": _sha256(receipt_bytes),
+            "bytes": len(receipt_bytes),
+        },
+        {
+            "path": "normalization-lineage.json",
+            "sha256": _sha256(lineage_bytes),
+            "bytes": len(lineage_bytes),
+        },
+    ])
+
+
 def _timestamp(value: str) -> str:
     if not isinstance(value, str) or contracts.UTC_TIMESTAMP_RE.fullmatch(value) is None:
         raise WikidataEntityAcquisitionError(
@@ -1046,7 +1066,9 @@ def _bundle_files(
     }
     lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
     contracts.validate_normalization_lineage(lineage)
-    bundle_id = lineage["normalization_lineage_id"]
+    receipt_bytes = contracts.canonical_json_bytes(receipt)
+    lineage_bytes = contracts.canonical_json_bytes(lineage)
+    bundle_id = _evidence_generation_id(receipt_bytes, lineage_bytes)
 
     deterministic = {
         "request-plan.json": plan_bytes,
@@ -1074,7 +1096,7 @@ def _bundle_files(
     manifest = {
         "schema": BUNDLE_SCHEMA,
         "bundle_id": bundle_id,
-        "identity_basis": "normalization_lineage_id",
+        "identity_basis": BUNDLE_IDENTITY_BASIS,
         "request_plan_sha256": _sha256(plan_bytes),
         "requested_qid_set_root": requested_qid_set_root(plan["qids"]),
         "summary": _entity_summary(entities),
@@ -1089,8 +1111,8 @@ def _bundle_files(
     }
     return bundle_id, {
         **deterministic,
-        "acquisition-receipt.json": contracts.canonical_json_bytes(receipt),
-        "normalization-lineage.json": contracts.canonical_json_bytes(lineage),
+        "acquisition-receipt.json": receipt_bytes,
+        "normalization-lineage.json": lineage_bytes,
         "bundle.json": contracts.canonical_json_bytes(manifest),
     }
 
@@ -1198,14 +1220,16 @@ def _verify_published(
     if actual_paths != set(expected_files):
         raise WikidataEntityAcquisitionError("published bundle member set mismatch")
     for relative, expected in expected_files.items():
-        if relative in {"acquisition-receipt.json", "normalization-lineage.json"}:
-            continue
         if (target / relative).read_bytes() != expected:
             raise WikidataEntityAcquisitionError(
                 f"published bundle member mismatch: {relative}"
             )
-    receipt = _read_canonical_object(target / "acquisition-receipt.json")
-    lineage = _read_canonical_object(target / "normalization-lineage.json")
+    receipt_path = target / "acquisition-receipt.json"
+    lineage_path = target / "normalization-lineage.json"
+    receipt_bytes = receipt_path.read_bytes()
+    lineage_bytes = lineage_path.read_bytes()
+    receipt = _read_canonical_object(receipt_path)
+    lineage = _read_canonical_object(lineage_path)
     try:
         contracts.validate_acquisition_receipt(receipt)
         contracts.validate_normalization_lineage(lineage)
@@ -1214,7 +1238,7 @@ def _verify_published(
     expected_receipt = contracts.parse_json_bytes(
         expected_files["acquisition-receipt.json"], location="candidate receipt"
     )
-    if lineage["normalization_lineage_id"] != bundle_id \
+    if _evidence_generation_id(receipt_bytes, lineage_bytes) != bundle_id \
             or receipt["acquisition_receipt_id"] != expected_receipt["acquisition_receipt_id"] \
             or lineage["acquisition_receipt_ids"] != [receipt["acquisition_receipt_id"]]:
         raise WikidataEntityAcquisitionError("published evidence identity mismatch")
