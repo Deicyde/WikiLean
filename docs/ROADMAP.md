@@ -429,9 +429,16 @@ explicit approval.
     output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
     validates complete typed responses and redirects, and isolates ordinary missing QIDs
     without allowing one bad ID to discard valid peers.
+  - [x] Make the legacy Wikidata universe, relation-edge, and description harvesters
+    all-or-nothing and atomic. They validate response shape, deterministic ordering,
+    duplicates, redirects, per-source coverage, and prior-generation volume floors; a
+    failed or suspiciously collapsed run preserves the prior bytes. Description output no
+    longer merges mixed-age cache rows or embeds observation/run timestamps. A reviewed
+    collapse requires the explicit `BRAIN_INGEST_FORCE=1` override.
   - [ ] Split Wikidata acquisition out of `fold_proposals.py` into sealed input evidence;
     universe/edge fetches and mixed-age description caches must likewise fail closed instead
-    of publishing partial normalized data.
+    of publishing partial normalized data. The legacy harvesters now fail closed, but still
+    perform separate live reads without a common receipt/lineage generation or writer lock.
   - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
     `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
     binds all six files by full commit, byte count, and SHA-256; acquisition rejects
