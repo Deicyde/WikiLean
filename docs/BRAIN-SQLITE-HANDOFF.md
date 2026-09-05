@@ -145,8 +145,10 @@ The latest continuation additionally passed 11 sealed-harvester tests, 8 D1-acqu
 tests, 10 top-level-shard tests, 15 portable-launcher tests, and 13 Brain-nightly shell
 tests. The launcher/harvester integration received an independent clean P0/P1 audit.
 
-The acquisition checkpoint passed the full Python gate (36 commands) and the Worker gate
-(37 files / 845 tests). Before merging, or after any continuation changes, rerun exactly:
+Final branch-wide verification after `c3d94243` passed the expanded Python gate (37
+commands) and the Worker gate (37 files / 845 tests). The Python result includes the one
+expected local replay-sandbox skip described below; every required offline scenario ran.
+Before merging, or after any continuation changes, rerun exactly:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -247,7 +249,7 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had about 6.3 GiB free at the latest check, after fluctuating as low as
+The filesystem had only about 6 GiB free at the latest check, after fluctuating as low as
 1.2–3.0 GiB during this work.
 The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
 Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
