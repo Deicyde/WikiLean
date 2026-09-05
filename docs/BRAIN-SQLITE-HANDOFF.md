@@ -10,7 +10,8 @@ the executable authority contracts are summarized in
 
 Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest pushed
 history should include `Seal D1 annotation mirroring` followed by `Define v3 Brain evidence
-contracts`. The worktree should be clean; verify that before doing anything else.
+contracts` and `Harden Wikidata acquisition publication`. The worktree should be clean;
+verify that before doing anything else.
 
 Immediate continuation order:
 
@@ -22,8 +23,9 @@ Immediate continuation order:
    `brain/acquire-d1-snapshot.sh`, review the private bundle, and bind it into a v3 plan.
 4. Restore a read-only Mathlib source checkout and run the reviewed plan's bounded preflight
    before attempting the first real pack.
-5. Continue the Wikidata separation work described in `ROADMAP.md`; no live acquisition or
-   tracked data regeneration is required to resume the code work.
+5. Replace the now-fail-closed legacy Wikidata live reads with one sealed evidence generation
+   and make proposal folding consume it offline; no live acquisition or tracked data
+   regeneration is required to resume the code work.
 
 No Worker deployment, production promotion, D1 write, or live Wikidata fetch was performed
 in this stabilization session.
@@ -100,6 +102,15 @@ This does not complete the acquisition/replay split: current legacy pairs remain
 Wikidata is still fetched inside the fold command, and physical external JSONL bytes still
 contain observation/run metadata even though that metadata is excluded from
 `pair_generation`.
+
+The latest Wikidata safety milestone makes the universe, relation-edge, and description
+harvesters all-or-nothing and atomic. Typed response validation, deterministic
+canonicalization, redirect handling, prior-generation/input-relative volume floors, and
+label/slug/description coverage guards prevent successful-but-collapsed responses from
+replacing known-good artifacts. Description output no longer merges a prior cache or embeds
+run timestamps. The focused hermetic suite passes 27 tests. These remain separate live API
+reads, not a shared upstream snapshot or sealed receipt/lineage generation; concurrent
+writers are not yet serialized.
 
 The immutable Hugging Face acquisition milestone additionally adds:
 
@@ -274,9 +285,9 @@ the current checkout:
    derived; Frontier no longer consumes halo output, and community provenance now uses the
    sealed D1 normalization-lineage identity.
 7. Finish acquisition separation before issuing evidence: move the now-fail-closed
-   Wikidata lookup out of `fold_proposals.py`, make the remaining
-   Wikidata harvesters reject partial results, and bind the reviewed Hugging Face revisions
-   into v3 evidence. Re-harvest legacy external pairs through the sealed writer.
+   Wikidata lookup out of `fold_proposals.py`, replace the separately fail-closed legacy
+   harvesters with one sealed generation, and bind the reviewed Hugging Face revisions into
+   v3 evidence. Re-harvest legacy external pairs through the sealed writer.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
