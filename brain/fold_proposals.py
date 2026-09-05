@@ -26,23 +26,30 @@ EVERY row regardless of verdict, and emits only rows that survive:
 Anti-slop invariants: a row without a skeptic verdict can still fold, but its
 confidence is capped at "medium" and it carries skeptic:"pending" — the
 precision class is published, never hidden. Deterministic checks (decl
-existence oracle + checkout grep, hierarchy-path existence, live Wikidata
+existence oracle + checkout grep, hierarchy-path existence, sealed Wikidata
 entity existence + label agreement) apply to all rows; failing rows are
 rejected even if a skeptic accepted them.
 """
 from __future__ import annotations
 
+import argparse
 import glob
 import json
 import os
 import re
 import subprocess
 import sys
-import time
+import tempfile
+from collections.abc import Sequence
 from pathlib import Path
 
 from build_context import external_pair_control_paths
 from ingest.common import read_stable_external_pair
+from wikidata_entity_bundle import (
+    REQUEST_PLAN_SCHEMA,
+    WikidataEntityBundleError,
+    verify_wikidata_entity_bundle,
+)
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -52,13 +59,8 @@ CATALOG = REPO / "catalog" / "data"
 ORACLE = REPO / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
 CHECKOUT = Path(os.environ.get("BRAIN_MATHLIB_CHECKOUT",
                                "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
-UA = "WikiLean/1.0 (https://wikilean.jackmccarthy.org)"
-QID_RE = re.compile(r"^Q[1-9]\d*$")
+QID_RE = re.compile(r"^Q[1-9][0-9]{0,11}$")
 CONF_ORDER = {"low": 0, "medium": 1, "high": 2}
-
-
-class WikidataAcquisitionError(RuntimeError):
-    """The live Wikidata batch could not be acquired completely and parsed."""
 
 
 def is_qid(value: object) -> bool:
@@ -298,206 +300,68 @@ def known_qids() -> dict[str, dict]:
     return out
 
 
-def _fetch_entity_chunk(chunk: list[str], chunk_number: int) -> dict[str, dict]:
-    """Fetch one logical chunk, bisecting only Wikidata no-such-entity errors."""
-    url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json"
-           "&props=labels|descriptions|aliases|claims|sitelinks&languages=en"
-           "&sitefilter=enwiki&redirects=yes&ids=" + "|".join(chunk))
+def request_plan_bytes(qids: Sequence[str]) -> bytes:
+    """Return the canonical request-plan document for one exact QID set."""
+    normalized = list(qids)
+    if normalized != sorted(set(normalized)) or any(not is_qid(qid) for qid in normalized):
+        raise ValueError("request-plan QIDs must be canonical, unique, and sorted")
+    return json.dumps(
+        {"schema": REQUEST_PLAN_SCHEMA, "qids": normalized},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+
+
+def write_request_plan(path: Path, qids: Sequence[str]) -> None:
+    """Atomically replace ``path`` with one canonical exact request plan."""
+    path = Path(path)
+    data = request_plan_bytes(qids)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    temporary = Path(temporary_name)
     try:
-        response = subprocess.run(
-            ["curl", "-sS", "-m", "90", "--retry", "2",
-             "-H", f"User-Agent: {UA}", url],
-            capture_output=True, text=True, timeout=120,
-        )
-    except (OSError, subprocess.SubprocessError) as exc:
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} request failed "
-            f"({type(exc).__name__})"
-        ) from exc
-    if response.returncode != 0:
-        detail = " ".join((response.stderr or "").split())[:200] or "no stderr"
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} curl exited "
-            f"{response.returncode}: {detail}"
-        )
-    # Throttle every completed request, including malformed/API-error
-    # responses that will be retried through no-such-entity bisection.
-    time.sleep(1)
-    if not response.stdout.strip():
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} returned an empty response"
-        )
-    try:
-        payload = json.loads(response.stdout)
-    except json.JSONDecodeError as exc:
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} returned invalid JSON"
-        ) from exc
-    if not isinstance(payload, dict):
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} response is not an object"
-        )
-
-    error = payload.get("error")
-    if error is not None:
-        if isinstance(error, dict) and error.get("code") == "no-such-entity":
-            # wbgetentities rejects the entire multi-ID request when even one
-            # syntactically valid, positive QID is beyond Wikidata's range.
-            # Bisect to retain valid peers and represent only isolated bad IDs
-            # as missing.  Every other API error remains fatal.
-            if len(chunk) == 1:
-                return {chunk[0]: {"missing": True}}
-            midpoint = len(chunk) // 2
-            left = _fetch_entity_chunk(chunk[:midpoint], chunk_number)
-            right = _fetch_entity_chunk(chunk[midpoint:], chunk_number)
-            return {**left, **right}
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} returned an API error"
-        )
-
-    entities = payload.get("entities")
-    if not isinstance(entities, dict):
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} has no entities object"
-        )
-    redirect_rows = payload.get("redirects", [])
-    if not isinstance(redirect_rows, list):
-        raise WikidataAcquisitionError(
-            f"wbgetentities chunk {chunk_number} redirects is not a list"
-        )
-    redirects: dict[str, str] = {}
-    for row in redirect_rows:
-        if not isinstance(row, dict) or not is_qid(row.get("from")) \
-                or not is_qid(row.get("to")):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} has a malformed redirect"
-            )
-        source, target = row["from"], row["to"]
-        if source in redirects and redirects[source] != target:
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} has conflicting redirects"
-            )
-        redirects[source] = target
-
-    out: dict[str, dict] = {}
-    for requested in chunk:
-        resolved = requested
-        seen: set[str] = set()
-        while resolved in redirects:
-            if resolved in seen:
-                raise WikidataAcquisitionError(
-                    f"wbgetentities chunk {chunk_number} has a redirect cycle"
-                )
-            seen.add(resolved)
-            resolved = redirects[resolved]
-        entity = entities.get(requested)
-        if entity is None:
-            entity = entities.get(resolved)
-        if entity is None:
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} omitted requested QID {requested}"
-            )
-        if not isinstance(entity, dict):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} is not an object"
-            )
-        if "missing" in entity:
-            out[requested] = {"missing": True}
-            continue
-
-        entity_qid = entity.get("id", resolved)
-        labels = entity.get("labels", {})
-        aliases_by_language = entity.get("aliases", {})
-        descriptions = entity.get("descriptions", {})
-        claims = entity.get("claims", {})
-        sitelinks = entity.get("sitelinks", {})
-        if not is_qid(entity_qid) or not isinstance(labels, dict) \
-                or not isinstance(aliases_by_language, dict) \
-                or not isinstance(descriptions, dict) \
-                or not isinstance(claims, dict) \
-                or not isinstance(sitelinks, dict):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} is malformed"
-            )
-
-        label_row = labels.get("en")
-        if label_row is not None and (not isinstance(label_row, dict)
-                                      or not isinstance(label_row.get("value"), str)):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed label"
-            )
-        alias_rows = aliases_by_language.get("en", [])
-        if not isinstance(alias_rows, list) or any(
-            not isinstance(row, dict) or not isinstance(row.get("value"), str)
-            for row in alias_rows
-        ):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} has malformed aliases"
-            )
-        description_row = descriptions.get("en")
-        if description_row is not None and (
-            not isinstance(description_row, dict)
-            or not isinstance(description_row.get("value"), str)
-        ):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed description"
-            )
-        p31_rows = claims.get("P31", [])
-        if not isinstance(p31_rows, list):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} has malformed P31 claims"
-            )
-        p31: list[str] = []
-        for claim in p31_rows:
-            if not isinstance(claim, dict) or not isinstance(claim.get("mainsnak"), dict):
-                raise WikidataAcquisitionError(
-                    f"wbgetentities chunk {chunk_number} entity {requested} "
-                    "has a malformed P31 claim"
-                )
-            datavalue = claim["mainsnak"].get("datavalue")
-            if datavalue is None:
-                continue
-            if not isinstance(datavalue, dict) or not isinstance(datavalue.get("value"), dict) \
-                    or not is_qid(datavalue["value"].get("id")):
-                raise WikidataAcquisitionError(
-                    f"wbgetentities chunk {chunk_number} entity {requested} "
-                    "has a malformed P31 value"
-                )
-            p31.append(datavalue["value"]["id"])
-        enwiki = sitelinks.get("enwiki")
-        if enwiki is not None and (not isinstance(enwiki, dict)
-                                   or not isinstance(enwiki.get("title"), str)):
-            raise WikidataAcquisitionError(
-                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed sitelink"
-            )
-        out[requested] = {
-            "qid": entity_qid,
-            "requested": requested,
-            "label": label_row["value"] if label_row is not None else None,
-            "aliases": [row["value"] for row in alias_rows],
-            "description": description_row["value"] if description_row is not None else None,
-            "classes": p31,
-            "enwiki_slug": enwiki["title"].replace(" ", "_") if enwiki else None,
-        }
-    return out
+        with os.fdopen(descriptor, "wb") as handle:
+            descriptor = -1
+            os.fchmod(handle.fileno(), 0o644)
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        directory_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+        directory = os.open(path.parent, directory_flags)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        temporary.unlink(missing_ok=True)
 
 
-def fetch_entities(qids: list[str]) -> dict[str, dict]:
-    """Fetch complete Wikidata entity evidence in deterministic batches of 50.
+def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument(
+        "--write-wikidata-request-plan",
+        type=Path,
+        metavar="PATH",
+        help="atomically write the exact canonical QID request plan and exit",
+    )
+    inputs.add_argument(
+        "--wikidata-entity-bundle",
+        type=Path,
+        metavar="ABSOLUTE_DIR",
+        help="explicit sealed Wikidata entity bundle for unknown proposal QIDs",
+    )
+    return parser.parse_args(argv)
 
-    Acquisition is all-or-nothing except that an isolated canonical QID which
-    Wikidata reports as no-such-entity is represented as ``missing``.  A failed,
-    malformed, or incomplete request raises before folding can publish outputs.
-    """
-    if any(not is_qid(qid) for qid in qids):
-        raise WikidataAcquisitionError("wbgetentities received a non-canonical QID")
-    out: dict[str, dict] = {}
-    for i in range(0, len(qids), 50):
-        out.update(_fetch_entity_chunk(qids[i:i + 50], i // 50))
-    return out
 
-
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parse_args(argv)
     paths = hierarchy_paths()
     oracle = oracle_names()
     # A missing oracle must FAIL, not degrade: an empty set would silently
@@ -602,7 +466,7 @@ def main() -> int:
 
     # Cross-batch reconciliation is computed before acquisition.  A rejected
     # row and every accepted duplicate covered by its any-reject veto are audit
-    # outputs only; they must not make the fold depend on a live upstream QID.
+    # outputs only; they must not make the fold depend on sealed upstream QID evidence.
     vetoed = {
         key
         for r in rows
@@ -619,7 +483,7 @@ def main() -> int:
 
         This mirrors only deterministic checks that precede qid_info() in the
         branch below.  It is intentionally conservative: uncertain rows fetch;
-        rows guaranteed to reject locally do not create a network dependency.
+        rows guaranteed to reject locally do not create an acquisition-evidence dependency.
         """
         if not isinstance(t, str) or t not in {
             "container", "discover", "replace_decl", "xref", "fc_link", "repo_link",
@@ -675,22 +539,71 @@ def main() -> int:
             return False
         return decl in names or sum(name.endswith("." + decl) for name in names) == 1
 
-    # ---- live-fetch every locally admissible, not-yet-known QID ---------------
+    # ---- bind every locally admissible, not-yet-known QID to sealed evidence --
     need = sorted({r["qid"] for r in rows if locally_fetchable(r, rtype(r))})
-    try:
-        fetched = fetch_entities(need) if need else {}
-    except WikidataAcquisitionError as exc:
-        print(f"FATAL: Wikidata acquisition failed: {exc}", file=sys.stderr)
-        return 1
-    absent = [qid for qid in need if qid not in fetched]
-    if absent:
-        # Keep the fold boundary fail-closed even if fetch_entities is replaced
-        # by a test double or future acquisition implementation.
-        print(f"FATAL: Wikidata acquisition returned only "
-              f"{len(fetched)}/{len(need)} requested QIDs; no outputs written",
-              file=sys.stderr)
-        return 1
-    print(f"fetched {len(fetched)}/{len(need)} unknown QIDs from Wikidata", file=sys.stderr)
+    if args.write_wikidata_request_plan is not None:
+        try:
+            write_request_plan(args.write_wikidata_request_plan, need)
+        except (OSError, ValueError) as exc:
+            print(f"FATAL: cannot write Wikidata request plan: {exc}", file=sys.stderr)
+            return 1
+        print(
+            f"wrote Wikidata request plan for {len(need)} unknown QIDs to "
+            f"{args.write_wikidata_request_plan}",
+            file=sys.stderr,
+        )
+        return 0
+
+    fetched: dict[str, dict]
+    if not need:
+        if args.wikidata_entity_bundle is not None:
+            print(
+                "FATAL: --wikidata-entity-bundle is not allowed when no unknown "
+                "QIDs require acquisition; no outputs written",
+                file=sys.stderr,
+            )
+            return 1
+        fetched = {}
+    else:
+        bundle_path = args.wikidata_entity_bundle
+        if bundle_path is None:
+            print(
+                "FATAL: unknown QIDs require --wikidata-entity-bundle; "
+                "write the exact request plan first; no outputs written",
+                file=sys.stderr,
+            )
+            return 1
+        if not bundle_path.is_absolute():
+            print(
+                "FATAL: --wikidata-entity-bundle must be an absolute path; "
+                "no outputs written",
+                file=sys.stderr,
+            )
+            return 1
+        try:
+            bundle = verify_wikidata_entity_bundle(bundle_path)
+        except (WikidataEntityBundleError, OSError, ValueError) as exc:
+            print(f"FATAL: Wikidata entity bundle verification failed: {exc}",
+                  file=sys.stderr)
+            return 1
+        if bundle.requested_qids != tuple(need):
+            print(
+                "FATAL: Wikidata entity bundle request set does not equal the "
+                f"current fold plan ({len(bundle.requested_qids)}/{len(need)} QIDs); "
+                "no outputs written",
+                file=sys.stderr,
+            )
+            return 1
+        if sorted(bundle.entities) != need:
+            print(
+                "FATAL: Wikidata entity bundle map does not exactly cover its "
+                "request plan; no outputs written",
+                file=sys.stderr,
+            )
+            return 1
+        fetched = dict(bundle.entities)
+    print(f"loaded {len(fetched)}/{len(need)} unknown QIDs from sealed Wikidata evidence",
+          file=sys.stderr)
 
     def qid_info(qid: str) -> dict | None:
         return known.get(qid) or fetched.get(qid)
@@ -863,7 +776,7 @@ def main() -> int:
             # concept QID. Machine checks: db is a source_registry
             # crossref_sources key, the page id exists in the ingested
             # <db>_pages.jsonl, and the QID exists upstream with an agreeing
-            # label — same live-Wikidata machinery as discover rows.
+            # label — same sealed-Wikidata machinery as discover rows.
             # Like overrides (and unlike links), anchors NEVER fold on a
             # pending verdict: the machine checks are near-tautological for
             # dispatched candidates (page exists, QID exists), so the skeptic
@@ -918,7 +831,7 @@ def main() -> int:
             # fc-tagger fleet rows: join a Wikidata concept to a
             # decl:FormalConjectures:* declaration. Existence oracle = the
             # deterministic harvest (catalog/data/formal_conjectures.jsonl);
-            # QID checks are the same live-Wikidata machinery as discover
+            # QID checks are the same sealed-Wikidata machinery as discover
             # rows. Policy mirrors xref/override for the STRONG kind:
             # formalizes NEVER folds on a pending verdict (a wrong "exact"
             # welds two atoms downstream); mentions folds pending at capped
@@ -987,7 +900,7 @@ def main() -> int:
             # Wikidata concept to a decl:<Lib>:* declaration of any
             # git-harvested Lean repo. Existence oracle = that repo's harvest
             # (catalog/data/<key>.jsonl); QID checks are the same
-            # live-Wikidata machinery as discover rows. MODERATION CONTRACT
+            # sealed-Wikidata machinery as discover rows. MODERATION CONTRACT
             # (hard): this channel folds MENTIONS ONLY — never a kind
             # build_cells fuses cells on (formalizes/exact identity claims
             # need human review; FC's gated formalizes path is FC-only and

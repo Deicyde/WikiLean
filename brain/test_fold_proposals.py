@@ -12,11 +12,9 @@ Run:
 from __future__ import annotations
 
 import contextlib
-import copy
 import io
 import json
 import shutil
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -43,27 +41,79 @@ def tree_bytes(root: Path) -> dict[str, bytes]:
     }
 
 
-def wikidata_entity(qid: str) -> dict:
+def bundle_entity(
+    requested: str,
+    *,
+    qid: str | None = None,
+    label: str | None = None,
+) -> dict:
     return {
-        "id": qid,
-        "labels": {"en": {"value": f"concept {qid}"}},
-        "aliases": {"en": []},
-        "descriptions": {"en": {"value": "synthetic concept"}},
-        "claims": {"P31": []},
-        "sitelinks": {},
+        "qid": qid or requested,
+        "requested": requested,
+        "label": label if label is not None else f"concept {requested}",
+        "aliases": [],
+        "description": "synthetic concept",
+        "classes": [],
+        "enwiki_slug": None,
     }
 
 
-def run_fake_fetch(qids: list[str], fake_run, fake_sleep=None) -> dict[str, dict]:
-    old_run = F.subprocess.run
-    old_sleep = F.time.sleep
+def make_fold_fixture(tmp: Path, rows: list[dict]) -> tuple[Path, Path, Path, Path, Path]:
+    catalog = tmp / "catalog" / "data"
+    proposals = tmp / "brain" / "proposals"
+    data = tmp / "brain" / "data"
+    checkout = tmp / "Mathlib"
+    oracle = tmp / "declaration-data.json"
+    for path in (catalog, proposals, data, checkout):
+        path.mkdir(parents=True, exist_ok=True)
+    oracle.write_text(json.dumps({"declarations": {"Mathlib.Example": {}}}))
+    (catalog / "hierarchy.json").write_text(json.dumps({"libraries": {}}))
+    (catalog / "source_registry.json").write_text(json.dumps({
+        "crossref_sources": {}, "frontier_sources": {},
+    }))
+    (catalog / "rebuild_grounding.json").write_text("[]")
+    write_jsonl(catalog / "wikidata_universe.jsonl", [])
+    write_jsonl(catalog / "universe_extension.jsonl", [{"sentinel": "extension"}])
+    write_jsonl(catalog / "grounding_overrides.jsonl", [{"sentinel": "override"}])
+    write_jsonl(proposals / "requests.jsonl", rows)
+    return catalog, proposals, data, checkout, oracle
+
+
+@contextlib.contextmanager
+def patched_fold_fixture(
+    catalog: Path, proposals: Path, data: Path, checkout: Path, oracle: Path
+):
+    old = {
+        "CATALOG": F.CATALOG,
+        "PROPOSALS": F.PROPOSALS,
+        "DATA": F.DATA,
+        "CHECKOUT": F.CHECKOUT,
+        "ORACLE": F.ORACLE,
+        "verify": F.verify_wikidata_entity_bundle,
+        "frontier_names": F._frontier_names,
+        "ext_page_ids": F._ext_page_ids,
+        "oracle_modules": F._oracle_modules,
+    }
     try:
-        F.subprocess.run = fake_run
-        F.time.sleep = fake_sleep or (lambda _seconds: None)
-        return F.fetch_entities(qids)
+        F.CATALOG = catalog
+        F.PROPOSALS = proposals
+        F.DATA = data
+        F.CHECKOUT = checkout
+        F.ORACLE = oracle
+        F._frontier_names = {}
+        F._ext_page_ids = {}
+        F._oracle_modules = None
+        yield
     finally:
-        F.subprocess.run = old_run
-        F.time.sleep = old_sleep
+        F.CATALOG = old["CATALOG"]
+        F.PROPOSALS = old["PROPOSALS"]
+        F.DATA = old["DATA"]
+        F.CHECKOUT = old["CHECKOUT"]
+        F.ORACLE = old["ORACLE"]
+        F.verify_wikidata_entity_bundle = old["verify"]
+        F._frontier_names = old["frontier_names"]
+        F._ext_page_ids = old["ext_page_ids"]
+        F._oracle_modules = old["oracle_modules"]
 
 
 def test_completed_retract_key_matches_fold_completion():
@@ -86,187 +136,94 @@ def test_completed_retract_key_matches_fold_completion():
 
 def test_qid_syntax_is_canonical_and_checked_before_request():
     assert F.is_qid("Q1")
-    assert F.is_qid("Q999999999999999")
-    for value in ("Q0", "Q01", "q1", "Q-1", "Q", 1, None, {"qid": "Q1"}):
+    assert F.is_qid("Q999999999999")
+    for value in (
+        "Q0", "Q01", "q1", "Q-1", "Q", "Q1000000000000", 1, None,
+        {"qid": "Q1"},
+    ):
         assert not F.is_qid(value)
 
+
+def test_request_plan_is_exact_canonical_atomic_and_does_not_fold():
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_plan_test_"))
+    rows = [
+        {"qid": "Q200", "qid_label": "concept Q200", "decl": "Mathlib.Example"},
+        {"qid": "Q100", "qid_label": "concept Q100", "decl": "Mathlib.Example"},
+        {"qid": "Q0", "qid_label": "invalid", "decl": "Mathlib.Example"},
+    ]
+    catalog, proposals, data, checkout, oracle = make_fold_fixture(tmp, rows)
+    plan = tmp / "request-plan.json"
+    plan.write_bytes(b"stale-plan")
     called = False
 
-    def must_not_run(*_args, **_kwargs):
+    def must_not_verify(_path):
         nonlocal called
         called = True
-        raise AssertionError("invalid QID reached curl")
+        raise AssertionError("planning mode attempted bundle verification")
 
     try:
-        run_fake_fetch(["Q0"], must_not_run)
-    except F.WikidataAcquisitionError:
-        pass
-    else:
-        raise AssertionError("non-canonical QID was accepted")
-    assert not called
-
-
-def test_fetch_entities_canonical_success_and_redirect():
-    entity = wikidata_entity("Q1")
-    entity["aliases"]["en"] = [{"value": "one"}]
-    entity["claims"]["P31"] = [{
-        "mainsnak": {"datavalue": {"value": {"id": "Q5"}}},
-    }]
-    entity["sitelinks"]["enwiki"] = {"title": "Concept one"}
-    result = run_fake_fetch(
-        ["Q1"],
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps({"entities": {"Q1": entity}}),
-            stderr="",
-        ),
-    )
-    assert result == {"Q1": {
-        "qid": "Q1", "requested": "Q1", "label": "concept Q1",
-        "aliases": ["one"], "description": "synthetic concept",
-        "classes": ["Q5"], "enwiki_slug": "Concept_one",
-    }}
-
-    target = wikidata_entity("Q2")
-    redirected = run_fake_fetch(
-        ["Q1"],
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps({
-                "redirects": [{"from": "Q1", "to": "Q2"}],
-                "entities": {"Q2": target},
-            }),
-            stderr="",
-        ),
-    )
-    assert redirected["Q1"]["requested"] == "Q1"
-    assert redirected["Q1"]["qid"] == "Q2"
-    assert redirected["Q1"]["label"] == "concept Q2"
-
-
-def test_fetch_entities_isolates_no_such_entity_and_preserves_valid_peers():
-    bad = "Q999999999999999"
-    calls: list[list[str]] = []
-    sleeps: list[int] = []
-
-    def fake_run(args, **_kwargs):
-        ids = args[-1].split("&ids=", 1)[1].split("|")
-        calls.append(ids)
-        if bad in ids:
-            payload = {"error": {"code": "no-such-entity", "info": "bad ID"}}
-        else:
-            payload = {"entities": {qid: wikidata_entity(qid) for qid in ids}}
-        return SimpleNamespace(returncode=0, stdout=json.dumps(payload), stderr="")
-
-    result = run_fake_fetch(
-        ["Q1", bad, "Q2"], fake_run, lambda seconds: sleeps.append(seconds)
-    )
-    assert result["Q1"]["qid"] == "Q1"
-    assert result[bad] == {"missing": True}
-    assert result["Q2"]["qid"] == "Q2"
-    assert calls == [
-        ["Q1", bad, "Q2"], ["Q1"], [bad, "Q2"], [bad], ["Q2"],
-    ]
-    assert sleeps == [1] * len(calls)
-
-    normal_missing = run_fake_fetch(
-        ["Q3"],
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps({"entities": {"Q3": {"id": "Q3", "missing": ""}}}),
-            stderr="",
-        ),
-    )
-    assert normal_missing == {"Q3": {"missing": True}}
-
-
-def test_fetch_entities_keeps_other_api_errors_fatal():
-    calls = 0
-
-    def fake_run(*_args, **_kwargs):
-        nonlocal calls
-        calls += 1
-        return SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps({"error": {"code": "maxlag", "info": "retry"}}),
-            stderr="",
-        )
-
-    try:
-        run_fake_fetch(["Q1", "Q2"], fake_run)
-    except F.WikidataAcquisitionError as exc:
-        assert "API error" in str(exc)
-    else:
-        raise AssertionError("non-no-such API error did not fail closed")
-    assert calls == 1
-
-
-def test_fetch_entities_rejects_wrong_scalar_and_list_item_types():
-    cases: list[tuple[str, dict]] = []
-    for name in ("id", "label", "alias", "description", "p31", "sitelink"):
-        entity = copy.deepcopy(wikidata_entity("Q1"))
-        if name == "id":
-            entity["id"] = 1
-        elif name == "label":
-            entity["labels"]["en"]["value"] = 1
-        elif name == "alias":
-            entity["aliases"]["en"] = [{"value": 1}]
-        elif name == "description":
-            entity["descriptions"]["en"]["value"] = 1
-        elif name == "p31":
-            entity["claims"]["P31"] = [{
-                "mainsnak": {"datavalue": {"value": {"id": 5}}},
-            }]
-        else:
-            entity["sitelinks"]["enwiki"] = {"title": 1}
-        cases.append((name, entity))
-
-    for name, entity in cases:
-        try:
-            run_fake_fetch(
-                ["Q1"],
-                lambda *_args, _entity=entity, **_kwargs: SimpleNamespace(
-                    returncode=0,
-                    stdout=json.dumps({"entities": {"Q1": _entity}}),
-                    stderr="",
-                ),
+        with patched_fold_fixture(catalog, proposals, data, checkout, oracle):
+            F.verify_wikidata_entity_bundle = must_not_verify
+            catalog_before = tree_bytes(catalog)
+            assert F.main(["--write-wikidata-request-plan", str(plan)]) == 0
+            assert plan.read_bytes() == (
+                b'{"qids":["Q100","Q200"],'
+                b'"schema":"wikilean.wikidata-entity-request-plan/v1"}'
             )
-        except F.WikidataAcquisitionError:
-            pass
-        else:
-            raise AssertionError(f"wrong {name} scalar/list item type was accepted")
+            assert not called
+            assert not list(data.iterdir())
+            assert tree_bytes(catalog) == catalog_before
+            assert not list(tmp.rglob("*.tmp"))
 
-
-def test_fetch_entities_rejects_request_and_parse_failures():
-    old_run = F.subprocess.run
-    old_sleep = F.time.sleep
-    scenarios = [
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(
-            subprocess.TimeoutExpired("curl", 120)),
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=22, stdout="", stderr="upstream failed"),
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0, stdout="not json", stderr=""),
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0, stdout=json.dumps({"entities": {}}), stderr=""),
-        lambda *_args, **_kwargs: SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps({"entities": {"Q1": {"labels": []}}}),
-            stderr=""),
-    ]
-    try:
-        F.time.sleep = lambda _seconds: None
-        for fake_run in scenarios:
-            F.subprocess.run = fake_run
-            try:
-                F.fetch_entities(["Q1"])
-            except F.WikidataAcquisitionError:
-                pass
-            else:
-                raise AssertionError("failed Wikidata batch did not fail closed")
+            # Empty is still an exact plan and atomically replaces the stale
+            # non-empty one; acquisition can then be skipped.
+            write_jsonl(proposals / "requests.jsonl", [])
+            assert F.main(["--write-wikidata-request-plan", str(plan)]) == 0
+            assert plan.read_bytes() == (
+                b'{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}'
+            )
+            assert not called
     finally:
-        F.subprocess.run = old_run
-        F.time.sleep = old_sleep
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_fold_contains_no_live_wikidata_transport():
+    source = Path(F.__file__).read_text()
+    assert "_fetch_entity_chunk" not in source
+    assert "fetch_entities" not in source
+    assert "wbgetentities" not in source
+    assert "wikidata.org/w/api.php" not in source
+
+
+def test_empty_need_rejects_a_bundle_and_folds_without_one():
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_empty_bundle_test_"))
+    catalog, proposals, data, checkout, oracle = make_fold_fixture(tmp, [])
+    bundle_path = (tmp / "unneeded-bundle").absolute()
+    called = False
+
+    def must_not_verify(_path):
+        nonlocal called
+        called = True
+        raise AssertionError("empty request set attempted bundle verification")
+
+    try:
+        with patched_fold_fixture(catalog, proposals, data, checkout, oracle):
+            F.verify_wikidata_entity_bundle = must_not_verify
+            before = tree_bytes(tmp)
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                assert F.main([
+                    "--wikidata-entity-bundle", str(bundle_path),
+                ]) == 1
+            assert "not allowed when no unknown QIDs" in stderr.getvalue()
+            assert tree_bytes(tmp) == before
+            assert not called
+
+            assert F.main([]) == 0
+            assert not called
+            assert (data / "discovery_proposals.jsonl").read_bytes() == b""
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def test_external_page_ids_rejects_interrupted_first_publication():
@@ -306,118 +263,157 @@ def test_external_page_ids_rejects_interrupted_first_publication():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def test_main_preserves_every_output_after_partial_acquisition_failure():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_fetch_failure_test_"))
-    catalog = tmp / "catalog" / "data"
-    proposals = tmp / "brain" / "proposals"
-    data = tmp / "brain" / "data"
-    checkout = tmp / "Mathlib"
-    oracle = tmp / "declaration-data.json"
-    for path in (catalog, proposals, data, checkout):
-        path.mkdir(parents=True, exist_ok=True)
-
-    oracle.write_text(json.dumps({"declarations": {"Mathlib.Example": {}}}))
-    (catalog / "hierarchy.json").write_text(json.dumps({"libraries": {}}))
-    (catalog / "source_registry.json").write_text(json.dumps({
-        "crossref_sources": {}, "frontier_sources": {},
-    }))
-    (catalog / "rebuild_grounding.json").write_text("[]")
-    write_jsonl(catalog / "wikidata_universe.jsonl", [])
-    write_jsonl(catalog / "universe_extension.jsonl", [{"sentinel": "extension"}])
-    write_jsonl(catalog / "grounding_overrides.jsonl", [{"sentinel": "override"}])
-
-    qids = [f"Q{1000 + i}" for i in range(51)]
-    write_jsonl(proposals / "partial_fetch.jsonl", [
+def test_main_preserves_every_output_on_bundle_failure_or_wrong_coverage():
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_failure_test_"))
+    qids = ["Q1001", "Q1002"]
+    rows = [
         {"qid": qid, "qid_label": f"concept {qid}",
          "decl": "Mathlib.Example", "module": "Mathlib.Test",
          "confidence": "medium", "evidence": "synthetic discovery",
          "proposer": "test"}
         for qid in qids
-    ])
-
-    # Seed every direct output family with recognizable bytes.  The absent
-    # discovery_rejected.jsonl also proves no new dump/temp file is created.
-    for name in ("container_links.jsonl", "discovery_proposals.jsonl",
-                 "grading_disputes.jsonl", "ext_anchor_links.jsonl",
-                 "fc_links.jsonl"):
+    ]
+    catalog, proposals, data, checkout, oracle = make_fold_fixture(tmp, rows)
+    for name in (
+        "container_links.jsonl", "discovery_proposals.jsonl",
+        "grading_disputes.jsonl", "ext_anchor_links.jsonl", "fc_links.jsonl",
+    ):
         (data / name).write_bytes(f"sentinel:{name}\n".encode())
-
-    old = {
-        "CATALOG": F.CATALOG,
-        "PROPOSALS": F.PROPOSALS,
-        "DATA": F.DATA,
-        "CHECKOUT": F.CHECKOUT,
-        "ORACLE": F.ORACLE,
-        "fetch_entities": F.fetch_entities,
-        "run": F.subprocess.run,
-        "sleep": F.time.sleep,
-        "frontier_names": F._frontier_names,
-        "ext_page_ids": F._ext_page_ids,
-        "oracle_modules": F._oracle_modules,
-    }
-    calls = 0
-
-    def partial_then_fail(*_args, **_kwargs):
-        nonlocal calls
-        calls += 1
-        if calls == 1:
-            entities = {qid: wikidata_entity(qid) for qid in sorted(qids)[:50]}
-            return SimpleNamespace(
-                returncode=0,
-                stdout=json.dumps({"entities": entities}),
-                stderr="",
-            )
-        return SimpleNamespace(returncode=28, stdout="", stderr="timeout")
+    bundle_path = (tmp / "sealed-bundle").absolute()
 
     try:
-        F.CATALOG = catalog
-        F.PROPOSALS = proposals
-        F.DATA = data
-        F.CHECKOUT = checkout
-        F.ORACLE = oracle
-        F.subprocess.run = partial_then_fail
-        F.time.sleep = lambda _seconds: None
-        F._frontier_names = {}
-        F._ext_page_ids = {}
-        F._oracle_modules = None
-        before = tree_bytes(tmp)
+        with patched_fold_fixture(catalog, proposals, data, checkout, oracle):
+            before = tree_bytes(tmp)
 
-        stderr = io.StringIO()
-        with contextlib.redirect_stderr(stderr):
-            assert F.main() == 1
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                assert F.main([]) == 1
+            assert "require --wikidata-entity-bundle" in stderr.getvalue()
+            assert tree_bytes(tmp) == before
 
-        assert calls == 2
-        assert "FATAL: Wikidata acquisition failed" in stderr.getvalue()
-        assert "chunk 1 curl exited 28" in stderr.getvalue()
-        assert tree_bytes(tmp) == before
-        assert not (data / "discovery_rejected.jsonl").exists()
-        assert not list(tmp.rglob("*.tmp"))
+            verifier_called = False
 
-        F.fetch_entities = lambda requested: {
-            requested[0]: {
-                "qid": requested[0], "requested": requested[0],
-                "label": f"concept {requested[0]}", "aliases": [],
-                "description": "synthetic concept", "classes": [],
-                "enwiki_slug": None,
-            },
-        }
-        outer_stderr = io.StringIO()
-        with contextlib.redirect_stderr(outer_stderr):
-            assert F.main() == 1
-        assert "Wikidata acquisition returned only 1/51" in outer_stderr.getvalue()
-        assert tree_bytes(tmp) == before
+            def must_not_verify_relative(_path):
+                nonlocal verifier_called
+                verifier_called = True
+                raise AssertionError("relative bundle path reached verifier")
+
+            F.verify_wikidata_entity_bundle = must_not_verify_relative
+            with contextlib.redirect_stderr(io.StringIO()):
+                assert F.main(["--wikidata-entity-bundle", "relative/bundle"]) == 1
+            assert not verifier_called
+            assert tree_bytes(tmp) == before
+
+            def reject_bundle(_path):
+                raise F.WikidataEntityBundleError("tampered bundle")
+
+            F.verify_wikidata_entity_bundle = reject_bundle
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                assert F.main([
+                    "--wikidata-entity-bundle", str(bundle_path),
+                ]) == 1
+            assert "bundle verification failed: tampered bundle" in stderr.getvalue()
+            assert tree_bytes(tmp) == before
+
+            wrong_bundles = [
+                SimpleNamespace(
+                    requested_qids=("Q1001",),
+                    entities={"Q1001": bundle_entity("Q1001")},
+                ),
+                SimpleNamespace(
+                    requested_qids=("Q1001", "Q1003"),
+                    entities={
+                        "Q1001": bundle_entity("Q1001"),
+                        "Q1003": bundle_entity("Q1003"),
+                    },
+                ),
+                SimpleNamespace(
+                    requested_qids=tuple(qids),
+                    entities={"Q1001": bundle_entity("Q1001")},
+                ),
+                SimpleNamespace(
+                    requested_qids=tuple(qids),
+                    entities={
+                        **{qid: bundle_entity(qid) for qid in qids},
+                        "Q1003": bundle_entity("Q1003"),
+                    },
+                ),
+            ]
+            for wrong in wrong_bundles:
+                F.verify_wikidata_entity_bundle = lambda _path, value=wrong: value
+                with contextlib.redirect_stderr(io.StringIO()):
+                    assert F.main([
+                        "--wikidata-entity-bundle", str(bundle_path),
+                    ]) == 1
+                assert tree_bytes(tmp) == before
+
+            assert not (data / "discovery_rejected.jsonl").exists()
+            assert not list(tmp.rglob("*.tmp"))
     finally:
-        F.CATALOG = old["CATALOG"]
-        F.PROPOSALS = old["PROPOSALS"]
-        F.DATA = old["DATA"]
-        F.CHECKOUT = old["CHECKOUT"]
-        F.ORACLE = old["ORACLE"]
-        F.fetch_entities = old["fetch_entities"]
-        F.subprocess.run = old["run"]
-        F.time.sleep = old["sleep"]
-        F._frontier_names = old["frontier_names"]
-        F._ext_page_ids = old["ext_page_ids"]
-        F._oracle_modules = old["oracle_modules"]
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_main_preserves_requested_qid_on_redirect_and_rejects_explicit_missing():
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_success_test_"))
+    redirected, missing = "Q999001", "Q999002"
+    rows = [
+        {"qid": redirected, "qid_label": "target concept",
+         "decl": "Mathlib.Example", "module": "Mathlib.Test",
+         "confidence": "medium", "evidence": "redirected discovery",
+         "proposer": "test"},
+        {"qid": missing, "qid_label": "missing concept",
+         "decl": "Mathlib.Example", "module": "Mathlib.Test",
+         "confidence": "medium", "evidence": "missing discovery",
+         "proposer": "test"},
+    ]
+    catalog, proposals, data, checkout, oracle = make_fold_fixture(tmp, rows)
+    write_jsonl(catalog / "universe_extension.jsonl", [])
+    write_jsonl(catalog / "grounding_overrides.jsonl", [])
+    bundle_path = (tmp / "sealed-bundle").absolute()
+    calls: list[Path] = []
+
+    redirected_entity = bundle_entity(
+        redirected, qid="Q2", label="target concept"
+    )
+    redirected_entity.update({
+        "aliases": ["requested concept"],
+        "description": "target description",
+        "classes": ["Q1936384"],
+        "enwiki_slug": "Target_concept",
+    })
+    bundle = SimpleNamespace(
+        requested_qids=(redirected, missing),
+        entities={redirected: redirected_entity, missing: {"missing": True}},
+    )
+
+    def verify(path: Path):
+        calls.append(path)
+        return bundle
+
+    try:
+        with patched_fold_fixture(catalog, proposals, data, checkout, oracle):
+            F.verify_wikidata_entity_bundle = verify
+            assert F.main([
+                "--wikidata-entity-bundle", str(bundle_path),
+            ]) == 0
+
+        assert calls == [bundle_path]
+        discovery = read_jsonl(data / "discovery_proposals.jsonl")
+        assert [row["src"] for row in discovery] == [redirected]
+        rejected = read_jsonl(data / "discovery_rejected.jsonl")
+        assert len(rejected) == 1
+        assert rejected[0]["qid"] == missing
+        assert rejected[0]["rejected_reason"] == "fold-check: qid missing upstream"
+        assert read_jsonl(catalog / "universe_extension.jsonl") == [{
+            "qid": redirected,
+            "label": "target concept",
+            "description": "target description",
+            "classes": ["Q1936384"],
+            "enwiki_slug": "Target_concept",
+            "source": "discovery",
+        }]
+    finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
@@ -548,16 +544,20 @@ def test_main_retracts_links_and_runs_trailing_outputs():
         "DATA": F.DATA,
         "CHECKOUT": F.CHECKOUT,
         "ORACLE": F.ORACLE,
-        "fetch_entities": F.fetch_entities,
+        "verify": F.verify_wikidata_entity_bundle,
         "frontier_names": F._frontier_names,
         "ext_page_ids": F._ext_page_ids,
         "oracle_modules": F._oracle_modules,
     }
-    fetch_calls: list[list[str]] = []
+    bundle_path = (tmp / "sealed-bundle").absolute()
+    verify_calls: list[Path] = []
 
-    def fetch_known(qids: list[str]) -> dict[str, dict]:
-        fetch_calls.append(list(qids))
-        return {qid: fetched[qid] for qid in qids}
+    def verify_bundle(path: Path):
+        verify_calls.append(path)
+        return SimpleNamespace(
+            requested_qids=("Q999001",),
+            entities=fetched,
+        )
 
     try:
         F.CATALOG = catalog
@@ -565,15 +565,17 @@ def test_main_retracts_links_and_runs_trailing_outputs():
         F.DATA = data
         F.CHECKOUT = checkout
         F.ORACLE = oracle
-        F.fetch_entities = fetch_known
+        F.verify_wikidata_entity_bundle = verify_bundle
         F._frontier_names = {}
         F._ext_page_ids = {}
         F._oracle_modules = None
 
         first_stdout = io.StringIO()
         with contextlib.redirect_stdout(first_stdout):
-            assert F.main() == 0
-        assert fetch_calls == [["Q999001"]]
+            assert F.main([
+                "--wikidata-entity-bundle", str(bundle_path),
+            ]) == 0
+        assert verify_calls == [bundle_path]
 
         fc_rows = read_jsonl(data / "fc_links.jsonl")
         assert fc_rows == [{"_meta": {
@@ -615,8 +617,8 @@ def test_main_retracts_links_and_runs_trailing_outputs():
         first_repo = (catalog / "tauceti_links.jsonl").read_bytes()
         second_stdout = io.StringIO()
         with contextlib.redirect_stdout(second_stdout):
-            assert F.main() == 0
-        assert fetch_calls == [["Q999001"]]
+            assert F.main([]) == 0
+        assert verify_calls == [bundle_path]
         assert (data / "fc_links.jsonl").read_bytes() == first_fc
         assert (catalog / "tauceti_links.jsonl").read_bytes() == first_repo
         assert len(read_jsonl(catalog / "grounding_overrides.jsonl")) == 1
@@ -628,7 +630,7 @@ def test_main_retracts_links_and_runs_trailing_outputs():
         F.DATA = old["DATA"]
         F.CHECKOUT = old["CHECKOUT"]
         F.ORACLE = old["ORACLE"]
-        F.fetch_entities = old["fetch_entities"]
+        F.verify_wikidata_entity_bundle = old["verify"]
         F._frontier_names = old["frontier_names"]
         F._ext_page_ids = old["ext_page_ids"]
         F._oracle_modules = old["oracle_modules"]
