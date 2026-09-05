@@ -9,12 +9,11 @@ the executable authority contracts are summarized in
 ## Laptop-transfer checkpoint
 
 Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest
-implementation checkpoint is `39632d33 Preserve Wikidata evidence freshness`, after
-`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`,
-`bc158cfd Integrate v3 Brain replay pipeline`, `bf52553a Record final Brain handoff
-verification`, `7d311adb Harden Wikidata acquisition publication`, `dba596f2 Define v3
-Brain evidence contracts`, and `92703ac0 Seal D1 annotation mirroring`. This handoff and
-roadmap update is committed immediately after that implementation history.
+implementation checkpoint is `03129828 Preserve D1 evidence freshness`, after
+`34fd6ee3 Update Brain migration handoff`, `39632d33 Preserve Wikidata evidence freshness`,
+`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`, and
+`bc158cfd Integrate v3 Brain replay pipeline`. This handoff and roadmap update is committed
+immediately after that implementation history.
 
 ```bash
 git fetch origin
@@ -33,8 +32,9 @@ Immediate continuation order:
 3. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
    headroom, then perform the two-path clean-room replay and semantic comparison.
 4. Replace the still-separate legacy Wikidata universe/edge/description reads with one shared
-   sealed generation, then bind it and the completed proposal-entity bundle into the reviewed
-   v3 current-corpus source plan.
+   sealed observation generation, then bind it and the completed proposal-entity bundle into
+   the reviewed v3 current-corpus source plan. Do not describe independent WDQS/Action API
+   requests as a transactional upstream snapshot.
 
 No Worker deployment, production promotion, D1 write, operator Wikidata bundle acquisition,
 or tracked-data regeneration was performed in this stabilization session. Read-only API
@@ -253,13 +253,15 @@ The remaining D1-consumer audit notes are P2: a hard kill after the atomic excha
 leave a complete old-cache sibling for an operator to identify and remove; acquisition and
 mirroring still buffer/clone the current corpus; bootstrap executable discovery trusts the
 operator `PATH` before recording exact digests; and long-lived historical bundles would
-need an explicit versioned verifier profile rather than weakening the current v1 policy.
+need an explicit versioned verifier profile rather than weakening the current v2 policy.
 
-Final branch-wide verification after the `39632d33` evidence-generation freshness fix passed
-the complete 40-command Python gate and the Worker gate (37 files / 845 tests). The Python
-result includes the one expected local replay-sandbox skip; every required offline scenario
-ran. Focused final results were 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before
-merging, or after any continuation changes, rerun exactly:
+Final branch-wide verification on the evidence-generation implementation passed the complete
+40-command Python gate and the Worker gate (37 files / 845 tests). The Python result includes
+the one expected local replay-sandbox skip; every required offline scenario ran. After the
+explicit D1 bundle-v2 version bump, the current focused results are 17 D1 acquisition,
+12 shared-verifier/harvester, and 19 annotation-mirror tests. The Wikidata-focused results
+remain 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before merging, or after any
+continuation changes, rerun exactly:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -355,9 +357,13 @@ the current checkout:
    sealed D1 normalization-lineage identity.
 7. Proposal-fold acquisition is separated and sealed. Before issuing authority evidence,
    replace the separately fail-closed Wikidata universe/edge/description harvesters with one
-   shared sealed generation, bind that generation plus the proposal-entity bundle and the
-   reviewed Hugging Face revisions into v3 evidence, and re-harvest legacy external pairs
-   through the sealed writer.
+   shared sealed observation generation, bind that generation plus the proposal-entity bundle
+   and the reviewed Hugging Face revisions into v3 evidence, and re-harvest legacy external
+   pairs through the sealed writer. Preserve the current WDQS and Action API semantics, record
+   `independent-live-requests/no-snapshot`, and add a v3 inventory coherence group requiring
+   universe, edges, and descriptions to name one source manifest. Resolve or bind the edge
+   collector's current dependency on prior `brain/data/nodes.jsonl`; also fix
+   `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
@@ -389,6 +395,13 @@ the exact plan does not retain ample headroom.
    generation, and author the reviewed current-corpus v3 source plan with immutable pins,
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
+   The smallest fully offline next patch is the shared external-pair metadata choke point:
+   remove `fetched_at` and run counters from normalized pair metadata, replace ProofWiki's
+   mtime pin with content/revision identity, and prove byte identity across clocks, mtimes,
+   cache states, and API-call counts. Follow with `concept_layer.jsonl`'s `built_at`, the
+   absolute checkout path in `mathlib_tag_xrefs.jsonl`, absolute `decl_renames.jsonl`
+   `file_line` values, and timestamps in the standalone Erdos/formal-conjecture/Lean-repo/
+   OpenAlex inputs. Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,

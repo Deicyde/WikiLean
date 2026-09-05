@@ -475,11 +475,16 @@ explicit approval.
     longer merges mixed-age cache rows or embeds observation/run timestamps. A reviewed
     collapse requires the explicit `BRAIN_INGEST_FORCE=1` override.
   - [ ] Replace the legacy Wikidata universe, relation-edge, and description jobs with one
-    shared sealed generation, common receipt/lineage evidence, and serialized publication.
-    Their current implementations fail closed and publish atomically, but still perform
-    separate live reads. Bind both that shared generation and the completed proposal-entity
-    bundle evidence into the reviewed v3 current-corpus source plan; neither bundle alone is
-    an authority or production-release claim.
+    shared sealed observation generation, common receipt/lineage evidence, and serialized
+    publication. Preserve the existing WDQS universe/edge and Action API description
+    semantics, and explicitly identify the result as independent live requests rather than
+    an upstream transaction/snapshot. Add an inventory-v3 coherence group requiring all three
+    bindings to share one source manifest, and resolve or bind the edge collector's dependency
+    on prior `brain/data/nodes.jsonl`. Their current implementations fail closed and publish
+    atomically, but still perform separate live reads. Bind both that shared generation and
+    the completed proposal-entity bundle evidence into the reviewed v3 current-corpus source
+    plan; neither bundle alone is an authority or production-release claim. During migration,
+    fix `brain/sync_agents.py` to unwrap the current descriptions envelope.
   - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
     `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
     binds all six files by full commit, byte count, and SHA-256; acquisition rejects
@@ -494,6 +499,14 @@ explicit approval.
     values that must move to audit/receipt evidence. Frontier stateability is now derived
     from its bound cells/synapses, and community provenance is pinned to the sealed D1
     normalization-lineage identity.
+    - [ ] At the shared external-pair writer, remove `fetched_at` and reject run-local metadata;
+      remove DLMF/EOM/Kerodon/OEIS run counters and replace ProofWiki's mtime-derived pin with
+      a content/revision identity. Prove output-byte stability across clocks, mtimes, cache
+      state, and API-call counts without rewriting the tracked corpus as authority.
+    - [ ] Remove `concept_layer.jsonl`'s repeated `built_at`, replace the absolute checkout
+      path in `mathlib_tag_xrefs.jsonl` with logical root plus Mathlib revision, canonicalize
+      absolute `decl_renames.jsonl` source locations, and move timestamps/API counters out of
+      the standalone Erdos, formal-conjecture, Lean-repository, and OpenAlex inputs.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
