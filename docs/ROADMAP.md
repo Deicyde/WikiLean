@@ -501,10 +501,16 @@ explicit approval.
     values that must move to audit/receipt evidence. Frontier stateability is now derived
     from its bound cells/synapses, and community provenance is pinned to the sealed D1
     normalization-lineage identity.
-    - [ ] At the shared external-pair writer, remove `fetched_at` and reject run-local metadata;
-      remove DLMF/EOM/Kerodon/OEIS run counters and replace ProofWiki's mtime-derived pin with
-      a content/revision identity. Prove output-byte stability across clocks, mtimes, cache
-      state, and API-call counts without rewriting the tracked corpus as authority.
+    - [x] At the shared external-pair writer, remove `fetched_at`, require a nonempty source
+      pin, and reject every field outside an explicit normalized-metadata allowlist. Remove
+      DLMF/EOM/Kerodon/OEIS run/cache counters and replace ProofWiki's mtime-derived pin with
+      a before/after SHA-256 of the exact dump bytes. Identical normalized rows now emit
+      byte-identical page/link pairs across clocks, and unsealed legacy pairs remain readable;
+      the tracked corpus was deliberately not rewritten or promoted as authority.
+    - [ ] When the shared sealed acquisition generation lands, retain removed operational
+      telemetry in audit/receipt evidence, re-harvest the legacy pair files, and add direct
+      adapter fixtures across cache states/API pagination plus a hostile ProofWiki source-swap
+      test. Current static endpoint labels are not immutable upstream pins.
     - [ ] Remove `concept_layer.jsonl`'s repeated `built_at`, replace the absolute checkout
       path in `mathlib_tag_xrefs.jsonl` with logical root plus Mathlib revision, canonicalize
       absolute `decl_renames.jsonl` source locations, and move timestamps/API counters out of
