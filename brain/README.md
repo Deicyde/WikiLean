@@ -131,7 +131,8 @@ emits validated acquisition-receipt and normalization-lineage documents under
 `catalog/.cache/d1/snapshots/`. Receipt and lineage logical IDs remain clock-free, while
 the bundle directory hashes their exact canonical bytes, including audit clocks. Repeating
 an unchanged read therefore preserves a fresh immutable observation rather than resolving
-to an older bundle. It does not write D1. Graduate community edges only from one explicit
+to an older bundle. This identity contract is D1 acquisition bundle v2; no production v1
+bundle was captured. It does not write D1. Graduate community edges only from one explicit
 bundle:
 
 ```bash
