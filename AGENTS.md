@@ -32,7 +32,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
 | The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **deleted** (retired 2026-07-10, tombstones destroyed 2026-08-04): `/map`, `/map-v2`, `/graph`, `/atlas`, `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas` and `GET /api/brain/node` answer plain 404s — `RESERVED` (index.ts) only squats the names; agents use `/api/brain/*` + `POST /mcp` (docs: GET `/mcp`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
 | Wikibrain agent API + MCP | `wiki/src/brain-api.ts` (`/api/brain/{unit,transfer,neighborhood,snippets,filter}`) + `wiki/src/mcp.ts` (stateless streamable-HTTP MCP at `POST /mcp`, 9 tools); reference `docs/BRAIN-API.md` + live `/brain/api`; benchmark harness `bench/` (no_tools vs wikibrain arms) |
-| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tracked tunables in `nightly.env`, host-local paths in gitignored `nightly.local.env`, and generated plists via `nightly-launchd.py`. Community graduation is opt-in from an explicit sealed D1 bundle; nightly never acquires it implicitly. Brain nightly = `brain-nightly.sh`: cadenced ingest → `fold_proposals` → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → frozen-release verification + shadow staging/Worker checks only; nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected. Exact production promotion is a separate approved operator action via `site/ops/brain-promote-release.sh`, an attested immutable public baseline, and a durable external journal. The Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
+| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tracked tunables in `nightly.env`, host-local paths in gitignored `nightly.local.env`, and generated plists via `nightly-launchd.py`. Community graduation is opt-in from an explicit sealed D1 bundle; nightly never acquires it implicitly. Brain nightly = `brain-nightly.sh`: cadenced ingest → canonical proposal-QID plan → sealed Wikidata entity acquisition only when nonempty → offline-only `fold_proposals` with the explicit verified bundle → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → frozen-release verification + shadow staging/Worker checks only. Planning/acquisition/fold failure aborts the build; the Brain lock is never stolen by age and requires verified manual recovery. Nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected. Exact production promotion is a separate approved operator action via `site/ops/brain-promote-release.sh`, an attested immutable public baseline, and a durable external journal. The Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | External, read-only, and host-configured through `WIKILEAN_MATHLIB` / `BRAIN_MATHLIB_CHECKOUT`; the bot's checkout must never be edited |
 
@@ -70,6 +70,12 @@ python3 manage/status.py [--live]  # ground-truth snapshot (the SessionStart hoo
 python3 manage/refresh.py [--snapshot-bundle /absolute/path] # rebuild control plane
 # Operator-only live read: the launcher enforces isolated CPython 3.12 (-I -S).
 brain/acquire-d1-snapshot.sh [--store /absolute/private/snapshot/store]
+# Proposal Wikidata acquisition: emit the exact plan first; skip acquisition for qids:[].
+python3 brain/fold_proposals.py \
+  --write-wikidata-request-plan /absolute/private/request-plan.json
+brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
+  --store /absolute/private/entity-bundle/store
+# Then rerun fold_proposals.py with --wikidata-entity-bundle <printed-absolute-path>.
 ```
 
 ## Hard invariants — do not break
@@ -99,6 +105,15 @@ brain/acquire-d1-snapshot.sh [--store /absolute/private/snapshot/store]
 - No local `lake build` on the live path. Fresh-clone runner: `git checkout -B <branch>
   FETCH_HEAD` (never `reset --hard`); **never `git add -A`** (stage explicit paths + leak guard).
 
+**Brain acquisition / replay**
+- `fold_proposals.py` is offline-only: emit its canonical Wikidata QID plan first, skip
+  acquisition for an empty plan, otherwise pass the exact absolute bundle printed by
+  `acquire-wikidata-entities.sh`. Never restore an implicit network fallback.
+- Wikidata acquisition receipt/lineage logical IDs are clock-free. The bundle directory ID
+  separately binds the exact canonical audit-bearing receipt and lineage bytes; do not
+  collapse a later unchanged acquisition onto an older evidence generation. A bundle is not
+  v3 source authority until its evidence is explicitly bound into a reviewed source plan.
+
 **Security / credentials**
 - `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
   credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
@@ -117,7 +132,7 @@ brain/acquire-d1-snapshot.sh [--store /absolute/private/snapshot/store]
 ## CI test boundaries
 - `npm test` / `npm run test:unit` excludes corpus-dependent Vitest files. `npm run test:ci` is
   the named Worker gate; `./scripts/ci-python.sh` is the Python 3.12 gate and unsets credential
-  variables before running all five offline commands with required SDK coverage.
+  variables before running all 40 offline commands.
 - `npm run test:corpus` preflights `site/cache/*.html`, `site/out/*.html`,
   `site/annotations/*.json`, and `wiki/public/assets/decl-index/manifest.json`, then runs the
   render-golden, decl-index, and seed suites. `brain/test_fold_xref.py` is also corpus-only because
