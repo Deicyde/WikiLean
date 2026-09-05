@@ -122,6 +122,20 @@ python3 -I brain/tools/run_offline.py \
 python3 brain/tools/verify_release.py --manifest /path/to/release.json --root /path/to/release-root
 ```
 
+The read-only D1 acquisition precursor is separate from offline replay:
+
+```bash
+python3 brain/acquire_d1_snapshot.py
+```
+
+It executes one checked-in CTE/UNION query over articles, all community edges
+(including tombstones), and community nodes; verifies in-snapshot counts and exact
+table columns; then publishes clock-free raw/normalized objects with validated
+`acquisition-receipt/v1` and `normalization-lineage/v1` evidence. The exact account,
+database UUID, request preimage, Wrangler package, Node executable, config, and
+environment policy are bound in the bundle. No live snapshot has been captured as
+part of the repository change, and v2 source plans do not consume these bundles.
+
 `prepare_replay_v2.py` is prepare-only. It reopens and verifies every copied byte,
 copies rather than links the exact normalized input and reducer closures into a private
 sibling staging directory, emits the canonical build context with final workspace paths,

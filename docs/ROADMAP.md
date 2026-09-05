@@ -374,6 +374,17 @@ explicit approval.
     migration compatibility path, not authority evidence.
   - [ ] Acquire D1 annotations/community rows from one consistent export or snapshot rather
     than separate live queries, then issue receipts before normalization.
+    - [x] Implement the sealed acquisition command: one read-only ordered statement covers
+      articles, all community edges including tombstones, community nodes, row counts, and
+      exact schema columns. It binds the production account/database UUID, checked-in
+      request preimage, pinned Wrangler/Node closure, and sanitized environment; publishes
+      a private content-addressed bundle with clock-free normalized bytes plus validated
+      acquisition receipt and normalization lineage. Hermetic tests cover malformed,
+      truncated, duplicate, reordered, concurrent, hostile-target, and real `SIGKILL`
+      cases. No remote query was run while landing this tool.
+    - [ ] Capture and review a fresh canonical bundle, then make annotation/community
+      consumers use that same bundle instead of `pull-annotations.ts` and
+      `harvest_community_edges.py` issuing independent live queries.
   - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
     output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
     validates complete typed responses and redirects, and isolates ordinary missing QIDs
@@ -533,7 +544,7 @@ explicit approval.
   differently licensed TheoremGraph object before making this gate strict.
 
 **Next P0-R implementation order:** (1) finish removing audit/observation fields from
-normalized bytes, build a coherent D1 export, and finish splitting live Wikidata
+normalized bytes, run and consume the sealed coherent D1 export, and finish splitting live Wikidata
 acquisition from folding; (2) integrate the resulting receipt/lineage objects, including
 the reviewed Hugging Face inputs, in
 explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
