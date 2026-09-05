@@ -85,9 +85,9 @@ def main() -> int:
                  for src in sorted(out_links) for dst in sorted(out_links[src])
                  if dst != src]
 
+    print(f"[eom] acquisition telemetry: {n_calls} API calls", file=sys.stderr)
     common.emit("eom", pages, link_rows, extra_meta={
-        "source_pin": f"encyclopediaofmath.org api.php allpages walk ({n_calls} calls)",
-        "n_api_calls": n_calls,
+        "source_pin": "encyclopediaofmath.org api.php allpages walk",
         "n_with_qid": sum(1 for p in pages if "qid" in p),
     })
     return 0

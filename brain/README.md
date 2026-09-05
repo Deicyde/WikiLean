@@ -172,6 +172,12 @@ SQLite is an indexed local projection, never an editable source of truth and nev
 Cloudflare asset. Re-index current JSONL without rewriting it with
 `python3 brain/build_snapshot.py --from-jsonl`.
 
+New external page/link pairs are byte-reproducible for identical normalized content:
+`brain/ingest/common.py` no longer serializes observation clocks or run/cache counters and
+accepts only a closed set of source/content metadata. ProofWiki now pins the exact dump bytes
+rather than its filesystem mtime. Existing checked-in pairs remain readable legacy inputs and
+are intentionally not rewritten until a reviewed sealed acquisition generation exists.
+
 > **⚠️ The edge set ships as TWO files.** The v2 external layer's `links` edges
 > (page→page hyperlinks + concept projections, ~393k rows / ~83 MB) pushed the joint
 > `edges.jsonl` past GitHub's **100 MB per-file hard limit**, so `build_snapshot.py`

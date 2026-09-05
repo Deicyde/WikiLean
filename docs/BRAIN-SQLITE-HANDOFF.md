@@ -133,10 +133,18 @@ unexpected nonempty run directory for inspection.
 This completes acquisition separation for proposal folding, not for the whole Wikidata
 surface. Current legacy external pairs remain readable; the universe, relation-edge, and
 description jobs still perform separate live reads without a shared sealed generation; and
-physical external JSONL bytes still contain some observation/run metadata even where that
-metadata is excluded from `pair_generation`. The proposal bundle receipt/lineage is also not
-yet bound into the reviewed v3 current-corpus source plan, so this milestone is not an
-authority or production-release claim.
+the checked-in legacy external JSONL bytes still contain observation/run metadata even though
+new writer output does not. The proposal bundle receipt/lineage is also not yet bound into the
+reviewed v3 current-corpus source plan, so this milestone is not an authority or production-
+release claim.
+
+The shared external-pair writer now emits clock-free bytes for identical normalized rows,
+requires a nonempty source pin, and rejects run/cache telemetry and unknown metadata rather
+than letting it churn source-manifest and pack identities. DLMF, EoM, Kerodon, and OEIS keep
+their run counters in operator logs only; ProofWiki uses the exact dump SHA-256 and refuses to
+publish if those bytes change during normalization. Legacy unsealed readers remain compatible.
+This is normalized-output cleanup, not acquisition evidence: the removed telemetry still
+needs durable receipt/audit representation when the shared sealed generation is implemented.
 
 The latest Wikidata safety milestone makes the universe, relation-edge, and description
 harvesters all-or-nothing and atomic. Typed response validation, deterministic
@@ -395,13 +403,12 @@ the exact plan does not retain ample headroom.
    generation, and author the reviewed current-corpus v3 source plan with immutable pins,
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
-   The smallest fully offline next patch is the shared external-pair metadata choke point:
-   remove `fetched_at` and run counters from normalized pair metadata, replace ProofWiki's
-   mtime pin with content/revision identity, and prove byte identity across clocks, mtimes,
-   cache states, and API-call counts. Follow with `concept_layer.jsonl`'s `built_at`, the
-   absolute checkout path in `mathlib_tag_xrefs.jsonl`, absolute `decl_renames.jsonl`
-   `file_line` values, and timestamps in the standalone Erdos/formal-conjecture/Lean-repo/
-   OpenAlex inputs. Do not rewrite tracked corpus files as authority without resealing them.
+   The shared external-pair writer clock cleanup is complete. Next remove
+   `concept_layer.jsonl`'s `built_at`, then the absolute checkout path in
+   `mathlib_tag_xrefs.jsonl`, absolute `decl_renames.jsonl` `file_line` values, and timestamps
+   in the standalone Erdos/formal-conjecture/Lean-repo/OpenAlex inputs. Add direct adapter
+   cache/pagination fixtures and carry removed telemetry into the future sealed receipts.
+   Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,

@@ -128,11 +128,14 @@ def main() -> int:
 
     link_rows = [{"db": "dlmf", "src": s, "dst": d, "context": "body"}
                  for s, d in sorted(links)]
+    print(
+        f"[dlmf] acquisition telemetry: {pending} sections pending; "
+        f"{budget[0]} fetches left",
+        file=sys.stderr,
+    )
     common.emit("dlmf", pages, link_rows, extra_meta={
         "source_pin": "dlmf.nist.gov idx + chapter TOC crawl",
         "n_sections_enumerated": len(sections),
-        "n_sections_pending": pending,
-        "fetch_budget_left": budget[0],
         "n_with_qid": sum(1 for p in pages if "qid" in p),
     })
     return 0

@@ -13,6 +13,7 @@ only from CC0 Wikidata property values — never guessed.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import fcntl
 import os
@@ -62,11 +63,45 @@ SNIPPET_LICENSE = {
 }
 SNIPPET_MAX = 600  # chars, hard cap after cleanup
 
+# Normalized pair metadata is source/content description, not run telemetry.
+# Keep this allowlist explicit so a new adapter cannot accidentally make pack
+# bytes depend on clocks, retry counts, cache warmth, or environment knobs.
+EXTERNAL_PAIR_EXTRA_META_FIELDS = frozenset({
+    "n_aliases",
+    "n_anchored",
+    "n_chapters",
+    "n_collapsed",
+    "n_junk_skipped",
+    "n_links_unresolved",
+    "n_names_inventory",
+    "n_qid_joined",
+    "n_refs_raw",
+    "n_refs_unresolved",
+    "n_redirects",
+    "n_sections_enumerated",
+    "n_skipped",
+    "n_snippets",
+    "n_tex",
+    "n_with_qid",
+    "sitemap_inventory",
+    "source_license",
+    "source_pin",
+})
+
 _WS = re.compile(r"\s+")
 
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def content_sha256_pin(path: Path) -> str:
+    """Return a content-derived source pin that is independent of path/mtime."""
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        while chunk := handle.read(1024 * 1024):
+            digest.update(chunk)
+    return f"sha256:{digest.hexdigest()}"
 
 
 def clean_snippet(text: str, limit: int = SNIPPET_MAX) -> str:
@@ -641,7 +676,9 @@ def emit(db: str, pages: list[dict], links: list[dict], extra_meta: dict | None 
     # record how many resolve for the meta, but do not drop them — build_common
     # decides minting.
     resolved = sum(1 for e in kept_links if e["src"] in page_ids and e["dst"] in page_ids)
-    extra = extra_meta or {}
+    if extra_meta is not None and not isinstance(extra_meta, dict):
+        raise ValueError("external metadata must be an object")
+    extra = dict(extra_meta or {})
     writer_meta_fields = {
         "db", "fetched_at", "n_pages", "n_links", "n_links_resolved",
         "n_pages_dropped_bad_id", "n_links_dropped_bad_id",
@@ -652,9 +689,37 @@ def emit(db: str, pages: list[dict], links: list[dict], extra_meta: dict | None 
         raise ValueError(
             "external metadata fields are writer-owned: " + ", ".join(conflicts)
         )
+    unsupported = sorted(set(extra) - EXTERNAL_PAIR_EXTRA_META_FIELDS)
+    if unsupported:
+        raise ValueError(
+            "external metadata fields are not normalized-data fields: "
+            + ", ".join(unsupported)
+        )
+    source_pin = extra.get("source_pin")
+    if not isinstance(source_pin, str) or not source_pin:
+        raise ValueError("external metadata requires a nonempty source_pin")
+    if "source_license" in extra and (
+        not isinstance(extra["source_license"], str) or not extra["source_license"]
+    ):
+        raise ValueError("external metadata source_license must be a nonempty string")
+    for field, value in extra.items():
+        if field.startswith("n_") and (
+            isinstance(value, bool) or not isinstance(value, int) or value < 0
+        ):
+            raise ValueError(f"external metadata {field} must be a nonnegative integer")
+    if "sitemap_inventory" in extra and (
+        extra["sitemap_inventory"] is not None
+        and (
+            isinstance(extra["sitemap_inventory"], bool)
+            or not isinstance(extra["sitemap_inventory"], int)
+            or extra["sitemap_inventory"] < 0
+        )
+    ):
+        raise ValueError(
+            "external metadata sitemap_inventory must be null or a nonnegative integer"
+        )
     meta = {
         "db": db,
-        "fetched_at": now_iso(),
         "n_pages": len(kept_pages),
         "n_links": len(kept_links),
         "n_links_resolved": resolved,

@@ -107,13 +107,14 @@ def main() -> int:
     link_rows = [{"db": "kerodon", "src": s, "dst": d, "context": "body"}
                  for s, d in sorted(links)]
 
+    print(
+        f"[kerodon] acquisition telemetry: cached={cached}, fetched={fetched}, "
+        f"errors={errors}, max_fetch={max_fetch}",
+        file=sys.stderr,
+    )
     common.emit("kerodon", sorted(pages.values(), key=lambda p: p["id"]),
                 link_rows, extra_meta={
         "source_pin": "kerodon.net Gerby API (roots 0000, 02GZ)",
-        "n_content_cached": cached,
-        "n_content_fetched_this_run": fetched,
-        "n_fetch_errors": errors,
-        "max_fetch": max_fetch,
     })
     return 0
 
