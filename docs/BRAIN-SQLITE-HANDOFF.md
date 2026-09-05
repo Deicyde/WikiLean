@@ -173,8 +173,13 @@ counts and exact migrated column inventories; binds the production account/datab
 pinned Wrangler package, digest-bound Node 22 executable, exact Python executable/version,
 and the local transitive Python dependency closure; then atomically publishes a private
 content-addressed bundle containing
-clock-free normalized objects and validated receipt/lineage evidence. No source-plan or
-release authority claim follows from the acquisition tool alone.
+clock-free normalized objects and validated receipt/lineage evidence. Logical receipt and
+lineage IDs exclude audit clocks, while the bundle directory binds the exact canonical
+audit-bearing evidence bytes. Reacquiring unchanged rows therefore publishes a distinct
+immutable observation with the new acquisition time instead of silently reusing stale
+evidence. This incompatible publication identity is explicitly versioned as D1 acquisition
+bundle v2; no production v1 bundle was captured. No source-plan or release authority claim
+follows from the acquisition tool alone.
 
 Community graduation and the annotation mirror are now wired to that boundary through one
 shared independent bundle verifier. `harvest_community_edges.py` accepts only an explicit
@@ -239,7 +244,7 @@ Focused results recorded through 2026-09-05:
   requested/available.
 
 The latest continuation additionally passed 12 sealed-harvester/shared-verifier tests,
-15 D1-acquisition tests, 19 annotation-mirror tests, 10 top-level-shard tests, 15
+17 D1-acquisition tests, 19 annotation-mirror tests, 10 top-level-shard tests, 15
 portable-launcher tests, and 18 Brain-nightly shell tests. The complete D1 acquisition and
 consumer slice and the Wikidata proposal-acquisition slice received independent clean
 P0/P1 audits after their identified blockers were fixed.
