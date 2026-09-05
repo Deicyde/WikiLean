@@ -20,11 +20,20 @@ overlay, or serving topology.
   assign every file or tree to one disjoint owner. A v2 source object may
   carry both `raw` and `normalized` roles when normalization is byte-identical; every
   object lives at `objects/sha256/<digest>`. A v2 pack binds every inventory input to
-  an exact sorted member list or to explicit absence, and its source-set root covers
-  the inventory ID, all source-manifest IDs, and those bindings. The pack separately
+  an exact sorted member list or to explicit absence. Every binding also carries a
+  sorted nonempty source-manifest ID set: present bindings name exactly their member
+  manifests, while absent bindings retain the manifests that attest the absence. Its
+  source-set root covers the inventory ID, all source-manifest IDs, and those bindings.
+  The pack separately
   closes all source objects, reducer files, configuration, environment descriptor,
   and schemas. Reducer code is additionally bound to a full Git commit. The reducer
   configuration is one canonical JSON document rather than an ambiguous file list.
+- `schemas/offline-pack-source-plan/v1.json` is the compiler input contract. It binds
+  every source/configuration/environment/schema object to an expected SHA-256 and byte
+  length, maps every reducer input member to its own source manifest (including
+  mixed-provenance wildcard inputs) or records explicit absence, carries review/audit/
+  lineage fields into source-manifest/v2, and keeps relocation-dependent host roots
+  outside the canonical document.
 - `schemas/execution-environment/v1.json` gives the environment descriptor its own
   strict, self-identifying contract. It pins the exact CPython, NumPy lock and installed
   tree, SQLite library and compile options, locale, replay-runner closure, and sandbox
@@ -73,6 +82,16 @@ cd /Users/jackmccarthy/projects/WikiLean
 python3 brain/tools/verify_source_set.py --manifest /path/to/source-manifest.json --root /path/to/object-root
 python3 brain/tools/verify_source_set.py --manifest /path/to/offline-pack.json --root /path/to/pack-root
 python3 brain/tools/verify_source_set.py --manifest brain/authority/reducer-inputs-v2.json --root brain/authority
+python3 brain/tools/compile_offline_pack_v2.py \
+  --plan /path/to/canonical-source-plan.json \
+  --inventory brain/authority/reducer-inputs-v2.json \
+  --output-store /path/to/private-offline-pack-store \
+  --root repo=/path/to/WikiLean --root external=/path/to/acquired-inputs
+python3 brain/tools/preflight_offline_pack_v2.py \
+  --plan /path/to/canonical-source-plan.json \
+  --inventory brain/authority/reducer-inputs-v2.json \
+  --output-store /path/to/private-offline-pack-store \
+  --root repo=/path/to/WikiLean --root external=/path/to/acquired-inputs
 python3 brain/tools/prepare_replay_v2.py \
   --manifest /path/to/offline-pack-v2.json --root /path/to/pack-root \
   --workspace /path/to/new-workspace --authority-git-commit <40hex> \
@@ -93,6 +112,29 @@ no-replace rename. Caller environment and caller-supplied source paths cannot se
 runtime inputs. The tool prints one canonical JSON result and never executes a reducer.
 These permission modes are an integrity convention for preparation, not a sandbox; the
 executor must still enforce an operating-system boundary while running reducer code.
+
+`compile_offline_pack_v2.py` is also network-free. It validates a canonical source plan,
+reads curated inputs and reducer code from the plan's pinned Git commits rather than the
+mutable worktree, streams approved source bytes into a deduplicated content-addressed
+object closure, rechecks mutable selector membership immediately before sealing, verifies
+the generated v2 pack, and publishes it with an atomic no-replace rename. The output store
+must be current-user-owned mode `0700`; completed packs are read-only and same-ID reuse is
+accepted only after full closure and byte verification. The compiler deliberately does not
+prove that upstream acquisition receipts, dataset revisions, or cross-source revisions are
+coherent: approving the source plan is a separate fail-closed gate.
+
+`preflight_offline_pack_v2.py` performs the bounded check before a large compile. It reads
+canonical metadata, filesystem sizes, directory membership, and pinned Git object sizes but
+does not hash or copy corpus payloads. Its canonical report distinguishes structural errors
+from release-readiness concerns and summarizes required/optional presence, pin strength,
+freshness, receipts/lineage, redistribution policy, and conservative free-space headroom.
+The report is explicitly scoped to `source-plan-only` and records that the runtime
+environment was not checked. `compile_ready` covers structural compiler admission;
+`source_authority_ready` and `source_publishable` cover only source-plan evidence and policy,
+not replay, runtime, release, or deployment readiness. The CLI exits 2 whenever
+`source_publishable` is false, including warning-class concerns that block source authority
+or publication. Compilation still performs the authoritative corpus-byte hashing and
+complete pack verification.
 
 `run_offline.py` supports both contract generations. For v1 it remains the cooperative
 single-program fixture runner: it verifies complete pack closure, then executes one Python
@@ -115,9 +157,15 @@ profile and denies process forks. Offline-pack/v2 now requires a canonical
 `execution-environment/v1` descriptor. Preparation copies those exact bytes into the
 workspace as a private, read-only file, and the runner revalidates its digest, canonical
 form, identity, and reducer Git binding before selecting a sandbox or executing a stage.
-Live runtime probing still needs to compare Python, NumPy, SQLite, locale, and sandbox facts
-to that descriptor. The policies also require clean-host integration tests before this can
-count as authoritative clean-room evidence. The v2 CLI requires Python
+Before stage one, it now verifies the live interpreter, NumPy import/runtime tree, SQLite
+extension/build, effective UTF-8/hash settings, fixed runner-file closure, development-host
+fingerprint, and sandbox executable/version/structural policy. A bounded canonical probe is
+executed through the same interpreter flags, sanitized environment, and kernel boundary as
+the reducer stages. The public CLI rejects `authoritative-oci` descriptors until a trusted
+launcher can prove that it started the exact platform manifest digest; a caller-authored
+marker or evidence file is not sufficient. Clean-host integration tests and a fixed NumPy/
+BLAS CPU-dispatch policy are still required before this counts as authoritative clean-room
+evidence. The v2 CLI requires Python
 isolated startup; the original invocation must use `python3 -I ...` because Python startup
 hooks run before application code can sanitize its own process.
 
@@ -131,9 +179,9 @@ or mismatched boundary into a hard failure.
 Executing fixtures through this path is not by itself a `full-offline-replay` attestation.
 No real full-corpus v2 pack, pinned execution environment, two-path deterministic build, or
 approved-baseline compatibility result is claimed yet.
-It also does not yet prove a declared Git commit/tree produced the packed bytes or that a
-multi-file binding exhausts an upstream tree. Those coherence/exhaustiveness checks belong
-to the pack compiler before any v2 build attestation may be emitted.
+The compiler proves curated Git membership and bytes against the declared commit/tree and
+exhausts every inventory selector. It does not yet prove non-Git acquisition/revision
+coherence, and no v2 build attestation may be emitted until that separate gate passes.
 
 Verification includes canonical encoding, schema/version and unknown-field checks,
 self-identities, source-set closure, exact SHA-256 and byte lengths, offline-pack

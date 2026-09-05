@@ -405,6 +405,7 @@ class ContextTopLevelShardTest(unittest.TestCase):
                     "path": "brain/data/community_edges.jsonl",
                     "requirement": "optional",
                     "root": "repo",
+                    "source_manifest_ids": [HASH_D],
                     "state": "present" if community_present else "absent",
                 },
                 {
@@ -421,6 +422,7 @@ class ContextTopLevelShardTest(unittest.TestCase):
                     "path": "catalog/data/source_registry.json",
                     "requirement": "required",
                     "root": "repo",
+                    "source_manifest_ids": [HASH_D],
                     "state": "present",
                 },
             ],

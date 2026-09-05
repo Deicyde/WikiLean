@@ -8,17 +8,26 @@ subprocess.  It has no flag that disables isolation.
 """
 from __future__ import annotations
 
-import os
-import sys
 import argparse
 import hashlib
 import json
+import math
+import os
+import platform
+import re
+import selectors
+import signal
+import shutil
 import stat
 import subprocess
+import sys
 import sysconfig
-from collections.abc import Callable, Mapping
+import time
+from collections.abc import Callable, Iterator, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
+from types import MappingProxyType
 from typing import Any
 
 
@@ -30,6 +39,7 @@ for module_root in (BRAIN, HERE):
 
 import build_context  # noqa: E402
 import authority_contracts as contracts  # noqa: E402
+import execution_environment as execution_env  # noqa: E402
 
 
 class ReplayExecutionError(RuntimeError):
@@ -40,6 +50,8 @@ class ReplayExecutionError(RuntimeError):
 class IsolationBoundary:
     name: str
     prefix: tuple[str, ...]
+    executable: Path | None = None
+    policy: Mapping[str, Any] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,9 +72,34 @@ class ReplayResult:
 Executor = Callable[
     [tuple[str, ...], Path, Mapping[str, str], IsolationBoundary], int
 ]
+ProbeExecutor = Callable[
+    [tuple[str, ...], Path, Mapping[str, str], IsolationBoundary],
+    tuple[int, bytes, bytes],
+]
+SandboxProbe = Callable[[IsolationBoundary], dict[str, Any]]
 ReducerFileSpec = tuple[str, int, str]
 OutputState = tuple[int, int, int, int, int, int, str | None]
 EXECUTION_ENVIRONMENT_NAME = "execution-environment.json"
+PROBE_PROGRAM = HERE / "probe_execution_environment.py"
+SANDBOX_POLICY_ID = "brain-replay-v1"
+PROBE_STDOUT_LIMIT = 1024 * 1024
+PROBE_STDERR_LIMIT = 64 * 1024
+PROBE_TIMEOUT_SECONDS = 30.0
+SANDBOX_VERSION_TIMEOUT_SECONDS = 5.0
+DEFAULT_STAGE_TIMEOUT_SECONDS = 6 * 60 * 60.0
+RUNNER_FILES = MappingProxyType({
+    "brain/build_context.py": BRAIN / "build_context.py",
+    "brain/tools/authority_contracts.py": HERE / "authority_contracts.py",
+    "brain/tools/execution_environment.py": HERE / "execution_environment.py",
+    "brain/tools/prepare_replay_v2.py": HERE / "prepare_replay_v2.py",
+    "brain/tools/probe_execution_environment.py": PROBE_PROGRAM,
+    "brain/tools/run_offline.py": HERE / "run_offline.py",
+    "brain/tools/run_replay_v2.py": Path(__file__).resolve(),
+})
+
+_BUBBLEWRAP_VERSION_RE = re.compile(
+    r"^(?:bubblewrap|bwrap) ([0-9](?:[0-9A-Za-z._+!-]*[0-9A-Za-z])?)$"
+)
 
 _RUN_STAGE = (
     "import os,runpy,sys;"
@@ -71,6 +108,119 @@ _RUN_STAGE = (
     "sys.argv[0]=program;"
     "runpy.run_path(program,run_name='__main__')"
 )
+
+
+def _sandbox_policy_document(backend: str) -> dict[str, Any]:
+    common: dict[str, Any] = {
+        "schema": "wikilean.replay-sandbox-policy/v1",
+        "backend": backend,
+        "default": "deny",
+        "network": "disabled",
+        "read": ["prepared-workspace", "python-runtime"],
+        "write": ["output", "scratch"],
+    }
+    if backend == "darwin-sandbox-exec":
+        common.update(
+            {
+                "platform_baseline": "system.sb",
+                "process_exec": "interpreter-only",
+                "process_fork": "denied",
+            }
+        )
+    elif backend == "linux-bubblewrap":
+        common.update(
+            {
+                "capabilities": "none",
+                "devices": "minimal",
+                "namespaces": "all-unshared",
+                "proc": "isolated",
+                "temporary_directory": "ephemeral",
+            }
+        )
+    else:
+        raise ReplayExecutionError(f"unknown replay sandbox backend {backend!r}")
+    return common
+
+
+def _host_operating_system() -> str:
+    if sys.platform == "darwin":
+        return "darwin"
+    if sys.platform.startswith("linux"):
+        return "linux"
+    raise ReplayExecutionError(
+        f"no supported replay runtime for platform {sys.platform!r}"
+    )
+
+
+def _development_runtime_facts() -> dict[str, Any]:
+    operating_system = _host_operating_system()
+    architecture = platform.machine().lower()
+    libc_name, libc_version = platform.libc_ver()
+    return {
+        "kind": "development-host",
+        "os": operating_system,
+        "architecture": architecture,
+        "host_fingerprint": execution_env.development_host_fingerprint(
+            operating_system=operating_system,
+            architecture=architecture,
+            kernel_release=platform.release(),
+            libc_name=libc_name,
+            libc_version=libc_version,
+        ),
+    }
+
+
+def _runner_files_root() -> str:
+    try:
+        return execution_env.runner_files_root(RUNNER_FILES)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(f"cannot verify replay-runner files: {exc}") from exc
+
+
+def _runtime_facts(
+    profile: str,
+    trusted_runtime_evidence: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    if profile == execution_env.DEVELOPMENT_HOST_PROFILE:
+        if trusted_runtime_evidence is not None:
+            raise ReplayExecutionError(
+                "trusted runtime evidence is valid only for authoritative-oci replay"
+            )
+        return _development_runtime_facts()
+    if trusted_runtime_evidence is None:
+        raise ReplayExecutionError(
+            "authoritative-oci replay requires explicit trusted runtime evidence"
+        )
+    try:
+        evidence = execution_env.validate_trusted_runtime_evidence(
+            dict(trusted_runtime_evidence)
+        )
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(f"trusted runtime evidence is invalid: {exc}") from exc
+    runtime = dict(evidence["runtime"])
+    if _host_operating_system() != runtime["os"]:
+        raise ReplayExecutionError(
+            "trusted OCI runtime operating system disagrees with the live host"
+        )
+    if platform.machine().lower() != runtime["architecture"]:
+        raise ReplayExecutionError(
+            "trusted OCI runtime architecture disagrees with the live host"
+        )
+    return runtime
+
+
+def _python_command(interpreter: Path, program: Path, *arguments: str) -> tuple[str, ...]:
+    return (
+        str(interpreter),
+        "-P",
+        "-S",
+        "-s",
+        "-B",
+        "-c",
+        _RUN_STAGE,
+        str(program),
+        *arguments,
+    )
 
 
 def require_isolated_startup() -> None:
@@ -336,7 +486,7 @@ def _validate_workspace(
     context_path: Path,
     context: build_context.BuildContext,
     reducer_files: tuple[ReducerFileSpec, ...],
-) -> tuple[Path, tuple[Path, ...]]:
+) -> tuple[Path, tuple[Path, ...], dict[str, Any]]:
     context_path = context_path.resolve(strict=True)
     workspace = context_path.parent
     if context_path != workspace / "build-context.json":
@@ -380,7 +530,7 @@ def _validate_workspace(
         raise ReplayExecutionError("build-context.json must not be hard-linked")
     if stat.S_IMODE(context_metadata.st_mode) != 0o444:
         raise ReplayExecutionError("build-context.json must have mode 0o444")
-    _verify_execution_environment(workspace, context)
+    execution_environment = _verify_execution_environment(workspace, context)
     _verify_input_closure(context)
     code_files = set(_verify_code_closure(context, reducer_files))
     programs: list[Path] = []
@@ -393,15 +543,17 @@ def _validate_workspace(
         programs.append(program)
     _require_empty_directory(context.roots.output, "replay output root")
     _require_empty_directory(context.roots.scratch, "replay scratch root")
-    return workspace, tuple(programs)
+    return workspace, tuple(programs), execution_environment
 
 
 def _scheme_string(value: Path) -> str:
     return json.dumps(str(value), ensure_ascii=True)
 
 
-def _runtime_roots(interpreter: Path) -> tuple[Path, ...]:
-    """Return the host runtime trees required by this runner's interpreter."""
+def _runtime_layout(
+    interpreter: Path,
+) -> tuple[tuple[Path, ...], Mapping[str, Path]]:
+    """Return verified runtime mounts and the parent's package-scheme anchors."""
     current = Path(sys.executable).resolve(strict=True)
     if interpreter != current:
         raise ReplayExecutionError(
@@ -425,11 +577,14 @@ def _runtime_roots(interpreter: Path) -> tuple[Path, ...]:
         if path not in runtime_prefixes:
             runtime_prefixes.append(path)
     roots = list(base_prefixes)
+    scheme_paths: dict[str, Path] = {}
     configured = sysconfig.get_paths()
     for key in ("purelib", "platlib"):
         item = configured.get(key)
         if not item:
-            continue
+            raise ReplayExecutionError(
+                f"Python package scheme does not define {key!r}"
+            )
         try:
             path = Path(item).resolve(strict=True)
         except OSError as exc:
@@ -444,18 +599,30 @@ def _runtime_roots(interpreter: Path) -> tuple[Path, ...]:
             )
         if path not in roots:
             roots.append(path)
+        scheme_paths[key] = path
     for root in roots:
         _real_directory(root, "Python runtime root")
-    return tuple(roots)
+    return tuple(roots), MappingProxyType(scheme_paths)
+
+
+def _runtime_roots(interpreter: Path) -> tuple[Path, ...]:
+    """Return the host runtime trees required by this runner's interpreter."""
+    return _runtime_layout(interpreter)[0]
+
+
+def _runtime_scheme_paths(interpreter: Path) -> Mapping[str, Path]:
+    """Return exact parent purelib/platlib paths for the isolated child probe."""
+    return _runtime_layout(interpreter)[1]
 
 
 def _runtime_pythonpath(interpreter: Path) -> str:
-    roots = _runtime_roots(interpreter)
-    return os.pathsep.join(
-        str(root)
-        for root in roots
-        if root.name in {"site-packages", "dist-packages"}
-    )
+    scheme_paths = _runtime_scheme_paths(interpreter)
+    roots: list[Path] = []
+    for key in ("purelib", "platlib"):
+        root = scheme_paths[key]
+        if root not in roots:
+            roots.append(root)
+    return os.pathsep.join(str(root) for root in roots)
 
 
 def _darwin_boundary(
@@ -483,7 +650,12 @@ def _darwin_boundary(
             "(deny network*)",
         )
     )
-    return IsolationBoundary("darwin-sandbox-exec", (str(executable), "-p", profile))
+    return IsolationBoundary(
+        "darwin-sandbox-exec",
+        (str(executable), "-p", profile),
+        executable,
+        _sandbox_policy_document("darwin-sandbox-exec"),
+    )
 
 
 def _linux_runtime_mounts(
@@ -557,6 +729,8 @@ def _linux_boundary(
             str(context.roots.code),
             "--",
         ),
+        executable,
+        _sandbox_policy_document("linux-bubblewrap"),
     )
 
 
@@ -575,15 +749,24 @@ def _select_isolation(
 def _environment(interpreter: Path) -> dict[str, str]:
     """Return the complete reducer environment; nothing is inherited."""
     return {
+        "BLIS_NUM_THREADS": "1",
         "HOME": "/nonexistent",
         "LANG": "C.UTF-8",
         "LC_ALL": "C.UTF-8",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "OMP_THREAD_LIMIT": "1",
+        "OPENBLAS_NUM_THREADS": "1",
         "PATH": "/nonexistent",
         "PYTHONPATH": _runtime_pythonpath(interpreter),
         "PYTHONHASHSEED": "0",
+        "PYTHONIOENCODING": "utf-8",
         "PYTHONDONTWRITEBYTECODE": "1",
         "PYTHONNOUSERSITE": "1",
+        "PYTHONUTF8": "1",
         "TZ": "UTC",
+        "VECLIB_MAXIMUM_THREADS": "1",
         "WIKILEAN_OFFLINE": "1",
     }
 
@@ -593,14 +776,432 @@ def _execute(
     cwd: Path,
     environment: Mapping[str, str],
     isolation: IsolationBoundary,
+    *,
+    timeout_seconds: float = DEFAULT_STAGE_TIMEOUT_SECONDS,
 ) -> int:
-    process = subprocess.run(
-        [*isolation.prefix, *command],
-        cwd=cwd,
-        env=dict(environment),
-        check=False,
+    timeout = _validated_stage_timeout_seconds(timeout_seconds)
+    try:
+        process = subprocess.Popen(
+            [*isolation.prefix, *command],
+            cwd=cwd,
+            env=dict(environment),
+            start_new_session=True,
+        )
+    except OSError as exc:
+        raise ReplayExecutionError(f"cannot start reducer stage subprocess: {exc}") from exc
+    try:
+        return process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        _terminate_process(process)
+        raise ReplayExecutionError(
+            "reducer stage subprocess timed out after "
+            f"{timeout:g} seconds"
+        ) from exc
+
+
+def _terminate_process(process: subprocess.Popen[bytes]) -> None:
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    except OSError:
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            # SIGKILL has already been requested. Never turn timeout cleanup into
+            # an unbounded wait on a process stuck in uninterruptible kernel I/O.
+            pass
+
+
+def _validated_stage_timeout_seconds(value: Any) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ReplayExecutionError("stage timeout must be a finite positive number")
+    timeout = float(value)
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise ReplayExecutionError("stage timeout must be a finite positive number")
+    return timeout
+
+
+def _capture_process(
+    command: tuple[str, ...],
+    cwd: Path,
+    environment: Mapping[str, str],
+    *,
+    timeout_seconds: float,
+    stdout_limit: int,
+    stderr_limit: int,
+) -> tuple[int, bytes, bytes]:
+    """Run a command with a hard deadline and bounded stdout/stderr buffers."""
+    if timeout_seconds <= 0 or stdout_limit < 0 or stderr_limit < 0:
+        raise ReplayExecutionError("invalid bounded-process limits")
+    try:
+        process = subprocess.Popen(
+            command,
+            cwd=cwd,
+            env=dict(environment),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            start_new_session=True,
+        )
+    except OSError as exc:
+        raise ReplayExecutionError(f"cannot start execution-environment probe: {exc}") from exc
+    assert process.stdout is not None
+    assert process.stderr is not None
+    selector = selectors.DefaultSelector()
+    buffers = {"stdout": bytearray(), "stderr": bytearray()}
+    limits = {"stdout": stdout_limit, "stderr": stderr_limit}
+    streams = {"stdout": process.stdout, "stderr": process.stderr}
+    deadline = time.monotonic() + timeout_seconds
+    try:
+        for name, stream in streams.items():
+            os.set_blocking(stream.fileno(), False)
+            selector.register(stream, selectors.EVENT_READ, name)
+        while selector.get_map():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ReplayExecutionError("execution-environment probe timed out")
+            events = selector.select(remaining)
+            if not events:
+                raise ReplayExecutionError("execution-environment probe timed out")
+            for key, _mask in events:
+                name = key.data
+                stream = key.fileobj
+                allowance = limits[name] - len(buffers[name]) + 1
+                try:
+                    chunk = os.read(stream.fileno(), min(64 * 1024, max(1, allowance)))
+                except BlockingIOError:
+                    continue
+                if not chunk:
+                    selector.unregister(stream)
+                    continue
+                buffers[name].extend(chunk)
+                if len(buffers[name]) > limits[name]:
+                    raise ReplayExecutionError(
+                        f"execution-environment probe {name} exceeded its byte limit"
+                    )
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise ReplayExecutionError("execution-environment probe timed out")
+        try:
+            returncode = process.wait(timeout=remaining)
+        except subprocess.TimeoutExpired as exc:
+            raise ReplayExecutionError(
+                "execution-environment probe timed out"
+            ) from exc
+    except BaseException:
+        _terminate_process(process)
+        raise
+    finally:
+        selector.close()
+        process.stdout.close()
+        process.stderr.close()
+    return returncode, bytes(buffers["stdout"]), bytes(buffers["stderr"])
+
+
+def _execute_probe(
+    command: tuple[str, ...],
+    cwd: Path,
+    environment: Mapping[str, str],
+    isolation: IsolationBoundary,
+) -> tuple[int, bytes, bytes]:
+    return _capture_process(
+        (*isolation.prefix, *command),
+        cwd,
+        environment,
+        timeout_seconds=PROBE_TIMEOUT_SECONDS,
+        stdout_limit=PROBE_STDOUT_LIMIT,
+        stderr_limit=PROBE_STDERR_LIMIT,
     )
-    return process.returncode
+
+
+def _sandbox_reported_version(executable: Path, backend: str) -> str | None:
+    if backend == "darwin-sandbox-exec":
+        return None
+    if backend != "linux-bubblewrap":
+        raise ReplayExecutionError(f"unknown replay sandbox backend {backend!r}")
+    returncode, stdout, stderr = _capture_process(
+        (str(executable), "--version"),
+        HERE,
+        {
+            "HOME": "/nonexistent",
+            "LANG": "C.UTF-8",
+            "LC_ALL": "C.UTF-8",
+            "PATH": "/nonexistent",
+            "TZ": "UTC",
+        },
+        timeout_seconds=SANDBOX_VERSION_TIMEOUT_SECONDS,
+        stdout_limit=4096,
+        stderr_limit=4096,
+    )
+    if returncode != 0 or stderr:
+        raise ReplayExecutionError(
+            "cannot obtain an exact bubblewrap version from the sandbox executable"
+        )
+    try:
+        output = stdout.decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise ReplayExecutionError("bubblewrap version output is not ASCII") from exc
+    if output.endswith("\n"):
+        output = output[:-1]
+    match = _BUBBLEWRAP_VERSION_RE.fullmatch(output)
+    if match is None:
+        raise ReplayExecutionError("bubblewrap version output is malformed")
+    return match.group(1)
+
+
+def _sandbox_facts(isolation: IsolationBoundary) -> dict[str, Any]:
+    if isolation.executable is None or isolation.policy is None:
+        raise ReplayExecutionError("selected sandbox lacks identity metadata")
+    if not isolation.prefix or isolation.prefix[0] != str(isolation.executable):
+        raise ReplayExecutionError(
+            "selected sandbox command disagrees with its executable identity"
+        )
+    expected_policy = _sandbox_policy_document(isolation.name)
+    if dict(isolation.policy) != expected_policy:
+        raise ReplayExecutionError(
+            "selected sandbox command disagrees with its structural policy"
+        )
+    _real_file(isolation.executable, "sandbox executable")
+    try:
+        executable_digest, _byte_length = execution_env.secure_file_digest(
+            isolation.executable
+        )
+        policy_root = execution_env.sandbox_policy_root(expected_policy)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(f"cannot verify sandbox identity: {exc}") from exc
+    return {
+        "backend": isolation.name,
+        "reported_version": _sandbox_reported_version(
+            isolation.executable, isolation.name
+        ),
+        "executable_sha256": executable_digest,
+        "policy_id": SANDBOX_POLICY_ID,
+        "policy_root": policy_root,
+        "network": "disabled",
+    }
+
+
+@contextmanager
+def _materialized_probe_program(
+    context: build_context.BuildContext,
+) -> Iterator[Path]:
+    """Stage exact probe support bytes under scratch, then remove them."""
+    support_root = context.roots.scratch / ".execution-environment-probe"
+    try:
+        support_root.mkdir(mode=0o700)
+    except OSError as exc:
+        raise ReplayExecutionError(
+            f"cannot create execution-environment probe support: {exc}"
+        ) from exc
+    source_files = {
+        "execution_environment.py": HERE / "execution_environment.py",
+        "probe_execution_environment.py": PROBE_PROGRAM,
+    }
+    try:
+        for name, source in source_files.items():
+            try:
+                source_digest, source_size = execution_env.secure_file_digest(source)
+                data = source.read_bytes()
+                if (
+                    len(data) != source_size
+                    or hashlib.sha256(data).hexdigest() != source_digest
+                    or execution_env.secure_file_digest(source)
+                    != (source_digest, source_size)
+                ):
+                    raise ReplayExecutionError(
+                        f"probe support source changed while being copied: {source}"
+                    )
+            except (OSError, execution_env.ExecutionEnvironmentError) as exc:
+                raise ReplayExecutionError(
+                    f"cannot read execution-environment probe support: {exc}"
+                ) from exc
+            destination = support_root / name
+            descriptor = os.open(
+                destination,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_CLOEXEC", 0),
+                0o600,
+            )
+            try:
+                view = memoryview(data)
+                while view:
+                    written = os.write(descriptor, view)
+                    if written <= 0:
+                        raise ReplayExecutionError(
+                            "short write while staging execution-environment probe"
+                        )
+                    view = view[written:]
+                os.fchmod(descriptor, 0o444)
+            finally:
+                os.close(descriptor)
+            try:
+                copied_digest, copied_size = execution_env.secure_file_digest(
+                    destination
+                )
+            except execution_env.ExecutionEnvironmentError as exc:
+                raise ReplayExecutionError(
+                    f"cannot verify staged execution-environment probe: {exc}"
+                ) from exc
+            if (copied_digest, copied_size) != (source_digest, source_size):
+                raise ReplayExecutionError(
+                    "staged execution-environment probe bytes are not exact"
+                )
+        support_root.chmod(0o555)
+        yield support_root / "probe_execution_environment.py"
+    finally:
+        try:
+            metadata = support_root.lstat()
+            if stat.S_ISLNK(metadata.st_mode):
+                support_root.unlink()
+            elif stat.S_ISDIR(metadata.st_mode):
+                support_root.chmod(0o700)
+                shutil.rmtree(support_root)
+            else:
+                support_root.unlink()
+        except FileNotFoundError:
+            pass
+        except OSError as exc:
+            raise ReplayExecutionError(
+                f"cannot remove execution-environment probe support: {exc}"
+            ) from exc
+
+
+def _read_live_probe(
+    context: build_context.BuildContext,
+    interpreter: Path,
+    environment: Mapping[str, str],
+    isolation: IsolationBoundary,
+    probe_executor: ProbeExecutor,
+) -> dict[str, Any]:
+    try:
+        with _materialized_probe_program(context) as probe_program:
+            scheme_paths = _runtime_scheme_paths(interpreter)
+            command = _python_command(
+                interpreter,
+                probe_program,
+                "--purelib",
+                str(scheme_paths["purelib"]),
+                "--platlib",
+                str(scheme_paths["platlib"]),
+            )
+            result = probe_executor(
+                command, context.roots.code, environment, isolation
+            )
+    except ReplayExecutionError:
+        raise
+    except subprocess.TimeoutExpired as exc:
+        raise ReplayExecutionError("execution-environment probe timed out") from exc
+    except Exception as exc:
+        raise ReplayExecutionError(
+            f"execution-environment probe could not run: {exc}"
+        ) from exc
+    if (
+        not isinstance(result, tuple)
+        or len(result) != 3
+        or type(result[0]) is not int
+        or not isinstance(result[1], bytes)
+        or not isinstance(result[2], bytes)
+    ):
+        raise ReplayExecutionError("execution-environment probe returned an invalid result")
+    returncode, stdout, stderr = result
+    if len(stdout) > PROBE_STDOUT_LIMIT or len(stderr) > PROBE_STDERR_LIMIT:
+        raise ReplayExecutionError("execution-environment probe output exceeded its byte limit")
+    if returncode != 0:
+        detail = stderr.decode("utf-8", errors="replace")[:500]
+        raise ReplayExecutionError(
+            f"execution-environment probe failed with status {returncode}"
+            + (f": {detail}" if detail else "")
+        )
+    if stderr:
+        raise ReplayExecutionError("execution-environment probe produced unexpected stderr")
+    try:
+        document = contracts.parse_json_bytes(
+            stdout, location="execution-environment probe stdout"
+        )
+        if stdout != contracts.canonical_json_bytes(document):
+            raise ReplayExecutionError(
+                "execution-environment probe output is not canonical-json-v1"
+            )
+        return execution_env.validate_live_probe_document(document)
+    except (contracts.VerificationError, execution_env.ExecutionEnvironmentError) as exc:
+        raise ReplayExecutionError(
+            f"execution-environment probe output is invalid: {exc}"
+        ) from exc
+
+
+def _probe_execution_environment(
+    *,
+    profile: str,
+    runtime: dict[str, Any],
+    runner_root: str,
+    parent_python: dict[str, Any],
+    context: build_context.BuildContext,
+    interpreter: Path,
+    environment: Mapping[str, str],
+    isolation: IsolationBoundary,
+    sandbox: dict[str, Any],
+    probe_executor: ProbeExecutor = _execute_probe,
+) -> dict[str, Any]:
+    """Measure parent and child runtime facts without echoing descriptor values."""
+    try:
+        child = _read_live_probe(
+            context, interpreter, environment, isolation, probe_executor
+        )
+        if child["python"] != parent_python:
+            raise ReplayExecutionError(
+                "sandboxed Python facts disagree with the parent interpreter"
+            )
+        return execution_env.probe_live_environment_projection(
+            profile=profile,
+            runtime_probe=lambda: runtime,
+            runner_files_probe=lambda: runner_root,
+            python_probe=lambda: child["python"],
+            numpy_probe=lambda: child["numpy"],
+            sqlite_probe=lambda: child["sqlite"],
+            locale_probe=lambda: child["locale"],
+            sandbox_probe=lambda: sandbox,
+        )
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(
+            f"cannot validate live execution environment: {exc}"
+        ) from exc
+
+
+def _first_projection_difference(expected: Any, actual: Any, location: str = "$") -> str:
+    if type(expected) is not type(actual):
+        return location
+    if isinstance(expected, dict):
+        if expected.keys() != actual.keys():
+            return location
+        for key in expected:
+            difference = _first_projection_difference(
+                expected[key], actual[key], f"{location}.{key}"
+            )
+            if difference:
+                return difference
+        return ""
+    if isinstance(expected, list):
+        if len(expected) != len(actual):
+            return location
+        for index, (left, right) in enumerate(zip(expected, actual, strict=True)):
+            difference = _first_projection_difference(
+                left, right, f"{location}[{index}]"
+            )
+            if difference:
+                return difference
+        return ""
+    return "" if expected == actual else location
 
 
 def _is_within(path: PurePosixPath, root: PurePosixPath) -> bool:
@@ -811,11 +1412,21 @@ def run_replay_v2(
     expected_configuration_sha256: str,
     expected_environment_sha256: str,
     interpreter: str | os.PathLike[str] = sys.executable,
+    stage_timeout_seconds: float = DEFAULT_STAGE_TIMEOUT_SECONDS,
+    _trusted_runtime_evidence: Mapping[str, Any] | None = None,
     _executor: Executor | None = None,
     _isolation: IsolationBoundary | None = None,
+    _probe_executor: ProbeExecutor | None = None,
+    _sandbox_probe: SandboxProbe | None = None,
 ) -> ReplayResult:
-    """Run a prepared replay. Test seams are private and unavailable from the CLI."""
+    """Run a prepared replay.
+
+    Underscore-prefixed seams are unavailable from the CLI. In particular, no
+    production entry point currently supplies trusted OCI launcher evidence,
+    so authoritative-oci descriptors fail closed.
+    """
     require_isolated_startup()
+    stage_timeout = _validated_stage_timeout_seconds(stage_timeout_seconds)
     source = Path(context_path).resolve(strict=True)
     context = build_context.BuildContext.load(source)
     expected_identity = (
@@ -840,35 +1451,132 @@ def run_replay_v2(
         raise ReplayExecutionError(
             "prepared build context does not match the requested replay identity"
         )
-    _workspace, programs = _validate_workspace(source, context, reducer_files)
+    _workspace, programs, descriptor = _validate_workspace(
+        source, context, reducer_files
+    )
     requested_python = Path(os.path.abspath(os.fspath(interpreter)))
     resolved_python = requested_python.resolve(strict=True)
     _real_file(resolved_python, "Python interpreter")
     _runtime_roots(resolved_python)
     interpreter_state = _hash_file(resolved_python)
+    runtime_facts = _runtime_facts(
+        descriptor["profile"], _trusted_runtime_evidence
+    )
+    if runtime_facts != descriptor["runtime"]:
+        raise ReplayExecutionError(
+            "live runtime identity disagrees with the sealed execution environment"
+        )
+    runner_root = _runner_files_root()
+    if runner_root != descriptor["runner"]["files_root"]:
+        raise ReplayExecutionError(
+            "replay-runner file closure disagrees with the sealed execution environment"
+        )
+    try:
+        parent_python = execution_env.probe_python_runtime(
+            executable_path=resolved_python
+        )
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(f"cannot verify Python interpreter: {exc}") from exc
+    if parent_python != descriptor["python"]:
+        raise ReplayExecutionError(
+            "parent Python interpreter disagrees with the sealed execution environment"
+        )
     isolation = _isolation or _select_isolation(context, resolved_python)
-    executor = _executor or _execute
+    if isolation.name != descriptor["sandbox"]["backend"]:
+        raise ReplayExecutionError(
+            "selected sandbox backend disagrees with the sealed execution environment"
+        )
+    if _executor is None:
+
+        def executor(
+            command: tuple[str, ...],
+            cwd: Path,
+            child_environment: Mapping[str, str],
+            boundary: IsolationBoundary,
+        ) -> int:
+            return _execute(
+                command,
+                cwd,
+                child_environment,
+                boundary,
+                timeout_seconds=stage_timeout,
+            )
+    else:
+        executor = _executor
     environment = _environment(resolved_python)
+    try:
+        sandbox_facts = (_sandbox_probe or _sandbox_facts)(isolation)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(f"cannot verify sandbox identity: {exc}") from exc
+    if sandbox_facts != descriptor["sandbox"]:
+        difference = _first_projection_difference(
+            descriptor["sandbox"], sandbox_facts, "$.sandbox"
+        )
+        raise ReplayExecutionError(
+            "live sandbox identity disagrees with the sealed descriptor"
+            + (f" at {difference}" if difference else "")
+        )
+    expected_projection = execution_env.live_environment_projection(descriptor)
+    actual_projection = _probe_execution_environment(
+        profile=descriptor["profile"],
+        runtime=runtime_facts,
+        runner_root=runner_root,
+        parent_python=parent_python,
+        context=context,
+        interpreter=resolved_python,
+        environment=environment,
+        isolation=isolation,
+        sandbox=sandbox_facts,
+        probe_executor=_probe_executor or _execute_probe,
+    )
+    try:
+        execution_env.validate_live_environment_projection(actual_projection)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(
+            f"live execution-environment projection is invalid: {exc}"
+        ) from exc
+    if (
+        execution_env.canonical_json_bytes(actual_projection)
+        != execution_env.canonical_json_bytes(expected_projection)
+    ):
+        difference = _first_projection_difference(
+            expected_projection, actual_projection
+        )
+        raise ReplayExecutionError(
+            "live execution environment disagrees with the sealed descriptor"
+            + (f" at {difference}" if difference else "")
+        )
+    sandbox_executable_state = (
+        _hash_file(isolation.executable)
+        if isolation.executable is not None
+        else None
+    )
     completed: list[str] = []
     prior_output_state: dict[str, OutputState] = {}
 
     for stage, program in zip(context.stages, programs):
-        command = (
-            str(resolved_python),
-            "-P",
-            "-S",
-            "-s",
-            "-B",
-            "-c",
-            _RUN_STAGE,
-            str(program),
+        if _hash_file(resolved_python) != interpreter_state:
+            raise ReplayExecutionError("Python interpreter changed during replay")
+        if _runner_files_root() != runner_root:
+            raise ReplayExecutionError("replay-runner files changed during replay")
+        if (
+            isolation.executable is not None
+            and _hash_file(isolation.executable) != sandbox_executable_state
+        ):
+            raise ReplayExecutionError("sandbox executable changed during replay")
+        command = _python_command(
+            resolved_python,
+            program,
             *stage.argv,
             "--build-context",
             str(source),
             "--stage-id",
             stage.id,
         )
-        returncode = executor(command, context.roots.code, environment, isolation)
+        try:
+            returncode = executor(command, context.roots.code, environment, isolation)
+        except ReplayExecutionError as exc:
+            raise ReplayExecutionError(f"stage {stage.id!r}: {exc}") from exc
         if returncode != 0:
             raise ReplayExecutionError(
                 f"stage {stage.id!r} failed with exit status {returncode}"
@@ -877,6 +1585,13 @@ def run_replay_v2(
         completed_ids = tuple(completed)
         if _hash_file(resolved_python) != interpreter_state:
             raise ReplayExecutionError("Python interpreter changed during replay")
+        if _runner_files_root() != runner_root:
+            raise ReplayExecutionError("replay-runner files changed during replay")
+        if (
+            isolation.executable is not None
+            and _hash_file(isolation.executable) != sandbox_executable_state
+        ):
+            raise ReplayExecutionError("sandbox executable changed during replay")
         _verify_code_closure(context, reducer_files)
         _verify_outputs(context, completed_ids)
         _verify_scratch(context, completed_ids)
@@ -887,6 +1602,76 @@ def run_replay_v2(
                     f"stage {stage.id!r} modified predecessor output {relative!r}"
                 )
         prior_output_state = current_output_state
+
+    final_runtime_facts = _runtime_facts(
+        descriptor["profile"], _trusted_runtime_evidence
+    )
+    if final_runtime_facts != descriptor["runtime"]:
+        raise ReplayExecutionError("live runtime identity changed during replay")
+    final_runner_root = _runner_files_root()
+    if final_runner_root != descriptor["runner"]["files_root"]:
+        raise ReplayExecutionError("replay-runner file closure changed during replay")
+    try:
+        final_parent_python = execution_env.probe_python_runtime(
+            executable_path=resolved_python
+        )
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(
+            f"cannot reverify Python interpreter after replay: {exc}"
+        ) from exc
+    if final_parent_python != descriptor["python"]:
+        raise ReplayExecutionError("Python interpreter identity changed during replay")
+    try:
+        final_sandbox_facts = (_sandbox_probe or _sandbox_facts)(isolation)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(
+            f"cannot reverify sandbox identity after replay: {exc}"
+        ) from exc
+    if final_sandbox_facts != descriptor["sandbox"]:
+        difference = _first_projection_difference(
+            descriptor["sandbox"], final_sandbox_facts, "$.sandbox"
+        )
+        raise ReplayExecutionError(
+            "live sandbox identity changed during replay"
+            + (f" at {difference}" if difference else "")
+        )
+    final_projection = _probe_execution_environment(
+        profile=descriptor["profile"],
+        runtime=final_runtime_facts,
+        runner_root=final_runner_root,
+        parent_python=final_parent_python,
+        context=context,
+        interpreter=resolved_python,
+        environment=environment,
+        isolation=isolation,
+        sandbox=final_sandbox_facts,
+        probe_executor=_probe_executor or _execute_probe,
+    )
+    try:
+        execution_env.validate_live_environment_projection(final_projection)
+    except execution_env.ExecutionEnvironmentError as exc:
+        raise ReplayExecutionError(
+            f"final live execution-environment projection is invalid: {exc}"
+        ) from exc
+    if (
+        execution_env.canonical_json_bytes(final_projection)
+        != execution_env.canonical_json_bytes(expected_projection)
+    ):
+        difference = _first_projection_difference(
+            expected_projection, final_projection
+        )
+        raise ReplayExecutionError(
+            "live execution environment changed during replay"
+            + (f" at {difference}" if difference else "")
+        )
+
+    _verify_code_closure(context, reducer_files)
+    _verify_outputs(context, tuple(completed))
+    _verify_scratch(context, tuple(completed))
+    if _output_state(context, tuple(completed)) != prior_output_state:
+        raise ReplayExecutionError(
+            "final execution-environment probe modified replay output"
+        )
 
     return ReplayResult(
         generation_id=context.generation_id,
@@ -907,6 +1692,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", type=Path)
     parser.add_argument("--expected-generation-id", required=True)
     parser.add_argument("--python", type=Path, default=Path(sys.executable))
+    parser.add_argument(
+        "--stage-timeout-seconds",
+        type=float,
+        default=DEFAULT_STAGE_TIMEOUT_SECONDS,
+    )
     return parser
 
 
@@ -943,6 +1733,7 @@ def main(argv: list[str] | None = None) -> int:
             expected_configuration_sha256=pack["configuration"]["sha256"],
             expected_environment_sha256=pack["environment"]["sha256"],
             interpreter=args.python,
+            stage_timeout_seconds=args.stage_timeout_seconds,
         )
     except (
         OSError,

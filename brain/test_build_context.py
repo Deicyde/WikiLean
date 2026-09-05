@@ -157,6 +157,7 @@ def _document(base: Path) -> dict:
                 "path": "catalog/data/concept_graph_v2.json",
                 "requirement": "required",
                 "root": "repo",
+                "source_manifest_ids": [HASH_D],
                 "state": "present",
             },
             {
@@ -167,6 +168,7 @@ def _document(base: Path) -> dict:
                 "path": "declaration-data.json",
                 "requirement": "optional",
                 "root": "decl_oracle",
+                "source_manifest_ids": [HASH_C],
                 "state": "absent",
             },
             {
@@ -189,6 +191,7 @@ def _document(base: Path) -> dict:
                 "path_pattern": "Mathlib/**/*.lean",
                 "requirement": "required",
                 "root": "mathlib",
+                "source_manifest_ids": [HASH_D],
                 "state": "present",
             },
         ],
@@ -236,6 +239,7 @@ class BuildContextTest(unittest.TestCase):
             (self.base / "input/repo/catalog/data/concept_graph_v2.json").resolve(),
         )
         self.assertIsNone(context.optional_one("declaration-oracle"))
+        self.assertEqual(context.bindings[1].source_manifest_ids, (HASH_C,))
         self.assertEqual(
             context.members("mathlib-source-tree"),
             (
@@ -332,6 +336,7 @@ class BuildContextTest(unittest.TestCase):
     def test_logical_binding_stage_and_configuration_changes_change_identity(self) -> None:
         for mutate in (
             lambda doc: doc["bindings"][0]["members"][0].update({"sha256": DIGEST_B}),
+            lambda doc: doc["bindings"][1].update({"source_manifest_ids": [HASH_B]}),
             lambda doc: doc["stages"][0].update({"argv": ["--fixture"]}),
             lambda doc: doc["configuration"].update({"external_node_cap": 17}),
         ):
@@ -495,6 +500,26 @@ class BuildContextTest(unittest.TestCase):
         too_many["generation_id"] = generation_identity(too_many)
         with self.assertRaisesRegex(BuildContextError, "cardinality one"):
             self.context(too_many)
+
+    def test_binding_source_manifest_ids_are_nonempty_sorted_and_exact(self) -> None:
+        for source_manifest_ids, expected in (
+            ([], "must not be empty"),
+            ([HASH_D, HASH_C], "unique and sorted"),
+        ):
+            document = copy.deepcopy(self.document)
+            document["bindings"][1]["source_manifest_ids"] = source_manifest_ids
+            document["generation_id"] = generation_identity(document)
+            with self.subTest(source_manifest_ids=source_manifest_ids):
+                with self.assertRaisesRegex(BuildContextError, expected):
+                    self.context(document)
+
+        mismatched = copy.deepcopy(self.document)
+        mismatched["bindings"][0]["source_manifest_ids"] = [HASH_C]
+        mismatched["generation_id"] = generation_identity(mismatched)
+        with self.assertRaisesRegex(
+            BuildContextError, "exactly name their member source manifests"
+        ):
+            self.context(mismatched)
 
     def test_helpers_reject_wrong_cardinality_requirement_and_unknown_ids(self) -> None:
         context = self.context()

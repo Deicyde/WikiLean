@@ -356,6 +356,14 @@ explicit approval.
   Wikidata checks used by `fold_proposals.py`, ends by sealing normalized/folded objects.
   The authoritative full-DAG replay begins after that boundary and performs no network or
   live D1 reads.
+  - [ ] Define canonical `acquisition-receipt/v1` and `normalization-lineage/v1`
+    evidence: exact upstream URI/native pin, acquisition time, tool identity, complete
+    fail-closed batch status, parent source-manifest IDs, and output hashes. Require these
+    before approving non-Git source plans; do not synthesize receipt objects from incomplete
+    historical metadata.
+  - [ ] Remove observation time, local absolute paths, and other ambient values from
+    normalized data bytes. Current hierarchy, theoremgraph-links, external harvests, and
+    halo outputs embed such values; retain them only in audit/receipt evidence.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
@@ -416,10 +424,15 @@ explicit approval.
   - [x] Materialize the exact verified descriptor as a copy-only read-only workspace file;
     make the runner reject missing, altered, linked, writable, noncanonical, invalid, or
     reducer-commit-mismatched descriptors before sandbox selection or stage execution.
-  - [ ] Fail closed when the live Python, NumPy, SQLite, locale, runner-file closure, or
-    sandbox identity disagrees with that sealed descriptor.
-  - [ ] Freeze the authoritative Linux OCI image and dependency artifacts by digest, then
-    capture strict clean-host sandbox evidence under that exact identity.
+  - [x] Fail closed before stage one when the live Python, NumPy import/runtime closure,
+    SQLite extension/build, effective UTF-8/hash settings, runner-file closure, development
+    host fingerprint, or sandbox executable/version/policy disagrees with the sealed
+    descriptor. The bounded canonical probe runs through the exact production sandbox and
+    child environment; direct authoritative-OCI replay remains disabled.
+  - [ ] Build a trusted OCI launcher that verifies and starts the exact platform manifest
+    digest before handing structured runtime evidence to the runner. Freeze dependency
+    artifacts and a CPU-dispatch/baseline policy, then capture strict clean-host sandbox
+    evidence under that exact identity; caller-authored evidence files are not sufficient.
 - [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source
   object store for the pinned Mathlib tree and declaration oracle, TheoremGraph inputs,
   sealed D1 annotations/community data, external normalized files, and curated Git inputs.
@@ -429,10 +442,48 @@ explicit approval.
   retire the compatibility `legacy_declared_input_root` from authoritative releases.
   - [x] Make source-pack and semantic-diff integrity verification stream opaque files so
     large corpus objects do not require matching in-memory byte allocations.
+  - [x] Add a deterministic, network-free v2 pack compiler and canonical source-plan
+    contract. The compiler binds every approved object by digest/size, reads curated inputs
+    and reducer bytes from pinned Git trees, records required presence or explicit absence
+    together with the responsible source-manifest IDs, rechecks mutable selectors and
+    top-level root identities before sealing, rejects portable path collisions, uses a
+    private content-addressed store, and verifies read-only same-ID reuse. Publication and
+    cleanup are descriptor-relative, candidate bytes are reverified after sealing, and
+    reuse is fenced by directory identity checks. Synthetic relocation, race,
+    Git-worktree-independence, traversal, policy, CLI, and schema tests are required by the
+    hermetic Python gate.
+  - [x] Allow one wildcard input binding to reference multiple source manifests, so external
+    databases and future user repositories retain distinct pins and license policies. Carry
+    source review/audit/lineage fields through compilation. Exclude the tracked D1 pull
+    receipt from the annotation payload selector while retaining Unicode slug support.
+  - [ ] Author and review the current-corpus source plan, acquire a fresh canonical D1
+    snapshot plus the missing Mathlib source tree, close the TheoremGraph/oracle revision
+    pins, and add complete acquisition/normalization lineage before compilation.
+    The 2026-09-04 census found 44 inputs, 38 present, six absent, and 14/15 required
+    inputs present; 833 non-Mathlib files total about 1.425 GiB. The current D1 mirror is
+    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs follow mutable
+    `main`, and the theorem-matching redistribution license is unresolved.
+  - [x] Add a bounded source-plan preflight that reports availability, selector membership,
+    pin strength, freshness against a configured age threshold, redistribution policy, lineage
+    evidence, and required free space without copying or hashing large payloads. Structural
+    mismatches fail; policy concerns remain explicit blockers/warnings in canonical output.
+    Its readiness fields are explicitly source-plan-only and do not claim runtime, replay,
+    release, or deployment readiness.
+  - [ ] Compile the first real pack on a host with enough free space, then bind its verified
+    `offline_pack_id` and `source_set_root` into build-attestation/v2 and release verification.
+  - [ ] Before repeated full-corpus builds, derive the candidate identity before materializing
+    duplicate bytes so a verified same-ID pack can be reused without another full staging
+    copy; add a safe shared-CAS/reflink strategy if cross-pack storage pressure warrants it.
+  - [ ] Eliminate the residual hostile-same-UID ABA window during path-based candidate and
+    existing-pack content verification, either by making the verifier fully dirfd-relative
+    or by running compilation inside an isolated privilege boundary. The reproduced
+    publication, cleanup, reuse, and post-seal mutation races are already covered by tests.
 - [ ] **Prove cross-object coherence.** Verify Mathlib archive ↔ declared commit,
   declaration oracle ↔ Mathlib revision, paired external pages/links ↔ one
   acquisition, TheoremGraph objects ↔ declared dataset revisions, and folded outputs ↔
-  sealed proposal/source inputs.
+  sealed proposal/source inputs. Compile from immutable acquisition snapshots (or an
+  equivalent whole-tree stability fence) so sequential final selector checks cannot leave a
+  mutation window between independently acquired roots.
 - [ ] **Add the dual-build gate.** Build the same pack in two different absolute paths
   with randomized mtimes, isolated temp/cache roots, and adversarial `BRAIN_*` values, with
   network disabled at the runner/container boundary. Mount the verified pack as the only
@@ -451,13 +502,14 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) pin the complete Python/NumPy/SQLite/container
-execution environment and exercise the narrowed sandbox on supported clean hosts; (2) compile
-the first real full-corpus pack and prove cross-object/source-revision coherence; (3) add the
-two-path randomized-mtime/adversarial-environment clean-room gate using the real OS boundary;
-(4) run the approved-baseline semantic compatibility review and emit the separate two-build
-reproducibility attestation. Network acquisition, live D1 snapshots, and proposal folding
-remain outside the replay boundary throughout.
+**Next P0-R implementation order:** (1) define acquisition-receipt and normalization-lineage
+contracts, refresh/freeze the external inputs, and author the reviewed current-corpus source
+plan on a volume with adequate space; (2) finish the trusted OCI launcher, dependency and
+CPU-dispatch policy, and strict clean-host sandbox evidence; (3) compile the first real pack
+and prove cross-object/source-revision coherence; (4) add the two-path randomized-mtime/
+adversarial-environment clean-room gate; (5) run the approved-baseline semantic compatibility
+review and emit the separate two-build reproducibility attestation. Network acquisition,
+live D1 snapshots, and proposal folding remain outside the replay boundary throughout.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently

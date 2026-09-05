@@ -185,6 +185,7 @@ class BaseGraphContextTest(unittest.TestCase):
                 "members": members,
                 "requirement": contract["requirement"],
                 "root": contract["root"],
+                "source_manifest_ids": [SOURCE_MANIFEST_ID],
                 "state": "present" if present else "absent",
             }
             selector = "path" if contract["cardinality"] == "one" else "path_pattern"

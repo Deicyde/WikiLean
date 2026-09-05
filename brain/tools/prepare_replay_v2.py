@@ -429,6 +429,7 @@ def _binding_projection(binding: dict[str, Any]) -> dict[str, Any]:
             }
             for member in binding["members"]
         ],
+        "source_manifest_ids": binding["source_manifest_ids"],
         "state": binding["state"],
     }
 
@@ -577,6 +578,7 @@ def prepare_replay_v2(
             "members": runtime_members,
             "requirement": declaration["requirement"],
             "root": declaration["root"],
+            "source_manifest_ids": packed_binding["source_manifest_ids"],
             "state": packed_binding["state"],
             (
                 "path"

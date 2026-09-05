@@ -113,6 +113,7 @@ class CellsContextTest(unittest.TestCase):
             "path": logical_path,
             "requirement": "optional",
             "root": "repo",
+            "source_manifest_ids": [SOURCE_MANIFEST_ID],
             "state": "present" if present else "absent",
         }
 

@@ -6,10 +6,13 @@ import copy
 import hashlib
 import json
 import os
+import platform
+import signal
 import stat
 import subprocess
 import sys
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -29,45 +32,37 @@ from test_build_context import _document  # noqa: E402
 
 
 def _environment_document(reducer_git_commit: str) -> dict[str, object]:
-    operating_system = "darwin" if sys.platform == "darwin" else "linux"
+    runtime = runner._development_runtime_facts()
+    operating_system = runtime["os"]
     value: dict[str, object] = {
         "schema": execution_env.EXECUTION_ENVIRONMENT_SCHEMA,
         "environment_id": "sha256:" + "0" * 64,
         "profile": execution_env.DEVELOPMENT_HOST_PROFILE,
-        "runtime": {
-            "kind": "development-host",
-            "os": operating_system,
-            "architecture": "arm64" if operating_system == "darwin" else "x86_64",
-            "runtime_root": "sha256:" + "1" * 64,
-        },
+        "runtime": runtime,
         "runner": {
             "name": "wikilean-replay",
             "version": "2.0.0",
             "git_commit": reducer_git_commit,
-            "files_root": "sha256:" + "2" * 64,
+            "files_root": runner._runner_files_root(),
         },
-        "python": {
-            "implementation": "CPython",
-            "version": "3.12.11",
-            "cache_tag": "cpython-312",
-            "soabi": "cpython-312-fixture",
-            "executable_sha256": "3" * 64,
-        },
+        "python": execution_env.probe_python_runtime(
+            executable_path=Path(sys.executable).resolve()
+        ),
         "dependency_lock": {
             "schema": execution_env.DEPENDENCY_LOCK_SCHEMA,
             "packages": [
                 {
                     "name": "numpy",
                     "version": "2.3.2",
-                    "artifact_sha256": "4" * 64,
-                    "installed_files_root": "sha256:" + "5" * 64,
+                    "locked_artifact_sha256": "4" * 64,
+                    "installed_tree_root": "sha256:" + "5" * 64,
                 }
             ],
         },
         "sqlite": {
             "version": "3.50.4",
             "source_id": "2030-01-02 03:04:05 " + "6" * 64,
-            "binary_sha256": "7" * 64,
+            "extension_file_sha256": "7" * 64,
             "compile_options": ["ENABLE_FTS5", "THREADSAFE=1"],
         },
         "locale": {
@@ -76,8 +71,9 @@ def _environment_document(reducer_git_commit: str) -> dict[str, object]:
             "timezone": "UTC",
             "preferred_encoding": "utf-8",
             "filesystem_encoding": "utf-8",
-            "utf8_mode": 0,
+            "utf8_mode": 1,
             "python_hash_seed": "0",
+            "hash_sentinel": "123456789",
         },
         "sandbox": {
             "backend": (
@@ -85,10 +81,18 @@ def _environment_document(reducer_git_commit: str) -> dict[str, object]:
                 if operating_system == "darwin"
                 else "linux-bubblewrap"
             ),
-            "version": "1.0.0",
+            "reported_version": (
+                None if operating_system == "darwin" else "1.0.0"
+            ),
             "executable_sha256": "8" * 64,
             "policy_id": "brain-replay-v1",
-            "policy_sha256": "9" * 64,
+            "policy_root": execution_env.sandbox_policy_root(
+                runner._sandbox_policy_document(
+                    "darwin-sandbox-exec"
+                    if operating_system == "darwin"
+                    else "linux-bubblewrap"
+                )
+            ),
             "network": "disabled",
         },
     }
@@ -152,7 +156,26 @@ class ReplayRunnerTest(unittest.TestCase):
         self.environment_path.chmod(0o444)
         self._make_read_only(self.base / "input")
         self._make_read_only(self.base / "code")
-        self.isolation = runner.IsolationBoundary("fixture-kernel", ("fixture",))
+        self.isolation = runner.IsolationBoundary(
+            self.environment_document["sandbox"]["backend"], ("fixture",)
+        )
+        self.probe_document = {
+            "schema": execution_env.LIVE_PROBE_SCHEMA,
+            "python": copy.deepcopy(self.environment_document["python"]),
+            "numpy": {
+                key: copy.deepcopy(value)
+                for key, value in self.environment_document["dependency_lock"][
+                    "packages"
+                ][0].items()
+                if key != "locked_artifact_sha256"
+            },
+            "sqlite": copy.deepcopy(self.environment_document["sqlite"]),
+            "locale": copy.deepcopy(self.environment_document["locale"]),
+        }
+        self.probe_bytes = execution_env.canonical_json_bytes(self.probe_document)
+        self.probe_invocations: list[
+            tuple[tuple[str, ...], Path, dict[str, str], runner.IsolationBoundary]
+        ] = []
 
     def tearDown(self) -> None:
         self._make_writable(self.base)
@@ -217,6 +240,24 @@ class ReplayRunnerTest(unittest.TestCase):
     def _stage_id(command: tuple[str, ...]) -> str:
         return command[command.index("--stage-id") + 1]
 
+    def _successful_probe(
+        self,
+        command: tuple[str, ...],
+        cwd: Path,
+        child_environment: dict[str, str],
+        isolation: runner.IsolationBoundary,
+    ) -> tuple[int, bytes, bytes]:
+        probe_path = Path(command[7])
+        self.assertTrue(probe_path.is_file())
+        self.assertEqual(stat.S_IMODE(probe_path.stat().st_mode), 0o444)
+        support_module = probe_path.parent / "execution_environment.py"
+        self.assertTrue(support_module.is_file())
+        self.assertEqual(stat.S_IMODE(support_module.stat().st_mode), 0o444)
+        self.probe_invocations.append(
+            (command, cwd, dict(child_environment), isolation)
+        )
+        return 0, self.probe_bytes, b""
+
     def _run(self, **kwargs):
         arguments = {
             "reducer_files": self.reducer_files,
@@ -227,6 +268,10 @@ class ReplayRunnerTest(unittest.TestCase):
             "expected_reducer_git_commit": self.context.replay.reducer_git_commit,
             "expected_configuration_sha256": self.context.replay.configuration_sha256,
             "expected_environment_sha256": self.context.replay.environment_sha256,
+            "_probe_executor": self._successful_probe,
+            "_sandbox_probe": lambda _isolation: copy.deepcopy(
+                self.environment_document["sandbox"]
+            ),
             **kwargs,
         }
         with mock.patch.object(runner, "require_isolated_startup"):
@@ -250,6 +295,27 @@ class ReplayRunnerTest(unittest.TestCase):
             build_context.canonical_json_bytes(self.context.to_document())
         )
         self.context_path.chmod(0o444)
+
+    def _set_environment_document(self, value: dict[str, object]) -> None:
+        self.environment_document = execution_env.seal_execution_environment(value)
+        self.environment_bytes = execution_env.canonical_json_bytes(
+            self.environment_document
+        )
+        self.probe_document = {
+            "schema": execution_env.LIVE_PROBE_SCHEMA,
+            "python": copy.deepcopy(self.environment_document["python"]),
+            "numpy": {
+                key: copy.deepcopy(item)
+                for key, item in self.environment_document["dependency_lock"][
+                    "packages"
+                ][0].items()
+                if key != "locked_artifact_sha256"
+            },
+            "sqlite": copy.deepcopy(self.environment_document["sqlite"]),
+            "locale": copy.deepcopy(self.environment_document["locale"]),
+        }
+        self.probe_bytes = execution_env.canonical_json_bytes(self.probe_document)
+        self._replace_environment(self.environment_bytes, rebind=True)
 
     def _assert_pre_execution_rejected(self, pattern: str) -> None:
         with mock.patch.object(runner, "_select_isolation") as select, mock.patch.object(
@@ -290,7 +356,9 @@ class ReplayRunnerTest(unittest.TestCase):
         expected_ids = tuple(stage.id for stage in self.context.stages)
         self.assertEqual(result.stages, expected_ids)
         self.assertEqual([self._stage_id(call[0]) for call in calls], list(expected_ids))
-        self.assertEqual(calls[-1][2], "fixture-kernel")
+        self.assertEqual(
+            calls[-1][2], self.environment_document["sandbox"]["backend"]
+        )
         for (command, environment, _name), stage in zip(calls, self.context.stages):
             self.assertEqual(command[0], str(Path(sys.executable).resolve()))
             self.assertEqual(command[1:6], ("-P", "-S", "-s", "-B", "-c"))
@@ -303,7 +371,19 @@ class ReplayRunnerTest(unittest.TestCase):
             )
             self.assertEqual(command[context_index + 1], str(self.context_path))
             self.assertEqual(environment["PYTHONHASHSEED"], "0")
+            self.assertEqual(environment["PYTHONUTF8"], "1")
+            self.assertEqual(environment["PYTHONIOENCODING"], "utf-8")
             self.assertEqual(environment["WIKILEAN_OFFLINE"], "1")
+            for name in (
+                "BLIS_NUM_THREADS",
+                "MKL_NUM_THREADS",
+                "NUMEXPR_NUM_THREADS",
+                "OMP_NUM_THREADS",
+                "OMP_THREAD_LIMIT",
+                "OPENBLAS_NUM_THREADS",
+                "VECLIB_MAXIMUM_THREADS",
+            ):
+                self.assertEqual(environment[name], "1")
             self.assertNotIn("ANTHROPIC_API_KEY", environment)
             self.assertNotIn("BRAIN_EXTERNAL_DIR", environment)
             self.assertEqual(
@@ -312,6 +392,188 @@ class ReplayRunnerTest(unittest.TestCase):
             )
             self.assertNotIn("/host/injection", environment["PYTHONPATH"])
         self.assertIn("brain-page", result.stages)
+        self.assertEqual(len(self.probe_invocations), 2)
+        probe_command, probe_cwd, probe_environment, probe_isolation = (
+            self.probe_invocations[0]
+        )
+        self.assertEqual(probe_cwd, self.context.roots.code)
+        self.assertIs(probe_isolation, self.isolation)
+        self.assertEqual(probe_command[:7], calls[0][0][:7])
+        self.assertEqual(Path(probe_command[7]).name, runner.PROBE_PROGRAM.name)
+        self.assertEqual(
+            Path(probe_command[7]).parent.parent, self.context.roots.scratch
+        )
+        scheme_paths = runner._runtime_scheme_paths(Path(sys.executable).resolve())
+        self.assertEqual(
+            probe_command[8:],
+            (
+                "--purelib",
+                str(scheme_paths["purelib"]),
+                "--platlib",
+                str(scheme_paths["platlib"]),
+            ),
+        )
+        self.assertEqual(probe_environment, calls[0][1])
+        self.assertEqual(list(self.context.roots.scratch.iterdir()), [])
+
+    def test_exact_child_probe_uses_parent_venv_scheme_and_ignores_scripts(
+        self,
+    ) -> None:
+        fixture_root = self.base.parent / "probe-venv"
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "venv",
+                "--without-pip",
+                str(fixture_root),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        venv_python = fixture_root / "bin" / "python"
+        scheme_result = subprocess.run(
+            [
+                str(venv_python),
+                "-I",
+                "-c",
+                (
+                    "import json,sys,sysconfig;"
+                    "print(json.dumps({'prefix':sys.prefix,"
+                    "'base_prefix':sys.base_prefix,'paths':sysconfig.get_paths()},"
+                    "sort_keys=True))"
+                ),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(scheme_result.returncode, 0, scheme_result.stderr)
+        scheme_document = json.loads(scheme_result.stdout)
+        self.assertNotEqual(
+            Path(scheme_document["prefix"]).resolve(),
+            Path(scheme_document["base_prefix"]).resolve(),
+        )
+        purelib = Path(scheme_document["paths"]["purelib"]).resolve()
+        package = purelib / "numpy"
+        libraries = purelib / "numpy.libs"
+        dynamic_libraries = purelib / "numpy.dylibs"
+        metadata = purelib / "numpy-2.3.2.dist-info"
+        scripts = fixture_root / "bin"
+        headers = fixture_root / "include" / "numpy"
+        for path in (package, libraries, dynamic_libraries, metadata, headers):
+            path.mkdir(parents=True, exist_ok=True)
+        package.joinpath("__init__.py").write_text(
+            "__version__ = '2.3.2'\n", encoding="utf-8"
+        )
+        package.joinpath("unrecorded.py").write_text("VALUE = 1\n", encoding="utf-8")
+        libraries.joinpath("libnumpy.so").write_bytes(b"fixture so\n")
+        dynamic_libraries.joinpath("libnumpy.dylib").write_bytes(b"fixture dylib\n")
+        metadata.joinpath("METADATA").write_text(
+            "Metadata-Version: 2.1\nName: numpy\nVersion: 2.3.2\n",
+            encoding="utf-8",
+        )
+        f2py = scripts / "f2py"
+        numpy_config = scripts / "numpy-config"
+        header = headers / "arrayobject.h"
+        f2py.write_bytes(b"#!/bin/sh\n")
+        numpy_config.write_bytes(b"#!/bin/sh\n")
+        header.write_bytes(b"fixture header\n")
+
+        def relative_to_purelib(path: Path) -> str:
+            return Path(os.path.relpath(path, purelib)).as_posix()
+
+        record_entries = (
+            "numpy/__init__.py",
+            "numpy-2.3.2.dist-info/METADATA",
+            "numpy-2.3.2.dist-info/RECORD",
+            relative_to_purelib(f2py),
+            relative_to_purelib(numpy_config),
+            relative_to_purelib(header),
+        )
+        metadata.joinpath("RECORD").write_text(
+            "".join(f"{path},,\n" for path in record_entries),
+            encoding="utf-8",
+        )
+
+        expected_files: dict[str, Path] = {}
+        for tree in (package, libraries, dynamic_libraries, metadata):
+            for path in sorted(tree.rglob("*")):
+                if path.is_file():
+                    expected_files[
+                        "site-packages/" + path.relative_to(purelib).as_posix()
+                    ] = path
+        expected_root = execution_env.numpy_installed_tree_root(expected_files)
+        outer_program = textwrap.dedent(
+            f"""
+            import json
+            import sys
+            from pathlib import Path
+
+            sys.path.insert(0, {str(TOOLS)!r})
+            import run_replay_v2 as runner
+
+            interpreter = Path(sys.executable).resolve(strict=True)
+            scheme = runner._runtime_scheme_paths(interpreter)
+            command = runner._python_command(
+                interpreter,
+                runner.PROBE_PROGRAM,
+                "--purelib",
+                str(scheme["purelib"]),
+                "--platlib",
+                str(scheme["platlib"]),
+            )
+            returncode, stdout, stderr = runner._capture_process(
+                command,
+                Path({str(self.base.parent)!r}),
+                runner._environment(interpreter),
+                timeout_seconds=10,
+                stdout_limit=runner.PROBE_STDOUT_LIMIT,
+                stderr_limit=runner.PROBE_STDERR_LIMIT,
+            )
+            print(json.dumps({{
+                "parent_prefix": sys.prefix,
+                "parent_base_prefix": sys.base_prefix,
+                "returncode": returncode,
+                "stdout": stdout.decode("utf-8"),
+                "stderr": stderr.decode("utf-8", errors="replace"),
+            }}, sort_keys=True))
+            """
+        )
+
+        def run_probe() -> dict[str, object]:
+            completed = subprocess.run(
+                [str(venv_python), "-I", "-c", outer_program],
+                env={
+                    "HOME": str(self.base.parent),
+                    "LANG": "C.UTF-8",
+                    "LC_ALL": "C.UTF-8",
+                    "PATH": "/nonexistent",
+                    "PYTHONDONTWRITEBYTECODE": "1",
+                    "TZ": "UTC",
+                },
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            wrapper = json.loads(completed.stdout)
+            self.assertNotEqual(wrapper["parent_prefix"], wrapper["parent_base_prefix"])
+            self.assertEqual(wrapper["returncode"], 0, wrapper["stderr"])
+            return json.loads(wrapper["stdout"])
+
+        first = run_probe()
+        self.assertEqual(first["numpy"]["version"], "2.3.2")
+        self.assertEqual(first["numpy"]["installed_tree_root"], expected_root)
+        f2py.write_bytes(b"#!/bin/sh\necho changed\n")
+        numpy_config.write_bytes(b"#!/bin/sh\necho changed\n")
+        header.write_bytes(b"changed header\n")
+        self.assertEqual(
+            run_probe()["numpy"]["installed_tree_root"],
+            expected_root,
+        )
 
     def test_environment_file_is_required_before_execution(self) -> None:
         self.environment_path.unlink()
@@ -346,6 +608,319 @@ class ReplayRunnerTest(unittest.TestCase):
         self._replace_environment(data, rebind=True)
         self._assert_pre_execution_rejected("runner Git commit does not match")
 
+    def test_parent_runtime_runner_and_python_must_match_before_sandbox(self) -> None:
+        mutations = (
+            (
+                "runtime",
+                lambda value: value["runtime"].update(
+                    host_fingerprint="sha256:" + "f" * 64
+                ),
+                "live runtime identity",
+            ),
+            (
+                "runner",
+                lambda value: value["runner"].update(
+                    files_root="sha256:" + "f" * 64
+                ),
+                "runner file closure",
+            ),
+            (
+                "python",
+                lambda value: value["python"].update(
+                    executable_file_sha256="f" * 64
+                ),
+                "parent Python interpreter",
+            ),
+        )
+        original = copy.deepcopy(self.environment_document)
+        for label, mutate, pattern in mutations:
+            with self.subTest(label=label):
+                changed = copy.deepcopy(original)
+                mutate(changed)
+                self._set_environment_document(changed)
+                self._assert_pre_execution_rejected(pattern)
+        self._set_environment_document(original)
+
+    def test_authoritative_oci_requires_private_launcher_evidence(self) -> None:
+        authoritative = copy.deepcopy(self.environment_document)
+        authoritative["profile"] = execution_env.AUTHORITATIVE_OCI_PROFILE
+        authoritative["runtime"] = {
+            "kind": "oci-image",
+            "os": "linux",
+            "architecture": platform.machine().lower(),
+            "manifest_digest": "sha256:" + "d" * 64,
+        }
+        authoritative["sandbox"].update(
+            backend="linux-bubblewrap", reported_version="0.11.0"
+        )
+        self._set_environment_document(authoritative)
+        self._assert_pre_execution_rejected("requires explicit trusted runtime evidence")
+
+        evidence = {
+            "schema": execution_env.TRUSTED_RUNTIME_EVIDENCE_SCHEMA,
+            "profile": execution_env.AUTHORITATIVE_OCI_PROFILE,
+            "runtime": copy.deepcopy(authoritative["runtime"]),
+        }
+        with mock.patch.object(
+            runner, "_host_operating_system", return_value="linux"
+        ), mock.patch.object(
+            runner.platform,
+            "machine",
+            return_value=authoritative["runtime"]["architecture"],
+        ):
+            self.assertEqual(
+                runner._runtime_facts(
+                    execution_env.AUTHORITATIVE_OCI_PROFILE, evidence
+                ),
+                authoritative["runtime"],
+            )
+        self.assertNotIn(
+            "trusted_runtime_evidence",
+            {action.dest for action in runner._parser()._actions},
+        )
+
+    def test_sandbox_identity_mismatch_stops_before_probe_or_stage(self) -> None:
+        sandbox = copy.deepcopy(self.environment_document["sandbox"])
+        sandbox["policy_root"] = "sha256:" + "f" * 64
+        probe = mock.Mock()
+        execute = mock.Mock()
+        with self.assertRaisesRegex(
+            runner.ReplayExecutionError, "sealed descriptor.*sandbox.policy_root"
+        ):
+            self._run(
+                _isolation=self.isolation,
+                _sandbox_probe=lambda _isolation: sandbox,
+                _probe_executor=probe,
+                _executor=execute,
+            )
+        probe.assert_not_called()
+        execute.assert_not_called()
+
+    def test_probe_failures_and_mismatches_stop_before_stage_one(self) -> None:
+        mismatched = copy.deepcopy(self.probe_document)
+        mismatched["numpy"]["version"] = "2.3.3"
+        cases = (
+            (
+                "malformed",
+                lambda *_args: (0, b"{", b""),
+                "probe output is invalid",
+            ),
+            (
+                "noncanonical-extra-bytes",
+                lambda *_args: (0, self.probe_bytes + b"\n", b""),
+                "not canonical-json-v1",
+            ),
+            (
+                "extra-member",
+                lambda *_args: (
+                    0,
+                    execution_env.canonical_json_bytes(
+                        {**self.probe_document, "unexpected": True}
+                    ),
+                    b"",
+                ),
+                "unknown keys",
+            ),
+            (
+                "nonzero",
+                lambda *_args: (19, b"", b"probe failed"),
+                "failed with status 19",
+            ),
+            (
+                "timeout",
+                lambda *args: (_ for _ in ()).throw(
+                    subprocess.TimeoutExpired(args[0], 1)
+                ),
+                "timed out",
+            ),
+            (
+                "mismatch",
+                lambda *_args: (
+                    0,
+                    execution_env.canonical_json_bytes(mismatched),
+                    b"",
+                ),
+                r"descriptor at \$\.numpy\.version",
+            ),
+            (
+                "oversized",
+                lambda *_args: (0, b"x" * (runner.PROBE_STDOUT_LIMIT + 1), b""),
+                "byte limit",
+            ),
+        )
+        for label, probe, pattern in cases:
+            with self.subTest(label=label):
+                execute = mock.Mock()
+                with self.assertRaisesRegex(runner.ReplayExecutionError, pattern):
+                    self._run(
+                        _isolation=self.isolation,
+                        _probe_executor=probe,
+                        _executor=execute,
+                    )
+                execute.assert_not_called()
+                self.assertEqual(list(self.context.roots.output.iterdir()), [])
+                self.assertEqual(list(self.context.roots.scratch.iterdir()), [])
+
+    def test_final_probe_rejects_environment_change_after_last_stage(self) -> None:
+        changed = copy.deepcopy(self.probe_document)
+        changed["sqlite"]["version"] = "3.50.5"
+        responses = iter(
+            (
+                self.probe_bytes,
+                execution_env.canonical_json_bytes(changed),
+            )
+        )
+        stages: list[str] = []
+
+        def probe(command, cwd, child_environment, isolation):
+            self._successful_probe(command, cwd, child_environment, isolation)
+            return 0, next(responses), b""
+
+        def execute(command, _cwd, _environment, _isolation) -> int:
+            stage_id = self._stage_id(command)
+            stages.append(stage_id)
+            self._write_stage_outputs(stage_id)
+            return 0
+
+        with self.assertRaisesRegex(
+            runner.ReplayExecutionError,
+            r"changed during replay at \$\.sqlite\.version",
+        ):
+            self._run(
+                _isolation=self.isolation,
+                _probe_executor=probe,
+                _executor=execute,
+            )
+        self.assertEqual(stages, [stage.id for stage in self.context.stages])
+        self.assertEqual(len(self.probe_invocations), 2)
+        self.assertEqual(list(self.context.roots.scratch.iterdir()), [])
+
+    def test_final_probe_rechecks_host_runtime_after_last_stage(self) -> None:
+        changed_runtime = copy.deepcopy(self.environment_document["runtime"])
+        changed_runtime["host_fingerprint"] = "sha256:" + "f" * 64
+        stages: list[str] = []
+
+        def execute(command, _cwd, _environment, _isolation) -> int:
+            stage_id = self._stage_id(command)
+            stages.append(stage_id)
+            self._write_stage_outputs(stage_id)
+            return 0
+
+        with mock.patch.object(
+            runner,
+            "_development_runtime_facts",
+            side_effect=(
+                copy.deepcopy(self.environment_document["runtime"]),
+                changed_runtime,
+            ),
+        ):
+            with self.assertRaisesRegex(
+                runner.ReplayExecutionError,
+                "live runtime identity changed during replay",
+            ):
+                self._run(
+                    _isolation=self.isolation,
+                    _executor=execute,
+                )
+        self.assertEqual(stages, [stage.id for stage in self.context.stages])
+        self.assertEqual(len(self.probe_invocations), 1)
+
+    def test_probe_process_capture_enforces_deadline_and_byte_limits(self) -> None:
+        process_environment = {
+            "HOME": "/nonexistent",
+            "LANG": "C.UTF-8",
+            "LC_ALL": "C.UTF-8",
+            "PATH": "/nonexistent",
+        }
+        with self.assertRaisesRegex(runner.ReplayExecutionError, "byte limit"):
+            runner._capture_process(
+                (sys.executable, "-I", "-c", "import os;os.write(1,b'x'*64)"),
+                self.base,
+                process_environment,
+                timeout_seconds=5,
+                stdout_limit=8,
+                stderr_limit=8,
+            )
+        with self.assertRaisesRegex(runner.ReplayExecutionError, "timed out"):
+            runner._capture_process(
+                (sys.executable, "-I", "-c", "import time;time.sleep(5)"),
+                self.base,
+                process_environment,
+                timeout_seconds=0.05,
+                stdout_limit=8,
+                stderr_limit=8,
+            )
+
+    def test_stage_timeout_kills_its_process_group_without_waiting(self) -> None:
+        process = mock.Mock(pid=4242)
+        process.poll.return_value = None
+        process.wait.side_effect = (
+            subprocess.TimeoutExpired(("sandbox", "stage"), 0.25),
+            0,
+        )
+        isolation = runner.IsolationBoundary("fixture", ("sandbox",))
+        with mock.patch.object(
+            runner.subprocess, "Popen", return_value=process
+        ) as popen, mock.patch.object(runner.os, "killpg") as killpg:
+            with self.assertRaisesRegex(
+                runner.ReplayExecutionError,
+                "timed out after 0.25 seconds",
+            ):
+                runner._execute(
+                    ("python", "stage.py"),
+                    self.base,
+                    {"PATH": "/nonexistent"},
+                    isolation,
+                    timeout_seconds=0.25,
+                )
+        popen.assert_called_once_with(
+            ["sandbox", "python", "stage.py"],
+            cwd=self.base,
+            env={"PATH": "/nonexistent"},
+            start_new_session=True,
+        )
+        killpg.assert_called_once_with(4242, signal.SIGKILL)
+        self.assertEqual(
+            process.wait.call_args_list,
+            [mock.call(timeout=0.25), mock.call(timeout=5)],
+        )
+        process.kill.assert_not_called()
+
+    def test_production_executor_receives_configured_stage_timeout(self) -> None:
+        observed: list[float] = []
+
+        def execute(
+            command,
+            _cwd,
+            _environment,
+            _isolation,
+            *,
+            timeout_seconds,
+        ) -> int:
+            observed.append(timeout_seconds)
+            self._write_stage_outputs(self._stage_id(command))
+            return 0
+
+        with mock.patch.object(runner, "_execute", side_effect=execute):
+            self._run(
+                _isolation=self.isolation,
+                stage_timeout_seconds=12.5,
+            )
+        self.assertEqual(
+            observed,
+            [12.5] * len(self.context.stages),
+        )
+
+        for invalid in (0, -1, float("nan"), float("inf"), True):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(
+                    runner.ReplayExecutionError,
+                    "finite positive number",
+                ):
+                    self._run(
+                        _isolation=self.isolation,
+                        stage_timeout_seconds=invalid,
+                    )
     def test_environment_must_be_read_only_and_singly_linked(self) -> None:
         self.environment_path.chmod(0o644)
         self._assert_pre_execution_rejected("must have mode 0o444")
@@ -538,6 +1113,11 @@ class ReplayRunnerTest(unittest.TestCase):
         self.assertIn(str(self.base), profile)
         self.assertIn(str(self.context.roots.output), profile)
         self.assertIn(str(self.context.roots.scratch), profile)
+        self.assertEqual(boundary.executable, Path("/usr/bin/sandbox-exec"))
+        self.assertEqual(
+            boundary.policy,
+            runner._sandbox_policy_document("darwin-sandbox-exec"),
+        )
 
         with mock.patch.object(runner, "_real_file"):
             linux = runner._linux_boundary(self.context, interpreter)
@@ -550,6 +1130,52 @@ class ReplayRunnerTest(unittest.TestCase):
             self.assertIn(
                 ("--ro-bind", str(Path("/lib").resolve()), "/lib"), triples
             )
+        self.assertEqual(linux.executable, Path("/usr/bin/bwrap"))
+        self.assertEqual(
+            linux.policy,
+            runner._sandbox_policy_document("linux-bubblewrap"),
+        )
+
+    def test_sandbox_facts_bind_executable_version_and_structural_policy(self) -> None:
+        executable = self.base.parent / "fixture-bwrap"
+        executable.write_bytes(b"fixture sandbox executable")
+        boundary = runner.IsolationBoundary(
+            "linux-bubblewrap",
+            (str(executable), "--unshare-all"),
+            executable,
+            runner._sandbox_policy_document("linux-bubblewrap"),
+        )
+        with mock.patch.object(
+            runner, "_sandbox_reported_version", return_value="0.11.0"
+        ):
+            facts = runner._sandbox_facts(boundary)
+        self.assertEqual(
+            facts["executable_sha256"],
+            hashlib.sha256(executable.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(facts["reported_version"], "0.11.0")
+        self.assertEqual(
+            facts["policy_root"],
+            execution_env.sandbox_policy_root(boundary.policy),
+        )
+
+    def test_runner_file_closure_covers_entry_preparation_and_probe_chain(self) -> None:
+        self.assertEqual(
+            set(runner.RUNNER_FILES),
+            {
+                "brain/build_context.py",
+                "brain/tools/authority_contracts.py",
+                "brain/tools/execution_environment.py",
+                "brain/tools/prepare_replay_v2.py",
+                "brain/tools/probe_execution_environment.py",
+                "brain/tools/run_offline.py",
+                "brain/tools/run_replay_v2.py",
+            },
+        )
+        self.assertEqual(
+            runner._runner_files_root(),
+            execution_env.runner_files_root(runner.RUNNER_FILES),
+        )
 
     def test_output_state_contains_content_digests(self) -> None:
         stage_id = self.context.stages[0].id
@@ -677,6 +1303,28 @@ class ReplayRunnerTest(unittest.TestCase):
         ), mock.patch.object(
             run_offline.prepare_replay_v2,
             "prepare_replay_v2",
+        ) as prepare_invalid_timeout:
+            with self.assertRaisesRegex(
+                runner.ReplayExecutionError,
+                "stage timeout must be a finite positive number",
+            ):
+                run_offline.run(
+                    manifest,
+                    root=self.base,
+                    workspace=workspace,
+                    authority_git_commit="a" * 40,
+                    authority_root="sha256:" + "b" * 64,
+                    semantic_epoch="brain-v3",
+                    stage_timeout_seconds=float("nan"),
+                )
+        prepare_invalid_timeout.assert_not_called()
+
+        with mock.patch.object(
+            run_offline.run_replay_v2,
+            "require_isolated_startup",
+        ), mock.patch.object(
+            run_offline.prepare_replay_v2,
+            "prepare_replay_v2",
             return_value=prepared,
         ) as prepare, mock.patch.object(
             run_offline.run_replay_v2,
@@ -692,6 +1340,7 @@ class ReplayRunnerTest(unittest.TestCase):
                     semantic_epoch="brain-v3",
                     prior_state_root="sha256:" + "c" * 64,
                     interpreter=Path(sys.executable),
+                    stage_timeout_seconds=12.5,
                 ),
                 0,
             )
@@ -715,6 +1364,7 @@ class ReplayRunnerTest(unittest.TestCase):
             expected_configuration_sha256=prepared.configuration_sha256,
             expected_environment_sha256=prepared.environment_sha256,
             interpreter=Path(sys.executable),
+            stage_timeout_seconds=12.5,
         )
 
         with mock.patch.object(
