@@ -96,6 +96,15 @@ These pins do not by themselves make v2 authority-ready: acquisition receipts, l
 and request preimages still require explicit v3 source-plan/source-manifest/offline-pack
 integration.
 
+The sealed D1 acquisition foundation additionally exists, but has not been run against
+production in this branch. `brain/acquire_d1_snapshot.py` uses one checked-in read-only
+statement for articles, every community edge (including tombstones), and community nodes;
+checks row counts and exact migrated column inventories; binds the production account and
+database UUID plus the pinned Node/Wrangler closure; and atomically publishes a private,
+content-addressed bundle containing clock-free normalized objects and validated receipt/
+lineage evidence. The legacy annotation pull and community harvester are not yet wired to
+consume it, so no source-plan or release authority claim follows from the tool alone.
+
 ## Verification state and required final commands
 
 Focused results recorded on 2026-09-04:
@@ -112,7 +121,7 @@ Focused results recorded on 2026-09-04:
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
 
-The Hugging Face checkpoint passed the full Python gate (35 commands) and the Worker gate
+The acquisition checkpoint passed the full Python gate (36 commands) and the Worker gate
 (37 files / 845 tests). Before merging, or after any continuation changes, rerun exactly:
 
 ```bash
@@ -135,6 +144,7 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 -m unittest -v \
   brain.test_compile_offline_pack_v2 \
   brain.test_preflight_offline_pack_v2 \
   brain.test_authority_contracts \
+  brain.test_acquire_d1_snapshot \
   brain.test_execution_environment \
   brain.test_prepare_replay_v2 \
   brain.test_run_replay_v2 \
@@ -179,9 +189,10 @@ declaration-oracle roots are locally available. The configured Mathlib root
 The first real pack remains blocked on evidence or data that cannot be manufactured from
 the current checkout:
 
-1. Acquire a fresh, read-only canonical D1 annotation/community snapshot. The current pull
-   manifest records `2026-08-06T04:19:49.266Z`; D1 remains canonical and must never be
-   re-seeded from these disk files.
+1. Run and review the new sealed, read-only D1 annotation/community acquisition command,
+   then migrate both consumers to its one-generation bundle. The current pull manifest
+   records `2026-08-06T04:19:49.266Z`; D1 remains canonical and must never be re-seeded
+   from these disk files. No production D1 query was run while implementing the tool.
 2. Restore or reacquire the read-only Mathlib source tree and bind its full commit/tree.
    Also prove the declaration oracle belongs to that exact Mathlib revision.
 3. Bind the reviewed Hugging Face revisions and local consistency sidecars into canonical
@@ -210,7 +221,8 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had only about 3.0 GiB free and reported 100% capacity at the latest check.
+The filesystem had about 10 GiB free at the latest check, after fluctuating as low as
+1.2–3.0 GiB during this work.
 The available non-Mathlib corpus already occupies 1.425 GiB, before adding the required
 Mathlib source tree, the content-addressed pack, compiler temporary duplication, or replay
 outputs. This is not safe headroom for the first real pack.
@@ -225,8 +237,9 @@ duplicate temporary object; the real plan is required for an exact number.
 1. Preserve both required hermetic gates for every continuation change; the branch now has
    independently reviewed compiler/runtime, evidence-contract, pair-publication, and fold
    fail-closed checkpoints.
-2. Remove remaining observation/run metadata from normalized bytes, finish coherent
-   D1/Wikidata acquisition, then design the explicit v3 receipt/lineage pack integration
+2. Remove remaining observation/run metadata from normalized bytes, wire the sealed D1
+   bundle into consumers, finish Wikidata acquisition separation, then design the explicit
+   v3 receipt/lineage pack integration
    (including the reviewed Hugging Face sources) and author the
    reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.
 3. Run the bounded preflight on a larger volume; require structural success and separately
