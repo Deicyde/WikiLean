@@ -67,7 +67,9 @@ gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean
 python3 bot/poll.py --mathlib /tmp/unused --decide     # act|wait (cheap, gh-only)
 # Management
 python3 manage/status.py [--live]  # ground-truth snapshot (the SessionStart hook runs this)
-python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/coverage/worklists)
+python3 manage/refresh.py [--snapshot-bundle /absolute/path] # rebuild control plane
+# Operator-only live read: the launcher enforces isolated CPython 3.12 (-I -S).
+brain/acquire-d1-snapshot.sh [--store /absolute/private/snapshot/store]
 ```
 
 ## Hard invariants — do not break

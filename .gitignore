@@ -53,6 +53,9 @@ docs/outreach.md
 site/cache/*
 !site/cache/*.meta.json
 site/out/
+# Sealed D1 annotation-mirror lock and crash-safe staging/old-cache trees.
+site/.annotations.pull.lock
+site/.annotations.pull.*.tmp/
 
 # Hugging Face caches + reviewed sidecars (reacquire only at revisions in
 # catalog/huggingface_pins.json; legacy matching bytes may use --adopt-existing)
@@ -131,6 +134,9 @@ site/out_w3c/
 # keeps only the richest slug and discards these). The canonical re-anchored
 # *.json backups stay tracked.
 site/annotations/*.agent1.json
+# Local recovery copies of root sidecars absent from a sealed D1 snapshot.
+# They are non-authoritative and excluded from annotation/Brain consumers.
+site/annotations/.d1_disk_only/
 # LaTeX build intermediates (report.pdf is the committed artifact)
 docs/research/bridge-report/*.aux
 docs/research/bridge-report/*.fls

@@ -178,14 +178,18 @@ or environment configuration. Shared stage I/O provides deterministic private sc
 durable atomic no-replace publication for files and trees, rollback of partial multi-output
 publication, and cross-filesystem refusal.
 
-The acquisition boundary now also has a sealed, read-only D1 snapshot command and a
-bundle-only community-edge consumer. The harvester independently verifies the bundle
-closure, toolchain and evidence chain, validates tombstones, and pins graduated provenance
-to the normalization-lineage identity; it has no live-query or fixture bypass. Scheduled
-graduation is disabled by default and requires an explicit absolute reviewed bundle path.
-Nightly LaunchAgents are now generated from the current checkout after a sparse-environment
-preflight seals the exact Python and Mathlib paths; no tracked host-specific plist remains,
-and installation never loads or starts a job.
+The acquisition boundary now also has a sealed, read-only D1 snapshot command plus
+bundle-only community-edge and annotation-cache consumers. A shared independent verifier
+checks the bundle closure, exact CPython/local dependency and Node/Wrangler toolchain,
+receipt/lineage chain, normalized rows, and tombstones; neither consumer has a live-query or
+fixture bypass. The annotation mirror constructs the complete next cache off to the side,
+atomically exchanges it, and quarantines disk-only recovery copies outside the active
+selector. Scheduled graduation is disabled by default and requires an explicit absolute
+reviewed bundle path. Nightly LaunchAgents are generated from the current checkout after a
+sparse-environment preflight seals the exact Python and Mathlib paths; no tracked
+host-specific plist remains, and installation never loads or starts a job. A 2026-09-05
+production capture attempt stopped before issuing the query because no locally configured
+D1-read token was available; it created no snapshot store and made no production change.
 
 Frontier replay no longer consumes the separately generated `manage/data/halo.json`.
 Its historical `mean_stateability` value is recomputed from the exact bound cells and
@@ -402,9 +406,20 @@ explicit approval.
       verified sealed bundle. The harvester has no live-query or fixture path, validates
       the complete edge/node/tombstone generation, and nightly execution is disabled unless
       an operator configures an absolute bundle directory.
-    - [ ] Capture and review a fresh canonical production bundle, migrate the annotation
-      consumer away from `pull-annotations.ts`, and bind the reviewed receipt/lineage into
-      source-plan authority. No production D1 query was run while implementing these tools.
+    - [x] Make the annotation cache mirror consume only an explicitly supplied, independently
+      verified sealed bundle. It stages an exact D1 article generation, preserves exact JSON
+      numbers, atomically swaps the complete cache, and moves disk-only sidecars into an
+      ignored, non-authoritative recovery quarantine. The retired `pull-annotations.ts`
+      live-query path no longer exists.
+    - [ ] Capture and review a fresh canonical production bundle and bind its reviewed
+      receipt/lineage into source-plan authority. A 2026-09-05 attempt failed closed before
+      the query because the non-interactive environment lacked a locally configured
+      D1-read token; no snapshot store or production mutation resulted.
+    - [ ] Before materially larger D1 corpora, replace full-response/full-cache cloning with
+      bounded streaming or incremental staging, report safely removable post-crash sibling
+      generations, and strengthen bootstrap executable discovery beyond the currently
+      digest-bound operator `PATH`. Add versioned verifier profiles only if old bundle
+      generations need long-term compatibility.
   - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
     output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
     validates complete typed responses and redirects, and isolates ordinary missing QIDs
@@ -567,10 +582,9 @@ explicit approval.
   differently licensed TheoremGraph object before making this gate strict.
 
 **Next P0-R implementation order:** (1) finish removing audit/observation fields from
-normalized bytes, run and review the sealed coherent D1 export, migrate the remaining
-annotation consumer, and finish splitting live Wikidata acquisition from folding; (2) bind
-the resulting D1 receipt/lineage objects, including
-the reviewed Hugging Face inputs, in
+normalized bytes, run and review the sealed coherent D1 export, and finish splitting live
+Wikidata acquisition from folding; (2) bind the resulting D1 receipt/lineage objects,
+including the reviewed Hugging Face inputs, in
 explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
 current-corpus source plan on a volume with adequate space; (3) finish the trusted OCI
 launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
@@ -740,8 +754,9 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## P1 — Close the loop (the core re-architecture)
 
-- [x] **One-time rescue pull** — DONE 2026-06-10. `wiki/scripts/pull-annotations.ts`
-  (`npm run pull`); 709 rows pulled: 47 sidecars created, 8 real content updates
+- [x] **One-time rescue pull** — DONE 2026-06-10. The historical
+  `wiki/scripts/pull-annotations.ts` path (now retired in favor of sealed-bundle mirroring)
+  pulled 709 rows: 47 sidecars created, 8 real content updates
   (the 7 user-edited slugs' human edits rescued + Tangent_bundle stale-sidecar fix),
   manifest at site/annotations/.d1_pull_manifest.json. Human edits now in git.
 - [x] **Stable annotation IDs** — DONE 2026-06-11, applied to production: 31,394 ids
