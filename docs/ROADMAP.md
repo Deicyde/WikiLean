@@ -191,6 +191,25 @@ host-specific plist remains, and installation never loads or starts a job. A 202
 production capture attempt stopped before issuing the query because no locally configured
 D1-read token was available; it created no snapshot store and made no production change.
 
+Proposal folding now has the same explicit acquisition boundary for unknown Wikidata QIDs.
+`fold_proposals.py` first emits one canonical exact-QID request plan and never performs a
+network request; `acquire-wikidata-entities.sh` acquires that plan into a private,
+content-addressed bundle with exact request preimages, response transcript, pinned isolated
+CPython/curl policy, acquisition receipt, and normalization lineage; and a separate verifier
+replays the transcript and normalization before the fold may consume the bundle. Brain nightly
+skips acquisition for an empty plan, otherwise passes only the verified acquired bundle to the
+fold, and aborts every build/release step on planning, acquisition, path-validation, or fold
+failure. This closes the live-network fold path but does not yet bind the Wikidata receipt and
+lineage into the reviewed v3 current-corpus source plan. The legacy universe, relation-edge,
+and description jobs also remain separate live acquisitions rather than one shared sealed
+generation.
+
+Receipt and normalization-lineage logical IDs remain clock-free, so byte-identical source
+content has the same semantic evidence identity. The published bundle directory instead uses
+an exact evidence-generation hash over the canonical receipt and lineage bytes, including
+their audit clocks. A later observation of unchanged upstream bytes therefore receives a new
+immutable target and can refresh v3 freshness without overwriting older evidence.
+
 Frontier replay no longer consumes the separately generated `manage/data/halo.json`.
 Its historical `mean_stateability` value is recomputed from the exact bound cells and
 synapses using the same ring-1 neighbor-fraction semantics. The current corpus keeps all 47
@@ -198,8 +217,9 @@ areas, membership, proximity, suitability, ordering, and top-cell choices unchan
 22 stateability summaries, the stateability input-count metadata field, and the reducer
 inventory identity change.
 
-`run_offline.py` now accepts v2 packs, prepares a fresh workspace, and delegates to the
-single fail-closed `run_replay_v2.py` executor. The executor re-verifies the sealed input and
+`run_offline.py` now accepts fully verified v2 or v3 packs, prepares a fresh workspace, and
+delegates to the single fail-closed `run_replay_v2.py` executor. The executor re-verifies the
+sealed input and
 reducer closures, runs every inventory stage in order (including independent leaves), requires
 a supported OS isolation boundary with networking denied, and rejects undeclared output,
 scratch residue, or predecessor mutation. This is not yet a production reproducibility claim:
@@ -431,20 +451,33 @@ explicit approval.
       generations, and strengthen bootstrap executable discovery beyond the currently
       digest-bound operator `PATH`. Add versioned verifier profiles only if old bundle
       generations need long-term compatibility.
-  - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
-    output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
-    validates complete typed responses and redirects, and isolates ordinary missing QIDs
-    without allowing one bad ID to discard valid peers.
+  - [x] Separate proposal-fold Wikidata acquisition from folding. `fold_proposals.py`
+    deterministically emits the exact canonical unknown-QID plan, performs no network I/O,
+    and accepts only an explicit absolute bundle whose independently verified request set
+    exactly equals the current plan. The isolated acquirer preserves request preimages and
+    the complete response/bisection transcript, validates redirects and missing identities,
+    seals normalized entities plus receipt/lineage evidence, and publishes by atomic
+    no-replace rename into a private content-addressed store. Logical receipt/lineage IDs are
+    clock-free, while the bundle target binds the exact audit-bearing evidence generation.
+    Failures preserve every fold output byte.
+  - [x] Put that boundary on the Brain-nightly hard path. An empty plan skips acquisition;
+    a non-empty plan must acquire successfully into the checkout-derived private store and pass
+    strict returned-path validation before the bundle is passed explicitly to the fold.
+    Planning, acquisition, verification, or folding failure aborts build and release. The
+    single-instance lock is never stolen by age; recovery is a manual operator action only
+    after confirming no process owns it.
   - [x] Make the legacy Wikidata universe, relation-edge, and description harvesters
     all-or-nothing and atomic. They validate response shape, deterministic ordering,
     duplicates, redirects, per-source coverage, and prior-generation volume floors; a
     failed or suspiciously collapsed run preserves the prior bytes. Description output no
     longer merges mixed-age cache rows or embeds observation/run timestamps. A reviewed
     collapse requires the explicit `BRAIN_INGEST_FORCE=1` override.
-  - [ ] Split Wikidata acquisition out of `fold_proposals.py` into sealed input evidence;
-    universe/edge fetches and mixed-age description caches must likewise fail closed instead
-    of publishing partial normalized data. The legacy harvesters now fail closed, but still
-    perform separate live reads without a common receipt/lineage generation or writer lock.
+  - [ ] Replace the legacy Wikidata universe, relation-edge, and description jobs with one
+    shared sealed generation, common receipt/lineage evidence, and serialized publication.
+    Their current implementations fail closed and publish atomically, but still perform
+    separate live reads. Bind both that shared generation and the completed proposal-entity
+    bundle evidence into the reviewed v3 current-corpus source plan; neither bundle alone is
+    an authority or production-release claim.
   - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
     `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
     binds all six files by full commit, byte count, and SHA-256; acquisition rejects
@@ -600,12 +633,13 @@ explicit approval.
   differently licensed TheoremGraph object before making this gate strict.
 
 **Next P0-R implementation order:** (1) finish removing audit/observation fields from
-normalized bytes, run and review the sealed coherent D1 export, finish splitting live
-Wikidata acquisition from folding, and bind the resulting D1 plus reviewed Hugging Face
-evidence into the v3 current-corpus source plan; (2) finish the trusted OCI
-launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
-compile the first real pack and prove cross-object/source-revision coherence; (5) add the
-two-path randomized-mtime/adversarial-environment clean-room gate; (6) run the approved-
+normalized bytes, run and review the sealed coherent D1 export, replace the three legacy
+Wikidata harvests with one shared sealed generation, and bind the D1, Wikidata proposal,
+legacy-Wikidata, and reviewed Hugging Face evidence into the v3 current-corpus source plan;
+(2) finish the trusted OCI
+launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (3)
+compile the first real pack and prove cross-object/source-revision coherence; (4) add the
+two-path randomized-mtime/adversarial-environment clean-room gate; (5) run the approved-
 baseline semantic compatibility review and emit the separate two-build reproducibility
 attestation. Network acquisition, live D1 snapshots, and proposal folding remain outside
 the replay boundary throughout.

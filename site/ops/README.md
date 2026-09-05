@@ -24,8 +24,9 @@ proofwiki / oeis / stacks / tag-harvest / crossrefs; weekly: lmfdb / eom /
 planetmath / wikidata descriptions; monthly: kerodon / dlmf / mathworld —
 cadence stamp files live in `site/ops/logs/`) → **agent team**
 (`brain/sync_agents.py`, gated `WIKILEAN_BRAIN_AGENTS=1`, OFF by default;
-writes `brain/proposals/*.jsonl` only) → **fold → snapshot/cells/frontier/page
-builds and acceptance tests** → **content-addressed release freeze and independent
+writes `brain/proposals/*.jsonl` only) → **canonical Wikidata request plan → sealed
+entity acquisition when nonempty → offline fold → snapshot/cells/frontier/page builds
+and acceptance tests** → **content-addressed release freeze and independent
 verification** → **atomic current/previous public staging** → **Worker typecheck
 and unit tests**. The Brain page is copied from the same frozen release as its
 assets, never from mutable `site/out`. The nightly is shadow-only and rejects the
@@ -40,21 +41,46 @@ selector, frozen manifest/page, required explorer assets, a deterministic shard,
 REST/MCP release identity, cursor behavior, compatibility aliases, and representative
 shell/search-index baseline files. Deployment requires an explicit approved invocation;
 automatic rollback is not implemented because Wrangler has no compare-and-swap primitive.
-Ingest is fail-soft, but every build/release/deploy
-gate fails closed and logs loudly. See `docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
+Ordinary catalog ingest is fail-soft, but Wikidata planning/acquisition/folding and every
+build/release/deploy gate fail closed and log loudly. See
+`docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
 Public staging hashes and copies through a fixed 1 MiB buffer, enforces object,
 byte, per-file, and free-space limits from `nightly.env`, and never prunes the
 frozen release store automatically. Machine-readable release, SQLite, and public
 stage metrics are written under `site/out/`. Logs live in
-`site/ops/logs/brain-<ts>.log`; lock `.lock.brain.d` (4h stale recovery).
+`site/ops/logs/brain-<ts>.log`; lock `.lock.brain.d` is never stolen based on age. If it
+remains after a crash, first prove no Brain job owns it, then remove that exact directory
+manually. A private mode-0700 `.brain-run.*` directory holds only the request plan and
+captured acquirer stdout; normal cleanup removes those known files, while unexpected residue
+is deliberately retained for inspection. Content-addressed entity bundles persist under
+`catalog/.cache/wikidata/entity-bundles/`. Their directory ID binds the exact canonical
+receipt and lineage bytes, including audit clocks; clock-free receipt/lineage logical IDs
+remain stable across an unchanged re-acquisition, while the fresh evidence generation gets
+a distinct immutable directory and freshness timestamp.
 The Brain job also requires Python 3.12+ and an explicit readable
 `BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`. Put host-local
 paths in the gitignored `site/ops/nightly.local.env`; see the runbook.
+The Wikidata acquirer strips proxy configuration and forces direct HTTPS. A proxy-only host
+will fail closed, so verify direct egress to `www.wikidata.org` before relying on a scheduled
+non-empty plan. Responses are individually capped, but aggregate transcript generation and
+verification are currently in-memory; keep plans bounded pending streaming hardening.
 Community-edge graduation is separately off by default. To enable it, set
 `WIKILEAN_COMMUNITY_HARVEST=1` and point `WIKILEAN_D1_SNAPSHOT_BUNDLE` at one
 absolute, existing, sealed bundle produced by the explicit D1 acquisition step.
 The moderation job never acquires live D1 state itself and preserves the prior
 `community_edges.jsonl` if that bundle is absent or invalid.
+
+The proposal-entity bundle is not source-plan authority by itself. Its reviewed receipt,
+lineage, request preimages, and normalized object still need explicit v3 current-corpus plan
+binding. The legacy Wikidata universe, relation-edge, and description ingests also remain
+three separate live generations; replacing them with one shared sealed acquisition is still
+pending. Nightly remains shadow-only throughout and never promotes production.
+
+Run the 18 focused nightly shell tests after changing this gate:
+
+```sh
+python3 site/ops/test_brain_nightly.py
+```
 
 P1B activation-review tooling is implemented but has not been run operationally.
 Promoter dry-run can retain its exact sealed public/Worker/config inputs and raw read-only
