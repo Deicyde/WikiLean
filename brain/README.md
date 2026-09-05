@@ -181,6 +181,15 @@ The same shared writer now rejects ambient metadata in the standalone Formal Con
 Erdős joins, TauCeti/user-repository, and OpenAlex citation inputs; their checked-in metadata
 has been stripped of clocks and run/API/cache counters without changing data rows.
 
+The Git-backed Formal Conjectures, Erdős, TauCeti, and user-repository harvesters no longer
+read source bytes from mutable worktrees. After acquisition they capture one local commit,
+enumerate the requested literal tree scope, and read its UTF-8 blobs through one bounded Git
+batch reader; the recorded commit and normalized rows therefore describe the same immutable
+object snapshot even when the index, worktree, or `HEAD` changes concurrently. Symlinks,
+gitlinks, partial-clone lazy fetching, replacement objects, unsafe paths, and missing objects
+fail before publication. A local commit pin is not proof of upstream origin; reviewed source
+plans still need acquisition evidence binding each repository and fetch policy.
+
 > **⚠️ The edge set ships as TWO files.** The v2 external layer's `links` edges
 > (page→page hyperlinks + concept projections, ~393k rows / ~83 MB) pushed the joint
 > `edges.jsonl` past GitHub's **100 MB per-file hard limit**, so `build_snapshot.py`
