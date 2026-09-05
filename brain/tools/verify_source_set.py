@@ -10,9 +10,11 @@ from pathlib import Path
 from authority_contracts import (
     PACK_SCHEMA,
     PACK_SCHEMA_V2,
+    PACK_SCHEMA_V3,
     REDUCER_INPUT_INVENTORY_SCHEMA_V2,
     SOURCE_SCHEMA,
     SOURCE_SCHEMA_V2,
+    SOURCE_SCHEMA_V3,
     VerificationError,
     load_canonical_json,
     validate_offline_pack,
@@ -39,7 +41,12 @@ def verify(manifest_path: Path, root: Path | None = None) -> dict[str, object]:
             "source_manifest_id": manifest["source_manifest_id"],
             "files": files,
         }
-    if schema in {PACK_SCHEMA, PACK_SCHEMA_V2}:
+    if schema == SOURCE_SCHEMA_V3:
+        raise VerificationError(
+            "$.schema: standalone source-manifest/v3 cannot prove its evidence closure; "
+            "verify the enclosing offline-pack/v3"
+        )
+    if schema in {PACK_SCHEMA, PACK_SCHEMA_V2, PACK_SCHEMA_V3}:
         pack = validate_offline_pack(document)
         counts = verify_offline_pack_files(pack, verification_root, manifest_path=manifest_path)
         return {

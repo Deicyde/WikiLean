@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/offline-pack-source-plan/v3.json",
+  "title": "WikiLean offline-pack source plan v3",
+  "$comment": "The Python source-plan validator is normative. It applies the frozen v1 structural rules, derives source-manifest/v3 identities, and can verify the complete receipt, lineage, parent-manifest, and request-preimage closure against separately supplied physical roots.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "inventory_id",
+    "input_bindings",
+    "sources",
+    "reducer",
+    "configuration",
+    "environment",
+    "schemas"
+  ],
+  "properties": {
+    "schema": {"const": "wikilean.offline-pack-source-plan/v3"},
+    "inventory_id": {"$ref": "#/$defs/hash"},
+    "input_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/inputBinding"}
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "reducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "git_commit", "entrypoint"],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "git_commit": {"$ref": "#/$defs/gitCommit"},
+        "entrypoint": {"$ref": "#/$defs/literalRelativePath"}
+      }
+    },
+    "configuration": {"$ref": "#/$defs/rootFile"},
+    "environment": {"$ref": "#/$defs/rootFile"},
+    "schemas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/schemaFile"}
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$"},
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*//)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*\\\\)(?!.*\\/$)[^\\u0000]+$"
+    },
+    "literalRelativePath": {
+      "allOf": [
+        {"$ref": "#/$defs/relativePath"},
+        {"pattern": "^[^*?\\[\\]{}]+$"}
+      ]
+    },
+    "mediaType": {"type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$"},
+    "rootFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "path", "sha256", "bytes"],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+      }
+    },
+    "schemaFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "path", "sha256", "bytes", "pack_path", "media_type"],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "pack_path": {
+          "allOf": [
+            {"$ref": "#/$defs/literalRelativePath"},
+            {"pattern": "^schemas/"}
+          ]
+        },
+        "media_type": {"$ref": "#/$defs/mediaType"}
+      }
+    },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "enum": [
+            "git_commit",
+            "content_sha256",
+            "dataset_revision",
+            "http_etag",
+            "database_snapshot"
+          ]
+        },
+        "value": {"type": "string", "minLength": 1, "maxLength": 512},
+        "tree": {"$ref": "#/$defs/gitCommit"}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["type"], "properties": {"type": {"const": "git_commit"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/gitCommit"}}}
+        },
+        {
+          "if": {"required": ["type"], "properties": {"type": {"const": "content_sha256"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/digest"}}}
+        },
+        {
+          "if": {"required": ["tree"]},
+          "then": {"properties": {"type": {"const": "git_commit"}}}
+        }
+      ]
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expression", "redistribution"],
+      "properties": {
+        "expression": {"type": "string", "minLength": 1},
+        "redistribution": {"enum": ["allowed", "restricted", "link-only", "unknown"]},
+        "attribution": {"type": ["string", "null"]},
+        "notice": {"type": ["string", "null"]}
+      }
+    },
+    "sourceObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "roles",
+        "root",
+        "path",
+        "sha256",
+        "bytes",
+        "media_type",
+        "redistribution"
+      ],
+      "properties": {
+        "name": {"$ref": "#/$defs/name"},
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["raw", "normalized", "receipt"]}
+        },
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"$ref": "#/$defs/mediaType"},
+        "redistribution": {"enum": ["allowed", "restricted", "link-only", "unknown"]}
+      }
+    },
+    "receiptFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root",
+        "path",
+        "sha256",
+        "bytes",
+        "media_type",
+        "acquisition_receipt_id"
+      ],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"const": "application/json"},
+        "acquisition_receipt_id": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "lineageFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root",
+        "path",
+        "sha256",
+        "bytes",
+        "media_type",
+        "normalization_lineage_id"
+      ],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"const": "application/json"},
+        "normalization_lineage_id": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "requestPreimageFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root",
+        "path",
+        "sha256",
+        "bytes",
+        "media_type",
+        "parameters_sha256"
+      ],
+      "properties": {
+        "root": {"$ref": "#/$defs/name"},
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "bytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "media_type": {"$ref": "#/$defs/mediaType"},
+        "parameters_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "sourceEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acquisition_receipts",
+        "normalization_lineage",
+        "request_parameter_preimages"
+      ],
+      "properties": {
+        "acquisition_receipts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/receiptFile"}
+        },
+        "normalization_lineage": {"$ref": "#/$defs/lineageFile"},
+        "request_parameter_preimages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/requestPreimageFile"}
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "source_kind",
+        "pin",
+        "objects",
+        "license",
+        "acquisition",
+        "normalization"
+      ],
+      "properties": {
+        "source": {"$ref": "#/$defs/name"},
+        "source_kind": {
+          "enum": ["acquired_dataset", "curated_git_tree", "sealed_snapshot"]
+        },
+        "pin": {"$ref": "#/$defs/pin"},
+        "objects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/sourceObject"}
+        },
+        "license": {"$ref": "#/$defs/license"},
+        "acquisition": {"$ref": "#/$defs/tool"},
+        "normalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema", "tool", "inputs", "outputs"],
+          "properties": {
+            "schema": {"type": "string", "minLength": 1},
+            "tool": {"$ref": "#/$defs/tool"},
+            "inputs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/name"}
+            },
+            "outputs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/name"}
+            }
+          }
+        },
+        "evidence": {"$ref": "#/$defs/sourceEvidence"},
+        "previous_source_manifest_id": {
+          "oneOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]
+        },
+        "review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["summary", "expected_semantic_effects"],
+          "properties": {
+            "summary": {"type": "string"},
+            "expected_semantic_effects": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "acquired_at": {"type": "string", "format": "date-time"},
+            "upstream_uri": {"type": "string"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["source_kind"],
+            "properties": {"source_kind": {"const": "curated_git_tree"}}
+          },
+          "then": {
+            "not": {"required": ["evidence"]},
+            "properties": {
+              "pin": {
+                "required": ["type", "value", "tree"],
+                "properties": {"type": {"const": "git_commit"}}
+              }
+            }
+          },
+          "else": {"required": ["evidence"]}
+        },
+        {
+          "if": {
+            "required": ["source_kind"],
+            "properties": {"source_kind": {"const": "acquired_dataset"}}
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "properties": {
+                  "acquisition_receipts": {"minItems": 1},
+                  "request_parameter_preimages": {"minItems": 1}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"pin": {"properties": {"type": {"const": "content_sha256"}}}}
+          },
+          "then": {
+            "properties": {
+              "objects": {
+                "contains": {
+                  "type": "object",
+                  "required": ["roles"],
+                  "properties": {"roles": {"contains": {"const": "raw"}}}
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bindingMember": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "source", "object"],
+      "properties": {
+        "path": {"$ref": "#/$defs/literalRelativePath"},
+        "source": {"$ref": "#/$defs/name"},
+        "object": {"$ref": "#/$defs/name"}
+      }
+    },
+    "inputBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_id", "sources", "state", "members"],
+      "properties": {
+        "input_id": {"$ref": "#/$defs/name"},
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/name"}
+        },
+        "state": {"enum": ["present", "absent"]},
+        "members": {"type": "array", "items": {"$ref": "#/$defs/bindingMember"}}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["state"], "properties": {"state": {"const": "present"}}},
+          "then": {"properties": {"members": {"minItems": 1}}}
+        },
+        {
+          "if": {"required": ["state"], "properties": {"state": {"const": "absent"}}},
+          "then": {"properties": {"members": {"maxItems": 0}}}
+        }
+      ]
+    }
+  }
+}

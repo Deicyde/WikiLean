@@ -6,6 +6,28 @@ Architecture details live in [`BRAIN-ARCHITECTURE.plan.md`](BRAIN-ARCHITECTURE.p
 the executable authority contracts are summarized in
 [`../brain/authority/README.md`](../brain/authority/README.md).
 
+## Laptop-transfer checkpoint
+
+Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest pushed
+history should include `Seal D1 annotation mirroring` followed by `Define v3 Brain evidence
+contracts`. The worktree should be clean; verify that before doing anything else.
+
+Immediate continuation order:
+
+1. Integrate source-plan/v3 into the pack compiler so v1 plans still emit byte-compatible
+   v2 packs and v3 plans emit evidence-closed v3 packs.
+2. Add v3 evidence/freshness/space handling to preflight, then allow v3 through preparation
+   and replay with tamper-before-execution tests.
+3. Configure a D1 Read-scoped Cloudflare token locally (never paste or commit it), run
+   `brain/acquire-d1-snapshot.sh`, review the private bundle, and bind it into a v3 plan.
+4. Restore a read-only Mathlib source checkout and run the reviewed plan's bounded preflight
+   before attempting the first real pack.
+5. Continue the Wikidata separation work described in `ROADMAP.md`; no live acquisition or
+   tracked data regeneration is required to resume the code work.
+
+No Worker deployment, production promotion, D1 write, or live Wikidata fetch was performed
+in this stabilization session.
+
 ## Bottom line
 
 The SQLite architecture and its fixture-scale sealed replay path are substantially
@@ -31,8 +53,8 @@ Branch: `codex/brain-architecture-phase1`. At this handoff it contains:
 - immutable Brain release assembly and streamed closure verification;
 - exact-release promotion, durable deployment-journal, public-baseline, and activation-
   evidence tooling, all production-inactive;
-- versioned source-manifest, `offline-pack/v2`, reducer-inventory, build-context,
-  execution-environment, and build-attestation contracts;
+- versioned source-manifest and offline-pack contracts through v3, plus reducer-inventory,
+  build-context, execution-environment, and build-attestation contracts;
 - standalone, self-identifying acquisition-receipt and normalization-lineage contracts
   with fail-closed request accounting, query-free evidence URIs, hashed request parameters,
   exact origins, and audit-only timestamps;
@@ -55,11 +77,11 @@ The report is explicitly `source-plan-only` with `runtime_environment_checked: f
 readiness fields are not runtime, replay, release, or deployment claims. The preflight CLI
 returns `0` only when `source_publishable` is true, `2` for a valid but non-publishable source
 plan (including warning-class authority/publication concerns), and `1` for structural or
-argument errors. All report/error output is canonical JSON. Receipt-role detection is
-presence-only in v2: standalone `acquisition-receipt/v1` and
-`normalization-lineage/v1` contracts now exist, but they cannot make a v2 source
-authority-ready until an explicit v3 pack/source-manifest integration seals and verifies
-their bytes.
+argument errors. All report/error output is canonical JSON. Receipt-role detection remains
+presence-only in v2. The explicit v3 source-manifest, source-plan, and offline-pack contracts
+now validate and seal receipt, lineage, and request-preimage bytes with clock-free logical
+identities. Compiler, preflight, preparation, and replay integration remain the next step;
+current compilation is still v1 plan to v2 pack only.
 
 The subsequent acquisition-integrity milestone adds:
 
@@ -92,9 +114,9 @@ The immutable Hugging Face acquisition milestone additionally adds:
 - deterministic hierarchy/theoremgraph-link lineage plus immutable premise-index API pins,
   with backward compatibility for the deployed legacy mtime-shaped manifest.
 
-These pins do not by themselves make v2 authority-ready: acquisition receipts, lineage,
-and request preimages still require explicit v3 source-plan/source-manifest/offline-pack
-integration.
+These pins do not by themselves make v2 authority-ready. The v3 contracts now express and
+verify acquisition receipts, lineage, and request preimages, but current inputs still need
+real evidence and the compiler/preflight/replay path still needs v3 integration.
 
 The sealed D1 acquisition foundation additionally exists, but has not completed a production
 capture in this branch. Run it only through `brain/acquire-d1-snapshot.sh`, which selects
@@ -136,7 +158,7 @@ Focused results recorded through 2026-09-05:
 
 - offline-pack compiler: 22 tests passed;
 - source-plan preflight: 15 tests passed;
-- authority contracts: 65 tests passed;
+- authority contracts: 74 tests passed, including the v3 evidence and parent-DAG closure;
 - proposal-fold acquisition: 10 tests passed;
 - external pair publication/reader fixtures: all checks passed;
 - execution environment: 20 tests passed;
