@@ -106,6 +106,7 @@ fi
 BRAIN_SEMANTIC_EPOCH="${WIKILEAN_BRAIN_SEMANTIC_EPOCH:-brain-v3-current}"
 BRAIN_REDUCER_SCHEDULE="${WIKILEAN_BRAIN_REDUCER_SCHEDULE:-brain-v3-current}"
 BRAIN_REDUCER_VERSION="${WIKILEAN_BRAIN_REDUCER_VERSION:-1}"
+WIKIDATA_ENTITY_STORE="$REPO/catalog/.cache/wikidata/entity-bundles"
 RELEASE_STORE="$REPO/site/out/brain-releases"
 RELEASE_RESULT="$REPO/site/out/brain-release-result.json"
 RELEASE_METRICS_RESULT="$REPO/site/out/brain-release-metrics.json"
@@ -128,18 +129,29 @@ fi
 . "$(dirname "$0")/retry-lib.sh"
 
 # Single-instance lock — its OWN lock (.lock.brain.d) so this job coexists with
-# the 03:10/03:20 jobs. Atomic mkdir, 4h stale recovery.
+# the 03:10/03:20 jobs. Never steal it based on age: an old timestamp does not
+# prove that the owning process is dead.
 LOCKDIR="$LOGDIR/.lock.brain.d"
 if ! mkdir "$LOCKDIR" 2>/dev/null; then
-  if [ -n "$(find "$LOCKDIR" -maxdepth 0 -mmin +240 2>/dev/null)" ]; then
-    rmdir "$LOCKDIR" 2>/dev/null
-    mkdir "$LOCKDIR" 2>/dev/null || { echo "[$TS] brain lock race — skipping" >>"$LOGDIR/skips.log"; exit 0; }
-  else
-    echo "[$TS] previous brain run still active — skipping" >>"$LOGDIR/skips.log"
-    exit 0
-  fi
+  echo "[$TS] brain lock exists; refusing age-only recovery — verify no process is active, then remove $LOCKDIR manually" >>"$LOGDIR/skips.log"
+  exit 1
 fi
-trap 'rmdir "$LOCKDIR" 2>/dev/null' EXIT
+RUN_DIR=""
+cleanup() {
+  cleanup_status=$?
+  trap - EXIT
+  if [ -n "$RUN_DIR" ] && [ -d "$RUN_DIR" ]; then
+    rm -f "$RUN_DIR/wikidata-request-plan.json" \
+          "$RUN_DIR/wikidata-acquire.stdout"
+    if ! rmdir "$RUN_DIR" 2>/dev/null; then
+      printf 'brain-nightly: private run directory not empty; inspect manually: %s\n' \
+        "$RUN_DIR" >&2
+    fi
+  fi
+  rmdir "$LOCKDIR" 2>/dev/null || true
+  exit "$cleanup_status"
+}
+trap cleanup EXIT
 
 # A new enabled run invalidates every prior machine-readable result immediately,
 # even if runtime/input preflight fails or the process is interrupted later.
@@ -170,6 +182,41 @@ if [ -z "$BRAIN_MATHLIB_CHECKOUT" ] \
     echo "!!! BRAIN_MATHLIB_CHECKOUT must name a readable mathlib4/Mathlib directory"
     echo "    configured value: ${BRAIN_MATHLIB_CHECKOUT:-unset}"
   } >>"$LOG" 2>&1
+  exit 1
+fi
+case "$WIKIDATA_ENTITY_STORE" in
+  /*) ;;
+  *)
+    {
+      echo "=== WikiLean nightly BRAIN refresh $TS ==="
+      echo "!!! derived Wikidata entity store must be an absolute path"
+      echo "    configured value: ${WIKIDATA_ENTITY_STORE:-unset}"
+    } >>"$LOG" 2>&1
+    exit 1
+    ;;
+esac
+if ! RUN_DIR="$(mktemp -d "$LOGDIR/.brain-run.XXXXXX")"; then
+  echo "[$TS] could not create private Brain run directory" >>"$LOG"
+  exit 1
+fi
+chmod 0700 "$RUN_DIR" || {
+  echo "[$TS] could not secure private Brain run directory $RUN_DIR" >>"$LOG"
+  exit 1
+}
+if ! "$PYTHON_BIN" - "$RUN_DIR" <<'PY'
+import stat
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+metadata = path.lstat()
+if path.is_symlink() or not stat.S_ISDIR(metadata.st_mode):
+    raise SystemExit("run directory is not a real directory")
+if stat.S_IMODE(metadata.st_mode) != 0o700:
+    raise SystemExit("run directory does not have mode 0700")
+PY
+then
+  echo "[$TS] private Brain run directory validation failed: $RUN_DIR" >>"$LOG"
   exit 1
 fi
 
@@ -305,6 +352,107 @@ sha256_text() {
   "$PYTHON_BIN" -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())'
 }
 
+wikidata_plan_qid_count() {
+  "$PYTHON_BIN" - "$1" <<'PY'
+import json
+import re
+import stat
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+before = path.lstat()
+if path.is_symlink() or not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
+    raise SystemExit("request plan is not a single-link regular file")
+if stat.S_IMODE(before.st_mode) != 0o644:
+    raise SystemExit("request plan must have mode 0644")
+data = path.read_bytes()
+after = path.lstat()
+if (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) != (
+    after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns
+):
+    raise SystemExit("request plan changed while being read")
+
+def object_without_duplicates(pairs):
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError(f"duplicate key {key!r}")
+        value[key] = item
+    return value
+
+try:
+    plan = json.loads(
+        data.decode("utf-8"),
+        object_pairs_hook=object_without_duplicates,
+        parse_constant=lambda value: (_ for _ in ()).throw(
+            ValueError(f"non-finite number {value!r}")
+        ),
+    )
+except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+    raise SystemExit(f"invalid request-plan JSON: {exc}") from exc
+if not isinstance(plan, dict) or set(plan) != {"schema", "qids"}:
+    raise SystemExit("request plan must contain exactly schema and qids")
+if plan["schema"] != "wikilean.wikidata-entity-request-plan/v1":
+    raise SystemExit("unexpected request-plan schema")
+qids = plan["qids"]
+if not isinstance(qids, list) or len(qids) > 50000:
+    raise SystemExit("request-plan qids must be an array of at most 50000 entries")
+qid_pattern = re.compile(r"Q[1-9][0-9]{0,11}")
+if any(not isinstance(qid, str) or qid_pattern.fullmatch(qid) is None for qid in qids):
+    raise SystemExit("request plan contains a non-canonical QID")
+if qids != sorted(set(qids)):
+    raise SystemExit("request-plan QIDs must be unique and sorted")
+canonical = json.dumps(
+    plan, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+).encode("utf-8")
+if data != canonical:
+    raise SystemExit("request plan is not canonical JSON")
+print(len(qids))
+PY
+}
+
+wikidata_bundle_path() {
+  "$PYTHON_BIN" - "$1" "$2" <<'PY'
+import re
+import stat
+import sys
+from pathlib import Path
+
+stdout_path, store = map(Path, sys.argv[1:])
+raw = stdout_path.read_bytes()
+try:
+    text = raw.decode("utf-8")
+except UnicodeDecodeError as exc:
+    raise SystemExit("acquirer stdout is not UTF-8") from exc
+if not text.endswith("\n") or text.count("\n") != 1:
+    raise SystemExit("acquirer must print exactly one newline-terminated path")
+line = text[:-1]
+if not line or line.strip() != line:
+    raise SystemExit("acquirer output path is empty or padded")
+target = Path(line)
+if not store.is_absolute() or not target.is_absolute():
+    raise SystemExit("bundle store and acquired path must be absolute")
+store_metadata = store.lstat()
+target_metadata = target.lstat()
+if store.is_symlink() or not stat.S_ISDIR(store_metadata.st_mode) \
+        or stat.S_IMODE(store_metadata.st_mode) != 0o700:
+    raise SystemExit("bundle store is not a real mode-0700 directory")
+if target.is_symlink() or not stat.S_ISDIR(target_metadata.st_mode) \
+        or stat.S_IMODE(target_metadata.st_mode) != 0o700:
+    raise SystemExit("acquirer output is not a real mode-0700 directory")
+store_real = store.resolve(strict=True)
+target_real = target.resolve(strict=True)
+try:
+    relative = target_real.relative_to(store_real)
+except ValueError as exc:
+    raise SystemExit("acquirer output escaped the configured store") from exc
+if len(relative.parts) != 1 or re.fullmatch(r"[0-9a-f]{64}", relative.name) is None:
+    raise SystemExit("acquirer output is not a content-addressed store child")
+print(target_real)
+PY
+}
+
 # Cadence stamps: due <name> <days> is true when .stamp.<name> is missing or
 # older than <days> days. Stamps are touched after the ATTEMPT (adapters keep
 # their own caching/staleness, so a flaky source doesn't re-trigger the whole
@@ -392,12 +540,62 @@ cd "$REPO" || exit 1
 
   # ---- 3. FOLD + BUILD (abort publish on failure, keep old shards) -----------
   PUBLISH_OK=1
-  echo "=== fold proposals (deterministic verifier; network: Wikidata) ==="
-  if [ "$PUBLISH_OK" = "1" ] && "$PYTHON_BIN" "$REPO/brain/fold_proposals.py"; then
-    echo "(fold GREEN)"
-  elif [ "$PUBLISH_OK" = "1" ]; then
-    echo "!!! fold_proposals FAILED — build and publish aborted; see fold output above"
+  FOLD_ARGS=()
+  WIKIDATA_REQUEST_PLAN="$RUN_DIR/wikidata-request-plan.json"
+  WIKIDATA_ACQUIRE_STDOUT="$RUN_DIR/wikidata-acquire.stdout"
+  WIKIDATA_QID_COUNT=""
+  WIKIDATA_BUNDLE=""
+
+  echo "=== plan sealed Wikidata evidence for proposal fold ==="
+  if "$PYTHON_BIN" "$REPO/brain/fold_proposals.py" \
+      --write-wikidata-request-plan "$WIKIDATA_REQUEST_PLAN"; then
+    if WIKIDATA_QID_COUNT="$(wikidata_plan_qid_count "$WIKIDATA_REQUEST_PLAN")" \
+        && case "$WIKIDATA_QID_COUNT" in ''|*[!0-9]*) false ;; *) true ;; esac; then
+      echo "(Wikidata request plan GREEN: $WIKIDATA_QID_COUNT QIDs)"
+    else
+      echo "!!! Wikidata request plan validation FAILED — build and release aborted"
+      PUBLISH_OK=0
+    fi
+  else
+    echo "!!! Wikidata request planning FAILED — build and release aborted"
     PUBLISH_OK=0
+  fi
+
+  if [ "$PUBLISH_OK" = "1" ] && [ "$WIKIDATA_QID_COUNT" -gt 0 ]; then
+    echo "=== acquire sealed Wikidata entity evidence ==="
+    if WIKILEAN_PYTHON="$PYTHON_BIN" \
+        "$REPO/brain/acquire-wikidata-entities.sh" \
+        "$WIKIDATA_REQUEST_PLAN" --store "$WIKIDATA_ENTITY_STORE" \
+        >"$WIKIDATA_ACQUIRE_STDOUT"; then
+      if WIKIDATA_BUNDLE="$(wikidata_bundle_path \
+          "$WIKIDATA_ACQUIRE_STDOUT" "$WIKIDATA_ENTITY_STORE")"; then
+        FOLD_ARGS=(--wikidata-entity-bundle "$WIKIDATA_BUNDLE")
+        echo "(Wikidata entity acquisition GREEN: $WIKIDATA_BUNDLE)"
+      else
+        echo "!!! Wikidata acquisition returned an invalid bundle path — build and release aborted"
+        PUBLISH_OK=0
+      fi
+    else
+      echo "!!! Wikidata entity acquisition FAILED — build and release aborted"
+      PUBLISH_OK=0
+    fi
+  elif [ "$PUBLISH_OK" = "1" ]; then
+    echo "(Wikidata request set empty — acquisition skipped)"
+  fi
+
+  echo "=== fold proposals (deterministic sealed-evidence verifier) ==="
+  if [ "$PUBLISH_OK" = "1" ]; then
+    if [ -n "$WIKIDATA_BUNDLE" ]; then
+      "$PYTHON_BIN" "$REPO/brain/fold_proposals.py" "${FOLD_ARGS[@]}"
+    else
+      "$PYTHON_BIN" "$REPO/brain/fold_proposals.py"
+    fi
+    if [ "$?" = "0" ]; then
+      echo "(fold GREEN)"
+    else
+      echo "!!! fold_proposals FAILED — build and publish aborted; see fold output above"
+      PUBLISH_OK=0
+    fi
   fi
   echo
   echo "=== rebuild brain graph (rollups are pinned — not rebuilt nightly) ==="
@@ -519,6 +717,8 @@ PY
   DIRTY=""
   if ! DIRTY="$(git -C "$REPO" status --porcelain -- \
       wiki/ site/assets \
+      brain/acquire-wikidata-entities.sh brain/acquire_wikidata_entities.py \
+      brain/wikidata_entity_bundle.py brain/fold_proposals.py brain/ingest/common.py \
       brain/tools/build_release.py brain/tools/verify_release.py brain/tools/measure_store.py \
       brain/tools/authority_contracts.py brain/authority/schemas \
       brain/authority/reducer-inputs-v1.json \
