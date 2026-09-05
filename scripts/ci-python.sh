@@ -57,8 +57,9 @@ run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py
+run_check "Portable nightly launcher tests" "$PYTHON_BIN" site/ops/test_nightly_launchd.py
 run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.py
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 36 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 37 commands passed; all required offline scenarios ran.\n'

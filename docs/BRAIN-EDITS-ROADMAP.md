@@ -140,10 +140,13 @@ through live Wikidata validation followed by a `brain_nodes` mint. For `xref`, v
 
 Everything is live and attributed; the human/AI label lets viewers weight/filter
 AI-submitted edges, and a bad edge is corrected by **deletion** (which leaves the
-gravestone), not a review queue. At nightly graduation, the harvester reuses the
-declaration/QID endpoint-oracle helpers for AI rows; it does not run community rows through
-the complete proposal-fold state machine. Failed AI endpoint checks do not enter the next
-static base.
+gravestone), not a review queue. Endpoint existence is enforced when the Worker accepts an
+edge: non-xref endpoints must resolve in the pinned static release or be a Wikidata QID
+validated and persisted as a community node. Graduation then revalidates every row against
+that same sealed static + live-community node universe. This is the deterministic endpoint
+oracle for both actor types; AI rows remain visibly AI-authored and medium-confidence, but
+graduation does not re-read an ambient declaration cache, checkout, PATH tool, or live
+Wikidata state.
 
 ### Read model (locality preserved)
 
@@ -171,7 +174,7 @@ connections with no new nodes.**
 | **1. Write/read/delete API ✅** | `POST /api/brain/edge`, `GET /api/brain/edges`, `DELETE /api/brain/edge/:id`; auth + origin + rate-limit + release/QID/kind/registry validation + provenance + dedupe + soft-delete gravestone; unit tests | ✅ 18 tests + adversarial security review (1 finding fixed) |
 | **2. Overlay UI ✅** | overlay fetch in `renderPanel` (`renderCommunity`); community chip (added-by + human/AI); "add a connection" panel (labels search for target, kind dropdown, xref DB picker + value, evidence note) + a delete affordance on community edges | ✅ verified in preview: list renders with chips, add-form + xref toggle work, graceful-degrades when the API is absent |
 | **3. Cross-pollination ✅** | `xref-shared` inference over community + static xref edges (build emits `xref_index.json`; overlay endpoint infers partners; UI "Same object elsewhere" block) | ✅ 3 tests (community↔community, community→static both ways, no false partners) + verified in preview |
-| **4. Graduation ✅** | `harvest_community_edges.py`: live (non-deleted) D1 edges → `brain/data/community_edges.jsonl` (human trusted; AI through the oracle); `build_shards.py` folds graduated xrefs into `xref_index.json`; wired into nightly moderation (`WIKILEAN_COMMUNITY_HARVEST`) | ✅ 6 tests + offline end-to-end run (AI-to-bogus-node dropped; graduated xref appears in the static index). A later Brain release incorporates the harvested file; production release deployment remains opt-in and is gated by `docs/ROADMAP.md` P1B/P1C. |
+| **4. Graduation ✅** | `harvest_community_edges.py`: one sealed D1 bundle → `brain/data/community_edges.jsonl`; both human and AI rows are checked against the sealed static + live-community node universe, with AI retained as medium-confidence; `build_shards.py` folds graduated xrefs into `xref_index.json` | ✅ Sealed-bundle, tombstone, trust-label, deterministic-output, and shard-integration tests. A later Brain release incorporates the harvested file; production release deployment remains opt-in and is gated by `docs/ROADMAP.md` P1B/P1C. Nightly execution is disabled unless an operator configures an explicit reviewed bundle path. |
 
 The original build order—backend, UI, cross-pollination, then graduation—is complete.
 All new architecture work is tracked in `docs/ROADMAP.md`.
@@ -188,8 +191,10 @@ All new architecture work is tracked in `docs/ROADMAP.md`.
 - **Soft-delete only in D1** — a delete never removes the row; it writes the gravestone
   (`status='deleted'`, `deleted_by/at`). Cross-release no-resurrection is not yet guaranteed
   and is explicitly owned by Phase 3.
-- Nightly graduation applies additional endpoint-oracle checks to AI rows before they enter
-  the next static base; this is narrower than the full `fold_proposals` state machine.
+- Graduation rechecks every endpoint against the exact sealed node universe. The Worker has
+  already resolved static endpoints and validated/minted new QIDs before insertion, so this
+  check is deterministic and does not depend on an unsealed local oracle. AI provenance and
+  medium confidence remain intact.
 
 ## Resolved (Jack, 2026-07-05)
 

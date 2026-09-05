@@ -3,7 +3,8 @@
 #
 # Runs as the logged-in user so the Claude Max-plan subscription login (read by
 # the `claude` CLI the agent SDK spawns) is available. launchd hands us a bare
-# environment, so every path is absolute and PATH is set explicitly.
+# environment, so the wrapper derives its checkout and validates host-local
+# paths before doing any work.
 #
 # Sequence: flush any checkpointed-but-unposted work from a prior failed run
 # (free), drift-sweep (wp-update, zero agent tokens), then a bounded review
@@ -11,11 +12,10 @@
 # same script serves the smoke test and the production schedule.
 set -uo pipefail
 
-REPO="/Users/jack/Desktop/LEAN/WikiLean"
-PY="$REPO/catalog/.venv/bin/python3"
-export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-export WIKILEAN_MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"
-export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.vars")"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)" || exit 1
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/nightly-runtime.sh"
+wikilean_ops_init || exit 1
 
 # Force Max-subscription auth. launchd hands us a bare env (no key), but when
 # this is launched interactively via run-now.sh it inherits ANTHROPIC_API_KEY
@@ -24,10 +24,10 @@ export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.var
 # Scrub it so both launch paths use the Max login.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 
-# Editable tunables live in site/ops/nightly.env (the one place to change the
-# nightly rate/budgets). Sourced with ":=" so an env override still wins and the
-# run-now.sh smoke-test env survives. Missing file → the inline defaults below.
-[ -f "$REPO/site/ops/nightly.env" ] && . "$REPO/site/ops/nightly.env"
+if [ "${WIKILEAN_OPS_PREFLIGHT_ONLY:-0}" = "1" ]; then
+  wikilean_ops_print_check
+  exit 0
+fi
 
 # Tunables (fallback defaults if nightly.env is absent; overridden in the smoke test).
 WPUPDATE_LIMIT="${WIKILEAN_WPUPDATE_LIMIT:-300}"
@@ -56,7 +56,7 @@ LOG="$LOGDIR/moderate-$TS.log"
 # reset (the 2026-07-02 run lost all 29 jobs to a 03:10 reset). See nightly.env.
 # Shared implementation (reset-time-aware sleep, budget-stop detection,
 # tunables): site/ops/retry-lib.sh.
-. "$(dirname "$0")/retry-lib.sh"
+. "$SCRIPT_DIR/retry-lib.sh"
 
 # Single-instance lock (macOS has no flock): atomic mkdir, with stale recovery
 # after 4h in case a prior run was killed without cleaning up. A review batch
@@ -83,7 +83,7 @@ cd "$REPO/site" || exit 1
   # the live D1 annotation layer first (needs wrangler auth in this env — verify
   # before enabling, or it fails soft and refresh falls back to disk).
   MANAGE_PULL=""; [ "${WIKILEAN_MANAGE_PULL:-0}" = "1" ] && MANAGE_PULL="--pull"
-  python3 "$REPO/manage/refresh.py" $MANAGE_PULL || echo "(manage refresh returned $?)"
+  "$PY" "$REPO/manage/refresh.py" $MANAGE_PULL || echo "(manage refresh returned $?)"
   echo
   echo "--- flush prior checkpoints (zero agent tokens) ---"
   "$PY" moderate.py flush || echo "(flush returned $?)"
@@ -111,7 +111,7 @@ cd "$REPO/site" || exit 1
     # Run the reviewer ONLY if the verifier succeeded AND wrote a non-empty list
     # this run — never trust a possibly-stale file from a prior run (it would
     # burn tokens re-reviewing already-formalized articles).
-    if python3 "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
+    if "$PY" "$REPO/manage/formalize_backlog.py" --limit "$FORMALIZE_LIMIT" \
          && [ -s "$REPO/manage/data/formalize_slugs.txt" ]; then
       retry_on_ratelimit "$PY" moderate.py review --slugs "$REPO/manage/data/formalize_slugs.txt" \
             --limit "$FORMALIZE_LIMIT" --concurrency "$CONCURRENCY" \
@@ -141,27 +141,35 @@ cd "$REPO/site" || exit 1
     # artifacts it posts). Crossref backfill first (fail-soft: atomic write
     # keeps the last good file) — the brain nightly consumes it at 02:20
     # tomorrow. The old graph/atlas KV refresh lived here until 2026-07-10.
-    python3 "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
+    "$PY" "$REPO/catalog/mathlib_deps/fetch_crossrefs.py" || echo "(crossrefs fetch returned $? — using last good file)"
     # FormalConjectures frontier ingest — same fail-soft contract; the DRIFT
     # lines in its output are the frontier moving (open→solved flips).
-    python3 "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
+    "$PY" "$REPO/catalog/ingest_formal_conjectures.py" || echo "(fc ingest returned $? — using last good file)"
     # The old concept-graph/atlas page + endpoint stack is DELETED (retired
     # 2026-07-10, tombstones destroyed 2026-08-04): /graph_data.json,
     # /atlas_data.json and /api/atlas are plain 404s, their builders are
     # deleted, and the brain nightly (brain-nightly.sh) owns the graph now.
     # Coverage still refreshes here — manage/ worklists consume it.
-    python3 "$REPO/manage/coverage.py" || echo "(coverage returned $?)"
+    "$PY" "$REPO/manage/coverage.py" || echo "(coverage returned $?)"
     echo
   fi
-  # Community brain edges (docs/BRAIN-EDITS-ROADMAP.md phase 4): snapshot the live
-  # D1 tail into brain/data/community_edges.jsonl (human edges trusted; AI edges
-  # verified against the oracle). This is the graduation record the brain rebuild
-  # folds into the static base. Fail-soft — the graph refresh already ran. The
-  # brain SHARD rebuild + deploy is a separate step (not yet in this nightly).
-  if [ "${WIKILEAN_COMMUNITY_HARVEST:-1}" = "1" ]; then
-    echo "--- graduate community brain edges (D1 → community_edges.jsonl) ---"
-    python3 "$REPO/brain/harvest_community_edges.py" \
-      || echo "(community harvest returned $? — keeping the last snapshot)"
+  # Community edges are reduced from one independently acquired and sealed D1
+  # snapshot bundle. This job never performs live D1 acquisition implicitly.
+  # Invalid/missing input skips the reducer and leaves the prior output intact.
+  if [ "${WIKILEAN_COMMUNITY_HARVEST:-0}" = "1" ]; then
+    echo "--- graduate community brain edges (sealed D1 bundle → community_edges.jsonl) ---"
+    COMMUNITY_BUNDLE="${WIKILEAN_D1_SNAPSHOT_BUNDLE:-}"
+    if [ -z "$COMMUNITY_BUNDLE" ] \
+        || [ "${COMMUNITY_BUNDLE#/}" = "$COMMUNITY_BUNDLE" ] \
+        || [ ! -d "$COMMUNITY_BUNDLE" ]; then
+      echo "!!! WIKILEAN_COMMUNITY_HARVEST=1 requires an absolute existing WIKILEAN_D1_SNAPSHOT_BUNDLE directory"
+      echo "!!! community harvest skipped; keeping the prior community_edges.jsonl"
+    else
+      COMMUNITY_BUNDLE="$(CDPATH= cd -- "$COMMUNITY_BUNDLE" && pwd -P)"
+      "$PY" "$REPO/brain/harvest_community_edges.py" \
+        --snapshot-bundle "$COMMUNITY_BUNDLE" \
+        || echo "(community harvest returned $? — keeping the prior community_edges.jsonl)"
+    fi
     echo
   fi
   # /decl/:name reverse citations — same success-gated KV pattern, but under
@@ -169,7 +177,7 @@ cd "$REPO/site" || exit 1
   # cited_by refresh (they share nothing but the pattern).
   if [ "${WIKILEAN_DECLCITES_REFRESH:-1}" = "1" ]; then
     echo "--- refresh /decl reverse citations (KV declcites:v1) ---"
-    if python3 "$REPO/site/build_decl_citations.py"; then
+    if "$PY" "$REPO/site/build_decl_citations.py"; then
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
             declcites:v1 --path="$REPO/site/out/decl_citations.json" ) \
@@ -185,7 +193,7 @@ cd "$REPO/site" || exit 1
   # fail-soft lives inside the builder (a dead docs site keeps its last blob).
   if [ "${WIKILEAN_LIBDECLS_REFRESH:-1}" = "1" ]; then
     echo "--- refresh multi-library decl fabric (KV libdecls:v1) ---"
-    if python3 "$REPO/site/build_library_decls.py"; then
+    if "$PY" "$REPO/site/build_library_decls.py"; then
       if [ "${WIKILEAN_GRAPH_DEPLOY:-1}" = "1" ]; then
         ( cd "$REPO/wiki" && npx wrangler kv key put --binding=RENDER_CACHE --remote \
             libdecls:v1 --path="$REPO/site/out/library_decls.json" ) \
@@ -209,7 +217,7 @@ cd "$REPO/site" || exit 1
       case "$s" in index|concepts|about|404|brain) continue;; esac
       [ -f "$REPO/site/annotations/$s.json" ] || continue
       [ -f "$REPO/site/cache/$s.html" ] || continue
-      if python3 "$REPO/site/render.py" "$s" >/dev/null 2>&1; then
+      if "$PY" "$REPO/site/render.py" "$s" >/dev/null 2>&1; then
         n_ok=$((n_ok + 1))
       else
         n_fail=$((n_fail + 1))

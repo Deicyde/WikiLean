@@ -93,9 +93,17 @@ python3 brain/acquire_d1_snapshot.py
 The command uses the repository-pinned Wrangler/Node closure, a private config
 bound to the production D1 UUID, and a sanitized subprocess environment. It emits
 validated acquisition-receipt and normalization-lineage documents under
-`catalog/.cache/d1/snapshots/`. It does not write D1. The legacy community-edge
-harvester does not consume this bundle yet, so running it is acquisition evidence,
-not a source-plan or release cutover.
+`catalog/.cache/d1/snapshots/`. It does not write D1. Graduate community edges only
+from one explicit bundle:
+
+```bash
+python3 brain/harvest_community_edges.py --snapshot-bundle <bundle>
+```
+
+The harvester independently verifies bundle closure, modes, toolchain/evidence,
+normalized rows, and tombstones, then pins output provenance to the normalization-lineage
+ID. Acquisition and graduation still do not make the annotation mirror or source plan
+authoritative, and this command has not been run against production in this branch.
 
 Writers publish through temporary files + rename; ordinary publication errors roll
 back the full base generation, and snapshot IDs make a hard interruption between
@@ -277,7 +285,7 @@ when `catalog/data/external/` lacks the needed ingest file (P6–P8) or when
 | `brain/data/discovery_proposals.jsonl` | 153 verified discovery links | 79 KB | yes |
 | `brain/data/discovery_rejected.jsonl` | rejected rows + reasons (audit trail) | 104 KB | yes |
 | `brain/data/grading_disputes.jsonl` | skeptic-rejected audits of SHIPPED grounding grades — the human-review queue feeding grounding_overrides.jsonl | small | yes |
-| `brain/data/community_edges.jsonl` | graduated live D1 community edges (harvest_community_edges.py) | small | yes |
+| `brain/data/community_edges.jsonl` | community edges graduated from a verified sealed D1 bundle (`harvest_community_edges.py`) | small | yes |
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~820 KB | yes |
 | `site/assets/brain/` | cells/ (v3 atom shards, build_cell_shards.py) + xref_index.json + sources.json — the v2 per-node shards/manifest/labels/aliases/views are retired | ~95 MB | **gitignored** (rebuild) |
 

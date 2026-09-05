@@ -51,11 +51,13 @@ the model matches reality within ~15%, and review is ~100% of nightly spend.
 
 ## 3. Draining the 610-article annotate backlog (sizes the newtags-launchd decision)
 
-The annotate worklist holds **610 candidates**. newtags caps at 40 articles/night
-under a 2M-token budget — but **newtags is NOT currently scheduled**: the plist
-exists (`site/ops/org.wikilean.newtags.plist`) but is not installed in launchd
-(only `org.wikilean.moderate` + `org.wikilean.poll` are loaded); last new-mode
-record 2026-07-03.
+The 2026-08-04 annotate worklist held **610 candidates**. Newtags caps at 40
+articles/night under a 2M-token budget. The repository now renders its newtags,
+moderation, and Brain plists from `site/ops/launchd-plist.template`; operational
+installation is host-local and must be verified with `launchctl print` rather
+than inferred from a checked-in plist. The last telemetry used by this memo had
+a new-mode record on 2026-07-03, so all backlog/yield numbers below remain a
+historical planning baseline, not a claim about current launchd state.
 
 - Nights: 610 ÷ 40 = 15.25 → **≥16 nightly runs (~3 weeks)**.
 - Tokens: 610 × 19.7k ≈ **12.0M total ≈ $806 equiv**; per night 40 × 19.7k ≈
