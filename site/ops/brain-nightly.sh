@@ -54,11 +54,18 @@ done
 # every agent call dies with 0 tokens. Scrub it so all launch paths use Max.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 
+# Preserve explicit values sealed into a rendered LaunchAgent plist. They must
+# win over a stale local file when an operator deliberately supplies overrides.
+LAUNCHD_PYTHON="${WIKILEAN_PYTHON:-}"
+LAUNCHD_BRAIN_MATHLIB="${BRAIN_MATHLIB_CHECKOUT:-}"
+
 # Editable tunables live in site/ops/nightly.env (sourced with ":=" so a
 # one-off env override still wins). Host-local absolute paths belong in the
 # gitignored nightly.local.env, sourced afterward. Missing files use defaults.
 [ -f "$REPO/site/ops/nightly.env" ] && . "$REPO/site/ops/nightly.env"
 [ -f "$REPO/site/ops/nightly.local.env" ] && . "$REPO/site/ops/nightly.local.env"
+[ -n "$LAUNCHD_PYTHON" ] && WIKILEAN_PYTHON="$LAUNCHD_PYTHON"
+[ -n "$LAUNCHD_BRAIN_MATHLIB" ] && BRAIN_MATHLIB_CHECKOUT="$LAUNCHD_BRAIN_MATHLIB"
 
 # launchd's system Python is 3.9 on this host, below WikiLean's supported 3.12.
 # Select an explicit interpreter and fail before ingest/build work if it is not
@@ -75,6 +82,10 @@ else
   done
   [ -n "$PYTHON_BIN" ] || PYTHON_BIN="$(command -v python3 2>/dev/null || true)"
 fi
+if [ -n "$PYTHON_BIN" ] && [ "${PYTHON_BIN#/}" != "$PYTHON_BIN" ] \
+    && [ -d "$(dirname -- "$PYTHON_BIN")" ]; then
+  PYTHON_BIN="$(CDPATH= cd -- "$(dirname -- "$PYTHON_BIN")" && pwd -P)/$(basename -- "$PYTHON_BIN")"
+fi
 AGENT_PY="${WIKILEAN_BRAIN_AGENT_PYTHON:-$REPO/catalog/.venv/bin/python3}"
 
 BRAIN_REFRESH="${WIKILEAN_BRAIN_REFRESH:-1}"
@@ -82,6 +93,11 @@ BRAIN_AGENTS="${WIKILEAN_BRAIN_AGENTS:-0}"
 BRAIN_AGENT_BUDGET="${WIKILEAN_BRAIN_AGENT_BUDGET:-500000}"
 BRAIN_DEPLOY="${WIKILEAN_BRAIN_DEPLOY:-0}"
 BRAIN_MATHLIB_CHECKOUT="${BRAIN_MATHLIB_CHECKOUT:-}"
+if [ -n "$BRAIN_MATHLIB_CHECKOUT" ] \
+    && [ "${BRAIN_MATHLIB_CHECKOUT#/}" != "$BRAIN_MATHLIB_CHECKOUT" ] \
+    && [ -d "$BRAIN_MATHLIB_CHECKOUT" ]; then
+  BRAIN_MATHLIB_CHECKOUT="$(CDPATH= cd -- "$BRAIN_MATHLIB_CHECKOUT" && pwd -P)"
+fi
 if [ -n "$BRAIN_MATHLIB_CHECKOUT" ]; then
   export BRAIN_MATHLIB_CHECKOUT
 else
@@ -138,6 +154,7 @@ if [ "$BRAIN_DEPLOY" != "0" ]; then
   exit 1
 fi
 if [ ! -x "$PYTHON_BIN" ] \
+    || [ "${PYTHON_BIN#/}" = "$PYTHON_BIN" ] \
     || ! "$PYTHON_BIN" -c 'import sys; raise SystemExit(sys.version_info < (3, 12))'; then
   {
     echo "=== WikiLean nightly BRAIN refresh $TS ==="
@@ -145,7 +162,9 @@ if [ ! -x "$PYTHON_BIN" ] \
   } >>"$LOG" 2>&1
   exit 1
 fi
-if [ -z "$BRAIN_MATHLIB_CHECKOUT" ] || [ ! -d "$BRAIN_MATHLIB_CHECKOUT/Algebra" ]; then
+if [ -z "$BRAIN_MATHLIB_CHECKOUT" ] \
+    || [ "${BRAIN_MATHLIB_CHECKOUT#/}" = "$BRAIN_MATHLIB_CHECKOUT" ] \
+    || [ ! -d "$BRAIN_MATHLIB_CHECKOUT/Algebra" ]; then
   {
     echo "=== WikiLean nightly BRAIN refresh $TS ==="
     echo "!!! BRAIN_MATHLIB_CHECKOUT must name a readable mathlib4/Mathlib directory"

@@ -3,26 +3,27 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>org.wikilean.brain</string>
+	<string>@LABEL@</string>
 	<key>ProcessType</key>
 	<string>Background</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>/bin/bash</string>
-		<string>/Users/jackmccarthy/projects/WikiLean/site/ops/brain-nightly.sh</string>
+		<string>@SCRIPT@</string>
 	</array>
 	<key>RunAtLoad</key>
 	<false/>
+@ENVIRONMENT@
 	<key>StandardErrorPath</key>
-	<string>/Users/jackmccarthy/Library/Logs/WikiLean/brain.err.log</string>
+	<string>@STDERR@</string>
 	<key>StandardOutPath</key>
-	<string>/Users/jackmccarthy/Library/Logs/WikiLean/brain.out.log</string>
+	<string>@STDOUT@</string>
 	<key>StartCalendarInterval</key>
 	<dict>
 		<key>Hour</key>
-		<integer>2</integer>
+		<integer>@HOUR@</integer>
 		<key>Minute</key>
-		<integer>20</integer>
+		<integer>@MINUTE@</integer>
 	</dict>
 </dict>
 </plist>
