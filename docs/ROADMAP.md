@@ -515,10 +515,17 @@ explicit approval.
       regenerate the tracked artifact with no other semantic change, and make the generator
       atomic and reproducible across input location/mtime. The required CI check compares the
       checked-in artifact byte-for-byte with a fresh generation.
+    - [x] Remove acquisition clocks and API/cache-dependent counts from the standalone Erdos,
+      formal-conjecture, Lean-repository, and OpenAlex inputs. Their shared atomic writer now
+      rejects run-local and unknown metadata, and a required regression protects the four
+      checked-in artifacts plus future user-repository harvests. Data rows are unchanged.
     - [ ] Replace the absolute checkout path in `mathlib_tag_xrefs.jsonl` with logical root,
-      Mathlib revision, and declaration-oracle digest; canonicalize absolute
-      `decl_renames.jsonl` source locations; and move timestamps/API counters out of the
-      standalone Erdos, formal-conjecture, Lean-repository, and OpenAlex inputs.
+      Mathlib revision, and declaration-oracle digest, and canonicalize absolute
+      `decl_renames.jsonl` source locations.
+    - [ ] Make the Formal Conjectures, Erdős, and generic Lean-repository harvesters read exact
+      blobs from one captured Git commit rather than a mutable worktree. A clean-tree check is
+      insufficient; use `ls-tree` plus one `cat-file --batch`, reject symlinks/gitlinks and
+      partial-clone lazy fetches, and test dirty/untracked/deleted/concurrent-worktree cases.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration

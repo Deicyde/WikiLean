@@ -762,6 +762,13 @@ and honor each source's rate limits / robots policy. `qid` is set ONLY from CC0 
 property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed — fuzzy
 anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
 
+Standalone normalized JSONL inputs written through `brain/ingest/common.write_jsonl`
+(`formal_conjectures.jsonl`, `erdos_joins.jsonl`, `tauceti.jsonl`/user-repo harvests, and
+`external/arxiv_citations.jsonl`) likewise use a closed metadata allowlist. Their checked-in
+bytes contain source/license/revision and deterministic content counts, but no acquisition
+clock, API-call count, cache-state count, or run-local resolution/twin count. Such operational
+facts belong in future acquisition receipts rather than normalized source objects.
+
 ## Unsolved-problems frontier (formal-conjectures + erdosproblems.com)
 
 The open-conjecture corpus enters as a first-class library (the Bridge

@@ -582,6 +582,76 @@ def test_content_pin_ignores_path_and_mtime(d: Path) -> None:
     )
 
 
+def test_standalone_jsonl_metadata_is_closed_and_clock_free(d: Path) -> None:
+    output = d / "standalone.jsonl"
+    rows = [{"decl": "Fixture.theorem"}]
+    meta = {
+        "source": "fixture/repo",
+        "license": "MIT",
+        "commit": "1" * 40,
+        "n_files": 1,
+        "n_decls": 1,
+    }
+    with mock.patch.object(
+        ingest_common, "now_iso", return_value="2020-01-01T00:00:00+00:00"
+    ):
+        ingest_common.write_jsonl(output, meta, rows)
+    first = output.read_bytes()
+    with mock.patch.object(
+        ingest_common, "now_iso", return_value="2030-01-01T00:00:00+00:00"
+    ):
+        ingest_common.write_jsonl(output, meta, rows)
+    check(
+        "standalone: identical normalized input emits byte-identically across clocks",
+        output.read_bytes() == first and b"fetched_at" not in first,
+    )
+
+    rejected = 0
+    for field in (
+        "fetched_at",
+        "n_api_calls",
+        "n_resolved",
+        "n_twins",
+        "n_entry_fetched_this_run",
+        "unknown_metadata",
+    ):
+        try:
+            ingest_common.write_jsonl(output, {**meta, field: 1}, rows)
+        except ValueError:
+            rejected += 1
+    for invalid in (
+        {**meta, "source": ""},
+        {**meta, "commit": "short"},
+        {**meta, "n_files": True},
+    ):
+        try:
+            ingest_common.write_jsonl(output, invalid, rows)
+        except ValueError:
+            rejected += 1
+    check(
+        "standalone: writer rejects run-local, invalid, and unknown metadata",
+        rejected == 9 and output.read_bytes() == first,
+    )
+    openalex_output = d / "openalex.jsonl"
+    ingest_common.write_jsonl(
+        openalex_output,
+        {
+            "db": "openalex",
+            "source_pin": "fixture",
+            "license": "CC0",
+            "meaning": "fixture",
+            "n_arxiv_ids": 1,
+            "n_skipped_non_arxiv": 0,
+            "n_links": 1,
+        },
+        [{"src": "1", "dst": "2"}],
+    )
+    check(
+        "standalone: database-keyed metadata does not require a source alias",
+        openalex_output.exists(),
+    )
+
+
 def test_cap(d: Path) -> None:
     # cap 3: both anchored (a, b) + the frontier page with MOST inbound (e: 2)
     ext_nodes, _edges, stats = run_layer(d, cap=3)
@@ -871,6 +941,7 @@ def main() -> int:
         test_loading(d)
         test_external_pair_publication(d)
         test_content_pin_ignores_path_and_mtime(d)
+        test_standalone_jsonl_metadata_is_closed_and_clock_free(d)
         test_minting(d)
         test_cap(d)
         test_snippet_guard(d)
