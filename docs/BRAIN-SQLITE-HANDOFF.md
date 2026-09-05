@@ -151,6 +151,13 @@ The regenerated 1,376-row `concept_layer.jsonl` differs from its predecessor onl
 of the repeated `built_at` field; a required hermetic test now regenerates and compares the
 tracked artifact byte-for-byte. Frontier's 25 secondary-only QIDs are unchanged.
 
+The standalone normalized-input writer is now closed against run metadata. Formal
+Conjectures, Erdős joins, TauCeti/future user repositories, and OpenAlex citations no longer
+serialize acquisition clocks; OpenAlex also omits API-call and cache-dependent resolved/twin
+counts. The four checked-in artifacts were changed only in their metadata row, and a required
+regression prevents those fields from returning. Their Git-based producers still need to read
+exact committed blobs rather than mutable worktrees before their commit pins become authority.
+
 The latest Wikidata safety milestone makes the universe, relation-edge, and description
 harvesters all-or-nothing and atomic. Typed response validation, deterministic
 canonicalization, redirect handling, prior-generation/input-relative volume floors, and
@@ -409,10 +416,10 @@ the exact plan does not retain ample headroom.
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
    The shared external-pair writer and concept-layer clock cleanups are complete. Next remove
-   the absolute checkout path in `mathlib_tag_xrefs.jsonl`, canonicalize absolute
-   `decl_renames.jsonl` `file_line` values, and remove timestamps/API counters from the
-   standalone Erdos/formal-conjecture/Lean-repo/OpenAlex inputs. Add direct adapter
-   cache/pagination fixtures and carry removed telemetry into the future sealed receipts.
+   the absolute checkout path in `mathlib_tag_xrefs.jsonl` and canonicalize absolute
+   `decl_renames.jsonl` `file_line` values. Then make the Git-backed harvesters consume exact
+   commit blobs instead of mutable worktrees. Add direct adapter cache/pagination fixtures and
+   carry removed telemetry into the future sealed receipts.
    Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.

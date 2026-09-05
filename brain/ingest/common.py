@@ -88,6 +88,28 @@ EXTERNAL_PAIR_EXTRA_META_FIELDS = frozenset({
     "source_pin",
 })
 
+# ``write_jsonl`` is shared only by the standalone normalized replay inputs
+# below. Keep their metadata closed for the same reason as external pairs:
+# clocks, request counts, cache state, and run-local statistics belong in
+# acquisition receipts/audit logs rather than content-addressed input bytes.
+STANDALONE_JSONL_META_FIELDS = frozenset({
+    "commit",
+    "db",
+    "lib",
+    "license",
+    "meaning",
+    "n_arxiv_ids",
+    "n_decls",
+    "n_files",
+    "n_links",
+    "n_problems",
+    "n_research",
+    "n_skipped_non_arxiv",
+    "repo",
+    "source",
+    "source_pin",
+})
+
 _WS = re.compile(r"\s+")
 
 
@@ -257,6 +279,36 @@ def write_jsonl(path: Path, meta: dict, rows: list[dict], *,
                 allow_empty: bool = False) -> None:
     """Atomic jsonl write, first line _meta. Refuses to clobber with an empty
     set unless allow_empty (deliberate meta-only links files)."""
+    if not isinstance(meta, dict):
+        raise ValueError("normalized JSONL metadata must be an object")
+    unsupported = sorted(set(meta) - STANDALONE_JSONL_META_FIELDS)
+    if unsupported:
+        raise ValueError(
+            "metadata fields are not normalized-data fields: "
+            + ", ".join(unsupported)
+        )
+    if not any(
+        isinstance(meta.get(field), str) and bool(meta[field])
+        for field in ("source", "db")
+    ):
+        raise ValueError("normalized JSONL metadata requires nonempty source or db")
+    if not isinstance(meta.get("license"), str) or not meta["license"]:
+        raise ValueError("normalized JSONL metadata requires nonempty license")
+    for field in ("db", "lib", "meaning", "repo", "source", "source_pin"):
+        if field in meta and (
+            not isinstance(meta[field], str) or not meta[field]
+        ):
+            raise ValueError(f"normalized JSONL metadata {field} must be nonempty text")
+    if "commit" in meta and (
+        not isinstance(meta["commit"], str)
+        or re.fullmatch(r"[0-9a-f]{40}", meta["commit"]) is None
+    ):
+        raise ValueError("normalized JSONL metadata commit must be a full Git commit")
+    for field, value in meta.items():
+        if field.startswith("n_") and (
+            isinstance(value, bool) or not isinstance(value, int) or value < 0
+        ):
+            raise ValueError(f"normalized JSONL metadata {field} must be a nonnegative integer")
     if not rows and not allow_empty:
         raise RuntimeError(f"refusing to write 0 rows to {path} (fail-soft)")
     tmp = _stage_jsonl(path, meta, rows)

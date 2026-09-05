@@ -214,7 +214,6 @@ def main() -> int:
         "license": "Apache-2.0 (The Formal Conjectures Authors) — docstrings/code "
                    "stored with attribution",
         "commit": commit,
-        "fetched_at": common.now_iso(),
         "n_files": n_files,
         "n_decls": len(rows),
         "n_research": n_research,
