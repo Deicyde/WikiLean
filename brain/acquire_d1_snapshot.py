@@ -9,13 +9,14 @@ rows), every community node, and an in-snapshot count control.  Nothing is
 published until the complete response has been parsed, type checked, counted,
 normalized, and bound to the authority receipt/lineage contracts.
 
-The published directory is named by the clock-free normalization-lineage ID.
-Audit timestamps are required by the authority schemas, but are excluded from
-their logical identities.  Raw and normalized data never contain wall-clock
-values added by this program.  SIGKILL before the single atomic directory
-rename can leave a private ``.staging/*.tmp`` orphan, but can never expose a
-partial content address.  Such orphans are reported after later CLI runs and
-must only be removed when no acquisition process is active.
+The published directory is named by an exact-evidence generation ID over the
+canonical receipt and lineage bytes.  Their logical IDs remain clock-free, but
+each acquisition keeps its own audit timestamps instead of silently reusing an
+older generation.  Raw and normalized data never contain wall-clock values
+added by this program.  SIGKILL before the single atomic directory rename can
+leave a private ``.staging/*.tmp`` orphan, but can never expose a partial
+content address.  Such orphans are reported after later CLI runs and must only
+be removed when no acquisition process is active.
 
 Remote-command failures publish nothing.  Known Wrangler authentication and
 timeout JSON errors are reduced to fixed operator diagnostics; raw stdout and
@@ -138,7 +139,9 @@ REQUIRED_PYTHON_STARTUP_FLAGS = {
     "safe_path": True,
 }
 
-BUNDLE_SCHEMA = "wikilean.d1-acquisition-bundle/v1"
+BUNDLE_SCHEMA = "wikilean.d1-acquisition-bundle/v2"
+BUNDLE_GENERATION_DOMAIN = "wikilean.d1-evidence-generation.v1"
+BUNDLE_IDENTITY_BASIS = "exact_receipt_and_lineage_bytes"
 CONTROL_SCHEMA = "wikilean.d1-snapshot-control/v1"
 NORMALIZATION_SCHEMA = "wikilean.d1-snapshot-normalization/v1"
 
@@ -302,6 +305,22 @@ Runner = Callable[..., subprocess.CompletedProcess[str]]
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _evidence_generation_id(receipt_bytes: bytes, lineage_bytes: bytes) -> str:
+    """Bind one immutable publication target to the exact evidence bytes."""
+    return contracts.domain_hash(BUNDLE_GENERATION_DOMAIN, [
+        {
+            "path": "acquisition-receipt.json",
+            "sha256": _sha256(receipt_bytes),
+            "bytes": len(receipt_bytes),
+        },
+        {
+            "path": "normalization-lineage.json",
+            "sha256": _sha256(lineage_bytes),
+            "bytes": len(lineage_bytes),
+        },
+    ])
 
 
 def _file_sha256(path: Path) -> str:
@@ -1206,7 +1225,9 @@ def _bundle_files(
     receipt, lineage = _evidence_documents(
         outputs, acquisition_tool=acquisition_tool, audit_time=_timestamp(audit_time)
     )
-    bundle_id = lineage["normalization_lineage_id"]
+    receipt_bytes = contracts.canonical_json_bytes(receipt)
+    lineage_bytes = contracts.canonical_json_bytes(lineage)
+    bundle_id = _evidence_generation_id(receipt_bytes, lineage_bytes)
     deterministic_members = [
         {
             "path": "request.sql",
@@ -1241,7 +1262,7 @@ def _bundle_files(
     manifest = {
         "schema": BUNDLE_SCHEMA,
         "bundle_id": bundle_id,
-        "identity_basis": "normalization_lineage_id",
+        "identity_basis": BUNDLE_IDENTITY_BASIS,
         "request_parameters_sha256": REQUEST_PARAMETERS_SHA256,
         "sql_sha256": SQL_SHA256,
         "toolchain_sha256": _sha256(toolchain_bytes),
@@ -1258,8 +1279,8 @@ def _bundle_files(
         "request.json": _request_descriptor_bytes(),
         "toolchain.json": toolchain_bytes,
         **outputs,
-        "acquisition-receipt.json": contracts.canonical_json_bytes(receipt),
-        "normalization-lineage.json": contracts.canonical_json_bytes(lineage),
+        "acquisition-receipt.json": receipt_bytes,
+        "normalization-lineage.json": lineage_bytes,
         "bundle.json": contracts.canonical_json_bytes(manifest),
     }
     return bundle_id, files
@@ -1365,15 +1386,12 @@ def _verify_published(
     if actual_paths != set(expected_files):
         raise D1SnapshotError("published bundle member set does not match candidate")
 
-    # Logical evidence IDs deliberately ignore audit timestamps.  Every other
-    # member is byte-for-byte content addressed; evidence documents are checked
-    # by the normative validators and must resolve to the same IDs.
     for relative, expected in expected_files.items():
-        if relative in {"acquisition-receipt.json", "normalization-lineage.json"}:
-            continue
         actual = (target / relative).read_bytes()
         if actual != expected:
             raise D1SnapshotError(f"published bundle member mismatch: {relative}")
+    receipt_bytes = (target / "acquisition-receipt.json").read_bytes()
+    lineage_bytes = (target / "normalization-lineage.json").read_bytes()
     receipt = _read_json(target / "acquisition-receipt.json")
     lineage = _read_json(target / "normalization-lineage.json")
     try:
@@ -1381,8 +1399,8 @@ def _verify_published(
         contracts.validate_normalization_lineage(lineage)
     except contracts.VerificationError as exc:
         raise D1SnapshotError(str(exc)) from exc
-    if lineage["normalization_lineage_id"] != bundle_id:
-        raise D1SnapshotError("published bundle lineage does not match directory identity")
+    if _evidence_generation_id(receipt_bytes, lineage_bytes) != bundle_id:
+        raise D1SnapshotError("published bundle evidence does not match directory identity")
     expected_receipt = _read_json_bytes(expected_files["acquisition-receipt.json"])
     if receipt["acquisition_receipt_id"] != expected_receipt["acquisition_receipt_id"]:
         raise D1SnapshotError("published bundle acquisition receipt identity mismatch")

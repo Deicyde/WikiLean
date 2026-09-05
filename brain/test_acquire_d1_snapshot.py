@@ -44,6 +44,32 @@ FAKE_TOOL = {
     "version": "1",
     "sha256": snapshot._sha256(contracts.canonical_json_bytes(FAKE_TOOLCHAIN)),
 }
+VERIFIABLE_TOOLCHAIN = {
+    "schema": bundle_verifier.TOOLCHAIN_SCHEMA,
+    "invocation": {
+        "config_sha256": bundle_verifier.CONFIG_SHA256,
+        "database_binding": bundle_verifier.D1_BINDING,
+        "forwarded_environment": bundle_verifier.FORWARDED_ENVIRONMENT,
+        "forced_environment": bundle_verifier.FORCED_ENVIRONMENT,
+    },
+    "node": {"version": "v22.0.0", "sha256": "1" * 64},
+    "python": FAKE_TOOLCHAIN["python"],
+    "local_dependencies": FAKE_TOOLCHAIN["local_dependencies"],
+    "wrangler": {
+        "version": bundle_verifier.WRANGLER_VERSION,
+        "package_integrity": bundle_verifier.WRANGLER_INTEGRITY,
+        "cli_sha256": bundle_verifier.WRANGLER_CLI_SHA256,
+        "package_lock_sha256": bundle_verifier.PACKAGE_LOCK_SHA256,
+    },
+    "wrapper": FAKE_TOOLCHAIN["wrapper"],
+}
+VERIFIABLE_TOOL = {
+    "name": "wikilean-d1-acquirer",
+    "version": "1",
+    "sha256": snapshot._sha256(
+        contracts.canonical_json_bytes(VERIFIABLE_TOOLCHAIN)
+    ),
+}
 
 
 def _payload(value: dict) -> str:
@@ -215,6 +241,14 @@ class D1SnapshotTests(unittest.TestCase):
         self.assertEqual(
             bundle_verifier.REQUIRED_PYTHON_STARTUP_FLAGS,
             snapshot.REQUIRED_PYTHON_STARTUP_FLAGS,
+        )
+        self.assertEqual(
+            bundle_verifier.BUNDLE_GENERATION_DOMAIN,
+            snapshot.BUNDLE_GENERATION_DOMAIN,
+        )
+        self.assertEqual(
+            bundle_verifier.BUNDLE_IDENTITY_BASIS,
+            snapshot.BUNDLE_IDENTITY_BASIS,
         )
         self.assertEqual(
             bundle_verifier.LOCAL_DEPENDENCY_PINS,
@@ -914,7 +948,7 @@ class D1SnapshotTests(unittest.TestCase):
                     )
                 self.assertFalse(store.exists())
 
-    def test_order_is_canonical_and_raw_and_normalized_bytes_are_clock_free(self) -> None:
+    def test_clock_changes_evidence_generation_but_not_logical_ids(self) -> None:
         first = snapshot.parse_wrangler_output(response(rows()))
         second = snapshot.parse_wrangler_output(response(list(reversed(rows()))))
         self.assertEqual(first, second)
@@ -930,7 +964,7 @@ class D1SnapshotTests(unittest.TestCase):
             acquisition_toolchain=FAKE_TOOLCHAIN,
             audit_time="2030-01-01T00:00:00Z",
         )
-        self.assertEqual(first_id, later_id)
+        self.assertNotEqual(first_id, later_id)
         for path in (
             "request.sql",
             "request.json",
@@ -940,13 +974,90 @@ class D1SnapshotTests(unittest.TestCase):
             "normalized/brain_edges.jsonl",
             "normalized/brain_nodes.jsonl",
             "normalized/control.json",
-            "bundle.json",
         ):
             self.assertEqual(first_files[path], later_files[path], path)
         self.assertNotEqual(
             first_files["acquisition-receipt.json"],
             later_files["acquisition-receipt.json"],
         )
+        self.assertNotEqual(
+            first_files["normalization-lineage.json"],
+            later_files["normalization-lineage.json"],
+        )
+        first_receipt = json.loads(first_files["acquisition-receipt.json"])
+        later_receipt = json.loads(later_files["acquisition-receipt.json"])
+        first_lineage = json.loads(first_files["normalization-lineage.json"])
+        later_lineage = json.loads(later_files["normalization-lineage.json"])
+        self.assertEqual(
+            first_receipt["acquisition_receipt_id"],
+            later_receipt["acquisition_receipt_id"],
+        )
+        self.assertEqual(
+            first_lineage["normalization_lineage_id"],
+            later_lineage["normalization_lineage_id"],
+        )
+
+    def test_reacquisition_preserves_each_generation_audit_time(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            store = Path(temporary) / "store"
+            first = snapshot.publish_response(
+                response(),
+                store=store,
+                acquisition_tool=VERIFIABLE_TOOL,
+                acquisition_toolchain=VERIFIABLE_TOOLCHAIN,
+                audit_time=AUDIT_TIME,
+            )
+            later_time = "2030-01-01T00:00:00Z"
+            later = snapshot.publish_response(
+                response(),
+                store=store,
+                acquisition_tool=VERIFIABLE_TOOL,
+                acquisition_toolchain=VERIFIABLE_TOOLCHAIN,
+                audit_time=later_time,
+            )
+            self.assertNotEqual(first, later)
+            first_bundle = bundle_verifier.verify_snapshot_bundle(first)
+            later_bundle = bundle_verifier.verify_snapshot_bundle(later)
+            self.assertEqual(first_bundle.acquired_at, AUDIT_TIME)
+            self.assertEqual(later_bundle.acquired_at, later_time)
+            self.assertEqual(
+                first_bundle.acquisition_receipt_id,
+                later_bundle.acquisition_receipt_id,
+            )
+            self.assertEqual(
+                first_bundle.normalization_lineage_id,
+                later_bundle.normalization_lineage_id,
+            )
+
+    def test_verifier_rejects_retimed_evidence_under_old_generation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            target = snapshot.publish_response(
+                response(),
+                store=Path(temporary) / "store",
+                acquisition_tool=VERIFIABLE_TOOL,
+                acquisition_toolchain=VERIFIABLE_TOOLCHAIN,
+                audit_time=AUDIT_TIME,
+            )
+            receipt_path = target / "acquisition-receipt.json"
+            lineage_path = target / "normalization-lineage.json"
+            receipt = json.loads(receipt_path.read_bytes())
+            lineage = json.loads(lineage_path.read_bytes())
+            receipt["audit"]["acquired_at"] = "2030-01-01T00:00:00Z"
+            lineage["audit"]["normalized_at"] = "2030-01-01T00:00:00Z"
+            self.assertEqual(
+                contracts.acquisition_receipt_identity(receipt),
+                receipt["acquisition_receipt_id"],
+            )
+            self.assertEqual(
+                contracts.normalization_lineage_identity(lineage),
+                lineage["normalization_lineage_id"],
+            )
+            receipt_path.write_bytes(contracts.canonical_json_bytes(receipt))
+            lineage_path.write_bytes(contracts.canonical_json_bytes(lineage))
+            with self.assertRaisesRegex(
+                bundle_verifier.SnapshotBundleError, "evidence generation"
+            ):
+                bundle_verifier.verify_snapshot_bundle(target)
 
     def test_published_bundle_is_private_complete_and_authority_validated(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -964,7 +1075,12 @@ class D1SnapshotTests(unittest.TestCase):
             lineage = json.loads((target / "normalization-lineage.json").read_text())
             contracts.validate_acquisition_receipt(receipt)
             contracts.validate_normalization_lineage(lineage)
-            self.assertEqual(target.name, lineage["normalization_lineage_id"].split(":", 1)[1])
+            receipt_bytes = (target / "acquisition-receipt.json").read_bytes()
+            lineage_bytes = (target / "normalization-lineage.json").read_bytes()
+            self.assertEqual(
+                target.name,
+                snapshot._evidence_generation_id(receipt_bytes, lineage_bytes).split(":", 1)[1],
+            )
             edges = [
                 json.loads(line)
                 for line in (target / "normalized/brain_edges.jsonl")
@@ -981,25 +1097,25 @@ class D1SnapshotTests(unittest.TestCase):
                 snapshot._sha256((target / "toolchain.json").read_bytes()),
             )
 
-    def test_concurrent_publishers_converge_without_replacement(self) -> None:
+    def test_exact_evidence_publishers_converge_without_replacement(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             store = Path(temporary) / "store"
             barrier = threading.Barrier(2)
 
-            def publish(audit_time: str) -> Path:
+            def publish() -> Path:
                 return snapshot.publish_response(
                     response(list(reversed(rows()))),
                     store=store,
                     acquisition_tool=FAKE_TOOL,
                     acquisition_toolchain=FAKE_TOOLCHAIN,
-                    audit_time=audit_time,
+                    audit_time=AUDIT_TIME,
                     before_publish=lambda _scratch, _target: barrier.wait(timeout=10),
                 )
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                 futures = [
-                    executor.submit(publish, AUDIT_TIME),
-                    executor.submit(publish, "2030-01-01T00:00:00Z"),
+                    executor.submit(publish),
+                    executor.submit(publish),
                 ]
                 targets = [future.result(timeout=20) for future in futures]
             self.assertEqual(targets[0], targets[1])

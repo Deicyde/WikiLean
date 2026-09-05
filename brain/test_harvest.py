@@ -237,7 +237,10 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
 
     manifest = json.loads(files["bundle.json"])
     lineage_id = lineage["normalization_lineage_id"]
-    manifest["bundle_id"] = lineage_id
+    bundle_id = bundle_verifier._evidence_generation_id(
+        files["acquisition-receipt.json"], files["normalization-lineage.json"]
+    )
+    manifest["bundle_id"] = bundle_id
     manifest["normalization_lineage_id"] = lineage_id
     manifest["acquisition_receipt_id"] = receipt_id
     manifest["members"] = [
@@ -251,7 +254,7 @@ def reseal_edge_mutation(bundle: Path, root: Path, field: str, value: str) -> Pa
     ]
     files["bundle.json"] = contracts.canonical_json_bytes(manifest)
 
-    target = root / lineage_id.removeprefix("sha256:")
+    target = root / bundle_id.removeprefix("sha256:")
     target.mkdir(mode=0o700)
     (target / "normalized").mkdir(mode=0o700)
     for relative, data in files.items():
@@ -354,7 +357,10 @@ def reseal_article_set(bundle: Path, root: Path, articles: list[dict]) -> Path:
 
     manifest = json.loads(files["bundle.json"])
     lineage_id = lineage["normalization_lineage_id"]
-    manifest["bundle_id"] = lineage_id
+    bundle_id = bundle_verifier._evidence_generation_id(
+        files["acquisition-receipt.json"], files["normalization-lineage.json"]
+    )
+    manifest["bundle_id"] = bundle_id
     manifest["normalization_lineage_id"] = lineage_id
     manifest["acquisition_receipt_id"] = receipt_id
     manifest["members"] = [
@@ -368,7 +374,7 @@ def reseal_article_set(bundle: Path, root: Path, articles: list[dict]) -> Path:
     ]
     files["bundle.json"] = contracts.canonical_json_bytes(manifest)
 
-    target = root / lineage_id.removeprefix("sha256:")
+    target = root / bundle_id.removeprefix("sha256:")
     target.mkdir(mode=0o700)
     (target / "normalized").mkdir(mode=0o700)
     for relative, data in files.items():
