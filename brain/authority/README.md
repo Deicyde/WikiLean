@@ -125,16 +125,42 @@ python3 brain/tools/verify_release.py --manifest /path/to/release.json --root /p
 The read-only D1 acquisition precursor is separate from offline replay:
 
 ```bash
-python3 brain/acquire_d1_snapshot.py
+brain/acquire-d1-snapshot.sh
 ```
 
 It executes one checked-in CTE/UNION query over articles, all community edges
 (including tombstones), and community nodes; verifies in-snapshot counts and exact
 table columns; then publishes clock-free raw/normalized objects with validated
 `acquisition-receipt/v1` and `normalization-lineage/v1` evidence. The exact account,
-database UUID, request preimage, Wrangler package, Node executable, config, and
-environment policy are bound in the bundle. No live snapshot has been captured as
-part of the repository change, and v2 source plans do not consume these bundles.
+database UUID, request preimage, Wrangler package, Node executable, CPython 3.12
+version/executable digest, repo-relative Python helper digests, config, and environment
+policy are bound in the bundle and rechecked after the remote call and immediately
+before publication. The launcher is the only supported acquisition entry point: it
+executes CPython with `-I -S`, and the program binds those startup flags and refuses
+unisolated direct invocation before Wrangler can run. Local helper modules are loaded
+after the standard-library paths and must resolve to their exact reviewed repository
+files. The normalization identity also names the reviewed community-row
+policy and mirror-safe article filename policy (including NFD/casefold collision and
+length checks), rather than relying on wrapper identity alone. No live snapshot has
+been captured as part of the repository change, and v2 source plans do not consume
+these bundles.
+
+Both current consumers require that same explicit absolute bundle path and run
+the shared consumer-side verifier before writing anything:
+
+```bash
+python3 brain/harvest_community_edges.py --snapshot-bundle /absolute/path/to/<bundle-id>
+cd wiki && npm run pull -- --snapshot-bundle /absolute/path/to/<bundle-id>
+```
+
+The annotation command never invokes Wrangler. It prepares a full copy of the
+existing disk cache, replaces only D1-backed article sidecars plus the lineage-
+bound manifest, then atomically exchanges the directory. Root-level sidecars
+absent from D1 move into the hidden `.d1_disk_only/` quarantine so coverage and
+Brain reducers cannot mistake them for canonical rows. Any verification,
+staging, or exchange failure leaves the prior cache generation in place.
+The quarantine is gitignored, local recovery data only; it is never an
+authority source and must not be packed, seeded, or served.
 
 `prepare_replay_v2.py` is prepare-only. It reopens and verifies every copied byte,
 copies rather than links the exact normalized input and reducer closures into a private
