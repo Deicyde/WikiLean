@@ -55,6 +55,8 @@ import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
+from ingest.common import validate_external_directory
+
 # Pop the API key BEFORE any SDK import (the import is lazy, inside _run_agent)
 # so the spawned `claude` subprocess uses the Max-subscription login rather
 # than billing an API account — same contract as site/batch_annotate.py.
@@ -234,8 +236,10 @@ def gen_candidates(limit: int) -> list[dict]:
         print(f"NOTE: {EXTERNAL} missing — no external pages yet, 0 candidates",
               file=sys.stderr)
         return []
-    for pages_file in sorted(EXTERNAL.glob("*_pages.jsonl")):
-        for row in iter_jsonl(pages_file):
+    external_pairs = validate_external_directory(EXTERNAL)
+    for db in sorted(external_pairs):
+        _meta, page_rows, _links_meta, _links = external_pairs[db]
+        for row in page_rows:
             if row.get("qid"):
                 continue  # already anchored by a CC0 Wikidata property
             db, pid = row.get("db"), str(row.get("id") or "")

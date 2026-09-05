@@ -61,6 +61,24 @@ presence-only in v2: standalone `acquisition-receipt/v1` and
 authority-ready until an explicit v3 pack/source-manifest integration seals and verifies
 their bytes.
 
+The subsequent acquisition-integrity milestone adds:
+
+- a shared `external-pair/v1` semantic identity and strict reader validation for newly
+  emitted external page/link artifacts;
+- per-database writer locking, canonical serialization, a durable transaction journal,
+  hard-linked prior-generation recovery, and explicit zero-link partners, with coverage for
+  caught failures, first-publication interruption, concurrent writers, and real `SIGKILL`;
+- validation in the graph build, proposal fold, agent candidate generator, and acceptance
+  gate, while explicit replay bindings reject orphan or unregistered source objects; and
+- fail-closed inline Wikidata acquisition in `fold_proposals.py`, including typed response
+  validation, redirect support, missing-QID isolation, complete-batch enforcement, and a
+  proof that later-batch failure leaves every prior output byte unchanged.
+
+This does not complete the acquisition/replay split: current legacy pairs remain readable,
+Wikidata is still fetched inside the fold command, and physical external JSONL bytes still
+contain observation/run metadata even though that metadata is excluded from
+`pair_generation`.
+
 ## Verification state and required final commands
 
 Focused results recorded on 2026-09-04:
@@ -68,6 +86,8 @@ Focused results recorded on 2026-09-04:
 - offline-pack compiler: 22 tests passed;
 - source-plan preflight: 15 tests passed;
 - authority contracts: 65 tests passed;
+- proposal-fold acquisition: 10 tests passed;
+- external pair publication/reader fixtures: all checks passed;
 - execution environment: 20 tests passed;
 - replay executor: 33 tests passed;
 - replay preparation: 24 tests passed;
@@ -157,10 +177,10 @@ the current checkout:
    not complete batch success or output ancestry.
 6. Remove observation times and local paths from remaining normalized hierarchy,
    theoremgraph-link, external-harvest, and halo bytes.
-7. Repair acquisition consistency before issuing evidence: publish external page/link pairs
-   as one generation, export D1 rows from one snapshot, split Wikidata fetching out of
-   `fold_proposals.py`, fail closed on partial Wikidata batches, and replace Hugging Face
-   `resolve/main` URLs with exact revisions.
+7. Finish acquisition separation before issuing evidence: export D1 rows from one snapshot,
+   move the now-fail-closed Wikidata lookup out of `fold_proposals.py`, make the remaining
+   Wikidata harvesters reject partial results, and replace Hugging Face `resolve/main` URLs
+   with exact revisions. Re-harvest legacy external pairs through the sealed writer.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
@@ -183,11 +203,12 @@ duplicate temporary object; the real plan is required for an exact number.
 
 ## Prioritized next work
 
-1. Review this branch's green compiler/runtime checkpoint and preserve both required
-   hermetic gates for every continuation change.
-2. Design the explicit v3 receipt/lineage pack integration, then acquire/freeze the missing
-   external inputs and author the reviewed current-corpus source plan with immutable pins,
-   licenses, receipts, and lineage.
+1. Preserve both required hermetic gates for every continuation change; the branch now has
+   independently reviewed compiler/runtime, evidence-contract, pair-publication, and fold
+   fail-closed checkpoints.
+2. Remove observation/run metadata from normalized bytes, finish coherent D1/Wikidata/HF
+   acquisition, then design the explicit v3 receipt/lineage pack integration and author the
+   reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,

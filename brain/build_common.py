@@ -14,6 +14,7 @@ the concrete input artifact is named in provenance.method.
 from __future__ import annotations
 
 import csv
+import fcntl
 import hashlib
 import html
 import json
@@ -33,9 +34,15 @@ from typing import Any
 from build_context import (
     BuildContext,
     BuildContextError,
+    EXTERNAL_PAIR_META_FIELDS,
+    EXTERNAL_PAIR_TRANSACTION_SCHEMA,
+    ExternalPairError,
     InputBinding,
     InputMember,
     canonical_json_bytes,
+    external_pair_control_paths,
+    external_pair_db_from_journal,
+    validate_external_pair,
 )
 
 HERE = Path(__file__).resolve().parent
@@ -1121,6 +1128,128 @@ def _frontier_repo_layer(*, lib: str, rows: list[dict], n_files, pin: str,
 
 # ---- SCHEMA.md v2: external DB pages → ext nodes / links edges --------------
 
+
+def _read_external_jsonl(path: Path) -> tuple[dict, list[dict], dict]:
+    """Read rows plus optional legacy metadata from one external artifact."""
+    meta: dict | None = None
+    rows: list[dict] = []
+    with path.open(encoding="utf-8") as fh:
+        before = os.fstat(fh.fileno())
+        for lineno, line in enumerate(fh, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    f"{path.name}:{lineno}: invalid JSON: {exc.msg}"
+                ) from exc
+            if not isinstance(record, dict):
+                raise ValueError(
+                    f"{path.name}:{lineno}: JSONL row must be an object"
+                )
+            if "_meta" in record:
+                if meta is not None or rows or set(record) != {"_meta"} \
+                        or not isinstance(record["_meta"], dict):
+                    raise ValueError(
+                        f"{path.name}:{lineno}: _meta must be the first and only "
+                        "metadata row"
+                    )
+                meta = record["_meta"]
+                continue
+            rows.append(record)
+        after = os.fstat(fh.fileno())
+    identity = lambda item: (item.st_dev, item.st_ino, item.st_size,
+                             item.st_mtime_ns, item.st_ctime_ns)
+    if identity(before) != identity(after):
+        raise ValueError(f"{path.name}: file changed while it was being read")
+    snapshot = {
+        "bytes": before.st_size,
+        "mtime": datetime.fromtimestamp(before.st_mtime, tz=timezone.utc)
+        .isoformat(timespec="seconds"),
+        "mtime_epoch": before.st_mtime,
+    }
+    return meta or {}, rows, snapshot
+
+
+def _read_external_pair(
+    db: str,
+    pages_path: Path,
+    links_path: Path | None,
+) -> tuple[dict, list[dict], dict, dict | None, list[dict], dict | None]:
+    """Read a complete pair, rejecting mixed or corrupted sealed generations."""
+    pages_meta, pages, pages_snapshot = _read_external_jsonl(pages_path)
+    if links_path is not None and links_path.exists():
+        links_meta, links, links_snapshot = _read_external_jsonl(links_path)
+    else:
+        links_meta, links, links_snapshot = None, [], None
+
+    validate_external_pair(db, pages_meta, pages, links_meta, links)
+    return (pages_meta, pages, pages_snapshot,
+            links_meta, links, links_snapshot)
+
+
+def _load_external_transaction(path: Path, db: str) -> dict:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ExternalPairError(f"{db}: unreadable external-pair journal") from exc
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schema") != EXTERNAL_PAIR_TRANSACTION_SCHEMA
+        or payload.get("db") != db
+        or not isinstance(payload.get("old_pages"), bool)
+        or not isinstance(payload.get("old_links"), bool)
+    ):
+        raise ExternalPairError(f"{db}: invalid external-pair journal")
+    return payload
+
+
+def _read_stable_external_pair(
+    directory: Path,
+    db: str,
+    pages_path: Path,
+    links_path: Path,
+) -> tuple[dict, list[dict], dict, dict | None, list[dict], dict | None]:
+    """Read under a shared writer lock, falling back after an interrupted commit."""
+    controls = external_pair_control_paths(directory, db)
+    lock_path = controls["lock"]
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(lock_path, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_SH)
+        if not controls["journal"].exists():
+            return _read_external_pair(db, pages_path, links_path)
+        payload = _load_external_transaction(controls["journal"], db)
+        try:
+            return _read_external_pair(db, pages_path, links_path)
+        except (OSError, ValueError):
+            if not payload["old_pages"]:
+                raise ExternalPairError(
+                    f"{db}: interrupted first publication has no prior generation"
+                )
+            return _read_external_pair(
+                db,
+                controls["pages_backup"],
+                controls["links_backup"] if payload["old_links"] else None,
+            )
+    finally:
+        fcntl.flock(descriptor, fcntl.LOCK_UN)
+        os.close(descriptor)
+
+
+def _first_external_meta(path: Path) -> dict:
+    with path.open(encoding="utf-8") as fh:
+        for line in fh:
+            if not line.strip():
+                continue
+            record = json.loads(line)
+            if isinstance(record, dict) and isinstance(record.get("_meta"), dict):
+                return record["_meta"]
+            return {}
+    return {}
+
 def external_dir() -> Path:
     """catalog/data/external unless BRAIN_EXTERNAL_DIR overrides (tests)."""
     return Path(os.environ.get("BRAIN_EXTERNAL_DIR", str(DATA / "external")))
@@ -1148,7 +1277,7 @@ def load_external(
 ) -> dict[str, dict]:
     """Read brain/ingest output: <db>_pages.jsonl (+ optional <db>_links.jsonl).
 
-    Returns {db: {"pages": [...], "links": [...], "pin": iso-date, "paths": [...]}}
+    Returns {db: {"pages": [...], "links": [...], "pin", "path_metadata"}}
     for every db whose files exist AND whose key is in the crossref registry.
     Missing dir / no files → {} — the whole v2 layer degrades to a no-op.
     """
@@ -1162,62 +1291,127 @@ def load_external(
         else tuple(ext_dir.glob("*_pages.jsonl"))
     )
     links_by_name = {item.path.name: item for item in link_files}
+    page_names = {
+        (item.path if explicit else item).name
+        for item in page_candidates
+    }
+    orphan_links = (
+        tuple(item.path for item in link_files)
+        if explicit
+        else tuple(ext_dir.glob("*_links.jsonl"))
+    )
+    if not explicit:
+        for journal in ext_dir.glob(".wikilean-pair-*.transaction.json"):
+            db = external_pair_db_from_journal(journal)
+            if db is None:
+                raise ExternalPairError("external-pair journal has an invalid path")
+            controls = external_pair_control_paths(ext_dir, db)
+            if journal.resolve() != controls["journal"]:
+                raise ExternalPairError(
+                    f"{db}: external-pair journal path does not match its payload"
+                )
+            controls["lock"].parent.mkdir(parents=True, exist_ok=True)
+            descriptor = os.open(
+                controls["lock"], os.O_RDWR | os.O_CREAT, 0o600
+            )
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_SH)
+                if not journal.exists():
+                    continue
+                _load_external_transaction(journal, db)
+                if not (ext_dir / f"{db}_pages.jsonl").exists():
+                    raise ExternalPairError(
+                        f"{db}: interrupted publication has no visible pages file"
+                    )
+            finally:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+                os.close(descriptor)
+    for orphan in orphan_links:
+        db = orphan.name[: -len("_links.jsonl")]
+        if f"{db}_pages.jsonl" in page_names:
+            continue
+        if explicit:
+            raise ExternalPairError(
+                f"{db}: bound links input has no matching bound pages input"
+            )
+        else:
+            controls = external_pair_control_paths(ext_dir, db)
+            controls["lock"].parent.mkdir(parents=True, exist_ok=True)
+            descriptor = os.open(controls["lock"], os.O_RDWR | os.O_CREAT, 0o600)
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_SH)
+                if (ext_dir / f"{db}_pages.jsonl").exists():
+                    continue
+                meta = _first_external_meta(orphan)
+            finally:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+                os.close(descriptor)
+        if EXTERNAL_PAIR_META_FIELDS.intersection(meta):
+            raise ExternalPairError(
+                f"{db}: generated links file has no matching pages file"
+            )
     for page_item in page_candidates:
         pp = page_item.path if explicit else page_item
         db = pp.name[: -len("_pages.jsonl")]
         if db not in registry:
+            if explicit:
+                raise ValueError(
+                    f"{pp.name} is bound but source_registry has no "
+                    f"crossref_sources key {db!r}"
+                )
             print(f"WARNING: {pp.name} has no source_registry crossref_sources "
                   f"key '{db}' — file skipped", file=sys.stderr)
             continue
-        pages: list[dict] = []
-        with pp.open(encoding="utf-8") as fh:
-            for line in fh:
-                line = line.strip()
-                if not line:
-                    continue
-                r = json.loads(line)
-                if "_meta" in r:
-                    continue
-                # contract-violating rows are never minted (fail-soft per row)
-                if r.get("db") != db or not r.get("id") or not r.get("title") \
-                        or not r.get("url"):
-                    continue
-                # Reducer-owned fields: only the separately bound,
-                # fold-verified anchor file may assign anchor provenance.
-                r.pop("qid_source", None)
-                r.pop("qid_confidence", None)
-                r.pop("qid_pin", None)
-                pages.append(r)
-        links: list[dict] = []
         link_item = links_by_name.get(f"{db}_links.jsonl") if explicit else None
         lp = (
             link_item.path
             if link_item is not None
-            else ext_dir / f"{db}_links.jsonl"
+            else (None if explicit else ext_dir / f"{db}_links.jsonl")
         )
-        link_present = link_item is not None if explicit else lp.exists()
-        if link_present:
-            with lp.open(encoding="utf-8") as fh:
-                for line in fh:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    r = json.loads(line)
-                    if "_meta" in r:
-                        continue
-                    if not r.get("src") or not r.get("dst") or r["src"] == r["dst"]:
-                        continue
-                    links.append(r)
+        if explicit:
+            pair = _read_external_pair(db, pp, lp)
+        else:
+            assert ext_dir is not None and lp is not None
+            pair = _read_stable_external_pair(ext_dir, db, pp, lp)
+        (pages_meta, page_rows, page_snapshot,
+         links_meta, link_rows, link_snapshot) = pair
+        pages: list[dict] = []
+        for r in page_rows:
+            # contract-violating legacy rows are never minted (fail-soft per
+            # row); generated pairs have already passed the stricter envelope.
+            if r.get("db") != db or not r.get("id") or not r.get("title") \
+                    or not r.get("url"):
+                continue
+            # Reducer-owned fields: only the separately bound,
+            # fold-verified anchor file may assign anchor provenance.
+            r.pop("qid_source", None)
+            r.pop("qid_confidence", None)
+            r.pop("qid_pin", None)
+            pages.append(r)
+        links: list[dict] = []
+        link_present = links_meta is not None
+        for r in link_rows:
+            if not r.get("src") or not r.get("dst") or r["src"] == r["dst"]:
+                continue
+            links.append(r)
         pin = (
             page_item.pin
             if explicit
-            else datetime.fromtimestamp(pp.stat().st_mtime, tz=timezone.utc)
-            .date().isoformat()
+            else pages_meta.get("pair_generation")
+            or page_snapshot["mtime"][:10]
         )
+        link_pin = (
+            link_item.pin
+            if link_item is not None
+            else ((links_meta or {}).get("pair_generation") or pin)
+        )
+        path_metadata = {pp.name: page_snapshot}
+        if link_present and lp is not None and link_snapshot is not None:
+            path_metadata[lp.name] = link_snapshot
         out[db] = {"pages": pages, "links": links, "pin": pin,
-                   "link_pin": link_item.pin if link_item is not None else pin,
+                   "link_pin": link_pin,
                    "anchor_pin": anchor_pin,
-                   "paths": [pp] + ([lp] if link_present else [])}
+                   "path_metadata": path_metadata}
     # Agent-verified anchors (fold_proposals action:"xref" output): stamp the
     # proposed qid onto pages that have none of their own — the ingest's CC0
     # Wikidata qid always wins over an agent-proposed anchor. Stamped pages
@@ -2861,14 +3055,22 @@ def build(
             **INPUTS,
             **{k: v for k, v in OPTIONAL_INPUTS.items() if v.exists()},
         }
+        external_input_metadata: dict[str, dict] = {}
+        external_mtimes: list[float] = []
         for rec in ext_data.values():
-            for ep in rec["paths"]:
-                present[f"external/{ep.name}"] = ep
+            for name, snapshot in rec["path_metadata"].items():
+                external_input_metadata[f"external/{name}"] = {
+                    "mtime": snapshot["mtime"],
+                    "bytes": snapshot["bytes"],
+                }
+                external_mtimes.append(snapshot["mtime_epoch"])
         if cit_path is not None and cit_path.exists():
             present[f"external/{cit_path.name}"] = cit_path
         for up in user_repo_files:
             present[f"user_repos/{up.name}"] = up
-        newest = max(v.stat().st_mtime for v in present.values())
+        newest = max(
+            [v.stat().st_mtime for v in present.values()] + external_mtimes
+        )
         generated_at = datetime.fromtimestamp(newest, tz=timezone.utc).isoformat(
             timespec="seconds"
         )
@@ -2880,6 +3082,8 @@ def build(
             }
             for k, v in sorted(present.items())
         }
+        input_metadata.update(external_input_metadata)
+        input_metadata = dict(sorted(input_metadata.items()))
     else:
         generated_at = source_set.generation_id
         input_metadata = source_set.metadata()
