@@ -177,6 +177,9 @@ New external page/link pairs are byte-reproducible for identical normalized cont
 accepts only a closed set of source/content metadata. ProofWiki now pins the exact dump bytes
 rather than its filesystem mtime. Existing checked-in pairs remain readable legacy inputs and
 are intentionally not rewritten until a reviewed sealed acquisition generation exists.
+The same shared writer now rejects ambient metadata in the standalone Formal Conjectures,
+Erdős joins, TauCeti/user-repository, and OpenAlex citation inputs; their checked-in metadata
+has been stripped of clocks and run/API/cache counters without changing data rows.
 
 > **⚠️ The edge set ships as TWO files.** The v2 external layer's `links` edges
 > (page→page hyperlinks + concept projections, ~393k rows / ~83 MB) pushed the joint

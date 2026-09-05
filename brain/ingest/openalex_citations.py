@@ -384,7 +384,6 @@ def main() -> int:
 
     meta = {
         "db": "openalex",
-        "fetched_at": common.now_iso(),
         "source_pin": "api.openalex.org /works: doi:10.48550/arXiv.<id> batch "
                       "filter + entity-GET fallback; referenced works "
                       "identified by arXiv DOI/location; published-twin "
@@ -394,9 +393,6 @@ def main() -> int:
                    "the theoremgraph_links.json arXiv id set",
         "n_arxiv_ids": len(aids),
         "n_skipped_non_arxiv": n_skipped,
-        "n_resolved": n_resolved,
-        "n_twins": len(twins),
-        "n_api_calls": _calls,
         "n_links": len(rows),
     }
     common._volume_guard(OUT, "link", len(rows))

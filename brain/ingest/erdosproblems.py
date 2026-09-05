@@ -98,7 +98,6 @@ def main() -> int:
         "source": "teorth/erdosproblems data/problems.yaml",
         "license": "Apache-2.0",
         "commit": commit,
-        "fetched_at": common.now_iso(),
         "n_problems": len(joins),
     }, joins)
     print(f"[erdos] wrote {len(pages)} pages + {len(joins)} join rows "
