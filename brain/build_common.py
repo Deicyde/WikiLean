@@ -135,7 +135,7 @@ BASE_GRAPH_BINDING_CONTRACT = {
     # input id: (root, cardinality, requirement, class, declared path/pattern)
     "annotations": (
         "repo", "many", "optional", "immutable_source_object",
-        "site/annotations/*.json",
+        "site/annotations/[!.]*.json",
     ),
     "brain-container-links": (
         "repo", "one", "optional", "curated_git_input",
@@ -1629,7 +1629,7 @@ def build(
         def source_pin(name: str, _input_id: str) -> str:
             return _pin(name)
 
-        annotations = tuple(sorted((ROOT / "site" / "annotations").glob("*.json"))) \
+        annotations = tuple(sorted((ROOT / "site" / "annotations").glob("[!.]*.json"))) \
             if (ROOT / "site" / "annotations").is_dir() else ()
         user_repo_files = tuple(sorted(USER_REPOS_DIR.glob("*.jsonl"))) \
             if USER_REPOS_DIR.is_dir() else ()

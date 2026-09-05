@@ -282,11 +282,26 @@ class PrepareReplayV2Test(unittest.TestCase):
                     }
                     for member in binding["members"]
                 ],
+                "source_manifest_ids": binding["source_manifest_ids"],
                 "state": binding["state"],
             }
             for binding in context_document["bindings"]
         ]
         self.assertEqual(binding_projection, self.pack["input_bindings"])
+        absent_context_binding = next(
+            binding
+            for binding in context_document["bindings"]
+            if binding["input_id"] == "optional_external"
+        )
+        absent_pack_binding = next(
+            binding
+            for binding in self.pack["input_bindings"]
+            if binding["input_id"] == "optional_external"
+        )
+        self.assertEqual(
+            absent_context_binding["source_manifest_ids"],
+            absent_pack_binding["source_manifest_ids"],
+        )
 
     def test_code_and_input_are_read_only_while_output_and_scratch_are_writable(self) -> None:
         workspace = self.root / "permissions"

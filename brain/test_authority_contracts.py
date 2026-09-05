@@ -52,14 +52,14 @@ def execution_environment_fixture(
             "kind": "oci-image",
             "os": "linux",
             "architecture": "x86_64",
-            "image_digest": "sha256:" + "1" * 64,
+            "manifest_digest": "sha256:" + "1" * 64,
         }
     else:
         runtime = {
             "kind": "development-host",
             "os": "linux",
             "architecture": "x86_64",
-            "runtime_root": "sha256:" + "1" * 64,
+            "host_fingerprint": "sha256:" + "1" * 64,
         }
     value: dict[str, object] = {
         "schema": execution_env.EXECUTION_ENVIRONMENT_SCHEMA,
@@ -77,7 +77,7 @@ def execution_environment_fixture(
             "version": "3.12.11",
             "cache_tag": "cpython-312",
             "soabi": "cpython-312-fixture",
-            "executable_sha256": "3" * 64,
+            "executable_file_sha256": "3" * 64,
         },
         "dependency_lock": {
             "schema": execution_env.DEPENDENCY_LOCK_SCHEMA,
@@ -85,15 +85,15 @@ def execution_environment_fixture(
                 {
                     "name": "numpy",
                     "version": "2.3.2",
-                    "artifact_sha256": "4" * 64,
-                    "installed_files_root": "sha256:" + "5" * 64,
+                    "locked_artifact_sha256": "4" * 64,
+                    "installed_tree_root": "sha256:" + "5" * 64,
                 }
             ],
         },
         "sqlite": {
             "version": "3.50.4",
             "source_id": "2030-01-02 03:04:05 " + "6" * 64,
-            "binary_sha256": "7" * 64,
+            "extension_file_sha256": "7" * 64,
             "compile_options": ["ENABLE_FTS5", "THREADSAFE=1"],
         },
         "locale": {
@@ -102,15 +102,16 @@ def execution_environment_fixture(
             "timezone": "UTC",
             "preferred_encoding": "utf-8",
             "filesystem_encoding": "utf-8",
-            "utf8_mode": 0,
+            "utf8_mode": 1,
             "python_hash_seed": "0",
+            "hash_sentinel": "123456789",
         },
         "sandbox": {
             "backend": "linux-bubblewrap",
-            "version": "0.11.0",
+            "reported_version": "0.11.0",
             "executable_sha256": "8" * 64,
             "policy_id": "brain-replay-v1",
-            "policy_sha256": "9" * 64,
+            "policy_root": "sha256:" + "9" * 64,
             "network": "disabled",
         },
     }
@@ -235,6 +236,128 @@ class CanonicalJsonTest(unittest.TestCase):
         self.assertIsNone(
             contracts._routed_shard("xy", keys, "_", (4, 3, 2))
         )
+
+
+class FileClosureTraversalTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_descriptor_count_is_bounded_by_depth(self) -> None:
+        for index in range(32):
+            directory = self.root / f"sibling-{index:02d}"
+            directory.mkdir()
+            (directory / "file.txt").write_text("fixture")
+        real_open = os.open
+        real_close = os.close
+        open_descriptors: set[int] = set()
+        peak = 0
+
+        def tracked_open(*args, **kwargs):
+            nonlocal peak
+            descriptor = real_open(*args, **kwargs)
+            open_descriptors.add(descriptor)
+            peak = max(peak, len(open_descriptors))
+            return descriptor
+
+        def tracked_close(descriptor):
+            open_descriptors.discard(descriptor)
+            return real_close(descriptor)
+
+        with mock.patch.object(
+            contracts.os, "open", side_effect=tracked_open
+        ), mock.patch.object(contracts.os, "close", side_effect=tracked_close):
+            closure = contracts._scan_file_closure(
+                self.root, location="$", subject="fixture tree"
+            )
+        self.assertEqual(len(closure.files), 32)
+        self.assertEqual(len(closure.token), 65)
+        self.assertLessEqual(peak, 2)
+        self.assertFalse(open_descriptors)
+
+    def test_rejects_addition_and_detached_child_replacement(self) -> None:
+        child = self.root / "child"
+        child.mkdir()
+        (child / "file.txt").write_text("fixture")
+        root_identity = (self.root.stat().st_dev, self.root.stat().st_ino)
+        real_scandir = os.scandir
+        root_scans = 0
+
+        def add_during_root_recheck(descriptor):
+            nonlocal root_scans
+            metadata = os.fstat(descriptor)
+            if (metadata.st_dev, metadata.st_ino) == root_identity:
+                root_scans += 1
+                if root_scans == 2:
+                    (self.root / "added.txt").write_text("late")
+            return real_scandir(descriptor)
+
+        with mock.patch.object(
+            contracts.os, "scandir", side_effect=add_during_root_recheck
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "changed (while being listed|during traversal)"
+        ):
+            contracts._scan_file_closure(
+                self.root, location="$", subject="fixture tree"
+            )
+
+        (self.root / "added.txt").unlink()
+        child_identity = (child.stat().st_dev, child.stat().st_ino)
+        real_fstat = os.fstat
+        child_stats = 0
+
+        def replace_before_child_name_recheck(descriptor):
+            nonlocal child_stats
+            metadata = real_fstat(descriptor)
+            if (metadata.st_dev, metadata.st_ino) == child_identity:
+                child_stats += 1
+                if child_stats == 6:
+                    child.rename(self.root / "detached-child")
+                    child.mkdir()
+                    (child / "file.txt").write_text("replacement")
+                    return real_fstat(descriptor)
+            return metadata
+
+        with mock.patch.object(
+            contracts.os, "fstat", side_effect=replace_before_child_name_recheck
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "directory was replaced during traversal"
+        ):
+            contracts._scan_file_closure(
+                self.root, location="$", subject="fixture tree"
+            )
+
+    def test_unsupported_fd_traversal_is_a_verification_error(self) -> None:
+        (self.root / "child").mkdir()
+        with mock.patch.object(
+            contracts.os,
+            "scandir",
+            side_effect=TypeError("fd scandir is unsupported"),
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "cannot enumerate fixture tree"
+        ):
+            contracts._scan_file_closure(
+                self.root, location="$", subject="fixture tree"
+            )
+
+        real_open = os.open
+
+        def unsupported_open(path, flags, *args, **kwargs):
+            if kwargs.get("dir_fd") is not None:
+                raise NotImplementedError("dir_fd open is unsupported")
+            return real_open(path, flags, *args, **kwargs)
+
+        with mock.patch.object(
+            contracts.os, "open", side_effect=unsupported_open
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "cannot open fixture tree directory child"
+        ):
+            contracts._scan_file_closure(
+                self.root, location="$", subject="fixture tree"
+            )
 
 
 class CompatibilityRootAndSelectorTest(unittest.TestCase):
@@ -468,6 +591,41 @@ class SourceSetVerificationTest(unittest.TestCase):
                 manifest_path=pack_path,
             )
 
+    def test_v1_rejects_file_replaced_after_hash_verification(self) -> None:
+        source = self.make_source_manifest()
+        pack = self.make_pack(source)
+        pack_path = self.root / "pack.json"
+        write_canonical(pack_path, pack)
+        reducer_relative = pack["reducer"]["path"]
+        reducer_path = self.root / reducer_relative
+        original_verify = contracts.verify_file_ref_integrity
+        replaced = False
+
+        def replace_after_verify(root, ref, location):
+            nonlocal replaced
+            original_verify(root, ref, location)
+            if not replaced and ref["path"] == reducer_relative:
+                replaced = True
+                replacement = self.root.parent / f"{self.root.name}-v1-reducer"
+                data = reducer_path.read_bytes()
+                replacement.write_bytes(b"X" + data[1:])
+                os.replace(replacement, reducer_path)
+
+        with mock.patch.object(
+            contracts,
+            "verify_file_ref_integrity",
+            side_effect=replace_after_verify,
+        ), self.assertRaisesRegex(
+            contracts.VerificationError,
+            "offline pack changed during file verification",
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+        self.assertTrue(replaced)
+
     def test_source_manifest_objects_are_stream_verified(self) -> None:
         source = self.make_source_manifest()
         with mock.patch.object(
@@ -532,6 +690,32 @@ class SourceSetVerificationTest(unittest.TestCase):
         (self.root / "extra.txt").write_text("not declared")
         with self.assertRaisesRegex(contracts.VerificationError, "undeclared files"):
             contracts.verify_offline_pack_files(pack, self.root)
+
+    def test_v1_rejects_closure_traversal_error(self) -> None:
+        source = self.make_source_manifest()
+        pack = self.make_pack(source)
+        pack_path = self.root / "pack.json"
+        write_canonical(pack_path, pack)
+        real_scandir = os.scandir
+        calls = 0
+
+        def fail_nested_scandir(path):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise PermissionError("fixture traversal failure")
+            return real_scandir(path)
+
+        with mock.patch.object(
+            contracts.os, "scandir", side_effect=fail_nested_scandir
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "cannot enumerate offline pack directory"
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
 
     def test_requires_manifest_inside_pack_root_and_rejects_special_entries(self) -> None:
         source = self.make_source_manifest()
@@ -667,6 +851,16 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         self.assertEqual(source_schema["properties"]["objects"]["minItems"], 1)
         self.assertIn("roles", source_schema["$defs"]["sourceObject"]["required"])
         self.assertEqual(pack_schema["properties"]["schema"]["const"], contracts.PACK_SCHEMA_V2)
+        self.assertIn(
+            "source_manifest_ids",
+            pack_schema["$defs"]["inputBinding"]["required"],
+        )
+        self.assertEqual(
+            pack_schema["$defs"]["inputBinding"]["properties"][
+                "source_manifest_ids"
+            ]["minItems"],
+            1,
+        )
         self.assertEqual(
             pack_schema["properties"]["environment"]["$ref"],
             "#/$defs/jsonFileRef",
@@ -678,6 +872,10 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         self.assertEqual(
             build_schema["properties"]["build_kind"]["const"],
             "full-offline-replay",
+        )
+        self.assertIn(
+            "source_manifest_ids",
+            context_schema["$defs"]["inputBinding"]["required"],
         )
         self.assertEqual(
             environment_schema["properties"]["schema"]["const"],
@@ -790,6 +988,23 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             HERE / "authority/reducer-inputs-v2.json"
         )
         contracts.validate_reducer_input_inventory(inventory)
+        annotations = next(
+            item for item in inventory["inputs"] if item["id"] == "annotations"
+        )
+        self.assertEqual(
+            annotations["path_pattern"], "site/annotations/[!.]*.json"
+        )
+        self.assertTrue(
+            contracts._matches_relative_pattern(
+                "site/annotations/Évariste.json", annotations["path_pattern"]
+            )
+        )
+        self.assertFalse(
+            contracts._matches_relative_pattern(
+                "site/annotations/.d1_pull_manifest.json",
+                annotations["path_pattern"],
+            )
+        )
         self.assertTrue(contracts._matches_relative_pattern("x_pages.jsonl", "*_pages.jsonl"))
         self.assertFalse(
             contracts._matches_relative_pattern("nested/x_pages.jsonl", "*_pages.jsonl")
@@ -1080,16 +1295,23 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             {
                 "input_id": "curated",
                 "state": "present",
+                "source_manifest_ids": [curated["source_manifest_id"]],
                 "members": [{
                     "path": "catalog/curated.json",
                     "source_manifest_id": curated["source_manifest_id"],
                     "object": curated_object,
                 }],
             },
-            {"input_id": "optional_external", "state": "absent", "members": []},
+            {
+                "input_id": "optional_external",
+                "state": "absent",
+                "source_manifest_ids": [source["source_manifest_id"]],
+                "members": [],
+            },
             {
                 "input_id": "source",
                 "state": "present",
+                "source_manifest_ids": [source["source_manifest_id"]],
                 "members": [{
                     "path": "input.json",
                     "source_manifest_id": source["source_manifest_id"],
@@ -1169,6 +1391,31 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             ),
             pack["source_set_root"],
         )
+        changed_absence = copy.deepcopy(pack["input_bindings"])
+        absent_binding = next(
+            item
+            for item in changed_absence
+            if item["input_id"] == "optional_external"
+        )
+        absent_binding["source_manifest_ids"] = [
+            next(
+                ref["source_manifest_id"]
+                for ref in pack["source_manifests"]
+                if ref["source_manifest_id"]
+                not in absent_binding["source_manifest_ids"]
+            )
+        ]
+        self.assertNotEqual(
+            contracts.source_set_root_v2(
+                pack["inventory"]["inventory_id"],
+                [
+                    ref["source_manifest_id"]
+                    for ref in pack["source_manifests"]
+                ],
+                changed_absence,
+            ),
+            pack["source_set_root"],
+        )
         self.assertNotEqual(
             contracts.source_set_root_v2(
                 "sha256:" + "f" * 64,
@@ -1186,6 +1433,187 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["offline_pack_id"], pack["offline_pack_id"])
+
+    def test_v2_binding_source_manifest_sets_are_exact_and_absence_is_bound(self) -> None:
+        pack, pack_path = self.make_pack()
+        source_binding = next(
+            item for item in pack["input_bindings"] if item["input_id"] == "source"
+        )
+
+        missing_field = copy.deepcopy(pack)
+        next(
+            item
+            for item in missing_field["input_bindings"]
+            if item["input_id"] == "source"
+        ).pop("source_manifest_ids")
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            "missing required members: source_manifest_ids",
+        ):
+            contracts.validate_offline_pack(missing_field)
+
+        empty = copy.deepcopy(pack)
+        next(
+            item
+            for item in empty["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )["source_manifest_ids"] = []
+        with self.assertRaisesRegex(contracts.VerificationError, "must not be empty"):
+            contracts.validate_offline_pack(empty)
+
+        unsorted = copy.deepcopy(pack)
+        next(
+            item
+            for item in unsorted["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )["source_manifest_ids"] = sorted(
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            reverse=True,
+        )
+        with self.assertRaisesRegex(
+            contracts.VerificationError, "entries must be unique and sorted"
+        ):
+            contracts.validate_offline_pack(unsorted)
+
+        mismatched = copy.deepcopy(pack)
+        mismatched_binding = next(
+            item
+            for item in mismatched["input_bindings"]
+            if item["input_id"] == "source"
+        )
+        mismatched_binding["source_manifest_ids"] = [
+            next(
+                ref["source_manifest_id"]
+                for ref in pack["source_manifests"]
+                if ref["source_manifest_id"]
+                != source_binding["source_manifest_ids"][0]
+            )
+        ]
+        with self.assertRaisesRegex(
+            contracts.VerificationError,
+            "exactly name their member source manifests",
+        ):
+            contracts.validate_offline_pack(mismatched)
+
+        optional_binding = next(
+            item
+            for item in pack["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )
+        unknown = copy.deepcopy(pack)
+        unknown_binding = next(
+            item
+            for item in unknown["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )
+        unknown_binding["source_manifest_ids"] = ["sha256:" + "e" * 64]
+        unknown["source_set_root"] = contracts.source_set_root_v2(
+            unknown["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in unknown["source_manifests"]],
+            unknown["input_bindings"],
+        )
+        unknown["offline_pack_id"] = contracts.offline_pack_identity(unknown)
+        with self.assertRaisesRegex(
+            contracts.VerificationError, "references unknown source manifests"
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(unknown),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+        absence_manifest, absence_ref = self.make_source_manifest(
+            source="absence-fixture",
+            source_kind="acquired_dataset",
+            normalized=b'{"absent":true}',
+        )
+        pack["source_manifests"].append(absence_ref)
+        pack["source_manifests"].sort(
+            key=lambda ref: ref["source_manifest_id"]
+        )
+        packed_objects = {ref["path"]: ref for ref in pack["objects"]}
+        for source_object in absence_manifest["objects"]:
+            packed_objects[source_object["path"]] = {
+                key: source_object[key]
+                for key in ("path", "sha256", "bytes", "media_type")
+            }
+        pack["objects"] = [
+            packed_objects[path] for path in sorted(packed_objects)
+        ]
+        optional_binding["source_manifest_ids"] = [
+            absence_manifest["source_manifest_id"]
+        ]
+        pack["source_set_root"] = contracts.source_set_root_v2(
+            pack["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            pack["input_bindings"],
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+        result = contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            self.root,
+            manifest_path=pack_path,
+        )
+        self.assertEqual(result["source_manifests"], 3)
+
+    def test_v2_present_binding_can_name_multiple_source_manifests(self) -> None:
+        pack, pack_path = self.make_pack()
+        manifests = {
+            json.loads((self.root / ref["path"]).read_text())["source"]: (
+                ref,
+                json.loads((self.root / ref["path"]).read_text()),
+            )
+            for ref in pack["source_manifests"]
+        }
+        curated_ref, curated_manifest = manifests["curated-fixture"]
+        source_ref, source_manifest = manifests["external-fixture"]
+        curated_object = next(
+            item for item in curated_manifest["objects"] if "normalized" in item["roles"]
+        )
+        source_object = next(
+            item for item in source_manifest["objects"] if "normalized" in item["roles"]
+        )
+        binding = next(
+            item
+            for item in pack["input_bindings"]
+            if item["input_id"] == "optional_external"
+        )
+        binding.update(
+            {
+                "state": "present",
+                "source_manifest_ids": sorted(
+                    [
+                        curated_ref["source_manifest_id"],
+                        source_ref["source_manifest_id"],
+                    ]
+                ),
+                "members": [
+                    {
+                        "path": "a_pages.jsonl",
+                        "source_manifest_id": curated_ref["source_manifest_id"],
+                        "object": curated_object["name"],
+                    },
+                    {
+                        "path": "b_pages.jsonl",
+                        "source_manifest_id": source_ref["source_manifest_id"],
+                        "object": source_object["name"],
+                    },
+                ],
+            }
+        )
+        pack["source_set_root"] = contracts.source_set_root_v2(
+            pack["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            pack["input_bindings"],
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+        contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            self.root,
+            manifest_path=pack_path,
+        )
 
     def test_v2_opaque_pack_members_are_stream_verified(self) -> None:
         pack, pack_path = self.make_pack()
@@ -1233,6 +1661,38 @@ class V2SourceSetVerificationTest(unittest.TestCase):
                 self.root,
                 manifest_path=pack_path,
             )
+
+    def test_v2_rejects_file_replaced_after_hash_verification(self) -> None:
+        pack, pack_path = self.make_pack()
+        reducer_relative = pack["reducer"]["files"][0]["path"]
+        reducer_path = self.root / reducer_relative
+        original_verify = contracts.verify_file_ref_integrity
+        replaced = False
+
+        def replace_after_verify(root, ref, location):
+            nonlocal replaced
+            original_verify(root, ref, location)
+            if not replaced and ref["path"] == reducer_relative:
+                replaced = True
+                replacement = self.root.parent / f"{self.root.name}-v2-reducer"
+                data = reducer_path.read_bytes()
+                replacement.write_bytes(b"X" + data[1:])
+                os.replace(replacement, reducer_path)
+
+        with mock.patch.object(
+            contracts,
+            "verify_file_ref_integrity",
+            side_effect=replace_after_verify,
+        ), self.assertRaisesRegex(
+            contracts.VerificationError,
+            "offline pack changed during file verification",
+        ):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+        self.assertTrue(replaced)
 
     def test_v2_environment_is_canonical_valid_and_identity_bound(self) -> None:
         pack, pack_path = self.make_pack()
@@ -1437,6 +1897,7 @@ class V2SourceSetVerificationTest(unittest.TestCase):
             {
                 "input_id": "source-parent",
                 "state": "present",
+                "source_manifest_ids": source_binding["source_manifest_ids"],
                 "members": [
                     {
                         **source_binding["members"][0],
@@ -1473,6 +1934,29 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         extra = self.root / "undeclared.txt"
         extra.write_text("not in the pack")
         with self.assertRaisesRegex(contracts.VerificationError, "undeclared files"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v2_rejects_closure_traversal_error(self) -> None:
+        pack, pack_path = self.make_pack()
+        real_scandir = os.scandir
+        calls = 0
+
+        def fail_nested_scandir(path):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise PermissionError("fixture traversal failure")
+            return real_scandir(path)
+
+        with mock.patch.object(
+            contracts.os, "scandir", side_effect=fail_nested_scandir
+        ), self.assertRaisesRegex(
+            contracts.VerificationError, "cannot enumerate offline pack directory"
+        ):
             contracts.verify_offline_pack_files(
                 contracts.validate_offline_pack(pack),
                 self.root,
@@ -1736,6 +2220,38 @@ class ReleaseVerificationTest(unittest.TestCase):
                 )
         release["release_id"] = contracts.release_identity(release)
 
+    def assert_nested_traversal_error(
+        self,
+        release: dict[str, object],
+        target: Path,
+        expected: str,
+        *,
+        occurrence: int = 1,
+    ) -> None:
+        target_metadata = target.stat()
+        target_identity = (target_metadata.st_dev, target_metadata.st_ino)
+        real_scandir = os.scandir
+        failed = False
+        matches = 0
+
+        def fail_target(descriptor):
+            nonlocal failed, matches
+            metadata = os.fstat(descriptor)
+            if (metadata.st_dev, metadata.st_ino) == target_identity:
+                matches += 1
+                if not failed and matches == occurrence:
+                    failed = True
+                    raise PermissionError("fixture traversal failure")
+            return real_scandir(descriptor)
+
+        with mock.patch.object(
+            contracts.os, "scandir", side_effect=fail_target
+        ), self.assertRaisesRegex(contracts.VerificationError, expected):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(release), self.root
+            )
+        self.assertTrue(failed)
+
     def test_verifies_release_cli_and_timestamp_independent_identity(self) -> None:
         release, manifest_path = self.make_release()
         result = contracts.verify_release_files(contracts.validate_release_manifest(release), self.root)
@@ -1754,6 +2270,54 @@ class ReleaseVerificationTest(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         self.assertEqual(json.loads(process.stdout)["artifacts"], 21)
+
+    def test_static_cell_closure_rejects_nested_traversal_error(self) -> None:
+        release, _ = self.make_release()
+        self.assert_nested_traversal_error(
+            release,
+            self.root / "site/assets/brain/cells/traces",
+            "cannot enumerate static cell tree directory traces",
+            occurrence=3,
+        )
+
+    def test_release_closure_rejects_nested_traversal_error(self) -> None:
+        release, _ = self.make_release()
+        self.assert_nested_traversal_error(
+            release,
+            self.root / "brain",
+            "cannot enumerate release directory brain",
+        )
+
+    def test_release_rejects_file_replaced_after_hash_verification(self) -> None:
+        release, _ = self.make_release()
+        target_relative = "site/out/brain.html"
+        target = self.root / target_relative
+        original_logical_root = contracts._artifact_logical_root_handle
+        replaced = False
+
+        def replace_after_hash(handle, logical_format, location):
+            nonlocal replaced
+            result = original_logical_root(handle, logical_format, location)
+            if not replaced and location == target_relative:
+                replaced = True
+                replacement = self.root.parent / f"{self.root.name}-brain-html"
+                data = target.read_bytes()
+                replacement.write_bytes(b"X" + data[1:])
+                os.replace(replacement, target)
+            return result
+
+        with mock.patch.object(
+            contracts,
+            "_artifact_logical_root_handle",
+            side_effect=replace_after_hash,
+        ), self.assertRaisesRegex(
+            contracts.VerificationError,
+            "release changed during file verification",
+        ):
+            contracts.verify_release_files(
+                contracts.validate_release_manifest(release), self.root
+            )
+        self.assertTrue(replaced)
 
     def test_rejects_non_null_authority_changeset_without_replay(self) -> None:
         release, _ = self.make_release()

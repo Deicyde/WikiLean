@@ -32,6 +32,8 @@ run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
+run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
+run_check "Brain offline-pack preflight tests" "$PYTHON_BIN" brain/test_preflight_offline_pack_v2.py
 run_check "Brain execution environment tests" "$PYTHON_BIN" brain/test_execution_environment.py
 run_check "Brain build context tests" "$PYTHON_BIN" brain/test_build_context.py
 run_check "Brain replay preparation tests" "$PYTHON_BIN" brain/test_prepare_replay_v2.py
@@ -57,4 +59,4 @@ run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 32 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 34 commands passed; all required offline scenarios ran.\n'
