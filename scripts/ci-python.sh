@@ -43,6 +43,13 @@ run_check "External Git source evidence tests" "$PYTHON_BIN" brain/test_external
 run_check "Public file source evidence tests" "$PYTHON_BIN" brain/test_public_file_sources.py
 run_check "ProofWiki source normalization tests" "$PYTHON_BIN" brain/test_proofwiki_sources.py
 run_check "EOM API source evidence tests" "$PYTHON_BIN" brain/test_eom_sources.py
+run_check "EOM source normalization tests" "$PYTHON_BIN" brain/test_eom_normalization.py
+run_check "DLMF source evidence tests" "$PYTHON_BIN" brain/test_dlmf_sources.py
+run_check "DLMF source normalization tests" "$PYTHON_BIN" brain/test_dlmf_normalization.py
+run_check "OEIS source evidence tests" "$PYTHON_BIN" brain/test_oeis_sources.py
+run_check "Kerodon source evidence tests" "$PYTHON_BIN" brain/test_kerodon_sources.py
+run_check "Kerodon source normalization tests" "$PYTHON_BIN" brain/test_kerodon_normalization.py
+run_check "LMFDB read-only source evidence tests" "$PYTHON_BIN" brain/test_lmfdb_sources.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Derived graph semantic parity tests" "$PYTHON_BIN" catalog/test_derived_graph_adapters.py
 run_check "Derived catalog source evidence tests" "$PYTHON_BIN" brain/test_derived_catalog_sources.py
