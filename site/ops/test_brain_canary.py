@@ -123,7 +123,10 @@ class Fixture:
         self.release = self.release_id.removeprefix("sha256:")
         immutable = f"/assets/brain/releases/{self.release}"
         selector = make_selector(self.release)
-        manifest = {**identity_value, "release_id": self.release_id, "attestations": []}
+        manifest = {**identity_value, "release_id": self.release_id, "attestations": [
+            {"kind": "build", "path": "attestations/build.json", "sha256": "a" * 64, "bytes": 1},
+            {"kind": "validation", "path": "attestations/validation.json", "sha256": "b" * 64, "bytes": 1},
+        ] if profile == "brain-offline-replay-v1" else []}
         shard_bytes = artifact_bytes["site/assets/brain/cells/aa.json"]
         cursor_one = base64.b64encode(
             json.dumps({
@@ -261,6 +264,27 @@ class BrainCanaryTest(unittest.TestCase):
                 fixture = Fixture(profile="brain-offline-replay-v1", replay=replay)
                 with self.assertRaisesRegex(brain_canary.CanaryError, "replay binding"):
                     self.canary(fixture).check_once()
+
+    def test_offline_attestations_require_one_build_and_validation_with_strict_references(self):
+        for change in ("empty", "one", "kind", "path", "hash", "size", "extra", "order", "duplicate", "third", "normalized-path"):
+            fixture = Fixture(profile="brain-offline-replay-v1", replay=REPLAY)
+            path = f"/assets/brain/releases/{fixture.release}/release.json"
+            manifest = json.loads(fixture.routes[path]._body)
+            refs = manifest["attestations"]
+            if change == "empty": refs.clear()
+            if change == "one": refs.pop()
+            if change == "kind": refs[1]["kind"] = "build"
+            if change == "path": refs[0]["path"] = "../outside.json"
+            if change == "hash": refs[0]["sha256"] = "invalid"
+            if change == "size": refs[0]["bytes"] = True
+            if change == "extra": refs[0]["unchecked"] = True
+            if change == "order": refs.reverse()
+            if change == "duplicate": refs[1]["path"] = refs[0]["path"]
+            if change == "third": refs.append({**refs[0], "path": "attestations/third.json"})
+            if change == "normalized-path": refs[0]["path"] = "attestations//build.json"
+            fixture.add_json(path, manifest)
+            with self.subTest(change=change), self.assertRaisesRegex(brain_canary.CanaryError, "attestation"):
+                self.canary(fixture).check_once()
 
     def test_frozen_profile_rejects_replay_and_unknown_profiles_remain_rejected(self):
         for profile in ("brain-current-v1", "brain-future-v1"):

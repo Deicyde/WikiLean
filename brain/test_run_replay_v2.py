@@ -1174,6 +1174,22 @@ class ReplayRunnerTest(unittest.TestCase):
             execution_env.sandbox_policy_root(boundary.policy),
         )
 
+    def test_materialized_probe_imports_its_complete_local_closure(self) -> None:
+        with runner._materialized_probe_program(self.context) as program:
+            result = subprocess.run(
+                [sys.executable, "-I", "-S", "-B", "-c",
+                 "import runpy,sys; from pathlib import Path; "
+                 "runpy.run_path(sys.argv[1]); import apparmor_runtime; "
+                 "assert Path(apparmor_runtime.__file__).parent == Path(sys.argv[1]).parent",
+                 str(program)],
+                cwd=self.base / "code", env=runner.base_environment(),
+                capture_output=True, timeout=10,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr.decode())
+            self.assertEqual(result.stdout, b"")
+            self.assertEqual(result.stderr, b"")
+        self.assertFalse(program.parent.exists())
+
     def test_runner_file_closure_covers_entry_preparation_and_probe_chain(self) -> None:
         self.assertEqual(
             set(runner.RUNNER_FILES),
@@ -1186,6 +1202,7 @@ class ReplayRunnerTest(unittest.TestCase):
                 "brain/tools/run_offline.py",
                 "brain/tools/run_replay_v2.py",
                 "brain/tools/oci_runtime.py",
+                "brain/tools/apparmor_runtime.py",
                 "brain/tools/oci_replay_entrypoint.py",
                 "brain/tools/launch_replay_oci.py",
             },

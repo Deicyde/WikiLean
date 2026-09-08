@@ -30,8 +30,11 @@ import authority_contracts as contracts  # noqa: E402
 PLAN_SCHEMA = "wikilean.wikidata-observation-plan/v1"
 PLAN_SCHEMA_V2 = "wikilean.wikidata-observation-plan/v2"
 BUNDLE_SCHEMA = "wikilean.wikidata-observation-bundle/v1"
+BUNDLE_SCHEMA_V2 = "wikilean.wikidata-observation-bundle/v2"
 NORMALIZATION_SCHEMA = "wikilean.wikidata-observation-normalization/v1"
+NORMALIZATION_SCHEMA_V2 = "wikilean.wikidata-observation-normalization/v2"
 TOOLCHAIN_SCHEMA = "wikilean.wikidata-observation-toolchain/v1"
+TOOLCHAIN_SCHEMA_V2 = "wikilean.wikidata-observation-toolchain/v2"
 PROFILE_REGISTRY_SCHEMA = "wikilean.wikidata-observation-profiles/v1"
 PROFILE_REGISTRY_SCHEMA_V2 = "wikilean.wikidata-observation-profiles/v2"
 PROFILE_REGISTRY = ROOT / "brain" / "wikidata_observation_profiles.json"
@@ -69,6 +72,16 @@ TRANSPORT_POLICY = {
     "response_limit": MAX_RESPONSE_BYTES, "aggregate_limit": MAX_TRANSCRIPT_BYTES,
     "credentials": "none", "request_order": "universe-edges-descriptions",
 }
+RETRY_POLICY = {
+    "max_attempts_per_request": 5,
+    "http_statuses": [429, 502, 503, 504],
+    "curl_transport_codes": [6, 7, 28, 52, 56],
+    "backoff_seconds": [10, 20, 40, 60],
+    "max_retry_after_seconds": 300,
+    "retry_after": "delay-seconds-only; date-or-excessive-aborts",
+    "evidence": "retain-every-attempt-and-response; exactly-one-final-success",
+}
+TRANSPORT_POLICY_V2 = {**TRANSPORT_POLICY, "retry": RETRY_POLICY}
 
 
 class ObservationError(RuntimeError):
@@ -472,6 +485,90 @@ def profile_identity(profile: dict) -> str:
         key: value for key, value in profile.items() if key != "profile_id"})
 
 
+def retryable_response(response: dict) -> bool:
+    """Only explicit transient statuses/transport failures may be retried."""
+    status, code = response["http_status"], response["curl_exit_code"]
+    if status in RETRY_POLICY["http_statuses"]:
+        return code in (0, 22)
+    return status in (None, 0) and code in RETRY_POLICY["curl_transport_codes"]
+
+
+def successful_attempt_records(plan: dict, attempts: Sequence[dict]) -> tuple[list[dict], list[dict]]:
+    """Verify a complete ordered attempt transcript without omitting failed bytes."""
+    requests = requests_for(plan)
+    if not isinstance(attempts, (list, tuple)) or not attempts \
+            or len(attempts) > len(requests) * RETRY_POLICY["max_attempts_per_request"]:
+        raise ObservationError("invalid bounded attempt transcript")
+    canonical_requests = sorted((request.descriptor() for request in requests), key=canonical)
+    request_indices = {canonical(request): i for i, request in enumerate(canonical_requests)}
+    successful, summaries = [], []
+    current, ordinal, total = 0, 1, 0
+    for item in attempts:
+        exact(item, {"request_index", "attempt", "outcome", "response", "retry_delay_seconds"}, "attempt")
+        if type(item["request_index"]) is not int or item["request_index"] != current \
+                or current >= len(requests) or type(item["attempt"]) is not int or item["attempt"] != ordinal:
+            raise ObservationError("attempt request sequence/order differs")
+        request = requests[current]
+        delay = integer(item["retry_delay_seconds"], "retry delay")
+        response = item["response"]
+        if item["outcome"] == "succeeded":
+            if delay != 0 or not isinstance(response, dict):
+                raise ObservationError("successful attempt has a retry delay or invalid response")
+            if type(response.get("index")) is not int or type(response.get("http_status")) is not int \
+                    or not isinstance(response.get("content_type"), str):
+                raise ObservationError("successful attempt response has invalid status types")
+            raw = _attempt_body(response)
+            if response != response_record(current, request, raw, response.get("http_status"), response.get("content_type", "")):
+                raise ObservationError("successful attempt response identity differs")
+            validate_response_payload(request, raw)
+            successful.append(response)
+            current, ordinal = current + 1, 1
+        elif item["outcome"] == "failed":
+            exact(response, {"http_status", "curl_exit_code", "content_type", "body_sha256", "body_base64", "retry_after"}, "failed response")
+            for key in ("http_status", "curl_exit_code"):
+                if response[key] is not None and (type(response[key]) is not int or response[key] < 0):
+                    raise ObservationError("invalid failed response status")
+            if response["content_type"] is not None and (not isinstance(response["content_type"], str)
+                    or len(response["content_type"]) > 1024 or any(ord(c) < 32 for c in response["content_type"])):
+                raise ObservationError("invalid failed response content type")
+            raw = _attempt_body(response)
+            if not retryable_response(response) or ordinal >= RETRY_POLICY["max_attempts_per_request"]:
+                raise ObservationError("nonretryable or exhausted failure in complete observation")
+            minimum = RETRY_POLICY["backoff_seconds"][ordinal - 1]
+            retry_after = response["retry_after"]
+            if retry_after is not None:
+                if not isinstance(retry_after, dict) or retry_after.get("kind") != "delay-seconds":
+                    raise ObservationError("retry transcript requires bounded normalized Retry-After delay")
+                exact(retry_after, {"kind", "seconds"}, "Retry-After")
+                minimum = max(minimum, integer(retry_after["seconds"], "Retry-After"))
+            if delay != minimum or delay > RETRY_POLICY["max_retry_after_seconds"]:
+                raise ObservationError("retry delay differs from reviewed policy")
+            ordinal += 1
+        else:
+            raise ObservationError("unknown attempt outcome")
+        total += len(raw)
+        if total > MAX_TRANSCRIPT_BYTES:
+            raise ObservationError("aggregate attempt transcript exceeds operational bound")
+        summaries.append({"request_index": request_indices[canonical(request.descriptor())],
+                          "outcome": item["outcome"], "response_sha256": sha(raw), "response_bytes": len(raw)})
+    if current != len(requests) or ordinal != 1:
+        raise ObservationError("incomplete attempt transcript")
+    return successful, summaries
+
+
+def _attempt_body(response: dict) -> bytes:
+    try:
+        encoded = response["body_base64"]
+        if not isinstance(encoded, str) or len(encoded) > MAX_RESPONSE_BYTES * 4 // 3 + 4:
+            raise ObservationError("attempt response exceeds bound")
+        raw = base64.b64decode(encoded, validate=True)
+    except (KeyError, ValueError, TypeError) as exc:
+        raise ObservationError("invalid attempt response encoding") from exc
+    if len(raw) > MAX_RESPONSE_BYTES or sha(raw) != response.get("body_sha256"):
+        raise ObservationError("attempt response bytes differ")
+    return raw
+
+
 def reviewed_profiles() -> dict:
     """Consumer policy: immutable whole generations, never ambient helper hashes.
 
@@ -489,6 +586,10 @@ def reviewed_profiles() -> dict:
         fields = {"profile_id", "normalization_schema", "files"}
         if registry["schema"] == PROFILE_REGISTRY_SCHEMA_V2 and "plan_schemas" in profile:
             fields.add("plan_schemas")
+        if registry["schema"] == PROFILE_REGISTRY_SCHEMA_V2 and "retry_normalization_schema" in profile:
+            fields.add("retry_normalization_schema")
+            if profile["retry_normalization_schema"] != NORMALIZATION_SCHEMA_V2:
+                raise ObservationError("invalid reviewed retry normalization schema")
         exact(profile, fields, "reviewed profile")
         if "plan_schemas" in profile:
             supported = profile["plan_schemas"]
@@ -517,8 +618,9 @@ def reviewed_profiles() -> dict:
 
 def validate_toolchain(toolchain: dict) -> dict:
     exact(toolchain, {"schema", "profile_id", "observation_policy", "transport_policy", "python", "curl", "files"}, "toolchain")
-    if toolchain["schema"] != TOOLCHAIN_SCHEMA or toolchain["observation_policy"] != OBSERVATION_POLICY \
-            or toolchain["transport_policy"] != TRANSPORT_POLICY:
+    policies = {TOOLCHAIN_SCHEMA: TRANSPORT_POLICY, TOOLCHAIN_SCHEMA_V2: TRANSPORT_POLICY_V2}
+    if toolchain["schema"] not in policies or toolchain["observation_policy"] != OBSERVATION_POLICY \
+            or toolchain["transport_policy"] != policies[toolchain["schema"]]:
         raise ObservationError("unreviewed toolchain policy")
     python = exact(toolchain["python"], {"implementation", "version", "sha256", "startup"}, "Python identity")
     if python["implementation"] != "CPython" or not isinstance(python["version"], str) \
@@ -534,6 +636,8 @@ def validate_toolchain(toolchain: dict) -> dict:
     profile = next((item for item in registry["profiles"] if item["profile_id"] == toolchain["profile_id"]), None)
     if profile is None or toolchain["files"] != profile["files"]:
         raise ObservationError("toolchain does not bind one reviewed implementation generation")
+    if toolchain["schema"] == TOOLCHAIN_SCHEMA_V2 and profile.get("retry_normalization_schema") != NORMALIZATION_SCHEMA_V2:
+        raise ObservationError("toolchain profile did not support explicit retry evidence")
     return profile
 
 
@@ -549,7 +653,12 @@ def bundle_files(plan: dict, records: Sequence[dict], toolchain: dict, audit_tim
     validate_plan(plan)
     if plan["schema"] not in profile.get("plan_schemas", [PLAN_SCHEMA]):
         raise ObservationError("reviewed tool profile did not support this request plan schema")
-    normalized = normalize(plan, records)
+    explicit_attempts = toolchain["schema"] == TOOLCHAIN_SCHEMA_V2
+    if explicit_attempts:
+        successful, summaries = successful_attempt_records(plan, records)
+    else:
+        successful, summaries = records, None
+    normalized = normalize(plan, successful)
     raw = b"".join(artifact(record) for record in records)
     plan_bytes = canonical(plan)
     toolchain_bytes = canonical(toolchain)
@@ -557,16 +666,18 @@ def bundle_files(plan: dict, records: Sequence[dict], toolchain: dict, audit_tim
     descriptors = sorted((request.descriptor() for request in requests), key=canonical)
     raw_ref = object_ref("wikidata_observation_raw", raw, "application/x-ndjson")
     receipt = {
-        "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+        "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V2 if explicit_attempts else contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
         "acquisition_receipt_id": "sha256:" + "0" * 64,
         "source": SOURCE, "upstream_uri": "https://www.wikidata.org",
         "pin": {"type": "content_sha256", "value": sha(raw)},
-        "tool": {"name": "wikilean-wikidata-observation-acquirer", "version": "1", "sha256": sha(toolchain_bytes)},
+        "tool": {"name": "wikilean-wikidata-observation-acquirer", "version": "2" if explicit_attempts else "1", "sha256": sha(toolchain_bytes)},
         "requests": descriptors,
         "batch": {"status": "complete", "request_set_root": contracts.acquisition_request_set_root(descriptors),
-                  "requests_total": len(requests), "requests_succeeded": len(requests), "requests_failed": 0},
+                  "requests_total": len(records), "requests_succeeded": len(requests), "requests_failed": len(records) - len(requests)},
         "outputs": [raw_ref], "audit": {"acquired_at": audit_time},
     }
+    if explicit_attempts:
+        receipt["attempts"] = summaries
     receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
     contracts.validate_acquisition_receipt(receipt)
     lineage = {
@@ -574,9 +685,10 @@ def bundle_files(plan: dict, records: Sequence[dict], toolchain: dict, audit_tim
         "normalization_lineage_id": "sha256:" + "0" * 64,
         "source": SOURCE, "mode": "transform",
         "acquisition_receipt_ids": [receipt["acquisition_receipt_id"]], "parent_source_manifest_ids": [],
-        "normalization_schema": NORMALIZATION_SCHEMA, "configuration_sha256": sha(plan_bytes),
-        "tool": {"name": "wikilean-wikidata-observation-normalizer", "version": "1", "sha256": next(
-            item["sha256"] for item in profile["files"] if item["path"] == "brain/wikidata_observation.py")},
+        "normalization_schema": NORMALIZATION_SCHEMA_V2 if explicit_attempts else NORMALIZATION_SCHEMA, "configuration_sha256": sha(plan_bytes),
+        "tool": {"name": "wikilean-wikidata-observation-normalizer", "version": "2" if explicit_attempts else "1",
+                 "sha256": sha(canonical(profile)) if explicit_attempts else next(
+                     item["sha256"] for item in profile["files"] if item["path"] == "brain/wikidata_observation.py")},
         "inputs": [{**raw_ref, "origin": {"kind": "acquisition_receipt", "id": receipt["acquisition_receipt_id"]}}],
         "outputs": sorted((object_ref(key.replace("-", "_"), normalized[path], member_ref(path, normalized[path])["media_type"])
                            for key, path in OUTPUTS.items()), key=lambda item: item["object"]),
@@ -589,8 +701,10 @@ def bundle_files(plan: dict, records: Sequence[dict], toolchain: dict, audit_tim
     files = {"request-plan.json": plan_bytes, "toolchain.json": toolchain_bytes,
              "acquired.jsonl": raw, **normalized,
              **{f"requests/{index:06d}.form": request.parameters for index, request in enumerate(requests)}}
+    if explicit_attempts:
+        files["normalization-profile.json"] = canonical(profile)
     manifest = {
-        "schema": BUNDLE_SCHEMA, "bundle_id": bundle_id, "observation_policy": OBSERVATION_POLICY,
+        "schema": BUNDLE_SCHEMA_V2 if explicit_attempts else BUNDLE_SCHEMA, "bundle_id": bundle_id, "observation_policy": OBSERVATION_POLICY,
         "acquisition_receipt_id": receipt["acquisition_receipt_id"],
         "normalization_lineage_id": lineage["normalization_lineage_id"],
         "members": [member_ref(path, data) for path, data in sorted(files.items())],
@@ -647,7 +761,7 @@ def verify_bundle(path: Path, *, expected_id: str | None = None, allow_staging: 
     manifest = parse(member_bytes("bundle.json", max_bytes=2 * 1024 * 1024), "manifest", canonical_required=True)
     exact(manifest, {"schema", "bundle_id", "observation_policy", "acquisition_receipt_id",
                      "normalization_lineage_id", "members", "bindings"}, "manifest")
-    if manifest["schema"] != BUNDLE_SCHEMA or manifest["observation_policy"] != OBSERVATION_POLICY \
+    if manifest["schema"] not in {BUNDLE_SCHEMA, BUNDLE_SCHEMA_V2} or manifest["observation_policy"] != OBSERVATION_POLICY \
             or manifest["bindings"] != OUTPUTS:
         raise ObservationError("unsupported bundle or mixed output bindings")
     if expected_id is not None and manifest["bundle_id"] != expected_id:

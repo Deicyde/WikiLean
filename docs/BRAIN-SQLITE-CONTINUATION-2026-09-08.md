@@ -17,7 +17,7 @@ No deployment or D1 write was performed during this continuation.
 The first reviewed implementation tranche is committed as `f51fc27c` (source evidence,
 inventory coherence, OCI tools and sealed publication fixes), followed by `3f822f04`
 (native ARM OpenBLAS identity). Further acquisition and pack-bound release work has
-passed integration checks. Completion of a fixture suite is
+passed integration checks and is committed as `d4ed6e42`. Completion of a fixture suite is
 not evidence of a full-corpus or native Linux OCI run.
 
 ## Real source acquisitions
@@ -83,6 +83,19 @@ manifest is `sha256:720e1aac25d584afd848704e8c05f9ae99f473b2fd3eb2d6835e4e9eb778
 the docs manifest is `sha256:0912ea672c4f447c7717dfd4185c17e2319bd5a99170baa132fff6811bbd7f47`.
 Keep both older evidence generations for audit; use the v2 export in the source plan.
 
+Fresh Hugging Face acquisition and independent export verification also succeeded:
+
+- Capture: `/Users/jack/.local/share/wikilean-migration/huggingface-evidence-captures/8356cd2318e29f5c4ac9bff91af076d17871437a08a86ee6523ef1629b5b1639`.
+- Export: `/Users/jack/.local/share/wikilean-migration/huggingface-source-exports/bc180fa2ae4adc70215a0f1f90d2582c60078aaa9956ff6055f66568d01c741f`.
+- Twelve actual public requests bind metadata, README files and six CSV files
+  (3,102,401,461 CSV bytes) to the reviewed dataset revisions and LFS checksums.
+  README Git blob hashes and publisher license declarations are retained.
+- Source IDs: MathNetwork/MathlibGraph `sha256:81d936b07f3152e9fda275e031e1dca28fc95ea583770e9fbe3c6519e81a3ce3`;
+  uw-math-ai/math-graph `sha256:98644aebd8499ca67335da9e3e6cab6672f11900bb2199ab067db91e9cac01d4`;
+  uw-math-ai/theorem-matching `sha256:34cc31e950257b002ebb4ce205f417e948a0153973929e8b800eac015826dcfd`.
+- All outputs remain private and restricted pending source-plan and redistribution
+  review. The preserved acquisition profile is `sha256:98e923fea9daea19c85226b6da3df86fc5f3012a62cd7bc8ed7c359aeed82ac2`.
+
 The first real Wikidata observation failed because WDQS appended a timeout stack trace
 inside an HTTP 200 JSON response. Plan v2 uses smaller edge batches and applies the
 complete pinned target scope before label lookup, preserving normalized semantics.
@@ -93,8 +106,21 @@ private migration root. No failed attempt published an authority bundle or insta
 partial data. Another complete attempt stopped at request 24 with an unclassified transport failure.
 The transport now retains only safe numeric curl status and bounded Retry-After
 diagnostics. The failed query succeeded when probed again; a larger batch was slower
-and approached the upstream timeout. A fresh complete 194-request attempt is running
-with the reviewed 25-subject edge batches; per-request retries remain disabled.
+and approached the upstream timeout. The next complete 194-request attempt failed
+at request 69 with curl status 22/HTTP 502 and no Retry-After. Its diagnostics are
+in `wikidata-observations/failed-attempt-ff538d414ceb4875a09eab8777487186`.
+An explicitly versioned retry mode is being integrated: every attempt and failed
+response is retained, receipt v2 counts actual attempts, and each planned request
+must end in exactly one success. The existing no-retry evidence stays verifiable.
+The fresh explicit-retry capture is running under profile
+`sha256:e69a4fdd13c937439ba781afdec6c204f99f55387b0d361a425e3287ca0158a4`.
+Its log is `wikidata-plan-20260908/acquisition-explicit-retries.log`; it has already
+retained and recovered from an HTTP 502 without restarting earlier requests.
+
+A separate complete entity capture succeeded for the 3,069 QIDs in the reviewed
+observation edge/description union (covering all 2,500 grounding QIDs):
+`/Users/jack/.local/share/wikilean-migration/wikidata-entity-captures/4ba24db76b9aa37c49e35cbbdd160f01a3e108c2ab8a2e208d241550e87701d6`.
+The crossref derivation and its immutable source export are still being implemented.
 
 ## Engineering changes in progress
 
@@ -121,7 +147,9 @@ with the reviewed 25-subject edge batches; per-request retries remain disabled.
   unbound cache. Rename metadata normalization preserves historical reviewed claims.
 - The trusted OCI launcher, image/wheel checks, numerical policy, and packaging tools
   are implemented for native Linux. Runtime v2 describes builtin `_sqlite3` linkage
-  explicitly while retaining v1's extension-file contract. No native OCI run has occurred.
+  explicitly while retaining v1's extension-file contract. A real native Linux
+  container kernel probe now passes under an exact scoped AppArmor policy. This is
+  baseline-image evidence; the final committed runner image still needs its own probe.
 - Pack-bound release production and independent verification now have a distinct
   `brain-offline-replay-v1` profile. The producer-owned two-build gate freezes all
   completed outputs plus exact sealed provenance inputs, compares bytes/identities,
@@ -150,21 +178,25 @@ private configuration, verified Lima archive and logs are in
 instance is that directory's `lima-state/`. The authoritative launcher must execute
 inside the Linux guest and still prove actual container and kernel isolation.
 
-Worker typechecking and all 859 tests passed after the new release-profile support. Pack/compiler/preflight/publication
+Worker typechecking and all 872 tests passed after the new release-profile and
+attestation-reference checks. Pack/compiler/preflight/publication
 focused checks passed 66 tests before subsequent integration; authority contracts
 passed 75 tests after the content-alias correction. Strict Darwin kernel sandbox
-probing passed without skipping. The complete 54-command Python suite passed after
-the new source evidence, release profile, and reproducibility gate changes; its log is
-`/tmp/wikilean-migration-python-ci-current.log`. A subsequent graph-consumer variable
-fix passed all 43 Wikidata observation tests, including a functional graph-build regression.
-Current focused release tests pass 37 cases; authority contracts pass 75. Strict
+probing passed without skipping. The complete 55-command Python suite passed after
+the new source evidence, release profile, explicit retry, and Linux policy integration;
+its log is `/tmp/wikilean-migration-python-ci-native-policy.log`. The latest focused
+Wikidata observation suite passes 48 cases; authority contracts pass 76. Native Linux
+kernel and runtime diagnostic logs are retained in the guest's `runtime/evidence/`.
+Two fresh sandboxed runtime probes agree on CPython 3.12.14, NumPy 2.3.3, SQLite 3.40.1
+and bubblewrap 0.8.0; final committed-image verification is still outstanding.
+Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
 
 ## Remaining completion order
 
-1. Commit the reviewed source/test/doc tranche, then finish the remaining source adapters
-   and native Linux kernel-policy implementation with their independent reviews.
+1. Finish the remaining source adapters and verify the final committed native Linux
+   runner image; retain the already-passing kernel and runtime diagnostics separately.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the
    reviewed current-corpus v3 plan. Close policy and cross-object provenance gaps.

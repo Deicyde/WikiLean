@@ -263,6 +263,7 @@ class LaunchRecordTests(unittest.TestCase):
             "runner_arguments": ["--manifest", self.runtime["manifest"], "--root", self.runtime["pack_root"],
                 "--context", "/private/workspace/build-context.json", "--expected-generation-id", H,
                 "--python", self.policy["python"], "--stage-timeout-seconds", "1200.0"]}
+        self.payload = payload
         self.record = {"schema": gate.launcher.LAUNCH_SCHEMA, "profile": "trusted-local-engine", "ok": True,
             "runtime": self.image.runtime(), "config_digest": self.image.config_digest, "environment_id": H,
             "offline_pack_id": H, "generation_id": H, "policy_sha256": self.image.policy_sha256,
@@ -309,6 +310,32 @@ class LaunchRecordTests(unittest.TestCase):
             roots=SimpleNamespace(output=Path("/private/different-workspace/output")))
         with self.assertRaisesRegex(gate.launcher.OCILaunchError, "command differs|mount closure"):
             self.verify()
+
+    def test_v2_launch_binds_exact_loaded_apparmor_and_system_path_configuration(self):
+        fixture = oci_fixtures.AppArmorPolicyTests(methodName="runTest")
+        fixture.setUp()
+        self.addCleanup(fixture.temporary.cleanup)
+        self.policy.update(schema=gate.oci_runtime.POLICY_SCHEMA_V2, apparmor=fixture.policy)
+        self.record.update(schema=gate.launcher.LAUNCH_SCHEMA_V2,
+            apparmor={key: fixture.policy[key] for key in
+                ("name", "binary_sha256", "kernel_abi", "text_sha256", "parser_sha256")} |
+                {"mode": "enforce", "kernel_profile_sha256": D})
+        for item in self.record["observations"].values():
+            item["AppArmorProfile"] = fixture.policy["name"]
+            item["HostConfig"]["SecurityOpt"] += ["apparmor=" + fixture.policy["name"]]
+            item["HostConfig"].update(MaskedPaths=[], ReadonlyPaths=[])
+        self.record["request_sha256"] = gate.sha(gate.canonical(self.payload))
+        self.rehash(self.record)
+        self.verify()
+        for mutate in (lambda item: item["apparmor"].update(mode="complain"),
+                       lambda item: item["apparmor"].update(binary_sha256="b" * 64),
+                       lambda item: item["observations"]["created"].update(AppArmorProfile="unconfined"),
+                       lambda item: item["observations"]["created"]["HostConfig"].update(MaskedPaths=["/proc/kcore"])):
+            changed = copy.deepcopy(self.record)
+            mutate(changed)
+            self.rehash(changed)
+            with self.assertRaises((gate.GateError, gate.launcher.OCILaunchError)):
+                self.verify(changed)
 
 
 class AttestationContractTests(unittest.TestCase):

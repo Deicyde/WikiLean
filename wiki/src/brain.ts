@@ -173,12 +173,29 @@ function validDigest(value: unknown): value is string {
   return typeof value === "string" && DIGEST_RE.test(value);
 }
 
+function validReplayAttestations(value: unknown): boolean {
+  if (!Array.isArray(value) || value.length !== 2) return false;
+  const paths: string[] = [];
+  const kinds = new Set<string>();
+  for (const entry of value) {
+    const ref = record(entry);
+    if (!ref || Object.keys(ref).length !== 4 ||
+        Object.keys(ref).some((key) => !["kind", "path", "sha256", "bytes"].includes(key)) ||
+        (ref.kind !== "build" && ref.kind !== "validation") ||
+        !validRelativePath(ref.path) || ref.path.split("/").some((part) => part.length === 0) ||
+        !validDigest(ref.sha256) || !Number.isSafeInteger(ref.bytes) || (ref.bytes as number) < 0) return false;
+    paths.push(ref.path);
+    kinds.add(ref.kind);
+  }
+  return kinds.size === 2 && paths[0] < paths[1];
+}
+
 function validReleaseProfile(o: Record<string, unknown>): boolean {
   if (o.profile === "brain-current-v1") return !("replay" in o);
   if (o.profile !== "brain-offline-replay-v1") return false;
   const replay = record(o.replay);
   const hashes = ["authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id"];
-  return replay !== null && Object.keys(replay).length === 5 &&
+  return validReplayAttestations(o.attestations) && replay !== null && Object.keys(replay).length === 5 &&
     Object.keys(replay).every((key) => key === "prior_state_root" || hashes.includes(key)) &&
     hashes.every((key) => validHash(replay[key])) &&
     (replay.prior_state_root === null || validHash(replay.prior_state_root));
