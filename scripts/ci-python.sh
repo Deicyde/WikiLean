@@ -69,6 +69,8 @@ run_check "Wikidata crossref source evidence tests" "$PYTHON_BIN" brain/test_wik
 run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_observation.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
+run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
+run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
 run_check "Brain agent input tests" "$PYTHON_BIN" brain/test_sync_agents.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
 run_check "Experimental assertion shadow tests" "$PYTHON_BIN" brain/test_assertion_kernel.py
@@ -76,6 +78,7 @@ run_check "Brain input acquisition coherence tests" "$PYTHON_BIN" brain/test_inv
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
 run_check "Brain sealed pack publication tests" "$PYTHON_BIN" brain/test_pack_publication.py
 run_check "Brain offline-pack preflight tests" "$PYTHON_BIN" brain/test_preflight_offline_pack_v2.py
+run_check "Standalone source policy review tests" "$PYTHON_BIN" brain/test_source_policy_reviews.py
 run_check "Brain execution environment tests" "$PYTHON_BIN" brain/test_execution_environment.py
 run_check "Brain verified OCI runtime tests" "$PYTHON_BIN" brain/test_oci_runtime.py
 run_check "Brain build context tests" "$PYTHON_BIN" brain/test_build_context.py
@@ -84,6 +87,7 @@ run_check "Brain base graph context tests" "$PYTHON_BIN" brain/test_base_graph_c
 run_check "Brain top-level shard publication tests" "$PYTHON_BIN" brain/test_build_shards.py
 run_check "Brain cells context tests" "$PYTHON_BIN" brain/test_build_cells_context.py
 run_check "Brain frontier context tests" "$PYTHON_BIN" brain/test_build_frontier_context.py
+run_check "Legacy same-input halo preparation tests" "$PYTHON_BIN" brain/test_legacy_halo_projection.py
 run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_shards_context.py
 run_check "Brain full-DAG replay tests" "$PYTHON_BIN" brain/test_run_replay_v2.py
 run_check "Brain replay sandbox kernel test" "$PYTHON_BIN" -I brain/test_replay_sandbox.py

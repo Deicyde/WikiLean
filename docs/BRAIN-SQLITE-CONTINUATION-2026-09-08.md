@@ -26,6 +26,9 @@ The subsequent Git harvest, external Git, ProofWiki, EOM raw and complete
 Wikidata-derived input tranche is committed as `bb179a0c`.
 The EOM normalization, DLMF, OEIS, Kerodon and LMFDB acquisition tranche is
 committed as `c3265f80`.
+The final catalog importers and experimental assertion shadow are committed as
+`f670cbf3`. The next reviewed tranche adds D1 export compatibility, sealed proposal
+folds, standalone policy review records and same-input legacy halo preparation.
 
 ## Real source acquisitions
 
@@ -51,6 +54,32 @@ The parent source ID is
 the derived source ID is
 `sha256:23d534a9275b49dc04f38bcc9efe92eda350bd499ff1c43256843ecc411452bf`.
 An earlier private export `ec2726ed...` is retained for audit and superseded by this one.
+
+The combined 106-source preflight subsequently found one digest declared with
+incompatible media types: the empty byte string appears in 255 Git-derived objects
+as `application/octet-stream`, and in five D1-derived objects as NDJSON. The
+compiler correctly rejected that combined declaration. The five D1 objects are
+normalization outputs, so no new production query was needed. Exporter v2 reruns
+the original verified raw rows and declares truly empty outputs as octet streams.
+It retains the original acquisition receipt; its verification-only v1 dispatch
+still reproduces the historical export from the complete pinned implementation.
+
+The new independently verified export is
+`d1-sources/315ef420a28828a7ed827b6208a89c530d76daf4f5837524e8ae34d28df19e4e`
+under the private migration root. Its parent is
+`sha256:a5b3003a1100f56158964b760fa5b3f8c94bf5dd79cadc017b08d841f1527fb9`
+and sidecar source is
+`sha256:e67d10faa96b9f2dc215a50bec17df24c83e1c561e05fd8536773661ae7391a3`.
+All 11 acquisition files (39,772,274 bytes) and 779 normalized files
+(17,217,882 bytes) are unchanged. The private
+`preflight-20260908/d1-export-refresh.json` records the exact comparison and
+transitive refresh: all four derived catalog children change identity because
+their configuration binds every parent. Proposal folding then needs the refreshed
+hierarchy parent. OpenAlex's unchanged acquisition contract binds the exact
+theorem-link parent, requiring a new plan and fresh capture. Its retained free
+quota was below the required 452 filtered requests; wait for the daily reset and
+verify adequate free quota before reacquiring. Keep the original draft and all old
+evidence until the replacement closure independently verifies.
 
 An exact declaration oracle and its Mathlib source revision were located through
 the official [documentation build](https://github.com/leanprover-community/mathlib4_docs/actions/runs/34203087670).
@@ -335,6 +364,43 @@ links whose completed declaration names match recorded rejections. No diagnostic
 fold output has replaced the currently bound runtime input. This is an explicit
 graph-change review, not a provenance-only parity claim.
 
+The sealed proposal adapter and exporter now reproduce the complete old fold from
+452 native Git proposal shards, exact source/oracle inputs and five separately
+retained direct Git container contributions. The reviewed current-generation
+export is `proposal-fold-source-exports/7033aafe895da26eb27051cb93e97e6726a1d0702f15794f7596e5d5a231e99c`;
+its 18,500 files verify independently. The 104 composed container rows remain
+equal; all 326 discovery identities remain, with two module fields corrected
+from `Mathlib.Data.Finite.Defs` to `Mathlib.Basic.Finite.Defs`. The 15 FC retractions remain an
+explicit content-change decision. This export is retained, not installed; refresh
+its hierarchy parent after the D1-derived generation changes. Input-class rules
+still need a reviewed transition before a derived fold can replace a curated Git
+binding.
+
+Standalone private-replay and public-release policy review tooling is implemented
+in [`standalone-policy-reviews-v1.md`](../brain/authority/specs/standalone-policy-reviews-v1.md).
+It binds exact pack/source/object closure separately from exact public artifact
+coverage, keeps original source restrictions, and drafts pending records only.
+No policy approval has been issued and the replay/promoter gates are not yet
+integrated with these new records. Retained publisher evidence and field-level
+decisions still need review, including mixed-license theorem-matching data and
+external text snippets. Provenance coverage needs source/method/context mappings;
+a source label alone does not identify an acquisition family.
+
+## Same-input legacy baseline preparation
+
+The private `legacy-baseline-20260908/` holds an unchanged detached `ebac34dc`
+checkout, all ten old reducer/helper files and a proposed seven-stage execution
+recipe. Its current input map is provisional and must be rebuilt from the final
+verified pack. No baseline graph run or approval has occurred. The new bounded
+`legacy_halo_projection.py` executes five exact hash-pinned old pure functions on
+the baseline's own cells/synapses. It emits full original rows with empty
+centrality; the old frontier consumes only cell IDs and `all_frac`, which do not
+depend on centrality. Historical halo data is retained for a separate diagnostic.
+The old schema-1 SQLite file must be preserved separately before an explicitly
+identified schema-2 compatibility projector indexes unchanged semantic artifacts.
+The native runtime can be reused, but the old-program launch needs its own honest
+execution evidence; it is not the new authoritative replay profile.
+
 P2A's experimental shadow kernel implements four assertion operations, independent
 contribution identity, exact revision/retraction history, predecessor checks,
 derived conflicts and full/incremental replay. Its fixture envelope and kind policy
@@ -449,14 +515,22 @@ and experimental assertion shadow 17 tests. Independent review confirmed actual
 use `src`/`dst`/`kind`, and checkpoint comparisons must distinguish booleans from
 integers using exact canonical bytes. Golden v1 identities and full/incremental
 replay remain equal. This completes the bounded P2A shadow criteria only.
+The next complete suite passes **81 commands**, log
+`/tmp/wikilean-migration-python-ci-fold-policy-d1.log`. It adds 17 sealed fold,
+17 standalone policy and three legacy halo checks, plus the expanded 22 D1
+export checks. The real v3 compiler regression rejects the historical empty MIME
+conflict and accepts all five refreshed D1 aliases beside the unchanged 255 Git
+aliases. Both old and new real D1 exports independently reproduce. The unchanged
+Worker retains its preceding passing typecheck and 872 tests.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
 
 ## Remaining completion order
 
-1. Finish the remaining Kerodon capture and independently verify its normalized
-   export. The other planned source families now have verified exports. The final
+1. Finish Kerodon and independently verify its normalized export. Complete the
+   D1 export's transitive catalog/fold refresh and fresh OpenAlex capture after
+   adequate free quota is confirmed. Preserve every earlier evidence generation. The final
    committed native Linux runner image is verified; preserve its preparation evidence.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the

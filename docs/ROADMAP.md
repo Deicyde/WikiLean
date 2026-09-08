@@ -165,12 +165,19 @@ catalog, Git harvest, nLab/Stacks, ProofWiki, EOM, OEIS, DLMF, LMFDB, PlanetMath
 and OpenAlex source exports are independently verified. Kerodon is the remaining
 full capture. The private source draft has 106 manifests and 41 of 43 complete
 input groups; its external aggregate groups await Kerodon. A sealed native Linux OCI image passed kernel/runtime checks,
-and the expanded Python suite passes 77 commands. P2A's bounded experimental
+and the expanded Python suite passes 81 commands. P2A's bounded experimental
 assertion shadow also passes, including exact parity for 430 committed pilot
 contributions. No full pack, complete approved
 semantic baseline, full two-build result, release attestation or production
 activation exists. The historical implementation context below must not be read
 as a current claim that the completed captures or runtime preparation are absent.
+Combined preflight exposed an empty-object MIME conflict. A verified D1 exporter
+v2 preserves the original capture and normalized bytes; its new source IDs require
+refreshing derived catalog/fold generations and reacquiring the exact-parent
+OpenAlex observation after adequate free quota is confirmed. Sealed fold export,
+standalone private/public policy review records and same-input old halo preparation
+are implemented and independently reviewed; none grants source, baseline or
+production approval. The current draft is preserved until replacement closure verifies.
 
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
