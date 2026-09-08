@@ -97,6 +97,7 @@ RUNNER_FILES = MappingProxyType({
     "brain/tools/run_offline.py": HERE / "run_offline.py",
     "brain/tools/run_replay_v2.py": Path(__file__).resolve(),
     "brain/tools/oci_runtime.py": HERE / "oci_runtime.py",
+    "brain/tools/apparmor_runtime.py": HERE / "apparmor_runtime.py",
     "brain/tools/oci_replay_entrypoint.py": HERE / "oci_replay_entrypoint.py",
     "brain/tools/launch_replay_oci.py": HERE / "launch_replay_oci.py",
 })
@@ -139,6 +140,7 @@ def _sandbox_policy_document(backend: str) -> dict[str, Any]:
                 "namespaces": "all-unshared",
                 "proc": "isolated",
                 "temporary_directory": "ephemeral",
+                "root_filesystem": "read-only-except-explicit-mounts",
             }
         )
     else:
@@ -729,6 +731,8 @@ def _linux_boundary(
             "--bind",
             scratch,
             scratch,
+            "--remount-ro",
+            "/",
             "--chdir",
             str(context.roots.code),
             "--",
@@ -1017,6 +1021,7 @@ def _materialized_probe_program(
         "execution_environment.py": HERE / "execution_environment.py",
         "probe_execution_environment.py": PROBE_PROGRAM,
         "oci_runtime.py": HERE / "oci_runtime.py",
+        "apparmor_runtime.py": HERE / "apparmor_runtime.py",
     }
     try:
         for name, source in source_files.items():

@@ -33,6 +33,7 @@ run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
 run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingface_download.py
+run_check "Hugging Face immutable source evidence tests" "$PYTHON_BIN" brain/test_huggingface_sources.py
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
 run_check "Mathlib source metadata tests" "$PYTHON_BIN" catalog/test_mathlib_sources.py
 run_check "Mathlib source acquisition evidence tests" "$PYTHON_BIN" brain/test_mathlib_source_evidence.py

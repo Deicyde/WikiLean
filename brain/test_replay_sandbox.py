@@ -105,6 +105,7 @@ attempt("overwrite_input", lambda: (workspace / "input" / "sealed.txt").write_te
 attempt("create_code", lambda: (workspace / "code" / "created.py").write_text("bad", encoding="utf-8"))
 attempt("overwrite_context", lambda: (workspace / "build-context.json").write_text("bad", encoding="utf-8"))
 attempt("write_workspace_root", lambda: (workspace / "rogue.txt").write_text("bad", encoding="utf-8"))
+attempt("write_filesystem_root", lambda: Path("/wikilean-unowned-root-write").write_text("bad", encoding="utf-8"))
 attempt("read_ambient", lambda: ambient.read_text(encoding="utf-8"))
 attempt("write_ambient", lambda: ambient_sink.write_text("bad", encoding="utf-8"))
 attempt("symlink_escape", lambda: (workspace / "output" / "escape" / "escaped.txt").write_text("bad", encoding="utf-8"))
@@ -347,12 +348,17 @@ class ReplaySandboxKernelTest(unittest.TestCase):
                 "create_code",
                 "overwrite_context",
                 "write_workspace_root",
+                "write_filesystem_root",
                 "read_ambient",
-                "write_ambient",
                 "symlink_escape",
                 "network_connect",
             ):
                 self._assert_denied(results, name)
+            if platform_name == "darwin" or not ambient_sink.is_relative_to(Path("/tmp")):
+                self._assert_denied(results, "write_ambient")
+            # A host path under /tmp is shadowed by the explicit private tmpfs.
+            # Creating that same spelling privately is allowed; the assertions
+            # below prove it cannot create or alter the original host sentinel.
 
             self.assertEqual(sealed_input.read_text(encoding="utf-8"), "sealed")
             self.assertEqual(context_path.read_text(encoding="utf-8"), "{}")

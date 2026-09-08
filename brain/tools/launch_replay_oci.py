@@ -34,6 +34,7 @@ import oci_runtime
 import run_replay_v2 as runner
 
 LAUNCH_SCHEMA = "wikilean.oci-replay-launch/v1"
+LAUNCH_SCHEMA_V2 = "wikilean.oci-replay-launch/v2"
 CHANNEL_SCHEMA = "wikilean.oci-launch-channel/v1"
 BOOTSTRAP = "/opt/wikilean/brain/tools/oci_replay_entrypoint.py"
 CHANNEL_LIMIT = 64 * 1024
@@ -163,7 +164,13 @@ class LocalEngine:
 
 
 def verify_engine_image(observation: dict[str, Any], image: oci_runtime.VerifiedImage) -> None:
-    _require(observation.get("Id") == image.config_digest, "engine selected a different image config")
+    _require(observation.get("Id") in {image.config_digest, image.manifest_digest},
+             "engine selected an unverified image identity")
+    if observation.get("Id") == image.manifest_digest:
+        descriptor = observation.get("Descriptor") or {}
+        _require(descriptor.get("digest") == image.manifest_digest and
+                 descriptor.get("mediaType") == oci_runtime.MANIFEST_MEDIA,
+                 "engine image does not identify the exact approved platform manifest")
     _require(observation.get("Os") == "linux" and oci_runtime.ARCHITECTURES.get(observation.get("Architecture")) == image.architecture,
              "engine image platform mismatch")
     rootfs = observation.get("RootFS") or {}
@@ -174,6 +181,26 @@ def verify_engine_image(observation: dict[str, Any], image: oci_runtime.Verified
              "engine image numerical policy differs")
 
 
+def inspect_engine_image(engine: LocalEngine, image: oci_runtime.VerifiedImage) -> tuple[dict, str]:
+    """Support containerd manifest IDs and classic config IDs, never tags."""
+    for address in (image.manifest_digest, image.config_digest):
+        status, stdout, stderr = engine.command(["image", "inspect", address], require_success=False)
+        if status != 0:
+            _require(stdout.strip() in {b"", b"[]"} and stderr.strip() ==
+                     ("Error response from daemon: No such image: " + address).encode(),
+                     "unexpected engine failure while selecting the approved image")
+            continue
+        _require(not stderr, "unexpected image inspection diagnostic")
+        value = json.loads(stdout)
+        _require(isinstance(value, list) and len(value) == 1 and isinstance(value[0], dict),
+                 "engine must inspect exactly one approved image")
+        observed = value[0]
+        verify_engine_image(observed, image)
+        _require(observed["Id"] == address, "engine image selection changed its immutable identity")
+        return observed, address
+    raise OCILaunchError("the exact approved OCI image is not loaded in this engine")
+
+
 def launch_environment(policy: dict[str, Any]) -> dict[str, str]:
     result = runner.base_environment()
     result.update(oci_runtime.numerical_environment(policy))
@@ -182,7 +209,9 @@ def launch_environment(policy: dict[str, Any]) -> dict[str, str]:
 
 def create_arguments(image: oci_runtime.VerifiedImage, workspace: Path, pack_root: Path,
                      policy: dict[str, Any], *, uid: int, gid: int, name: str,
-                     memory_bytes: int) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+                     memory_bytes: int, engine_image_id: str | None = None) -> tuple[list[str], list[str], list[dict[str, Any]]]:
+    selected_image = engine_image_id or image.config_digest
+    _require(selected_image in {image.config_digest, image.manifest_digest}, "engine image must use an exact verified digest")
     _require(uid > 0 and gid >= 0, "OCI replay must run as a non-root host user")
     _require(type(memory_bytes) is int and 1024**3 <= memory_bytes <= 128 * 1024**3,
              "memory limit must be between 1 and 128 GiB")
@@ -202,28 +231,46 @@ def create_arguments(image: oci_runtime.VerifiedImage, workspace: Path, pack_roo
                  "--memory", str(memory_bytes), "--memory-swap", str(memory_bytes),
                  "--user", f"{uid}:{gid}", "--workdir", str(workspace),
                  "--entrypoint", "/usr/bin/env"]
+    if "apparmor" in policy:
+        arguments.extend(["--security-opt", "apparmor=" + policy["apparmor"]["name"]])
+        # Locked/masked outer proc mounts prevent unprivileged creation of the
+        # inner namespace's fresh procfs. The reviewed profile preserves writes
+        # restrictions; inner bwrap remounts its root read-only and drops caps.
+        arguments.extend(["--security-opt", "systempaths=unconfined"])
     for mount in mounts:
         options = "type=bind,src=" + mount["Source"] + ",dst=" + mount["Destination"] + ",bind-propagation=rprivate"
         if not mount["RW"]:
             options += ",readonly"
         arguments.extend(["--mount", options])
-    arguments.extend([image.config_digest, *child])
+    arguments.extend([selected_image, *child])
     return arguments, child, mounts
 
 
 def verify_container(value: dict[str, Any], *, image: oci_runtime.VerifiedImage,
                      child: list[str], mounts: list[dict[str, Any]], uid: int, gid: int,
-                     memory_bytes: int, status: str, cid: str) -> None:
-    _require(value.get("Id") == cid and value.get("Image") == image.config_digest, "created container identity mismatch")
+                     memory_bytes: int, status: str, cid: str, apparmor_profile: str | None = None,
+                     engine_image_id: str | None = None) -> None:
+    selected_image = engine_image_id or image.config_digest
+    _require(selected_image in {image.config_digest, image.manifest_digest}, "unverified container image selector")
+    _require(value.get("Id") == cid and value.get("Image") == selected_image, "created container identity mismatch")
     config = value.get("Config") or {}
-    _require(config.get("Image") == image.config_digest and config.get("User") == f"{uid}:{gid}" and
+    _require(config.get("Image") == selected_image and config.get("User") == f"{uid}:{gid}" and
              config.get("Entrypoint") == ["/usr/bin/env"] and config.get("Cmd") == child and
              config.get("WorkingDir") == mounts[0]["Destination"] and config.get("OpenStdin") is True and
              config.get("Tty") is False, "created container command differs from the sealed launch")
     host = value.get("HostConfig") or {}
+    security = {"no-new-privileges", "seccomp=unconfined"}
+    if apparmor_profile is not None:
+        _require(apparmor_profile == oci_runtime.apparmor_runtime.NAME and value.get("AppArmorProfile") == apparmor_profile,
+                 "container does not use the verified replay AppArmor profile")
+        security.add("apparmor=" + apparmor_profile)
+        # Docker consumes systempaths=unconfined instead of retaining it in
+        # SecurityOpt. Verify its concrete effect, including explicit arrays.
+        _require(host.get("MaskedPaths") == [] and host.get("ReadonlyPaths") == [],
+                 "outer proc masks prevent the required private inner procfs")
     _require(host.get("NetworkMode") == "none" and host.get("ReadonlyRootfs") is True and
              host.get("Privileged") is False and host.get("CapDrop") == ["ALL"] and not host.get("CapAdd") and
-             set(host.get("SecurityOpt") or []) == {"no-new-privileges", "seccomp=unconfined"} and
+             set(host.get("SecurityOpt") or []) == security and
              host.get("IpcMode") == "none" and host.get("CgroupnsMode") == "private" and
              not host.get("PidMode") and host.get("PidsLimit") == 512 and
              host.get("Memory") == memory_bytes and host.get("MemorySwap") == memory_bytes and
@@ -292,6 +339,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     runner._validate_workspace(args.context, context, reducer_files)
     image = oci_runtime.verify_image(args.oci_layout, descriptor["runtime"]["manifest_digest"], policy,
                                      args.wheelhouse, descriptor)
+    apparmor = (oci_runtime.apparmor_runtime.verify_loaded(policy["apparmor"], args.wheelhouse)
+                if "apparmor" in policy else None)
+    apparmor_name = policy["apparmor"]["name"] if apparmor is not None else None
     _require(platform.machine().lower() == image.architecture, "emulated or cross-architecture replay is forbidden")
     _require(args.receipt.is_absolute() and not args.receipt.exists(), "launch receipt must be a fresh absolute path")
     _real_path(args.receipt.parent, directory=True)
@@ -315,11 +365,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         info = engine.document(["info", "--format", "{{json .}}"])
         _require(info.get("ID") == args.engine_id and info.get("ServerVersion") == args.engine_version and
                  info.get("OSType") == "linux", "local engine identity/version differs from the approved launch")
-        inspected_image = engine.document(["image", "inspect", image.config_digest], singleton=True)
-        verify_engine_image(inspected_image, image)
+        inspected_image, engine_image_id = inspect_engine_image(engine, image)
         name = "wikilean-replay-" + nonce
         command, child, mounts = create_arguments(image, workspace, pack_root, policy, uid=uid, gid=gid,
-                                                  name=name, memory_bytes=args.memory_bytes)
+                                                  name=name, memory_bytes=args.memory_bytes, engine_image_id=engine_image_id)
         cid = None
         cleaned = False
         try:
@@ -329,13 +378,23 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             _require(CID_RE.fullmatch(cid) is not None, "engine did not return one complete container ID")
             before = engine.document(["container", "inspect", cid], singleton=True)
             verify_container(before, image=image, child=child, mounts=mounts, uid=uid, gid=gid,
-                             memory_bytes=args.memory_bytes, status="created", cid=cid)
+                             memory_bytes=args.memory_bytes, status="created", cid=cid, apparmor_profile=apparmor_name,
+                             engine_image_id=engine_image_id)
+            if apparmor is not None:
+                _require(oci_runtime.apparmor_runtime.loaded_policy(policy["apparmor"]) == apparmor,
+                         "AppArmor policy changed before replay start")
             _code, stdout, stderr = engine.command(["container", "start", "--attach", "--interactive", cid],
                                                    timeout=args.timeout_seconds, input_bytes=encoded, limit=OUTPUT_LIMIT)
             after = engine.document(["container", "inspect", cid], singleton=True)
             verify_container(after, image=image, child=child, mounts=mounts, uid=uid, gid=gid,
-                             memory_bytes=args.memory_bytes, status="exited", cid=cid)
-            verify_engine_image(engine.document(["image", "inspect", image.config_digest], singleton=True), image)
+                             memory_bytes=args.memory_bytes, status="exited", cid=cid, apparmor_profile=apparmor_name,
+                             engine_image_id=engine_image_id)
+            if apparmor is not None:
+                _require(oci_runtime.apparmor_runtime.verify_loaded(policy["apparmor"], args.wheelhouse) == apparmor,
+                         "AppArmor policy changed during replay")
+            verified_after = engine.document(["image", "inspect", engine_image_id], singleton=True)
+            verify_engine_image(verified_after, image)
+            _require(verified_after["Id"] == engine_image_id, "engine image identity changed during replay")
             lines = stdout.splitlines()
             _require(bool(lines), "replay did not return a launch-channel result")
             result = oci_runtime._json(lines[-1], "launch-channel result")
@@ -352,6 +411,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                        "observations": {"created": before, "exited": after},
                        "request_sha256": hashlib.sha256(encoded).hexdigest(),
                        "stdout_sha256": hashlib.sha256(stdout).hexdigest(), "stderr_sha256": hashlib.sha256(stderr).hexdigest()}
+            if apparmor is not None:
+                receipt.update(schema=LAUNCH_SCHEMA_V2, apparmor=apparmor)
             fd = os.open(args.receipt, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o400)
             with os.fdopen(fd, "wb") as stream:
                 stream.write(canonical(receipt))

@@ -159,6 +159,27 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
             with self.assertRaisesRegex(verifier.WikidataEntityBundleError, "generation pin mismatch"):
                 verifier._validate_toolchain(value)
 
+    def test_full_historical_bundle_normalizer_uses_its_recorded_wrapper_generation(self) -> None:
+        wrapper, dependencies = next((wrapper, dependencies) for wrapper, dependencies in verifier.REVIEWED_TOOL_GENERATIONS
+            if any(item["path"] == "brain/tools/authority_contracts.py" and
+                   item["sha256"] == "fd87f76991f52f522587d0ef45cf4605b00f0970a23f0dfe1b50d6597c9a9319" for item in dependencies))
+        self.assertNotEqual(wrapper, verifier.ACQUIRER_WRAPPER_SHA256)
+        historical = copy.deepcopy(self.toolchain)
+        historical["wrapper"]["sha256"] = wrapper
+        historical["local_dependencies"] = list(dependencies)
+        plan, responses = complex_fixture()
+        with tempfile.TemporaryDirectory() as temporary:
+            # Reconstruct a retained fixture under its historical producer identity;
+            # live runtime measurement is covered separately and is never bypassed by a CLI.
+            with mock.patch.object(acquire, "LOADED_SCRIPT_SHA256", wrapper), \
+                    mock.patch.object(acquire, "_verify_runtime_closure"):
+                target = acquire.publish_transcript(plan, responses, store=Path(temporary).resolve() / "store",
+                    acquisition_tool=fake_tool(historical), acquisition_toolchain=historical, audit_time=AUDIT_TIME)
+            loaded = verifier.verify_wikidata_entity_bundle(target)
+            self.assertEqual(loaded.entities["Q1"]["qid"], "Q1")
+            lineage = json.loads((target / "normalization-lineage.json").read_bytes())
+            self.assertEqual(lineage["tool"]["sha256"], wrapper)
+
     def test_transitive_runtime_helper_is_bound_by_current_producer(self) -> None:
         self.assertIn("brain/tools/execution_environment.py", {
             record["path"] for record in acquire._local_dependency_records()

@@ -40,6 +40,7 @@ SOURCE_SCHEMA_V1 = "wikilean.source-manifest/v1"
 SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
 SOURCE_SCHEMA_V3 = "wikilean.source-manifest/v3"
 ACQUISITION_RECEIPT_SCHEMA_V1 = "wikilean.acquisition-receipt/v1"
+ACQUISITION_RECEIPT_SCHEMA_V2 = "wikilean.acquisition-receipt/v2"
 NORMALIZATION_LINEAGE_SCHEMA_V1 = "wikilean.normalization-lineage/v1"
 OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3 = "wikilean.offline-pack-source-plan/v3"
 PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
@@ -115,6 +116,7 @@ SOURCE_DOMAIN_V1 = "wikilean.source-manifest.v1"
 SOURCE_DOMAIN_V2 = "wikilean.source-manifest.v2"
 SOURCE_DOMAIN_V3 = "wikilean.source-manifest.v3"
 ACQUISITION_RECEIPT_DOMAIN_V1 = "wikilean.acquisition-receipt.v1"
+ACQUISITION_RECEIPT_DOMAIN_V2 = "wikilean.acquisition-receipt.v2"
 ACQUISITION_REQUEST_SET_DOMAIN_V1 = "wikilean.acquisition-request-set.v1"
 NORMALIZATION_LINEAGE_DOMAIN_V1 = "wikilean.normalization-lineage.v1"
 SOURCE_SET_DOMAIN_V1 = "wikilean.source-set.v1"
@@ -867,7 +869,9 @@ def source_manifest_identity(manifest: dict[str, Any]) -> str:
 
 
 def acquisition_receipt_identity(receipt: dict[str, Any]) -> str:
-    if receipt.get("schema") != ACQUISITION_RECEIPT_SCHEMA_V1:
+    domains = {ACQUISITION_RECEIPT_SCHEMA_V1: ACQUISITION_RECEIPT_DOMAIN_V1,
+               ACQUISITION_RECEIPT_SCHEMA_V2: ACQUISITION_RECEIPT_DOMAIN_V2}
+    if receipt.get("schema") not in domains:
         _fail(
             "$.schema",
             "unknown acquisition-receipt schema/version "
@@ -876,7 +880,7 @@ def acquisition_receipt_identity(receipt: dict[str, Any]) -> str:
     value = copy.deepcopy(receipt)
     value.pop("acquisition_receipt_id", None)
     value.pop("audit", None)
-    return domain_hash(ACQUISITION_RECEIPT_DOMAIN_V1, value)
+    return domain_hash(domains[receipt["schema"]], value)
 
 
 def acquisition_request_set_root(requests: list[dict[str, Any]]) -> str:
@@ -1454,6 +1458,7 @@ def validate_acquisition_receipt(
     location: str = "$",
 ) -> dict[str, Any]:
     obj = _expect_object(receipt, location)
+    explicit_attempts = obj.get("schema") == ACQUISITION_RECEIPT_SCHEMA_V2
     _keys(
         obj,
         location,
@@ -1468,9 +1473,9 @@ def validate_acquisition_receipt(
             "batch",
             "outputs",
             "audit",
-        },
+        } | ({"attempts"} if explicit_attempts else set()),
     )
-    if obj["schema"] != ACQUISITION_RECEIPT_SCHEMA_V1:
+    if obj["schema"] not in {ACQUISITION_RECEIPT_SCHEMA_V1, ACQUISITION_RECEIPT_SCHEMA_V2}:
         _fail(f"{location}.schema", f"unknown schema/version {obj['schema']!r}")
     _hash(obj["acquisition_receipt_id"], f"{location}.acquisition_receipt_id")
     _expect_pattern(
@@ -1513,13 +1518,37 @@ def validate_acquisition_receipt(
     failed = _expect_int(
         batch["requests_failed"], f"{location}.batch.requests_failed"
     )
-    if succeeded != total or failed != 0:
+    if explicit_attempts:
+        attempts = _expect_array(obj["attempts"], f"{location}.attempts", nonempty=True)
+        if len(attempts) > MAX_ACQUISITION_REQUESTS * 10:
+            _fail(f"{location}.attempts", "attempt transcript exceeds operational bound")
+        completed: set[int] = set()
+        failures = 0
+        for index, item in enumerate(attempts):
+            where = f"{location}.attempts[{index}]"
+            attempt = _expect_object(item, where)
+            _keys(attempt, where, {"request_index", "outcome", "response_sha256", "response_bytes"})
+            request_index = _expect_int(attempt["request_index"], f"{where}.request_index")
+            if request_index >= len(requests) or request_index in completed:
+                _fail(where, "attempt names an unknown or already successful request")
+            _digest(attempt["response_sha256"], f"{where}.response_sha256")
+            _expect_int(attempt["response_bytes"], f"{where}.response_bytes")
+            if attempt["outcome"] == "succeeded":
+                completed.add(request_index)
+            elif attempt["outcome"] == "failed":
+                failures += 1
+            else:
+                _fail(f"{where}.outcome", "expected succeeded or failed")
+        if len(completed) != len(requests) or succeeded != len(completed) \
+                or failed != failures or total != len(attempts) or total != succeeded + failed:
+            _fail(f"{location}.batch", "actual attempt counts must agree and every request must succeed exactly once")
+    elif succeeded != total or failed != 0:
         _fail(
             f"{location}.batch",
             "complete acquisition requires requests_succeeded == requests_total "
             "and requests_failed == 0",
         )
-    if total != len(requests):
+    if not explicit_attempts and total != len(requests):
         _fail(
             f"{location}.batch.requests_total",
             "must equal the canonical request descriptor count",

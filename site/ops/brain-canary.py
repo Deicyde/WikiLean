@@ -13,7 +13,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Callable
 
 from brain_http import (
@@ -219,6 +219,23 @@ class BrainCanary:
         valid_text = lambda v: isinstance(v, str) and bool(v)
         valid_digest = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) is not None
         valid_commit = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) is not None
+        if offline:
+            refs = value.get("attestations")
+            if not isinstance(refs, list) or len(refs) != 2:
+                raise CanaryError("offline replay requires exactly one build and one validation attestation")
+            paths, kinds = [], set()
+            for ref in refs:
+                if not isinstance(ref, dict) or set(ref) != {"kind", "path", "sha256", "bytes"} \
+                        or not isinstance(ref["kind"], str) or ref["kind"] not in {"build", "validation"} \
+                        or not isinstance(ref["path"], str) or not ref["path"] or "\\" in ref["path"] or "\0" in ref["path"] \
+                        or PurePosixPath(ref["path"]).is_absolute() or PurePosixPath(ref["path"]).as_posix() != ref["path"] \
+                        or any(part in {"", ".", ".."} for part in PurePosixPath(ref["path"]).parts) \
+                        or not valid_digest(ref["sha256"]) or type(ref["bytes"]) is not int or not 0 <= ref["bytes"] <= 9_007_199_254_740_991:
+                    raise CanaryError("offline replay attestation reference is malformed")
+                paths.append(ref["path"])
+                kinds.add(ref["kind"])
+            if kinds != {"build", "validation"} or paths != sorted(set(paths)):
+                raise CanaryError("offline replay attestation references must be distinct, sorted, and cover both kinds")
         if not isinstance(authority, dict) or set(authority) - {"git_commit", "semantic_state_root", "through_changeset"} \
                 or not valid_commit(authority.get("git_commit")) or not valid_hash(authority.get("semantic_state_root")) \
                 or authority.get("through_changeset") is not None \

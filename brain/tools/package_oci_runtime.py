@@ -107,6 +107,8 @@ def package(*, git: Path, repo: Path, commit: str, base_image: str,
     expected = (policy["numpy"]["sha256"], policy["numpy"]["bytes"])
     if environment.secure_file_digest(wheel) != expected:
         raise ValueError("immutable NumPy artifact mismatch")
+    apparmor_binary = (oci_runtime.apparmor_runtime.verify_artifact(policy["apparmor"], wheelhouse)
+                       if "apparmor" in policy else None)
     _preflight_git(git, repo, commit)
     code: dict[str, bytes] = {}
     for logical in sorted(runner.RUNNER_FILES):
@@ -121,6 +123,8 @@ def package(*, git: Path, repo: Path, commit: str, base_image: str,
         shutil.copyfile(wheel, temporary / "wheels" / wheel.name, follow_symlinks=False)
         if environment.secure_file_digest(temporary / "wheels" / wheel.name) != expected:
             raise ValueError("NumPy artifact changed during packaging")
+        if apparmor_binary is not None:
+            (temporary / "wheels" / policy["apparmor"]["binary"]).write_bytes(apparmor_binary)
         for logical, data in code.items():
             target = temporary / "runner" / logical
             target.parent.mkdir(parents=True, exist_ok=True)
