@@ -39,8 +39,13 @@ from brain_deploy_journal import (
 )
 from brain_http import SelectorProbe, TransportError, probe_selector, require_https_base_url
 from brain_public_baseline import (
+    BaselineFreezeError,
     BaselineValidationError,
     PublicAssetBaseline,
+    _publish_no_replace,
+    _remove_owned_directory_at,
+    _verify_directory_at,
+    _verify_store_identity,
     verify_public_baseline,
 )
 
@@ -841,10 +846,22 @@ def retain_dry_run_artifacts(
         protected.append(prepared.prior.root)
     store = _prepare_dry_run_store(store_input, protected)
     pending = store / f".pending-{os.getpid()}-{uuid.uuid4().hex}"
-    with _dry_run_store_lock(store):
+    with _dry_run_store_lock(store), contextlib.ExitStack() as descriptors:
         _assert_external_dry_run_store(store, protected)
+        store_fd = os.open(store, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        descriptors.callback(os.close, store_fd)
+        store_info = os.fstat(store_fd)
+        pending_info: os.stat_result | None = None
+        final: Path | None = None
+
+        def verify_store() -> None:
+            _verify_store_identity(store, store_fd, store_info)
+            _assert_external_dry_run_store(store, protected)
+
         try:
-            pending.mkdir(mode=0o700)
+            verify_store()
+            os.mkdir(pending.name, mode=0o700, dir_fd=store_fd)
+            pending_info = os.stat(pending.name, dir_fd=store_fd, follow_symlinks=False)
             _copy_sealed_tree(prepared.public_dir, pending / "public", prepared.public_inventory)
             _copy_sealed_tree(prepared.bundle_dir, pending / "worker", prepared.bundle_inventory)
             config_body = prepared.deploy_config.read_bytes()
@@ -882,29 +899,38 @@ def retain_dry_run_artifacts(
             manifest = {**identity, "artifact_id": artifact_id}
             _write_exclusive(pending / "manifest.json", canonical_json_bytes(manifest))
             _seal_retained_tree(pending)
+            _verify_directory_at(store_fd, pending.name, pending_info)
+            verify_store()
             final = store / artifact_hex
-            if final.exists() or final.is_symlink():
-                existing = verify_retained_dry_run_artifacts(
-                    final, expected_artifact_id=artifact_id
-                )
-                _remove_pending_tree(pending)
-                return existing
             try:
-                os.rename(pending, final)
-            except OSError:
-                if final.is_symlink() or not final.is_dir():
-                    raise
-                existing = verify_retained_dry_run_artifacts(
-                    final, expected_artifact_id=artifact_id
-                )
-                _remove_pending_tree(pending)
-                return existing
-            _fsync_directory(store)
-            return verify_retained_dry_run_artifacts(
+                _publish_no_replace(store_fd, pending.name, final.name)
+                final_info = pending_info
+            except FileExistsError:
+                final_info = os.stat(final.name, dir_fd=store_fd, follow_symlinks=False)
+            verify_store()
+            _verify_directory_at(store_fd, final.name, final_info)
+            verified = verify_retained_dry_run_artifacts(
                 final, expected_artifact_id=artifact_id
             )
-        finally:
-            _remove_pending_tree(pending)
+            _verify_directory_at(store_fd, final.name, final_info)
+            verify_store()
+            _remove_owned_directory_at(store_fd, pending.name, pending_info)
+            _verify_directory_at(store_fd, final.name, final_info)
+            verify_store()
+            os.fsync(store_fd)
+            return verified
+        except BaseException as original_error:
+            if pending_info is not None:
+                for candidate in (pending, final):
+                    if candidate is None:
+                        continue
+                    try:
+                        _remove_owned_directory_at(store_fd, candidate.name, pending_info)
+                    except Exception as cleanup_error:
+                        original_error.add_note(f"retained artifact cleanup failed at {candidate.name}: {cleanup_error}")
+            if isinstance(original_error, BaselineFreezeError):
+                raise PromotionError(str(original_error)) from original_error
+            raise
 
 
 def selector_from_probe(

@@ -2941,6 +2941,30 @@ class V3EvidenceClosureTest(unittest.TestCase):
         write_canonical(pack_path, pack)
         return child, lineage, lineage_ref
 
+    def test_v3_named_outputs_can_share_identical_content_without_weakening_v2(self) -> None:
+        _pack, _path, manifests, _receipt, _lineage, _preimage = self.make_v3_pack()
+        source = copy.deepcopy(manifests["external-fixture"])
+        alias = copy.deepcopy(next(item for item in source["objects"] if "normalized" in item["roles"]))
+        alias["name"] = "normalized-alias"
+        source["objects"].append(alias)
+        source["objects"].sort(key=lambda item: item["name"])
+        source["normalization"]["outputs"].append(alias["name"])
+        source["normalization"]["outputs"].sort()
+        source["source_manifest_id"] = contracts.source_manifest_identity(source)
+        contracts.validate_source_manifest(source)
+        for field, value in (("bytes", alias["bytes"] + 1), ("media_type", "text/plain")):
+            bad = copy.deepcopy(source)
+            next(item for item in bad["objects"] if item["name"] == alias["name"])[field] = value
+            bad["source_manifest_id"] = contracts.source_manifest_identity(bad)
+            with self.assertRaisesRegex(contracts.VerificationError, "aliases must agree"):
+                contracts.validate_source_manifest(bad)
+        legacy = copy.deepcopy(source)
+        legacy["schema"] = contracts.SOURCE_SCHEMA_V2
+        legacy.pop("evidence")
+        legacy["source_manifest_id"] = contracts.source_manifest_identity(legacy)
+        with self.assertRaisesRegex(contracts.VerificationError, "duplicate source object"):
+            contracts.validate_source_manifest(legacy)
+
     def test_v3_pack_and_source_plan_seal_complete_evidence(self) -> None:
         pack, pack_path, manifests, _receipt, _lineage, _preimage = self.make_v3_pack()
         result = contracts.verify_offline_pack_files(

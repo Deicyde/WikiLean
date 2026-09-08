@@ -5,6 +5,7 @@ import contextlib
 import hashlib
 import json
 import os
+import signal
 import shutil
 import stat
 import subprocess
@@ -219,9 +220,9 @@ class FreezeAndVerifyTest(BaselineFixture):
 
     def test_publication_uses_pending_sibling_sync_and_atomic_rename(self) -> None:
         with mock.patch.object(
-            baseline.os,
-            "rename",
-            wraps=baseline.os.rename,
+            baseline,
+            "_rename_no_replace",
+            wraps=baseline._rename_no_replace,
         ) as rename_mock, mock.patch.object(
             baseline,
             "_fsync_directory",
@@ -229,10 +230,9 @@ class FreezeAndVerifyTest(BaselineFixture):
         ) as sync_mock:
             result = self.freeze()
         rename_mock.assert_called_once()
-        pending_arg, final_arg = rename_mock.call_args.args
-        self.assertEqual(Path(pending_arg).parent, self.store)
-        self.assertTrue(Path(pending_arg).name.startswith(".pending-"))
-        self.assertEqual(Path(final_arg), result.root)
+        _descriptor, pending_arg, final_arg = rename_mock.call_args.args
+        self.assertTrue(pending_arg.startswith(".pending-"))
+        self.assertEqual(final_arg, result.root.name)
         self.assertGreater(sync_mock.call_count, 1)
 
     def test_failed_freeze_removes_its_pending_directory(self) -> None:
@@ -241,6 +241,106 @@ class FreezeAndVerifyTest(BaselineFixture):
             self.freeze()
         self.assertTrue(self.store.exists())
         self.assertFalse(any(path.name.startswith(".pending-") for path in self.store.iterdir()))
+
+    def test_existing_empty_destination_is_never_replaced(self) -> None:
+        rename = baseline._rename_no_replace
+        occupied = []
+
+        def race(descriptor, source, target):
+            os.mkdir(target, mode=0o700, dir_fd=descriptor)
+            occupied.append((self.store / target).stat().st_ino)
+            rename(descriptor, source, target)
+
+        with mock.patch.object(baseline, "_rename_no_replace", side_effect=race):
+            with self.assertRaises(baseline.BaselineValidationError):
+                self.freeze()
+        survivors = [path for path in self.store.iterdir() if path.is_dir()]
+        self.assertEqual(len(survivors), 1)
+        self.assertEqual(survivors[0].stat().st_ino, occupied[0])
+        self.assertEqual(list(survivors[0].iterdir()), [])
+
+    def test_postrename_failure_removes_owned_target_and_preserves_recreated_source(self) -> None:
+        publish = baseline._publish_no_replace
+
+        def publish_then_fail(descriptor, source, target):
+            publish(descriptor, source, target)
+            os.mkdir(source, mode=0o700, dir_fd=descriptor)
+            (self.store / source / "keep").write_text("unrelated")
+            raise OSError("injected postrename failure")
+
+        with mock.patch.object(baseline, "_publish_no_replace", side_effect=publish_then_fail):
+            with self.assertRaisesRegex(OSError, "postrename"):
+                self.freeze()
+        survivors = [path for path in self.store.iterdir() if path.is_dir()]
+        self.assertEqual(len(survivors), 1)
+        self.assertTrue(survivors[0].name.startswith(".pending-"))
+        self.assertEqual((survivors[0] / "keep").read_text(), "unrelated")
+
+    def test_final_verification_failure_removes_owned_publication(self) -> None:
+        with mock.patch.object(baseline, "verify_public_baseline", side_effect=baseline.BaselineValidationError("injected final check")):
+            with self.assertRaisesRegex(baseline.BaselineValidationError, "final check"):
+                self.freeze()
+        self.assertFalse(any(path.is_dir() for path in self.store.iterdir()))
+
+    def test_store_replacement_during_pending_cleanup_cannot_be_reported_as_success(self) -> None:
+        remove = baseline._remove_owned_directory_at
+        displaced = self.base / "displaced-store"
+        replaced = False
+
+        def replace_after_cleanup(descriptor, name, expected):
+            nonlocal replaced
+            remove(descriptor, name, expected)
+            if not replaced and name.startswith(".pending-"):
+                self.store.rename(displaced)
+                self.store.mkdir(mode=0o700)
+                (self.store / "keep").write_text("unrelated")
+                replaced = True
+
+        with mock.patch.object(baseline, "_remove_owned_directory_at", side_effect=replace_after_cleanup):
+            with self.assertRaisesRegex(baseline.BaselineFreezeError, "store inode"):
+                self.freeze()
+        self.assertEqual((self.store / "keep").read_text(), "unrelated")
+        self.assertFalse(any(path.is_dir() for path in displaced.iterdir()))
+
+    @unittest.skipUnless(sys.platform == "darwin" and os.geteuid() != 0, "Darwin nonroot publication boundary")
+    def test_darwin_publication_window_is_nonsearchable_and_reseals_after_error(self) -> None:
+        rename = baseline._rename_no_replace
+
+        def rename_then_inspect(descriptor, source, target):
+            self.assertEqual(stat.S_IMODE(os.stat(source, dir_fd=descriptor).st_mode), 0o600)
+            rename(descriptor, source, target)
+            with self.assertRaises(PermissionError):
+                (self.store / target / baseline.MANIFEST_NAME).read_bytes()
+            raise OSError("injected rename seam")
+
+        with mock.patch.object(baseline, "_rename_no_replace", side_effect=rename_then_inspect):
+            with self.assertRaisesRegex(OSError, "rename seam"):
+                self.freeze()
+        self.assertFalse(any(path.is_dir() for path in self.store.iterdir()))
+
+    @unittest.skipUnless(sys.platform == "darwin" and os.geteuid() != 0, "Darwin nonroot hard interruption")
+    def test_hard_interruption_after_rename_leaves_rejected_inaccessible_target(self) -> None:
+        script = """import os,signal,sys
+sys.path.insert(0,sys.argv[1])
+import brain_public_baseline as b
+rename=b._rename_no_replace
+def kill_after_rename(*args):
+    rename(*args)
+    os.kill(os.getpid(),signal.SIGKILL)
+b._rename_no_replace=kill_after_rename
+b.freeze_public_baseline(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
+"""
+        result = subprocess.run([sys.executable, "-c", script, str(HERE), str(self.source), str(self.store), self.authority, str(self.repo)], capture_output=True)
+        self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+        targets = [path for path in self.store.iterdir() if path.is_dir()]
+        self.assertEqual(len(targets), 1)
+        target = targets[0]
+        self.assertEqual(stat.S_IMODE(target.stat().st_mode), 0o600)
+        with self.assertRaises(PermissionError):
+            (target / baseline.MANIFEST_NAME).read_bytes()
+        with self.assertRaises((baseline.BaselineValidationError, OSError)):
+            baseline.verify_public_baseline(target, self.repo)
+        target.chmod(0o700)
 
 
 class BoundaryAndSourceSafetyTest(BaselineFixture):
@@ -360,7 +460,9 @@ class SourceAuthorityAttestationTest(BaselineFixture):
         self.rewrite_manifest(result.root, document)
         baseline._seal_pending_tree(result.root)
         forged_root = result.root.with_name(document["baseline_id"].removeprefix("sha256:"))
+        result.root.chmod(0o700)
         result.root.rename(forged_root)
+        forged_root.chmod(0o555)
 
         with self.assertRaisesRegex(
             baseline.BaselineValidationError,
@@ -657,10 +759,14 @@ class FrozenArtifactAdversarialTest(BaselineFixture):
         shutil.rmtree(result.root)
         result = self.freeze()
         wrong = result.root.with_name("b" * 64)
+        result.root.chmod(0o700)
         result.root.rename(wrong)
+        wrong.chmod(0o555)
         with self.assertRaisesRegex(baseline.BaselineValidationError, "does not match"):
             baseline.verify_public_baseline(wrong, self.repo)
+        wrong.chmod(0o700)
         wrong.rename(result.root)
+        result.root.chmod(0o555)
         with self.assertRaisesRegex(baseline.BaselineValidationError, "identity mismatch"):
             baseline.verify_public_baseline(
                 result.root,

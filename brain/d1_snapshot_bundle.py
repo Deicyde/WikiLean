@@ -44,7 +44,7 @@ WRANGLER_INTEGRITY = (
 )
 WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
 PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650"
+ACQUIRER_WRAPPER_SHA256 = "350fa3d7c130d3c3c7b8057a8bcf39c3d5ce7536e2559c342833a5f56e879aa1"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
@@ -52,12 +52,22 @@ LOCAL_DEPENDENCY_PINS = (
     },
     {
         "path": "brain/tools/authority_contracts.py",
-        "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
+        "sha256": "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc",
     },
     {
         "path": "brain/tools/execution_environment.py",
-        "sha256": "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd",
+        "sha256": "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac",
     },
+)
+# Review whole wrapper/dependency generations together. Historical acquisitions
+# remain verifiable; mixing individually recognized hashes is never permitted.
+REVIEWED_ACQUIRER_GENERATIONS = (
+    (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
+    ("47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650", (
+        {"path": "brain/stage_io.py", "sha256": "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf"},
+        {"path": "brain/tools/authority_contracts.py", "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6"},
+        {"path": "brain/tools/execution_environment.py", "sha256": "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd"},
+    )),
 )
 REQUIRED_PYTHON_STARTUP_FLAGS = {
     "ignore_environment": True,
@@ -594,10 +604,6 @@ def _validate_toolchain(value: Any) -> dict[str, Any]:
             "toolchain.json.python.startup_flags: expected isolated -I -S policy"
         )
     dependencies = toolchain["local_dependencies"]
-    if dependencies != list(LOCAL_DEPENDENCY_PINS):
-        raise HarvestError(
-            "toolchain.json.local_dependencies: does not match reviewed local pins"
-        )
     wrangler = _exact_object(
         toolchain["wrangler"],
         ("version", "package_integrity", "cli_sha256", "package_lock_sha256"),
@@ -613,8 +619,9 @@ def _validate_toolchain(value: Any) -> dict[str, Any]:
     wrapper = _exact_object(
         toolchain["wrapper"], ("sha256",), "toolchain.json.wrapper"
     )
-    if wrapper["sha256"] != ACQUIRER_WRAPPER_SHA256:
-        raise HarvestError("toolchain.json.wrapper.sha256: unexpected acquirer wrapper")
+    if not any(wrapper["sha256"] == known_wrapper and dependencies == list(known_dependencies)
+               for known_wrapper, known_dependencies in REVIEWED_ACQUIRER_GENERATIONS):
+        raise HarvestError("toolchain.json: wrapper and local_dependencies do not match a reviewed acquisition generation")
     return toolchain
 
 
@@ -712,6 +719,23 @@ def verify_snapshot_bundle(bundle_path: Path) -> SnapshotBundle:
     """Load and independently verify one complete D1 acquisition bundle."""
     bundle_path = Path(bundle_path).absolute()
     files = _bundle_bytes(bundle_path)
+    return verify_snapshot_bundle_files(bundle_path, files)
+
+
+def verify_snapshot_bundle_files(
+    bundle_path: Path, captured_files: Mapping[str, bytes]
+) -> SnapshotBundle:
+    """Verify exactly one captured byte generation without reopening the source.
+
+    Exporters use the same verifier after a descriptor-relative capture. Copy the
+    mapping and require immutable bytes so later caller mutations cannot change
+    the generation being verified. Filesystem closure/modes are checked by
+    ``_bundle_bytes`` before capture; every content/evidence check remains here.
+    """
+    bundle_path = Path(bundle_path).absolute()
+    files = dict(captured_files)
+    if frozenset(files) != EXPECTED_FILES or any(type(value) is not bytes for value in files.values()):
+        raise HarvestError("captured snapshot bundle must contain the exact immutable byte closure")
     manifest = _canonical_json(files["bundle.json"], "bundle.json")
     receipt = _canonical_json(files["acquisition-receipt.json"], "acquisition-receipt.json")
     lineage = _canonical_json(files["normalization-lineage.json"], "normalization-lineage.json")
@@ -817,7 +841,7 @@ def verify_snapshot_bundle(bundle_path: Path) -> SnapshotBundle:
     if (
         lineage["tool"]["name"] != "wikilean-d1-snapshot-normalizer"
         or lineage["tool"]["version"] != "1"
-        or lineage["tool"]["sha256"] != ACQUIRER_WRAPPER_SHA256
+        or lineage["tool"]["sha256"] != toolchain["wrapper"]["sha256"]
     ):
         raise HarvestError("normalization lineage names an unexpected tool")
     if lineage["acquisition_receipt_ids"] != [receipt_id] or lineage["parent_source_manifest_ids"] != []:
