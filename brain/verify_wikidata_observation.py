@@ -37,6 +37,9 @@ def source_entry(path: Path, *, root_name: str, license_policy: dict) -> dict:
     for name, relative in (("request_plan", "request-plan.json"), ("toolchain", "toolchain.json")):
         objects.append({**ref(relative), "name": name, "roles": ["receipt"],
                         "redistribution": license_policy["redistribution"]})
+    if bundle["manifest"]["schema"] == observation.BUNDLE_SCHEMA_V2:
+        objects.append({**ref("normalization-profile.json"), "name": "normalization_tool_profile", "roles": ["receipt"],
+                        "redistribution": license_policy["redistribution"]})
     preimages = []
     for index, request in enumerate(observation.requests_for(bundle["plan"])):
         preimages.append({**ref(f"requests/{index:06d}.form"), "parameters_sha256": observation.sha(request.parameters)})
