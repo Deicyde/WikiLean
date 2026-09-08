@@ -24,7 +24,8 @@ class PublicGitSourcesTest(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name).resolve()
         self.programs = {name: (core.ROOT / name).read_bytes() for name in core.TOOL_FILES}
-        self.profile = {"files": [{"path": name, "sha256": core.sha(self.programs[name])} for name in core.TOOL_FILES]}
+        self.profile = {"files": [{"path": name, "sha256": core.sha(self.programs[name])} for name in core.TOOL_FILES],
+                        "repositories": dict(core.REPOSITORIES)}
         self.profile["profile_id"] = core.profile_id(self.profile)
         self.registry = {"schema": core.PROFILE_SCHEMA, "current_profile": self.profile["profile_id"], "profiles": [self.profile]}
         registry = self.root / "profiles.json"
@@ -101,6 +102,35 @@ class PublicGitSourcesTest(unittest.TestCase):
                 core.normalize(self.plan, {**self.raw, "commit": core.canonical(metadata)})
         for change in ({"commit": "main"}, {"repository": "attacker/fork"}, {"source": "unknown"}):
             with self.assertRaises(core.EvidenceError): core.validate_plan({**self.plan, **change})
+
+    def test_reviewed_repository_dispatch_includes_nlab_and_stacks(self):
+        for source, repository in core.REPOSITORIES.items():
+            plan = {**self.plan, "source": source, "repository": repository}
+            metadata = json.loads(self.raw["commit"])
+            metadata["url"] = "https://api.github.com/repos/" + repository + "/git/commits/" + plan["commit"]
+            metadata["tree"]["url"] = "https://api.github.com/repos/" + repository + "/git/trees/" + self.tree
+            raw = {**self.raw, "commit": core.canonical(metadata)}
+            with self.subTest(source=source):
+                files = core.capture_files(plan, raw, self.tool, self.programs, WHEN)
+                capture = {name: data for name, data in files.items() if name != "manifest.json"}
+                self.assertEqual(core.verify_capture_files(capture)[0], plan)
+                exported = core.build_export(capture, self.profile, self.programs, WHEN)
+                self.assertEqual(json.loads(exported["source-manifest.json"])["source"], source)
+
+    def test_historical_generation_cannot_claim_new_repository_capabilities(self):
+        historical = {key: value for key, value in self.profile.items() if key not in {"repositories", "profile_id"}}
+        historical["profile_id"] = core.profile_id(historical)
+        self.registry["profiles"].append(historical)
+        self.registry["profiles"].sort(key=lambda item: item["profile_id"])
+        core.REGISTRY.write_bytes(core.canonical(self.registry))
+        tool = {**self.tool, "profile_id": historical["profile_id"]}
+        core.capture_files(self.plan, self.raw, tool, self.programs, WHEN)
+        for source in ("nlab-source", "stacks-source"):
+            plan = {**self.plan, "source": source, "repository": core.REPOSITORIES[source]}
+            with self.assertRaisesRegex(core.EvidenceError, "recorded reviewed tool generation"):
+                core.capture_files(plan, self.raw, tool, self.programs, WHEN)
+            with self.assertRaisesRegex(core.EvidenceError, "recorded reviewed tool generation"):
+                core.validate_plan_for_profile(plan, historical)
 
     def test_upstream_unicode_metadata_is_retained_without_control_normalization(self):
         metadata = json.loads(self.raw["commit"])

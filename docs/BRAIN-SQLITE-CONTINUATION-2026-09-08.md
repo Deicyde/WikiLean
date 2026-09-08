@@ -18,7 +18,8 @@ The first reviewed implementation tranche is committed as `f51fc27c` (source evi
 inventory coherence, OCI tools and sealed publication fixes), followed by `3f822f04`
 (native ARM OpenBLAS identity). Further acquisition and pack-bound release work has
 passed integration checks and is committed as `d4ed6e42`, followed by `c64438d2`
-(dataset evidence and actual native replay isolation). Completion of a fixture suite is
+(dataset evidence and actual native replay isolation), then `a99d48fa` (derived
+catalog fragments and retained rejected observations). Completion of a fixture suite is
 not evidence of a full-corpus or native Linux OCI run.
 
 ## Real source acquisitions
@@ -126,8 +127,13 @@ The review is `wikidata-plan-20260908/q21550639-floor-review.json`; it grants no
 production semantic approval. A fresh complete acquisition is running with
 `request-plan-v2-reviewed-class-drift.json` (SHA-256
 `4f14434d1cdaefa0404cb859d47d78161ec09c90ac99e47d146a521a5762aab3`),
-log `acquisition-reviewed-class-drift.log`, and tool profile
+tool profile
 `sha256:da17f29e23a2f883e28cedcb92f919ced455edc1637a8c58a0f8ffa3c8545939`.
+The first attempt under this plan exhausted five DNS failures at request 129;
+its single-request diagnostic is retained under
+`wikidata-observations/failed-attempt-3d4e06e1d8e749548bb7b212df7f650c/`.
+DNS resolution subsequently recovered. A fresh complete attempt uses the same
+plan/profile and log `acquisition-reviewed-class-drift-retry2.log`.
 The producer now preserves complete rejected transcripts as private diagnostics;
 these have no receipt, normalized output, authority bundle or resume path.
 
@@ -150,6 +156,25 @@ requests and exact complete Git trees. Their paths and identities are retained i
 `/Users/jack/.local/share/wikilean-migration/public-git/verified-source-exports.json`.
 Pure harvester normalization is the next step for these source families.
 
+Fresh nLab and Stacks Git captures and second-process export verification also
+succeeded. The summary is `public-git/verified-nlab-stacks-source-exports.json`:
+nLab commit `155c084fedf98b24d14ff8883d692140a6f0a942` has 41,428 files;
+Stacks commit `c4fe5c4a3db63dab0f8c7b65f828662ef952ab2a` has 154 files.
+Their source IDs are respectively
+`sha256:d8cfe64994d5325bd49a33f02fc295b329468ee80fa7b530c57ea982f806dd7d`
+and `sha256:a1988cb44467ba2aa060e572cf6d9b18e49a3db1a08ea53a4be448ec74623cab`.
+The Git acquisition profile now explicitly binds allowed repositories; historical
+profiles remain restricted to their original three repositories.
+
+The independently verified identifier export is
+`derived-identifier-source-exports/0035986f00ab36f6519a044dcb60f2c410b8f4171aa71284e4a341c5acc4d18f`.
+It contains 710 Mathlib tag rows from the exact source/oracle pair and 1,738
+MathWorld identifiers from verified P2812 claims. No MathWorld sitemap was acquired;
+the empty link pair and explicit inventory metadata retain that limitation.
+The source IDs are `sha256:3e679da797cb7f6f544623258a4ba34dd5b1f842c81cb01b324b51b8c67551e1`
+and `sha256:eea3d8d9e5867143d9c125f4f922c8f957b582c353e663de2fa44b6cb8ce7a6b`.
+These exports are private and carry no production semantic approval.
+
 The derived catalog normalizer covers concept layer, concept graph/declaration
 bindings, hierarchy and theorem links. Its 22 evidence/compiler tests and five
 legacy semantic parity tests pass. The private draft in
@@ -159,6 +184,14 @@ independently checked. Its current profile is
 `sha256:98623f9f769343f566693da9d4371111a9ae0b78fcb878f805c630b4e981e0b8`.
 Curated source objects use native Git paths. Final logical input assembly belongs
 in a separate Git-backed staging tree, never the original dirty checkout.
+
+The private `full-corpus-plan-20260908/control/source-plan-draft.json` currently
+binds 28 of 43 input groups, with 15 explicitly unresolved. Its detached staging
+checkout is at `c64438d2`; verified source members are copied into logical input
+locations with checksums and materialization records. MathWorld contributes only
+a partial external-pages/links binding. All previously present external source
+families remain required by the draft completeness review. The draft is explicitly
+non-authoritative and is not a full plan or compiled pack.
 
 ## Engineering changes in progress
 
@@ -240,6 +273,11 @@ The expanded 59-command Python suite passed, log
 `/tmp/wikilean-migration-python-ci-source-fragments.log`; focused counts include
 Wikidata 49, compiler 31, crossref 28 and public Git 10 tests. The unchanged Worker
 remains at the previously passing typecheck and 872 tests.
+The subsequent 60-command Python suite passed in
+`/tmp/wikilean-migration-python-ci-identifiers.log`, including all 13 identifier
+tests and the expanded 12 public Git tests. CI now pins PyYAML 6.0.3 for the
+upcoming pure Erdos importer; source normalization separately retains its complete
+installed dependency preimages and interpreter identity.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.

@@ -31,10 +31,14 @@ TOOL_FILES = tuple(sorted({
     "brain/stage_io.py", "brain/tools/authority_contracts.py",
     "brain/tools/execution_environment.py", "brain/tools/source_plan_contracts.py",
 }))
-REPOSITORIES = {
+LEGACY_REPOSITORIES = {
     "formal-conjectures-source": "google-deepmind/formal-conjectures",
     "erdosproblems-source": "teorth/erdosproblems",
     "tauceti-source": "TauCetiProject/TauCeti",
+}
+REPOSITORIES = {**LEGACY_REPOSITORIES,
+    "nlab-source": "ncatlab/nlab-content",
+    "stacks-source": "stacks/stacks-project",
 }
 PHYSICAL_ROOT = "public_git_export"
 EvidenceError = archive.EvidenceError
@@ -64,7 +68,20 @@ def request_specs(plan):
 
 
 def profile_id(profile):
-    return contracts.domain_hash("wikilean.public-git-source-tool-profile.v1", {"files": profile["files"]})
+    return contracts.domain_hash("wikilean.public-git-source-tool-profile.v1", {
+        key: value for key, value in profile.items() if key != "profile_id"})
+
+
+def profile_repositories(profile):
+    # Original reviewed profiles predate the two additional dispatch targets.
+    # Do not reinterpret their retained program bytes as a new capability.
+    return profile.get("repositories", LEGACY_REPOSITORIES)
+
+
+def validate_plan_for_profile(plan, profile):
+    validate_plan(plan)
+    require(profile_repositories(profile).get(plan["source"]) == plan["repository"],
+            "repository is unsupported by the recorded reviewed tool generation")
 
 
 def profiles():
@@ -74,7 +91,11 @@ def profiles():
             "unsupported public Git profile registry")
     ids = []
     for profile in value["profiles"]:
-        exact(profile, {"profile_id", "files"}, "profile")
+        require(isinstance(profile, dict) and set(profile) in ({"profile_id", "files"}, {"profile_id", "files", "repositories"}),
+                "profile has unexpected fields")
+        allowed = profile_repositories(profile)
+        require(isinstance(allowed, dict) and allowed and all(REPOSITORIES.get(name) == repository for name, repository in allowed.items()),
+                "profile contains an unreviewed repository dispatch")
         require(isinstance(profile["files"], list) and [item["path"] for item in profile["files"]] == list(TOOL_FILES),
                 "public Git profile must cover the exact complete implementation")
         for item in profile["files"]:
@@ -97,6 +118,7 @@ def current_profile():
     origins()
     registry = profiles()
     profile = next(item for item in registry["profiles"] if item["profile_id"] == registry["current_profile"])
+    require(profile_repositories(profile) == REPOSITORIES, "current profile does not close the complete repository dispatch")
     require(profile["files"] == [{"path": name, "sha256": sha(read_regular(ROOT / name))} for name in TOOL_FILES],
             "current public Git implementation differs from its reviewed generation")
     return copy.deepcopy(profile)
@@ -138,7 +160,7 @@ def normalize(plan, raw):
 
 
 def receipt(plan, raw, tool, when):
-    validate_tool(tool)
+    validate_plan_for_profile(plan, validate_tool(tool))
     specs = request_specs(plan)
     requests = sorted(map(archive.request_descriptor, specs), key=canonical)
     value = {"schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1, "source": plan["source"],
@@ -155,6 +177,7 @@ def receipt(plan, raw, tool, when):
 
 def capture_files(plan, raw, tool, programs, when):
     profile = validate_tool(tool)
+    validate_plan_for_profile(plan, profile)
     verify_programs(profile, programs)
     normalize(plan, raw)
     files = {"plan.json": canonical(plan), "tool.json": canonical(tool), "receipt.json": canonical(receipt(plan, raw, tool, when)),
@@ -190,6 +213,7 @@ def verify_capture(path):
 
 def build_export(capture, profile, programs, when):
     plan, raw, tool = verify_capture_files(capture)
+    validate_plan_for_profile(plan, profile)
     verify_programs(profile, programs)
     tree_files, tree = normalize(plan, raw)
     files = {"acquisition/" + name: data for name, data in capture.items()}
