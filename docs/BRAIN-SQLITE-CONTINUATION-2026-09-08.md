@@ -21,6 +21,7 @@ passed integration checks and is committed as `d4ed6e42`, followed by `c64438d2`
 (dataset evidence and actual native replay isolation), then `a99d48fa` (derived
 catalog fragments and retained rejected observations). Completion of a fixture suite is
 not evidence of a full-corpus or native Linux OCI run.
+The next identifier and public Git tranche is committed as `dded5b39`.
 
 ## Real source acquisitions
 
@@ -132,8 +133,16 @@ tool profile
 The first attempt under this plan exhausted five DNS failures at request 129;
 its single-request diagnostic is retained under
 `wikidata-observations/failed-attempt-3d4e06e1d8e749548bb7b212df7f650c/`.
-DNS resolution subsequently recovered. A fresh complete attempt uses the same
-plan/profile and log `acquisition-reviewed-class-drift-retry2.log`.
+DNS resolution subsequently recovered. The fresh attempt under the same
+plan/profile succeeded; its log is `acquisition-reviewed-class-drift-retry2.log`.
+Independent complete bundle/source verification passed for
+`wikidata-observations/b8f9a745812f3cc60c41680b9d5ec99a51a2c765c27a47c171eb4e204f1dbf35`.
+It contains 194 successful requests and four explicitly retained failed attempts
+(198 attempts total). Source ID:
+`sha256:36be342172d6c1bf3c896aeba7ab19a6794b8d0190e382111ab4429b7a07f5e6`;
+receipt `sha256:69e0ab6665c3eeeddae7e2af19c3434a8ab15e375b1830f383cbf2d2a44bae8f`;
+lineage `sha256:f665b695284eb247ce84b69beaad596abcd7571213c5d1331ec92074c4d55434`.
+The verified fragment, manifest and report are in `wikidata-plan-20260908/`.
 The producer now preserves complete rejected transcripts as private diagnostics;
 these have no receipt, normalized output, authority bundle or resume path.
 
@@ -154,7 +163,13 @@ Fresh public Git source captures and independently reconstructed exports also
 succeeded for Formal Conjectures, ErdosProblems and TauCeti, using six actual
 requests and exact complete Git trees. Their paths and identities are retained in
 `/Users/jack/.local/share/wikilean-migration/public-git/verified-source-exports.json`.
-Pure harvester normalization is the next step for these source families.
+Pure harvester normalization and second-process verification subsequently passed:
+`public-git/harvest-normalization/exports/7ced5a02f6778d485b6c55193127e0e1060df24be8f274162597cddfa4bfb0ad`.
+The 4,190 Formal Conjectures rows, 7,860 TauCeti rows and 1,217 Erdos joins/pages
+match every existing data row. Erdos gains a deterministic pair envelope and an
+explicit empty links companion. `public-git/harvest-normalization/verified-export.json`
+records child IDs, parent roots, exact PyYAML 6.0.3 dependency evidence and row parity.
+The source-only YAML loader rejects preloaded packages and bypasses unmeasured bytecode.
 
 Fresh nLab and Stacks Git captures and second-process export verification also
 succeeded. The summary is `public-git/verified-nlab-stacks-source-exports.json`:
@@ -165,6 +180,12 @@ Their source IDs are respectively
 and `sha256:a1988cb44467ba2aa060e572cf6d9b18e49a3db1a08ea53a4be448ec74623cab`.
 The Git acquisition profile now explicitly binds allowed repositories; historical
 profiles remain restricted to their original three repositories.
+Both pure catalog reductions also passed independent verification:
+`external-git-source-exports/cd0b2c1d11af82264e136e83b9a34458119d7d92b04a177b4264b2c1f8235a4d`.
+nLab produces 20,057 pages/438,492 links; Stacks produces 21,436 pages/47,356 links.
+`verified-external-git-export-20260908.json` records complete source IDs and root bindings.
+The shared `external_pair_normalization.py` retains the reviewed legacy writer's
+pure row/metadata semantics without executing its filesystem publication block.
 
 The independently verified identifier export is
 `derived-identifier-source-exports/0035986f00ab36f6519a044dcb60f2c410b8f4171aa71284e4a341c5acc4d18f`.
@@ -177,21 +198,46 @@ These exports are private and carry no production semantic approval.
 
 The derived catalog normalizer covers concept layer, concept graph/declaration
 bindings, hierarchy and theorem links. Its 22 evidence/compiler tests and five
-legacy semantic parity tests pass. The private draft in
-`derived-catalog-plan-20260908/draft-plan.json` explicitly awaits Wikidata edges;
-all ten available parent manifests and 10,148 objects (3,593,020,375 bytes) were
-independently checked. Its current profile is
+legacy semantic parity tests pass. The original draft was finalized with the
+verified shared Wikidata observation: `derived-catalog-plan-20260908/plan.json`,
+SHA-256 `ebb2b4c5daca2a25aa38343939901aef398970a267155397d545a32506832d91`.
+The actual eleven-parent reduction and separate-process verification succeeded at
+`derived-catalog-source-exports/98ab7bb4df33fc7ca30f13e55df3a85a15d7c57b2be3e6a07b99c91cd56a9dda`.
+The exact six output bindings and four child manifests are in its source fragment;
+the complete verification report is `derived-catalog-plan-20260908/verification.json`.
+Its current profile is
 `sha256:98623f9f769343f566693da9d4371111a9ae0b78fcb878f805c630b4e981e0b8`.
 Curated source objects use native Git paths. Final logical input assembly belongs
 in a separate Git-backed staging tree, never the original dirty checkout.
 
 The private `full-corpus-plan-20260908/control/source-plan-draft.json` currently
-binds 28 of 43 input groups, with 15 explicitly unresolved. Its detached staging
+binds 40 of 43 input groups, with three explicitly unresolved: external-pages,
+external-links and external-arxiv-citations. Its detached staging
 checkout is at `c64438d2`; verified source members are copied into logical input
-locations with checksums and materialization records. MathWorld contributes only
-a partial external-pages/links binding. All previously present external source
+locations with checksums and materialization records. MathWorld, Erdos, nLab,
+Stacks and ProofWiki contribute partial external-pages/links bindings. DLMF, EOM,
+Kerodon, LMFDB, OEIS and PlanetMath still require verified pairs. Previously present external source
 families remain required by the draft completeness review. The draft is explicitly
 non-authoritative and is not a full plan or compiled pack.
+
+ProofWiki's fresh single-GET compressed dump is 36,266,006 bytes, SHA-256
+`48c9ba98542597a32d2c4e7cddc670170a6975c404a25b9bb4f96a28bf4f7979`.
+Its raw export is `public-files/exports/834530ee2b1359da2b154ceda45e7050b09a688b55699058c68d2cb41ef12e90`;
+the complete pure XML reduction and independent replay are
+`proofwiki-normalization/exports/a79f80855eaa72aada3dc746995ea98ce167695e4c5a70d88640c62b5dbdb8d8`.
+It yields 49,331 pages and 342,161 links, with 540 QID joins. Its explicit four-parent
+ancestry includes the verified dump, requested entity claims, crossrefs and Git registry.
+The XML stream independently enforces the 4 GiB expansion cap. Fresh upstream
+content differs from the old dump; source drift is not a migration parity approval.
+
+EOM's complete fresh 95-request API walk and separate-process export verification
+passed: `eom/exports/50d67ba95bd75644891c7608309317c575107a568c737a70e8e14010492f821b`.
+Source ID `sha256:114b5813d750ca72e95a39f210f889ea8f19bebff2723c967d49abc8dfbd6a6f`;
+4,639,593 original response bytes yield 9,985 page identities and 42,846 links.
+Exact continuation replay, logical-title collision rejection, incremental resource
+bounds, complete request/body evidence and private failure retention are enforced.
+The raw identity source has no logical reducer binding until its pure normalization
+with the reviewed crossref/registry parents is complete. No article text is requested.
 
 ## Engineering changes in progress
 
@@ -278,6 +324,10 @@ The subsequent 60-command Python suite passed in
 tests and the expanded 12 public Git tests. CI now pins PyYAML 6.0.3 for the
 upcoming pure Erdos importer; source normalization separately retains its complete
 installed dependency preimages and interpreter identity.
+The expanded 65-command suite subsequently passed in
+`/tmp/wikilean-migration-python-ci-external-sources.log`: Git harvest 16,
+external Git 19, public-file 13, ProofWiki 11 and EOM 13 focused checks, including
+actual pack compiler integration and independent legacy-parity coverage.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
