@@ -24,6 +24,8 @@ not evidence of a full-corpus or native Linux OCI run.
 The next identifier and public Git tranche is committed as `dded5b39`.
 The subsequent Git harvest, external Git, ProofWiki, EOM raw and complete
 Wikidata-derived input tranche is committed as `bb179a0c`.
+The EOM normalization, DLMF, OEIS, Kerodon and LMFDB acquisition tranche is
+committed as `c3265f80`.
 
 ## Real source acquisitions
 
@@ -212,15 +214,18 @@ Its current profile is
 Curated source objects use native Git paths. Final logical input assembly belongs
 in a separate Git-backed staging tree, never the original dirty checkout.
 
-The private `full-corpus-plan-20260908/control/source-plan-draft.json` currently
-binds 40 of 43 input groups, with three explicitly unresolved: external-pages,
-external-links and external-arxiv-citations. Its detached staging
+The private `full-corpus-plan-20260908/control/source-plan-draft.json` now has
+106 manifests and 41 of 43 complete input groups after PlanetMath and OpenAlex
+integration. Ten external pairs are staged; only the aggregate external page/link
+groups remain incomplete pending Kerodon. Its current SHA-256 is
+`4a0e4fb7fa9cbe3c9df97bf7c419d181d64f3dbfe3cf2c97526452cd593ce9ce`. Its detached
 checkout is at `c64438d2`; verified source members are copied into logical input
-locations with checksums and materialization records. Its 35 source manifests include
-MathWorld, Erdos, nLab, Stacks, ProofWiki, EOM and OEIS as partial external-pages/links
-contributions. DLMF, Kerodon, LMFDB and PlanetMath still require verified pairs. Previously present external source
-families remain required by the draft completeness review. The draft is explicitly
-non-authoritative and is not a full plan or compiled pack.
+locations with checksums and materialization records. Kerodon remains necessary
+before either aggregate external input can be complete. Previously present source
+families remain required by the completeness review. The draft is explicitly
+non-authoritative and is not a full plan or compiled pack; inspect the latest
+materialization records for subsequent assembly changes. Proposal-fold source
+coherence, source-policy review and full evidence/compiler checks remain outstanding.
 
 ProofWiki's fresh single-GET compressed dump is 36,266,006 bytes, SHA-256
 `48c9ba98542597a32d2c4e7cddc670170a6975c404a25b9bb4f96a28bf4f7979`.
@@ -272,17 +277,74 @@ actual CPython runtime in profile
 `sha256:48c6b118dc336d1b77bc87d78aa4657065e83a52f7ddb44f051ff65e9e111cfe`.
 Network message allocation, query size, latest-revision ambiguity and schema are
 bounded; query/cleanup failures retain received data without publishing authority.
-Pure row normalization and its legacy-parity check are the next LMFDB step.
+Pure normalization and independent legacy-code parity also passed: all 1,725
+pages and 5,235 links match the legacy normalizer on the same fresh responses.
+The export is `lmfdb-normalization/exports/4e21920329f9c742dac51b124fa49459464bd62eaa9428b848edff2e306738f9`,
+child source `sha256:d40430d389d707043a454241afe0ab207455110a8ccd6a487a98dff8fbb92b51`.
+There are 42 QID joins and 1,694 snippets. Historical-cache comparison separately
+records eight added pages, 11 changed content rows, 12 changed QID joins, 21 added
+links and two removed links. Both normalized members are staged. Publisher code
+at LMFDB commit `fea1c3dffe05b3ac2df3d5953885db035d9096b4` explicitly states that
+the data use CC-BY-SA-4.0; the verified template and Git blob identity are retained
+under `source-policy-review/lmfdb/`. The old registry's unverified-license note
+is therefore stale, but its pinned bytes remain intact pending source-policy review.
 
-DLMF and Kerodon raw acquisition and pure normalization tools are implemented and
-independently reviewed. Their full live walks are still running under frozen
-profiles; incomplete captures cannot supply source-plan bindings. DLMF enumerates
-all chapter and section pages from retained discovery pages. Kerodon enumerates
-both roots and all 7,509 tags at a polite request rate; its old cache contained
-only 6,490 successful contents, so its incomplete legacy coverage must be called
-out in the later semantic review. Private logs are `dlmf/acquisition.log` and
-`kerodon-plan-20260908/acquisition.log`. PlanetMath and OpenAlex/arXiv source
-adapters remain in development.
+DLMF completed 909 requests with 103,921,199 response bytes. The independent raw
+and normalized replays produce 872 pages and 31,540 links, including 15 QID joins;
+all rows equal the legacy normalizer on the same responses. Normalized export:
+`dlmf-normalization/exports/45891255636701f95e75d170fe2aad1b4d38f3be502032bd56e70dfbd34e7e4f`,
+child source `sha256:7ddc2bf7bf04d108a02d6d8d4e0db8418d09c5d4734657ddfc74281a06d6ef2a`.
+The raw source is `sha256:9ddb2900d0eb25ab86ef9a7dd1fce5e86eb4f0a1da820e78398d091ea74f872a`.
+Both normalized members are staged.
+
+PlanetMath completed all 63 repositories and 127 requests. The independently
+verified export is
+`planetmath-source/exports/be139e543da0f4f78cb8030aae7dbcc5d8fda1bc19bd06dc9fd6838cdb52b2e7`,
+child source `sha256:f82666ce0cc45b9acfe31545748c5171a39ff505cceddaf52349acc9e424fef8`.
+It retains 26,565 files and 5,604,844,007 bytes of evidence. All 9,451 page content
+rows and 12,805 links match the historical cache; 40 added Wikidata joins raise
+coverage to 297. The initial archive-bound failure and its measured limit review
+are retained. The successful generation keeps its exact larger resource policy;
+the failed generation is never relabeled as successful.
+
+OpenAlex and arXiv completed 914 requests, including 452 filtered calls, with no
+retries and 37,731,295 response bytes. All 2,052 selected arXiv IDs returned identified
+Atom entries. The normalized export is
+`openalex-normalized-exports/82146a6bd9cb1e3bf642353b67fbc5d0e49f97efbeb7be71d96ecd1412911a7c`,
+child source `sha256:550466341eb80fc696187bf023157af59fae6724f0f407a6b5bfcee18e748c39`.
+All 25 normalized citation rows match the legacy main on the same captured responses.
+Historical drift is five added links and one removed link; the removed link's
+source paper is absent from the reviewed current theoremgraph selector. The exact
+selector and full seven-parent ancestry remain bound, rather than promoting a cache.
+Private reports are in `openalex-plan-20260908/`.
+
+Kerodon is the remaining live source capture. Its reviewed raw and pure profiles
+remain frozen while it reads both roots and all 7,509 tags at a polite request
+rate. The old cache contained only 6,490 successful contents, so its incomplete
+legacy coverage must be called out in the later semantic review. The private log
+is `kerodon-plan-20260908/acquisition.log`; incomplete captures cannot supply bindings.
+
+## Curated contribution and assertion checks
+
+The proposal diagnostic replays all 452 pinned proposal files with an exactly
+empty unknown-entity request plan. Replaying from an empty FC seed produces the
+same 2,100 rows as the old seeded run, removing an opaque prior-output dependency.
+The separate [curation decision](BRAIN-SQLITE-CURATION-DECISION.md) explains five
+direct Git container contributions that must be preserved separately, and 15 FC
+links whose completed declaration names match recorded rejections. No diagnostic
+fold output has replaced the currently bound runtime input. This is an explicit
+graph-change review, not a provenance-only parity claim.
+
+P2A's experimental shadow kernel implements four assertion operations, independent
+contribution identity, exact revision/retraction history, predecessor checks,
+derived conflicts and full/incremental replay. Its fixture envelope and kind policy
+are separate from accepted changesets; see
+[`experimental-assertions-v1.md`](../brain/authority/specs/experimental-assertions-v1.md).
+The actual Git pilot at `c64438d2` preserves all 104 container and 326 discovery
+contributions with identical canonical per-file roots. Evidence is retained in
+`assertion-shadow-20260908/`; source files, runtime routes and
+`authority.through_changeset` are unchanged. Full graph parity, accepted genesis
+and production authority remain later milestones.
 
 ## Engineering changes in progress
 
@@ -373,20 +435,28 @@ The expanded 65-command suite subsequently passed in
 `/tmp/wikilean-migration-python-ci-external-sources.log`: Git harvest 16,
 external Git 19, public-file 13, ProofWiki 11 and EOM 13 focused checks, including
 actual pack compiler integration and independent legacy-parity coverage.
-The latest complete suite passes **72 commands**, log
+The preceding complete suite passes **72 commands**, log
 `/tmp/wikilean-migration-python-ci-remaining-catalogs.log`. New focused checks:
 EOM normalization 12, DLMF raw 12 and normalization 12, OEIS 14, Kerodon raw 18
 and normalization 12, LMFDB raw 16. All new source slices received independent
 review; the LMFDB cleanup finding was fixed and regressed before live acquisition.
 The unchanged Worker still has its previously passing typecheck and 872 tests.
+The latest complete suite passes **77 commands**, log
+`/tmp/wikilean-migration-python-ci-shadow-sources.log`. New focused suites pass
+LMFDB normalization 12, PlanetMath 16, OpenAlex raw 18 and normalization 10,
+and experimental assertion shadow 17 tests. Independent review confirmed actual
+430-row Git pilot parity and exposed two repaired shadow issues: discovery rows
+use `src`/`dst`/`kind`, and checkpoint comparisons must distinguish booleans from
+integers using exact canonical bytes. Golden v1 identities and full/incremental
+replay remain equal. This completes the bounded P2A shadow criteria only.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
 
 ## Remaining completion order
 
-1. Finish DLMF/Kerodon captures, LMFDB normalization, and PlanetMath/OpenAlex
-   source adapters and captures. Shared Wikidata and its derived catalog are complete. The final
+1. Finish the remaining Kerodon capture and independently verify its normalized
+   export. The other planned source families now have verified exports. The final
    committed native Linux runner image is verified; preserve its preparation evidence.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the
@@ -404,6 +474,7 @@ Darwin evidence is retained in the private migration root's
    identities into the full-offline-replay release attestation.
 6. Finish the P1B public baseline/shadow/dry-run/activation evidence bundle. P1C still
    requires Jack's exact-release and window approvals for A, B, rollback, and final state.
-7. Complete the roadmap's later Git assertion authority, release-pinned D1 overlay,
+7. After the experimental P2A shadow, complete the later accepted Git assertion
+   authority, release-pinned D1 overlay,
    and generated-artifact retirement stages. No schema or authority cutover is implied
    by completing the source-acquisition tools.

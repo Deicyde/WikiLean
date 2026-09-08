@@ -6,6 +6,10 @@ overlay, or serving topology.
 
 ## Contracts
 
+- `specs/experimental-assertions-v1.md` freezes the P2A fixture-only assertion
+  envelope, identity/history transitions, and exact Git contribution shadow.
+  Its validator and replay CLIs always emit non-authoritative reports. It does
+  not define accepted changesets or alter any production input.
 - `specs/canonical-json-v1.md` is normative for canonical bytes, domain-separated
   identifiers, and representation-independent JSON/JSONL logical roots.
 - `schemas/source-manifest/v1.json` describes one acquired source, its native pin,
