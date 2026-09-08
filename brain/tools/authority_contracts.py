@@ -46,6 +46,7 @@ PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
 PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
 PACK_SCHEMA_V3 = "wikilean.offline-pack/v3"
 REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
+REDUCER_INPUT_INVENTORY_SCHEMA_V3 = "wikilean.reducer-input-inventory/v3"
 EXECUTION_ENVIRONMENT_SCHEMA = (
     execution_environment_contract.EXECUTION_ENVIRONMENT_SCHEMA
 )
@@ -122,6 +123,7 @@ PACK_DOMAIN_V1 = "wikilean.offline-pack.v1"
 PACK_DOMAIN_V2 = "wikilean.offline-pack.v2"
 PACK_DOMAIN_V3 = "wikilean.offline-pack.v3"
 REDUCER_INPUT_INVENTORY_DOMAIN_V2 = "wikilean.reducer-input-inventory.v2"
+REDUCER_INPUT_INVENTORY_DOMAIN_V3 = "wikilean.reducer-input-inventory.v3"
 RELEASE_DOMAIN = "wikilean.release.v1"
 BUILD_ATTESTATION_DOMAIN_V1 = "wikilean.build-attestation.v1"
 BUILD_ATTESTATION_DOMAIN_V2 = "wikilean.build-attestation.v2"
@@ -1032,14 +1034,18 @@ def source_set_root_v3(
 
 
 def reducer_input_inventory_identity(inventory: dict[str, Any]) -> str:
-    if inventory.get("schema") != REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+    domains = {
+        REDUCER_INPUT_INVENTORY_SCHEMA_V2: REDUCER_INPUT_INVENTORY_DOMAIN_V2,
+        REDUCER_INPUT_INVENTORY_SCHEMA_V3: REDUCER_INPUT_INVENTORY_DOMAIN_V3,
+    }
+    if inventory.get("schema") not in domains:
         _fail(
             "$.schema",
             f"unknown reducer-input inventory schema/version {inventory.get('schema')!r}",
         )
     value = copy.deepcopy(inventory)
     value.pop("inventory_id", None)
-    return domain_hash(REDUCER_INPUT_INVENTORY_DOMAIN_V2, value)
+    return domain_hash(domains[inventory["schema"]], value)
 
 
 def offline_pack_identity(pack: dict[str, Any]) -> str:
@@ -1134,8 +1140,9 @@ def attestation_identity(attestation: dict[str, Any]) -> str:
 
 
 def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
-    """Validate the v2 logical input and reducer-DAG inventory."""
+    """Validate versioned input/DAG inventories without tightening v2 in place."""
     obj = _expect_object(inventory, "$")
+    is_v3 = obj.get("schema") == REDUCER_INPUT_INVENTORY_SCHEMA_V3
     _keys(
         obj,
         "$",
@@ -1148,9 +1155,11 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
             "stages",
             "inputs",
             "forbidden_ambient",
-        },
+        } | ({"coherence_groups"} if is_v3 else set()),
     )
-    if obj["schema"] != REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+    if obj["schema"] not in {
+        REDUCER_INPUT_INVENTORY_SCHEMA_V2, REDUCER_INPUT_INVENTORY_SCHEMA_V3
+    }:
         _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
     _hash(obj["inventory_id"], "$.inventory_id")
     if obj["boundary"] != "post-acquisition-fold":
@@ -1288,6 +1297,32 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
     if input_ids != sorted(set(input_ids)):
         _fail("$.inputs", "entries must have unique IDs and be sorted by id")
 
+    if is_v3:
+        declarations = {item["id"]: item for item in inputs}
+        groups = _expect_array(obj["coherence_groups"], "$.coherence_groups", nonempty=True)
+        group_ids: list[str] = []
+        grouped_inputs: set[str] = set()
+        for index, value in enumerate(groups):
+            location = f"$.coherence_groups[{index}]"
+            group = _expect_object(value, location)
+            _keys(group, location, {"id", "kind", "inputs"})
+            group_ids.append(_expect_pattern(group["id"], f"{location}.id", NAME_RE, "a lowercase group ID"))
+            if group["kind"] != "shared-acquisition":
+                _fail(f"{location}.kind", "expected 'shared-acquisition'")
+            members = _sorted_unique_strings(group["inputs"], f"{location}.inputs", nonempty=True)
+            if len(members) < 2:
+                _fail(f"{location}.inputs", "a coherence group requires at least two inputs")
+            for member in members:
+                if member not in declarations:
+                    _fail(f"{location}.inputs", f"unknown input {member!r}")
+                if member in grouped_inputs:
+                    _fail(f"{location}.inputs", f"input {member!r} already belongs to a coherence group")
+                if declarations[member]["class"] != "immutable_source_object":
+                    _fail(f"{location}.inputs", "shared acquisition requires immutable source objects")
+                grouped_inputs.add(member)
+        if group_ids != sorted(set(group_ids)):
+            _fail("$.coherence_groups", "entries must have unique IDs and be sorted by id")
+
     forbidden = _expect_array(obj["forbidden_ambient"], "$.forbidden_ambient")
     forbidden_names: list[str] = []
     for index, value in enumerate(forbidden):
@@ -1314,6 +1349,53 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
     if obj["inventory_id"] != expected:
         _fail("$.inventory_id", f"expected {expected}")
     return obj
+
+
+def validate_inventory_coherence(
+    inventory: dict[str, Any],
+    bindings: list[dict[str, Any]],
+    sources: dict[str, dict[str, Any]],
+    *,
+    schema: str,
+) -> None:
+    """Require grouped inputs to come from one evidence-bearing acquisition.
+
+    Plans use source names; packed bindings use source-manifest identities. Both
+    are checked before data copying/replay. A v3 inventory cannot be smuggled into
+    a v2 pack whose source evidence has weaker semantics.
+    """
+    validate_reducer_input_inventory(inventory)
+    if inventory["schema"] == REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+        return
+    if schema not in {OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3, PACK_SCHEMA_V3}:
+        _fail("$.inventory", "inventory/v3 requires a source-plan/v3 or offline-pack/v3")
+    is_plan = schema == OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
+    source_field = "sources" if is_plan else "source_manifest_ids"
+    member_field = "source" if is_plan else "source_manifest_id"
+    indexed = {binding["input_id"]: binding for binding in bindings}
+    if len(indexed) != len(bindings):
+        _fail("$.input_bindings", "duplicate input IDs")
+    for group in inventory["coherence_groups"]:
+        location = f"$.coherence_groups[{group['id']!r}]"
+        expected_source: str | None = None
+        for input_id in group["inputs"]:
+            binding = indexed.get(input_id)
+            if binding is None or binding["state"] != "present" or not binding["members"]:
+                _fail(location, f"shared acquisition requires present input {input_id!r}")
+            declared_sources = binding[source_field]
+            if len(declared_sources) != 1:
+                _fail(location, f"input {input_id!r} must bind exactly one source manifest")
+            source_id = declared_sources[0]
+            if any(member[member_field] != source_id for member in binding["members"]):
+                _fail(location, f"input {input_id!r} has mixed member source manifests")
+            if expected_source is not None and source_id != expected_source:
+                _fail(location, "all inputs must bind the same source manifest")
+            expected_source = source_id
+            source = sources.get(source_id)
+            if source is None or source.get("source_kind") != "acquired_dataset":
+                _fail(location, "shared acquisition requires an acquired_dataset source")
+            if "evidence" not in source:
+                _fail(location, "shared acquisition source is missing v3 evidence")
 
 
 def _validated_evidence_objects(
@@ -1646,7 +1728,9 @@ def validate_source_manifest(manifest: Any) -> dict[str, Any]:
     return obj
 
 
-def _validate_source_manifest_v2(manifest: Any) -> dict[str, Any]:
+def _validate_source_manifest_v2(
+    manifest: Any, *, allow_content_aliases: bool = False
+) -> dict[str, Any]:
     obj = _expect_object(manifest, "$")
     _keys(
         obj,
@@ -1702,7 +1786,7 @@ def _validate_source_manifest_v2(manifest: Any) -> dict[str, Any]:
 
     objects = _expect_array(obj["objects"], "$.objects", nonempty=True)
     object_names: list[str] = []
-    object_paths: set[str] = set()
+    object_paths: dict[str, tuple[str, int, str]] = {}
     objects_by_name: dict[str, dict[str, Any]] = {}
     roles: set[str] = set()
     for index, item in enumerate(objects):
@@ -1726,10 +1810,16 @@ def _validate_source_manifest_v2(manifest: Any) -> dict[str, Any]:
         expected_path = f"objects/sha256/{ref['sha256']}"
         if ref["path"] != expected_path:
             _fail(f"{location}.path", f"expected content-addressed path {expected_path!r}")
-        if name in objects_by_name or ref["path"] in object_paths:
+        if name in objects_by_name:
             _fail(location, "duplicate source object name or path")
+        content = (ref["sha256"], ref["bytes"], ref["media_type"])
+        if ref["path"] in object_paths:
+            if not allow_content_aliases:
+                _fail(location, "duplicate source object name or path")
+            if object_paths[ref["path"]] != content:
+                _fail(location, "content-addressed aliases must agree on digest, size and media type")
         object_names.append(name)
-        object_paths.add(ref["path"])
+        object_paths[ref["path"]] = content
         objects_by_name[name] = ref
         roles.update(object_roles)
     if object_names != sorted(object_names):
@@ -1817,7 +1907,10 @@ def _validate_source_manifest_v3(manifest: Any) -> dict[str, Any]:
     compatibility.pop("evidence", None)
     compatibility["schema"] = SOURCE_SCHEMA_V2
     compatibility["source_manifest_id"] = source_manifest_identity(compatibility)
-    _validate_source_manifest_v2(compatibility)
+    # Distinct named outputs may legitimately contain identical bytes (e.g.
+    # empty D1 edge and node tables). V3 preserves those evidence roles while
+    # storing one CAS object. V2 acceptance remains unchanged.
+    _validate_source_manifest_v2(compatibility, allow_content_aliases=True)
 
     source_kind = obj["source_kind"]
     if source_kind == "curated_git_tree":
@@ -3203,6 +3296,9 @@ def _verify_offline_pack_files_v2(
                 source_manifest = source_manifests[member["source_manifest_id"]]
                 if source_manifest["source_kind"] != "curated_git_tree":
                     _fail(member_location, "curated Git inputs require a curated_git_tree source manifest")
+    validate_inventory_coherence(
+        inventory, pack["input_bindings"], source_manifests, schema=pack["schema"]
+    )
     unused_manifests = sorted(set(source_manifests) - bound_manifest_ids)
     if unused_manifests:
         _fail(

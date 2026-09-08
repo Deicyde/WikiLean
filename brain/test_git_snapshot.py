@@ -77,6 +77,7 @@ class GitSnapshotTests(unittest.TestCase):
             )
 
         self.assertEqual(snapshot.commit, commit)
+        self.assertEqual(snapshot.tree, self.git("rev-parse", f"{commit}^{{tree}}"))
         self.assertEqual(
             [(item.path, item.text) for item in snapshot.files],
             [
@@ -140,6 +141,8 @@ class GitSnapshotTests(unittest.TestCase):
         self.assertTrue(moved)
         self.assertNotEqual(self.git("rev-parse", "HEAD"), first)
         self.assertEqual(snapshot.commit, first)
+        self.assertEqual(snapshot.tree, self.git("rev-parse", f"{first}^{{tree}}"))
+        self.assertNotEqual(snapshot.tree, self.git("rev-parse", "HEAD^{tree}"))
         self.assertEqual(snapshot.files[0].text, "first\n")
 
     def test_accepts_executable_blob_and_empty_suffix_selection(self) -> None:

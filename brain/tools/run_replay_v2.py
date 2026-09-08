@@ -40,6 +40,7 @@ for module_root in (BRAIN, HERE):
 import build_context  # noqa: E402
 import authority_contracts as contracts  # noqa: E402
 import execution_environment as execution_env  # noqa: E402
+import oci_runtime  # noqa: E402
 
 
 class ReplayExecutionError(RuntimeError):
@@ -95,6 +96,9 @@ RUNNER_FILES = MappingProxyType({
     "brain/tools/probe_execution_environment.py": PROBE_PROGRAM,
     "brain/tools/run_offline.py": HERE / "run_offline.py",
     "brain/tools/run_replay_v2.py": Path(__file__).resolve(),
+    "brain/tools/oci_runtime.py": HERE / "oci_runtime.py",
+    "brain/tools/oci_replay_entrypoint.py": HERE / "oci_replay_entrypoint.py",
+    "brain/tools/launch_replay_oci.py": HERE / "launch_replay_oci.py",
 })
 
 _BUBBLEWRAP_VERSION_RE = re.compile(
@@ -746,8 +750,8 @@ def _select_isolation(
     )
 
 
-def _environment(interpreter: Path) -> dict[str, str]:
-    """Return the complete reducer environment; nothing is inherited."""
+def base_environment() -> dict[str, str]:
+    """Return path-independent replay settings; nothing is inherited."""
     return {
         "BLIS_NUM_THREADS": "1",
         "HOME": "/nonexistent",
@@ -759,7 +763,6 @@ def _environment(interpreter: Path) -> dict[str, str]:
         "OMP_THREAD_LIMIT": "1",
         "OPENBLAS_NUM_THREADS": "1",
         "PATH": "/nonexistent",
-        "PYTHONPATH": _runtime_pythonpath(interpreter),
         "PYTHONHASHSEED": "0",
         "PYTHONIOENCODING": "utf-8",
         "PYTHONDONTWRITEBYTECODE": "1",
@@ -769,6 +772,11 @@ def _environment(interpreter: Path) -> dict[str, str]:
         "VECLIB_MAXIMUM_THREADS": "1",
         "WIKILEAN_OFFLINE": "1",
     }
+
+
+def _environment(interpreter: Path) -> dict[str, str]:
+    """Return the complete reducer environment; nothing is inherited."""
+    return {**base_environment(), "PYTHONPATH": _runtime_pythonpath(interpreter)}
 
 
 def _execute(
@@ -1008,6 +1016,7 @@ def _materialized_probe_program(
     source_files = {
         "execution_environment.py": HERE / "execution_environment.py",
         "probe_execution_environment.py": PROBE_PROGRAM,
+        "oci_runtime.py": HERE / "oci_runtime.py",
     }
     try:
         for name, source in source_files.items():
@@ -1083,6 +1092,7 @@ def _read_live_probe(
     environment: Mapping[str, str],
     isolation: IsolationBoundary,
     probe_executor: ProbeExecutor,
+    numerical_policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     try:
         with _materialized_probe_program(context) as probe_program:
@@ -1094,6 +1104,7 @@ def _read_live_probe(
                 str(scheme_paths["purelib"]),
                 "--platlib",
                 str(scheme_paths["platlib"]),
+                *([] if numerical_policy is None else ["--oci-policy-json", execution_env.canonical_json_bytes(numerical_policy).decode("utf-8")]),
             )
             result = probe_executor(
                 command, context.roots.code, environment, isolation
@@ -1152,11 +1163,12 @@ def _probe_execution_environment(
     isolation: IsolationBoundary,
     sandbox: dict[str, Any],
     probe_executor: ProbeExecutor = _execute_probe,
+    numerical_policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Measure parent and child runtime facts without echoing descriptor values."""
     try:
         child = _read_live_probe(
-            context, interpreter, environment, isolation, probe_executor
+            context, interpreter, environment, isolation, probe_executor, numerical_policy
         )
         if child["python"] != parent_python:
             raise ReplayExecutionError(
@@ -1414,6 +1426,7 @@ def run_replay_v2(
     interpreter: str | os.PathLike[str] = sys.executable,
     stage_timeout_seconds: float = DEFAULT_STAGE_TIMEOUT_SECONDS,
     _trusted_runtime_evidence: Mapping[str, Any] | None = None,
+    _numerical_policy: dict[str, Any] | None = None,
     _executor: Executor | None = None,
     _isolation: IsolationBoundary | None = None,
     _probe_executor: ProbeExecutor | None = None,
@@ -1422,8 +1435,8 @@ def run_replay_v2(
     """Run a prepared replay.
 
     Underscore-prefixed seams are unavailable from the CLI. In particular, no
-    production entry point currently supplies trusted OCI launcher evidence,
-    so authoritative-oci descriptors fail closed.
+    only the trusted local OCI launcher supplies runtime evidence and numerical
+    policy. The direct CLI has no corresponding arguments and fails closed.
     """
     require_isolated_startup()
     stage_timeout = _validated_stage_timeout_seconds(stage_timeout_seconds)
@@ -1462,6 +1475,14 @@ def run_replay_v2(
     runtime_facts = _runtime_facts(
         descriptor["profile"], _trusted_runtime_evidence
     )
+    if descriptor["profile"] == execution_env.AUTHORITATIVE_OCI_PROFILE:
+        if _numerical_policy is None:
+            raise ReplayExecutionError("authoritative OCI replay requires a sealed numerical policy")
+        oci_runtime.validate_policy(_numerical_policy)
+        if _numerical_policy["architecture"] != descriptor["runtime"]["architecture"]:
+            raise ReplayExecutionError("numerical policy architecture differs from the sealed runtime")
+    elif _numerical_policy is not None:
+        raise ReplayExecutionError("OCI numerical policy is not valid for development-host replay")
     if runtime_facts != descriptor["runtime"]:
         raise ReplayExecutionError(
             "live runtime identity disagrees with the sealed execution environment"
@@ -1504,6 +1525,8 @@ def run_replay_v2(
     else:
         executor = _executor
     environment = _environment(resolved_python)
+    if _numerical_policy is not None:
+        environment.update(oci_runtime.numerical_environment(_numerical_policy))
     try:
         sandbox_facts = (_sandbox_probe or _sandbox_facts)(isolation)
     except execution_env.ExecutionEnvironmentError as exc:
@@ -1528,6 +1551,7 @@ def run_replay_v2(
         isolation=isolation,
         sandbox=sandbox_facts,
         probe_executor=_probe_executor or _execute_probe,
+        numerical_policy=_numerical_policy,
     )
     try:
         execution_env.validate_live_environment_projection(actual_projection)
@@ -1646,6 +1670,7 @@ def run_replay_v2(
         isolation=isolation,
         sandbox=final_sandbox_facts,
         probe_executor=_probe_executor or _execute_probe,
+        numerical_policy=_numerical_policy,
     )
     try:
         execution_env.validate_live_environment_projection(final_projection)
@@ -1700,7 +1725,9 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, *,
+         _trusted_runtime_evidence: Mapping[str, Any] | None = None,
+         _numerical_policy: dict[str, Any] | None = None) -> int:
     try:
         require_isolated_startup()
         args = _parser().parse_args(argv)
@@ -1739,6 +1766,8 @@ def main(argv: list[str] | None = None) -> int:
             expected_environment_sha256=pack["environment"]["sha256"],
             interpreter=args.python,
             stage_timeout_seconds=args.stage_timeout_seconds,
+            _trusted_runtime_evidence=_trusted_runtime_evidence,
+            _numerical_policy=_numerical_policy,
         )
     except (
         OSError,

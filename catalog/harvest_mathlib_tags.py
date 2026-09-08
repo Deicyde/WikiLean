@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Harvest mathlib4's human-authored cross-reference attributes.
 
-Scans every .lean file under the mathlib4 checkout (read-only) for the
+Reads every committed .lean file under Mathlib from one captured Git revision for the
 `Mathlib/Tactic/CrossRefAttribute.lean` attributes — `@[stacks TAG]`,
 `@[kerodon TAG]`, `@[wikidata QID]` — and resolves each to the fully-qualified
 name of the declaration it annotates. These are the human-reviewed gold links
@@ -34,15 +34,23 @@ Output: catalog/data/mathlib_tag_xrefs.jsonl —
   {"decl": FQ, "db": "stacks"|"kerodon"|"wikidata", "tag": "0BR2", "file": relpath, "line": n}
 
 Usage:
-    python3 catalog/harvest_mathlib_tags.py
-    BRAIN_MATHLIB_CHECKOUT=/path/to/mathlib4/Mathlib python3 catalog/harvest_mathlib_tags.py
+    python3 catalog/harvest_mathlib_tags.py --mathlib /path/to/mathlib4 \
+        --oracle /path/to/declaration-data.json --output /path/to/tag-xrefs.jsonl
+
+The source commit/tree and exact oracle bytes are recorded separately. An unpinned
+doc-gen cache does not prove that the oracle belongs to that Mathlib revision;
+output explicitly retains an unbound oracle revision. Sealing this observation
+requires additional reviewed oracle/build evidence before source authority.
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 import os
 import re
 import sys
+import tempfile
 from bisect import bisect_right
 from collections import Counter
 from pathlib import Path
@@ -52,8 +60,8 @@ ROOT = HERE.parent
 OUT = HERE / "data" / "mathlib_tag_xrefs.jsonl"
 ORACLE = ROOT / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
 
-MATHLIB_DIR = Path(os.environ.get(
-    "BRAIN_MATHLIB_CHECKOUT", "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
+sys.path.insert(0, str(ROOT / "brain" / "ingest"))
+from git_snapshot import GitSnapshotError, read_text_snapshot  # noqa: E402
 
 # stacks/kerodon tags are 4-char [0-9A-Z] Gerby ids; wikidata ids are QIDs.
 TAG_RE = re.compile(r"\b(stacks|kerodon)\s+([0-9A-Z]{4})(?![0-9A-Za-z])")
@@ -245,9 +253,10 @@ def tags_in(content: str) -> list[tuple[str, str, int]]:
     return found
 
 
-def harvest_file(path: Path, rel: str, oracle: set[str],
+def harvest_text(source: str, rel: str, oracle: set[str],
                  rows: list[dict], problems: list[str]) -> None:
-    text = strip_noise(path.read_text(encoding="utf-8"))
+    """Parse one immutable source blob; locations are relative to its repository."""
+    text = strip_noise(source)
     if "stacks" not in text and "kerodon" not in text and "wikidata" not in text:
         return
     offs, parts = namespace_checkpoints(text)
@@ -304,20 +313,34 @@ def harvest_file(path: Path, rel: str, oracle: set[str],
             emit(db, tag, m.start() + off, inline, why)
 
 
-def main() -> int:
-    if not MATHLIB_DIR.is_dir():
-        print(f"FATAL: mathlib checkout missing at {MATHLIB_DIR} "
-              f"(BRAIN_MATHLIB_CHECKOUT to override)", file=sys.stderr)
-        return 1
-    oracle = set(json.loads(ORACLE.read_text())["declarations"])
-    checkout = MATHLIB_DIR.parent
+def harvest_file(path: Path, rel: str, oracle: set[str],
+                 rows: list[dict], problems: list[str]) -> None:
+    """Compatibility parser entry point; production harvests use committed blobs."""
+    harvest_text(path.read_text(encoding="utf-8"), rel, oracle, rows, problems)
+
+
+def harvest(mathlib: Path, oracle_path: Path) -> tuple[list[dict], list[str]]:
+    """Observe committed tags and independent oracle bytes without inventing lineage."""
+    # Historically BRAIN_MATHLIB_CHECKOUT named the Mathlib subdirectory, while
+    # the shared build context names the checkout root. Accept either spelling.
+    mathlib = Path(mathlib).resolve()
+    checkout = mathlib.parent if mathlib.name == "Mathlib" \
+        and not (mathlib / ".git").exists() else mathlib
+    snapshot = read_text_snapshot(checkout, scope="Mathlib", suffixes=(".lean",))
+    if not snapshot.files:
+        raise ValueError("captured Mathlib source tree contains no Lean files")
+    oracle_bytes = oracle_path.read_bytes()
+    oracle_data = json.loads(oracle_bytes)
+    declarations = oracle_data.get("declarations") if isinstance(oracle_data, dict) else None
+    if not isinstance(declarations, dict) or not declarations \
+            or any(not isinstance(value, dict) for value in declarations.values()):
+        raise ValueError("declaration oracle must contain a nonempty declarations object")
+    oracle = set(declarations)
 
     rows: list[dict] = []
     problems: list[str] = []
-    files = sorted(MATHLIB_DIR.rglob("*.lean"))
-    for path in files:
-        rel = str(path.relative_to(checkout))
-        harvest_file(path, rel, oracle, rows, problems)
+    for source in snapshot.files:
+        harvest_text(source.text, source.path, oracle, rows, problems)
 
     rows.sort(key=lambda r: (r["file"], r["line"], r["db"], r["tag"], r["decl"]))
     by_db = Counter(r["db"] for r in rows)
@@ -325,30 +348,70 @@ def main() -> int:
     meta = {
         "source": "mathlib4 checkout @[stacks]/@[kerodon]/@[wikidata] attributes",
         "license": "Apache-2.0",
-        "harvested_from": str(MATHLIB_DIR),
-        "oracle": str(ORACLE.relative_to(ROOT)),
+        "source_root": "mathlib",
+        "harvested_from": "Mathlib",
+        "commit": snapshot.commit,
+        "tree": snapshot.tree,
+        "oracle": {
+            "root": "decl_oracle",
+            "path": "declaration-data.json",
+            "sha256": hashlib.sha256(oracle_bytes).hexdigest(),
+            "bytes": len(oracle_bytes),
+            "mathlib_commit": None,
+            "revision_status": "unbound",
+        },
+        "n_files": len(snapshot.files),
         "counts": dict(sorted(by_db.items())),
         "unverified_rows": n_unverified,
         "unresolved_dropped": len(problems) - n_unverified,
         "note": "rows with unverified:true missed the (known-incomplete) decl "
                 "oracle under every namespace join and keep the plain join; "
-                "generated to_additive/to_dual counterparts are not harvested",
+                "generated to_additive/to_dual counterparts are not harvested; "
+                "oracle membership does not establish agreement with the source revision",
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    tmp = OUT.with_suffix(".jsonl.tmp")
-    with tmp.open("w") as fh:
-        fh.write(json.dumps({"_meta": meta}, ensure_ascii=False,
-                            separators=(",", ":")) + "\n")
-        for r in rows:
-            fh.write(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n")
-    tmp.replace(OUT)
+    return [{"_meta": meta}, *rows], problems
 
-    print(f"harvested {len(rows)} tag rows from {len(files)} files -> "
-          f"{OUT.relative_to(ROOT)}")
-    for db, c in sorted(by_db.items()):
+
+def write_rows(output: Path, records: list[dict]) -> None:
+    """Publish canonical bytes atomically without changing the prior file on error."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            for record in records:
+                handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True,
+                                        separators=(",", ":"), allow_nan=False) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mathlib", type=Path, default=os.environ.get(
+        "BRAIN_MATHLIB_CHECKOUT", os.environ.get("WIKILEAN_MATHLIB")))
+    parser.add_argument("--oracle", type=Path, default=os.environ.get("BRAIN_DECL_ORACLE", ORACLE))
+    parser.add_argument("--output", type=Path, default=OUT)
+    args = parser.parse_args(argv)
+    if args.mathlib is None:
+        parser.error("configure --mathlib, BRAIN_MATHLIB_CHECKOUT, or WIKILEAN_MATHLIB")
+    try:
+        records, problems = harvest(args.mathlib, args.oracle)
+        write_rows(args.output, records)
+    except (GitSnapshotError, OSError, ValueError) as exc:
+        print(f"FATAL: {exc}", file=sys.stderr)
+        return 1
+    meta = records[0]["_meta"]
+    print(f"harvested {len(records) - 1} tag rows from {meta['n_files']} files -> "
+          f"{args.output}")
+    for db, c in meta["counts"].items():
         print(f"  {db:9s} {c}")
-    print(f"  unverified (kept, no oracle hit): {n_unverified}")
-    print(f"  unresolved (dropped, no decl):    {len(problems) - n_unverified}")
+    print(f"  unverified (kept, no oracle hit): {meta['unverified_rows']}")
+    print(f"  unresolved (dropped, no decl):    {meta['unresolved_dropped']}")
+    print("  oracle revision: UNBOUND — source authority requires reviewed revision evidence")
     for p in problems:
         print(f"    - {p}")
     return 0

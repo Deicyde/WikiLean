@@ -995,6 +995,40 @@ class BrainActivationBundleTests(unittest.TestCase):
         self.assertEqual(first.bundle_id, second.bundle_id)
         self.assertEqual(first.root, second.root)
 
+    def test_publication_failure_cleans_owned_target_and_preserves_recreated_source(self):
+        publish = bundle._publish_no_replace
+
+        def fail_after_publish(descriptor, source, target):
+            publish(descriptor, source, target)
+            os.mkdir(source, mode=0o700, dir_fd=descriptor)
+            (self.fixture.store / source / "keep").write_text("unrelated")
+            raise OSError("injected activation publication failure")
+
+        with mock.patch.object(bundle, "_publish_no_replace", side_effect=fail_after_publish):
+            with self.assertRaisesRegex(OSError, "activation publication failure"):
+                self.fixture.freeze()
+        survivors = [path for path in self.fixture.store.iterdir() if path.is_dir()]
+        self.assertEqual(len(survivors), 1)
+        self.assertTrue(survivors[0].name.startswith(".pending-"))
+        self.assertEqual((survivors[0] / "keep").read_text(), "unrelated")
+
+    def test_existing_empty_publication_target_is_not_replaced(self):
+        publish = bundle._publish_no_replace
+        existing = []
+
+        def collide(descriptor, source, target):
+            os.mkdir(target, mode=0o700, dir_fd=descriptor)
+            existing.append(os.stat(target, dir_fd=descriptor).st_ino)
+            publish(descriptor, source, target)
+
+        with mock.patch.object(bundle, "_publish_no_replace", side_effect=collide):
+            with self.assertRaises(bundle.BundleValidationError):
+                self.fixture.freeze()
+        survivors = [path for path in self.fixture.store.iterdir() if path.is_dir()]
+        self.assertEqual(len(survivors), 1)
+        self.assertEqual(survivors[0].stat().st_ino, existing[0])
+        self.assertEqual(list(survivors[0].iterdir()), [])
+
     def test_verify_remains_valid_after_build_worktree_is_removed(self):
         frozen = self.fixture.freeze()
         _run(

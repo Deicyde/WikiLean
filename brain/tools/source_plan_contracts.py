@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Normative validation for evidence-bearing offline-pack source-plan/v3.
 
-The existing v1 plan remains the input to the v2 compiler.  This module layers
-the explicit v3 acquisition boundary on the unchanged v1 structural contract;
-it does not make the v2 compiler accept or synthesize v3 authority evidence.
+The compiler preserves v1-plan to v2-pack compatibility and accepts v3 plans
+only with the evidence closure validated here. This module layers the explicit
+v3 acquisition boundary on the unchanged v1 structural contract; it never
+synthesizes missing authority evidence.
 """
 from __future__ import annotations
 

@@ -123,12 +123,12 @@ LOCAL_DEPENDENCIES = (
     (
         "brain/tools/authority_contracts.py",
         TOOLS / "authority_contracts.py",
-        "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
+        "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc",
     ),
     (
         "brain/tools/execution_environment.py",
         TOOLS / "execution_environment.py",
-        "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd",
+        "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac",
     ),
 )
 REQUIRED_PYTHON_STARTUP_FLAGS = {
