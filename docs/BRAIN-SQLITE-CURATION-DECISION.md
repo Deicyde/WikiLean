@@ -34,13 +34,18 @@ The same replay removes 15 of 2,115 FC links. Every removed fully qualified
 `_completed_retract_key` rule. Their original proposal strings omit an enclosing
 namespace; a prior folded file retained the completed names despite the rejected
 proposal. The current corrected fold respects those decisions. All 2,100 retained
-FC rows and all 326 discovery rows are semantically equal to the prior rows;
-discovery differences are serialization order only.
+FC rows are semantically equal to the prior rows. All 326 discovery relationship
+identities remain equal, but the complete current replay changes two `module`
+fields from `Mathlib.Data.Finite.Defs` to `Mathlib.Basic.Finite.Defs`: `Set.Infinite`
+for Q205140 and `Set.Finite` for Q272404. These metadata differences must remain
+visible; the earlier scratch report understated them as serialization-only.
 
 Private evidence is retained under
 `/Users/jack/.local/share/wikilean-migration/proposal-fold-plan-20260908/`:
 `planning-diagnostic.json`, `replay-diagnostic.json`, `legacy-diff.json`, and
-`compatibility-findings.json`. This is diagnostic evidence, not a sealed source
+`compatibility-findings.json`. The subsequent source exporter retains the complete
+Mathlib subtree and a detailed comparison including those two module changes.
+This is diagnostic evidence, not a sealed source
 export or approved graph baseline. The active draft still binds the original
 committed files.
 
