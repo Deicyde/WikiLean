@@ -105,7 +105,7 @@ REQUIRED_PYTHON_STARTUP_FLAGS = {
     "no_user_site": True,
     "safe_path": True,
 }
-LOCAL_DEPENDENCY_PINS = (
+LEGACY_LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
         "sha256": "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf",
@@ -115,8 +115,23 @@ LOCAL_DEPENDENCY_PINS = (
         "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
     },
 )
-ACQUIRER_WRAPPER_SHA256 = (
+LEGACY_ACQUIRER_WRAPPER_SHA256 = (
     "bccaef80927f34b5e4f6944843ef17d8a470171ba670e7d99d79dff9059e8c1c"
+)
+LOCAL_DEPENDENCY_PINS = (
+    {"path": "brain/stage_io.py",
+     "sha256": "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf"},
+    {"path": "brain/tools/authority_contracts.py",
+     "sha256": "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc"},
+    {"path": "brain/tools/execution_environment.py",
+     "sha256": "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac"},
+)
+ACQUIRER_WRAPPER_SHA256 = "cf0eb1eb4af78013ceddb81e6bb9d264a02f2a2a79bfe23fbdc906587922aa79"
+# Historical evidence remains valid only as an exact reviewed implementation
+# generation. No combination of individually approved helper hashes is accepted.
+REVIEWED_TOOL_GENERATIONS = (
+    (LEGACY_ACQUIRER_WRAPPER_SHA256, LEGACY_LOCAL_DEPENDENCY_PINS),
+    (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
 )
 
 NORMALIZATION_CONFIGURATION = {
@@ -670,11 +685,12 @@ def _validate_toolchain(value: Any) -> dict[str, Any]:
             or contracts.DIGEST_RE.fullmatch(python["sha256"]) is None \
             or python["startup_flags"] != REQUIRED_PYTHON_STARTUP_FLAGS:
         raise WikidataEntityBundleError("toolchain.json.python: invalid exact runtime pin")
-    if toolchain["local_dependencies"] != list(LOCAL_DEPENDENCY_PINS):
-        raise WikidataEntityBundleError("toolchain.json.local_dependencies: pin mismatch")
     wrapper = _exact_object(toolchain["wrapper"], ("sha256",), "toolchain.json.wrapper")
-    if wrapper["sha256"] != ACQUIRER_WRAPPER_SHA256:
-        raise WikidataEntityBundleError("toolchain.json.wrapper.sha256: pin mismatch")
+    if not any(
+        wrapper["sha256"] == wrapper_pin and toolchain["local_dependencies"] == list(dependencies)
+        for wrapper_pin, dependencies in REVIEWED_TOOL_GENERATIONS
+    ):
+        raise WikidataEntityBundleError("toolchain.json.wrapper/local_dependencies: reviewed generation pin mismatch")
     return toolchain
 
 

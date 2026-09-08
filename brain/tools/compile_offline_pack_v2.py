@@ -1739,6 +1739,15 @@ def _publish_no_replace(
     staging_name: str,
     target_name: str,
 ) -> None:
+    """Publish without replacement, resealing Darwin's directory-write boundary.
+
+    Darwin requires owner-write permission on the directory being renamed, even
+    within one parent. The root is temporarily mode 0600: owner-writable but
+    without directory search permission, so readers cannot open any member at
+    the final path until the open descriptor restores and fsyncs its original
+    mode. Sealed children remain unchanged. A hard interruption can leave an
+    inaccessible root, which compilation/reuse must reject, never adopt.
+    """
     if (
         not staging_name
         or not target_name
@@ -1748,6 +1757,36 @@ def _publish_no_replace(
         or target_name in {".", ".."}
     ):
         _fail("publication", "source and target must be single path components")
+    if sys.platform == "darwin":
+        descriptor = os.open(
+            staging_name,
+            os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+            dir_fd=store_descriptor,
+        )
+        try:
+            metadata = os.fstat(descriptor)
+            identity = _identity_from_stat(metadata, "publication source")
+            if identity.owner != os.getuid():
+                _fail("publication source", "must be owned by the current user")
+            original_mode = stat.S_IMODE(metadata.st_mode)
+            _verify_directory_identity_at(store_descriptor, staging_name, identity, "publication source")
+            try:
+                os.fchmod(descriptor, 0o600)
+                _verify_directory_identity_at(store_descriptor, staging_name, identity, "publication source")
+                _rename_no_replace(store_descriptor, staging_name, target_name)
+                _verify_directory_identity_at(store_descriptor, target_name, identity, "publication target")
+            finally:
+                os.fchmod(descriptor, original_mode)
+                os.fsync(descriptor)
+                os.fsync(store_descriptor)
+        finally:
+            os.close(descriptor)
+    else:
+        _rename_no_replace(store_descriptor, staging_name, target_name)
+
+
+def _rename_no_replace(store_descriptor: int, staging_name: str, target_name: str) -> None:
+    """The descriptor-relative, no-fallback OS rename primitive."""
     source_bytes = os.fsencode(staging_name)
     target_bytes = os.fsencode(target_name)
     library = ctypes.CDLL(None, use_errno=True)
@@ -1937,6 +1976,15 @@ def compile_offline_pack_v2(
         raise PackCompilationError(f"inventory: {exc}") from exc
     if inventory["inventory_id"] != plan["inventory_id"]:
         _fail("$.inventory_id", "does not match the verified reducer inventory")
+    try:
+        contracts.validate_inventory_coherence(
+            inventory,
+            plan["input_bindings"],
+            {source["source"]: source for source in plan["sources"]},
+            schema=plan["schema"],
+        )
+    except contracts.VerificationError as exc:
+        raise PackCompilationError(str(exc)) from exc
 
     required_roots = {entry["id"] for entry in inventory["roots"]}
     required_roots.add(plan["reducer"]["root"])
@@ -2205,7 +2253,7 @@ def compile_offline_pack_v2(
     staging = store / f".offline-pack-{secrets.token_hex(12)}"
     staging_identity: _DirectoryIdentity | None = None
     store_descriptor = -1
-    published = False
+    publication_target: str | None = None
     try:
         store_descriptor = _open_private_store(store, store_identity)
         staging_identity = _create_private_staging(
@@ -2216,7 +2264,7 @@ def compile_offline_pack_v2(
         assert staging_identity is not None
         inventory_ref = _write_document(
             staging,
-            "inventory/reducer-inputs-v2.json",
+            "inventory/reducer-inputs-v3.json" if inventory["schema"] == contracts.REDUCER_INPUT_INVENTORY_SCHEMA_V3 else "inventory/reducer-inputs-v2.json",
             inventory,
         )
         inventory_ref["inventory_id"] = inventory["inventory_id"]
@@ -2480,7 +2528,7 @@ def compile_offline_pack_v2(
             *request_preimage_refs.values(),
         ]
         all_pack_paths = [
-            "inventory/reducer-inputs-v2.json",
+            inventory_ref["path"],
             "configuration/reducer.json",
             "environment/execution-environment.json",
             "offline-pack.json",
@@ -2690,6 +2738,7 @@ def compile_offline_pack_v2(
             )
 
         try:
+            publication_target = target_name
             _publish_no_replace(store_descriptor, staging.name, target_name)
         except _DestinationExists:
             if is_v3:
@@ -2732,7 +2781,6 @@ def compile_offline_pack_v2(
                 bytes=total_bytes,
                 reused=True,
             )
-        published = True
         _verify_directory_identity_at(
             store_descriptor,
             target_name,
@@ -2743,6 +2791,19 @@ def compile_offline_pack_v2(
         _verify_store_descriptor(store_descriptor, store_identity)
         _verify_directory_identity(store, store_identity, "output store")
         _verify_directory_identity(target, staging_identity, "published pack")
+        # Reverify all bytes after Darwin's root-only write window, and fence
+        # the final pathname on every platform before reporting publication.
+        counts, published_identity = _verify_existing_pack_at(
+            store,
+            store_descriptor,
+            store_identity,
+            target_name,
+            pack["offline_pack_id"],
+            fingerprints,
+            expected_schema=contracts.PACK_SCHEMA_V3 if is_v3 else contracts.PACK_SCHEMA_V2,
+        )
+        if published_identity != staging_identity:
+            _fail("published pack", "directory inode changed during final verification")
         return CompiledPack(
             root=target,
             manifest_path=target / "offline-pack.json",
@@ -2754,9 +2815,25 @@ def compile_offline_pack_v2(
             bytes=total_bytes,
             reused=False,
         )
-    except BaseException:
-        if not published and staging_identity is not None and store_descriptor >= 0:
-            _remove_tree_at(store_descriptor, staging.name, staging_identity)
+    except BaseException as error:
+        if staging_identity is not None and store_descriptor >= 0:
+            # A rename may have succeeded before resealing, fsync, or final
+            # verification failed. Remove only this compilation's known inode;
+            # an existing or concurrently substituted target belongs to others.
+            names = [staging.name]
+            if publication_target is not None:
+                names.append(publication_target)
+            for name in names:
+                try:
+                    identity = _directory_identity_at(
+                        store_descriptor, name, "failed publication", missing_ok=True
+                    )
+                    if identity == staging_identity:
+                        _remove_tree_at(store_descriptor, name, staging_identity)
+                except (OSError, PackCompilationError) as cleanup_error:
+                    # A substituted source name must not prevent final-target
+                    # cleanup or replace the original failure diagnosis.
+                    error.add_note(f"candidate cleanup at {name!r}: {cleanup_error}")
         raise
     finally:
         if store_descriptor >= 0:

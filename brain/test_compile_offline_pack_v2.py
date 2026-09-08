@@ -1188,13 +1188,70 @@ class OfflinePackCompilerTest(unittest.TestCase):
         published = [
             path for path in displaced.iterdir() if not path.name.startswith(".")
         ]
-        self.assertEqual(len(published), 1)
-        pack, _ = contracts.load_canonical_json(published[0] / "offline-pack.json")
-        contracts.verify_offline_pack_files(
-            contracts.validate_offline_pack(pack),
-            published[0],
-            manifest_path=published[0] / "offline-pack.json",
-        )
+        self.assertEqual(published, [])
+        fake = next(store.glob(".offline-pack-*"))
+        self.assertEqual((fake / "marker").read_text(), "not the verified candidate")
+
+    def test_failure_after_rename_removes_only_the_known_candidate(self) -> None:
+        real_publish = compiler._publish_no_replace
+
+        def publish_then_fail(descriptor: int, source: str, target: str) -> None:
+            real_publish(descriptor, source, target)
+            raise OSError("injected post-rename failure")
+
+        with mock.patch.object(compiler, "_publish_no_replace", side_effect=publish_then_fail):
+            with self.assertRaisesRegex(OSError, "post-rename"):
+                self._compile()
+        self.assertEqual(list((self.base / "store").iterdir()), [])
+
+    def test_final_verification_failure_removes_published_candidate(self) -> None:
+        with mock.patch.object(
+            compiler,
+            "_verify_existing_pack_at",
+            side_effect=compiler.PackCompilationError("injected final verification"),
+        ):
+            with self.assertRaisesRegex(compiler.PackCompilationError, "final verification"):
+                self._compile()
+        self.assertEqual(list((self.base / "store").iterdir()), [])
+
+    def test_recreated_staging_name_does_not_prevent_failed_target_cleanup(self) -> None:
+        real_publish = compiler._publish_no_replace
+        retained: list[Path] = []
+
+        def recreate_then_fail(descriptor: int, source: str, target: str) -> None:
+            real_publish(descriptor, source, target)
+            path = self.base / "store" / source
+            path.mkdir(mode=0o700)
+            (path / "keep").write_text("unrelated staging")
+            retained.append(path)
+            raise OSError("original post-rename failure")
+
+        with mock.patch.object(compiler, "_publish_no_replace", side_effect=recreate_then_fail):
+            with self.assertRaisesRegex(OSError, "original post-rename failure"):
+                self._compile()
+        self.assertEqual((retained[0] / "keep").read_text(), "unrelated staging")
+        self.assertEqual(self._published_directories(), [])
+
+    def test_failed_publication_preserves_substituted_target(self) -> None:
+        real_publish = compiler._publish_no_replace
+        retained: list[Path] = []
+
+        def replace_then_fail(descriptor: int, source: str, target: str) -> None:
+            real_publish(descriptor, source, target)
+            path = self.base / "store" / target
+            displaced = path.with_name(".displaced-candidate")
+            path.chmod(0o700)
+            path.rename(displaced)
+            displaced.chmod(0o555)
+            path.mkdir(mode=0o700)
+            (path / "keep").write_text("unrelated target")
+            retained.append(path)
+            raise OSError("injected substituted target")
+
+        with mock.patch.object(compiler, "_publish_no_replace", side_effect=replace_then_fail):
+            with self.assertRaisesRegex(OSError, "substituted target"):
+                self._compile()
+        self.assertEqual((retained[0] / "keep").read_text(), "unrelated target")
 
     def test_same_id_reuse_rechecks_target_inode_after_verification(self) -> None:
         first = self._compile()
@@ -1211,7 +1268,11 @@ class OfflinePackCompilerTest(unittest.TestCase):
             counts = real_verify(root, expected_id, expected_fingerprints)
             if root == first.root and not swapped:
                 swapped = True
+                # Darwin also requires write permission on a renamed directory.
+                # Give the simulated same-owner attacker that permission.
+                root.chmod(0o700)
                 root.rename(displaced)
+                displaced.chmod(0o555)
                 root.mkdir(mode=0o700)
                 (root / "offline-pack.json").write_bytes(b"{}\n")
                 (root / "offline-pack.json").chmod(0o444)
