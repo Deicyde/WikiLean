@@ -444,10 +444,14 @@ explicit approval.
       numbers, atomically swaps the complete cache, and moves disk-only sidecars into an
       ignored, non-authoritative recovery quarantine. The retired `pull-annotations.ts`
       live-query path no longer exists.
-    - [ ] Capture and review a fresh canonical production bundle and bind its reviewed
-      receipt/lineage into source-plan authority. A 2026-09-05 attempt failed closed before
-      the query because the non-interactive environment lacked a locally configured
-      D1-read token; no snapshot store or production mutation resulted.
+    - [x] Capture and independently verify a fresh canonical production bundle. The
+      2026-09-08 read captured 778 articles and zero community edges/nodes; the private
+      bundle and receipt/lineage identities are recorded in
+      `BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
+    - [ ] Bind the reviewed receipt/lineage and exact normalized annotation/community
+      outputs into the complete current-corpus source plan. The private source exporter
+      preserves original capture evidence and derives sidecars without ambient cache
+      metadata. Historical bundles remain verifiable through exact reviewed tool generations.
     - [ ] Before materially larger D1 corpora, replace full-response/full-cache cloning with
       bounded streaming or incremental staging, report safely removable post-crash sibling
       generations, and strengthen bootstrap executable discovery beyond the currently
@@ -480,10 +484,16 @@ explicit approval.
     semantics, and explicitly identify the result as independent live requests rather than
     an upstream transaction/snapshot. Add an inventory-v3 coherence group requiring all three
     bindings to share one source manifest, and resolve or bind the edge collector's dependency
-    on prior `brain/data/nodes.jsonl`. Their current implementations fail closed and publish
-    atomically, but still perform separate live reads. Bind both that shared generation and
+    on prior `brain/data/nodes.jsonl`. Bind both that shared generation and
     the completed proposal-entity bundle evidence into the reviewed v3 current-corpus source
     plan; neither bundle alone is an authority or production-release claim.
+    - [x] Implement the shared acquirer, complete transcript verification, immutable bundle,
+      explicit five-input request plan, inventory-v3 coherence checks, and recoverable
+      installation. Nightly now requires the explicit reviewed plan and gates all readers
+      on the complete generation; the three standalone live publishing CLIs are retired.
+      Exact tool-generation profiles preserve historical verification, including non-NFC
+      corpus/response handling without changing hashed source bytes.
+    - [ ] Complete a real reviewed observation and bind it into the current-corpus plan.
     - [x] Fix `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope
       while retaining its legacy flat-map reader, so agent candidates receive the 2,582
       descriptions already present in the current corpus.
@@ -521,7 +531,11 @@ explicit approval.
       checked-in artifacts plus future user-repository harvests. Data rows are unchanged.
     - [ ] Replace the absolute checkout path in `mathlib_tag_xrefs.jsonl` with logical root,
       Mathlib revision, and declaration-oracle digest, and canonicalize absolute
-      `decl_renames.jsonl` source locations.
+      `decl_renames.jsonl` source locations. Immutable Git harvesting and portable rename
+      export tools are implemented; tracked corpus regeneration remains pending. Official
+      documentation artifact/run evidence now ties the existing declaration oracle to
+      Mathlib `e861750b15eff0d5bc98279911ce457bb1a1382f`; that exact source tree was acquired
+      separately from the bot checkout. Seal the retained evidence before claiming authority.
     - [x] Make the Formal Conjectures, Erdős, and generic Lean-repository harvesters read exact
       blobs from one captured Git commit rather than a mutable worktree. The shared reader
       captures `HEAD^{commit}` once, enumerates a literal scope with `ls-tree`, reads selected
@@ -601,6 +615,12 @@ explicit approval.
     digest before handing structured runtime evidence to the runner. Freeze dependency
     artifacts and a CPU-dispatch/baseline policy, then capture strict clean-host sandbox
     evidence under that exact identity; caller-authored evidence files are not sufficient.
+    - [x] Implement the local native-Linux launcher, platform manifest/layer/DiffID and
+      wheel verification, container inspection/cleanup, isolated startup, and measured
+      NumPy/OpenBLAS dispatch policy. Runtime v2 explicitly binds builtin SQLite modules;
+      v1's extension-file contract is retained. Packaging rejects lazy-fetch Git sources.
+    - [ ] Build the actual pinned image/dependency artifacts and retain native Linux
+      sandbox/replay evidence. No OCI build or execution has occurred on this Darwin host.
 - [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source
   object store for the pinned Mathlib tree and declaration oracle, TheoremGraph inputs,
   sealed D1 annotations/community data, external normalized files, and curated Git inputs.
@@ -641,6 +661,10 @@ explicit approval.
     release, or deployment readiness.
   - [ ] Compile the first real pack on a host with enough free space, then bind its verified
     `offline_pack_id` and `source_set_root` into build-attestation/v2 and release verification.
+    Pack-bound release production/verification is implemented in the continuation:
+    `brain-offline-replay-v1` hashes the exact replay roots and generation, requires
+    build-attestation/v2, and freezes all outputs plus two sealed provenance inputs.
+    The actual full-corpus pack and release remain outstanding.
   - [ ] Before repeated full-corpus builds, derive the candidate identity before materializing
     duplicate bytes so a verified same-ID pack can be reused without another full staging
     copy; add a safe shared-CAS/reflink strategy if cross-pack storage pressure warrants it.
@@ -654,35 +678,39 @@ explicit approval.
   sealed proposal/source inputs. Compile from immutable acquisition snapshots (or an
   equivalent whole-tree stability fence) so sequential final selector checks cannot leave a
   mutation window between independently acquired roots.
-- [ ] **Add the dual-build gate.** Build the same pack in two different absolute paths
+- [x] **Add the dual-build gate.** Build the same pack in two different absolute paths
   with randomized mtimes, isolated temp/cache roots, and adversarial `BRAIN_*` values, with
   network disabled at the runner/container boundary. Mount the verified pack as the only
   readable data input and use a separate writable output mount, then require byte-identical
   JSON/JSONL/static output plus equal base snapshot, projection, semantic, and release IDs.
+  `brain/tools/reproducibility_gate.py` owns the two real launcher subprocesses and
+  frozen releases, with no imported-success CLI. Its 26 focused tests pass. Actual
+  full-corpus execution is still required by the completion criteria below.
 - [ ] **Prove compatibility, not only repeatability.** Compare the clean-room result with
   the approved pre-refactor baseline and require zero graph/topology/content changes. Since
   replacing mtime/date pins intentionally changes provenance, require either a documented
   legacy-pin normalization comparison or an explicitly reviewed provenance-only migration
   report. Include fixtures for prior snippet-loss and fold/source-mismatch regressions.
-- [ ] **Define a reproducibility attestation schema.** Record both build identities, pack
+- [x] **Define a reproducibility attestation schema.** Record both build identities, pack
   and environment IDs, compared roots/digests, normalized provenance result, and pass/fail;
   the existing validation attestation is not a substitute.
+  Implemented at `brain/authority/schemas/attestation/reproducibility-v1.json`.
+  Finalization re-verifies an explicitly reviewed exact producer session; fixture
+  scope remains diagnostic and cannot satisfy full-corpus authority.
 - [ ] **Close provenance/license coverage.** Require every emitted provenance source to
   resolve to a sealed source manifest and policy entry. Resolve the current `tag-queue` and
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) finish removing audit/observation fields from
-normalized bytes, run and review the sealed coherent D1 export, replace the three legacy
-Wikidata harvests with one shared sealed generation, and bind the D1, Wikidata proposal,
-legacy-Wikidata, and reviewed Hugging Face evidence into the v3 current-corpus source plan;
-(2) finish the trusted OCI
-launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (3)
-compile the first real pack and prove cross-object/source-revision coherence; (4) add the
-two-path randomized-mtime/adversarial-environment clean-room gate; (5) run the approved-
-baseline semantic compatibility review and emit the separate two-build reproducibility
-attestation. Network acquisition, live D1 snapshots, and proposal folding remain outside
-the replay boundary throughout.
+**Next P0-R implementation order:** (1) finish the successful shared Wikidata capture,
+review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
+Wikidata proposal/fold, Hugging Face, and remaining source evidence into the v3
+current-corpus plan; (2) freeze the actual native Linux OCI/dependency artifacts and
+retain strict kernel sandbox evidence; (3) compile the first real pack and prove
+cross-object/source-revision coherence; (4) run the two-path adversarial clean-room gate
+against the approved semantic baseline; (5) review the concrete session and emit its
+separate reproducibility attestation. Network acquisition, live D1 snapshots, and
+proposal folding remain outside the replay boundary throughout.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently

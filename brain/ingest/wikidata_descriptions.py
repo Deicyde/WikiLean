@@ -2,15 +2,16 @@
 """Wikidata descriptions fetcher — catalog/data/wikidata_descriptions.json.
 
 Collects every concept QID the Brain builds over (rebuild_grounding.json +
-universe_extension.jsonl + wikidata_crossrefs.json), then fetches one coherent
-snapshot via wbgetentities in batches of 50 (props=descriptions, languages=en,
+universe_extension.jsonl + wikidata_crossrefs.json), then fetches independent live
+observations via wbgetentities in batches of 50 (props=descriptions, languages=en,
 CC0). Output shape (SCHEMA.md v2): {"_meta": {...}, "descriptions": {qid: text}}.
 The previous output is never used as an input, and publication is atomic only
 after every requested batch has succeeded.
 
 An intentional reviewed volume collapse requires BRAIN_INGEST_FORCE=1.
 
-Run: python3 brain/ingest/wikidata_descriptions.py
+Standalone publication is retired; these functions remain compatibility/test
+adapters. Use brain/acquire-wikidata-observation.sh for a complete generation.
 """
 from __future__ import annotations
 
@@ -280,4 +281,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(
+        "Standalone Wikidata description publication is retired. Use "
+        "brain/acquire-wikidata-observation.sh with a reviewed canonical plan, "
+        "then brain/install_wikidata_observation.py to install the complete generation."
+    )

@@ -18,6 +18,7 @@ sys.path.insert(0, str(HERE))
 
 import authority_contracts as contracts  # noqa: E402
 import build_release  # noqa: E402
+import store  # noqa: E402
 from test_authority_contracts import GIT_COMMIT, ReleaseVerificationTest  # noqa: E402
 
 
@@ -111,6 +112,115 @@ class ReleaseBuilderTest(unittest.TestCase):
         self.assertTrue(second["reused"])
         self.assertEqual(first["release_id"], second["release_id"])
         self.assertEqual(before, after)
+
+    def offline_inputs(self) -> build_release._VerifiedReplayInputs:
+        generation = "sha256:" + "a" * 64
+        for path in self.repo.rglob("*"):
+            if path.suffix in {".json", ".jsonl"}:
+                raw = path.read_bytes()
+                raw = raw.replace(b"2030-01-01T00:00:00Z", generation.encode())
+                raw = raw.replace(b"2030-01-01T00:01:00Z", generation.encode())
+                path.write_bytes(raw)
+        sqlite = self.repo / "brain/data/brain.sqlite3"
+        sqlite.unlink()
+        store.write_sqlite_from_jsonl(sqlite, self.repo / "brain/data")
+        inputs = Path(self.temp.name) / "sealed-provenance"
+        inputs.mkdir()
+        sources = {}
+        for relative in ("catalog/data/source_registry.json", "brain/data/community_edges.jsonl"):
+            original = self.repo / relative
+            source = inputs / original.name
+            source.write_bytes(original.read_bytes())
+            sources[relative] = (source, *contracts.digest_file(source))
+            original.unlink()
+        for relative in ("brain/data/cell_review.jsonl", "brain/data/frontier_review.jsonl"):
+            (self.repo / relative).write_bytes(b'{}\n')
+        output_paths = tuple(sorted(path.relative_to(self.repo).as_posix() for path in self.repo.rglob("*")
+                                    if path.is_file() and "authority" not in path.parts))
+        return build_release._VerifiedReplayInputs(
+            source_set_root="sha256:" + "b" * 64,
+            replay={"authority_root": "sha256:" + "c" * 64, "offline_pack_id": "sha256:" + "d" * 64,
+                    "reducer_inventory_id": "sha256:" + "e" * 64, "prior_state_root": None,
+                    "generation_id": generation},
+            sources=sources, input_count=41, output_paths=output_paths)
+
+    def test_offline_profile_freezes_all_outputs_and_exact_sealed_provenance_inputs(self) -> None:
+        inputs = self.offline_inputs()
+        result = build_release.build_release(self.config(), _verified_replay=inputs)
+        root = Path(result["root"])
+        manifest, _ = contracts.load_canonical_json(root / "release.json")
+        self.assertEqual(manifest["profile"], contracts.OFFLINE_REPLAY_RELEASE_PROFILE)
+        self.assertEqual(manifest["source_set_root"], inputs.source_set_root)
+        self.assertEqual(manifest["replay"], inputs.replay)
+        self.assertEqual({item["path"] for item in manifest["artifacts"]}, set(inputs.output_paths) | set(inputs.sources))
+        build, _ = contracts.load_canonical_json(root / "attestations/build.json")
+        self.assertEqual(build["schema"], contracts.BUILD_ATTESTATION_SCHEMA_V2)
+        self.assertEqual(build["inputs"]["authority_root"], inputs.replay["authority_root"])
+        self.assertNotIn("generation_id", build["inputs"])
+        contracts.verify_release_files(contracts.validate_release_manifest(manifest), root)
+        self.assertFalse((self.repo / "catalog/data/source_registry.json").exists())
+
+    def test_offline_profile_rejects_forged_attestation_pack_binding(self) -> None:
+        result = build_release.build_release(self.config(), _verified_replay=self.offline_inputs())
+        root = Path(result["root"])
+        manifest, _ = contracts.load_canonical_json(root / "release.json")
+        path = root / "attestations/build.json"
+        build, _ = contracts.load_canonical_json(path)
+        build["inputs"]["offline_pack_id"] = "sha256:" + "f" * 64
+        build["attestation_id"] = contracts.attestation_identity(build)
+        path.write_bytes(contracts.canonical_json_bytes(build))
+        ref = next(item for item in manifest["attestations"] if item["kind"] == "build")
+        ref["sha256"], ref["bytes"] = contracts.digest_file(path)
+        with self.assertRaisesRegex(contracts.VerificationError, "release replay binding"):
+            contracts.verify_release_files(contracts.validate_release_manifest(manifest), root)
+
+    def test_offline_profile_and_generation_are_part_of_release_identity(self) -> None:
+        result = build_release.build_release(self.config(), _verified_replay=self.offline_inputs())
+        root = Path(result["root"])
+        manifest, _ = contracts.load_canonical_json(root / "release.json")
+        old_id = manifest["release_id"]
+        manifest["replay"]["generation_id"] = "sha256:" + "f" * 64
+        manifest["release_id"] = contracts.release_identity(manifest)
+        self.assertNotEqual(old_id, manifest["release_id"])
+        with self.assertRaisesRegex(contracts.VerificationError, "artifact generation"):
+            contracts.verify_release_files(contracts.validate_release_manifest(manifest), root)
+        manifest["profile"] = contracts.RELEASE_PROFILE
+        manifest["release_id"] = contracts.release_identity(manifest)
+        with self.assertRaises(contracts.VerificationError):
+            contracts.validate_release_manifest(manifest)
+
+    def test_offline_provenance_input_mutation_cannot_publish(self) -> None:
+        inputs = self.offline_inputs()
+        source = inputs.sources["brain/data/community_edges.jsonl"][0]
+        def mutate(relative):
+            if relative == "site/out/brain.html":
+                source.write_bytes(b'{}\n')
+        with self.assertRaisesRegex(contracts.VerificationError, "provenance input changed"):
+            build_release.build_release(self.config(), _verified_replay=inputs, after_copy=mutate)
+        self.assertEqual(list(self.output.iterdir()), [])
+
+    def test_offline_final_source_check_runs_before_publication(self) -> None:
+        def changed():
+            raise contracts.VerificationError("retained replay changed")
+        with self.assertRaisesRegex(contracts.VerificationError, "retained replay changed"):
+            build_release.build_release(self.config(), _verified_replay=self.offline_inputs(), _before_publish=changed)
+        self.assertEqual(list(self.output.iterdir()), [])
+
+    def test_empty_target_appearing_during_publication_is_never_replaced(self) -> None:
+        original = build_release._publish_no_replace
+        appeared = []
+        def collision(staging, target):
+            target.mkdir()
+            appeared.append((target, target.stat().st_ino))
+            original(staging, target)
+        with mock.patch.object(build_release, "_publish_no_replace", side_effect=collision):
+            with self.assertRaises((OSError, contracts.VerificationError)):
+                build_release.build_release(self.config())
+        self.assertEqual(len(appeared), 1)
+        target, inode = appeared[0]
+        self.assertEqual(target.stat().st_ino, inode)
+        self.assertEqual(list(target.iterdir()), [])
+        self.assertEqual(list(self.output.iterdir()), [target])
 
     def test_fsyncs_every_release_directory_before_publish(self) -> None:
         synced_directories: set[tuple[int, int]] = set()

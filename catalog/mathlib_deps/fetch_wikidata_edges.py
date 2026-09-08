@@ -298,4 +298,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(
+        "Standalone Wikidata edge publication is retired. Use "
+        "brain/acquire-wikidata-observation.sh with a reviewed canonical plan, "
+        "then brain/install_wikidata_observation.py to install the complete generation."
+    )
