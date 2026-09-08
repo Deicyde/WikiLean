@@ -72,13 +72,25 @@ export interface BrainReleaseSelector {
   audited_at?: string;
 }
 
-export interface BrainReleaseManifest {
+interface BrainReleaseManifestCommon {
   schema: "wikilean.release/v1";
-  profile: "brain-current-v1";
   release_id: string;
   artifacts: BrainReleaseArtifact[];
   attestations: unknown[];
 }
+
+export interface BrainReplayBinding {
+  authority_root: string;
+  offline_pack_id: string;
+  reducer_inventory_id: string;
+  generation_id: string;
+  prior_state_root: string | null;
+}
+
+export type BrainReleaseManifest = BrainReleaseManifestCommon & (
+  | { profile: "brain-current-v1"; replay?: never }
+  | { profile: "brain-offline-replay-v1"; replay: BrainReplayBinding }
+);
 
 export interface BrainReleaseArtifact {
   logical_name: string;
@@ -161,6 +173,17 @@ function validDigest(value: unknown): value is string {
   return typeof value === "string" && DIGEST_RE.test(value);
 }
 
+function validReleaseProfile(o: Record<string, unknown>): boolean {
+  if (o.profile === "brain-current-v1") return !("replay" in o);
+  if (o.profile !== "brain-offline-replay-v1") return false;
+  const replay = record(o.replay);
+  const hashes = ["authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id"];
+  return replay !== null && Object.keys(replay).length === 5 &&
+    Object.keys(replay).every((key) => key === "prior_state_root" || hashes.includes(key)) &&
+    hashes.every((key) => validHash(replay[key])) &&
+    (replay.prior_state_root === null || validHash(replay.prior_state_root));
+}
+
 function validReleaseMetadata(o: Record<string, unknown>): boolean {
   const authority = record(o.authority);
   const reducer = record(o.reducer);
@@ -239,9 +262,9 @@ async function parseReleaseManifest(
   const o = record(raw);
   if (
     !o ||
-    Object.keys(o).some((key) => !RELEASE_KEYS.has(key)) ||
+    Object.keys(o).some((key) => !RELEASE_KEYS.has(key) && !(key === "replay" && o.profile === "brain-offline-replay-v1")) ||
     o.schema !== "wikilean.release/v1" ||
-    o.profile !== "brain-current-v1" ||
+    !validReleaseProfile(o) ||
     o.release_id !== releaseId ||
     !Array.isArray(o.artifacts) ||
     !Array.isArray(o.attestations) ||

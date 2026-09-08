@@ -1,5 +1,10 @@
 # Brain SQLite operational handoff — 2026-09-05
 
+The [2026-09-08 continuation](BRAIN-SQLITE-CONTINUATION-2026-09-08.md) records the
+subsequent laptop setup, first real D1 capture, revision-bound Mathlib evidence,
+and engineering work. The historical checkpoint below remains useful for the
+branch's original implementation and activation boundaries.
+
 This is a branch-state and operator handoff, not the project plan. The canonical plan and
 completion criteria remain in [`ROADMAP.md`](ROADMAP.md), especially P0-R and P1A–P1C.
 Architecture details live in [`BRAIN-ARCHITECTURE.plan.md`](BRAIN-ARCHITECTURE.plan.md), and

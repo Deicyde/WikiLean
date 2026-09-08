@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 import errno
 import hashlib
 import json
@@ -62,6 +63,22 @@ class BuildConfig:
     input_inventory: str = DEFAULT_INPUT_INVENTORY
     compatible_overlay_generation_ids: tuple[str, ...] = ()
     recorded_at: str | None = None
+
+
+@dataclass(frozen=True)
+class _VerifiedReplayInputs:
+    """Internal handoff from the producer that observed a complete offline run.
+
+    Deliberately unavailable as command-line arguments. The caller re-verifies
+    the sealed pack, prepared context, complete output and live launch result.
+    """
+
+    source_set_root: str
+    replay: dict[str, Any]
+    # Only the two provenance inputs accompany reducer-owned output artifacts.
+    sources: dict[str, tuple[Path, str, int]]
+    input_count: int
+    output_paths: tuple[str, ...]
 
 
 def _error(message: str) -> VerificationError:
@@ -365,10 +382,35 @@ def _verify_finalized(root: Path, expected_release_id: str) -> None:
     verify_release_files(validated, root)
 
 
+def _publish_no_replace(staging: Path, target: Path) -> None:
+    """Reserve the final release name atomically, including against empty dirs."""
+    if staging.parent != target.parent:
+        raise _error("release publication requires sibling directories")
+    descriptor = os.open(staging.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        library = ctypes.CDLL(None, use_errno=True)
+        if sys.platform == "darwin" and hasattr(library, "renameatx_np"):
+            operation, flag = library.renameatx_np, 0x00000004
+        elif sys.platform.startswith("linux") and hasattr(library, "renameat2"):
+            operation, flag = library.renameat2, 0x00000001
+        else:
+            raise _error("platform lacks kernel no-replace directory publication")
+        operation.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        operation.restype = ctypes.c_int
+        if operation(descriptor, os.fsencode(staging.name), descriptor, os.fsencode(target.name), flag):
+            number = ctypes.get_errno()
+            raise OSError(number, os.strerror(number), str(target))
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
 def build_release(
     config: BuildConfig,
     *,
     after_copy: Callable[[str], None] | None = None,
+    _verified_replay: _VerifiedReplayInputs | None = None,
+    _before_publish: Callable[[], None] | None = None,
 ) -> dict[str, Any]:
     repo_root = config.repo_root.resolve(strict=True)
     if config.output_store.is_symlink():
@@ -386,8 +428,17 @@ def build_release(
     snapshot_id = _preflight_generations(repo_root)
     dynamic_paths = _static_closure(repo_root)
     source_paths = sorted(set(REQUIRED_RELEASE_PATHS) | dynamic_paths)
-    inventory_sha256, declared_inputs = _inventory_paths(repo_root, config.input_inventory)
-    source_set_root = legacy_declared_input_root(inventory_sha256, declared_inputs)
+    if _verified_replay is None:
+        inventory_sha256, declared_inputs = _inventory_paths(repo_root, config.input_inventory)
+        source_set_root = legacy_declared_input_root(inventory_sha256, declared_inputs)
+    else:
+        if set(_verified_replay.sources) != {
+            "catalog/data/source_registry.json", "brain/data/community_edges.jsonl"
+        }:
+            raise _error("offline release must bind exactly both sealed provenance inputs")
+        source_set_root = _verified_replay.source_set_root
+        inventory_sha256, declared_inputs = "", []
+        source_paths = sorted(set(source_paths) | set(_verified_replay.output_paths))
 
     output_store.mkdir(parents=True, exist_ok=True)
     if output_store.is_symlink() or not output_store.is_dir():
@@ -397,12 +448,18 @@ def build_release(
         artifacts: list[dict[str, Any]] = []
         for relative in source_paths:
             destination = candidate / relative
+            source_root, source_relative = repo_root, relative
+            override = _verified_replay.sources.get(relative) if _verified_replay else None
+            if override is not None:
+                source_root, source_relative = override[0].parent, override[0].name
             digest, size = _copy_source_file(
-                repo_root,
-                relative,
+                source_root,
+                source_relative,
                 destination,
-                after_copy=after_copy,
+                after_copy=(lambda _path, relative=relative: after_copy(relative)) if after_copy else None,
             )
+            if override is not None and (digest, size) != override[1:]:
+                raise _error(f"sealed provenance input changed while freezing: {relative}")
             media_type, logical_format = _media_and_format(relative)
             with destination.open("rb") as handle:
                 logical_root = _artifact_logical_root_handle(
@@ -418,14 +475,16 @@ def build_release(
                 "logical_root": logical_root,
             })
 
-        final_inventory_sha256, final_declared_inputs = _inventory_paths(
-            repo_root, config.input_inventory
-        )
-        if (
-            final_inventory_sha256 != inventory_sha256
-            or final_declared_inputs != declared_inputs
-        ):
-            raise _error("declared reducer inputs changed while freezing the release")
+        if _verified_replay is None:
+            final_inventory_sha256, final_declared_inputs = _inventory_paths(
+                repo_root, config.input_inventory
+            )
+            if final_inventory_sha256 != inventory_sha256 or final_declared_inputs != declared_inputs:
+                raise _error("declared reducer inputs changed while freezing the release")
+        else:
+            for relative, (source, digest, size) in _verified_replay.sources.items():
+                if _digest_source(source.parent, source.name) != (digest, size):
+                    raise _error(f"sealed provenance input changed while freezing: {relative}")
 
         by_path = {artifact["path"]: artifact for artifact in artifacts}
         semantic_root = compatibility_semantic_state_root(
@@ -460,6 +519,9 @@ def build_release(
         }
         if config.recorded_at is not None:
             release["created_at"] = config.recorded_at
+        if _verified_replay is not None:
+            release["profile"] = "brain-offline-replay-v1"
+            release["replay"] = dict(_verified_replay.replay)
         release["release_id"] = release_identity(release)
 
         attested_artifacts = sorted(
@@ -513,6 +575,18 @@ def build_release(
             ],
             "result": "pass",
         }
+        if _verified_replay is not None:
+            build["schema"] = "wikilean.build-attestation/v2"
+            build["build_kind"] = "full-offline-replay"
+            build["builder"]["version"] = "2"
+            del build["input_roots"]
+            build["inputs"] = {
+                key: value for key, value in _verified_replay.replay.items()
+                if key != "generation_id"
+            }
+            build["inputs"]["source_set_root"] = source_set_root
+            build["metrics"]["declared_input_count"] = _verified_replay.input_count
+            validation["checks"].append({"name": "sealed-pack-and-complete-replay", "status": "pass"})
         if config.recorded_at is not None:
             build["recorded_at"] = config.recorded_at
             validation["recorded_at"] = config.recorded_at
@@ -530,6 +604,8 @@ def build_release(
 
         validated = validate_release_manifest(release)
         verify_release_files(validated, candidate)
+        if _before_publish is not None:
+            _before_publish()
         _fsync_directory_tree(candidate)
         release_hex = release["release_id"].removeprefix("sha256:")
         final = output_store / release_hex
@@ -543,7 +619,7 @@ def build_release(
             reused = True
         else:
             try:
-                os.rename(candidate, final)
+                _publish_no_replace(candidate, final)
             except OSError as exc:
                 if exc.errno not in {errno.EEXIST, errno.ENOTEMPTY} or not final.is_dir():
                     raise

@@ -132,7 +132,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 ## CI test boundaries
 - `npm test` / `npm run test:unit` excludes corpus-dependent Vitest files. `npm run test:ci` is
   the named Worker gate; `./scripts/ci-python.sh` is the Python 3.12 gate and unsets credential
-  variables before running all 40 offline commands.
+  variables before running the full offline suite (the summary reports the check count).
 - `npm run test:corpus` preflights `site/cache/*.html`, `site/out/*.html`,
   `site/annotations/*.json`, and `wiki/public/assets/decl-index/manifest.json`, then runs the
   render-golden, decl-index, and seed suites. `brain/test_fold_xref.py` is also corpus-only because

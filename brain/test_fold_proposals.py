@@ -145,7 +145,7 @@ def test_qid_syntax_is_canonical_and_checked_before_request():
 
 
 def test_request_plan_is_exact_canonical_atomic_and_does_not_fold():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_plan_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_plan_test_")).resolve()
     rows = [
         {"qid": "Q200", "qid_label": "concept Q200", "decl": "Mathlib.Example"},
         {"qid": "Q100", "qid_label": "concept Q100", "decl": "Mathlib.Example"},
@@ -196,7 +196,7 @@ def test_fold_contains_no_live_wikidata_transport():
 
 
 def test_empty_need_rejects_a_bundle_and_folds_without_one():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_empty_bundle_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_empty_bundle_test_")).resolve()
     catalog, proposals, data, checkout, oracle = make_fold_fixture(tmp, [])
     bundle_path = (tmp / "unneeded-bundle").absolute()
     called = False
@@ -227,7 +227,7 @@ def test_empty_need_rejects_a_bundle_and_folds_without_one():
 
 
 def test_external_page_ids_rejects_interrupted_first_publication():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_external_orphan_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_external_orphan_test_")).resolve()
     external = tmp / "external"
     external.mkdir(parents=True)
     controls = F.external_pair_control_paths(external, "fixture")
@@ -264,7 +264,7 @@ def test_external_page_ids_rejects_interrupted_first_publication():
 
 
 def test_main_preserves_every_output_on_bundle_failure_or_wrong_coverage():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_failure_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_failure_test_")).resolve()
     qids = ["Q1001", "Q1002"]
     rows = [
         {"qid": qid, "qid_label": f"concept {qid}",
@@ -355,7 +355,7 @@ def test_main_preserves_every_output_on_bundle_failure_or_wrong_coverage():
 
 
 def test_main_preserves_requested_qid_on_redirect_and_rejects_explicit_missing():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_success_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_bundle_success_test_")).resolve()
     redirected, missing = "Q999001", "Q999002"
     rows = [
         {"qid": redirected, "qid_label": "target concept",
@@ -418,7 +418,7 @@ def test_main_preserves_requested_qid_on_redirect_and_rejects_explicit_missing()
 
 
 def test_main_retracts_links_and_runs_trailing_outputs():
-    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_test_"))
+    tmp = Path(tempfile.mkdtemp(prefix="fold_proposals_test_")).resolve()
     catalog = tmp / "catalog" / "data"
     proposals = tmp / "brain" / "proposals"
     data = tmp / "brain" / "data"

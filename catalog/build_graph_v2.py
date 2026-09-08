@@ -274,9 +274,13 @@ def main() -> int:
     formal_edges = lift_formal_edges.lift(decl_to_qid)
     formal_edges = [e for e in formal_edges if e["from"] in node_qids and e["to"] in node_qids]
     wd_edges = []
-    if WD_EDGES.exists():
+    sys.path.append(str(HERE.parent / "brain"))
+    import install_wikidata_observation
+    observation = install_wikidata_observation.load_installed(WD_EDGES.parent.parent.parent)
+    wd_edge_path = observation["path"] / "normalized/wikidata_edges.jsonl" if observation is not None else WD_EDGES
+    if wd_edge_path.exists():
         seen = set()
-        for line in WD_EDGES.read_text().splitlines():
+        for line in wd_edge_path.read_text().splitlines():
             if not line.strip():
                 continue
             r = json.loads(line)
