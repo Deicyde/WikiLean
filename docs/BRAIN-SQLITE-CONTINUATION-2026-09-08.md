@@ -27,7 +27,7 @@ Wikidata-derived input tranche is committed as `bb179a0c`.
 The EOM normalization, DLMF, OEIS, Kerodon and LMFDB acquisition tranche is
 committed as `c3265f80`.
 The final catalog importers and experimental assertion shadow are committed as
-`f670cbf3`. The next reviewed tranche adds D1 export compatibility, sealed proposal
+`f670cbf3`. Commit `1bd15ac3` adds D1 export compatibility, sealed proposal
 folds, standalone policy review records and same-input legacy halo preparation.
 
 ## Real source acquisitions
@@ -80,6 +80,16 @@ theorem-link parent, requiring a new plan and fresh capture. Its retained free
 quota was below the required 452 filtered requests; wait for the daily reset and
 verify adequate free quota before reacquiring. Keep the original draft and all old
 evidence until the replacement closure independently verifies.
+
+The derived-catalog refresh independently verifies at
+`derived-catalog-source-exports/dda362e2c5e647c9d9d5df49ef0d3ce523a9d2beecbe7c73ee1a14a6f2312fc3`.
+All six normalized files (30,159,029 bytes) remain equal. The new hierarchy source
+is `sha256:06a224b93915bd1d69ebabae9e9e1e8a8e92c79a08e841ba8798b4567d26b6b1`;
+the theorem-link source is
+`sha256:085a42e3845366a132242005e77588a63653ca57c13030c3d3c5b8ace11fb1cf`.
+The new replacement OpenAlex plan changes only that exact parent identity; its
+selector remains 2,052 arXiv IDs and nine exclusions. Acquisition awaits a fresh
+adequate free-quota observation. The current full draft is still unchanged.
 
 An exact declaration oracle and its Mathlib source revision were located through
 the official [documentation build](https://github.com/leanprover-community/mathlib4_docs/actions/runs/34203087670).
@@ -396,8 +406,19 @@ verified pack. No baseline graph run or approval has occurred. The new bounded
 the baseline's own cells/synapses. It emits full original rows with empty
 centrality; the old frontier consumes only cell IDs and `all_frac`, which do not
 depend on centrality. Historical halo data is retained for a separate diagnostic.
-The old schema-1 SQLite file must be preserved separately before an explicitly
-identified schema-2 compatibility projector indexes unchanged semantic artifacts.
+The new `legacy_sqlite_projection.py` preserves the original schema-1 SQLite and
+all seven exact expected semantic files in a separate private directory. It builds
+a schema-2 index from the five indexed files and runs the independent complete
+SQLite row/column/owner verifier; frontier files remain exact pass-through bytes.
+Its canonical expected-ID plan pins inputs and the four-file loaded implementation
+closure. The completion record explicitly grants no legacy execution, static
+release or baseline approval. All nine focused checks pass independently, including
+the real retained `ebac34dc` schema-1 writer, changed index columns, a modified
+retained database whose historical snapshot ID still matches, and the isolated CLI.
+The original writer predates SQLite's current WLBN application marker: its exact
+application ID is zero, while the new index must pass the current schema-2 checks.
+Release assembly still needs verified legacy static artifacts plus exact sealed
+registry/community inputs and the existing full static/release verifier.
 The native runtime can be reused, but the old-program launch needs its own honest
 execution evidence; it is not the new authoritative replay profile.
 
@@ -522,6 +543,9 @@ export checks. The real v3 compiler regression rejects the historical empty MIME
 conflict and accepts all five refreshed D1 aliases beside the unchanged 255 Git
 aliases. Both old and new real D1 exports independently reproduce. The unchanged
 Worker retains its preceding passing typecheck and 872 tests.
+The required CI gate now includes one additional SQLite compatibility projection
+command (82 total). Its nine focused cases pass locally and independently; the
+preceding full-suite result above remains the 81-command run.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
