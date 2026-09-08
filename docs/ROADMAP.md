@@ -158,6 +158,19 @@ never independent semantic writers.
 
 ### Current Brain execution queue (updated 2026-09-05)
 
+**2026-09-08 continuation:** the live engineering checkpoint is
+[`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
+Real D1, Mathlib/oracle, Hugging Face, shared Wikidata/entity/crossref, derived
+catalog, Git harvest, nLab/Stacks, ProofWiki, EOM and OEIS source exports are
+verified; LMFDB raw capture is verified. DLMF and Kerodon full captures are running,
+and LMFDB normalization plus PlanetMath/OpenAlex remain. The private draft stages
+40 of 43 input groups and 35 source manifests; the external aggregate groups are
+still incomplete. A sealed native Linux OCI image passed kernel/runtime checks,
+and the expanded Python suite passes 72 commands. No full pack, complete approved
+semantic baseline, full two-build result, release attestation or production
+activation exists. The historical implementation context below must not be read
+as a current claim that the completed captures or runtime preparation are absent.
+
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
 `wiki/public-asset-source-attestation.json`, so public baseline freeze/verify fails closed
@@ -702,11 +715,11 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) finish the successful shared Wikidata capture,
-review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
+**Next P0-R implementation order:** (1) finish the remaining external captures and
+normalizers, review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
 Wikidata proposal/fold, Hugging Face, and remaining source evidence into the v3
-current-corpus plan; (2) freeze the actual native Linux OCI/dependency artifacts and
-retain strict kernel sandbox evidence; (3) compile the first real pack and prove
+current-corpus plan; (2) preserve the completed native Linux OCI/dependency artifacts
+and strict kernel sandbox evidence, resealing if the trusted runner changes; (3) compile the first real pack and prove
 cross-object/source-revision coherence; (4) run the two-path adversarial clean-room gate
 against the approved semantic baseline; (5) review the concrete session and emit its
 separate reproducibility attestation. Network acquisition, live D1 snapshots, and
