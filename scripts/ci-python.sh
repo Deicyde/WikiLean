@@ -37,7 +37,10 @@ run_check "Hugging Face immutable source evidence tests" "$PYTHON_BIN" brain/tes
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
 run_check "Mathlib source metadata tests" "$PYTHON_BIN" catalog/test_mathlib_sources.py
 run_check "Mathlib source acquisition evidence tests" "$PYTHON_BIN" brain/test_mathlib_source_evidence.py
+run_check "Public Git source acquisition evidence tests" "$PYTHON_BIN" brain/test_public_git_sources.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
+run_check "Derived graph semantic parity tests" "$PYTHON_BIN" catalog/test_derived_graph_adapters.py
+run_check "Derived catalog source evidence tests" "$PYTHON_BIN" brain/test_derived_catalog_sources.py
 run_check "Normalized input metadata tests" "$PYTHON_BIN" brain/test_normalized_input_metadata.py
 run_check "Immutable Git snapshot tests" "$PYTHON_BIN" brain/test_git_snapshot.py
 run_check "Formal Conjectures and Erdos Git harvester tests" "$PYTHON_BIN" brain/test_git_harvesters_fc_erdos.py
@@ -45,6 +48,7 @@ run_check "Generic Lean Git harvester tests" "$PYTHON_BIN" brain/test_git_harves
 run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_snapshot.py
 run_check "D1 immutable source export tests" "$PYTHON_BIN" brain/test_export_d1_sources.py
 run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikidata_entities.py
+run_check "Wikidata crossref source evidence tests" "$PYTHON_BIN" brain/test_wikidata_crossref_sources.py
 run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_observation.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
