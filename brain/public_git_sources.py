@@ -56,6 +56,7 @@ def acquire(plan_path, store, gh):
     plan = core.validate_plan(core.parse(raw_plan, "reviewed public Git plan"))
     core.require(raw_plan == core.canonical(plan), "reviewed public Git plan must be canonical")
     tool, programs = runtime_identity(gh)
+    core.validate_plan_for_profile(plan, core.validate_tool(tool))
     raw = {}
     try:
         for index, spec in enumerate(core.request_specs(plan), 1):

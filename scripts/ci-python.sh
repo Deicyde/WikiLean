@@ -41,6 +41,7 @@ run_check "Public Git source acquisition evidence tests" "$PYTHON_BIN" brain/tes
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Derived graph semantic parity tests" "$PYTHON_BIN" catalog/test_derived_graph_adapters.py
 run_check "Derived catalog source evidence tests" "$PYTHON_BIN" brain/test_derived_catalog_sources.py
+run_check "Derived identifier source evidence tests" "$PYTHON_BIN" brain/test_derived_identifier_sources.py
 run_check "Normalized input metadata tests" "$PYTHON_BIN" brain/test_normalized_input_metadata.py
 run_check "Immutable Git snapshot tests" "$PYTHON_BIN" brain/test_git_snapshot.py
 run_check "Formal Conjectures and Erdos Git harvester tests" "$PYTHON_BIN" brain/test_git_harvesters_fc_erdos.py
