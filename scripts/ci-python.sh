@@ -50,6 +50,10 @@ run_check "OEIS source evidence tests" "$PYTHON_BIN" brain/test_oeis_sources.py
 run_check "Kerodon source evidence tests" "$PYTHON_BIN" brain/test_kerodon_sources.py
 run_check "Kerodon source normalization tests" "$PYTHON_BIN" brain/test_kerodon_normalization.py
 run_check "LMFDB read-only source evidence tests" "$PYTHON_BIN" brain/test_lmfdb_sources.py
+run_check "LMFDB source normalization tests" "$PYTHON_BIN" brain/test_lmfdb_normalization.py
+run_check "PlanetMath source evidence tests" "$PYTHON_BIN" brain/test_planetmath_sources.py
+run_check "OpenAlex source evidence tests" "$PYTHON_BIN" brain/test_openalex_sources.py
+run_check "OpenAlex source normalization tests" "$PYTHON_BIN" brain/test_openalex_normalization.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Derived graph semantic parity tests" "$PYTHON_BIN" catalog/test_derived_graph_adapters.py
 run_check "Derived catalog source evidence tests" "$PYTHON_BIN" brain/test_derived_catalog_sources.py
@@ -67,6 +71,7 @@ run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_anno
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Brain agent input tests" "$PYTHON_BIN" brain/test_sync_agents.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
+run_check "Experimental assertion shadow tests" "$PYTHON_BIN" brain/test_assertion_kernel.py
 run_check "Brain input acquisition coherence tests" "$PYTHON_BIN" brain/test_inventory_coherence.py
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
 run_check "Brain sealed pack publication tests" "$PYTHON_BIN" brain/test_pack_publication.py
