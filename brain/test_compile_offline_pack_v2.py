@@ -643,6 +643,45 @@ class OfflinePackCompilerTest(unittest.TestCase):
         self.assertEqual(second.offline_pack_id, first.offline_pack_id)
         self.assertEqual(second.manifest_path.read_bytes(), first.manifest_path.read_bytes())
 
+    def test_v3_named_normalized_aliases_compile_without_weakening_v1(self) -> None:
+        _plan, _receipt, lineage, _preimage = self._upgrade_plan_v3()
+        source = next(item for item in self.plan["sources"] if item["source"] == "external-fixture")
+        original = next(item for item in source["objects"] if item["name"] == "normalized")
+        alias = {**original, "name": "normalized-alias"}
+        source["objects"].append(alias)
+        source["objects"].sort(key=lambda item: item["name"])
+        source["normalization"]["outputs"].append(alias["name"])
+        lineage["outputs"].append({**lineage["outputs"][0], "object": alias["name"]})
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
+        _write_canonical(self.external / "lineage.json", lineage)
+        raw = (self.external / "lineage.json").read_bytes()
+        source["evidence"]["normalization_lineage"].update(
+            sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw),
+            normalization_lineage_id=lineage["normalization_lineage_id"],
+        )
+        _write_canonical(self.plan_path, self.plan)
+        compiled = self._compile("store-v3-aliases")
+        pack, _ = contracts.load_canonical_json(compiled.manifest_path)
+        contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack), compiled.root,
+            manifest_path=compiled.manifest_path,
+        )
+        manifests = [contracts.load_canonical_json(compiled.root / ref["path"])[0]
+                     for ref in pack["source_manifests"]]
+        sealed = next(item for item in manifests if item["source"] == source["source"])
+        outputs = [item for item in sealed["objects"] if "normalized" in item["roles"]]
+        self.assertEqual(len(outputs), 2)
+        self.assertEqual(outputs[0]["path"], outputs[1]["path"])
+        legacy = source_plan_contracts._compatibility_plan(self.plan)
+        with self.assertRaisesRegex(compiler.PackCompilationError, "combined roles"):
+            compiler.validate_source_plan(legacy)
+        for field, value in (("bytes", alias["bytes"] + 1), ("media_type", "text/plain")):
+            bad = copy.deepcopy(self.plan)
+            bad_source = next(item for item in bad["sources"] if item["source"] == source["source"])
+            next(item for item in bad_source["objects"] if item["name"] == alias["name"])[field] = value
+            with self.assertRaisesRegex(compiler.PackCompilationError, "aliases must agree"):
+                compiler.validate_source_plan(bad)
+
     def test_v3_compiles_evidence_only_parent_manifest(self) -> None:
         self._upgrade_plan_v3()
         prospective = source_plan_contracts.source_manifests_from_plan_v3(self.plan)
