@@ -194,7 +194,9 @@ def validate_source_plan_v3(value: Any) -> dict[str, Any]:
     import compile_offline_pack_v2 as compiler
 
     try:
-        compiler.validate_source_plan(_compatibility_plan(value))
+        compiler._validate_source_plan_structure(
+            _compatibility_plan(value), allow_content_aliases=True
+        )
     except compiler.PackCompilationError as exc:
         raise SourcePlanContractError(str(exc)) from exc
 
