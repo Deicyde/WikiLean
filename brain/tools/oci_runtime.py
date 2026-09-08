@@ -30,6 +30,10 @@ ARCHITECTURES = {"amd64": "x86_64", "arm64": "aarch64"}
 JSON_LIMIT = 4 * 1024 * 1024
 EXPANDED_LAYER_LIMIT = 16 * 1024**3
 CORE_TYPES = {"x86_64": "Prescott", "aarch64": "ARMV8"}
+# OpenBLAS accepts the architecture policy token above but reports its ARM
+# baseline through get_corename as lowercase. Keep the exact measured spelling;
+# case folding would accept unreviewed variants from a different implementation.
+REPORTED_CORE_TYPES = {"x86_64": b"Prescott", "aarch64": b"armv8"}
 BLAS_SYMBOLS = {
     "openblas_get_corename", "openblas_get_corename64_",
     "scipy_openblas_get_corename", "scipy_openblas_get_corename64_",
@@ -144,7 +148,7 @@ def verify_numerical_runtime(policy: dict[str, Any], *, numpy_module: Any = None
     function = getattr(loaded, cpu["blas_symbol"])
     function.restype = ctypes.c_char_p
     function.argtypes = []
-    _require(function() == cpu["openblas_core"].encode("ascii"), "OpenBLAS selected a different CPU core")
+    _require(function() == REPORTED_CORE_TYPES[policy["architecture"]], "OpenBLAS selected a different CPU core")
 
 
 @dataclass(frozen=True)
