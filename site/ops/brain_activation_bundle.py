@@ -45,10 +45,15 @@ from authority_contracts import (  # noqa: E402
     verify_release_files,
 )
 from brain_public_baseline import (  # noqa: E402
+    BaselineFreezeError,
     BaselineValidationError,
     PublicAssetBaseline,
     PublicAssetFile,
     SOURCE_ATTESTATION_PATH,
+    _publish_no_replace,
+    _remove_owned_directory_at,
+    _verify_directory_at,
+    _verify_store_identity,
     validate_public_baseline_manifest,
     verify_public_baseline,
 )
@@ -2776,35 +2781,59 @@ def freeze_activation_bundle(
     manifest = {**identity, "bundle_id": bundle_id}
     pending = store / f".pending-{os.getpid()}-{uuid.uuid4().hex}"
 
-    with _store_lock(store):
+    with _store_lock(store), contextlib.ExitStack() as descriptors:
+        store_fd = os.open(store, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        descriptors.callback(os.close, store_fd)
+        store_info = os.fstat(store_fd)
+        pending_info: os.stat_result | None = None
+        final: Path | None = None
+
+        def verify_store() -> None:
+            _verify_store_identity(store, store_fd, store_info)
+            if stat.S_IMODE(os.fstat(store_fd).st_mode) & 0o077:
+                raise BundleFreezeError("output store privacy permissions changed")
+
         try:
-            pending.mkdir(mode=0o700)
+            verify_store()
+            os.mkdir(pending.name, mode=0o700, dir_fd=store_fd)
+            pending_info = os.stat(pending.name, dir_fd=store_fd, follow_symlinks=False)
             for item in files:
                 _write_new(pending / item.path, validated.canonical_bytes[item.kind])
             _write_new(pending / MANIFEST_NAME, _canonical_json_bytes(manifest))
             _seal(pending)
             _final_publish_fence(validated)
+            _verify_directory_at(store_fd, pending.name, pending_info)
+            verify_store()
             final = store / bundle_hex
-            if final.exists() or final.is_symlink():
-                existing = verify_activation_bundle(final)
-                if existing.bundle_id != bundle_id:
-                    raise BundleFreezeError("existing bundle directory has a different identity")
-                _remove_pending(pending)
-                return existing
             try:
-                os.rename(pending, final)
-            except OSError:
-                if not final.is_dir() or final.is_symlink():
-                    raise
-                existing = verify_activation_bundle(final)
-                if existing.bundle_id != bundle_id:
-                    raise BundleFreezeError("concurrent bundle has a different identity")
-                _remove_pending(pending)
-                return existing
-            _fsync_directory(store)
-            return verify_activation_bundle(final)
-        finally:
-            _remove_pending(pending)
+                _publish_no_replace(store_fd, pending.name, final.name)
+                final_info = pending_info
+            except FileExistsError:
+                final_info = os.stat(final.name, dir_fd=store_fd, follow_symlinks=False)
+            verify_store()
+            _verify_directory_at(store_fd, final.name, final_info)
+            verified = verify_activation_bundle(final)
+            if verified.bundle_id != bundle_id:
+                raise BundleFreezeError("published bundle directory has a different identity")
+            _verify_directory_at(store_fd, final.name, final_info)
+            verify_store()
+            _remove_owned_directory_at(store_fd, pending.name, pending_info)
+            _verify_directory_at(store_fd, final.name, final_info)
+            verify_store()
+            os.fsync(store_fd)
+            return verified
+        except BaseException as original_error:
+            if pending_info is not None:
+                for candidate in (pending, final):
+                    if candidate is None:
+                        continue
+                    try:
+                        _remove_owned_directory_at(store_fd, candidate.name, pending_info)
+                    except Exception as cleanup_error:
+                        original_error.add_note(f"bundle cleanup failed at {candidate.name}: {cleanup_error}")
+            if isinstance(original_error, BaselineFreezeError):
+                raise BundleFreezeError(str(original_error)) from original_error
+            raise
 
 
 def _scan_bundle(root: Path) -> dict[str, os.stat_result]:

@@ -631,10 +631,10 @@ class HarvestTests(unittest.TestCase):
             (
                 ("local_dependencies", 0, "sha256"),
                 "0" * 64,
-                "reviewed local pins",
+                "reviewed acquisition generation",
             ),
             (("wrangler", "version"), "4.121.0", "reviewed pins"),
-            (("wrapper", "sha256"), "0" * 64, "unexpected acquirer wrapper"),
+            (("wrapper", "sha256"), "0" * 64, "reviewed acquisition generation"),
         ]
         for keys, value, message in cases:
             with self.subTest(keys=keys):

@@ -48,6 +48,7 @@ class GitTextSnapshot:
 
     commit: str
     files: tuple[GitTextFile, ...]
+    tree: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -220,6 +221,15 @@ def _capture_commit(git: str, repository: Path) -> str:
     if _OID.fullmatch(commit) is None:
         raise GitSnapshotError(f"Git returned an invalid commit object ID: {commit!r}")
     return commit
+
+
+def _commit_tree(git: str, repository: Path, commit: str) -> str:
+    """Resolve the captured commit's tree, never a second read of moving HEAD."""
+    raw = _run_git(git, repository, ["rev-parse", "--verify", f"{commit}^{{tree}}"])
+    tree = _decode_single_line(raw, "tree object ID", "ascii")
+    if _OID.fullmatch(tree) is None:
+        raise GitSnapshotError(f"Git returned an invalid tree object ID: {tree!r}")
+    return tree
 
 
 def _require_top_level(git: str, repository: Path) -> None:
@@ -451,10 +461,11 @@ def read_text_snapshot(
     _require_top_level(git_command, root)
     _reject_partial_clone(git_command, root)
     commit = _capture_commit(git_command, root)
+    tree = _commit_tree(git_command, root, commit)
     entries = _tree_entries(git_command, root, commit, normalized_scope)
     selected = _select_entries(entries, normalized_scope, normalized_suffixes)
     files = _read_text_blobs(git_command, root, selected)
-    return GitTextSnapshot(commit=commit, files=files)
+    return GitTextSnapshot(commit=commit, files=files, tree=tree)
 
 
 __all__ = [
