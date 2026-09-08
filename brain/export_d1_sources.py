@@ -29,10 +29,12 @@ import compile_offline_pack_v2 as publisher  # noqa: E402
 import source_plan_contracts  # noqa: E402
 import d1_snapshot_bundle as snapshots  # noqa: E402
 
-EXPORT_SCHEMA = "wikilean.d1-source-export/v1"
-EXPORT_DOMAIN = "wikilean.d1-source-export.v1"
+EXPORT_SCHEMA = "wikilean.d1-source-export/v2"
+EXPORT_DOMAIN = "wikilean.d1-source-export.v2"
 FRAGMENT_SCHEMA = "wikilean.d1-source-plan-fragment/v1"
-NORMALIZATION_SCHEMA = "wikilean.d1-brain-sidecars/v1"
+NORMALIZATION_SCHEMA = "wikilean.d1-brain-sidecars/v2"
+SOURCE_NORMALIZATION_SCHEMA = "wikilean.d1-source-normalization/v2"
+PROFILE_PATH = ROOT / "brain/d1_source_export_profiles.json"
 PHYSICAL_ROOT = "d1_export"
 DERIVED_SOURCE = "wikilean-d1-brain-sidecars"
 IMPLEMENTATION_PATHS = (
@@ -57,6 +59,7 @@ def _verify_implementation() -> dict[str, bytes]:
     current = {path: (ROOT / path).read_bytes() for path in IMPLEMENTATION_PATHS}
     if current != LOADED_IMPLEMENTATION:
         raise ExportError("export implementation changed after this process loaded")
+    _reviewed_tool(current, generation=2)
     return dict(LOADED_IMPLEMENTATION)
 
 
@@ -72,6 +75,40 @@ def _object_ref(item: Mapping[str, Any]) -> dict[str, Any]:
     return {"object": item["name"], **{key: item[key] for key in ("sha256", "bytes", "media_type")}}
 
 
+def _reviewed_tool(implementation: Mapping[str, bytes], *, generation: int) -> None:
+    """Match one complete reviewed exporter generation, never per-file unions."""
+    raw = PROFILE_PATH.read_bytes()
+    registry = contracts.parse_json_bytes(raw, location="D1 exporter profiles")
+    if raw != contracts.canonical_json_bytes(registry) or set(registry) != {"schema", "profiles"} \
+            or registry["schema"] != "wikilean.d1-source-export-profiles/v1" \
+            or not isinstance(registry["profiles"], list):
+        raise ExportError("invalid D1 exporter profile registry")
+    files = [_ref(path, implementation[path], "text/x-python") for path in sorted(implementation)]
+    expected = {"generation": generation, "files": files}
+    matched = False
+    seen = set()
+    for profile in registry["profiles"]:
+        if not isinstance(profile, dict) or set(profile) != {"generation", "files"} \
+                or type(profile["generation"]) is not int or profile["generation"] not in (1, 2) \
+                or not isinstance(profile["files"], list) \
+                or [item.get("path") for item in profile["files"] if isinstance(item, dict)] != sorted(IMPLEMENTATION_PATHS):
+            raise ExportError("invalid D1 exporter whole-generation profile")
+        for item in profile["files"]:
+            if set(item) != {"path", "sha256", "bytes", "media_type"} \
+                    or item["media_type"] != "text/x-python" \
+                    or type(item["bytes"]) is not int or item["bytes"] <= 0 \
+                    or not isinstance(item["sha256"], str) or len(item["sha256"]) != 64 \
+                    or any(char not in "0123456789abcdef" for char in item["sha256"]):
+                raise ExportError("invalid D1 exporter program descriptor")
+        identity = digest(contracts.canonical_json_bytes(profile))
+        if identity in seen:
+            raise ExportError("duplicate D1 exporter whole generation")
+        seen.add(identity)
+        matched |= profile == expected
+    if not matched:
+        raise ExportError("export tool is not a reviewed complete D1 exporter generation")
+
+
 def build_export(
     bundle_path: Path,
     captured: Mapping[str, bytes],
@@ -79,8 +116,14 @@ def build_export(
     normalized_at: str,
     implementation: Mapping[str, bytes],
     registry_bytes: bytes,
+    _generation: int = 2,
 ) -> dict[str, bytes]:
     """Derive a complete export from one captured immutable byte generation."""
+    # The v1 branch only reproduces retained, allowlisted exports for verification.
+    # export_bundle always creates the current generation.
+    if _generation not in (1, 2):
+        raise ExportError("unsupported D1 export generation")
+    normalization_schema = f"wikilean.d1-brain-sidecars/v{_generation}"
     captured = dict(captured)
     bundle = snapshots.verify_snapshot_bundle_files(bundle_path, captured)
     if bundle.edges or bundle.nodes:
@@ -96,9 +139,15 @@ def build_export(
     receipt = contracts.parse_json_bytes(captured["acquisition-receipt.json"], location="acquisition receipt")
     original_lineage = contracts.parse_json_bytes(captured["normalization-lineage.json"], location="original lineage")
     bundle_manifest = contracts.parse_json_bytes(captured["bundle.json"], location="acquisition bundle")
+    if _generation == 2:
+        # Replay the transformation independently of every retained normalized
+        # descriptor. The original bundle remains byte-for-byte historical evidence.
+        replayed, _ = snapshots._raw_normalized_outputs(captured["acquired.jsonl"])
+        if any(captured[path] != data for path, data in replayed.items()):
+            raise ExportError("D1 raw replay differs from the original normalized bytes")
 
     configuration = {
-        "schema": NORMALIZATION_SCHEMA,
+        "schema": normalization_schema,
         "annotations": "every sealed article field; no ambient sidecar metadata",
         "filenames": "NFC-normalized slug plus .json; preserve original slug inside payload",
         "community": "only verified zero brain_edges and zero brain_nodes; emit an empty edge file",
@@ -107,6 +156,18 @@ def build_export(
         "redistribution": "restricted",
         "reason": "private captured database and lineage; no public export policy approved",
     }
+    if _generation == 2:
+        configuration.update({
+            "source_normalization_schema": SOURCE_NORMALIZATION_SCHEMA,
+            "source_transform": {
+                "implementation": "brain/d1_snapshot_bundle.py:_raw_normalized_outputs",
+                "input": "the original acquisition receipt's exact d1_raw bytes",
+                "outputs": "replay every original normalized member byte-for-byte before changing only empty-object MIME",
+                "historical_normalization_schema": snapshots.NORMALIZATION_SCHEMA,
+                "historical_configuration_sha256": snapshots.NORMALIZATION_CONFIGURATION_SHA256,
+            },
+            "empty_object_media_type": "application/octet-stream iff actual bytes are empty; otherwise retain the original type",
+        })
     configuration_bytes = contracts.canonical_json_bytes(configuration)
     files["implementation/configuration.json"] = configuration_bytes
     files["implementation/source-registry.json"] = registry_bytes
@@ -118,10 +179,12 @@ def build_export(
         toolchain.append(_ref(logical_path, data, "text/x-python"))
     toolchain_bytes = contracts.canonical_json_bytes({"files": toolchain, "schema": "wikilean.d1-source-export-tool/v1"})
     files["implementation/tool.json"] = toolchain_bytes
-    tool = {"name": "wikilean-d1-source-exporter", "version": "1", "sha256": digest(toolchain_bytes)}
+    tool = {"name": "wikilean-d1-source-exporter", "version": str(_generation), "sha256": digest(toolchain_bytes)}
 
     def planned_object(name: str, path: str, roles: list[str], media_type: str) -> dict[str, Any]:
         data = files[path]
+        if _generation == 2 and not data:
+            media_type = "application/octet-stream"
         ref = {"name": name, "roles": sorted(roles), "root": PHYSICAL_ROOT,
                **_ref(path, data, media_type), "redistribution": "restricted"}
         # The standalone prospective manifests can be verified here as well as
@@ -141,19 +204,46 @@ def build_export(
         ("toolchain", "acquisition/toolchain.json", "application/json"),
     ):
         parent_objects.append(planned_object(name, path, ["receipt"], media))
+    support_objects = [planned_object("export_configuration", "implementation/configuration.json", ["receipt"], "application/json"),
+                       planned_object("export_tool", "implementation/tool.json", ["receipt"], "application/json"),
+                       planned_object("license_registry", "implementation/source-registry.json", ["receipt"], "application/json")]
+    for index, logical_path in enumerate(sorted(implementation)):
+        support_objects.append(planned_object(f"export_program_{index}", "implementation/" + logical_path,
+                                              ["receipt"], "text/x-python"))
+    source_lineage = original_lineage
+    source_lineage_path = "acquisition/normalization-lineage.json"
+    if _generation == 2:
+        raw = next(item for item in parent_objects if item["name"] == "d1_raw")
+        source_lineage = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": "sha256:" + "0" * 64,
+            "source": "wikilean-d1", "mode": "transform",
+            "acquisition_receipt_ids": [bundle.acquisition_receipt_id], "parent_source_manifest_ids": [],
+            "normalization_schema": SOURCE_NORMALIZATION_SCHEMA,
+            "configuration_sha256": digest(configuration_bytes), "tool": tool,
+            "inputs": [{**_object_ref(raw), "origin": {"kind": "acquisition_receipt", "id": bundle.acquisition_receipt_id}}],
+            "outputs": [_object_ref(item) for item in sorted(parent_objects, key=lambda item: item["name"])
+                        if "normalized" in item["roles"]],
+            "result": "complete", "audit": {"normalized_at": normalized_at},
+        }
+        source_lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(source_lineage)
+        contracts.validate_normalization_lineage(source_lineage)
+        source_lineage_path = "evidence/source-lineage.json"
+        files[source_lineage_path] = contracts.canonical_json_bytes(source_lineage)
+        parent_objects.extend(support_objects)
     parent = {
         "source": "wikilean-d1", "source_kind": "acquired_dataset", "pin": receipt["pin"],
         "objects": sorted(parent_objects, key=lambda item: item["name"]),
         "license": {"expression": "LicenseRef-Private-D1-Snapshot", "redistribution": "restricted",
                     "notice": "Captured database rows are private source material; no redistribution approval is asserted."},
         "acquisition": receipt["tool"],
-        "normalization": {"schema": original_lineage["normalization_schema"], "tool": original_lineage["tool"],
+        "normalization": {"schema": source_lineage["normalization_schema"], "tool": source_lineage["tool"],
                           "inputs": ["d1_raw"], "outputs": sorted(snapshots.NORMALIZED_PATHS)},
         "evidence": {
             "acquisition_receipts": [evidence_ref("acquisition/acquisition-receipt.json",
                                                    acquisition_receipt_id=bundle.acquisition_receipt_id)],
-            "normalization_lineage": evidence_ref("acquisition/normalization-lineage.json",
-                                                   normalization_lineage_id=bundle.normalization_lineage_id),
+            "normalization_lineage": evidence_ref(source_lineage_path,
+                                                   normalization_lineage_id=source_lineage["normalization_lineage_id"]),
             "request_parameter_preimages": [evidence_ref("acquisition/request.json",
                                                          parameters_sha256=digest(captured["request.json"]))],
         },
@@ -183,7 +273,7 @@ def build_export(
         "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1, "normalization_lineage_id": "sha256:" + "0" * 64,
         "source": DERIVED_SOURCE, "mode": "transform", "acquisition_receipt_ids": [],
         "parent_source_manifest_ids": [parent_manifest["source_manifest_id"]],
-        "normalization_schema": NORMALIZATION_SCHEMA, "configuration_sha256": digest(configuration_bytes),
+        "normalization_schema": normalization_schema, "configuration_sha256": digest(configuration_bytes),
         "tool": tool, "inputs": inputs,
         "outputs": [_object_ref(item) for item in sorted(normalized_objects, key=lambda item: item["name"])],
         "result": "complete", "audit": {"normalized_at": normalized_at},
@@ -191,12 +281,6 @@ def build_export(
     lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
     contracts.validate_normalization_lineage(lineage)
     files["evidence/export-lineage.json"] = contracts.canonical_json_bytes(lineage)
-    support_objects = [planned_object("export_configuration", "implementation/configuration.json", ["receipt"], "application/json"),
-                       planned_object("export_tool", "implementation/tool.json", ["receipt"], "application/json"),
-                       planned_object("license_registry", "implementation/source-registry.json", ["receipt"], "application/json")]
-    for index, logical_path in enumerate(sorted(implementation)):
-        support_objects.append(planned_object(f"export_program_{index}", "implementation/" + logical_path,
-                                              ["receipt"], "text/x-python"))
     child = {
         "source": DERIVED_SOURCE, "source_kind": "sealed_snapshot",
         "pin": {"type": "database_snapshot", "value": parent_manifest["source_manifest_id"]},
@@ -204,7 +288,7 @@ def build_export(
         "license": {"expression": annotation_license, "redistribution": "restricted",
                     "notice": "Registry annotation license recorded; this source pack and its original D1 evidence remain private."},
         "acquisition": tool,
-        "normalization": {"schema": NORMALIZATION_SCHEMA, "tool": tool,
+        "normalization": {"schema": normalization_schema, "tool": tool,
                           "inputs": sorted(item["name"] for item in raw_objects),
                           "outputs": sorted(item["name"] for item in normalized_objects)},
         "evidence": {"acquisition_receipts": [], "request_parameter_preimages": [],
@@ -213,7 +297,7 @@ def build_export(
     }
     child_manifest = source_plan_contracts._source_manifest_from_plan(child, "$.child")
     contracts.validate_source_manifest_evidence_documents(
-        parent_manifest, receipts={bundle.acquisition_receipt_id: receipt}, lineage=original_lineage,
+        parent_manifest, receipts={bundle.acquisition_receipt_id: receipt}, lineage=source_lineage,
         request_parameter_preimages={digest(captured["request.json"]): {
             "parameters_sha256": digest(captured["request.json"]), "bytes": len(captured["request.json"]),
             "media_type": "application/json"}},
@@ -237,13 +321,13 @@ def build_export(
     }
     files["source-fragment.json"] = contracts.canonical_json_bytes(fragment)
     manifest = {
-        "schema": EXPORT_SCHEMA, "bundle_id": bundle_manifest["bundle_id"],
+        "schema": f"wikilean.d1-source-export/v{_generation}", "bundle_id": bundle_manifest["bundle_id"],
         "parent_source_manifest_id": parent_manifest["source_manifest_id"],
         "derived_source_manifest_id": child_manifest["source_manifest_id"],
         "articles": len(bundle.articles), "brain_edges": 0, "brain_nodes": 0,
         "files": [_ref(path, files[path], "application/octet-stream") for path in sorted(files)],
     }
-    manifest["export_id"] = contracts.domain_hash(EXPORT_DOMAIN, manifest)
+    manifest["export_id"] = contracts.domain_hash(f"wikilean.d1-source-export.v{_generation}", manifest)
     files["export.json"] = contracts.canonical_json_bytes(manifest)
     return files
 
@@ -258,6 +342,47 @@ def _verify_written(root: Path, files: Mapping[str, bytes]) -> None:
     for name in ("parent", "derived"):
         manifest, _ = contracts.load_canonical_json(root / f"source-manifests/{name}.json")
         contracts.verify_source_manifest_files(contracts.validate_source_manifest(manifest), root)
+
+
+def verify_export_files(files: Mapping[str, bytes]) -> dict[str, Any]:
+    """Reproduce current or historical exports from retained bytes and a whole profile."""
+    if any(type(data) is not bytes for data in files.values()):
+        raise ExportError("export verification requires immutable captured bytes")
+    manifest = contracts.parse_json_bytes(files["export.json"], location="export manifest")
+    schemas = {f"wikilean.d1-source-export/v{generation}": generation for generation in (1, 2)}
+    generation = schemas.get(manifest.get("schema"))
+    if generation is None:
+        raise ExportError("unsupported D1 export schema")
+    implementation = {path: files["implementation/" + path] for path in IMPLEMENTATION_PATHS}
+    _reviewed_tool(implementation, generation=generation)
+    lineage = contracts.parse_json_bytes(files["evidence/export-lineage.json"], location="export lineage")
+    captured = {path.removeprefix("acquisition/"): data for path, data in files.items()
+                if path.startswith("acquisition/")}
+    replayed = build_export(
+        Path("/retained-d1-bundle") / manifest["bundle_id"].removeprefix("sha256:"), captured,
+        normalized_at=lineage["audit"]["normalized_at"], implementation=implementation,
+        registry_bytes=files["implementation/source-registry.json"], _generation=generation,
+    )
+    if dict(files) != replayed:
+        differences = sorted(path for path in set(files) | set(replayed) if files.get(path) != replayed.get(path))
+        raise ExportError("D1 export does not exactly replay its retained generation: " + differences[0])
+    return {key: manifest[key] for key in ("schema", "export_id", "bundle_id", "parent_source_manifest_id", "derived_source_manifest_id")}
+
+
+def verify_export(root: Path) -> dict[str, Any]:
+    root = Path(root).absolute()
+    publisher._verify_read_only_tree(root)
+    paths = publisher._tree_paths(root)
+    # Bounded before reading; the exporter includes content-address aliases.
+    sizes = [(root / path).stat().st_size for path in paths]
+    if any(size > 512 * 1024**2 for size in sizes) or sum(sizes) > 2 * 1024**3:
+        raise ExportError("D1 export exceeds its retained verification byte bounds")
+    files = {path: (root / path).read_bytes() for path in paths}
+    result = verify_export_files(files)
+    if root.name != result["export_id"].removeprefix("sha256:"):
+        raise ExportError("D1 export directory name is not its verified identity")
+    _verify_written(root, files)
+    return result
 
 
 def export_bundle(bundle_path: Path, store_path: Path, *, normalized_at: str | None = None) -> Path:
@@ -338,13 +463,21 @@ def export_bundle(bundle_path: Path, store_path: Path, *, normalized_at: str | N
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--snapshot-bundle", type=Path, required=True)
-    parser.add_argument("--store", type=Path, required=True)
+    parser.add_argument("--snapshot-bundle", type=Path)
+    parser.add_argument("--store", type=Path)
+    parser.add_argument("--verify-export", type=Path)
     args = parser.parse_args(argv)
     try:
+        if args.verify_export is not None:
+            if args.snapshot_bundle is not None or args.store is not None:
+                parser.error("--verify-export cannot be combined with export arguments")
+            print(contracts.canonical_json_bytes(verify_export(args.verify_export)).decode())
+            return 0
+        if args.snapshot_bundle is None or args.store is None:
+            parser.error("new private exports require --snapshot-bundle and --store")
         output = export_bundle(args.snapshot_bundle, args.store)
     except (ExportError, snapshots.SnapshotBundleError, publisher.PackCompilationError,
-            contracts.VerificationError, OSError, ValueError) as exc:
+            contracts.VerificationError, OSError, ValueError, KeyError, TypeError) as exc:
         print(f"FATAL: {exc}", file=sys.stderr)
         return 1
     print(output)
