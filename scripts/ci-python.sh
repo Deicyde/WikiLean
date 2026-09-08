@@ -88,6 +88,7 @@ run_check "Brain top-level shard publication tests" "$PYTHON_BIN" brain/test_bui
 run_check "Brain cells context tests" "$PYTHON_BIN" brain/test_build_cells_context.py
 run_check "Brain frontier context tests" "$PYTHON_BIN" brain/test_build_frontier_context.py
 run_check "Legacy same-input halo preparation tests" "$PYTHON_BIN" brain/test_legacy_halo_projection.py
+run_check "Legacy SQLite compatibility projection tests" "$PYTHON_BIN" brain/test_legacy_sqlite_projection.py
 run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_shards_context.py
 run_check "Brain full-DAG replay tests" "$PYTHON_BIN" brain/test_run_replay_v2.py
 run_check "Brain replay sandbox kernel test" "$PYTHON_BIN" -I brain/test_replay_sandbox.py
