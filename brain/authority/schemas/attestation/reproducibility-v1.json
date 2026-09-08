@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wikilean.invalid/brain/authority/schemas/attestation/reproducibility-v1.json",
+  "title": "Two observed OCI builds with independently verified output and baseline evidence",
+  "description": "A schema-valid document alone is not launch or approval authority. Verify its exact reviewed session, actual OCI launch records, source pack, complete outputs, baseline comparison and pack-bound releases. Fixture passes and failures cannot authorize full-corpus reproducibility.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "attestation_id", "result", "scope", "authority", "session_id", "approval_id", "offline_pack_id", "source_set_root", "environment_id", "baseline", "compatibility", "builds"],
+  "properties": {
+    "schema": {"const": "wikilean.reproducibility-attestation/v1"},
+    "attestation_id": {"$ref": "#/$defs/hash"},
+    "result": {"enum": ["pass", "fail"]},
+    "scope": {"enum": ["fixture", "full-corpus"]},
+    "authority": {"enum": ["none", "diagnostic-fixture", "full-corpus"]},
+    "session_id": {"$ref": "#/$defs/hash"},
+    "approval_id": {"$ref": "#/$defs/hash"},
+    "offline_pack_id": {"$ref": "#/$defs/hash"},
+    "source_set_root": {"$ref": "#/$defs/hash"},
+    "environment_id": {"$ref": "#/$defs/hash"},
+    "baseline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["release_id", "manifest_sha256"],
+      "properties": {"release_id": {"$ref": "#/$defs/hash"}, "manifest_sha256": {"$ref": "#/$defs/digest"}}
+    },
+    "compatibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "report_sha256", "graph_topology_content", "provenance"],
+      "properties": {
+        "mode": {"enum": ["exact", "reviewed-provenance-only"]},
+        "report_sha256": {"$ref": "#/$defs/digest"},
+        "graph_topology_content": {"enum": ["equal", "different"]},
+        "provenance": {"enum": ["equal", "reviewed-only", "different"]}
+      }
+    },
+    "builds": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/build"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"scope": {"const": "fixture"}}},
+      "then": {"properties": {"authority": {"const": "diagnostic-fixture"}}}
+    },
+    {
+      "if": {"properties": {"scope": {"const": "full-corpus"}, "result": {"const": "pass"}}},
+      "then": {"properties": {"authority": {"const": "full-corpus"}}}
+    },
+    {
+      "if": {"properties": {"scope": {"const": "full-corpus"}, "result": {"const": "fail"}}},
+      "then": {"properties": {"authority": {"const": "none"}}}
+    },
+    {
+      "if": {"properties": {"result": {"const": "pass"}}},
+      "then": {"properties": {"compatibility": {"properties": {
+        "graph_topology_content": {"const": "equal"}, "provenance": {"enum": ["equal", "reviewed-only"]}
+      }}}}
+    },
+    {
+      "if": {"properties": {"compatibility": {"properties": {"mode": {"const": "exact"}}}}},
+      "then": {"properties": {"compatibility": {"properties": {"provenance": {"enum": ["equal", "different"]}}}}}
+    }
+  ],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "build": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generation_id", "container_id", "launch_sha256", "measurement_sha256", "release_id", "output_root", "base_snapshot_id", "projection_id", "semantic_state_root"],
+      "properties": {
+        "generation_id": {"$ref": "#/$defs/hash"}, "container_id": {"$ref": "#/$defs/digest"},
+        "launch_sha256": {"$ref": "#/$defs/digest"}, "measurement_sha256": {"$ref": "#/$defs/digest"},
+        "release_id": {"$ref": "#/$defs/hash"}, "output_root": {"$ref": "#/$defs/hash"},
+        "base_snapshot_id": {"$ref": "#/$defs/digest"}, "projection_id": {"$ref": "#/$defs/digest"},
+        "semantic_state_root": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}

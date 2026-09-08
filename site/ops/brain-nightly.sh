@@ -107,6 +107,11 @@ BRAIN_SEMANTIC_EPOCH="${WIKILEAN_BRAIN_SEMANTIC_EPOCH:-brain-v3-current}"
 BRAIN_REDUCER_SCHEDULE="${WIKILEAN_BRAIN_REDUCER_SCHEDULE:-brain-v3-current}"
 BRAIN_REDUCER_VERSION="${WIKILEAN_BRAIN_REDUCER_VERSION:-1}"
 WIKIDATA_ENTITY_STORE="$REPO/catalog/.cache/wikidata/entity-bundles"
+WIKIDATA_OBSERVATION_STORE="$REPO/catalog/.cache/wikidata/observation-bundles"
+WIKIDATA_OBSERVATION_PLAN="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}"
+# This run establishes its own exact generation after verification; inherited
+# selectors must never select a different installed bundle behind the gate.
+unset WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
 RELEASE_STORE="$REPO/site/out/brain-releases"
 RELEASE_RESULT="$REPO/site/out/brain-release-result.json"
 RELEASE_METRICS_RESULT="$REPO/site/out/brain-release-metrics.json"
@@ -142,7 +147,9 @@ cleanup() {
   trap - EXIT
   if [ -n "$RUN_DIR" ] && [ -d "$RUN_DIR" ]; then
     rm -f "$RUN_DIR/wikidata-request-plan.json" \
-          "$RUN_DIR/wikidata-acquire.stdout"
+          "$RUN_DIR/wikidata-acquire.stdout" \
+          "$RUN_DIR/wikidata-observation.stdout" \
+          "$RUN_DIR/wikidata-install.stdout"
     if ! rmdir "$RUN_DIR" 2>/dev/null; then
       printf 'brain-nightly: private run directory not empty; inspect manually: %s\n' \
         "$RUN_DIR" >&2
@@ -195,6 +202,12 @@ case "$WIKIDATA_ENTITY_STORE" in
     exit 1
     ;;
 esac
+if [ -z "$WIKIDATA_OBSERVATION_PLAN" ] \
+    || [ "${WIKIDATA_OBSERVATION_PLAN#/}" = "$WIKIDATA_OBSERVATION_PLAN" ] \
+    || [ ! -f "$WIKIDATA_OBSERVATION_PLAN" ]; then
+  echo "[$TS] WIKILEAN_WIKIDATA_OBSERVATION_PLAN must name the explicit reviewed canonical observation plan" >>"$LOG"
+  exit 1
+fi
 if ! RUN_DIR="$(mktemp -d "$LOGDIR/.brain-run.XXXXXX")"; then
   echo "[$TS] could not create private Brain run directory" >>"$LOG"
   exit 1
@@ -469,6 +482,46 @@ cd "$REPO" || exit 1
   echo "agents=$BRAIN_AGENTS budget=$BRAIN_AGENT_BUDGET deploy=$BRAIN_DEPLOY"
   echo
 
+  # The three Wikidata artifacts are one hard-gated generation. Their inputs
+  # are the reviewed plan's exact QID sets, not whichever prior graph happens
+  # to be on disk when this run starts. No separate live description job remains.
+  echo "=== sealed Wikidata universe/edges/descriptions ==="
+  if due brain-wikidata-observation 6 \
+      || [ ! -f "$REPO/catalog/.cache/wikidata/installed-observation/installed.json" ]; then
+    if ! WIKILEAN_PYTHON="$PYTHON_BIN" \
+        "$REPO/brain/acquire-wikidata-observation.sh" "$WIKIDATA_OBSERVATION_PLAN" \
+        --store "$WIKIDATA_OBSERVATION_STORE" >"$RUN_DIR/wikidata-observation.stdout"; then
+      echo "!!! shared Wikidata acquisition FAILED — ingest, build and release aborted"
+      exit 1
+    fi
+    if ! OBSERVATION_BUNDLE="$(wikidata_bundle_path \
+        "$RUN_DIR/wikidata-observation.stdout" "$WIKIDATA_OBSERVATION_STORE")"; then
+      echo "!!! shared Wikidata acquisition returned an invalid path — build and release aborted"
+      exit 1
+    fi
+    if ! "$PYTHON_BIN" -I "$REPO/brain/install_wikidata_observation.py" install \
+        --repo-root "$REPO" --plan "$WIKIDATA_OBSERVATION_PLAN" \
+        --bundle "$OBSERVATION_BUNDLE" >"$RUN_DIR/wikidata-install.stdout"; then
+      echo "!!! shared Wikidata installation FAILED — build and release aborted"
+      exit 1
+    fi
+    touch "$LOGDIR/.stamp.brain-wikidata-observation"
+  else
+    if ! "$PYTHON_BIN" -I "$REPO/brain/install_wikidata_observation.py" verify \
+        --repo-root "$REPO" --plan "$WIKIDATA_OBSERVATION_PLAN" \
+        >"$RUN_DIR/wikidata-install.stdout"; then
+      echo "!!! installed Wikidata verification FAILED — build and release aborted"
+      exit 1
+    fi
+  fi
+  if ! WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE="$(wikidata_bundle_path \
+      "$RUN_DIR/wikidata-install.stdout" "$WIKIDATA_OBSERVATION_STORE")"; then
+    echo "!!! installed Wikidata selector is invalid — build and release aborted"
+    exit 1
+  fi
+  export WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
+  echo "(shared Wikidata generation GREEN: $WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE)"
+
   # ---- 1. INGEST (per-source cadence; each adapter fail-soft) ----------------
   echo "=== ingest: daily sources ==="
   py_soft "nlab ingest"        "$REPO/brain/ingest/nlab.py"
@@ -485,7 +538,6 @@ cd "$REPO" || exit 1
     py_soft "lmfdb ingest (Postgres mirror)" "$REPO/brain/ingest/lmfdb.py"
     py_soft "eom ingest"                     "$REPO/brain/ingest/eom.py"
     py_soft "planetmath ingest"              "$REPO/brain/ingest/planetmath.py"
-    py_soft "wikidata descriptions"          "$REPO/brain/ingest/wikidata_descriptions.py"
     py_soft "formal-conjectures harvest"     "$REPO/brain/ingest/formal_conjectures.py"
     py_soft "erdosproblems ingest"           "$REPO/brain/ingest/erdosproblems.py"
     py_soft "tauceti harvest"                "$REPO/brain/ingest/lean_repo.py" tauceti
@@ -507,7 +559,7 @@ cd "$REPO" || exit 1
     py_soft "user Lean repos harvest"        "$REPO/brain/ingest/lean_repo.py" --user-repos
     touch "$LOGDIR/.stamp.brain-weekly"
   else
-    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/descriptions/formal-conjectures/erdos/tauceti/user-repos)"
+    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/formal-conjectures/erdos/tauceti/user-repos)"
   fi
   echo
   if due brain-monthly 27; then

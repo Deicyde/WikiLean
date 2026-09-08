@@ -137,10 +137,16 @@ def iter_jsonl(path: Path):
 
 def load_concepts() -> tuple[dict[str, dict], dict[str, list[str]]]:
     """(qid -> {label, slug, description}, normalized name -> [qids])."""
+    from install_wikidata_observation import load_installed
+    bundle = load_installed(REPO)
+    description_path = (
+        bundle["path"] / "normalized/wikidata_descriptions.json"
+        if bundle is not None else DESCRIPTIONS
+    )
     descriptions: dict[str, str] = {}
-    if DESCRIPTIONS.exists():
+    if description_path.exists():
         try:
-            raw = json.loads(DESCRIPTIONS.read_text())
+            raw = json.loads(description_path.read_text())
             # Current files use an object envelope; retain compatibility with
             # the original flat qid -> string/object map used by older snapshots.
             raw = raw.get("descriptions", raw) if isinstance(raw, dict) else raw
