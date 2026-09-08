@@ -270,6 +270,28 @@ class OCILaunchBoundaryTests(unittest.TestCase):
             with self.assertRaisesRegex(oci.OCIRuntimeError, "enabled CPU dispatch"):
                 oci.verify_numerical_runtime(self.policy, numpy_module=numpy)
 
+    def test_arm_baseline_requires_exact_actual_openblas_reported_core(self):
+        policy = copy.deepcopy(self.policy)
+        policy["architecture"] = "aarch64"
+        policy["cpu"].update(baseline=["ASIMD", "NEON", "NEON_FP16", "NEON_VFPV4"],
+                             disable=["ASIMDFHM", "ASIMDHP", "SVE"], openblas_core="ARMV8")
+        numpy = mock.Mock()
+        numpy.__version__ = policy["numpy"]["version"]
+        core = numpy._core._multiarray_umath
+        core.__cpu_baseline__ = policy["cpu"]["baseline"]
+        core.__cpu_dispatch__ = policy["cpu"]["disable"]
+        core.__cpu_features__ = {feature: False for feature in policy["cpu"]["disable"]}
+        library = mock.Mock()
+        function = getattr(library, policy["cpu"]["blas_symbol"])
+        with mock.patch.dict(os.environ, oci.numerical_environment(policy)), \
+             mock.patch.object(environment, "secure_file_digest"), mock.patch.object(oci.ctypes, "CDLL", return_value=library):
+            function.return_value = b"armv8"
+            oci.verify_numerical_runtime(policy, numpy_module=numpy)
+            for report in (b"ARMV8", b"ARMV8SVE", b"neoversen1"):
+                function.return_value = report
+                with self.assertRaisesRegex(oci.OCIRuntimeError, "different CPU core"):
+                    oci.verify_numerical_runtime(policy, numpy_module=numpy)
+
     def test_no_evidence_file_or_remote_engine_flag_exists(self):
         flags = {action.dest for action in launcher.parser()._actions}
         self.assertNotIn("trusted_runtime_evidence", flags)
