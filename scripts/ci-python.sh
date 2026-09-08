@@ -38,6 +38,11 @@ run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acqui
 run_check "Mathlib source metadata tests" "$PYTHON_BIN" catalog/test_mathlib_sources.py
 run_check "Mathlib source acquisition evidence tests" "$PYTHON_BIN" brain/test_mathlib_source_evidence.py
 run_check "Public Git source acquisition evidence tests" "$PYTHON_BIN" brain/test_public_git_sources.py
+run_check "Git harvest source evidence tests" "$PYTHON_BIN" brain/test_git_harvest_sources.py
+run_check "External Git source evidence tests" "$PYTHON_BIN" brain/test_external_git_sources.py
+run_check "Public file source evidence tests" "$PYTHON_BIN" brain/test_public_file_sources.py
+run_check "ProofWiki source normalization tests" "$PYTHON_BIN" brain/test_proofwiki_sources.py
+run_check "EOM API source evidence tests" "$PYTHON_BIN" brain/test_eom_sources.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Derived graph semantic parity tests" "$PYTHON_BIN" catalog/test_derived_graph_adapters.py
 run_check "Derived catalog source evidence tests" "$PYTHON_BIN" brain/test_derived_catalog_sources.py
