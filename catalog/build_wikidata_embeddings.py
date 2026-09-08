@@ -87,10 +87,14 @@ def _humanize_slug(slug: str) -> str:
 
 
 def load_universe(limit: int | None = None) -> list[dict]:
-    if not UNIVERSE.exists():
-        sys.exit(f"error: {UNIVERSE} not found")
+    sys.path.append(str(_HERE.parent / "brain"))
+    import install_wikidata_observation
+    bundle = install_wikidata_observation.load_installed(UNIVERSE.parent.parent.parent)
+    universe = bundle["path"] / "normalized/wikidata_universe.jsonl" if bundle is not None else UNIVERSE
+    if not universe.exists():
+        sys.exit(f"error: {universe} not found")
     rows = []
-    with UNIVERSE.open(encoding="utf-8") as fh:
+    with universe.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:

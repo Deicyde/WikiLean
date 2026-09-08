@@ -4087,7 +4087,7 @@ class ReleaseVerificationTest(unittest.TestCase):
                 ref["sha256"], ref["bytes"] = contracts.digest_file(build_path)
         with self.assertRaisesRegex(
             contracts.VerificationError,
-            "offline replay attestations are not integrated yet",
+            "brain-current-v1 requires wikilean.build-attestation/v1",
         ):
             contracts.verify_release_files(
                 contracts.validate_release_manifest(release), self.root

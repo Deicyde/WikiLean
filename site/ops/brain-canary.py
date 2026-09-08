@@ -35,6 +35,8 @@ from brain_public_baseline import (
 RELEASE_ID_RE = re.compile(r"^sha256:([0-9a-f]{64})$")
 SELECTOR_SCHEMA = "wikilean.release-selector/v1"
 RELEASE_SCHEMA = "wikilean.release/v1"
+RELEASE_KEYS = {"schema", "profile", "release_id", "authority", "source_set_root", "semantic_epoch",
+                "reducer", "artifacts", "attestations", "compatible_overlay_generation_ids", "created_at"}
 SELECTOR_KEYS = {
     "schema",
     "release_id",
@@ -197,6 +199,41 @@ class BrainCanary:
     def _canonical_json(value: object) -> bytes:
         return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
 
+    @staticmethod
+    def _verify_release_metadata(value: dict[str, object]) -> None:
+        profile = value.get("profile")
+        if not isinstance(profile, str) or profile not in {"brain-current-v1", "brain-offline-replay-v1"}:
+            raise CanaryError("release manifest profile mismatch")
+        offline = profile == "brain-offline-replay-v1"
+        if set(value) - (RELEASE_KEYS | ({"replay"} if offline else set())):
+            raise CanaryError("release manifest contains unexpected fields")
+        valid_hash = lambda v: isinstance(v, str) and RELEASE_ID_RE.fullmatch(v) is not None
+        if offline:
+            replay = value.get("replay")
+            hashes = {"authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id"}
+            if not isinstance(replay, dict) or set(replay) != hashes | {"prior_state_root"} \
+                    or not all(valid_hash(replay[key]) for key in hashes) \
+                    or not (replay["prior_state_root"] is None or valid_hash(replay["prior_state_root"])):
+                raise CanaryError("release manifest replay binding is malformed")
+        authority, reducer = value.get("authority"), value.get("reducer")
+        valid_text = lambda v: isinstance(v, str) and bool(v)
+        valid_digest = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) is not None
+        valid_commit = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) is not None
+        if not isinstance(authority, dict) or set(authority) - {"git_commit", "semantic_state_root", "through_changeset"} \
+                or not valid_commit(authority.get("git_commit")) or not valid_hash(authority.get("semantic_state_root")) \
+                or authority.get("through_changeset") is not None \
+                or not valid_hash(value.get("source_set_root")) or not isinstance(value.get("semantic_epoch"), str) \
+                or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", value["semantic_epoch"]) is None \
+                or not isinstance(reducer, dict) or set(reducer) - {"schedule", "version", "git_commit", "configuration_sha256", "environment_sha256"} \
+                or not valid_text(reducer.get("schedule")) or not valid_text(reducer.get("version")) \
+                or not valid_commit(reducer.get("git_commit")) or not valid_digest(reducer.get("configuration_sha256")) \
+                or not valid_digest(reducer.get("environment_sha256")) \
+                or not isinstance(value.get("attestations"), list) \
+                or not isinstance(value.get("compatible_overlay_generation_ids"), list) \
+                or not all(valid_text(v) for v in value["compatible_overlay_generation_ids"]) \
+                or ("created_at" in value and not valid_text(value["created_at"])):
+            raise CanaryError("release manifest semantic metadata mismatch")
+
     def _verify_filter_cursor(self, cursor: str) -> None:
         if len(cursor.encode("utf-8")) > MAX_CURSOR_BYTES:
             raise CanaryError("Brain API emitted an oversized opaque cursor")
@@ -306,10 +343,9 @@ class BrainCanary:
         release_manifest = self._object(release_raw, "release manifest")
         if release_manifest.get("schema") != RELEASE_SCHEMA:
             raise CanaryError("release manifest schema mismatch")
-        if release_manifest.get("profile") != "brain-current-v1":
-            raise CanaryError("release manifest profile mismatch")
         if release_manifest.get("release_id") != self.expected_release_id:
             raise CanaryError("release manifest identity does not match the selector")
+        self._verify_release_metadata(release_manifest)
         identity_value = dict(release_manifest)
         for key in ("release_id", "attestations", "created_at"):
             identity_value.pop(key, None)

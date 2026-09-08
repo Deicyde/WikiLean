@@ -122,14 +122,21 @@ LOCAL_DEPENDENCY_PINS = (
     {"path": "brain/stage_io.py",
      "sha256": "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf"},
     {"path": "brain/tools/authority_contracts.py",
-     "sha256": "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc"},
+     "sha256": "fd87f76991f52f522587d0ef45cf4605b00f0970a23f0dfe1b50d6597c9a9319"},
     {"path": "brain/tools/execution_environment.py",
      "sha256": "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac"},
 )
-ACQUIRER_WRAPPER_SHA256 = "cf0eb1eb4af78013ceddb81e6bb9d264a02f2a2a79bfe23fbdc906587922aa79"
+ACQUIRER_WRAPPER_SHA256 = "b6d67634d7977a66ab101c25697c20d7935cbd0fa9c5daa83b5f50d4f5b2122a"
 # Historical evidence remains valid only as an exact reviewed implementation
 # generation. No combination of individually approved helper hashes is accepted.
 REVIEWED_TOOL_GENERATIONS = (
+    ('cf0eb1eb4af78013ceddb81e6bb9d264a02f2a2a79bfe23fbdc906587922aa79',
+     ({'path': 'brain/stage_io.py',
+       'sha256': '9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf'},
+      {'path': 'brain/tools/authority_contracts.py',
+       'sha256': 'e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc'},
+      {'path': 'brain/tools/execution_environment.py',
+       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
     (LEGACY_ACQUIRER_WRAPPER_SHA256, LEGACY_LOCAL_DEPENDENCY_PINS),
     (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
 )

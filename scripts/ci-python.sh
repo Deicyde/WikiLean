@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON_BIN="${PYTHON:-python3}"
+CHECKS_PASSED=0
 
 cd "$ROOT"
 export PYTHONHASHSEED=0
@@ -20,6 +21,7 @@ run_check() {
   printf '%q ' "$@"
   printf '\n'
   "$@"
+  CHECKS_PASSED=$((CHECKS_PASSED + 1))
 }
 
 "$PYTHON_BIN" -c 'import sys; assert sys.version_info[:2] == (3, 12), f"Python 3.12 required, found {sys.version.split()[0]}"'
@@ -32,20 +34,27 @@ run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
 run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingface_download.py
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
+run_check "Mathlib source metadata tests" "$PYTHON_BIN" catalog/test_mathlib_sources.py
+run_check "Mathlib source acquisition evidence tests" "$PYTHON_BIN" brain/test_mathlib_source_evidence.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Normalized input metadata tests" "$PYTHON_BIN" brain/test_normalized_input_metadata.py
 run_check "Immutable Git snapshot tests" "$PYTHON_BIN" brain/test_git_snapshot.py
 run_check "Formal Conjectures and Erdos Git harvester tests" "$PYTHON_BIN" brain/test_git_harvesters_fc_erdos.py
 run_check "Generic Lean Git harvester tests" "$PYTHON_BIN" brain/test_git_harvester_lean_repo.py
 run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_snapshot.py
+run_check "D1 immutable source export tests" "$PYTHON_BIN" brain/test_export_d1_sources.py
 run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikidata_entities.py
+run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_observation.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Brain agent input tests" "$PYTHON_BIN" brain/test_sync_agents.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
+run_check "Brain input acquisition coherence tests" "$PYTHON_BIN" brain/test_inventory_coherence.py
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
+run_check "Brain sealed pack publication tests" "$PYTHON_BIN" brain/test_pack_publication.py
 run_check "Brain offline-pack preflight tests" "$PYTHON_BIN" brain/test_preflight_offline_pack_v2.py
 run_check "Brain execution environment tests" "$PYTHON_BIN" brain/test_execution_environment.py
+run_check "Brain verified OCI runtime tests" "$PYTHON_BIN" brain/test_oci_runtime.py
 run_check "Brain build context tests" "$PYTHON_BIN" brain/test_build_context.py
 run_check "Brain replay preparation tests" "$PYTHON_BIN" brain/test_prepare_replay_v2.py
 run_check "Brain base graph context tests" "$PYTHON_BIN" brain/test_base_graph_context.py
@@ -56,6 +65,7 @@ run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_s
 run_check "Brain full-DAG replay tests" "$PYTHON_BIN" brain/test_run_replay_v2.py
 run_check "Brain replay sandbox kernel test" "$PYTHON_BIN" -I brain/test_replay_sandbox.py
 run_check "Brain release builder tests" "$PYTHON_BIN" brain/test_release_builder.py
+run_check "Brain actual replay reproducibility gate tests" "$PYTHON_BIN" brain/test_reproducibility_gate.py
 run_check "Brain store metrics tests" "$PYTHON_BIN" brain/test_store_metrics.py
 run_check "Brain semantic diff tests" "$PYTHON_BIN" brain/test_semantic_diff.py
 run_check "Brain trusted transport tests" "$PYTHON_BIN" site/ops/test_brain_http.py
@@ -71,4 +81,4 @@ run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 46 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"

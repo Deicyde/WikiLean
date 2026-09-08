@@ -44,6 +44,38 @@ def make_gate_checkout(directory: str) -> tuple[Path, Path, Path, Path]:
     (logdir / ".stamp.brain-weekly").touch()
     (logdir / ".stamp.brain-monthly").touch()
     command_log = root / "commands.jsonl"
+    (root / "observation-plan.json").write_text("{}", encoding="utf-8")
+    write_executable(root / "brain" / "acquire-wikidata-observation.sh", """#!/bin/bash
+set -eu
+printf 'acquire\\n' >>"$TEST_OBSERVATION_LOG"
+[ "${TEST_OBSERVATION_MODE:-success}" != "acquire-fail" ] || exit 9
+store="$3"
+mkdir -p "$store"
+chmod 0700 "$store"
+target="$store/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+mkdir -p "$target"
+chmod 0700 "$target"
+if [ "${TEST_OBSERVATION_MODE:-success}" = "invalid-path" ]; then
+  printf 'relative-bundle\\n'
+else
+  printf '%s\\n' "$target"
+fi
+""")
+    write_executable(root / "brain" / "install_wikidata_observation.py", """#!/usr/bin/env python3
+import os
+import sys
+from pathlib import Path
+mode = sys.argv[1]
+with Path(os.environ["TEST_OBSERVATION_LOG"]).open("a") as handle:
+    handle.write(mode + "\\n")
+if os.environ.get("TEST_OBSERVATION_MODE") == mode + "-fail":
+    raise SystemExit(9)
+repo = Path(sys.argv[sys.argv.index("--repo-root") + 1])
+state = repo / "catalog/.cache/wikidata/installed-observation"
+state.mkdir(parents=True, exist_ok=True)
+(state / "installed.json").write_text("{}")
+print(repo / "catalog/.cache/wikidata/observation-bundles" / ("b" * 64))
+""")
 
     write_executable(root / "brain" / "fold_proposals.py", """#!/usr/bin/env python3
 import json
@@ -116,6 +148,7 @@ def run_gate_checkout(
     acquire_mode: str = "success",
     plan_exit: int = 0,
     fold_exit: int = 0,
+    observation_mode: str = "success",
 ) -> subprocess.CompletedProcess[str]:
     env = dict(os.environ)
     env.update({
@@ -130,6 +163,9 @@ def run_gate_checkout(
         "TEST_PLAN_EXIT": str(plan_exit),
         "TEST_FOLD_EXIT": str(fold_exit),
         "TEST_OUTSIDE_BUNDLE": str(root / "outside-bundle"),
+        "WIKILEAN_WIKIDATA_OBSERVATION_PLAN": str(root / "observation-plan.json"),
+        "TEST_OBSERVATION_MODE": observation_mode,
+        "TEST_OBSERVATION_LOG": str(root / "observation-commands.txt"),
     })
     return subprocess.run(
         ["bash", str(root / "site" / "ops" / "brain-nightly.sh")],
@@ -147,6 +183,36 @@ def command_records(path: Path) -> list[dict]:
 
 
 class BrainNightlyShellTest(unittest.TestCase):
+    def test_shared_observation_failure_aborts_before_proposal_fold_and_build(self):
+        for mode in ("acquire-fail", "invalid-path", "install-fail"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
+                root, mathlib, commands, store = make_gate_checkout(directory)
+                result = run_gate_checkout(root, mathlib, commands, store,
+                    plan_bytes='{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}',
+                    observation_mode=mode)
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(command_records(commands), [])
+
+    def test_shared_observation_is_installed_then_verified_without_reacquiring_when_not_due(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, mathlib, commands, store = make_gate_checkout(directory)
+            plan = '{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}'
+            run_gate_checkout(root, mathlib, commands, store, plan_bytes=plan)
+            run_gate_checkout(root, mathlib, commands, store, plan_bytes=plan)
+            self.assertEqual((root / "observation-commands.txt").read_text().splitlines(),
+                             ["acquire", "install", "verify"])
+
+    def test_shared_observation_verification_failure_aborts_not_due_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, mathlib, commands, store = make_gate_checkout(directory)
+            plan = '{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}'
+            run_gate_checkout(root, mathlib, commands, store, plan_bytes=plan)
+            previous_commands = command_records(commands)
+            result = run_gate_checkout(root, mathlib, commands, store, plan_bytes=plan,
+                                       observation_mode="verify-fail")
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(command_records(commands), previous_commands)
+
     def test_disabled_run_derives_repo_root_from_script_location(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "checkout"
@@ -345,7 +411,7 @@ class BrainNightlyShellTest(unittest.TestCase):
                 "fold", "plan-mode", "acquire", "fold", "build",
             ])
             acquire = records[2]
-            self.assertEqual(acquire["python"], sys.executable)
+            self.assertEqual(Path(acquire["python"]).resolve(), Path(sys.executable).resolve())
             self.assertEqual(acquire["store"], str(store.resolve()))
             self.assertEqual(acquire["plan"], records[0]["args"][1])
             expected_bundle = (store / ("a" * 64)).resolve()
