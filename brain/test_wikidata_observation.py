@@ -634,6 +634,31 @@ class ObservationTest(unittest.TestCase):
         self.assertIn(mock.call(20), sleep.call_args_list)
         self.assertEqual(len(list(self.store.glob("failed-attempt-*"))), 2)
 
+    def test_live_complete_quality_failure_retains_diagnostics_without_authority(self) -> None:
+        _attempts, toolchain = self.retry_fixture()
+        self.plan["volume_floors"]["universe_classes"][observation.CLASSES[-1]] = 2
+        plan_path = self.root / "plan.json"
+        plan_path.write_bytes(observation.canonical(self.plan))
+        with mock.patch.object(acquire, "require_isolated_startup"), \
+                mock.patch.object(acquire, "runtime_identity", return_value=toolchain), \
+                mock.patch.object(acquire, "_transport", side_effect=lambda request, curl, index: copy.deepcopy(self.records[index])), \
+                mock.patch.object(acquire.time, "sleep"):
+            with self.assertRaisesRegex(observation.ObservationError, "volume floor"):
+                acquire.acquire(plan_path, store=self.store, curl=Path("/usr/bin/curl"), retry_transient=True)
+        diagnostics = list(self.store.glob("rejected-observation-*"))
+        self.assertEqual(len(diagnostics), 1)
+        target = diagnostics[0]
+        self.assertFalse((target / "bundle.json").exists())
+        self.assertFalse((target / "acquisition-receipt.json").exists())
+        report = json.loads((target / "failure.json").read_bytes())
+        self.assertIs(report["authority"], False)
+        self.assertEqual((target / "request-plan.json").read_bytes(), plan_path.read_bytes())
+        attempts = [json.loads(row) for row in (target / "transcript.jsonl").read_bytes().splitlines()]
+        self.assertEqual(observation.successful_attempt_records(self.plan, attempts)[0], self.records)
+        with self.assertRaises((observation.ObservationError, OSError)):
+            observation.verify_bundle(target)
+        self.assertEqual(sorted(p.name for p in self.store.iterdir()), [".observation.lock", target.name])
+
     def test_historical_tool_profile_cannot_claim_explicit_retry_support(self) -> None:
         attempts, toolchain = self.retry_fixture()
         previous = next(p for p in observation.reviewed_profiles()["profiles"] if "retry_normalization_schema" not in p)
