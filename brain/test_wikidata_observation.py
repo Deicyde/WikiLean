@@ -545,6 +545,102 @@ class ObservationTest(unittest.TestCase):
             self.assertEqual(run.call_args.kwargs["env"]["NO_PROXY"], "*")
             self.assertEqual(run.call_args.kwargs["input"], request.parameters if request.kind == "http_post" else None)
 
+    def retry_fixture(self):
+        attempts = [{"request_index": index, "attempt": 1, "outcome": "succeeded",
+                     "response": copy.deepcopy(record), "retry_delay_seconds": 0}
+                    for index, record in enumerate(self.records)]
+        failure = acquire.RequestFailure(0, "fixture gateway error", b"nginx Bad Gateway", status=502,
+                                         content_type="text/html", curl_exit_code=22)
+        attempts[0]["attempt"] = 2
+        attempts.insert(0, {"request_index": 0, "attempt": 1, "outcome": "failed",
+                            "response": acquire.failed_response(failure), "retry_delay_seconds": 10})
+        toolchain = {**self.toolchain, "schema": observation.TOOLCHAIN_SCHEMA_V2,
+                     "transport_policy": copy.deepcopy(observation.TRANSPORT_POLICY_V2)}
+        return attempts, toolchain
+
+    def test_explicit_retry_bundle_retains_failed_bytes_and_counts_actual_attempts(self) -> None:
+        attempts, toolchain = self.retry_fixture()
+        path = acquire.publish_records(self.plan, attempts, store=self.store, toolchain=toolchain, audit_time=AUDIT)
+        verified = observation.verify_bundle(path)
+        self.assertEqual(verified["manifest"]["schema"], observation.BUNDLE_SCHEMA_V2)
+        receipt = verified["receipt"]
+        self.assertEqual(receipt["schema"], observation.contracts.ACQUISITION_RECEIPT_SCHEMA_V2)
+        self.assertEqual(receipt["batch"]["requests_total"], len(self.records) + 1)
+        self.assertEqual(receipt["batch"]["requests_failed"], 1)
+        self.assertEqual(receipt["batch"]["requests_succeeded"], len(self.records))
+        self.assertEqual(receipt["attempts"][0]["response_sha256"], observation.sha(b"nginx Bad Gateway"))
+        self.assertEqual(verified["normalized"], {k: observation.normalize(self.plan, self.records)[v] for k, v in observation.OUTPUTS.items()})
+        self.assertIn(base64.b64encode(b"nginx Bad Gateway"), (path / "acquired.jsonl").read_bytes())
+        self.assertEqual(observation.sha((path / "normalization-profile.json").read_bytes()), verified["lineage"]["tool"]["sha256"])
+
+    def test_attempt_transcript_rejects_omissions_nonretryable_and_rehashed_substitutions(self) -> None:
+        attempts, _toolchain = self.retry_fixture()
+        for mutate in (
+            lambda x: x.pop(),
+            lambda x: x.pop(0),
+            lambda x: x[0]["response"].update(http_status=401),
+            lambda x: x[0]["response"].update(curl_exit_code=True),
+            lambda x: x[0]["response"].update(body_sha256="f" * 64),
+            lambda x: x[0].update(retry_delay_seconds=9),
+            lambda x: x[0].update(retry_delay_seconds=301),
+            lambda x: x[0]["response"].update(retry_after={"kind": "delay-seconds", "seconds": 20}),
+            lambda x: x[1]["response"].update(index=False),
+            lambda x: x[1]["response"].update(http_status=502),
+            lambda x: x.append(copy.deepcopy(x[-1])),
+        ):
+            changed = copy.deepcopy(attempts)
+            mutate(changed)
+            with self.assertRaises(observation.ObservationError):
+                observation.successful_attempt_records(self.plan, changed)
+
+    def test_retry_policy_respects_retry_after_and_never_retries_invalid_success_payload(self) -> None:
+        for status, code, expected in ((502, 22, 10), (429, 22, 10), (0, 28, 10),
+                                       (200, 0, None), (401, 22, None), (403, 22, None), (0, 60, None)):
+            failure = acquire.RequestFailure(0, "fixture", status=status, curl_exit_code=code)
+            self.assertEqual(acquire.retry_delay(failure, 1), expected)
+        failure = acquire.RequestFailure(0, "fixture", status=429, curl_exit_code=22,
+                                         retry_after={"kind": "delay-seconds", "seconds": 45})
+        self.assertEqual(acquire.retry_delay(failure, 1), 45)
+        self.assertIsNone(acquire.retry_delay(failure, 5))
+        failure.retry_after["seconds"] = 301
+        self.assertIsNone(acquire.retry_delay(failure, 1))
+        failure.retry_after = {"kind": "http-date", "value": "2030-01-01T00:00:00Z"}
+        self.assertIsNone(acquire.retry_delay(failure, 1))
+        for header in (b"9999999999999999", b"9" * 129, b"invalid-present-value"):
+            failure.retry_after = acquire.parsed_retry_after(header)
+            self.assertEqual(failure.retry_after, {"kind": "unsupported-or-excessive"})
+            self.assertIsNone(acquire.retry_delay(failure, 1))
+
+    def test_producer_owns_retry_attempts_before_complete_publication(self) -> None:
+        _attempts, toolchain = self.retry_fixture()
+        plan_path = self.root / "plan.json"
+        plan_path.write_bytes(observation.canonical(self.plan))
+        counts = {}
+        def transport(request, curl, index):
+            counts[index] = counts.get(index, 0) + 1
+            if index == 0 and counts[index] <= 2:
+                raise acquire.RequestFailure(index, "gateway", b"nginx Bad Gateway", status=502,
+                                             content_type="text/html", curl_exit_code=22)
+            return copy.deepcopy(self.records[index])
+        with mock.patch.object(acquire, "require_isolated_startup"), \
+                mock.patch.object(acquire, "runtime_identity", return_value=toolchain), \
+                mock.patch.object(acquire, "_transport", side_effect=transport), \
+                mock.patch.object(acquire.time, "sleep") as sleep:
+            path = acquire.acquire(plan_path, store=self.store, curl=Path("/usr/bin/curl"), retry_transient=True)
+        verified = observation.verify_bundle(path)
+        self.assertEqual(verified["receipt"]["batch"]["requests_failed"], 2)
+        self.assertEqual(counts[0], 3)
+        self.assertIn(mock.call(10), sleep.call_args_list)
+        self.assertIn(mock.call(20), sleep.call_args_list)
+        self.assertEqual(len(list(self.store.glob("failed-attempt-*"))), 2)
+
+    def test_historical_tool_profile_cannot_claim_explicit_retry_support(self) -> None:
+        attempts, toolchain = self.retry_fixture()
+        previous = next(p for p in observation.reviewed_profiles()["profiles"] if "retry_normalization_schema" not in p)
+        toolchain.update(profile_id=previous["profile_id"], files=previous["files"])
+        with self.assertRaisesRegex(observation.ObservationError, "did not support explicit retry"):
+            observation.bundle_files(self.plan, attempts, toolchain, AUDIT)
+
     def test_v2_defaults_to_small_bounded_subquery_before_label_service(self) -> None:
         self.assertEqual(self.plan["schema"], observation.PLAN_SCHEMA_V2)
         plan = copy.deepcopy(self.plan)
@@ -649,7 +745,7 @@ class ObservationTest(unittest.TestCase):
             (22, b"429\t\t120", 429, {"kind": "delay-seconds", "seconds": 120}),
             (22, b"503\ttext/html\tTue, 08 Sep 2026 20:30:00 GMT", 503,
              {"kind": "http-date", "value": "2026-09-08T20:30:00Z"}),
-            (22, b"503\ttext/html\thttps://secret.invalid/?token=private", 503, None),
+            (22, b"503\ttext/html\thttps://secret.invalid/?token=private", 503, {"kind": "unsupported-or-excessive"}),
         ]
         store = acquire.prepare_store(self.store)
         for code, trailer, status, retry in cases:
@@ -673,7 +769,8 @@ class ObservationTest(unittest.TestCase):
     def test_retry_after_parser_rejects_unbounded_or_non_wait_header_content(self) -> None:
         for raw in (b"9" * 16, b"x" * 129, b"-1", b"0.5", b"120\tsecret", b"tomorrow",
                     b"Tue, 99 Sep 2026 20:30:00 GMT"):
-            self.assertIsNone(acquire.parsed_retry_after(raw))
+            self.assertEqual(acquire.parsed_retry_after(raw), {"kind": "unsupported-or-excessive"})
+        self.assertIsNone(acquire.parsed_retry_after(b""))
         self.assertEqual(acquire.parsed_retry_after(b"0"), {"kind": "delay-seconds", "seconds": 0})
 
     def test_unisolated_live_acquisition_fails_before_transport_or_store(self) -> None:

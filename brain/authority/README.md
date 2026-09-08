@@ -51,6 +51,14 @@ overlay, or serving topology.
   the portable JSON Schemas describe shape but cannot express root recomputation, count
   equality, exact origin sets, or identity-mode equality.
   These documents are not silently grafted onto source-manifest/v2 or offline-pack/v2.
+- `schemas/acquisition-receipt/v2.json` adds an ordered attempt transcript. Its
+  counters describe actual attempts, including failures; every canonical request
+  must have exactly one final success and no later attempts. Each attempt binds
+  the returned bytes and outcome. Wikidata's explicit `--retry-transient` mode
+  retains all failed bodies in the raw source object, independently checks the
+  complete transcript, and uses bounded reviewed backoff only for selected transient
+  failures. Unsupported or excessive Retry-After values abort. Malformed successful
+  HTTP payloads abort. The original v1 receipt and no-retry tool profiles are unchanged.
 - `schemas/source-manifest/v3.json`, `schemas/offline-pack-source-plan/v3.json`, and
   `schemas/offline-pack/v3.json` define that fail-closed integration without changing v2.
   Every acquired dataset carries one or more logical acquisition-receipt IDs, one

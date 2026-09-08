@@ -403,17 +403,19 @@ def verify_launch_record(record: dict, *, context, pack: dict, descriptor: dict,
             "engine observation lacks launch nonce")
     uid, gid = map(int, observations["created"]["Config"]["User"].split(":"))
     memory = observations["created"]["HostConfig"]["Memory"]
+    engine_image_id = observations["created"].get("Image")
+    require(engine_image_id in {image.manifest_digest, image.config_digest}, "container selected an unverified engine image")
     require((uid, gid) == (os.getuid(), os.getgid()) and memory == runtime["memory_bytes"],
             "observed runtime ownership/resources differ from this launch policy")
     _command, child, mounts = launcher.create_arguments(image, context.roots.output.parent, Path(runtime["pack_root"]),
-        policy, uid=uid, gid=gid, name=name, memory_bytes=memory)
+        policy, uid=uid, gid=gid, name=name, memory_bytes=memory, engine_image_id=engine_image_id)
     for status in ("created", "exited"):
         require(observations[status].get("Name") == "/" + name and
                 (observations[status].get("Config", {}).get("Labels") or {}).get(launcher.LAUNCH_LABEL) == name,
                 "container launch name/ownership label changed")
         launcher.verify_container(observations[status], image=image, child=child, mounts=mounts,
             uid=uid, gid=gid, memory_bytes=memory, status=status, cid=cid,
-            apparmor_profile=policy.get("apparmor", {}).get("name"))
+            apparmor_profile=policy.get("apparmor", {}).get("name"), engine_image_id=engine_image_id)
     nonce = name.removeprefix("wikilean-replay-")
     payload = {"schema": launcher.CHANNEL_SCHEMA, "nonce": nonce, "runtime": image.runtime(), "policy": policy,
         "runner_arguments": ["--manifest", runtime["manifest"], "--root", runtime["pack_root"],

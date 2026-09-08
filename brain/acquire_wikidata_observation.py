@@ -4,12 +4,13 @@
 Use acquire-wikidata-observation.sh with an explicit reviewed request plan.
 No legacy output is changed. The output is one verified private immutable
 bundle; its three normalized files must be bound together in source authority.
-The supported transport does not retry or follow redirects, ensuring every
-successful bundle has an exact, complete request transcript.
+The default transport does not retry or follow redirects. Explicit transient
+retry mode uses v2 evidence that retains every failed response and attempt.
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import fcntl
 import os
@@ -52,30 +53,33 @@ class RequestFailure(observation.ObservationError):
 
 def parsed_retry_after(raw: bytes) -> dict | None:
     """Retain only a bounded wait instruction, never arbitrary header text."""
-    if not raw or len(raw) > 128:
+    if not raw:
         return None
+    refused = {"kind": "unsupported-or-excessive"}
+    if len(raw) > 128:
+        return refused
     if re.fullmatch(rb"[0-9]{1,15}", raw):
         return {"kind": "delay-seconds", "seconds": int(raw)}
     if not re.fullmatch(rb"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]{2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT", raw):
-        return None
+        return refused
     try:
         timestamp = dt.datetime.strptime(raw.decode("ascii"), "%a, %d %b %Y %H:%M:%S GMT")
     except ValueError:
-        return None
+        return refused
     return {"kind": "http-date", "value": timestamp.isoformat() + "Z"}
 
 
-def runtime_identity(curl: Path) -> dict:
+def runtime_identity(curl: Path, *, retry_transient: bool = False) -> dict:
     if platform.python_implementation() != "CPython" or sys.version_info[:2] != (3, 12):
         raise observation.ObservationError("CPython 3.12 is required")
     curl = curl.resolve(strict=True)
     version = subprocess.run([str(curl), "--disable", "--version"], env=ENVIRONMENT,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=10).stdout
     toolchain = {
-        "schema": observation.TOOLCHAIN_SCHEMA,
+        "schema": observation.TOOLCHAIN_SCHEMA_V2 if retry_transient else observation.TOOLCHAIN_SCHEMA,
         "profile_id": observation.reviewed_profiles()["current_profile"],
         "observation_policy": observation.OBSERVATION_POLICY,
-        "transport_policy": observation.TRANSPORT_POLICY,
+        "transport_policy": observation.TRANSPORT_POLICY_V2 if retry_transient else observation.TRANSPORT_POLICY,
         "python": {"implementation": platform.python_implementation(), "version": platform.python_version(),
                    "sha256": observation.sha(Path(sys.executable).resolve().read_bytes()), "startup": ["-I", "-S"]},
         "curl": {"sha256": observation.sha(curl.read_bytes()), "version": version.decode("utf-8").splitlines()[0]},
@@ -244,34 +248,68 @@ def _publish_locked(plan: dict, records: list[dict], *, store: Path, toolchain: 
     return target
 
 
-def acquire(plan_path: Path, *, store: Path, curl: Path) -> Path:
+def failed_response(failure: RequestFailure) -> dict:
+    return {"http_status": failure.status, "curl_exit_code": failure.curl_exit_code,
+            "content_type": failure.content_type, "body_sha256": observation.sha(failure.raw),
+            "body_base64": base64.b64encode(failure.raw).decode("ascii"), "retry_after": failure.retry_after}
+
+
+def retry_delay(failure: RequestFailure, ordinal: int) -> int | None:
+    if ordinal >= observation.RETRY_POLICY["max_attempts_per_request"] \
+            or len(failure.raw) > observation.MAX_RESPONSE_BYTES or not observation.retryable_response(failed_response(failure)):
+        return None
+    delay = observation.RETRY_POLICY["backoff_seconds"][ordinal - 1]
+    if failure.retry_after is not None:
+        if failure.retry_after.get("kind") != "delay-seconds":
+            return None
+        delay = max(delay, failure.retry_after["seconds"])
+    return delay if delay <= observation.RETRY_POLICY["max_retry_after_seconds"] else None
+
+
+def acquire(plan_path: Path, *, store: Path, curl: Path, retry_transient: bool = False) -> Path:
     require_isolated_startup()
     # The hashed executable and every launched request must use the same resolved path.
     curl = curl.resolve(strict=True)
     plan_bytes = observation.read_regular(plan_path, max_bytes=16 * 1024 * 1024)
     plan = observation.validate_plan(observation.parse(plan_bytes, "request plan", canonical_required=True))
-    toolchain = runtime_identity(curl)
+    toolchain = runtime_identity(curl, retry_transient=retry_transient)
     store = prepare_store(store)
     with writer_lock(store):
         records = []
         total = 0
         for index, request in enumerate(observation.requests_for(plan)):
-            try:
-                record = _transport(request, curl, index)
-            except RequestFailure as failure:
+            ordinal = 1
+            print(f"Acquiring Wikidata request {index + 1} ({request.stage})", file=sys.stderr, flush=True)
+            while True:
                 try:
-                    diagnostic = record_failed_attempt(store, plan_bytes, request, failure)
-                    failure.diagnostics_path = diagnostic
-                    failure.add_note(f"private failed-attempt diagnostics: {diagnostic}")
-                except (observation.ObservationError, OSError) as diagnostic_error:
-                    failure.add_note(f"could not retain failed-attempt diagnostics: {type(diagnostic_error).__name__}")
-                raise
-            records.append(record)
-            total += len(record["body_base64"])
-            if total > observation.MAX_TRANSCRIPT_BYTES * 4 // 3 + 4 * len(records):
-                raise observation.ObservationError("aggregate transcript exceeds operational bound")
+                    record = _transport(request, curl, index)
+                except RequestFailure as failure:
+                    try:
+                        diagnostic = record_failed_attempt(store, plan_bytes, request, failure)
+                        failure.diagnostics_path = diagnostic
+                        failure.add_note(f"private failed-attempt diagnostics: {diagnostic}")
+                    except (observation.ObservationError, OSError) as diagnostic_error:
+                        failure.add_note(f"could not retain failed-attempt diagnostics: {type(diagnostic_error).__name__}")
+                    delay = retry_delay(failure, ordinal) if retry_transient else None
+                    if delay is None:
+                        raise
+                    records.append({"request_index": index, "attempt": ordinal, "outcome": "failed",
+                                    "response": failed_response(failure), "retry_delay_seconds": delay})
+                    total += len(failure.raw)
+                    if total > observation.MAX_TRANSCRIPT_BYTES:
+                        raise observation.ObservationError("aggregate transcript exceeds operational bound")
+                    print(f"Transient Wikidata failure; retaining attempt {ordinal} and waiting {delay} seconds", file=sys.stderr, flush=True)
+                    time.sleep(delay)
+                    ordinal += 1
+                    continue
+                records.append({"request_index": index, "attempt": ordinal, "outcome": "succeeded",
+                                "response": record, "retry_delay_seconds": 0} if retry_transient else record)
+                total += len(base64.b64decode(record["body_base64"], validate=True))
+                if total > observation.MAX_TRANSCRIPT_BYTES:
+                    raise observation.ObservationError("aggregate transcript exceeds operational bound")
+                break
             time.sleep(0.3 if request.stage == "descriptions" else 2.0)
-        if runtime_identity(curl) != toolchain:
+        if runtime_identity(curl, retry_transient=retry_transient) != toolchain:
             raise observation.ObservationError("acquisition runtime changed before publication")
         if observation.read_regular(plan_path, max_bytes=16 * 1024 * 1024) != plan_bytes:
             raise observation.ObservationError("reviewed plan changed during acquisition")
@@ -284,11 +322,12 @@ def main() -> int:
     parser.add_argument("plan", type=Path)
     parser.add_argument("--store", type=Path, default=DEFAULT_STORE)
     parser.add_argument("--curl", type=Path)
+    parser.add_argument("--retry-transient", action="store_true", help="Use reviewed v2 evidence with bounded explicit retries and all failed responses retained")
     args = parser.parse_args()
     try:
         require_isolated_startup()
         curl = args.curl or Path(shutil.which("curl", path="/usr/bin:/bin") or "/nonexistent")
-        print(acquire(args.plan, store=args.store, curl=curl))
+        print(acquire(args.plan, store=args.store, curl=curl, retry_transient=args.retry_transient))
         return 0
     except (observation.ObservationError, observation.contracts.VerificationError, OSError, subprocess.SubprocessError) as exc:
         print(f"Wikidata observation acquisition failed: {type(exc).__name__}: {exc}", file=sys.stderr)

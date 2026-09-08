@@ -104,6 +104,39 @@ describe("Brain release selection", () => {
     expect((await getJson(invalid, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
   });
 
+  it.each([
+    [],
+    [{ kind: "build", path: "attestations/build.json", sha256: "a".repeat(64), bytes: 1 }],
+    ["wrong", "shape"],
+  ].map((attestations) => ({ attestations })))("rejects missing or malformed offline attestation pairs despite an unchanged release ID: %j", async ({ attestations }) => {
+    const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay,
+      mutateReleaseManifest: (manifest) => { manifest.attestations = attestations; } });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+  });
+
+  it.each(["kind", "path", "hash", "size", "extra", "order", "duplicate", "third", "normalized-path"])(
+    "rejects offline attestation reference mutation %s", async (change) => {
+      const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay,
+        mutateReleaseManifest: (manifest) => {
+          const refs = manifest.attestations as Array<Record<string, unknown>>;
+          if (change === "kind") refs[1].kind = "build";
+          if (change === "path") refs[0].path = "../outside.json";
+          if (change === "hash") refs[0].sha256 = "invalid";
+          if (change === "size") refs[0].bytes = -1;
+          if (change === "extra") refs[0].unchecked = true;
+          if (change === "order") refs.reverse();
+          if (change === "duplicate") refs[1].path = refs[0].path;
+          if (change === "third") refs.push({ ...refs[0], path: "attestations/third.json" });
+          if (change === "normalized-path") refs[0].path = "attestations//build.json";
+        } });
+      expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    });
+
+  it("preserves frozen-profile runtime attestation handling", async () => {
+    const h = harness({ mutateReleaseManifest: (manifest) => { manifest.attestations = []; } });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+  });
+
   it("revalidates the selector per request and memoizes a verified immutable manifest", async () => {
     const paths: string[] = [];
     const h = harness({ onAssetPath: (path) => paths.push(path) });

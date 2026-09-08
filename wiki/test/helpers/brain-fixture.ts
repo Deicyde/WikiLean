@@ -705,7 +705,10 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
       environment_sha256: "4".repeat(64),
     },
     artifacts,
-    attestations: [],
+    attestations: opts.releaseProfile === "brain-offline-replay-v1" ? [
+      { kind: "build", path: "attestations/build.json", sha256: "a".repeat(64), bytes: 1 },
+      { kind: "validation", path: "attestations/validation.json", sha256: "b".repeat(64), bytes: 1 },
+    ] : [],
     compatible_overlay_generation_ids: [],
     created_at: "2026-07-15T00:00:00Z",
   };
