@@ -86,6 +86,16 @@ class OpenalexNormalizationTest(unittest.TestCase):
         self.assertEqual(derivation['excluded_non_arxiv_ids'],['teorth/pfr'])
         fragment=json.loads((path/'source-fragment.json').read_bytes());self.assertEqual(fragment['input_bindings'][0]['input_id'],'external-arxiv-citations')
 
+    def test_v2_parent_replays_rate_limit_attempts_without_changing_citation_rows(self):
+        self.raw.enable_v2();self.raw.records,_index=self.raw.v2_retry_rows()
+        replacement=core.observation.archive.publish(self.raw.build(),self.root/'v2-raw-export',core.observation.EXPORT_SCHEMA)
+        source=json.loads((replacement/'source-fragment.json').read_bytes())['sources'][0]
+        self.plan['parents']=[source if s['source']==core.observation.SOURCE else s for s in self.plan['parents']]
+        self.plan['reviewed_parent_manifest_ids'][core.observation.SOURCE]=io.source_plan_contracts._source_manifest_from_plan(source,'v2 parent')['source_manifest_id']
+        self.roots['openalex_observation_export']=replacement
+        output=self.export();producer.verify(output,self.roots)
+        self.assertEqual(self.rows(output/'normalized/arxiv_citations.jsonl')[1:],self.raw.rows)
+
     def test_retain_entire_parent_ancestry_and_fail_on_missing_or_unrelated_parent(self):
         plan=copy.deepcopy(self.plan);plan['parents']=[s for s in plan['parents'] if s['source']!='fixture-theoremgraph-origin'];plan['reviewed_parent_manifest_ids'].pop('fixture-theoremgraph-origin')
         with self.assertRaisesRegex(io.ExportError,'ancestor'):core.capture_parents(plan,self.roots)
