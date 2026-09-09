@@ -29,6 +29,7 @@ SOURCE = "openalex-arxiv-observation"
 SCOPE_SOURCE = "wikilean-derived-theoremgraph-links"
 SCOPE_OBJECT = "theoremgraph-links"
 PLAN_SCHEMA = "wikilean.openalex-observation-plan/v1"
+PLAN_SCHEMA_V2 = "wikilean.openalex-observation-plan/v2"
 CAPTURE_SCHEMA = "wikilean.openalex-observation-capture/v1"
 EXPORT_SCHEMA = "wikilean.openalex-observation-export/v1"
 TRANSCRIPT_SCHEMA = "wikilean.openalex-observation-transcript/v1"
@@ -61,12 +62,30 @@ POLICY = {"uri": BASE, "observation": "independent-live-requests/no-snapshot", "
     "redirects": "recorded 301 only for direct singleton; same API work-ID endpoint; at most three",
     "response_media_types": ["application/json", "application/atom+xml", "application/xml", "text/xml", "text/html"],
     "parser_symbols": sorted(PARSER_SYMBOLS), "retry": RETRY_POLICY, "documentation": DOCS}
+# Version 1 remains byte-for-byte defined above. Version 2 only expands polite
+# arXiv rate-limit handling; it never grants OpenAlex quota or authentication.
+POLICY_V2 = copy.deepcopy(POLICY)
+POLICY_V2.update(arxiv_interval_milliseconds=10000,
+    auth="keyless public API only; no account, credentials, payment or quota escalation; OpenAlex 429 aborts")
+POLICY_V2["retry"].update(arxiv_http_statuses=[429], arxiv_backoff_seconds=[60, 120, 240, 480],
+    arxiv_maximum_retry_after_seconds=900)
 USER_AGENT = "WikiLean-brain/2.0 (https://wikilean.jackmccarthy.org; contact via GitHub Deicyde/WikiLean)"
 
 
 def require(condition, message):
     if not condition:
         raise EvidenceError(message)
+
+
+def plan_policy(plan):
+    require(isinstance(plan.get("schema"), str) and plan["schema"] in {PLAN_SCHEMA, PLAN_SCHEMA_V2},
+            "unsupported OpenAlex plan generation")
+    return POLICY if plan["schema"] == PLAN_SCHEMA else POLICY_V2
+
+
+def validate_plan_profile(plan, profile):
+    require(canonical(profile["policy"]) == canonical(plan_policy(plan)),
+            "OpenAlex plan and acquisition profile select different policies")
 
 
 def origins():
@@ -89,7 +108,8 @@ def profiles():
         for item in profile["files"]:
             exact(item, {"path", "sha256"}, "program")
             contracts._digest(item["sha256"], "program digest")
-        require(profile["policy"] == POLICY and profile["profile_id"] == profile_id(profile), "unreviewed OpenAlex policy or profile identity")
+        require(canonical(profile["policy"]) in {canonical(POLICY), canonical(POLICY_V2)} and
+            profile["profile_id"] == profile_id(profile), "unreviewed OpenAlex policy or profile identity")
         ids.append(profile["profile_id"])
     require(ids == sorted(set(ids)) and value["current_profile"] in ids, "invalid current OpenAlex profile")
     return value
@@ -110,7 +130,8 @@ def verify_programs(profile, programs):
 
 def validate_plan(plan):
     exact(plan, {"schema", "source", "uri", "mailto", "scope", "arxiv_ids", "excluded_non_arxiv_ids", "minimum_links"}, "OpenAlex plan")
-    require(plan["schema"] == PLAN_SCHEMA and plan["source"] == SOURCE and plan["uri"] == API and plan["mailto"] is None, "unsupported OpenAlex source/auth")
+    plan_policy(plan)
+    require(plan["source"] == SOURCE and plan["uri"] == API and plan["mailto"] is None, "unsupported OpenAlex source/auth")
     scope = exact(plan["scope"], {"source", "source_manifest_id", "object", "sha256", "bytes"}, "scope")
     require(scope["source"] == SCOPE_SOURCE and scope["object"] == SCOPE_OBJECT, "unreviewed scope selector")
     contracts._hash(scope["source_manifest_id"], "reviewed scope source")
@@ -173,12 +194,13 @@ def parser(program):
     return types.SimpleNamespace(**namespace)
 
 
-def parameters(target):
+def parameters(target, policy=None):
+    policy = POLICY if policy is None else policy
     exact(target, {"phase", "values", "uri"}, "request target")
     return {"method": "GET", "uri": target["uri"], "selection": target,
         "headers": {"Accept": "application/json, application/atom+xml, text/html", "Accept-Encoding": "identity", "User-Agent": USER_AGENT},
         "transport": {"default_config": False, "credentials": False, "proxy": False, "tls_verification": True,
-            "redirects": False, "implicit_retries": 0, "recorded_retry_policy": RETRY_POLICY, "cache": False,
+            "redirects": False, "implicit_retries": 0, "recorded_retry_policy": policy["retry"], "cache": False,
             "connect_timeout_seconds": 30, "timeout_seconds": 120, "maximum_response_bytes": POLICY["maximum_response_bytes"]}}
 
 
@@ -208,20 +230,24 @@ def response_bytes(record):
     return raw
 
 
-def retry_delay(metadata, ordinal):
-    if ordinal >= RETRY_POLICY["maximum_attempts_per_request"]:
+def retry_delay(metadata, ordinal, *, phase=None, policy=None):
+    policy = POLICY if policy is None else policy
+    retry = policy["retry"]
+    if type(ordinal) is not int or not 1 <= ordinal < retry["maximum_attempts_per_request"]:
         return None
     status, code = metadata["http_status"], metadata["curl_exit_code"]
-    eligible = (status in RETRY_POLICY["http_statuses"] and code in (0, 22)) or (
-        status == 0 and code in RETRY_POLICY["curl_transport_codes"])
+    arxiv_rate_limit = phase == "arxiv" and status in retry.get("arxiv_http_statuses", []) and code in (0, 22)
+    eligible = arxiv_rate_limit or (status in retry["http_statuses"] and code in (0, 22)) or (
+        status == 0 and code in retry["curl_transport_codes"])
     if not eligible:
         return None
-    delay = RETRY_POLICY["backoff_seconds"][ordinal - 1]
+    delay = retry["arxiv_backoff_seconds" if arxiv_rate_limit else "backoff_seconds"][ordinal - 1]
     after = metadata["retry_after"]
     if after is not None:
         if after.get("kind") != "delay-seconds": return None
         delay = max(delay, after["seconds"])
-    return delay if delay <= RETRY_POLICY["maximum_retry_after_seconds"] else None
+    maximum = retry["arxiv_maximum_retry_after_seconds" if arxiv_rate_limit else "maximum_retry_after_seconds"]
+    return delay if delay <= maximum else None
 
 
 def target(phase, values, uri):
@@ -395,6 +421,7 @@ def query_walk(plan, syntax):
 class WalkState:
     def __init__(self, plan, parser_program):
         self.plan = validate_plan(plan)
+        self.policy = plan_policy(plan)
         self.generator = query_walk(plan, parser(parser_program))
         self.target = next(self.generator)
         self.total = self.count = self.attempt_count = self.failures = self.filtered_attempts = 0
@@ -406,7 +433,7 @@ class WalkState:
     def accept(self, record):
         require(self.attempt_count < POLICY["maximum_attempts"] and self.count < POLICY["maximum_requests"], "OpenAlex request budget exceeded")
         exact(record, {"request", "response", "body_base64", "attempt", "outcome", "retry_delay_seconds"}, "transcript record")
-        require(self.target is not None and record["request"] == parameters(self.target) and type(record["attempt"]) is int and
+        require(self.target is not None and record["request"] == parameters(self.target, self.policy) and type(record["attempt"]) is int and
             record["attempt"] == self.ordinal, "OpenAlex attempt diverges from exact derived request scope")
         phase = self.target["phase"].split(":", 1)[0]
         if phase not in {"docs", "direct", "arxiv"}:
@@ -417,7 +444,7 @@ class WalkState:
         require(self.total <= POLICY["maximum_total_response_bytes"] and self.transcript_bytes <= POLICY["maximum_transcript_bytes"], "OpenAlex response/transcript budget exceeded")
         require(type(record["retry_delay_seconds"]) is int and record["retry_delay_seconds"] >= 0, "invalid retry delay")
         if record["outcome"] == "failed":
-            delay = retry_delay(record["response"], self.ordinal)
+            delay = retry_delay(record["response"], self.ordinal, phase=phase, policy=self.policy)
             require(delay is not None and record["retry_delay_seconds"] == delay, "unreviewed failure, quota, or wrong retry delay")
             self.ordinal += 1; self.attempt_count += 1; self.failures += 1
             return
@@ -454,6 +481,7 @@ def body_ref(raw):
 
 def capture_files(plan, records, tool, programs, when, selector):
     profile = validate_tool(tool)
+    validate_plan_profile(plan, profile)
     verify_programs(profile, programs)
     validate_selector(plan, selector, programs["brain/ingest/openalex_citations.py"])
     facts, _ = replay(plan, records, programs)
