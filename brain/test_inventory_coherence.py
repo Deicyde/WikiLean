@@ -89,6 +89,32 @@ class InventoryCoherenceTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["inventory_id"], v3["inventory_id"])
 
+    def test_folded_inventory_changes_only_the_three_explicit_fold_contracts(self) -> None:
+        import build_common
+        old, _ = contracts.load_canonical_json(HERE / "authority/reducer-inputs-v3.json")
+        folded, _ = contracts.load_canonical_json(HERE / "authority/reducer-inputs-v3-folded.json")
+        contracts.validate_reducer_input_inventory(folded)
+        self.assertEqual(folded["inventory_id"], build_common.FOLDED_REDUCER_INVENTORY_ID)
+        self.assertNotEqual(old["inventory_id"], folded["inventory_id"])
+        self.assertEqual({k:v for k,v in old.items() if k not in {"inventory_id", "inputs"}},
+                         {k:v for k,v in folded.items() if k not in {"inventory_id", "inputs"}})
+        changed = set()
+        for before, after in zip(old["inputs"], folded["inputs"], strict=True):
+            if before != after:
+                changed.add(before["id"])
+                self.assertEqual(before["class"], "curated_git_input")
+                self.assertEqual(after["class"], "immutable_source_object")
+                self.assertEqual({k:v for k,v in before.items() if k not in {"class", "purpose"}},
+                                 {k:v for k,v in after.items() if k not in {"class", "purpose"}})
+        self.assertEqual(changed, {"brain-container-links", "brain-discovery-proposals", "brain-fc-links"})
+        original_contracts = build_common.BASE_GRAPH_BINDING_CONTRACT
+        for item in folded["inputs"]:
+            if item["id"] in build_common.BASE_GRAPH_INPUT_IDS:
+                actual = (item["root"], item["cardinality"], item["requirement"], item["class"], item.get("path", item.get("path_pattern")))
+                self.assertEqual(actual, build_common.FOLDED_BASE_GRAPH_BINDING_CONTRACT[item["id"]])
+                if item["id"] in changed:
+                    self.assertEqual(original_contracts[item["id"]][3], "curated_git_input")
+
     def test_group_contract_rejects_undefined_duplicate_or_curated_inputs(self) -> None:
         for inputs in (["source"], ["source", "source"], ["source", "unknown"], ["curated", "source"]):
             with self.subTest(inputs=inputs):

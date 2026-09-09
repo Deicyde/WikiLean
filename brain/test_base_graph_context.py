@@ -450,6 +450,41 @@ class BaseGraphContextTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "contract is"):
                     build_common.ContextBuildInputs.from_context(context)
 
+    def test_sealed_fold_contract_requires_the_exact_separately_identified_inventory(self) -> None:
+        document = self._document(self.root / "folded")
+        original_inventory_id = document["replay"]["reducer_inventory_id"]
+        for binding in document["bindings"]:
+            if binding["input_id"] in build_common.FOLDED_INPUT_IDS:
+                binding["class"] = "immutable_source_object"
+        binding = next(item for item in document["bindings"] if item["input_id"] == "brain-container-links")
+        raw = b'{"qid":"Q1","path":"Mathlib.Fixture","confidence":"high"}\n'
+        path = self.root / "folded/input/repo" / binding["path"]
+        path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(raw)
+        digest = hashlib.sha256(raw).hexdigest()
+        binding["state"] = "present"
+        binding["members"] = [{"bytes": len(raw), "materialized_path": str(path), "media_type": "application/x-ndjson",
+            "object": "sealed-composed-containers", "path": binding["path"], "sha256": digest,
+            "pin": {"type": "content_sha256", "value": digest}, "source_manifest_id": SOURCE_MANIFEST_ID}]
+        for inventory_id, accepted in ((original_inventory_id, False),
+                (build_common.FOLDED_REDUCER_INVENTORY_ID, True), ("sha256:" + "9" * 64, False)):
+            with self.subTest(inventory_id=inventory_id):
+                document["replay"]["reducer_inventory_id"] = inventory_id
+                document["generation_id"] = build_context.generation_identity(document)
+                context = build_context.BuildContext.from_document(document)
+                if accepted:
+                    inputs = build_common.ContextBuildInputs.from_context(context)
+                    member = inputs.members("brain-container-links")[0]
+                    self.assertEqual(member.path.read_bytes(), raw)
+                    self.assertEqual(member.member.pin.value, digest)
+                else:
+                    with self.assertRaisesRegex(ValueError, "contract is"):
+                        build_common.ContextBuildInputs.from_context(context)
+        document["replay"]["reducer_inventory_id"] = build_common.FOLDED_REDUCER_INVENTORY_ID
+        next(item for item in document["bindings"] if item["input_id"] == "brain-fc-links")["class"] = "curated_git_input"
+        document["generation_id"] = build_context.generation_identity(document)
+        with self.assertRaisesRegex(ValueError, "contract is"):
+            build_common.ContextBuildInputs.from_context(build_context.BuildContext.from_document(document))
+
     def test_member_pins_are_authoritative_for_frontier_and_external_layers(self) -> None:
         present = {
             "brain-ext-anchor-links",
