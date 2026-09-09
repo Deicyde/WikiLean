@@ -1,5 +1,8 @@
 # Brain SQLite operational handoff — 2026-09-05
 
+**Latest continuation:** read [the 2026-09-09 handoff](BRAIN-SQLITE-HANDOFF-2026-09-09.md)
+first. This older document is retained as historical implementation context.
+
 The [2026-09-08 continuation](BRAIN-SQLITE-CONTINUATION-2026-09-08.md) records the
 subsequent laptop setup, first real D1 capture, revision-bound Mathlib evidence,
 and engineering work. The historical checkpoint below remains useful for the
