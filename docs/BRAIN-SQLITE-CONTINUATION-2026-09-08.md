@@ -29,6 +29,7 @@ committed as `c3265f80`.
 The final catalog importers and experimental assertion shadow are committed as
 `f670cbf3`. Commit `1bd15ac3` adds D1 export compatibility, sealed proposal
 folds, standalone policy review records and same-input legacy halo preparation.
+Commit `945f9c81` adds the byte-preserving legacy SQLite compatibility projector.
 
 ## Real source acquisitions
 
@@ -74,12 +75,10 @@ All 11 acquisition files (39,772,274 bytes) and 779 normalized files
 (17,217,882 bytes) are unchanged. The private
 `preflight-20260908/d1-export-refresh.json` records the exact comparison and
 transitive refresh: all four derived catalog children change identity because
-their configuration binds every parent. Proposal folding then needs the refreshed
-hierarchy parent. OpenAlex's unchanged acquisition contract binds the exact
-theorem-link parent, requiring a new plan and fresh capture. Its retained free
-quota was below the required 452 filtered requests; wait for the daily reset and
-verify adequate free quota before reacquiring. Keep the original draft and all old
-evidence until the replacement closure independently verifies.
+their configuration binds every parent. Proposal folding has now been refreshed
+against the new hierarchy parent. OpenAlex's unchanged acquisition contract binds
+the exact theorem-link parent, requiring a new plan and fresh capture. Keep the
+original draft and all old evidence until the replacement closure independently verifies.
 
 The derived-catalog refresh independently verifies at
 `derived-catalog-source-exports/dda362e2c5e647c9d9d5df49ef0d3ce523a9d2beecbe7c73ee1a14a6f2312fc3`.
@@ -88,8 +87,14 @@ is `sha256:06a224b93915bd1d69ebabae9e9e1e8a8e92c79a08e841ba8798b4567d26b6b1`;
 the theorem-link source is
 `sha256:085a42e3845366a132242005e77588a63653ca57c13030c3d3c5b8ace11fb1cf`.
 The new replacement OpenAlex plan changes only that exact parent identity; its
-selector remains 2,052 arXiv IDs and nine exclusions. Acquisition awaits a fresh
-adequate free-quota observation. The current full draft is still unchanged.
+selector remains 2,052 arXiv IDs and nine exclusions. A fresh observation at
+2026-09-09T00:02:22Z confirmed $0.10 free quota, with zero prepaid balance. The
+credential-free replacement capture subsequently stopped at request 485 on arXiv
+HTTP 429, after 484 retained requests. This was not OpenAlex quota exhaustion;
+the reviewed retry policy does not retry that response. Its log and quota receipt
+are in `openalex-d1-refresh-20260908/`, and its incomplete capture is
+`openalex/captures-incomplete/3ab91cc14709a1533475fa286f18666ce504cf889b56fab21d272e59fe5f8ff0`.
+A compliant new attempt is being prepared. The current full draft is still unchanged.
 
 An exact declaration oracle and its Mathlib source revision were located through
 the official [documentation build](https://github.com/leanprover-community/mathlib4_docs/actions/runs/34203087670).
@@ -376,25 +381,46 @@ graph-change review, not a provenance-only parity claim.
 
 The sealed proposal adapter and exporter now reproduce the complete old fold from
 452 native Git proposal shards, exact source/oracle inputs and five separately
-retained direct Git container contributions. The reviewed current-generation
-export is `proposal-fold-source-exports/7033aafe895da26eb27051cb93e97e6726a1d0702f15794f7596e5d5a231e99c`;
-its 18,500 files verify independently. The 104 composed container rows remain
+retained direct Git container contributions. The first reviewed export is retained
+at `proposal-fold-source-exports/7033aafe895da26eb27051cb93e97e6726a1d0702f15794f7596e5d5a231e99c`.
+The D1-derived hierarchy refresh independently verifies at
+`proposal-fold-source-exports/5cd6b73e2c4448e53bfa20f89571974657309218b16a3b41e8fdfa181299bc89`;
+only parent identities and their contribution audit change. Graph, decision and
+comparison bytes remain equal across those two exports. The 104 composed container rows remain
 equal; all 326 discovery identities remain, with two module fields corrected
 from `Mathlib.Data.Finite.Defs` to `Mathlib.Basic.Finite.Defs`. The 15 FC retractions remain an
-explicit content-change decision. This export is retained, not installed; refresh
-its hierarchy parent after the D1-derived generation changes. Input-class rules
-still need a reviewed transition before a derived fold can replace a curated Git
-binding.
+explicit content-change decision. This export is retained, not installed.
+
+The separately versioned `brain/authority/reducer-inputs-v3-folded.json` changes
+only the three container/discovery/FC input classes and their purpose text to
+describe sealed fold outputs. Its identity is
+`sha256:675e97745422fdd1ae7930eead2fb83f1d012236b452c08d84a368256ca2672c`.
+The reducer accepts those classes only for that exact inventory ID. Historical
+inventories and contexts retain their original checks. All 23 focused inventory
+and base-context tests pass independently. Installing the new inventory still
+requires a new committed reducer generation and the complete coherent source
+replacement; no source plan, graph-change approval or runtime binding was changed.
 
 Standalone private-replay and public-release policy review tooling is implemented
 in [`standalone-policy-reviews-v1.md`](../brain/authority/specs/standalone-policy-reviews-v1.md).
 It binds exact pack/source/object closure separately from exact public artifact
 coverage, keeps original source restrictions, and drafts pending records only.
-No policy approval has been issued and the replay/promoter gates are not yet
-integrated with these new records. Retained publisher evidence and field-level
+No policy approval has been issued. The separate private replay gate now binds
+an exact private policy review while leaving the existing authoritative replay
+and promoter profiles unchanged. Retained publisher evidence and field-level
 decisions still need review, including mixed-license theorem-matching data and
 external text snippets. Provenance coverage needs source/method/context mappings;
 a source label alone does not identify an acquisition family.
+
+The standalone provenance checker and new private replay gate pass 42 combined
+focused checks independently (18 checker, 24 gate). The checker verifies the
+complete frozen release, exact source families, required joins, source-member
+witnesses, policy references and provenance indices. Unknown kinds and unresolved
+mappings fail. The gate seals the complete loaded implementation closure and
+rechecks the exact mapping and private policy before final qualification. Neither
+tool grants publication rights, accepted authority or production activation. No
+full release mapping or private approval has been completed; these are verified
+tools and fixture integration, not a full-corpus qualification result.
 
 ## Same-input legacy baseline preparation
 
@@ -417,8 +443,20 @@ the real retained `ebac34dc` schema-1 writer, changed index columns, a modified
 retained database whose historical snapshot ID still matches, and the isolated CLI.
 The original writer predates SQLite's current WLBN application marker: its exact
 application ID is zero, while the new index must pass the current schema-2 checks.
-Release assembly still needs verified legacy static artifacts plus exact sealed
-registry/community inputs and the existing full static/release verifier.
+The new `prepare_legacy_baseline.py` copies only fully verified pack inputs and
+the exact ten old programs from native Git objects into a fresh private layout.
+It checks declared absences against program and input paths, retains mixed
+`brain/data` inputs for read-only overlays, and excludes old caches. Preparation
+records explicitly say execution has not occurred.
+
+The new `assemble_legacy_release.py` verifies the producer-owned seven-stage
+execution record, all ten old programs, exact inputs, fresh halo, SQLite projection,
+and sealed provenance. It preserves the old database and comparison evidence
+outside the frozen release. All 12 tests pass independently. A separate synthetic
+probe using the exact old static builders passed the unchanged full release verifier
+with 20 artifacts; this is format compatibility evidence, not the full baseline.
+The composite release identifies its current assembler/freezer generation and
+retains the exact old graph code identity in its configuration evidence.
 The native runtime can be reused, but the old-program launch needs its own honest
 execution evidence; it is not the new authoritative replay profile.
 
@@ -543,9 +581,14 @@ export checks. The real v3 compiler regression rejects the historical empty MIME
 conflict and accepts all five refreshed D1 aliases beside the unchanged 255 Git
 aliases. Both old and new real D1 exports independently reproduce. The unchanged
 Worker retains its preceding passing typecheck and 872 tests.
-The required CI gate now includes one additional SQLite compatibility projection
-command (82 total). Its nine focused cases pass locally and independently; the
-preceding full-suite result above remains the 81-command run.
+The expanded complete suite passes **86 commands**, log
+`/tmp/wikilean-migration-python-ci-private-legacy.log`. It includes SQLite compatibility
+projection, verified old input preparation, legacy release assembly, provenance
+coverage and private qualification. Focused cases pass: projector nine, input
+preparer six, assembler 12, coverage 18 and private gate 24. Independent review
+also verified the 23 folded-inventory/base-context cases and found the repaired
+special-file omission in the preparer's final closure checks. The unchanged Worker
+retains its preceding passing typecheck and 872 tests.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
@@ -553,15 +596,18 @@ Darwin evidence is retained in the private migration root's
 ## Remaining completion order
 
 1. Finish Kerodon and independently verify its normalized export. Complete the
-   D1 export's transitive catalog/fold refresh and fresh OpenAlex capture after
-   adequate free quota is confirmed. Preserve every earlier evidence generation. The final
+   replacement OpenAlex capture after resolving arXiv throttling; D1's catalog/fold
+   refresh is verified.
+   Preserve every earlier evidence generation. The final
    committed native Linux runner image is verified; preserve its preparation evidence.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the
    reviewed current-corpus v3 plan. Close policy and cross-object provenance gaps.
 3. Assemble the logical inputs in the private detached staging checkout at
-   `full-corpus-plan-20260908/repo` (commit `c64438d2`), and bind the already sealed
-   native Linux runtime identity. No valid full source plan has been emitted yet.
+   `full-corpus-plan-20260908/repo` (currently `c64438d2`), update only its reducer
+   generation for the exact folded inventory, preserve original curated Git pins,
+   and bind the sealed native Linux runtime identity. No valid full source plan
+   has been emitted yet.
 4. Compile the real pack, run two isolated builds in different paths with adversarial
    mtimes/environment, verify complete byte/identity equality, and compare the approved
    semantic baseline with explicit provenance migration review. No approved complete
