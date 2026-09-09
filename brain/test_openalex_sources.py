@@ -76,6 +76,91 @@ class OpenalexSourcesTest(unittest.TestCase):
     def capture(self,records=None):return core.capture_files(self.plan,self.records if records is None else records,self.tool,self.programs,WHEN,self.selector)
     def build(self):return core.build_export({k:v for k,v in self.capture().items() if k!='manifest.json'},self.profile,self.programs,WHEN)
 
+    def enable_v2(self):
+        previous=copy.deepcopy(self.profile)
+        self.plan['schema']=core.PLAN_SCHEMA_V2
+        self.profile={**previous,'policy':copy.deepcopy(core.POLICY_V2)}
+        self.profile['profile_id']=core.profile_id(self.profile)
+        self.registry.write_bytes(core.canonical({'schema':core.PROFILE_SCHEMA,'current_profile':self.profile['profile_id'],
+            'profiles':sorted([previous,self.profile],key=lambda p:p['profile_id'])}))
+        self.tool.update(profile_id=self.profile['profile_id'],files=self.profile['files'])
+        for row in self.records:row['request']=core.parameters(row['request']['selection'],core.POLICY_V2)
+
+    def v2_retry_rows(self):
+        index=next(i for i,r in enumerate(self.records) if r['request']['selection']['phase'].startswith('arxiv:'))
+        failure=self.record(self.records[index]['request']['selection'],b'rate limited',outcome='failed',delay=60,
+            http_status=429,curl_exit_code=22,content_type='text/html')
+        failure['request']=core.parameters(failure['request']['selection'],core.POLICY_V2)
+        success=copy.deepcopy(self.records[index]);success['attempt']=2
+        return [*self.records[:index],failure,success,*self.records[index+1:]],index
+
+    def test_v2_arxiv_429_retains_true_attempts_and_old_generation_stays_identical(self):
+        old=self.capture();self.enable_v2()
+        core.verify_capture_files({k:v for k,v in old.items() if k!='manifest.json'})
+        rows,index=self.v2_retry_rows();capture=self.capture(rows)
+        core.verify_capture_files({k:v for k,v in capture.items() if k!='manifest.json'})
+        receipt=json.loads(capture['receipt.json'])
+        self.assertEqual(receipt['batch']['requests_failed'],1)
+        self.assertEqual(receipt['attempts'][index]['response_sha256'],core.sha(b'rate limited'))
+        self.assertEqual(receipt['attempts'][index]['outcome'],'failed')
+        for invalid in (rows[:index]+rows[index+1:],rows[:index+1]):
+            with self.assertRaises(core.EvidenceError):self.capture(invalid)
+        changed=copy.deepcopy(rows);changed[index]['retry_delay_seconds']=59
+        with self.assertRaises(core.EvidenceError):self.capture(changed)
+
+    def test_v2_rate_limit_authority_is_arxiv_only_and_bounded(self):
+        meta=self.metadata(b'limited',http_status=429,curl_exit_code=22)
+        self.assertIsNone(core.retry_delay(meta,1,phase='arxiv'))
+        for phase in ('a','direct','journal','identify','twins','docs',None):
+            self.assertIsNone(core.retry_delay(meta,1,phase=phase,policy=core.POLICY_V2))
+        self.assertEqual([core.retry_delay(meta,i,phase='arxiv',policy=core.POLICY_V2) for i in range(1,6)],[60,120,240,480,None])
+        for bad in (0,-1,True,1.0):self.assertIsNone(core.retry_delay(meta,bad,phase='arxiv',policy=core.POLICY_V2))
+        for status in (400,401,403):
+            self.assertIsNone(core.retry_delay({**meta,'http_status':status},1,phase='arxiv',policy=core.POLICY_V2))
+        for after,expected in (({'kind':'delay-seconds','seconds':0},60),({'kind':'delay-seconds','seconds':90},90),
+            ({'kind':'delay-seconds','seconds':900},900),({'kind':'delay-seconds','seconds':901},None),
+            ({'kind':'unsupported-or-excessive'},None)):
+            self.assertEqual(core.retry_delay({**meta,'retry_after':after},1,phase='arxiv',policy=core.POLICY_V2),expected)
+
+    def test_plan_profile_mismatch_refuses_before_any_network_or_capture(self):
+        old_tool=copy.deepcopy(self.tool);self.enable_v2()
+        with self.assertRaisesRegex(core.EvidenceError,'different policies'):
+            core.capture_files(self.plan,self.records,old_tool,self.programs,WHEN,self.selector)
+        plan=self.root/'plan.json';plan.write_bytes(core.canonical({**self.plan,'schema':core.PLAN_SCHEMA}))
+        selector=self.root/'selector.json';selector.write_bytes(self.selector)
+        with mock.patch.object(cli,'require_startup'),mock.patch.object(cli,'runtime_identity',return_value=(self.tool,self.programs)),mock.patch.object(cli,'transport') as network:
+            with self.assertRaisesRegex(core.EvidenceError,'different policies'):
+                cli.acquire(plan,self.root/'captures',Path(sys.executable).resolve(),selector)
+        network.assert_not_called();self.assertFalse((self.root/'captures').exists())
+
+    def test_v2_acquirer_waits_longer_and_preserves_rate_limit_failure(self):
+        self.enable_v2();rows,_index=self.v2_retry_rows();responses=iter(rows)
+        plan=self.root/'plan.json';plan.write_bytes(core.canonical(self.plan));selector=self.root/'selector.json';selector.write_bytes(self.selector)
+        def fetch(params,_curl):
+            row=next(responses);self.assertEqual(params,row['request']);return core.response_bytes(row),row['response']
+        with mock.patch.object(cli,'require_startup'),mock.patch.object(cli,'runtime_identity',return_value=(self.tool,self.programs)),mock.patch.object(cli,'transport',side_effect=fetch),mock.patch.object(cli.time,'sleep') as sleep,mock.patch.object(sys,'stderr',io.StringIO()):
+            result=cli.acquire(plan,self.root/'captures',Path(sys.executable).resolve(),selector)
+        core.verify_capture(result)
+        self.assertIn(mock.call(10),sleep.call_args_list);self.assertIn(mock.call(60),sleep.call_args_list)
+        self.assertEqual(json.loads((result/'facts.json').read_bytes())['failed_attempts'],1)
+
+    def test_v2_exhausted_arxiv_rate_limit_keeps_all_five_failed_responses(self):
+        self.enable_v2();rows,index=self.v2_retry_rows();failures=[]
+        for ordinal,delay in enumerate((60,120,240,480,0),1):
+            row=copy.deepcopy(rows[index]);row.update(attempt=ordinal,retry_delay_seconds=delay);failures.append(row)
+        responses=iter([*rows[:index],*failures]);plan=self.root/'plan.json';plan.write_bytes(core.canonical(self.plan))
+        selector=self.root/'selector.json';selector.write_bytes(self.selector)
+        def fetch(params,_curl):
+            row=next(responses);self.assertEqual(params,row['request']);return core.response_bytes(row),row['response']
+        with mock.patch.object(cli,'require_startup'),mock.patch.object(cli,'runtime_identity',return_value=(self.tool,self.programs)),mock.patch.object(cli,'transport',side_effect=fetch) as network,mock.patch.object(cli.time,'sleep'),mock.patch.object(sys,'stderr',io.StringIO()):
+            with self.assertRaisesRegex(core.EvidenceError,'nonretryable or retries exhausted'):
+                cli.acquire(plan,self.root/'captures',Path(sys.executable).resolve(),selector)
+        self.assertEqual(network.call_count,index+5);self.assertFalse((self.root/'captures').exists())
+        retained=next((self.root/'captures-incomplete').iterdir());doc=json.loads((retained/'transcript.json').read_bytes())
+        failed=[r for r in doc['completed_requests'] if r['outcome']=='failed']+[doc['failed_request']]
+        self.assertEqual([r['attempt'] for r in failed],[1,2,3,4,5])
+        self.assertTrue(all(core.response_bytes(r)==b'rate limited' for r in failed))
+
     def test_exact_phases_scope_direct_404_redirect_and_one_twin_round(self):
         self.assertEqual(self.rows,[{'src':AIDS[0],'dst':AIDS[2]},{'src':AIDS[1],'dst':AIDS[2]},{'src':AIDS[2],'dst':AIDS[0]}])
         self.assertEqual(self.facts['journal_twins'],1);self.assertEqual(self.facts['identified_twins'],1)
