@@ -79,6 +79,7 @@ run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_o
 run_check "Brain sealed pack publication tests" "$PYTHON_BIN" brain/test_pack_publication.py
 run_check "Brain offline-pack preflight tests" "$PYTHON_BIN" brain/test_preflight_offline_pack_v2.py
 run_check "Standalone source policy review tests" "$PYTHON_BIN" brain/test_source_policy_reviews.py
+run_check "Release provenance coverage tests" "$PYTHON_BIN" -m unittest brain.test_provenance_coverage
 run_check "Brain execution environment tests" "$PYTHON_BIN" brain/test_execution_environment.py
 run_check "Brain verified OCI runtime tests" "$PYTHON_BIN" brain/test_oci_runtime.py
 run_check "Brain build context tests" "$PYTHON_BIN" brain/test_build_context.py
@@ -88,12 +89,15 @@ run_check "Brain top-level shard publication tests" "$PYTHON_BIN" brain/test_bui
 run_check "Brain cells context tests" "$PYTHON_BIN" brain/test_build_cells_context.py
 run_check "Brain frontier context tests" "$PYTHON_BIN" brain/test_build_frontier_context.py
 run_check "Legacy same-input halo preparation tests" "$PYTHON_BIN" brain/test_legacy_halo_projection.py
+run_check "Legacy verified input preparation tests" "$PYTHON_BIN" brain/test_prepare_legacy_baseline.py
 run_check "Legacy SQLite compatibility projection tests" "$PYTHON_BIN" brain/test_legacy_sqlite_projection.py
+run_check "Legacy compatibility release assembly tests" "$PYTHON_BIN" brain/test_assemble_legacy_release.py
 run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_shards_context.py
 run_check "Brain full-DAG replay tests" "$PYTHON_BIN" brain/test_run_replay_v2.py
 run_check "Brain replay sandbox kernel test" "$PYTHON_BIN" -I brain/test_replay_sandbox.py
 run_check "Brain release builder tests" "$PYTHON_BIN" brain/test_release_builder.py
 run_check "Brain actual replay reproducibility gate tests" "$PYTHON_BIN" brain/test_reproducibility_gate.py
+run_check "Brain private replay qualification gate tests" "$PYTHON_BIN" brain/test_private_replay_gate.py
 run_check "Brain store metrics tests" "$PYTHON_BIN" brain/test_store_metrics.py
 run_check "Brain semantic diff tests" "$PYTHON_BIN" brain/test_semantic_diff.py
 run_check "Brain trusted transport tests" "$PYTHON_BIN" site/ops/test_brain_http.py

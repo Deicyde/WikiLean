@@ -276,6 +276,16 @@ BASE_GRAPH_BINDING_CONTRACT = {
 }
 BASE_GRAPH_INPUT_IDS = tuple(sorted(BASE_GRAPH_BINDING_CONTRACT))
 
+# This separately identified inventory admits sealed fold outputs whose native
+# Git proposals and manual contributions remain parents in normalization lineage.
+# Existing inventories retain their exact curated-Git contract and behavior.
+FOLDED_REDUCER_INVENTORY_ID = "sha256:675e97745422fdd1ae7930eead2fb83f1d012236b452c08d84a368256ca2672c"
+FOLDED_INPUT_IDS = frozenset({"brain-container-links", "brain-discovery-proposals", "brain-fc-links"})
+FOLDED_BASE_GRAPH_BINDING_CONTRACT = {
+    key: (*value[:3], "immutable_source_object", value[4]) if key in FOLDED_INPUT_IDS else value
+    for key, value in BASE_GRAPH_BINDING_CONTRACT.items()
+}
+
 _REQUIRED_INPUT_KEYS = {
     "concept_graph_v2.json": "concept-graph",
     "rebuild_grounding.json": "rebuild-grounding",
@@ -473,9 +483,14 @@ class ContextBuildInputs:
                 materialize_root.chmod(0o700)
 
         projected: dict[str, tuple[BoundInputFile, ...]] = {}
+        binding_contract = (
+            FOLDED_BASE_GRAPH_BINDING_CONTRACT
+            if context.replay.reducer_inventory_id == FOLDED_REDUCER_INVENTORY_ID
+            else BASE_GRAPH_BINDING_CONTRACT
+        )
         for input_id in BASE_GRAPH_INPUT_IDS:
             binding = by_id[input_id]
-            expected = BASE_GRAPH_BINDING_CONTRACT[input_id]
+            expected = binding_contract[input_id]
             actual = (
                 binding.root,
                 binding.cardinality,
