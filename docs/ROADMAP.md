@@ -160,6 +160,8 @@ never independent semantic writers.
 
 **2026-09-08 continuation:** the live engineering checkpoint is
 [`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
+The final stopped-session status, live capture and newly found fold metadata blocker
+are in [the 2026-09-09 handoff](BRAIN-SQLITE-HANDOFF-2026-09-09.md); read it first.
 Real D1, Mathlib/oracle, Hugging Face, shared Wikidata/entity/crossref, derived
 catalog, Git harvest, nLab/Stacks, ProofWiki, EOM, OEIS, DLMF, LMFDB, PlanetMath
 and OpenAlex source exports are independently verified. Kerodon is the remaining
