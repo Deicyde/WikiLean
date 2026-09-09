@@ -120,6 +120,28 @@ class LegacyAssemblyTest(unittest.TestCase):
         with self.assertRaises(OSError): self.run_assembly()
         self.assertFalse(self.destination.exists())
 
+    def test_explicit_runtime_support_bytes_are_retained_and_unresolved_refs_fail(self):
+        support = self.evidence / "policy.bin"; support.write_bytes(b"actual retained policy bytes")
+        self.record["runtime"]["support_files"] = [self.file(support, self.evidence)]
+        self.refresh_record()
+        support.unlink()
+        with self.assertRaises(OSError): self.run_assembly()
+        self.assertFalse(self.destination.exists())
+        support.write_bytes(b"changed")
+        with self.assertRaisesRegex(ValueError, "identity|differs"): self.run_assembly()
+        support.write_bytes(b"actual retained policy bytes")
+        self.run_assembly()
+        self.assertEqual((self.destination / "evidence/legacy-evidence/policy.bin").read_bytes(), support.read_bytes())
+
+    def test_runtime_support_aliases_cannot_change_existing_evidence_or_repeat(self):
+        reference = copy.deepcopy(self.record["runtime"]["preimage"])
+        reference["sha256"] = "a" * 64
+        self.record["runtime"]["support_files"] = [reference]; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "support aliases"): self.run_assembly()
+        reference = self.record["runtime"]["preimage"]
+        self.record["runtime"]["support_files"] = [reference, reference]; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "sorted unique"): self.run_assembly()
+
     def test_changed_or_missing_static_and_sealed_provenance_fail(self):
         paths = [self.legacy / "site/assets/brain/cells/ce.json", self.legacy / "site/out/brain.html",
                  self.sealed / "catalog/data/source_registry.json", self.sealed / "brain/data/community_edges.jsonl"]

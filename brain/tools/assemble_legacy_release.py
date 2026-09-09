@@ -174,6 +174,15 @@ def validate_execution(record):
         value = record.get(kind, {}).get("preimage"); ref(value, path=True)
         prior = evidence.setdefault(value["path"], value)
         require(ref(prior) == ref(value), "legacy preimage aliases disagree")
+    supports = record.get("runtime", {}).get("support_files", [])
+    require(isinstance(supports, list), "runtime support files must be a list")
+    support_paths = []
+    for value in supports:
+        ref(value, path=True)
+        support_paths.append(value["path"])
+        prior = evidence.setdefault(value["path"], value)
+        require(ref(prior) == ref(value), "runtime support aliases disagree")
+    require(support_paths == sorted(set(support_paths)), "runtime support files must have sorted unique paths")
     inputs = records(record.get("inputs"), "legacy inputs")
     for value in inputs.values():
         require({"input_id", "source_manifest_id", "object", "logical_root", "member_path"} <= set(value), "legacy input lineage is incomplete")
