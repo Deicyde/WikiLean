@@ -17,19 +17,22 @@ import re
 import sqlite3
 import stat
 import sys
-from pathlib import Path
+import unicodedata
+from pathlib import Path, PurePosixPath
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import build_release as freezer
+import legacy_stage_executor as execution_contract
 import legacy_sqlite_projection as projection
 
 contracts = projection.contracts
 SCHEMA = "wikilean.legacy-release-assembly-plan/v1"
-LEGACY_COMMIT = "ebac34dc1d07b66ce97692c31a914a084328f5df"
-STAGES = ("brain/build_snapshot.py", "brain/build_shards.py", "brain/build_cells.py",
-          "brain/build_snapshot.py", "brain/build_frontier.py", "brain/build_cell_shards.py",
-          "site/build_brain_page.py")
+LEGACY_COMMIT = execution_contract.LEGACY_COMMIT
+LEGACY_TREE = execution_contract.LEGACY_TREE
+LEGACY_PROGRAM_HASHES = dict(execution_contract.PROGRAM_HASHES)
+STAGE_RECIPES = execution_contract.STAGES
+STAGES = tuple(program for program, _arguments in STAGE_RECIPES)
 LEGACY_PROGRAM_PATHS = frozenset({*STAGES, "brain/build_common.py", "brain/store.py",
                                   "brain/layout.py", "brain/frontier_suitability.py"})
 PROVENANCE = frozenset({"catalog/data/source_registry.json", "brain/data/community_edges.jsonl"})
@@ -39,7 +42,8 @@ PREFIX = ".legacy-compatibility/"
 MAX_CONTROL = 64 * 1024**2
 MAX_FILE = 16 * 1024**3
 PROGRAMS = {**projection.PROGRAMS, "assembler": Path(__file__).resolve(),
-            "freezer": Path(freezer.__file__).resolve()}
+            "freezer": Path(freezer.__file__).resolve(),
+            "legacy_execution_contract": Path(execution_contract.__file__).resolve()}
 
 
 def require(value, message):
@@ -67,6 +71,17 @@ def ref(value, *, path=False):
 def literal(value):
     require(isinstance(value, str) and value and not any(char in value for char in "*?[]"), "literal file path required")
     contracts.validate_literal_relative_path(value, "legacy assembly path")
+    return value
+
+
+def absolute_posix(value, label):
+    require(isinstance(value, str) and value.startswith("/") and "\\" not in value and
+            not any(unicodedata.category(char).startswith("C") for char in value),
+            label + " must be an absolute normalized POSIX path without controls")
+    parts = value.split("/")[1:]
+    require(bool(parts) and all(part not in {"", ".", ".."} for part in parts) and
+            PurePosixPath(value).as_posix() == value,
+            label + " must be an absolute normalized POSIX path without controls")
     return value
 
 
@@ -151,25 +166,43 @@ def records(rows, label):
 def validate_execution(record):
     require(isinstance(record, dict) and record.get("schema") == "wikilean.legacy-baseline-execution/v1"
             and record.get("scope") == "baseline-diagnostic", "unexpected legacy execution record")
-    require(record.get("authority") is False and record.get("baseline_approved") is False, "execution record must remain diagnostic")
+    require(record.get("authority") is False and record.get("baseline_approved") is False and
+            record.get("offline_replay_verified") is False, "execution record must remain diagnostic")
     legacy = record.get("legacy", {})
-    require(legacy.get("git_commit") == LEGACY_COMMIT and isinstance(legacy.get("git_tree"), str)
-            and re.fullmatch(r"[a-f0-9]{40}", legacy["git_tree"]), "legacy program generation differs")
+    require(legacy.get("git_commit") == LEGACY_COMMIT and legacy.get("git_tree") == LEGACY_TREE,
+            "legacy program generation differs")
     for name in ("offline_pack_id", "source_set_root", "reducer_inventory_id"):
         contracts._hash(record.get("pack", {}).get(name), "legacy record pack." + name)
     programs = records(legacy.get("program_files"), "legacy programs")
     require(set(programs) == LEGACY_PROGRAM_PATHS, "legacy program closure must contain exactly the ten ebac reducer programs")
+    require(all(programs[path]["sha256"] == LEGACY_PROGRAM_HASHES[path] for path in LEGACY_PROGRAM_PATHS),
+            "legacy program bytes differ from the exact reviewed generation")
     stages = record.get("stages")
     require(isinstance(stages, list) and [row.get("program") for row in stages] == list(STAGES), "legacy stage sequence is incomplete")
     evidence = {}
-    for stage in stages:
+    interpreters = set()
+    prepared_roots = set()
+    for stage, (program, arguments) in zip(stages, STAGE_RECIPES, strict=True):
         require(type(stage.get("exit")) is int and stage["exit"] == 0, "legacy stage did not complete")
-        require(isinstance(stage.get("argv"), list) and stage["argv"]
-                and all(isinstance(arg, str) for arg in stage["argv"]), "legacy stage argv is missing")
+        argv = stage.get("argv")
+        require(isinstance(argv, list) and all(isinstance(arg, str) for arg in argv), "legacy stage argv is missing")
+        require(len(argv) == 8 + len(arguments) and
+                tuple(argv[1:6]) == execution_contract.PYTHON_STAGE_FLAGS and
+                argv[6] == execution_contract.RUN_STAGE and tuple(argv[8:]) == arguments,
+                "legacy stage argv differs from the exact isolated recipe")
+        absolute_posix(argv[0], "legacy interpreter path")
+        suffix = "/code/" + program
+        absolute_posix(argv[7], "legacy stage program path")
+        require(argv[7].endswith(suffix), "legacy stage program path differs")
+        prepared_root = argv[7][:-len(suffix)]
+        absolute_posix(prepared_root, "legacy prepared root")
+        interpreters.add(argv[0]); prepared_roots.add(prepared_root)
         for kind in ("stdout", "stderr"):
             value = stage.get(kind); ref(value, path=True)
             prior = evidence.setdefault(value["path"], value)
             require(ref(prior) == ref(value), "legacy log aliases disagree")
+    require(len(interpreters) == 1 and len(prepared_roots) == 1,
+            "legacy stages do not share one interpreter and prepared root")
     for kind in ("configuration", "runtime"):
         value = record.get(kind, {}).get("preimage"); ref(value, path=True)
         prior = evidence.setdefault(value["path"], value)
@@ -194,19 +227,19 @@ def validate_execution(record):
     require(not (set(inputs) & set(outputs) or set(programs) & (set(inputs) | set(outputs))), "legacy input/output/program ownership overlaps")
     require(SEMANTIC | {"brain/data/brain.sqlite3"} <= set(outputs), "completed legacy output lacks semantic files or original SQLite")
     require(PROVENANCE <= set(inputs), "original input inventory lacks sealed provenance")
-    halo = record.get("halo", {}).get("output"); ref(halo, path=True)
+    halo_group = record.get("halo", {})
+    require(isinstance(halo_group, dict) and set(halo_group) == {"output", "program", "report", "preparation"},
+            "legacy halo evidence closure differs")
+    halo = halo_group.get("output"); ref(halo, path=True)
     require(halo["path"] == HALO and HALO not in programs, "exact generated halo input is required")
     if HALO in inputs:
         require(ref(inputs[HALO]) == ref(halo), "halo input identity disagrees")
     if HALO in outputs:
         require(ref(outputs[HALO]) == ref(halo), "halo output identity disagrees")
-    # Optional halo evidence records are retained whenever supplied; the producer
-    # owns these records, while this helper only checks their exact correspondence.
     for name in ("program", "report", "preparation"):
-        value = record["halo"].get(name)
-        if value is not None:
-            ref(value, path=True); prior = evidence.setdefault(value["path"], value)
-            require(ref(prior) == ref(value), "halo evidence aliases disagree")
+        value = halo_group[name]
+        ref(value, path=True); prior = evidence.setdefault(value["path"], value)
+        require(ref(prior) == ref(value), "halo evidence aliases disagree")
     absences = record.get("absences")
     require(isinstance(absences, list), "explicit legacy absences are required")
     for row in absences:

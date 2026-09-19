@@ -40,28 +40,38 @@ class LegacyAssemblyTest(unittest.TestCase):
             # Synthetic reviewed record fixture, not a legacy execution claim.
             target.write_bytes(("# synthetic stage fixture: " + path + "\n").encode())
             old_programs.append(self.file(target, self.legacy))
+        self.legacy_program_hashes = {row["path"]: row["sha256"] for row in old_programs}
+        program_patch = mock.patch.object(assembly, "LEGACY_PROGRAM_HASHES", self.legacy_program_hashes)
+        program_patch.start(); self.addCleanup(program_patch.stop)
         inputs = []
         for path in sorted(assembly.PROVENANCE | {"catalog/data/original.json"}):
             inputs.append({**self.file(self.legacy / path, self.legacy), "input_id": "fixture",
                 "source_manifest_id": "sha256:" + "1" * 64, "object": "fixture",
                 "logical_root": "fixture", "member_path": path})
         stages = []
-        for index, program in enumerate(assembly.STAGES):
+        for index, (program, arguments) in enumerate(assembly.STAGE_RECIPES):
             logs = {}
             for kind in ("stdout", "stderr"):
                 path = self.evidence / f"stage-{index}-{kind}.log"; path.write_bytes(b"")
                 logs[kind] = self.file(path, self.evidence)
-            stages.append({"program": program, "argv": ["python3", program], "exit": 0, **logs})
+            stages.append({"program": program, "argv": ["/usr/local/bin/python3.12",
+                *assembly.execution_contract.PYTHON_STAGE_FLAGS, assembly.execution_contract.RUN_STAGE,
+                "/private/prepared/code/" + program, *arguments], "exit": 0, **logs})
         configuration = self.evidence / "configuration.json"; configuration.write_bytes(b'{"fixture":true}')
         runtime = self.evidence / "runtime.json"; runtime.write_bytes(b'{"scope":"fixture-only"}')
+        halo_program = self.evidence / "halo-program.py"; halo_program.write_bytes(b"fixture halo program")
+        halo_report = self.evidence / "halo-report.json"; halo_report.write_bytes(b'{"fixture":true}')
+        preparation = self.evidence / "preparation.json"; preparation.write_bytes(b'{"fixture":true}')
         outputs = [self.file(self.legacy / path, self.legacy) for path in sorted(
             assembly.contracts.REQUIRED_RELEASE_PATHS - assembly.PROVENANCE | assembly.freezer._static_closure(self.legacy))]
         self.record = {"schema": "wikilean.legacy-baseline-execution/v1", "scope": "baseline-diagnostic",
-            "authority": False, "baseline_approved": False,
+            "authority": False, "baseline_approved": False, "offline_replay_verified": False,
             "pack": {name: "sha256:" + "2" * 64 for name in ("offline_pack_id", "source_set_root", "reducer_inventory_id")},
-            "legacy": {"git_commit": assembly.LEGACY_COMMIT, "git_tree": "3" * 40, "program_files": old_programs},
+            "legacy": {"git_commit": assembly.LEGACY_COMMIT, "git_tree": assembly.LEGACY_TREE, "program_files": old_programs},
             "inputs": inputs, "outputs": outputs, "absences": [{"input_id": "absent", "logical_root": "fixture", "path": "catalog/data/absent.json"}],
-            "stages": stages, "halo": {"output": self.file(halo, self.legacy)},
+            "stages": stages, "halo": {"output": self.file(halo, self.legacy),
+                "program": self.file(halo_program, self.evidence), "report": self.file(halo_report, self.evidence),
+                "preparation": self.file(preparation, self.evidence)},
             "configuration": {"preimage": self.file(configuration, self.evidence)},
             "runtime": {"preimage": self.file(runtime, self.evidence)}}
         self.record_path = self.evidence / "execution.json"
@@ -174,6 +184,46 @@ class LegacyAssemblyTest(unittest.TestCase):
                 self.assertFalse(self.destination.exists())
                 self.record["legacy"]["program_files"] = programs
 
+    def test_execution_record_requires_exact_legacy_generation_and_stage_recipe(self):
+        original_tree = self.record["legacy"]["git_tree"]
+        self.record["legacy"]["git_tree"] = "0" * 40; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "generation differs"): self.run_assembly()
+        self.record["legacy"]["git_tree"] = original_tree
+
+        original_hash = self.record["legacy"]["program_files"][0]["sha256"]
+        self.record["legacy"]["program_files"][0]["sha256"] = "0" * 64; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "program bytes differ"): self.run_assembly()
+        self.record["legacy"]["program_files"][0]["sha256"] = original_hash
+
+        original_argv = self.record["stages"][3]["argv"]
+        self.record["stages"][3]["argv"] = [*original_argv, "--unexpected"]; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "exact isolated recipe"): self.run_assembly()
+        self.record["stages"][3]["argv"] = original_argv
+
+        self.record["offline_replay_verified"] = True; self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "remain diagnostic"): self.run_assembly()
+
+    def test_execution_record_rejects_noncanonical_absolute_argv_paths(self):
+        for index, value in enumerate(("/usr/../bin/python3.12", "/usr//bin/python3.12",
+                                       "/usr/bin/py\nthon", "/usr/bin/py\u200bthon")):
+            with self.subTest(value=value):
+                original = self.record["stages"][index]["argv"][0]
+                self.record["stages"][index]["argv"][0] = value; self.refresh_record()
+                with self.assertRaisesRegex(ValueError, "absolute normalized POSIX"):
+                    self.run_assembly()
+                self.record["stages"][index]["argv"][0] = original
+        original = self.record["stages"][0]["argv"][7]
+        self.record["stages"][0]["argv"][7] = "/private/../private/prepared/code/brain/build_snapshot.py"
+        self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "absolute normalized POSIX"):
+            self.run_assembly()
+        self.record["stages"][0]["argv"][7] = original
+        self.record["stages"][0]["argv"][7] = "/code/brain/build_snapshot.py"
+        self.refresh_record()
+        with self.assertRaisesRegex(ValueError, "legacy prepared root"):
+            self.run_assembly()
+        self.record["stages"][0]["argv"][7] = original
+
     def test_present_recorded_absence_and_symlink_are_rejected(self):
         path = self.legacy / "catalog/data/absent.json"; path.write_bytes(b"")
         with self.assertRaisesRegex(ValueError, "absent legacy input is present"): self.run_assembly()
@@ -239,7 +289,10 @@ class LegacyAssemblyTest(unittest.TestCase):
 
     def test_actual_isolated_cli_and_canonical_plan_requirement(self):
         plan = self.root / "assembly-plan.json"; plan.write_bytes(assembly.canonical(self.plan))
-        argv = [sys.executable, "-I", str(Path(assembly.__file__)), "--plan", str(plan),
+        bootstrap = ("import json,sys;sys.path.insert(0," + repr(str(Path(assembly.__file__).parent)) + ");"
+            "import assemble_legacy_release as a;a.LEGACY_PROGRAM_HASHES=json.loads(" +
+            repr(json.dumps(self.legacy_program_hashes)) + ");raise SystemExit(a.main())")
+        argv = [sys.executable, "-I", "-c", bootstrap, "--plan", str(plan),
             "--expected-plan-id", self.plan["plan_id"], "--legacy-root", str(self.legacy),
             "--projection-root", str(self.projected), "--sealed-root", str(self.sealed), "--evidence-root", str(self.evidence),
             "--destination", str(self.destination), "--execution-record", str(self.record_path), "--projection-plan", str(self.projection_plan)]
