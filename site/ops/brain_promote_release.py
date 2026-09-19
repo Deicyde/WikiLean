@@ -56,13 +56,16 @@ UUID_RE = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 )
 ATTEMPT_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
-SELECTOR_SCHEMA = "wikilean.release-selector/v1"
+SELECTOR_SCHEMA_V1 = "wikilean.release-selector/v1"
+SELECTOR_SCHEMA = "wikilean.release-selector/v2"
 RELEASE_SCHEMA = "wikilean.release/v1"
 DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v1"
 DRY_RUN_ARTIFACT_SCHEMA = "wikilean.brain-promotion-dry-run-artifacts/v1"
 DRY_RUN_ARTIFACT_DOMAIN = "wikilean.brain-promotion-dry-run-artifacts.v1"
 RESULT_SCHEMA = "wikilean.brain-promotion-result/v1"
 MAX_COMMAND_EVIDENCE_BYTES = 4 * 1024 * 1024
+MAX_NODE_MODULE_OBJECTS = 100_000
+MAX_NODE_MODULE_BYTES = 2 * 1024 * 1024 * 1024
 PRODUCTION_ORIGIN = "https://wikilean.jackmccarthy.org"
 
 
@@ -158,6 +161,9 @@ class SelectorState:
     previous_release_id: str | None
     retained_release_id: str | None
     audited_at: str | None
+    current_manifest_sha256: str | None = None
+    previous_manifest_sha256: str | None = None
+    retained_manifest_sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -195,6 +201,9 @@ class PreparedPromotion:
     trust_source: str
     history: dict[str, object]
     history_raw: Mapping[str, bytes] | None = None
+    activation: ReviewedActivation | None = None
+    wrangler_installation: Mapping[str, object] | None = None
+    node_executables: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -216,6 +225,34 @@ class RetainedDryRunArtifacts:
             "root": str(self.root),
             "manifest": str(self.manifest),
             "manifest_sha256": self.manifest_sha256,
+        }
+
+
+@dataclass(frozen=True)
+class ReviewedActivation:
+    root: Path
+    manifest: Path
+    manifest_sha256: str
+    bundle_id: str
+    semantic_baseline_release_id: str
+    release_id: str
+    baseline_id: str
+    authority_commit: str
+    reducer_commit: str
+    dry_run_attempt_id: str
+    intent: Mapping[str, object]
+    retained: RetainedDryRunArtifacts
+
+    def reference(self) -> dict[str, str]:
+        return {
+            "bundle_id": self.bundle_id,
+            "root": str(self.root),
+            "manifest": str(self.manifest),
+            "manifest_sha256": self.manifest_sha256,
+            "semantic_baseline_release_id": self.semantic_baseline_release_id,
+            "retained_artifact_id": self.retained.artifact_id,
+            "retained_artifact_root": str(self.retained.root),
+            "retained_artifact_manifest_sha256": self.retained.manifest_sha256,
         }
 
 
@@ -360,6 +397,202 @@ def inventory_tree(root: Path) -> dict[str, object]:
         "bytes": byte_count,
         "sha256": digest.hexdigest(),
     }
+
+
+def inventory_node_modules(wiki_root: Path) -> dict[str, object]:
+    """Fingerprint the installed Node tree without following symlinks."""
+    root_input = wiki_root / "node_modules"
+    lockfile = wiki_root / "package-lock.json"
+    if root_input.is_symlink() or not root_input.is_dir():
+        raise PromotionError("wiki/node_modules must be a physical directory")
+    root = root_input.resolve(strict=True)
+    if root != root_input.absolute():
+        raise PromotionError("wiki/node_modules must not traverse symlink aliases")
+    if lockfile.is_symlink() or not lockfile.is_file():
+        raise PromotionError("wiki/package-lock.json must be a regular file")
+    lockfile_body = lockfile.read_bytes()
+    digest = hashlib.sha256()
+    digest.update(b"wikilean\0wikilean.node-modules-inventory.v1\0")
+    digest.update(hashlib.sha256(lockfile_body).digest())
+    objects = 0
+    byte_count = 0
+    symlinks = 0
+    hard_links: dict[tuple[int, int], tuple[int, list[str]]] = {}
+    pending = [root]
+    while pending:
+        directory = pending.pop()
+        try:
+            entries = sorted(os.scandir(directory), key=lambda entry: entry.name)
+        except OSError as exc:
+            raise PromotionError(f"cannot scan installed Node dependency tree: {exc}") from exc
+        for entry in entries:
+            path = Path(entry.path)
+            relative = path.relative_to(root).as_posix()
+            info = entry.stat(follow_symlinks=False)
+            if stat.S_ISDIR(info.st_mode):
+                pending.append(path)
+                continue
+            if stat.S_ISLNK(info.st_mode):
+                target = os.readlink(path)
+                if os.path.isabs(target):
+                    raise PromotionError(
+                        f"installed Node dependency uses an absolute symlink: {relative}"
+                    )
+                try:
+                    resolved_target = (path.parent / target).resolve(strict=True)
+                except OSError as exc:
+                    raise PromotionError(
+                        f"installed Node dependency symlink is broken: {relative}"
+                    ) from exc
+                if (
+                    not _is_relative_to(resolved_target, root)
+                    or not resolved_target.is_file()
+                ):
+                    raise PromotionError(
+                        f"installed Node dependency symlink escapes its tree: {relative}"
+                    )
+                body = target.encode("utf-8")
+                kind = b"L"
+                symlinks += 1
+            elif stat.S_ISREG(info.st_mode):
+                flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+                descriptor = os.open(path, flags)
+                try:
+                    before = os.fstat(descriptor)
+                    file_digest = hashlib.sha256()
+                    size = 0
+                    while True:
+                        chunk = os.read(descriptor, 1024 * 1024)
+                        if not chunk:
+                            break
+                        size += len(chunk)
+                        byte_count += len(chunk)
+                        if byte_count > MAX_NODE_MODULE_BYTES:
+                            raise PromotionError(
+                                "installed Node dependency tree exceeds the byte limit"
+                            )
+                        file_digest.update(chunk)
+                    after = os.fstat(descriptor)
+                finally:
+                    os.close(descriptor)
+                if (
+                    before.st_dev,
+                    before.st_ino,
+                    before.st_mode,
+                    before.st_nlink,
+                    before.st_size,
+                    before.st_mtime_ns,
+                    before.st_ctime_ns,
+                ) != (
+                    after.st_dev,
+                    after.st_ino,
+                    after.st_mode,
+                    after.st_nlink,
+                    after.st_size,
+                    after.st_mtime_ns,
+                    after.st_ctime_ns,
+                ) or size != before.st_size:
+                    raise PromotionError(
+                        f"installed Node dependency changed while hashing: {relative}"
+                    )
+                body = file_digest.digest()
+                record_size = size
+                kind = b"F"
+                link_key = (after.st_dev, after.st_ino)
+                expected_links, paths = hard_links.setdefault(
+                    link_key, (after.st_nlink, [])
+                )
+                if expected_links != after.st_nlink:
+                    raise PromotionError(
+                        f"installed Node dependency link count changed: {relative}"
+                    )
+                paths.append(relative)
+            else:
+                raise PromotionError(
+                    f"installed Node dependency tree contains an unsafe entry: {relative}"
+                )
+            encoded = relative.encode("utf-8")
+            digest.update(kind)
+            digest.update(len(encoded).to_bytes(4, "big"))
+            digest.update(encoded)
+            if kind == b"L":
+                record_size = len(body)
+            digest.update(record_size.to_bytes(8, "big"))
+            digest.update(body)
+            objects += 1
+            if objects > MAX_NODE_MODULE_OBJECTS:
+                raise PromotionError(
+                    "installed Node dependency tree exceeds the object limit"
+                )
+    for expected_links, paths in hard_links.values():
+        if expected_links != len(paths):
+            raise PromotionError(
+                "installed Node dependency has a hard link outside node_modules: "
+                + paths[0]
+            )
+    return {
+        "schema": "wikilean.node-modules-inventory/v1",
+        "root": str(root),
+        "package_lock_sha256": sha256_bytes(lockfile_body),
+        "objects": objects,
+        "bytes": byte_count,
+        "symlinks": symlinks,
+        "sha256": digest.hexdigest(),
+    }
+
+
+def _resolved_executable(name: str) -> Path:
+    selected = shutil.which(name)
+    if selected is None:
+        raise PromotionError(f"required executable is unavailable: {name}")
+    invocation = Path(selected).absolute()
+    try:
+        resolved = invocation.resolve(strict=True)
+    except OSError as exc:
+        raise PromotionError(f"cannot resolve {name} executable: {exc}") from exc
+    if not resolved.is_file() or not os.access(resolved, os.X_OK):
+        raise PromotionError(f"{name} executable is not an executable regular file")
+    return resolved
+
+
+def _executable_identity(name: str) -> dict[str, object]:
+    resolved = _resolved_executable(name)
+    body = resolved.read_bytes()
+    return {
+        "path": str(resolved),
+        "sha256": sha256_bytes(body),
+        "bytes": len(body),
+    }
+
+
+def _node_environment(
+    node: Path | None = None,
+    *,
+    include_cloudflare: bool = False,
+) -> dict[str, str]:
+    allowed = {
+        "HOME",
+        "TMPDIR",
+        "TMP",
+        "TEMP",
+        "LANG",
+        "LC_ALL",
+        "SSL_CERT_FILE",
+        "SSL_CERT_DIR",
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "NO_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "no_proxy",
+        "CI",
+    }
+    if include_cloudflare:
+        allowed.update({"CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"})
+    environment = {name: value for name, value in os.environ.items() if name in allowed}
+    node_path = node or _resolved_executable("node")
+    environment["PATH"] = os.pathsep.join((str(node_path.parent), os.defpath))
+    return environment
 
 
 def seal_tree_read_only(root: Path) -> None:
@@ -937,6 +1170,7 @@ def selector_from_probe(
     probe: SelectorProbe,
     candidate_release_id: str,
     *,
+    candidate_manifest_sha256: str | None = None,
     allow_first_deploy: bool,
     first_deploy_approval: str | None,
 ) -> SelectorState:
@@ -958,50 +1192,107 @@ def selector_from_probe(
     value = _decode_json(probe.body, "production selector")
     if not isinstance(value, dict):
         raise PromotionError("production selector must be an object")
-    allowed = {
-        "schema",
-        "release_id",
-        "release",
-        "manifest",
-        "previous_release_id",
-        "previous_release",
-        "previous_manifest",
-        "audited_at",
-    }
+    schema = value.get("schema")
+    if schema == SELECTOR_SCHEMA_V1:
+        current_keys = {"release_id", "release", "manifest"}
+        previous_keys = {
+            "previous_release_id",
+            "previous_release",
+            "previous_manifest",
+        }
+    elif schema == SELECTOR_SCHEMA:
+        current_keys = {"release_id", "release", "manifest_sha256", "manifest"}
+        previous_keys = {
+            "previous_release_id",
+            "previous_release",
+            "previous_manifest_sha256",
+            "previous_manifest",
+        }
+    else:
+        raise PromotionError("production selector schema mismatch")
+    allowed = {"schema", "audited_at", *current_keys, *previous_keys}
     unknown = sorted(set(value) - allowed)
     if unknown:
         raise PromotionError(f"production selector has unknown fields: {unknown}")
-    if value.get("schema") != SELECTOR_SCHEMA:
-        raise PromotionError("production selector schema mismatch")
+    missing = sorted(current_keys - set(value))
+    if missing:
+        raise PromotionError(f"production selector is missing fields: {missing}")
 
-    def checked(prefix: str = "") -> str:
+    def checked(prefix: str = "") -> tuple[str, str | None]:
         release_id = value.get(prefix + "release_id")
         release_hex = value.get(prefix + "release")
         manifest = value.get(prefix + "manifest")
         match = RELEASE_ID_RE.fullmatch(str(release_id or ""))
-        if (
-            match is None
-            or release_hex != match.group(1)
-            or manifest != f"/assets/brain/releases/{match.group(1)}/release.json"
-        ):
+        if match is None or release_hex != match.group(1):
             raise PromotionError(f"production selector {prefix or 'current '}release is inconsistent")
-        return str(release_id)
+        if schema == SELECTOR_SCHEMA_V1:
+            expected_manifest = f"/assets/brain/releases/{match.group(1)}/release.json"
+            manifest_sha256 = None
+        else:
+            raw_manifest_sha256 = value.get(prefix + "manifest_sha256")
+            if (
+                not isinstance(raw_manifest_sha256, str)
+                or re.fullmatch(r"[0-9a-f]{64}", raw_manifest_sha256) is None
+            ):
+                raise PromotionError(
+                    f"production selector {prefix or 'current '}manifest digest is invalid"
+                )
+            manifest_sha256 = raw_manifest_sha256
+            expected_manifest = (
+                f"/assets/brain/releases/{manifest_sha256}/release.json"
+            )
+        if manifest != expected_manifest:
+            raise PromotionError(f"production selector {prefix or 'current '}release is inconsistent")
+        return str(release_id), manifest_sha256
 
-    current = checked()
-    previous_keys = ("previous_release_id", "previous_release", "previous_manifest")
+    current, current_manifest_sha256 = checked()
+    if (
+        schema == SELECTOR_SCHEMA_V1
+        and current == candidate_release_id
+        and candidate_manifest_sha256 is not None
+    ):
+        raise PromotionError(
+            "legacy production selector cannot distinguish the live manifest from a "
+            "same-logical-release candidate"
+        )
     present = [key for key in previous_keys if key in value]
     previous: str | None = None
+    previous_manifest_sha256: str | None = None
     if present:
         if len(present) != len(previous_keys):
             raise PromotionError("production selector previous release fields are incomplete")
-        previous = checked("previous_")
-        if previous == current:
+        previous, previous_manifest_sha256 = checked("previous_")
+        if schema == SELECTOR_SCHEMA_V1 and previous == current:
             raise PromotionError("production selector current and previous releases are identical")
+        if (
+            schema == SELECTOR_SCHEMA
+            and previous_manifest_sha256 == current_manifest_sha256
+        ):
+            raise PromotionError("production selector current and previous manifests are identical")
     audited_at = value.get("audited_at")
     if audited_at is not None and (not isinstance(audited_at, str) or not audited_at):
         raise PromotionError("production selector audited_at is invalid")
-    retained = previous if current == candidate_release_id else current
-    return SelectorState(200, probe.sha256, probe.body, current, previous, retained, audited_at)
+    candidate_is_current = current == candidate_release_id
+    if schema == SELECTOR_SCHEMA:
+        if candidate_manifest_sha256 is None:
+            raise PromotionError("candidate manifest digest is required for a v2 selector")
+        candidate_is_current = current_manifest_sha256 == candidate_manifest_sha256
+    retained = previous if candidate_is_current else current
+    retained_manifest_sha256 = (
+        previous_manifest_sha256 if candidate_is_current else current_manifest_sha256
+    )
+    return SelectorState(
+        200,
+        probe.sha256,
+        probe.body,
+        current,
+        previous,
+        retained,
+        audited_at,
+        current_manifest_sha256,
+        previous_manifest_sha256,
+        retained_manifest_sha256,
+    )
 
 
 def parse_deployment_status(output: bytes) -> DeploymentState:
@@ -1066,6 +1357,9 @@ class BrainPromoter:
         release_root: Path | None,
         public_baseline_id: str | None,
         public_baseline_root: Path | None,
+        activation_bundle_id: str | None = None,
+        activation_bundle_root: Path | None = None,
+        expected_semantic_baseline_id: str | None = None,
         receipt_root: Path,
         base_url: str,
         mode: str,
@@ -1098,6 +1392,9 @@ class BrainPromoter:
         self.release_root = release_root
         self.public_baseline_id = public_baseline_id
         self.public_baseline_root = public_baseline_root
+        self.activation_bundle_id = activation_bundle_id
+        self.activation_bundle_root = activation_bundle_root
+        self.expected_semantic_baseline_id = expected_semantic_baseline_id
         self.receipt_root_input = receipt_root
         self.base_url = require_https_base_url(base_url)
         self.production_origin = require_https_base_url(production_origin)
@@ -1126,6 +1423,7 @@ class BrainPromoter:
         self._selector_probe_count = 0
         self.wiki = self.repo / "wiki"
         self.receipt_root: Path | None = None
+        self._reviewed_node_executables: Mapping[str, object] | None = None
 
     @staticmethod
     def _new_attempt_id(release_id: str | None) -> str:
@@ -1190,6 +1488,15 @@ class BrainPromoter:
                 raise PromotionError("reconciliation requires --approval-note")
             if self.allow_first_deploy or self.first_deploy_approval is not None:
                 raise PromotionError("first-deploy options are not valid during reconciliation")
+            if any(
+                value is not None
+                for value in (
+                    self.activation_bundle_id,
+                    self.activation_bundle_root,
+                    self.expected_semantic_baseline_id,
+                )
+            ):
+                raise PromotionError("activation-bundle options are not valid during reconciliation")
             if self.accept_external_supersession and self.confirm_no_production_change:
                 raise PromotionError(
                     "choose only one reconciliation resolution: external supersession or no change"
@@ -1244,6 +1551,30 @@ class BrainPromoter:
             )
         if self.mode == "execute" and not present(self.approval_note):
             raise PromotionError("execution requires --approval-note")
+        activation_values = (
+            self.activation_bundle_id,
+            self.activation_bundle_root,
+            self.expected_semantic_baseline_id,
+        )
+        if self.mode == "execute":
+            if any(value is None for value in activation_values):
+                raise PromotionError(
+                    "execution requires --activation-bundle-id, --activation-bundle-root, "
+                    "and --expected-semantic-baseline-id"
+                )
+            assert self.activation_bundle_id is not None
+            assert self.activation_bundle_root is not None
+            assert self.expected_semantic_baseline_id is not None
+            if RELEASE_ID_RE.fullmatch(self.activation_bundle_id) is None:
+                raise PromotionError("activation bundle ID must be sha256:<64 lowercase hex>")
+            if RELEASE_ID_RE.fullmatch(self.expected_semantic_baseline_id) is None:
+                raise PromotionError(
+                    "expected semantic baseline ID must be sha256:<64 lowercase hex>"
+                )
+            if not self.activation_bundle_root.is_absolute():
+                raise PromotionError("--activation-bundle-root must be an absolute path")
+        elif any(value is not None for value in activation_values):
+            raise PromotionError("activation-bundle options are valid only with --execute")
 
     def _run(
         self,
@@ -1267,13 +1598,106 @@ class BrainPromoter:
         cwd: Path,
         label: str,
         timeout: float | None = None,
+        env: Mapping[str, str] | None = None,
     ) -> RunResult:
-        result = self._run(args, cwd=cwd, timeout=timeout)
+        result = self._run(args, cwd=cwd, timeout=timeout, env=env)
         if not result.ok:
             detail = (result.stderr or result.stdout).decode("utf-8", errors="replace")[-2000:]
             state = "timed out" if result.timed_out else f"returned {result.returncode}"
             raise PromotionError(f"{label} {state}: {detail.strip()}")
         return result
+
+    def _node_executables_identity(self) -> dict[str, object]:
+        wrangler_entry = (
+            self.wiki
+            / "node_modules"
+            / "wrangler"
+            / "bin"
+            / "wrangler.js"
+        )
+        if wrangler_entry.is_symlink() or not wrangler_entry.is_file():
+            raise PromotionError("installed Wrangler entry point is missing or symlinked")
+        wrangler_body = wrangler_entry.read_bytes()
+        return {
+            "schema": "wikilean.node-executables/v1",
+            "node": _executable_identity("node"),
+            "wrangler": {
+                "path": str(wrangler_entry),
+                "sha256": sha256_bytes(wrangler_body),
+                "bytes": len(wrangler_body),
+            },
+        }
+
+    def _bind_node_executables(self, identity: Mapping[str, object]) -> None:
+        if identity.get("schema") != "wikilean.node-executables/v1":
+            raise PromotionError("reviewed Node executable identity is malformed")
+        for name in ("node", "wrangler"):
+            path = Path(self._node_tool_path(identity, name))
+            if not path.is_absolute():
+                raise PromotionError(f"reviewed {name} executable path is not absolute")
+        self._reviewed_node_executables = copy.deepcopy(dict(identity))
+
+    def _reviewed_node_tool_path(self, name: str) -> str:
+        if self._reviewed_node_executables is None:
+            raise PromotionError("Node/Wrangler executables were not reviewed")
+        return self._node_tool_path(self._reviewed_node_executables, name)
+
+    def _reviewed_node_environment(
+        self, *, include_cloudflare: bool = False
+    ) -> dict[str, str]:
+        return _node_environment(
+            Path(self._reviewed_node_tool_path("node")),
+            include_cloudflare=include_cloudflare,
+        )
+
+    def _reviewed_node_executables_now(self) -> dict[str, object]:
+        if self._reviewed_node_executables is None:
+            raise PromotionError("Node/Wrangler executables were not reviewed")
+        node_path = Path(self._reviewed_node_tool_path("node"))
+        wrangler_path = Path(self._reviewed_node_tool_path("wrangler"))
+        try:
+            resolved_node = node_path.resolve(strict=True)
+        except OSError as exc:
+            raise PromotionError(f"reviewed Node executable is unavailable: {exc}") from exc
+        if resolved_node != node_path or not node_path.is_file() or not os.access(node_path, os.X_OK):
+            raise PromotionError("reviewed Node path is not a canonical executable file")
+        if wrangler_path.is_symlink() or not wrangler_path.is_file():
+            raise PromotionError("reviewed Wrangler entry point is unavailable or symlinked")
+        if wrangler_path != self.wiki / "node_modules" / "wrangler" / "bin" / "wrangler.js":
+            raise PromotionError("reviewed Wrangler entry point is outside this checkout")
+        node_body = node_path.read_bytes()
+        wrangler_body = wrangler_path.read_bytes()
+        return {
+            "schema": "wikilean.node-executables/v1",
+            "node": {
+                "path": str(node_path),
+                "sha256": sha256_bytes(node_body),
+                "bytes": len(node_body),
+            },
+            "wrangler": {
+                "path": str(wrangler_path),
+                "sha256": sha256_bytes(wrangler_body),
+                "bytes": len(wrangler_body),
+            },
+        }
+
+    @staticmethod
+    def _node_tool_path(identity: Mapping[str, object], name: str) -> str:
+        tool = identity.get(name)
+        if not isinstance(tool, dict) or not isinstance(tool.get("path"), str):
+            raise PromotionError(f"reviewed {name} executable identity is malformed")
+        return tool["path"]
+
+    @staticmethod
+    def _node_command(name: str, *arguments: str) -> list[str]:
+        return [str(_resolved_executable(name)), *arguments]
+
+    def _wrangler_command(self, *arguments: str) -> list[str]:
+        return [
+            self._reviewed_node_tool_path("node"),
+            self._reviewed_node_tool_path("wrangler"),
+            *arguments,
+        ]
 
     def _git_text(self, *args: str, allow_failure: bool = False) -> str:
         environment = dict(os.environ)
@@ -1349,8 +1773,18 @@ class BrainPromoter:
         return head
 
     def _verify_toolchain(self) -> tuple[str, str]:
+        if self._reviewed_node_executables is None:
+            self._bind_node_executables(self._node_executables_identity())
+        tools = self._reviewed_node_executables
+        assert tools is not None
+        if self._reviewed_node_executables_now() != tools:
+            raise PromotionError("Node/Wrangler executable bytes changed before use")
         node_result = self._require_command(
-            ["node", "--version"], cwd=self.wiki, label="Node version", timeout=30
+            [self._node_tool_path(tools, "node"), "--version"],
+            cwd=self.wiki,
+            label="Node version",
+            timeout=30,
+            env=self._reviewed_node_environment(),
         )
         node_version = node_result.stdout.decode("utf-8", errors="strict").strip()
         if re.fullmatch(r"v22\.[0-9]+\.[0-9]+", node_version) is None:
@@ -1377,10 +1811,15 @@ class BrainPromoter:
                 "installed Wrangler version does not match package-lock.json; run npm ci"
             )
         wrangler_result = self._require_command(
-            ["npx", "--no-install", "wrangler", "--version"],
+            [
+                self._node_tool_path(tools, "node"),
+                self._node_tool_path(tools, "wrangler"),
+                "--version",
+            ],
             cwd=self.wiki,
             label="Wrangler version",
             timeout=60,
+            env=self._reviewed_node_environment(),
         )
         wrangler_output = wrangler_result.stdout.decode("utf-8", errors="replace").strip()
         versions = re.findall(r"(?m)^([0-9]+\.[0-9]+\.[0-9]+)\s*$", wrangler_output)
@@ -1390,7 +1829,16 @@ class BrainPromoter:
             )
         return node_version, locked_version
 
-    def _validate_release_root(self, root_input: Path, expected_release_id: str) -> Path:
+    def _wrangler_installation_identity(self) -> dict[str, object]:
+        return inventory_node_modules(self.wiki)
+
+    def _validate_release_root(
+        self,
+        root_input: Path,
+        expected_release_id: str,
+        *,
+        allow_legacy_release_id_root: bool = False,
+    ) -> Path:
         if not root_input.is_absolute():
             raise PromotionError("release root must be absolute")
         if root_input.is_symlink():
@@ -1405,15 +1853,39 @@ class BrainPromoter:
             raise PromotionError("release root must be a directory outside the promotion checkout")
         match = RELEASE_ID_RE.fullmatch(expected_release_id)
         assert match is not None
-        if root.name != match.group(1):
-            raise PromotionError("release root basename does not match the requested release ID")
         manifest = root / "release.json"
         if manifest.is_symlink() or not manifest.is_file():
             raise PromotionError("release root must contain a regular release.json")
+        manifest_bytes = manifest.read_bytes()
+        manifest_value = _decode_json(manifest_bytes, "release manifest")
+        if (
+            not isinstance(manifest_value, dict)
+            or manifest_value.get("release_id") != expected_release_id
+        ):
+            raise PromotionError("release root manifest does not match the requested release ID")
+        manifest_sha256 = sha256_bytes(manifest_bytes)
+        allowed_names = {manifest_sha256}
+        if allow_legacy_release_id_root:
+            allowed_names.add(match.group(1))
+        if root.name not in allowed_names:
+            expected = "manifest digest"
+            if allow_legacy_release_id_root:
+                expected += " (or legacy release ID)"
+            raise PromotionError(f"release root basename does not match the {expected}")
         return root
 
-    def _verify_release(self, expected_release_id: str, root_input: Path) -> ReleaseInfo:
-        root = self._validate_release_root(root_input, expected_release_id)
+    def _verify_release(
+        self,
+        expected_release_id: str,
+        root_input: Path,
+        *,
+        allow_legacy_release_id_root: bool = False,
+    ) -> ReleaseInfo:
+        root = self._validate_release_root(
+            root_input,
+            expected_release_id,
+            allow_legacy_release_id_root=allow_legacy_release_id_root,
+        )
         manifest = root / "release.json"
         result = self._require_command(
             [
@@ -1482,7 +1954,7 @@ class BrainPromoter:
     def _wrangler_status(
         self, config: Path | None = None
     ) -> tuple[DeploymentState, RunResult]:
-        command = ["npx", "--no-install", "wrangler", "deployments", "status"]
+        command = self._wrangler_command("deployments", "status")
         if config is not None:
             command.extend(["--config", str(config)])
         command.append("--json")
@@ -1491,6 +1963,7 @@ class BrainPromoter:
             cwd=self.wiki,
             label="Wrangler deployment status",
             timeout=120,
+            env=self._reviewed_node_environment(include_cloudflare=True),
         )
         return parse_deployment_status(result.stdout), result
 
@@ -1499,7 +1972,7 @@ class BrainPromoter:
     ) -> tuple[dict[str, str], RunResult]:
         if UUID_RE.fullmatch(version_id) is None:
             raise PromotionError("refusing to inspect a malformed Worker version ID")
-        command = ["npx", "--no-install", "wrangler", "versions", "view", version_id]
+        command = self._wrangler_command("versions", "view", version_id)
         if config is not None:
             command.extend(["--config", str(config)])
         command.append("--json")
@@ -1508,6 +1981,7 @@ class BrainPromoter:
             cwd=self.wiki,
             label="Wrangler version view",
             timeout=120,
+            env=self._reviewed_node_environment(include_cloudflare=True),
         )
         value = extract_last_json_value(result.stdout, "Wrangler version view")
         if not isinstance(value, dict) or value.get("id") != version_id:
@@ -1530,11 +2004,17 @@ class BrainPromoter:
             ("deployments", ["deployments", "list"]),
             ("versions", ["versions", "list"]),
         ):
-            command = ["npx", "--no-install", "wrangler", *parts]
+            command = self._wrangler_command(*parts)
             if config is not None:
                 command.extend(["--config", str(config)])
             command.append("--json")
-            result = self._require_command(command, cwd=self.wiki, label=f"Wrangler {key} history", timeout=120)
+            result = self._require_command(
+                command,
+                cwd=self.wiki,
+                label=f"Wrangler {key} history",
+                timeout=120,
+                env=self._reviewed_node_environment(include_cloudflare=True),
+            )
             value = extract_last_json_value(result.stdout, f"Wrangler {key} history")
             if not isinstance(value, (dict, list)):
                 raise PromotionError(f"Wrangler {key} history returned the wrong JSON type")
@@ -1549,8 +2029,8 @@ class BrainPromoter:
     def _attempt_history(
         self, tag: str, message: str, config: Path | None = None
     ) -> dict[str, object]:
-        versions_command = ["npx", "--no-install", "wrangler", "versions", "list"]
-        deployments_command = ["npx", "--no-install", "wrangler", "deployments", "list"]
+        versions_command = self._wrangler_command("versions", "list")
+        deployments_command = self._wrangler_command("deployments", "list")
         if config is not None:
             versions_command.extend(["--config", str(config)])
             deployments_command.extend(["--config", str(config)])
@@ -1561,12 +2041,14 @@ class BrainPromoter:
             cwd=self.wiki,
             label="Wrangler version history",
             timeout=120,
+            env=self._reviewed_node_environment(include_cloudflare=True),
         )
         deployments_result = self._require_command(
             deployments_command,
             cwd=self.wiki,
             label="Wrangler deployment history",
             timeout=120,
+            env=self._reviewed_node_environment(include_cloudflare=True),
         )
         versions_value = extract_last_json_value(
             versions_result.stdout, "Wrangler version history"
@@ -1744,7 +2226,7 @@ class BrainPromoter:
         public_dir: Path,
     ) -> tuple[dict[str, object], SelectorState]:
         args = [
-            "node",
+            self._reviewed_node_tool_path("node"),
             "--experimental-strip-types",
             "scripts/build-public.ts",
             "--public-dir",
@@ -1769,7 +2251,12 @@ class BrainPromoter:
                 str(previous.root),
             ]
         )
-        result = self._require_command(args, cwd=self.wiki, label="external public staging")
+        result = self._require_command(
+            args,
+            cwd=self.wiki,
+            label="external public staging",
+            env=self._reviewed_node_environment(),
+        )
         value = extract_last_json_value(result.stdout, "external public staging")
         if not isinstance(value, dict) or value.get("schema") != "wikilean.public-build-result/v1":
             raise PromotionError("public staging result schema mismatch")
@@ -1789,13 +2276,21 @@ class BrainPromoter:
             raise PromotionError("public staging did not preserve the verified asset baseline")
         brain = value.get("brain")
         expected_previous = prior.release_id if prior is not None else None
+        expected_previous_manifest = prior.manifest_sha256 if prior is not None else None
         expected_retained = [candidate.release_id, *([expected_previous] if expected_previous else [])]
+        expected_retained_manifests = [
+            candidate.manifest_sha256,
+            *([expected_previous_manifest] if expected_previous_manifest else []),
+        ]
         if (
             not isinstance(brain, dict)
-            or brain.get("schema") != "wikilean.public-stage-result/v1"
+            or brain.get("schema") != "wikilean.public-stage-result/v2"
             or brain.get("release_id") != candidate.release_id
+            or brain.get("manifest_sha256") != candidate.manifest_sha256
             or brain.get("previous_release_id") != expected_previous
+            or brain.get("previous_manifest_sha256") != expected_previous_manifest
             or brain.get("retained_release_ids") != expected_retained
+            or brain.get("retained_manifest_sha256s") != expected_retained_manifests
             or brain.get("warnings") != []
         ):
             raise PromotionError(
@@ -1818,12 +2313,15 @@ class BrainPromoter:
                 url=selector_path.as_uri(),
             ),
             candidate.release_id,
+            candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=False,
             first_deploy_approval=None,
         )
         if (
             staged_selector.current_release_id != candidate.release_id
+            or staged_selector.current_manifest_sha256 != candidate.manifest_sha256
             or staged_selector.previous_release_id != expected_previous
+            or staged_selector.previous_manifest_sha256 != expected_previous_manifest
             or staged_selector.audited_at != self.audited_at
         ):
             raise PromotionError("staged selector identity/retention/audit fields are inconsistent")
@@ -1835,13 +2333,20 @@ class BrainPromoter:
         bundle_dir: Path,
         deploy_config: Path,
     ) -> tuple[Path, dict[str, object]]:
-        self._require_command(["npm", "run", "typecheck"], cwd=self.wiki, label="Worker typecheck")
-        self._require_command(["npm", "run", "test:unit"], cwd=self.wiki, label="Worker unit tests")
         self._require_command(
-            [
-                "npx",
-                "--no-install",
-                "wrangler",
+            self._node_command("npm", "run", "typecheck"),
+            cwd=self.wiki,
+            label="Worker typecheck",
+            env=self._reviewed_node_environment(),
+        )
+        self._require_command(
+            self._node_command("npm", "run", "test:unit"),
+            cwd=self.wiki,
+            label="Worker unit tests",
+            env=self._reviewed_node_environment(),
+        )
+        self._require_command(
+            self._wrangler_command(
                 "deploy",
                 str(self.wiki / "src" / "index.ts"),
                 "--dry-run",
@@ -1852,9 +2357,10 @@ class BrainPromoter:
                 str(public_dir),
                 "--outdir",
                 str(bundle_dir),
-            ],
+            ),
             cwd=self.wiki,
             label="Wrangler local deployment dry-run",
+            env=self._reviewed_node_environment(),
         )
         bundle_entry = bundle_dir / "index.js"
         if bundle_entry.is_symlink() or not bundle_entry.is_file():
@@ -1863,10 +2369,7 @@ class BrainPromoter:
 
         preview_dir = bundle_dir.parent / "upload-preview"
         self._require_command(
-            [
-                "npx",
-                "--no-install",
-                "wrangler",
+            self._wrangler_command(
                 "deploy",
                 str(bundle_entry),
                 "--config",
@@ -1878,9 +2381,10 @@ class BrainPromoter:
                 str(public_dir),
                 "--outdir",
                 str(preview_dir),
-            ],
+            ),
             cwd=self.wiki,
             label="sealed-bundle upload dry-run",
+            env=self._reviewed_node_environment(),
         )
         preview_entry = preview_dir / "index.js"
         if not preview_entry.is_file() or preview_entry.read_bytes() != bundle_entry.read_bytes():
@@ -1888,6 +2392,364 @@ class BrainPromoter:
         if inventory_tree(bundle_dir) != initial_inventory:
             raise PromotionError("reviewed Worker bundle changed during upload preview")
         return bundle_entry, initial_inventory
+
+    def _verify_reviewed_activation(
+        self,
+        expected: ReviewedActivation | None = None,
+    ) -> ReviewedActivation:
+        assert self.activation_bundle_id is not None
+        assert self.activation_bundle_root is not None
+        assert self.expected_semantic_baseline_id is not None
+        try:
+            import brain_activation_bundle as activation_bundle
+
+            verified = activation_bundle.verify_activation_bundle(
+                self.activation_bundle_root
+            )
+        except (OSError, RuntimeError, ValueError) as exc:
+            raise PromotionError(f"activation bundle verification failed: {exc}") from exc
+        if verified.root != self.activation_bundle_root:
+            raise PromotionError("activation bundle verifier returned a different root")
+        if verified.bundle_id != self.activation_bundle_id:
+            raise PromotionError(
+                "activation bundle identity differs from --activation-bundle-id"
+            )
+        if verified.release_id != self.release_id:
+            raise PromotionError("activation bundle names a different candidate release")
+        if verified.baseline_id != self.public_baseline_id:
+            raise PromotionError("activation bundle names a different public baseline")
+        if (
+            verified.semantic_baseline_release_id
+            != self.expected_semantic_baseline_id
+        ):
+            raise PromotionError(
+                "activation bundle names a different semantic baseline release"
+            )
+
+        evidence = next(
+            (item for item in verified.files if item.kind == "promoter_dry_run"),
+            None,
+        )
+        if evidence is None:
+            raise PromotionError("activation bundle omitted promoter dry-run evidence")
+        dry_run_path = verified.root / evidence.path
+        dry_run_raw = dry_run_path.read_bytes()
+        if (
+            len(dry_run_raw) != evidence.bytes
+            or sha256_bytes(dry_run_raw) != evidence.sha256
+        ):
+            raise PromotionError("activation promoter dry-run evidence changed after verification")
+        dry_run = _decode_json(dry_run_raw, "activation promoter dry-run")
+        if not isinstance(dry_run, dict):
+            raise PromotionError("activation promoter dry-run must be an object")
+        attempt_id = dry_run.get("attempt_id")
+        intent = dry_run.get("proposed_intent")
+        if (
+            not isinstance(attempt_id, str)
+            or ATTEMPT_ID_RE.fullmatch(attempt_id) is None
+            or not isinstance(intent, dict)
+        ):
+            raise PromotionError("activation promoter dry-run identity is malformed")
+        retained_reference = intent.get("retained_artifacts")
+        if not isinstance(retained_reference, dict):
+            raise PromotionError("activation bundle omitted retained dry-run artifacts")
+        retained_root = retained_reference.get("root")
+        retained_id = retained_reference.get("artifact_id")
+        if not isinstance(retained_root, str) or not isinstance(retained_id, str):
+            raise PromotionError("activation retained artifact reference is malformed")
+        try:
+            retained = verify_retained_dry_run_artifacts(
+                Path(retained_root), expected_artifact_id=retained_id
+            )
+        except (OSError, PromotionError) as exc:
+            raise PromotionError(
+                f"activation retained dry-run artifacts failed verification: {exc}"
+            ) from exc
+        if (
+            retained.manifest_sha256 != retained_reference.get("manifest_sha256")
+            or str(retained.manifest) != retained_reference.get("manifest")
+        ):
+            raise PromotionError("activation retained artifact reference is inconsistent")
+
+        reviewed = ReviewedActivation(
+            root=verified.root,
+            manifest=verified.manifest_path,
+            manifest_sha256=sha256_bytes(verified.manifest_path.read_bytes()),
+            bundle_id=verified.bundle_id,
+            semantic_baseline_release_id=verified.semantic_baseline_release_id,
+            release_id=verified.release_id,
+            baseline_id=verified.baseline_id,
+            authority_commit=verified.authority_git_commit,
+            reducer_commit=verified.reducer_git_commit,
+            dry_run_attempt_id=attempt_id,
+            intent=copy.deepcopy(intent),
+            retained=retained,
+        )
+        if expected is not None and reviewed.reference() != expected.reference():
+            raise PromotionError("activation bundle identity changed before deployment")
+        return reviewed
+
+    @staticmethod
+    def _reviewed_evidence_body(
+        retained: RetainedDryRunArtifacts,
+        name: str,
+    ) -> bytes:
+        relative = _DRY_RUN_EVIDENCE_PATHS[name]
+        path = retained.root / relative
+        if path.is_symlink() or not path.is_file():
+            raise PromotionError(f"retained dry-run evidence is unavailable: {name}")
+        return path.read_bytes()
+
+    def _prepare_reviewed_activation(
+        self,
+        activation: ReviewedActivation,
+    ) -> PreparedPromotion:
+        assert self.release_id is not None
+        assert self.release_root is not None
+        assert self.public_baseline_id is not None
+        assert self.public_baseline_root is not None
+        intent = activation.intent
+        audited_at = intent.get("audited_at")
+        if not isinstance(audited_at, str) or not audited_at:
+            raise PromotionError("activation dry-run audited_at is malformed")
+        self.attempt_id = activation.dry_run_attempt_id
+        self.audited_at = audited_at
+
+        candidate = self._verify_release(self.release_id, self.release_root)
+        if (
+            candidate.release_id != activation.release_id
+            or candidate.authority_commit != activation.authority_commit
+            or candidate.reducer_commit != activation.reducer_commit
+            or not self._release_matches_intent(
+                candidate,
+                manifest_sha256=intent.get("release_manifest_sha256"),
+                tree=intent.get("release_tree"),
+                authority_commit=intent.get("authority_commit"),
+                reducer_commit=intent.get("reducer_commit"),
+            )
+            or str(candidate.root) != intent.get("release_root")
+        ):
+            raise PromotionError("candidate release differs from the reviewed activation")
+        try:
+            public_baseline = verify_public_baseline(
+                self.public_baseline_root,
+                self.repo.resolve(strict=True),
+                expected_baseline_id=self.public_baseline_id,
+                expected_authority_git_commit=candidate.authority_commit,
+            )
+        except BaselineValidationError as exc:
+            raise PromotionError(f"public asset baseline verification failed: {exc}") from exc
+        reviewed_baseline = intent.get("public_baseline")
+        expected_baseline = {
+            "baseline_id": public_baseline.baseline_id,
+            "root": str(public_baseline.root),
+            "manifest": str(public_baseline.manifest_path),
+            "manifest_sha256": sha256_bytes(public_baseline.manifest_path.read_bytes()),
+            "authority_commit": public_baseline.authority_git_commit,
+            "files": len(public_baseline.files),
+            "bytes": public_baseline.total_bytes,
+        }
+        if reviewed_baseline != expected_baseline:
+            raise PromotionError("public baseline differs from the reviewed activation")
+
+        prior: ReleaseInfo | None = None
+        retained_release = intent.get("retained_release")
+        if retained_release is not None:
+            if not isinstance(retained_release, dict):
+                raise PromotionError("activation retained release is malformed")
+            retained_id = retained_release.get("release_id")
+            retained_root = retained_release.get("release_root")
+            if not isinstance(retained_id, str) or not isinstance(retained_root, str):
+                raise PromotionError("activation retained release identity is malformed")
+            prior = self._verify_release(
+                retained_id,
+                Path(retained_root),
+                allow_legacy_release_id_root=True,
+            )
+            if not self._release_matches_intent(
+                prior,
+                manifest_sha256=retained_release.get("release_manifest_sha256"),
+                tree=retained_release.get("release_tree"),
+                authority_commit=retained_release.get("authority_commit"),
+                reducer_commit=retained_release.get("reducer_commit"),
+            ):
+                raise PromotionError("retained release differs from the reviewed activation")
+
+        reviewed_worker = intent.get("worker_bundle")
+        if not isinstance(reviewed_worker, dict):
+            raise PromotionError("activation Worker bundle evidence is malformed")
+        self._check_git_authority(candidate.authority_commit)
+        node_executables = self._node_executables_identity()
+        if reviewed_worker.get("executables") != node_executables:
+            raise PromotionError(
+                "Node/Wrangler executables differ from the reviewed activation"
+            )
+        wrangler_installation = self._wrangler_installation_identity()
+        if reviewed_worker.get("installation") != wrangler_installation:
+            raise PromotionError(
+                "installed Wrangler dependency tree differs from the reviewed activation"
+            )
+        self._bind_node_executables(node_executables)
+        node_version, wrangler_version = self._verify_toolchain()
+        if (
+            reviewed_worker.get("node_version") != node_version
+            or reviewed_worker.get("wrangler_version") != wrangler_version
+        ):
+            raise PromotionError("toolchain differs from the reviewed activation")
+
+        retained = verify_retained_dry_run_artifacts(
+            activation.retained.root,
+            expected_artifact_id=activation.retained.artifact_id,
+        )
+        selector_body = self._reviewed_evidence_body(retained, "initial_selector")
+        status_before_body = self._reviewed_evidence_body(retained, "status_before")
+        status_after_body = self._reviewed_evidence_body(retained, "status_after")
+        predeploy = intent.get("predeploy")
+        if not isinstance(predeploy, dict):
+            raise PromotionError("activation predeploy evidence is malformed")
+        selector_status = predeploy.get("selector_status")
+        if selector_status not in {200, 404}:
+            raise PromotionError("activation selector status is malformed")
+        initial_probe = SelectorProbe(
+            body=selector_body,
+            body_sha256=sha256_bytes(selector_body),
+            content_type=(
+                "application/json"
+                if selector_status == 200
+                else "application/octet-stream"
+            ),
+            status=selector_status,
+            trust_source=str(intent.get("trust_source")),
+            url=f"{self.base_url}/assets/brain/current.json?activation={activation.bundle_id}",
+        )
+        initial_selector = selector_from_probe(
+            initial_probe,
+            candidate.release_id,
+            candidate_manifest_sha256=candidate.manifest_sha256,
+            allow_first_deploy=self.allow_first_deploy,
+            first_deploy_approval=self.first_deploy_approval,
+        )
+        deployment_before = parse_deployment_status(status_before_body)
+        deployment_after = parse_deployment_status(status_after_body)
+        if not self._same_deployment(deployment_before, deployment_after):
+            raise PromotionError("reviewed activation status sandwich is inconsistent")
+        expected_predeploy = {
+            "deployment_id": deployment_before.deployment_id,
+            "version_id": deployment_before.version_id,
+            "status_sha256": deployment_before.raw_sha256,
+            "selector_status": initial_selector.status,
+            "selector_sha256": initial_selector.body_sha256,
+            "release_id": initial_selector.current_release_id,
+            "manifest_sha256": initial_selector.current_manifest_sha256,
+            "previous_release_id": initial_selector.previous_release_id,
+            "previous_manifest_sha256": initial_selector.previous_manifest_sha256,
+            "audited_at": initial_selector.audited_at,
+        }
+        if predeploy != expected_predeploy:
+            raise PromotionError("predeploy state differs from the reviewed activation")
+
+        staged_path = retained.public_dir / "assets" / "brain" / "current.json"
+        staged_body = staged_path.read_bytes()
+        staged_selector = selector_from_probe(
+            SelectorProbe(
+                body=staged_body,
+                body_sha256=sha256_bytes(staged_body),
+                content_type="application/json",
+                status=200,
+                trust_source="reviewed-retained-artifact",
+                url=staged_path.as_uri(),
+            ),
+            candidate.release_id,
+            candidate_manifest_sha256=candidate.manifest_sha256,
+            allow_first_deploy=False,
+            first_deploy_approval=None,
+        )
+        reviewed_staged = intent.get("staged_selector")
+        expected_staged = {
+            "sha256": staged_selector.body_sha256,
+            "release_id": staged_selector.current_release_id,
+            "manifest_sha256": staged_selector.current_manifest_sha256,
+            "previous_release_id": staged_selector.previous_release_id,
+            "previous_manifest_sha256": staged_selector.previous_manifest_sha256,
+            "audited_at": staged_selector.audited_at,
+        }
+        if reviewed_staged != expected_staged:
+            raise PromotionError("staged selector differs from the reviewed activation")
+
+        if initial_selector.current_release_id is None:
+            predeploy_release = None
+        elif (
+            initial_selector.current_release_id == candidate.release_id
+            and initial_selector.current_manifest_sha256
+            in {None, candidate.manifest_sha256}
+        ):
+            predeploy_release = candidate
+        elif (
+            prior is not None
+            and initial_selector.current_release_id == prior.release_id
+            and initial_selector.current_manifest_sha256
+            in {None, prior.manifest_sha256}
+        ):
+            predeploy_release = prior
+        else:
+            raise PromotionError(
+                "reviewed predeploy selector lacks a verified frozen release"
+            )
+        planned = intent.get("planned")
+        public_result = intent.get("public_result")
+        history = intent.get("history")
+        if (
+            not isinstance(planned, dict)
+            or not isinstance(public_result, dict)
+            or not isinstance(history, dict)
+            or not isinstance(planned.get("tag"), str)
+            or not isinstance(planned.get("message"), str)
+        ):
+            raise PromotionError("activation promoter intent is malformed")
+        history_raw = {
+            "deployments": self._reviewed_evidence_body(retained, "deployments_history"),
+            "versions": self._reviewed_evidence_body(retained, "versions_history"),
+        }
+        prepared = PreparedPromotion(
+            activation.dry_run_attempt_id,
+            audited_at,
+            planned["tag"],
+            planned["message"],
+            candidate,
+            prior,
+            predeploy_release,
+            public_baseline,
+            initial_selector,
+            deployment_before,
+            status_before_body,
+            status_after_body,
+            retained.public_dir,
+            inventory_tree(retained.public_dir),
+            copy.deepcopy(public_result),
+            staged_selector,
+            retained.worker_dir,
+            retained.worker_entry,
+            inventory_tree(retained.worker_dir),
+            retained.config,
+            sha256_bytes(retained.config.read_bytes()),
+            node_version,
+            wrangler_version,
+            str(intent.get("trust_source")),
+            copy.deepcopy(history),
+            history_raw=history_raw,
+            activation=activation,
+            wrangler_installation=wrangler_installation,
+            node_executables=node_executables,
+        )
+        reconstructed = self._intent_payload(prepared)
+        reconstructed.pop("activation_bundle", None)
+        reviewed_intent = copy.deepcopy(dict(intent))
+        reviewed_intent["approval_note"] = self.approval_note
+        if reconstructed != reviewed_intent:
+            raise PromotionError(
+                "retained dry-run intent differs from the executable reviewed activation"
+            )
+        return prepared
 
     def prepare(self) -> PreparedPromotion:
         assert (
@@ -1907,24 +2769,58 @@ class BrainPromoter:
         except BaselineValidationError as exc:
             raise PromotionError(f"public asset baseline verification failed: {exc}") from exc
         self._check_git_authority(candidate.authority_commit)
+        node_executables = self._node_executables_identity()
+        wrangler_installation = self._wrangler_installation_identity()
+        self._bind_node_executables(node_executables)
         node_version, wrangler_version = self._verify_toolchain()
 
         initial_probe, trust_source = self._probe_selector("initial")
         selector = selector_from_probe(
             initial_probe,
             candidate.release_id,
+            candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=self.allow_first_deploy,
             first_deploy_approval=self.first_deploy_approval,
         )
         prior: ReleaseInfo | None = None
         if selector.retained_release_id is not None:
-            prior_root = candidate.root.parent / selector.retained_release_id.removeprefix("sha256:")
-            prior = self._verify_release(selector.retained_release_id, prior_root)
+            prior_root_name = (
+                selector.retained_manifest_sha256
+                or selector.retained_release_id.removeprefix("sha256:")
+            )
+            prior_root = candidate.root.parent / prior_root_name
+            prior = self._verify_release(
+                selector.retained_release_id,
+                prior_root,
+                allow_legacy_release_id_root=(
+                    selector.retained_manifest_sha256 is None
+                ),
+            )
+            if (
+                selector.retained_manifest_sha256 is not None
+                and prior.manifest_sha256 != selector.retained_manifest_sha256
+            ):
+                raise PromotionError(
+                    "retained release manifest differs from the production selector"
+                )
         if selector.current_release_id is None:
             predeploy_release = None
-        elif selector.current_release_id == candidate.release_id:
+        elif (
+            selector.current_release_id == candidate.release_id
+            and (
+                selector.current_manifest_sha256 is None
+                or selector.current_manifest_sha256 == candidate.manifest_sha256
+            )
+        ):
             predeploy_release = candidate
-        elif prior is not None and selector.current_release_id == prior.release_id:
+        elif (
+            prior is not None
+            and selector.current_release_id == prior.release_id
+            and (
+                selector.current_manifest_sha256 is None
+                or selector.current_manifest_sha256 == prior.manifest_sha256
+            )
+        ):
             predeploy_release = prior
         else:
             raise PromotionError("predeploy selector release is not available as a verified frozen release")
@@ -1967,7 +2863,13 @@ class BrainPromoter:
             if candidate_after.tree != candidate.tree or candidate_after.manifest_sha256 != candidate.manifest_sha256:
                 raise PromotionError("candidate frozen release changed during preparation")
             if prior is not None:
-                prior_after = self._verify_release(prior.release_id, prior.root)
+                prior_after = self._verify_release(
+                    prior.release_id,
+                    prior.root,
+                    allow_legacy_release_id_root=(
+                        prior.root.name == prior.release_hex
+                    ),
+                )
                 if prior_after.tree != prior.tree or prior_after.manifest_sha256 != prior.manifest_sha256:
                     raise PromotionError("prior frozen release changed during preparation")
             self._check_git_authority(candidate.authority_commit)
@@ -2013,7 +2915,9 @@ class BrainPromoter:
                 wrangler_version,
                 trust_source,
                 history,
-                history_raw,
+                history_raw=history_raw,
+                wrangler_installation=wrangler_installation,
+                node_executables=node_executables,
             )
         except BaseException:
             remove_sealed_tree(work_root)
@@ -2111,6 +3015,7 @@ class BrainPromoter:
     def _run_canary(
         self,
         release_id: str,
+        manifest_sha256: str,
         journal: EventJournal,
         prefix: str,
         expected_trust_source: str,
@@ -2123,6 +3028,8 @@ class BrainPromoter:
             self.base_url,
             "--expected-release-id",
             release_id,
+            "--expected-manifest-sha256",
+            manifest_sha256,
             "--timeout",
             str(self.canary_timeout),
             "--interval",
@@ -2157,6 +3064,7 @@ class BrainPromoter:
             parsed = {"ok": False, "error": "canary emitted no result object"}
         payload = {
             "expected_release_id": release_id,
+            "expected_manifest_sha256": manifest_sha256,
             "expected_trust_source": expected_trust_source,
             "expected_public_baseline_id": (
                 public_baseline.baseline_id if public_baseline is not None else None
@@ -2168,6 +3076,7 @@ class BrainPromoter:
             result.ok
             and parsed.get("ok") is True
             and parsed.get("release_id") == release_id
+            and parsed.get("manifest_sha256") == manifest_sha256
             and parsed.get("trust_source") == expected_trust_source
             and (
                 public_baseline is None
@@ -2184,8 +3093,10 @@ class BrainPromoter:
         self,
         *,
         expected_release_id: str,
+        expected_manifest_sha256: str,
         expected_version_id: str,
         expected_previous_release_id: str | None,
+        expected_previous_manifest_sha256: str | None,
         expected_selector_sha256: str,
         expected_audited_at: str | None,
         expected_trust_source: str,
@@ -2216,6 +3127,7 @@ class BrainPromoter:
         selector = selector_from_probe(
             probe,
             expected_release_id,
+            candidate_manifest_sha256=expected_manifest_sha256,
             allow_first_deploy=False,
             first_deploy_approval=None,
         )
@@ -2223,9 +3135,20 @@ class BrainPromoter:
             raise PromotionError(
                 f"live selector names {selector.current_release_id}, expected {expected_release_id}"
             )
+        if selector.current_manifest_sha256 != expected_manifest_sha256:
+            raise PromotionError(
+                "live selector manifest digest differs from the staged candidate"
+            )
         if selector.previous_release_id != expected_previous_release_id:
             raise PromotionError(
                 "live selector previous release does not equal the staged retention target"
+            )
+        if (
+            selector.previous_manifest_sha256
+            != expected_previous_manifest_sha256
+        ):
+            raise PromotionError(
+                "live selector previous manifest differs from the staged retention target"
             )
         if selector.body_sha256 != expected_selector_sha256:
             raise PromotionError("live selector bytes differ from the staged selector")
@@ -2240,6 +3163,8 @@ class BrainPromoter:
             "selector_status": selector.status,
             "selector_sha256": selector.body_sha256,
             "release_id": selector.current_release_id,
+            "manifest_sha256": selector.current_manifest_sha256,
+            "previous_manifest_sha256": selector.previous_manifest_sha256,
             "status_before_sha256": sha256_bytes(before_result.stdout),
             "status_after_sha256": sha256_bytes(after_result.stdout),
             "version_annotations": annotations,
@@ -2248,7 +3173,7 @@ class BrainPromoter:
         }
 
     def _intent_payload(self, prepared: PreparedPromotion) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "requested_release_id": prepared.candidate.release_id,
             "release_root": str(prepared.candidate.root),
             "release_manifest_sha256": prepared.candidate.manifest_sha256,
@@ -2283,7 +3208,11 @@ class BrainPromoter:
             "staged_selector": {
                 "sha256": prepared.staged_selector.body_sha256,
                 "release_id": prepared.staged_selector.current_release_id,
+                "manifest_sha256": prepared.staged_selector.current_manifest_sha256,
                 "previous_release_id": prepared.staged_selector.previous_release_id,
+                "previous_manifest_sha256": (
+                    prepared.staged_selector.previous_manifest_sha256
+                ),
                 "audited_at": prepared.staged_selector.audited_at,
             },
             "worker_bundle": {
@@ -2293,6 +3222,8 @@ class BrainPromoter:
                 "config_sha256": prepared.deploy_config_sha256,
                 "node_version": prepared.node_version,
                 "wrangler_version": prepared.wrangler_version,
+                "installation": prepared.wrangler_installation,
+                "executables": prepared.node_executables,
             },
             "audited_at": prepared.audited_at,
             "base_url": self.base_url,
@@ -2304,7 +3235,11 @@ class BrainPromoter:
                 "selector_status": prepared.initial_selector.status,
                 "selector_sha256": prepared.initial_selector.body_sha256,
                 "release_id": prepared.initial_selector.current_release_id,
+                "manifest_sha256": prepared.initial_selector.current_manifest_sha256,
                 "previous_release_id": prepared.initial_selector.previous_release_id,
+                "previous_manifest_sha256": (
+                    prepared.initial_selector.previous_manifest_sha256
+                ),
                 "audited_at": prepared.initial_selector.audited_at,
             },
             "planned": {
@@ -2317,6 +3252,10 @@ class BrainPromoter:
             "first_deploy_approval": self.first_deploy_approval,
             "history": prepared.history,
         }
+        if prepared.activation is not None:
+            payload["retained_artifacts"] = prepared.activation.retained.reference()
+            payload["activation_bundle"] = prepared.activation.reference()
+        return payload
 
     def _retained_intent_payload(
         self,
@@ -2353,6 +3292,9 @@ class BrainPromoter:
         prepared: PreparedPromotion,
         journal: EventJournal,
     ) -> dict[str, object]:
+        if prepared.activation is None:
+            raise PromotionError("deployment has no reviewed activation bundle")
+        self._verify_reviewed_activation(prepared.activation)
         if prepared.public_dir.is_symlink() or prepared.public_dir.resolve(strict=True) != prepared.public_dir:
             raise PromotionError("sealed public directory identity changed before deployment")
         if prepared.bundle_dir.is_symlink() or prepared.bundle_dir.resolve(strict=True) != prepared.bundle_dir:
@@ -2390,12 +3332,27 @@ class BrainPromoter:
         ):
             raise PromotionError("candidate frozen release changed after durable intent")
         if prepared.prior is not None:
-            prior_now = self._verify_release(prepared.prior.release_id, prepared.prior.root)
+            prior_now = self._verify_release(
+                prepared.prior.release_id,
+                prepared.prior.root,
+                allow_legacy_release_id_root=(
+                    prepared.prior.root.name == prepared.prior.release_hex
+                ),
+            )
             if (
                 prior_now.tree != prepared.prior.tree
                 or prior_now.manifest_sha256 != prepared.prior.manifest_sha256
             ):
                 raise PromotionError("retained frozen release changed after durable intent")
+        installation = self._wrangler_installation_identity()
+        if installation != prepared.wrangler_installation:
+            raise PromotionError(
+                "installed Wrangler dependency tree changed after review"
+            )
+        executables = self._node_executables_identity()
+        if executables != prepared.node_executables:
+            raise PromotionError("Node/Wrangler executable bytes changed after review")
+        self._bind_node_executables(executables)
         node_version, wrangler_version = self._verify_toolchain()
         if (
             node_version != prepared.node_version
@@ -2463,11 +3420,17 @@ class BrainPromoter:
         return before, before_result, probe, after, after_result
 
     def _deploy(self, prepared: PreparedPromotion, journal: EventJournal) -> int:
+        if prepared.activation is None:
+            raise PromotionError("deployment requires a reviewed activation bundle")
+        if prepared.node_executables is None:
+            raise PromotionError("deployment requires reviewed Node/Wrangler executables")
+        self._bind_node_executables(prepared.node_executables)
         append_event(
             journal,
             "observation",
             {
                 "phase": "predeploy_evidence",
+                "activation_bundle": prepared.activation.reference(),
                 "selector": journal.append_blob(
                     "predeploy-selector",
                     prepared.initial_selector.body,
@@ -2495,10 +3458,7 @@ class BrainPromoter:
                 ),
             },
         )
-        command = [
-            "npx",
-            "--no-install",
-            "wrangler",
+        command = self._wrangler_command(
             "deploy",
             str(prepared.bundle_entry),
             "--config",
@@ -2511,25 +3471,33 @@ class BrainPromoter:
             prepared.tag,
             "--message",
             prepared.message,
-        ]
+        )
         append_event(
             journal,
             "deploy_invocation",
             {
                 "command": command,
+                "activation_bundle": prepared.activation.reference(),
                 "production_mutation_possible_after_this_event": True,
             },
         )
         try:
             self._final_predeploy_fence(prepared, journal)
-            # This final fence intentionally performs no journal or filesystem
-            # writes.  Wrangler is spawned immediately after the second status
-            # response, minimizing the unavoidable non-CAS control-plane gap.
+            # This final fence performs no journal or filesystem writes. Recheck
+            # the reviewed tool bytes after its status calls, then spawn Wrangler.
             self._remote_predeploy_fence(
                 prepared,
                 config=prepared.deploy_config,
                 phase="immediate-before-deploy",
             )
+            if self._wrangler_installation_identity() != prepared.wrangler_installation:
+                raise PromotionError(
+                    "installed Wrangler dependency tree changed during the immediate predeploy fence"
+                )
+            if self._node_executables_identity() != prepared.node_executables:
+                raise PromotionError(
+                    "Node/Wrangler executable bytes changed during the immediate predeploy fence"
+                )
         except PromotionError as exc:
             append_event(
                 journal,
@@ -2568,7 +3536,12 @@ class BrainPromoter:
                 file=sys.stderr,
             )
             return 1
-        deploy_result = self._run(command, cwd=self.wiki, timeout=self.command_timeout)
+        deploy_result = self._run(
+            command,
+            cwd=self.wiki,
+            timeout=self.command_timeout,
+            env=self._reviewed_node_environment(include_cloudflare=True),
+        )
         combined = deploy_result.stdout + b"\n" + deploy_result.stderr
         candidate_hint = parse_candidate_version(combined)
         append_event(journal,
@@ -2604,6 +3577,7 @@ class BrainPromoter:
 
         canary_ok, canary_payload, _ = self._run_canary(
             prepared.candidate.release_id,
+            prepared.candidate.manifest_sha256,
             journal,
             "candidate",
             prepared.trust_source,
@@ -2615,8 +3589,12 @@ class BrainPromoter:
             try:
                 final_observation = self._observe_expected_release(
                     expected_release_id=prepared.candidate.release_id,
+                    expected_manifest_sha256=prepared.candidate.manifest_sha256,
                     expected_version_id=live_candidate.version_id,
                     expected_previous_release_id=prepared.staged_selector.previous_release_id,
+                    expected_previous_manifest_sha256=(
+                        prepared.staged_selector.previous_manifest_sha256
+                    ),
                     expected_selector_sha256=prepared.staged_selector.body_sha256,
                     expected_audited_at=prepared.staged_selector.audited_at,
                     expected_trust_source=prepared.trust_source,
@@ -2716,9 +3694,13 @@ class BrainPromoter:
             release_id = value.get("release_id")
             if not isinstance(release_id, str) or RELEASE_ID_RE.fullmatch(release_id) is None:
                 raise PromotionError("reconciliation selector has no valid release ID")
+            manifest_sha256 = value.get("manifest_sha256")
+            if manifest_sha256 is not None and not isinstance(manifest_sha256, str):
+                raise PromotionError("reconciliation selector manifest digest is malformed")
             selector = selector_from_probe(
                 probe,
                 release_id,
+                candidate_manifest_sha256=manifest_sha256,
                 allow_first_deploy=False,
                 first_deploy_approval=None,
             )
@@ -2792,8 +3774,18 @@ class BrainPromoter:
                     if observation.selector is not None
                     else None
                 ),
+                "manifest_sha256": (
+                    observation.selector.current_manifest_sha256
+                    if observation.selector is not None
+                    else None
+                ),
                 "previous_release_id": (
                     observation.selector.previous_release_id
+                    if observation.selector is not None
+                    else None
+                ),
+                "previous_manifest_sha256": (
+                    observation.selector.previous_manifest_sha256
                     if observation.selector is not None
                     else None
                 ),
@@ -2857,7 +3849,11 @@ class BrainPromoter:
             or not isinstance(predeploy, dict)
         ):
             raise PromotionError("journal intent lacks verified release/deployment state")
-        candidate = self._verify_release(requested_release, Path(release_root))
+        candidate = self._verify_release(
+            requested_release,
+            Path(release_root),
+            allow_legacy_release_id_root=True,
+        )
         if not self._release_matches_intent(
             candidate,
             manifest_sha256=release_manifest_sha256,
@@ -2905,7 +3901,11 @@ class BrainPromoter:
                 or not isinstance(retained_root, str)
             ):
                 raise PromotionError("journal retained release identity is malformed")
-            retained = self._verify_release(retained_id, Path(retained_root))
+            retained = self._verify_release(
+                retained_id,
+                Path(retained_root),
+                allow_legacy_release_id_root=True,
+            )
             retained_authority = retained_release.get("authority_commit")
             retained_reducer = retained_release.get("reducer_commit")
             if not self._release_matches_intent(
@@ -2917,6 +3917,21 @@ class BrainPromoter:
             ):
                 raise PromotionError("retained release no longer matches the durable intent")
         self._check_recovery_checkout(authority_commit)
+        reviewed_installation = worker_bundle.get("installation")
+        if (
+            reviewed_installation is not None
+            and self._wrangler_installation_identity() != reviewed_installation
+        ):
+            raise PromotionError(
+                "reconciliation Wrangler dependency tree differs from the durable intent"
+            )
+        reviewed_executables = worker_bundle.get("executables")
+        current_executables = self._node_executables_identity()
+        if reviewed_executables is not None and current_executables != reviewed_executables:
+            raise PromotionError(
+                "reconciliation Node/Wrangler executables differ from the durable intent"
+            )
+        self._bind_node_executables(current_executables)
         node_version, wrangler_version = self._verify_toolchain()
         if (
             worker_bundle.get("node_version") != node_version
@@ -2938,12 +3953,25 @@ class BrainPromoter:
         prior_deployment = predeploy.get("deployment_id")
         prior_version = predeploy.get("version_id")
         prior_release = predeploy.get("release_id")
+        prior_manifest_sha256 = predeploy.get("manifest_sha256")
         prior_selector_status = predeploy.get("selector_status")
         prior_selector_sha256 = predeploy.get("selector_sha256")
         prior_previous_release = predeploy.get("previous_release_id")
+        prior_previous_manifest_sha256 = predeploy.get("previous_manifest_sha256")
         prior_audited_at = predeploy.get("audited_at")
         expected_selector_sha256 = staged_selector.get("sha256")
+        expected_manifest_sha256 = staged_selector.get("manifest_sha256")
         expected_previous_release = staged_selector.get("previous_release_id")
+        expected_previous_manifest_sha256 = staged_selector.get(
+            "previous_manifest_sha256"
+        )
+        staged_has_manifest_identity = "manifest_sha256" in staged_selector
+        if staged_has_manifest_identity != (
+            "previous_manifest_sha256" in staged_selector
+        ):
+            raise PromotionError(
+                "journal staged selector manifest identity is incomplete"
+            )
         expected_audited_at = staged_selector.get("audited_at")
         command_timeout_raw = planned.get("command_timeout_seconds")
         if (
@@ -2963,6 +3991,13 @@ class BrainPromoter:
             or not expected_audited_at
         ):
             raise PromotionError("journal intent predeploy identity is malformed")
+        if staged_has_manifest_identity:
+            if expected_manifest_sha256 != candidate.manifest_sha256:
+                raise PromotionError(
+                    "journal staged selector names the wrong candidate manifest"
+                )
+        elif expected_manifest_sha256 is not None:
+            raise PromotionError("legacy journal staged manifest identity is malformed")
         try:
             recorded_command_timeout = float(command_timeout_raw)
         except (TypeError, ValueError) as exc:
@@ -2973,6 +4008,16 @@ class BrainPromoter:
             not isinstance(prior_release, str) or RELEASE_ID_RE.fullmatch(prior_release) is None
         ):
             raise PromotionError("journal intent prior release is malformed")
+        for value, label in (
+            (prior_manifest_sha256, "prior manifest digest"),
+            (prior_previous_manifest_sha256, "prior previous manifest digest"),
+            (expected_previous_manifest_sha256, "expected previous manifest digest"),
+        ):
+            if value is not None and (
+                not isinstance(value, str)
+                or re.fullmatch(r"[0-9a-f]{64}", value) is None
+            ):
+                raise PromotionError(f"journal {label} is malformed")
         for value, label in (
             (prior_previous_release, "prior previous release"),
             (expected_previous_release, "expected previous release"),
@@ -2988,6 +4033,23 @@ class BrainPromoter:
             retained.release_id if retained is not None else None,
         }:
             raise PromotionError("journal prior release lacks a verified frozen artifact")
+        if prior_release is None:
+            verified_prior_manifest_sha256 = None
+        elif (
+            prior_manifest_sha256 in {None, candidate.manifest_sha256}
+            and prior_release == candidate.release_id
+        ):
+            verified_prior_manifest_sha256 = candidate.manifest_sha256
+        elif (
+            retained is not None
+            and prior_manifest_sha256 in {None, retained.manifest_sha256}
+            and prior_release == retained.release_id
+        ):
+            verified_prior_manifest_sha256 = retained.manifest_sha256
+        else:
+            raise PromotionError(
+                "journal prior manifest lacks a verified frozen artifact"
+            )
 
         event_kinds = [event.get("kind") for event in journal.events]
         deploy_invocation_started = any(
@@ -3013,7 +4075,10 @@ class BrainPromoter:
             and first.selector_probe.sha256 == expected_selector_sha256
             and first.selector is not None
             and first.selector.current_release_id == requested_release
+            and first.selector.current_manifest_sha256 == expected_manifest_sha256
             and first.selector.previous_release_id == expected_previous_release
+            and first.selector.previous_manifest_sha256
+            == expected_previous_manifest_sha256
             and first.selector.audited_at == expected_audited_at
         )
         if annotated_for_attempt and not candidate_selector_exact:
@@ -3028,6 +4093,7 @@ class BrainPromoter:
                 )
             canary_ok, payload, _ = self._run_canary(
                 requested_release,
+                candidate.manifest_sha256,
                 journal,
                 "reconcile-candidate",
                 expected_trust_source,
@@ -3145,6 +4211,7 @@ class BrainPromoter:
                 if prior_release is not None:
                     canary_ok, payload, _ = self._run_canary(
                         prior_release,
+                        verified_prior_manifest_sha256,
                         journal,
                         "reconcile-prior",
                         expected_trust_source,
@@ -3221,7 +4288,12 @@ class BrainPromoter:
                     + ", ".join(journal.attempt_id for journal in incomplete)
                 )
 
-            prepared = self.prepare()
+            activation: ReviewedActivation | None = None
+            if self.mode == "execute":
+                activation = self._verify_reviewed_activation()
+                prepared = self._prepare_reviewed_activation(activation)
+            else:
+                prepared = self.prepare()
             work_root = prepared.public_dir.parent
             try:
                 if self.mode == "dry-run":
@@ -3273,7 +4345,8 @@ class BrainPromoter:
                         pass
                     raise
             finally:
-                remove_sealed_tree(work_root)
+                if activation is None:
+                    remove_sealed_tree(work_root)
 
 
 def _env_int(name: str, default: int) -> int:
@@ -3306,6 +4379,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--release-root", type=Path)
     parser.add_argument("--public-baseline-id")
     parser.add_argument("--public-baseline-root", type=Path)
+    parser.add_argument("--activation-bundle-id")
+    parser.add_argument("--activation-bundle-root", type=Path)
+    parser.add_argument("--expected-semantic-baseline-id")
     parser.add_argument("--repo-root", type=Path, required=True)
     parser.add_argument("--python", type=Path, required=True)
     parser.add_argument(
@@ -3382,9 +4458,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                 args.release_root,
                 args.public_baseline_id,
                 args.public_baseline_root,
+                args.activation_bundle_id,
+                args.activation_bundle_root,
+                args.expected_semantic_baseline_id,
             )
         ):
-            parser.error("reconciliation does not accept release or baseline arguments")
+            parser.error(
+                "reconciliation does not accept release, baseline, or activation-bundle arguments"
+            )
     elif any(
         value is None
         for value in (
@@ -3416,6 +4497,9 @@ def main(argv: list[str] | None = None) -> int:
             release_root=args.release_root,
             public_baseline_id=args.public_baseline_id,
             public_baseline_root=args.public_baseline_root,
+            activation_bundle_id=args.activation_bundle_id,
+            activation_bundle_root=args.activation_bundle_root,
+            expected_semantic_baseline_id=args.expected_semantic_baseline_id,
             receipt_root=args.receipt_dir,
             base_url=PRODUCTION_ORIGIN,
             mode=mode,

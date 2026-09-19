@@ -1108,6 +1108,66 @@ class ReplayRunnerTest(unittest.TestCase):
                 _isolation=self.isolation,
             )
 
+    def test_rechecks_input_closure_after_each_stage(self) -> None:
+        member_path = self.context.members("concept-graph")[0]
+        stages: list[str] = []
+
+        def execute(command, _cwd, _environment, _isolation) -> int:
+            stage_id = self._stage_id(command)
+            stages.append(stage_id)
+            self._write_stage_outputs(stage_id)
+            if stage_id == self.context.stages[0].id:
+                member_path.chmod(0o600)
+                member_path.write_bytes(b"changed during replay\n")
+                member_path.chmod(0o444)
+            return 0
+
+        with self.assertRaisesRegex(runner.ReplayExecutionError, "metadata changed"):
+            self._run(
+                _executor=execute,
+                _isolation=self.isolation,
+            )
+        self.assertEqual(stages, [self.context.stages[0].id])
+
+    def test_rechecks_input_closure_after_environment_probe(self) -> None:
+        member_path = self.context.members("concept-graph")[0]
+
+        def probe(command, cwd, environment, isolation):
+            result = self._successful_probe(command, cwd, environment, isolation)
+            member_path.chmod(0o600)
+            member_path.write_bytes(b"changed during environment probe\n")
+            member_path.chmod(0o444)
+            return result
+
+        execute = mock.Mock()
+        with self.assertRaisesRegex(runner.ReplayExecutionError, "metadata changed"):
+            self._run(
+                _probe_executor=probe,
+                _executor=execute,
+                _isolation=self.isolation,
+            )
+        execute.assert_not_called()
+
+    def test_input_mutation_cannot_hide_by_restoring_original_bytes(self) -> None:
+        member_path = self.context.members("concept-graph")[0]
+        original = member_path.read_bytes()
+
+        def execute(command, _cwd, _environment, _isolation) -> int:
+            stage_id = self._stage_id(command)
+            self._write_stage_outputs(stage_id)
+            if stage_id == self.context.stages[0].id:
+                member_path.chmod(0o600)
+                member_path.write_bytes(b"temporary replacement\n")
+                member_path.write_bytes(original)
+                member_path.chmod(0o444)
+            return 0
+
+        with self.assertRaisesRegex(runner.ReplayExecutionError, "metadata changed"):
+            self._run(
+                _executor=execute,
+                _isolation=self.isolation,
+            )
+
     def test_platform_boundary_is_mandatory(self) -> None:
         interpreter = Path(sys.executable).resolve()
         with mock.patch.object(runner.sys, "platform", "unsupported"):

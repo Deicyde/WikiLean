@@ -578,6 +578,12 @@ export interface BrainFixtureOpts {
   releaseReplay?: unknown;
   // Mutate a complete manifest after its identity is computed, to model tampering.
   mutateReleaseManifest?: (manifest: Record<string, unknown>) => void;
+  // Change only an identity-excluded audit timestamp while preserving release_id.
+  releaseCreatedAt?: string;
+  // Override only the selector's exact manifest claim, to model byte-identity drift.
+  selectorManifestSha256?: string;
+  // Serve the deployed v1 selector shape during the v2 migration.
+  legacyReleaseSelector?: boolean;
   // Omit paths before computing identity, producing a self-consistent but incomplete release.
   omitReleaseArtifacts?: string[];
   // Set before computing identity; current runtime profile must reject non-null
@@ -596,6 +602,7 @@ interface FixtureRelease {
   manifest: Record<string, unknown>;
   releaseId: string;
   releaseHex: string;
+  manifestSha256: string;
 }
 
 function fixtureDigest(value: string): string {
@@ -705,17 +712,24 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
       environment_sha256: "4".repeat(64),
     },
     artifacts,
-    attestations: opts.releaseProfile === "brain-offline-replay-v1" ? [
+    attestations: [
       { kind: "build", path: "attestations/build.json", sha256: "a".repeat(64), bytes: 1 },
       { kind: "validation", path: "attestations/validation.json", sha256: "b".repeat(64), bytes: 1 },
-    ] : [],
+    ],
     compatible_overlay_generation_ids: [],
-    created_at: "2026-07-15T00:00:00Z",
+    created_at: opts.releaseCreatedAt ?? "2026-07-15T00:00:00Z",
   };
   const releaseId = fixtureReleaseIdentity(releaseManifest);
   releaseManifest.release_id = opts.manifestReleaseId ?? releaseId;
   opts.mutateReleaseManifest?.(releaseManifest);
-  return { assetBodies, manifest: releaseManifest, releaseId, releaseHex: releaseId.slice("sha256:".length) };
+  const manifestSha256 = fixtureDigest(JSON.stringify(releaseManifest));
+  return {
+    assetBodies,
+    manifest: releaseManifest,
+    releaseId,
+    releaseHex: releaseId.slice("sha256:".length),
+    manifestSha256,
+  };
 }
 
 const DEFAULT_FIXTURE_RELEASE = buildFixtureRelease({});
@@ -725,17 +739,27 @@ export const FIXTURE_RELEASE_HEX = DEFAULT_FIXTURE_RELEASE.releaseHex;
 export function installBrainFixture(
   env: Env,
   opts: BrainFixtureOpts = {},
-): { releaseId: string; releaseHex: string } {
+): { releaseId: string; releaseHex: string; manifestSha256: string } {
   const fixture = buildFixtureRelease(opts);
   const { releaseId, releaseHex } = fixture;
-  const releaseBase = `/assets/brain/releases/${releaseHex}`;
-  const selector = {
-    schema: "wikilean.release-selector/v1",
-    release_id: releaseId,
-    release: releaseHex,
-    manifest: `${releaseBase}/release.json`,
-    audited_at: "2026-07-15T00:00:00Z",
-  };
+  const manifestSha256 = opts.selectorManifestSha256 ?? fixture.manifestSha256;
+  const releaseBase = `/assets/brain/releases/${opts.legacyReleaseSelector ? releaseHex : manifestSha256}`;
+  const selector = opts.legacyReleaseSelector
+    ? {
+      schema: "wikilean.release-selector/v1",
+      release_id: releaseId,
+      release: releaseHex,
+      manifest: `${releaseBase}/release.json`,
+      audited_at: "2026-07-15T00:00:00Z",
+    }
+    : {
+      schema: "wikilean.release-selector/v2",
+      release_id: releaseId,
+      release: releaseHex,
+      manifest_sha256: manifestSha256,
+      manifest: `${releaseBase}/release.json`,
+      audited_at: "2026-07-15T00:00:00Z",
+    };
   let remainingXrefFailures = opts.xrefIndexFailures ?? 0;
   const missingAssets = new Set(opts.missingAssets ?? []);
   (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } }).ASSETS = {
@@ -791,5 +815,5 @@ export function installBrainFixture(
       return new Response("not found", { status: 404 });
     },
   };
-  return { releaseId, releaseHex };
+  return { releaseId, releaseHex, manifestSha256 };
 }

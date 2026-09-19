@@ -687,7 +687,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
 
     install("xref-lru-b");
     expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
-    const releaseBXref = `/assets/brain/releases/${releaseB.releaseHex}/xref_index.json`;
+    const releaseBXref = `/assets/brain/releases/${releaseB.manifestSha256}/xref_index.json`;
     expect(paths.filter((path) => path === releaseBXref)).toHaveLength(2);
   });
 

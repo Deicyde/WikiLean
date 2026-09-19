@@ -10,7 +10,9 @@ evidence bundle and Jack-gated P1C rollout/rollback drill. Keep the nightly
 An exact frozen release is eligible only after all existing data/page gates and these
 release gates pass:
 
-1. `brain/tools/build_release.py` freezes a content-addressed release in `site/out/brain-releases/<64hex>/`.
+1. `brain/tools/build_release.py` freezes an exact manifest namespace in
+   `site/out/brain-releases/<manifest-sha256>/`. The logical `release_id` remains
+   timestamp and attestation independent.
 2. `brain/tools/verify_release.py` independently verifies the frozen bytes and attestations.
    The current `brain-current-v1` profile requires the WLBN SQLite schema v2 and
    path-specific media/logical formats; legacy schema-v1 indexes are not publishable.
@@ -22,8 +24,10 @@ release gates pass:
    exact authority commit, so ignored or dirty `wiki/public` output cannot self-attest.
 4. `wiki/scripts/build-public.ts` copies only that verified baseline into a fresh
    external tree, then overlays the requested release, exact retained production
-   release, byte-identical aliases, selector, and Brain page. Mutable or ignored
-   checkout output cannot leak into a promotion.
+   release, byte-identical aliases, selector, and Brain page. Every immutable public
+   namespace is named by the SHA-256 of its exact `release.json` bytes, not by the
+   timestamp-independent logical release ID. Mutable or ignored checkout output cannot
+   leak into a promotion.
 5. Worker typecheck/unit tests run, Wrangler emits a reviewed bundle in dry-run mode,
    and a second no-bundle dry-run proves the sealed bundle and external asset tree are
    accepted together. Node 22 and the installed Wrangler version must match the lockfile.
@@ -42,7 +46,8 @@ release gates pass:
 9. Wrangler runs once from the sealed bundle with `--no-bundle --strict`, an attempt-unique
    tag, and an attempt-unique message. The candidate version is adopted only when those
    annotations, 100% traffic, the exact staged selector bytes, and the canary agree.
-10. `site/ops/brain-canary.py` waits for selector, manifest, required view assets,
+10. `site/ops/brain-canary.py` waits for the selector's exact manifest digest,
+   required view assets,
    cell manifest/shard, `/brain`, `/brain.html`, REST API/cursor, MCP, aliases, and
    representative files from the frozen non-Brain baseline to agree.
 
@@ -135,8 +140,8 @@ To verify a frozen release independently:
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" brain/tools/verify_release.py \
-  --manifest /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<release-hex>/release.json \
-  --root /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<release-hex>
+  --manifest /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<manifest-hex>/release.json \
+  --root /Users/jackmccarthy/projects/WikiLean/site/out/brain-releases/<manifest-hex>
 ```
 
 ## Freeze the non-Brain public baseline
@@ -152,8 +157,8 @@ cd /Users/jackmccarthy/projects/WikiLean
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/build_static_pages.py
 (cd wiki && npm ci)
 (cd wiki && node --experimental-strip-types scripts/build-public.ts \
-  --brain-release-manifest /absolute/release-store/<bootstrap-release-hex>/release.json \
-  --brain-release-dir /absolute/release-store/<bootstrap-release-hex>)
+  --brain-release-manifest /absolute/release-store/<bootstrap-manifest-hex>/release.json \
+  --brain-release-dir /absolute/release-store/<bootstrap-manifest-hex>)
 (cd wiki && npm run build:indexes)
 
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py attest \
@@ -214,8 +219,8 @@ workspace:
 
 ```bash
 cd "$PROMOTION_WORKTREE"
-bash site/ops/brain-promote-release.sh sha256:<candidate-hex> \
-  --release-root /absolute/releases/<candidate-hex> \
+bash site/ops/brain-promote-release.sh sha256:<candidate-release-hex> \
+  --release-root /absolute/releases/<candidate-manifest-hex> \
   --public-baseline-id sha256:<public-baseline-hex> \
   --public-baseline-root /absolute/public-baselines/<public-baseline-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
@@ -247,8 +252,10 @@ resolution uses private shims to those approved executables. It requires Node 22
 Python 3.12, a credential-free allowlisted environment, bounded process groups, and
 pre/post clean-authority fences. It runs exactly `npm ci`, `npm run test:ci`, and
 `PYTHON=<selected> ./scripts/ci-python.sh`; the generated canonical
-`wikilean.brain-activation-ci/v2` evidence retains the exact argv, working directory,
-return code, tool-version probes, and complete stdout/stderr for every successful gate.
+`wikilean.brain-activation-ci/v3` evidence retains the exact argv, working directory,
+return code, tool-version probes, the canonical Node executable path, digest, and size, and
+complete stdout/stderr for every successful gate. The freezer requires that exact Node
+identity and version to equal the promoter dry-run's Worker toolchain.
 `brain_activation_ci.py` remains useful as a standalone preview, but its output is not a
 freeze input.
 
@@ -267,8 +274,8 @@ Freeze the completed review set from the promotion checkout:
 
 ```bash
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py freeze \
-  --release-manifest /absolute/releases/<candidate-hex>/release.json \
-  --semantic-baseline-manifest /absolute/releases/<baseline-release-hex>/release.json \
+  --release-manifest /absolute/releases/<candidate-manifest-hex>/release.json \
+  --semantic-baseline-manifest /absolute/releases/<baseline-manifest-hex>/release.json \
   --expected-semantic-baseline-id sha256:<baseline-release-hex> \
   --public-baseline-manifest /absolute/public-baselines/<baseline-hex>/manifest.json \
   --source-attestation "$PROMOTION_WORKTREE/wiki/public-asset-source-attestation.json" \
@@ -303,9 +310,10 @@ The freezer checks complete releases, baseline/source identity, a fresh fixed
 `--limit 100 --iterations 5 --warmup 1 --check-limit 100` SQLite measurement,
 semantic detail and summaries, retained dry-run bytes, clean worktree separation, and its
 fresh CI receipt before atomically publishing a read-only content-addressed directory. It
-rejects a candidate self-diff and requires the reviewed prior release ID as an external
-trust anchor. Verify the returned root independently with both returned IDs and retain its
-bundle ID/root for review:
+rejects an identical candidate/baseline manifest and binds the reviewed prior release's
+logical ID as an external trust anchor. When the promoter retained a live release, its
+logical ID and exact manifest digest must both match that baseline. Verify the returned root
+independently with both returned IDs and retain its bundle ID/root for review:
 
 ```bash
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py verify \
@@ -338,7 +346,7 @@ release authority commit:
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
 bash site/ops/brain-promote-release.sh sha256:<64hex> \
-  --release-root /absolute/release-store/<release-hex> \
+  --release-root /absolute/release-store/<manifest-hex> \
   --public-baseline-id sha256:<baseline-hex> \
   --public-baseline-root /absolute/public-baselines/<baseline-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
@@ -357,13 +365,22 @@ the mutating form is:
 
 ```bash
 WIKILEAN_BRAIN_DEPLOY=1 bash site/ops/brain-promote-release.sh sha256:<64hex> \
-  --release-root /absolute/release-store/<release-hex> \
+  --release-root /absolute/release-store/<manifest-hex> \
   --public-baseline-id sha256:<baseline-hex> \
   --public-baseline-root /absolute/public-baselines/<baseline-hex> \
+  --activation-bundle-id sha256:<activation-bundle-hex> \
+  --activation-bundle-root \
+    "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE/<activation-bundle-hex>" \
+  --expected-semantic-baseline-id sha256:<baseline-release-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
   --execute \
   --approval-note "Jack approved release <id>, baseline <id>, and this window"
 ```
+
+Execution re-verifies the exact activation bundle and its retained dry-run artifact,
+then uploads those reviewed public, Worker, and Wrangler bytes. It does not regenerate
+deployment inputs. The bundle ID, root, semantic baseline, and retained artifact identity
+are recorded in the durable intent and deployment event.
 
 If production has no release-qualified selector, the promoter fails unless the
 operator also supplies `--allow-first-deploy-without-selector`. That exception requires
@@ -468,13 +485,15 @@ automate frozen-store garbage collection around assumed semantic equivalence.
 
 ## Canary
 
-Run the same release-qualified canary manually with the full release ID:
+Run the same release-qualified canary manually with both the logical release ID and
+the bare SHA-256 digest of the exact `release.json` bytes:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain-canary.py \
   --base-url https://wikilean.jackmccarthy.org \
   --expected-release-id sha256:<release-hex> \
+  --expected-manifest-sha256 <manifest-hex> \
   --public-baseline-id sha256:<baseline-hex> \
   --public-baseline-root /absolute/public-baselines/<baseline-hex> \
   --timeout 300 \
@@ -487,7 +506,8 @@ Each response is capped at 32 MiB. Success prints versioned JSON including
 the promoter appends it to the durable attempt journal. The initial operational target is
 convergence within five minutes; this is a target, not a measured rollback SLO.
 
-The canary requires all of the following to agree on the expected release:
+The canary requires all of the following to agree on the expected logical release and
+exact manifest:
 
 - Strict `current.json` selector and immutable `release.json` identity.
 - Cell manifest, a deterministic manifest-declared shard, labels, supercells,
@@ -551,6 +571,7 @@ cd /Users/jackmccarthy/projects/WikiLean
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain-canary.py \
   --base-url https://wikilean.jackmccarthy.org \
   --expected-release-id sha256:<predeploy-release-hex> \
+  --expected-manifest-sha256 <predeploy-manifest-hex> \
   --timeout 300 \
   --interval 5
 ```

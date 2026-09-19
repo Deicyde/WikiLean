@@ -132,9 +132,9 @@ describe("Brain release selection", () => {
       expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
     });
 
-  it("preserves frozen-profile runtime attestation handling", async () => {
+  it("rejects a current release without build and validation attestations", async () => {
     const h = harness({ mutateReleaseManifest: (manifest) => { manifest.attestations = []; } });
-    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
   });
 
   it("revalidates the selector per request and memoizes a verified immutable manifest", async () => {
@@ -238,6 +238,45 @@ describe("Brain release selection", () => {
     expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).j.release_id).toBe(second.releaseId);
   });
 
+  it("separates exact manifests that share one logical release ID", async () => {
+    const paths: string[] = [];
+    const firstOptions = {
+      releaseCreatedAt: "2026-07-15T00:00:00Z",
+      onAssetPath: (path: string) => paths.push(path),
+    };
+    const h = harness(firstOptions);
+    const first = installBrainFixture(h.env, firstOptions);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+
+    const second = installBrainFixture(h.env, {
+      releaseCreatedAt: "2026-07-16T00:00:00Z",
+      onAssetPath: (path) => paths.push(path),
+    });
+    expect(second.releaseId).toBe(first.releaseId);
+    expect(second.manifestSha256).not.toBe(first.manifestSha256);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect(paths).toContain(`/assets/brain/releases/${first.manifestSha256}/release.json`);
+    expect(paths).toContain(`/assets/brain/releases/${second.manifestSha256}/release.json`);
+  });
+
+  it("fails closed when selector manifest bytes disagree with its exact digest", async () => {
+    const h = harness({ selectorManifestSha256: "f".repeat(64) });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(503);
+    expect(j).toMatchObject({ ok: false, release_id: null, snapshot: null });
+  });
+
+  it("reads a v1 selector without caching its unbound manifest URL", async () => {
+    const paths: string[] = [];
+    const h = harness({
+      legacyReleaseSelector: true,
+      onAssetPath: (path) => paths.push(path),
+    });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+    expect(paths.filter((path) => path.endsWith("/release.json"))).toHaveLength(2);
+  });
+
   it("evicts the least-recently-used Brain release while retaining fixed asset memos", async () => {
     const paths: string[] = [];
     const observed = (path: string) => paths.push(path);
@@ -245,7 +284,10 @@ describe("Brain release selection", () => {
     const first = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
     expect(first.status).toBe(200);
     const releaseA = first.j.release_id as string;
-    const releaseAHex = releaseA.slice("sha256:".length);
+    const releaseAManifest = installBrainFixture(h.env, {
+      releaseVariant: "lru-a",
+      onAssetPath: observed,
+    }).manifestSha256;
     expect((await getJson(h, "/api/brain/decl?name=CommGroup")).status).toBe(200);
 
     const releaseB = installBrainFixture(h.env, { releaseVariant: "lru-b", onAssetPath: observed });
@@ -260,8 +302,8 @@ describe("Brain release selection", () => {
     expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
     expect((await getJson(h, "/api/brain/decl?name=CommGroup")).status).toBe(200);
 
-    const releaseABase = `/assets/brain/releases/${releaseAHex}`;
-    const releaseBBase = `/assets/brain/releases/${releaseB.releaseHex}`;
+    const releaseABase = `/assets/brain/releases/${releaseAManifest}`;
+    const releaseBBase = `/assets/brain/releases/${releaseB.manifestSha256}`;
     expect(paths.filter((path) => path === `${releaseABase}/release.json`)).toHaveLength(1);
     expect(paths.filter((path) => path === `${releaseABase}/cells/aliases.json`)).toHaveLength(1);
     expect(paths.filter((path) => path === `${releaseBBase}/release.json`)).toHaveLength(2);

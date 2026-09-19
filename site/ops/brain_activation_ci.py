@@ -23,9 +23,10 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 
-EVIDENCE_SCHEMA = "wikilean.brain-activation-ci/v2"
+EVIDENCE_SCHEMA = "wikilean.brain-activation-ci/v3"
 ENVIRONMENT_POLICY = "wikilean.brain-activation-ci-environment/v2"
 GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 GIT_VERSION_RE = re.compile(r"^git version [^\r\n]+$")
 NODE_22_RE = re.compile(r"^v22\.[0-9]+\.[0-9]+$")
 NPM_VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$")
@@ -213,7 +214,11 @@ def validate_ci_evidence(
     npm = _object(tools.get("npm"), "activation CI npm tool")
     python = _object(tools.get("python"), "activation CI Python tool")
     _exact_keys(git, {"path", "version", "probe"}, "activation CI Git tool")
-    _exact_keys(node, {"path", "version", "probe"}, "activation CI Node tool")
+    _exact_keys(
+        node,
+        {"path", "sha256", "bytes", "version", "probe"},
+        "activation CI Node tool",
+    )
     _exact_keys(npm, {"path", "version", "probe"}, "activation CI npm tool")
     _exact_keys(python, {"path", "version", "probe"}, "activation CI Python tool")
     git_version = git.get("version")
@@ -228,6 +233,17 @@ def validate_ci_evidence(
         raise ActivationCIError("activation CI evidence has an invalid Git version")
     if not isinstance(node_version, str) or NODE_22_RE.fullmatch(node_version) is None:
         raise ActivationCIError("activation CI evidence did not use Node 22")
+    if (
+        not isinstance(node.get("sha256"), str)
+        or SHA256_RE.fullmatch(node["sha256"]) is None
+    ):
+        raise ActivationCIError("activation CI evidence has an invalid Node executable digest")
+    if (
+        isinstance(node.get("bytes"), bool)
+        or not isinstance(node.get("bytes"), int)
+        or node["bytes"] <= 0
+    ):
+        raise ActivationCIError("activation CI evidence has an invalid Node executable byte count")
     if not isinstance(npm_version, str) or NPM_VERSION_RE.fullmatch(npm_version) is None:
         raise ActivationCIError("activation CI evidence has an invalid npm version")
     if not isinstance(python_version, str) or PYTHON_312_RE.fullmatch(python_version) is None:
@@ -244,6 +260,8 @@ def validate_ci_evidence(
     assert isinstance(node_path, str)
     assert isinstance(npm_path, str)
     assert isinstance(python_path, str)
+    if os.path.normpath(node_path) != node_path:
+        raise ActivationCIError("activation CI Node path must be canonical")
     _validate_command_evidence(
         git.get("probe"),
         name="git_version",
@@ -458,7 +476,7 @@ class ActivationCIRecorder:
     ) -> None:
         self.repo = repo_root.expanduser().resolve(strict=True)
         self.git = self._absolute_path(git, "Git")
-        self.node = self._absolute_path(node, "Node")
+        self.node = self._canonical_executable_path(node, "Node")
         self.npm = self._absolute_path(npm, "npm")
         candidate_python = python.expanduser()
         if not candidate_python.is_absolute():
@@ -476,6 +494,14 @@ class ActivationCIRecorder:
         if not candidate.is_absolute():
             raise ActivationCIError(f"selected {label} path must be absolute")
         return Path(os.path.abspath(candidate))
+
+    @classmethod
+    def _canonical_executable_path(cls, path: Path, label: str) -> Path:
+        candidate = cls._absolute_path(path, label)
+        try:
+            return candidate.resolve(strict=True)
+        except OSError as exc:
+            raise ActivationCIError(f"selected {label} executable is invalid: {exc}") from exc
 
     @staticmethod
     def _validate_executable(path: Path, label: str) -> None:
@@ -507,6 +533,20 @@ class ActivationCIRecorder:
             self._validate_executable(executable, label)
         if not os.access(self.repo / "scripts" / "ci-python.sh", os.X_OK):
             raise ActivationCIError("scripts/ci-python.sh is not executable")
+
+    def _node_identity(self) -> dict[str, object]:
+        try:
+            resolved = self.node.resolve(strict=True)
+            if resolved != self.node:
+                raise ActivationCIError("selected Node path is not canonical")
+            body = self.node.read_bytes()
+        except OSError as exc:
+            raise ActivationCIError(f"cannot read selected Node executable: {exc}") from exc
+        return {
+            "path": str(self.node),
+            "sha256": hashlib.sha256(body).hexdigest(),
+            "bytes": len(body),
+        }
 
     def _create_tool_shims(self, tool_bin: Path) -> None:
         tool_bin.mkdir(mode=0o700)
@@ -665,6 +705,7 @@ class ActivationCIRecorder:
             )
 
             before = self._checkout_state("pre-CI")
+            node_identity = self._node_identity()
             completed: list[dict[str, object]] = []
             git_probe: RunResult | None = None
             node_probe: RunResult | None = None
@@ -764,6 +805,8 @@ class ActivationCIRecorder:
                 raise
 
             after = self._validate_post_state(before)
+            if self._node_identity() != node_identity:
+                raise ActivationCIError("selected Node executable changed while CI was running")
             assert (
                 git_probe is not None
                 and node_probe is not None
@@ -795,7 +838,7 @@ class ActivationCIRecorder:
                         ),
                     },
                     "node": {
-                        "path": str(self.node),
+                        **node_identity,
                         "version": self._version_text(node_probe, "Node"),
                         "probe": self._command_evidence(
                             "node_version", node_probe, self.wiki

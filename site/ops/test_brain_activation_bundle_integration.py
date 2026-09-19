@@ -167,6 +167,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             "site/ops/brain_promote_release.py",
             "site/ops/brain_public_baseline.py",
             "brain/tools/authority_contracts.py",
+            "brain/tools/release_selector_contracts.py",
             "brain/tools/execution_environment.py",
             "brain/tools/build_release.py",
             "brain/tools/measure_store.py",
@@ -513,7 +514,40 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             None,
             None,
             audited_at,
+            str(stage_result["manifest_sha256"]),
+            None,
+            None,
         )
+        wrangler_installation = {
+            "schema": "wikilean.node-modules-inventory/v1",
+            "root": str(promotion / "wiki" / "node_modules"),
+            "package_lock_sha256": "8" * 64,
+            "objects": 1,
+            "bytes": 1,
+            "symlinks": 0,
+            "sha256": "9" * 64,
+        }
+        node_body = self.node.read_bytes()
+        node_executables = {
+            "schema": "wikilean.node-executables/v1",
+            "node": {
+                "path": str(self.node),
+                "sha256": hashlib.sha256(node_body).hexdigest(),
+                "bytes": len(node_body),
+            },
+            "wrangler": {
+                "path": str(
+                    promotion
+                    / "wiki"
+                    / "node_modules"
+                    / "wrangler"
+                    / "bin"
+                    / "wrangler.js"
+                ),
+                "sha256": "b" * 64,
+                "bytes": 1,
+            },
+        }
         prepared = promoter.PreparedPromotion(
             attempt_id,
             audited_at,
@@ -548,7 +582,9 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             "4.120.0",
             "certifi:integration",
             history,
-            history_raw,
+            history_raw=history_raw,
+            wrangler_installation=wrangler_installation,
+            node_executables=node_executables,
         )
         receipt_root = self.base / "receipts"
         receipt_root.mkdir()
@@ -599,7 +635,9 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                 "staged_selector": {
                     "sha256": hashlib.sha256(staged_body).hexdigest(),
                     "release_id": candidate["release_id"],
+                    "manifest_sha256": stage_result["manifest_sha256"],
                     "previous_release_id": None,
+                    "previous_manifest_sha256": None,
                     "audited_at": audited_at,
                 },
                 "worker_bundle": {
@@ -611,6 +649,8 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                     ).hexdigest(),
                     "node_version": node_version.strip(),
                     "wrangler_version": "4.120.0",
+                    "installation": wrangler_installation,
+                    "executables": node_executables,
                 },
                 "audited_at": audited_at,
                 "base_url": "https://wikilean.jackmccarthy.org",
@@ -622,7 +662,9 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                     "selector_status": 404,
                     "selector_sha256": hashlib.sha256(b"").hexdigest(),
                     "release_id": None,
+                    "manifest_sha256": None,
                     "previous_release_id": None,
+                    "previous_manifest_sha256": None,
                     "audited_at": None,
                 },
                 "planned": {
@@ -712,6 +754,59 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
         )
         verified = json.loads(verify.stdout)
         self.assertEqual(verified["bundle_id"], result["bundle_id"])
+
+        class IntegrationPromoter(promoter.BrainPromoter):
+            def _verify_release(
+                inner,
+                expected_release_id,
+                root_input,
+                *,
+                allow_legacy_release_id_root=False,
+            ):
+                del allow_legacy_release_id_root
+                if (
+                    expected_release_id == candidate_info.release_id
+                    and Path(root_input) == candidate_info.root
+                ):
+                    return candidate_info
+                raise AssertionError((expected_release_id, root_input))
+
+            def _check_git_authority(inner, expected_commit):
+                self.assertEqual(expected_commit, authority)
+                return expected_commit
+
+            def _verify_toolchain(inner):
+                return node_version.strip(), "4.120.0"
+
+            def _wrangler_installation_identity(inner):
+                return wrangler_installation
+
+            def _node_executables_identity(inner):
+                return node_executables
+
+        execution = IntegrationPromoter(
+            repo_root=promotion,
+            python=Path(python),
+            release_id=str(candidate["release_id"]),
+            release_root=Path(str(candidate["root"])),
+            public_baseline_id=baseline.baseline_id,
+            public_baseline_root=baseline.root,
+            activation_bundle_id=result["bundle_id"],
+            activation_bundle_root=Path(result["root"]),
+            expected_semantic_baseline_id=str(prior["release_id"]),
+            receipt_root=receipt_root,
+            base_url=promoter.PRODUCTION_ORIGIN,
+            mode="execute",
+            allow_first_deploy=True,
+            first_deploy_approval="integration fixture approval",
+            approval_note="integration reviewed activation",
+        )
+        reviewed = execution._verify_reviewed_activation()
+        executable = execution._prepare_reviewed_activation(reviewed)
+        self.assertEqual(executable.activation.bundle_id, result["bundle_id"])
+        self.assertEqual(executable.public_dir, retained.public_dir)
+        self.assertEqual(executable.bundle_entry, retained.worker_entry)
+        self.assertEqual(executable.deploy_config, retained.config)
 
 
 if __name__ == "__main__":

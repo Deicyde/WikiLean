@@ -66,18 +66,23 @@ class FrontierPageTest(unittest.TestCase):
         self.assertIn('const RELEASE_SELECTOR_URL = "/assets/brain/current.json"', self.html)
         self.assertIn('fetch(RELEASE_SELECTOR_URL, {cache: "no-cache"})', self.html)
         self.assertEqual(self.html.count("await selectRelease()"), 1)
-        self.assertIn('const releaseBase = "/assets/brain/releases/" + match[1] + "/"', self.html)
+        self.assertIn('const namespace = v2 ? selector.manifest_sha256 : match[1]', self.html)
+        self.assertIn('const releaseBase = "/assets/brain/releases/" + namespace + "/"', self.html)
+        self.assertIn('await sha256Hex(manifestBytes) !== selector.manifest_sha256', self.html)
+        self.assertIn('RELEASE_ARTIFACTS = artifacts', self.html)
+        self.assertIn('bytes.byteLength !== expected.bytes', self.html)
+        self.assertIn('await sha256Hex(bytes) !== expected.sha256', self.html)
         self.assertIn('"wikilean.release.v1", releaseManifest, ["release_id", "attestations", "created_at"]', self.html)
         self.assertIn('crypto.subtle.digest("SHA-256", bytes)', self.html)
         self.assertIn('"wikilean\\0" + domain + "\\0canonical-json-v1\\0"', self.html)
         self.assertNotIn('"wikilean\\\\0" + domain', self.html)
-        self.assertIn('BASE = releaseBase + "cells/"', self.html)
-        self.assertIn('SOURCES_URL = releaseBase + "sources.json"', self.html)
-        self.assertIn('const required = ["schema", "release_id", "release", "manifest"]', self.html)
+        self.assertIn('releaseJson("cells/manifest.json")', self.html)
+        self.assertIn('releaseJson("sources.json")', self.html)
+        self.assertIn('...(v2 ? ["manifest_sha256"] : []), "manifest"]', self.html)
         self.assertIn('Object.keys(selector).some(key => !allowed.has(key))', self.html)
-        self.assertIn('selector.previous_release_id === selector.release_id', self.html)
+        self.assertIn('selector.previous_manifest_sha256 === selector.manifest_sha256', self.html)
         self.assertIn('"audited_at" in selector', self.html)
-        self.assertIn('const previousKeys = ["previous_release_id", "previous_release", "previous_manifest"]', self.html)
+        self.assertIn('...(v2 ? ["previous_manifest_sha256"] : []), "previous_manifest"]', self.html)
         self.assertIn('releaseManifest.release_id !== selector.release_id', self.html)
         self.assertIn('releaseEl.textContent = `release ${RELEASE_HEX.slice(0, 12)}`', self.html)
         self.assertIn("releaseEl.title = RELEASE_ID", self.html)
@@ -86,6 +91,39 @@ class FrontierPageTest(unittest.TestCase):
         self.assertNotIn("selector_id", self.html)
         self.assertNotIn('"updated_at" in selector', self.html)
         self.assertNotIn("await fetchManifest(); } catch { return null; }", self.html)
+
+    def test_release_json_rejects_tampered_declared_asset(self):
+        start = self.html.index('const RELEASE_SELECTOR_URL = "/assets/brain/current.json"')
+        end = self.html.index('const ROOTS_ID = "__libs__"')
+        harness = self.html[start:end] + """
+RELEASE_BASE = "https://example.test/assets/brain/releases/exact/";
+RELEASE_ARTIFACTS = new Map([["cells/labels.json", {
+  bytes: 2,
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+}]]);
+globalThis.fetch = async () => new Response("[]", {status: 200});
+(async () => {
+  try {
+    await releaseJson("cells/labels.json");
+    process.exitCode = 2;
+  } catch (error) {
+    if (!String(error).includes("does not match the release manifest")) {
+      console.error(error);
+      process.exitCode = 3;
+    }
+  }
+})();
+"""
+        with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as fh:
+            fh.write(harness)
+            script_path = Path(fh.name)
+        self.addCleanup(script_path.unlink, missing_ok=True)
+        result = subprocess.run(
+            ["node", str(script_path)],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_generated_inline_script_parses(self):
         scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", self.html,

@@ -80,6 +80,9 @@ ProbeExecutor = Callable[
 SandboxProbe = Callable[[IsolationBoundary], dict[str, Any]]
 ReducerFileSpec = tuple[str, int, str]
 OutputState = tuple[int, int, int, int, int, int, str | None]
+InputMetadataState = tuple[
+    tuple[str, int, int, int, int, int, int, int, int], ...
+]
 EXECUTION_ENVIRONMENT_NAME = "execution-environment.json"
 PROBE_PROGRAM = HERE / "probe_execution_environment.py"
 SANDBOX_POLICY_ID = "brain-replay-v1"
@@ -353,6 +356,38 @@ def _verify_input_closure(context: build_context.BuildContext) -> None:
             "sealed input tree does not equal the declared member closure: "
             f"extra={extras[:5]!r}, missing={missing[:5]!r}"
         )
+
+
+def _input_metadata_state(
+    context: build_context.BuildContext,
+) -> InputMetadataState:
+    """Capture a cheap same-user mutation tripwire for the sealed input tree."""
+    _verify_read_only_tree(context.roots.input, "sealed input tree")
+    state: list[tuple[str, int, int, int, int, int, int, int, int]] = []
+    for directory, names, filenames in os.walk(
+        context.roots.input,
+        followlinks=False,
+    ):
+        directory_path = Path(directory)
+        paths = [directory_path]
+        paths.extend(directory_path / name for name in names)
+        paths.extend(directory_path / name for name in filenames)
+        for path in paths:
+            metadata = path.lstat()
+            state.append(
+                (
+                    path.relative_to(context.roots.input).as_posix(),
+                    stat.S_IFMT(metadata.st_mode),
+                    stat.S_IMODE(metadata.st_mode),
+                    metadata.st_dev,
+                    metadata.st_ino,
+                    metadata.st_nlink,
+                    metadata.st_size,
+                    metadata.st_mtime_ns,
+                    metadata.st_ctime_ns,
+                )
+            )
+    return tuple(sorted(state))
 
 
 def _verify_code_closure(
@@ -1472,6 +1507,7 @@ def run_replay_v2(
     _workspace, programs, descriptor = _validate_workspace(
         source, context, reducer_files
     )
+    input_metadata_state = _input_metadata_state(context)
     requested_python = Path(os.path.abspath(os.fspath(interpreter)))
     resolved_python = requested_python.resolve(strict=True)
     _real_file(resolved_python, "Python interpreter")
@@ -1582,6 +1618,8 @@ def run_replay_v2(
     )
     completed: list[str] = []
     prior_output_state: dict[str, OutputState] = {}
+    if _input_metadata_state(context) != input_metadata_state:
+        raise ReplayExecutionError("sealed input metadata changed during replay")
 
     for stage, program in zip(context.stages, programs):
         if _hash_file(resolved_python) != interpreter_state:
@@ -1621,6 +1659,8 @@ def run_replay_v2(
             and _hash_file(isolation.executable) != sandbox_executable_state
         ):
             raise ReplayExecutionError("sandbox executable changed during replay")
+        if _input_metadata_state(context) != input_metadata_state:
+            raise ReplayExecutionError("sealed input metadata changed during replay")
         _verify_code_closure(context, reducer_files)
         _verify_outputs(context, completed_ids)
         _verify_scratch(context, completed_ids)
@@ -1631,6 +1671,8 @@ def run_replay_v2(
                     f"stage {stage.id!r} modified predecessor output {relative!r}"
                 )
         prior_output_state = current_output_state
+
+    _verify_input_closure(context)
 
     final_runtime_facts = _runtime_facts(
         descriptor["profile"], _trusted_runtime_evidence

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -222,6 +223,11 @@ class ActivationCITests(unittest.TestCase):
         )
         self.assertEqual(evidence["tools"]["git"]["path"], str(self.fixture.git))
         self.assertEqual(evidence["tools"]["node"]["path"], str(self.fixture.node))
+        node_body = self.fixture.node.read_bytes()
+        self.assertEqual(
+            evidence["tools"]["node"]["sha256"], hashlib.sha256(node_body).hexdigest()
+        )
+        self.assertEqual(evidence["tools"]["node"]["bytes"], len(node_body))
         self.assertEqual(evidence["tools"]["npm"]["path"], str(self.fixture.npm))
         self.assertEqual(evidence["tools"]["git"]["version"], "git version 2.51.0")
         self.assertEqual(evidence["tools"]["node"]["version"], "v22.23.2")
@@ -355,6 +361,46 @@ class ActivationCITests(unittest.TestCase):
                 expected_repo_root=self.fixture.repo,
                 expected_git_commit=COMMIT,
             )
+
+    def test_node_symlink_is_recorded_as_its_canonical_executable(self) -> None:
+        alias = self.fixture.root / "approved" / "node-alias"
+        alias.symlink_to(self.fixture.node)
+        runner = self.fixture.runner()
+        recorder = activation_ci.ActivationCIRecorder(
+            repo_root=self.fixture.repo,
+            git=self.fixture.git,
+            node=alias,
+            npm=self.fixture.npm,
+            python=self.fixture.python,
+            runner=runner,
+            command_timeout=123.0,
+        )
+        evidence = recorder.record()
+        self.assertEqual(evidence["tools"]["node"]["path"], str(self.fixture.node))
+        self.assertEqual(
+            evidence["tools"]["node"]["probe"]["argv"],
+            [str(self.fixture.node), "--version"],
+        )
+
+    def test_node_executable_change_during_ci_is_rejected(self) -> None:
+        runner = self.fixture.runner()
+        run = runner.run
+
+        def mutate_node_after_worker_ci(
+            args: Sequence[str],
+            *,
+            cwd: Path,
+            timeout: float,
+            env: Mapping[str, str],
+        ) -> activation_ci.RunResult:
+            result = run(args, cwd=cwd, timeout=timeout, env=env)
+            if tuple(args) == (str(self.fixture.npm), "run", "test:ci"):
+                self.fixture.node.write_bytes(b"#!/bin/sh\nexit 0\n")
+            return result
+
+        runner.run = mutate_node_after_worker_ci  # type: ignore[method-assign]
+        with self.assertRaisesRegex(activation_ci.ActivationCIError, "changed while CI"):
+            self.fixture.recorder(runner).record()
 
     def test_caller_path_tool_shadows_are_ignored(self) -> None:
         runner = self.fixture.runner()

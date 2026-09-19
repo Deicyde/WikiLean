@@ -41,9 +41,9 @@ from authority_contracts import (  # noqa: E402
     load_canonical_json,
     parse_artifact_json_bytes,
     validate_release_manifest,
-    validate_release_selector,
     verify_release_files,
 )
+from release_selector_contracts import validate_release_selector  # noqa: E402
 from brain_public_baseline import (  # noqa: E402
     BaselineFreezeError,
     BaselineValidationError,
@@ -83,7 +83,7 @@ BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1"
 SOURCE_ATTESTATION_SCHEMA = "wikilean.public-asset-source-attestation/v1"
 METRICS_SCHEMA = "wikilean.brain.store-metrics.v1"
 PUBLIC_RESULT_SCHEMA = "wikilean.public-build-result/v1"
-PUBLIC_STAGE_SCHEMA = "wikilean.public-stage-result/v1"
+PUBLIC_STAGE_SCHEMA = "wikilean.public-stage-result/v2"
 DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v1"
 MANIFEST_NAME = "manifest.json"
 MAX_JSON_BYTES = 64 * 1024 * 1024
@@ -346,6 +346,51 @@ def _validate_tree_inventory(value: object, label: str) -> dict[str, Any]:
     _require_int(tree.get("bytes"), f"{label}.bytes", minimum=1)
     _require_digest(tree.get("sha256"), f"{label}.sha256")
     return tree
+
+
+def _validate_node_modules_inventory(value: object, label: str) -> dict[str, Any]:
+    inventory = _require_object(value, label)
+    _exact_keys(
+        inventory,
+        {
+            "schema",
+            "root",
+            "package_lock_sha256",
+            "objects",
+            "bytes",
+            "symlinks",
+            "sha256",
+        },
+        label,
+    )
+    if inventory.get("schema") != "wikilean.node-modules-inventory/v1":
+        raise BundleValidationError(f"{label} schema mismatch")
+    root = _declared_absolute_path(inventory.get("root"), f"{label}.root")
+    if root.name != "node_modules":
+        raise BundleValidationError(f"{label}.root must name node_modules")
+    _require_digest(
+        inventory.get("package_lock_sha256"),
+        f"{label}.package_lock_sha256",
+    )
+    _require_int(inventory.get("objects"), f"{label}.objects", minimum=1)
+    _require_int(inventory.get("bytes"), f"{label}.bytes", minimum=1)
+    _require_int(inventory.get("symlinks"), f"{label}.symlinks")
+    _require_digest(inventory.get("sha256"), f"{label}.sha256")
+    return inventory
+
+
+def _validate_node_executables(value: object, label: str) -> dict[str, Any]:
+    executables = _require_object(value, label)
+    _exact_keys(executables, {"schema", "node", "wrangler"}, label)
+    if executables.get("schema") != "wikilean.node-executables/v1":
+        raise BundleValidationError(f"{label} schema mismatch")
+    for name in ("node", "wrangler"):
+        item = _require_object(executables.get(name), f"{label}.{name}")
+        _exact_keys(item, {"path", "sha256", "bytes"}, f"{label}.{name}")
+        _declared_absolute_path(item.get("path"), f"{label}.{name}.path")
+        _require_digest(item.get("sha256"), f"{label}.{name}.sha256")
+        _require_int(item.get("bytes"), f"{label}.{name}.bytes", minimum=1)
+    return executables
 
 
 def _physical_absolute_path(value: object, label: str, *, expect_dir: bool) -> Path:
@@ -698,6 +743,7 @@ def _validate_public_result(
     *,
     release_id: str,
     release_hex: str,
+    release_manifest_sha256: str,
     baseline_id: str,
     baseline_authority: str,
     baseline_root: Path,
@@ -757,8 +803,11 @@ def _validate_public_result(
             "schema",
             "release_id",
             "release",
+            "manifest_sha256",
             "previous_release_id",
+            "previous_manifest_sha256",
             "retained_release_ids",
+            "retained_manifest_sha256s",
             "destination",
             "objects",
             "bytes",
@@ -777,6 +826,7 @@ def _validate_public_result(
         brain.get("schema") != PUBLIC_STAGE_SCHEMA
         or brain.get("release_id") != release_id
         or brain.get("release") != release_hex
+        or brain.get("manifest_sha256") != release_manifest_sha256
         or brain.get("warnings") != []
     ):
         raise BundleValidationError(f"{label} names the wrong or unhealthy Brain release")
@@ -785,17 +835,39 @@ def _validate_public_result(
         not isinstance(retained, list)
         or not retained
         or retained[0] != release_id
-        or len(retained) != len(set(retained))
         or any(RELEASE_ID_RE.fullmatch(item) is None for item in retained if isinstance(item, str))
         or not all(isinstance(item, str) for item in retained)
     ):
         raise BundleValidationError(f"{label} does not retain the candidate as current")
+    retained_manifests = brain.get("retained_manifest_sha256s")
+    if (
+        not isinstance(retained_manifests, list)
+        or not retained_manifests
+        or retained_manifests[0] != release_manifest_sha256
+        or len(retained_manifests) != len(set(retained_manifests))
+        or len(retained_manifests) != len(retained)
+        or not all(
+            isinstance(item, str) and DIGEST_RE.fullmatch(item) is not None
+            for item in retained_manifests
+        )
+    ):
+        raise BundleValidationError(
+            f"{label} does not retain the candidate manifest as current"
+        )
     previous = brain.get("previous_release_id")
+    previous_manifest = brain.get("previous_manifest_sha256")
     if previous is not None:
         _require_release_id(previous, f"{label}.brain.previous_release_id")
-        if len(retained) < 2 or retained[1] != previous:
+        _require_digest(
+            previous_manifest, f"{label}.brain.previous_manifest_sha256"
+        )
+        if (
+            len(retained) < 2
+            or retained[1] != previous
+            or retained_manifests[1] != previous_manifest
+        ):
             raise BundleValidationError(f"{label} previous release is not retained second")
-    elif len(retained) != 1:
+    elif previous_manifest is not None or len(retained) != 1:
         raise BundleValidationError(f"{label} retained unexpected releases without previous")
     destination = _declared_absolute_path(
         brain.get("destination"), f"{label}.brain.destination"
@@ -831,6 +903,7 @@ def _validate_release_result(
     *,
     release_id: str,
     release_hex: str,
+    manifest_sha256: str,
     artifact_count: int,
     byte_count: int,
 ) -> None:
@@ -840,6 +913,7 @@ def _validate_release_result(
             "artifact_count",
             "byte_count",
             "manifest",
+            "manifest_sha256",
             "release",
             "release_id",
             "reused",
@@ -849,6 +923,8 @@ def _validate_release_result(
     )
     if document.get("release_id") != release_id or document.get("release") != release_hex:
         raise BundleValidationError("release result names the wrong release")
+    if document.get("manifest_sha256") != manifest_sha256:
+        raise BundleValidationError("release result names the wrong manifest bytes")
     if document.get("artifact_count") != artifact_count or document.get("byte_count") != byte_count:
         raise BundleValidationError("release result counts differ from the release manifest")
     _require_bool(document.get("reused"), "release result reused")
@@ -920,11 +996,25 @@ def _validate_shadow_public_output(
         raise BundleValidationError(f"shadow Brain selector is invalid: {exc}") from exc
     if selector.get("release_id") != release_id or selector.get("release") != release_hex:
         raise BundleValidationError("shadow Brain selector does not select the candidate release")
+    release_manifest_sha256 = hashlib.sha256(release_manifest_bytes).hexdigest()
+    if selector.get("manifest_sha256") != release_manifest_sha256:
+        raise BundleValidationError(
+            "shadow Brain selector does not bind the candidate manifest bytes"
+        )
     previous_release_id = brain.get("previous_release_id")
+    previous_manifest_sha256 = brain.get("previous_manifest_sha256")
     if selector.get("previous_release_id") != previous_release_id:
         if not (previous_release_id is None and "previous_release_id" not in selector):
             raise BundleValidationError(
                 "shadow Brain selector previous release differs from the stage result"
+            )
+    if selector.get("previous_manifest_sha256") != previous_manifest_sha256:
+        if not (
+            previous_manifest_sha256 is None
+            and "previous_manifest_sha256" not in selector
+        ):
+            raise BundleValidationError(
+                "shadow Brain selector previous manifest differs from the stage result"
             )
 
     expected_files: dict[str, tuple[int, str]] = {
@@ -933,15 +1023,17 @@ def _validate_shadow_public_output(
 
     def add_namespace(
         namespace_id: str,
+        manifest_sha256: str,
         manifest: Mapping[str, Any],
         manifest_bytes: bytes,
         *,
         candidate: bool,
     ) -> None:
-        _, namespace_hex = _require_release_id(
+        _require_release_id(
             namespace_id, "shadow namespace release_id"
         )
-        prefix = f"releases/{namespace_hex}/"
+        _require_digest(manifest_sha256, "shadow namespace manifest_sha256")
+        prefix = f"releases/{manifest_sha256}/"
         expected_files[prefix + PUBLIC_RELEASE_MANIFEST] = (
             len(manifest_bytes),
             hashlib.sha256(manifest_bytes).hexdigest(),
@@ -965,16 +1057,24 @@ def _validate_shadow_public_output(
 
     add_namespace(
         release_id,
+        release_manifest_sha256,
         release_manifest,
         release_manifest_bytes,
         candidate=True,
     )
     if previous_release_id is not None:
-        previous_id, previous_hex = _require_release_id(
+        previous_id, _ = _require_release_id(
             previous_release_id, "shadow previous release_id"
         )
+        previous_manifest_sha256 = _require_digest(
+            previous_manifest_sha256,
+            "shadow previous manifest_sha256",
+        )
         previous_manifest_path = (
-            destination / "releases" / previous_hex / PUBLIC_RELEASE_MANIFEST
+            destination
+            / "releases"
+            / previous_manifest_sha256
+            / PUBLIC_RELEASE_MANIFEST
         )
         previous_raw = _read_physical_file(
             previous_manifest_path, "shadow previous release manifest"
@@ -1000,8 +1100,13 @@ def _validate_shadow_public_output(
             ) from exc
         if validated_previous.get("release_id") != previous_id:
             raise BundleValidationError("shadow previous namespace names the wrong release")
+        if hashlib.sha256(previous_raw).hexdigest() != previous_manifest_sha256:
+            raise BundleValidationError(
+                "shadow previous namespace manifest bytes differ from the selector"
+            )
         add_namespace(
             previous_id,
+            previous_manifest_sha256,
             validated_previous,
             previous_raw,
             candidate=False,
@@ -1559,26 +1664,64 @@ def _validate_promoter_intent(
     staged = _require_object(intent.get("staged_selector"), "promoter staged_selector")
     _exact_keys(
         staged,
-        {"sha256", "release_id", "previous_release_id", "audited_at"},
+        {
+            "sha256",
+            "release_id",
+            "manifest_sha256",
+            "previous_release_id",
+            "previous_manifest_sha256",
+            "audited_at",
+        },
         "promoter staged_selector",
     )
     _require_digest(staged.get("sha256"), "promoter staged selector digest")
     if staged.get("release_id") != release_id:
         raise BundleValidationError("promoter staged selector names the wrong release")
+    if staged.get("manifest_sha256") != release_manifest_sha256:
+        raise BundleValidationError(
+            "promoter staged selector names the wrong candidate manifest"
+        )
     previous = staged.get("previous_release_id")
+    previous_manifest_sha256 = staged.get("previous_manifest_sha256")
     if previous is not None:
         _require_release_id(previous, "promoter staged selector previous_release_id")
+        _require_digest(
+            previous_manifest_sha256,
+            "promoter staged selector previous_manifest_sha256",
+        )
+    elif previous_manifest_sha256 is not None:
+        raise BundleValidationError(
+            "promoter staged selector has a previous manifest without a previous release"
+        )
     staged_audited_at = _require_string(
         staged.get("audited_at"), "promoter staged selector audited_at"
     )
     retained_id = retained.get("release_id") if isinstance(retained, dict) else None
     if previous != retained_id:
         raise BundleValidationError("promoter staged previous release differs from retained release")
+    retained_manifest_sha256 = (
+        retained.get("release_manifest_sha256")
+        if isinstance(retained, dict)
+        else None
+    )
+    if previous_manifest_sha256 != retained_manifest_sha256:
+        raise BundleValidationError(
+            "promoter staged previous manifest differs from retained release"
+        )
 
     worker = _require_object(intent.get("worker_bundle"), "promoter worker_bundle")
     _exact_keys(
         worker,
-        {"tree", "entry", "config", "config_sha256", "node_version", "wrangler_version"},
+        {
+            "tree",
+            "entry",
+            "config",
+            "config_sha256",
+            "node_version",
+            "wrangler_version",
+            "installation",
+            "executables",
+        },
         "promoter worker_bundle",
     )
     worker_tree = _validate_tree_inventory(worker.get("tree"), "promoter worker_bundle.tree")
@@ -1598,6 +1741,12 @@ def _validate_promoter_intent(
     )
     if re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", wrangler_version) is None:
         raise BundleValidationError("promoter Wrangler version is malformed")
+    _validate_node_modules_inventory(
+        worker.get("installation"), "promoter Wrangler installation"
+    )
+    _validate_node_executables(
+        worker.get("executables"), "promoter Node/Wrangler executables"
+    )
 
     predeploy = _require_object(intent.get("predeploy"), "promoter predeploy")
     _exact_keys(
@@ -1609,7 +1758,9 @@ def _validate_promoter_intent(
             "selector_status",
             "selector_sha256",
             "release_id",
+            "manifest_sha256",
             "previous_release_id",
+            "previous_manifest_sha256",
             "audited_at",
         },
         "promoter predeploy",
@@ -1626,6 +1777,10 @@ def _validate_promoter_intent(
         value = predeploy.get(field)
         if value is not None:
             _require_release_id(value, f"promoter predeploy.{field}")
+    for field in ("manifest_sha256", "previous_manifest_sha256"):
+        value = predeploy.get(field)
+        if value is not None:
+            _require_digest(value, f"promoter predeploy.{field}")
     audited = predeploy.get("audited_at")
     if audited is not None:
         _require_string(audited, "promoter predeploy.audited_at")
@@ -1633,12 +1788,35 @@ def _validate_promoter_intent(
     if selector_status == 404:
         if any(
             predeploy.get(field) is not None
-            for field in ("release_id", "previous_release_id", "audited_at")
+            for field in (
+                "release_id",
+                "manifest_sha256",
+                "previous_release_id",
+                "previous_manifest_sha256",
+                "audited_at",
+            )
         ):
             raise BundleValidationError("promoter missing-selector prestate contains release fields")
     else:
         if predeploy.get("release_id") is None:
             raise BundleValidationError("promoter live selector prestate omitted its release")
+        predeploy_manifest = predeploy.get("manifest_sha256")
+        if predeploy_manifest is not None:
+            if (
+                predeploy.get("release_id") == release_id
+                and predeploy_manifest == release_manifest_sha256
+            ):
+                pass
+            elif (
+                isinstance(retained, dict)
+                and predeploy.get("release_id") == retained_id
+                and predeploy_manifest == retained_manifest_sha256
+            ):
+                pass
+            else:
+                raise BundleValidationError(
+                    "promoter live selector manifest lacks a verified release"
+                )
         expected_retained = (
             predeploy.get("previous_release_id")
             if predeploy.get("release_id") == release_id
@@ -1708,9 +1886,17 @@ def _validate_promoter_intent(
         raise BundleValidationError("promoter public tree and public result roots differ")
     result_brain = _require_object(public_result.get("brain"), "promoter public_result.brain")
     expected_retained_ids = [release_id, *([previous] if previous is not None else [])]
+    expected_retained_manifests = [
+        release_manifest_sha256,
+        *([previous_manifest_sha256] if previous_manifest_sha256 is not None else []),
+    ]
     if (
         result_brain.get("previous_release_id") != previous
+        or result_brain.get("previous_manifest_sha256")
+        != previous_manifest_sha256
         or result_brain.get("retained_release_ids") != expected_retained_ids
+        or result_brain.get("retained_manifest_sha256s")
+        != expected_retained_manifests
     ):
         raise BundleValidationError("promoter public result retained releases are inconsistent")
 
@@ -1870,7 +2056,11 @@ def _validate_retained_promoter_artifacts(
             raise BundleValidationError(f"retained initial selector is invalid: {exc}") from exc
         if (
             selector.get("release_id") != predeploy.get("release_id")
+            or selector.get("manifest_sha256")
+            != predeploy.get("manifest_sha256")
             or selector.get("previous_release_id") != predeploy.get("previous_release_id")
+            or selector.get("previous_manifest_sha256")
+            != predeploy.get("previous_manifest_sha256")
             or selector.get("audited_at") != predeploy.get("audited_at")
         ):
             raise BundleValidationError("retained initial selector identity is inconsistent")
@@ -1933,8 +2123,12 @@ def _validate_retained_promoter_artifacts(
         raise BundleValidationError(f"retained staged selector is invalid: {exc}") from exc
     if (
         staged_document.get("release_id") != staged.get("release_id")
+        or staged_document.get("manifest_sha256")
+        != staged.get("manifest_sha256")
         or staged_document.get("previous_release_id")
         != staged.get("previous_release_id")
+        or staged_document.get("previous_manifest_sha256")
+        != staged.get("previous_manifest_sha256")
         or staged_document.get("audited_at") != staged.get("audited_at")
     ):
         raise BundleValidationError(
@@ -2002,10 +2196,14 @@ def _validate_semantic_diff(
         raise BundleValidationError("semantic diff does not target the candidate release")
     declared_before = _declared_absolute_path(before.get("path"), "semantic diff from.path")
     declared_after = _declared_absolute_path(after.get("path"), "semantic diff to.path")
+    baseline_manifest_sha256 = hashlib.sha256(
+        release_canonical_json_bytes(dict(baseline_manifest))
+    ).hexdigest()
     if (
         declared_before != baseline_manifest_path
         or baseline_manifest_path.name != "release.json"
-        or baseline_manifest_path.parent.name != baseline_release_hex
+        or baseline_manifest_path.parent.name
+        not in {baseline_manifest_sha256, baseline_release_hex}
     ):
         raise BundleValidationError("semantic diff source path differs from the baseline release")
     if declared_after != release_manifest_path:
@@ -2138,6 +2336,58 @@ def _validate_semantic_diff(
         raise BundleValidationError("semantic diff different flag disagrees with its summary")
 
 
+def _validate_semantic_baseline_binding(
+    *,
+    candidate_manifest_sha256: str,
+    semantic_baseline_release_id: str,
+    semantic_baseline_manifest_sha256: str,
+    retained_release: object,
+) -> None:
+    if semantic_baseline_manifest_sha256 == candidate_manifest_sha256:
+        raise BundleValidationError(
+            "semantic baseline exact manifest must differ from the candidate"
+        )
+    if retained_release is None:
+        return
+    retained = _require_object(retained_release, "promoter retained_release")
+    if (
+        retained.get("release_id") != semantic_baseline_release_id
+        or retained.get("release_manifest_sha256")
+        != semantic_baseline_manifest_sha256
+    ):
+        raise BundleValidationError(
+            "semantic baseline must equal the promoter's retained live release "
+            "by logical and exact manifest identity"
+        )
+
+
+def _validate_ci_node_binding(
+    ci_evidence: Mapping[str, Any],
+    promoter_intent: Mapping[str, Any],
+) -> None:
+    ci_tools = _require_object(ci_evidence.get("tools"), "activation CI tools")
+    ci_node = _require_object(ci_tools.get("node"), "activation CI Node tool")
+    worker = _require_object(promoter_intent.get("worker_bundle"), "promoter worker_bundle")
+    executables = _require_object(
+        worker.get("executables"), "promoter Node/Wrangler executables"
+    )
+    promoter_node = _require_object(
+        executables.get("node"), "promoter Node/Wrangler executables.node"
+    )
+    ci_identity = {
+        field: ci_node.get(field)
+        for field in ("path", "sha256", "bytes")
+    }
+    if ci_identity != promoter_node:
+        raise BundleValidationError(
+            "activation CI Node executable identity differs from the promoter dry-run"
+        )
+    if ci_node.get("version") != worker.get("node_version"):
+        raise BundleValidationError(
+            "activation CI Node version differs from the promoter dry-run"
+        )
+
+
 def _validate_evidence(
     documents: Mapping[str, Mapping[str, Any]],
     canonical: Mapping[str, bytes],
@@ -2182,8 +2432,11 @@ def _validate_evidence(
         raise BundleValidationError(
             "semantic baseline release differs from the explicitly reviewed baseline ID"
         )
-    if semantic_baseline_id == release_id:
-        raise BundleValidationError("semantic baseline release must differ from the candidate")
+    expected_release_bytes = release_canonical_json_bytes(validated_release)
+    release_manifest_sha256 = hashlib.sha256(expected_release_bytes).hexdigest()
+    semantic_baseline_manifest_sha256 = hashlib.sha256(
+        release_canonical_json_bytes(validated_semantic_baseline)
+    ).hexdigest()
 
     build_root, promotion_root = _validate_build_context(
         documents["build_context"],
@@ -2202,10 +2455,10 @@ def _validate_evidence(
         )
     except ActivationCIError as exc:
         raise BundleValidationError(f"activation CI evidence is invalid: {exc}") from exc
+    ci_tools = _require_object(ci_evidence.get("tools"), "activation CI tools")
     if inspect_external:
         if git is None:
             raise BundleValidationError("approved Git executable is required during bundle freeze")
-        ci_tools = _require_object(ci_evidence.get("tools"), "activation CI tools")
         ci_git = _require_object(ci_tools.get("git"), "activation CI Git tool")
         if ci_git.get("path") != str(git):
             raise BundleValidationError(
@@ -2218,6 +2471,7 @@ def _validate_evidence(
         release_result,
         release_id=release_id,
         release_hex=release_hex,
+        manifest_sha256=release_manifest_sha256,
         artifact_count=len(expected_artifacts),
         byte_count=sum(item["bytes"] for item in expected_artifacts),
     )
@@ -2232,13 +2486,17 @@ def _validate_evidence(
     else:
         release_root = path_validator(release_result.get("root"), "release result root")
         manifest_path = path_validator(release_result.get("manifest"), "release result manifest")
-    if manifest_path != release_root / "release.json" or release_root.name != release_hex:
-        raise BundleValidationError("release result paths do not match the release identity")
+    if (
+        manifest_path != release_root / "release.json"
+        or release_root.name != release_manifest_sha256
+    ):
+        raise BundleValidationError(
+            "release result paths do not match the manifest byte identity"
+        )
     if inspect_external and _overlap(release_root, promotion_root):
         raise BundleValidationError(
             "candidate release root must be outside the promotion worktree"
         )
-    expected_release_bytes = release_canonical_json_bytes(validated_release)
     if inspect_external:
         try:
             actual_document, _ = load_canonical_json(manifest_path)
@@ -2260,10 +2518,12 @@ def _validate_evidence(
         semantic_baseline_root = semantic_baseline_path.parent
         if (
             semantic_baseline_path.name != "release.json"
-            or semantic_baseline_root.name != semantic_baseline_hex
+            or semantic_baseline_root.name
+            not in {semantic_baseline_manifest_sha256, semantic_baseline_hex}
         ):
             raise BundleValidationError(
-                "semantic baseline manifest path does not match its release identity"
+                "semantic baseline manifest path matches neither its byte identity "
+                "nor its legacy release identity"
             )
         if _overlap(semantic_baseline_root, promotion_root):
             raise BundleValidationError(
@@ -2322,11 +2582,14 @@ def _validate_evidence(
         reducer_commit=reducer_commit,
         inspect_external=inspect_external,
     )
+    _validate_ci_node_binding(ci_evidence, intent)
     retained = intent.get("retained_release")
-    if isinstance(retained, dict) and retained.get("release_id") != semantic_baseline_id:
-        raise BundleValidationError(
-            "semantic baseline must equal the promoter's retained live release"
-        )
+    _validate_semantic_baseline_binding(
+        candidate_manifest_sha256=release_manifest_sha256,
+        semantic_baseline_release_id=semantic_baseline_id,
+        semantic_baseline_manifest_sha256=semantic_baseline_manifest_sha256,
+        retained_release=retained,
+    )
     intent_baseline = _require_object(intent.get("public_baseline"), "promoter public_baseline")
     if inspect_external:
         baseline_root = _physical_absolute_path(
@@ -2439,6 +2702,7 @@ def _validate_evidence(
         documents["shadow_public_result"],
         release_id=release_id,
         release_hex=release_hex,
+        release_manifest_sha256=release_manifest_sha256,
         baseline_id=baseline_id,
         baseline_authority=baseline_authority,
         baseline_root=baseline_root,
@@ -2462,6 +2726,7 @@ def _validate_evidence(
         intent_public,
         release_id=release_id,
         release_hex=release_hex,
+        release_manifest_sha256=release_manifest_sha256,
         baseline_id=baseline_id,
         baseline_authority=baseline_authority,
         baseline_root=baseline_root,
