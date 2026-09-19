@@ -60,6 +60,21 @@ def verified_preparation(args):
     return record
 
 
+def verified_pack_paths(manifest, pack_root):
+    pack_root = launcher._real_path(Path(pack_root), directory=True)
+    manifest = launcher._real_path(Path(manifest), directory=False)
+    child.require(manifest.is_relative_to(pack_root), "offline-pack manifest must reside beneath its sealed root")
+    return manifest, pack_root
+
+
+def verified_runtime_paths(oci_layout, policy, wheelhouse, environment, docker):
+    return (launcher._real_path(Path(oci_layout), directory=True),
+            launcher._real_path(Path(policy), directory=False),
+            launcher._real_path(Path(wheelhouse), directory=True),
+            launcher._real_path(Path(environment), directory=False),
+            launcher._real_path(Path(docker), directory=False))
+
+
 def create_arguments(image, prepared, run, policy, *, uid, gid, name, memory_bytes, engine_image_id):
     # Reuse the inspected engine policy, replacing only its fixed mount/command
     # closure. The shared verifier takes these exact returned expectations.
@@ -134,6 +149,9 @@ def run(args):
     destination = args.destination
     child.real(destination.parent)
     child.require(destination.is_absolute() and not os.path.lexists(destination), "a fresh absolute private destination is required")
+    args.oci_layout, args.policy, args.wheelhouse, args.environment, args.docker = verified_runtime_paths(
+        args.oci_layout, args.policy, args.wheelhouse, args.environment, args.docker)
+    input_roots = [args.oci_layout, args.wheelhouse]
     policy, raw_policy = oci_runtime.read_control(args.policy)
     descriptor, raw_descriptor = oci_runtime.read_control(args.environment)
     child.require(raw_policy == child.canonical(policy) and raw_descriptor == child.canonical(descriptor), "canonical runtime controls required")
@@ -144,10 +162,12 @@ def run(args):
     apparmor_name = policy["apparmor"]["name"] if apparmor is not None else None
     if args.command == "execute":
         prepared = launcher._real_path(args.prepared, directory=True)
-        for source in (prepared, args.pack_root):
-            child.require(not (source == destination or source in destination.parents or destination in source.parents),
-                          "run destination must be disjoint from prepared and sealed roots")
+        args.manifest, args.pack_root = verified_pack_paths(args.manifest, args.pack_root)
+        input_roots += [prepared, args.pack_root]
         record = verified_preparation(args)
+    for source in input_roots:
+        child.require(not (source == destination or source in destination.parents or destination in source.parents),
+                      "run destination must be disjoint from all directory inputs")
     destination.mkdir(mode=0o700)
     run_root = destination / "launch"
     run_root.mkdir(mode=0o700)
@@ -158,6 +178,8 @@ def run(args):
         record = prepare_probe(prepared)
     nonce = uuid.uuid4().hex
     child.write(run_root / "host-sentinel", nonce.encode())
+    (run_root / "source").mkdir(mode=0o700)
+    brain_readonly = child.materialize_brain_source(prepared, run_root / "source/brain")
     for name in ("legacy_stage_executor.py", "legacy_halo_projection.py"):
         child.measure(HERE / name, LOADED_PROGRAMS["brain/tools/" + name], copy_to=run_root / "tool" / name)
     for row in initial_programs:
@@ -169,7 +191,8 @@ def run(args):
         "prepared": str(prepared), "run": str(run_root), "policy": policy,
         "executor": LOADED_PROGRAMS["brain/tools/legacy_stage_executor.py"],
         "halo_projector": LOADED_PROGRAMS["brain/tools/legacy_halo_projection.py"],
-        "expected_python": descriptor["python"], "stage_timeout": args.stage_timeout_seconds}
+        "expected_python": descriptor["python"], "stage_timeout": args.stage_timeout_seconds,
+        "brain_readonly": brain_readonly}
     if args.command == "execute":
         request["preparation"] = {"sha256": args.preparation_sha256, "bytes": args.preparation_bytes}
         child.measure(prepared / "preparation.json", request["preparation"], copy_to=evidence / "preparation.json")
@@ -237,6 +260,8 @@ def run(args):
     child.require(implementation() == initial_programs, "producer changed")
     for item in runtime["evidence_files"]:
         child.measure(evidence / item["path"], item)
+    for item in brain_readonly:
+        child.measure(run_root / "source" / item["path"], item)
     child.require(child.read(run_root / "host-sentinel") == nonce.encode(), "host sentinel was modified")
     if args.command == "probe":
         output = {"schema": "wikilean.legacy-native-probe/v1", "fixture_only": True, "authority": False,
