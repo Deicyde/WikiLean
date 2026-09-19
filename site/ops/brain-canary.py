@@ -33,7 +33,9 @@ from brain_public_baseline import (
 )
 
 RELEASE_ID_RE = re.compile(r"^sha256:([0-9a-f]{64})$")
-SELECTOR_SCHEMA = "wikilean.release-selector/v1"
+DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
+SELECTOR_SCHEMA = "wikilean.release-selector/v2"
+LEGACY_SELECTOR_SCHEMA = "wikilean.release-selector/v1"
 RELEASE_SCHEMA = "wikilean.release/v1"
 RELEASE_KEYS = {"schema", "profile", "release_id", "authority", "source_set_root", "semantic_epoch",
                 "reducer", "artifacts", "attestations", "compatible_overlay_generation_ids", "created_at"}
@@ -41,9 +43,11 @@ SELECTOR_KEYS = {
     "schema",
     "release_id",
     "release",
+    "manifest_sha256",
     "manifest",
     "previous_release_id",
     "previous_release",
+    "previous_manifest_sha256",
     "previous_manifest",
     "audited_at",
 }
@@ -64,6 +68,7 @@ class BrainCanary:
         self,
         base_url: str,
         expected_release_id: str,
+        expected_manifest_sha256: str,
         *,
         request_timeout: float = 20.0,
         max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
@@ -74,6 +79,8 @@ class BrainCanary:
         match = RELEASE_ID_RE.fullmatch(expected_release_id)
         if not match:
             raise ValueError("expected release id must be sha256:<64 lowercase hex>")
+        if DIGEST_RE.fullmatch(expected_manifest_sha256) is None:
+            raise ValueError("expected manifest sha256 must be 64 lowercase hex")
         if not math.isfinite(request_timeout) or request_timeout <= 0:
             raise ValueError("request timeout must be finite and positive")
         if (
@@ -84,6 +91,7 @@ class BrainCanary:
             raise ValueError("maximum response bytes must be positive")
         self.base_url = require_https_base_url(base_url)
         self.expected_release_id = expected_release_id
+        self.expected_manifest_sha256 = expected_manifest_sha256
         self.release = match.group(1)
         self.request_timeout = request_timeout
         self.max_response_bytes = max_response_bytes
@@ -219,23 +227,24 @@ class BrainCanary:
         valid_text = lambda v: isinstance(v, str) and bool(v)
         valid_digest = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) is not None
         valid_commit = lambda v: isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) is not None
-        if offline:
-            refs = value.get("attestations")
-            if not isinstance(refs, list) or len(refs) != 2:
-                raise CanaryError("offline replay requires exactly one build and one validation attestation")
-            paths, kinds = [], set()
-            for ref in refs:
-                if not isinstance(ref, dict) or set(ref) != {"kind", "path", "sha256", "bytes"} \
-                        or not isinstance(ref["kind"], str) or ref["kind"] not in {"build", "validation"} \
-                        or not isinstance(ref["path"], str) or not ref["path"] or "\\" in ref["path"] or "\0" in ref["path"] \
-                        or PurePosixPath(ref["path"]).is_absolute() or PurePosixPath(ref["path"]).as_posix() != ref["path"] \
-                        or any(part in {"", ".", ".."} for part in PurePosixPath(ref["path"]).parts) \
-                        or not valid_digest(ref["sha256"]) or type(ref["bytes"]) is not int or not 0 <= ref["bytes"] <= 9_007_199_254_740_991:
-                    raise CanaryError("offline replay attestation reference is malformed")
-                paths.append(ref["path"])
-                kinds.add(ref["kind"])
-            if kinds != {"build", "validation"} or paths != sorted(set(paths)):
-                raise CanaryError("offline replay attestation references must be distinct, sorted, and cover both kinds")
+        refs = value.get("attestations")
+        if not isinstance(refs, list) or not refs or (offline and len(refs) != 2):
+            raise CanaryError("release manifest must name build and validation attestations")
+        paths, kinds = [], set()
+        for ref in refs:
+            if not isinstance(ref, dict) or set(ref) != {"kind", "path", "sha256", "bytes"} \
+                    or not isinstance(ref["kind"], str) or ref["kind"] not in {"build", "validation"} \
+                    or not isinstance(ref["path"], str) or not ref["path"] or "\\" in ref["path"] or "\0" in ref["path"] \
+                    or PurePosixPath(ref["path"]).is_absolute() or PurePosixPath(ref["path"]).as_posix() != ref["path"] \
+                    or any(part in {"", ".", ".."} for part in PurePosixPath(ref["path"]).parts) \
+                    or not valid_digest(ref["sha256"]) or type(ref["bytes"]) is not int or not 0 <= ref["bytes"] <= 9_007_199_254_740_991:
+                raise CanaryError("release manifest attestation reference is malformed")
+            paths.append(ref["path"])
+            kinds.add(ref["kind"])
+        if kinds != {"build", "validation"} or paths != sorted(set(paths)):
+            raise CanaryError(
+                "release manifest attestation references must be distinct, sorted, and cover both kinds"
+            )
         if not isinstance(authority, dict) or set(authority) - {"git_commit", "semantic_state_root", "through_changeset"} \
                 or not valid_commit(authority.get("git_commit")) or not valid_hash(authority.get("semantic_state_root")) \
                 or authority.get("through_changeset") is not None \
@@ -323,40 +332,67 @@ class BrainCanary:
         self.response_bytes = 0
         selector_raw, _ = self.fetch_json("/assets/brain/current.json")
         selector = self._object(selector_raw, "selector")
-        expected_manifest = f"/assets/brain/releases/{self.release}/release.json"
-        unknown_selector_keys = sorted(set(selector) - SELECTOR_KEYS)
+        selector_schema = selector.get("schema")
+        legacy_selector = selector_schema == LEGACY_SELECTOR_SCHEMA
+        if selector_schema not in {SELECTOR_SCHEMA, LEGACY_SELECTOR_SCHEMA}:
+            raise CanaryError("selector schema mismatch")
+        expected_namespace = self.release if legacy_selector else self.expected_manifest_sha256
+        expected_manifest = f"/assets/brain/releases/{expected_namespace}/release.json"
+        allowed_selector_keys = SELECTOR_KEYS - ({"manifest_sha256", "previous_manifest_sha256"} if legacy_selector else set())
+        unknown_selector_keys = sorted(set(selector) - allowed_selector_keys)
         if unknown_selector_keys:
             raise CanaryError(f"selector has unknown fields: {unknown_selector_keys}")
-        if selector.get("schema") != SELECTOR_SCHEMA:
-            raise CanaryError("selector schema mismatch")
         if selector.get("release_id") != self.expected_release_id:
             raise CanaryError(
                 f"selector release mismatch: expected {self.expected_release_id}, got {selector.get('release_id')!r}"
             )
         if selector.get("release") != self.release:
             raise CanaryError("selector release hex does not match release_id")
+        if not legacy_selector and selector.get("manifest_sha256") != self.expected_manifest_sha256:
+            raise CanaryError("selector manifest digest does not match the expected manifest")
         if selector.get("manifest") != expected_manifest:
             raise CanaryError("selector manifest path does not match the immutable release")
-        previous_keys = ("previous_release_id", "previous_release", "previous_manifest")
+        previous_keys = (
+            "previous_release_id",
+            "previous_release",
+            *(("previous_manifest_sha256",) if not legacy_selector else ()),
+            "previous_manifest",
+        )
         present_previous = [key for key in previous_keys if key in selector]
         has_previous = bool(present_previous)
         if has_previous:
             if len(present_previous) != len(previous_keys):
                 raise CanaryError("selector previous release fields must be supplied together")
             previous_match = RELEASE_ID_RE.fullmatch(str(selector.get("previous_release_id", "")))
+            previous_namespace = (
+                selector.get("previous_release")
+                if legacy_selector
+                else selector.get("previous_manifest_sha256")
+            )
             if (
                 previous_match is None
                 or previous_match.group(1) != selector.get("previous_release")
+                or not isinstance(previous_namespace, str)
+                or DIGEST_RE.fullmatch(previous_namespace) is None
                 or selector.get("previous_manifest")
-                != f"/assets/brain/releases/{selector.get('previous_release')}/release.json"
-                or selector.get("previous_release_id") == self.expected_release_id
+                != f"/assets/brain/releases/{previous_namespace}/release.json"
+                or (
+                    legacy_selector
+                    and selector.get("previous_release_id") == self.expected_release_id
+                )
+                or (
+                    not legacy_selector
+                    and selector.get("previous_manifest_sha256") == self.expected_manifest_sha256
+                )
             ):
                 raise CanaryError("selector previous release is inconsistent")
         audited_at = selector.get("audited_at")
         if audited_at is not None and (not isinstance(audited_at, str) or not audited_at):
             raise CanaryError("selector audited_at must be a non-empty string")
 
-        release_raw, _ = self.fetch_json(expected_manifest)
+        release_raw, release_bytes = self.fetch_json(expected_manifest)
+        if hashlib.sha256(release_bytes).hexdigest() != self.expected_manifest_sha256:
+            raise CanaryError("release manifest bytes do not match the expected manifest digest")
         release_manifest = self._object(release_raw, "release manifest")
         if release_manifest.get("schema") != RELEASE_SCHEMA:
             raise CanaryError("release manifest schema mismatch")
@@ -389,7 +425,7 @@ class BrainCanary:
                 raise CanaryError(f"release manifest artifact {index} is malformed or duplicated")
             artifacts[path] = (size, digest)
 
-        immutable_base = f"/assets/brain/releases/{self.release}"
+        immutable_base = f"/assets/brain/releases/{expected_namespace}"
         cells_raw, cells_bytes = self.fetch_json(f"{immutable_base}/cells/manifest.json")
         self._verify_artifact(
             artifacts,
@@ -544,6 +580,7 @@ class BrainCanary:
             "schema": "wikilean.brain-canary-result/v1",
             "ok": True,
             "release_id": self.expected_release_id,
+            "manifest_sha256": self.expected_manifest_sha256,
             "release": self.release,
             "manifest": expected_manifest,
             "shard": shard_path,
@@ -596,6 +633,7 @@ def poll(canary: BrainCanary, timeout: float, interval: float) -> dict[str, obje
                 f"release did not converge within {timeout:g}s after {attempts} attempt(s): {last_error}",
                 details={
                     "release_id": canary.expected_release_id,
+                    "manifest_sha256": canary.expected_manifest_sha256,
                     "attempts": attempts,
                     "convergence_seconds": round(elapsed, 3),
                     "requests": failed_requests,
@@ -616,6 +654,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="https://wikilean.jackmccarthy.org")
     parser.add_argument("--expected-release-id", required=True)
+    parser.add_argument("--expected-manifest-sha256", required=True)
     parser.add_argument("--timeout", type=float, default=300.0)
     parser.add_argument("--interval", type=float, default=5.0)
     parser.add_argument("--request-timeout", type=float, default=20.0)
@@ -641,6 +680,7 @@ def main(argv: list[str] | None = None) -> int:
             BrainCanary(
                 args.base_url,
                 args.expected_release_id,
+                args.expected_manifest_sha256,
                 request_timeout=args.request_timeout,
                 max_response_bytes=args.max_response_bytes,
                 public_baseline=public_baseline,
@@ -656,6 +696,7 @@ def main(argv: list[str] | None = None) -> int:
                 "ok": False,
                 "error": str(exc),
                 "release_id": args.expected_release_id,
+                "manifest_sha256": args.expected_manifest_sha256,
                 "attempts": 0,
                 "convergence_seconds": 0.0,
                 "requests": 0,

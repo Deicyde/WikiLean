@@ -1,0 +1,90 @@
+{
+  "schema": "wikilean.release-selector-conformance/v1",
+  "cases": [
+    {
+      "name": "current-only",
+      "valid": true,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json"
+      }
+    },
+    {
+      "name": "same-logical-release-different-manifest",
+      "valid": true,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json",
+        "previous_release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "previous_release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "previous_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "previous_manifest": "/assets/brain/releases/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/release.json",
+        "audited_at": "2030-01-01T00:00:00Z"
+      }
+    },
+    {
+      "name": "manifest-path-not-bound",
+      "valid": false,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "manifest": "/assets/brain/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/release.json"
+      }
+    },
+    {
+      "name": "same-exact-manifest-twice",
+      "valid": false,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json",
+        "previous_release_id": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "previous_release": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "previous_manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "previous_manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json"
+      }
+    },
+    {
+      "name": "missing-manifest-digest",
+      "valid": false,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json"
+      }
+    },
+    {
+      "name": "empty-audit-timestamp",
+      "valid": false,
+      "selector": {
+        "schema": "wikilean.release-selector/v2",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "manifest": "/assets/brain/releases/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/release.json",
+        "audited_at": ""
+      }
+    },
+    {
+      "name": "legacy-v1-readable",
+      "valid": true,
+      "selector": {
+        "schema": "wikilean.release-selector/v1",
+        "release_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "release": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "manifest": "/assets/brain/releases/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/release.json"
+      }
+    }
+  ]
+}

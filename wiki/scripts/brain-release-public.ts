@@ -22,7 +22,7 @@ const RELEASE_ID_RE = /^sha256:([0-9a-f]{64})$/;
 const DIGEST_RE = /^[0-9a-f]{64}$/;
 const GIT_COMMIT_RE = /^[0-9a-f]{40}$/;
 const EPOCH_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/;
-const SELECTOR_SCHEMA = "wikilean.release-selector/v1";
+const SELECTOR_SCHEMA = "wikilean.release-selector/v2";
 const RELEASE_SCHEMA = "wikilean.release/v1";
 const RELEASE_PROFILE = "brain-current-v1";
 const STATIC_PREFIX = "site/assets/brain/";
@@ -114,12 +114,27 @@ export interface BrainReleaseSelector {
   schema: typeof SELECTOR_SCHEMA;
   release_id: string;
   release: string;
+  manifest_sha256: string;
+  manifest: string;
+  previous_release_id?: string;
+  previous_release?: string;
+  previous_manifest_sha256?: string;
+  previous_manifest?: string;
+  audited_at?: string;
+}
+
+interface LegacyBrainReleaseSelector {
+  schema: "wikilean.release-selector/v1";
+  release_id: string;
+  release: string;
   manifest: string;
   previous_release_id?: string;
   previous_release?: string;
   previous_manifest?: string;
   audited_at?: string;
 }
+
+type ReadableBrainReleaseSelector = BrainReleaseSelector | LegacyBrainReleaseSelector;
 
 export interface StageBrainPublicOptions {
   manifestPath: string;
@@ -136,11 +151,14 @@ export interface StageBrainPublicOptions {
 }
 
 export interface StageBrainPublicResult {
-  schema: "wikilean.public-stage-result/v1";
+  schema: "wikilean.public-stage-result/v2";
   release_id: string;
   release: string;
+  manifest_sha256: string;
   previous_release_id: string | null;
+  previous_manifest_sha256: string | null;
   retained_release_ids: string[];
+  retained_manifest_sha256s: string[];
   destination: string;
   objects: number;
   bytes: number;
@@ -166,6 +184,7 @@ interface NamespaceFile {
 interface LoadedNamespace {
   releaseId: string;
   releaseHex: string;
+  manifestSha256: string;
   files: NamespaceFile[];
   brainPage: NamespaceFile | null;
 }
@@ -582,8 +601,12 @@ function loadCurrentNamespace(
   const manifestBytes = readBoundedFile(root, "release.json", maxManifestBytes, "release manifest");
   const manifest = parseReleaseManifest(manifestBytes, "release manifest");
   const hex = releaseHex(manifest.release_id, "release manifest release_id");
-  if (basename(root) !== hex) {
-    fail(`release directory basename must equal release hex ${hex}`);
+  const manifestSha256 = sha256(manifestBytes);
+  if (basename(root) !== manifestSha256 && basename(root) !== hex) {
+    fail(
+      `release directory basename must equal manifest digest ${manifestSha256} ` +
+      `or legacy release hex ${hex}`,
+    );
   }
 
   const selectedArtifacts = publicArtifacts(manifest);
@@ -618,25 +641,47 @@ function loadCurrentNamespace(
     pageArtifact.sha256,
     "release artifact site/out/brain.html",
   );
-  return { releaseId: manifest.release_id, releaseHex: hex, files, brainPage };
+  return {
+    releaseId: manifest.release_id,
+    releaseHex: hex,
+    manifestSha256,
+    files,
+    brainPage,
+  };
 }
 
-function parseSelector(root: string): BrainReleaseSelector {
+function parseSelector(root: string): ReadableBrainReleaseSelector {
   const raw = parseJsonObject(
     readBoundedFile(root, "current.json", MAX_SELECTOR_BYTES, "prior selector"),
     "prior selector",
   );
-  const required = ["schema", "release_id", "release", "manifest"];
-  const previousKeys = ["previous_release_id", "previous_release", "previous_manifest"];
+  const v2 = raw.schema === SELECTOR_SCHEMA;
+  const v1 = raw.schema === "wikilean.release-selector/v1";
+  if (!v1 && !v2) fail("prior selector has unsupported schema");
+  const required = [
+    "schema",
+    "release_id",
+    "release",
+    ...(v2 ? ["manifest_sha256"] : []),
+    "manifest",
+  ];
+  const previousKeys = [
+    "previous_release_id",
+    "previous_release",
+    ...(v2 ? ["previous_manifest_sha256"] : []),
+    "previous_manifest",
+  ];
   const allowed = new Set([...required, ...previousKeys, "audited_at"]);
   const missing = required.filter(key => !(key in raw));
   if (missing.length) fail(`prior selector is missing required fields: ${missing.join(", ")}`);
   const unknown = Object.keys(raw).filter(key => !allowed.has(key));
   if (unknown.length) fail(`prior selector has unknown fields: ${unknown.join(", ")}`);
-  if (raw.schema !== SELECTOR_SCHEMA) fail("prior selector has unsupported schema");
   const currentHex = releaseHex(raw.release_id, "prior selector release_id");
   if (raw.release !== currentHex) fail("prior selector release does not match release_id");
-  if (raw.manifest !== `/assets/brain/releases/${currentHex}/release.json`) {
+  const currentNamespace = v2
+    ? digestValue(raw.manifest_sha256, "prior selector manifest_sha256")
+    : currentHex;
+  if (raw.manifest !== `/assets/brain/releases/${currentNamespace}/release.json`) {
     fail("prior selector manifest path is inconsistent");
   }
   const presentPrevious = previousKeys.filter(key => raw[key] !== undefined);
@@ -646,20 +691,29 @@ function parseSelector(root: string): BrainReleaseSelector {
   if (presentPrevious.length) {
     const previousHex = releaseHex(raw.previous_release_id, "prior selector previous_release_id");
     if (raw.previous_release !== previousHex) fail("prior selector previous_release does not match previous_release_id");
-    if (raw.previous_manifest !== `/assets/brain/releases/${previousHex}/release.json`) {
+    const previousNamespace = v2
+      ? digestValue(raw.previous_manifest_sha256, "prior selector previous_manifest_sha256")
+      : previousHex;
+    if (raw.previous_manifest !== `/assets/brain/releases/${previousNamespace}/release.json`) {
       fail("prior selector previous_manifest path is inconsistent");
     }
-    if (raw.previous_release_id === raw.release_id) fail("prior selector previous release must differ from current");
+    if (v2 && previousNamespace === currentNamespace) {
+      fail("prior selector previous manifest must differ from current");
+    }
+    if (v1 && raw.previous_release_id === raw.release_id) {
+      fail("prior v1 selector previous release must differ from current");
+    }
   }
   if (raw.audited_at !== undefined && (typeof raw.audited_at !== "string" || !raw.audited_at)) {
     fail("prior selector audited_at must be a non-empty string when present");
   }
-  return raw as unknown as BrainReleaseSelector;
+  return raw as unknown as ReadableBrainReleaseSelector;
 }
 
 function loadPublicNamespace(
   namespaceDir: string,
   expectedReleaseId: string,
+  expectedManifestSha256: string | null,
   maxManifestBytes: number,
   maxObjects: number,
 ): LoadedNamespace {
@@ -677,12 +731,19 @@ function loadPublicNamespace(
     maxManifestBytes,
     "prior public release manifest",
   );
+  const manifestSha256 = sha256(manifestBytes);
+  if (expectedManifestSha256 !== null && manifestSha256 !== expectedManifestSha256) {
+    fail("prior public release manifest bytes do not match the prior selector");
+  }
   const manifest = parseReleaseManifest(manifestBytes, "prior public release manifest");
   if (manifest.release_id !== expectedReleaseId) {
     fail("prior public release manifest does not match the prior selector");
   }
   const hex = releaseHex(manifest.release_id, "prior public release manifest release_id");
-  if (basename(root) !== hex) fail("prior public release directory does not match its release ID");
+  const expectedBasename = expectedManifestSha256 ?? hex;
+  if (basename(root) !== expectedBasename) {
+    fail("prior public release directory does not match its selector namespace");
+  }
 
   const selectedArtifacts = publicArtifacts(manifest);
   if (selectedArtifacts.length + 1 > maxObjects) {
@@ -706,7 +767,13 @@ function loadPublicNamespace(
       `prior public artifact ${artifact.publicPath}`,
     ));
   }
-  return { releaseId: manifest.release_id, releaseHex: hex, files, brainPage: null };
+  return {
+    releaseId: manifest.release_id,
+    releaseHex: hex,
+    manifestSha256,
+    files,
+    brainPage: null,
+  };
 }
 
 function writeAll(descriptor: number, bytes: Buffer): void {
@@ -1030,24 +1097,37 @@ export function stageBrainPublicRelease(options: StageBrainPublicOptions): Stage
       maxObjects,
     )
     : null;
-  if (previous?.releaseId === current.releaseId) previous = null;
+  if (previous?.manifestSha256 === current.manifestSha256) previous = null;
 
   const oldSelectorPath = resolve(destination, "current.json");
   if (!hasPreviousManifest && existsSync(oldSelectorPath)) {
     const oldSelector = parseSelector(destination);
-    const retainedId = oldSelector.release_id === current.releaseId
-      ? oldSelector.previous_release_id
-      : oldSelector.release_id;
-    const retainedHex = oldSelector.release_id === current.releaseId
-      ? oldSelector.previous_release
+    const oldCurrentNamespace = oldSelector.schema === SELECTOR_SCHEMA
+      ? oldSelector.manifest_sha256
       : oldSelector.release;
-    if (retainedId && retainedHex && retainedId !== current.releaseId) {
+    const oldCurrent = loadPublicNamespace(
+      resolve(destination, "releases", oldCurrentNamespace),
+      oldSelector.release_id,
+      oldSelector.schema === SELECTOR_SCHEMA ? oldSelector.manifest_sha256 : null,
+      maxFileBytes,
+      maxObjects,
+    );
+    if (oldCurrent.manifestSha256 !== current.manifestSha256) {
+      previous = oldCurrent;
+    } else if (oldSelector.previous_release_id) {
+      const oldPreviousNamespace = oldSelector.schema === SELECTOR_SCHEMA
+        ? oldSelector.previous_manifest_sha256!
+        : oldSelector.previous_release!;
       previous = loadPublicNamespace(
-        resolve(destination, "releases", retainedHex),
-        retainedId,
+        resolve(destination, "releases", oldPreviousNamespace),
+        oldSelector.previous_release_id,
+        oldSelector.schema === SELECTOR_SCHEMA
+          ? oldSelector.previous_manifest_sha256!
+          : null,
         maxFileBytes,
         maxObjects,
       );
+      if (previous.manifestSha256 === current.manifestSha256) previous = null;
     }
   }
 
@@ -1057,11 +1137,13 @@ export function stageBrainPublicRelease(options: StageBrainPublicOptions): Stage
     schema: SELECTOR_SCHEMA,
     release_id: current.releaseId,
     release: current.releaseHex,
-    manifest: `/assets/brain/releases/${current.releaseHex}/release.json`,
+    manifest_sha256: current.manifestSha256,
+    manifest: `/assets/brain/releases/${current.manifestSha256}/release.json`,
     ...(previous ? {
       previous_release_id: previous.releaseId,
       previous_release: previous.releaseHex,
-      previous_manifest: `/assets/brain/releases/${previous.releaseHex}/release.json`,
+      previous_manifest_sha256: previous.manifestSha256,
+      previous_manifest: `/assets/brain/releases/${previous.manifestSha256}/release.json`,
     } : {}),
     audited_at: options.auditedAt ?? new Date().toISOString(),
   };
@@ -1072,11 +1154,11 @@ export function stageBrainPublicRelease(options: StageBrainPublicOptions): Stage
     expectedFiles.set(path, { bytes, sha256: digest });
   };
   for (const file of current.files) {
-    expectFile(`releases/${current.releaseHex}/${file.destinationPath}`, file.bytes, file.sha256);
+    expectFile(`releases/${current.manifestSha256}/${file.destinationPath}`, file.bytes, file.sha256);
   }
   if (previous) {
     for (const file of previous.files) {
-      expectFile(`releases/${previous.releaseHex}/${file.destinationPath}`, file.bytes, file.sha256);
+      expectFile(`releases/${previous.manifestSha256}/${file.destinationPath}`, file.bytes, file.sha256);
     }
   }
   for (const file of aliasFiles) expectFile(file.destinationPath, file.bytes, file.sha256);
@@ -1111,10 +1193,10 @@ export function stageBrainPublicRelease(options: StageBrainPublicOptions): Stage
       pageStaging = mkdtempSync(join(pageParent, ".brain-page.stage-"));
     }
     const scratch = Buffer.allocUnsafe(COPY_BUFFER_BYTES);
-    const currentRoot = resolve(staging, "releases", current.releaseHex);
+    const currentRoot = resolve(staging, "releases", current.manifestSha256);
     copyVerifiedFiles(currentRoot, current.files, scratch);
     if (previous) {
-      copyVerifiedFiles(resolve(staging, "releases", previous.releaseHex), previous.files, scratch);
+      copyVerifiedFiles(resolve(staging, "releases", previous.manifestSha256), previous.files, scratch);
     }
     const stagedAliases = aliasFiles.map(file => ({
       ...file,
@@ -1167,11 +1249,17 @@ export function stageBrainPublicRelease(options: StageBrainPublicOptions): Stage
       );
     }
     return {
-      schema: "wikilean.public-stage-result/v1",
+      schema: "wikilean.public-stage-result/v2",
       release_id: current.releaseId,
       release: current.releaseHex,
+      manifest_sha256: current.manifestSha256,
       previous_release_id: previous?.releaseId ?? null,
+      previous_manifest_sha256: previous?.manifestSha256 ?? null,
       retained_release_ids: [current.releaseId, ...(previous ? [previous.releaseId] : [])],
+      retained_manifest_sha256s: [
+        current.manifestSha256,
+        ...(previous ? [previous.manifestSha256] : []),
+      ],
       destination,
       objects: measured.objects,
       bytes: measured.bytes,

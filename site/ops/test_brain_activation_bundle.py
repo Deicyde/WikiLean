@@ -101,7 +101,7 @@ class ActivationFixture:
         self.build = self.root / "build"
         _run("git", "worktree", "add", "--detach", str(self.build), self.authority, cwd=self.promotion)
 
-        self.release_root = self.root / "releases" / RELEASE_ID.removeprefix("sha256:")
+        self.release_root = self.root / "releases" / "candidate-staging"
         self.release_manifest_path = self.release_root / "release.json"
         semantic_roots = {
             path: "sha256:" + format(index, "064x")
@@ -157,6 +157,13 @@ class ActivationFixture:
         }
         self.release_manifest_path.parent.mkdir(parents=True)
         self.release_manifest_path.write_bytes(_authority_json(self.release_manifest))
+        self.release_manifest_sha256 = hashlib.sha256(
+            self.release_manifest_path.read_bytes()
+        ).hexdigest()
+        final_release_root = self.release_root.parent / self.release_manifest_sha256
+        self.release_root.rename(final_release_root)
+        self.release_root = final_release_root
+        self.release_manifest_path = self.release_root / "release.json"
         page_path = self.release_root / "site" / "out" / "brain.html"
         page_path.parent.mkdir(parents=True)
         page_path.write_bytes(self.page_bytes)
@@ -164,9 +171,7 @@ class ActivationFixture:
         database.parent.mkdir(parents=True)
         database.write_bytes(b"sqlite-placeholder")
 
-        self.semantic_baseline_root = (
-            self.root / "releases" / PRIOR_RELEASE_ID.removeprefix("sha256:")
-        )
+        self.semantic_baseline_root = self.root / "releases" / "baseline-staging"
         self.semantic_baseline_manifest_path = self.semantic_baseline_root / "release.json"
         self.semantic_baseline_manifest = json.loads(json.dumps(self.release_manifest))
         self.semantic_baseline_manifest["release_id"] = PRIOR_RELEASE_ID
@@ -177,6 +182,13 @@ class ActivationFixture:
         self.semantic_baseline_manifest_path.write_bytes(
             _authority_json(self.semantic_baseline_manifest)
         )
+        semantic_manifest_sha256 = hashlib.sha256(
+            self.semantic_baseline_manifest_path.read_bytes()
+        ).hexdigest()
+        final_semantic_root = self.semantic_baseline_root.parent / semantic_manifest_sha256
+        self.semantic_baseline_root.rename(final_semantic_root)
+        self.semantic_baseline_root = final_semantic_root
+        self.semantic_baseline_manifest_path = self.semantic_baseline_root / "release.json"
 
         self.baseline_root = self.root / "baselines" / BASELINE_ID.removeprefix("sha256:")
         self.baseline_root.mkdir(parents=True)
@@ -203,6 +215,7 @@ class ActivationFixture:
             "release": RELEASE_ID.removeprefix("sha256:"),
             "root": str(self.release_root),
             "manifest": str(self.release_manifest_path),
+            "manifest_sha256": self.release_manifest_sha256,
             "artifact_count": len(self.release_manifest["artifacts"]),
             "byte_count": artifact_bytes,
             "reused": False,
@@ -435,6 +448,35 @@ class ActivationFixture:
         selected_node = "/usr/bin/node"
         selected_npm = "/usr/bin/npm"
         selected_python = "/usr/bin/python3"
+        self.wrangler_installation = {
+            "schema": "wikilean.node-modules-inventory/v1",
+            "root": str(self.promotion / "wiki" / "node_modules"),
+            "package_lock_sha256": "8" * 64,
+            "objects": 1,
+            "bytes": 1,
+            "symlinks": 0,
+            "sha256": "9" * 64,
+        }
+        self.node_executables = {
+            "schema": "wikilean.node-executables/v1",
+            "node": {
+                "path": selected_node,
+                "sha256": "a" * 64,
+                "bytes": 1,
+            },
+            "wrangler": {
+                "path": str(
+                    self.promotion
+                    / "wiki"
+                    / "node_modules"
+                    / "wrangler"
+                    / "bin"
+                    / "wrangler.js"
+                ),
+                "sha256": "b" * 64,
+                "bytes": 1,
+            },
+        }
 
         def command_evidence(
             name: str,
@@ -486,6 +528,8 @@ class ActivationFixture:
                 },
                 "node": {
                     "path": selected_node,
+                    "sha256": self.node_executables["node"]["sha256"],
+                    "bytes": self.node_executables["node"]["bytes"],
                     "version": "v22.23.2",
                     "probe": command_evidence(
                         "node_version",
@@ -591,7 +635,9 @@ class ActivationFixture:
                 "staged_selector": {
                     "sha256": "c" * 64,
                     "release_id": RELEASE_ID,
+                    "manifest_sha256": self.release_manifest_sha256,
                     "previous_release_id": None,
+                    "previous_manifest_sha256": None,
                     "audited_at": "2030-01-01T00:00:00Z",
                 },
                 "worker_bundle": {
@@ -601,6 +647,8 @@ class ActivationFixture:
                     "config_sha256": "e" * 64,
                     "node_version": "v22.23.2",
                     "wrangler_version": "4.120.0",
+                    "installation": self.wrangler_installation,
+                    "executables": self.node_executables,
                 },
                 "audited_at": "2030-01-01T00:00:00Z",
                 "base_url": bundle.PRODUCTION_ORIGIN,
@@ -612,7 +660,9 @@ class ActivationFixture:
                     "selector_status": 404,
                     "selector_sha256": hashlib.sha256(b"").hexdigest(),
                     "release_id": None,
+                    "manifest_sha256": None,
                     "previous_release_id": None,
+                    "previous_manifest_sha256": None,
                     "audited_at": None,
                 },
                 "planned": {
@@ -735,6 +785,9 @@ class ActivationFixture:
             None,
             None,
             audited_at,
+            self.release_manifest_sha256,
+            None,
+            None,
         )
         prepared = promoter.PreparedPromotion(
             self.dry_run["attempt_id"],
@@ -770,7 +823,9 @@ class ActivationFixture:
             "4.120.0",
             "certifi:test",
             history,
-            history_raw,
+            history_raw=history_raw,
+            wrangler_installation=self.wrangler_installation,
+            node_executables=self.node_executables,
         )
         receipt_root = self.root / "receipts"
         receipt_root.mkdir(exist_ok=True)
@@ -818,8 +873,11 @@ class ActivationFixture:
                 "schema": bundle.PUBLIC_STAGE_SCHEMA,
                 "release_id": RELEASE_ID,
                 "release": RELEASE_ID.removeprefix("sha256:"),
+                "manifest_sha256": self.release_manifest_sha256,
                 "previous_release_id": None,
+                "previous_manifest_sha256": None,
                 "retained_release_ids": [RELEASE_ID],
+                "retained_manifest_sha256s": [self.release_manifest_sha256],
                 "destination": str(public_dir / "assets" / "brain"),
                 "objects": 3,
                 "bytes": len(self.page_bytes) + len(self.release_manifest_path.read_bytes()) + 1,
@@ -845,17 +903,18 @@ class ActivationFixture:
     def _materialize_shadow_public(self) -> None:
         public_dir = Path(self.public_result["public_dir"])
         destination = Path(self.public_result["brain"]["destination"])
-        namespace = destination / "releases" / RELEASE_ID.removeprefix("sha256:")
+        namespace = destination / "releases" / self.release_manifest_sha256
         namespace.mkdir(parents=True)
         (public_dir / self.baseline_asset_path).write_bytes(self.baseline_asset_bytes)
         (namespace / "release.json").write_bytes(self.release_manifest_path.read_bytes())
         selector = {
-            "schema": "wikilean.release-selector/v1",
+            "schema": "wikilean.release-selector/v2",
             "release_id": RELEASE_ID,
             "release": RELEASE_ID.removeprefix("sha256:"),
+            "manifest_sha256": self.release_manifest_sha256,
             "manifest": (
                 "/assets/brain/releases/"
-                + RELEASE_ID.removeprefix("sha256:")
+                + self.release_manifest_sha256
                 + "/release.json"
             ),
             "audited_at": "2030-01-01T00:00:00Z",
@@ -1081,17 +1140,108 @@ class BrainActivationBundleTests(unittest.TestCase):
         with self.assertRaisesRegex(bundle.BundleValidationError, "authority and reducer"):
             self.fixture.freeze()
 
-    def test_rejects_candidate_self_diff_as_semantic_baseline(self):
+    def test_rejects_identical_exact_manifest_as_semantic_baseline(self):
         paths = dict(self.fixture.paths)
         paths["semantic_baseline_manifest"] = self.fixture.release_manifest_path
         with self.fixture.verifiers():
-            with self.assertRaisesRegex(bundle.BundleValidationError, "must differ"):
+            with self.assertRaisesRegex(bundle.BundleValidationError, "exact manifest must differ"):
                 bundle.freeze_activation_bundle(
                     paths,
                     self.fixture.store,
                     ci_evidence=self.fixture.ci_evidence,
                     expected_semantic_baseline_id=RELEASE_ID,
                     git=self.fixture.git,
+                )
+
+    def test_allows_same_logical_release_with_distinct_exact_manifest(self):
+        baseline = json.loads(json.dumps(self.fixture.release_manifest))
+        baseline["created_at"] = "2030-01-02T00:00:00Z"
+        baseline_raw = _authority_json(baseline)
+        baseline_digest = hashlib.sha256(baseline_raw).hexdigest()
+        old_root = self.fixture.semantic_baseline_root
+        old_path = self.fixture.semantic_baseline_manifest_path
+        old_path.write_bytes(baseline_raw)
+        new_root = old_root.parent / baseline_digest
+        old_root.rename(new_root)
+        self.fixture.semantic_baseline_root = new_root
+        self.fixture.semantic_baseline_manifest_path = new_root / "release.json"
+        self.fixture.semantic_baseline_manifest = baseline
+        self.fixture.paths["semantic_baseline_manifest"] = (
+            self.fixture.semantic_baseline_manifest_path
+        )
+        semantic_diff = self.fixture.semantic_diff
+        semantic_diff["from"]["path"] = str(
+            self.fixture.semantic_baseline_manifest_path
+        )
+        semantic_diff["from"]["release_id"] = RELEASE_ID
+        for record in semantic_diff["semantic_artifacts"].values():
+            record["from"] = record["to"]
+            record["different"] = False
+        for section in (
+            "nodes",
+            "edges",
+            "snippets",
+            "cells",
+            "organ_membership",
+            "frontier",
+        ):
+            for key, value in semantic_diff[section].items():
+                if isinstance(value, list) and key != "compared_artifacts":
+                    semantic_diff[section][key] = []
+        semantic_diff["synapses"] = dict(
+            semantic_diff["semantic_artifacts"]["brain/data/synapses.jsonl"]
+        )
+        semantic_diff["frontier_graph"] = dict(
+            semantic_diff["semantic_artifacts"]["brain/data/frontier_graph.json"]
+        )
+        semantic_diff["summary"] = bundle.semantic_diff_tool.summarize_report(
+            semantic_diff
+        )
+        semantic_diff["different"] = bundle.semantic_diff_tool.summary_has_differences(
+            semantic_diff["summary"]
+        )
+        self.fixture.sync()
+
+        with self.fixture.verifiers():
+            frozen = bundle.freeze_activation_bundle(
+                self.fixture.paths,
+                self.fixture.store,
+                ci_evidence=self.fixture.ci_evidence,
+                expected_semantic_baseline_id=RELEASE_ID,
+                git=self.fixture.git,
+            )
+        self.assertEqual(frozen.release_id, RELEASE_ID)
+        self.assertEqual(frozen.semantic_baseline_release_id, RELEASE_ID)
+
+    def test_retained_baseline_requires_logical_and_exact_manifest_identity(self):
+        arguments = {
+            "candidate_manifest_sha256": "a" * 64,
+            "semantic_baseline_release_id": PRIOR_RELEASE_ID,
+            "semantic_baseline_manifest_sha256": "b" * 64,
+        }
+        bundle._validate_semantic_baseline_binding(
+            **arguments,
+            retained_release={
+                "release_id": PRIOR_RELEASE_ID,
+                "release_manifest_sha256": "b" * 64,
+            },
+        )
+        for retained in (
+            {
+                "release_id": RELEASE_ID,
+                "release_manifest_sha256": "b" * 64,
+            },
+            {
+                "release_id": PRIOR_RELEASE_ID,
+                "release_manifest_sha256": "c" * 64,
+            },
+        ):
+            with self.subTest(retained=retained), self.assertRaisesRegex(
+                bundle.BundleValidationError, "logical and exact manifest identity"
+            ):
+                bundle._validate_semantic_baseline_binding(
+                    **arguments,
+                    retained_release=retained,
                 )
 
     def test_rejects_partial_semantic_coverage(self):
@@ -1196,6 +1346,25 @@ class BrainActivationBundleTests(unittest.TestCase):
             "--version",
         ]
         with self.assertRaisesRegex(bundle.BundleValidationError, "Git executable differs"):
+            self.fixture.freeze()
+
+    def test_rejects_ci_node_executable_identity_different_from_promoter(self):
+        self.fixture.ci_evidence["tools"]["node"]["sha256"] = "f" * 64
+        with self.assertRaisesRegex(
+            bundle.BundleValidationError, "Node executable identity differs"
+        ):
+            self.fixture.freeze()
+
+    def test_rejects_ci_node_version_different_from_promoter(self):
+        node = self.fixture.ci_evidence["tools"]["node"]
+        node["version"] = "v22.99.99"
+        probe = node["probe"]
+        stdout = "v22.99.99\n"
+        stdout_bytes = stdout.encode("utf-8")
+        probe["stdout"] = stdout
+        probe["stdout_bytes"] = len(stdout_bytes)
+        probe["stdout_sha256"] = hashlib.sha256(stdout_bytes).hexdigest()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "Node version differs"):
             self.fixture.freeze()
 
     def test_rejects_missing_shadow_public_output(self):
@@ -1335,7 +1504,7 @@ class BrainActivationBundleTests(unittest.TestCase):
         nested = (
             self.fixture.promotion
             / "ignored-releases"
-            / RELEASE_ID.removeprefix("sha256:")
+            / self.fixture.release_manifest_sha256
         )
         shutil.copytree(self.fixture.release_root, nested)
         self.fixture.paths["candidate_release_manifest"] = nested / "release.json"
@@ -1352,6 +1521,27 @@ class BrainActivationBundleTests(unittest.TestCase):
         self.fixture.sync()
         with self.assertRaisesRegex(bundle.BundleValidationError, "outside the promotion"):
             self.fixture.freeze()
+
+    def test_accepts_legacy_release_id_keyed_semantic_baseline_for_migration(self):
+        legacy_root = (
+            self.fixture.semantic_baseline_root.parent
+            / PRIOR_RELEASE_ID.removeprefix("sha256:")
+        )
+        self.fixture.semantic_baseline_root.rename(legacy_root)
+        self.fixture.semantic_baseline_root = legacy_root
+        self.fixture.semantic_baseline_manifest_path = legacy_root / "release.json"
+        self.fixture.paths["semantic_baseline_manifest"] = (
+            self.fixture.semantic_baseline_manifest_path
+        )
+        self.fixture.semantic_diff["from"]["path"] = str(
+            self.fixture.semantic_baseline_manifest_path
+        )
+        self.fixture.sync()
+        frozen = self.fixture.freeze()
+        self.assertEqual(
+            frozen.semantic_baseline_release_id,
+            PRIOR_RELEASE_ID,
+        )
 
     def test_rejects_tampered_evidence(self):
         frozen = self.fixture.freeze()

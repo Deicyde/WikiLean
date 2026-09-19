@@ -113,13 +113,17 @@ that witnessed the bond, not the atom ids.
 ## Release identity and request consistency
 
 Every REST request and MCP `tools/call` fetches `/assets/brain/current.json`
-exactly once. The selector carries `schema: "wikilean.release-selector/v1"`, a
-full content identity `release_id: "sha256:<64 lowercase hex>"`, the matching
-URL-safe `release` hex, and the immutable `manifest` path. The optional flat
-`previous_release_id`, `previous_release`, and `previous_manifest` fields are
-all-or-none and retain the prior release; `audited_at` is optional audit metadata.
-The Worker validates these fields agree, recomputes the immutable manifest's
-canonical release identity, and requires the complete runtime artifact closure.
+exactly once. New selectors carry `schema: "wikilean.release-selector/v2"`, a
+logical content identity `release_id: "sha256:<64 lowercase hex>"`, the matching
+URL-safe `release` hex, an exact `manifest_sha256`, and the immutable `manifest`
+path beneath that digest. The optional flat `previous_release_id`,
+`previous_release`, `previous_manifest_sha256`, and `previous_manifest` fields
+are all-or-none and retain the prior exact manifest; `audited_at` is optional
+audit metadata. The Worker validates these fields agree, checks the fetched
+manifest bytes against `manifest_sha256`, recomputes the manifest's logical
+release identity, and requires the complete runtime artifact closure. Legacy v1
+selectors remain readable during migration, but their unbound manifest URL is
+fetched again on every request and is never used as a cache identity.
 Every release-relative JSON read must also be declared by that manifest and match
 its byte length and SHA-256 before parsing. Missing, malformed, mismatched, or
 transiently unavailable mandatory assets fail closed with 503; failed immutable
@@ -127,12 +131,14 @@ loads are evicted from the isolate memo so a retry can recover.
 
 That selected identity is pinned for the complete request. Cell shards, labels,
 aliases, supercells, and `xref_index.json` are all read below
-`/assets/brain/releases/<release>/`; isolate caches are keyed by release ID, so
-a promotion during an isolate's lifetime cannot mix releases. Release-keyed
-manifest, asset, xref, and inversion caches share a two-release LRU bound for
-the current/previous overlap window. Declaration, suffix, and premise indexes
-retain their existing unqualified paths because they are separate compatibility
-indexes.
+`/assets/brain/releases/<manifest-sha256>/`; manifest and artifact caches are
+keyed by the logical release plus exact manifest digest, so changing audit or
+attestation bytes cannot reuse an older manifest cache entry. Release-derived
+xref and inversion caches remain keyed by logical release because that identity
+already binds every runtime artifact. The caches share a two-manifest LRU bound
+for the current/previous overlap window. Declaration, suffix, and premise
+indexes retain their existing unqualified paths because they are separate
+compatibility indexes.
 
 ## REST endpoints
 
@@ -658,8 +664,9 @@ top-level `note` says so.
   (`public, max-age=0, must-revalidate`) because they resolve the mutable
   current selector. `/api/brain/edges` remains live and `no-store`.
 - Be a good citizen: batch-style crawling should first read
-  `/assets/brain/current.json`, validate its immutable release manifest, then
-  crawl `/assets/brain/releases/<release>/cells/manifest.json` and its sibling
+  `/assets/brain/current.json`, verify its `manifest_sha256`, validate that
+  immutable release manifest, then crawl
+  `/assets/brain/releases/<manifest-sha256>/cells/manifest.json` and its sibling
   shards, `labels.json`, `aliases.json`, `supercells.json`, and `explorer.json`.
   Never assemble a crawl from the retired mutable `/assets/brain/cells/` alias.
 

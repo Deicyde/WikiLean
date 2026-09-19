@@ -54,14 +54,32 @@ const SELECTOR_KEYS = new Set([
   "schema",
   "release_id",
   "release",
+  "manifest_sha256",
   "manifest",
   "previous_release_id",
   "previous_release",
+  "previous_manifest_sha256",
   "previous_manifest",
   "audited_at",
 ]);
+const LEGACY_SELECTOR_KEYS = new Set(
+  [...SELECTOR_KEYS].filter((key) => !key.includes("manifest_sha256")),
+);
 
 export interface BrainReleaseSelector {
+  schema: "wikilean.release-selector/v2";
+  release_id: string;
+  release: string;
+  manifest_sha256: string;
+  manifest: string;
+  previous_release_id?: string;
+  previous_release?: string;
+  previous_manifest_sha256?: string;
+  previous_manifest?: string;
+  audited_at?: string;
+}
+
+interface LegacyBrainReleaseSelector {
   schema: "wikilean.release-selector/v1";
   release_id: string;
   release: string;
@@ -71,6 +89,8 @@ export interface BrainReleaseSelector {
   previous_manifest?: string;
   audited_at?: string;
 }
+
+type ReadableBrainReleaseSelector = BrainReleaseSelector | LegacyBrainReleaseSelector;
 
 interface BrainReleaseManifestCommon {
   schema: "wikilean.release/v1";
@@ -106,6 +126,7 @@ export interface BrainReleaseArtifact {
 export interface BrainReleaseContext {
   releaseId: string;
   release: string;
+  manifestSha256: string;
   assetBase: string;
   manifestPath: string;
   manifest: BrainReleaseManifest;
@@ -173,8 +194,10 @@ function validDigest(value: unknown): value is string {
   return typeof value === "string" && DIGEST_RE.test(value);
 }
 
-function validReplayAttestations(value: unknown): boolean {
-  if (!Array.isArray(value) || value.length !== 2) return false;
+function validAttestations(value: unknown, exactPair: boolean): boolean {
+  if (!Array.isArray(value) || value.length === 0 || (exactPair && value.length !== 2)) {
+    return false;
+  }
   const paths: string[] = [];
   const kinds = new Set<string>();
   for (const entry of value) {
@@ -187,15 +210,19 @@ function validReplayAttestations(value: unknown): boolean {
     paths.push(ref.path);
     kinds.add(ref.kind);
   }
-  return kinds.size === 2 && paths[0] < paths[1];
+  return kinds.size === 2 && paths.every(
+    (path, index) => index === 0 || paths[index - 1] < path,
+  );
 }
 
 function validReleaseProfile(o: Record<string, unknown>): boolean {
-  if (o.profile === "brain-current-v1") return !("replay" in o);
+  if (o.profile === "brain-current-v1") {
+    return !("replay" in o) && validAttestations(o.attestations, false);
+  }
   if (o.profile !== "brain-offline-replay-v1") return false;
   const replay = record(o.replay);
   const hashes = ["authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id"];
-  return validReplayAttestations(o.attestations) && replay !== null && Object.keys(replay).length === 5 &&
+  return validAttestations(o.attestations, true) && replay !== null && Object.keys(replay).length === 5 &&
     Object.keys(replay).every((key) => key === "prior_state_root" || hashes.includes(key)) &&
     hashes.every((key) => validHash(replay[key])) &&
     (replay.prior_state_root === null || validHash(replay.prior_state_root));
@@ -235,27 +262,41 @@ function releaseParts(releaseId: unknown, release: unknown): { id: string; hex: 
   return { id: releaseId, hex: release };
 }
 
-async function parseSelector(raw: unknown): Promise<BrainReleaseSelector | null> {
+export async function parseBrainReleaseSelector(
+  raw: unknown,
+): Promise<ReadableBrainReleaseSelector | null> {
   const o = record(raw);
-  if (!o || Object.keys(o).some((key) => !SELECTOR_KEYS.has(key))) return null;
-  if (o.schema !== "wikilean.release-selector/v1") return null;
+  if (!o) return null;
+  const v2 = o.schema === "wikilean.release-selector/v2";
+  const v1 = o.schema === "wikilean.release-selector/v1";
+  if (!v1 && !v2) return null;
+  const allowedKeys = v2 ? SELECTOR_KEYS : LEGACY_SELECTOR_KEYS;
+  if (Object.keys(o).some((key) => !allowedKeys.has(key))) return null;
   const current = releaseParts(o.release_id, o.release);
-  if (!current || o.manifest !== `/assets/brain/releases/${current.hex}/release.json`) return null;
-  const previousValues = [o.previous_release_id, o.previous_release, o.previous_manifest];
+  const currentNamespace = v2 ? o.manifest_sha256 : current?.hex;
+  if (!current || !validDigest(currentNamespace) ||
+      o.manifest !== `/assets/brain/releases/${currentNamespace}/release.json`) return null;
+  const previousValues = [
+    o.previous_release_id,
+    o.previous_release,
+    ...(v2 ? [o.previous_manifest_sha256] : []),
+    o.previous_manifest,
+  ];
   const hasPrevious = previousValues.some((value) => value !== undefined);
   let previous: { id: string; hex: string } | null = null;
   if (hasPrevious) {
     if (previousValues.some((value) => value === undefined)) return null;
     previous = releaseParts(o.previous_release_id, o.previous_release);
+    const previousNamespace = v2 ? o.previous_manifest_sha256 : previous?.hex;
     if (
       !previous ||
-      o.previous_manifest !== `/assets/brain/releases/${previous.hex}/release.json` ||
-      previous.id === current.id
+      !validDigest(previousNamespace) ||
+      o.previous_manifest !== `/assets/brain/releases/${previousNamespace}/release.json` ||
+      (v2 ? previousNamespace === currentNamespace : previous.id === current.id)
     ) return null;
   }
   if (o.audited_at !== undefined && (typeof o.audited_at !== "string" || !o.audited_at)) return null;
-  return {
-    schema: "wikilean.release-selector/v1",
+  const common = {
     release_id: current.id,
     release: current.hex,
     manifest: o.manifest as string,
@@ -266,6 +307,17 @@ async function parseSelector(raw: unknown): Promise<BrainReleaseSelector | null>
     } : {}),
     ...(o.audited_at === undefined ? {} : { audited_at: o.audited_at as string }),
   };
+  if (v2) {
+    return {
+      schema: "wikilean.release-selector/v2",
+      ...common,
+      manifest_sha256: o.manifest_sha256 as string,
+      ...(previous
+        ? { previous_manifest_sha256: o.previous_manifest_sha256 as string }
+        : {}),
+    };
+  }
+  return { schema: "wikilean.release-selector/v1", ...common };
 }
 
 async function parseReleaseManifest(
@@ -342,19 +394,45 @@ export async function assetJson<T>(c: Ctx, path: string): Promise<T | null> {
   return (await res.json()) as T;
 }
 
+async function exactAssetJson<T>(
+  c: Ctx,
+  path: string,
+  expectedSha256: string,
+): Promise<T | null> {
+  const loaded = await assetJsonWithDigest<T>(c, path);
+  if (loaded === null) return null;
+  if (loaded.sha256 !== expectedSha256) {
+    throw new TypeError(`asset bytes do not match selector digest: ${path}`);
+  }
+  return loaded.value;
+}
+
+async function assetJsonWithDigest<T>(
+  c: Ctx,
+  path: string,
+): Promise<{ value: T; sha256: string } | null> {
+  const res = await c.env.ASSETS.fetch(new Request(new URL(path, c.req.url)));
+  if (!res.ok) return null;
+  const bytes = await res.arrayBuffer();
+  const sha256 = await sha256Buffer(bytes);
+  const text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(bytes);
+  return { value: JSON.parse(text) as T, sha256 };
+}
+
 // Isolate-lifetime memo for parsed immutable assets. Brain keys include the
-// release id; unrelated indexes keep their historical path-only keys. Brain
+// logical release and exact manifest digest; unrelated indexes keep their
+// historical path-only keys. Brain
 // release data is bounded to the selector's current/previous overlap window;
 // failed loads are removed so transient failures remain retryable.
 const _assetMemo = new Map<string, Promise<unknown>>();
 const _releaseMemo = new Map<string, Promise<BrainReleaseContext | null>>();
 const MAX_MEMOIZED_BRAIN_RELEASES = 2;
-const _brainReleaseLru = new Map<string, true>();
+const _brainReleaseLru = new Map<string, string>();
 const _brainReleaseEvictors = new Set<(releaseId: string) => void>();
 
-function evictBrainRelease(releaseId: string): void {
-  _releaseMemo.delete(releaseId);
-  const prefix = `brain:${releaseId}:`;
+function evictBrainRelease(cacheIdentity: string, releaseId: string): void {
+  _releaseMemo.delete(cacheIdentity);
+  const prefix = `brain:${cacheIdentity}:`;
   for (const key of _assetMemo.keys()) {
     if (key.startsWith(prefix)) _assetMemo.delete(key);
   }
@@ -367,14 +445,14 @@ export function registerBrainReleaseCacheEvictor(evict: (releaseId: string) => v
   _brainReleaseEvictors.add(evict);
 }
 
-function touchBrainRelease(releaseId: string): void {
-  _brainReleaseLru.delete(releaseId);
-  _brainReleaseLru.set(releaseId, true);
+function touchBrainRelease(cacheIdentity: string, releaseId: string): void {
+  _brainReleaseLru.delete(cacheIdentity);
+  _brainReleaseLru.set(cacheIdentity, releaseId);
   while (_brainReleaseLru.size > MAX_MEMOIZED_BRAIN_RELEASES) {
-    const oldest = _brainReleaseLru.keys().next().value as string | undefined;
+    const oldest = _brainReleaseLru.entries().next().value as [string, string] | undefined;
     if (oldest === undefined) break;
-    _brainReleaseLru.delete(oldest);
-    evictBrainRelease(oldest);
+    _brainReleaseLru.delete(oldest[0]);
+    evictBrainRelease(oldest[0], oldest[1]);
   }
 }
 
@@ -387,6 +465,29 @@ function memoJson<T>(c: Ctx, key: string, path: string): Promise<T | null> {
   if (hit) return hit as Promise<T | null>;
   let pending: Promise<T | null>;
   pending = assetJson<T>(c, path).then(
+    (value) => {
+      if (value === null && _assetMemo.get(key) === pending) _assetMemo.delete(key);
+      return value;
+    },
+    (error) => {
+      if (_assetMemo.get(key) === pending) _assetMemo.delete(key);
+      throw error;
+    },
+  );
+  _assetMemo.set(key, pending);
+  return pending;
+}
+
+function memoExactJson<T>(
+  c: Ctx,
+  key: string,
+  path: string,
+  expectedSha256: string,
+): Promise<T | null> {
+  const hit = _assetMemo.get(key);
+  if (hit) return hit as Promise<T | null>;
+  let pending: Promise<T | null>;
+  pending = exactAssetJson<T>(c, path, expectedSha256).then(
     (value) => {
       if (value === null && _assetMemo.get(key) === pending) _assetMemo.delete(key);
       return value;
@@ -417,8 +518,9 @@ export function brainAssetJson<T>(c: Ctx, release: BrainReleaseContext, path: st
   const artifactPath = sourceArtifactPath(relative);
   const artifact = artifactPath ? release.artifactsByPath.get(artifactPath) : undefined;
   if (!artifact) return Promise.resolve(null);
-  touchBrainRelease(release.releaseId);
-  const key = `brain:${release.releaseId}:${relative}`;
+  const cacheIdentity = `${release.releaseId}:${release.manifestSha256}`;
+  touchBrainRelease(cacheIdentity, release.releaseId);
+  const key = `brain:${cacheIdentity}:${relative}`;
   const hit = _assetMemo.get(key);
   if (hit) return hit as Promise<T | null>;
   let pending: Promise<T | null>;
@@ -499,21 +601,33 @@ export async function requiredBrainAssetJson<T>(
 }
 
 // Resolve current once at each HTTP entry point. The selector is fetched fresh;
-// its immutable manifest may be memoized under the selected release identity.
+// its immutable manifest is memoized only under the selector's exact byte
+// identity. Logical release IDs intentionally exclude attestations and time.
 export async function resolveBrainRelease(c: Ctx): Promise<BrainReleaseContext | null> {
   try {
-    const selector = await parseSelector(await assetJson<unknown>(c, SELECTOR_PATH));
+    const selector = await parseBrainReleaseSelector(await assetJson<unknown>(c, SELECTOR_PATH));
     if (!selector) return null;
-    touchBrainRelease(selector.release_id);
-    let hit = _releaseMemo.get(selector.release_id);
+    const legacyManifest = selector.schema === "wikilean.release-selector/v1"
+      ? await assetJsonWithDigest<unknown>(c, selector.manifest)
+      : null;
+    if (selector.schema === "wikilean.release-selector/v1" && legacyManifest === null) return null;
+    const manifestSha256 = selector.schema === "wikilean.release-selector/v2"
+      ? selector.manifest_sha256
+      : legacyManifest!.sha256;
+    const cacheIdentity = `${selector.release_id}:${manifestSha256}`;
+    touchBrainRelease(cacheIdentity, selector.release_id);
+    let hit = _releaseMemo.get(cacheIdentity);
     if (!hit) {
       hit = (async () => {
-        const manifestKey = `brain:${selector.release_id}:release.json`;
-        const manifestPromise = memoJson<unknown>(
-          c,
-          manifestKey,
-          selector.manifest,
-        );
+        const manifestKey = `brain:${cacheIdentity}:release.json`;
+        const manifestPromise = selector.schema === "wikilean.release-selector/v2"
+          ? memoExactJson<unknown>(
+            c,
+            manifestKey,
+            selector.manifest,
+            selector.manifest_sha256,
+          )
+          : Promise.resolve(legacyManifest!.value);
         const rawManifest = await manifestPromise;
         let parsed: Awaited<ReturnType<typeof parseReleaseManifest>>;
         try {
@@ -529,22 +643,23 @@ export async function resolveBrainRelease(c: Ctx): Promise<BrainReleaseContext |
         return {
           releaseId: selector.release_id,
           release: selector.release,
-          assetBase: `/assets/brain/releases/${selector.release}`,
+          manifestSha256,
+          assetBase: selector.manifest.slice(0, -"/release.json".length),
           manifestPath: selector.manifest,
           manifest: parsed.manifest,
           artifactPaths: parsed.artifactPaths,
           artifactsByPath: parsed.artifactsByPath,
         };
       })();
-      _releaseMemo.set(selector.release_id, hit);
+      _releaseMemo.set(cacheIdentity, hit);
       hit.then(
         (value) => {
-          if (value === null && _releaseMemo.get(selector.release_id) === hit) {
-            _releaseMemo.delete(selector.release_id);
+          if (value === null && _releaseMemo.get(cacheIdentity) === hit) {
+            _releaseMemo.delete(cacheIdentity);
           }
         },
         () => {
-          if (_releaseMemo.get(selector.release_id) === hit) _releaseMemo.delete(selector.release_id);
+          if (_releaseMemo.get(cacheIdentity) === hit) _releaseMemo.delete(cacheIdentity);
         },
       );
     }
@@ -556,7 +671,9 @@ export async function resolveBrainRelease(c: Ctx): Promise<BrainReleaseContext |
 
 // test-only (mirrors brain-edits' _resetBrainEditCaches)
 export function _resetBrainAssetMemo(): void {
-  for (const releaseId of _brainReleaseLru.keys()) evictBrainRelease(releaseId);
+  for (const [cacheIdentity, releaseId] of _brainReleaseLru) {
+    evictBrainRelease(cacheIdentity, releaseId);
+  }
   _brainReleaseLru.clear();
   _assetMemo.clear();
   _releaseMemo.clear();

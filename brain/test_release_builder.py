@@ -2,6 +2,7 @@
 """Focused tests for immutable Brain release assembly."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import stat
@@ -90,13 +91,14 @@ class ReleaseBuilderTest(unittest.TestCase):
         config = self.config(reducer_version="reducer-fixture-v7")
         first = build_release.build_release(config)
         root = Path(first["root"])
-        self.assertEqual(root.name, first["release"])
+        self.assertEqual(root.name, first["manifest_sha256"])
         self.assertEqual(first["release_id"], f"sha256:{first['release']}")
         self.assertEqual(first["manifest"], str(root / "release.json"))
         self.assertFalse(first["reused"])
 
         manifest, raw = contracts.load_canonical_json(root / "release.json")
         self.assertEqual(raw, contracts.canonical_json_bytes(manifest))
+        self.assertEqual(first["manifest_sha256"], hashlib.sha256(raw).hexdigest())
         self.assertIsNone(manifest["authority"]["through_changeset"])
         build_attestation, _ = contracts.load_canonical_json(root / "attestations/build.json")
         self.assertEqual(build_attestation["builder"]["name"], build_release.BUILDER_NAME)
@@ -112,6 +114,32 @@ class ReleaseBuilderTest(unittest.TestCase):
         self.assertTrue(second["reused"])
         self.assertEqual(first["release_id"], second["release_id"])
         self.assertEqual(before, after)
+
+    def test_distinct_manifests_for_one_logical_release_coexist(self) -> None:
+        first = build_release.build_release(
+            self.config(recorded_at="2030-01-01T00:00:00Z")
+        )
+        second = build_release.build_release(
+            self.config(recorded_at="2030-01-02T00:00:00Z")
+        )
+        self.assertEqual(first["release_id"], second["release_id"])
+        self.assertNotEqual(first["manifest_sha256"], second["manifest_sha256"])
+        self.assertNotEqual(first["root"], second["root"])
+        self.assertTrue(Path(first["manifest"]).is_file())
+        self.assertTrue(Path(second["manifest"]).is_file())
+
+    def test_manifest_mutation_before_publication_cannot_claim_the_old_digest(self) -> None:
+        def mutate_manifest() -> None:
+            candidate = next(self.output.glob(".brain-release-*"))
+            manifest = candidate / "release.json"
+            manifest.write_bytes(manifest.read_bytes() + b" ")
+
+        with self.assertRaisesRegex(contracts.VerificationError, "manifest digest"):
+            build_release.build_release(
+                self.config(),
+                _before_publish=mutate_manifest,
+            )
+        self.assertEqual(list(self.output.iterdir()), [])
 
     def offline_inputs(self) -> build_release._VerifiedReplayInputs:
         generation = "sha256:" + "a" * 64
@@ -333,7 +361,10 @@ class ReleaseBuilderTest(unittest.TestCase):
         with self.assertRaises(contracts.VerificationError):
             build_release.build_release(self.config())
         self.assertEqual(page.read_bytes(), corrupt)
-        self.assertEqual({path.name for path in self.output.iterdir()}, {first["release"]})
+        self.assertEqual(
+            {path.name for path in self.output.iterdir()},
+            {first["manifest_sha256"]},
+        )
 
     def test_failure_preserves_an_existing_other_release(self) -> None:
         self.output.mkdir()
@@ -371,6 +402,10 @@ class ReleaseBuilderTest(unittest.TestCase):
         self.assertEqual(code, 0)
         result = json.loads(stdout.getvalue())
         self.assertEqual(result["release_id"], f"sha256:{result['release']}")
+        self.assertEqual(
+            result["manifest_sha256"],
+            hashlib.sha256(Path(result["manifest"]).read_bytes()).hexdigest(),
+        )
         self.assertTrue(Path(result["manifest"]).is_file())
 
 
