@@ -90,6 +90,7 @@ run_check "Brain cells context tests" "$PYTHON_BIN" brain/test_build_cells_conte
 run_check "Brain frontier context tests" "$PYTHON_BIN" brain/test_build_frontier_context.py
 run_check "Legacy same-input halo preparation tests" "$PYTHON_BIN" brain/test_legacy_halo_projection.py
 run_check "Legacy verified input preparation tests" "$PYTHON_BIN" brain/test_prepare_legacy_baseline.py
+run_check "Native legacy execution driver tests" "$PYTHON_BIN" brain/test_run_legacy_baseline.py
 run_check "Legacy SQLite compatibility projection tests" "$PYTHON_BIN" brain/test_legacy_sqlite_projection.py
 run_check "Legacy compatibility release assembly tests" "$PYTHON_BIN" brain/test_assemble_legacy_release.py
 run_check "Brain cell shard context tests" "$PYTHON_BIN" brain/test_build_cell_shards_context.py
