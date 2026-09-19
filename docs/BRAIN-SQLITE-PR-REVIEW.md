@@ -2,18 +2,22 @@
 
 ## Review target
 
-PR: [#17](https://github.com/Deicyde/WikiLean/pull/17), branch
-`codex/brain-architecture-phase1` against `origin/main`.
+The former 124k-line aggregate PR is now a **15-patch dependent stack**. Start with
+[#18](https://github.com/Deicyde/WikiLean/pull/18); patches 2–15 remain drafts until their
+predecessor merges. The original [#17](https://github.com/Deicyde/WikiLean/pull/17) now
+contains only the final CI/documentation patch, based on patch 14, so its existing discussion
+is preserved without asking reviewers to use GitHub's truncated aggregate diff.
 
-At code checkpoint `1bf1ac9f`, the branch contained 58 commits touching 369 files
-(about 124,169 insertions and 4,545 deletions). This guide and the current handoff are added
-after that snapshot, so use `git diff --stat origin/main...HEAD` for final totals. The size is
-primarily contracts, verifiers, acquisition/replay tools, fixtures, and tests. It is not a
-production data promotion.
+The complete stack is still available on `codex/brain-architecture-phase1` for end-to-end
+verification. It is primarily contracts, verifiers, acquisition/replay tools, fixtures, and
+tests; it is not a production data promotion. Every patch keeps its implementation and tests
+together, and no individual patch exceeds 84 files or about 14,100 added lines.
 
-GitHub's aggregate diff endpoint rejects this change as `too_large` above 300 files. Review
-the bounded commit clusters below or use the clean worktree commands in this guide; do not
-assume the web UI's aggregate file view is complete.
+Merge strictly in order with ordinary merge commits. After each predecessor merges, retarget
+its immediate child to `main`, verify that the diff is still limited to that patch, and only
+then mark the child ready. Do not squash or rebase while descendants remain open; doing so
+would require rebasing every downstream branch. Keep each base branch until its child has
+been retargeted.
 
 The recommended disposition is to review and merge the **fail-closed architecture and
 tooling** once the required gates and code review are green, while leaving the real source
@@ -23,7 +27,7 @@ missing.
 
 ## Exact claims
 
-This PR claims that:
+The stack claims that:
 
 - the Brain has a deterministic indexed SQLite projection with JSONL parity and stable
   logical identities;
@@ -48,7 +52,7 @@ private evidence is not part of the Git review surface.
 
 ## Explicit nonclaims
 
-This PR does **not** claim:
+The stack does **not** claim:
 
 - that a complete, reviewed v3 current-corpus source plan or real full offline pack exists;
 - that the private source draft or captures from the previous laptop are available here;
@@ -65,73 +69,29 @@ This PR does **not** claim:
 The old PID and quota instructions in the 2026-09-09 handoff are historical. PID 11762 is
 gone, and its private evidence root is absent on this laptop.
 
-## Commit-cluster review order
+## Patch order
 
-The history is intentionally incremental. Review by boundary rather than reading all 55+
-commits strictly chronologically.
+| Patch | PR | Scope | Diff |
+|---:|---|---|---:|
+| 01 | [#18](https://github.com/Deicyde/WikiLean/pull/18) | Immutable release artifacts and Worker reads | 44 files, +10,508/−1,046 |
+| 02 | [#19](https://github.com/Deicyde/WikiLean/pull/19) | Exact release promotion and durable journal | 27 files, +10,261/−773 |
+| 03 | [#20](https://github.com/Deicyde/WikiLean/pull/20) | Activation evidence bundles | 19 files, +8,438/−100 |
+| 04 | [#21](https://github.com/Deicyde/WikiLean/pull/21) | Replay authority and sealed build context | 30 files, +8,761/−162 |
+| 05 | [#22](https://github.com/Deicyde/WikiLean/pull/22) | Network-denied replay execution/environment | 30 files, +8,347/−468 |
+| 06 | [#23](https://github.com/Deicyde/WikiLean/pull/23) | Offline-pack compiler and acquisition contracts | 43 files, +13,928/−399 |
+| 07 | [#24](https://github.com/Deicyde/WikiLean/pull/24) | Sealed source-acquisition pipelines | 70 files, +10,499/−822 |
+| 08 | [#25](https://github.com/Deicyde/WikiLean/pull/25) | V3 D1/Wikidata evidence and replay binding | 40 files, +11,083/−963 |
+| 09 | [#26](https://github.com/Deicyde/WikiLean/pull/26) | Deterministic normalization and timestamp-only churn | 26 files, +2,149/−1,463 |
+| 10 | [#27](https://github.com/Deicyde/WikiLean/pull/27) | Immutable Git/SQLite source capture | 50 files, +6,033/−327 |
+| 11 | [#28](https://github.com/Deicyde/WikiLean/pull/28) | Runtime/source capture binding to replay releases | 64 files, +8,310/−174 |
+| 12 | [#29](https://github.com/Deicyde/WikiLean/pull/29) | Derived, Mathlib, and MathWorld adapters | 27 files, +4,097/−18 |
+| 13 | [#30](https://github.com/Deicyde/WikiLean/pull/30) | Remaining external adapters and assertion shadow | 84 files, +14,008/−26 |
+| 14 | [#31](https://github.com/Deicyde/WikiLean/pull/31) | Proposal folds and exact legacy qualification | 54 files, +10,002/−59 |
+| 15 | [#17](https://github.com/Deicyde/WikiLean/pull/17) | CI pins and reviewer handoff | 12 files, +522/−630 |
 
-1. **Authority contracts and identity primitives**
-
-   Start with `05205bea` (replay authority contracts), `196bfc31` (acquisition evidence),
-   `dba596f2` (v3 evidence contracts), `f5a2c9c9` (pack compiler), and the schema/verifier
-   tests. Check canonical encoding, domain separation, logical-versus-audit identity, closure,
-   version compatibility, path containment, and streaming bounds first.
-
-2. **Build context and offline execution boundary**
-
-   Review `e56b7ce1`, `99cc8f57`, `1e18462a`, `b23cff32`, `d7ad0faf`, `14a0020f`,
-   `bc158cfd`, and `85d30e54`. Trace one fixture from verified pack through preparation and
-   all seven stages. Focus on exact input binding, read-only code/data, scratch/output
-   ownership, network denial, runtime probing, mutation detection, and no ambient path/mtime
-   identity.
-
-3. **Source acquisition and normalization boundaries**
-
-   Review `e07e1a4f`, `8db5203f`, `581a70f1`, `61f49b2b`, `92703ac0`, `7d311adb`,
-   `4cd402c1`, `39632d33`, `03129828`, then the later source-family clusters from
-   `a99d48fa` through `c3265f80`. Check that network access ends at a sealed bundle, evidence
-   generations cannot overwrite each other, request sets are complete, verifier code is
-   independent, and historical profiles remain replayable.
-
-4. **Deterministic reducer and source cleanup**
-
-   Review `c3d94243`, `8996c194`, `7b2909da`, `49ad4bb7`, `fc052f7c`, and `f5373f26`.
-   Confirm that removed clocks, mtimes, cache counters, absolute paths, and moving-worktree
-   reads are replaced by explicit pins/evidence rather than merely omitted.
-
-5. **Private-export adapters, fold closure, and policy gates**
-
-   Review `dded5b39`, `bb179a0c`, `1bd15ac3`, `69cfb173`, and `a2001a6c`. Pay special
-   attention to proposal/fold generation-1 compatibility, generation-2 zero-byte media
-   canonicalization, complete source-parent closure, preserved curation deltas, and the
-   separation between private qualification and public policy approval.
-
-6. **Legacy semantic comparison and reproducibility session tooling**
-
-   Review `945f9c81`, `952eac23`, `8928d7c7`, and `0d14f93a`. Verify exact old program/tree
-   hashes, seven-stage recipe and argv, writable-path
-   containment across bind mounts, complete launch evidence, the schema-1 compatibility
-   projection, release assembly, and the rule that only an explicitly reviewed real session
-   can finalize an attestation.
-
-7. **Immutable release and production boundary**
-
-   Review `75e1bbf2`, `6fbc59e9`, and `72943e68`, plus Worker release tests. Confirm that
-   public reads are release-qualified, aliases are byte-identical, promotion consumes an
-   exact already-built release, dry-run does not mutate production, rollback remains explicit,
-   and no nightly path deploys.
-
-8. **Experimental authority shadow and integration**
-
-   Review `f670cbf3` last. It should remain bounded, deterministic, and disconnected from
-   accepted authority and production routes.
-
-9. **CI/runtime maintenance**
-
-   Review `1bf1ac9f` independently of the architecture. It pins every official action to a
-   current immutable Node-24 release commit, keeps project jobs on Node 22, preserves the
-   workflow permission boundaries, and raises only the Python timeout needed by the measured
-   87-command gate.
+Patch 09 deliberately isolates most review noise: 1,376 `concept_layer.jsonl` rows change
+only by removal of a nondeterministic `built_at` value. Patch 14 contains byte-exact legacy
+fixtures because the comparison runner must bind the historical program bytes it executes.
 
 Finally read [ROADMAP.md](ROADMAP.md) and the
 [current handoff](BRAIN-SQLITE-HANDOFF-2026-09-19.md) to verify that implementation claims
@@ -177,9 +137,11 @@ PYTHON=.venv/bin/python3 ./scripts/ci-python.sh
 
 At code tip `1bf1ac9f`, a fresh `npm ci` plus the named Worker gate passed 872 tests across
 37 files, and the complete Python gate passed all 87 commands in 1,284.99 seconds. The hosted
-Python timeout is therefore 45 minutes. The PR must still supply the first Ubuntu-hosted run.
-The optional macOS browser soak could not start Chromium because the host denied its Mach
-service registration; use the PR's non-required Ubuntu browser job for the browser result.
+Python timeout is therefore 45 minutes. The corresponding hosted Ubuntu
+[run](https://github.com/Deicyde/WikiLean/actions/runs/35458917192) passed its Worker,
+Python, browser, and aggregate required jobs at `faba2ca0`. The optional macOS browser soak
+could not start Chromium because the host denied its Mach service registration; this was a
+host launch failure, not an application assertion failure.
 
 Also inspect, without changing frozen evidence bytes:
 
