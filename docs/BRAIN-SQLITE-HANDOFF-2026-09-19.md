@@ -25,8 +25,9 @@ deployment or production write.
 - Remote: `origin` = `Deicyde/WikiLean`
 - The code checkpoint is 58 commits ahead of `origin/main`; use `git log` for the exact
   current tip because final review fixes may add commits after this document.
-- No PR existed when this checkpoint was drafted, so branch CI had not yet run under the PR
-  event. The repository workflow runs its required jobs on a PR or on `main`.
+- [PR #17](https://github.com/Deicyde/WikiLean/pull/17) is open against `main` for review.
+  It is the branch's first hosted Ubuntu validation surface; check its current Actions result
+  rather than inferring hosted status from this document.
 - The previous private evidence root,
   `/Users/jack/.local/share/wikilean-migration`, is absent on this laptop. No equivalent
   private store or required external Mathlib checkout was found locally. Private captures
@@ -164,8 +165,8 @@ meaningful browser result.
 
 ## Recommended continuation order
 
-1. Open the tooling PR, obtain hosted Ubuntu CI, and start boundary-focused review using the
-   companion review guide.
+1. Review PR #17, obtain its final hosted Ubuntu CI result, and use the companion guide for
+   boundary-focused review.
 2. In parallel, locate the prior private store. If it cannot be recovered, write a new
    acquisition plan rather than relying on historical paths or process state.
 3. Close Kerodon, OpenAlex/arXiv, Mathlib/oracle, fold-generation-2, and tracked portable
