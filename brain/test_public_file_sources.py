@@ -133,7 +133,9 @@ class PublicFileSourcesTest(unittest.TestCase):
         argv_path = self.root / "argv.json"
         fake = self.root / "curl"
         trailer = cli.TRAILER + str(status).zfill(3).encode() + b"\t" + content_type.encode() + b"\n" + trailing_stderr
-        fake.write_text("#!" + str(Path(sys.executable).resolve()) + "\n" +
+        # Disable interpreter site startup so the fake records the environment
+        # passed at exec, not vendor-specific variables added by site hooks.
+        fake.write_text("#!" + str(Path(sys.executable).resolve()) + " -S\n" +
             "import json, os, sys\nfrom pathlib import Path\n" +
             "Path(" + repr(str(argv_path)) + ").write_text(json.dumps({'argv':sys.argv,'env':dict(os.environ)}))\n" +
             "sys.stdout.buffer.write(Path(" + repr(str(raw_path)) + ").read_bytes())\n" +
