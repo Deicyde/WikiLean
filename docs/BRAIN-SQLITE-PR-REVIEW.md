@@ -87,7 +87,7 @@ gone, and its private evidence root is absent on this laptop.
 | 12 | [#29](https://github.com/Deicyde/WikiLean/pull/29) | Derived, Mathlib, and MathWorld adapters | 27 files, +4,097/−18 |
 | 13 | [#30](https://github.com/Deicyde/WikiLean/pull/30) | Remaining external adapters and assertion shadow | 84 files, +14,008/−26 |
 | 14 | [#31](https://github.com/Deicyde/WikiLean/pull/31) | Proposal folds and exact legacy qualification | 54 files, +10,002/−59 |
-| 15 | [#17](https://github.com/Deicyde/WikiLean/pull/17) | CI pins and reviewer handoff | 12 files, +522/−630 |
+| 15 | [#17](https://github.com/Deicyde/WikiLean/pull/17) | CI pins and reviewer handoff | 12 files, +488/−630 |
 
 Patch 09 deliberately isolates most review noise: 1,376 `concept_layer.jsonl` rows change
 only by removal of a nondeterministic `built_at` value. Patch 14 contains byte-exact legacy

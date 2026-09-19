@@ -23,7 +23,7 @@ deployment or production write.
 - Repository: `/Users/jackmccarthy/projects/WikiLean`
 - Branch: `codex/brain-architecture-phase1`
 - Remote: `origin` = `Deicyde/WikiLean`
-- The code checkpoint is 61 commits ahead of `origin/main`; use `git log` for the exact
+- The code checkpoint is more than 60 commits ahead of `origin/main`; use `git log` for the exact
   current tip because final review fixes may add commits after this document.
 - Review starts at [PR #18](https://github.com/Deicyde/WikiLean/pull/18). PRs
   [#19–#31](https://github.com/Deicyde/WikiLean/pulls) and the retargeted final
