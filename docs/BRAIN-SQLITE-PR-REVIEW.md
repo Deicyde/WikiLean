@@ -2,7 +2,8 @@
 
 ## Review target
 
-Branch: `codex/brain-architecture-phase1` against `origin/main`.
+PR: [#17](https://github.com/Deicyde/WikiLean/pull/17), branch
+`codex/brain-architecture-phase1` against `origin/main`.
 
 At code checkpoint `1bf1ac9f`, the branch contained 58 commits touching 369 files
 (about 124,169 insertions and 4,545 deletions). This guide and the current handoff are added
