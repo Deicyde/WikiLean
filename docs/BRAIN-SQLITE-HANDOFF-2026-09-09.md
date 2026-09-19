@@ -1,6 +1,11 @@
 # Brain SQLite handoff — 2026-09-09 00:22 UTC
 
-**Resume here.** Jack requested an immediate handoff and push because the session
+> **Historical checkpoint only.** Use
+> [the 2026-09-19 handoff](BRAIN-SQLITE-HANDOFF-2026-09-19.md) for current state.
+> The PID, private paths, quota date, and live-capture instructions below describe the old
+> laptop and must not be treated as current operator instructions.
+
+At this checkpoint, Jack requested an immediate handoff and push because the session
 was running out of tokens. Further engineering, probes and new captures were stopped.
 `ROADMAP.md` remains the completion contract; the detailed acquisition history is in
 [`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
@@ -32,7 +37,8 @@ was running out of tokens. Further engineering, probes and new captures were sto
 - `952eac23`: **WIP native legacy execution driver** and optional assembler runtime
   support-file retention. Driver 12 tests and assembler 14 tests passed. Two actual
   native fixture probes passed. **Independent driver review is still outstanding.**
-  The new driver test is not yet registered in the required CI script.
+  At this historical checkpoint the new driver test was not yet registered in the required
+  CI script; commit `8928d7c7` registered it afterward.
 
 The complete suite was not rerun after the final two commits; their relevant
 focused suites passed. The Worker is unchanged and retains its earlier passing
