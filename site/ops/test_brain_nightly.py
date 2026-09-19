@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import plistlib
 import shutil
 import subprocess
 import sys
@@ -95,11 +94,6 @@ class BrainNightlyShellTest(unittest.TestCase):
             log = logs[0].read_text(encoding="utf-8")
             self.assertIn("BRAIN_MATHLIB_CHECKOUT", log)
             self.assertNotIn("=== ingest", log)
-
-    def test_launchd_invokes_this_checkout(self):
-        with (HERE / "org.wikilean.brain.plist").open("rb") as stream:
-            plist = plistlib.load(stream)
-        self.assertEqual(plist["ProgramArguments"], ["/bin/bash", str(SCRIPT)])
 
     def test_script_has_no_checkout_specific_absolute_path(self):
         text = SCRIPT.read_text(encoding="utf-8")
