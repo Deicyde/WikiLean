@@ -15,7 +15,8 @@
    session opens from real current state instead of a stale doc. Add `--live` for site-200 +
    bot-gate checks.
 
-3. **The memory system** — `~/.claude/projects/-Users-jack-Desktop-LEAN-WikiLean/memory/`.
+3. **The memory system** —
+   `~/.claude/projects/-Users-jackmccarthy-projects-WikiLean/memory/`.
    `MEMORY.md` is the index (loaded each session); the individual notes hold the evolving
    operational detail — pipeline internals, deploy setup, the `/review` tool, the Wikidata
    property proposal, the `manage/` control plane, and Jack's working preferences.

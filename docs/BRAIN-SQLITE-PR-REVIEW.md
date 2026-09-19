@@ -8,9 +8,12 @@ PR: [#17](https://github.com/Deicyde/WikiLean/pull/17), branch
 At code checkpoint `1bf1ac9f`, the branch contained 58 commits touching 369 files
 (about 124,169 insertions and 4,545 deletions). This guide and the current handoff are added
 after that snapshot, so use `git diff --stat origin/main...HEAD` for final totals. The size is
-primarily
-contracts, verifiers, acquisition/replay tools, fixtures, and tests. It is not a production
-data promotion.
+primarily contracts, verifiers, acquisition/replay tools, fixtures, and tests. It is not a
+production data promotion.
+
+GitHub's aggregate diff endpoint rejects this change as `too_large` above 300 files. Review
+the bounded commit clusters below or use the clean worktree commands in this guide; do not
+assume the web UI's aggregate file view is complete.
 
 The recommended disposition is to review and merge the **fail-closed architecture and
 tooling** once the required gates and code review are green, while leaving the real source
