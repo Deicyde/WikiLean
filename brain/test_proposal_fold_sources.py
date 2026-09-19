@@ -36,6 +36,8 @@ class ProposalSourcesTest(unittest.TestCase):
         for path in [*core.BASE_PATHS.values(), "catalog/data/rebuild_grounding.json", "catalog/data/source_registry.json",
                 *[name for name in self.files if name.startswith("brain/proposals/")]]:
             self.write(path, self.files[path])
+        # Empty proposal shards are valid and occur in the retained real fold.
+        self.write("brain/proposals/empty.jsonl", b"")
         self.write(core.CONTAINER_PATH, folded[core.CONTAINER_PATH])
         self.write("brain/data/discovery_proposals.jsonl", folded["brain/data/discovery_proposals.jsonl"])
         self.write("brain/data/fc_links.jsonl", folded["brain/data/fc_links.jsonl"] + jl([{
@@ -69,10 +71,12 @@ class ProposalSourcesTest(unittest.TestCase):
             "bindings": {name: {"source": source, "object": obj} for name, (source, obj, _path) in core.BINDINGS.items() if source is not None}}
         self.plan["bindings"].update(grounding={"source": curated["source"], "object": "grounding"}, registry={"source": curated["source"], "object": "source_registry"})
         self.roots = {"fixture_parent": self.parents, "fixture_git": self.repository, core.GIT_ROOT: self.repository}
-        profile = {"files": [{"path": path, "sha256": core.io.sha((core.ROOT / path).read_bytes())} for path in core.TOOL_FILES]}
-        profile["profile_id"] = core.profile_id(profile)
-        self.profile = profile
-        registry = self.root / "profiles.json"; registry.write_bytes(core.io.canonical({"schema": core.PROFILE_SCHEMA, "current_profile": profile["profile_id"], "profiles": [profile]}))
+        files = [{"path": path, "sha256": core.io.sha((core.ROOT / path).read_bytes())} for path in core.TOOL_FILES]
+        historical = {"files": files}; historical["profile_id"] = core.profile_id(historical)
+        profile = {"generation": core.CURRENT_GENERATION, "files": files}; profile["profile_id"] = core.profile_id(profile)
+        self.historical_profile, self.profile = historical, profile
+        registry = self.root / "profiles.json"; registry.write_bytes(core.io.canonical({"schema": core.PROFILE_SCHEMA,
+            "current_profile": profile["profile_id"], "profiles": sorted([historical, profile], key=lambda row: row["profile_id"])}))
         patch = mock.patch.object(core, "REGISTRY", registry); patch.start(); self.addCleanup(patch.stop)
 
     def git(self, *args):
@@ -90,6 +94,10 @@ class ProposalSourcesTest(unittest.TestCase):
 
     def read_output(self, target, source, name, suffix=".jsonl"):
         return (target / "normalized" / source / (name + suffix)).read_bytes()
+
+    def build_documents(self, profile):
+        return core.build_documents(self.plan, *core.capture_parents(self.plan, self.roots),
+            core.capture_curations(self.plan, self.roots), profile, producer.implementation(), WHEN)
 
     def test_complete_replay_preserves_manual_origin_and_completed_rejection(self):
         target = self.build(); verified = producer.verify(target, self.roots)
@@ -109,6 +117,36 @@ class ProposalSourcesTest(unittest.TestCase):
         self.assertNotIn("prior-fc", fold_manifest["normalization"]["inputs"])
         for original in self.plan["parents"]: self.assertIn(original, fragment["sources"])
         self.assertEqual(self.build(), target)
+
+    def test_current_generation_canonicalizes_empty_media_and_historical_generation_replays(self):
+        target = self.build()
+        current = json.loads((target / "export.json").read_bytes())
+        self.assertEqual(current["schema"], core.EXPORT_SCHEMAS[2])
+        self.assertEqual(json.loads((target / "normalization/configuration.json").read_bytes())["schema"],
+                         "wikilean.proposal-fold-normalization/v2")
+        current_sources = json.loads((target / "source-fragment.json").read_bytes())["sources"]
+        current_empty = [item for source in current_sources for item in source["objects"] if item["bytes"] == 0]
+        self.assertTrue(current_empty)
+        self.assertEqual({item["media_type"] for item in current_empty}, {"application/octet-stream"})
+
+        historical = self.build_documents(self.historical_profile)
+        self.assertEqual(json.loads(historical["export.json"])["schema"], core.EXPORT_SCHEMAS[1])
+        self.assertEqual(json.loads(historical["normalization/configuration.json"])["schema"],
+                         "wikilean.proposal-fold-normalization/v1")
+        historical_sources = json.loads(historical["source-fragment.json"])["sources"]
+        historical_empty = [item for source in historical_sources for item in source["objects"] if item["bytes"] == 0]
+        self.assertIn("application/x-ndjson", {item["media_type"] for item in historical_empty})
+        retained = self.root / "retained-v1"; retained.mkdir(mode=0o700)
+        for name, raw in historical.items():
+            core.io.write(retained, name, raw)
+        self.assertEqual(producer.verify(retained, self.roots)["schema"], core.EXPORT_SCHEMAS[1])
+
+        current["schema"] = core.EXPORT_SCHEMAS[1]
+        current.pop("export_id")
+        current["export_id"] = core.contracts.domain_hash(current["schema"], current)
+        (target / "export.json").write_bytes(core.io.canonical(current))
+        with self.assertRaisesRegex(core.io.ExportError, "profile generation"):
+            producer.verify(target, self.roots)
 
     def test_equal_contributions_keep_both_origins_and_conflicts_refuse(self):
         raw = jl([self.manual[0]])
@@ -216,6 +254,23 @@ class ProposalSourcesTest(unittest.TestCase):
         target = self.build(); fragment = json.loads((target / "source-fragment.json").read_bytes())
         fixture = fixture_module.OfflinePackCompilerTest(); fixture.setUp(); self.addCleanup(fixture.tearDown)
         fixture._upgrade_plan_v3()
+        # Reproduce the real closure's pre-existing empty octet-stream aliases.
+        # The compiler must retain its global requirement that all aliases of a
+        # CAS digest agree on size and media type.
+        empty = fixture.repo / "catalog/empty-fold"; empty.write_bytes(b"")
+        fixture_module._git(fixture.repo, "add", "--", "catalog/empty-fold")
+        fixture_module._git(fixture.repo, "commit", "-q", "-m", "empty fold fixture")
+        curated = next(source for source in fixture.plan["sources"] if source["source"] == "curated-fixture")
+        curated["pin"].update(value=fixture_module._git(fixture.repo, "rev-parse", "HEAD"),
+                              tree=fixture_module._git(fixture.repo, "rev-parse", "HEAD^{tree}"))
+        for index in range(3):
+            name = f"existing-empty-{index}"
+            curated["objects"].append({"name": name, "roles": ["normalized", "raw"], "root": "repo",
+                "path": "catalog/empty-fold", "sha256": core.io.sha(b""), "bytes": 0,
+                "media_type": "application/octet-stream", "redistribution": "allowed"})
+            curated["normalization"]["inputs"].append(name); curated["normalization"]["outputs"].append(name)
+        curated["objects"].sort(key=lambda row: row["name"])
+        curated["normalization"]["inputs"].sort(); curated["normalization"]["outputs"].sort()
         fixture.inventory["roots"].append({"id":"fold_result", "kind":"external_tree"}); fixture.inventory["roots"].sort(key=lambda x:x["id"])
         fixture.inventory["inputs"].append({"id":"candidate-fold", "class":"immutable_source_object", "cardinality":"one", "consumers":["brain/replay.py"],
             "path":"candidate.jsonl", "purpose":"fixture fold proof only", "requirement":"required", "root":"fold_result"})
@@ -236,6 +291,9 @@ class ProposalSourcesTest(unittest.TestCase):
             roots={"repo":fixture.repo.resolve(), "external":fixture.external.resolve(), **self.roots, core.PHYSICAL_ROOT:target, "fold_result":result_root}, git_executable="/usr/bin/git")
         manifest,_ = core.contracts.load_canonical_json(packed.manifest_path)
         core.contracts.verify_offline_pack_files(manifest, packed.root, manifest_path=packed.manifest_path)
+        zero = [row for row in manifest["objects"] if row["bytes"] == 0]
+        self.assertEqual(len(zero), 1)
+        self.assertEqual(zero[0]["media_type"], "application/octet-stream")
 
 
 if __name__ == "__main__": unittest.main()

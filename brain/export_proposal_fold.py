@@ -29,21 +29,24 @@ def captured_export(path):
     files = io.capture_tree(path)
     raw = files.pop("export.json")
     document = io.exact(io.parse(raw, "export"), {"schema", "normalization_profile_id", "normalized_at", "source_manifest_ids", "files", "export_id"}, "export")
-    io.require(document["schema"] == core.EXPORT_SCHEMA and raw == io.canonical(document), "invalid canonical Proposal fold export")
+    generations = {schema: generation for generation, schema in core.EXPORT_SCHEMAS.items()}
+    generation = generations.get(document["schema"])
+    io.require(generation is not None and raw == io.canonical(document), "invalid canonical Proposal fold export")
     io.require(document["files"] == {name: {"sha256": io.sha(data), "bytes": len(data)} for name, data in sorted(files.items())}, "Proposal fold export member closure differs")
-    io.require(document["export_id"] == core.contracts.domain_hash(core.EXPORT_SCHEMA,
+    io.require(document["export_id"] == core.contracts.domain_hash(document["schema"],
         {key: value for key, value in document.items() if key != "export_id"}), "Proposal fold export ID differs")
-    return document, files
+    return document, files, generation
 
 
 def verify(path, roots):
     implementation()
-    document, files = captured_export(path)
+    document, files, generation = captured_export(path)
     plan = core.validate_plan(io.parse(files["plan.json"], "Proposal fold plan"))
     source_data = core.capture_parents(plan, roots)
     curations = core.capture_curations(plan, roots)
     profile = io.parse(files["normalization/profile.json"], "normalizer profile")
-    io.require(profile["profile_id"] == document["normalization_profile_id"], "Proposal fold profile differs")
+    io.require(profile["profile_id"] == document["normalization_profile_id"] and core.profile_generation(profile) == generation,
+               "Proposal fold profile generation differs")
     programs = {name.removeprefix("implementation/"): raw for name, raw in files.items() if name.startswith("implementation/")}
     expected = core.build_documents(plan, *source_data, curations, profile, programs, document["normalized_at"])
     io.require(expected == {**files, "export.json": io.canonical(document)}, "Proposal fold export differs from independent reduction")
