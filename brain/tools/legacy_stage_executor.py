@@ -46,9 +46,18 @@ OUTPUT_DIRS = ("brain/data", "site/assets", "site/out", "manage/data")
 SEMANTIC = {"brain/data/" + name for name in (
     "nodes.jsonl", "edges.jsonl", "edges_links.jsonl", "cells.jsonl", "synapses.jsonl",
     "frontier.jsonl", "frontier_graph.json", "brain.sqlite3")}
+GENERATED_BRAIN_DATA = SEMANTIC | {"brain/data/cell_review.jsonl", "brain/data/frontier_review.jsonl"}
 MAX_FILE = 8 * 1024**3
 MAX_CONTROL = 32 * 1024**2
 MTIME_NS = 1788825600000000000
+RUN_STAGE = (
+    "import os,runpy,sys;"
+    "program=sys.argv.pop(1);"
+    "sys.path.insert(0,os.path.dirname(program));"
+    "sys.argv[0]=program;"
+    "runpy.run_path(program,run_name='__main__')"
+)
+PYTHON_STAGE_FLAGS = ("-P", "-S", "-s", "-B", "-c")
 
 
 def require(value, message):
@@ -164,6 +173,13 @@ def check_absences(root, absences):
             require(not list(root.glob(pattern)), "declared absent pattern has members")
 
 
+def brain_data_overlays(record):
+    overlays = {row["path"] for row in record["inputs"] if row["path"].startswith("brain/data/")}
+    require(not overlays & GENERATED_BRAIN_DATA,
+            "readonly legacy input collides with a generated brain/data output")
+    return overlays
+
+
 def verify_preparation(root, expected, *, cold=False):
     root = real(root)
     record = control(root / "preparation.json", expected)
@@ -190,6 +206,7 @@ def verify_preparation(root, expected, *, cold=False):
             require(row["sha256"] == PROGRAM_HASHES[path], "legacy imported program changed")
         measure(root / "code" / path, row)
         require((root / "code" / path).stat().st_mtime_ns == MTIME_NS, "staged input/program mtime differs")
+    brain_data_overlays(record)
     overlays = {p: row for p, row in inputs.items() if p.startswith("brain/data/")}
     require(set(files(root / "input")) == set(overlays), "mixed input overlay closure differs")
     for path, row in overlays.items():
@@ -214,17 +231,114 @@ def stage_environment(root, config, runtime_environment):
     return result
 
 
-def boundary(root, record, runtime_mounts):
+def python_command(interpreter, program, *arguments):
+    """The exact isolated invocation recorded for every legacy stage."""
+    return (str(interpreter), *PYTHON_STAGE_FLAGS, RUN_STAGE, str(program), *arguments)
+
+
+def brain_readonly_records(root):
+    root = real(root)
+    return [{"path": path, **measure(source)} for path, source in sorted(files(root / "code").items())
+            if path.startswith("brain/") and not path.startswith("brain/data/")]
+
+
+def materialize_brain_source(root, destination):
+    """Copy the exact read-only Brain overlay outside its later mount target."""
+    root = real(root)
+    destination = Path(destination)
+    real(destination.parent)
+    require(destination.is_absolute() and not os.path.lexists(destination),
+            "legacy Brain source alias must be a fresh absolute directory")
+    destination.mkdir(mode=0o700)
+    records = brain_readonly_records(root)
+    for row in records:
+        relative = row["path"].removeprefix("brain/")
+        measure(root / "code" / row["path"], row, copy_to=destination / relative)
+    require(set(files(destination)) == {row["path"].removeprefix("brain/") for row in records},
+            "legacy Brain source alias closure differs")
+    return records
+
+
+def prepare_brain_parent(root, source, expected, record):
+    """Create the one writable parent the exact old snapshotter requires.
+
+    ``build_snapshot.py`` stages beside ``brain/data`` before atomically
+    replacing files in that directory.  Both paths must therefore be on one
+    writable bind mount; nested mounts would make ``os.replace`` fail with
+    ``EXDEV``.  Use ``output/brain`` as that common backing tree and mount every
+    non-output file in the subtree back over it read-only.
+    """
+    root = real(root)
+    source = real(source)
+    records = brain_readonly_records(root)
+    require(records == expected, "legacy Brain readonly record differs")
+    expected_source = {row["path"].removeprefix("brain/"): row for row in records}
+    require(set(files(source)) == set(expected_source), "legacy Brain source alias closure differs")
+    for relative, row in expected_source.items():
+        measure(source / relative, row)
+    output = real(root / "output")
+    require(not files(output), "legacy brain-parent preparation requires empty output")
+    shadow = real(output / "brain")
+    readonly = [row["path"] for row in records]
+    data_inputs = sorted(brain_data_overlays(record))
+    require(readonly, "legacy brain program closure is empty")
+    for relative in [*readonly, *data_inputs]:
+        target = shadow / relative.removeprefix("brain/")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        write(target, b"")
+    real(shadow / "data")
+    return shadow, tuple(readonly), tuple(data_inputs)
+
+
+def verify_brain_parent(shadow, readonly, data_inputs):
+    shadow = real(shadow)
+    readonly_placeholders = {path.removeprefix("brain/") for path in readonly}
+    input_placeholders = {path.removeprefix("brain/") for path in data_inputs}
+    generated = {path.removeprefix("brain/") for path in GENERATED_BRAIN_DATA}
+    actual = files(shadow)
+    require(set(actual) <= readonly_placeholders | input_placeholders | generated,
+            "legacy writable brain parent retained unexpected files")
+    require(readonly_placeholders | input_placeholders <= set(actual),
+            "legacy writable brain parent lost a readonly mountpoint")
+    expected_directories = {"data"}
+    for relative in set(actual):
+        expected_directories.update(str(parent) for parent in PurePosixPath(relative).parents
+                                    if str(parent) != ".")
+    actual_directories = set()
+    for parent, directories, _names in os.walk(shadow, followlinks=False):
+        for name in directories:
+            path = Path(parent) / name
+            require(stat.S_ISDIR(path.lstat().st_mode), "legacy writable brain parent contains a non-directory")
+            actual_directories.add(path.relative_to(shadow).as_posix())
+    require(actual_directories == expected_directories,
+            "legacy writable brain parent retained unexpected directories")
+    for relative in readonly_placeholders | input_placeholders:
+        require(actual[relative].stat().st_size == 0, "legacy writable brain placeholder acquired bytes")
+
+
+def boundary(root, record, runtime_mounts, brain_parent, brain_source, brain_readonly):
     code = root / "code"
+    require(real(brain_parent) == root / "output/brain",
+            "legacy writable brain parent differs")
+    real(brain_source)
     prefix = ["/usr/bin/bwrap", "--die-with-parent", "--new-session", "--unshare-all", "--cap-drop", "ALL",
               "--dev", "/dev", "--proc", "/proc", "--tmpfs", "/tmp"]
     for source, destination in runtime_mounts:
         prefix += ["--ro-bind", str(source), str(destination)]
-    prefix += ["--ro-bind", str(code), str(code)]
+    prefix += ["--ro-bind", str(code), str(code),
+               "--bind", str(brain_parent), str(code / "brain")]
+    for relative in brain_readonly:
+        literal(relative)
+        require(relative.startswith("brain/") and not relative.startswith("brain/data/"),
+                "invalid readonly brain overlay")
+        prefix += ["--ro-bind", str(brain_source / relative.removeprefix("brain/")), str(code / relative)]
     for relative in OUTPUT_DIRS:
+        if relative == "brain/data":
+            continue  # Already inside the writable brain-parent bind: preserve atomic rename semantics.
         prefix += ["--bind", str(root / "output" / relative), str(code / relative)]
+    overlay_paths = brain_data_overlays(record)
     for row in record["inputs"]:
-        if row["path"].startswith("brain/data/"):
+        if row["path"] in overlay_paths:
             prefix += ["--ro-bind", str(root / "input" / row["path"]), str(code / row["path"])]
     prefix += ["--bind", str(root / "scratch"), str(root / "scratch"),
                "--remount-ro", "/", "--chdir", str(code), "--"]
@@ -293,10 +407,13 @@ print(json.dumps(outcomes,sort_keys=True,separators=(",",":")))
 
 def kernel_probe(root, record, prefix, python, environment, evidence, sentinel):
     code_paths = sorted(files(root / "code"))
-    readonly = [str(root / "code" / next(p for p in code_paths if not p.startswith("brain/data/")))]
+    program = "brain/build_snapshot.py" if "brain/build_snapshot.py" in code_paths else next(
+        p for p in code_paths if not p.startswith("brain/data/"))
+    readonly = [str(root / "code" / program)]
     readonly += [str(root / "code" / row["path"]) for row in record["inputs"] if row["path"].startswith("brain/data/")][:1]
     options = {"readonly": readonly, "outside": [str(sentinel), "/tmp" + str(sentinel)],
-               "writable": [str(root / "code" / p / ".kernel-probe") for p in OUTPUT_DIRS] +
+               "writable": [str(root / "code/brain/.kernel-probe")] +
+                           [str(root / "code" / p / ".kernel-probe") for p in OUTPUT_DIRS] +
                            [str(root / "scratch/.kernel-probe")]}
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0)); listener.listen(1)
@@ -317,19 +434,27 @@ def kernel_probe(root, record, prefix, python, environment, evidence, sentinel):
 
 def output_records(root, record):
     inputs = {p["path"]: p for p in record["inputs"]}
+    brain_readonly = {path for path in files(root / "code")
+                      if path.startswith("brain/") and not path.startswith("brain/data/")}
     rows = []
     for relative, path in sorted(files(root / "output").items()):
+        if relative in brain_readonly:
+            require(path.stat().st_size == 0, "writable brain-parent placeholder acquired bytes")
+            continue
         if relative in inputs:
             # bwrap creates empty mountpoint placeholders in the host output.
             require(path.stat().st_size == 0, "hidden mixed-input mountpoint acquired bytes")
             continue
+        if relative.startswith("brain/data/"):
+            require(relative in GENERATED_BRAIN_DATA, "undeclared brain/data output")
         require(any(relative.startswith(d + "/") for d in OUTPUT_DIRS), "undeclared output directory")
         rows.append({"path": relative, **measure(path)})
-    require(SEMANTIC <= {row["path"] for row in rows}, "legacy stage output is incomplete")
+    require(GENERATED_BRAIN_DATA <= {row["path"] for row in rows}, "legacy stage output is incomplete")
     return rows
 
 
-def run_stages(root, record, prefix, python, environment, evidence, python_command, halo, *, timeout):
+def run_stages(root, record, prefix, python, environment, evidence, python_command, halo, *, timeout,
+               after_stage=None):
     stages = []
     halo_record = None
     for i, (program, arguments) in enumerate(STAGES):
@@ -349,6 +474,8 @@ def run_stages(root, record, prefix, python, environment, evidence, python_comma
             halo_record = {"output": {"path": "manage/data/halo.json", **identity(raw)},
                            "program": {"path": "halo-program.py", **identity(program_raw)},
                            "report": {"path": "halo-report.json", **identity(canonical(report))}}
+        if after_stage is not None:
+            after_stage()
     return stages, halo_record
 
 
@@ -377,11 +504,16 @@ def main():
         require(not files(root / "output") and not files(root / "scratch"), "probe requires fresh output")
     child_environment = stage_environment(root, record["configuration"],
         {**runner._environment(python), **oci_runtime.numerical_environment(policy)})
-    prefix = boundary(root, record, runner._linux_runtime_mounts(runner._runtime_roots(python)))
+    brain_source = real(run / "source/brain")
+    brain_parent, brain_readonly, brain_data_inputs = prepare_brain_parent(
+        root, brain_source, request["brain_readonly"], record)
+    prefix = boundary(root, record, runner._linux_runtime_mounts(runner._runtime_roots(python)),
+                      brain_parent, brain_source, brain_readonly)
     config = {"settings": record["configuration"], "environment": child_environment, "sandbox_argv": prefix,
               "stages": [{"program": p, "arguments": list(a)} for p, a in STAGES]}
     write(evidence / "configuration.json", canonical(config))
     probe = kernel_probe(root, record, prefix, python, child_environment, evidence, run / "host-sentinel")
+    verify_brain_parent(brain_parent, brain_readonly, brain_data_inputs)
     write(evidence / "kernel-probe.json", canonical(probe))
     result = {"schema": "wikilean.legacy-container-result/v1", "authority": False, "baseline_approved": False,
               "mode": request["mode"], "nonce": request["nonce"], "python": facts, "probe": probe,
@@ -391,7 +523,9 @@ def main():
         halo = types.ModuleType("captured_legacy_halo")
         exec(compile(halo_raw, "legacy_halo_projection.py", "exec"), halo.__dict__)
         stages, halo_record = run_stages(root, record, prefix, python, child_environment, evidence,
-                                       runner._python_command, halo, timeout=request["stage_timeout"])
+                                       python_command, halo, timeout=request["stage_timeout"],
+                                       after_stage=lambda: verify_brain_parent(
+                                           brain_parent, brain_readonly, brain_data_inputs))
         verify_preparation(root, request["preparation"])
         result.update(stages=stages, halo=halo_record, outputs=output_records(root, record))
     else:
