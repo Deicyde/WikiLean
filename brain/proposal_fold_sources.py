@@ -23,8 +23,13 @@ import proposal_fold_adapter as adapter
 
 contracts = io.contracts
 PLAN_SCHEMA = "wikilean.proposal-fold-source-plan/v1"
-EXPORT_SCHEMA = "wikilean.proposal-fold-source-export/v1"
-PROFILE_SCHEMA = "wikilean.proposal-fold-source-profiles/v1"
+CURRENT_GENERATION = 2
+EXPORT_SCHEMAS = {
+    1: "wikilean.proposal-fold-source-export/v1",
+    2: "wikilean.proposal-fold-source-export/v2",
+}
+EXPORT_SCHEMA = EXPORT_SCHEMAS[CURRENT_GENERATION]
+PROFILE_SCHEMA = "wikilean.proposal-fold-source-profiles/v2"
 REGISTRY = ROOT / "brain/proposal_fold_profiles.json"
 PHYSICAL_ROOT = "proposal_fold_export"
 GIT_ROOT = "proposal_git"
@@ -53,7 +58,7 @@ BINDINGS = {
     "oracle": ("mathlib-docs", "declaration_oracle", "oracle.json"),
     "mathlib": ("mathlib-source", "git_tree", None),
 }
-CONFIGURATION = {"schema": "wikilean.proposal-fold-normalization/v1",
+CONFIGURATION_V1 = {"schema": "wikilean.proposal-fold-normalization/v1",
     "fold": "exact reviewed main and helper AST over captured in-memory inputs",
     "mathlib_fallback": "legacy line-pattern search over complete pinned Mathlib subtree, unique .lean module resolution",
     "initial_fc_seed": "absent; separately compare against the pinned prior seed",
@@ -62,6 +67,9 @@ CONFIGURATION = {"schema": "wikilean.proposal-fold-normalization/v1",
     "manual_curation": "exact five appended native Git contributions, independent of proposal decisions",
     "projection": "retain independent contribution records; equal edge rows may share one projection; conflicting rows reject",
     "authority": "candidate sources only; graph delta and baseline require separate review"}
+CONFIGURATION_V2 = {**CONFIGURATION_V1,
+    "schema": "wikilean.proposal-fold-normalization/v2",
+    "empty_object_media_type": "application/octet-stream iff actual bytes are empty; otherwise retain the declared semantic type"}
 TOOL_FILES = tuple(sorted((set(io.TOOL_FILES) - {"brain/export_wikidata_crossrefs.py"}) | {
     "brain/proposal_fold_sources.py", "brain/export_proposal_fold.py", "brain/proposal_fold_adapter.py", "brain/fold_proposals.py"}))
 
@@ -76,7 +84,22 @@ LOADED = {path: io.sha(io.read(ROOT / path)) for path in TOOL_FILES if path != "
 
 
 def profile_id(profile):
-    return contracts.domain_hash("wikilean.proposal-fold-source-profile.v1", {"files": profile["files"]})
+    generation = profile_generation(profile)
+    payload = {"files": profile["files"]}
+    if generation == 2:
+        payload["generation"] = generation
+    return contracts.domain_hash(f"wikilean.proposal-fold-source-profile.v{generation}", payload)
+
+
+def profile_generation(profile):
+    """Keep the original files-only profile as generation 1 forever."""
+    io.require(isinstance(profile, dict), "invalid fold profile generation")
+    keys = set(profile) - {"profile_id"}
+    if keys == {"files"}:
+        return 1
+    io.require(keys == {"generation", "files"} and profile["generation"] == 2,
+               "invalid fold profile generation")
+    return 2
 
 
 def profiles():
@@ -85,7 +108,8 @@ def profiles():
     io.require(raw == io.canonical(value) and value["schema"] == PROFILE_SCHEMA and isinstance(value["profiles"], list), "invalid fold profile registry")
     ids = []
     for profile in value["profiles"]:
-        io.exact(profile, {"profile_id", "files"}, "profile")
+        generation = profile_generation(profile)
+        io.exact(profile, {"profile_id", "files"} | ({"generation"} if generation == 2 else set()), "profile")
         io.require(isinstance(profile["files"], list) and [item["path"] for item in profile["files"]] == list(TOOL_FILES), "fold profile omits its exact executed closure")
         for item in profile["files"]:
             io.exact(item, {"path", "sha256"}, "helper"); contracts._digest(item["sha256"], "helper hash")
@@ -99,6 +123,8 @@ def current_profile():
     origins()
     registry = profiles()
     profile = next(p for p in registry["profiles"] if p["profile_id"] == registry["current_profile"])
+    io.require(profile_generation(profile) == CURRENT_GENERATION,
+               "current fold profile is not the current exporter generation")
     actual = {path: io.sha(io.read(ROOT / path)) for path in TOOL_FILES}
     io.require(profile["files"] == [{"path": path, "sha256": actual[path]} for path in TOOL_FILES], "unreviewed fold implementation")
     io.require(all(actual[path] == digest for path, digest in LOADED.items()), "loaded fold implementation changed")
@@ -343,22 +369,26 @@ def semantic_delta(before, after, key):
 
 
 def build_documents(plan, sources, manifests, objects, captured, mathlib_paths, curations, profile, programs, when):
+    generation = profile_generation(profile)
+    configuration = CONFIGURATION_V1 if generation == 1 else CONFIGURATION_V2
     io.require(profile in profiles()["profiles"] and profile["files"] ==
         [{"path": path, "sha256": io.sha(raw)} for path, raw in sorted(programs.items())], "unreviewed fold program preimages")
     # Work on new mappings: verification never mutates the reviewed parent plan.
     sources, manifests, objects, captured = (copy.deepcopy(sources), copy.deepcopy(manifests), copy.deepcopy(objects), dict(captured))
     files = {"plan.json": io.canonical(plan), "normalization/profile.json": io.canonical(profile),
-        "normalization/configuration.json": io.canonical(CONFIGURATION)}
+        "normalization/configuration.json": io.canonical(configuration)}
     files.update({"implementation/" + path: raw for path, raw in programs.items()})
 
     def planned(name, path, roles, media="application/json"):
         raw = files[path]
+        if generation == 2 and not raw:
+            media = "application/octet-stream"
         item = {"name": name, "root": PHYSICAL_ROOT, "path": path, "sha256": io.sha(raw), "bytes": len(raw),
             "media_type": media, "roles": sorted(roles), "redistribution": "restricted"}
         files.setdefault("objects/sha256/" + item["sha256"], raw)
         return item
 
-    tool = {"name": "wikilean-proposal-fold-normalizer", "version": "1", "sha256": io.sha(files["normalization/profile.json"])}
+    tool = {"name": "wikilean-proposal-fold-normalizer", "version": str(generation), "sha256": io.sha(files["normalization/profile.json"])}
     support = [planned("normalizer-profile", "normalization/profile.json", ["receipt"]),
         planned("normalizer-configuration", "normalization/configuration.json", ["receipt"]),
         planned("normalizer-plan", "plan.json", ["receipt"])]
@@ -392,7 +422,7 @@ def build_documents(plan, sources, manifests, objects, captured, mathlib_paths, 
         source = {"source": source_name, "source_kind": "curated_git_tree", "pin": {"type": "git_commit", "value": group["commit"], "tree": group["tree"]},
             "objects": sorted(curated_objects, key=lambda item: item["name"]),
             "license": {"expression": "CC0-1.0", "redistribution": "restricted", "notice": "Native WikiLean curation bytes; no new upstream acquisition or public release is claimed."},
-            "acquisition": acquisition, "normalization": {"schema": "wikilean.native-fold-curation/v1", "tool": acquisition,
+            "acquisition": acquisition, "normalization": {"schema": f"wikilean.native-fold-curation/v{generation}", "tool": acquisition,
                 "inputs": sorted(item["name"] for item in curated_objects), "outputs": sorted(item["name"] for item in curated_objects)}}
         sources[source_name] = source
         manifests[source_name] = io.source_plan_contracts._source_manifest_from_plan(source, "native fold curation")
@@ -415,7 +445,7 @@ def build_documents(plan, sources, manifests, objects, captured, mathlib_paths, 
             item = planned(name, path, ["normalized"], "application/x-ndjson" if suffix == ".jsonl" else "application/json")
             normalized.append(item)
         parents = {manifests[key[0]]["source_manifest_id"]: manifests[key[0]] for key in selected}
-        schema = "wikilean." + source_name + "/v1"
+        schema = "wikilean." + source_name + f"/v{generation}"
         lineage = {"schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1, "normalization_lineage_id": "sha256:" + "0" * 64,
             "source": source_name, "mode": "transform", "acquisition_receipt_ids": [], "parent_source_manifest_ids": sorted(parents),
             "normalization_schema": schema, "configuration_sha256": io.sha(files["normalization/configuration.json"]), "tool": tool,
@@ -503,9 +533,10 @@ def build_documents(plan, sources, manifests, objects, captured, mathlib_paths, 
             "universe-extension": {"source": FOLD, "object": "universe-extension"}},
         "explicit_absence": ["brain-ext-anchor-links", "tauceti-links"]}
     files["source-fragment.json"] = io.canonical(fragment)
-    document = {"schema": EXPORT_SCHEMA, "normalization_profile_id": profile["profile_id"], "normalized_at": when,
+    export_schema = EXPORT_SCHEMAS[generation]
+    document = {"schema": export_schema, "normalization_profile_id": profile["profile_id"], "normalized_at": when,
         "source_manifest_ids": sorted(manifests[name]["source_manifest_id"] for name in CHILDREN),
         "files": {path: {"sha256": io.sha(raw), "bytes": len(raw)} for path, raw in sorted(files.items())}}
-    document["export_id"] = contracts.domain_hash(EXPORT_SCHEMA, document)
+    document["export_id"] = contracts.domain_hash(export_schema, document)
     files["export.json"] = io.canonical(document)
     return files
