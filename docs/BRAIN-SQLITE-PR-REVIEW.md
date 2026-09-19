@@ -73,13 +73,13 @@ gone, and its private evidence root is absent on this laptop.
 
 | Patch | PR | Scope | Diff |
 |---:|---|---|---:|
-| 01 | [#18](https://github.com/Deicyde/WikiLean/pull/18) | Immutable release artifacts and Worker reads | 44 files, +10,508/−1,046 |
+| 01 | [#18](https://github.com/Deicyde/WikiLean/pull/18) | Immutable release artifacts and Worker reads | 43 files, +10,499/−1,043 |
 | 02 | [#19](https://github.com/Deicyde/WikiLean/pull/19) | Exact release promotion and durable journal | 27 files, +10,261/−773 |
 | 03 | [#20](https://github.com/Deicyde/WikiLean/pull/20) | Activation evidence bundles | 19 files, +8,438/−100 |
 | 04 | [#21](https://github.com/Deicyde/WikiLean/pull/21) | Replay authority and sealed build context | 30 files, +8,761/−162 |
 | 05 | [#22](https://github.com/Deicyde/WikiLean/pull/22) | Network-denied replay execution/environment | 30 files, +8,347/−468 |
 | 06 | [#23](https://github.com/Deicyde/WikiLean/pull/23) | Offline-pack compiler and acquisition contracts | 43 files, +13,928/−399 |
-| 07 | [#24](https://github.com/Deicyde/WikiLean/pull/24) | Sealed source-acquisition pipelines | 70 files, +10,499/−822 |
+| 07 | [#24](https://github.com/Deicyde/WikiLean/pull/24) | Sealed source-acquisition pipelines | 70 files, +10,501/−818 |
 | 08 | [#25](https://github.com/Deicyde/WikiLean/pull/25) | V3 D1/Wikidata evidence and replay binding | 40 files, +11,083/−963 |
 | 09 | [#26](https://github.com/Deicyde/WikiLean/pull/26) | Deterministic normalization and timestamp-only churn | 26 files, +2,149/−1,463 |
 | 10 | [#27](https://github.com/Deicyde/WikiLean/pull/27) | Immutable Git/SQLite source capture | 50 files, +6,033/−327 |
@@ -87,11 +87,13 @@ gone, and its private evidence root is absent on this laptop.
 | 12 | [#29](https://github.com/Deicyde/WikiLean/pull/29) | Derived, Mathlib, and MathWorld adapters | 27 files, +4,097/−18 |
 | 13 | [#30](https://github.com/Deicyde/WikiLean/pull/30) | Remaining external adapters and assertion shadow | 84 files, +14,008/−26 |
 | 14 | [#31](https://github.com/Deicyde/WikiLean/pull/31) | Proposal folds and exact legacy qualification | 54 files, +10,002/−59 |
-| 15 | [#17](https://github.com/Deicyde/WikiLean/pull/17) | CI pins and reviewer handoff | 12 files, +488/−630 |
+| 15 | [#17](https://github.com/Deicyde/WikiLean/pull/17) | CI pins and reviewer handoff | 12 files, under 1,200 changed lines |
 
 Patch 09 deliberately isolates most review noise: 1,376 `concept_layer.jsonl` rows change
 only by removal of a nondeterministic `built_at` value. Patch 14 contains byte-exact legacy
 fixtures because the comparison runner must bind the historical program bytes it executes.
+Patch 01 leaves the pre-existing host-local launchd files untouched; patch 07 replaces them
+with the portable generated-launcher design and tests that own that migration.
 
 Finally read [ROADMAP.md](ROADMAP.md) and the
 [current handoff](BRAIN-SQLITE-HANDOFF-2026-09-19.md) to verify that implementation claims

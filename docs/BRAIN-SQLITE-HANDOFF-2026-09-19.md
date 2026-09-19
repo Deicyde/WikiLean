@@ -29,6 +29,9 @@ deployment or production write.
   [#19–#31](https://github.com/Deicyde/WikiLean/pulls) and the retargeted final
   [PR #17](https://github.com/Deicyde/WikiLean/pull/17) form a strict dependent stack; see
   the review guide for exact order, sizes, and merge protocol.
+- The pre-split commit IDs remain recoverable at
+  `origin/codex/brain-architecture-phase1-pre-split-archive`. That archive is a rollback aid,
+  not a review or merge target; its tree matches the rebuilt stack before stack-doc metadata.
 - The previous private evidence root,
   `/Users/jack/.local/share/wikilean-migration`, is absent on this laptop. No equivalent
   private store or required external Mathlib checkout was found locally. Private captures
