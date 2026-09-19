@@ -1,6 +1,6 @@
 # Brain SQLite handoff — 2026-09-19
 
-This is the current laptop-transfer checkpoint for branch
+This is the current laptop-transfer checkpoint for the 15-patch review stack ending at
 `codex/brain-architecture-phase1`. The durable completion contract is
 [ROADMAP.md](ROADMAP.md), especially P0-R. The review map and exact claims are in
 [BRAIN-SQLITE-PR-REVIEW.md](BRAIN-SQLITE-PR-REVIEW.md).
@@ -23,11 +23,12 @@ deployment or production write.
 - Repository: `/Users/jackmccarthy/projects/WikiLean`
 - Branch: `codex/brain-architecture-phase1`
 - Remote: `origin` = `Deicyde/WikiLean`
-- The code checkpoint is 58 commits ahead of `origin/main`; use `git log` for the exact
+- The code checkpoint is 61 commits ahead of `origin/main`; use `git log` for the exact
   current tip because final review fixes may add commits after this document.
-- [PR #17](https://github.com/Deicyde/WikiLean/pull/17) is open against `main` for review.
-  It is the branch's first hosted Ubuntu validation surface; check its current Actions result
-  rather than inferring hosted status from this document.
+- Review starts at [PR #18](https://github.com/Deicyde/WikiLean/pull/18). PRs
+  [#19–#31](https://github.com/Deicyde/WikiLean/pulls) and the retargeted final
+  [PR #17](https://github.com/Deicyde/WikiLean/pull/17) form a strict dependent stack; see
+  the review guide for exact order, sizes, and merge protocol.
 - The previous private evidence root,
   `/Users/jack/.local/share/wikilean-migration`, is absent on this laptop. No equivalent
   private store or required external Mathlib checkout was found locally. Private captures
@@ -96,7 +97,7 @@ captures, credentials, runtime images, or a full offline pack.
 
 ### Validation snapshot
 
-At code tip `1bf1ac9f`, both required local gates passed cleanly after all implementation
+At code tip `faba2ca0`, both required local gates passed cleanly after all implementation
 changes:
 
 - fresh `npm ci` plus `npm run test:ci`: **37 files / 872 tests**, including typecheck;
@@ -120,8 +121,8 @@ Do not describe fixture success as a real full-corpus replay or reproducibility 
 
 The optional local Playwright soak could not launch Chromium on this managed macOS host:
 Chromium failed before page creation with a Mach service `Permission denied` error. This is
-not an application assertion failure. The PR's non-required Ubuntu browser job is the next
-meaningful browser result.
+not an application assertion failure. The equivalent non-required hosted Ubuntu browser job,
+both required hosted jobs, and their aggregate gate passed at `faba2ca0`.
 
 ## Remaining blockers
 
@@ -165,8 +166,9 @@ meaningful browser result.
 
 ## Recommended continuation order
 
-1. Review PR #17, obtain its final hosted Ubuntu CI result, and use the companion guide for
-   boundary-focused review.
+1. Review the stack from PR #18 through final PR #17 using the companion guide. Merge only
+   bottom-up with merge commits, retargeting each immediate child to `main` after its parent
+   lands; do not squash/rebase while descendants remain open.
 2. In parallel, locate the prior private store. If it cannot be recovered, write a new
    acquisition plan rather than relying on historical paths or process state.
 3. Close Kerodon, OpenAlex/arXiv, Mathlib/oracle, fold-generation-2, and tracked portable
