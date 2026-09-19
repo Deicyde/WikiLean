@@ -194,8 +194,10 @@ promotion, or authority cutover. P1B/P1C remain separate Jack-approved operation
 merged `main`; P2B and later remain blocked on P0-R, and Phase 3 must not start before the
 reviewed Phase 2 genesis.
 
-**Immediate queue:** (1) review [PR #17](https://github.com/Deicyde/WikiLean/pull/17) and
-obtain its final hosted Ubuntu CI result;
+**Immediate queue:** (1) review the scoped Brain SQLite stack beginning with
+[#18](https://github.com/Deicyde/WikiLean/pull/18), following the exact order and merge
+protocol in [BRAIN-SQLITE-PR-REVIEW.md](BRAIN-SQLITE-PR-REVIEW.md); the retargeted
+[#17](https://github.com/Deicyde/WikiLean/pull/17) is patch 15/15, not an aggregate diff;
 (2) recover or reacquire immutable private evidence, including Kerodon, OpenAlex/arXiv and
 Mathlib/oracle; (3) regenerate proposal/fold generation 2 and the
 portable Mathlib metadata, then review the complete v3 source plan and policies; (4) bind the
