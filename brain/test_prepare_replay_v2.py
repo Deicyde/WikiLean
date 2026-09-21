@@ -163,6 +163,40 @@ class PrepareReplayV2Test(unittest.TestCase):
         self.assertEqual(
             result.reducer_inventory_id, self.pack["inventory"]["inventory_id"]
         )
+        environment_source = self.pack_root / self.pack["environment"]["path"]
+        self.assertEqual(
+            result.environment_path,
+            workspace.resolve() / "execution-environment.json",
+        )
+        self.assertEqual(
+            result.environment_sha256,
+            self.pack["environment"]["sha256"],
+        )
+        self.assertEqual(
+            result.configuration_sha256,
+            self.pack["configuration"]["sha256"],
+        )
+        self.assertEqual(
+            result.reducer_git_commit,
+            self.pack["reducer"]["git_commit"],
+        )
+        environment_document = json.loads(environment_source.read_text())
+        self.assertEqual(
+            result.environment_id,
+            environment_document["environment_id"],
+        )
+        self.assertEqual(
+            result.environment_path.read_bytes(),
+            environment_source.read_bytes(),
+        )
+        environment_metadata = result.environment_path.lstat()
+        self.assertEqual(stat.S_IMODE(environment_metadata.st_mode), 0o444)
+        self.assertEqual(environment_metadata.st_nlink, 1)
+        source_metadata = environment_source.stat()
+        self.assertNotEqual(
+            (environment_metadata.st_dev, environment_metadata.st_ino),
+            (source_metadata.st_dev, source_metadata.st_ino),
+        )
 
         raw_context = result.context_path.read_bytes()
         context_document = json.loads(raw_context)
@@ -173,6 +207,18 @@ class PrepareReplayV2Test(unittest.TestCase):
         self.assertEqual(context.generation_id, result.generation_id)
         self.assertEqual(
             context.replay.reducer_git_commit, self.pack["reducer"]["git_commit"]
+        )
+        self.assertEqual(
+            context.replay.environment_sha256,
+            result.environment_sha256,
+        )
+        self.assertEqual(
+            context.replay.configuration_sha256,
+            result.configuration_sha256,
+        )
+        self.assertEqual(
+            context.replay.reducer_git_commit,
+            result.reducer_git_commit,
         )
         self.assertEqual(context.require_one("source").read_bytes(), b'{"rows":[1,2]}')
         self.assertEqual(
@@ -272,6 +318,10 @@ class PrepareReplayV2Test(unittest.TestCase):
             stat.S_IMODE((workspace / "build-context.json").stat().st_mode),
             0o444,
         )
+        self.assertEqual(
+            stat.S_IMODE((workspace / "execution-environment.json").stat().st_mode),
+            0o444,
+        )
 
     def test_relocation_and_hostile_brain_environment_preserve_generation(self) -> None:
         with mock.patch.dict(
@@ -322,6 +372,18 @@ class PrepareReplayV2Test(unittest.TestCase):
         with self.assertRaises(contracts.VerificationError):
             self.prepare(workspace)
         self.assertFalse(workspace.exists())
+
+    def test_tampered_environment_fails_before_workspace_creation(self) -> None:
+        environment_ref = self.pack["environment"]
+        environment_path = self.pack_root / environment_ref["path"]
+        environment_path.write_bytes(b"x" * environment_ref["bytes"])
+        workspace = self.root / "tampered-environment"
+        with self.assertRaises(contracts.VerificationError):
+            self.prepare(workspace)
+        self.assertFalse(workspace.exists())
+        self.assertEqual(
+            list(self.root.glob(".tampered-environment.prepare-*")), []
+        )
 
     def test_destination_ancestry_collision_fails_before_workspace_creation(self) -> None:
         self.fixture.add_reducer_ancestry_collision(self.pack, self.manifest)
@@ -406,6 +468,60 @@ class PrepareReplayV2Test(unittest.TestCase):
         self.assertFalse(workspace.exists())
         self.assertEqual(
             list(self.root.glob(".post-verify-source-tamper.prepare-*")), []
+        )
+
+    def test_post_verification_environment_tamper_is_reopened(self) -> None:
+        original = contracts.verify_offline_pack_files
+        environment_ref = self.pack["environment"]
+        environment_path = self.pack_root / environment_ref["path"]
+
+        def verify_then_tamper(*args: object, **kwargs: object) -> dict[str, int]:
+            result = original(*args, **kwargs)
+            environment_path.write_bytes(b"x" * environment_ref["bytes"])
+            return result
+
+        workspace = self.root / "post-verify-environment-tamper"
+        with mock.patch.object(
+            contracts,
+            "verify_offline_pack_files",
+            side_effect=verify_then_tamper,
+        ):
+            with self.assertRaises(contracts.VerificationError):
+                self.prepare(workspace)
+        self.assertFalse(workspace.exists())
+        self.assertEqual(
+            list(self.root.glob(".post-verify-environment-tamper.prepare-*")),
+            [],
+        )
+
+    def test_environment_copy_toctou_cleans_private_staging(self) -> None:
+        original = prepare._load_verified_json
+        environment_ref = self.pack["environment"]
+        environment_path = self.pack_root / environment_ref["path"]
+
+        def load_then_tamper(
+            root: Path,
+            ref: dict[str, object],
+            location: str,
+        ) -> tuple[dict[str, object], bytes]:
+            result = original(root, ref, location)
+            if location == "$.environment":
+                environment_path.write_bytes(b"x" * environment_ref["bytes"])
+            return result
+
+        workspace = self.root / "environment-copy-toctou"
+        with mock.patch.object(
+            prepare,
+            "_load_verified_json",
+            side_effect=load_then_tamper,
+        ):
+            with self.assertRaisesRegex(
+                prepare.ReplayPreparationError, "source changed"
+            ):
+                self.prepare(workspace)
+        self.assertFalse(workspace.exists())
+        self.assertEqual(
+            list(self.root.glob(".environment-copy-toctou.prepare-*")), []
         )
 
     def test_post_verification_symlink_swap_is_rejected(self) -> None:
@@ -615,6 +731,28 @@ class PrepareReplayV2Test(unittest.TestCase):
         result = json.loads(completed.stdout)
         self.assertTrue(result["ok"])
         self.assertEqual(result["offline_pack_id"], self.pack["offline_pack_id"])
+        self.assertEqual(
+            result["environment_path"],
+            str(workspace.resolve() / "execution-environment.json"),
+        )
+        self.assertEqual(
+            result["environment_sha256"],
+            self.pack["environment"]["sha256"],
+        )
+        self.assertEqual(
+            result["configuration_sha256"],
+            self.pack["configuration"]["sha256"],
+        )
+        self.assertEqual(
+            result["reducer_git_commit"],
+            self.pack["reducer"]["git_commit"],
+        )
+        self.assertEqual(
+            result["environment_id"],
+            json.loads((workspace / "execution-environment.json").read_text())[
+                "environment_id"
+            ],
+        )
         self.assertEqual(
             result["generation_id"],
             build_context.BuildContext.load(

@@ -167,6 +167,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             "site/ops/brain_promote_release.py",
             "site/ops/brain_public_baseline.py",
             "brain/tools/authority_contracts.py",
+            "brain/tools/execution_environment.py",
             "brain/tools/build_release.py",
             "brain/tools/measure_store.py",
             "brain/tools/semantic_diff.py",
