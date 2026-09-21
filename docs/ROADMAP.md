@@ -158,6 +158,20 @@ never independent semantic writers.
 
 ### Current Brain execution queue (updated 2026-09-05)
 
+**2026-09-08 continuation:** the live engineering checkpoint is
+[`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
+Real D1, Mathlib/oracle, Hugging Face, shared Wikidata/entity/crossref, derived
+catalog, Git harvest, nLab/Stacks, ProofWiki, EOM, OEIS, DLMF, LMFDB, PlanetMath
+and OpenAlex source exports are independently verified. Kerodon is the remaining
+full capture. The private source draft has 106 manifests and 41 of 43 complete
+input groups; its external aggregate groups await Kerodon. A sealed native Linux OCI image passed kernel/runtime checks,
+and the expanded Python suite passes 77 commands. P2A's bounded experimental
+assertion shadow also passes, including exact parity for 430 committed pilot
+contributions. No full pack, complete approved
+semantic baseline, full two-build result, release attestation or production
+activation exists. The historical implementation context below must not be read
+as a current claim that the completed captures or runtime preparation are absent.
+
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
 `wiki/public-asset-source-attestation.json`, so public baseline freeze/verify fails closed
@@ -702,11 +716,11 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) finish the successful shared Wikidata capture,
-review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
+**Next P0-R implementation order:** (1) finish the remaining external captures and
+normalizers, review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
 Wikidata proposal/fold, Hugging Face, and remaining source evidence into the v3
-current-corpus plan; (2) freeze the actual native Linux OCI/dependency artifacts and
-retain strict kernel sandbox evidence; (3) compile the first real pack and prove
+current-corpus plan; (2) preserve the completed native Linux OCI/dependency artifacts
+and strict kernel sandbox evidence, resealing if the trusted runner changes; (3) compile the first real pack and prove
 cross-object/source-revision coherence; (4) run the two-path adversarial clean-room gate
 against the approved semantic baseline; (5) review the concrete session and emit its
 separate reproducibility attestation. Network acquisition, live D1 snapshots, and
@@ -718,32 +732,40 @@ appearing optional inputs fail before reduction; graph/content parity plus the r
 provenance migration are proven; and the reproducibility attestation is stored with the
 release.
 
-#### P2A — shadow assertion kernel `[PARALLEL, SHADOW ONLY]`
+#### P2A — shadow assertion kernel `[IMPLEMENTED 2026-09-08; SHADOW ONLY]`
 
-- [ ] Freeze the v1 operation envelope and assertion state plus the minimal
+- [x] Freeze the v1 operation envelope and assertion state plus the minimal
   operation family: entity assertion, relationship assertion, assertion retraction, and
   exact-retraction restoration. Use an explicitly experimental fixture wrapper and fixture
   relationship-kind policy—not accepted `changeset/v1`—so source transitions, reducer
   schedules, semantic migrations, and authoritative kind policy can wait for P0-R without
   mutating a frozen schema. Do not conflate authored kinds with generated `depends`/bulk
   `links` edges.
-- [ ] Implement `brain/tools/validate_authority.py` and
+- [x] Implement `brain/tools/validate_authority.py` and
   `brain/tools/replay_authority.py` using the existing canonical JSON/hash primitives.
   The semantic root must bind inactive assertions and exact retraction history, not only
   the currently active graph.
-- [ ] Add stable operation/assertion IDs, assertion revisions, predecessor/root checks,
+- [x] Add stable operation/assertion IDs, assertion revisions, predecessor/root checks,
   tombstone state transitions, derived conflict footprints, and deterministic full plus
   incremental replay.
-- [ ] Shadow-import `brain/data/container_links.jsonl` and
+- [x] Shadow-import `brain/data/container_links.jsonl` and
   `brain/data/discovery_proposals.jsonl` first. Prove canonical source-contribution parity
   against those legacy rows; leave runtime inputs and `authority.through_changeset`
   unchanged. Full graph semantic parity waits for P2B's compatibility exporter and P0-R
   build context.
-- [ ] Add adversarial fixtures for unknown versions/fields, duplicate or reused IDs,
+- [x] Add adversarial fixtures for unknown versions/fields, duplicate or reused IDs,
   authored `cell:` endpoints, stale expected revisions, bad predecessor roots, invalid
   retract/restore chains, and equivalent independent assertions. Prove independence from
   physical file enumeration and JSON serialization order; permute only operation classes
   whose commutativity is explicitly registered and tested.
+
+The [experimental v1 spec](../brain/authority/specs/experimental-assertions-v1.md)
+and frozen history vector are implemented with 17 tests. The actual native Git
+pilot at `c64438d2` has an empty canonical contribution diff for 104 container and
+326 discovery rows. All 24 permutations of the four registered operation classes
+on disjoint histories converge to the same semantic root; chain roots preserve
+order. Incremental replay rechecks complete retained prefix bytes. Actor fields
+in arbitrary fixtures do not authenticate authors or confer authority.
 
 **Done when:** fixture full/incremental roots converge, the pilot legacy-vs-shadow semantic
 contribution diff is empty, and no production bytes/routes change. Genesis acceptance and

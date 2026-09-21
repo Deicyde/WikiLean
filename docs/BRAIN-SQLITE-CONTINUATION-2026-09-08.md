@@ -21,6 +21,11 @@ passed integration checks and is committed as `d4ed6e42`, followed by `c64438d2`
 (dataset evidence and actual native replay isolation), then `a99d48fa` (derived
 catalog fragments and retained rejected observations). Completion of a fixture suite is
 not evidence of a full-corpus or native Linux OCI run.
+The next identifier and public Git tranche is committed as `dded5b39`.
+The subsequent Git harvest, external Git, ProofWiki, EOM raw and complete
+Wikidata-derived input tranche is committed as `bb179a0c`.
+The EOM normalization, DLMF, OEIS, Kerodon and LMFDB acquisition tranche is
+committed as `c3265f80`.
 
 ## Real source acquisitions
 
@@ -132,8 +137,16 @@ tool profile
 The first attempt under this plan exhausted five DNS failures at request 129;
 its single-request diagnostic is retained under
 `wikidata-observations/failed-attempt-3d4e06e1d8e749548bb7b212df7f650c/`.
-DNS resolution subsequently recovered. A fresh complete attempt uses the same
-plan/profile and log `acquisition-reviewed-class-drift-retry2.log`.
+DNS resolution subsequently recovered. The fresh attempt under the same
+plan/profile succeeded; its log is `acquisition-reviewed-class-drift-retry2.log`.
+Independent complete bundle/source verification passed for
+`wikidata-observations/b8f9a745812f3cc60c41680b9d5ec99a51a2c765c27a47c171eb4e204f1dbf35`.
+It contains 194 successful requests and four explicitly retained failed attempts
+(198 attempts total). Source ID:
+`sha256:36be342172d6c1bf3c896aeba7ab19a6794b8d0190e382111ab4429b7a07f5e6`;
+receipt `sha256:69e0ab6665c3eeeddae7e2af19c3434a8ab15e375b1830f383cbf2d2a44bae8f`;
+lineage `sha256:f665b695284eb247ce84b69beaad596abcd7571213c5d1331ec92074c4d55434`.
+The verified fragment, manifest and report are in `wikidata-plan-20260908/`.
 The producer now preserves complete rejected transcripts as private diagnostics;
 these have no receipt, normalized output, authority bundle or resume path.
 
@@ -154,7 +167,13 @@ Fresh public Git source captures and independently reconstructed exports also
 succeeded for Formal Conjectures, ErdosProblems and TauCeti, using six actual
 requests and exact complete Git trees. Their paths and identities are retained in
 `/Users/jack/.local/share/wikilean-migration/public-git/verified-source-exports.json`.
-Pure harvester normalization is the next step for these source families.
+Pure harvester normalization and second-process verification subsequently passed:
+`public-git/harvest-normalization/exports/7ced5a02f6778d485b6c55193127e0e1060df24be8f274162597cddfa4bfb0ad`.
+The 4,190 Formal Conjectures rows, 7,860 TauCeti rows and 1,217 Erdos joins/pages
+match every existing data row. Erdos gains a deterministic pair envelope and an
+explicit empty links companion. `public-git/harvest-normalization/verified-export.json`
+records child IDs, parent roots, exact PyYAML 6.0.3 dependency evidence and row parity.
+The source-only YAML loader rejects preloaded packages and bypasses unmeasured bytecode.
 
 Fresh nLab and Stacks Git captures and second-process export verification also
 succeeded. The summary is `public-git/verified-nlab-stacks-source-exports.json`:
@@ -165,6 +184,12 @@ Their source IDs are respectively
 and `sha256:a1988cb44467ba2aa060e572cf6d9b18e49a3db1a08ea53a4be448ec74623cab`.
 The Git acquisition profile now explicitly binds allowed repositories; historical
 profiles remain restricted to their original three repositories.
+Both pure catalog reductions also passed independent verification:
+`external-git-source-exports/cd0b2c1d11af82264e136e83b9a34458119d7d92b04a177b4264b2c1f8235a4d`.
+nLab produces 20,057 pages/438,492 links; Stacks produces 21,436 pages/47,356 links.
+`verified-external-git-export-20260908.json` records complete source IDs and root bindings.
+The shared `external_pair_normalization.py` retains the reviewed legacy writer's
+pure row/metadata semantics without executing its filesystem publication block.
 
 The independently verified identifier export is
 `derived-identifier-source-exports/0035986f00ab36f6519a044dcb60f2c410b8f4171aa71284e4a341c5acc4d18f`.
@@ -177,21 +202,149 @@ These exports are private and carry no production semantic approval.
 
 The derived catalog normalizer covers concept layer, concept graph/declaration
 bindings, hierarchy and theorem links. Its 22 evidence/compiler tests and five
-legacy semantic parity tests pass. The private draft in
-`derived-catalog-plan-20260908/draft-plan.json` explicitly awaits Wikidata edges;
-all ten available parent manifests and 10,148 objects (3,593,020,375 bytes) were
-independently checked. Its current profile is
+legacy semantic parity tests pass. The original draft was finalized with the
+verified shared Wikidata observation: `derived-catalog-plan-20260908/plan.json`,
+SHA-256 `ebb2b4c5daca2a25aa38343939901aef398970a267155397d545a32506832d91`.
+The actual eleven-parent reduction and separate-process verification succeeded at
+`derived-catalog-source-exports/98ab7bb4df33fc7ca30f13e55df3a85a15d7c57b2be3e6a07b99c91cd56a9dda`.
+The exact six output bindings and four child manifests are in its source fragment;
+the complete verification report is `derived-catalog-plan-20260908/verification.json`.
+Its current profile is
 `sha256:98623f9f769343f566693da9d4371111a9ae0b78fcb878f805c630b4e981e0b8`.
 Curated source objects use native Git paths. Final logical input assembly belongs
 in a separate Git-backed staging tree, never the original dirty checkout.
 
-The private `full-corpus-plan-20260908/control/source-plan-draft.json` currently
-binds 28 of 43 input groups, with 15 explicitly unresolved. Its detached staging
+The private `full-corpus-plan-20260908/control/source-plan-draft.json` now has
+106 manifests and 41 of 43 complete input groups after PlanetMath and OpenAlex
+integration. Ten external pairs are staged; only the aggregate external page/link
+groups remain incomplete pending Kerodon. Its current SHA-256 is
+`4a0e4fb7fa9cbe3c9df97bf7c419d181d64f3dbfe3cf2c97526452cd593ce9ce`. Its detached
 checkout is at `c64438d2`; verified source members are copied into logical input
-locations with checksums and materialization records. MathWorld contributes only
-a partial external-pages/links binding. All previously present external source
-families remain required by the draft completeness review. The draft is explicitly
-non-authoritative and is not a full plan or compiled pack.
+locations with checksums and materialization records. Kerodon remains necessary
+before either aggregate external input can be complete. Previously present source
+families remain required by the completeness review. The draft is explicitly
+non-authoritative and is not a full plan or compiled pack; inspect the latest
+materialization records for subsequent assembly changes. Proposal-fold source
+coherence, source-policy review and full evidence/compiler checks remain outstanding.
+
+ProofWiki's fresh single-GET compressed dump is 36,266,006 bytes, SHA-256
+`48c9ba98542597a32d2c4e7cddc670170a6975c404a25b9bb4f96a28bf4f7979`.
+Its raw export is `public-files/exports/834530ee2b1359da2b154ceda45e7050b09a688b55699058c68d2cb41ef12e90`;
+the complete pure XML reduction and independent replay are
+`proofwiki-normalization/exports/a79f80855eaa72aada3dc746995ea98ce167695e4c5a70d88640c62b5dbdb8d8`.
+It yields 49,331 pages and 342,161 links, with 540 QID joins. Its explicit four-parent
+ancestry includes the verified dump, requested entity claims, crossrefs and Git registry.
+The XML stream independently enforces the 4 GiB expansion cap. Fresh upstream
+content differs from the old dump; source drift is not a migration parity approval.
+
+EOM's complete fresh 95-request API walk and separate-process export verification
+passed: `eom/exports/50d67ba95bd75644891c7608309317c575107a568c737a70e8e14010492f821b`.
+Source ID `sha256:114b5813d750ca72e95a39f210f889ea8f19bebff2723c967d49abc8dfbd6a6f`;
+4,639,593 original response bytes yield 9,985 page identities and 42,846 links.
+Exact continuation replay, logical-title collision rejection, incremental resource
+bounds, complete request/body evidence and private failure retention are enforced.
+The pure normalization and independent replay also completed:
+`eom-normalized-exports/4dfb6326e3447f0446e2b94e689f809eb9b7b17df0341a70a2bcf25682958da9`.
+Its child source is `sha256:1d8213ee6f119e54a0d5d6bffc659180ab15bc0031884c9004a92fa7c9795185`.
+All 9,985 existing page rows and 42,846 link rows match exactly; 473 pages have QIDs.
+Both logical members are staged, with the original API, claims and Git registry
+ancestry retained. No article text is requested.
+
+OEIS acquisition, reduction and separate-process verification completed:
+`oeis-source/exports/928606537a0d43a920e9d6c13926094fb5087035a7972cd08b7e5b0acf0c2bd2`.
+All 99 actual GETs succeeded, retaining 9,394,637 response bytes and the full
+399,443-name inventory. The exact 98 current P829 anchors produce 98 pages and
+115 links. Every legacy page row (37) matches, and all 22 legacy links remain;
+61 new anchors reflect source refresh. The raw source is
+`sha256:8cf6f236ae0bacc5cef20d8823a59b6fd2db28ca0860b6de6729d05ee0d9d4cc`;
+the normalized source is `sha256:10f7cef4d1e9023637229641efcf9e6d4878758fd593be5d50e12e1cb4bb77a1`.
+The complete fragment and integration report are in `oeis-source/`; both members
+are staged. This is source evidence, not full-graph semantic approval.
+
+LMFDB's raw source capture and independent export verification completed:
+`lmfdb-source/exports/40697ecf7a0799698f3ad13861d4c7b6d829c5ebd71f5599f9a2f68556a547ce`.
+Its source ID is `sha256:2b8f90c21074abf4352210ece01041a4e6fa69e57cdf59740c5c5369cd6983d3`.
+One read-only repeatable-read transaction on the documented public mirror retained
+1,725 latest eligible knowls in 1,651,084 original response bytes and rolled back.
+PostgreSQL reported snapshot `66149792:66149792:`. The mirror presents a self-signed
+certificate: the retained DER SHA-256
+`5547fae90ed24ba86dfce1c9c48bd5218a84e7789e8be9d0e177d79ac5bfad12`
+is checked before authentication; no public-CA authentication is claimed and system
+trust was not changed. Source-policy review must retain this explicit limitation.
+The importer seals all 98 installed files of its five pinned pure-Python driver
+packages, executes captured source bytes instead of bytecode caches, and binds the
+actual CPython runtime in profile
+`sha256:48c6b118dc336d1b77bc87d78aa4657065e83a52f7ddb44f051ff65e9e111cfe`.
+Network message allocation, query size, latest-revision ambiguity and schema are
+bounded; query/cleanup failures retain received data without publishing authority.
+Pure normalization and independent legacy-code parity also passed: all 1,725
+pages and 5,235 links match the legacy normalizer on the same fresh responses.
+The export is `lmfdb-normalization/exports/4e21920329f9c742dac51b124fa49459464bd62eaa9428b848edff2e306738f9`,
+child source `sha256:d40430d389d707043a454241afe0ab207455110a8ccd6a487a98dff8fbb92b51`.
+There are 42 QID joins and 1,694 snippets. Historical-cache comparison separately
+records eight added pages, 11 changed content rows, 12 changed QID joins, 21 added
+links and two removed links. Both normalized members are staged. Publisher code
+at LMFDB commit `fea1c3dffe05b3ac2df3d5953885db035d9096b4` explicitly states that
+the data use CC-BY-SA-4.0; the verified template and Git blob identity are retained
+under `source-policy-review/lmfdb/`. The old registry's unverified-license note
+is therefore stale, but its pinned bytes remain intact pending source-policy review.
+
+DLMF completed 909 requests with 103,921,199 response bytes. The independent raw
+and normalized replays produce 872 pages and 31,540 links, including 15 QID joins;
+all rows equal the legacy normalizer on the same responses. Normalized export:
+`dlmf-normalization/exports/45891255636701f95e75d170fe2aad1b4d38f3be502032bd56e70dfbd34e7e4f`,
+child source `sha256:7ddc2bf7bf04d108a02d6d8d4e0db8418d09c5d4734657ddfc74281a06d6ef2a`.
+The raw source is `sha256:9ddb2900d0eb25ab86ef9a7dd1fce5e86eb4f0a1da820e78398d091ea74f872a`.
+Both normalized members are staged.
+
+PlanetMath completed all 63 repositories and 127 requests. The independently
+verified export is
+`planetmath-source/exports/be139e543da0f4f78cb8030aae7dbcc5d8fda1bc19bd06dc9fd6838cdb52b2e7`,
+child source `sha256:f82666ce0cc45b9acfe31545748c5171a39ff505cceddaf52349acc9e424fef8`.
+It retains 26,565 files and 5,604,844,007 bytes of evidence. All 9,451 page content
+rows and 12,805 links match the historical cache; 40 added Wikidata joins raise
+coverage to 297. The initial archive-bound failure and its measured limit review
+are retained. The successful generation keeps its exact larger resource policy;
+the failed generation is never relabeled as successful.
+
+OpenAlex and arXiv completed 914 requests, including 452 filtered calls, with no
+retries and 37,731,295 response bytes. All 2,052 selected arXiv IDs returned identified
+Atom entries. The normalized export is
+`openalex-normalized-exports/82146a6bd9cb1e3bf642353b67fbc5d0e49f97efbeb7be71d96ecd1412911a7c`,
+child source `sha256:550466341eb80fc696187bf023157af59fae6724f0f407a6b5bfcee18e748c39`.
+All 25 normalized citation rows match the legacy main on the same captured responses.
+Historical drift is five added links and one removed link; the removed link's
+source paper is absent from the reviewed current theoremgraph selector. The exact
+selector and full seven-parent ancestry remain bound, rather than promoting a cache.
+Private reports are in `openalex-plan-20260908/`.
+
+Kerodon is the remaining live source capture. Its reviewed raw and pure profiles
+remain frozen while it reads both roots and all 7,509 tags at a polite request
+rate. The old cache contained only 6,490 successful contents, so its incomplete
+legacy coverage must be called out in the later semantic review. The private log
+is `kerodon-plan-20260908/acquisition.log`; incomplete captures cannot supply bindings.
+
+## Curated contribution and assertion checks
+
+The proposal diagnostic replays all 452 pinned proposal files with an exactly
+empty unknown-entity request plan. Replaying from an empty FC seed produces the
+same 2,100 rows as the old seeded run, removing an opaque prior-output dependency.
+The separate [curation decision](BRAIN-SQLITE-CURATION-DECISION.md) explains five
+direct Git container contributions that must be preserved separately, and 15 FC
+links whose completed declaration names match recorded rejections. No diagnostic
+fold output has replaced the currently bound runtime input. This is an explicit
+graph-change review, not a provenance-only parity claim.
+
+P2A's experimental shadow kernel implements four assertion operations, independent
+contribution identity, exact revision/retraction history, predecessor checks,
+derived conflicts and full/incremental replay. Its fixture envelope and kind policy
+are separate from accepted changesets; see
+[`experimental-assertions-v1.md`](../brain/authority/specs/experimental-assertions-v1.md).
+The actual Git pilot at `c64438d2` preserves all 104 container and 326 discovery
+contributions with identical canonical per-file roots. Evidence is retained in
+`assertion-shadow-20260908/`; source files, runtime routes and
+`authority.through_changeset` are unchanged. Full graph parity, accepted genesis
+and production authority remain later milestones.
 
 ## Engineering changes in progress
 
@@ -278,13 +431,32 @@ The subsequent 60-command Python suite passed in
 tests and the expanded 12 public Git tests. CI now pins PyYAML 6.0.3 for the
 upcoming pure Erdos importer; source normalization separately retains its complete
 installed dependency preimages and interpreter identity.
+The expanded 65-command suite subsequently passed in
+`/tmp/wikilean-migration-python-ci-external-sources.log`: Git harvest 16,
+external Git 19, public-file 13, ProofWiki 11 and EOM 13 focused checks, including
+actual pack compiler integration and independent legacy-parity coverage.
+The preceding complete suite passes **72 commands**, log
+`/tmp/wikilean-migration-python-ci-remaining-catalogs.log`. New focused checks:
+EOM normalization 12, DLMF raw 12 and normalization 12, OEIS 14, Kerodon raw 18
+and normalization 12, LMFDB raw 16. All new source slices received independent
+review; the LMFDB cleanup finding was fixed and regressed before live acquisition.
+The unchanged Worker still has its previously passing typecheck and 872 tests.
+The latest complete suite passes **77 commands**, log
+`/tmp/wikilean-migration-python-ci-shadow-sources.log`. New focused suites pass
+LMFDB normalization 12, PlanetMath 16, OpenAlex raw 18 and normalization 10,
+and experimental assertion shadow 17 tests. Independent review confirmed actual
+430-row Git pilot parity and exposed two repaired shadow issues: discovery rows
+use `src`/`dst`/`kind`, and checkpoint comparisons must distinguish booleans from
+integers using exact canonical bytes. Golden v1 identities and full/incremental
+replay remain equal. This completes the bounded P2A shadow criteria only.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
 
 ## Remaining completion order
 
-1. Finish the remaining source adapters and shared Wikidata capture. The final
+1. Finish the remaining Kerodon capture and independently verify its normalized
+   export. The other planned source families now have verified exports. The final
    committed native Linux runner image is verified; preserve its preparation evidence.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the
@@ -294,11 +466,15 @@ Darwin evidence is retained in the private migration root's
    native Linux runtime identity. No valid full source plan has been emitted yet.
 4. Compile the real pack, run two isolated builds in different paths with adversarial
    mtimes/environment, verify complete byte/identity equality, and compare the approved
-   semantic baseline with explicit provenance migration review.
+   semantic baseline with explicit provenance migration review. No approved complete
+   pre-refactor baseline has been identified yet. Prepare a legacy-code comparison
+   on the same verified inputs so fresh-source drift is not confused with migration
+   behavior; retain an explicit review boundary before asserting full parity.
 5. Emit a separate reproducibility attestation and bind the verified pack/source-set
    identities into the full-offline-replay release attestation.
 6. Finish the P1B public baseline/shadow/dry-run/activation evidence bundle. P1C still
    requires Jack's exact-release and window approvals for A, B, rollback, and final state.
-7. Complete the roadmap's later Git assertion authority, release-pinned D1 overlay,
+7. After the experimental P2A shadow, complete the later accepted Git assertion
+   authority, release-pinned D1 overlay,
    and generated-artifact retirement stages. No schema or authority cutover is implied
    by completing the source-acquisition tools.
