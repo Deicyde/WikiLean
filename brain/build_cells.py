@@ -25,10 +25,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import stat
 import sys
 from collections import Counter, defaultdict
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
+
+from build_context import BuildContext, BuildContextError
+from stage_io import (
+    assert_outputs_absent,
+    ensure_private_directory,
+    owned_directory,
+    publish_files_no_replace,
+    require_same_filesystem,
+)
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -45,6 +57,53 @@ OVERRIDES_IN = CATALOG_DATA / "grounding_overrides.jsonl"
 CELLS_OUT = BRAIN_DATA / "cells.jsonl"
 SYNAPSES_OUT = BRAIN_DATA / "synapses.jsonl"
 REVIEW_OUT = BRAIN_DATA / "cell_review.jsonl"  # tagger-quality worklist
+
+STAGE_ID = "cells"
+STAGE_PROGRAM = "brain/build_cells.py"
+STAGE_ARGV: tuple[str, ...] = ()
+STAGE_NEEDS = ("base-graph",)
+STAGE_OUTPUTS = (
+    ("file", "brain/data/cell_review.jsonl"),
+    ("file", "brain/data/cells.jsonl"),
+    ("file", "brain/data/synapses.jsonl"),
+)
+
+
+@dataclass(frozen=True, slots=True)
+class CellInputPaths:
+    nodes: Path
+    edges: Path
+    edges_links: Path
+    grounding_overrides: Path | None
+    discovery_rejected: Path | None
+    bot_cut_log: Path | None
+    bot_seed_queue: Path | None
+    bot_recycle_queue: Path | None
+    bot_brain_queue: Path | None
+    bot_pool_candidates: Path | None
+
+    def queue_paths(self) -> tuple[tuple[str, Path | None], ...]:
+        return (
+            ("seed_queue.json", self.bot_seed_queue),
+            ("recycle_queue.json", self.bot_recycle_queue),
+            ("brain_queue.json", self.bot_brain_queue),
+            ("pool_candidates.json", self.bot_pool_candidates),
+        )
+
+
+def _legacy_input_paths() -> CellInputPaths:
+    return CellInputPaths(
+        nodes=NODES_IN,
+        edges=EDGES_IN,
+        edges_links=EDGES_LINKS_IN,
+        grounding_overrides=OVERRIDES_IN,
+        discovery_rejected=REJECTED_IN,
+        bot_cut_log=BOT_STATE / "cut_log.json",
+        bot_seed_queue=BOT_STATE / "seed_queue.json",
+        bot_recycle_queue=BOT_STATE / "recycle_queue.json",
+        bot_brain_queue=BOT_STATE / "brain_queue.json",
+        bot_pool_candidates=BOT_STATE / "pool_candidates.json",
+    )
 
 # ---- SCHEMA v3 constants ----------------------------------------------------
 
@@ -78,11 +137,18 @@ F_EXT = 1 << 8
 
 # ---- small helpers ----------------------------------------------------------
 
-def _iter_jsonl(path: Path, *, skip_meta: bool = True):
+def _iter_jsonl(
+    path: Path,
+    *,
+    skip_meta: bool = True,
+    required: bool = False,
+):
     """Yield rows of a brain JSONL, skipping the leading `_meta` line."""
     if not path.exists():
+        if required:
+            raise FileNotFoundError(f"sealed cells input disappeared: {path}")
         return
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         for line in fh:
             if not line.strip():
                 continue
@@ -93,7 +159,7 @@ def _iter_jsonl(path: Path, *, skip_meta: bool = True):
 
 
 def _jsonl_meta(path: Path) -> dict:
-    with path.open() as fh:
+    with path.open(encoding="utf-8") as fh:
         row = json.loads(next(fh))
     meta = row.get("_meta")
     if not isinstance(meta, dict):
@@ -163,7 +229,11 @@ class DSU:
 
 # ---- inputs -----------------------------------------------------------------
 
-def load_overrides(path: Path = OVERRIDES_IN) -> dict[str, dict]:
+def load_overrides(
+    path: Path | None = OVERRIDES_IN,
+    *,
+    required: bool = False,
+) -> dict[str, dict]:
     """`grounding_overrides.jsonl` -> {qid: {"match_kind:<Decl>": kind, ...}}.
 
     These point-fixes are applied upstream by `catalog/build_graph_v2.py`, but that
@@ -171,38 +241,70 @@ def load_overrides(path: Path = OVERRIDES_IN) -> dict[str, dict]:
     on the next cell build and is idempotent once upstream catches up.
     """
     out: dict[str, dict] = {}
-    for row in _iter_jsonl(path, skip_meta=False):
+    if path is None:
+        return out
+    for row in _iter_jsonl(path, skip_meta=False, required=required):
         qid = row.get("qid")
         if qid and isinstance(row.get("set"), dict):
             out.setdefault(qid, {}).update(row["set"])
     return out
 
 
-def load_rejected() -> set[tuple[str, str]]:
+def _load_rejected(
+    *,
+    cut_log_path: Path | None,
+    discovery_rejected_path: Path | None,
+    strict: bool,
+) -> set[tuple[str, str]]:
     """(qid, bare decl) claims a reviewer or skeptic REJECTED — never bond (C7).
 
     Two sources: the LLM triage's `cut` decisions (`bot/state/cut_log.json`) and the
     discovery pipeline's skeptic rejections (`brain/data/discovery_rejected.jsonl`).
     """
     rejected: set[tuple[str, str]] = set()
-    cut_log = BOT_STATE / "cut_log.json"
-    if cut_log.exists():
+    if cut_log_path is not None:
         try:
-            for row in json.loads(cut_log.read_text()):
+            rows = json.loads(cut_log_path.read_text(encoding="utf-8"))
+            if not isinstance(rows, list):
+                raise ValueError("expected a JSON array")
+            for row in rows:
+                if not isinstance(row, dict):
+                    raise ValueError("expected every cut-log row to be an object")
                 qid = row.get("qid")
                 triage = row.get("triage") or {}
                 decl = triage.get("suggested_decl") or row.get("decl")
                 if qid and decl:
                     rejected.add((qid, decl))
-        except Exception as exc:  # fail-soft: a malformed cut log must not break the build
+        except Exception as exc:
+            if strict:
+                raise ValueError(f"invalid sealed cut log {cut_log_path}: {exc}") from exc
+            # Legacy builds retain their historical fail-soft queue behavior.
             print(f"  ! cut_log unreadable ({exc}) — continuing", file=sys.stderr)
-    for row in _iter_jsonl(REJECTED_IN, skip_meta=False):
-        if row.get("verdict") == "reject" and row.get("qid") and row.get("decl"):
-            rejected.add((row["qid"], row["decl"]))
+    if discovery_rejected_path is not None:
+        for row in _iter_jsonl(
+            discovery_rejected_path,
+            skip_meta=False,
+            required=strict,
+        ):
+            if row.get("verdict") == "reject" and row.get("qid") and row.get("decl"):
+                rejected.add((row["qid"], row["decl"]))
     return rejected
 
 
-def load_tag_queue() -> list[dict]:
+def load_rejected() -> set[tuple[str, str]]:
+    """Load rejected claims from the historical repository-local paths."""
+    return _load_rejected(
+        cut_log_path=BOT_STATE / "cut_log.json",
+        discovery_rejected_path=REJECTED_IN,
+        strict=False,
+    )
+
+
+def _load_tag_queue(
+    paths: tuple[tuple[str, Path | None], ...],
+    *,
+    strict: bool,
+) -> list[dict]:
     """The `@[wikidata]` tag queue, read LOCALLY from `bot/state/` — no network.
 
     Mirrors the assembly of `bot/publish_queue.py` (which POSTs the same rows to
@@ -215,41 +317,59 @@ def load_tag_queue() -> list[dict]:
     """
     items: list[dict] = []
 
-    def _read(name: str) -> list:
-        path = BOT_STATE / name
-        if not path.exists():
+    def _read(name: str, path: Path | None) -> list:
+        if path is None:
+            return []
+        if not strict and not path.exists():
             return []
         try:
-            data = json.loads(path.read_text())
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                rows = data.get("items", [])
+            elif isinstance(data, list):
+                rows = data
+            else:
+                raise ValueError("expected a JSON array or an object with items")
+            if not isinstance(rows, list) or not all(
+                isinstance(row, dict) for row in rows
+            ):
+                raise ValueError("expected queue items to be an array of objects")
+            return rows
         except Exception as exc:
+            if strict:
+                raise ValueError(f"invalid sealed tag queue {path}: {exc}") from exc
             print(f"  ! {name} unreadable ({exc}) — skipping", file=sys.stderr)
             return []
-        if isinstance(data, dict):
-            return data.get("items", [])
-        return data if isinstance(data, list) else []
 
-    for row in _read("seed_queue.json"):
+    by_name = dict(paths)
+    for row in _read("seed_queue.json", by_name.get("seed_queue.json")):
         # A seed item's (qid, decl) is ALREADY the corrected claim; any reject/revise
         # note refers to the superseded decl, not this one.
         items.append({"qid": row.get("qid"), "decl": row.get("decl"),
                       "status": row.get("status", "unreviewed"), "src": "seed_queue"})
-    for row in _read("recycle_queue.json"):
+    for row in _read("recycle_queue.json", by_name.get("recycle_queue.json")):
         triage = row.get("triage") or {}
         qid = triage.get("suggested_qid") or row.get("qid")
         decl = triage.get("suggested_decl") or row.get("decl") or row.get("current_decl")
         items.append({"qid": qid, "decl": decl, "status": "recycled",
                       "orig_qid": row.get("qid"), "src": "recycle_queue"})
-    for row in _read("brain_queue.json"):
+    for row in _read("brain_queue.json", by_name.get("brain_queue.json")):
         items.append({"qid": row.get("qid"), "decl": row.get("decl"),
                       "status": "brain", "src": "brain_queue"})
-    for row in _read("pool_candidates.json"):
+    for row in _read("pool_candidates.json", by_name.get("pool_candidates.json")):
         items.append({"qid": row.get("qid"), "decl": row.get("decl"),
                       "status": row.get("status", "unreviewed"), "src": "pool_candidates"})
     return [i for i in items if i.get("qid") and i.get("decl")]
 
 
+def load_tag_queue() -> list[dict]:
+    """Load tag queues from the historical repository-local paths."""
+    return _load_tag_queue(_legacy_input_paths().queue_paths(), strict=False)
+
+
 def queue_bonds(nodes: dict[str, dict], rejected: set[tuple[str, str]],
-                stats: Counter, overrides: dict[str, dict] | None = None
+                stats: Counter, overrides: dict[str, dict] | None = None,
+                queue_items: list[dict] | None = None,
                 ) -> list[dict]:
     """Resolve queue items to (qid, decl node id) strong bonds.
 
@@ -268,7 +388,7 @@ def queue_bonds(nodes: dict[str, dict], rejected: set[tuple[str, str]],
             by_bare.setdefault(node["label"], nid)
 
     bonds: list[dict] = []
-    for item in load_tag_queue():
+    for item in load_tag_queue() if queue_items is None else queue_items:
         qid, decl = item["qid"], item["decl"]
         if (qid, decl) in rejected:
             stats["queue_rejected"] += 1
@@ -753,7 +873,8 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
                    merged_pairs: set[tuple[str, str]],
                    stats: Counter, prov: Prov, *,
                    supercells: set[str] | None = None,
-                   links_path: Path = EDGES_LINKS_IN) -> list[dict]:
+                   links_path: Path = EDGES_LINKS_IN,
+                   links_required: bool = False) -> list[dict]:
     """Aggregate every weak bond into ONE synapse per endpoint pair, keeping traces.
 
     Both endpoints must resolve to an ATOM — a cell, or a supercell for a rule-5
@@ -835,6 +956,10 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
     # names both pages, which is what the evidence drawer shows); a projected row is
     # then used only if its underlying page pair was not already consumed.
     if not links_path.exists():
+        if links_required:
+            raise FileNotFoundError(
+                f"sealed cells input disappeared: {links_path}"
+            )
         # LOUD: this file is gitignored (146MB), so a fresh clone silently loses every
         # external-DB link synapse — the whole point of ingesting internal links.
         print(f"  ! {links_path.name} absent — NO link synapses will be built "
@@ -843,7 +968,7 @@ def build_synapses(cells: dict[str, dict], owner: dict[str, str],
 
     consumed: set[tuple[str, str]] = set()
     projected: list[dict] = []
-    for edge in _iter_jsonl(links_path):
+    for edge in _iter_jsonl(links_path, required=links_required):
         ev = edge.get("evidence") or {}
         if ev.get("projected"):
             projected.append(edge)       # 11,540 rows — buffered, resolved below
@@ -949,30 +1074,107 @@ def write_jsonl(path: Path, meta: dict, rows: list[dict]) -> None:
     """Atomically publish a derived JSONL artifact."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    with tmp.open("w") as fh:
+    with tmp.open("w", encoding="utf-8", newline="\n") as fh:
         fh.write(json.dumps({"_meta": meta}, separators=(",", ":")) + "\n")
         for row in rows:
             fh.write(json.dumps(row, separators=(",", ":")) + "\n")
     tmp.replace(path)
 
 
-def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
-          links_path: Path = EDGES_LINKS_IN) -> tuple[list[dict], list[dict], dict]:
+def _write_jsonl_exclusive(path: Path, meta: dict, rows: list[dict]) -> None:
+    """Durably stream one context artifact into fresh stage scratch space."""
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(path, flags, 0o600)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            descriptor = -1
+            os.fchmod(handle.fileno(), 0o644)
+            handle.write(json.dumps({"_meta": meta}, separators=(",", ":")) + "\n")
+            for row in rows:
+                handle.write(json.dumps(row, separators=(",", ":")) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    except BaseException:
+        if descriptor >= 0:
+            os.close(descriptor)
+        path.unlink(missing_ok=True)
+        raise
+
+
+def _synapse_meta(meta: dict) -> dict:
+    keys = (
+        "schema",
+        "generated_at",
+        "generation_id",
+        "base_generated_at",
+        "base_snapshot_id",
+        "prov",
+    )
+    return {key: meta[key] for key in keys if key in meta} | {
+        "counts": meta["counts"]
+    }
+
+
+def _review_meta(meta: dict, review: list[dict]) -> dict:
+    rule_counts = Counter(row["rule"] for row in review)
+    return {
+        "schema": "brain/SCHEMA.md#v3",
+        "generated_at": meta["generated_at"],
+        **({"generation_id": meta["generation_id"]}
+           if "generation_id" in meta else {}),
+        "note": "cells flagged as tagger-quality worklist items: rule-2 "
+                "absorptions and rule-1 exact welds; fix via "
+                "grounding_overrides.jsonl",
+        "counts": {
+            "flagged": len(review),
+            "rule2_absorption": rule_counts["rule2-absorption"],
+            "rule1_exact_weld": rule_counts["rule1-exact-weld"],
+        },
+    }
+
+
+def build(
+    *,
+    do_layout: bool = True,
+    attach_kinds: tuple[str, ...] = ATTACH,
+    links_path: Path | None = None,
+    input_paths: CellInputPaths | None = None,
+    strict_inputs: bool = False,
+    layout_iterations: int = 200,
+    generated_at: str | None = None,
+    generation_id: str | None = None,
+) -> tuple[list[dict], list[dict], dict, list[dict]]:
+    paths = input_paths or _legacy_input_paths()
+    if links_path is not None:
+        paths = replace(paths, edges_links=Path(links_path))
     stats: Counter = Counter()
     prov = Prov()
 
     print("reading organ layer…", file=sys.stderr)
-    nodes = {n["id"]: n for n in _iter_jsonl(NODES_IN)}
+    nodes = {
+        node["id"]: node
+        for node in _iter_jsonl(paths.nodes, required=strict_inputs)
+    }
     edges_by_kind: dict[str, list] = defaultdict(list)
-    for edge in _iter_jsonl(EDGES_IN):
+    for edge in _iter_jsonl(paths.edges, required=strict_inputs):
         edges_by_kind[edge["kind"]].append(edge)
     print(f"  {len(nodes)} organs, "
           f"{sum(len(v) for v in edges_by_kind.values())} edges", file=sys.stderr)
 
-    overrides = load_overrides()
+    overrides = load_overrides(
+        paths.grounding_overrides,
+        required=strict_inputs and paths.grounding_overrides is not None,
+    )
     apply_overrides(edges_by_kind["formalizes"], overrides, stats)
-    rejected = load_rejected()
-    qbonds = queue_bonds(nodes, rejected, stats, overrides)
+    rejected = _load_rejected(
+        cut_log_path=paths.bot_cut_log,
+        discovery_rejected_path=paths.discovery_rejected,
+        strict=strict_inputs,
+    )
+    queue_items = _load_tag_queue(paths.queue_paths(), strict=strict_inputs)
+    qbonds = queue_bonds(
+        nodes, rejected, stats, overrides, queue_items=queue_items
+    )
     print(f"  tag queue: {stats['queue_bonded']} bonded, "
           f"{stats['queue_rejected']} rejected, "
           f"{stats['queue_unresolved_decl']} unresolved, "
@@ -991,7 +1193,8 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
     print("aggregating synapses…", file=sys.stderr)
     synapses = build_synapses(cells, owner, edges_by_kind, co_claims, merged_pairs,
                               stats, prov, supercells=set(supercell_organs),
-                              links_path=links_path)
+                              links_path=paths.edges_links,
+                              links_required=strict_inputs)
     print(f"  {len(synapses)} synapses", file=sys.stderr)
 
     review = cell_review(cells, nodes, stats)
@@ -1000,13 +1203,18 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
     if do_layout:
         from layout import layout_cells  # local import: numpy only needed for layout
         print("laying out (build-time force sim)…", file=sys.stderr)
-        layout_cells(cells, synapses)
+        layout_cells(cells, synapses, iterations=layout_iterations)
 
     rows = [cells[k] for k in sorted(cells)]
-    base_meta = _jsonl_meta(NODES_IN)
+    base_meta = _jsonl_meta(paths.nodes)
     meta = {
         "schema": "brain/SCHEMA.md#v3",
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": (
+            generated_at
+            if generated_at is not None
+            else datetime.now(timezone.utc).isoformat(timespec="seconds")
+        ),
+        **({"generation_id": generation_id} if generation_id is not None else {}),
         "base_generated_at": base_meta.get("generated_at"),
         **({"base_snapshot_id": base_meta["snapshot_id"]}
            if base_meta.get("snapshot_id") else {}),
@@ -1024,22 +1232,133 @@ def build(*, do_layout: bool = True, attach_kinds: tuple[str, ...] = ATTACH,
     return rows, synapses, meta, review
 
 
-def main() -> None:
+def _require_context_file(path: Path, label: str) -> Path:
+    try:
+        mode = path.lstat().st_mode
+    except OSError as exc:
+        raise BuildContextError(f"cells input {label!r} is unavailable: {path}") from exc
+    if stat.S_ISLNK(mode) or not stat.S_ISREG(mode):
+        raise BuildContextError(f"cells input {label!r} is not a regular file: {path}")
+    return path
+
+
+def _context_input_paths(context: BuildContext) -> CellInputPaths:
+    paths = CellInputPaths(
+        nodes=context.dependency_output_for(
+            STAGE_ID, "base-graph", "brain/data/nodes.jsonl"
+        ),
+        edges=context.dependency_output_for(
+            STAGE_ID, "base-graph", "brain/data/edges.jsonl"
+        ),
+        edges_links=context.dependency_output_for(
+            STAGE_ID, "base-graph", "brain/data/edges_links.jsonl"
+        ),
+        grounding_overrides=context.optional_one("grounding-overrides"),
+        discovery_rejected=context.optional_one("brain-discovery-rejected"),
+        bot_cut_log=context.optional_one("bot-cut-log"),
+        bot_seed_queue=context.optional_one("bot-seed-queue"),
+        bot_recycle_queue=context.optional_one("bot-recycle-queue"),
+        bot_brain_queue=context.optional_one("bot-brain-queue"),
+        bot_pool_candidates=context.optional_one("bot-pool-candidates"),
+    )
+    for label in ("nodes", "edges", "edges_links"):
+        _require_context_file(getattr(paths, label), label)
+    for label in (
+        "grounding_overrides",
+        "discovery_rejected",
+        "bot_cut_log",
+        "bot_seed_queue",
+        "bot_recycle_queue",
+        "bot_brain_queue",
+        "bot_pool_candidates",
+    ):
+        path = getattr(paths, label)
+        if path is not None:
+            _require_context_file(path, label)
+    return paths
+
+
+def build_cells_from_context(context: BuildContext) -> tuple[Path, ...]:
+    """Build and publish the sealed cells stage without ambient path discovery."""
+    context.require_stage(
+        STAGE_ID,
+        program=STAGE_PROGRAM,
+        argv=STAGE_ARGV,
+        needs=STAGE_NEEDS,
+        outputs=STAGE_OUTPUTS,
+    )
+    input_paths = _context_input_paths(context)
+    outputs = tuple(
+        context.output_for(STAGE_ID, relative) for _kind, relative in STAGE_OUTPUTS
+    )
+    assert_outputs_absent(outputs)
+    require_same_filesystem(context.roots.scratch, context.roots.output)
+
+    cells, synapses, meta, review = build(
+        do_layout=context.configuration.layout_enabled,
+        attach_kinds=context.configuration.cell_attach_kinds,
+        input_paths=input_paths,
+        strict_inputs=True,
+        layout_iterations=context.configuration.layout_iterations,
+        generated_at=context.generation_id,
+        generation_id=context.generation_id,
+    )
+    documents = (
+        (_review_meta(meta, review), review),
+        (meta, cells),
+        (_synapse_meta(meta), synapses),
+    )
+    output_parent = outputs[0].parent
+    if any(output.parent != output_parent for output in outputs):
+        raise BuildContextError("cells outputs must share one directory")
+    # Keep publication as the final fallible operation in sealed mode.
+    print(json.dumps(meta["counts"], indent=1), file=sys.stderr)
+    print(
+        "writing "
+        + " + ".join(str(path.relative_to(context.roots.output)) for path in outputs),
+        file=sys.stderr,
+    )
+    ensure_private_directory(context.roots.output, output_parent)
+    scratch = context.scratch_for(STAGE_ID, "publish")
+    with owned_directory(context.roots.scratch, scratch) as ownership:
+        publications = []
+        for output, (artifact_meta, rows) in zip(outputs, documents):
+            staged = scratch / output.name
+            _write_jsonl_exclusive(staged, artifact_meta, rows)
+            publications.append((staged, output))
+        require_same_filesystem(scratch, output_parent)
+        publish_files_no_replace(publications, scratch=ownership)
+    return outputs
+
+
+def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--no-layout", action="store_true",
                     help="skip the build-time force sim (fast iteration)")
     ap.add_argument("--stats", action="store_true", help="print the stats table and exit")
-    ap.add_argument("--attach", default=",".join(ATTACH),
+    ap.add_argument("--attach",
                     help="match_kinds that may attach a home-less concept (SCHEMA rule 2); "
                          "the excluded ones become synapses instead. "
                          f"choose from: {', '.join(ATTACHABLE)}")
-    args = ap.parse_args()
+    ap.add_argument("--build-context", type=Path)
+    ap.add_argument("--stage-id")
+    args = ap.parse_args(argv)
+
+    if args.build_context is not None or args.stage_id is not None:
+        if args.build_context is None or args.stage_id is None:
+            ap.error("--build-context and --stage-id must be provided together")
+        if args.stage_id != STAGE_ID:
+            ap.error(f"this reducer only supports context stage {STAGE_ID!r}")
+        if args.no_layout or args.stats or args.attach is not None:
+            ap.error("context mode forbids --no-layout, --stats, and --attach")
+        build_cells_from_context(BuildContext.load(args.build_context))
+        return
 
     # Validate: an unknown kind used to be accepted silently (and quietly build a
     # DIFFERENT graph), while a real-but-unranked kind raised a bare KeyError deep
     # in merge(). Widening the merge set is a contract change — fail loudly here.
-    attach_kinds = tuple(k for k in args.attach.split(",") if k)
+    attach_kinds = tuple(k for k in (args.attach or ",".join(ATTACH)).split(",") if k)
     unknown = [k for k in attach_kinds if k not in ATTACH_RANK]
     if unknown:
         ap.error(f"--attach: unknown match_kind(s) {unknown}; "
@@ -1051,24 +1370,8 @@ def main() -> None:
         return
 
     write_jsonl(CELLS_OUT, meta, cells)
-    synapse_meta_keys = (
-        "schema", "generated_at", "base_generated_at", "base_snapshot_id", "prov"
-    )
-    write_jsonl(
-        SYNAPSES_OUT,
-        {k: meta[k] for k in synapse_meta_keys if k in meta}
-        | {"counts": meta["counts"]},
-        synapses,
-    )
-    rule_counts = Counter(r["rule"] for r in review)
-    write_jsonl(REVIEW_OUT, {"schema": "brain/SCHEMA.md#v3",
-                             "generated_at": meta["generated_at"],
-                             "note": "cells flagged as tagger-quality worklist items: "
-                                     "rule-2 absorptions and rule-1 exact welds; fix "
-                                     "via grounding_overrides.jsonl",
-                             "counts": {"flagged": len(review),
-                                        "rule2_absorption": rule_counts["rule2-absorption"],
-                                        "rule1_exact_weld": rule_counts["rule1-exact-weld"]}}, review)
+    write_jsonl(SYNAPSES_OUT, _synapse_meta(meta), synapses)
+    write_jsonl(REVIEW_OUT, _review_meta(meta, review), review)
     print(json.dumps(meta["counts"], indent=1), file=sys.stderr)
     print(f"wrote {CELLS_OUT.relative_to(ROOT)} + {SYNAPSES_OUT.relative_to(ROOT)}"
           f" + {REVIEW_OUT.relative_to(ROOT)}", file=sys.stderr)
