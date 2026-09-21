@@ -50,16 +50,20 @@ frozen release store automatically. Machine-readable release, SQLite, and public
 stage metrics are written under `site/out/`. Logs live in
 `site/ops/logs/brain-<ts>.log`; lock `.lock.brain.d` is never stolen based on age. If it
 remains after a crash, first prove no Brain job owns it, then remove that exact directory
-manually. A private mode-0700 `.brain-run.*` directory holds only the request plan and
-captured acquirer stdout; normal cleanup removes those known files, while unexpected residue
-is deliberately retained for inspection. Content-addressed entity bundles persist under
+manually. A private mode-0700 `.brain-run.*` directory holds the digest-verified copy of the
+reviewed observation plan, the proposal request plan, and captured acquirer stdout; normal
+cleanup removes those known files, while unexpected residue is deliberately retained for
+inspection. Content-addressed entity bundles persist under
 `catalog/.cache/wikidata/entity-bundles/`. Their directory ID binds the exact canonical
 receipt and lineage bytes, including audit clocks; clock-free receipt/lineage logical IDs
 remain stable across an unchanged re-acquisition, while the fresh evidence generation gets
 a distinct immutable directory and freshness timestamp.
-The Brain job also requires Python 3.12+ and an explicit readable
-`BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`. Put host-local
-paths in the gitignored `site/ops/nightly.local.env`; see the runbook.
+The Brain job also requires Python 3.12+, an explicit readable
+`BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`, and an explicit
+readable `WIKILEAN_WIKIDATA_OBSERVATION_PLAN=/absolute/path/to/reviewed-plan.json`
+whose reviewed bytes match `WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256=<64hex>`.
+Put host-local paths and the digest in the gitignored `site/ops/nightly.local.env`;
+see the runbook.
 The Wikidata acquirer strips proxy configuration and forces direct HTTPS. A proxy-only host
 will fail closed, so verify direct egress to `www.wikidata.org` before relying on a scheduled
 non-empty plan. Responses are individually capped, but aggregate transcript generation and
@@ -96,25 +100,34 @@ SQLite measurement, requires an externally anchored non-self semantic baseline, 
 re-verifies the retained
 dry-run bytes plus the entire non-Brain public baseline. Verification requires the
 referenced companion retained-artifact root. These commands do not deploy.
-Generating the first real bundle remains blocked until Jack merges P1A onto `main` and
-authorizes the launch-context Mathlib and interpreter paths; see the release runbook.
+For an absent production selector, the P1B dry-run records the explicit
+`--allow-first-deploy-without-selector` topology exception but forbids an approval string.
+Jack supplies `--first-deploy-approval` only during P1C execution, after reviewing the
+frozen evidence IDs and deployment window.
+P1A is merged on `main`. Generating the first real bundle remains blocked until Jack
+authorizes the launch-context Mathlib checkout, Wikidata observation plan, interpreter
+paths, and external evidence stores; see the release runbook.
 
 ## Install the three nightly jobs
 ```sh
-# First copy/edit the gitignored host-local config. Python and both Mathlib
-# settings must be absolute; the check runs from / with launchd-like isolation.
+# First copy/edit the gitignored host-local config. Python, both Mathlib settings,
+# and the Wikidata observation plan must be absolute. Its lowercase SHA-256 must
+# match the reviewed bytes; the check runs from / with launchd-like isolation.
 cp site/ops/nightly.local.env.example site/ops/nightly.local.env
 python3 site/ops/nightly-launchd.py check
 python3 site/ops/nightly-launchd.py install
 
-# The installer seals the exact version-checked Python path into every plist,
-# including when it was auto-discovered from this checkout's .venv.
+# The installer seals the exact version-checked Python path into every plist and
+# the reviewed observation-plan path and SHA-256 into the Brain plist. Switching
+# plan paths or bytes requires rerunning check/install.
 
 # Equivalent one-time explicit path overrides are sealed into the rendered
 # plists (no token is ever written there):
 # python3 site/ops/nightly-launchd.py install \
 #   --python /absolute/path/to/python3 \
-#   --mathlib /absolute/path/to/mathlib4
+#   --mathlib /absolute/path/to/mathlib4 \
+#   --wikidata-observation-plan /absolute/path/to/reviewed-plan.json \
+#   --wikidata-observation-plan-sha256 <64-lowercase-hex>
 
 # Installation only writes validated absolute plists; loading remains an
 # explicit operator action.

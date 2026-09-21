@@ -411,5 +411,6 @@ the seven compatibility paths: `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`
 `cells.jsonl`, `synapses.jsonl`, `frontier.jsonl`, and `frontier_graph.json`. Complete
 release verification separately covers SQLite and release-coupled static artifacts.
 Tooling completion is not activation: generating the first P1B bundle remains blocked on
-Jack merging P1A to `main` and authorizing the host Mathlib/interpreter paths, and P1C still
+Jack authorizing the host Mathlib checkout, reviewed Wikidata observation plan,
+interpreter paths, and external evidence stores. P1A is merged on `main`; P1C still
 requires separate deployment approval.

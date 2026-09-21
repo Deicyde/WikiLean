@@ -84,7 +84,7 @@ SOURCE_ATTESTATION_SCHEMA = "wikilean.public-asset-source-attestation/v1"
 METRICS_SCHEMA = "wikilean.brain.store-metrics.v1"
 PUBLIC_RESULT_SCHEMA = "wikilean.public-build-result/v1"
 PUBLIC_STAGE_SCHEMA = "wikilean.public-stage-result/v2"
-DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v1"
+DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v2"
 MANIFEST_NAME = "manifest.json"
 MAX_JSON_BYTES = 64 * 1024 * 1024
 COPY_BUFFER_BYTES = 1024 * 1024
@@ -1553,11 +1553,9 @@ def _validate_promoter_intent(
         {"schema", "ok", "attempt_id", "proposed_intent", "production_mutated"},
         "promoter dry-run",
     )
-    if (
-        dry_run.get("schema") != DRY_RUN_SCHEMA
-        or dry_run.get("ok") is not True
-        or dry_run.get("production_mutated") is not False
-    ):
+    if dry_run.get("schema") != DRY_RUN_SCHEMA:
+        raise BundleValidationError("promoter dry-run schema mismatch")
+    if dry_run.get("ok") is not True or dry_run.get("production_mutated") is not False:
         raise BundleValidationError("promoter dry-run is not a successful non-mutating result")
     attempt_id = _require_string(dry_run.get("attempt_id"), "promoter dry-run attempt_id")
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", attempt_id) is None:
@@ -1851,16 +1849,16 @@ def _validate_promoter_intent(
     _require_string(intent.get("trust_source"), "promoter trust_source")
     approval_note = intent.get("approval_note")
     if approval_note is not None:
-        _require_string(approval_note, "promoter approval_note")
+        raise BundleValidationError(
+            "promoter dry-run must not contain an execution approval note"
+        )
     first_deploy = _require_bool(
         intent.get("first_deploy_exception"), "promoter first_deploy_exception"
     )
     first_approval = intent.get("first_deploy_approval")
-    if first_deploy:
-        _require_string(first_approval, "promoter first_deploy_approval")
-    elif first_approval is not None:
+    if first_approval is not None:
         raise BundleValidationError(
-            "promoter first_deploy_approval requires the recorded exception"
+            "promoter dry-run must not contain first-deploy approval"
         )
     if (selector_status == 404) != first_deploy:
         raise BundleValidationError(

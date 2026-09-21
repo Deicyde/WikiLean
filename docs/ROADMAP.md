@@ -233,9 +233,10 @@ two isolated candidate builds, review semantic parity, and finalize the attestat
 - [x] Fix Python TLS trust for the canary using a maintained CA source (`truststore` or
   `certifi`); never disable certificate verification. Run a transport preflight with the
   same opener before invoking Wrangler. HTTP 200 proves the normal path. A missing selector
-  is accepted only with `--allow-first-deploy-without-selector`, Jack's approval for that
-  exact window, and the exception recorded in the intent journal. TLS, DNS, and timeout failures
-  fail closed.
+  is admitted during P1B dry-run only with `--allow-first-deploy-without-selector` and no
+  approval string. P1C execution additionally requires Jack's approval for that exact
+  release and window; the approval and exception are fsynced in the intent journal before
+  mutation. TLS, DNS, and timeout failures fail closed.
 - [x] Add failure-injection tests for exact-ID mismatch, dirty/wrong Git authority,
   unattested public bytes, incomplete index families, selector/version races, Wrangler
   returning nonzero after a possible remote commit, interrupted child-process cleanup,
@@ -275,9 +276,11 @@ before deployment.
   bytes before and immediately before publication. Verification also proves the complete
   retained non-Brain public file closure equals the immutable baseline and refuses to pass
   if this companion root is unavailable.
-- [ ] **Jack prerequisite:** review and merge the final Phase 1/P1A pull request onto a
-  clean `main`, and authorize the read-only Mathlib checkout plus Git/Node/npm/Python
-  executable paths used by the launch job.
+- [x] **P1A merge prerequisite:** the final Phase 1/P1A tooling was reviewed and merged
+  onto `main` in PR #32. This did not authorize a production activation.
+- [ ] **Jack host-context prerequisite:** authorize the read-only Mathlib checkout, reviewed
+  canonical Wikidata observation plan plus its SHA-256, and Git/Node/npm/Python executable
+  paths used by the launch job.
 - [ ] Provision and verify those paths plus gitignored `site/ops/nightly.local.env` in the
   same launch context used by the job, including the external retained-dry-run and
   activation-bundle stores and the approved absolute Git/Node/npm/Python executables. Keep
@@ -313,8 +316,10 @@ before deployment.
   static artifacts. A sealed `brain/data` comparison is partial supplemental evidence only;
   it cannot satisfy activation-bundle freeze or P0-R semantic parity.
 - [ ] Run the exact promoter through local verification and transport dry-run with
-  `--retain-dry-run-store`, then review its proposed intent and retain the referenced
-  content-addressed execution-artifact root without invoking a mutating Wrangler command.
+  `--retain-dry-run-store`, adding `--allow-first-deploy-without-selector` only while the
+  production selector is absent. P1B dry-run forbids a first-deploy approval string. Review
+  its proposed intent and retain the referenced content-addressed execution-artifact root
+  without invoking a mutating Wrangler command.
 - [ ] Generate the verified two-worktree context, assemble all 11 evidence files, freeze
   them under `WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`, and independently run
   `brain_activation_bundle.py verify` with both the expected bundle ID and reviewed prior
@@ -326,8 +331,10 @@ production has not changed.
 
 #### P1C — production activation and rollback drill `[JACK GATE]`
 
-- [ ] Jack approves the exact release A ID, exclusive deployment window, journal location,
-  and (only if applicable) the first-deploy missing-selector exception.
+- [ ] Jack approves the exact release A ID, manifest digest, baseline and activation-bundle
+  IDs/roots, exclusive deployment window, journal location, and (only if applicable) the
+  first-deploy missing-selector exception. This approval is supplied only at execution,
+  after P1B review, and is fsynced before Wrangler can mutate production.
 - [ ] Promote release A through the manual-only recovery path and record end-to-end canary
   convergence. A first compatibility deployment does not by itself prove rollback.
 - [ ] Build and review exact release B. Jack separately approves B's exact ID and promotion
