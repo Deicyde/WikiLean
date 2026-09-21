@@ -1,5 +1,9 @@
 # Brain SQLite continuation — 2026-09-08
 
+> **Historical checkpoint only.** Use
+> [the 2026-09-19 handoff](BRAIN-SQLITE-HANDOFF-2026-09-19.md) for current state;
+> paths and live-process instructions below belong to the previous laptop.
+
 This is an operational checkpoint. `ROADMAP.md` remains the completion contract.
 The work is on `codex/brain-architecture-phase1`, continued from `509c6f65` in
 `/Users/jack/Desktop/LEAN/WikiLean-migration`. The main checkout was synchronized

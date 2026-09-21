@@ -156,112 +156,53 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-09-05)
+### Current Brain execution queue (updated 2026-09-19)
 
-**2026-09-08 continuation:** the live engineering checkpoint is
-[`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
-The final stopped-session status, live capture and newly found fold metadata blocker
-are in [the 2026-09-09 handoff](BRAIN-SQLITE-HANDOFF-2026-09-09.md); read it first.
-Real D1, Mathlib/oracle, Hugging Face, shared Wikidata/entity/crossref, derived
-catalog, Git harvest, nLab/Stacks, ProofWiki, EOM, OEIS, DLMF, LMFDB, PlanetMath
-and OpenAlex source exports are independently verified. Kerodon is the remaining
-full capture. The private source draft has 106 manifests and 41 of 43 complete
-input groups; its external aggregate groups await Kerodon. A sealed native Linux OCI image passed kernel/runtime checks,
-and the expanded Python suite passes 86 commands. P2A's bounded experimental
-assertion shadow also passes, including exact parity for 430 committed pilot
-contributions. No full pack, complete approved
-semantic baseline, full two-build result, release attestation or production
-activation exists. The historical implementation context below must not be read
-as a current claim that the completed captures or runtime preparation are absent.
-Combined preflight exposed an empty-object MIME conflict. A verified D1 exporter
-v2 preserves the original capture and normalized bytes; its new source IDs require
-refreshing derived catalog/fold generations and reacquiring the exact-parent
-OpenAlex observation. The catalog/fold replacements now verify independently with
-unchanged normalized graph bytes. The new citation capture had adequate free
-OpenAlex quota but stopped on an arXiv HTTP 429; its incomplete evidence is retained.
-Sealed fold export, an exact-ID folded-input inventory transition, standalone policy
-reviews, provenance coverage, a separate private replay qualification gate, and
-same-input legacy preparation/SQLite projection/release assembly are implemented
-and independently reviewed. Full native legacy execution and the complete source
-replacement remain pending. None of this tooling grants source, baseline or
-production approval. The current draft is preserved until replacement closure verifies.
+The current operational checkpoint is
+[`BRAIN-SQLITE-HANDOFF-2026-09-19.md`](BRAIN-SQLITE-HANDOFF-2026-09-19.md), and the
+review order and claims boundary are in
+[`BRAIN-SQLITE-PR-REVIEW.md`](BRAIN-SQLITE-PR-REVIEW.md). The 2026-09-08 continuation
+and 2026-09-09 handoff are historical only: their private paths, PID, quota date, and live
+capture instructions do not describe this laptop.
 
-P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
-remain production-inactive. The current commit intentionally has no
-`wiki/public-asset-source-attestation.json`, so public baseline freeze/verify fails closed
-until the first complete attestation is created and reviewed. Actual P1B evidence generation
-is blocked on Jack merging P1A onto `main` and authorizing the launch-context Mathlib and
-Git/Node/npm/Python paths. The next operational ticket is to produce and review one complete activation
-evidence bundle, including the immutable non-Brain public baseline, without changing
-production. In parallel, P0-R remains the main architecture workstream. Its first
-contract/input-closure tranche is implemented: versioned v2 source-manifest,
-offline-pack, reducer-input-inventory, and full-offline-replay build-attestation
-contracts describe the current seven-stage post-acquisition build DAG, explicit logical
-roots, and required-versus-absent inputs. All seven stages now consume the immutable runtime
-context: base graph, top-level shards, cells, SQLite-with-cells, frontier, cell shards, and
-the input-free Brain page. Bound normalized input and reducer bytes are copied into atomically
-published read-only views; builders use exact context bindings, predecessor outputs, source
-pins, reducer configuration, and the pack-derived generation identity rather than caller paths
-or environment configuration. Shared stage I/O provides deterministic private scratch,
-durable atomic no-replace publication for files and trees, rollback of partial multi-output
-publication, and cross-filesystem refusal.
+The branch is ready for reviewer attention as fail-closed architecture/tooling. At code tip
+`1bf1ac9f`, the fresh named gates passed: 872 Worker tests across 37 files and all 87 Python
+commands (the Python run took 1,285 seconds locally, validating the new 45-minute hosted
+timeout). The SQLite projection, immutable release closure,
+v2/v3 source and pack contracts, compiler/preflight, seven-stage replay, acquisition
+verifiers, dual-build harness, reproducibility-attestation contract, compatibility projectors,
+and P2A experimental shadow are implemented. Proposal/fold generation 2 now assigns one
+canonical `application/octet-stream` type to every zero-byte object while retaining exact
+generation-1 replay; the compiler's global alias rule remains strict. The legacy native driver
+has undergone independent audit. That review repaired both a read-only-parent failure and a
+cross-bind-mount `EXDEV` failure, closed its exact input/output and program overlays, and
+passed the 53-test legacy preparation/driver/projection/assembly family. The real seven-stage
+native Linux run remains a separate evidence step.
 
-The acquisition boundary now also has a sealed, read-only D1 snapshot command plus
-bundle-only community-edge and annotation-cache consumers. A shared independent verifier
-checks the bundle closure, exact CPython/local dependency and Node/Wrangler toolchain,
-receipt/lineage chain, normalized rows, and tombstones; neither consumer has a live-query or
-fixture bypass. The annotation mirror constructs the complete next cache off to the side,
-atomically exchanges it, and quarantines disk-only recovery copies outside the active
-selector. Scheduled graduation is disabled by default and requires an explicit absolute
-reviewed bundle path. Nightly LaunchAgents are generated from the current checkout after a
-sparse-environment preflight seals the exact Python and Mathlib paths; no tracked
-host-specific plist remains, and installation never loads or starts a job. A 2026-09-05
-production capture attempt stopped before issuing the query because no locally configured
-D1-read token was available; it created no snapshot store and made no production change.
+This laptop does not have the previous private evidence root or the required external Mathlib
+checkout. The old Kerodon PID is gone. The earlier private draft reportedly contained 106
+manifests and 41 of 43 input groups, but those bytes are not in Git and are not currently
+available here. OpenAlex/arXiv and Kerodon replacement evidence, a reviewed v3 source plan,
+the first real pack, final reducer/runtime binding, seven-stage legacy result, approved
+semantic baseline, two real full-corpus builds, concrete policy approval, and the final
+attestation all remain outstanding.
 
-Proposal folding now has the same explicit acquisition boundary for unknown Wikidata QIDs.
-`fold_proposals.py` first emits one canonical exact-QID request plan and never performs a
-network request; `acquire-wikidata-entities.sh` acquires that plan into a private,
-content-addressed bundle with exact request preimages, response transcript, pinned isolated
-CPython/curl policy, acquisition receipt, and normalization lineage; and a separate verifier
-replays the transcript and normalization before the fold may consume the bundle. Brain nightly
-skips acquisition for an empty plan, otherwise passes only the verified acquired bundle to the
-fold, and aborts every build/release step on planning, acquisition, path-validation, or fold
-failure. This closes the live-network fold path but does not yet bind the Wikidata receipt and
-lineage into the reviewed v3 current-corpus source plan. The legacy universe, relation-edge,
-and description jobs also remain separate live acquisitions rather than one shared sealed
-generation.
+**Merge-review boundary:** reviewers can merge the deterministic, production-inactive tooling
+after its code review and required gates are green. Merge does not satisfy P0-R's evidence or
+approval criteria and does not authorize live acquisition, production D1 writes, deployment,
+promotion, or authority cutover. P1B/P1C remain separate Jack-approved operations from a clean
+merged `main`; P2B and later remain blocked on P0-R, and Phase 3 must not start before the
+reviewed Phase 2 genesis.
 
-Receipt and normalization-lineage logical IDs remain clock-free, so byte-identical source
-content has the same semantic evidence identity. The published bundle directory instead uses
-an exact evidence-generation hash over the canonical receipt and lineage bytes, including
-their audit clocks. A later observation of unchanged upstream bytes therefore receives a new
-immutable target and can refresh v3 freshness without overwriting older evidence.
-
-Frontier replay no longer consumes the separately generated `manage/data/halo.json`.
-Its historical `mean_stateability` value is recomputed from the exact bound cells and
-synapses using the same ring-1 neighbor-fraction semantics. The current corpus keeps all 47
-areas, membership, proximity, suitability, ordering, and top-cell choices unchanged; only
-22 stateability summaries, the stateability input-count metadata field, and the reducer
-inventory identity change.
-
-`run_offline.py` now accepts fully verified v2 or v3 packs, prepares a fresh workspace, and
-delegates to the single fail-closed `run_replay_v2.py` executor. The executor re-verifies the
-sealed input and
-reducer closures, runs every inventory stage in order (including independent leaves), requires
-a supported OS isolation boundary with networking denied, and rejects undeclared output,
-scratch residue, or predecessor mutation. This is not yet a production reproducibility claim:
-there is no real full-corpus pack or complete two-build run. The native runtime is now
-pinned and its generated sandbox policy has passed strict kernel probes, as recorded
-in the continuation checkpoint. Linux no
-longer bind-mounts the host root: reducers see the exact prepared workspace, an empty temp
-directory, kernel-local `/proc` and `/dev`, and the selected runtime roots. Darwin grants
-reads only to the exact workspace, selected runtime roots, and Apple's standard system
-runtime profile; process forking and networking are denied. Current release creation
-therefore continues to use the v1 compatibility authority. P2A is a
-safe third, shadow-only workstream, but P2B and
-later wait for P0-R's source/build contracts. Do not start a Phase 3 D1 schema cutover
-until all Phase 2 contracts and the reviewed genesis are complete.
+**Immediate queue:** (1) review the scoped Brain SQLite stack beginning with
+[#18](https://github.com/Deicyde/WikiLean/pull/18), following the exact order and merge
+protocol in [BRAIN-SQLITE-PR-REVIEW.md](BRAIN-SQLITE-PR-REVIEW.md); the retargeted
+[#17](https://github.com/Deicyde/WikiLean/pull/17) is patch 15/15, not an aggregate diff;
+(2) recover or reacquire immutable private evidence, including Kerodon, OpenAlex/arXiv and
+Mathlib/oracle; (3) regenerate proposal/fold generation 2 and the
+portable Mathlib metadata, then review the complete v3 source plan and policies; (4) bind the
+final reducer to a verified environment, compile the real pack, run the legacy baseline and
+two isolated candidate builds, review semantic parity, and finalize the attestation.
 
 #### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; NOT ACTIVATED]`
 
@@ -495,6 +436,12 @@ explicit approval.
     no-replace rename into a private content-addressed store. Logical receipt/lineage IDs are
     clock-free, while the bundle target binds the exact audit-bearing evidence generation.
     Failures preserve every fold output byte.
+  - [x] Version the proposal/fold exporter to generation 2 and canonicalize every zero-byte
+    raw, normalized, and support object as `application/octet-stream`. Historical generation
+    1 profiles and exports remain exactly verifiable, while generation 2 removes the retained
+    fold's NDJSON/octet-stream empty-object collision without weakening the pack compiler's
+    global digest/size/media alias rule. The real private fold must still be re-exported and
+    its new source identities bound into the reviewed current-corpus plan.
   - [x] Put that boundary on the Brain-nightly hard path. An empty plan skips acquisition;
     a non-empty plan must acquire successfully into the checkout-derived private store and pass
     strict returned-path validation before the bundle is passed explicitly to the fold.
@@ -680,12 +627,12 @@ explicit approval.
   - [ ] Author and review the current-corpus source plan, acquire a fresh canonical D1
     snapshot plus the missing Mathlib source tree, close the TheoremGraph/oracle revision
     pins, and add complete acquisition/normalization lineage before compilation.
-    The 2026-09-05 census found 43 inputs, 37 present, six absent, and 14/15 required
-    inputs present; 832 non-Mathlib files total 1,529,390,053 bytes (about 1.424 GiB).
-    The current D1 mirror is
-    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs now have exact
-    reviewed revisions but are not yet sealed into v3 receipt/lineage authority, and the
-    theorem-matching redistribution license is unresolved.
+    A private 2026-09-08 draft on the previous laptop reportedly reached 106 manifests and
+    41 of 43 input groups, but that evidence root and the external Mathlib checkout are absent
+    on this laptop. Recover and independently verify those immutable bytes or reacquire them;
+    do not infer evidence from the draft description. Hugging Face inputs have exact reviewed
+    revisions but still need v3 evidence binding, and concrete redistribution decisions,
+    including theorem-matching, remain unresolved.
   - [x] Add a bounded source-plan preflight that reports availability, selector membership,
     pin strength, freshness against a configured age threshold, redistribution policy, lineage
     evidence, and required free space without copying or hashing large payloads. Structural
@@ -724,6 +671,17 @@ explicit approval.
   replacing mtime/date pins intentionally changes provenance, require either a documented
   legacy-pin normalization comparison or an explicitly reviewed provenance-only migration
   report. Include fixtures for prior snippet-loss and fold/source-mismatch regressions.
+  - [x] Implement exact old-input preparation, schema-1-to-schema-2 SQLite projection,
+    comparison release assembly, and fixture-scale semantic checks without treating them as
+    baseline approval.
+  - [x] Close the native legacy-driver containment review. Independent audit repaired the
+    read-only parent and nested-bind `EXDEV` failures; exact old programs and data inputs are
+    overlaid read-only from a disjoint verified source, staging and `brain/data` share one
+    writable mount, all permitted Brain outputs are closed over, and the 53-test focused
+    family passes. This is driver/tooling verification, not a real baseline result.
+  - [ ] Run all seven old stages under the reviewed native Linux runtime from the real verified
+    pack, retain the complete launch evidence, and submit the result for semantic-baseline
+    approval.
 - [x] **Define a reproducibility attestation schema.** Record both build identities, pack
   and environment IDs, compared roots/digests, normalized provenance result, and pass/fail;
   the existing validation attestation is not a substitute.
@@ -741,15 +699,16 @@ explicit approval.
   - [ ] Complete the concrete full-pack policy decisions and release-specific
     provenance mapping, then rerun their verifiers on the real retained outputs.
 
-**Next P0-R implementation order:** (1) finish the remaining external captures and
-normalizers, review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
-Wikidata proposal/fold, Hugging Face, and remaining source evidence into the v3
-current-corpus plan; (2) preserve the completed native Linux OCI/dependency artifacts
-and strict kernel sandbox evidence, resealing if the trusted runner changes; (3) compile the first real pack and prove
-cross-object/source-revision coherence; (4) run the two-path adversarial clean-room gate
-against the approved semantic baseline; (5) review the concrete session and emit its
-separate reproducibility attestation. Network acquisition, live D1 snapshots, and
-proposal folding remain outside the replay boundary throughout.
+**Next P0-R implementation order:** (1) merge-review the fail-closed tooling after the named
+hermetic gates pass; (2) recover or reacquire the private evidence, finish Kerodon and
+OpenAlex/arXiv, restore the exact Mathlib/oracle tree, regenerate proposal/fold generation 2
+and portable Mathlib metadata, and approve the complete v3 source plan and policies; (3) bind
+the final reducer/legacy driver to freshly verified runtime and strict sandbox evidence;
+(4) compile the first real pack and prove cross-object/source-revision coherence; (5) run the
+seven-stage legacy baseline plus two-path adversarial clean-room gate, review semantic parity,
+and emit the separate reproducibility attestation. Network acquisition, live D1 snapshots,
+and proposal folding remain outside replay throughout. No merge or fixture result authorizes
+production activation.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
 touching files changes nothing; undeclared, missing-required, substituted, or silently
@@ -908,8 +867,10 @@ file ownership) + adversarial integration review + live smoke test.
   output. INCLUDED deliberately: site/cache/*.meta.json revid sidecars (5.4 MB —
   NOT reproducible; they pin which Wikipedia revision each article was annotated
   against). Secret scan run pre-commit: no values, only env-var name references.
-- [ ] Minor: bump actions/checkout + setup-node for the Node 24 runner migration
-  (GitHub deprecation notice; forced June 16, 2026 — low stakes, fold into next PR).
+- [x] **GitHub Actions Node 24 migration** — all official actions across CI, D1 backup,
+  and the Wikidata poller are pinned to exact current Node-24 release commits; configured
+  project Node versions are 22. The expanded 87-command Python job has a 45-minute bound,
+  while required CI still aggregates only the hermetic Worker and Python gates.
 
 **P0 asset pipeline note:** canonical sources are `site/assets/{script.js,review.css,
 style.css}` and `wiki/assets/editor.js`; `wiki/scripts/build-public.ts` copies them

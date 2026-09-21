@@ -72,11 +72,12 @@ The moderation job never acquires live D1 state itself and preserves the prior
 
 The proposal-entity bundle is not source-plan authority by itself. Its reviewed receipt,
 lineage, request preimages, and normalized object still need explicit v3 current-corpus plan
-binding. The legacy Wikidata universe, relation-edge, and description ingests also remain
-three separate live generations; replacing them with one shared sealed acquisition is still
-pending. Nightly remains shadow-only throughout and never promotes production.
+binding. Wikidata universe, relation-edge, and description ingestion now consumes one shared
+sealed observation generation, but a real reviewed generation and its current-corpus plan
+binding are still pending. Nightly remains shadow-only throughout and never promotes
+production.
 
-Run the 18 focused nightly shell tests after changing this gate:
+Run the focused nightly shell suite after changing this gate:
 
 ```sh
 python3 site/ops/test_brain_nightly.py
