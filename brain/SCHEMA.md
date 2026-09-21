@@ -739,22 +739,35 @@ catalog/data/external/<db>_links.jsonl  {"db","src","dst","context"}     # nativ
 ```
 
 First line =
-`{"_meta":{"db","fetched_at","source_pin","n_pages","n_links","pair_schema","pair_generation",...}}`.
+`{"_meta":{"db","source_pin","n_pages","n_links","n_links_resolved",`
+`"n_pages_dropped_bad_id","n_links_dropped_bad_id","pair_schema",`
+`"pair_generation",...}}`.
 New adapter runs always publish both files, including a metadata-only links file when the
 source has no links. `pair_generation` is a domain-separated hash of the database key and
-the ordered normalized page/link rows; acquisition timestamps and run counters do not
-affect it. A per-database lock, durable transaction journal, hard-linked prior generation,
+the ordered normalized page/link rows. The writer accepts only an explicit allowlist of
+source/content metadata, requires a nonempty `source_pin`, and refuses timestamps, retry/API
+counts, cache warmth, fetch budgets, environment knobs, or unknown fields. Operational
+telemetry is logged outside these normalized artifacts. A per-database lock, durable
+transaction journal, hard-linked prior generation,
 fsync ordering, and a pages-last commit point keep concurrent writers serialized and let
 readers use the prior complete generation after interruption or `SIGKILL`. Generated
 orphans, mixed generations, malformed rows, and unregistered explicitly bound sources fail
 closed. Legacy unsealed pairs remain readable only for migration; authoritative v3 packs
-must require sealed acquisition and normalization evidence. The physical files still carry
-`fetched_at` and other run metadata, so byte-level reproducibility cleanup remains pending.
+must require sealed acquisition and normalization evidence. The checked-in legacy files still
+carry old `fetched_at` and run fields; do not rewrite or treat them as authority until their
+source evidence is sealed.
 
 Adapters otherwise fail soft (failed fetch leaves the previous readable generation intact)
 and honor each source's rate limits / robots policy. `qid` is set ONLY from CC0 Wikidata
 property values (P4215/P2812/P6781/P7554/P7726/P829/P11497/P12987), never guessed — fuzzy
 anchoring is the agent team's job via `brain/proposals/` + `fold_proposals.py`.
+
+Standalone normalized JSONL inputs written through `brain/ingest/common.write_jsonl`
+(`formal_conjectures.jsonl`, `erdos_joins.jsonl`, `tauceti.jsonl`/user-repo harvests, and
+`external/arxiv_citations.jsonl`) likewise use a closed metadata allowlist. Their checked-in
+bytes contain source/license/revision and deterministic content counts, but no acquisition
+clock, API-call count, cache-state count, or run-local resolution/twin count. Such operational
+facts belong in future acquisition receipts rather than normalized source objects.
 
 ## Unsolved-problems frontier (formal-conjectures + erdosproblems.com)
 
