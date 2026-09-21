@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import concurrent.futures
+import copy
 import base64
 import json
 import os
@@ -141,6 +142,30 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
     def setUp(self) -> None:
         self.toolchain = fake_toolchain()
         self.tool = fake_tool(self.toolchain)
+
+    def test_reviewed_tool_generations_preserve_history_and_reject_mixes(self) -> None:
+        for wrapper, dependencies in verifier.REVIEWED_TOOL_GENERATIONS:
+            value = copy.deepcopy(self.toolchain)
+            value["wrapper"]["sha256"] = wrapper
+            value["local_dependencies"] = list(dependencies)
+            self.assertEqual(verifier._validate_toolchain(value), value)
+        for wrapper, dependencies in (
+            (verifier.LEGACY_ACQUIRER_WRAPPER_SHA256, verifier.LOCAL_DEPENDENCY_PINS),
+            (verifier.ACQUIRER_WRAPPER_SHA256, verifier.LEGACY_LOCAL_DEPENDENCY_PINS),
+        ):
+            value = copy.deepcopy(self.toolchain)
+            value["wrapper"]["sha256"] = wrapper
+            value["local_dependencies"] = list(dependencies)
+            with self.assertRaisesRegex(verifier.WikidataEntityBundleError, "generation pin mismatch"):
+                verifier._validate_toolchain(value)
+
+    def test_transitive_runtime_helper_is_bound_by_current_producer(self) -> None:
+        self.assertIn("brain/tools/execution_environment.py", {
+            record["path"] for record in acquire._local_dependency_records()
+        })
+        with mock.patch.object(acquire.contracts.execution_environment_contract,
+                               "__file__", "/unreviewed/execution_environment.py"):
+            self.assertIn("execution_environment", acquire._module_origin_mismatch())
 
     def publish(
         self,

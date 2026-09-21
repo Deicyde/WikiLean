@@ -28,7 +28,10 @@ from typing import Any
 MAX_SAFE_INTEGER = 9_007_199_254_740_991
 EXECUTION_ENVIRONMENT_SCHEMA = "wikilean.execution-environment/v1"
 EXECUTION_ENVIRONMENT_DOMAIN = "wikilean.execution-environment.v1"
+EXECUTION_ENVIRONMENT_SCHEMA_V2 = "wikilean.execution-environment/v2"
+EXECUTION_ENVIRONMENT_DOMAIN_V2 = "wikilean.execution-environment.v2"
 LIVE_PROBE_SCHEMA = "wikilean.execution-environment-probe/v1"
+LIVE_PROBE_SCHEMA_V2 = "wikilean.execution-environment-probe/v2"
 TRUSTED_RUNTIME_EVIDENCE_SCHEMA = "wikilean.trusted-runtime-evidence/v1"
 DEPENDENCY_LOCK_SCHEMA = "wikilean.python-dependency-lock/v1"
 DEVELOPMENT_HOST_PROFILE = "development-host"
@@ -812,11 +815,11 @@ def _validate_numpy_runtime_facts(value: Any) -> dict[str, Any]:
 def validate_live_probe_document(value: Any) -> dict[str, Any]:
     """Validate the strict document emitted by the in-sandbox probe."""
     probe = _object(value, "$", {"schema", "python", "numpy", "sqlite", "locale"})
-    if probe["schema"] != LIVE_PROBE_SCHEMA:
-        _fail("$.schema", f"expected {LIVE_PROBE_SCHEMA!r}")
+    if probe["schema"] not in {LIVE_PROBE_SCHEMA, LIVE_PROBE_SCHEMA_V2}:
+        _fail("$.schema", "expected a supported execution-environment probe schema")
     _validate_python(probe["python"])
     _validate_numpy_runtime_facts(probe["numpy"])
-    _validate_sqlite(probe["sqlite"])
+    _validate_sqlite(probe["sqlite"], version=2 if probe["schema"] == LIVE_PROBE_SCHEMA_V2 else 1)
     _validate_locale(probe["locale"])
     return probe
 
@@ -838,6 +841,7 @@ def probe_sqlite_runtime(
     extension_module: Any = None,
     connect: Callable[[str], Any] | None = None,
     file_digest: Callable[[str | os.PathLike[str]], tuple[str, int]] = secure_file_digest,
+    builtin_linkage_probe: Callable[..., dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Project SQLite facts from the loaded Python extension and live engine."""
     if sqlite_module is None:
@@ -880,19 +884,71 @@ def probe_sqlite_runtime(
             )
         options.append(row[0])
     extension_path = getattr(extension_module, "__file__", None)
-    if not isinstance(extension_path, (str, os.PathLike)):
-        raise ExecutionEnvironmentError("loaded _sqlite3 extension has no file path")
-    extension_digest, _byte_length = _file_digest_result(
-        file_digest(extension_path), "$.sqlite.extension_file"
-    )
     result = {
         "version": version_row[0],
         "source_id": version_row[1],
-        "extension_file_sha256": extension_digest,
         "compile_options": sorted(options),
     }
-    _validate_sqlite(result)
+    if isinstance(extension_path, (str, os.PathLike)):
+        extension_digest, _byte_length = _file_digest_result(
+            file_digest(extension_path), "$.sqlite.extension_file"
+        )
+        result["extension_file_sha256"] = extension_digest
+        _validate_sqlite(result)
+    else:
+        if (getattr(extension_module, "__name__", None) != "_sqlite3" or
+                getattr(getattr(extension_module, "__spec__", None), "origin", None) != "built-in" or
+                "_sqlite3" not in sys.builtin_module_names):
+            raise ExecutionEnvironmentError("loaded _sqlite3 extension has no file path and is not a verified builtin")
+        result["linkage"] = (builtin_linkage_probe or probe_builtin_sqlite_linkage)(
+            file_digest=file_digest
+        )
+        _validate_sqlite(result, version=2)
     return result
+
+
+def probe_builtin_sqlite_linkage(
+    *,
+    file_digest: Callable[[str | os.PathLike[str]], tuple[str, int]] = secure_file_digest,
+) -> dict[str, Any]:
+    """Hash the *loaded* owner of the builtin _sqlite3 initialization symbol.
+
+    CPython standalone builds can put both in libpython, not the executable.
+    Resolve PyInit__sqlite3 with dladdr instead of guessing sysconfig filenames.
+    Process-global sqlite3 symbols may belong to an unrelated system SQLite and
+    must not be used as evidence. Connected-engine facts remain separately bound.
+    Like v1's module digest, this does not claim an independent shared-library
+    closure; authoritative OCI binds that closure through the whole image digest.
+    No fictitious extension hash is minted.
+    """
+    import ctypes
+
+    if sys.platform != "darwin" and not sys.platform.startswith("linux"):
+        raise ExecutionEnvironmentError("builtin SQLite linkage probing requires Darwin or Linux dladdr")
+
+    class DlInfo(ctypes.Structure):
+        _fields_ = [("filename", ctypes.c_char_p), ("base", ctypes.c_void_p),
+                    ("symbol", ctypes.c_char_p), ("address", ctypes.c_void_p)]
+
+    try:
+        process = ctypes.CDLL(None)
+        dladdr = process.dladdr
+        dladdr.argtypes = [ctypes.c_void_p, ctypes.POINTER(DlInfo)]
+        dladdr.restype = ctypes.c_int
+        initializer = process.PyInit__sqlite3
+        def owner_digest(function: Any, label: str) -> str:
+            info = DlInfo()
+            if not dladdr(ctypes.cast(function, ctypes.c_void_p), ctypes.byref(info)) or not info.filename:
+                raise ExecutionEnvironmentError(f"cannot resolve loaded binary for {label}")
+            path = Path(os.fsdecode(info.filename))
+            if not path.is_absolute():
+                raise ExecutionEnvironmentError(f"loaded binary for {label} has no absolute path")
+            digest, _size = _file_digest_result(file_digest(path.resolve(strict=True)), label)
+            return digest
+
+        return {"kind": "builtin", "module_owner_sha256": owner_digest(initializer, "PyInit__sqlite3")}
+    except (AttributeError, OSError, UnicodeError) as exc:
+        raise ExecutionEnvironmentError(f"cannot verify builtin SQLite loaded linkage: {exc}") from exc
 
 
 def probe_locale_runtime(
@@ -983,7 +1039,7 @@ def validate_live_environment_projection(value: Any) -> dict[str, Any]:
     _hash(runner["files_root"], "$.runner.files_root")
     _validate_python(projection["python"])
     _validate_numpy_runtime_facts(projection["numpy"])
-    _validate_sqlite(projection["sqlite"])
+    _validate_sqlite(projection["sqlite"], version=2 if isinstance(projection["sqlite"], dict) and "linkage" in projection["sqlite"] else 1)
     _validate_locale(projection["locale"])
     _validate_sandbox(projection["sandbox"], profile, operating_system)
     return projection
@@ -1018,7 +1074,7 @@ def probe_live_environment_projection(
     numpy = copy.deepcopy(numpy_probe())
     _validate_numpy_runtime_facts(numpy)
     sqlite = copy.deepcopy(sqlite_probe())
-    _validate_sqlite(sqlite)
+    _validate_sqlite(sqlite, version=2 if isinstance(sqlite, dict) and "linkage" in sqlite else 1)
     locale = copy.deepcopy(locale_probe())
     _validate_locale(locale)
     sandbox = copy.deepcopy(sandbox_probe())
@@ -1040,14 +1096,15 @@ def execution_environment_identity(environment: dict[str, Any]) -> str:
     """Derive the environment ID, excluding only the self-referential ID field."""
     if not isinstance(environment, dict):
         _fail("$", "expected an object")
-    if environment.get("schema") != EXECUTION_ENVIRONMENT_SCHEMA:
+    if environment.get("schema") not in {EXECUTION_ENVIRONMENT_SCHEMA, EXECUTION_ENVIRONMENT_SCHEMA_V2}:
         _fail(
             "$.schema",
             f"unknown execution-environment schema/version {environment.get('schema')!r}",
         )
     value = copy.deepcopy(environment)
     value.pop("environment_id", None)
-    return _domain_hash(EXECUTION_ENVIRONMENT_DOMAIN, value)
+    domain = EXECUTION_ENVIRONMENT_DOMAIN_V2 if environment["schema"] == EXECUTION_ENVIRONMENT_SCHEMA_V2 else EXECUTION_ENVIRONMENT_DOMAIN
+    return _domain_hash(domain, value)
 
 
 def _validate_runtime(value: Any, profile: str) -> tuple[str, str]:
@@ -1186,19 +1243,23 @@ def _validate_dependency_lock(value: Any) -> None:
         )
 
 
-def _validate_sqlite(value: Any) -> None:
+def _validate_sqlite(value: Any, *, version: int = 1) -> None:
     location = "$.sqlite"
     sqlite = _object(
         value,
         location,
-        {"version", "source_id", "extension_file_sha256", "compile_options"},
+        {"version", "source_id", "compile_options", "extension_file_sha256" if version == 1 else "linkage"},
     )
     _exact_version(sqlite["version"], f"{location}.version")
     _printable_ascii(sqlite["source_id"], f"{location}.source_id", max_length=512)
-    _digest(
-        sqlite["extension_file_sha256"],
-        f"{location}.extension_file_sha256",
-    )
+    if version == 1:
+        _digest(sqlite["extension_file_sha256"], f"{location}.extension_file_sha256")
+    else:
+        linkage = _object(sqlite["linkage"], f"{location}.linkage",
+                          {"kind", "module_owner_sha256"})
+        if linkage["kind"] != "builtin":
+            _fail(f"{location}.linkage.kind", "v2 requires builtin SQLite linkage")
+        _digest(linkage["module_owner_sha256"], f"{location}.linkage.module_owner_sha256")
     options = sqlite["compile_options"]
     if not isinstance(options, list) or not options:
         _fail(f"{location}.compile_options", "expected a non-empty array")
@@ -1320,7 +1381,7 @@ def validate_execution_environment(environment: Any) -> dict[str, Any]:
         "sandbox",
     }
     obj = _object(environment, "$", required)
-    if obj["schema"] != EXECUTION_ENVIRONMENT_SCHEMA:
+    if obj["schema"] not in {EXECUTION_ENVIRONMENT_SCHEMA, EXECUTION_ENVIRONMENT_SCHEMA_V2}:
         _fail(
             "$.schema",
             f"unknown execution-environment schema/version {obj['schema']!r}",
@@ -1336,7 +1397,7 @@ def validate_execution_environment(environment: Any) -> dict[str, Any]:
     _validate_runner(obj["runner"])
     _validate_python(obj["python"])
     _validate_dependency_lock(obj["dependency_lock"])
-    _validate_sqlite(obj["sqlite"])
+    _validate_sqlite(obj["sqlite"], version=2 if obj["schema"] == EXECUTION_ENVIRONMENT_SCHEMA_V2 else 1)
     _validate_locale(obj["locale"])
     _validate_sandbox(obj["sandbox"], profile, operating_system)
     expected = execution_environment_identity(obj)

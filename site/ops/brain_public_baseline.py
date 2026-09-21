@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import ctypes
+import errno
 import fcntl
 import hashlib
 import json
@@ -714,20 +716,95 @@ def _fsync_directory(path: Path) -> None:
 
 
 @contextlib.contextmanager
-def _store_lock(store: Path) -> Iterator[None]:
+def _store_lock(store: Path) -> Iterator[int]:
+    store_fd = os.open(store, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    store_info = os.fstat(store_fd)
     flags = os.O_RDWR | os.O_CREAT | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
-    descriptor = os.open(store / ".freeze.lock", flags, 0o600)
+    descriptor = -1
     try:
+        descriptor = os.open(".freeze.lock", flags, 0o600, dir_fd=store_fd)
         info = os.fstat(descriptor)
         if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid():
             raise BaselineFreezeError("baseline store lock is not a regular owner-owned file")
         if stat.S_IMODE(info.st_mode) != 0o600:
             raise BaselineFreezeError("baseline store lock permissions must be 0600")
         fcntl.flock(descriptor, fcntl.LOCK_EX)
-        yield
+        _verify_store_identity(store, store_fd, store_info)
+        yield store_fd
     finally:
-        with contextlib.suppress(OSError):
-            fcntl.flock(descriptor, fcntl.LOCK_UN)
+        if descriptor >= 0:
+            with contextlib.suppress(OSError):
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+            os.close(descriptor)
+        os.close(store_fd)
+
+
+def _directory_identity(info: os.stat_result) -> tuple[int, int, int]:
+    if not stat.S_ISDIR(info.st_mode):
+        raise BaselineFreezeError("publication entry must be a real directory")
+    return info.st_dev, info.st_ino, info.st_uid
+
+
+def _verify_directory_at(parent_fd: int, name: str, expected: os.stat_result) -> None:
+    actual = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    if _directory_identity(actual) != _directory_identity(expected):
+        raise BaselineFreezeError("publication directory inode or ownership changed")
+
+
+def _verify_store_identity(store: Path, descriptor: int, expected: os.stat_result) -> None:
+    opened = os.fstat(descriptor)
+    current = store.lstat()
+    if _directory_identity(opened) != _directory_identity(expected) or \
+            _directory_identity(current) != _directory_identity(expected):
+        raise BaselineFreezeError("baseline store inode or ownership changed")
+    if opened.st_uid != os.geteuid() or stat.S_IMODE(opened.st_mode) & 0o022:
+        raise BaselineFreezeError("baseline store ownership or write permissions changed")
+
+
+def _rename_no_replace(parent_fd: int, source: str, target: str) -> None:
+    """Use the kernel's exclusive rename, with no replacing fallback."""
+    library = ctypes.CDLL(None, use_errno=True)
+    if sys.platform == "darwin" and hasattr(library, "renameatx_np"):
+        rename, flag = library.renameatx_np, 0x00000004
+    elif sys.platform.startswith("linux") and hasattr(library, "renameat2"):
+        rename, flag = library.renameat2, 0x00000001
+    else:
+        raise BaselineFreezeError("platform lacks atomic no-replace directory publication")
+    rename.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+    rename.restype = ctypes.c_int
+    if rename(parent_fd, os.fsencode(source), parent_fd, os.fsencode(target), flag) == 0:
+        return
+    error = ctypes.get_errno()
+    if error in {errno.EEXIST, errno.ENOTEMPTY}:
+        raise FileExistsError(error, "publication destination already exists", target)
+    raise OSError(error, os.strerror(error), target)
+
+
+def _publish_no_replace(parent_fd: int, source: str, target: str) -> None:
+    """Publish a sealed directory; Darwin's writable root is never searchable."""
+    if any(not value or "/" in value or value in {".", ".."} for value in (source, target)):
+        raise BaselineFreezeError("publication names must be single path components")
+    descriptor = os.open(source, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent_fd)
+    try:
+        original = os.fstat(descriptor)
+        if original.st_uid != os.geteuid() or stat.S_IMODE(original.st_mode) != 0o555:
+            raise BaselineFreezeError("publication source must be owner-owned with mode 0555")
+        _verify_directory_at(parent_fd, source, original)
+        try:
+            if sys.platform == "darwin":
+                # Darwin requires root write permission to rename directories.
+                # Without search permission no member is readable at either
+                # name until this retained descriptor restores the seal.
+                os.fchmod(descriptor, 0o600)
+            _verify_directory_at(parent_fd, source, original)
+            _rename_no_replace(parent_fd, source, target)
+            _verify_directory_at(parent_fd, target, original)
+        finally:
+            if sys.platform == "darwin":
+                os.fchmod(descriptor, 0o555)
+            os.fsync(descriptor)
+            os.fsync(parent_fd)
+    finally:
         os.close(descriptor)
 
 
@@ -952,31 +1029,31 @@ def _seal_pending_tree(root: Path) -> None:
         _fsync_directory(path)
 
 
-def _remove_pending(path: Path) -> None:
-    if not path.exists() and not path.is_symlink():
+def _remove_owned_directory_at(parent_fd: int, name: str, expected: os.stat_result) -> None:
+    """Remove only the retained candidate inode, without following links."""
+    try:
+        current = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
         return
-    for current, dirnames, filenames in os.walk(path, topdown=False, followlinks=False):
-        current_path = Path(current)
-        with contextlib.suppress(OSError):
-            current_path.chmod(0o700)
-        for name in filenames:
-            child = current_path / name
-            with contextlib.suppress(OSError):
-                child.chmod(0o600)
-            with contextlib.suppress(OSError):
-                child.unlink()
-        for name in dirnames:
-            child = current_path / name
-            if child.is_symlink():
-                with contextlib.suppress(OSError):
-                    child.unlink()
+    if not stat.S_ISDIR(current.st_mode) or _directory_identity(current) != _directory_identity(expected):
+        return
+    descriptor = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent_fd)
+    try:
+        opened = os.fstat(descriptor)
+        if opened.st_uid != os.geteuid() or _directory_identity(opened) != _directory_identity(expected):
+            raise BaselineFreezeError("cleanup directory inode or ownership changed")
+        os.fchmod(descriptor, 0o700)
+        for child in os.listdir(descriptor):
+            before = os.stat(child, dir_fd=descriptor, follow_symlinks=False)
+            if stat.S_ISDIR(before.st_mode):
+                _remove_owned_directory_at(descriptor, child, before)
             else:
-                with contextlib.suppress(OSError):
-                    child.chmod(0o700)
-                with contextlib.suppress(OSError):
-                    child.rmdir()
-    with contextlib.suppress(OSError):
-        path.rmdir()
+                os.unlink(child, dir_fd=descriptor)
+        _verify_directory_at(parent_fd, name, expected)
+        os.rmdir(name, dir_fd=parent_fd)
+        os.fsync(parent_fd)
+    finally:
+        os.close(descriptor)
 
 
 def _open_baseline_file(root: Path, relative: str) -> tuple[int, os.stat_result]:
@@ -1345,9 +1422,14 @@ def freeze_public_baseline(
         raise BaselineValidationError("source public root and baseline store must not overlap")
 
     pending = store / f".pending-{os.getpid()}-{uuid.uuid4().hex}"
-    with _store_lock(store):
+    with _store_lock(store) as store_fd:
+        store_info = os.fstat(store_fd)
+        pending_info: os.stat_result | None = None
+        final: Path | None = None
         try:
-            pending.mkdir(mode=0o700)
+            os.mkdir(pending.name, mode=0o700, dir_fd=store_fd)
+            pending_info = os.stat(pending.name, dir_fd=store_fd, follow_symlinks=False)
+            _verify_store_identity(store, store_fd, store_info)
             files = _copy_source_tree(source, pending)
             _validate_required_payload(files)
             _validate_index_closure(pending, files)
@@ -1360,43 +1442,41 @@ def freeze_public_baseline(
             _validate_manifest(manifest)
             _write_manifest(pending / MANIFEST_NAME, manifest)
             _seal_pending_tree(pending)
+            _verify_directory_at(store_fd, pending.name, pending_info)
+            _verify_store_identity(store, store_fd, store_info)
 
             final = store / baseline_hex
-            if final.exists() or final.is_symlink():
-                existing = verify_public_baseline(
-                    final,
-                    repository,
-                    expected_baseline_id=baseline_id,
-                    expected_authority_git_commit=authority,
-                )
-                _remove_pending(pending)
-                return existing
             try:
-                os.rename(pending, final)
-                _fsync_directory(store)
-            except OSError as exc:
-                # A cooperating concurrent freezer may have won between the
-                # existence check and rename.  Accept only the exact artifact.
-                if final.exists() and not final.is_symlink():
-                    existing = verify_public_baseline(
-                        final,
-                        repository,
-                        expected_baseline_id=baseline_id,
-                        expected_authority_git_commit=authority,
-                    )
-                    _remove_pending(pending)
-                    return existing
-                raise BaselineFreezeError(
-                    f"cannot atomically publish baseline {baseline_id}: {exc}"
-                ) from exc
-            return verify_public_baseline(
+                _publish_no_replace(store_fd, pending.name, final.name)
+                final_info = pending_info
+            except FileExistsError:
+                # Only an exclusive-rename collision may reuse another
+                # candidate. Other failures must clean up our publication.
+                final_info = os.stat(final.name, dir_fd=store_fd, follow_symlinks=False)
+            _verify_store_identity(store, store_fd, store_info)
+            _verify_directory_at(store_fd, final.name, final_info)
+            verified = verify_public_baseline(
                 final,
                 repository,
                 expected_baseline_id=baseline_id,
                 expected_authority_git_commit=authority,
             )
-        except Exception:
-            _remove_pending(pending)
+            _verify_directory_at(store_fd, final.name, final_info)
+            _verify_store_identity(store, store_fd, store_info)
+            _remove_owned_directory_at(store_fd, pending.name, pending_info)
+            _verify_directory_at(store_fd, final.name, final_info)
+            _verify_store_identity(store, store_fd, store_info)
+            os.fsync(store_fd)
+            return verified
+        except BaseException as original_error:
+            if pending_info is not None:
+                for candidate in (pending, final):
+                    if candidate is None:
+                        continue
+                    try:
+                        _remove_owned_directory_at(store_fd, candidate.name, pending_info)
+                    except Exception as cleanup_error:
+                        original_error.add_note(f"baseline cleanup failed at {candidate.name}: {cleanup_error}")
             raise
 
 

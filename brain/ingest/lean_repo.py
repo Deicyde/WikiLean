@@ -3,7 +3,8 @@
 
 Parameterizes brain/ingest/formal_conjectures.py's harvest for an ARBITRARY
 public GitHub Lean repo: clone/pull a mirror checkout (outside WikiLean — never
-inside the repo), walk <Lib>/**/*.lean, and emit one row per declaration
+inside the repo), capture <Lib>/**/*.lean from one immutable Git commit, and
+emit one row per declaration
 (FQ name, module, decl kind, the @[category ..., AMS ...] attribute when
 present, /-- docstring -/, a statement-header code snippet, and every
 erdos/wikipedia/oeis reference URL the docstrings cite) — the exact row shape
@@ -40,6 +41,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import common                     # noqa: E402  (brain/ingest/common.py)
 import build_common               # noqa: E402  (brain/build_common.py — Lean parser)
 import formal_conjectures as fc   # noqa: E402  (shared decl-context helpers)
+import git_snapshot               # noqa: E402  (immutable committed source bytes)
 
 # GitHub owner/repo segments reach `git clone` and the filesystem, so REJECT
 # anything outside this strict allowlist before any subprocess/path use. The
@@ -122,9 +124,13 @@ def preflight_public_repo(owner: str, repo: str) -> None:
                          f"(cap {REPO_SIZE_CAP_KB // 1024} MB)")
 
 
-def ensure_checkout(owner: str, repo: str, checkout: Path) -> str:
-    """Clone or (at most daily) ff-pull the mirror; return the commit pin.
-    Fail-soft on network: an existing checkout is always usable as-is."""
+def ensure_checkout(owner: str, repo: str, checkout: Path) -> None:
+    """Clone or (at most daily) ff-pull the mirror.
+
+    Fail-soft on network: an existing checkout is always usable as-is.  The
+    exact commit pin is captured later, together with its source bytes, by
+    ``git_snapshot.read_text_snapshot``.
+    """
     validate_owner_repo(owner, repo)
     url = f"https://github.com/{owner}/{repo}.git"
     if not (checkout / ".git").exists():
@@ -139,34 +145,25 @@ def ensure_checkout(owner: str, repo: str, checkout: Path) -> str:
             if r.returncode != 0:
                 print(f"[lean_repo:{owner}/{repo}] pull failed (using existing "
                       f"checkout): {r.stderr.strip()[:200]}", file=sys.stderr)
-    out = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"],
-                         capture_output=True, text=True)
-    return out.stdout.strip()
 
 
-def harvest_rows(checkout: Path, lib: str) -> tuple[list[dict], int]:
-    """Every declaration under <checkout>/<lib>/ — same walk, decl context and
-    row shape as formal_conjectures.py's main loop."""
-    root = checkout / lib
-    if not root.is_dir():
-        raise RuntimeError(f"checkout has no {lib}/ source root at {checkout}")
+def harvest_rows(snapshot: git_snapshot.GitTextSnapshot,
+                 lib: str) -> tuple[list[dict], int]:
+    """Parse every declaration from one captured ``<lib>/**/*.lean`` snapshot.
+
+    The row shape and declaration-context parsing match
+    formal_conjectures.py's main loop.  Empty source selections are rejected
+    before any caller can write a normalized input.
+    """
+    if not snapshot.files:
+        raise RuntimeError(
+            f"{lib}: captured commit {snapshot.commit} contains no .lean files "
+            f"under {lib}/"
+        )
     rows: list[dict] = []
-    n_files = 0
-    croot = checkout.resolve()
-    for fp in sorted(root.rglob("*.lean")):
-        # A hostile repo can ship symlinks pointing outside the checkout; the
-        # harvest must never read (and later publish) anything but the repo's
-        # own files.
-        if fp.is_symlink() or not fp.resolve().is_relative_to(croot):
-            print(f"[lean_repo] skipping non-contained path {fp}", file=sys.stderr)
-            continue
-        rel = fp.relative_to(checkout).as_posix()
-        try:
-            lines = fp.read_text().splitlines()
-        except (OSError, UnicodeDecodeError) as e:
-            print(f"[lean_repo] unreadable {rel}: {e}", file=sys.stderr)
-            continue
-        n_files += 1
+    for source in snapshot.files:
+        rel = source.path
+        lines = source.text.splitlines()
         module = rel[:-len(".lean")].replace("/", ".")
         header = fc._module_docstring(lines)
         file_refs = fc._refs(header)
@@ -193,13 +190,16 @@ def harvest_rows(checkout: Path, lib: str) -> tuple[list[dict], int]:
                 f"{lib}: >{DECL_CAP} declarations — refusing to harvest past "
                 f"the per-repo cap (a deliberate cap raise beats a silent "
                 f"truncation)")
-    return rows, n_files
+    return rows, len(snapshot.files)
 
 
 def harvest_repo(key: str, owner: str, repo: str, lib: str,
                  checkout: Path, out: Path, license_note: str) -> None:
-    commit = ensure_checkout(owner, repo, checkout)
-    rows, n_files = harvest_rows(checkout, lib)
+    ensure_checkout(owner, repo, checkout)
+    snapshot = git_snapshot.read_text_snapshot(
+        checkout, scope=lib, suffixes=(".lean",)
+    )
+    rows, n_files = harvest_rows(snapshot, lib)
     if not rows:
         raise RuntimeError(f"{owner}/{repo}: harvested 0 declarations — "
                            f"refusing to write (fail-soft)")
@@ -209,12 +209,12 @@ def harvest_repo(key: str, owner: str, repo: str, lib: str,
         "repo": f"{owner}/{repo}",
         "lib": lib,
         "license": license_note,
-        "commit": commit,
+        "commit": snapshot.commit,
         "n_files": n_files,
         "n_decls": len(rows),
     }, rows)
     print(f"[lean_repo:{key}] wrote {len(rows)} decls from {n_files} files "
-          f"@ {commit[:12]} -> {out}", file=sys.stderr)
+          f"@ {snapshot.commit[:12]} -> {out}", file=sys.stderr)
 
 
 def user_repos_main() -> int:

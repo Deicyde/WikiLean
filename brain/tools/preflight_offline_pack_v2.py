@@ -655,6 +655,15 @@ def preflight_offline_pack_v2(
         raise PreflightError(str(exc)) from exc
     if inventory["inventory_id"] != plan["inventory_id"]:
         _fail("$.inventory_id", "does not match the verified reducer inventory")
+    try:
+        contracts.validate_inventory_coherence(
+            inventory,
+            plan["input_bindings"],
+            {source["source"]: source for source in plan["sources"]},
+            schema=plan["schema"],
+        )
+    except contracts.VerificationError as exc:
+        raise PreflightError(str(exc)) from exc
     plan_schema = plan["schema"]
     is_v3 = plan_schema == contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
 

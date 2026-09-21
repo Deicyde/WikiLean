@@ -58,6 +58,8 @@ def _module_origin_mismatch() -> str | None:
     reviewed = (
         ("authority_contracts", contracts, TOOLS / "authority_contracts.py"),
         ("stage_io", stage_io, BRAIN / "stage_io.py"),
+        ("execution_environment", contracts.execution_environment_contract,
+         TOOLS / "execution_environment.py"),
     )
     for name, module, expected in reviewed:
         origin = getattr(module, "__file__", None)
@@ -159,7 +161,12 @@ LOCAL_DEPENDENCIES = (
     (
         "brain/tools/authority_contracts.py",
         TOOLS / "authority_contracts.py",
-        "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
+        "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc",
+    ),
+    (
+        "brain/tools/execution_environment.py",
+        TOOLS / "execution_environment.py",
+        "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac",
     ),
 )
 

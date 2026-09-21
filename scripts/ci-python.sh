@@ -34,6 +34,9 @@ run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingfac
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
 run_check "Concept layer generation tests" "$PYTHON_BIN" catalog/test_build_concept_layer.py
 run_check "Normalized input metadata tests" "$PYTHON_BIN" brain/test_normalized_input_metadata.py
+run_check "Immutable Git snapshot tests" "$PYTHON_BIN" brain/test_git_snapshot.py
+run_check "Formal Conjectures and Erdos Git harvester tests" "$PYTHON_BIN" brain/test_git_harvesters_fc_erdos.py
+run_check "Generic Lean Git harvester tests" "$PYTHON_BIN" brain/test_git_harvester_lean_repo.py
 run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_snapshot.py
 run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikidata_entities.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
@@ -68,4 +71,4 @@ run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 43 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 46 commands passed; all required offline scenarios ran.\n'
