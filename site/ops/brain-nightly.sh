@@ -58,6 +58,15 @@ unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
 # win over a stale local file when an operator deliberately supplies overrides.
 LAUNCHD_PYTHON="${WIKILEAN_PYTHON:-}"
 LAUNCHD_BRAIN_MATHLIB="${BRAIN_MATHLIB_CHECKOUT:-}"
+LAUNCHD_WIKIDATA_OBSERVATION_PLAN="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}"
+LAUNCHD_WIKIDATA_OBSERVATION_PLAN_SHA256="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}"
+if { [ -n "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN" ] \
+      && [ -z "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN_SHA256" ]; } \
+    || { [ -z "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN" ] \
+      && [ -n "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN_SHA256" ]; }; then
+  printf 'brain-nightly: explicit WIKILEAN_WIKIDATA_OBSERVATION_PLAN and WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be supplied together\n' >&2
+  exit 1
+fi
 
 # Editable tunables live in site/ops/nightly.env (sourced with ":=" so a
 # one-off env override still wins). Host-local absolute paths belong in the
@@ -66,6 +75,10 @@ LAUNCHD_BRAIN_MATHLIB="${BRAIN_MATHLIB_CHECKOUT:-}"
 [ -f "$REPO/site/ops/nightly.local.env" ] && . "$REPO/site/ops/nightly.local.env"
 [ -n "$LAUNCHD_PYTHON" ] && WIKILEAN_PYTHON="$LAUNCHD_PYTHON"
 [ -n "$LAUNCHD_BRAIN_MATHLIB" ] && BRAIN_MATHLIB_CHECKOUT="$LAUNCHD_BRAIN_MATHLIB"
+[ -n "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN" ] \
+  && WIKILEAN_WIKIDATA_OBSERVATION_PLAN="$LAUNCHD_WIKIDATA_OBSERVATION_PLAN"
+[ -n "$LAUNCHD_WIKIDATA_OBSERVATION_PLAN_SHA256" ] \
+  && WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256="$LAUNCHD_WIKIDATA_OBSERVATION_PLAN_SHA256"
 
 # launchd's system Python is 3.9 on this host, below WikiLean's supported 3.12.
 # Select an explicit interpreter and fail before ingest/build work if it is not
@@ -109,6 +122,7 @@ BRAIN_REDUCER_VERSION="${WIKILEAN_BRAIN_REDUCER_VERSION:-1}"
 WIKIDATA_ENTITY_STORE="$REPO/catalog/.cache/wikidata/entity-bundles"
 WIKIDATA_OBSERVATION_STORE="$REPO/catalog/.cache/wikidata/observation-bundles"
 WIKIDATA_OBSERVATION_PLAN="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}"
+WIKIDATA_OBSERVATION_PLAN_SHA256="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}"
 # This run establishes its own exact generation after verification; inherited
 # selectors must never select a different installed bundle behind the gate.
 unset WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
@@ -147,6 +161,7 @@ cleanup() {
   trap - EXIT
   if [ -n "$RUN_DIR" ] && [ -d "$RUN_DIR" ]; then
     rm -f "$RUN_DIR/wikidata-request-plan.json" \
+          "$RUN_DIR/wikidata-observation-plan.json" \
           "$RUN_DIR/wikidata-acquire.stdout" \
           "$RUN_DIR/wikidata-observation.stdout" \
           "$RUN_DIR/wikidata-install.stdout"
@@ -208,6 +223,16 @@ if [ -z "$WIKIDATA_OBSERVATION_PLAN" ] \
   echo "[$TS] WIKILEAN_WIKIDATA_OBSERVATION_PLAN must name the explicit reviewed canonical observation plan" >>"$LOG"
   exit 1
 fi
+if [ "${#WIKIDATA_OBSERVATION_PLAN_SHA256}" -ne 64 ]; then
+  echo "[$TS] WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be 64 lowercase hexadecimal characters" >>"$LOG"
+  exit 1
+fi
+case "$WIKIDATA_OBSERVATION_PLAN_SHA256" in
+  *[!0-9a-f]*)
+    echo "[$TS] WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be 64 lowercase hexadecimal characters" >>"$LOG"
+    exit 1
+    ;;
+esac
 if ! RUN_DIR="$(mktemp -d "$LOGDIR/.brain-run.XXXXXX")"; then
   echo "[$TS] could not create private Brain run directory" >>"$LOG"
   exit 1
@@ -232,6 +257,27 @@ then
   echo "[$TS] private Brain run directory validation failed: $RUN_DIR" >>"$LOG"
   exit 1
 fi
+SEALED_WIKIDATA_OBSERVATION_PLAN="$RUN_DIR/wikidata-observation-plan.json"
+if ! cp "$WIKIDATA_OBSERVATION_PLAN" "$SEALED_WIKIDATA_OBSERVATION_PLAN" \
+    || ! chmod 0600 "$SEALED_WIKIDATA_OBSERVATION_PLAN"; then
+  echo "[$TS] could not seal WIKILEAN_WIKIDATA_OBSERVATION_PLAN=$WIKIDATA_OBSERVATION_PLAN" >>"$LOG"
+  exit 1
+fi
+if ! WIKIDATA_OBSERVATION_PLAN_ACTUAL_SHA256="$("$PYTHON_BIN" -I -c \
+    'import hashlib,sys; print(hashlib.file_digest(open(sys.argv[1], "rb"), "sha256").hexdigest())' \
+    "$SEALED_WIKIDATA_OBSERVATION_PLAN" 2>>"$LOG")"; then
+  echo "[$TS] could not hash the sealed Wikidata observation plan" >>"$LOG"
+  exit 1
+fi
+if [ "$WIKIDATA_OBSERVATION_PLAN_ACTUAL_SHA256" != "$WIKIDATA_OBSERVATION_PLAN_SHA256" ]; then
+  {
+    echo "[$TS] WIKILEAN_WIKIDATA_OBSERVATION_PLAN SHA-256 mismatch"
+    echo "    expected: $WIKIDATA_OBSERVATION_PLAN_SHA256"
+    echo "    actual:   $WIKIDATA_OBSERVATION_PLAN_ACTUAL_SHA256"
+  } >>"$LOG"
+  exit 1
+fi
+WIKIDATA_OBSERVATION_PLAN="$SEALED_WIKIDATA_OBSERVATION_PLAN"
 
 # Run an ingest/build python script fail-soft: a missing script (adapter not
 # landed yet) or a nonzero exit logs and CONTINUES — every adapter is

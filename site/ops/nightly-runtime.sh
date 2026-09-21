@@ -16,7 +16,9 @@ wikilean_ops_python_312() {
 
 wikilean_ops_init() {
   local mode runtime_dir required candidate configured_python token_file
-  local inherited_python inherited_mathlib inherited_brain_mathlib python_dir
+  local inherited_python inherited_mathlib inherited_brain_mathlib
+  local inherited_wikidata_observation_plan inherited_wikidata_observation_plan_sha256
+  local observation_plan_actual_sha256 observation_plan_dir python_dir
 
   mode="${1:-moderation}"
   case "$mode" in
@@ -29,6 +31,17 @@ wikilean_ops_init() {
   inherited_python="${WIKILEAN_PYTHON:-}"
   inherited_mathlib="${WIKILEAN_MATHLIB:-}"
   inherited_brain_mathlib="${BRAIN_MATHLIB_CHECKOUT:-}"
+  inherited_wikidata_observation_plan="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}"
+  inherited_wikidata_observation_plan_sha256="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}"
+  if [ "$mode" = "brain" ] || [ "$mode" = "all" ]; then
+    if { [ -n "$inherited_wikidata_observation_plan" ] \
+          && [ -z "$inherited_wikidata_observation_plan_sha256" ]; } \
+        || { [ -z "$inherited_wikidata_observation_plan" ] \
+          && [ -n "$inherited_wikidata_observation_plan_sha256" ]; }; then
+      wikilean_ops_error "explicit WIKILEAN_WIKIDATA_OBSERVATION_PLAN and WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be supplied together"
+      return 1
+    fi
+  fi
 
   runtime_dir="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)" \
     || { wikilean_ops_error "cannot resolve site/ops"; return 1; }
@@ -59,6 +72,10 @@ wikilean_ops_init() {
   [ -n "$inherited_python" ] && WIKILEAN_PYTHON="$inherited_python"
   [ -n "$inherited_mathlib" ] && WIKILEAN_MATHLIB="$inherited_mathlib"
   [ -n "$inherited_brain_mathlib" ] && BRAIN_MATHLIB_CHECKOUT="$inherited_brain_mathlib"
+  [ -n "$inherited_wikidata_observation_plan" ] \
+    && WIKILEAN_WIKIDATA_OBSERVATION_PLAN="$inherited_wikidata_observation_plan"
+  [ -n "$inherited_wikidata_observation_plan_sha256" ] \
+    && WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256="$inherited_wikidata_observation_plan_sha256"
 
   configured_python="${WIKILEAN_PYTHON:-}"
   if [ -n "$configured_python" ]; then
@@ -154,6 +171,52 @@ wikilean_ops_init() {
     BRAIN_MATHLIB_CHECKOUT="$(CDPATH= cd -- "$BRAIN_MATHLIB_CHECKOUT" && pwd -P)" \
       || { wikilean_ops_error "cannot resolve BRAIN_MATHLIB_CHECKOUT=$BRAIN_MATHLIB_CHECKOUT"; return 1; }
     export BRAIN_MATHLIB_CHECKOUT
+
+    if [ -z "${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}" ]; then
+      wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN is required; set the reviewed plan in $REPO/site/ops/nightly.local.env"
+      return 1
+    fi
+    case "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN" in
+      /*) ;;
+      *)
+        wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN must be absolute (configured: $WIKILEAN_WIKIDATA_OBSERVATION_PLAN)"
+        return 1
+        ;;
+    esac
+    if [ ! -f "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN" ] \
+        || [ ! -r "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN" ] \
+        || [ -L "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN" ]; then
+      wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN must name a readable regular file, not a symlink (configured: $WIKILEAN_WIKIDATA_OBSERVATION_PLAN)"
+      return 1
+    fi
+    observation_plan_dir="$(CDPATH= cd -- "$(dirname -- "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN")" && pwd -P)" \
+      || { wikilean_ops_error "cannot resolve WIKILEAN_WIKIDATA_OBSERVATION_PLAN=$WIKILEAN_WIKIDATA_OBSERVATION_PLAN"; return 1; }
+    WIKILEAN_WIKIDATA_OBSERVATION_PLAN="$observation_plan_dir/$(basename -- "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN")"
+    WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}"
+    if [ -z "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256" ]; then
+      wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 is required with the reviewed plan"
+      return 1
+    fi
+    if [ "${#WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256}" -ne 64 ]; then
+      wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be 64 lowercase hexadecimal characters"
+      return 1
+    fi
+    case "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256" in
+      *[!0-9a-f]*)
+        wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256 must be 64 lowercase hexadecimal characters"
+        return 1
+        ;;
+    esac
+    observation_plan_actual_sha256="$("$PY" -I -c \
+      'import hashlib,sys; print(hashlib.file_digest(open(sys.argv[1], "rb"), "sha256").hexdigest())' \
+      "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN" 2>/dev/null)" \
+      || { wikilean_ops_error "cannot hash WIKILEAN_WIKIDATA_OBSERVATION_PLAN=$WIKILEAN_WIKIDATA_OBSERVATION_PLAN"; return 1; }
+    if [ "$observation_plan_actual_sha256" != "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256" ]; then
+      wikilean_ops_error "WIKILEAN_WIKIDATA_OBSERVATION_PLAN SHA-256 mismatch (expected $WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256, got $observation_plan_actual_sha256)"
+      return 1
+    fi
+    export WIKILEAN_WIKIDATA_OBSERVATION_PLAN
+    export WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256
   fi
 
   return 0
@@ -166,11 +229,17 @@ wikilean_ops_print_check() {
   [ -n "${WIKILEAN_MATHLIB:-}" ] && printf 'mathlib=%s\n' "$WIKILEAN_MATHLIB"
   [ -n "${BRAIN_MATHLIB_CHECKOUT:-}" ] \
     && printf 'brain_mathlib=%s\n' "$BRAIN_MATHLIB_CHECKOUT"
+  [ -n "${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}" ] \
+    && printf 'wikidata_observation_plan=%s\n' "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN"
+  [ -n "${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}" ] \
+    && printf 'wikidata_observation_plan_sha256=%s\n' "$WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"
   return 0
 }
 
 wikilean_ops_print_json() {
-  "$PY" -I - "$REPO" "$PY" "${WIKILEAN_MATHLIB:-}" "${BRAIN_MATHLIB_CHECKOUT:-}" <<'PY'
+  "$PY" -I - "$REPO" "$PY" "${WIKILEAN_MATHLIB:-}" "${BRAIN_MATHLIB_CHECKOUT:-}" \
+    "${WIKILEAN_WIKIDATA_OBSERVATION_PLAN:-}" \
+    "${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}" <<'PY'
 import json
 import sys
 
@@ -179,6 +248,8 @@ print(json.dumps({
     "python": sys.argv[2],
     "mathlib": sys.argv[3] or None,
     "brain_mathlib": sys.argv[4] or None,
+    "wikidata_observation_plan": sys.argv[5] or None,
+    "wikidata_observation_plan_sha256": sys.argv[6] or None,
 }, sort_keys=True, separators=(",", ":")))
 PY
 }

@@ -185,7 +185,6 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
         RELEASE_A,
         candidate_manifest_sha256=candidate.manifest_sha256,
         allow_first_deploy=False,
-        first_deploy_approval=None,
     )
     status_body = (
         json.dumps(
@@ -247,7 +246,6 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
             RELEASE_A,
             candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         ),
         bundle_dir,
         bundle_entry,
@@ -741,6 +739,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
         self.temp.cleanup()
 
     def promoter(self, **kwargs):
+        mode = kwargs.pop("mode", "dry-run")
         return promote.BrainPromoter(
             repo_root=self.repo,
             python=Path(sys.executable),
@@ -751,7 +750,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
             receipt_root=self.receipt,
             base_url="https://example.test",
             production_origin="https://example.test",
-            mode="dry-run",
+            mode=mode,
             attempt_id="attempt-fixture",
             audited_at="2030-01-01T00:00:00Z",
             **kwargs,
@@ -852,15 +851,79 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 with self.assertRaises(promote.PromotionError):
                     self.promoter(**options)._validate_options()
 
-    def test_approval_flags_require_nonempty_paired_text(self):
+    def test_first_deploy_approval_is_execute_only(self):
+        self.promoter(allow_first_deploy=True)._validate_options()
+        for allow_first_deploy, approval in (
+            (True, "premature approval"),
+            (False, "orphan approval"),
+            (True, ""),
+        ):
+            with self.subTest(
+                allow_first_deploy=allow_first_deploy,
+                approval=approval,
+            ), self.assertRaisesRegex(
+                promote.PromotionError, "valid only with --execute"
+            ):
+                self.promoter(
+                    allow_first_deploy=allow_first_deploy,
+                    first_deploy_approval=approval,
+                )._validate_options()
+
+    def test_approval_note_is_execute_only(self):
+        for approval_note in ("premature approval", "", "   "):
+            with self.subTest(approval_note=approval_note), self.assertRaisesRegex(
+                promote.PromotionError, "valid only with --execute"
+            ):
+                self.promoter(approval_note=approval_note)._validate_options()
+
+    def test_execute_and_reconciliation_require_nonempty_approval_notes(self):
+        for approval_note in (None, "", "   "):
+            with self.subTest(
+                mode="execute", approval_note=approval_note
+            ), self.assertRaisesRegex(
+                promote.PromotionError, "execution requires --approval-note"
+            ):
+                self.promoter(
+                    mode="execute",
+                    approval_note=approval_note,
+                )._validate_options()
+            with self.subTest(
+                mode="reconcile", approval_note=approval_note
+            ), self.assertRaisesRegex(
+                promote.PromotionError, "reconciliation requires --approval-note"
+            ):
+                self.promoter(
+                    mode="reconcile",
+                    reconcile_attempt="reconcile-approval-test",
+                    approval_note=approval_note,
+                )._validate_options()
+
+    def test_execute_first_deploy_requires_nonempty_paired_approval(self):
+        execute_options = {
+            "mode": "execute",
+            "activation_bundle_id": "sha256:" + "6" * 64,
+            "activation_bundle_root": self.base / "activation-bundle",
+            "expected_semantic_baseline_id": RELEASE_C,
+            "approval_note": "approved reviewed activation",
+        }
         with self.assertRaisesRegex(promote.PromotionError, "first-deploy-approval"):
             self.promoter(
+                **execute_options,
                 allow_first_deploy=True,
                 first_deploy_approval="   ",
             )._validate_options()
         with self.assertRaisesRegex(promote.PromotionError, "requires --allow"):
-            self.promoter(first_deploy_approval="orphan approval")._validate_options()
+            self.promoter(
+                **execute_options,
+                first_deploy_approval="orphan approval",
+            )._validate_options()
+        self.promoter(
+            **execute_options,
+            allow_first_deploy=True,
+            first_deploy_approval="Jack approved this first deployment",
+        )._validate_options()
 
+    def test_reconciliation_approval_flags_require_nonempty_paired_text(self):
         prepared = make_prepared(self.base)
         for options, message in (
             (
@@ -924,6 +987,21 @@ class BrainPromotionUnitTest(unittest.TestCase):
             runner=runner,
         )
         with self.assertRaisesRegex(promote.PromotionError, "activation-bundle-id"):
+            instance.run()
+        self.assertEqual(runner.calls, [])
+
+    def test_first_deploy_execute_without_approval_blocks_before_any_runner_call(self):
+        runner = ResultRunner(promote.RunResult(("unexpected",), 0, b"", b""))
+        instance = self.promoter(
+            mode="execute",
+            activation_bundle_id="sha256:" + "6" * 64,
+            activation_bundle_root=self.base / "activation-bundle",
+            expected_semantic_baseline_id=RELEASE_C,
+            allow_first_deploy=True,
+            approval_note="approved reviewed activation",
+            runner=runner,
+        )
+        with self.assertRaisesRegex(promote.PromotionError, "first-deploy-approval"):
             instance.run()
         self.assertEqual(runner.calls, [])
 
@@ -1037,27 +1115,18 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
             self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
-    def test_selector_404_requires_flag_and_approval(self):
+    def test_selector_404_requires_explicit_exception(self):
         probe = selector_probe(status=404, body=b"missing")
         with self.assertRaisesRegex(promote.PromotionError, "selector is absent"):
             promote.selector_from_probe(
                 probe,
                 RELEASE_A,
                 allow_first_deploy=False,
-                first_deploy_approval=None,
-            )
-        with self.assertRaisesRegex(promote.PromotionError, "requires --first-deploy-approval"):
-            promote.selector_from_probe(
-                probe,
-                RELEASE_A,
-                allow_first_deploy=True,
-                first_deploy_approval=None,
             )
         state = promote.selector_from_probe(
             probe,
             RELEASE_A,
             allow_first_deploy=True,
-            first_deploy_approval="Jack approved window",
         )
         self.assertEqual(state.status, 404)
 
@@ -1067,7 +1136,6 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 selector_probe(),
                 RELEASE_A,
                 allow_first_deploy=True,
-                first_deploy_approval="approval",
             )
 
     def test_v1_selector_cannot_discard_same_logical_release_without_manifest_proof(self):
@@ -1080,7 +1148,6 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 RELEASE_A,
                 candidate_manifest_sha256="3" * 64,
                 allow_first_deploy=False,
-                first_deploy_approval=None,
             )
 
     def test_release_root_must_match_id_and_reject_symlink(self):
@@ -1233,7 +1300,6 @@ class BrainPromotionUnitTest(unittest.TestCase):
                     selector_probe(RELEASE_A),
                     RELEASE_A,
                     allow_first_deploy=False,
-                    first_deploy_approval=None,
                 )
                 return {"schema": "wikilean.public-build-result/v1"}, staged
 
@@ -1264,7 +1330,6 @@ class BrainPromotionUnitTest(unittest.TestCase):
             production_origin="https://example.test",
             mode="dry-run",
             allow_first_deploy=True,
-            first_deploy_approval="approved",
             attempt_id="race-attempt",
         )
         with mock.patch.object(promote, "verify_public_baseline", return_value=baseline):
@@ -1365,7 +1430,6 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
             selector_probe(RELEASE_A, body=legacy_body),
             RELEASE_A,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         )
         prepared = replace(
             self.prepared,
@@ -1975,7 +2039,6 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
             selector_probe(RELEASE_C),
             RELEASE_C,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         )
         external = make_observation(
             external_state,
@@ -2289,7 +2352,10 @@ class BrainPromotionDryRunTest(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()) as output:
                 self.assertEqual(instance.run(), 0)
             value = json.loads(output.getvalue())
+            self.assertEqual(value["schema"], promote.DRY_RUN_SCHEMA)
             self.assertFalse(value["production_mutated"])
+            self.assertIsNone(value["proposed_intent"]["approval_note"])
+            self.assertIsNone(value["proposed_intent"]["first_deploy_approval"])
             attempts = receipt.resolve() / "attempts"
             self.assertFalse(attempts.exists())
 

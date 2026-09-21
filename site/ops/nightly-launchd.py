@@ -151,9 +151,15 @@ def _absolute_option(path: Optional[Path], label: str) -> Optional[Path]:
     return path.resolve(strict=False)
 
 
+def _sha256_option(value: Optional[str], label: str) -> Optional[str]:
+    if value is not None and re.fullmatch(r"[0-9a-f]{64}", value) is None:
+        raise ValueError(f"{label} must be 64 lowercase hexadecimal characters")
+    return value
+
+
 def _launchd_environment(args: argparse.Namespace) -> dict[str, str]:
     # launchd does not inherit the operator's interactive WIKILEAN_*/BRAIN_*
-    # exports.  Model that sparse environment exactly; explicit CLI paths are
+    # exports.  Model that sparse environment exactly; explicit CLI values are
     # the only overrides and will also be sealed into EnvironmentVariables.
     environment = {
         key: os.environ[key]
@@ -167,6 +173,13 @@ def _launchd_environment(args: argparse.Namespace) -> dict[str, str]:
         environment["WIKILEAN_MATHLIB"] = str(args.mathlib)
     if args.brain_mathlib is not None:
         environment["BRAIN_MATHLIB_CHECKOUT"] = str(args.brain_mathlib)
+    if args.wikidata_observation_plan is not None:
+        environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN"] = str(
+            args.wikidata_observation_plan
+        )
+        environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"] = str(
+            args.wikidata_observation_plan_sha256
+        )
     return environment
 
 
@@ -212,6 +225,13 @@ def _rendered_environment(
         environment["WIKILEAN_MATHLIB"] = str(config["mathlib"])
     if job.mode == "brain" and args.brain_mathlib is not None:
         environment["BRAIN_MATHLIB_CHECKOUT"] = str(config["brain_mathlib"])
+    if job.mode == "brain":
+        environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN"] = str(
+            config["wikidata_observation_plan"]
+        )
+        environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"] = str(
+            config["wikidata_observation_plan_sha256"]
+        )
     return environment
 
 
@@ -219,9 +239,23 @@ def _prepare(args: argparse.Namespace) -> tuple[list[Job], dict[str, object], Pa
     if not _repo_is_valid():
         raise ValueError(f"derived repository root is invalid: {REPO}")
     _portable_sources_check()
+    if (args.wikidata_observation_plan is None) != (
+        args.wikidata_observation_plan_sha256 is None
+    ):
+        raise ValueError(
+            "--wikidata-observation-plan and --wikidata-observation-plan-sha256 "
+            "must be supplied together"
+        )
     args.python = _absolute_option(args.python, "--python")
     args.mathlib = _absolute_option(args.mathlib, "--mathlib")
     args.brain_mathlib = _absolute_option(args.brain_mathlib, "--brain-mathlib")
+    args.wikidata_observation_plan = _absolute_option(
+        args.wikidata_observation_plan, "--wikidata-observation-plan"
+    )
+    args.wikidata_observation_plan_sha256 = _sha256_option(
+        args.wikidata_observation_plan_sha256,
+        "--wikidata-observation-plan-sha256",
+    )
     jobs = _selected_jobs(args.job)
     if args.mathlib is not None and args.brain_mathlib is None and any(
         job.mode == "brain" for job in jobs
@@ -259,6 +293,13 @@ def cmd_check(args: argparse.Namespace) -> None:
         print(f"mathlib={config['mathlib']}")
     if config.get("brain_mathlib"):
         print(f"brain_mathlib={config['brain_mathlib']}")
+    if config.get("wikidata_observation_plan"):
+        print(f"wikidata_observation_plan={config['wikidata_observation_plan']}")
+    if config.get("wikidata_observation_plan_sha256"):
+        print(
+            "wikidata_observation_plan_sha256="
+            f"{config['wikidata_observation_plan_sha256']}"
+        )
     print("launchd templates ok")
 
 
@@ -295,6 +336,15 @@ def parser() -> argparse.ArgumentParser:
         command.add_argument("--mathlib", type=Path, help="absolute mathlib4 checkout root")
         command.add_argument(
             "--brain-mathlib", type=Path, help="absolute mathlib4/Mathlib directory"
+        )
+        command.add_argument(
+            "--wikidata-observation-plan",
+            type=Path,
+            help="absolute reviewed Wikidata observation plan",
+        )
+        command.add_argument(
+            "--wikidata-observation-plan-sha256",
+            help="lowercase SHA-256 of the reviewed Wikidata observation plan",
         )
 
     check = commands.add_parser("check", help="validate launchd runtime config and rendering")
