@@ -260,6 +260,18 @@ def validate_source_plan(value: Any) -> dict[str, Any]:
             return source_plan_contracts.validate_source_plan_v3(value)
         except contracts.VerificationError as exc:
             raise PackCompilationError(str(exc)) from exc
+    return _validate_source_plan_structure(value)
+
+
+def _validate_source_plan_structure(
+    value: Any, *, allow_content_aliases: bool = False
+) -> dict[str, Any]:
+    """Shared shape checks; only the v3 evidence validator permits CAS aliases.
+
+    V3 separately derives and validates every source manifest, including the
+    requirement that aliases agree on size and media type. Public v1 callers
+    retain the original one-name-per-digest contract.
+    """
     obj = _object(
         value,
         "$",
@@ -382,7 +394,7 @@ def validate_source_plan(value: Any) -> dict[str, Any]:
                 normalized_objects.add((source_name, object_name))
         if object_names != sorted(set(object_names)):
             _fail(f"{location}.objects", "entries must have unique names and be sorted")
-        if len(object_digests) != len(set(object_digests)):
+        if not allow_content_aliases and len(object_digests) != len(set(object_digests)):
             _fail(
                 f"{location}.objects",
                 "equal expected content must be represented by one object with combined roles",
