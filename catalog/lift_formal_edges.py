@@ -33,6 +33,11 @@ import json
 import sys
 from pathlib import Path
 
+from huggingface_download import (
+    HuggingFaceArtifactError,
+    verified_reviewed_dataset,
+)
+
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / ".cache"
 STMT = CACHE / "statement_formal.csv"
@@ -44,7 +49,7 @@ BUCKET = {"sig": "sig", "field": "sig", "extends": "sig", "def": "def", "proof":
 csv.field_size_limit(10 ** 9)
 
 
-def lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
+def _lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
     interest = set(decl_to_qid)
     if not STMT.exists() or not DEP.exists():
         sys.exit(f"missing {STMT.name}/{DEP.name} in {CACHE} — download math-graph first")
@@ -101,6 +106,20 @@ def lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
              "w_types": {k: len(s) for k, s in v["w"].items()},
              "edge_types": sorted(v["types"])}
             for (a, b), v in edges.items()]
+
+
+def lift(decl_to_qid: dict[str, list[str]]) -> list[dict]:
+    try:
+        with verified_reviewed_dataset(
+            "uw-math-ai/math-graph",
+            {
+                "formal_dependency.csv": DEP,
+                "statement_formal.csv": STMT,
+            },
+        ):
+            return _lift(decl_to_qid)
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
 
 
 def main() -> int:

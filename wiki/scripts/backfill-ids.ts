@@ -162,7 +162,7 @@ function main(): void {
     statements.push(update, insert);
 
     // Mirror the ids into the disk sidecar (D1 annotations are canonical —
-    // same policy as pull-annotations.ts; the envelope is preserved).
+    // same policy as pull_annotations.py; the envelope is preserved).
     const sidecarPath = resolve(annotDir, `${r.slug}.json`);
     if (!existsSync(sidecarPath)) {
       sidecarMissing.push(r.slug);
@@ -181,7 +181,7 @@ function main(): void {
     console.log(`sidecars that were stale vs D1 (now refreshed to D1+ids): ${sidecarStale.join(", ")}`);
   }
   if (sidecarMissing.length) {
-    console.log(`WARN: no disk sidecar for ${sidecarMissing.join(", ")} — run 'npm run pull' to materialize them`);
+    console.log(`WARN: no disk sidecar for ${sidecarMissing.join(", ")} — run 'npm run pull -- --snapshot-bundle /absolute/path/to/<bundle-id>' to materialize them`);
   }
 
   if (!statements.length) {
@@ -198,7 +198,7 @@ function main(): void {
     console.log(`DRIFT WARNING: ${drifted.length} article(s) moved since the manifest pull:`);
     for (const d of drifted) console.log(`  ${d}`);
     console.log("Their CAS UPDATEs target the version read just now (still safe), but disk");
-    console.log("sidecars may not reflect what the manifest pinned. Re-run 'npm run pull'");
+    console.log("sidecars may not reflect what the manifest pinned. Re-run 'npm run pull -- --snapshot-bundle /absolute/path/to/<bundle-id>'");
     console.log("then re-run 'npm run backfill-ids' before applying.");
   }
 

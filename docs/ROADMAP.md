@@ -156,7 +156,7 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-09-02)
+### Current Brain execution queue (updated 2026-09-05)
 
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
@@ -177,6 +177,26 @@ pins, reducer configuration, and the pack-derived generation identity rather tha
 or environment configuration. Shared stage I/O provides deterministic private scratch,
 durable atomic no-replace publication for files and trees, rollback of partial multi-output
 publication, and cross-filesystem refusal.
+
+The acquisition boundary now also has a sealed, read-only D1 snapshot command plus
+bundle-only community-edge and annotation-cache consumers. A shared independent verifier
+checks the bundle closure, exact CPython/local dependency and Node/Wrangler toolchain,
+receipt/lineage chain, normalized rows, and tombstones; neither consumer has a live-query or
+fixture bypass. The annotation mirror constructs the complete next cache off to the side,
+atomically exchanges it, and quarantines disk-only recovery copies outside the active
+selector. Scheduled graduation is disabled by default and requires an explicit absolute
+reviewed bundle path. Nightly LaunchAgents are generated from the current checkout after a
+sparse-environment preflight seals the exact Python and Mathlib paths; no tracked
+host-specific plist remains, and installation never loads or starts a job. A 2026-09-05
+production capture attempt stopped before issuing the query because no locally configured
+D1-read token was available; it created no snapshot store and made no production change.
+
+Frontier replay no longer consumes the separately generated `manage/data/halo.json`.
+Its historical `mean_stateability` value is recomputed from the exact bound cells and
+synapses using the same ring-1 neighbor-fraction semantics. The current corpus keeps all 47
+areas, membership, proximity, suitability, ordering, and top-cell choices unchanged; only
+22 stateability summaries, the stateability input-count metadata field, and the reducer
+inventory identity change.
 
 `run_offline.py` now accepts v2 packs, prepares a fresh workspace, and delegates to the
 single fail-closed `run_replay_v2.py` executor. The executor re-verifies the sealed input and
@@ -374,6 +394,32 @@ explicit approval.
     migration compatibility path, not authority evidence.
   - [ ] Acquire D1 annotations/community rows from one consistent export or snapshot rather
     than separate live queries, then issue receipts before normalization.
+    - [x] Implement the sealed acquisition command: one read-only ordered statement covers
+      articles, all community edges including tombstones, community nodes, row counts, and
+      exact schema columns. It binds the production account/database UUID, checked-in
+      request preimage, pinned Wrangler/Node closure, and sanitized environment; publishes
+      a private content-addressed bundle with clock-free normalized bytes plus validated
+      acquisition receipt and normalization lineage. Hermetic tests cover malformed,
+      truncated, duplicate, reordered, concurrent, hostile-target, and real `SIGKILL`
+      cases. No remote query was run while landing this tool.
+    - [x] Make community graduation consume only an explicitly supplied, independently
+      verified sealed bundle. The harvester has no live-query or fixture path, validates
+      the complete edge/node/tombstone generation, and nightly execution is disabled unless
+      an operator configures an absolute bundle directory.
+    - [x] Make the annotation cache mirror consume only an explicitly supplied, independently
+      verified sealed bundle. It stages an exact D1 article generation, preserves exact JSON
+      numbers, atomically swaps the complete cache, and moves disk-only sidecars into an
+      ignored, non-authoritative recovery quarantine. The retired `pull-annotations.ts`
+      live-query path no longer exists.
+    - [ ] Capture and review a fresh canonical production bundle and bind its reviewed
+      receipt/lineage into source-plan authority. A 2026-09-05 attempt failed closed before
+      the query because the non-interactive environment lacked a locally configured
+      D1-read token; no snapshot store or production mutation resulted.
+    - [ ] Before materially larger D1 corpora, replace full-response/full-cache cloning with
+      bounded streaming or incremental staging, report safely removable post-crash sibling
+      generations, and strengthen bootstrap executable discovery beyond the currently
+      digest-bound operator `PATH`. Add versioned verifier profiles only if old bundle
+      generations need long-term compatibility.
   - [x] Make the current inline `fold_proposals.py` Wikidata lookup fail closed before any
     output write. It excludes rejected/vetoed/local-invalid rows from acquisition,
     validates complete typed responses and redirects, and isolates ordinary missing QIDs
@@ -381,11 +427,20 @@ explicit approval.
   - [ ] Split Wikidata acquisition out of `fold_proposals.py` into sealed input evidence;
     universe/edge fetches and mixed-age description caches must likewise fail closed instead
     of publishing partial normalized data.
-  - [ ] Resolve exact Hugging Face dataset revisions before downloading TheoremGraph and
-    MathNetwork files; mutable `resolve/main` URLs are not authority evidence.
+  - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
+    `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
+    binds all six files by full commit, byte count, and SHA-256; acquisition rejects
+    branches/tags and mutable `resolve/main`, ignores user curl configuration, stages and
+    verifies complete datasets, and publishes through separate acquisition/publication
+    locks plus a durable recovery journal. Python and premise-index consumers hold a
+    verified generation for their full read. Sidecars prove local consistency; v3
+    receipt/lineage integration remains the authority boundary.
   - [ ] Remove observation time, local absolute paths, and other ambient values from
-    normalized data bytes. Current hierarchy, theoremgraph-links, external harvests, and
-    halo outputs embed such values; retain them only in audit/receipt evidence.
+    normalized data bytes. Hierarchy and theoremgraph-link outputs now use immutable
+    revision/hash lineage; external harvests and other catalog outputs still embed ambient
+    values that must move to audit/receipt evidence. Frontier stateability is now derived
+    from its bound cells/synapses, and community provenance is pinned to the sealed D1
+    normalization-lineage identity.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration
@@ -481,10 +536,12 @@ explicit approval.
   - [ ] Author and review the current-corpus source plan, acquire a fresh canonical D1
     snapshot plus the missing Mathlib source tree, close the TheoremGraph/oracle revision
     pins, and add complete acquisition/normalization lineage before compilation.
-    The 2026-09-04 census found 44 inputs, 38 present, six absent, and 14/15 required
-    inputs present; 833 non-Mathlib files total about 1.425 GiB. The current D1 mirror is
-    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs follow mutable
-    `main`, and the theorem-matching redistribution license is unresolved.
+    The 2026-09-05 census found 43 inputs, 37 present, six absent, and 14/15 required
+    inputs present; 832 non-Mathlib files total 1,529,390,053 bytes (about 1.424 GiB).
+    The current D1 mirror is
+    from 2026-08-06, the Mathlib source root is absent, Hugging Face inputs now have exact
+    reviewed revisions but are not yet sealed into v3 receipt/lineage authority, and the
+    theorem-matching redistribution license is unresolved.
   - [x] Add a bounded source-plan preflight that reports availability, selector membership,
     pin strength, freshness against a configured age threshold, redistribution policy, lineage
     evidence, and required free space without copying or hashing large payloads. Structural
@@ -524,9 +581,10 @@ explicit approval.
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
 
-**Next P0-R implementation order:** (1) remove audit/observation fields from normalized
-bytes, pin exact external revisions, build a coherent D1 export, and finish splitting live
-Wikidata acquisition from folding; (2) integrate the resulting receipt/lineage objects in
+**Next P0-R implementation order:** (1) finish removing audit/observation fields from
+normalized bytes, run and review the sealed coherent D1 export, and finish splitting live
+Wikidata acquisition from folding; (2) bind the resulting D1 receipt/lineage objects,
+including the reviewed Hugging Face inputs, in
 explicit v3 source-plan/source-manifest/offline-pack contracts and author the reviewed
 current-corpus source plan on a volume with adequate space; (3) finish the trusted OCI
 launcher, dependency and CPU-dispatch policy, and strict clean-host sandbox evidence; (4)
@@ -696,8 +754,9 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## P1 — Close the loop (the core re-architecture)
 
-- [x] **One-time rescue pull** — DONE 2026-06-10. `wiki/scripts/pull-annotations.ts`
-  (`npm run pull`); 709 rows pulled: 47 sidecars created, 8 real content updates
+- [x] **One-time rescue pull** — DONE 2026-06-10. The historical
+  `wiki/scripts/pull-annotations.ts` path (now retired in favor of sealed-bundle mirroring)
+  pulled 709 rows: 47 sidecars created, 8 real content updates
   (the 7 user-edited slugs' human edits rescued + Tangent_bundle stale-sidecar fix),
   manifest at site/annotations/.d1_pull_manifest.json. Human edits now in git.
 - [x] **Stable annotation IDs** — DONE 2026-06-11, applied to production: 31,394 ids

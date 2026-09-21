@@ -10,15 +10,19 @@ decl-dependencies + Wikidata semantic relations. Nothing was reading them.
 This directory computes centrality over that graph, joins it to live coverage,
 and emits ranked worklists the rest of the project can act on.
 
-Everything here is **pure Python, deterministic, offline** (except the optional
-`--pull`), **no LLM**. It never writes upstream and never touches the files the
-`@[wikidata]` bot owns — safe to run any time.
+Everything here is **pure Python, deterministic, offline**, **no LLM**. An
+optional annotation refresh consumes an already-acquired sealed D1 snapshot;
+it never opens an independent live query. It never writes upstream or touches
+the files the `@[wikidata]` bot owns.
 
 ## Run it
 
 ```bash
 python3 manage/refresh.py          # compute from current disk, write digest
-python3 manage/refresh.py --pull   # `npm run pull` (live D1) first, then compute
+python3 manage/refresh.py --snapshot-bundle /absolute/path/to/<bundle-id>
+# Compatibility alias, with the same fail-closed behavior:
+WIKILEAN_D1_SNAPSHOT_BUNDLE=/absolute/path/to/<bundle-id> \
+  python3 manage/refresh.py --pull
 ```
 
 Or a single pass:

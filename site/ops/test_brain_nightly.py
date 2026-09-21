@@ -104,6 +104,12 @@ class BrainNightlyShellTest(unittest.TestCase):
             self.assertIn("BRAIN_MATHLIB_CHECKOUT", log)
             self.assertNotIn("=== ingest", log)
 
+    def test_launchd_invokes_this_checkout(self):
+        self.assertFalse((HERE / "org.wikilean.brain.plist").exists())
+        renderer = (HERE / "nightly-launchd.py").read_text(encoding="utf-8")
+        self.assertIn('label="org.wikilean.brain"', renderer)
+        self.assertIn('script="brain-nightly.sh"', renderer)
+
     def test_script_has_no_checkout_specific_absolute_path(self):
         text = SCRIPT.read_text(encoding="utf-8")
         self.assertNotIn("/Users/jack", text)

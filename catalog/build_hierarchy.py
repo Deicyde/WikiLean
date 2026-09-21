@@ -18,11 +18,15 @@ Run: python3 catalog/build_hierarchy.py
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
+
+from huggingface_download import (
+    HuggingFaceArtifactError,
+    ReviewedDatasetPin,
+    verified_reviewed_dataset,
+)
 
 HERE = Path(__file__).resolve().parent
 STMT = HERE / ".cache" / "statement_formal.csv"
@@ -118,7 +122,10 @@ def tree_depth(node: dict) -> int:
     return 1 + max((tree_depth(v) for v in node["sub"].values()), default=0)
 
 
-def main() -> int:
+def _build(
+    pin: ReviewedDatasetPin,
+    source_metadata: dict[str, object],
+) -> int:
     if not STMT.exists():
         raise SystemExit(f"missing {STMT} — download math-graph statement_formal.csv first")
 
@@ -178,20 +185,13 @@ def main() -> int:
 
     max_depth_eff = max(
         (1 + tree_depth(m) for L in libs.values() for m in L["modules"].values()), default=0)
-    sha = hashlib.sha256()
-    with STMT.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            sha.update(chunk)
-    st = STMT.stat()
-
     out = {
         "meta": {
             "source": "uw-math-ai/math-graph statement_formal.csv (TheoremGraph)",
-            # snapshot mtime, NOT build time — rebuilds of the same CSV are byte-identical
-            "generated_at": datetime.fromtimestamp(st.st_mtime, tz=timezone.utc)
-                            .isoformat(timespec="seconds"),
-            "source_bytes": st.st_size,
-            "source_sha256": sha.hexdigest()[:16],
+            "source_revision": pin.revision,
+            "source_url": source_metadata["file_url"],
+            "source_bytes": source_metadata["size"],
+            "source_sha256": source_metadata["sha256"],
             "n_libraries": len(libs), "n_decls": n_rows,
             "n_subfields": len(subfields), "max_depth": MAX_DEPTH,
             "max_depth_effective": max_depth_eff, "split_threshold": SPLIT_AT,
@@ -220,6 +220,17 @@ def main() -> int:
         print(f"  {lib:22} {L['n_decls']:>7} decls  {L['n_files']:>5} files  "
               f"{len(L['modules']):>4} top-modules  [{L['kind']}]")
     return 0
+
+
+def main() -> int:
+    try:
+        with verified_reviewed_dataset(
+            "uw-math-ai/math-graph",
+            {"statement_formal.csv": STMT},
+        ) as (pin, metadata):
+            return _build(pin, metadata["statement_formal.csv"])
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
 
 
 if __name__ == "__main__":

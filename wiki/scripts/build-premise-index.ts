@@ -29,9 +29,10 @@
 //   resolves a source name with the existing declShardFor. Each int i indexes
 //   the fixed-chunk name tables names/<floor(i/8192)>.json (JSON arrays of
 //   8192 names each; last chunk short), name table sorted lexicographically.
-import { createReadStream, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createInterface } from "node:readline";
+import { spawn } from "node:child_process";
 import {
   buildKeyedShards,
   MAX_SHARD_BYTES,
@@ -49,6 +50,101 @@ export const THEOREM_KINDS = new Set(["theorem"]);
 const EDGES_CSV = "../catalog/.cache/mathnetwork/edges.csv";
 const DECL_DATA = "../catalog/.cache/declaration-data.json";
 const HEADER = "source,target,is_explicit,is_simplifier";
+const HF_DATASET = "MathNetwork/MathlibGraph";
+
+interface HfSourceMetadata {
+  dataset: string;
+  revision: string;
+  file_url: string;
+  sha256: string;
+  size: number;
+}
+
+interface HfGuard {
+  metadata: HfSourceMetadata;
+  release: () => Promise<void>;
+}
+
+async function acquireHfGuard(edgesPath: string): Promise<HfGuard> {
+  const guardScript = resolve(process.cwd(), "../catalog/verify_huggingface_cache.py");
+  const child = spawn(
+    "python3",
+    [
+      guardScript,
+      "--dataset",
+      HF_DATASET,
+      "--file",
+      `edges.csv=${edgesPath}`,
+      "--hold",
+    ],
+    { stdio: ["pipe", "pipe", "inherit"] },
+  );
+  child.stdout.setEncoding("utf8");
+  const exited = new Promise<{ code: number | null; signal: NodeJS.Signals | null }>(
+    (resolveExit, rejectExit) => {
+      child.once("error", rejectExit);
+      child.once("exit", (code, signal) => resolveExit({ code, signal }));
+    },
+  );
+  let metadata: HfSourceMetadata;
+  try {
+    metadata = await new Promise<HfSourceMetadata>((resolveReady, rejectReady) => {
+      let buffer = "";
+      let settled = false;
+      const fail = (error: Error) => {
+        if (!settled) {
+          settled = true;
+          rejectReady(error);
+        }
+      };
+      exited.then(
+        ({ code, signal }) => {
+          fail(new Error(`Hugging Face cache guard exited before ready: code=${code} signal=${signal}`));
+        },
+        (error) => fail(error instanceof Error ? error : new Error(String(error))),
+      );
+      child.stdout.on("data", (chunk: string) => {
+        if (settled) return;
+        buffer += chunk;
+        const newline = buffer.indexOf("\n");
+        if (newline < 0) return;
+        try {
+          const value = JSON.parse(buffer.slice(0, newline)) as {
+            dataset?: string;
+            revision?: string;
+            files?: Record<string, HfSourceMetadata>;
+          };
+          const source = value.files?.["edges.csv"];
+          if (value.dataset !== HF_DATASET || !source || value.revision !== source.revision) {
+            throw new Error("Hugging Face cache guard returned inconsistent metadata");
+          }
+          settled = true;
+          resolveReady(source);
+        } catch (error) {
+          fail(error instanceof Error ? error : new Error(String(error)));
+        }
+      });
+    });
+  } catch (error) {
+    child.stdin.end();
+    child.kill();
+    await exited.catch(() => undefined);
+    throw error;
+  }
+  let released = false;
+  return {
+    metadata,
+    release: async () => {
+      if (released) return;
+      released = true;
+      child.stdin.end();
+      const { code, signal } = await exited;
+      if (code !== 0) {
+        throw new Error(`Hugging Face cache guard failed: code=${code} signal=${signal}`);
+      }
+    },
+  };
+}
 
 // Minimal CSV field split: fast path for the ~all unquoted lines; quoted
 // fields (notation decls with commas inside «», e.g. MeasureTheory's ⨍ terms)
@@ -106,7 +202,13 @@ interface PremiseManifest extends Manifest {
   source_dataset: string;
   source_license: string;
   source_paper: string;
-  pin: { edges_mtime: string; edges_bytes: number; decl_index_etag: string };
+  pin: {
+    dataset_revision: string;
+    edges_sha256: string;
+    edges_bytes: number;
+    edges_url: string;
+    decl_index_etag: string;
+  };
   filters: {
     is_explicit: true;
     drop_self_loops: true;
@@ -169,8 +271,10 @@ function assemble(lists: Map<string, string[]>): Variant {
   };
 }
 
-async function main() {
-  const edgesPath = resolve(process.cwd(), EDGES_CSV);
+async function buildPremiseIndex(
+  edgesPath: string,
+  sourceMetadata: HfSourceMetadata,
+) {
   const declDataPath = resolve(process.cwd(), DECL_DATA);
   const declManifestPath = resolve(process.cwd(), "public", "assets", "decl-index", "manifest.json");
   const outDir = resolve(process.cwd(), "public", "assets", "premise-index");
@@ -179,7 +283,7 @@ async function main() {
     throw new Error(
       `MISSING INPUT: ${edgesPath}\n` +
         `The MathNetwork/MathlibGraph edge dump is a machine-local cache (754 MB, gitignored).\n` +
-        `Fetch it with: python3 catalog/fetch_mathlib_graph.py (see catalog/data/source_registry.json → mathnetwork).`,
+        `Fetch it with the reviewed revision shown in catalog/huggingface_pins.json.`,
     );
   }
   if (!existsSync(declDataPath)) {
@@ -274,17 +378,18 @@ async function main() {
     counts[key] = arr.length;
     if (key.length > maxLen) maxLen = key.length;
   }
-  const st = statSync(edgesPath);
   const manifest: PremiseManifest = {
     built_at: new Date().toISOString(),
     source: "catalog/.cache/mathnetwork/edges.csv (catalog/fetch_mathlib_graph.py)",
-    source_sha_or_etag: `mtime:${st.mtime.toISOString()};bytes:${st.size}`,
+    source_sha_or_etag: `sha256:${sourceMetadata.sha256}`,
     source_dataset: "https://huggingface.co/datasets/MathNetwork/MathlibGraph",
     source_license: "Apache-2.0",
     source_paper: "arXiv:2604.24797",
     pin: {
-      edges_mtime: st.mtime.toISOString(),
-      edges_bytes: st.size,
+      dataset_revision: sourceMetadata.revision,
+      edges_sha256: sourceMetadata.sha256,
+      edges_bytes: sourceMetadata.size,
+      edges_url: sourceMetadata.file_url,
       decl_index_etag: declManifest.source_sha_or_etag,
     },
     filters: {
@@ -338,6 +443,16 @@ async function main() {
   console.log(`  bytes:          shards ${(variant.shardBytes / 1e6).toFixed(1)} MB + names ${(variant.chunkBytes / 1e6).toFixed(1)} MB + manifest ${(Buffer.byteLength(manifestJson) / 1e3).toFixed(0)} KB = ${((variant.totalBytes + Buffer.byteLength(manifestJson)) / 1e6).toFixed(1)} MB`);
   console.log(`  largest shard:  ${largest.key}.json — ${largest.bytes} bytes`);
   console.log(`  max key length: ${maxLen}`);
+}
+
+async function main() {
+  const edgesPath = resolve(process.cwd(), EDGES_CSV);
+  const guard = await acquireHfGuard(edgesPath);
+  try {
+    await buildPremiseIndex(edgesPath, guard.metadata);
+  } finally {
+    await guard.release();
+  }
 }
 
 const isCli = import.meta.url === `file://${process.argv[1]}`;

@@ -49,6 +49,20 @@
    "our_provenance": "catalog/mathlib_deps/mathlib_edges.tsv (decl dep graph) x decl_to_qid.json; edge carries the witnessing [decl_a, decl_b] pairs. source='mathlib'.",
    "target_license": "Apache-2.0 (derived facts, CC0)"
   },
+  "theoremgraph_dependencies": {
+   "name": "TheoremGraph math-graph",
+   "homepage": "https://huggingface.co/datasets/uw-math-ai/math-graph",
+   "layer": "formal",
+   "kind": "Typed declaration dependencies and statement metadata used for hierarchy construction, formal-edge lifting, Brain rollups, and licensed declaration slogans.",
+   "our_provenance": "uw-math-ai/math-graph statement_formal.csv, formal_dependency.csv, and slogan.csv; catalog/fetch_math_graph.py -> catalog/.cache/. Exact reviewed revision, byte counts, and full SHA-256 digests are authoritative in catalog/huggingface_pins.json.",
+   "target_license": "CC-BY-4.0",
+   "pin": {
+    "registry": "catalog/huggingface_pins.json",
+    "dataset": "uw-math-ai/math-graph",
+    "revision": "ced4ca9de1bd9e5b67aa09d1d515e270e438fa1e",
+    "note": "The executable registry's expected full SHA-256 and byte counts are authoritative; local sidecars are consistency metadata, not proof of Hugging Face commit membership."
+   }
+  },
   "wikidata_props": {
    "name": "Wikidata concept relations",
    "layer": "bridge",
@@ -69,12 +83,13 @@
    "homepage": "https://huggingface.co/datasets/MathNetwork/MathlibGraph",
    "layer": "formal",
    "kind": "Per-edge is_explicit flags on the full Mathlib declaration dependency graph — the explicit (source-visible, non-elaborator-synthesized) subgraph, folded into tree-grain rollups as w_types.exp and into the per-declaration premise lists served at /assets/premise-index/ (the brain_premises tool).",
-   "our_provenance": "Released dataset of 'The Network Structure of Mathlib' (arXiv 2604.24797); catalog/fetch_mathlib_graph.py -> catalog/.cache/mathnetwork/; joined by decl name onto the pinned TheoremGraph snapshot in brain/build_rollups.py, and independently by decl name onto the doc-gen4 decl-index snapshot in wiki/scripts/build-premise-index.ts (filters + hub-drop list recorded in that asset's manifest.json).",
+   "our_provenance": "Released dataset of 'The Network Structure of Mathlib' (arXiv 2604.24797); catalog/fetch_mathlib_graph.py -> catalog/.cache/mathnetwork/; exact reviewed revision, byte counts, and full SHA-256 digests are authoritative in catalog/huggingface_pins.json. Joined by decl name onto the pinned TheoremGraph snapshot in brain/build_rollups.py, and independently by decl name onto the doc-gen4 decl-index snapshot in wiki/scripts/build-premise-index.ts (filters + hub-drop list recorded in that asset's manifest.json).",
    "target_license": "Apache-2.0",
    "pin": {
-    "edges_csv_mtime": "2026-07-03T23:43:32-04:00",
-    "edges_csv_bytes": 753711915,
-    "note": "machine-local cache; the premise-index manifest re-records this pin plus the decl-index etag it was joined against"
+    "registry": "catalog/huggingface_pins.json",
+    "dataset": "MathNetwork/MathlibGraph",
+    "revision": "8c706461fe266802197b62af324de12a3f1aa7fb",
+    "note": "The executable registry's expected full SHA-256 and byte counts are authoritative; local sidecars are consistency metadata, not proof of Hugging Face commit membership."
    }
   }
  },
@@ -314,8 +329,14 @@
    "layer": "literature",
    "kind": "'This result is STATED in the literature as Thm X.Y in arXiv:…' — judge-affirmed (formal Mathlib decl ↔ informal arXiv statement) matches, joined to our concepts on the shared Mathlib decl name.",
    "url_template": "https://arxiv.org/abs/{id}",
-   "our_provenance": "uw-math-ai/theorem-matching (arXiv:2606.25363), paper-affirmed slice only (GPT-5.4 judge ∈ {exact,inexact}; both judges' labels kept per link). catalog/ingest_theorem_graph.py. NOT the concept's canonical/origin source; AI-proposed, not human-verified.",
+   "our_provenance": "uw-math-ai/theorem-matching (arXiv:2606.25363), paper-affirmed slice only (GPT-5.4 judge ∈ {exact,inexact}; both judges' labels kept per link). catalog/ingest_theorem_graph.py; exact reviewed revision, byte count, and full SHA-256 digest are authoritative in catalog/huggingface_pins.json. NOT the concept's canonical/origin source; AI-proposed, not human-verified.",
    "target_license": "CC-BY-SA-4.0 — we store only the link facts (decl ↔ arxiv_id/ref/title + judge verdicts); each arXiv paper retains its own license.",
+   "pin": {
+    "registry": "catalog/huggingface_pins.json",
+    "dataset": "uw-math-ai/theorem-matching",
+    "revision": "5caba941dd716f17dba4880bd7173edfb1cc36d1",
+    "note": "The executable registry's expected full SHA-256 and byte count are authoritative; local sidecars are consistency metadata, not proof of Hugging Face commit membership."
+   },
    "note": "~80% of the underlying arXiv papers are NOT open-licensed (non-exclusive-distrib) — we store only the link facts (decl↔arxiv_id/ref/title), never the paper text."
   }
  },
@@ -332,8 +353,14 @@
    "homepage": "https://theoremsearch.com",
    "layer": "literature",
    "kind": "decl <-> literature `matches` edges (dual-judge affirmed) + the decl slogans rendered on decl pages.",
-   "our_provenance": "uw-math-ai/theorem-matching theorem_matching.csv @ pin (arXiv:2606.25363); judge verdicts + similarity kept per edge; slogans from its formal_slogan column. Distinct from `theoremgraph` (the concept->arXiv citation lift).",
+   "our_provenance": "uw-math-ai/theorem-matching theorem_matching.csv @ the exact reviewed pin in catalog/huggingface_pins.json (arXiv:2606.25363); judge verdicts + similarity kept per edge; slogans from its formal_slogan column. Distinct from `theoremgraph` (the concept->arXiv citation lift).",
    "target_license": "CC-BY-SA-4.0 — attribution carried in artifact _meta and rendered with a source credit; arXiv statement TEXT is never redistributed, only ids/labels/links.",
+   "pin": {
+    "registry": "catalog/huggingface_pins.json",
+    "dataset": "uw-math-ai/theorem-matching",
+    "revision": "5caba941dd716f17dba4880bd7173edfb1cc36d1",
+    "note": "The executable registry's expected full SHA-256 and byte count are authoritative; local sidecars are consistency metadata, not proof of Hugging Face commit membership."
+   },
    "attribution_required": true
   },
   "brain_container_links": {
