@@ -288,18 +288,26 @@ PY
 }
 
 public_result_release_id() {
-  "$PYTHON_BIN" - "$1" <<'PY'
+  "$PYTHON_BIN" - "$1" "$2" "$3" <<'PY'
 import json
+import re
 import sys
 
 value = json.load(open(sys.argv[1], encoding="utf-8"))
+expected_release_id, expected_manifest_sha256 = sys.argv[2:]
 if not isinstance(value, dict):
     raise SystemExit("public build result must be an object")
 brain = value.get("brain")
 if value.get("schema") != "wikilean.public-build-result/v1" or not isinstance(brain, dict):
     raise SystemExit("invalid public build result schema")
-if brain.get("schema") != "wikilean.public-stage-result/v1":
+if brain.get("schema") != "wikilean.public-stage-result/v2":
     raise SystemExit("invalid public stage result schema")
+if (
+    brain.get("release_id") != expected_release_id
+    or brain.get("manifest_sha256") != expected_manifest_sha256
+    or re.fullmatch(r"[0-9a-f]{64}", expected_manifest_sha256) is None
+):
+    raise SystemExit("public stage result does not bind the frozen manifest")
 if brain.get("warnings") != []:
     raise SystemExit("public stage completed with operational warnings")
 page = brain.get("brain_page")
@@ -822,12 +830,13 @@ PY
         --input-inventory "brain/authority/reducer-inputs-v1.json" \
         >"$TMP_BUILD_OUTPUT" \
       && extract_json_object "$TMP_BUILD_OUTPUT" "$TMP_RELEASE_RESULT" \
-           release_id release root manifest artifact_count byte_count; then
+           release_id release root manifest manifest_sha256 artifact_count byte_count; then
       mv "$TMP_RELEASE_RESULT" "$RELEASE_RESULT"
       RELEASE_ID="$(json_field "$RELEASE_RESULT" release_id)"
       RELEASE_HEX="$(json_field "$RELEASE_RESULT" release)"
       RELEASE_ROOT="$(json_field "$RELEASE_RESULT" root)"
       RELEASE_MANIFEST="$(json_field "$RELEASE_RESULT" manifest)"
+      RELEASE_MANIFEST_SHA256="$(json_field "$RELEASE_RESULT" manifest_sha256)"
       echo "(release frozen: $RELEASE_ID)"
     else
       echo "!!! RELEASE ABORTED: build_release.py failed or emitted no valid result"
@@ -844,9 +853,9 @@ PY
     esac
   fi
   if [ "$PUBLISH_OK" = "1" ] \
-      && { [ "$RELEASE_ROOT" != "$RELEASE_STORE/$RELEASE_HEX" ] \
+      && { [ "$RELEASE_ROOT" != "$RELEASE_STORE/$RELEASE_MANIFEST_SHA256" ] \
         || [ "$RELEASE_MANIFEST" != "$RELEASE_ROOT/release.json" ]; }; then
-    echo "!!! RELEASE ABORTED: builder result paths do not match release identity"
+    echo "!!! RELEASE ABORTED: builder result paths do not match exact manifest identity"
     PUBLISH_OK=0
   fi
 
@@ -898,7 +907,8 @@ PY
             >"$TMP_PUBLIC_OUTPUT") \
         && extract_json_object "$TMP_PUBLIC_OUTPUT" "$TMP_PUBLIC_RESULT" \
              schema public_dir mathlib_declarations public_baseline brain duration_ms max_rss_bytes \
-        && PUBLIC_STAGE_RELEASE_ID="$(public_result_release_id "$TMP_PUBLIC_RESULT" 2>/dev/null)" \
+        && PUBLIC_STAGE_RELEASE_ID="$(public_result_release_id \
+             "$TMP_PUBLIC_RESULT" "$RELEASE_ID" "$RELEASE_MANIFEST_SHA256" 2>/dev/null)" \
         && [ "$PUBLIC_STAGE_RELEASE_ID" = "$RELEASE_ID" ] \
         && cmp -s "$RELEASE_ROOT/site/out/brain.html" "$REPO/wiki/public/brain.html"; then
       mv "$TMP_PUBLIC_RESULT" "$PUBLIC_RESULT"

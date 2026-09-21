@@ -57,9 +57,10 @@ are not interchangeable.
 The release projection excludes attestation references to avoid a content-identity
 cycle: attestations bind the already computed release ID. A validation attestation
 must not embed the final manifest digest, because the manifest embeds the attestation
-digest; exact manifest bytes are instead content-addressed by the registry or caller
-that stores the manifest. Changing an attestation reference therefore requires a new
-immutable manifest object but does not rename the release's logical content.
+digest. Frozen and public registries instead name the complete namespace by the bare
+SHA-256 digest of the exact manifest bytes, and release-selector v2 binds that digest
+to its URL. Changing an attestation reference therefore creates a new immutable
+manifest namespace but does not rename the release's logical content.
 
 The `wikilean.brain-reducer-config/v1` document has no separate domain identifier.
 `replay.reducer.configuration_sha256` is the lowercase bare SHA-256 digest of that

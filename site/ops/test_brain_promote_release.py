@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import contextlib
+import copy
 import hashlib
 import importlib.util
 import io
 import json
 import os
+import shutil
 import stat
 import sys
 import tempfile
@@ -48,6 +50,34 @@ DEPLOYMENT_C = "33333333-3333-3333-3333-333333333333"
 VERSION_C = "cccccccc-cccc-cccc-cccc-cccccccccccc"
 
 
+def node_modules_identity(base: Path) -> dict[str, object]:
+    return {
+        "schema": "wikilean.node-modules-inventory/v1",
+        "root": str((base / "node_modules").resolve()),
+        "package_lock_sha256": "1" * 64,
+        "objects": 1,
+        "bytes": 1,
+        "symlinks": 0,
+        "sha256": "2" * 64,
+    }
+
+
+def node_executables_identity(base: Path) -> dict[str, object]:
+    return {
+        "schema": "wikilean.node-executables/v1",
+        "node": {
+            "path": str((base / "bin" / "node").resolve()),
+            "sha256": "3" * 64,
+            "bytes": 1,
+        },
+        "wrangler": {
+            "path": str((base / "node_modules" / "wrangler.js").resolve()),
+            "sha256": "4" * 64,
+            "bytes": 1,
+        },
+    }
+
+
 def make_repo(root: Path) -> Path:
     repo = (root / "repo").resolve()
     for relative in (
@@ -64,11 +94,7 @@ def make_repo(root: Path) -> Path:
 
 def make_release(base: Path, release_id: str = RELEASE_A) -> promote.ReleaseInfo:
     release_hex = release_id.removeprefix("sha256:")
-    root = (base / "store" / release_hex).resolve()
-    (root / "site" / "out").mkdir(parents=True)
-    (root / "site" / "out" / "brain.html").write_text("<html>brain</html>\n", encoding="utf-8")
-    manifest = root / "release.json"
-    manifest.write_text(
+    manifest_body = (
         json.dumps(
             {
                 "schema": "wikilean.release/v1",
@@ -78,15 +104,20 @@ def make_release(base: Path, release_id: str = RELEASE_A) -> promote.ReleaseInfo
             },
             sort_keys=True,
         )
-        + "\n",
-        encoding="utf-8",
-    )
+        + "\n"
+    ).encode()
+    manifest_sha256 = hashlib.sha256(manifest_body).hexdigest()
+    root = (base / "store" / manifest_sha256).resolve()
+    (root / "site" / "out").mkdir(parents=True)
+    (root / "site" / "out" / "brain.html").write_text("<html>brain</html>\n", encoding="utf-8")
+    manifest = root / "release.json"
+    manifest.write_bytes(manifest_body)
     return promote.ReleaseInfo(
         release_id,
         release_hex,
         root,
         manifest,
-        hashlib.sha256(manifest.read_bytes()).hexdigest(),
+        manifest_sha256,
         COMMIT,
         COMMIT,
         promote.inventory_tree(root),
@@ -148,18 +179,42 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
     bundle_entry.write_text("export default {};\n", encoding="utf-8")
     deploy_config = (base / "wrangler.jsonc").resolve()
     deploy_config.write_text("{}\n", encoding="utf-8")
+    initial_probe = selector_probe(RELEASE_B)
+    initial_selector = promote.selector_from_probe(
+        initial_probe,
+        RELEASE_A,
+        candidate_manifest_sha256=candidate.manifest_sha256,
+        allow_first_deploy=False,
+        first_deploy_approval=None,
+    )
+    status_body = (
+        json.dumps(
+            {
+                "id": DEPLOYMENT_A,
+                "versions": [{"version_id": VERSION_A, "percentage": 100}],
+            },
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode()
     staged_body = selector_probe(
         RELEASE_A,
         body=(
             json.dumps(
                 {
-                    "schema": "wikilean.release-selector/v1",
+                    "schema": "wikilean.release-selector/v2",
                     "release_id": RELEASE_A,
                     "release": "a" * 64,
-                    "manifest": f"/assets/brain/releases/{'a' * 64}/release.json",
+                    "manifest_sha256": candidate.manifest_sha256,
+                    "manifest": (
+                        f"/assets/brain/releases/{candidate.manifest_sha256}/release.json"
+                    ),
                     "previous_release_id": RELEASE_B,
                     "previous_release": "b" * 64,
-                    "previous_manifest": f"/assets/brain/releases/{'b' * 64}/release.json",
+                    "previous_manifest_sha256": prior.manifest_sha256,
+                    "previous_manifest": (
+                        f"/assets/brain/releases/{prior.manifest_sha256}/release.json"
+                    ),
                     "audited_at": "2030-01-01T00:00:00Z",
                 },
                 sort_keys=True,
@@ -176,16 +231,21 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
         prior,
         prior,
         baseline,
-        promote.SelectorState(200, "1" * 64, b"{}", RELEASE_B, None, RELEASE_B, None),
-        promote.DeploymentState(DEPLOYMENT_A, VERSION_A, "2" * 64),
-        b'{"id":"before"}',
-        b'{"id":"after"}',
+        initial_selector,
+        promote.DeploymentState(
+            DEPLOYMENT_A,
+            VERSION_A,
+            hashlib.sha256(status_body).hexdigest(),
+        ),
+        status_body,
+        status_body,
         public_dir,
         promote.inventory_tree(public_dir),
         {"schema": "wikilean.public-build-result/v1", "duration_ms": 1.25},
         promote.selector_from_probe(
             staged_body,
             RELEASE_A,
+            candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=False,
             first_deploy_approval=None,
         ),
@@ -199,7 +259,41 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
         "fixture-ca",
         {},
         {"deployments": b'[{"id":"deployment"}]\n', "versions": b'[{"id":"version"}]\n'},
+        wrangler_installation=node_modules_identity(base),
+        node_executables=node_executables_identity(base),
     )
+
+
+def with_reviewed_activation(
+    prepared: promote.PreparedPromotion,
+) -> promote.PreparedPromotion:
+    root = prepared.public_dir.parent.resolve()
+    retained = promote.RetainedDryRunArtifacts(
+        "sha256:" + "9" * 64,
+        "9" * 64,
+        root,
+        root / "manifest.json",
+        "8" * 64,
+        prepared.public_dir,
+        prepared.bundle_dir,
+        prepared.bundle_entry,
+        prepared.deploy_config,
+    )
+    activation = promote.ReviewedActivation(
+        root,
+        root / "activation-manifest.json",
+        "7" * 64,
+        "sha256:" + "6" * 64,
+        RELEASE_C,
+        prepared.candidate.release_id,
+        prepared.public_baseline.baseline_id,
+        prepared.candidate.authority_commit,
+        prepared.candidate.reducer_commit,
+        prepared.attempt_id,
+        {},
+        retained,
+    )
+    return replace(prepared, activation=activation)
 
 
 def prepared_for_retention(base: Path) -> promote.PreparedPromotion:
@@ -229,13 +323,21 @@ def prepared_for_retention(base: Path) -> promote.PreparedPromotion:
             "bytes": 0,
         },
         "brain": {
-            "schema": "wikilean.public-stage-result/v1",
+            "schema": "wikilean.public-stage-result/v2",
             "release_id": prepared.candidate.release_id,
             "release": prepared.candidate.release_hex,
+            "manifest_sha256": prepared.candidate.manifest_sha256,
             "previous_release_id": prepared.prior.release_id if prepared.prior else None,
+            "previous_manifest_sha256": (
+                prepared.prior.manifest_sha256 if prepared.prior else None
+            ),
             "retained_release_ids": [
                 prepared.candidate.release_id,
                 *([prepared.prior.release_id] if prepared.prior else []),
+            ],
+            "retained_manifest_sha256s": [
+                prepared.candidate.manifest_sha256,
+                *([prepared.prior.manifest_sha256] if prepared.prior else []),
             ],
             "destination": str(prepared.public_dir / "assets/brain"),
             "objects": 1,
@@ -350,6 +452,7 @@ class DeployScenario(promote.BrainPromoter):
     def _run_canary(
         self,
         release_id,
+        manifest_sha256,
         journal,
         prefix,
         expected_trust_source,
@@ -359,8 +462,14 @@ class DeployScenario(promote.BrainPromoter):
         result = promote.RunResult(("canary",), 0 if self.canary_ok else 1, b"", b"")
         return self.canary_ok, {
             "expected_release_id": release_id,
+            "expected_manifest_sha256": manifest_sha256,
             "expected_trust_source": expected_trust_source,
-            "result": {"ok": self.canary_ok, "trust_source": expected_trust_source},
+            "result": {
+                "ok": self.canary_ok,
+                "release_id": release_id,
+                "manifest_sha256": manifest_sha256,
+                "trust_source": expected_trust_source,
+            },
         }, result
 
     def _final_predeploy_fence(self, prepared, journal):
@@ -379,6 +488,12 @@ class DeployScenario(promote.BrainPromoter):
             url="https://example.test/assets/brain/current.json?fence=2",
         )
         return prepared.predeploy, result, probe, prepared.predeploy, result
+
+    def _wrangler_installation_identity(self):
+        return node_modules_identity(self.repo.parent)
+
+    def _node_executables_identity(self):
+        return node_executables_identity(self.repo.parent)
 
     def _observe_expected_release(self, **_kwargs):
         if self.observe_error is not None:
@@ -424,13 +539,26 @@ class FenceScenario(DeployScenario):
     def _final_predeploy_fence(self, prepared, journal):
         return promote.BrainPromoter._final_predeploy_fence(self, prepared, journal)
 
+    def _verify_reviewed_activation(self, expected=None):
+        if expected is None:
+            raise AssertionError("expected reviewed activation")
+        return expected
+
+    def _wrangler_installation_identity(self):
+        return self.prepared_value.wrangler_installation
+
+    def _node_executables_identity(self):
+        return self.prepared_value.node_executables
+
     def _remote_predeploy_fence(self, prepared, *, config, phase):
         return promote.BrainPromoter._remote_predeploy_fence(
             self, prepared, config=config, phase=phase
         )
 
-    def _verify_release(self, expected_release_id, root_input):
-        del root_input
+    def _verify_release(
+        self, expected_release_id, root_input, *, allow_legacy_release_id_root=False
+    ):
+        del root_input, allow_legacy_release_id_root
         if expected_release_id == self.prepared_value.candidate.release_id:
             return self.prepared_value.candidate
         if (
@@ -517,8 +645,10 @@ class ReconcileScenario(promote.BrainPromoter):
             attempt_id="reconcile-command",
         )
 
-    def _verify_release(self, expected_release_id, root_input):
-        del root_input
+    def _verify_release(
+        self, expected_release_id, root_input, *, allow_legacy_release_id_root=False
+    ):
+        del root_input, allow_legacy_release_id_root
         if expected_release_id == self.prepared_value.candidate.release_id:
             return self.prepared_value.candidate
         if (
@@ -536,6 +666,12 @@ class ReconcileScenario(promote.BrainPromoter):
 
     def _verify_toolchain(self):
         return self.prepared_value.node_version, self.prepared_value.wrangler_version
+
+    def _wrangler_installation_identity(self):
+        return self.prepared_value.wrangler_installation
+
+    def _node_executables_identity(self):
+        return self.prepared_value.node_executables
 
     def _stable_reconciliation_observation(self, config=None):
         del config
@@ -566,6 +702,7 @@ class ReconcileScenario(promote.BrainPromoter):
     def _run_canary(
         self,
         release_id,
+        manifest_sha256,
         journal,
         prefix,
         expected_trust_source,
@@ -576,8 +713,14 @@ class ReconcileScenario(promote.BrainPromoter):
         result = promote.RunResult(("canary",), 0 if self.canary_ok else 1, b"", b"")
         return self.canary_ok, {
             "expected_release_id": release_id,
+            "expected_manifest_sha256": manifest_sha256,
             "expected_trust_source": expected_trust_source,
-            "result": {"ok": self.canary_ok, "trust_source": expected_trust_source},
+            "result": {
+                "ok": self.canary_ok,
+                "release_id": release_id,
+                "manifest_sha256": manifest_sha256,
+                "trust_source": expected_trust_source,
+            },
         }, result
 
 
@@ -651,6 +794,53 @@ class BrainPromotionUnitTest(unittest.TestCase):
         killpg.assert_called_once_with(43210, promote.signal.SIGTERM)
         self.assertEqual(process.communicate.call_count, 2)
 
+    def test_wrangler_installation_identity_detects_tampering_and_symlink_escape(self):
+        wiki = self.base / "toolchain-wiki"
+        package = wiki / "node_modules" / "wrangler"
+        package.mkdir(parents=True)
+        (wiki / "package-lock.json").write_text('{"lockfileVersion":3}\n')
+        entry = package / "bin.js"
+        entry.write_text("first\n")
+        bin_dir = wiki / "node_modules" / ".bin"
+        bin_dir.mkdir()
+        (bin_dir / "wrangler").symlink_to("../wrangler/bin.js")
+        before = promote.inventory_node_modules(wiki)
+        entry.write_text("other\n")
+        after = promote.inventory_node_modules(wiki)
+        self.assertNotEqual(before["sha256"], after["sha256"])
+
+        outside = self.base / "outside-node-tool"
+        outside.write_text("outside\n")
+        escaping = bin_dir / "escaping"
+        escaping.symlink_to("../../../outside-node-tool")
+        with self.assertRaisesRegex(promote.PromotionError, "escapes"):
+            promote.inventory_node_modules(wiki)
+
+    def test_node_environment_drops_injection_and_scopes_cloudflare_credentials(self):
+        source = {
+            "HOME": str(self.base),
+            "NODE_OPTIONS": "--require=/tmp/inject.js",
+            "NODE_PATH": "/tmp/inject-modules",
+            "npm_config_userconfig": "/tmp/attacker.npmrc",
+            "CLOUDFLARE_API_TOKEN": "token",
+            "CLOUDFLARE_ACCOUNT_ID": "account",
+            "CLOUDFLARE_API_BASE_URL": "https://attacker.invalid",
+            "SSL_CERT_FILE": "/tmp/ca.pem",
+        }
+        with mock.patch.dict(os.environ, source, clear=True):
+            local = promote._node_environment(Path("/reviewed/bin/node"))
+            remote = promote._node_environment(
+                Path("/reviewed/bin/node"), include_cloudflare=True
+            )
+        self.assertNotIn("NODE_OPTIONS", local)
+        self.assertNotIn("NODE_PATH", local)
+        self.assertNotIn("npm_config_userconfig", local)
+        self.assertNotIn("CLOUDFLARE_API_TOKEN", local)
+        self.assertEqual(remote["CLOUDFLARE_API_TOKEN"], "token")
+        self.assertEqual(remote["CLOUDFLARE_ACCOUNT_ID"], "account")
+        self.assertNotIn("CLOUDFLARE_API_BASE_URL", remote)
+        self.assertEqual(remote["SSL_CERT_FILE"], "/tmp/ca.pem")
+
     def test_nonfinite_operational_intervals_are_rejected(self):
         for options in (
             {"command_timeout": float("inf")},
@@ -717,6 +907,49 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 with self.assertRaisesRegex(promote.PromotionError, message):
                     scenario._validate_options()
 
+    def test_execute_requires_complete_activation_trust_anchors(self):
+        runner = ResultRunner(promote.RunResult(("unexpected",), 0, b"", b""))
+        instance = promote.BrainPromoter(
+            repo_root=self.repo,
+            python=Path(sys.executable),
+            release_id=RELEASE_A,
+            release_root=self.base / "store" / ("a" * 64),
+            public_baseline_id=BASELINE_ID,
+            public_baseline_root=self.base / "baseline" / ("d" * 64),
+            receipt_root=self.receipt,
+            base_url="https://example.test",
+            production_origin="https://example.test",
+            mode="execute",
+            approval_note="fixture approval",
+            runner=runner,
+        )
+        with self.assertRaisesRegex(promote.PromotionError, "activation-bundle-id"):
+            instance.run()
+        self.assertEqual(runner.calls, [])
+
+    def test_invalid_activation_bundle_blocks_before_any_runner_call(self):
+        runner = ResultRunner(promote.RunResult(("unexpected",), 0, b"", b""))
+        instance = promote.BrainPromoter(
+            repo_root=self.repo,
+            python=Path(sys.executable),
+            release_id=RELEASE_A,
+            release_root=self.base / "store" / ("a" * 64),
+            public_baseline_id=BASELINE_ID,
+            public_baseline_root=self.base / "baseline" / ("d" * 64),
+            activation_bundle_id="sha256:" + "6" * 64,
+            activation_bundle_root=self.base / "missing-activation-bundle",
+            expected_semantic_baseline_id=RELEASE_B,
+            receipt_root=self.receipt,
+            base_url="https://example.test",
+            production_origin="https://example.test",
+            mode="execute",
+            approval_note="fixture approval",
+            runner=runner,
+        )
+        with self.assertRaisesRegex(promote.PromotionError, "activation bundle verification"):
+            instance.run()
+        self.assertEqual(runner.calls, [])
+
     def test_worker_bundle_dry_run_uses_explicit_checkout_entry_with_copied_config(self):
         public_dir = self.base / "public-smoke"
         public_dir.mkdir()
@@ -728,14 +961,22 @@ class BrainPromotionUnitTest(unittest.TestCase):
         class BundleRunner(promote.CommandRunner):
             def __init__(inner):
                 inner.calls = []
+                inner.environments = []
 
             def run(inner, args, *, cwd, timeout=None, env=None):
-                del cwd, timeout, env
+                del cwd, timeout
                 command = tuple(str(value) for value in args)
                 inner.calls.append(command)
-                if command[:3] == ("npm", "run", "typecheck"):
+                inner.environments.append(dict(env or {}))
+                if Path(command[0]).name in {"npm", "npm-cli.js"} and command[1:] == (
+                    "run",
+                    "typecheck",
+                ):
                     return promote.RunResult(command, 0, b"", b"")
-                if command[:3] == ("npm", "run", "test:unit"):
+                if Path(command[0]).name in {"npm", "npm-cli.js"} and command[1:] == (
+                    "run",
+                    "test:unit",
+                ):
                     return promote.RunResult(command, 0, b"", b"")
                 output = Path(command[command.index("--outdir") + 1])
                 output.mkdir(parents=True)
@@ -744,17 +985,21 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
         runner = BundleRunner()
         instance = self.promoter(runner=runner)
+        tools = node_executables_identity(self.base)
+        tools["wrangler"]["path"] = str(
+            self.repo / "wiki" / "node_modules" / "wrangler" / "bin" / "wrangler.js"
+        )
+        instance._bind_node_executables(tools)
         entry, _ = instance._run_worker_checks(
             public_dir, bundle_dir, deploy_config
         )
         self.assertEqual(entry, bundle_dir / "index.js")
         first_wrangler = runner.calls[2]
+        self.assertEqual(Path(first_wrangler[0]).name, "node")
         self.assertEqual(
-            first_wrangler[:5],
+            first_wrangler[1:4],
             (
-                "npx",
-                "--no-install",
-                "wrangler",
+                str(self.repo / "wiki" / "node_modules/wrangler/bin/wrangler.js"),
                 "deploy",
                 str(self.repo / "wiki" / "src" / "index.ts"),
             ),
@@ -762,6 +1007,9 @@ class BrainPromotionUnitTest(unittest.TestCase):
         self.assertEqual(
             first_wrangler[first_wrangler.index("--config") + 1],
             str(deploy_config),
+        )
+        self.assertTrue(
+            all("CLOUDFLARE_API_TOKEN" not in call_env for call_env in runner.environments)
         )
 
     def test_history_evidence_preserves_raw_wrangler_bodies(self):
@@ -777,7 +1025,13 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 inner.index += 1
                 return promote.RunResult(tuple(args), 0, body, b"")
 
-        evidence, raw = self.promoter(runner=HistoryRunner())._history_evidence()
+        instance = self.promoter(runner=HistoryRunner())
+        tools = node_executables_identity(self.base)
+        tools["wrangler"]["path"] = str(
+            self.repo / "wiki" / "node_modules" / "wrangler" / "bin" / "wrangler.js"
+        )
+        instance._bind_node_executables(tools)
+        evidence, raw = instance._history_evidence()
         self.assertEqual(raw, {"deployments": bodies[0], "versions": bodies[1]})
         for key in ("deployments", "versions"):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
@@ -816,15 +1070,41 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 first_deploy_approval="approval",
             )
 
+    def test_v1_selector_cannot_discard_same_logical_release_without_manifest_proof(self):
+        with self.assertRaisesRegex(
+            promote.PromotionError,
+            "cannot distinguish the live manifest",
+        ):
+            promote.selector_from_probe(
+                selector_probe(RELEASE_A),
+                RELEASE_A,
+                candidate_manifest_sha256="3" * 64,
+                allow_first_deploy=False,
+                first_deploy_approval=None,
+            )
+
     def test_release_root_must_match_id_and_reject_symlink(self):
         release = make_release(self.base, RELEASE_A)
         self.assertEqual(self.promoter()._validate_release_root(release.root, RELEASE_A), release.root)
-        with self.assertRaisesRegex(promote.PromotionError, "basename"):
+        with self.assertRaisesRegex(promote.PromotionError, "requested release ID"):
             self.promoter()._validate_release_root(release.root, RELEASE_B)
         alias = self.base / "release-alias"
         alias.symlink_to(release.root, target_is_directory=True)
         with self.assertRaisesRegex(promote.PromotionError, "symlink"):
             self.promoter()._validate_release_root(alias, RELEASE_A)
+
+        legacy_root = self.base / "legacy-store" / RELEASE_A.removeprefix("sha256:")
+        shutil.copytree(release.root, legacy_root)
+        with self.assertRaisesRegex(promote.PromotionError, "manifest digest"):
+            self.promoter()._validate_release_root(legacy_root, RELEASE_A)
+        self.assertEqual(
+            self.promoter()._validate_release_root(
+                legacy_root,
+                RELEASE_A,
+                allow_legacy_release_id_root=True,
+            ),
+            legacy_root,
+        )
 
     def test_deployment_status_rejects_split_and_noninteger_percentage(self):
         for percentage in (100.0, True):
@@ -917,8 +1197,14 @@ class BrainPromotionUnitTest(unittest.TestCase):
         )
 
         class RacePromoter(promote.BrainPromoter):
-            def _verify_release(inner, expected_release_id, root_input):
-                del expected_release_id, root_input
+            def _verify_release(
+                inner,
+                expected_release_id,
+                root_input,
+                *,
+                allow_legacy_release_id_root=False,
+            ):
+                del expected_release_id, root_input, allow_legacy_release_id_root
                 return candidate
 
             def _check_git_authority(inner, expected_commit):
@@ -926,6 +1212,12 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
             def _verify_toolchain(inner):
                 return "v22.0.0", "4.120.0"
+
+            def _wrangler_installation_identity(inner):
+                return node_modules_identity(self.base)
+
+            def _node_executables_identity(inner):
+                return node_executables_identity(self.base)
 
             def _probe_selector(inner, phase):
                 del phase
@@ -988,7 +1280,7 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         self.receipt = initialize_target_receipt_root(
             self.base / "receipts", self.repo, "https://example.test"
         )
-        self.prepared = make_prepared(self.base)
+        self.prepared = with_reviewed_activation(make_prepared(self.base))
 
     def tearDown(self):
         self.temp.cleanup()
@@ -1011,12 +1303,26 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
                 result = promoter_instance._deploy(prepared, journal)
             return result, EventJournal.load(journal.attempt_dir)
 
-    def run_reconciliation(self, scenario: ReconcileScenario, attempt_id: str):
+    def run_reconciliation(
+        self,
+        scenario: ReconcileScenario,
+        attempt_id: str,
+        *,
+        prepared: promote.PreparedPromotion | None = None,
+        legacy_selector_intent: bool = False,
+    ):
+        prepared = prepared or self.prepared
+        intent = scenario._intent_payload(prepared)
+        if legacy_selector_intent:
+            intent["staged_selector"].pop("manifest_sha256")
+            intent["staged_selector"].pop("previous_manifest_sha256")
+            intent["predeploy"].pop("manifest_sha256")
+            intent["predeploy"].pop("previous_manifest_sha256")
         with PromotionLock(self.receipt):
             journal = EventJournal.create_with_intent(
                 self.receipt,
                 attempt_id,
-                promote.journal_safe(scenario._intent_payload(self.prepared)),
+                promote.journal_safe(intent),
             )
             if scenario.deploy_invocation_started:
                 journal.append(
@@ -1026,7 +1332,7 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
             with mock.patch.object(
                 promote,
                 "verify_public_baseline",
-                return_value=self.prepared.public_baseline,
+                return_value=prepared.public_baseline,
             ):
                 with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
                     io.StringIO()
@@ -1034,12 +1340,73 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
                     result = scenario.reconcile(journal)
             return result, EventJournal.load(journal.attempt_dir)
 
+    def test_legacy_v1_intent_remains_reconcilable(self):
+        legacy_body = (
+            json.dumps(
+                {
+                    "schema": "wikilean.release-selector/v1",
+                    "release_id": RELEASE_A,
+                    "release": RELEASE_A.removeprefix("sha256:"),
+                    "manifest": (
+                        f"/assets/brain/releases/{RELEASE_A.removeprefix('sha256:')}/release.json"
+                    ),
+                    "previous_release_id": RELEASE_B,
+                    "previous_release": RELEASE_B.removeprefix("sha256:"),
+                    "previous_manifest": (
+                        f"/assets/brain/releases/{RELEASE_B.removeprefix('sha256:')}/release.json"
+                    ),
+                    "audited_at": self.prepared.audited_at,
+                },
+                sort_keys=True,
+            )
+            + "\n"
+        ).encode()
+        legacy_selector = promote.selector_from_probe(
+            selector_probe(RELEASE_A, body=legacy_body),
+            RELEASE_A,
+            allow_first_deploy=False,
+            first_deploy_approval=None,
+        )
+        prepared = replace(
+            self.prepared,
+            staged_selector=legacy_selector,
+            initial_selector=legacy_selector,
+            predeploy_release=self.prepared.candidate,
+        )
+        annotations = {
+            "workers/tag": prepared.tag,
+            "workers/message": prepared.message,
+        }
+        observed = make_observation(legacy_selector, annotations=annotations)
+        scenario = ReconcileScenario(
+            self.repo,
+            self.receipt,
+            prepared,
+            [observed, observed],
+            reconcile_attempt="legacy-selector-intent",
+        )
+        exit_code, journal = self.run_reconciliation(
+            scenario,
+            "legacy-selector-intent",
+            prepared=prepared,
+            legacy_selector_intent=True,
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(journal.events[-1]["payload"]["outcome"], "deployed_reconciled")
+
     def test_execute_publishes_no_empty_attempt_and_exactly_one_intent(self):
         work = self.base / "atomic-work"
-        prepared = replace(make_prepared(work), attempt_id="atomic-attempt")
+        prepared = with_reviewed_activation(
+            replace(make_prepared(work), attempt_id="atomic-attempt")
+        )
 
         class AtomicPromoter(promote.BrainPromoter):
-            def prepare(inner):
+            def _verify_reviewed_activation(inner, expected=None):
+                del expected
+                return prepared.activation
+
+            def _prepare_reviewed_activation(inner, activation):
+                self.assertEqual(activation, prepared.activation)
                 return prepared
 
             def _deploy(inner, prepared_value, journal):
@@ -1060,6 +1427,11 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
             production_origin="https://example.test",
             mode="execute",
             approval_note="fixture approval",
+            activation_bundle_id=prepared.activation.bundle_id,
+            activation_bundle_root=prepared.activation.root,
+            expected_semantic_baseline_id=(
+                prepared.activation.semantic_baseline_release_id
+            ),
             attempt_id="atomic-attempt",
             audited_at=prepared.audited_at,
         )
@@ -1090,9 +1462,22 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         self.assertEqual(journal.events[-1]["payload"]["outcome"], "deployed_after_uncertain_command")
         deploy_event = next(event for event in journal.events if event["kind"] == "deploy_result")
         self.assertEqual(deploy_event["payload"]["command"]["returncode"], 1)
+        intent = journal.events[0]["payload"]
+        self.assertEqual(
+            intent["activation_bundle"]["bundle_id"],
+            self.prepared.activation.bundle_id,
+        )
+        invocation = next(
+            event for event in journal.events if event["kind"] == "deploy_invocation"
+        )
+        self.assertEqual(
+            invocation["payload"]["activation_bundle"],
+            self.prepared.activation.reference(),
+        )
         self.assertEqual(len(runner.calls), 1)
         command = runner.calls[0]
-        self.assertEqual(command[:5], ("npx", "--no-install", "wrangler", "deploy", str(self.prepared.bundle_entry)))
+        self.assertEqual(Path(command[0]).name, "node")
+        self.assertEqual(command[2:4], ("deploy", str(self.prepared.bundle_entry)))
         self.assertEqual(command[command.index("--config") + 1], str(self.prepared.deploy_config))
         self.assertIn("--no-bundle", command)
         self.assertEqual(command[command.index("--assets") + 1], str(self.prepared.public_dir))
@@ -1116,6 +1501,86 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         self.assertTrue(journal.terminal)
         self.assertEqual(journal.events[-1]["payload"]["outcome"], "predeploy_race_aborted")
         self.assertIn("sealed public tree changed", journal.events[-2]["payload"]["error"])
+
+    def test_final_fence_aborts_on_wrangler_installation_tampering(self):
+        runner = ResultRunner(promote.RunResult(("deploy",), 0, b"", b""))
+        scenario = FenceScenario(self.repo, self.receipt, runner, self.prepared)
+        changed = dict(self.prepared.wrangler_installation)
+        changed["sha256"] = "f" * 64
+        scenario._wrangler_installation_identity = lambda: changed
+        with mock.patch.object(
+            promote, "verify_public_baseline", return_value=self.prepared.public_baseline
+        ):
+            exit_code, journal = self.run_with_journal(scenario)
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(runner.calls, [])
+        self.assertIn(
+            "dependency tree changed",
+            journal.events[-2]["payload"]["error"],
+        )
+
+    def test_final_fence_aborts_on_node_executable_tampering(self):
+        runner = ResultRunner(promote.RunResult(("deploy",), 0, b"", b""))
+        scenario = FenceScenario(self.repo, self.receipt, runner, self.prepared)
+        changed = copy.deepcopy(self.prepared.node_executables)
+        changed["node"]["sha256"] = "f" * 64
+        scenario._node_executables_identity = lambda: changed
+        with mock.patch.object(
+            promote, "verify_public_baseline", return_value=self.prepared.public_baseline
+        ):
+            exit_code, journal = self.run_with_journal(scenario)
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(runner.calls, [])
+        self.assertIn(
+            "executable bytes changed",
+            journal.events[-2]["payload"]["error"],
+        )
+
+    def test_immediate_fence_aborts_on_wrangler_mutation_before_spawn(self):
+        runner = ResultRunner(promote.RunResult(("deploy",), 0, b"", b""))
+        probes = [
+            (
+                SelectorProbe(
+                    body=self.prepared.initial_selector.body,
+                    body_sha256=self.prepared.initial_selector.body_sha256,
+                    content_type="application/json",
+                    status=self.prepared.initial_selector.status,
+                    trust_source=self.prepared.trust_source,
+                    url=f"https://example.test/assets/brain/current.json?fence={index}",
+                ),
+                self.prepared.trust_source,
+            )
+            for index in (1, 2)
+        ]
+        scenario = FenceScenario(
+            self.repo,
+            self.receipt,
+            runner,
+            self.prepared,
+            probes=probes,
+            statuses=[self.prepared.predeploy] * 4,
+        )
+        checked_fence = scenario._remote_predeploy_fence
+        changed = dict(self.prepared.wrangler_installation)
+        changed["sha256"] = "f" * 64
+
+        def mutate_after_fence(prepared, *, config, phase):
+            result = checked_fence(prepared, config=config, phase=phase)
+            if phase == "immediate-before-deploy":
+                scenario._wrangler_installation_identity = lambda: changed
+            return result
+
+        scenario._remote_predeploy_fence = mutate_after_fence
+        with mock.patch.object(
+            promote, "verify_public_baseline", return_value=self.prepared.public_baseline
+        ):
+            exit_code, journal = self.run_with_journal(scenario)
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(runner.calls, [])
+        self.assertIn(
+            "changed during the immediate predeploy fence",
+            journal.events[-2]["payload"]["error"],
+        )
 
     def test_final_fence_aborts_on_selector_race_before_wrangler(self):
         runner = ResultRunner(promote.RunResult(("deploy",), 0, b"", b""))
@@ -1630,6 +2095,122 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         self.assertNotIn("final_state", [event["kind"] for event in journal.events])
 
 class BrainPromotionDryRunTest(unittest.TestCase):
+    def test_reviewed_activation_reuses_exact_retained_deployment_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(
+                base / "receipts", repo, "https://example.test"
+            )
+            prepared = prepared_for_retention(base / "workspace")
+            selector_path = prepared.public_dir / "assets" / "brain" / "current.json"
+            selector_path.parent.mkdir(parents=True)
+            selector_path.write_bytes(prepared.staged_selector.body)
+            prepared = replace(
+                prepared,
+                public_inventory=promote.inventory_tree(prepared.public_dir),
+            )
+            dry_run_promoter = promote.BrainPromoter(
+                repo_root=repo,
+                python=Path(sys.executable),
+                release_id=prepared.candidate.release_id,
+                release_root=prepared.candidate.root,
+                public_baseline_id=prepared.public_baseline.baseline_id,
+                public_baseline_root=prepared.public_baseline.root,
+                receipt_root=receipt,
+                base_url="https://example.test",
+                production_origin="https://example.test",
+                mode="dry-run",
+                attempt_id=prepared.attempt_id,
+                audited_at=prepared.audited_at,
+            )
+            retained = promote.retain_dry_run_artifacts(
+                prepared,
+                base / "retained",
+                repo_root=repo,
+                receipt_root=receipt,
+            )
+            intent = dry_run_promoter._retained_intent_payload(prepared, retained)
+            activation = promote.ReviewedActivation(
+                base / ("6" * 64),
+                base / ("6" * 64) / "manifest.json",
+                "7" * 64,
+                "sha256:" + "6" * 64,
+                RELEASE_C,
+                prepared.candidate.release_id,
+                prepared.public_baseline.baseline_id,
+                prepared.candidate.authority_commit,
+                prepared.candidate.reducer_commit,
+                prepared.attempt_id,
+                intent,
+                retained,
+            )
+
+            class ReviewedPromoter(promote.BrainPromoter):
+                def _verify_release(
+                    inner,
+                    expected_release_id,
+                    root_input,
+                *,
+                allow_legacy_release_id_root=False,
+            ):
+                    if (
+                        expected_release_id == prepared.candidate.release_id
+                        and Path(root_input) == prepared.candidate.root
+                    ):
+                        return prepared.candidate
+                    if (
+                        prepared.prior is not None
+                        and expected_release_id == prepared.prior.release_id
+                        and Path(root_input) == prepared.prior.root
+                    ):
+                        self.assertTrue(allow_legacy_release_id_root)
+                        return prepared.prior
+                    raise AssertionError((expected_release_id, root_input))
+
+                def _check_git_authority(inner, expected_commit):
+                    self.assertEqual(expected_commit, COMMIT)
+                    return expected_commit
+
+                def _verify_toolchain(inner):
+                    return prepared.node_version, prepared.wrangler_version
+
+                def _wrangler_installation_identity(inner):
+                    return prepared.wrangler_installation
+
+                def _node_executables_identity(inner):
+                    return prepared.node_executables
+
+            instance = ReviewedPromoter(
+                repo_root=repo,
+                python=Path(sys.executable),
+                release_id=prepared.candidate.release_id,
+                release_root=prepared.candidate.root,
+                public_baseline_id=prepared.public_baseline.baseline_id,
+                public_baseline_root=prepared.public_baseline.root,
+                activation_bundle_id=activation.bundle_id,
+                activation_bundle_root=activation.root,
+                expected_semantic_baseline_id=(
+                    activation.semantic_baseline_release_id
+                ),
+                receipt_root=receipt,
+                base_url="https://example.test",
+                production_origin="https://example.test",
+                mode="execute",
+                approval_note="approved reviewed activation",
+            )
+            with mock.patch.object(
+                promote,
+                "verify_public_baseline",
+                return_value=prepared.public_baseline,
+            ):
+                executable = instance._prepare_reviewed_activation(activation)
+            self.assertEqual(executable.public_dir, retained.public_dir)
+            self.assertEqual(executable.bundle_entry, retained.worker_entry)
+            self.assertEqual(executable.deploy_config, retained.config)
+            self.assertEqual(executable.activation, activation)
+            self.assertEqual(instance.attempt_id, prepared.attempt_id)
+
     def test_retained_publication_failure_removes_candidate_and_preserves_recreated_source(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory).resolve()

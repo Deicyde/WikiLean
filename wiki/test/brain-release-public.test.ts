@@ -75,8 +75,19 @@ function makeRelease(
   root: string,
   fill: string,
   largeShardBytes = 0,
-  overrides: { profile?: string; throughChangeset?: string | null; omitArtifact?: string } = {},
-): { releaseDir: string; manifestPath: string; releaseId: string; hex: string } {
+  overrides: {
+    profile?: string;
+    throughChangeset?: string | null;
+    omitArtifact?: string;
+    createdAt?: string;
+  } = {},
+): {
+  releaseDir: string;
+  manifestPath: string;
+  releaseId: string;
+  hex: string;
+  manifestSha256: string;
+} {
   const artifactData = REQUIRED.filter(path => path !== overrides.omitArtifact).map((path, index) => ({
     path,
     bytes: largeShardBytes > 0 && path.endsWith("cells/aa.json")
@@ -133,7 +144,7 @@ function makeRelease(
     artifacts,
     attestations: [],
     compatible_overlay_generation_ids: [],
-    created_at: "2030-01-01T00:00:00Z",
+    created_at: overrides.createdAt ?? "2030-01-01T00:00:00Z",
   };
   const releaseId = identity("wikilean.release.v1", identityInput);
   const hex = releaseId.slice("sha256:".length);
@@ -168,9 +179,18 @@ function makeRelease(
     writeFileSync(target, item.bytes);
   }
   const manifest = { ...identityInput, release_id: releaseId, attestations };
-  const manifestPath = join(releaseDir, "release.json");
-  writeFileSync(manifestPath, JSON.stringify(manifest) + "\n");
-  return { releaseDir, manifestPath, releaseId, hex };
+  const logicalManifestPath = join(releaseDir, "release.json");
+  writeFileSync(logicalManifestPath, JSON.stringify(manifest) + "\n");
+  const manifestSha256 = digest(readFileSync(logicalManifestPath));
+  const exactReleaseDir = join(root, manifestSha256);
+  renameSync(releaseDir, exactReleaseDir);
+  return {
+    releaseDir: exactReleaseDir,
+    manifestPath: join(exactReleaseDir, "release.json"),
+    releaseId,
+    hex,
+    manifestSha256,
+  };
 }
 
 const PUBLIC_BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1";
@@ -312,10 +332,13 @@ describe("stageBrainPublicRelease", () => {
 
     const result = stage(release, destination);
 
-    expect(result.schema).toBe("wikilean.public-stage-result/v1");
+    expect(result.schema).toBe("wikilean.public-stage-result/v2");
     expect(result.release_id).toBe(release.releaseId);
+    expect(result.manifest_sha256).toBe(release.manifestSha256);
     expect(result.previous_release_id).toBeNull();
+    expect(result.previous_manifest_sha256).toBeNull();
     expect(result.retained_release_ids).toEqual([release.releaseId]);
+    expect(result.retained_manifest_sha256s).toEqual([release.manifestSha256]);
     expect(result.copy_buffer_bytes).toBe(1024 * 1024);
     expect(result.duration_ms).toBeGreaterThanOrEqual(0);
     expect(result.max_rss_bytes).toBeGreaterThan(0);
@@ -325,21 +348,22 @@ describe("stageBrainPublicRelease", () => {
     expect(result.brain_page).toBeNull();
     const stagedSelector = selector(destination);
     expect(stagedSelector).toEqual({
-      schema: "wikilean.release-selector/v1",
+      schema: "wikilean.release-selector/v2",
       release_id: release.releaseId,
       release: release.hex,
-      manifest: `/assets/brain/releases/${release.hex}/release.json`,
+      manifest_sha256: release.manifestSha256,
+      manifest: `/assets/brain/releases/${release.manifestSha256}/release.json`,
       audited_at: "2030-01-01T00:00:00Z",
     });
     stage(release, destination, { auditedAt: "2040-01-01T00:00:00Z" });
     expect(selector(destination).audited_at).toBe("2040-01-01T00:00:00Z");
     for (const relativePath of ["sources.json", "xref_index.json", "cells/manifest.json", "cells/aa.json"]) {
       expect(readFileSync(join(destination, relativePath))).toEqual(
-        readFileSync(immutablePath(destination, release.hex, relativePath)),
+        readFileSync(immutablePath(destination, release.manifestSha256, relativePath)),
       );
     }
-    expect(existsSync(immutablePath(destination, release.hex, "brain/data/brain.sqlite3"))).toBe(false);
-    expect(existsSync(immutablePath(destination, release.hex, "attestations/build.json"))).toBe(false);
+    expect(existsSync(immutablePath(destination, release.manifestSha256, "brain/data/brain.sqlite3"))).toBe(false);
+    expect(existsSync(immutablePath(destination, release.manifestSha256, "attestations/build.json"))).toBe(false);
   });
 
   it("retains prior production current, removes stale namespaces, and keeps aliases on current", () => {
@@ -357,15 +381,18 @@ describe("stageBrainPublicRelease", () => {
     const result = stage(c, destination);
 
     expect(result.previous_release_id).toBe(b.releaseId);
-    expect(readdirSync(join(destination, "releases")).sort()).toEqual([b.hex, c.hex].sort());
+    expect(readdirSync(join(destination, "releases")).sort()).toEqual(
+      [b.manifestSha256, c.manifestSha256].sort(),
+    );
     expect(selector(destination)).toMatchObject({
       release_id: c.releaseId,
       previous_release_id: b.releaseId,
       previous_release: b.hex,
-      previous_manifest: `/assets/brain/releases/${b.hex}/release.json`,
+      previous_manifest_sha256: b.manifestSha256,
+      previous_manifest: `/assets/brain/releases/${b.manifestSha256}/release.json`,
     });
     expect(readFileSync(join(destination, "sources.json"))).toEqual(
-      readFileSync(immutablePath(destination, c.hex, "sources.json")),
+      readFileSync(immutablePath(destination, c.manifestSha256, "sources.json")),
     );
   });
 
@@ -384,7 +411,9 @@ describe("stageBrainPublicRelease", () => {
       previousReleaseDir: a.releaseDir,
     });
 
-    expect(readdirSync(join(destination, "releases")).sort()).toEqual([a.hex, c.hex].sort());
+    expect(readdirSync(join(destination, "releases")).sort()).toEqual(
+      [a.manifestSha256, c.manifestSha256].sort(),
+    );
     expect(selector(destination)).toMatchObject({
       release_id: c.releaseId,
       previous_release_id: a.releaseId,
@@ -410,10 +439,42 @@ describe("stageBrainPublicRelease", () => {
 
     stage(b, destination);
 
-    expect(readdirSync(join(destination, "releases")).sort()).toEqual([a.hex, b.hex].sort());
+    expect(readdirSync(join(destination, "releases")).sort()).toEqual(
+      [a.manifestSha256, b.manifestSha256].sort(),
+    );
     expect(selector(destination)).toMatchObject({
       release_id: b.releaseId,
       previous_release_id: a.releaseId,
+    });
+  });
+
+  it("gives distinct immutable namespaces to manifests with one logical release ID", () => {
+    const root = tempRoot();
+    const first = makeRelease(join(root, "store-a"), "same", 0, {
+      createdAt: "2030-01-01T00:00:00Z",
+    });
+    const second = makeRelease(join(root, "store-b"), "same", 0, {
+      createdAt: "2030-01-02T00:00:00Z",
+    });
+    const destination = join(root, "brain");
+    expect(second.releaseId).toBe(first.releaseId);
+    expect(second.manifestSha256).not.toBe(first.manifestSha256);
+
+    stage(first, destination);
+    const result = stage(second, destination);
+
+    expect(result.release_id).toBe(first.releaseId);
+    expect(result.manifest_sha256).toBe(second.manifestSha256);
+    expect(result.previous_release_id).toBe(first.releaseId);
+    expect(result.previous_manifest_sha256).toBe(first.manifestSha256);
+    expect(readdirSync(join(destination, "releases")).sort()).toEqual(
+      [first.manifestSha256, second.manifestSha256].sort(),
+    );
+    expect(selector(destination)).toMatchObject({
+      release_id: first.releaseId,
+      manifest_sha256: second.manifestSha256,
+      previous_release_id: first.releaseId,
+      previous_manifest_sha256: first.manifestSha256,
     });
   });
 
@@ -480,7 +541,7 @@ describe("stageBrainPublicRelease", () => {
 
     expect(result.largest_file_bytes).toBe(3 * 1024 * 1024 + 17);
     expect(digest(readFileSync(join(destination, "cells", "aa.json")))).toBe(
-      digest(readFileSync(immutablePath(destination, release.hex, "cells/aa.json"))),
+      digest(readFileSync(immutablePath(destination, release.manifestSha256, "cells/aa.json"))),
     );
   });
 
@@ -607,6 +668,60 @@ describe("stageBrainPublicRelease", () => {
     });
   });
 
+  it("migrates a verified v1 namespace while writing only a v2 selector", () => {
+    const root = tempRoot();
+    const store = join(root, "store");
+    const a = makeRelease(store, "A");
+    const b = makeRelease(store, "B");
+    const destination = join(root, "brain");
+    stage(a, destination);
+    renameSync(
+      join(destination, "releases", a.manifestSha256),
+      join(destination, "releases", a.hex),
+    );
+    writeFileSync(join(destination, "current.json"), JSON.stringify({
+      schema: "wikilean.release-selector/v1",
+      release_id: a.releaseId,
+      release: a.hex,
+      manifest: `/assets/brain/releases/${a.hex}/release.json`,
+    }) + "\n");
+
+    stage(b, destination);
+
+    expect(selector(destination)).toMatchObject({
+      schema: "wikilean.release-selector/v2",
+      release_id: b.releaseId,
+      manifest_sha256: b.manifestSha256,
+      previous_release_id: a.releaseId,
+      previous_manifest_sha256: a.manifestSha256,
+    });
+    expect(readdirSync(join(destination, "releases")).sort()).toEqual(
+      [a.manifestSha256, b.manifestSha256].sort(),
+    );
+  });
+
+  it("reads a legacy logical-ID frozen directory but publishes an exact namespace", () => {
+    const root = tempRoot();
+    const release = makeRelease(join(root, "store"), "legacy");
+    const legacyDir = join(root, "store", release.hex);
+    renameSync(release.releaseDir, legacyDir);
+    release.releaseDir = legacyDir;
+    release.manifestPath = join(legacyDir, "release.json");
+    const destination = join(root, "brain");
+
+    stage(release, destination);
+
+    expect(selector(destination)).toMatchObject({
+      schema: "wikilean.release-selector/v2",
+      manifest_sha256: release.manifestSha256,
+    });
+    expect(existsSync(immutablePath(
+      destination,
+      release.manifestSha256,
+      "release.json",
+    ))).toBe(true);
+  });
+
   it("rejects an explicit manifest outside the explicit release directory", () => {
     const root = tempRoot();
     const release = makeRelease(join(root, "store"), "A");
@@ -653,9 +768,10 @@ describe("buildPublic", () => {
       mathlib_declarations: 0,
       public_baseline: null,
       brain: {
-        schema: "wikilean.public-stage-result/v1",
+        schema: "wikilean.public-stage-result/v2",
         release_id: release.releaseId,
         release: release.hex,
+        manifest_sha256: release.manifestSha256,
       },
     });
     expect(metrics.public_dir).toMatch(/\/wiki\/public$/);
@@ -672,7 +788,15 @@ describe("buildPublic", () => {
     }
     expect(existsSync(join(wiki, "public", "junk.txt"))).toBe(false);
     expect(readFileSync(join(wiki, "public", "assets", "brain", "sources.json"))).toEqual(
-      readFileSync(join(wiki, "public", "assets", "brain", "releases", release.hex, "sources.json")),
+      readFileSync(join(
+        wiki,
+        "public",
+        "assets",
+        "brain",
+        "releases",
+        release.manifestSha256,
+        "sources.json",
+      )),
     );
     expect(JSON.parse(readFileSync(join(wiki, "public", "assets", "mathlib-index.json"), "utf8"))).toEqual([]);
   });

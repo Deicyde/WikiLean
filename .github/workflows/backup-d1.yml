@@ -26,7 +26,7 @@
 #   Download the resulting artifact from the run's summary page.
 #
 # ── Restore (into a fresh empty D1 of the same name) ──────────────────────
-#   cd wiki && npx wrangler d1 execute wikilean --remote --file=wikilean-<ts>.sql
+#   cd wiki && npm ci && ./node_modules/.bin/wrangler d1 execute wikilean --remote --file=wikilean-<ts>.sql
 
 name: Backup D1
 
@@ -36,30 +36,40 @@ on:
     - cron: "27 8 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   backup:
     runs-on: ubuntu-latest
     # Runs from the repo root on purpose: wrangler resolves the database by
     # name via the API (CLOUDFLARE_ACCOUNT_ID below), so this workflow has no
     # dependency on wiki/wrangler.jsonc being present in the checkout.
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: wiki/package-lock.json
+
+      - name: Install pinned Wrangler
+        run: npm ci --prefix wiki
 
       - name: Compute timestamp
         id: stamp
         run: echo "ts=$(date -u +%Y%m%dT%H%M%SZ)" >> "$GITHUB_OUTPUT"
 
       - name: Export D1 (wikilean)
-        run: npx --yes wrangler d1 export wikilean --remote --output="wikilean-${{ steps.stamp.outputs.ts }}.sql"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
+        run: wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="wikilean-${{ steps.stamp.outputs.ts }}.sql"
 
       - name: Upload backup artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

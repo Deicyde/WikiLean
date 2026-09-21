@@ -488,7 +488,8 @@ body.embed .wl-header, body.embed #crumbbar { display:none; }   /* flex column f
 // tab to that namespace. It never falls back to mutable compatibility aliases.
 const RELEASE_SELECTOR_URL = "/assets/brain/current.json";
 const RELEASE_ID_RE = /^sha256:([0-9a-f]{64})$/;
-let RELEASE_ID = "", RELEASE_HEX = "", RELEASE_BASE = "", BASE = "", SOURCES_URL = "";
+let RELEASE_ID = "", RELEASE_HEX = "", RELEASE_BASE = "";
+let RELEASE_ARTIFACTS = new Map();
 function canonicalIdentityJson(value) {
   if (value === null || typeof value === "boolean" || typeof value === "string")
     return JSON.stringify(value);
@@ -508,12 +509,21 @@ async function domainIdentity(domain, value, excluded) {
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
   return "sha256:" + Array.from(digest, byte => byte.toString(16).padStart(2, "0")).join("");
 }
+async function sha256Hex(bytes) {
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+  return Array.from(digest, byte => byte.toString(16).padStart(2, "0")).join("");
+}
 async function selectRelease() {
   const response = await fetch(RELEASE_SELECTOR_URL, {cache: "no-cache"});
   if (!response.ok) throw new Error("release selector HTTP " + response.status);
   const selector = await response.json();
-  const required = ["schema", "release_id", "release", "manifest"];
-  const previousKeys = ["previous_release_id", "previous_release", "previous_manifest"];
+  const v2 = selector && selector.schema === "wikilean.release-selector/v2";
+  const v1 = selector && selector.schema === "wikilean.release-selector/v1";
+  if (!v1 && !v2) throw new Error("invalid release selector schema");
+  const required = ["schema", "release_id", "release",
+    ...(v2 ? ["manifest_sha256"] : []), "manifest"];
+  const previousKeys = ["previous_release_id", "previous_release",
+    ...(v2 ? ["previous_manifest_sha256"] : []), "previous_manifest"];
   const allowed = new Set([...required, ...previousKeys, "audited_at"]);
   if (!selector || typeof selector !== "object" || Array.isArray(selector) ||
       required.some(key => !(key in selector)) || Object.keys(selector).some(key => !allowed.has(key)))
@@ -524,9 +534,12 @@ async function selectRelease() {
   if (presentPrevious.length) {
     const previousMatch = typeof selector.previous_release_id === "string"
       ? RELEASE_ID_RE.exec(selector.previous_release_id) : null;
+    const previousNamespace = v2 ? selector.previous_manifest_sha256 : selector.previous_release;
     if (!previousMatch || selector.previous_release !== previousMatch[1] ||
-        selector.previous_manifest !== "/assets/brain/releases/" + previousMatch[1] + "/release.json" ||
-        selector.previous_release_id === selector.release_id)
+        typeof previousNamespace !== "string" || !/^[0-9a-f]{64}$/.test(previousNamespace) ||
+        selector.previous_manifest !== "/assets/brain/releases/" + previousNamespace + "/release.json" ||
+        (v2 ? selector.previous_manifest_sha256 === selector.manifest_sha256
+            : selector.previous_release_id === selector.release_id))
       throw new Error("invalid previous release selector");
   }
   if ("audited_at" in selector &&
@@ -534,24 +547,55 @@ async function selectRelease() {
     throw new Error("invalid release selector audit timestamp");
   const match = typeof selector.release_id === "string"
     ? RELEASE_ID_RE.exec(selector.release_id) : null;
-  if (!match || selector.schema !== "wikilean.release-selector/v1" || selector.release !== match[1])
+  if (!match || selector.release !== match[1])
     throw new Error("invalid release selector");
-  const releaseBase = "/assets/brain/releases/" + match[1] + "/";
+  const namespace = v2 ? selector.manifest_sha256 : match[1];
+  if (typeof namespace !== "string" || !/^[0-9a-f]{64}$/.test(namespace))
+    throw new Error("invalid release manifest digest");
+  const releaseBase = "/assets/brain/releases/" + namespace + "/";
   if (selector.manifest !== releaseBase + "release.json")
     throw new Error("release selector manifest mismatch");
   const manifestResponse = await fetch(selector.manifest);
   if (!manifestResponse.ok) throw new Error("release manifest HTTP " + manifestResponse.status);
-  const releaseManifest = await manifestResponse.json();
+  const manifestBytes = await manifestResponse.arrayBuffer();
+  if (v2 && await sha256Hex(manifestBytes) !== selector.manifest_sha256)
+    throw new Error("release manifest digest mismatch");
+  const releaseManifest = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(manifestBytes));
   if (!releaseManifest || releaseManifest.schema !== "wikilean.release/v1" ||
       releaseManifest.release_id !== selector.release_id ||
       releaseManifest.release_id !== await domainIdentity(
         "wikilean.release.v1", releaseManifest, ["release_id", "attestations", "created_at"]))
     throw new Error("release manifest identity mismatch");
+  if (!Array.isArray(releaseManifest.artifacts))
+    throw new Error("release manifest artifact inventory missing");
+  const artifacts = new Map();
+  for (const artifact of releaseManifest.artifacts) {
+    if (!artifact || typeof artifact !== "object" ||
+        typeof artifact.path !== "string" ||
+        typeof artifact.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(artifact.sha256) ||
+        !Number.isSafeInteger(artifact.bytes) || artifact.bytes < 0)
+      throw new Error("invalid release manifest artifact");
+    if (!artifact.path.startsWith("site/assets/brain/")) continue;
+    const relative = artifact.path.slice("site/assets/brain/".length);
+    if (!relative || relative.startsWith("/") || relative.includes("\\") ||
+        /(?:^|\/)\.{1,2}(?:\/|$)/.test(relative) || artifacts.has(relative))
+      throw new Error("invalid or duplicate public release artifact path");
+    artifacts.set(relative, {bytes: artifact.bytes, sha256: artifact.sha256});
+  }
   RELEASE_ID = selector.release_id;
   RELEASE_HEX = match[1];
   RELEASE_BASE = releaseBase;
-  BASE = releaseBase + "cells/";
-  SOURCES_URL = releaseBase + "sources.json";
+  RELEASE_ARTIFACTS = artifacts;
+}
+async function releaseJson(relative) {
+  const expected = RELEASE_ARTIFACTS.get(relative);
+  if (!expected) throw new Error("release manifest does not declare " + relative);
+  const response = await fetch(RELEASE_BASE + relative);
+  if (!response.ok) throw new Error(relative + " HTTP " + response.status);
+  const bytes = await response.arrayBuffer();
+  if (bytes.byteLength !== expected.bytes || await sha256Hex(bytes) !== expected.sha256)
+    throw new Error(relative + " does not match the release manifest");
+  return JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
 }
 const ROOTS_ID = "__libs__";          // pseudo-focus: the library roots
 const UNPLACED_ID = "__unplaced__";   // pseudo-focus: cells neither the tree nor
@@ -615,16 +659,11 @@ function shardFor(id) {
   }
   return null;
 }
-// Every data fetch is pinned to one immutable release namespace. dataV remains
-// a useful cache/debug key, but a failed shard never re-resolves the selector or
-// crosses into a newer release during this page session.
-let dataV = "";
-const vq = () => (dataV ? "?v=" + dataV : "");
+// Every data fetch is pinned to one exact immutable release namespace. A failed
+// shard never re-resolves the selector or crosses into a newer release during
+// this page session.
 async function fetchManifest() {
-  const r = await fetch(BASE + "manifest.json", {cache: "no-cache"});
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  manifest = await r.json();
-  dataV = encodeURIComponent(manifest._meta.generated_at || "");
+  manifest = await releaseJson("cells/manifest.json");
 }
 // ONE fetch renders a whole card: the shard entry embeds every organ payload
 // (Lean code, the Wikidata description, licensed DB snippets) + the synapses.
@@ -633,8 +672,8 @@ async function getEntry(id) {
   const key = shardFor(id);
   if (key === null) return null;
   if (!shardCache.has(key)) {
-    shardCache.set(key, fetch(BASE + key + ".json" + vq())
-      .then(r => r.ok ? r.json().then(j => ({ok: true, j})) : {ok: false, j: {}})
+    shardCache.set(key, releaseJson("cells/" + key + ".json")
+      .then(j => ({ok: true, j}))
       .catch(() => { shardCache.delete(key); return {ok: false, j: {}}; }));
   }
   const res = await shardCache.get(key);
@@ -661,8 +700,7 @@ const isPathId = id => typeof id === "string" && id.startsWith("path:");
 
 async function ensureLabels() {
   if (!labels) {
-    const r = await fetch(BASE + "labels.json" + vq());
-    labels = r.ok ? await r.json() : [];
+    labels = await releaseJson("cells/labels.json");
     labelById = new Map(labels.map(r2 => [r2.id, r2]));
   }
   return labels;
@@ -674,7 +712,7 @@ async function ensureLabels() {
 async function ensureTree() {
   if (tree) return tree;
   const [j] = await Promise.all([
-    fetch(BASE + "supercells.json" + vq()).then(r => (r.ok ? r.json() : null)).catch(() => null),
+    releaseJson("cells/supercells.json"),
     ensureLabels(),
   ]);
   if (!j) { tree = {roots: [], frontier: [], frontierFa: 0, frontierN: 0,
@@ -777,8 +815,7 @@ async function ensureTree() {
 }
 async function ensureAliases() {
   if (!aliases) {
-    const r = await fetch(BASE + "aliases.json" + vq());
-    aliases = r.ok ? await r.json() : {organs: {}, decls: {}, slugs: {}};
+    aliases = await releaseJson("cells/aliases.json");
   }
   return aliases;
 }
@@ -1796,8 +1833,7 @@ function runParityCheck() {
 }
 function fetchFrontierGraph() {
   if (!fgraphP) {
-    fgraphP = fetch(BASE + "frontier_graph.json" + vq())
-      .then(r => (r.ok ? r.json() : null)).catch(() => null)
+    fgraphP = releaseJson("cells/frontier_graph.json")
       .then(j => {
         fgraph = j;
         fgraphFail = !j;
@@ -3798,8 +3834,8 @@ async function fetchSidecarTraces(a, b) {
   const bk = sidecarBucketFor(idx, key);
   if (bk === null) return {ok: false, why: "no bucket covers this synapse"};
   if (!traceBucketCache.has(bk)) {
-    traceBucketCache.set(bk, fetch(BASE + idx.dir + bk + ".json" + vq())
-      .then(r => (r.ok ? r.json().then(j => ({ok: true, j})) : {ok: false, j: {}}))
+    traceBucketCache.set(bk, releaseJson("cells/" + idx.dir + bk + ".json")
+      .then(j => ({ok: true, j}))
       .catch(() => ({ok: false, j: {}})));
   }
   const res = await traceBucketCache.get(bk);
@@ -4442,9 +4478,7 @@ let sourcesData = null;
 async function showSourcesPanel() {
   lastPanelId = "__sources__";
   if (!sourcesData) {
-    const r = await fetch(SOURCES_URL);
-    if (!r.ok) { panelEl.innerHTML = `<p class="note">sources.json unavailable</p>`; return; }
-    sourcesData = await r.json();
+    sourcesData = await releaseJson("sources.json");
   }
   const GROUP_LABEL = {spine: "The join spine", node_sources: "Node sources",
     edge_sources: "Edge sources", crossref_sources: "Cross-reference databases",
@@ -4573,8 +4607,7 @@ document.addEventListener("click", ev => {
 let xdata = null;
 async function fetchExplorerData() {
   if (xdata) return xdata;
-  const get = () => fetch(BASE + "explorer.json" + vq())
-    .then(r => (r.ok ? r.json() : null)).catch(() => null);
+  const get = () => releaseJson("cells/explorer.json");
   const j = await get();
   xdata = j;
   return j;

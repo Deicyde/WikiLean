@@ -60,8 +60,8 @@ python3 brain/test_fold_xref.py    # real catalog + private decl cache/Mathlib c
 # Site (wiki/)
 cd wiki && npm run deploy          # deploy the Worker (bundles ALL of wiki/src)
 cd wiki && node --experimental-strip-types scripts/build-public.ts \
-  --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
-  --brain-release-dir ../site/out/brain-releases/<release-hex>       # verified assets; RUN FROM wiki/
+  --brain-release-manifest ../site/out/brain-releases/<manifest-hex>/release.json \
+  --brain-release-dir ../site/out/brain-releases/<manifest-hex>       # verified assets; RUN FROM wiki/
 # Tagging bot
 gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean
 python3 bot/poll.py --mathlib /tmp/unused --decide     # act|wait (cheap, gh-only)

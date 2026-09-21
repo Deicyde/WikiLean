@@ -27,16 +27,25 @@ REPLAY = {"authority_root": "sha256:" + "5" * 64, "offline_pack_id": "sha256:" +
           "prior_state_root": None}
 
 
-def make_selector(release: str, previous: str | None = None) -> dict[str, object]:
+def make_selector(
+    release: str,
+    manifest_sha256: str,
+    previous: str | None = None,
+    previous_manifest_sha256: str | None = None,
+) -> dict[str, object]:
     value: dict[str, object] = {
-        "schema": "wikilean.release-selector/v1",
+        "schema": "wikilean.release-selector/v2",
         "release_id": f"sha256:{release}",
         "release": release,
-        "manifest": f"/assets/brain/releases/{release}/release.json",
+        "manifest_sha256": manifest_sha256,
+        "manifest": f"/assets/brain/releases/{manifest_sha256}/release.json",
         **({
             "previous_release_id": f"sha256:{previous}",
             "previous_release": previous,
-            "previous_manifest": f"/assets/brain/releases/{previous}/release.json",
+            "previous_manifest_sha256": previous_manifest_sha256 or "d" * 64,
+            "previous_manifest": (
+                f"/assets/brain/releases/{previous_manifest_sha256 or 'd' * 64}/release.json"
+            ),
         } if previous is not None else {}),
         "audited_at": "2026-01-01T00:00:00Z",
     }
@@ -121,12 +130,15 @@ class Fixture:
         ).encode()
         self.release_id = "sha256:" + hashlib.sha256(payload).hexdigest()
         self.release = self.release_id.removeprefix("sha256:")
-        immutable = f"/assets/brain/releases/{self.release}"
-        selector = make_selector(self.release)
         manifest = {**identity_value, "release_id": self.release_id, "attestations": [
             {"kind": "build", "path": "attestations/build.json", "sha256": "a" * 64, "bytes": 1},
             {"kind": "validation", "path": "attestations/validation.json", "sha256": "b" * 64, "bytes": 1},
-        ] if profile == "brain-offline-replay-v1" else []}
+        ]}
+        manifest_bytes = json.dumps(manifest, sort_keys=True).encode()
+        self.manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+        immutable = f"/assets/brain/releases/{self.manifest_sha256}"
+        self.manifest_path = f"{immutable}/release.json"
+        selector = make_selector(self.release, self.manifest_sha256)
         shard_bytes = artifact_bytes["site/assets/brain/cells/aa.json"]
         cursor_one = base64.b64encode(
             json.dumps({
@@ -152,7 +164,7 @@ class Fixture:
         }
         self.routes: dict[str, FakeResponse] = {}
         self.add_json("/assets/brain/current.json", selector)
-        self.add_json(f"{immutable}/release.json", manifest)
+        self.routes[self.manifest_path] = FakeResponse(manifest_bytes)
         self.add_json(f"{immutable}/cells/manifest.json", cells)
         self.routes[f"{immutable}/cells/aa.json"] = FakeResponse(shard_bytes)
         self.add_json(f"{immutable}/cells/aliases.json", aliases)
@@ -196,6 +208,22 @@ class Fixture:
     def add_json(self, path: str, value: object) -> None:
         self.routes[path] = FakeResponse(json.dumps(value, sort_keys=True).encode())
 
+    def replace_manifest(self, value: object) -> None:
+        old_base = self.manifest_path.removesuffix("/release.json")
+        body = json.dumps(value, sort_keys=True).encode()
+        manifest_sha256 = hashlib.sha256(body).hexdigest()
+        new_base = f"/assets/brain/releases/{manifest_sha256}"
+        for path, response in list(self.routes.items()):
+            if path.startswith(old_base + "/"):
+                self.routes[new_base + path[len(old_base):]] = response
+        self.manifest_sha256 = manifest_sha256
+        self.manifest_path = f"{new_base}/release.json"
+        self.routes[self.manifest_path] = FakeResponse(body)
+        self.add_json(
+            "/assets/brain/current.json",
+            make_selector(self.release, self.manifest_sha256),
+        )
+
     def open(self, request, timeout: float):
         del timeout
         parts = urlsplit(request.full_url)
@@ -223,7 +251,13 @@ class Fixture:
 
 class BrainCanaryTest(unittest.TestCase):
     def canary(self, fixture: Fixture):
-        return brain_canary.BrainCanary(BASE, fixture.release_id, opener=fixture.open, nonce=lambda: "test-nonce")
+        return brain_canary.BrainCanary(
+            BASE,
+            fixture.release_id,
+            fixture.manifest_sha256,
+            opener=fixture.open,
+            nonce=lambda: "test-nonce",
+        )
 
     def test_complete_release_surface_passes(self):
         fixture = Fixture()
@@ -231,6 +265,7 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertEqual(result["schema"], "wikilean.brain-canary-result/v1")
         self.assertTrue(result["ok"])
         self.assertEqual(result["release_id"], fixture.release_id)
+        self.assertEqual(result["manifest_sha256"], fixture.manifest_sha256)
         self.assertEqual(result["shard"], "cells/aa.json")
         self.assertEqual(result["pages_checked"], ["/brain", "/brain.html"])
         self.assertEqual(result["brain_html_delivery"], "same-origin-307")
@@ -268,7 +303,7 @@ class BrainCanaryTest(unittest.TestCase):
     def test_offline_attestations_require_one_build_and_validation_with_strict_references(self):
         for change in ("empty", "one", "kind", "path", "hash", "size", "extra", "order", "duplicate", "third", "normalized-path"):
             fixture = Fixture(profile="brain-offline-replay-v1", replay=REPLAY)
-            path = f"/assets/brain/releases/{fixture.release}/release.json"
+            path = fixture.manifest_path
             manifest = json.loads(fixture.routes[path]._body)
             refs = manifest["attestations"]
             if change == "empty": refs.clear()
@@ -282,9 +317,17 @@ class BrainCanaryTest(unittest.TestCase):
             if change == "duplicate": refs[1]["path"] = refs[0]["path"]
             if change == "third": refs.append({**refs[0], "path": "attestations/third.json"})
             if change == "normalized-path": refs[0]["path"] = "attestations//build.json"
-            fixture.add_json(path, manifest)
+            fixture.replace_manifest(manifest)
             with self.subTest(change=change), self.assertRaisesRegex(brain_canary.CanaryError, "attestation"):
                 self.canary(fixture).check_once()
+
+    def test_current_release_requires_well_formed_build_and_validation_attestations(self):
+        fixture = Fixture()
+        manifest = json.loads(fixture.routes[fixture.manifest_path]._body)
+        manifest["attestations"] = []
+        fixture.replace_manifest(manifest)
+        with self.assertRaisesRegex(brain_canary.CanaryError, "attestation"):
+            self.canary(fixture).check_once()
 
     def test_frozen_profile_rejects_replay_and_unknown_profiles_remain_rejected(self):
         for profile in ("brain-current-v1", "brain-future-v1"):
@@ -305,10 +348,10 @@ class BrainCanaryTest(unittest.TestCase):
 
     def test_replay_binding_is_part_of_unchanged_release_identity_domain(self):
         fixture = Fixture(profile="brain-offline-replay-v1", replay=REPLAY)
-        path = f"/assets/brain/releases/{fixture.release}/release.json"
+        path = fixture.manifest_path
         manifest = json.loads(fixture.routes[path]._body)
         manifest["replay"]["generation_id"] = "sha256:" + "9" * 64
-        fixture.add_json(path, manifest)
+        fixture.replace_manifest(manifest)
         with self.assertRaisesRegex(brain_canary.CanaryError, "self-identity mismatch"):
             self.canary(fixture).check_once()
 
@@ -351,6 +394,7 @@ class BrainCanaryTest(unittest.TestCase):
         canary = brain_canary.BrainCanary(
             BASE,
             fixture.release_id,
+            fixture.manifest_sha256,
             public_baseline=baseline,
             opener=fixture.open,
             nonce=lambda: "test-nonce",
@@ -365,18 +409,58 @@ class BrainCanaryTest(unittest.TestCase):
 
     def test_selector_mismatch_fails(self):
         fixture = Fixture()
-        fixture.add_json("/assets/brain/current.json", make_selector("b" * 64))
+        fixture.add_json(
+            "/assets/brain/current.json",
+            make_selector("b" * 64, fixture.manifest_sha256),
+        )
         with self.assertRaisesRegex(brain_canary.CanaryError, "selector release mismatch"):
             self.canary(fixture).check_once()
 
     def test_flat_previous_release_selector_passes(self):
         fixture = Fixture()
-        fixture.add_json("/assets/brain/current.json", make_selector(fixture.release, "b" * 64))
+        fixture.add_json(
+            "/assets/brain/current.json",
+            make_selector(fixture.release, fixture.manifest_sha256, "b" * 64),
+        )
         self.assertTrue(self.canary(fixture).check_once()["ok"])
+
+    def test_legacy_v1_selector_remains_readable_with_an_external_exact_digest(self):
+        fixture = Fixture()
+        old_base = f"/assets/brain/releases/{fixture.manifest_sha256}"
+        legacy_base = f"/assets/brain/releases/{fixture.release}"
+        for path, response in list(fixture.routes.items()):
+            if path == old_base or path.startswith(old_base + "/"):
+                fixture.routes[legacy_base + path[len(old_base):]] = response
+        fixture.add_json(
+            "/assets/brain/current.json",
+            {
+                "schema": "wikilean.release-selector/v1",
+                "release_id": fixture.release_id,
+                "release": fixture.release,
+                "manifest": f"{legacy_base}/release.json",
+                "audited_at": "2026-01-01T00:00:00Z",
+            },
+        )
+        self.assertTrue(self.canary(fixture).check_once()["ok"])
+
+    def test_selector_manifest_digest_mismatch_fails_before_asset_checks(self):
+        fixture = Fixture()
+        selector = make_selector(fixture.release, "f" * 64)
+        fixture.add_json("/assets/brain/current.json", selector)
+        with self.assertRaisesRegex(brain_canary.CanaryError, "manifest digest"):
+            self.canary(fixture).check_once()
+
+    def test_manifest_bytes_are_checked_against_the_selector_digest(self):
+        fixture = Fixture()
+        fixture.routes[fixture.manifest_path] = FakeResponse(
+            fixture.routes[fixture.manifest_path]._body + b" "
+        )
+        with self.assertRaisesRegex(brain_canary.CanaryError, "manifest bytes"):
+            self.canary(fixture).check_once()
 
     def test_partial_previous_release_selector_fails(self):
         fixture = Fixture()
-        selector = make_selector(fixture.release)
+        selector = make_selector(fixture.release, fixture.manifest_sha256)
         selector["previous_release_id"] = "sha256:" + "b" * 64
         fixture.add_json("/assets/brain/current.json", selector)
         with self.assertRaisesRegex(brain_canary.CanaryError, "supplied together"):
@@ -384,25 +468,24 @@ class BrainCanaryTest(unittest.TestCase):
 
     def test_manifest_identity_mismatch_fails(self):
         fixture = Fixture()
-        fixture.add_json(
-            f"/assets/brain/releases/{fixture.release}/release.json",
+        fixture.replace_manifest(
             {
                 "schema": "wikilean.release/v1",
                 "profile": "brain-current-v1",
                 "release_id": "sha256:" + "b" * 64,
                 "artifacts": [],
                 "attestations": [],
-            },
+            }
         )
         with self.assertRaisesRegex(brain_canary.CanaryError, "manifest identity"):
             self.canary(fixture).check_once()
 
     def test_release_manifest_self_identity_mismatch_fails(self):
         fixture = Fixture()
-        manifest_path = f"/assets/brain/releases/{fixture.release}/release.json"
+        manifest_path = fixture.manifest_path
         manifest = json.loads(fixture.routes[manifest_path]._body)
         manifest["artifacts"][0]["sha256"] = "0" * 64
-        fixture.add_json(manifest_path, manifest)
+        fixture.replace_manifest(manifest)
         with self.assertRaisesRegex(brain_canary.CanaryError, "self-identity mismatch"):
             self.canary(fixture).check_once()
 
@@ -443,7 +526,7 @@ class BrainCanaryTest(unittest.TestCase):
 
     def test_missing_required_view_asset_fails(self):
         fixture = Fixture()
-        immutable = f"/assets/brain/releases/{fixture.release}"
+        immutable = f"/assets/brain/releases/{fixture.manifest_sha256}"
         fixture.routes[f"{immutable}/cells/supercells.json"] = FakeResponse(b"{}", status=404)
         with self.assertRaisesRegex(brain_canary.CanaryError, "supercells.json.*HTTP 404"):
             self.canary(fixture).check_once()
@@ -525,11 +608,14 @@ class BrainCanaryTest(unittest.TestCase):
 
     def test_invalid_expected_release_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "expected release id"):
-            brain_canary.BrainCanary(BASE, "not-a-release")
+            brain_canary.BrainCanary(BASE, "not-a-release", "a" * 64)
+        with self.assertRaisesRegex(ValueError, "expected manifest sha256"):
+            brain_canary.BrainCanary(BASE, "sha256:" + "a" * 64, "not-a-digest")
         with self.assertRaisesRegex(ValueError, "absolute HTTPS"):
             brain_canary.BrainCanary(
                 "http://example.test",
                 "sha256:" + "a" * 64,
+                "b" * 64,
                 opener=lambda *_args, **_kwargs: None,
             )
 
@@ -539,6 +625,7 @@ class BrainCanaryTest(unittest.TestCase):
             brain_canary.BrainCanary(
                 BASE,
                 fixture.release_id,
+                fixture.manifest_sha256,
                 request_timeout=float("nan"),
                 opener=fixture.open,
             )
@@ -553,6 +640,7 @@ class BrainCanaryTest(unittest.TestCase):
         canary = brain_canary.BrainCanary(
             BASE,
             fixture.release_id,
+            fixture.manifest_sha256,
             max_response_bytes=32,
             opener=fixture.open,
             nonce=lambda: "test-nonce",
@@ -565,6 +653,7 @@ class BrainCanaryTest(unittest.TestCase):
 
         class FailingCanary:
             expected_release_id = release_id
+            expected_manifest_sha256 = "b" * 64
             request_count = 0
             response_bytes = 0
             trust_source = "fixture-ca:1"
@@ -579,6 +668,7 @@ class BrainCanaryTest(unittest.TestCase):
             with contextlib.redirect_stderr(stderr):
                 code = brain_canary.main([
                     "--expected-release-id", release_id,
+                    "--expected-manifest-sha256", "b" * 64,
                     "--timeout", "0",
                 ])
 
@@ -587,6 +677,7 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertEqual(result["schema"], "wikilean.brain-canary-result/v1")
         self.assertFalse(result["ok"])
         self.assertEqual(result["release_id"], release_id)
+        self.assertEqual(result["manifest_sha256"], "b" * 64)
         self.assertEqual(result["attempts"], 1)
         self.assertGreaterEqual(result["convergence_seconds"], 0)
         self.assertEqual(result["requests"], 2)
