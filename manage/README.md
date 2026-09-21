@@ -121,8 +121,10 @@ The Brain has its own 02:20 launchd job, `site/ops/brain-nightly.sh`
 (org.wikilean.brain), upstream of the 03:00-cluster jobs this control plane
 feeds: external-DB ingest (per-source cadence) → propose-only agent team
 (`brain/sync_agents.py`, gated OFF by default) → `brain/fold_proposals.py` →
-node/edge rebuild → acceptance gate → shards → clean-tree-gated deploy. It
-never touches `manage/data/`; tune it in `site/ops/nightly.env`
+node/edge rebuild → acceptance gate → frozen release → verified shadow staging
+and Worker checks. It never deploys and rejects nonzero `WIKILEAN_BRAIN_DEPLOY`;
+exact production promotion is a separate approved operator action described in
+`docs/BRAIN-RELEASE-RUNBOOK.md`. It never touches `manage/data/`; tune it in `site/ops/nightly.env`
 (`WIKILEAN_BRAIN_*`) and read `site/ops/README.md` for install/operate.
 
 ## Known limitations (documented, not hidden)

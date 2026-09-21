@@ -85,13 +85,15 @@ DLMF ~1 req/s; Kerodon polite evening crawl, cached).
 
 ## Publish path (axis 4 unblocker)
 
-Brain shards are static Worker assets → previously required a manual deploy, which the
-nightly refused (WIP risk). v2: **clean-tree-gated deploy** — the nightly rebuilds
-shards and deploys ONLY IF `git status --porcelain wiki/src` is empty AND
-`npx tsc --noEmit` passes AND `brain/test_acceptance.py` is green. R2 was evaluated and
-is the better home (no deploys at all, ~$0 on free tier) but **R2 is not enabled on the
-account** (dashboard opt-in required — Jack action item). The serving code keeps an
-ASSETS-first helper so flipping to R2-first later is a localized change.
+Brain shards are static Worker assets. The original v2 design called for a
+clean-tree-gated nightly deploy; that path is now superseded. The nightly rebuilds,
+freezes, verifies, and shadow-stages a release, then runs Worker checks without changing
+production. Nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected before ingest or build work.
+Production activation is a separate, explicitly approved operator action through
+`site/ops/brain-promote-release.sh`, using one exact frozen Brain release, one immutable
+non-Brain public baseline tied to a reviewed Git attestation, and a durable external
+journal. See `docs/BRAIN-RELEASE-RUNBOOK.md`; P1B in `docs/ROADMAP.md` tracks first
+activation. R2 remains a possible future home that would remove Worker asset deploys.
 
 ## Nightly brain sync (axis 4)
 
