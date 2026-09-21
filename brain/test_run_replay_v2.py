@@ -1185,6 +1185,9 @@ class ReplayRunnerTest(unittest.TestCase):
                 "brain/tools/probe_execution_environment.py",
                 "brain/tools/run_offline.py",
                 "brain/tools/run_replay_v2.py",
+                "brain/tools/oci_runtime.py",
+                "brain/tools/oci_replay_entrypoint.py",
+                "brain/tools/launch_replay_oci.py",
             },
         )
         self.assertEqual(

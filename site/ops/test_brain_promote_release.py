@@ -1630,6 +1630,52 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         self.assertNotIn("final_state", [event["kind"] for event in journal.events])
 
 class BrainPromotionDryRunTest(unittest.TestCase):
+    def test_retained_publication_failure_removes_candidate_and_preserves_recreated_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(base / "receipts", repo, "https://example.test")
+            prepared = prepared_for_retention(base / "workspace")
+            store = base / "retained"
+            publish = promote._publish_no_replace
+
+            def fail_after_publish(descriptor, source, target):
+                publish(descriptor, source, target)
+                os.mkdir(source, mode=0o700, dir_fd=descriptor)
+                (store / source / "keep").write_text("unrelated")
+                raise OSError("injected retention publication failure")
+
+            with mock.patch.object(promote, "_publish_no_replace", side_effect=fail_after_publish):
+                with self.assertRaisesRegex(OSError, "retention publication failure"):
+                    promote.retain_dry_run_artifacts(prepared, store, repo_root=repo, receipt_root=receipt)
+            survivors = [path for path in store.iterdir() if path.is_dir()]
+            self.assertEqual(len(survivors), 1)
+            self.assertTrue(survivors[0].name.startswith(".pending-"))
+            self.assertEqual((survivors[0] / "keep").read_text(), "unrelated")
+
+    def test_retained_publication_preserves_an_empty_existing_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            repo = make_repo(base)
+            receipt = initialize_target_receipt_root(base / "receipts", repo, "https://example.test")
+            prepared = prepared_for_retention(base / "workspace")
+            store = base / "retained"
+            publish = promote._publish_no_replace
+            existing = []
+
+            def collide(descriptor, source, target):
+                os.mkdir(target, mode=0o700, dir_fd=descriptor)
+                existing.append(os.stat(target, dir_fd=descriptor).st_ino)
+                publish(descriptor, source, target)
+
+            with mock.patch.object(promote, "_publish_no_replace", side_effect=collide):
+                with self.assertRaises(promote.PromotionError):
+                    promote.retain_dry_run_artifacts(prepared, store, repo_root=repo, receipt_root=receipt)
+            survivors = [path for path in store.iterdir() if path.is_dir()]
+            self.assertEqual(len(survivors), 1)
+            self.assertEqual(survivors[0].stat().st_ino, existing[0])
+            self.assertEqual(list(survivors[0].iterdir()), [])
+
     def test_dry_run_writes_no_attempt_and_never_calls_deploy(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory).resolve()

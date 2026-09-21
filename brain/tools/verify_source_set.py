@@ -12,6 +12,7 @@ from authority_contracts import (
     PACK_SCHEMA_V2,
     PACK_SCHEMA_V3,
     REDUCER_INPUT_INVENTORY_SCHEMA_V2,
+    REDUCER_INPUT_INVENTORY_SCHEMA_V3,
     SOURCE_SCHEMA,
     SOURCE_SCHEMA_V2,
     SOURCE_SCHEMA_V3,
@@ -56,7 +57,7 @@ def verify(manifest_path: Path, root: Path | None = None) -> dict[str, object]:
             "source_set_root": pack["source_set_root"],
             **counts,
         }
-    if schema == REDUCER_INPUT_INVENTORY_SCHEMA_V2:
+    if schema in {REDUCER_INPUT_INVENTORY_SCHEMA_V2, REDUCER_INPUT_INVENTORY_SCHEMA_V3}:
         inventory = validate_reducer_input_inventory(document)
         return {
             "ok": True,

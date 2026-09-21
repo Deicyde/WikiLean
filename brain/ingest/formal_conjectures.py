@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import common                     # noqa: E402  (brain/ingest/common.py)
 import build_common               # noqa: E402  (brain/build_common.py — Lean parser)
+import git_snapshot               # noqa: E402  (immutable Git object reader)
 
 REPO_URL = "https://github.com/google-deepmind/formal-conjectures.git"
 CHECKOUT = Path(os.environ.get(
@@ -48,9 +49,13 @@ _KW = re.compile(r"\b(theorem|lemma|def|abbrev|structure|class|inductive"
                  r"|instance|opaque|axiom)\s")
 
 
-def ensure_checkout() -> str:
-    """Clone or (at most daily) ff-pull the mirror; return the commit pin.
-    Fail-soft on network: an existing checkout is always usable as-is."""
+def ensure_checkout() -> None:
+    """Clone or (at most daily) ff-pull the mirror.
+
+    This only refreshes the local object database.  The caller separately
+    captures one immutable commit and its file bytes through ``git_snapshot``.
+    Fail-soft on network: an existing checkout is always usable as-is.
+    """
     if not (CHECKOUT / ".git").exists():
         subprocess.run(["git", "clone", "--depth", "1", REPO_URL, str(CHECKOUT)],
                        check=True)
@@ -62,9 +67,6 @@ def ensure_checkout() -> str:
             if r.returncode != 0:
                 print(f"[formal_conjectures] pull failed (using existing checkout): "
                       f"{r.stderr.strip()[:200]}", file=sys.stderr)
-    out = subprocess.run(["git", "-C", str(CHECKOUT), "rev-parse", "HEAD"],
-                         capture_output=True, text=True)
-    return out.stdout.strip()
 
 
 def _clean_slug(raw: str) -> str:
@@ -167,22 +169,14 @@ def _code_snippet(lines: list[str], idx: int) -> str:
     return "\n".join(snip)[:CODE_MAX]
 
 
-def main() -> int:
-    commit = ensure_checkout()
-    root = CHECKOUT / "FormalConjectures"
-    if not root.is_dir():
-        raise RuntimeError(f"checkout has no FormalConjectures/ at {CHECKOUT}")
-
+def harvest_snapshot(
+    snapshot: git_snapshot.GitTextSnapshot,
+) -> tuple[list[dict], int]:
+    """Parse declarations from files bound to one captured Git commit."""
     rows: list[dict] = []
-    n_files = 0
-    for fp in sorted(root.rglob("*.lean")):
-        rel = fp.relative_to(CHECKOUT).as_posix()
-        try:
-            lines = fp.read_text().splitlines()
-        except OSError as e:
-            print(f"[formal_conjectures] unreadable {rel}: {e}", file=sys.stderr)
-            continue
-        n_files += 1
+    for source_file in snapshot.files:
+        rel = source_file.path
+        lines = source_file.text.splitlines()
         module = rel[:-len(".lean")].replace("/", ".")
         header = _module_docstring(lines)
         file_refs = _refs(header)
@@ -204,6 +198,17 @@ def main() -> int:
                 "file_refs": file_refs or None,
             }
             rows.append({k: v for k, v in row.items() if v is not None})
+    return rows, len(snapshot.files)
+
+
+def main() -> int:
+    ensure_checkout()
+    snapshot = git_snapshot.read_text_snapshot(
+        CHECKOUT,
+        scope="FormalConjectures",
+        suffixes=(".lean",),
+    )
+    rows, n_files = harvest_snapshot(snapshot)
 
     if not rows:
         raise RuntimeError("harvested 0 declarations — refusing to write (fail-soft)")
@@ -213,13 +218,13 @@ def main() -> int:
         "source": "google-deepmind/formal-conjectures",
         "license": "Apache-2.0 (The Formal Conjectures Authors) — docstrings/code "
                    "stored with attribution",
-        "commit": commit,
+        "commit": snapshot.commit,
         "n_files": n_files,
         "n_decls": len(rows),
         "n_research": n_research,
     }, rows)
     print(f"[formal_conjectures] wrote {len(rows)} decls ({n_research} research) "
-          f"from {n_files} files @ {commit[:12]} -> {OUT}", file=sys.stderr)
+          f"from {n_files} files @ {snapshot.commit[:12]} -> {OUT}", file=sys.stderr)
     return 0
 
 
