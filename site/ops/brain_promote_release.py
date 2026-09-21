@@ -59,7 +59,7 @@ ATTEMPT_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SELECTOR_SCHEMA_V1 = "wikilean.release-selector/v1"
 SELECTOR_SCHEMA = "wikilean.release-selector/v2"
 RELEASE_SCHEMA = "wikilean.release/v1"
-DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v1"
+DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v2"
 DRY_RUN_ARTIFACT_SCHEMA = "wikilean.brain-promotion-dry-run-artifacts/v1"
 DRY_RUN_ARTIFACT_DOMAIN = "wikilean.brain-promotion-dry-run-artifacts.v1"
 RESULT_SCHEMA = "wikilean.brain-promotion-result/v1"
@@ -1172,16 +1172,12 @@ def selector_from_probe(
     *,
     candidate_manifest_sha256: str | None = None,
     allow_first_deploy: bool,
-    first_deploy_approval: str | None,
 ) -> SelectorState:
     if probe.status == 404:
         if not allow_first_deploy:
             raise PromotionError(
-                "production selector is absent; pass --allow-first-deploy-without-selector "
-                "with a recorded approval"
+                "production selector is absent; pass --allow-first-deploy-without-selector"
             )
-        if not first_deploy_approval:
-            raise PromotionError("first deployment requires --first-deploy-approval")
         return SelectorState(404, probe.sha256, probe.body, None, None, None, None)
     if probe.status != 200:
         raise PromotionError(f"production selector returned HTTP {probe.status}")
@@ -1540,10 +1536,16 @@ class BrainPromoter:
             raise PromotionError("public baseline ID must be sha256:<64 lowercase hex>")
         if self.public_baseline_root is None or not self.public_baseline_root.is_absolute():
             raise PromotionError("--public-baseline-root must be an absolute path")
-        if self.allow_first_deploy:
+        if self.mode == "dry-run":
+            if self.approval_note is not None:
+                raise PromotionError("--approval-note is valid only with --execute")
+            if self.first_deploy_approval is not None:
+                raise PromotionError("--first-deploy-approval is valid only with --execute")
+        elif self.allow_first_deploy:
             if not present(self.first_deploy_approval):
                 raise PromotionError(
-                    "--allow-first-deploy-without-selector requires a non-empty --first-deploy-approval"
+                    "--allow-first-deploy-without-selector requires a non-empty "
+                    "--first-deploy-approval during execution"
                 )
         elif self.first_deploy_approval is not None:
             raise PromotionError(
@@ -2315,7 +2317,6 @@ class BrainPromoter:
             candidate.release_id,
             candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         )
         if (
             staged_selector.current_release_id != candidate.release_id
@@ -2627,7 +2628,6 @@ class BrainPromoter:
             candidate.release_id,
             candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=self.allow_first_deploy,
-            first_deploy_approval=self.first_deploy_approval,
         )
         deployment_before = parse_deployment_status(status_before_body)
         deployment_after = parse_deployment_status(status_after_body)
@@ -2662,7 +2662,6 @@ class BrainPromoter:
             candidate.release_id,
             candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         )
         reviewed_staged = intent.get("staged_selector")
         expected_staged = {
@@ -2745,6 +2744,9 @@ class BrainPromoter:
         reconstructed.pop("activation_bundle", None)
         reviewed_intent = copy.deepcopy(dict(intent))
         reviewed_intent["approval_note"] = self.approval_note
+        # Authorization is deliberately bound only after P1B review. These are
+        # the only intent fields allowed to differ from the retained dry-run.
+        reviewed_intent["first_deploy_approval"] = self.first_deploy_approval
         if reconstructed != reviewed_intent:
             raise PromotionError(
                 "retained dry-run intent differs from the executable reviewed activation"
@@ -2780,7 +2782,6 @@ class BrainPromoter:
             candidate.release_id,
             candidate_manifest_sha256=candidate.manifest_sha256,
             allow_first_deploy=self.allow_first_deploy,
-            first_deploy_approval=self.first_deploy_approval,
         )
         prior: ReleaseInfo | None = None
         if selector.retained_release_id is not None:
@@ -3129,7 +3130,6 @@ class BrainPromoter:
             expected_release_id,
             candidate_manifest_sha256=expected_manifest_sha256,
             allow_first_deploy=False,
-            first_deploy_approval=None,
         )
         if selector.current_release_id != expected_release_id:
             raise PromotionError(
@@ -3702,7 +3702,6 @@ class BrainPromoter:
                 release_id,
                 candidate_manifest_sha256=manifest_sha256,
                 allow_first_deploy=False,
-                first_deploy_approval=None,
             )
         else:
             raise PromotionError(f"reconciliation selector returned HTTP {probe.status}")
@@ -4403,8 +4402,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "evidence in this absolute external content-addressed store"
         ),
     )
-    parser.add_argument("--allow-first-deploy-without-selector", action="store_true")
-    parser.add_argument("--first-deploy-approval")
+    parser.add_argument(
+        "--allow-first-deploy-without-selector",
+        action="store_true",
+        help=(
+            "admit an HTTP 404 selector as first-deploy prestate; provisional in "
+            "--dry-run, and paired approval is required with --execute"
+        ),
+    )
+    parser.add_argument(
+        "--first-deploy-approval",
+        help="execute-only approval for the reviewed first-deployment exception",
+    )
     parser.add_argument("--approval-note")
     parser.add_argument(
         "--reconcile-quiet-seconds",

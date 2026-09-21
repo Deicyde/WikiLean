@@ -672,7 +672,7 @@ class ActivationFixture:
                 },
                 "approval_note": None,
                 "first_deploy_exception": True,
-                "first_deploy_approval": "fixture approval",
+                "first_deploy_approval": None,
                 "history": {
                     "deployments": {
                         "sha256": "1" * 64,
@@ -1285,6 +1285,48 @@ class BrainActivationBundleTests(unittest.TestCase):
         self.fixture.dry_run["production_mutated"] = True
         self.fixture.sync()
         with self.assertRaisesRegex(bundle.BundleValidationError, "non-mutating"):
+            self.fixture.freeze()
+
+    def test_rejects_first_deploy_approval_in_dry_run_evidence(self):
+        self.fixture.dry_run["proposed_intent"]["first_deploy_approval"] = (
+            "premature approval"
+        )
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "must not contain"):
+            self.fixture.freeze()
+
+    def test_rejects_execution_approval_note_in_dry_run_evidence(self):
+        self.fixture.dry_run["proposed_intent"]["approval_note"] = (
+            "premature approval"
+        )
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "must not contain"):
+            self.fixture.freeze()
+
+    def test_rejects_missing_selector_without_provisional_exception(self):
+        self.fixture.dry_run["proposed_intent"]["first_deploy_exception"] = False
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "selector presence"):
+            self.fixture.freeze()
+
+    def test_rejects_provisional_exception_when_selector_exists(self):
+        intent = self.fixture.dry_run["proposed_intent"]
+        intent["predeploy"].update(
+            {
+                "selector_status": 200,
+                "release_id": RELEASE_ID,
+                "manifest_sha256": self.fixture.release_manifest_sha256,
+                "audited_at": "2030-01-01T00:00:00Z",
+            }
+        )
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "selector presence"):
+            self.fixture.freeze()
+
+    def test_rejects_legacy_dry_run_schema(self):
+        self.fixture.dry_run["schema"] = "wikilean.brain-promotion-dry-run/v1"
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "schema"):
             self.fixture.freeze()
 
     def test_rejects_incomplete_promoter_intent(self):

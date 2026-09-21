@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -48,6 +49,7 @@ def make_gate_checkout(directory: str) -> tuple[Path, Path, Path, Path]:
     write_executable(root / "brain" / "acquire-wikidata-observation.sh", """#!/bin/bash
 set -eu
 printf 'acquire\\n' >>"$TEST_OBSERVATION_LOG"
+printf '%s\\n' "$1" >"$TEST_OBSERVATION_PLAN_PATH_LOG"
 [ "${TEST_OBSERVATION_MODE:-success}" != "acquire-fail" ] || exit 9
 store="$3"
 mkdir -p "$store"
@@ -149,7 +151,11 @@ def run_gate_checkout(
     plan_exit: int = 0,
     fold_exit: int = 0,
     observation_mode: str = "success",
+    observation_plan_sha256: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    observation_plan = root / "observation-plan.json"
+    if observation_plan_sha256 is None:
+        observation_plan_sha256 = hashlib.sha256(observation_plan.read_bytes()).hexdigest()
     env = dict(os.environ)
     env.update({
         "WIKILEAN_BRAIN_REFRESH": "1",
@@ -163,9 +169,11 @@ def run_gate_checkout(
         "TEST_PLAN_EXIT": str(plan_exit),
         "TEST_FOLD_EXIT": str(fold_exit),
         "TEST_OUTSIDE_BUNDLE": str(root / "outside-bundle"),
-        "WIKILEAN_WIKIDATA_OBSERVATION_PLAN": str(root / "observation-plan.json"),
+        "WIKILEAN_WIKIDATA_OBSERVATION_PLAN": str(observation_plan),
+        "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256": observation_plan_sha256,
         "TEST_OBSERVATION_MODE": observation_mode,
         "TEST_OBSERVATION_LOG": str(root / "observation-commands.txt"),
+        "TEST_OBSERVATION_PLAN_PATH_LOG": str(root / "observation-plan-path.txt"),
     })
     return subprocess.run(
         ["bash", str(root / "site" / "ops" / "brain-nightly.sh")],
@@ -183,6 +191,54 @@ def command_records(path: Path) -> list[dict]:
 
 
 class BrainNightlyShellTest(unittest.TestCase):
+    def test_explicit_observation_plan_wins_over_stale_local_config(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, mathlib, commands, store = make_gate_checkout(directory)
+            (root / "site" / "ops" / "nightly.local.env").write_text(
+                "WIKILEAN_WIKIDATA_OBSERVATION_PLAN=/missing/stale-plan.json\n"
+                f"WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256={'0' * 64}\n",
+                encoding="utf-8",
+            )
+            result = run_gate_checkout(
+                root,
+                mathlib,
+                commands,
+                store,
+                plan_bytes='{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}',
+            )
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(
+                (root / "observation-commands.txt").read_text(encoding="utf-8").splitlines(),
+                ["acquire", "install"],
+            )
+            acquired_plan = Path(
+                (root / "observation-plan-path.txt").read_text(encoding="utf-8").strip()
+            )
+            self.assertEqual(acquired_plan.name, "wikidata-observation-plan.json")
+            self.assertTrue(acquired_plan.parent.name.startswith(".brain-run."))
+            self.assertNotEqual(acquired_plan, root / "observation-plan.json")
+            self.assertTrue(command_records(commands))
+
+    def test_observation_plan_digest_is_checked_before_acquisition(self):
+        for digest, expected in (("A" * 64, "64 lowercase hexadecimal"),
+                                 ("0" * 64, "SHA-256 mismatch")):
+            with self.subTest(digest=digest), tempfile.TemporaryDirectory() as directory:
+                root, mathlib, commands, store = make_gate_checkout(directory)
+                result = run_gate_checkout(
+                    root,
+                    mathlib,
+                    commands,
+                    store,
+                    plan_bytes='{"qids":[],"schema":"wikilean.wikidata-entity-request-plan/v1"}',
+                    observation_plan_sha256=digest,
+                )
+                self.assertEqual(result.returncode, 1)
+                self.assertFalse((root / "observation-commands.txt").exists())
+                self.assertEqual(command_records(commands), [])
+                logs = list((root / "site" / "ops" / "logs").glob("brain-*.log"))
+                self.assertEqual(len(logs), 1)
+                self.assertIn(expected, logs[0].read_text(encoding="utf-8"))
+
     def test_shared_observation_failure_aborts_before_proposal_fold_and_build(self):
         for mode in ("acquire-fail", "invalid-path", "install-fail"):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import os
 import plistlib
 import re
@@ -25,15 +26,27 @@ class NightlyLaunchdTest(unittest.TestCase):
         self.ops = self.repo / "site" / "ops"
         self.home = base / "home & local"
         self.mathlib = base / "mathlib4"
+        self.observation_plan = base / "reviewed observation plan.json"
         self.ops.mkdir(parents=True)
         self.home.mkdir()
         (self.mathlib / "Mathlib" / "Algebra").mkdir(parents=True)
+        self.observation_plan.write_text("{}\n", encoding="utf-8")
+        self.observation_plan_sha256 = hashlib.sha256(
+            self.observation_plan.read_bytes()
+        ).hexdigest()
         (self.repo / "wiki").mkdir()
         (self.repo / "wiki" / "package.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / "wiki" / "wrangler.jsonc").write_text("{}\n", encoding="utf-8")
         (self.repo / "wiki" / ".dev.vars").write_text(
             "PIPELINE_TOKEN=fixture-file-token\n", encoding="utf-8"
         )
         (self.repo / "site" / "moderate.py").write_text("# fixture\n", encoding="utf-8")
+        (self.repo / "site" / "build_brain_page.py").write_text(
+            "# fixture\n", encoding="utf-8"
+        )
+        authority = self.repo / "brain" / "authority"
+        authority.mkdir(parents=True)
+        (authority / "reducer-inputs-v1.json").write_text("{}\n", encoding="utf-8")
 
         for name in (
             "launchd-plist.template",
@@ -84,6 +97,10 @@ class NightlyLaunchdTest(unittest.TestCase):
             str(Path(sys.executable).resolve()),
             "--mathlib",
             str(self.mathlib),
+            "--wikidata-observation-plan",
+            str(self.observation_plan),
+            "--wikidata-observation-plan-sha256",
+            self.observation_plan_sha256,
         ]
 
     def moderation_environment(self, fake_python: Path) -> dict[str, str]:
@@ -260,10 +277,20 @@ printf '%s\\n' -- >>"$FAKE_PY_LOG"
                 self.assertEqual(
                     environment["BRAIN_MATHLIB_CHECKOUT"], str(self.mathlib / "Mathlib")
                 )
+                self.assertEqual(
+                    environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN"],
+                    str(self.observation_plan),
+                )
+                self.assertEqual(
+                    environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"],
+                    self.observation_plan_sha256,
+                )
                 self.assertNotIn("WIKILEAN_MATHLIB", environment)
             else:
                 self.assertEqual(environment["WIKILEAN_MATHLIB"], str(self.mathlib))
                 self.assertNotIn("BRAIN_MATHLIB_CHECKOUT", environment)
+                self.assertNotIn("WIKILEAN_WIKIDATA_OBSERVATION_PLAN", environment)
+                self.assertNotIn("WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256", environment)
 
     def test_check_and_install_never_load_a_job(self) -> None:
         check = self.run_command(
@@ -297,7 +324,10 @@ printf '%s\\n' -- >>"$FAKE_PY_LOG"
                     f"WIKILEAN_PYTHON={shlex.quote(str(Path(sys.executable).resolve()))}",
                     f"WIKILEAN_MATHLIB={shlex.quote(str(self.mathlib))}",
                     f"BRAIN_MATHLIB_CHECKOUT={shlex.quote(str(self.mathlib / 'Mathlib'))}",
+                    f"WIKILEAN_WIKIDATA_OBSERVATION_PLAN={shlex.quote(str(self.observation_plan))}",
+                    f"WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256={self.observation_plan_sha256}",
                     "export WIKILEAN_PYTHON WIKILEAN_MATHLIB BRAIN_MATHLIB_CHECKOUT",
+                    "export WIKILEAN_WIKIDATA_OBSERVATION_PLAN WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256",
                     "",
                 )
             ),
@@ -309,6 +339,8 @@ printf '%s\\n' -- >>"$FAKE_PY_LOG"
                 "WIKILEAN_PYTHON": "/hostile/python",
                 "WIKILEAN_MATHLIB": "/hostile/mathlib",
                 "BRAIN_MATHLIB_CHECKOUT": "/hostile/Mathlib",
+                "WIKILEAN_WIKIDATA_OBSERVATION_PLAN": "/hostile/observation-plan.json",
+                "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256": "0" * 64,
                 "WIKILEAN_API_TOKEN": "hostile-token",
             }
         )
@@ -337,10 +369,184 @@ printf '%s\\n' -- >>"$FAKE_PY_LOG"
         for path in output.glob("*.plist"):
             with path.open("rb") as stream:
                 document = plistlib.load(stream)
-            self.assertEqual(
-                document["EnvironmentVariables"],
-                {"WIKILEAN_PYTHON": str(Path(sys.executable).resolve())},
-            )
+            expected_environment = {
+                "WIKILEAN_PYTHON": str(Path(sys.executable).resolve())
+            }
+            if document["Label"] == "org.wikilean.brain":
+                expected_environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN"] = str(
+                    self.observation_plan
+                )
+                expected_environment["WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"] = (
+                    self.observation_plan_sha256
+                )
+            self.assertEqual(document["EnvironmentVariables"], expected_environment)
+
+    def test_explicit_observation_plan_override_wins_local_config_and_is_sealed(self) -> None:
+        local_plan = self.repo / "local observation plan.json"
+        local_plan.write_text("{}\n", encoding="utf-8")
+        local_plan_sha256 = hashlib.sha256(local_plan.read_bytes()).hexdigest()
+        (self.ops / "nightly.local.env").write_text(
+            f"WIKILEAN_WIKIDATA_OBSERVATION_PLAN={shlex.quote(str(local_plan))}\n"
+            f"WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256={local_plan_sha256}\n"
+            "export WIKILEAN_WIKIDATA_OBSERVATION_PLAN "
+            "WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256\n",
+            encoding="utf-8",
+        )
+        output = Path(self.temporary.name) / "explicit-plan-render"
+        result = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "render",
+            "--job",
+            "brain",
+            "--output-dir",
+            str(output),
+            "--python",
+            str(Path(sys.executable).resolve()),
+            "--brain-mathlib",
+            str(self.mathlib / "Mathlib"),
+            "--wikidata-observation-plan",
+            str(self.observation_plan),
+            "--wikidata-observation-plan-sha256",
+            self.observation_plan_sha256,
+            cwd="/",
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with (output / "org.wikilean.brain.plist").open("rb") as stream:
+            document = plistlib.load(stream)
+        self.assertEqual(
+            document["EnvironmentVariables"]["WIKILEAN_WIKIDATA_OBSERVATION_PLAN"],
+            str(self.observation_plan),
+        )
+        self.assertEqual(
+            document["EnvironmentVariables"]["WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256"],
+            self.observation_plan_sha256,
+        )
+
+    def test_brain_preflight_rejects_invalid_observation_plan_binding(self) -> None:
+        common = (
+            "--job",
+            "brain",
+            "--python",
+            str(Path(sys.executable).resolve()),
+            "--brain-mathlib",
+            str(self.mathlib / "Mathlib"),
+        )
+        missing = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "check",
+            *common,
+            cwd="/",
+        )
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("WIKILEAN_WIKIDATA_OBSERVATION_PLAN is required", missing.stderr)
+
+        for unpaired in (
+            ("--wikidata-observation-plan", str(self.observation_plan)),
+            ("--wikidata-observation-plan-sha256", self.observation_plan_sha256),
+        ):
+            with self.subTest(unpaired=unpaired[0]):
+                result = self.run_command(
+                    sys.executable,
+                    str(self.ops / "nightly-launchd.py"),
+                    "check",
+                    *common,
+                    *unpaired,
+                    cwd="/",
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("must be supplied together", result.stderr)
+
+        relative = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "check",
+            *common,
+            "--wikidata-observation-plan",
+            "relative/plan.json",
+            "--wikidata-observation-plan-sha256",
+            self.observation_plan_sha256,
+            cwd="/",
+        )
+        self.assertNotEqual(relative.returncode, 0)
+        self.assertIn("--wikidata-observation-plan must be an absolute path", relative.stderr)
+
+        bad_digest = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "check",
+            *common,
+            "--wikidata-observation-plan",
+            str(self.observation_plan),
+            "--wikidata-observation-plan-sha256",
+            "A" * 64,
+            cwd="/",
+        )
+        self.assertNotEqual(bad_digest.returncode, 0)
+        self.assertIn("must be 64 lowercase hexadecimal characters", bad_digest.stderr)
+
+        mismatch = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "check",
+            *common,
+            "--wikidata-observation-plan",
+            str(self.observation_plan),
+            "--wikidata-observation-plan-sha256",
+            "0" * 64,
+            cwd="/",
+        )
+        self.assertNotEqual(mismatch.returncode, 0)
+        self.assertIn("SHA-256 mismatch", mismatch.stderr)
+
+        non_file = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "check",
+            *common,
+            "--wikidata-observation-plan",
+            str(self.home),
+            "--wikidata-observation-plan-sha256",
+            self.observation_plan_sha256,
+            cwd="/",
+        )
+        self.assertNotEqual(non_file.returncode, 0)
+        self.assertIn("must name a readable regular file", non_file.stderr)
+
+    def test_brain_plist_digest_rejects_plan_replaced_after_render(self) -> None:
+        output = Path(self.temporary.name) / "replacement-render"
+        rendered = self.run_command(
+            sys.executable,
+            str(self.ops / "nightly-launchd.py"),
+            "render",
+            "--job",
+            "brain",
+            "--output-dir",
+            str(output),
+            *self.launchd_arguments(),
+            cwd="/",
+        )
+        self.assertEqual(rendered.returncode, 0, rendered.stderr)
+        with (output / "org.wikilean.brain.plist").open("rb") as stream:
+            document = plistlib.load(stream)
+
+        self.observation_plan.write_text('{"replacement":true}\n', encoding="utf-8")
+        launch_environment = {
+            "HOME": str(self.home),
+            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+            **document["EnvironmentVariables"],
+        }
+        launched = self.run_command(
+            "/bin/bash",
+            str(self.ops / "brain-nightly.sh"),
+            env=launch_environment,
+            cwd="/",
+        )
+        self.assertNotEqual(launched.returncode, 0)
+        logs = list((self.ops / "logs").glob("brain-*.log"))
+        self.assertEqual(len(logs), 1)
+        self.assertIn("SHA-256 mismatch", logs[0].read_text(encoding="utf-8"))
 
     def test_launchd_check_does_not_inherit_interactive_token(self) -> None:
         (self.repo / "wiki" / ".dev.vars").unlink()

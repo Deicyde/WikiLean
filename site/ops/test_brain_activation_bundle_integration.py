@@ -606,7 +606,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             "brain": retained_brain,
         }
         dry_run = {
-            "schema": "wikilean.brain-promotion-dry-run/v1",
+            "schema": promoter.DRY_RUN_SCHEMA,
             "ok": True,
             "attempt_id": attempt_id,
             "proposed_intent": {
@@ -679,7 +679,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                 },
                 "approval_note": None,
                 "first_deploy_exception": True,
-                "first_deploy_approval": "integration fixture approval",
+                "first_deploy_approval": None,
                 "history": {
                     "deployments": history["deployments"],
                     "versions": history["versions"],
@@ -798,11 +798,16 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             base_url=promoter.PRODUCTION_ORIGIN,
             mode="execute",
             allow_first_deploy=True,
-            first_deploy_approval="integration fixture approval",
+            first_deploy_approval="Jack approved the reviewed integration fixture",
             approval_note="integration reviewed activation",
         )
         reviewed = execution._verify_reviewed_activation()
         executable = execution._prepare_reviewed_activation(reviewed)
+        self.assertIsNone(reviewed.intent["first_deploy_approval"])
+        self.assertEqual(
+            execution._intent_payload(executable)["first_deploy_approval"],
+            "Jack approved the reviewed integration fixture",
+        )
         self.assertEqual(executable.activation.bundle_id, result["bundle_id"])
         self.assertEqual(executable.public_dir, retained.public_dir)
         self.assertEqual(executable.bundle_entry, retained.worker_entry)
