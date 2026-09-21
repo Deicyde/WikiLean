@@ -110,11 +110,36 @@ that witnessed the bond, not the atom ids.
 `_prov_table` where relevant). The provenance single-source-of-truth is
 `catalog/data/source_registry.json`.
 
+## Release identity and request consistency
+
+Every REST request and MCP `tools/call` fetches `/assets/brain/current.json`
+exactly once. The selector carries `schema: "wikilean.release-selector/v1"`, a
+full content identity `release_id: "sha256:<64 lowercase hex>"`, the matching
+URL-safe `release` hex, and the immutable `manifest` path. The optional flat
+`previous_release_id`, `previous_release`, and `previous_manifest` fields are
+all-or-none and retain the prior release; `audited_at` is optional audit metadata.
+The Worker validates these fields agree, recomputes the immutable manifest's
+canonical release identity, and requires the complete runtime artifact closure.
+Every release-relative JSON read must also be declared by that manifest and match
+its byte length and SHA-256 before parsing. Missing, malformed, mismatched, or
+transiently unavailable mandatory assets fail closed with 503; failed immutable
+loads are evicted from the isolate memo so a retry can recover.
+
+That selected identity is pinned for the complete request. Cell shards, labels,
+aliases, supercells, and `xref_index.json` are all read below
+`/assets/brain/releases/<release>/`; isolate caches are keyed by release ID, so
+a promotion during an isolate's lifetime cannot mix releases. Release-keyed
+manifest, asset, xref, and inversion caches share a two-release LRU bound for
+the current/previous overlap window. Declaration, suffix, and premise indexes
+retain their existing unqualified paths because they are separate compatibility
+indexes.
+
 ## REST endpoints
 
-All GET, read-only, unauthenticated, JSON, `Cache-Control: public,
-max-age=3600` on success (the underlying shards rebuild nightly). Errors are
-`{ok:false, error, …hint}` with 400/404/503 and are not cached.
+All GET, read-only, unauthenticated, JSON. The unqualified compatibility URLs
+select "current", so successful responses use `Cache-Control: public,
+max-age=0, must-revalidate`; immutable release assets can be cached normally.
+Errors are `{ok:false, error, …hint}` with 400/404/503 and are not cached.
 
 ### `GET /api/brain/cell?key=<any organ id>` — the flagship
 
@@ -262,8 +287,12 @@ filters the traces too, so asking for `depends` never dumps `links`);
 Rows come in a **stable `(-w, id)` order** so a long-running agent can walk a
 chain across turns:
 
-- `cursor` — an **opaque** token; pass the previous response's `next_cursor`
-  back to resume. `next_cursor` is present only while filtered rows remain.
+- `cursor` — an **opaque, versioned, release-bound** token; pass the previous
+  response's `next_cursor` back to resume. `next_cursor` is present only while
+  filtered rows remain. New tokens bind the release, atom ID, normalized `kinds`,
+  and `min_w`; reuse against another release or query returns 400. Legacy v1
+  tokens remain accepted only when they carry the current release ID; unbound
+  pre-release `{w,id}` tokens are rejected.
 - `min_w` — floor the synapse weight.
 - `min_conf` — drop traces whose `evidence.confidence` is below the floor
   (traces with no confidence are KEPT, and the number dropped is reported in
@@ -352,10 +381,11 @@ over its organs, so `f=1` returns every atom holding a gold-tagged declaration
 and `f=17` (bits 0+4) every formalized atom whose formalization carries a gold
 `@[wikidata]` tag.
 
-Pagination is by stable row-index cursor: pass the previous response's
-`next_cursor` back as `cursor`; `next_cursor: null` means done. (Cursors are
-positions in the nightly-built index — treat a nightly rebuild as invalidating
-outstanding cursors.)
+Pagination uses an opaque, versioned cursor containing the stable row index,
+release ID, and normalized `f`/`type`/`under` query: pass `next_cursor` back as
+`cursor`; `next_cursor: null` means done. Reuse against another release or query
+returns 400. Legacy v1 tokens remain accepted only when they carry the current
+release ID; unbound integer offsets are rejected.
 
 ```bash
 curl 'https://wikilean.jackmccarthy.org/api/brain/filter?f=17&limit=50'
@@ -519,14 +549,15 @@ development and tuning run against LeanDojo Benchmark-4's premise split
 (`docs/research/BRIDGE-V2-BENCHMARKS.md`); the measured evaluation is the
 bench **WP arm** (W + `brain_premises`) against the frozen pre-tool W rows.
 
-### Snapshot echo
+### Release and snapshot echo
 
-**Every** API/MCP response carries `snapshot: {generated_at, pin}` — the brain
-build time (`cells/manifest.json` `_meta.generated_at`) and the Mathlib rev the
-decl organs were built against (the commit-shaped `pin` off the manifest's
-`prov` table, e.g. `"bf3266149cda603f"`). A held-out evaluation is dishonest
-without it. `snapshot: null` when the manifest is unavailable. `?rev=`
-time-travel over archived snapshots comes later.
+**Every** Brain API/MCP response carries both `release_id` and `snapshot:
+{generated_at, pin}`. `release_id` is the immutable identity of the complete
+published Brain release; `snapshot` is human-readable provenance from
+`cells/manifest.json` (`_meta.generated_at` plus the Mathlib `pin`). A held-out
+evaluation is dishonest without both. If release selection or immutable
+manifest validation fails, the request returns 503 with `release_id: null` and
+`snapshot: null`. `?rev=` time-travel over archived snapshots comes later.
 
 ### Related routes
 
@@ -614,13 +645,14 @@ top-level `note` says so.
 
 - `POST /mcp`: **120 requests/min per IP** (JSON-RPC error `-32000`, HTTP 429
   when exceeded).
-- REST routes: unauthenticated and edge-cached (`public, max-age=3600`);
-  responses change on the nightly data rebuild. `/api/brain/edges` is the one
-  live, uncached route.
-- Be a good citizen: batch-style crawling should use the static cell assets
-  (`/assets/brain/cells/manifest.json` + shards, `labels.json`, `aliases.json`,
-  `supercells.json`, `explorer.json`) or the repo's `brain/data/*.jsonl`
-  instead of hammering the API.
+- REST compatibility routes are unauthenticated and revalidation-safe
+  (`public, max-age=0, must-revalidate`) because they resolve the mutable
+  current selector. `/api/brain/edges` remains live and `no-store`.
+- Be a good citizen: batch-style crawling should first read
+  `/assets/brain/current.json`, validate its immutable release manifest, then
+  crawl `/assets/brain/releases/<release>/cells/manifest.json` and its sibling
+  shards, `labels.json`, `aliases.json`, `supercells.json`, and `explorer.json`.
+  Never assemble a crawl from the retired mutable `/assets/brain/cells/` alias.
 
 ## The local CLI (`brain/query.py`)
 

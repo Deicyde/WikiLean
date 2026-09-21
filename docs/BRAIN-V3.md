@@ -395,9 +395,10 @@ tombstone, then removed outright; it answers a plain 404). The community-edit or
 `atomIdForOrgan`, and submitted `cell:<anchor>` endpoints normalize to their
 anchor before storage (fixes the search-picker → add-connection 400).
 Unanchored `xref:`/`lit:` ids — the populations v3 dropped — 400 with the
-named reason. `wiki/scripts/build-public.ts` copies an allow-list only:
-`cells/` + `sources.json` + `xref_index.json` (~100 MB deploy, down from
-~440 MB).
+named reason. `wiki/scripts/build-public.ts` stages an allow-list from one
+explicit verified release only: `cells/` + `sources.json` + `xref_index.json`
+(~100 MB deploy, down from ~440 MB), plus the release-qualified manifest and
+selector. The matching `brain.html` also comes from the frozen release.
 
 ## Open items / carried debt
 

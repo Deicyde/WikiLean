@@ -59,7 +59,9 @@ python3 brain/test_fold_xref.py    # real catalog + private decl cache/Mathlib c
 
 # Site (wiki/)
 cd wiki && npm run deploy          # deploy the Worker (bundles ALL of wiki/src)
-cd wiki && node --experimental-strip-types scripts/build-public.ts   # rebuild static assets (RUN FROM wiki/)
+cd wiki && node --experimental-strip-types scripts/build-public.ts \
+  --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
+  --brain-release-dir ../site/out/brain-releases/<release-hex>       # verified assets; RUN FROM wiki/
 # Tagging bot
 gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean
 python3 bot/poll.py --mathlib /tmp/unused --decide     # act|wait (cheap, gh-only)
@@ -126,8 +128,10 @@ python3 manage/refresh.py [--pull] # rebuild the control plane (centrality/cover
 - `npm run deploy` bundles **all** of `wiki/src` — don't leave unreleased Worker WIP committed
   if the nightly may deploy. (The 03:20 nightly never deploys; the 02:20 brain
   nightly deploys only behind `WIKILEAN_BRAIN_DEPLOY=1` + clean-tree + main-branch gates.)
-- Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), then run build-public from
-  `wiki/`; never edit `wiki/public/` directly (it's generated + gitignored).
+- Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
+  then run build-public from `wiki/` with its explicit manifest and directory; never edit
+  `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen
+  release, not mutable `site/out`.
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
 
 ## How Jack works

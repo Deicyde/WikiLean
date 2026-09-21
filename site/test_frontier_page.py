@@ -50,6 +50,31 @@ class FrontierPageTest(unittest.TestCase):
         self.assertNotIn("suitability", self.html[score_cells:active_prox])
         self.assertGreater(suitability, active_prox)
 
+    def test_release_selector_pins_one_immutable_page_session(self):
+        self.assertIn('const RELEASE_SELECTOR_URL = "/assets/brain/current.json"', self.html)
+        self.assertIn('fetch(RELEASE_SELECTOR_URL, {cache: "no-cache"})', self.html)
+        self.assertEqual(self.html.count("await selectRelease()"), 1)
+        self.assertIn('const releaseBase = "/assets/brain/releases/" + match[1] + "/"', self.html)
+        self.assertIn('"wikilean.release.v1", releaseManifest, ["release_id", "attestations", "created_at"]', self.html)
+        self.assertIn('crypto.subtle.digest("SHA-256", bytes)', self.html)
+        self.assertIn('"wikilean\\0" + domain + "\\0canonical-json-v1\\0"', self.html)
+        self.assertNotIn('"wikilean\\\\0" + domain', self.html)
+        self.assertIn('BASE = releaseBase + "cells/"', self.html)
+        self.assertIn('SOURCES_URL = releaseBase + "sources.json"', self.html)
+        self.assertIn('const required = ["schema", "release_id", "release", "manifest"]', self.html)
+        self.assertIn('Object.keys(selector).some(key => !allowed.has(key))', self.html)
+        self.assertIn('selector.previous_release_id === selector.release_id', self.html)
+        self.assertIn('"audited_at" in selector', self.html)
+        self.assertIn('const previousKeys = ["previous_release_id", "previous_release", "previous_manifest"]', self.html)
+        self.assertIn('releaseManifest.release_id !== selector.release_id', self.html)
+        self.assertIn('releaseEl.textContent = `release ${RELEASE_HEX.slice(0, 12)}`', self.html)
+        self.assertIn("releaseEl.title = RELEASE_ID", self.html)
+        self.assertNotIn('const BASE = "/assets/brain/cells/"', self.html)
+        self.assertNotIn('const SOURCES_URL = "/assets/brain/sources.json"', self.html)
+        self.assertNotIn("selector_id", self.html)
+        self.assertNotIn('"updated_at" in selector', self.html)
+        self.assertNotIn("await fetchManifest(); } catch { return null; }", self.html)
+
     def test_generated_inline_script_parses(self):
         scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", self.html,
                              flags=re.DOTALL)

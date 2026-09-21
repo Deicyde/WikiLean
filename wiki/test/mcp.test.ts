@@ -17,6 +17,7 @@ import {
   FIELD_Q,
   LINALG_SUPER,
   DECL_CELL,
+  FIXTURE_RELEASE_ID,
   type BrainFixtureOpts,
 } from "./helpers/brain-fixture.js";
 
@@ -302,9 +303,9 @@ describe("POST /mcp — tools/call", () => {
     expect((data.next_tools as string[]).join(" ")).toContain("decl_exists");
   });
 
-  // BRIDGE item 6 — snapshot echo rides on every tool result (the text body IS
-  // the REST body), so a held-out evaluation always knows which build answered.
-  it("every tool result echoes snapshot:{generated_at, pin}", async () => {
+  // Snapshot and immutable release identity ride on every tool result (the text
+  // body IS the REST body), so held-out evaluation knows exactly what answered.
+  it("every tool result echoes snapshot and release_id", async () => {
     const h = harness();
     for (const [name, args] of [
       ["brain_cell", { key: "CommGroup" }],
@@ -314,6 +315,7 @@ describe("POST /mcp — tools/call", () => {
     ] as Array<[string, Record<string, unknown>]>) {
       const { data } = await callTool(h, name, args);
       expect(data.snapshot).toEqual({ generated_at: "2026-07-15", pin: "2026-07-04" });
+      expect(data.release_id).toBe(FIXTURE_RELEASE_ID);
     }
   });
 
@@ -328,6 +330,30 @@ describe("POST /mcp — tools/call", () => {
     expect(badMask.isError).toBe(true);
     const unknownCell = await callTool(h, "brain_cell", { key: "Q999999999" });
     expect(unknownCell.isError).toBe(true);
+  });
+
+  it("reports a missing mandatory Brain asset as a 503 tool result", async () => {
+    const h = harness({ aliases: null });
+    const result = await callTool(h, "brain_cell", { key: MODULE_Q });
+    expect(result.isError).toBe(true);
+    expect(result.data).toMatchObject({
+      ok: false,
+      error: "brain release unavailable",
+      release_id: FIXTURE_RELEASE_ID,
+      snapshot: null,
+    });
+  });
+
+  it("accepts opaque filter cursors and rejects them after release rollover", async () => {
+    const h = harness();
+    const first = await callTool(h, "brain_filter", { f: 1, limit: 1 });
+    expect(first.data.next_cursor).toEqual(expect.any(String));
+    const second = await callTool(h, "brain_filter", { f: 1, limit: 1, cursor: first.data.next_cursor });
+    expect(second.data.hits).toEqual([expect.objectContaining({ id: MODULE_CELL })]);
+    installBrainFixture(h.env, { releaseVariant: "mcp-rollover" });
+    const mismatch = await callTool(h, "brain_filter", { f: 1, limit: 1, cursor: first.data.next_cursor });
+    expect(mismatch.isError).toBe(true);
+    expect(mismatch.data.error).toContain("different Brain release");
   });
 
   it("an unknown tool is a -32602 protocol error", async () => {

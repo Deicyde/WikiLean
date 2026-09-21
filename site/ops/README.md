@@ -25,21 +25,36 @@ proofwiki / oeis / stacks / tag-harvest / crossrefs; weekly: lmfdb / eom /
 planetmath / wikidata descriptions; monthly: kerodon / dlmf / mathworld —
 cadence stamp files live in `site/ops/logs/`) → **agent team**
 (`brain/sync_agents.py`, gated `WIKILEAN_BRAIN_AGENTS=1`, OFF by default;
-writes `brain/proposals/*.jsonl` only) → **fold → build_snapshot →
-test_acceptance** (RED aborts the publish, old shards stay live) →
-**build_shards** → **clean-tree-gated deploy** (gated `WIKILEAN_BRAIN_DEPLOY=1`,
-OFF by default; deploys ONLY if `git status --porcelain -- wiki/src
-wiki/package.json wiki/wrangler.jsonc` is empty AND `npx tsc --noEmit` passes —
-never ships uncommitted Worker WIP). Every step is fail-soft with its own loud
-log line; ingest adapters are atomic-write, so a failed fetch keeps the
-previous data. Tunables in `nightly.env` (`WIKILEAN_BRAIN_*`, `KERODON_MAX_FETCH`,
-`DLMF_MAX_FETCH`, `BRAIN_EXT_NODE_CAP`); logs in `site/ops/logs/brain-<ts>.log`;
-lock `.lock.brain.d` (4h stale recovery).
+writes `brain/proposals/*.jsonl` only) → **fold → snapshot/cells/frontier/page
+builds and acceptance tests** → **content-addressed release freeze and independent
+verification** → **atomic current/previous public staging** → **Worker typecheck
+and unit tests**. The Brain page is copied from the same frozen release as its
+assets, never from mutable `site/out`. With `WIKILEAN_BRAIN_DEPLOY=1` it deploys exactly once only from
+`main`, outside a merge/rebase, with clean Worker/static/release source inputs and
+a stable Worker-version/selector prestate. The strict tagged deploy is bound to
+Wrangler's emitted candidate version. The post-deploy canary checks the selector,
+frozen manifest and page bytes (`/brain` and `/brain.html`), required explorer
+assets, a deterministic shard, REST/MCP release identity, cursor behavior, and
+compatibility aliases. The gitignored public tree is restaged from the frozen
+release immediately before Wrangler reads it.
+Deployment and automatic rollback are independently OFF by default; automatic
+rollback remains an exclusive-window escape hatch because Wrangler has no CAS.
+Ingest is fail-soft, but every build/release/deploy
+gate fails closed and logs loudly. See `docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
+Public staging hashes and copies through a fixed 1 MiB buffer, enforces object,
+byte, per-file, and free-space limits from `nightly.env`, and never prunes the
+frozen release store automatically. Machine-readable release, SQLite, and public
+stage metrics are written under `site/out/`. Logs live in
+`site/ops/logs/brain-<ts>.log`; lock `.lock.brain.d` (4h stale recovery).
+The Brain job also requires Python 3.12+ and an explicit readable
+`BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`. Put host-local
+paths in the gitignored `site/ops/nightly.local.env`; see the runbook.
 
 Install (same pattern as the moderate job; the Full Disk Access grant below
 covers this job too):
 
 ```sh
+mkdir -p ~/Library/Logs/WikiLean
 cp site/ops/org.wikilean.brain.plist ~/Library/LaunchAgents/
 launchctl bootout  gui/$(id -u)/org.wikilean.brain 2>/dev/null
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.wikilean.brain.plist
@@ -60,19 +75,19 @@ launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate
 tail -f site/cache/cron/moderate-*.log
 ```
 
-## REQUIRED one-time permission — Full Disk Access for `/bin/bash`
-The repo lives under `~/Desktop`, which macOS **TCC** shields from background
-(launchd) processes. Without this grant the job fails to even start
+## Conditional one-time permission — Full Disk Access for `/bin/bash`
+If a checkout lives under `~/Desktop`, macOS **TCC** shields it from background
+(launchd) processes. Without this grant such a job fails to even start
 (`Operation not permitted` / exit 126). Grant it once:
 
   **System Settings → Privacy & Security → Full Disk Access → `+` → ⌘⇧G →
   `/bin/bash` → enable.**
 
 bash is the LaunchAgent's "responsible process", so the child processes (the
-venv Python → `claude` → node) inherit its disk + keychain access. (Verified:
-a full review runs and authenticates under launchd with this grant.) If the
-repo ever moves off `~/Desktop` (e.g. to `~/LEAN`), this grant is no longer
-needed and can be removed.
+venv Python → `claude` → node) inherit its disk + keychain access. A checkout
+under `~/projects`, including the current Brain plist target, normally does not
+need this grant. The moderation/newtags plists still carry their legacy Desktop
+paths and should be migrated separately before reinstalling those jobs.
 
 Note: the plist's `StandardOutPath`/`StandardErrorPath` point at
 `~/Library/Logs/WikiLean/` (off Desktop) — launchd itself can't write onto the
@@ -95,7 +110,7 @@ see you're near reset with capacity left:
 
 ```sh
 bash site/ops/run-now.sh        # detached; reviews up to 100 (WIKILEAN_REVIEW_LIMIT)
-# or alias it:  alias wlmod='~/Desktop/LEAN/WikiLean/site/ops/run-now.sh'  →  wlmod
+# or alias the absolute path of this checkout's site/ops/run-now.sh
 ```
 It runs in your login context (Max auth, no FDA needed), detaches (survives
 closing the terminal), and the runner aborts cleanly when the window is spent.
