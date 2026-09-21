@@ -83,11 +83,14 @@ def main() -> int:
 
     link_rows = [{"db": "oeis", "src": s, "dst": d, "context": "related"}
                  for s, d in sorted(links)]
+    print(
+        f"[oeis] acquisition telemetry: {fetched[0]} entries fetched this run",
+        file=sys.stderr,
+    )
     common.emit("oeis", pages, link_rows, extra_meta={
         "source_pin": "oeis.org names.gz + per-entry ?fmt=json",
         "n_names_inventory": len(names),
         "n_anchored": len(anchored),
-        "n_entry_fetched_this_run": fetched[0],
     })
     return 0
 

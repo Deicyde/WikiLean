@@ -24,7 +24,6 @@ import subprocess
 import sys
 import urllib.parse
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -164,6 +163,7 @@ def main() -> None:
 
     dump = common.cache_path("proofwiki", "latest.xml.gz")
     ensure_dump(dump, args.max_age_hours)
+    dump_pin = common.content_sha256_pin(dump)
 
     # pass 1: titles + redirects only (small), to build resolve/collapse maps
     redirects: dict[str, str] = {}
@@ -282,9 +282,10 @@ def main() -> None:
         pages.append(row)
     link_rows = [{"db": "proofwiki", "src": s, "dst": d, "context": c}
                  for (s, d), c in sorted(links.items())]
+    if common.content_sha256_pin(dump) != dump_pin:
+        raise RuntimeError("ProofWiki dump changed while it was being normalized")
     common.emit("proofwiki", pages, link_rows, {
-        "source_pin": datetime.fromtimestamp(
-            dump.stat().st_mtime, timezone.utc).isoformat(timespec="seconds"),
+        "source_pin": dump_pin,
         "n_redirects": len(redirects), "n_collapsed": len(collapse),
         "n_links_unresolved": n_unresolved, "n_qid_joined": len(page_qid),
     })

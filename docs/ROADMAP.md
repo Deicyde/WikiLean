@@ -475,11 +475,18 @@ explicit approval.
     longer merges mixed-age cache rows or embeds observation/run timestamps. A reviewed
     collapse requires the explicit `BRAIN_INGEST_FORCE=1` override.
   - [ ] Replace the legacy Wikidata universe, relation-edge, and description jobs with one
-    shared sealed generation, common receipt/lineage evidence, and serialized publication.
-    Their current implementations fail closed and publish atomically, but still perform
-    separate live reads. Bind both that shared generation and the completed proposal-entity
-    bundle evidence into the reviewed v3 current-corpus source plan; neither bundle alone is
-    an authority or production-release claim.
+    shared sealed observation generation, common receipt/lineage evidence, and serialized
+    publication. Preserve the existing WDQS universe/edge and Action API description
+    semantics, and explicitly identify the result as independent live requests rather than
+    an upstream transaction/snapshot. Add an inventory-v3 coherence group requiring all three
+    bindings to share one source manifest, and resolve or bind the edge collector's dependency
+    on prior `brain/data/nodes.jsonl`. Their current implementations fail closed and publish
+    atomically, but still perform separate live reads. Bind both that shared generation and
+    the completed proposal-entity bundle evidence into the reviewed v3 current-corpus source
+    plan; neither bundle alone is an authority or production-release claim.
+    - [x] Fix `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope
+      while retaining its legacy flat-map reader, so agent candidates receive the 2,582
+      descriptions already present in the current corpus.
   - [x] Resolve and enforce exact Hugging Face revisions for `uw-math-ai/math-graph`,
     `uw-math-ai/theorem-matching`, and `MathNetwork/MathlibGraph`. The reviewed registry
     binds all six files by full commit, byte count, and SHA-256; acquisition rejects
@@ -494,6 +501,31 @@ explicit approval.
     values that must move to audit/receipt evidence. Frontier stateability is now derived
     from its bound cells/synapses, and community provenance is pinned to the sealed D1
     normalization-lineage identity.
+    - [x] At the shared external-pair writer, remove `fetched_at`, require a nonempty source
+      pin, and reject every field outside an explicit normalized-metadata allowlist. Remove
+      DLMF/EOM/Kerodon/OEIS run/cache counters and replace ProofWiki's mtime-derived pin with
+      a before/after SHA-256 of the exact dump bytes. Identical normalized rows now emit
+      byte-identical page/link pairs across clocks, and unsealed legacy pairs remain readable;
+      the tracked corpus was deliberately not rewritten or promoted as authority.
+    - [ ] When the shared sealed acquisition generation lands, retain removed operational
+      telemetry in audit/receipt evidence, re-harvest the legacy pair files, and add direct
+      adapter fixtures across cache states/API pagination plus a hostile ProofWiki source-swap
+      test. Current static endpoint labels are not immutable upstream pins.
+    - [x] Remove the repeated `built_at` field from all 1,376 `concept_layer.jsonl` rows,
+      regenerate the tracked artifact with no other semantic change, and make the generator
+      atomic and reproducible across input location/mtime. The required CI check compares the
+      checked-in artifact byte-for-byte with a fresh generation.
+    - [x] Remove acquisition clocks and API/cache-dependent counts from the standalone Erdos,
+      formal-conjecture, Lean-repository, and OpenAlex inputs. Their shared atomic writer now
+      rejects run-local and unknown metadata, and a required regression protects the four
+      checked-in artifacts plus future user-repository harvests. Data rows are unchanged.
+    - [ ] Replace the absolute checkout path in `mathlib_tag_xrefs.jsonl` with logical root,
+      Mathlib revision, and declaration-oracle digest, and canonicalize absolute
+      `decl_renames.jsonl` source locations.
+    - [ ] Make the Formal Conjectures, Erdős, and generic Lean-repository harvesters read exact
+      blobs from one captured Git commit rather than a mutable worktree. A clean-tree check is
+      insufficient; use `ls-tree` plus one `cat-file --batch`, reject symlinks/gitlinks and
+      partial-clone lazy fetches, and test dirty/untracked/deleted/concurrent-worktree cases.
 - [x] **Introduce an explicit build context.** Add one full-DAG replay entry point with
   separate read-only input and writable output roots. Route builders through explicit
   file lists, source pins, generation identity, and versioned reducer configuration

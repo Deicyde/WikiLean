@@ -210,7 +210,6 @@ def harvest_repo(key: str, owner: str, repo: str, lib: str,
         "lib": lib,
         "license": license_note,
         "commit": commit,
-        "fetched_at": common.now_iso(),
         "n_files": n_files,
         "n_decls": len(rows),
     }, rows)

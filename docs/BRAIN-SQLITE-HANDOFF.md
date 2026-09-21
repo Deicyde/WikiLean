@@ -9,12 +9,11 @@ the executable authority contracts are summarized in
 ## Laptop-transfer checkpoint
 
 Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest
-implementation checkpoint is `39632d33 Preserve Wikidata evidence freshness`, after
-`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`,
-`bc158cfd Integrate v3 Brain replay pipeline`, `bf52553a Record final Brain handoff
-verification`, `7d311adb Harden Wikidata acquisition publication`, `dba596f2 Define v3
-Brain evidence contracts`, and `92703ac0 Seal D1 annotation mirroring`. This handoff and
-roadmap update is committed immediately after that implementation history.
+implementation checkpoint is `03129828 Preserve D1 evidence freshness`, after
+`34fd6ee3 Update Brain migration handoff`, `39632d33 Preserve Wikidata evidence freshness`,
+`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`, and
+`bc158cfd Integrate v3 Brain replay pipeline`. This handoff and roadmap update is committed
+immediately after that implementation history.
 
 ```bash
 git fetch origin
@@ -33,8 +32,9 @@ Immediate continuation order:
 3. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
    headroom, then perform the two-path clean-room replay and semantic comparison.
 4. Replace the still-separate legacy Wikidata universe/edge/description reads with one shared
-   sealed generation, then bind it and the completed proposal-entity bundle into the reviewed
-   v3 current-corpus source plan.
+   sealed observation generation, then bind it and the completed proposal-entity bundle into
+   the reviewed v3 current-corpus source plan. Do not describe independent WDQS/Action API
+   requests as a transactional upstream snapshot.
 
 No Worker deployment, production promotion, D1 write, operator Wikidata bundle acquisition,
 or tracked-data regeneration was performed in this stabilization session. Read-only API
@@ -133,10 +133,30 @@ unexpected nonempty run directory for inspection.
 This completes acquisition separation for proposal folding, not for the whole Wikidata
 surface. Current legacy external pairs remain readable; the universe, relation-edge, and
 description jobs still perform separate live reads without a shared sealed generation; and
-physical external JSONL bytes still contain some observation/run metadata even where that
-metadata is excluded from `pair_generation`. The proposal bundle receipt/lineage is also not
-yet bound into the reviewed v3 current-corpus source plan, so this milestone is not an
-authority or production-release claim.
+the checked-in legacy external JSONL bytes still contain observation/run metadata even though
+new writer output does not. The proposal bundle receipt/lineage is also not yet bound into the
+reviewed v3 current-corpus source plan, so this milestone is not an authority or production-
+release claim.
+
+The shared external-pair writer now emits clock-free bytes for identical normalized rows,
+requires a nonempty source pin, and rejects run/cache telemetry and unknown metadata rather
+than letting it churn source-manifest and pack identities. DLMF, EoM, Kerodon, and OEIS keep
+their run counters in operator logs only; ProofWiki uses the exact dump SHA-256 and refuses to
+publish if those bytes change during normalization. Legacy unsealed readers remain compatible.
+This is normalized-output cleanup, not acquisition evidence: the removed telemetry still
+needs durable receipt/audit representation when the shared sealed generation is implemented.
+
+`catalog/build_concept_layer.py` is also clock/path independent and publishes atomically.
+The regenerated 1,376-row `concept_layer.jsonl` differs from its predecessor only by removal
+of the repeated `built_at` field; a required hermetic test now regenerates and compares the
+tracked artifact byte-for-byte. Frontier's 25 secondary-only QIDs are unchanged.
+
+The standalone normalized-input writer is now closed against run metadata. Formal
+Conjectures, Erdős joins, TauCeti/future user repositories, and OpenAlex citations no longer
+serialize acquisition clocks; OpenAlex also omits API-call and cache-dependent resolved/twin
+counts. The four checked-in artifacts were changed only in their metadata row, and a required
+regression prevents those fields from returning. Their Git-based producers still need to read
+exact committed blobs rather than mutable worktrees before their commit pins become authority.
 
 The latest Wikidata safety milestone makes the universe, relation-edge, and description
 harvesters all-or-nothing and atomic. Typed response validation, deterministic
@@ -253,13 +273,15 @@ The remaining D1-consumer audit notes are P2: a hard kill after the atomic excha
 leave a complete old-cache sibling for an operator to identify and remove; acquisition and
 mirroring still buffer/clone the current corpus; bootstrap executable discovery trusts the
 operator `PATH` before recording exact digests; and long-lived historical bundles would
-need an explicit versioned verifier profile rather than weakening the current v1 policy.
+need an explicit versioned verifier profile rather than weakening the current v2 policy.
 
-Final branch-wide verification after the `39632d33` evidence-generation freshness fix passed
-the complete 40-command Python gate and the Worker gate (37 files / 845 tests). The Python
-result includes the one expected local replay-sandbox skip; every required offline scenario
-ran. Focused final results were 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before
-merging, or after any continuation changes, rerun exactly:
+Final branch-wide verification on the evidence-generation implementation passed the complete
+40-command Python gate and the Worker gate (37 files / 845 tests). The Python result includes
+the one expected local replay-sandbox skip; every required offline scenario ran. After the
+explicit D1 bundle-v2 version bump, the current focused results are 17 D1 acquisition,
+12 shared-verifier/harvester, and 19 annotation-mirror tests. The Wikidata-focused results
+remain 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before merging, or after any
+continuation changes, rerun exactly:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -355,9 +377,13 @@ the current checkout:
    sealed D1 normalization-lineage identity.
 7. Proposal-fold acquisition is separated and sealed. Before issuing authority evidence,
    replace the separately fail-closed Wikidata universe/edge/description harvesters with one
-   shared sealed generation, bind that generation plus the proposal-entity bundle and the
-   reviewed Hugging Face revisions into v3 evidence, and re-harvest legacy external pairs
-   through the sealed writer.
+   shared sealed observation generation, bind that generation plus the proposal-entity bundle
+   and the reviewed Hugging Face revisions into v3 evidence, and re-harvest legacy external
+   pairs through the sealed writer. Preserve the current WDQS and Action API semantics, record
+   `independent-live-requests/no-snapshot`, and add a v3 inventory coherence group requiring
+   universe, edges, and descriptions to name one source manifest. Resolve or bind the edge
+   collector's current dependency on prior `brain/data/nodes.jsonl`. The descriptions-envelope
+   consumer bug in `brain/sync_agents.py` is fixed and covered by the hermetic gate.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
@@ -389,6 +415,12 @@ the exact plan does not retain ample headroom.
    generation, and author the reviewed current-corpus v3 source plan with immutable pins,
    licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
    sources.
+   The shared external-pair writer and concept-layer clock cleanups are complete. Next remove
+   the absolute checkout path in `mathlib_tag_xrefs.jsonl` and canonicalize absolute
+   `decl_renames.jsonl` `file_line` values. Then make the Git-backed harvesters consume exact
+   commit blobs instead of mutable worktrees. Add direct adapter cache/pagination fixtures and
+   carry removed telemetry into the future sealed receipts.
+   Do not rewrite tracked corpus files as authority without resealing them.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,

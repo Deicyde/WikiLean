@@ -131,7 +131,8 @@ emits validated acquisition-receipt and normalization-lineage documents under
 `catalog/.cache/d1/snapshots/`. Receipt and lineage logical IDs remain clock-free, while
 the bundle directory hashes their exact canonical bytes, including audit clocks. Repeating
 an unchanged read therefore preserves a fresh immutable observation rather than resolving
-to an older bundle. It does not write D1. Graduate community edges only from one explicit
+to an older bundle. This identity contract is D1 acquisition bundle v2; no production v1
+bundle was captured. It does not write D1. Graduate community edges only from one explicit
 bundle:
 
 ```bash
@@ -170,6 +171,15 @@ derived data; `nodes.jsonl` + `edges.jsonl` remain the committed, reviewable dat
 SQLite is an indexed local projection, never an editable source of truth and never a
 Cloudflare asset. Re-index current JSONL without rewriting it with
 `python3 brain/build_snapshot.py --from-jsonl`.
+
+New external page/link pairs are byte-reproducible for identical normalized content:
+`brain/ingest/common.py` no longer serializes observation clocks or run/cache counters and
+accepts only a closed set of source/content metadata. ProofWiki now pins the exact dump bytes
+rather than its filesystem mtime. Existing checked-in pairs remain readable legacy inputs and
+are intentionally not rewritten until a reviewed sealed acquisition generation exists.
+The same shared writer now rejects ambient metadata in the standalone Formal Conjectures,
+Erdős joins, TauCeti/user-repository, and OpenAlex citation inputs; their checked-in metadata
+has been stripped of clocks and run/API/cache counters without changing data rows.
 
 > **⚠️ The edge set ships as TWO files.** The v2 external layer's `links` edges
 > (page→page hyperlinks + concept projections, ~393k rows / ~83 MB) pushed the joint
