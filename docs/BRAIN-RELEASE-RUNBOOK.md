@@ -59,8 +59,8 @@ is not authorization to deploy; P1C remains an explicit Jack gate.
 
 Before running even a shadow build, create the gitignored
 `site/ops/nightly.local.env` with a readable, read-only Mathlib tree, Python 3.12+,
-and the reviewed absolute activation-tool paths (or set the same variables in the
-invoking environment):
+an explicit reviewed canonical Wikidata observation plan, and the reviewed absolute
+activation-tool paths (or set the same variables in the invoking environment):
 
 ```bash
 cp site/ops/nightly.local.env.example site/ops/nightly.local.env
@@ -71,6 +71,8 @@ run, the equivalent environment is:
 
 ```bash
 export BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib
+export WIKILEAN_WIKIDATA_OBSERVATION_PLAN=/absolute/private/reviewed-wikidata-observation-plan.json
+export WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256="<64-lowercase-hex>"
 export WIKILEAN_PYTHON=/absolute/path/to/python3.12
 export WIKILEAN_BRAIN_RECEIPT_DIR=/absolute/private/backed-up/deploy-receipts
 export WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE=/absolute/path/to/public-baselines
@@ -93,16 +95,37 @@ cd /Users/jackmccarthy/projects/WikiLean
   --target-origin https://wikilean.jackmccarthy.org
 ```
 
-The job fails closed before fold/build if the Mathlib tree is unset or missing.
+The job fails closed before acquisition/fold/build if the Mathlib tree or observation-plan
+path is unset or missing. The volume floors are reviewed policy; do not derive them from
+the current corpus or substitute the planner's test defaults. Generate a candidate plan
+offline from those reviewed floors and the five explicit selectors:
+
+```bash
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" brain/plan_wikidata_observation.py \
+  --concept-layer "$PWD/catalog/data/concept_layer.jsonl" \
+  --grounding "$PWD/catalog/data/rebuild_grounding.json" \
+  --prior-brain-nodes "$PWD/brain/data/nodes.jsonl" \
+  --universe-extension "$PWD/catalog/data/universe_extension.jsonl" \
+  --wikidata-crossrefs "$PWD/catalog/data/wikidata_crossrefs.json" \
+  --volume-floors /absolute/private/reviewed-wikidata-volume-floors.json \
+  > /absolute/private/candidate-wikidata-observation-plan.json
+```
+
+Review the resulting canonical bytes before configuring their absolute path. The plan and
+its lowercase SHA-256 are one approved input: configure both
+`WIKILEAN_WIKIDATA_OBSERVATION_PLAN` and
+`WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256`. Runtime preflight verifies the digest, and the
+nightly copies those exact bytes into its private run directory before acquisition. The plan
+and its sealed acquisition contract are documented in `brain/authority/README.md`.
 The optional proposal agents use a separate interpreter
 (`WIKILEAN_BRAIN_AGENT_PYTHON`, default `catalog/.venv/bin/python3`) and are
 skipped with an explicit warning if that environment is absent. Verify all configured
 paths from the same launch context that will run the job; missing paths fail closed.
 
-The tooling is ready, but evidence generation is not yet authorized: Jack must first merge
-the reviewed P1A changes onto `main` and approve the exact read-only Mathlib checkout and
-Git/Node/npm/Python executable paths. Do not substitute this feature branch or an arbitrary
-project-local Mathlib dependency for that reviewed host context.
+P1A is merged on `main`, but evidence generation is not yet authorized: Jack must approve
+the exact read-only Mathlib checkout, observation plan, and Git/Node/npm/Python executable
+paths. Do not substitute an arbitrary project-local Mathlib dependency or unreviewed plan
+for that reviewed host context.
 
 ## Shadow release
 
@@ -212,12 +235,35 @@ export WIKILEAN_BRAIN_NODE=/absolute/path/to/node
 export WIKILEAN_BRAIN_NPM=/absolute/path/to/npm
 ```
 
+The retained P1B dry-run makes authenticated, read-only Wrangler status and history calls.
+After `npm ci` in the promotion worktree, authenticate Wrangler in the operator shell and
+verify the exact command families with the reviewed Node binary:
+
+```bash
+(
+  set -e
+  cd "$PROMOTION_WORKTREE/wiki"
+  "$WIKILEAN_BRAIN_NODE" node_modules/wrangler/bin/wrangler.js \
+    deployments status --config wrangler.jsonc --json >/dev/null
+  "$WIKILEAN_BRAIN_NODE" node_modules/wrangler/bin/wrangler.js \
+    deployments list --config wrangler.jsonc --json >/dev/null
+  "$WIKILEAN_BRAIN_NODE" node_modules/wrangler/bin/wrangler.js \
+    versions list --config wrangler.jsonc --json >/dev/null
+)
+```
+
+Do not use `wrangler whoami` as this gate; Wrangler 4.120 can exit zero while reporting that
+the shell is unauthenticated. If using `CLOUDFLARE_API_TOKEN`, export it locally only. Do
+not place it in `nightly.local.env`, repository files, command arguments, logs, or review
+messages.
+
 After the shadow release, public baseline, and semantic comparison have been produced,
 run the promoter's no-mutation path with retention enabled. The retained store must be an
 absolute path outside every checkout, release, baseline, receipt, and temporary promotion
 workspace:
 
 ```bash
+# First activation only, while /assets/brain/current.json returns HTTP 404.
 cd "$PROMOTION_WORKTREE"
 bash site/ops/brain-promote-release.sh sha256:<candidate-release-hex> \
   --release-root /absolute/releases/<candidate-manifest-hex> \
@@ -226,8 +272,13 @@ bash site/ops/brain-promote-release.sh sha256:<candidate-release-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
   --dry-run \
   --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE" \
+  --allow-first-deploy-without-selector \
   > "$EVIDENCE_DIR/promoter-dry-run.json"
 ```
+
+The dry-run flag acknowledges the observed selector topology so P1B can collect evidence;
+it does not authorize deployment. Dry-run rejects `--first-deploy-approval`. After a
+release-qualified selector exists, omit the exception flag; supplying it deliberately fails.
 
 This publishes a read-only, content-addressed copy of the exact staged public and Worker
 trees, Wrangler configuration, and raw selector/status/history responses. Retain that root
@@ -324,7 +375,7 @@ independently with both returned IDs and retain its bundle ID/root for review:
 
 This entire section is P1B preparation only. `context`, the CI recorder, `freeze`, and
 `verify` do not authorize or perform a production deployment. Actual evidence generation
-remains blocked until Jack merges P1A and authorizes the host paths above.
+remains blocked until Jack authorizes the host paths and evidence inputs above.
 
 The review artifact is an attested two-root set: the 11-file activation bundle plus the
 content-addressed retained promoter root named by `promoter-dry-run.json`. Normal `verify`
@@ -340,19 +391,9 @@ Do not delete or relocate either root after review.
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.
 
-Run the no-mutation preflight first from a separate clean checkout/worktree at the
-release authority commit:
-
-```bash
-cd /Users/jackmccarthy/projects/WikiLean
-bash site/ops/brain-promote-release.sh sha256:<64hex> \
-  --release-root /absolute/release-store/<manifest-hex> \
-  --public-baseline-id sha256:<baseline-hex> \
-  --public-baseline-root /absolute/public-baselines/<baseline-hex> \
-  --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
-  --dry-run \
-  --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE"
-```
+The retained P1B dry-run is the reviewed no-mutation preflight. Do not generate an ad hoc
+replacement after freezing the activation bundle. If its evidence is stale, repeat P1B,
+freeze a new bundle, and review the new IDs before activation.
 
 Run the promoter from a separate clean checkout/worktree at the frozen release's recorded
 authority commit. Point it at the explicit read-only release root/store produced by the
@@ -364,6 +405,8 @@ After Jack approves the exact release, baseline, journal location, and exclusive
 the mutating form is:
 
 ```bash
+FIRST_DEPLOY_APPROVAL="Jack approved first deployment without a selector for release sha256:<64hex> in <exclusive-window>"
+
 WIKILEAN_BRAIN_DEPLOY=1 bash site/ops/brain-promote-release.sh sha256:<64hex> \
   --release-root /absolute/release-store/<manifest-hex> \
   --public-baseline-id sha256:<baseline-hex> \
@@ -374,19 +417,24 @@ WIKILEAN_BRAIN_DEPLOY=1 bash site/ops/brain-promote-release.sh sha256:<64hex> \
   --expected-semantic-baseline-id sha256:<baseline-release-hex> \
   --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
   --execute \
+  --allow-first-deploy-without-selector \
+  --first-deploy-approval "$FIRST_DEPLOY_APPROVAL" \
   --approval-note "Jack approved release <id>, baseline <id>, and this window"
 ```
+
+For later promotions with an existing release-qualified selector, omit both first-deploy
+options.
 
 Execution re-verifies the exact activation bundle and its retained dry-run artifact,
 then uploads those reviewed public, Worker, and Wrangler bytes. It does not regenerate
 deployment inputs. The bundle ID, root, semantic baseline, and retained artifact identity
 are recorded in the durable intent and deployment event.
 
-If production has no release-qualified selector, the promoter fails unless the
-operator also supplies `--allow-first-deploy-without-selector`. That exception requires
-`--first-deploy-approval`, Jack's approval for the exact window, and is written into the
-deployment intent record.
-TLS, DNS, and timeout failures are never an acceptable substitute for the explicit flag.
+If production has no release-qualified selector, dry-run requires the exception flag but
+forbids an approval string. Execution requires the same exception flag plus Jack's new P1C
+approval for the exact release and window. That approval is added to the reviewed intent
+and fsynced before Wrangler can mutate production. TLS, DNS, and timeout failures are never
+an acceptable substitute for the explicit flag.
 
 Every promotion uses a crash-safe append-only event journal. Before any mutating Wrangler
 call, the promoter fsyncs an intent record containing the attempt ID, requested/prior
