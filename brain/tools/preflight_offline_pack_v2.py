@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Preflight an offline-pack/v2 source plan without hashing or copying corpus bytes.
+"""Preflight an offline-pack source plan without hashing or copying corpus bytes.
 
 The pack compiler remains the authority for byte verification.  This command is a
 bounded, network-free readiness check: it validates the canonical plan and inventory,
 resolves exactly the declared roots, enumerates every logical selector, asks Git only
 for pinned-tree metadata, and compares declared sizes with ``lstat``/Git object sizes.
-It also emits explicit, non-structural concerns for source freshness, pin quality,
-redistribution policy, missing receipts/lineage, and output-store capacity.
+For source-plan/v3 it additionally verifies bounded acquisition receipts,
+normalization lineages, and request preimages. It emits explicit concerns for source
+freshness, pin quality, redistribution policy, and output-store capacity.
 """
 from __future__ import annotations
 
@@ -32,6 +33,7 @@ if str(BRAIN) not in sys.path:
 
 import authority_contracts as contracts  # noqa: E402
 import compile_offline_pack_v2 as compiler  # noqa: E402
+import source_plan_contracts  # noqa: E402
 
 
 PREFLIGHT_SCHEMA = "wikilean.offline-pack-preflight/v1"
@@ -110,7 +112,147 @@ def _required_roots(plan: Mapping[str, Any], inventory: Mapping[str, Any]) -> se
         for source in plan["sources"]
         for item in source["objects"]
     )
+    if plan["schema"] == contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3:
+        for source in plan["sources"]:
+            evidence = source.get("evidence")
+            if evidence is None:
+                continue
+            references = [
+                *evidence["acquisition_receipts"],
+                evidence["normalization_lineage"],
+                *evidence["request_parameter_preimages"],
+            ]
+            result.update(item["root"] for item in references)
     return result
+
+
+def _load_source_plan(path: Path) -> tuple[dict[str, Any], bytes]:
+    """Load v1 through its frozen validator and dispatch v3 explicitly."""
+    try:
+        candidate, raw = contracts.load_canonical_json(path)
+    except (OSError, contracts.VerificationError) as exc:
+        raise compiler.PackCompilationError(f"source plan: {exc}") from exc
+    if (
+        isinstance(candidate, dict)
+        and candidate.get("schema")
+        == contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
+    ):
+        try:
+            return source_plan_contracts.validate_source_plan_v3(candidate), raw
+        except contracts.VerificationError as exc:
+            raise compiler.PackCompilationError(f"source plan: {exc}") from exc
+    # Keep the established v1 validation and diagnostics unchanged.
+    return compiler.load_source_plan(path)
+
+
+def _v3_evidence_references(
+    plan: Mapping[str, Any],
+) -> list[tuple[int, str, str, str, Mapping[str, Any], str]]:
+    """Return every v3 evidence reference with its logical deduplication key."""
+    references: list[tuple[int, str, str, str, Mapping[str, Any], str]] = []
+    for source_index, source in enumerate(plan["sources"]):
+        evidence = source.get("evidence")
+        if evidence is None:
+            continue
+        base = f"$.sources[{source_index}].evidence"
+        for index, ref in enumerate(evidence["acquisition_receipts"]):
+            references.append((
+                source_index,
+                source["source"],
+                "acquisition_receipt",
+                ref["acquisition_receipt_id"],
+                ref,
+                f"{base}.acquisition_receipts[{index}]",
+            ))
+        lineage = evidence["normalization_lineage"]
+        references.append((
+            source_index,
+            source["source"],
+            "normalization_lineage",
+            lineage["normalization_lineage_id"],
+            lineage,
+            f"{base}.normalization_lineage",
+        ))
+        for index, ref in enumerate(evidence["request_parameter_preimages"]):
+            references.append((
+                source_index,
+                source["source"],
+                "request_parameter_preimage",
+                ref["parameters_sha256"],
+                ref,
+                f"{base}.request_parameter_preimages[{index}]",
+            ))
+    return references
+
+
+def _v3_evidence_capacity(
+    references: Sequence[tuple[int, str, str, str, Mapping[str, Any], str]],
+) -> dict[str, int]:
+    """Count each logical evidence object once across all source references."""
+    unique: dict[tuple[str, str], tuple[int, str, str]] = {}
+    for _source_index, _source_name, kind, identity, ref, location in references:
+        key = (kind, identity)
+        fingerprint = (ref["bytes"], ref["sha256"], ref["media_type"])
+        previous = unique.setdefault(key, fingerprint)
+        if previous != fingerprint:
+            _fail(location, "logical evidence object has conflicting metadata")
+    return {
+        "bytes": sum(item[0] for item in unique.values()),
+        "deduplicated_references": len(references) - len(unique),
+        "references": len(references),
+        "unique_files": len(unique),
+    }
+
+
+def _verify_v3_evidence(
+    plan: dict[str, Any],
+    resolved_roots: Mapping[str, Path],
+) -> tuple[
+    dict[str, int],
+    dict[str, list[tuple[str, Mapping[str, Any]]]],
+    dict[str, int],
+]:
+    """Bound, hash, and fully validate v3 evidence before trusting it."""
+    references = _v3_evidence_references(plan)
+    for _source_index, _source_name, _kind, _identity, ref, location in references:
+        if ref["bytes"] > MAX_CONTROL_FILE_BYTES:
+            _fail(
+                location,
+                f"evidence control exceeds the {MAX_CONTROL_FILE_BYTES}-byte preflight limit",
+            )
+        actual_size = _filesystem_size(
+            resolved_roots[ref["root"]], ref["path"], location
+        )
+        if actual_size != ref["bytes"]:
+            _fail(
+                location,
+                "declared byte size does not match lstat "
+                f"(planned={ref['bytes']}, actual={actual_size})",
+            )
+    evidence_capacity = _v3_evidence_capacity(references)
+
+    try:
+        verification = source_plan_contracts.verify_source_plan_v3_evidence(
+            plan, resolved_roots
+        )
+    except contracts.VerificationError as exc:
+        raise PreflightError(str(exc)) from exc
+
+    receipts_by_source: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
+    for _source_index, source_name, kind, _identity, ref, location in references:
+        if kind != "acquisition_receipt":
+            continue
+        raw = _read_control_file(ref, resolved_roots, location)
+        try:
+            document = contracts.parse_json_bytes(raw, location=ref["path"])
+            contracts.validate_acquisition_receipt(
+                document, location=f"{location}.document"
+            )
+        except contracts.VerificationError as exc:
+            raise PreflightError(str(exc)) from exc
+        receipts_by_source.setdefault(source_name, []).append((location, document))
+
+    return verification, receipts_by_source, evidence_capacity
 
 
 def _resolve_roots(
@@ -234,6 +376,7 @@ def _source_concerns(
     as_of: dt.datetime,
     max_age_days: int,
     concerns: list[dict[str, Any]],
+    evidence_receipts: Sequence[tuple[str, Mapping[str, Any]]] | None = None,
 ) -> tuple[str, int]:
     name = source["source"]
     location = f"$.sources[{name!r}]"
@@ -263,71 +406,115 @@ def _source_concerns(
             blocks=("authority", "publication"),
         )
 
-    audit = source.get("audit")
     if source["source_kind"] != "curated_git_tree":
-        if not audit:
-            _concern(
-                concerns,
-                "warning",
-                "missing-source-audit",
-                location,
-                "non-Git source has no acquisition time or upstream URI",
-                blocks=("authority", "publication"),
-            )
-        else:
-            if "upstream_uri" not in audit:
-                _concern(
-                    concerns,
-                    "warning",
-                    "missing-upstream-uri",
-                    f"{location}.audit",
-                    "source audit does not name its upstream URI",
-                    blocks=("authority", "publication"),
+        if evidence_receipts is not None:
+            for receipt_location, receipt in evidence_receipts:
+                acquired_at = receipt["audit"]["acquired_at"]
+                acquired = _timestamp(
+                    acquired_at,
+                    f"{receipt_location}.document.audit.acquired_at",
                 )
-            acquired_at = audit.get("acquired_at")
-            if acquired_at is None:
-                _concern(
-                    concerns,
-                    "warning",
-                    "missing-acquired-at",
-                    f"{location}.audit",
-                    "source freshness cannot be assessed without acquired_at",
-                    blocks=("authority", "publication"),
-                )
-            else:
-                acquired = _timestamp(acquired_at, f"{location}.audit.acquired_at")
+                # Complete v3 evidence validation has already established this
+                # timestamp's shape. Keep this defensive branch fail-closed if
+                # the contract and preflight ever drift apart.
                 if acquired is None:
                     _concern(
                         concerns,
-                        "warning",
+                        "blocker",
                         "invalid-acquired-at",
-                        f"{location}.audit.acquired_at",
-                        "timestamp is not RFC3339 with a UTC offset",
+                        f"{receipt_location}.document.audit.acquired_at",
+                        "validated acquisition receipt has an invalid timestamp",
+                        blocks=("authority", "publication"),
+                    )
+                    continue
+                age = as_of - acquired
+                if age < -dt.timedelta(minutes=5):
+                    _concern(
+                        concerns,
+                        "blocker",
+                        "future-acquisition-time",
+                        f"{receipt_location}.document.audit.acquired_at",
+                        "acquisition time is later than the preflight reference time",
+                        blocks=("authority", "publication"),
+                    )
+                elif age > dt.timedelta(days=max_age_days):
+                    _concern(
+                        concerns,
+                        "warning",
+                        "stale-source",
+                        f"{receipt_location}.document.audit.acquired_at",
+                        f"source is older than the configured {max_age_days}-day threshold",
+                        blocks=("authority", "publication"),
+                    )
+        else:
+            audit = source.get("audit")
+            if not audit:
+                _concern(
+                    concerns,
+                    "warning",
+                    "missing-source-audit",
+                    location,
+                    "non-Git source has no acquisition time or upstream URI",
+                    blocks=("authority", "publication"),
+                )
+            else:
+                if "upstream_uri" not in audit:
+                    _concern(
+                        concerns,
+                        "warning",
+                        "missing-upstream-uri",
+                        f"{location}.audit",
+                        "source audit does not name its upstream URI",
+                        blocks=("authority", "publication"),
+                    )
+                acquired_at = audit.get("acquired_at")
+                if acquired_at is None:
+                    _concern(
+                        concerns,
+                        "warning",
+                        "missing-acquired-at",
+                        f"{location}.audit",
+                        "source freshness cannot be assessed without acquired_at",
                         blocks=("authority", "publication"),
                     )
                 else:
-                    age = as_of - acquired
-                    if age < -dt.timedelta(minutes=5):
-                        _concern(
-                            concerns,
-                            "blocker",
-                            "future-acquisition-time",
-                            f"{location}.audit.acquired_at",
-                            "acquisition time is later than the preflight reference time",
-                            blocks=("authority", "publication"),
-                        )
-                    elif age > dt.timedelta(days=max_age_days):
+                    acquired = _timestamp(
+                        acquired_at, f"{location}.audit.acquired_at"
+                    )
+                    if acquired is None:
                         _concern(
                             concerns,
                             "warning",
-                            "stale-source",
+                            "invalid-acquired-at",
                             f"{location}.audit.acquired_at",
-                            f"source is older than the configured {max_age_days}-day threshold",
+                            "timestamp is not RFC3339 with a UTC offset",
                             blocks=("authority", "publication"),
                         )
+                    else:
+                        age = as_of - acquired
+                        if age < -dt.timedelta(minutes=5):
+                            _concern(
+                                concerns,
+                                "blocker",
+                                "future-acquisition-time",
+                                f"{location}.audit.acquired_at",
+                                "acquisition time is later than the preflight reference time",
+                                blocks=("authority", "publication"),
+                            )
+                        elif age > dt.timedelta(days=max_age_days):
+                            _concern(
+                                concerns,
+                                "warning",
+                                "stale-source",
+                                f"{location}.audit.acquired_at",
+                                f"source is older than the configured {max_age_days}-day threshold",
+                                blocks=("authority", "publication"),
+                            )
 
-    receipt_count = sum(
-        "receipt" in item["roles"] for item in source["objects"]
+    receipt_count = (
+        len(evidence_receipts)
+        if evidence_receipts is not None
+        else sum("receipt" in item["roles"] for item in source["objects"])
     )
     raw_names = {
         item["name"] for item in source["objects"] if "raw" in item["roles"]
@@ -338,7 +525,11 @@ def _source_concerns(
         if "normalized" in item["roles"]
     }
     transformed = raw_names != normalized_names
-    if source["source_kind"] != "curated_git_tree" and receipt_count == 0:
+    if (
+        evidence_receipts is None
+        and source["source_kind"] != "curated_git_tree"
+        and receipt_count == 0
+    ):
         _concern(
             concerns,
             "blocker",
@@ -347,7 +538,7 @@ def _source_concerns(
             "non-Git source has no object carrying the receipt role",
             blocks=("authority", "publication"),
         )
-    if receipt_count:
+    if evidence_receipts is None and receipt_count:
         _concern(
             concerns,
             "blocker",
@@ -356,7 +547,7 @@ def _source_concerns(
             "receipt role is present, but no receipt schema or lineage content is validated yet",
             blocks=("authority", "publication"),
         )
-    if transformed and receipt_count == 0:
+    if evidence_receipts is None and transformed and receipt_count == 0:
         _concern(
             concerns,
             "blocker",
@@ -365,7 +556,7 @@ def _source_concerns(
             "transformed outputs have no retained receipt/lineage object",
             blocks=("authority", "publication"),
         )
-    elif transformed:
+    elif evidence_receipts is None and transformed:
         _concern(
             concerns,
             "blocker",
@@ -457,15 +648,26 @@ def preflight_offline_pack_v2(
     try:
         plan_path = compiler._real_file(source_plan_path, "source plan")
         inventory_file = compiler._real_file(inventory_path, "inventory")
-        plan, plan_raw = compiler.load_source_plan(plan_path)
+        plan, plan_raw = _load_source_plan(plan_path)
         inventory, inventory_raw = contracts.load_canonical_json(inventory_file)
         contracts.validate_reducer_input_inventory(inventory)
     except (OSError, compiler.PackCompilationError, contracts.VerificationError) as exc:
         raise PreflightError(str(exc)) from exc
     if inventory["inventory_id"] != plan["inventory_id"]:
         _fail("$.inventory_id", "does not match the verified reducer inventory")
+    plan_schema = plan["schema"]
+    is_v3 = plan_schema == contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
 
     resolved_roots = _resolve_roots(plan, inventory, roots)
+    evidence_verification: dict[str, int] | None = None
+    evidence_receipts: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
+    evidence_capacity = {"bytes": 0, "references": 0, "unique_files": 0}
+    if is_v3:
+        (
+            evidence_verification,
+            evidence_receipts,
+            evidence_capacity,
+        ) = _verify_v3_evidence(plan, resolved_roots)
     try:
         store_path, store_exists = compiler._resolve_output_store(output_store)
     except compiler.PackCompilationError as exc:
@@ -600,22 +802,32 @@ def preflight_offline_pack_v2(
             as_of=reference_time,
             max_age_days=max_age_days,
             concerns=concerns,
+            evidence_receipts=(
+                evidence_receipts.get(source_name, []) if is_v3 else None
+            ),
         )
-        source_reports.append(
-            {
-                "bytes": source_bytes,
-                "objects": len(source["objects"]),
-                "pin_strength": pin_strength,
-                "pin_type": source["pin"]["type"],
-                "receipt_objects": receipt_count,
-                "receipt_validation": (
-                    "presence-only-unvalidated" if receipt_count else "absent"
-                ),
-                "redistribution": source_policy,
-                "source": source_name,
-                "source_kind": source["source_kind"],
-            }
-        )
+        source_report = {
+            "bytes": source_bytes,
+            "objects": len(source["objects"]),
+            "pin_strength": pin_strength,
+            "pin_type": source["pin"]["type"],
+            "receipt_objects": receipt_count,
+            "receipt_validation": (
+                "validated-v3-evidence"
+                if is_v3 and source["source_kind"] != "curated_git_tree"
+                else "presence-only-unvalidated" if receipt_count else "absent"
+            ),
+            "redistribution": source_policy,
+            "source": source_name,
+            "source_kind": source["source_kind"],
+        }
+        if is_v3:
+            source_report["freshness_basis"] = (
+                "acquisition-receipt-audit"
+                if evidence_receipts.get(source_name)
+                else "not-applicable"
+            )
+        source_reports.append(source_report)
 
     declarations = {item["id"]: item for item in inventory["inputs"]}
     planned_bindings = {item["input_id"]: item for item in plan["input_bindings"]}
@@ -783,9 +995,11 @@ def preflight_offline_pack_v2(
         + len(plan["sources"]) * 8 * 1024
         + len(digest_records) * 512
         + member_count * 512
+        + (evidence_capacity["unique_files"] * 512 if is_v3 else 0)
     )
     estimated_pack_bytes = (
         unique_object_bytes
+        + evidence_capacity["bytes"]
         + reducer_bytes
         + configuration_bytes
         + environment_bytes
@@ -850,18 +1064,31 @@ def preflight_offline_pack_v2(
     required_inputs = [
         item for item in input_reports if item["requirement"] == "required"
     ]
-    return {
+    result = {
         "as_of": _utc_text(reference_time),
         "concerns": concerns,
         "compile_ready": compile_ready,
         "control_files": {
-            "bytes": configuration_bytes + environment_bytes + schema_bytes,
-            "count": 2 + len(schema_raw),
+            "bytes": (
+                configuration_bytes
+                + environment_bytes
+                + schema_bytes
+                + evidence_capacity["bytes"]
+            ),
+            "count": 2 + len(schema_raw) + evidence_capacity["unique_files"],
             "maximum_file_bytes": MAX_CONTROL_FILE_BYTES,
-            "validation": "stable-read, SHA-256, canonical JSON, and typed config/environment checks",
+            "validation": (
+                "stable-read, SHA-256, canonical JSON, typed config/environment, "
+                "and complete v3 evidence checks"
+                if is_v3
+                else "stable-read, SHA-256, canonical JSON, and typed config/environment checks"
+            ),
         },
         "content_verification": (
-            "control files are hashed and validated; corpus payloads are size-only and "
+            "control and v3 evidence files are hashed and validated; corpus payloads "
+            "are size-only and defer SHA-256 verification to compilation"
+            if is_v3
+            else "control files are hashed and validated; corpus payloads are size-only and "
             "defer SHA-256 verification to compilation"
         ),
         "freshness_policy": {
@@ -873,7 +1100,9 @@ def preflight_offline_pack_v2(
         "ok": True,
         "readiness_scope": "source-plan-only",
         "receipt_validation": (
-            "role presence only; receipt schema and normalization lineage are not yet validated"
+            "complete v3 receipt, lineage, request-preimage, and parent closure validated"
+            if is_v3
+            else "role presence only; receipt schema and normalization lineage are not yet validated"
         ),
         "runtime_environment_checked": False,
         "schema": PREFLIGHT_SCHEMA,
@@ -911,6 +1140,14 @@ def preflight_offline_pack_v2(
         },
         "redistribution": redistribution,
     }
+    if is_v3:
+        assert evidence_verification is not None
+        result["evidence"] = {
+            **evidence_verification,
+            **evidence_capacity,
+        }
+        result["source_plan_schema"] = plan_schema
+    return result
 
 
 class _CanonicalArgumentParser(argparse.ArgumentParser):

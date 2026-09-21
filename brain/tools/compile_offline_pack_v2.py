@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile an immutable, self-verifying ``offline-pack/v2`` directory.
+"""Compile an immutable, self-verifying ``offline-pack/v2`` or ``v3`` directory.
 
 The compiler is deliberately post-acquisition and network-free.  A canonical
 source plan names every physical source object and every intended present or
@@ -7,9 +7,9 @@ absent reducer input.  Absolute host paths are supplied separately as root
 bindings, so neither the plan nor the resulting pack identity depends on where
 the inputs happen to be mounted.
 
-This module assembles and verifies packs; it does not claim that acquisition
-receipts or cross-source revisions are coherent.  Those checks belong before a
-source plan is approved.
+For source-plan/v3, the compiler verifies and seals acquisition receipts,
+normalization lineage, and request-parameter preimages before publication.
+Source-plan/v1 retains its byte-identical offline-pack/v2 behavior.
 """
 from __future__ import annotations
 
@@ -43,6 +43,7 @@ import build_context  # noqa: E402
 
 
 SOURCE_PLAN_SCHEMA = "wikilean.offline-pack-source-plan/v1"
+SOURCE_PLAN_SCHEMA_V3 = contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3
 ZERO_HASH = "sha256:" + "0" * 64
 NAME_RE = re.compile(r"^[a-z][a-z0-9_.-]{0,127}$")
 DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -250,6 +251,15 @@ def _license(value: Any, location: str) -> dict[str, Any]:
 
 def validate_source_plan(value: Any) -> dict[str, Any]:
     """Validate the canonical, relocation-independent pack source plan."""
+    if isinstance(value, dict) and value.get("schema") == SOURCE_PLAN_SCHEMA_V3:
+        # Lazy import avoids a module-initialization cycle: the v3 contract
+        # validator reuses this function against a synthetic v1 plan.
+        import source_plan_contracts
+
+        try:
+            return source_plan_contracts.validate_source_plan_v3(value)
+        except contracts.VerificationError as exc:
+            raise PackCompilationError(str(exc)) from exc
     obj = _object(
         value,
         "$",
@@ -1025,6 +1035,54 @@ def _copy_source_object(
     return digest, size
 
 
+def _copy_planned_file(
+    root: Path,
+    ref: Mapping[str, Any],
+    candidate: Path,
+    destination: str,
+    location: str,
+    *,
+    after_copy: Callable[[str], None] | None,
+) -> dict[str, Any]:
+    """Copy one digest-bound plan file to an exact non-CAS pack path."""
+    try:
+        with contracts.open_regular_file(root, ref["path"], location) as source:
+            before = os.fstat(source.fileno())
+            if before.st_size != ref["bytes"]:
+                _fail(
+                    location,
+                    "source size does not match the approved source plan before copy "
+                    f"(expected={ref['bytes']}, actual={before.st_size})",
+                )
+            temporary, digest, size = _copy_stream_to_temp(
+                source,
+                candidate,
+                after_copy=(lambda: after_copy(location)) if after_copy else None,
+            )
+            after = os.fstat(source.fileno())
+    except contracts.VerificationError as exc:
+        raise PackCompilationError(str(exc)) from exc
+    if _stat_signature(before) != _stat_signature(after) or size != before.st_size:
+        temporary.unlink(missing_ok=True)
+        _fail(location, "source changed while it was being copied")
+    if (digest, size) != (ref["sha256"], ref["bytes"]):
+        temporary.unlink(missing_ok=True)
+        _fail(
+            location,
+            "copied bytes do not match the approved source plan "
+            f"(expected={ref['sha256']}/{ref['bytes']}, actual={digest}/{size})",
+        )
+    target = _ensure_parent(candidate, destination)
+    try:
+        os.link(temporary, target, follow_symlinks=False)
+    except FileExistsError:
+        temporary.unlink(missing_ok=True)
+        _fail(location, f"pack destination already exists: {destination}")
+    else:
+        temporary.unlink()
+    return _file_ref(destination, digest, size, ref["media_type"])
+
+
 def _git_environment() -> dict[str, str]:
     return {
         "GIT_CONFIG_NOSYSTEM": "1",
@@ -1770,6 +1828,8 @@ def _verify_existing_pack(
     root: Path,
     expected_id: str,
     expected_fingerprints: Mapping[str, tuple[str, int]],
+    *,
+    expected_schema: str = contracts.PACK_SCHEMA_V2,
 ) -> dict[str, int]:
     if root.is_symlink() or not root.is_dir():
         _fail("existing pack", f"destination is not a real directory: {root}")
@@ -1777,8 +1837,13 @@ def _verify_existing_pack(
     try:
         document, _ = contracts.load_canonical_json(manifest_path)
         pack = contracts.validate_offline_pack(document)
-        if pack.get("schema") != contracts.PACK_SCHEMA_V2:
-            _fail("existing pack", "destination is not offline-pack/v2")
+        if pack.get("schema") != expected_schema:
+            expected_label = (
+                "offline-pack/v2"
+                if expected_schema == contracts.PACK_SCHEMA_V2
+                else "offline-pack/v3"
+            )
+            _fail("existing pack", f"destination is not {expected_label}")
         if pack["offline_pack_id"] != expected_id:
             _fail("existing pack", "manifest identity does not match destination")
         counts = contracts.verify_offline_pack_files(
@@ -1802,6 +1867,8 @@ def _verify_existing_pack_at(
     name: str,
     expected_id: str,
     expected_fingerprints: Mapping[str, tuple[str, int]],
+    *,
+    expected_schema: str = contracts.PACK_SCHEMA_V2,
 ) -> tuple[dict[str, int], _DirectoryIdentity]:
     _verify_store_descriptor(store_descriptor, store_identity)
     _verify_directory_identity(store, store_identity, "output store")
@@ -1810,11 +1877,19 @@ def _verify_existing_pack_at(
     if not hasattr(os, "getuid") or identity.owner != os.getuid():
         _fail("existing pack", "must be owned by the current user")
     root = store / name
-    counts = _verify_existing_pack(
-        root,
-        expected_id,
-        expected_fingerprints,
-    )
+    if expected_schema == contracts.PACK_SCHEMA_V2:
+        counts = _verify_existing_pack(
+            root,
+            expected_id,
+            expected_fingerprints,
+        )
+    else:
+        counts = _verify_existing_pack(
+            root,
+            expected_id,
+            expected_fingerprints,
+            expected_schema=expected_schema,
+        )
     _verify_store_descriptor(store_descriptor, store_identity)
     _verify_directory_identity(store, store_identity, "output store")
     _verify_directory_identity_at(store_descriptor, name, identity, "existing pack")
@@ -1848,6 +1923,13 @@ def compile_offline_pack_v2(
     plan_path = _real_file(source_plan_path, "source plan")
     inventory_file = _real_file(inventory_path, "inventory")
     plan, _ = load_source_plan(plan_path)
+    is_v3 = plan["schema"] == SOURCE_PLAN_SCHEMA_V3
+    source_plan_contracts = None
+    expected_v3_manifests: dict[str, dict[str, Any]] = {}
+    if is_v3:
+        import source_plan_contracts as source_plan_contracts_module
+
+        source_plan_contracts = source_plan_contracts_module
     try:
         inventory, _ = contracts.load_canonical_json(inventory_file)
         contracts.validate_reducer_input_inventory(inventory)
@@ -1866,6 +1948,17 @@ def compile_offline_pack_v2(
         for source in plan["sources"]
         for item in source["objects"]
     )
+    if is_v3:
+        required_roots.update(
+            ref["root"]
+            for source in plan["sources"]
+            if "evidence" in source
+            for ref in (
+                *source["evidence"]["acquisition_receipts"],
+                source["evidence"]["normalization_lineage"],
+                *source["evidence"]["request_parameter_preimages"],
+            )
+        )
     if set(roots) != required_roots:
         _fail(
             "roots",
@@ -1880,6 +1973,48 @@ def compile_offline_pack_v2(
         name: _directory_identity(root, f"roots.{name}")
         for name, root in resolved_roots.items()
     }
+    evidence_source_refs: dict[
+        tuple[str, str], tuple[dict[str, Any], str]
+    ] = {}
+    if is_v3:
+        assert source_plan_contracts is not None
+        try:
+            source_plan_contracts.verify_source_plan_v3_evidence(
+                plan,
+                resolved_roots,
+            )
+            expected_v3_manifests = {
+                manifest["source"]: manifest
+                for manifest in source_plan_contracts.source_manifests_from_plan_v3(
+                    plan
+                ).values()
+            }
+        except contracts.VerificationError as exc:
+            raise PackCompilationError(f"source plan evidence: {exc}") from exc
+        for source_index, source in enumerate(plan["sources"]):
+            if "evidence" not in source:
+                continue
+            evidence = source["evidence"]
+            groups = (
+                ("acquisition_receipt", evidence["acquisition_receipts"]),
+                ("normalization_lineage", [evidence["normalization_lineage"]]),
+                (
+                    "request_parameter_preimage",
+                    evidence["request_parameter_preimages"],
+                ),
+            )
+            for kind, refs in groups:
+                for evidence_index, ref in enumerate(refs):
+                    key = (kind, (
+                        ref.get("acquisition_receipt_id")
+                        or ref.get("normalization_lineage_id")
+                        or ref["parameters_sha256"]
+                    ))
+                    location = (
+                        f"$.sources[{source_index}].evidence.{kind}"
+                        f"[{evidence_index}]"
+                    )
+                    evidence_source_refs.setdefault(key, (ref, location))
     store_path, store_exists = _resolve_output_store(output_store)
     for name, root in resolved_roots.items():
         if _paths_overlap(store_path, root):
@@ -2086,6 +2221,52 @@ def compile_offline_pack_v2(
         )
         inventory_ref["inventory_id"] = inventory["inventory_id"]
 
+        acquisition_receipt_refs: dict[str, dict[str, Any]] = {}
+        normalization_lineage_refs: dict[str, dict[str, Any]] = {}
+        request_preimage_refs: dict[str, dict[str, Any]] = {}
+        evidence_fingerprints: dict[
+            tuple[str, str], tuple[str, int]
+        ] = {}
+        if is_v3:
+            for (kind, identity), (ref, location) in sorted(
+                evidence_source_refs.items()
+            ):
+                if kind == "acquisition_receipt":
+                    destination = (
+                        "evidence/acquisition-receipts/"
+                        + identity.removeprefix("sha256:")
+                        + ".json"
+                    )
+                elif kind == "normalization_lineage":
+                    destination = (
+                        "evidence/normalization-lineages/"
+                        + identity.removeprefix("sha256:")
+                        + ".json"
+                    )
+                else:
+                    destination = f"evidence/request-parameters/sha256/{identity}"
+                copied = _copy_planned_file(
+                    resolved_roots[ref["root"]],
+                    ref,
+                    staging,
+                    destination,
+                    location,
+                    after_copy=after_copy,
+                )
+                evidence_fingerprints[(ref["root"], ref["path"])] = (
+                    ref["sha256"],
+                    ref["bytes"],
+                )
+                if kind == "acquisition_receipt":
+                    copied["acquisition_receipt_id"] = identity
+                    acquisition_receipt_refs[identity] = copied
+                elif kind == "normalization_lineage":
+                    copied["normalization_lineage_id"] = identity
+                    normalization_lineage_refs[identity] = copied
+                else:
+                    copied["parameters_sha256"] = identity
+                    request_preimage_refs[identity] = copied
+
         object_refs: dict[str, dict[str, Any]] = {}
         materialized_objects: dict[tuple[str, str], dict[str, Any]] = {}
         source_manifests: list[tuple[dict[str, Any], dict[str, Any]]] = []
@@ -2152,7 +2333,11 @@ def compile_offline_pack_v2(
                 "normalization": copy.deepcopy(source["normalization"]),
                 "objects": finalized_objects,
                 "pin": copy.deepcopy(source["pin"]),
-                "schema": contracts.SOURCE_SCHEMA_V2,
+                "schema": (
+                    contracts.SOURCE_SCHEMA_V3
+                    if is_v3
+                    else contracts.SOURCE_SCHEMA_V2
+                ),
                 "source": source["source"],
                 "source_kind": source["source_kind"],
                 "source_manifest_id": ZERO_HASH,
@@ -2164,6 +2349,10 @@ def compile_offline_pack_v2(
             ):
                 if optional_key in source:
                     manifest[optional_key] = copy.deepcopy(source[optional_key])
+            if is_v3 and "evidence" in source:
+                manifest["evidence"] = copy.deepcopy(
+                    expected_v3_manifests[source["source"]]["evidence"]
+                )
             manifest["source_manifest_id"] = contracts.source_manifest_identity(manifest)
             try:
                 contracts.validate_source_manifest(manifest)
@@ -2172,6 +2361,11 @@ def compile_offline_pack_v2(
                     f"$.sources[{source_index}]: generated source manifest failed "
                     f"validation: {exc}"
                 ) from exc
+            if is_v3 and manifest != expected_v3_manifests[source["source"]]:
+                _fail(
+                    f"$.sources[{source_index}]",
+                    "materialized source manifest differs from the validated v3 plan projection",
+                )
             manifest_path = (
                 "manifests/"
                 + manifest["source_manifest_id"].removeprefix("sha256:")
@@ -2280,6 +2474,11 @@ def compile_offline_pack_v2(
             )
             schema_refs.append(ref)
 
+        packed_evidence_refs = [
+            *acquisition_receipt_refs.values(),
+            *normalization_lineage_refs.values(),
+            *request_preimage_refs.values(),
+        ]
         all_pack_paths = [
             "inventory/reducer-inputs-v2.json",
             "configuration/reducer.json",
@@ -2289,6 +2488,7 @@ def compile_offline_pack_v2(
             *(ref["path"] for _manifest, ref in source_manifests),
             *(ref["path"] for ref in reducer_files),
             *(ref["path"] for ref in schema_refs),
+            *(ref["path"] for ref in packed_evidence_refs),
         ]
         _reject_path_collisions(all_pack_paths)
 
@@ -2304,15 +2504,34 @@ def compile_offline_pack_v2(
                 "files": reducer_files,
                 "git_commit": reducer["git_commit"],
             },
-            "schema": contracts.PACK_SCHEMA_V2,
+            "schema": contracts.PACK_SCHEMA_V3 if is_v3 else contracts.PACK_SCHEMA_V2,
             "schemas": schema_refs,
             "source_manifests": [ref for _manifest, ref in source_manifests],
-            "source_set_root": contracts.source_set_root_v2(
+            "source_set_root": (
+                contracts.source_set_root_v3
+                if is_v3
+                else contracts.source_set_root_v2
+            )(
                 inventory["inventory_id"],
                 [manifest["source_manifest_id"] for manifest, _ref in source_manifests],
                 input_bindings,
             ),
         }
+        if is_v3:
+            pack["evidence"] = {
+                "acquisition_receipts": [
+                    acquisition_receipt_refs[key]
+                    for key in sorted(acquisition_receipt_refs)
+                ],
+                "normalization_lineages": [
+                    normalization_lineage_refs[key]
+                    for key in sorted(normalization_lineage_refs)
+                ],
+                "request_parameter_preimages": [
+                    request_preimage_refs[key]
+                    for key in sorted(request_preimage_refs)
+                ],
+            }
         pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
         manifest_ref = _write_document(staging, "offline-pack.json", pack)
         try:
@@ -2330,6 +2549,7 @@ def compile_offline_pack_v2(
             *reducer_files,
             configuration_ref,
             *schema_refs,
+            *packed_evidence_refs,
             manifest_ref,
         ]
         fingerprints = {
@@ -2357,6 +2577,20 @@ def compile_offline_pack_v2(
                     "mutable input member set changed during compilation "
                     f"(before={list(expected_paths)}, after={list(actual_paths)})",
                 )
+        if is_v3:
+            for (root_name, relative), expected in sorted(
+                evidence_fingerprints.items()
+            ):
+                actual = _fingerprint_regular(
+                    resolved_roots[root_name],
+                    relative,
+                    f"evidence source {root_name}:{relative}",
+                )
+                if actual != expected:
+                    _fail(
+                        f"evidence source {root_name}:{relative}",
+                        "changed after validation/copy and before pack sealing",
+                    )
         for name, root in resolved_roots.items():
             _verify_directory_identity(root, root_identities[name], f"roots.{name}")
         if _validate_private_store(store) != store_identity:
@@ -2382,11 +2616,19 @@ def compile_offline_pack_v2(
             "staging",
         )
         _verify_directory_identity(staging, staging_identity, "staging")
-        counts = _verify_existing_pack(
-            staging,
-            pack["offline_pack_id"],
-            fingerprints,
-        )
+        if is_v3:
+            counts = _verify_existing_pack(
+                staging,
+                pack["offline_pack_id"],
+                fingerprints,
+                expected_schema=contracts.PACK_SCHEMA_V3,
+            )
+        else:
+            counts = _verify_existing_pack(
+                staging,
+                pack["offline_pack_id"],
+                fingerprints,
+            )
         _verify_store_descriptor(store_descriptor, store_identity)
         _verify_directory_identity(store, store_identity, "output store")
         _verify_directory_identity_at(
@@ -2406,14 +2648,25 @@ def compile_offline_pack_v2(
             missing_ok=True,
         )
         if existing_identity is not None:
-            existing_counts, existing_identity = _verify_existing_pack_at(
-                store,
-                store_descriptor,
-                store_identity,
-                target_name,
-                pack["offline_pack_id"],
-                fingerprints,
-            )
+            if is_v3:
+                existing_counts, existing_identity = _verify_existing_pack_at(
+                    store,
+                    store_descriptor,
+                    store_identity,
+                    target_name,
+                    pack["offline_pack_id"],
+                    fingerprints,
+                    expected_schema=contracts.PACK_SCHEMA_V3,
+                )
+            else:
+                existing_counts, existing_identity = _verify_existing_pack_at(
+                    store,
+                    store_descriptor,
+                    store_identity,
+                    target_name,
+                    pack["offline_pack_id"],
+                    fingerprints,
+                )
             _remove_tree_at(store_descriptor, staging.name, staging_identity)
             _verify_store_descriptor(store_descriptor, store_identity)
             _verify_directory_identity(store, store_identity, "output store")
@@ -2439,14 +2692,25 @@ def compile_offline_pack_v2(
         try:
             _publish_no_replace(store_descriptor, staging.name, target_name)
         except _DestinationExists:
-            existing_counts, existing_identity = _verify_existing_pack_at(
-                store,
-                store_descriptor,
-                store_identity,
-                target_name,
-                pack["offline_pack_id"],
-                fingerprints,
-            )
+            if is_v3:
+                existing_counts, existing_identity = _verify_existing_pack_at(
+                    store,
+                    store_descriptor,
+                    store_identity,
+                    target_name,
+                    pack["offline_pack_id"],
+                    fingerprints,
+                    expected_schema=contracts.PACK_SCHEMA_V3,
+                )
+            else:
+                existing_counts, existing_identity = _verify_existing_pack_at(
+                    store,
+                    store_descriptor,
+                    store_identity,
+                    target_name,
+                    pack["offline_pack_id"],
+                    fingerprints,
+                )
             _remove_tree_at(store_descriptor, staging.name, staging_identity)
             _verify_store_descriptor(store_descriptor, store_identity)
             _verify_directory_identity(store, store_identity, "output store")

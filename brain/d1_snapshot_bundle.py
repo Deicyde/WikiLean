@@ -25,7 +25,9 @@ if str(TOOLS) not in sys.path:
 
 import authority_contracts as contracts  # noqa: E402
 
-BUNDLE_SCHEMA = "wikilean.d1-acquisition-bundle/v1"
+BUNDLE_SCHEMA = "wikilean.d1-acquisition-bundle/v2"
+BUNDLE_GENERATION_DOMAIN = "wikilean.d1-evidence-generation.v1"
+BUNDLE_IDENTITY_BASIS = "exact_receipt_and_lineage_bytes"
 CONTROL_SCHEMA = "wikilean.d1-snapshot-control/v1"
 NORMALIZATION_SCHEMA = "wikilean.d1-snapshot-normalization/v1"
 UPSTREAM_URI = "d1://cloudflare/fc1b0190-77dd-4f41-a5b9-7f30d53df140"
@@ -42,7 +44,7 @@ WRANGLER_INTEGRITY = (
 )
 WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
 PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "8add497ed3c09a762d35ec2a66f8b077cb061315710a660c24804cee71eef620"
+ACQUIRER_WRAPPER_SHA256 = "47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
@@ -50,7 +52,7 @@ LOCAL_DEPENDENCY_PINS = (
     },
     {
         "path": "brain/tools/authority_contracts.py",
-        "sha256": "9cb0d246cce72c173b47bfe9247458ef4a92f1abf3e48a9db7d6484951541d63",
+        "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6",
     },
     {
         "path": "brain/tools/execution_environment.py",
@@ -225,6 +227,22 @@ class SnapshotBundle:
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _evidence_generation_id(receipt_bytes: bytes, lineage_bytes: bytes) -> str:
+    """Independently derive the immutable target identity from evidence bytes."""
+    return contracts.domain_hash(BUNDLE_GENERATION_DOMAIN, [
+        {
+            "path": "acquisition-receipt.json",
+            "sha256": _sha256(receipt_bytes),
+            "bytes": len(receipt_bytes),
+        },
+        {
+            "path": "normalization-lineage.json",
+            "sha256": _sha256(lineage_bytes),
+            "bytes": len(lineage_bytes),
+        },
+    ])
 
 
 def _exact_object(value: Any, fields: Sequence[str], location: str) -> dict[str, Any]:
@@ -714,7 +732,7 @@ def verify_snapshot_bundle(bundle_path: Path) -> SnapshotBundle:
     )
     if manifest["schema"] != BUNDLE_SCHEMA:
         raise HarvestError("bundle.json.schema: unexpected schema")
-    if manifest["identity_basis"] != "normalization_lineage_id":
+    if manifest["identity_basis"] != BUNDLE_IDENTITY_BASIS:
         raise HarvestError("bundle.json.identity_basis: unexpected identity basis")
     receipt_id = receipt["acquisition_receipt_id"]
     lineage_id = lineage["normalization_lineage_id"]
@@ -722,12 +740,18 @@ def verify_snapshot_bundle(bundle_path: Path) -> SnapshotBundle:
         raise HarvestError("acquisition receipt identity mismatch")
     if contracts.normalization_lineage_identity(lineage) != lineage_id:
         raise HarvestError("normalization lineage identity mismatch")
-    if manifest["bundle_id"] != lineage_id or manifest["normalization_lineage_id"] != lineage_id:
-        raise HarvestError("bundle manifest does not bind its lineage identity")
+    bundle_id = _evidence_generation_id(
+        files["acquisition-receipt.json"], files["normalization-lineage.json"]
+    )
+    if (
+        manifest["bundle_id"] != bundle_id
+        or manifest["normalization_lineage_id"] != lineage_id
+    ):
+        raise HarvestError("bundle manifest does not bind its evidence generation")
     if manifest["acquisition_receipt_id"] != receipt_id:
         raise HarvestError("bundle manifest does not bind its receipt identity")
-    if bundle_path.name != lineage_id.removeprefix("sha256:"):
-        raise HarvestError("snapshot bundle directory name is not its lineage identity")
+    if bundle_path.name != bundle_id.removeprefix("sha256:"):
+        raise HarvestError("snapshot bundle directory name is not its evidence generation")
     if manifest["evidence"] != {
         "acquisition_receipt": "acquisition-receipt.json",
         "normalization_lineage": "normalization-lineage.json",

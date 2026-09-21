@@ -46,12 +46,29 @@ overlay, or serving topology.
   rejected. Every request kind, including `http_get`, binds the exact canonical
   query/body/statement/export-parameter bytes through `parameters_sha256`; a
   parameter-free request hashes the empty byte string. This keeps credentials out of the
-  receipt URI. The parameter preimage itself must be sealed by the future pack-integration
-  contract before the receipt can authorize replay. The executable Python validator is normative;
+  receipt URI. Source-manifest/offline-pack/source-plan v3 seals the parameter preimage before
+  the receipt can authorize replay. The executable Python validator is normative;
   the portable JSON Schemas describe shape but cannot express root recomputation, count
   equality, exact origin sets, or identity-mode equality.
-  These documents are not silently grafted onto source-manifest/v2 or offline-pack/v2;
-  fail-closed pack integration requires an explicit next contract version.
+  These documents are not silently grafted onto source-manifest/v2 or offline-pack/v2.
+- `schemas/source-manifest/v3.json`, `schemas/offline-pack-source-plan/v3.json`, and
+  `schemas/offline-pack/v3.json` define that fail-closed integration without changing v2.
+  Every acquired dataset carries one or more logical acquisition-receipt IDs, one
+  normalization-lineage ID, and the exact digest/length/media type of every distinct
+  request-parameter preimage. A derived sealed snapshot may instead use a parent-only
+  lineage; curated Git trees continue to be sealed solely by commit plus tree and must not
+  claim acquisition evidence. Receipt/lineage audit timestamps remain outside
+  `source_manifest_id` and `source_set_root`; the enclosing offline-pack/v3 still seals the
+  exact canonical evidence files, including their audit fields, through its own file refs and
+  `offline_pack_id`. The pack verifier requires exact receipt/lineage/preimage closure, checks
+  source/pin/tool and raw-to-normalized object coherence, resolves evidence-only normalized
+  parent objects, and rejects parent cycles. The v3 source-plan validator applies the frozen
+  v1 structural rules, derives prospective source-manifest/v3 identities, and separately
+  verifies evidence bytes against explicit physical roots. `request.json` is the D1 request
+  preimage; its `sql_sha256` transitively binds the reviewed `request.sql` used by the sealed
+  acquisition bundle. `source.audit` remains descriptive only; freshness decisions must use
+  the audit timestamp from the validated receipt document. The current v2 compiler/preflight
+  do not yet accept v3 plans.
 - `schemas/execution-environment/v1.json` gives the environment descriptor its own
   strict, self-identifying contract. It pins the exact CPython, NumPy lock and installed
   tree, SQLite library and compile options, locale, replay-runner closure, and sandbox
@@ -134,16 +151,18 @@ table columns; then publishes clock-free raw/normalized objects with validated
 `acquisition-receipt/v1` and `normalization-lineage/v1` evidence. The exact account,
 database UUID, request preimage, Wrangler package, Node executable, CPython 3.12
 version/executable digest, repo-relative Python helper digests, config, and environment
-policy are bound in the bundle and rechecked after the remote call and immediately
-before publication. The launcher is the only supported acquisition entry point: it
+policy are bound in the bundle. Node and Wrangler are rechecked after the remote call;
+Python, the wrapper, and local helpers are rechecked immediately before publication;
+the request descriptor and SQL are reread while the bundle is assembled. The launcher is
+the only supported acquisition entry point: it
 executes CPython with `-I -S`, and the program binds those startup flags and refuses
 unisolated direct invocation before Wrangler can run. Local helper modules are loaded
 after the standard-library paths and must resolve to their exact reviewed repository
 files. The normalization identity also names the reviewed community-row
 policy and mirror-safe article filename policy (including NFD/casefold collision and
 length checks), rather than relying on wrapper identity alone. No live snapshot has
-been captured as part of the repository change, and v2 source plans do not consume
-these bundles.
+been captured as part of the repository change. The v3 contracts can represent this
+evidence, but the current v2 compiler/preflight do not yet consume v3 plans.
 
 Both current consumers require that same explicit absolute bundle path and run
 the shared consumer-side verifier before writing anything:
