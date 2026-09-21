@@ -21,7 +21,9 @@
    property proposal, the `manage/` control plane, and Jack's working preferences.
 
 4. **`docs/ROADMAP.md`** — the canonical plan (phases, binding decisions, status log). Read
-   before proposing what to build next. Companion: `docs/research-plan.md` (RQ1–RQ8).
+   before proposing what to build next. For the current Brain/SQLite branch state and exact
+   continuation commands, also read `docs/BRAIN-SQLITE-HANDOFF.md`. Companion:
+   `docs/research-plan.md` (RQ1–RQ8).
 
 **Why the split:** live state → `status.py`, evolving facts → memory, durable conventions →
 `CLAUDE.md`, the plan → `ROADMAP.md`, and the operational loop runs itself (nightly launchd +

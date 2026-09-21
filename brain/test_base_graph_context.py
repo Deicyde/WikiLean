@@ -46,7 +46,9 @@ REQUIRED_CONTENT = {
     "hierarchy": '{"libraries":{},"meta":{"source_sha256":"ambient-pin"}}\n',
     "mathlib-source-tree": "-- sealed fixture\n",
     "rebuild-grounding": "[]\n",
-    "source-registry": '{"crossref_sources":{}}\n',
+    "source-registry": (
+        '{"crossref_sources":{"fixture":{"ingest":{"snippets":false}}}}\n'
+    ),
     "statement-formal": "decl_name,statement_id,module,kind,docstring\n",
     "theorem-matching": (
         "formal_decl,formal_module,arxiv_id,license_open,gpt54_label,"
@@ -185,6 +187,7 @@ class BaseGraphContextTest(unittest.TestCase):
                 "members": members,
                 "requirement": contract["requirement"],
                 "root": contract["root"],
+                "source_manifest_ids": [SOURCE_MANIFEST_ID],
                 "state": "present" if present else "absent",
             }
             selector = "path" if contract["cardinality"] == "one" else "path_pattern"

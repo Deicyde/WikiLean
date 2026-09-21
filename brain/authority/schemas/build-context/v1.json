@@ -140,6 +140,7 @@
         "requirement",
         "class",
         "state",
+        "source_manifest_ids",
         "members"
       ],
       "properties": {
@@ -149,6 +150,12 @@
         "requirement": {"enum": ["required", "optional"]},
         "class": {"enum": ["curated_git_input", "immutable_source_object"]},
         "state": {"enum": ["present", "absent"]},
+        "source_manifest_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/hash"}
+        },
         "path": {"$ref": "#/$defs/literalRelativePath"},
         "path_pattern": {"$ref": "#/$defs/pathPattern"},
         "members": {
