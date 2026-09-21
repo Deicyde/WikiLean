@@ -160,17 +160,31 @@ never independent semantic writers.
 
 **2026-09-08 continuation:** the live engineering checkpoint is
 [`BRAIN-SQLITE-CONTINUATION-2026-09-08.md`](BRAIN-SQLITE-CONTINUATION-2026-09-08.md).
+The final stopped-session status, live capture and newly found fold metadata blocker
+are in [the 2026-09-09 handoff](BRAIN-SQLITE-HANDOFF-2026-09-09.md); read it first.
 Real D1, Mathlib/oracle, Hugging Face, shared Wikidata/entity/crossref, derived
 catalog, Git harvest, nLab/Stacks, ProofWiki, EOM, OEIS, DLMF, LMFDB, PlanetMath
 and OpenAlex source exports are independently verified. Kerodon is the remaining
 full capture. The private source draft has 106 manifests and 41 of 43 complete
 input groups; its external aggregate groups await Kerodon. A sealed native Linux OCI image passed kernel/runtime checks,
-and the expanded Python suite passes 77 commands. P2A's bounded experimental
+and the expanded Python suite passes 86 commands. P2A's bounded experimental
 assertion shadow also passes, including exact parity for 430 committed pilot
 contributions. No full pack, complete approved
 semantic baseline, full two-build result, release attestation or production
 activation exists. The historical implementation context below must not be read
 as a current claim that the completed captures or runtime preparation are absent.
+Combined preflight exposed an empty-object MIME conflict. A verified D1 exporter
+v2 preserves the original capture and normalized bytes; its new source IDs require
+refreshing derived catalog/fold generations and reacquiring the exact-parent
+OpenAlex observation. The catalog/fold replacements now verify independently with
+unchanged normalized graph bytes. The new citation capture had adequate free
+OpenAlex quota but stopped on an arXiv HTTP 429; its incomplete evidence is retained.
+Sealed fold export, an exact-ID folded-input inventory transition, standalone policy
+reviews, provenance coverage, a separate private replay qualification gate, and
+same-input legacy preparation/SQLite projection/release assembly are implemented
+and independently reviewed. Full native legacy execution and the complete source
+replacement remain pending. None of this tooling grants source, baseline or
+production approval. The current draft is preserved until replacement closure verifies.
 
 P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
 remain production-inactive. The current commit intentionally has no
@@ -237,8 +251,9 @@ sealed input and
 reducer closures, runs every inventory stage in order (including independent leaves), requires
 a supported OS isolation boundary with networking denied, and rejects undeclared output,
 scratch residue, or predecessor mutation. This is not yet a production reproducibility claim:
-there is no real full-corpus pack, the Python/NumPy/SQLite runtime is not pinned, and the
-generated sandbox policies have not yet been exercised on clean supported hosts. Linux no
+there is no real full-corpus pack or complete two-build run. The native runtime is now
+pinned and its generated sandbox policy has passed strict kernel probes, as recorded
+in the continuation checkpoint. Linux no
 longer bind-mounts the host root: reducers see the exact prepared workspace, an empty temp
 directory, kernel-local `/proc` and `/dev`, and the selected runtime roots. Darwin grants
 reads only to the exact workspace, selected runtime roots, and Apple's standard system
@@ -633,8 +648,12 @@ explicit approval.
       wheel verification, container inspection/cleanup, isolated startup, and measured
       NumPy/OpenBLAS dispatch policy. Runtime v2 explicitly binds builtin SQLite modules;
       v1's extension-file contract is retained. Packaging rejects lazy-fetch Git sources.
-    - [ ] Build the actual pinned image/dependency artifacts and retain native Linux
-      sandbox/replay evidence. No OCI build or execution has occurred on this Darwin host.
+    - [x] Build the actual pinned image/dependency artifacts and retain native Linux
+      strict sandbox and runtime-probe evidence. The `c64438d2` image ran in the
+      isolated native Linux guest; its exact descriptor and evidence are retained
+      in the continuation checkpoint.
+    - [ ] Bind the final reducer generation to a verified environment descriptor and
+      retain the full-corpus launch/replay evidence under that exact identity.
 - [ ] **Build one real offline pack.** Add a pack compiler and content-addressed source
   object store for the pinned Mathlib tree and declaration oracle, TheoremGraph inputs,
   sealed D1 annotations/community data, external normalized files, and curated Git inputs.
@@ -715,6 +734,12 @@ explicit approval.
   resolve to a sealed source manifest and policy entry. Resolve the current `tag-queue` and
   `wikilean` registry-name gaps and record explicit policy for nLab, OEIS, LMFDB, and each
   differently licensed TheoremGraph object before making this gate strict.
+  - [x] Implement independently reviewed standalone exact-pack private policy and
+    exact-release public policy records, a 25-family provenance coverage checker,
+    and a separate private qualification gate. Original restrictions and production
+    profiles remain unchanged; fixtures do not supply a full-corpus approval.
+  - [ ] Complete the concrete full-pack policy decisions and release-specific
+    provenance mapping, then rerun their verifiers on the real retained outputs.
 
 **Next P0-R implementation order:** (1) finish the remaining external captures and
 normalizers, review all complete normalization tool identities, and bind the real D1, Mathlib/oracle,
