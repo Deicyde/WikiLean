@@ -39,7 +39,7 @@ brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json  (the 
         ▼                    cells/ itself is built by brain/build_cell_shards.py)
 wiki build-public         → wiki/public/assets/brain/  (allow-list copy: cells/ +
                              sources.json + xref_index.json; deployed)
-brain/test_acceptance.py  → CI gate; datapoints P1-P9 + schema invariants
+brain/test_acceptance.py  → corpus/nightly acceptance gate; datapoints P1-P9 + schema invariants
 brain/test_v2.py          → fixture unit tests for the v2 external layer
 ```
 
@@ -67,8 +67,8 @@ python3 catalog/fetch_math_graph.py \
 python3 catalog/ingest_theorem_graph.py \
   --revision 5caba941dd716f17dba4880bd7173edfb1cc36d1 # reviewed theorem-matching cache
 python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live  # warms the decl oracle cache
-# plus a mathlib4 checkout (default /Users/jack/Desktop/LEAN/mathlib4; override
-# with BRAIN_MATHLIB_CHECKOUT) — build_graph_v2 and fold_proposals FAIL HARD
+# plus a read-only mathlib4 checkout configured with BRAIN_MATHLIB_CHECKOUT
+# (legacy interactive entry points retain a host-specific fallback) — build_graph_v2 and fold_proposals FAIL HARD
 # when the oracle/checkout are missing rather than silently dropping data.
 ```
 
@@ -104,12 +104,13 @@ in-memory; keep request plans bounded until streaming lands. Receipt and normali
 lineage IDs intentionally exclude audit clocks, while the bundle directory ID hashes the
 exact canonical receipt and lineage bytes. Reacquiring unchanged source bytes therefore
 creates a distinct immutable evidence generation with a fresh audit time without changing
-the logical source identity. This bundle closes proposal folding only. The legacy Wikidata
-universe, relation-edge, and description harvesters still perform separate live
-acquisitions, and neither their outputs nor a proposal bundle become v3 source authority
-until explicitly bound into a reviewed source plan.
+the logical source identity. This bundle closes proposal folding only. Universe, relation-edge,
+and description acquisition now has its own shared sealed observation generation and
+independent verifier; a real reviewed generation and its current-corpus plan binding are still
+required. Neither observation tooling nor a proposal bundle becomes v3 source authority until
+explicitly bound into that reviewed source plan.
 
-Focused regression commands (current counts: 23 acquisition/verifier, 9 fold):
+Focused regression commands:
 
 ```bash
 python3 brain/test_acquire_wikidata_entities.py
