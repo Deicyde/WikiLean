@@ -626,7 +626,7 @@ PY
           && node --experimental-strip-types scripts/build-public.ts "${STAGE_ARGS[@]}" \
             >"$TMP_PUBLIC_OUTPUT") \
         && extract_json_object "$TMP_PUBLIC_OUTPUT" "$TMP_PUBLIC_RESULT" \
-             schema public_dir mathlib_declarations brain duration_ms max_rss_bytes \
+             schema public_dir mathlib_declarations public_baseline brain duration_ms max_rss_bytes \
         && PUBLIC_STAGE_RELEASE_ID="$(public_result_release_id "$TMP_PUBLIC_RESULT" 2>/dev/null)" \
         && [ "$PUBLIC_STAGE_RELEASE_ID" = "$RELEASE_ID" ] \
         && cmp -s "$RELEASE_ROOT/site/out/brain.html" "$REPO/wiki/public/brain.html"; then
