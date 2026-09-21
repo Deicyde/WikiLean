@@ -41,6 +41,7 @@ def run(
     semantic_epoch: str | None = None,
     prior_state_root: str | None = None,
     interpreter: Path | None = None,
+    stage_timeout_seconds: float | None = None,
 ) -> int:
     manifest_path = manifest_path.resolve(strict=True)
     verification_root = (root or manifest_path.parent).resolve(strict=True)
@@ -65,6 +66,13 @@ def run(
             raise VerificationError(
                 "offline-pack/v2 requires " + ", ".join(missing)
             )
+        replay_options = {}
+        if stage_timeout_seconds is not None:
+            replay_options["stage_timeout_seconds"] = (
+                run_replay_v2._validated_stage_timeout_seconds(
+                    stage_timeout_seconds
+                )
+            )
         prepared = prepare_replay_v2.prepare_replay_v2(
             manifest_path,
             workspace,
@@ -85,6 +93,7 @@ def run(
             expected_configuration_sha256=prepared.configuration_sha256,
             expected_environment_sha256=prepared.environment_sha256,
             interpreter=interpreter or Path(sys.executable),
+            **replay_options,
         )
         return 0
     if not isinstance(document, dict) or document.get("schema") != PACK_SCHEMA:
@@ -98,6 +107,7 @@ def run(
             authority_root,
             semantic_epoch,
             prior_state_root,
+            stage_timeout_seconds,
         )
     ):
         raise VerificationError(
@@ -166,6 +176,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--semantic-epoch")
     parser.add_argument("--prior-state-root")
     parser.add_argument("--python", type=Path, default=Path(sys.executable))
+    parser.add_argument("--stage-timeout-seconds", type=float)
     parser.add_argument("reducer_args", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
     reducer_args = args.reducer_args
@@ -182,6 +193,7 @@ def main(argv: list[str] | None = None) -> int:
             semantic_epoch=args.semantic_epoch,
             prior_state_root=args.prior_state_root,
             interpreter=args.python,
+            stage_timeout_seconds=args.stage_timeout_seconds,
         )
     except (
         OSError,

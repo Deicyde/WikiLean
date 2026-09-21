@@ -41,6 +41,9 @@ import sys
 import time
 from pathlib import Path
 
+from build_context import external_pair_control_paths
+from ingest.common import read_stable_external_pair
+
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 DATA = HERE / "data"
@@ -50,8 +53,17 @@ ORACLE = REPO / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaratio
 CHECKOUT = Path(os.environ.get("BRAIN_MATHLIB_CHECKOUT",
                                "/Users/jack/Desktop/LEAN/mathlib4/Mathlib"))
 UA = "WikiLean/1.0 (https://wikilean.jackmccarthy.org)"
-QID_RE = re.compile(r"^Q\d+$")
+QID_RE = re.compile(r"^Q[1-9]\d*$")
 CONF_ORDER = {"low": 0, "medium": 1, "high": 2}
+
+
+class WikidataAcquisitionError(RuntimeError):
+    """The live Wikidata batch could not be acquired completely and parsed."""
+
+
+def is_qid(value: object) -> bool:
+    """Whether value is a canonical, positive Wikidata item identifier."""
+    return isinstance(value, str) and QID_RE.fullmatch(value) is not None
 
 
 def oracle_names() -> set[str]:
@@ -153,18 +165,25 @@ def external_page_ids(db: str) -> set[str] | None:
     if db not in _ext_page_ids:
         f = CATALOG / "external" / f"{db}_pages.jsonl"
         if not f.exists():
+            links = f.parent / f"{db}_links.jsonl"
+            journal = external_pair_control_paths(f.parent, db)["journal"]
+            if links.exists() or journal.exists():
+                # A first-publication crash may leave a sealed links orphan.
+                # The stable reader must reject it rather than treating the
+                # source as cleanly absent.
+                read_stable_external_pair(db, f, links)
             _ext_page_ids[db] = None
         else:
-            ids: set[str] = set()
-            with f.open() as fh:
-                for line in fh:
-                    if not line.strip():
-                        continue
-                    r = json.loads(line)
-                    if "_meta" in r:
-                        continue
-                    if r.get("id") is not None:
-                        ids.add(str(r["id"]))
+            _meta, rows, _links_meta, _links = read_stable_external_pair(
+                db,
+                f,
+                f.parent / f"{db}_links.jsonl",
+            )
+            ids = {
+                str(row["id"])
+                for row in rows
+                if row.get("id") is not None
+            }
             _ext_page_ids[db] = ids
     return _ext_page_ids[db]
 
@@ -279,45 +298,202 @@ def known_qids() -> dict[str, dict]:
     return out
 
 
+def _fetch_entity_chunk(chunk: list[str], chunk_number: int) -> dict[str, dict]:
+    """Fetch one logical chunk, bisecting only Wikidata no-such-entity errors."""
+    url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json"
+           "&props=labels|descriptions|aliases|claims|sitelinks&languages=en"
+           "&sitefilter=enwiki&redirects=yes&ids=" + "|".join(chunk))
+    try:
+        response = subprocess.run(
+            ["curl", "-sS", "-m", "90", "--retry", "2",
+             "-H", f"User-Agent: {UA}", url],
+            capture_output=True, text=True, timeout=120,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} request failed "
+            f"({type(exc).__name__})"
+        ) from exc
+    if response.returncode != 0:
+        detail = " ".join((response.stderr or "").split())[:200] or "no stderr"
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} curl exited "
+            f"{response.returncode}: {detail}"
+        )
+    # Throttle every completed request, including malformed/API-error
+    # responses that will be retried through no-such-entity bisection.
+    time.sleep(1)
+    if not response.stdout.strip():
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} returned an empty response"
+        )
+    try:
+        payload = json.loads(response.stdout)
+    except json.JSONDecodeError as exc:
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} returned invalid JSON"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} response is not an object"
+        )
+
+    error = payload.get("error")
+    if error is not None:
+        if isinstance(error, dict) and error.get("code") == "no-such-entity":
+            # wbgetentities rejects the entire multi-ID request when even one
+            # syntactically valid, positive QID is beyond Wikidata's range.
+            # Bisect to retain valid peers and represent only isolated bad IDs
+            # as missing.  Every other API error remains fatal.
+            if len(chunk) == 1:
+                return {chunk[0]: {"missing": True}}
+            midpoint = len(chunk) // 2
+            left = _fetch_entity_chunk(chunk[:midpoint], chunk_number)
+            right = _fetch_entity_chunk(chunk[midpoint:], chunk_number)
+            return {**left, **right}
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} returned an API error"
+        )
+
+    entities = payload.get("entities")
+    if not isinstance(entities, dict):
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} has no entities object"
+        )
+    redirect_rows = payload.get("redirects", [])
+    if not isinstance(redirect_rows, list):
+        raise WikidataAcquisitionError(
+            f"wbgetentities chunk {chunk_number} redirects is not a list"
+        )
+    redirects: dict[str, str] = {}
+    for row in redirect_rows:
+        if not isinstance(row, dict) or not is_qid(row.get("from")) \
+                or not is_qid(row.get("to")):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} has a malformed redirect"
+            )
+        source, target = row["from"], row["to"]
+        if source in redirects and redirects[source] != target:
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} has conflicting redirects"
+            )
+        redirects[source] = target
+
+    out: dict[str, dict] = {}
+    for requested in chunk:
+        resolved = requested
+        seen: set[str] = set()
+        while resolved in redirects:
+            if resolved in seen:
+                raise WikidataAcquisitionError(
+                    f"wbgetentities chunk {chunk_number} has a redirect cycle"
+                )
+            seen.add(resolved)
+            resolved = redirects[resolved]
+        entity = entities.get(requested)
+        if entity is None:
+            entity = entities.get(resolved)
+        if entity is None:
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} omitted requested QID {requested}"
+            )
+        if not isinstance(entity, dict):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} is not an object"
+            )
+        if "missing" in entity:
+            out[requested] = {"missing": True}
+            continue
+
+        entity_qid = entity.get("id", resolved)
+        labels = entity.get("labels", {})
+        aliases_by_language = entity.get("aliases", {})
+        descriptions = entity.get("descriptions", {})
+        claims = entity.get("claims", {})
+        sitelinks = entity.get("sitelinks", {})
+        if not is_qid(entity_qid) or not isinstance(labels, dict) \
+                or not isinstance(aliases_by_language, dict) \
+                or not isinstance(descriptions, dict) \
+                or not isinstance(claims, dict) \
+                or not isinstance(sitelinks, dict):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} is malformed"
+            )
+
+        label_row = labels.get("en")
+        if label_row is not None and (not isinstance(label_row, dict)
+                                      or not isinstance(label_row.get("value"), str)):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed label"
+            )
+        alias_rows = aliases_by_language.get("en", [])
+        if not isinstance(alias_rows, list) or any(
+            not isinstance(row, dict) or not isinstance(row.get("value"), str)
+            for row in alias_rows
+        ):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} has malformed aliases"
+            )
+        description_row = descriptions.get("en")
+        if description_row is not None and (
+            not isinstance(description_row, dict)
+            or not isinstance(description_row.get("value"), str)
+        ):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed description"
+            )
+        p31_rows = claims.get("P31", [])
+        if not isinstance(p31_rows, list):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} has malformed P31 claims"
+            )
+        p31: list[str] = []
+        for claim in p31_rows:
+            if not isinstance(claim, dict) or not isinstance(claim.get("mainsnak"), dict):
+                raise WikidataAcquisitionError(
+                    f"wbgetentities chunk {chunk_number} entity {requested} "
+                    "has a malformed P31 claim"
+                )
+            datavalue = claim["mainsnak"].get("datavalue")
+            if datavalue is None:
+                continue
+            if not isinstance(datavalue, dict) or not isinstance(datavalue.get("value"), dict) \
+                    or not is_qid(datavalue["value"].get("id")):
+                raise WikidataAcquisitionError(
+                    f"wbgetentities chunk {chunk_number} entity {requested} "
+                    "has a malformed P31 value"
+                )
+            p31.append(datavalue["value"]["id"])
+        enwiki = sitelinks.get("enwiki")
+        if enwiki is not None and (not isinstance(enwiki, dict)
+                                   or not isinstance(enwiki.get("title"), str)):
+            raise WikidataAcquisitionError(
+                f"wbgetentities chunk {chunk_number} entity {requested} has a malformed sitelink"
+            )
+        out[requested] = {
+            "qid": entity_qid,
+            "requested": requested,
+            "label": label_row["value"] if label_row is not None else None,
+            "aliases": [row["value"] for row in alias_rows],
+            "description": description_row["value"] if description_row is not None else None,
+            "classes": p31,
+            "enwiki_slug": enwiki["title"].replace(" ", "_") if enwiki else None,
+        }
+    return out
+
+
 def fetch_entities(qids: list[str]) -> dict[str, dict]:
-    """wbgetentities in batches of 50: label/description/aliases/P31/sitelink.
-    curl, not urllib: the system Python's SSL trust store is broken on this
-    machine (same reason fetch_crossrefs.py / fetch_universe_extension.py shell
-    out to curl)."""
+    """Fetch complete Wikidata entity evidence in deterministic batches of 50.
+
+    Acquisition is all-or-nothing except that an isolated canonical QID which
+    Wikidata reports as no-such-entity is represented as ``missing``.  A failed,
+    malformed, or incomplete request raises before folding can publish outputs.
+    """
+    if any(not is_qid(qid) for qid in qids):
+        raise WikidataAcquisitionError("wbgetentities received a non-canonical QID")
     out: dict[str, dict] = {}
     for i in range(0, len(qids), 50):
-        chunk = qids[i:i + 50]
-        url = ("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json"
-               "&props=labels|descriptions|aliases|claims|sitelinks&languages=en"
-               "&sitefilter=enwiki&ids=" + "|".join(chunk))
-        r = subprocess.run(["curl", "-sS", "-m", "90", "--retry", "2",
-                            "-H", f"User-Agent: {UA}", url],
-                           capture_output=True, text=True, timeout=120)
-        if r.returncode != 0 or not r.stdout.strip():
-            print(f"WARNING: wbgetentities chunk {i//50} failed: {r.stderr.strip()[:200]}",
-                  file=sys.stderr)
-            continue
-        ents = json.loads(r.stdout).get("entities", {})
-        for qid, ent in ents.items():
-            if "missing" in ent:
-                out[qid] = {"missing": True}
-                continue
-            label = (ent.get("labels", {}).get("en") or {}).get("value")
-            aliases = [a["value"] for a in ent.get("aliases", {}).get("en", [])]
-            p31 = [c["mainsnak"]["datavalue"]["value"]["id"]
-                   for c in ent.get("claims", {}).get("P31", [])
-                   if c.get("mainsnak", {}).get("datavalue")]
-            out[qid] = {
-                "qid": ent.get("id", qid),  # redirects resolve to the target id
-                "requested": qid,
-                "label": label,
-                "aliases": aliases,
-                "description": (ent.get("descriptions", {}).get("en") or {}).get("value"),
-                "classes": p31,
-                "enwiki_slug": (ent.get("sitelinks", {}).get("enwiki") or {})
-                .get("title", "").replace(" ", "_") or None,
-            }
-        time.sleep(1)
+        out.update(_fetch_entity_chunk(qids[i:i + 50], i // 50))
     return out
 
 
@@ -385,25 +561,6 @@ def main() -> int:
             return "container"
         return "discover"
 
-    # ---- live-fetch every not-yet-known QID ----------------------------------
-    need = sorted({r["qid"] for r in rows
-                   if r.get("qid") and QID_RE.match(r["qid"]) and r["qid"] not in known
-                   and rtype(r) in ("container", "discover", "replace_decl",
-                                    "xref", "fc_link", "repo_link")})
-    fetched = fetch_entities(need) if need else {}
-    print(f"fetched {len(fetched)}/{len(need)} unknown QIDs from Wikidata", file=sys.stderr)
-
-    def qid_info(qid: str) -> dict | None:
-        return known.get(qid) or fetched.get(qid)
-
-    def label_agrees(r: dict, info: dict) -> bool:
-        want = (r.get("qid_label") or r.get("label") or "").casefold().strip()
-        if not want:
-            return True  # container batches carry graph labels; no claim to check
-        got = [(info.get("label") or "").casefold()] + \
-              [a.casefold() for a in info.get("aliases", [])]
-        return want in got or any(want == g for g in got)
-
     checkout_cache: dict[str, bool] = {}
 
     def decl_ok(d: str) -> bool:
@@ -416,6 +573,139 @@ def main() -> int:
     xref_dbs = crossref_dbs()
     fc_names = fc_decl_names()
     repo_keys = frontier_repo_keys()
+
+    def veto_key(r: dict, t: str) -> tuple | None:
+        """Return the exact any-reject identity used by the fold loop."""
+        if t == "container":
+            path = r.get("path")
+            normalized = path.removeprefix("path:") \
+                if isinstance(path, str) else _hashable_key(path)
+            return ("container", _hashable_key(r.get("qid")), normalized)
+        if t in ("discover", "replace_decl"):
+            return ("discover", _hashable_key(r.get("qid")),
+                    _hashable_key(r.get("decl") or r.get("new_decl")))
+        if t == "xref":
+            xref = r.get("xref") if isinstance(r.get("xref"), dict) else {}
+            return ("xref", _hashable_key(r.get("qid")),
+                    _hashable_key(xref.get("db")),
+                    str(xref["id"]) if xref.get("id") is not None else None)
+        if t == "fc_link":
+            qid, decl = _completed_retract_key(r.get("qid"), r.get("decl"), fc_names)
+            return ("fc_link", qid, decl)
+        if t == "repo_link":
+            repo = r.get("repo")
+            names = frontier_decl_names(repo) \
+                if isinstance(repo, str) and repo in repo_keys else None
+            qid, decl = _completed_retract_key(r.get("qid"), r.get("decl"), names)
+            return ("repo_link", _hashable_key(repo), qid, decl)
+        return None
+
+    # Cross-batch reconciliation is computed before acquisition.  A rejected
+    # row and every accepted duplicate covered by its any-reject veto are audit
+    # outputs only; they must not make the fold depend on a live upstream QID.
+    vetoed = {
+        key
+        for r in rows
+        if r.get("verdict") == "reject"
+        for key in [veto_key(r, rtype(r))]
+        if key is not None
+    }
+
+    def claimed_label(r: dict) -> object:
+        return r.get("qid_label") or r.get("label") or ""
+
+    def locally_fetchable(r: dict, t: str) -> bool:
+        """Whether this row can reach an upstream-dependent fold check.
+
+        This mirrors only deterministic checks that precede qid_info() in the
+        branch below.  It is intentionally conservative: uncertain rows fetch;
+        rows guaranteed to reject locally do not create a network dependency.
+        """
+        if not isinstance(t, str) or t not in {
+            "container", "discover", "replace_decl", "xref", "fc_link", "repo_link",
+        }:
+            return False
+        qid = r.get("qid")
+        if not is_qid(qid) or qid in known or r.get("verdict") == "reject":
+            return False
+        key = veto_key(r, t)
+        if key is not None and key in vetoed:
+            return False
+        skeptic = "accept" if r.get("verdict") == "accept" else "pending"
+        if t == "container":
+            path = r.get("path")
+            return isinstance(path, str) and path.removeprefix("path:") in paths
+        if not isinstance(claimed_label(r), str):
+            return False
+        if t in ("discover", "replace_decl"):
+            decl = r.get("decl") or r.get("new_decl")
+            return isinstance(decl, str) and bool(decl) and decl_ok(decl)
+        if t == "xref":
+            xref = r.get("xref")
+            if skeptic != "accept" or not isinstance(xref, dict):
+                return False
+            db = xref.get("db")
+            page_id = str(xref["id"]) if xref.get("id") is not None else None
+            if not isinstance(db, str) or db not in xref_dbs or not page_id:
+                return False
+            page_ids = external_page_ids(db)
+            return page_ids is not None and page_id in page_ids
+        if t == "fc_link":
+            decl, kind = r.get("decl"), r.get("kind")
+            if kind not in ("formalizes", "mentions") or fc_names is None \
+                    or not isinstance(decl, str):
+                return False
+            if decl not in fc_names:
+                matches = [name for name in fc_names if name.endswith("." + decl)]
+                if len(matches) != 1:
+                    return False
+            if kind == "formalizes" and (skeptic == "pending"
+                                          or (r.get("match_kind") or "exact") != "exact"):
+                return False
+            return True
+        repo, decl = r.get("repo"), r.get("decl")
+        if not isinstance(repo, str) or not REPO_KEY_RE.match(repo) \
+                or repo not in repo_keys or r.get("kind") != "mentions" \
+                or not isinstance(decl, str) \
+                or not isinstance(r.get("evidence"), str) or not r["evidence"].strip() \
+                or not isinstance(r.get("qid_label"), str) or not r["qid_label"].strip():
+            return False
+        names = frontier_decl_names(repo)
+        if names is None:
+            return False
+        return decl in names or sum(name.endswith("." + decl) for name in names) == 1
+
+    # ---- live-fetch every locally admissible, not-yet-known QID ---------------
+    need = sorted({r["qid"] for r in rows if locally_fetchable(r, rtype(r))})
+    try:
+        fetched = fetch_entities(need) if need else {}
+    except WikidataAcquisitionError as exc:
+        print(f"FATAL: Wikidata acquisition failed: {exc}", file=sys.stderr)
+        return 1
+    absent = [qid for qid in need if qid not in fetched]
+    if absent:
+        # Keep the fold boundary fail-closed even if fetch_entities is replaced
+        # by a test double or future acquisition implementation.
+        print(f"FATAL: Wikidata acquisition returned only "
+              f"{len(fetched)}/{len(need)} requested QIDs; no outputs written",
+              file=sys.stderr)
+        return 1
+    print(f"fetched {len(fetched)}/{len(need)} unknown QIDs from Wikidata", file=sys.stderr)
+
+    def qid_info(qid: str) -> dict | None:
+        return known.get(qid) or fetched.get(qid)
+
+    def label_agrees(r: dict, info: dict) -> bool:
+        raw_label = claimed_label(r)
+        if not isinstance(raw_label, str):
+            return False
+        want = raw_label.casefold().strip()
+        if not want:
+            return True  # container batches carry graph labels; no claim to check
+        got = [(info.get("label") or "").casefold()] + \
+              [a.casefold() for a in info.get("aliases", [])]
+        return want in got or any(want == g for g in got)
+
     containers_out: dict[tuple[str, str], dict] = {}
     discovery_out: dict[tuple[str, str], dict] = {}
     xref_out: dict[tuple[str, str, str], dict] = {}
@@ -429,40 +719,13 @@ def main() -> int:
     def reject(r: dict, why: str) -> None:
         rejected.append({**r, "rejected_reason": why})
 
-    # Cross-batch reconciliation: proposers overlapped, so the same
-    # (qid, target) pair can carry contradictory skeptic verdicts from
-    # different shards. Any-reject wins — a link one skeptic refuted must not
-    # ship because another batch's copy was accepted.
-    vetoed: set[tuple] = set()
-    for r in rows:
-        if r.get("verdict") == "reject":
-            t = rtype(r)
-            if t == "container":
-                path = r.get("path")
-                normalized_path = path.removeprefix("path:") if isinstance(path, str) else _hashable_key(path)
-                vetoed.add(("container", _hashable_key(r.get("qid")), normalized_path))
-            elif t in ("discover", "replace_decl"):
-                vetoed.add(("discover", _hashable_key(r.get("qid")),
-                            _hashable_key(r.get("decl") or r.get("new_decl"))))
-            elif t == "xref":
-                x = r.get("xref") if isinstance(r.get("xref"), dict) else {}
-                vetoed.add(("xref", _hashable_key(r.get("qid")), _hashable_key(x.get("db")),
-                            str(x["id"]) if x.get("id") is not None else None))
-            elif t == "fc_link":
-                qid, decl = _completed_retract_key(
-                    r.get("qid"), r.get("decl"), fc_names)
-                vetoed.add(("fc_link", qid, decl))
-            elif t == "repo_link":
-                repo = r.get("repo")
-                qid, decl = _completed_retract_key(
-                    r.get("qid"), r.get("decl"),
-                    frontier_decl_names(repo) if repo in repo_keys else None)
-                vetoed.add(("repo_link", repo, qid, decl))
-
     for r in rows:
         t = rtype(r)
         verdict = r.get("verdict")
         qid_value = r.get("qid")
+        if not isinstance(t, str):
+            reject(r, f"fold-check: unknown row type {t!r}")
+            continue
         if t in {"container", "discover", "replace_decl", "xref", "fc_link", "repo_link"} \
                 and not isinstance(qid_value, str):
             reject(r, "fold-check: qid must be a string")
@@ -491,38 +754,26 @@ def main() -> int:
                                  ("qid", "decl", "note", "verify_note", "_shard")})
             reject(r, f"skeptic: {r.get('verify_note') or 'rejected'}")
             continue
-        path_value = r.get("path")
-        veto_path = path_value.removeprefix("path:") if isinstance(path_value, str) else _hashable_key(path_value)
-        if t == "container" and ("container", _hashable_key(r.get("qid")), veto_path) in vetoed:
+        if t == "container" and veto_key(r, t) in vetoed:
             reject(r, "fold-check: conflicting skeptic verdicts across batches "
                       "(any-reject wins)")
             continue
-        if t in ("discover", "replace_decl") and \
-                ("discover", _hashable_key(r.get("qid")),
-                 _hashable_key(r.get("decl") or r.get("new_decl"))) in vetoed:
+        if t in ("discover", "replace_decl") and veto_key(r, t) in vetoed:
             reject(r, "fold-check: conflicting skeptic verdicts across batches "
                       "(any-reject wins)")
             continue
         if t == "xref":
-            x = r.get("xref") if isinstance(r.get("xref"), dict) else {}
-            if ("xref", _hashable_key(r.get("qid")), _hashable_key(x.get("db")),
-                    str(x["id"]) if x.get("id") is not None else None) in vetoed:
+            if veto_key(r, t) in vetoed:
                 reject(r, "fold-check: conflicting skeptic verdicts across batches "
                           "(any-reject wins)")
                 continue
         if t == "fc_link":
-            qid, decl = _completed_retract_key(
-                r.get("qid"), r.get("decl"), fc_names)
-            if ("fc_link", qid, decl) in vetoed:
+            if veto_key(r, t) in vetoed:
                 reject(r, "fold-check: conflicting skeptic verdicts across batches "
                           "(any-reject wins)")
                 continue
         if t == "repo_link":
-            repo = r.get("repo")
-            qid, decl = _completed_retract_key(
-                r.get("qid"), r.get("decl"),
-                frontier_decl_names(repo) if repo in repo_keys else None)
-            if ("repo_link", repo, qid, decl) in vetoed:
+            if veto_key(r, t) in vetoed:
                 reject(r, "fold-check: conflicting skeptic verdicts across batches "
                           "(any-reject wins)")
                 continue
@@ -538,7 +789,7 @@ def main() -> int:
         if t == "container":
             qid, raw_path = r.get("qid"), r.get("path")
             path = raw_path.removeprefix("path:") if isinstance(raw_path, str) else None
-            if not (isinstance(qid, str) and QID_RE.match(qid)):
+            if not is_qid(qid):
                 reject(r, "fold-check: bad qid")
                 continue
             if path not in paths:
@@ -583,7 +834,7 @@ def main() -> int:
         if t in ("discover", "replace_decl"):
             d = r.get("decl") or r.get("new_decl")
             qid = r.get("qid")
-            if not (isinstance(qid, str) and QID_RE.match(qid)):
+            if not is_qid(qid):
                 reject(r, "fold-check: bad qid")
                 continue
             if not d or not decl_ok(d):
@@ -628,7 +879,7 @@ def main() -> int:
             db = x.get("db")
             pid = str(x["id"]) if x.get("id") is not None else None
             qid = r.get("qid")
-            if not (isinstance(qid, str) and QID_RE.match(qid)):
+            if not is_qid(qid):
                 reject(r, "fold-check: bad qid")
                 continue
             if not db or db not in xref_dbs:
@@ -673,7 +924,7 @@ def main() -> int:
             # welds two atoms downstream); mentions folds pending at capped
             # medium like discover rows.
             qid, d, kind = r.get("qid"), r.get("decl"), r.get("kind")
-            if not (isinstance(qid, str) and QID_RE.match(qid)):
+            if not is_qid(qid):
                 reject(r, "fold-check: bad qid")
                 continue
             if kind not in ("formalizes", "mentions"):
@@ -753,7 +1004,7 @@ def main() -> int:
                           f"(AI joins never mint identity claims — moderation "
                           f"contract), got {r.get('kind')!r}")
                 continue
-            if not (isinstance(qid, str) and QID_RE.match(qid)):
+            if not is_qid(qid):
                 reject(r, "fold-check: bad qid")
                 continue
             if not isinstance(d, str):

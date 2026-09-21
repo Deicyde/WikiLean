@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import decimal
 import fnmatch
 import hashlib
@@ -12,10 +13,11 @@ import re
 import sqlite3
 import stat
 import unicodedata
+import urllib.parse
 from collections import defaultdict
 from contextlib import contextmanager, suppress
 from pathlib import Path, PurePosixPath
-from typing import Any, BinaryIO, Iterator
+from typing import Any, BinaryIO, Iterator, NamedTuple
 
 try:
     from . import execution_environment as execution_environment_contract
@@ -29,9 +31,15 @@ GIT_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 NAME_RE = re.compile(r"^[a-z][a-z0-9_.-]{0,127}$")
 EPOCH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 MEDIA_TYPE_RE = re.compile(r"^[^/\s]+/[^/\s]+$")
+UTC_TIMESTAMP_RE = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
+    r"(?:\.[0-9]{1,9})?Z$"
+)
 
 SOURCE_SCHEMA_V1 = "wikilean.source-manifest/v1"
 SOURCE_SCHEMA_V2 = "wikilean.source-manifest/v2"
+ACQUISITION_RECEIPT_SCHEMA_V1 = "wikilean.acquisition-receipt/v1"
+NORMALIZATION_LINEAGE_SCHEMA_V1 = "wikilean.normalization-lineage/v1"
 PACK_SCHEMA_V1 = "wikilean.offline-pack/v1"
 PACK_SCHEMA_V2 = "wikilean.offline-pack/v2"
 REDUCER_INPUT_INVENTORY_SCHEMA_V2 = "wikilean.reducer-input-inventory/v2"
@@ -100,6 +108,9 @@ BRAIN_SQLITE_V2_INDEXES = {
 
 SOURCE_DOMAIN_V1 = "wikilean.source-manifest.v1"
 SOURCE_DOMAIN_V2 = "wikilean.source-manifest.v2"
+ACQUISITION_RECEIPT_DOMAIN_V1 = "wikilean.acquisition-receipt.v1"
+ACQUISITION_REQUEST_SET_DOMAIN_V1 = "wikilean.acquisition-request-set.v1"
+NORMALIZATION_LINEAGE_DOMAIN_V1 = "wikilean.normalization-lineage.v1"
 SOURCE_SET_DOMAIN_V1 = "wikilean.source-set.v1"
 SOURCE_SET_DOMAIN_V2 = "wikilean.source-set.v2"
 PACK_DOMAIN_V1 = "wikilean.offline-pack.v1"
@@ -118,7 +129,10 @@ LOGICAL_JSON_DOMAIN = "wikilean.logical-json.v1"
 LOGICAL_JSONL_DOMAIN = "wikilean.logical-jsonl-rowset.v1"
 COMPATIBILITY_SEMANTIC_STATE_DOMAIN = "wikilean.compatibility-semantic-state.v1"
 LEGACY_DECLARED_INPUT_DOMAIN = "wikilean.legacy-declared-inputs.v1"
-
+MAX_ACQUISITION_REQUESTS = 100_000
+ALLOWED_ACQUISITION_URI_SCHEMES = frozenset(
+    {"https", "d1", "postgresql", "git+https"}
+)
 REQUIRED_RELEASE_PATHS = frozenset({
     "brain/data/nodes.jsonl",
     "brain/data/edges.jsonl",
@@ -582,6 +596,145 @@ def _tool(value: Any, location: str) -> None:
     _digest(obj["sha256"], f"{location}.sha256")
 
 
+def _evidence_pin(value: Any, location: str) -> dict[str, Any]:
+    pin = _expect_object(value, location)
+    _keys(pin, location, {"type", "value"}, {"tree"})
+    if pin["type"] not in {
+        "git_commit",
+        "content_sha256",
+        "dataset_revision",
+        "http_etag",
+        "database_snapshot",
+    }:
+        _fail(f"{location}.type", f"unknown pin type {pin['type']!r}")
+    pin_value = _expect_string(pin["value"], f"{location}.value")
+    if len(pin_value) > 512:
+        _fail(f"{location}.value", "must contain at most 512 characters")
+    if pin["type"] == "git_commit" and not GIT_COMMIT_RE.fullmatch(pin_value):
+        _fail(
+            f"{location}.value",
+            "git_commit pins must be full 40-character lowercase hashes",
+        )
+    if pin["type"] == "content_sha256" and not DIGEST_RE.fullmatch(pin_value):
+        _fail(
+            f"{location}.value",
+            "content_sha256 pins must be 64 lowercase hex digits",
+        )
+    if "tree" in pin:
+        _expect_pattern(
+            pin["tree"],
+            f"{location}.tree",
+            GIT_COMMIT_RE,
+            "a full lowercase Git tree hash",
+        )
+        if pin["type"] != "git_commit":
+            _fail(f"{location}.tree", "tree is permitted only with a git_commit pin")
+    return pin
+
+
+def _utc_timestamp(value: Any, location: str) -> str:
+    text = _expect_pattern(
+        value,
+        location,
+        UTC_TIMESTAMP_RE,
+        "an RFC3339 UTC timestamp ending in Z",
+    )
+    try:
+        dt.datetime.fromisoformat(text[:-1] + "+00:00")
+    except ValueError as exc:
+        raise VerificationError(f"{location}: invalid calendar timestamp") from exc
+    return text
+
+
+def _upstream_uri(value: Any, location: str) -> str:
+    text = _expect_string(value, location)
+    if any(ord(character) < 32 or ord(character) == 127 for character in text):
+        _fail(location, "URI must not contain control characters")
+    if any(character.isspace() for character in text):
+        _fail(location, "URI must not contain whitespace")
+    if len(text) > 2048:
+        _fail(location, "must contain at most 2048 characters")
+    try:
+        parsed = urllib.parse.urlsplit(text)
+        hostname = parsed.hostname
+        parsed.port
+    except ValueError as exc:
+        raise VerificationError(f"{location}: malformed URI") from exc
+    if parsed.scheme not in ALLOWED_ACQUISITION_URI_SCHEMES:
+        _fail(
+            location,
+            "URI scheme must be one of https, d1, postgresql, or git+https",
+        )
+    if not text.startswith(f"{parsed.scheme}://"):
+        _fail(location, "URI scheme and separator must use canonical lowercase spelling")
+    if not parsed.netloc or hostname is None:
+        _fail(location, "URI must name a host")
+    if "@" in parsed.netloc or parsed.username is not None or parsed.password is not None:
+        _fail(location, "URI must not contain userinfo credentials")
+    if "#" in text:
+        _fail(location, "URI fragments are forbidden")
+    if "?" in text:
+        _fail(
+            location,
+            "URI queries are forbidden; seal request parameters by digest",
+        )
+    return text
+
+
+def _request_descriptor(value: Any, location: str) -> dict[str, Any]:
+    request = _expect_object(value, location)
+    _keys(request, location, {"kind", "uri", "parameters_sha256"})
+    if request["kind"] not in {
+        "http_get",
+        "http_post",
+        "database_query",
+        "snapshot_export",
+    }:
+        _fail(
+            f"{location}.kind",
+            "expected http_get, http_post, database_query, or snapshot_export",
+        )
+    _upstream_uri(request["uri"], f"{location}.uri")
+    _digest(request["parameters_sha256"], f"{location}.parameters_sha256")
+    return request
+
+
+def _validated_request_descriptors(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    requests = _expect_array(value, location, nonempty=True)
+    if len(requests) > MAX_ACQUISITION_REQUESTS:
+        _fail(location, f"must contain at most {MAX_ACQUISITION_REQUESTS} requests")
+    keys: list[bytes] = []
+    for index, item in enumerate(requests):
+        request = _request_descriptor(item, f"{location}[{index}]")
+        keys.append(canonical_json_bytes(request))
+    if keys != sorted(set(keys)):
+        _fail(location, "request descriptors must be unique and canonically sorted")
+    return requests
+
+
+def _evidence_object_digest(value: Any, location: str) -> dict[str, Any]:
+    obj = _expect_object(value, location)
+    _keys(obj, location, {"object", "sha256", "bytes", "media_type"})
+    _expect_pattern(
+        obj["object"],
+        f"{location}.object",
+        NAME_RE,
+        "a lowercase source object name",
+    )
+    _digest(obj["sha256"], f"{location}.sha256")
+    _expect_int(obj["bytes"], f"{location}.bytes")
+    _expect_pattern(
+        obj["media_type"],
+        f"{location}.media_type",
+        MEDIA_TYPE_RE,
+        "a media type",
+    )
+    return obj
+
+
 def _file_ref(value: Any, location: str, *, extra: set[str] = frozenset()) -> dict[str, Any]:
     obj = _expect_object(value, location)
     _keys(obj, location, {"path", "sha256", "bytes", "media_type"} | extra)
@@ -631,6 +784,40 @@ def source_manifest_identity(manifest: dict[str, Any]) -> str:
     return domain_hash(domains[schema], value)
 
 
+def acquisition_receipt_identity(receipt: dict[str, Any]) -> str:
+    if receipt.get("schema") != ACQUISITION_RECEIPT_SCHEMA_V1:
+        _fail(
+            "$.schema",
+            "unknown acquisition-receipt schema/version "
+            f"{receipt.get('schema')!r}",
+        )
+    value = copy.deepcopy(receipt)
+    value.pop("acquisition_receipt_id", None)
+    value.pop("audit", None)
+    return domain_hash(ACQUISITION_RECEIPT_DOMAIN_V1, value)
+
+
+def acquisition_request_set_root(requests: list[dict[str, Any]]) -> str:
+    validated = _validated_request_descriptors(requests, "$.requests")
+    return domain_hash(
+        ACQUISITION_REQUEST_SET_DOMAIN_V1,
+        {"requests": copy.deepcopy(validated)},
+    )
+
+
+def normalization_lineage_identity(lineage: dict[str, Any]) -> str:
+    if lineage.get("schema") != NORMALIZATION_LINEAGE_SCHEMA_V1:
+        _fail(
+            "$.schema",
+            "unknown normalization-lineage schema/version "
+            f"{lineage.get('schema')!r}",
+        )
+    value = copy.deepcopy(lineage)
+    value.pop("normalization_lineage_id", None)
+    value.pop("audit", None)
+    return domain_hash(NORMALIZATION_LINEAGE_DOMAIN_V1, value)
+
+
 def source_set_root(manifest_ids: list[str]) -> str:
     return domain_hash(SOURCE_SET_DOMAIN_V1, sorted(manifest_ids))
 
@@ -653,7 +840,11 @@ def source_set_root_v2(
     for index, value in enumerate(input_bindings):
         location = f"$.input_bindings[{index}]"
         binding = _expect_object(value, location)
-        _keys(binding, location, {"input_id", "state", "members"})
+        _keys(
+            binding,
+            location,
+            {"input_id", "state", "source_manifest_ids", "members"},
+        )
         input_id = _expect_pattern(
             binding["input_id"], f"{location}.input_id", NAME_RE, "a lowercase input ID"
         )
@@ -662,6 +853,16 @@ def source_set_root_v2(
         seen_inputs.add(input_id)
         if binding["state"] not in {"present", "absent"}:
             _fail(f"{location}.state", "expected present or absent")
+        binding_manifest_ids = _sorted_unique_strings(
+            binding["source_manifest_ids"],
+            f"{location}.source_manifest_ids",
+            nonempty=True,
+        )
+        for manifest_index, manifest_id in enumerate(binding_manifest_ids):
+            _hash(
+                manifest_id,
+                f"{location}.source_manifest_ids[{manifest_index}]",
+            )
         members = _expect_array(binding["members"], f"{location}.members")
         normalized_members: list[dict[str, str]] = []
         member_paths: set[str] = set()
@@ -693,9 +894,21 @@ def source_set_root_v2(
             _fail(f"{location}.members", "absent bindings must have no members")
         if binding["state"] == "present" and not normalized_members:
             _fail(f"{location}.members", "present bindings must have at least one member")
+        member_manifest_ids = sorted(
+            {member["source_manifest_id"] for member in normalized_members}
+        )
+        if (
+            binding["state"] == "present"
+            and binding_manifest_ids != member_manifest_ids
+        ):
+            _fail(
+                f"{location}.source_manifest_ids",
+                "present bindings must exactly name their member source manifests",
+            )
         normalized_bindings.append({
             "input_id": input_id,
             "state": binding["state"],
+            "source_manifest_ids": binding_manifest_ids,
             "members": normalized_members,
         })
     normalized_bindings.sort(key=lambda item: item["input_id"])
@@ -990,6 +1203,259 @@ def validate_reducer_input_inventory(inventory: Any) -> dict[str, Any]:
     expected = reducer_input_inventory_identity(obj)
     if obj["inventory_id"] != expected:
         _fail("$.inventory_id", f"expected {expected}")
+    return obj
+
+
+def _validated_evidence_objects(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    objects = _expect_array(value, location, nonempty=True)
+    names: list[str] = []
+    for index, item in enumerate(objects):
+        ref = _evidence_object_digest(item, f"{location}[{index}]")
+        names.append(ref["object"])
+    if names != sorted(set(names)):
+        _fail(location, "entries must have unique object names and be sorted by object")
+    return objects
+
+
+def _validated_lineage_inputs(
+    value: Any,
+    location: str,
+) -> list[dict[str, Any]]:
+    inputs = _expect_array(value, location, nonempty=True)
+    keys: list[tuple[str, str, str]] = []
+    for index, item in enumerate(inputs):
+        item_location = f"{location}[{index}]"
+        ref = _expect_object(item, item_location)
+        _keys(
+            ref,
+            item_location,
+            {"object", "sha256", "bytes", "media_type", "origin"},
+        )
+        _evidence_object_digest(
+            {key: ref[key] for key in ("object", "sha256", "bytes", "media_type")},
+            item_location,
+        )
+        origin = _expect_object(ref["origin"], f"{item_location}.origin")
+        _keys(origin, f"{item_location}.origin", {"kind", "id"})
+        if origin["kind"] not in {"acquisition_receipt", "source_manifest"}:
+            _fail(
+                f"{item_location}.origin.kind",
+                "expected acquisition_receipt or source_manifest",
+            )
+        _hash(origin["id"], f"{item_location}.origin.id")
+        keys.append((origin["kind"], origin["id"], ref["object"]))
+    if keys != sorted(set(keys)):
+        _fail(
+            location,
+            "entries must be unique and sorted by origin kind, origin ID, and object",
+        )
+    return inputs
+
+
+def validate_acquisition_receipt(
+    receipt: Any,
+    *,
+    location: str = "$",
+) -> dict[str, Any]:
+    obj = _expect_object(receipt, location)
+    _keys(
+        obj,
+        location,
+        {
+            "schema",
+            "acquisition_receipt_id",
+            "source",
+            "upstream_uri",
+            "pin",
+            "tool",
+            "requests",
+            "batch",
+            "outputs",
+            "audit",
+        },
+    )
+    if obj["schema"] != ACQUISITION_RECEIPT_SCHEMA_V1:
+        _fail(f"{location}.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["acquisition_receipt_id"], f"{location}.acquisition_receipt_id")
+    _expect_pattern(
+        obj["source"],
+        f"{location}.source",
+        NAME_RE,
+        "a lowercase source name",
+    )
+    _upstream_uri(obj["upstream_uri"], f"{location}.upstream_uri")
+    _evidence_pin(obj["pin"], f"{location}.pin")
+    _tool(obj["tool"], f"{location}.tool")
+    requests = _validated_request_descriptors(
+        obj["requests"], f"{location}.requests"
+    )
+    batch = _expect_object(obj["batch"], f"{location}.batch")
+    _keys(
+        batch,
+        f"{location}.batch",
+        {
+            "status",
+            "request_set_root",
+            "requests_total",
+            "requests_succeeded",
+            "requests_failed",
+        },
+    )
+    if batch["status"] != "complete":
+        _fail(f"{location}.batch.status", "expected 'complete'")
+    request_set_root = _hash(
+        batch["request_set_root"], f"{location}.batch.request_set_root"
+    )
+    total = _expect_int(
+        batch["requests_total"], f"{location}.batch.requests_total", minimum=1
+    )
+    succeeded = _expect_int(
+        batch["requests_succeeded"],
+        f"{location}.batch.requests_succeeded",
+        minimum=1,
+    )
+    failed = _expect_int(
+        batch["requests_failed"], f"{location}.batch.requests_failed"
+    )
+    if succeeded != total or failed != 0:
+        _fail(
+            f"{location}.batch",
+            "complete acquisition requires requests_succeeded == requests_total "
+            "and requests_failed == 0",
+        )
+    if total != len(requests):
+        _fail(
+            f"{location}.batch.requests_total",
+            "must equal the canonical request descriptor count",
+        )
+    expected_request_root = acquisition_request_set_root(requests)
+    if request_set_root != expected_request_root:
+        _fail(
+            f"{location}.batch.request_set_root",
+            f"expected {expected_request_root}",
+        )
+    outputs = _validated_evidence_objects(obj["outputs"], f"{location}.outputs")
+    if obj["pin"]["type"] == "content_sha256":
+        if len(outputs) != 1:
+            _fail(
+                f"{location}.outputs",
+                "content_sha256 receipts require exactly one output",
+            )
+        if outputs[0]["sha256"] != obj["pin"]["value"]:
+            _fail(
+                f"{location}.pin.value",
+                "must equal the sole receipt output sha256",
+            )
+    audit = _expect_object(obj["audit"], f"{location}.audit")
+    _keys(audit, f"{location}.audit", {"acquired_at"})
+    _utc_timestamp(audit["acquired_at"], f"{location}.audit.acquired_at")
+    expected = acquisition_receipt_identity(obj)
+    if obj["acquisition_receipt_id"] != expected:
+        _fail(f"{location}.acquisition_receipt_id", f"expected {expected}")
+    return obj
+
+
+def validate_normalization_lineage(
+    lineage: Any,
+    *,
+    location: str = "$",
+) -> dict[str, Any]:
+    obj = _expect_object(lineage, location)
+    _keys(
+        obj,
+        location,
+        {
+            "schema",
+            "normalization_lineage_id",
+            "source",
+            "mode",
+            "acquisition_receipt_ids",
+            "parent_source_manifest_ids",
+            "normalization_schema",
+            "configuration_sha256",
+            "tool",
+            "inputs",
+            "outputs",
+            "result",
+            "audit",
+        },
+    )
+    if obj["schema"] != NORMALIZATION_LINEAGE_SCHEMA_V1:
+        _fail(f"{location}.schema", f"unknown schema/version {obj['schema']!r}")
+    _hash(obj["normalization_lineage_id"], f"{location}.normalization_lineage_id")
+    _expect_pattern(
+        obj["source"],
+        f"{location}.source",
+        NAME_RE,
+        "a lowercase source name",
+    )
+    if obj["mode"] not in {"identity", "transform"}:
+        _fail(f"{location}.mode", "expected identity or transform")
+    receipt_ids = _sorted_unique_strings(
+        obj["acquisition_receipt_ids"],
+        f"{location}.acquisition_receipt_ids",
+    )
+    for index, receipt_id in enumerate(receipt_ids):
+        _hash(receipt_id, f"{location}.acquisition_receipt_ids[{index}]")
+    parents = _sorted_unique_strings(
+        obj["parent_source_manifest_ids"],
+        f"{location}.parent_source_manifest_ids",
+    )
+    for index, manifest_id in enumerate(parents):
+        _hash(
+            manifest_id,
+            f"{location}.parent_source_manifest_ids[{index}]",
+        )
+    _expect_string(
+        obj["normalization_schema"], f"{location}.normalization_schema"
+    )
+    _digest(obj["configuration_sha256"], f"{location}.configuration_sha256")
+    _tool(obj["tool"], f"{location}.tool")
+    inputs = _validated_lineage_inputs(obj["inputs"], f"{location}.inputs")
+    outputs = _validated_evidence_objects(obj["outputs"], f"{location}.outputs")
+    permitted_origins = {
+        ("acquisition_receipt", item) for item in receipt_ids
+    }
+    permitted_origins.update(("source_manifest", item) for item in parents)
+    if not permitted_origins:
+        _fail(
+            location,
+            "lineage requires at least one acquisition receipt or parent source manifest",
+        )
+    actual_origins = {
+        (item["origin"]["kind"], item["origin"]["id"]) for item in inputs
+    }
+    if actual_origins != permitted_origins:
+        _fail(
+            f"{location}.inputs",
+            "input origins must exactly cover acquisition_receipt_ids and "
+            "parent_source_manifest_ids",
+        )
+    if obj["mode"] == "identity":
+        projected_inputs = [
+            {
+                key: item[key]
+                for key in ("object", "sha256", "bytes", "media_type")
+            }
+            for item in inputs
+        ]
+        projected_inputs.sort(key=lambda item: item["object"])
+        if projected_inputs != outputs:
+            _fail(
+                f"{location}.outputs",
+                "identity lineage outputs must exactly equal inputs",
+            )
+    if obj["result"] != "complete":
+        _fail(f"{location}.result", "expected 'complete'")
+    audit = _expect_object(obj["audit"], f"{location}.audit")
+    _keys(audit, f"{location}.audit", {"normalized_at"})
+    _utc_timestamp(audit["normalized_at"], f"{location}.audit.normalized_at")
+    expected = normalization_lineage_identity(obj)
+    if obj["normalization_lineage_id"] != expected:
+        _fail(f"{location}.normalization_lineage_id", f"expected {expected}")
     return obj
 
 
@@ -1336,7 +1802,11 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
     for index, value in enumerate(bindings):
         location = f"$.input_bindings[{index}]"
         binding = _expect_object(value, location)
-        _keys(binding, location, {"input_id", "state", "members"})
+        _keys(
+            binding,
+            location,
+            {"input_id", "state", "source_manifest_ids", "members"},
+        )
         binding_ids.append(
             _expect_pattern(
                 binding["input_id"], f"{location}.input_id", NAME_RE, "a lowercase input ID"
@@ -1344,8 +1814,19 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
         )
         if binding["state"] not in {"present", "absent"}:
             _fail(f"{location}.state", "expected present or absent")
+        binding_manifest_ids = _sorted_unique_strings(
+            binding["source_manifest_ids"],
+            f"{location}.source_manifest_ids",
+            nonempty=True,
+        )
+        for manifest_index, manifest_id in enumerate(binding_manifest_ids):
+            _hash(
+                manifest_id,
+                f"{location}.source_manifest_ids[{manifest_index}]",
+            )
         members = _expect_array(binding["members"], f"{location}.members")
         paths: list[str] = []
+        member_manifest_ids: set[str] = set()
         for member_index, raw_member in enumerate(members):
             member_location = f"{location}.members[{member_index}]"
             member = _expect_object(raw_member, member_location)
@@ -1353,7 +1834,12 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
             paths.append(
                 validate_literal_relative_path(member["path"], f"{member_location}.path")
             )
-            _hash(member["source_manifest_id"], f"{member_location}.source_manifest_id")
+            member_manifest_ids.add(
+                _hash(
+                    member["source_manifest_id"],
+                    f"{member_location}.source_manifest_id",
+                )
+            )
             _expect_pattern(
                 member["object"],
                 f"{member_location}.object",
@@ -1366,6 +1852,14 @@ def _validate_offline_pack_v2(pack: Any) -> dict[str, Any]:
             _fail(f"{location}.members", "absent bindings must have no members")
         if binding["state"] == "present" and not members:
             _fail(f"{location}.members", "present bindings must have at least one member")
+        if (
+            binding["state"] == "present"
+            and binding_manifest_ids != sorted(member_manifest_ids)
+        ):
+            _fail(
+                f"{location}.source_manifest_ids",
+                "present bindings must exactly name their member source manifests",
+            )
     if binding_ids != sorted(set(binding_ids)):
         _fail("$.input_bindings", "entries must have unique IDs and be sorted by input_id")
 
@@ -1528,9 +2022,237 @@ def verify_file_ref(root: Path, ref: dict[str, Any], location: str) -> bytes:
         return handle.read()
 
 
+def verify_file_ref_integrity(
+    root: Path, ref: dict[str, Any], location: str
+) -> None:
+    """Verify a referenced file's size and digest without materializing its bytes."""
+    with open_verified_file(root, ref, location):
+        pass
+
+
+class _FileClosureSnapshot(NamedTuple):
+    files: frozenset[str]
+    token: tuple[tuple[str, tuple[int, int, int, int, int, int, int]], ...]
+
+
+def _scan_file_closure(
+    root: Path,
+    *,
+    location: str,
+    subject: str,
+    include_symlinks: bool = False,
+    reject_nonregular: bool = True,
+) -> _FileClosureSnapshot:
+    """Enumerate a stable tree without following links or suppressing errors."""
+    traversal_errors = (OSError, TypeError, ValueError, NotImplementedError)
+
+    def error_detail(exc: BaseException) -> str:
+        return str(getattr(exc, "strerror", None) or exc)
+
+    def descriptor_stat(descriptor: int, relative: str) -> os.stat_result:
+        try:
+            return os.fstat(descriptor)
+        except traversal_errors as exc:
+            raise VerificationError(
+                f"{location}: cannot inspect open {subject} directory "
+                f"{relative or '.'}: {error_detail(exc)}"
+            ) from exc
+
+    def named_stat(
+        directory_descriptor: int, name: str, relative: str
+    ) -> os.stat_result:
+        try:
+            return os.stat(
+                name,
+                dir_fd=directory_descriptor,
+                follow_symlinks=False,
+            )
+        except traversal_errors as exc:
+            raise VerificationError(
+                f"{location}: cannot inspect {subject} entry "
+                f"{relative}: {error_detail(exc)}"
+            ) from exc
+
+    def identity(metadata: os.stat_result) -> tuple[int, int, int]:
+        return (
+            metadata.st_dev,
+            metadata.st_ino,
+            stat.S_IFMT(metadata.st_mode),
+        )
+
+    def state(metadata: os.stat_result) -> tuple[int, int, int, int, int, int, int]:
+        return (
+            *identity(metadata),
+            metadata.st_nlink,
+            metadata.st_size,
+            metadata.st_mtime_ns,
+            metadata.st_ctime_ns,
+        )
+
+    def snapshot(
+        directory_descriptor: int, prefix: str
+    ) -> tuple[os.stat_result, dict[str, os.stat_result]]:
+        relative = prefix or "."
+        before = descriptor_stat(directory_descriptor, prefix)
+        if not stat.S_ISDIR(before.st_mode):
+            _fail(
+                location,
+                f"open {subject} directory is no longer a directory: {relative}",
+            )
+        try:
+            with os.scandir(directory_descriptor) as entries:
+                names = sorted(entry.name for entry in entries)
+        except traversal_errors as exc:
+            raise VerificationError(
+                f"{location}: cannot enumerate {subject} directory "
+                f"{relative}: {error_detail(exc)}"
+            ) from exc
+        listing = {
+            name: named_stat(
+                directory_descriptor,
+                name,
+                f"{prefix}/{name}" if prefix else name,
+            )
+            for name in names
+        }
+        after = descriptor_stat(directory_descriptor, prefix)
+        if state(before) != state(after):
+            _fail(
+                location,
+                f"{subject} directory changed while being listed: {relative}",
+            )
+        return after, listing
+
+    try:
+        resolved_root = root.resolve(strict=True)
+    except (OSError, RuntimeError) as exc:
+        raise VerificationError(
+            f"{location}: cannot resolve {subject} root: {exc}"
+        ) from exc
+    directory_flags = (
+        os.O_RDONLY
+        | getattr(os, "O_DIRECTORY", 0)
+        | getattr(os, "O_NOFOLLOW", 0)
+    )
+    try:
+        root_descriptor = os.open(resolved_root, directory_flags)
+    except traversal_errors as exc:
+        raise VerificationError(
+            f"{location}: cannot open {subject} root: {error_detail(exc)}"
+        ) from exc
+
+    files: set[str] = set()
+    observed: dict[str, tuple[int, int, int, int, int, int, int]] = {}
+
+    def visit(directory_descriptor: int, prefix: str) -> None:
+        initial_directory, initial_listing = snapshot(
+            directory_descriptor, prefix
+        )
+        observed[prefix or "."] = state(initial_directory)
+        for name, metadata in initial_listing.items():
+            relative = f"{prefix}/{name}" if prefix else name
+            observed[relative] = state(metadata)
+            if stat.S_ISLNK(metadata.st_mode):
+                if include_symlinks:
+                    files.add(relative)
+                else:
+                    _fail(location, f"{subject} contains a symlink: {relative}")
+            elif stat.S_ISREG(metadata.st_mode):
+                files.add(relative)
+            elif stat.S_ISDIR(metadata.st_mode):
+                try:
+                    child_descriptor = os.open(
+                        name,
+                        directory_flags,
+                        dir_fd=directory_descriptor,
+                    )
+                except traversal_errors as exc:
+                    raise VerificationError(
+                        f"{location}: cannot open {subject} directory "
+                        f"{relative}: {error_detail(exc)}"
+                    ) from exc
+                try:
+                    opened_child = descriptor_stat(child_descriptor, relative)
+                    if state(opened_child) != state(metadata):
+                        _fail(
+                            location,
+                            f"{subject} directory changed while being opened: "
+                            f"{relative}",
+                        )
+                    visit(child_descriptor, relative)
+                    finished_child = descriptor_stat(child_descriptor, relative)
+                    linked_child = named_stat(
+                        directory_descriptor, name, relative
+                    )
+                    if state(finished_child) != state(linked_child):
+                        _fail(
+                            location,
+                            f"{subject} directory was replaced during traversal: "
+                            f"{relative}",
+                        )
+                finally:
+                    with suppress(OSError):
+                        os.close(child_descriptor)
+            elif reject_nonregular:
+                _fail(
+                    location,
+                    f"{subject} contains a non-regular entry: {relative}",
+                )
+
+        final_directory, final_listing = snapshot(directory_descriptor, prefix)
+        if state(initial_directory) != state(final_directory) or {
+            name: state(metadata) for name, metadata in initial_listing.items()
+        } != {
+            name: state(metadata) for name, metadata in final_listing.items()
+        }:
+            _fail(
+                location,
+                f"{subject} directory changed during traversal: {prefix or '.'}",
+            )
+
+    try:
+        opened_root = descriptor_stat(root_descriptor, "")
+        visit(root_descriptor, "")
+        finished_root = descriptor_stat(root_descriptor, "")
+        try:
+            linked_root = os.stat(resolved_root, follow_symlinks=False)
+        except traversal_errors as exc:
+            raise VerificationError(
+                f"{location}: cannot recheck {subject} root: "
+                f"{error_detail(exc)}"
+            ) from exc
+        if (
+            state(opened_root) != state(finished_root)
+            or state(finished_root) != state(linked_root)
+        ):
+            _fail(location, f"{subject} root was replaced during traversal")
+    except RecursionError as exc:
+        raise VerificationError(
+            f"{location}: {subject} directory nesting exceeds verifier limits"
+        ) from exc
+    finally:
+        with suppress(OSError):
+            os.close(root_descriptor)
+    return _FileClosureSnapshot(
+        frozenset(files),
+        tuple(sorted(observed.items())),
+    )
+
+
+def _require_unchanged_file_closure(
+    before: _FileClosureSnapshot,
+    after: _FileClosureSnapshot,
+    *,
+    location: str,
+    subject: str,
+) -> None:
+    if before.token != after.token:
+        _fail(location, f"{subject} changed during file verification")
+
+
 def verify_source_manifest_files(manifest: dict[str, Any], root: Path) -> int:
     for index, ref in enumerate(manifest["objects"]):
-        verify_file_ref(root, ref, f"$.objects[{index}]")
+        verify_file_ref_integrity(root, ref, f"$.objects[{index}]")
     return len(manifest["objects"])
 
 
@@ -1539,6 +2261,9 @@ def verify_offline_pack_files(
 ) -> dict[str, int]:
     if pack.get("schema") == PACK_SCHEMA_V2:
         return _verify_offline_pack_files_v2(pack, root, manifest_path=manifest_path)
+    initial_closure = _scan_file_closure(
+        root, location="$", subject="offline pack"
+    )
     verified_paths: set[str] = set()
     object_refs = {ref["path"]: ref for ref in pack["objects"]}
     referenced_object_paths: set[str] = set()
@@ -1582,18 +2307,19 @@ def verify_offline_pack_files(
     for location, ref in refs:
         if ref["path"] in verified_paths:
             _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
-        verify_file_ref(root, ref, location)
+        verify_file_ref_integrity(root, ref, location)
         verified_paths.add(ref["path"])
 
-    actual_paths: set[str] = set()
-    for path in root.rglob("*"):
-        relative = path.relative_to(root).as_posix()
-        if path.is_symlink():
-            _fail("$", f"offline pack contains a symlink: {relative}")
-        if path.is_file():
-            actual_paths.add(relative)
-        elif not path.is_dir():
-            _fail("$", f"offline pack contains a non-regular entry: {relative}")
+    final_closure = _scan_file_closure(
+        root, location="$", subject="offline pack"
+    )
+    _require_unchanged_file_closure(
+        initial_closure,
+        final_closure,
+        location="$",
+        subject="offline pack",
+    )
+    actual_paths = set(final_closure.files)
     if manifest_path is not None:
         try:
             manifest_relative = manifest_path.resolve(strict=True).relative_to(
@@ -1616,6 +2342,9 @@ def verify_offline_pack_files(
 def _verify_offline_pack_files_v2(
     pack: dict[str, Any], root: Path, *, manifest_path: Path | None = None
 ) -> dict[str, int]:
+    initial_closure = _scan_file_closure(
+        root, location="$", subject="offline pack"
+    )
     verified_paths: set[str] = set()
 
     inventory_ref = pack["inventory"]
@@ -1711,6 +2440,17 @@ def _verify_offline_pack_files_v2(
     for input_id, declaration in inventory_inputs.items():
         binding_index, binding = indexed_bindings[input_id]
         location = f"$.input_bindings[{binding_index}]"
+        declared_manifest_ids = binding["source_manifest_ids"]
+        unknown_manifest_ids = sorted(
+            set(declared_manifest_ids) - set(source_manifests)
+        )
+        if unknown_manifest_ids:
+            _fail(
+                f"{location}.source_manifest_ids",
+                "references unknown source manifests: "
+                + ", ".join(unknown_manifest_ids),
+            )
+        bound_manifest_ids.update(declared_manifest_ids)
         if declaration["requirement"] == "required" and binding["state"] != "present":
             _fail(location, "required inputs must be present")
         members = binding["members"]
@@ -1782,18 +2522,19 @@ def _verify_offline_pack_files_v2(
     for location, ref in refs:
         if ref["path"] in verified_paths:
             _fail(location, f"path {ref['path']!r} is listed in more than one pack section")
-        verify_file_ref(root, ref, location)
+        verify_file_ref_integrity(root, ref, location)
         verified_paths.add(ref["path"])
 
-    actual_paths: set[str] = set()
-    for path in root.rglob("*"):
-        relative = path.relative_to(root).as_posix()
-        if path.is_symlink():
-            _fail("$", f"offline pack contains a symlink: {relative}")
-        if path.is_file():
-            actual_paths.add(relative)
-        elif not path.is_dir():
-            _fail("$", f"offline pack contains a non-regular entry: {relative}")
+    final_closure = _scan_file_closure(
+        root, location="$", subject="offline pack"
+    )
+    _require_unchanged_file_closure(
+        initial_closure,
+        final_closure,
+        location="$",
+        subject="offline pack",
+    )
+    actual_paths = set(final_closure.files)
     if manifest_path is not None:
         try:
             manifest_relative = manifest_path.resolve(strict=True).relative_to(
@@ -3004,9 +3745,14 @@ def _verify_current_static_closure(
 
     cells_root = root.resolve(strict=True) / "site/assets/brain/cells"
     actual = {
-        f"{STATIC_CELLS_PREFIX}{path.relative_to(cells_root).as_posix()}"
-        for path in cells_root.rglob("*")
-        if path.is_file() or path.is_symlink()
+        f"{STATIC_CELLS_PREFIX}{relative}"
+        for relative in _scan_file_closure(
+            cells_root,
+            location="$.artifacts",
+            subject="static cell tree",
+            include_symlinks=True,
+            reject_nonregular=False,
+        ).files
     }
     declared = {path for path in artifact_paths if path.startswith(STATIC_CELLS_PREFIX)}
     unlisted = sorted(actual - declared)
@@ -3537,6 +4283,9 @@ def _verify_sqlite_projection(
 
 def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]:
     root = root.resolve(strict=True)
+    initial_closure = _scan_file_closure(
+        root, location="$", subject="release"
+    )
     artifact_by_name: dict[str, dict[str, Any]] = {}
     artifacts_by_path = {
         artifact["path"]: artifact for artifact in manifest["artifacts"]
@@ -3580,20 +4329,6 @@ def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]
             artifacts_by_path,
             verify_static_closure=True,
         )
-
-    allowed_paths = artifact_paths | {ref["path"] for ref in manifest["attestations"]} | {"release.json"}
-    actual_paths: set[str] = set()
-    for path in root.rglob("*"):
-        relative = path.relative_to(root).as_posix()
-        if path.is_symlink():
-            _fail("$", f"release contains a symlink: {relative}")
-        if path.is_file():
-            actual_paths.add(relative)
-        elif not path.is_dir():
-            _fail("$", f"release contains a non-regular entry: {relative}")
-    undeclared = sorted(actual_paths - allowed_paths)
-    if undeclared:
-        _fail("$", f"release contains undeclared files: {', '.join(undeclared)}")
 
     base_paths = ("brain/data/nodes.jsonl", "brain/data/edges.jsonl", "brain/data/edges_links.jsonl")
     base_generations = {metadata.get(path, {}).get("generated_at") for path in base_paths}
@@ -3684,5 +4419,23 @@ def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]
         if attestation["release_id"] != manifest["release_id"]:
             _fail(location, "attestation release_id does not match release")
         attestation_count += 1
+
+    allowed_paths = (
+        artifact_paths
+        | {ref["path"] for ref in manifest["attestations"]}
+        | {"release.json"}
+    )
+    final_closure = _scan_file_closure(
+        root, location="$", subject="release"
+    )
+    _require_unchanged_file_closure(
+        initial_closure,
+        final_closure,
+        location="$",
+        subject="release",
+    )
+    undeclared = sorted(set(final_closure.files) - allowed_paths)
+    if undeclared:
+        _fail("$", f"release contains undeclared files: {', '.join(undeclared)}")
 
     return {"artifacts": len(manifest["artifacts"]), "attestations": attestation_count}

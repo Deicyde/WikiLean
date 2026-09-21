@@ -191,6 +191,7 @@ def make_context(
                 "path": "fixture.json",
                 "requirement": "required",
                 "root": "repo",
+                "source_manifest_ids": ["sha256:" + "2" * 64],
                 "state": "present",
             }
         ],

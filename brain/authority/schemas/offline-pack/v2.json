@@ -142,10 +142,16 @@
     "inputBinding": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["input_id", "state", "members"],
+      "required": ["input_id", "state", "source_manifest_ids", "members"],
       "properties": {
         "input_id": {"$ref": "#/$defs/name"},
         "state": {"enum": ["present", "absent"]},
+        "source_manifest_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/hash"}
+        },
         "members": {
           "type": "array",
           "items": {"$ref": "#/$defs/bindingMember"}

@@ -45,6 +45,8 @@ from collections import Counter
 from itertools import chain
 from pathlib import Path
 
+from ingest.common import ExternalPairError, validate_external_directory
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 DATA = HERE / "data"
@@ -137,6 +139,13 @@ def main() -> int:
             print(f"  - {p.relative_to(ROOT)}")
         print("(run brain/build_nodes.py + brain/build_edges.py first)")
         return 1
+
+    if EXTERNAL.is_dir():
+        try:
+            validate_external_directory(EXTERNAL)
+        except (OSError, ValueError, ExternalPairError) as exc:
+            print(f"BRAIN acceptance: FAIL — external ingest pair invalid: {exc}")
+            return 1
 
     valid_sources = registry_source_keys()
     crossrefs = registry_crossrefs()

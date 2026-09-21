@@ -18,12 +18,21 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_common as bc  # noqa: E402
+from build_context import (  # noqa: E402
+    external_pair_generation,
+    seal_external_pair_meta,
+)
+from ingest import common as ingest_common  # noqa: E402
 
 REG = {
     "nlab": {"url_template": "https://ncatlab.org/nlab/show/{id}",
@@ -116,6 +125,343 @@ def test_loading(d: Path) -> None:
     check("load: registered dbs only (bogusdb skipped)",
           sorted(ext_data) == ["mathworld", "nlab"], f"got {sorted(ext_data)}")
     check("load: _meta rows skipped", len(ext_data["nlab"]["pages"]) == 6)
+
+
+def test_external_pair_publication(d: Path) -> None:
+    pair_dir = d / "generated-pairs"
+    pair_dir.mkdir()
+    registry = {"fixture": {"ingest": {"snippets": False}},
+                "emptydb": {"ingest": {"snippets": False}},
+                "first": {"ingest": {"snippets": False}},
+                "unicode": {"ingest": {"snippets": False}}}
+    pages = [page("fixture", "p1"), page("fixture", "p2")]
+    links = [{"db": "fixture", "src": "p1", "dst": "p2",
+              "context": "body"}]
+    with mock.patch.object(ingest_common, "EXTERNAL_DIR", pair_dir):
+        ingest_common.emit("fixture", pages, links, {"source_pin": "old"})
+
+        pages_path = pair_dir / "fixture_pages.jsonl"
+        links_path = pair_dir / "fixture_links.jsonl"
+        pages_meta = json.loads(pages_path.read_text().splitlines()[0])["_meta"]
+        links_meta = json.loads(links_path.read_text().splitlines()[0])["_meta"]
+        generation = pages_meta.get("pair_generation", "")
+        check("pair: writer seals identical generation metadata",
+              pages_meta == links_meta
+              and pages_meta.get("pair_schema")
+              == ingest_common.EXTERNAL_PAIR_SCHEMA
+              and generation.startswith("sha256:") and len(generation) == 71)
+        page_rows = [json.loads(line) for line in pages_path.read_text().splitlines()[1:]]
+        link_rows = [json.loads(line) for line in links_path.read_text().splitlines()[1:]]
+        changed_audit = dict(pages_meta, fetched_at="2099-01-01T00:00:00+00:00",
+                             n_fetches_this_run=999)
+        check("pair: audit timestamps and run counters do not change identity",
+              external_pair_generation(changed_audit, page_rows, link_rows)
+              == generation)
+        check("pair: writer emits canonical JSON object ordering",
+              pages_path.read_text().splitlines()[1]
+              == json.dumps(page_rows[0], ensure_ascii=False, sort_keys=True,
+                            separators=(",", ":"), allow_nan=False))
+        check("pair: sealed output passes the build reader",
+              len(bc.load_external(pair_dir, registry)["fixture"]["pages"]) == 2)
+
+        # A page-only source still publishes its links half as a meta-only file.
+        ingest_common.emit("emptydb", [page("emptydb", "only")], [],
+                           {"source_pin": "empty"})
+        empty_links = pair_dir / "emptydb_links.jsonl"
+        check("pair: zero-link generation has an explicit partner",
+              empty_links.exists()
+              and len(empty_links.read_text().splitlines()) == 1
+              and bc.load_external(pair_dir, registry)["emptydb"]["links"] == [])
+
+        decomposed = "Igor Kr\u030ciz\u030c"
+        ingest_common.emit(
+            "unicode",
+            [page("unicode", decomposed, title=decomposed)],
+            [],
+            {"source_pin": "unicode"},
+        )
+        unicode_page = bc.load_external(pair_dir, registry)["unicode"]["pages"][0]
+        check("pair: upstream non-NFC text is preserved and sealed",
+              unicode_page["id"] == decomposed and unicode_page["title"] == decomposed)
+
+        journal_dir = d / "journal-only"
+        journal_dir.mkdir()
+        journal_child = """
+import os, signal, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1]) / 'brain' / 'ingest'))
+import common
+common.EXTERNAL_DIR = Path(sys.argv[2])
+real_replace = os.replace
+def replace(src, dst):
+    real_replace(src, dst)
+    if Path(dst).name.endswith('.transaction.json'):
+        os.kill(os.getpid(), signal.SIGKILL)
+common.os.replace = replace
+common.emit('first', [{'db':'first','id':'p','title':'P',
+                       'url':'https://example.test/p'}], [],
+            {'source_pin':'first'})
+"""
+        journal_killed = subprocess.run(
+            [sys.executable, "-c", journal_child,
+             str(Path(__file__).resolve().parents[1]), str(journal_dir)],
+            capture_output=True,
+            text=True,
+        )
+        journal_rejected = validation_rejected = False
+        try:
+            bc.load_external(journal_dir, registry)
+        except ValueError:
+            journal_rejected = True
+        try:
+            ingest_common.validate_external_directory(journal_dir)
+        except ValueError:
+            validation_rejected = True
+        check("pair: journal-only first publication fails closed",
+              journal_killed.returncode < 0 and journal_rejected
+              and validation_rejected)
+        with mock.patch.object(ingest_common, "EXTERNAL_DIR", journal_dir):
+            ingest_common.emit(
+                "first", [page("first", "p")], [], {"source_pin": "recovered"}
+            )
+        check("pair: next publisher recovers journal-only crash",
+              len(bc.load_external(journal_dir, registry)["first"]["pages"]) == 1
+              and not list(journal_dir.glob(".wikilean-pair-*"))
+              and not list(journal_dir.glob(".*.tmp")))
+
+        old_pages = pages_path.read_bytes()
+        old_links = links_path.read_bytes()
+        replace_targets: list[str] = []
+        real_replace = os.replace
+        page_commit_failed = False
+
+        def fail_page_commit(src, dst):
+            nonlocal page_commit_failed
+            target = Path(dst).name
+            if target in {"fixture_pages.jsonl", "fixture_links.jsonl"}:
+                replace_targets.append(target)
+            if (target == "fixture_pages.jsonl"
+                    and not page_commit_failed):
+                page_commit_failed = True
+                raise OSError("simulated crash before pages commit")
+            return real_replace(src, dst)
+
+        newer_pages = pages + [page("fixture", "p3")]
+        newer_links = [{"db": "fixture", "src": "p2", "dst": "p3",
+                        "context": "proof"}]
+        crashed = False
+        try:
+            with mock.patch.object(ingest_common.os, "replace",
+                                   side_effect=fail_page_commit):
+                ingest_common.emit("fixture", newer_pages, newer_links,
+                                   {"source_pin": "new"})
+        except OSError:
+            crashed = True
+        check("pair: links publish before the pages commit point",
+              crashed and replace_targets[:2]
+              == ["fixture_links.jsonl", "fixture_pages.jsonl"])
+        check("pair: caught interruption restores the prior generation",
+              pages_path.read_bytes() == old_pages
+              and links_path.read_bytes() == old_links
+              and len(bc.load_external(pair_dir, registry)["fixture"]["pages"]) == 2)
+        check("pair: caught interruption cleans journal and staging files",
+              not list(pair_dir.glob(".wikilean-pair-*"))
+              and not list(pair_dir.glob(".*.tmp")))
+
+        # A real SIGKILL leaves the durable journal in place. The reader uses
+        # the hard-linked prior generation instead of exposing the mixed pair.
+        signal_path = d / "sigkill-ready"
+        child = """
+import json, os, signal, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1]) / 'brain' / 'ingest'))
+import common
+common.EXTERNAL_DIR = Path(sys.argv[2])
+real_replace = os.replace
+def replace(src, dst):
+    real_replace(src, dst)
+    if Path(dst).name == 'fixture_links.jsonl':
+        Path(sys.argv[3]).write_text('ready')
+        os.kill(os.getpid(), signal.SIGKILL)
+common.os.replace = replace
+common.emit('fixture', json.loads(sys.argv[4]), json.loads(sys.argv[5]),
+            {'source_pin': 'sigkill'})
+"""
+        killed = subprocess.run(
+            [sys.executable, "-c", child,
+             str(Path(__file__).resolve().parents[1]), str(pair_dir),
+             str(signal_path), json.dumps(newer_pages), json.dumps(newer_links)],
+            capture_output=True,
+            text=True,
+        )
+        fallback = bc.load_external(pair_dir, registry)["fixture"]
+        check("pair: SIGKILL reader falls back to prior generation",
+              killed.returncode < 0 and signal_path.exists()
+              and len(fallback["pages"]) == 2
+              and fallback["links"][0]["dst"] == "p2")
+
+        # Re-running first recovers the stale journal, then publishes normally.
+        ingest_common.emit("fixture", newer_pages, newer_links,
+                           {"source_pin": "new"})
+        loaded = bc.load_external(pair_dir, registry)["fixture"]
+        check("pair: rerun heals the pair", len(loaded["pages"]) == 3
+              and loaded["links"][0]["dst"] == "p3"
+              and not list(pair_dir.glob(".wikilean-pair-*"))
+              and not list(pair_dir.glob(".*.tmp")))
+
+        # Two publishers are serialized. A pauses after its links rename while
+        # B blocks on the lock; B must become the final complete generation.
+        concurrency_child = """
+import json, os, sys, time
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1]) / 'brain' / 'ingest'))
+import common
+common.EXTERNAL_DIR = Path(sys.argv[2])
+pin, signal_path = sys.argv[3], sys.argv[4]
+if signal_path:
+    real_replace = os.replace
+    def replace(src, dst):
+        real_replace(src, dst)
+        if Path(dst).name == 'fixture_links.jsonl':
+            Path(signal_path).write_text('locked')
+            time.sleep(0.5)
+    common.os.replace = replace
+pages = [{'db':'fixture','id':f'{pin}1','title':f'{pin} one',
+          'url':f'https://example.test/{pin}/1'},
+         {'db':'fixture','id':f'{pin}2','title':f'{pin} two',
+          'url':f'https://example.test/{pin}/2'},
+         {'db':'fixture','id':f'{pin}3','title':f'{pin} three',
+          'url':f'https://example.test/{pin}/3'}]
+links = [{'db':'fixture','src':f'{pin}1','dst':f'{pin}2','context':'body'}]
+common.emit('fixture', pages, links, {'source_pin': pin})
+"""
+        lock_signal = d / "publisher-a-locked"
+        base_args = [sys.executable, "-c", concurrency_child,
+                     str(Path(__file__).resolve().parents[1]), str(pair_dir)]
+        publisher_a = subprocess.Popen(
+            base_args + ["A", str(lock_signal)],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        deadline = time.monotonic() + 5
+        while not lock_signal.exists() and publisher_a.poll() is None \
+                and time.monotonic() < deadline:
+            time.sleep(0.01)
+        publisher_b = subprocess.Popen(
+            base_args + ["B", ""],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        _a_out, _a_err = publisher_a.communicate(timeout=10)
+        _b_out, _b_err = publisher_b.communicate(timeout=10)
+        concurrent = bc.load_external(pair_dir, registry)["fixture"]
+        final_meta = json.loads(pages_path.read_text().splitlines()[0])["_meta"]
+        check("pair: concurrent publishers serialize complete generations",
+              lock_signal.exists() and publisher_a.returncode == 0
+              and publisher_b.returncode == 0
+              and final_meta["source_pin"] == "B"
+              and concurrent["pages"][0]["id"] == "B1")
+
+        before_invalid = (pages_path.read_bytes(), links_path.read_bytes())
+        invalid_rejected = 0
+        for bad_pages in (
+            [],
+            [dict(page("fixture", "bad"), _meta={"spoof": True})],
+            [dict(page("fixture", "bad"), score=1.5)],
+            [dict(page("fixture", "bad"), title=2)],
+        ):
+            try:
+                ingest_common.emit("fixture", bad_pages, [],
+                                   {"source_pin": "invalid"})
+            except (RuntimeError, ValueError):
+                invalid_rejected += 1
+        try:
+            ingest_common.emit(
+                "fixture",
+                [page("fixture", "bad-link")],
+                [{"db": "fixture", "src": "bad-link", "dst": "other",
+                  "context": 3}],
+                {"source_pin": "invalid"},
+            )
+        except (RuntimeError, ValueError):
+            invalid_rejected += 1
+        check("pair: empty, reserved, and noncanonical rows fail before publish",
+              invalid_rejected == 5
+              and (pages_path.read_bytes(), links_path.read_bytes())
+              == before_invalid)
+
+        verifier_rejected = 0
+        for case, bad_pages, count_override in (
+            ("empty", [], None),
+            ("malformed", [{"db": "fixture", "id": "missing-fields"}], None),
+            ("boolean-count", [page("fixture", "one")], True),
+        ):
+            invalid_dir = d / f"sealed-{case}"
+            invalid_dir.mkdir()
+            base_meta = {"db": "fixture", "fetched_at": "audit",
+                         "n_pages": len(bad_pages), "n_links": 0}
+            if count_override is not None:
+                base_meta["n_pages"] = count_override
+            sealed_meta = seal_external_pair_meta(base_meta, bad_pages, [])
+            for suffix in ("pages", "links"):
+                rows = bad_pages if suffix == "pages" else []
+                with (invalid_dir / f"fixture_{suffix}.jsonl").open("w") as fh:
+                    fh.write(json.dumps({"_meta": sealed_meta}) + "\n")
+                    for row in rows:
+                        fh.write(json.dumps(row) + "\n")
+            try:
+                bc.load_external(invalid_dir, registry)
+            except ValueError:
+                verifier_rejected += 1
+        check("pair: verifier rejects empty, malformed, and boolean-count seals",
+              verifier_rejected == 3)
+
+        orphan_dir = d / "orphan-pair"
+        orphan_dir.mkdir()
+        orphan = orphan_dir / "fixture_links.jsonl"
+        orphan.write_bytes(links_path.read_bytes())
+        direct_rejected = explicit_rejected = validation_rejected = False
+        unregistered_rejected = False
+        try:
+            bc.load_external(orphan_dir, registry)
+        except ValueError:
+            direct_rejected = True
+        try:
+            fake = SimpleNamespace(path=orphan,
+                                   logical_path="fixture_links.jsonl", pin="fixture")
+            bc.load_external(None, registry, page_files=(), link_files=(fake,))
+        except ValueError:
+            explicit_rejected = True
+        try:
+            fake_page = SimpleNamespace(
+                path=pages_path, logical_path="fixture_pages.jsonl", pin="fixture"
+            )
+            fake_link = SimpleNamespace(
+                path=links_path, logical_path="fixture_links.jsonl", pin="fixture"
+            )
+            bc.load_external(
+                None, {}, page_files=(fake_page,), link_files=(fake_link,)
+            )
+        except ValueError:
+            unregistered_rejected = True
+        try:
+            ingest_common.validate_external_directory(orphan_dir)
+        except ValueError:
+            validation_rejected = True
+        check("pair: readers reject orphan and unregistered bound inputs",
+              direct_rejected and explicit_rejected and validation_rejected
+              and unregistered_rejected)
+
+        # A matching label is not enough: the generation is recomputed over
+        # both row sets, so same-count content tampering also fails closed.
+        lines = links_path.read_text().splitlines()
+        tampered = json.loads(lines[1])
+        tampered["context"] = "statement"
+        links_path.write_text(lines[0] + "\n" + json.dumps(tampered) + "\n")
+        rejected = False
+        try:
+            bc.load_external(pair_dir, registry)
+        except ValueError:
+            rejected = True
+        check("pair: reader rejects content tampering", rejected)
 
 
 def test_minting(d: Path) -> None:
@@ -421,6 +767,7 @@ def main() -> int:
         make_external(d)
         test_env_override()
         test_loading(d)
+        test_external_pair_publication(d)
         test_minting(d)
         test_cap(d)
         test_snippet_guard(d)
