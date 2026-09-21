@@ -370,9 +370,15 @@ def _tree_fingerprints(root: Path) -> dict[str, tuple[str, int]]:
     return result
 
 
-def _verify_finalized(root: Path, expected_release_id: str) -> None:
+def _verify_finalized(
+    root: Path,
+    expected_release_id: str,
+    expected_manifest_sha256: str,
+) -> None:
     manifest_path = root / "release.json"
     manifest_bytes = manifest_path.read_bytes()
+    if hashlib.sha256(manifest_bytes).hexdigest() != expected_manifest_sha256:
+        raise _error(f"existing manifest digest does not match directory: {root}")
     manifest = parse_json_bytes(manifest_bytes, location=str(manifest_path))
     if manifest_bytes != canonical_json_bytes(manifest):
         raise _error(f"existing manifest is not canonical: {manifest_path}")
@@ -600,20 +606,23 @@ def build_release(
             {"kind": "build", "path": "attestations/build.json", "sha256": build_digest, "bytes": build_size},
             {"kind": "validation", "path": "attestations/validation.json", "sha256": validation_digest, "bytes": validation_size},
         ]
-        _write_canonical(candidate / "release.json", release)
+        manifest_sha256, _manifest_size = _write_canonical(
+            candidate / "release.json", release
+        )
 
         validated = validate_release_manifest(release)
         verify_release_files(validated, candidate)
         if _before_publish is not None:
             _before_publish()
+        _verify_finalized(candidate, release["release_id"], manifest_sha256)
         _fsync_directory_tree(candidate)
         release_hex = release["release_id"].removeprefix("sha256:")
-        final = output_store / release_hex
+        final = output_store / manifest_sha256
         reused = False
         if final.exists() or final.is_symlink():
             if final.is_symlink() or not final.is_dir():
                 raise _error(f"release destination exists and is not a real directory: {final}")
-            _verify_finalized(final, release["release_id"])
+            _verify_finalized(final, release["release_id"], manifest_sha256)
             if _tree_fingerprints(final) != _tree_fingerprints(candidate):
                 raise _error(f"release destination exists with different bytes: {final}")
             reused = True
@@ -623,7 +632,7 @@ def build_release(
             except OSError as exc:
                 if exc.errno not in {errno.EEXIST, errno.ENOTEMPTY} or not final.is_dir():
                     raise
-                _verify_finalized(final, release["release_id"])
+                _verify_finalized(final, release["release_id"], manifest_sha256)
                 if _tree_fingerprints(final) != _tree_fingerprints(candidate):
                     raise _error(f"concurrent release destination has different bytes: {final}") from exc
                 reused = True
@@ -638,6 +647,7 @@ def build_release(
             "artifact_count": len(artifacts),
             "byte_count": sum(artifact["bytes"] for artifact in artifacts),
             "manifest": str(root / "release.json"),
+            "manifest_sha256": manifest_sha256,
             "release": release_hex,
             "release_id": release["release_id"],
             "reused": reused,

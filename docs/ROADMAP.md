@@ -256,7 +256,8 @@ before deployment.
   `npm run test:ci`, and `PYTHON=<selected> ./scripts/ci-python.sh` gates in the clean
   promotion checkout, checks Node 22/Python 3.12 and Git authority before and after,
   strips inherited credentials and Git overrides, and emits canonical
-  `wikilean.brain-activation-ci/v2` evidence with complete command output.
+  `wikilean.brain-activation-ci/v3` evidence with complete command output and exact Node
+  executable identity.
 - [x] Implement `site/ops/brain_activation_bundle.py context|freeze|verify`. The immutable
   bundle contains exactly 11 evidence files, validates their identities and external
   worktree/artifact roots before freezing, generates fresh CI evidence in-process using

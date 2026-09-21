@@ -92,8 +92,8 @@ python3 brain/test_acceptance.py   # exit 0 = green (reads edges.jsonl + edges_l
 cd brain && python3 build_shards.py && cd ..          # xref_index.json + sources.json only
 # Freeze + verify a release per docs/BRAIN-RELEASE-RUNBOOK.md, then:
 cd wiki && node --experimental-strip-types scripts/build-public.ts \
-  --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
-  --brain-release-dir ../site/out/brain-releases/<release-hex>
+  --brain-release-manifest ../site/out/brain-releases/<manifest-hex>/release.json \
+  --brain-release-dir ../site/out/brain-releases/<manifest-hex>
 ```
 
 `brain/acquire-wikidata-entities.sh` requires isolated CPython 3.12 and direct HTTPS

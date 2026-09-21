@@ -11,7 +11,7 @@ Tag GENERATION stays deterministic elsewhere; this only decides requeue-vs-cut
 and proposes a target. Input = settle.py's recycle list (JSON on stdin or --in).
 Output = recycle_queue.json (requeued) + cut_log.json.
 """
-import argparse, json, subprocess, sys
+import argparse, json, os, subprocess, sys
 from pathlib import Path
 
 # Default outputs live in bot/state/ (script-relative), so a caller that omits
@@ -22,6 +22,23 @@ STATE = Path(__file__).resolve().parent / "state"
 SKILLS = Path(__file__).resolve().parent.parent / ".claude" / "skills"
 MATHLIB_SEARCH = SKILLS / "mathlib-search" / "mathlib_search.py"
 WIKIDATA_SEARCH = SKILLS / "wikidata-search" / "wikidata.py"
+
+CLAUDE_ENV_KEYS = (
+    "ALL_PROXY", "CI", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "CLAUDE_CODE_MAX_OUTPUT_CHARS", "CLAUDE_CODE_OAUTH_TOKEN",
+    "GITHUB_ACTIONS", "HOME", "HTTP_PROXY", "HTTPS_PROXY", "LANG",
+    "LC_ALL", "LC_CTYPE", "LOGNAME", "NODE_EXTRA_CA_CERTS", "NO_PROXY",
+    "PATH", "RUNNER_TEMP", "SHELL", "SSL_CERT_DIR", "SSL_CERT_FILE",
+    "TEMP", "TMP", "TMPDIR", "TZ", "USER", "XDG_CACHE_HOME",
+    "XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_RUNTIME_DIR", "XDG_STATE_HOME",
+    "all_proxy", "http_proxy", "https_proxy", "no_proxy",
+)
+
+
+def claude_environment(environ=None):
+    """Return the explicit environment visible to the non-deterministic child."""
+    source = os.environ if environ is None else environ
+    return {name: source[name] for name in CLAUDE_ENV_KEYS if name in source}
 
 
 def verify(d):
@@ -93,10 +110,23 @@ def ask_llm(entry, model):
     prompt = PROMPT.format(qid=entry["qid"], decl=entry.get("decl") or "(unknown)",
                            file=entry.get("file"),
                            verdicts=entry.get("verdicts"), notes=notes)
-    cmd = ["claude", "-p", prompt, "--output-format", "json"]
+    cmd = [
+        "claude", "-p", prompt,
+        "--output-format", "json",
+        "--safe-mode",
+        "--tools", "",
+        "--setting-sources", "",
+        "--strict-mcp-config",
+        "--no-session-persistence",
+    ]
     if model:
         cmd += ["--model", model]
-    out = subprocess.run(cmd, capture_output=True, text=True)
+    out = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        env=claude_environment(),
+    )
     if out.returncode != 0:
         return {"decision": "requeue", "reason": "LLM call failed; defaulting to requeue", "_error": out.stderr[:200]}
     try:

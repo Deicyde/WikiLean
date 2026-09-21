@@ -512,6 +512,9 @@ class BrainNightlyShellTest(unittest.TestCase):
         self.assertIn('"$PYTHON_BIN" "$REPO/brain/tools/measure_store.py"', text)
         self.assertIn('STORE_METRICS_RELEASE_ID="$(store_metrics_release_id', text)
         self.assertIn('PUBLIC_STAGE_RELEASE_ID="$(public_result_release_id', text)
+        self.assertIn('RELEASE_MANIFEST_SHA256="$(json_field "$RELEASE_RESULT" manifest_sha256)"', text)
+        self.assertIn('"$RELEASE_STORE/$RELEASE_MANIFEST_SHA256"', text)
+        self.assertIn('"wikilean.public-stage-result/v2"', text)
         self.assertIn(
             "schema public_dir mathlib_declarations public_baseline brain duration_ms max_rss_bytes",
             text,
@@ -597,7 +600,7 @@ class BrainNightlyShellTest(unittest.TestCase):
         promoter = (HERE / "brain_promote_release.py").read_text(encoding="utf-8")
         self.assertNotIn('"wrangler", "rollback"', nightly)
         self.assertNotIn("npm run deploy", nightly)
-        self.assertIn('"wrangler",\n            "deploy"', promoter)
+        self.assertIn('command = self._wrangler_command(\n            "deploy"', promoter)
         self.assertIn('"--no-bundle"', promoter)
         self.assertIn('"deploy_invocation"', promoter)
 

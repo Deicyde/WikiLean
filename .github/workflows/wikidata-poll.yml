@@ -59,17 +59,34 @@ jobs:
       PYTHONUNBUFFERED: "1"        # stream poll/open_batch print()s live (no 40m of silence)
       REPO: leanprover-community/mathlib4
       MATHLIB: ${{ github.workspace }}/_mathlib4
-      WIKILEAN_API_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
       WIKILEAN_CROSSREF_DIR: ${{ github.workspace }}/_crossref
       WIKILEAN_BASH: bash          # Linux: native bash 4+/GNU coreutils, no brew
-      GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}   # gh acts on mathlib + the fork
     steps:
-      - name: Checkout WikiLean (with push-back creds)
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1; default token can push state back
+      - name: Checkout WikiLean without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with: { python-version: '3.12' }
-      - run: pip install --quiet requests
+      # Each later network step supplies its own GH_TOKEN. Git reads that token
+      # through this prompt helper, so no credential is written to config or a
+      # remote URL. The helper script itself contains no secret.
+      - name: Configure non-persistent Git authentication
+        run: |
+          askpass="$RUNNER_TEMP/wikilean-git-askpass"
+          printf '%s\n' \
+            '#!/bin/sh' \
+            'case "$1" in' \
+            '  *Username*) printf "%s\n" "x-access-token" ;;' \
+            '  *) printf "%s\n" "$GH_TOKEN" ;;' \
+            'esac' > "$askpass"
+          chmod 700 "$askpass"
+          echo "GIT_ASKPASS=$askpass" >> "$GITHUB_ENV"
+          echo "GIT_TERMINAL_PROMPT=0" >> "$GITHUB_ENV"
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
 
       - name: Refresh Brain queue
         run: python3 bot/brain_queue.py
@@ -77,6 +94,8 @@ jobs:
       # ---- cheap gh-only decision: act or wait? ----
       - name: Decide
         id: decide
+        env:
+          GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: |
           if [ "${{ inputs.force_heavy }}" = "true" ]; then
             echo "act=true" >> "$GITHUB_OUTPUT"; echo "forced heavy path (validation)"; exit 0
@@ -94,31 +113,34 @@ jobs:
       # build). Re-add an elan install here if a local build is ever reintroduced.
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.decide.outputs.act == 'true'
-        with: { node-version: '22' }
-      - name: Install Claude CLI
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: .github/claude-cli/package-lock.json
+      - name: Install pinned Claude CLI
         if: steps.decide.outputs.act == 'true'
-        run: npm install -g @anthropic-ai/claude-code
+        run: |
+          npm ci --prefix .github/claude-cli
+          echo "$GITHUB_WORKSPACE/.github/claude-cli/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Clone mathlib4 (fork origin + upstream)
         if: steps.decide.outputs.act == 'true'
         run: |
-          git clone --filter=blob:none \
-            "https://x-access-token:${MATHLIB_FORK_PAT}@github.com/Deicyde/mathlib4.git" "$MATHLIB"
+          git clone --filter=blob:none https://github.com/Deicyde/mathlib4.git "$MATHLIB"
           git -C "$MATHLIB" remote add upstream https://github.com/leanprover-community/mathlib4.git
           git -C "$MATHLIB" config user.name  "wikilean-bot"
           git -C "$MATHLIB" config user.email "bot@wikilean.jackmccarthy.org"
-        env:
-          MATHLIB_FORK_PAT: ${{ secrets.MATHLIB_FORK_PAT }}
 
       - name: Poll tick (apply)
         if: steps.decide.outputs.act == 'true'
         env:
+          GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
+          WIKILEAN_API_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # On a merge, auto-populate Wikidata P14534 from the just-merged tags.
-          # WIKILEAN_PUSH_PROPERTY gates the whole step; without the token the
-          # pusher stays dry-run. Flip the flag to "1" to enable once ready.
+          # WIKILEAN_PUSH_PROPERTY gates the whole step. When enabling it, add
+          # QUICKSTATEMENTS_TOKEN here so the credential remains step-local.
           WIKILEAN_PUSH_PROPERTY: "0"
-          QUICKSTATEMENTS_TOKEN: ${{ secrets.QUICKSTATEMENTS_TOKEN }}
           QUICKSTATEMENTS_USER: "Mynus grey"
         run: |
           git config --global user.name  "wikilean-bot"
@@ -128,6 +150,8 @@ jobs:
       # ---- persist advanced state back to this repo ----
       - name: Commit poll state
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "wikilean-bot"
           git config user.email "bot@wikilean.jackmccarthy.org"
@@ -146,4 +170,6 @@ jobs:
       # the no-op waits, which is exactly when reviews trickle in.
       - name: Refresh tag table
         if: always()
+        env:
+          GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: python3 bot/poll.py --mathlib /tmp/unused --refresh-table

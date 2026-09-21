@@ -103,10 +103,15 @@ overlay, or serving topology.
 - `schemas/release/v1.json` describes compatibility and sealed offline replay
   profiles over the current artifact topology. The latter binds the input pack,
   inventory, authority/prior-state roots and generation in the release identity.
-- `schemas/release-selector/v1.json` describes the public current/previous selector.
-  Current release fields are required; the flat `previous_*` fields are all-or-none, and
-  each release hex and immutable manifest URL must agree with its full `sha256:` ID.
-  Optional `audited_at` records publication audit time without changing release identity.
+- `schemas/release-selector/v2.json` describes the public current/previous selector.
+  Current release fields are required; the flat `previous_*` fields are all-or-none.
+  `release_id` remains the logical content identity, while `manifest_sha256` binds the
+  exact manifest bytes and complete immutable namespace at
+  `/assets/brain/releases/<manifest-sha256>/`. V1 selectors remain readable during
+  migration, but new selectors are always v2. Optional `audited_at` records publication
+  audit time without changing either identity. The narrow executable validator lives in
+  `brain/tools/release_selector_contracts.py`; selector changes do not invalidate every
+  acquisition profile that pins the larger authority library.
 - `schemas/attestation/build-v1.json` and
   `schemas/attestation/validation-v1.json` describe immutable build and validation
   evidence. Attestations bind a timestamp-independent release ID; they do not embed
@@ -352,9 +357,10 @@ not require R2, PostgreSQL, or a database topology change.
 closure under a temporary sibling of the output store, derives all hashes from the
 frozen bytes, creates canonical build and validation attestations after release identity,
 verifies the complete candidate, and atomically renames it to
-`site/out/brain-releases/<release-hex>/`. Existing content-addressed releases are reused
+`site/out/brain-releases/<manifest-sha256>/`. Existing byte-addressed manifests are reused
 only after full verification and byte equality. The CLI prints one JSON object containing
-`release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
+`release_id`, `release`, `root`, `manifest`, `manifest_sha256`, `artifact_count`,
+`byte_count`, and `reused`.
 Its `build-attestation/v1` records compatibility release assembly, not a clean-room graph
 replay. The `brain-current-v1` profile continues to require that v1 attestation.
 
@@ -379,13 +385,15 @@ Wrangler configuration, and raw read-only selector/status/history responses into
 external content-addressed root. The proposed intent refers to those durable bytes.
 
 `site/ops/brain_activation_ci.py` emits canonical
-`wikilean.brain-activation-ci/v2` evidence for the exact required CI commands. Bundle
+`wikilean.brain-activation-ci/v3` evidence for the exact required CI commands. Bundle
 `freeze` invokes it in-process, so caller-authored CI evidence is not accepted. It requires
 a clean promotion checkout whose `HEAD` and `refs/heads/main` equal the candidate authority.
 Git, Node, npm, and Python are explicit absolute paths; caller `PATH` is discarded and a
-private shim directory pins child-tool resolution. The recorder checks Node 22 and Python
-3.12, removes inherited credentials and Git overrides, bounds and cleans up every process
-group, and repeats the Git authority/cleanliness fence afterward.
+private shim directory pins child-tool resolution. The recorder captures the canonical Node
+path, digest, size, and Node 22 version; bundle validation requires them to equal the
+promoter's Worker toolchain. It checks Python 3.12, removes inherited credentials and Git
+overrides, bounds and cleans up every process group, and repeats the Git authority/cleanliness
+fence afterward.
 
 `site/ops/brain_activation_bundle.py context|freeze|verify` creates the immutable P1B
 review artifact. `context` proves the isolated build and clean promotion worktrees are

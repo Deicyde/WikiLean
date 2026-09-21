@@ -32,6 +32,7 @@ run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py 
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
+run_check "Bot triage process-boundary tests" "$PYTHON_BIN" bot/test_triage.py
 run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingface_download.py
 run_check "Hugging Face immutable source evidence tests" "$PYTHON_BIN" brain/test_huggingface_sources.py
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
@@ -73,6 +74,7 @@ run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
 run_check "Brain agent input tests" "$PYTHON_BIN" brain/test_sync_agents.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
+run_check "Brain release selector contract tests" "$PYTHON_BIN" brain/test_release_selector_contracts.py
 run_check "Experimental assertion shadow tests" "$PYTHON_BIN" brain/test_assertion_kernel.py
 run_check "Brain input acquisition coherence tests" "$PYTHON_BIN" brain/test_inventory_coherence.py
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
