@@ -10,10 +10,9 @@ import os
 import re
 import sqlite3
 import stat
-import tempfile
 import unicodedata
 from collections import defaultdict
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO, Iterator
 
@@ -30,7 +29,57 @@ PACK_SCHEMA = "wikilean.offline-pack/v1"
 RELEASE_SCHEMA = "wikilean.release/v1"
 BUILD_ATTESTATION_SCHEMA = "wikilean.build-attestation/v1"
 VALIDATION_ATTESTATION_SCHEMA = "wikilean.validation-attestation/v1"
+RELEASE_SELECTOR_SCHEMA = "wikilean.release-selector/v1"
 RELEASE_PROFILE = "brain-current-v1"
+BRAIN_SQLITE_APPLICATION_ID = 0x574C424E  # ASCII "WLBN"
+
+BRAIN_SQLITE_V2_TABLE_COLUMNS = {
+    "snapshot": (
+        "singleton",
+        "schema_version",
+        "build_state",
+        "snapshot_id",
+        "base_snapshot_id",
+        "projection_id",
+        "metadata_json",
+    ),
+    "artifacts": (
+        "name",
+        "generated_at",
+        "row_count",
+        "digest",
+        "source_digest",
+        "logical_digest",
+        "raw_digest",
+        "source_present",
+        "metadata_json",
+    ),
+    "nodes": ("ordinal", "id", "type", "label", "payload_json"),
+    "edges": (
+        "stream",
+        "ordinal",
+        "src",
+        "dst",
+        "kind",
+        "confidence",
+        "provenance_source",
+        "payload_json",
+    ),
+    "cells": ("ordinal", "id", "anchor", "label", "payload_json"),
+    "organ_owners": ("organ_id", "owner_id", "organ_kind", "bare_decl"),
+    "synapses": ("ordinal", "src", "dst", "weight", "payload_json"),
+}
+BRAIN_SQLITE_V2_INDEXES = {
+    "nodes_type_label_idx": ("nodes", ("type", "label")),
+    "edges_src_kind_idx": ("edges", ("src", "kind")),
+    "edges_dst_kind_idx": ("edges", ("dst", "kind")),
+    "edges_kind_stream_idx": ("edges", ("kind", "stream")),
+    "cells_label_idx": ("cells", ("label",)),
+    "organ_owners_owner_idx": ("organ_owners", ("owner_id",)),
+    "organ_owners_bare_decl_idx": ("organ_owners", ("bare_decl",)),
+    "synapses_src_idx": ("synapses", ("src",)),
+    "synapses_dst_idx": ("synapses", ("dst",)),
+}
 
 SOURCE_DOMAIN = "wikilean.source-manifest.v1"
 SOURCE_SET_DOMAIN = "wikilean.source-set.v1"
@@ -40,6 +89,8 @@ BUILD_ATTESTATION_DOMAIN = "wikilean.build-attestation.v1"
 VALIDATION_ATTESTATION_DOMAIN = "wikilean.validation-attestation.v1"
 LOGICAL_JSON_DOMAIN = "wikilean.logical-json.v1"
 LOGICAL_JSONL_DOMAIN = "wikilean.logical-jsonl-rowset.v1"
+COMPATIBILITY_SEMANTIC_STATE_DOMAIN = "wikilean.compatibility-semantic-state.v1"
+LEGACY_DECLARED_INPUT_DOMAIN = "wikilean.legacy-declared-inputs.v1"
 
 REQUIRED_RELEASE_PATHS = frozenset({
     "brain/data/nodes.jsonl",
@@ -63,6 +114,27 @@ REQUIRED_RELEASE_PATHS = frozenset({
     "site/out/brain.html",
 })
 STATIC_CELLS_PREFIX = "site/assets/brain/cells/"
+COMPATIBILITY_SEMANTIC_PATHS = (
+    "brain/data/nodes.jsonl",
+    "brain/data/edges.jsonl",
+    "brain/data/edges_links.jsonl",
+    "brain/data/cells.jsonl",
+    "brain/data/synapses.jsonl",
+    "brain/data/frontier.jsonl",
+    "brain/data/frontier_graph.json",
+)
+
+
+def _release_artifact_contract(path: str) -> tuple[str, str]:
+    if path.endswith(".jsonl"):
+        return "application/x-ndjson", "jsonl-rowset"
+    if path.endswith(".json"):
+        return "application/json", "json"
+    if path.endswith(".html"):
+        return "text/html", "opaque"
+    if path.endswith(".sqlite3"):
+        return "application/vnd.sqlite3", "opaque"
+    _fail("$.artifacts", f"{RELEASE_PROFILE} does not support artifact path {path!r}")
 
 
 class VerificationError(ValueError):
@@ -224,6 +296,42 @@ def _decimal_json(value: Any) -> bytes:
     _fail("$", f"unsupported logical artifact type {type(value).__name__}")
 
 
+def _same_logical_json(left: Any, right: Any) -> bool:
+    """Compare logical JSON recursively without materializing whole documents."""
+    if left is None or right is None:
+        return left is None and right is None
+    if isinstance(left, bool) or isinstance(right, bool):
+        return isinstance(left, bool) and isinstance(right, bool) and left is right
+    if isinstance(left, (int, decimal.Decimal)) or isinstance(
+        right, (int, decimal.Decimal)
+    ):
+        if not isinstance(left, (int, decimal.Decimal)) or not isinstance(
+            right, (int, decimal.Decimal)
+        ):
+            return False
+        return decimal.Decimal(left) == decimal.Decimal(right)
+    if isinstance(left, str) or isinstance(right, str):
+        return isinstance(left, str) and isinstance(right, str) and left == right
+    if isinstance(left, list) or isinstance(right, list):
+        return (
+            isinstance(left, list)
+            and isinstance(right, list)
+            and len(left) == len(right)
+            and all(
+                _same_logical_json(left_item, right_item)
+                for left_item, right_item in zip(left, right, strict=True)
+            )
+        )
+    if isinstance(left, dict) or isinstance(right, dict):
+        return (
+            isinstance(left, dict)
+            and isinstance(right, dict)
+            and left.keys() == right.keys()
+            and all(_same_logical_json(left[key], right[key]) for key in left)
+        )
+    return False
+
+
 def canonical_json_bytes(value: Any) -> bytes:
     _validate_canonical_type(value)
     return json.dumps(
@@ -379,6 +487,59 @@ def release_identity(manifest: dict[str, Any]) -> str:
     value.pop("attestations", None)
     value.pop("created_at", None)
     return domain_hash(RELEASE_DOMAIN, value)
+
+
+def compatibility_semantic_state_root(
+    semantic_epoch: str,
+    snapshot_id: str,
+    logical_roots: dict[str, str],
+) -> str:
+    """Bind the current pre-changeset Brain state to its verified logical outputs."""
+    _expect_pattern(semantic_epoch, "$.semantic_epoch", EPOCH_RE, "a semantic epoch")
+    _expect_pattern(snapshot_id, "$.snapshot_id", DIGEST_RE, "64 lowercase SHA-256 hex digits")
+    expected_paths = set(COMPATIBILITY_SEMANTIC_PATHS)
+    if set(logical_roots) != expected_paths:
+        missing = sorted(expected_paths - set(logical_roots))
+        unknown = sorted(set(logical_roots) - expected_paths)
+        _fail("$.logical_roots", f"expected compatibility paths (missing={missing}, unknown={unknown})")
+    roots = []
+    for path in COMPATIBILITY_SEMANTIC_PATHS:
+        roots.append({"path": path, "logical_root": _hash(logical_roots[path], f"$.logical_roots.{path}")})
+    return domain_hash(
+        COMPATIBILITY_SEMANTIC_STATE_DOMAIN,
+        {"semantic_epoch": semantic_epoch, "snapshot_id": snapshot_id, "logical_roots": roots},
+    )
+
+
+def legacy_declared_input_root(inventory_sha256: str, inputs: list[dict[str, Any]]) -> str:
+    """Bind the compatibility source root to an inventory and exact input bytes."""
+    _digest(inventory_sha256, "$.inventory_sha256")
+    normalized: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for index, value in enumerate(inputs):
+        location = f"$.inputs[{index}]"
+        item = _expect_object(value, location)
+        _keys(item, location, {"declaration", "path", "present"}, {"sha256", "bytes"})
+        declaration = _expect_string(item["declaration"], f"{location}.declaration")
+        path = validate_relative_path(item["path"], f"{location}.path")
+        if not isinstance(item["present"], bool):
+            _fail(f"{location}.present", "expected a boolean")
+        if item["present"]:
+            _keys(item, location, {"declaration", "path", "present", "sha256", "bytes"})
+            _digest(item["sha256"], f"{location}.sha256")
+            _expect_int(item["bytes"], f"{location}.bytes")
+        elif "sha256" in item or "bytes" in item:
+            _fail(location, "absent inputs must not declare sha256 or bytes")
+        key = (declaration, path)
+        if key in seen:
+            _fail(location, "duplicate declared input")
+        seen.add(key)
+        normalized.append(dict(item))
+    normalized.sort(key=lambda item: (item["declaration"], item["path"]))
+    return domain_hash(
+        LEGACY_DECLARED_INPUT_DOMAIN,
+        {"inventory_sha256": inventory_sha256, "inputs": normalized},
+    )
 
 
 def attestation_identity(attestation: dict[str, Any]) -> str:
@@ -695,8 +856,59 @@ def _logical_jsonl_bytes(data: bytes, location: str) -> str:
     return "sha256:" + hashlib.sha256(prefix + canonical_rows).hexdigest()
 
 
+def _logical_jsonl_handle(handle: BinaryIO, location: str) -> str:
+    """Compute the order-independent JSONL root with disk-backed sorting.
+
+    Release artifacts are already hundreds of megabytes and are projected to
+    grow into gigabytes.  Keeping every canonical row in a Python list makes
+    verification scale with corpus size.  A temporary SQLite table preserves
+    the exact bytewise ordering used by ``sorted(bytes)`` while bounding Python
+    heap use to one input row plus a small insert batch.
+    """
+    connection = sqlite3.connect("")
+    try:
+        connection.execute("PRAGMA temp_store = FILE")
+        connection.execute("PRAGMA cache_size = -4096")
+        connection.execute("CREATE TABLE rows (payload BLOB NOT NULL)")
+        batch: list[tuple[Any, ...]] = []
+        handle.seek(0)
+        for line_number, raw in enumerate(handle, 1):
+            if not raw.strip():
+                continue
+            row = parse_artifact_json_bytes(raw, location=f"{location}:{line_number}")
+            if isinstance(row, dict) and set(row) == {"_meta"}:
+                continue
+            batch.append((sqlite3.Binary(_decimal_json(row)),))
+            if len(batch) >= 1_000:
+                connection.executemany("INSERT INTO rows VALUES (?)", batch)
+                batch.clear()
+        if batch:
+            connection.executemany("INSERT INTO rows VALUES (?)", batch)
+
+        digest = hashlib.sha256()
+        digest.update(
+            f"wikilean\0{LOGICAL_JSONL_DOMAIN}\0canonical-artifact-json-v1\0".encode(
+                "ascii"
+            )
+        )
+        digest.update(b"[")
+        first = True
+        for (payload,) in connection.execute("SELECT payload FROM rows ORDER BY payload"):
+            if not first:
+                digest.update(b",")
+            digest.update(bytes(payload))
+            first = False
+        digest.update(b"]")
+        return "sha256:" + digest.hexdigest()
+    except sqlite3.Error as exc:
+        raise VerificationError(f"{location}: cannot compute disk-backed JSONL root: {exc}") from exc
+    finally:
+        connection.close()
+
+
 def logical_jsonl_root(path: Path) -> str:
-    return _logical_jsonl_bytes(path.read_bytes(), str(path))
+    with path.open("rb") as handle:
+        return _logical_jsonl_handle(handle, str(path))
 
 
 def validate_release_manifest(manifest: Any) -> dict[str, Any]:
@@ -743,6 +955,17 @@ def validate_release_manifest(manifest: Any) -> dict[str, Any]:
         _expect_int(artifact["bytes"], f"{location}.bytes")
         if artifact["logical_format"] not in {"json", "jsonl-rowset", "opaque"}:
             _fail(f"{location}.logical_format", "unknown logical format")
+        expected_media_type, expected_logical_format = _release_artifact_contract(path)
+        if artifact["media_type"] != expected_media_type:
+            _fail(
+                f"{location}.media_type",
+                f"expected {expected_media_type!r} for {path}",
+            )
+        if artifact["logical_format"] != expected_logical_format:
+            _fail(
+                f"{location}.logical_format",
+                f"expected {expected_logical_format!r} for {path}",
+            )
         if artifact["logical_format"] == "opaque":
             if artifact["logical_root"] is not None:
                 _fail(f"{location}.logical_root", "opaque artifacts must use null")
@@ -798,6 +1021,55 @@ def validate_release_manifest(manifest: Any) -> dict[str, Any]:
     expected = release_identity(obj)
     if obj["release_id"] != expected:
         _fail("$.release_id", f"expected {expected}")
+    return obj
+
+
+def _validate_release_selection(value: Any, location: str) -> dict[str, Any]:
+    selection = _expect_object(value, location)
+    _keys(selection, location, {"release_id", "release", "manifest"})
+    release_id = _hash(selection["release_id"], f"{location}.release_id")
+    release_hex = _digest(selection["release"], f"{location}.release")
+    if release_id != f"sha256:{release_hex}":
+        _fail(location, "release must be the lowercase digest suffix of release_id")
+    expected_manifest = f"/assets/brain/releases/{release_hex}/release.json"
+    if selection["manifest"] != expected_manifest:
+        _fail(f"{location}.manifest", f"expected {expected_manifest!r}")
+    return selection
+
+
+def validate_release_selector(selector: Any) -> dict[str, Any]:
+    obj = _expect_object(selector, "$")
+    previous_keys = {"previous_release_id", "previous_release", "previous_manifest"}
+    _keys(
+        obj,
+        "$",
+        {"schema", "release_id", "release", "manifest"},
+        previous_keys | {"audited_at"},
+    )
+    if obj["schema"] != RELEASE_SELECTOR_SCHEMA:
+        _fail("$.schema", f"unknown schema/version {obj['schema']!r}")
+    _validate_release_selection(
+        {key: obj[key] for key in ("release_id", "release", "manifest")},
+        "$",
+    )
+    present_previous = previous_keys.intersection(obj)
+    if present_previous and present_previous != previous_keys:
+        _fail("$", "previous release fields must be present together")
+    if present_previous:
+        previous = _validate_release_selection(
+            {
+                "release_id": obj["previous_release_id"],
+                "release": obj["previous_release"],
+                "manifest": obj["previous_manifest"],
+            },
+            "$.previous",
+        )
+        if previous["release_id"] == obj["release_id"]:
+            _fail("$.previous_release_id", "previous release must differ from current release")
+    if "audited_at" in obj:
+        audited_at = _expect_string(obj["audited_at"], "$.audited_at")
+        if not audited_at:
+            _fail("$.audited_at", "must be non-empty")
     return obj
 
 
@@ -914,6 +1186,17 @@ def _artifact_logical_root(data: bytes, logical_format: str, location: str) -> s
     return None
 
 
+def _artifact_logical_root_handle(
+    handle: BinaryIO, logical_format: str, location: str
+) -> str | None:
+    if logical_format == "jsonl-rowset":
+        return _logical_jsonl_handle(handle, location)
+    if logical_format == "json":
+        handle.seek(0)
+        return _logical_json_bytes(handle.read(), location)
+    return None
+
+
 def _json_meta(data: bytes, location: str) -> dict[str, Any]:
     value = parse_artifact_json_bytes(data, location=location)
     if not isinstance(value, dict) or not isinstance(value.get("_meta"), dict):
@@ -923,6 +1206,17 @@ def _json_meta(data: bytes, location: str) -> dict[str, Any]:
 
 def _jsonl_meta(data: bytes, location: str) -> dict[str, Any]:
     for line_number, raw in enumerate(data.splitlines(), 1):
+        if raw.strip():
+            first = parse_artifact_json_bytes(raw, location=f"{location}:{line_number}")
+            if isinstance(first, dict) and isinstance(first.get("_meta"), dict):
+                return first["_meta"]
+            return {}
+    return {}
+
+
+def _jsonl_meta_handle(handle: BinaryIO, location: str) -> dict[str, Any]:
+    handle.seek(0)
+    for line_number, raw in enumerate(handle, 1):
         if raw.strip():
             first = parse_artifact_json_bytes(raw, location=f"{location}:{line_number}")
             if isinstance(first, dict) and isinstance(first.get("_meta"), dict):
@@ -1056,9 +1350,22 @@ def _normalized_prefix(value: str, length: int, pad: str) -> str:
     return result
 
 
-def _routed_shard(value: str, keys: set[str], pad: str) -> str | None:
-    matches = [key for key in keys if _normalized_prefix(value, len(key), pad) == key]
-    return max(matches, key=len) if matches else None
+def _routed_shard(
+    value: str,
+    keys: set[str],
+    pad: str,
+    lengths: tuple[int, ...] | None = None,
+) -> str | None:
+    """Route through the small set of prefix lengths, not every shard key."""
+    ordered_lengths = lengths or tuple(sorted({len(key) for key in keys}, reverse=True))
+    if not ordered_lengths:
+        return None
+    normalized = _normalized_prefix(value, ordered_lengths[0], pad)
+    for length in ordered_lengths:
+        candidate = normalized[:length]
+        if candidate in keys:
+            return candidate
+    return None
 
 
 def _validate_provenance_indexes(value: Any, table_size: int, location: str) -> None:
@@ -1076,10 +1383,20 @@ def _validate_provenance_indexes(value: Any, table_size: int, location: str) -> 
 
 
 def _verify_current_static_closure(
-    root: Path, artifact_paths: set[str], artifact_bytes: dict[str, bytes]
+    root: Path,
+    artifacts: dict[str, dict[str, Any]],
+    connection: sqlite3.Connection,
 ) -> None:
+    artifact_paths = set(artifacts)
+
+    def read_artifact(relative: str) -> bytes:
+        ref = artifacts.get(relative)
+        if ref is None:
+            _fail("$.artifacts", f"release does not declare {relative}")
+        return verify_file_ref(root, ref, f"static projection {relative}")
+
     manifest_relative = f"{STATIC_CELLS_PREFIX}manifest.json"
-    manifest = parse_artifact_json_bytes(artifact_bytes[manifest_relative], location=manifest_relative)
+    manifest = parse_artifact_json_bytes(read_artifact(manifest_relative), location=manifest_relative)
     manifest_obj = _expect_object(manifest, manifest_relative)
     shards = _expect_object(manifest_obj.get("shards"), f"{manifest_relative}.shards")
     traces = _expect_object(manifest_obj.get("traces"), f"{manifest_relative}.traces")
@@ -1090,6 +1407,10 @@ def _verify_current_static_closure(
     trace_pad = _expect_string(trace_scheme.get("pad"), f"{manifest_relative}.traces.scheme.pad")
     expected = {f"{STATIC_CELLS_PREFIX}{key}.json" for key in shards}
     expected.update(f"{STATIC_CELLS_PREFIX}traces/{key}.json" for key in trace_files)
+    shard_keys = set(shards)
+    shard_lengths = tuple(sorted({len(key) for key in shard_keys}, reverse=True))
+    trace_keys = set(trace_files)
+    trace_lengths = tuple(sorted({len(key) for key in trace_keys}, reverse=True))
     missing = sorted(expected - artifact_paths)
     if missing:
         preview = ", ".join(missing[:5])
@@ -1105,58 +1426,85 @@ def _verify_current_static_closure(
         suffix = f" (and {len(stale) - 5} more)" if len(stale) > 5 else ""
         _fail("$.artifacts", f"static cell manifest closure contains stale files: {preview}{suffix}")
 
-    cell_meta, cell_rows = _jsonl_rows(
-        artifact_bytes["brain/data/cells.jsonl"], "brain/data/cells.jsonl"
-    )
-    _, node_rows = _jsonl_rows(
-        artifact_bytes["brain/data/nodes.jsonl"], "brain/data/nodes.jsonl"
-    )
-    _, edge_rows = _jsonl_rows(
-        artifact_bytes["brain/data/edges.jsonl"], "brain/data/edges.jsonl"
-    )
-    synapse_meta, synapse_rows = _jsonl_rows(
-        artifact_bytes["brain/data/synapses.jsonl"], "brain/data/synapses.jsonl"
-    )
-    frontier_meta, frontier_rows = _jsonl_rows(
-        artifact_bytes["brain/data/frontier.jsonl"], "brain/data/frontier.jsonl"
-    )
-    cells = {
-        _expect_string(row.get("id"), "brain/data/cells.jsonl.id"): row
-        for row in cell_rows
-    }
-    if len(cells) != len(cell_rows):
-        _fail("brain/data/cells.jsonl", "duplicate cell IDs")
-    if manifest_obj.get("prov", []) != cell_meta.get("prov", []):
-        _fail(manifest_relative, "prov does not match cells.jsonl metadata")
-    expected_trace_prov = synapse_meta.get("prov", [])
-    if expected_trace_prov == cell_meta.get("prov", []):
-        if "prov" in traces:
-            _fail(manifest_relative, "traces.prov must be omitted when provenance tables agree")
-    elif traces.get("prov") != expected_trace_prov:
-        _fail(manifest_relative, "traces.prov does not match synapses.jsonl metadata")
+    def sqlite_metadata(name: str) -> dict[str, Any]:
+        row = connection.execute(
+            "SELECT metadata_json FROM artifacts WHERE name = ?", (name,)
+        ).fetchone()
+        if row is None or not isinstance(row[0], str):
+            _fail("$.artifacts", f"Brain SQLite metadata is missing for {name}")
+        return _expect_object(
+            parse_json_bytes(row[0].encode("utf-8"), location=f"SQLite artifacts.{name}"),
+            f"SQLite artifacts.{name}",
+        )
+
+    def sqlite_payloads(
+        query: str, parameters: tuple[Any, ...] = ()
+    ) -> Iterator[dict[str, Any]]:
+        for (payload,) in connection.execute(query, parameters):
+            if not isinstance(payload, str):
+                _fail("$.artifacts", "Brain SQLite payload_json must be text")
+            yield _expect_object(
+                parse_artifact_json_bytes(
+                    payload.encode("utf-8"), location="Brain SQLite payload_json"
+                ),
+                "Brain SQLite payload_json",
+            )
+
+    cell_meta = sqlite_metadata("cells")
+    cells: dict[str, dict[str, Any]] = {}
     cell_prov = cell_meta.get("prov", [])
     if not isinstance(cell_prov, list):
         _fail("brain/data/cells.jsonl._meta.prov", "must be an array")
+    for index, row in enumerate(
+        sqlite_payloads("SELECT payload_json FROM cells ORDER BY ordinal")
+    ):
+        cell_id = _expect_string(row.get("id"), "brain/data/cells.jsonl.id")
+        if cell_id in cells:
+            _fail("brain/data/cells.jsonl", "duplicate cell IDs")
+        _validate_provenance_indexes(
+            row, len(cell_prov), f"brain/data/cells.jsonl[{index}]"
+        )
+        cells[cell_id] = row
+    if not _same_logical_json(manifest_obj.get("prov", []), cell_meta.get("prov", [])):
+        _fail(manifest_relative, "prov does not match cells.jsonl metadata")
+
+    expected_cell_ids = set(cells)
+    ordered_cells = [cells[cell_id] for cell_id in sorted(cells)]
+    cell_index = {cell["id"]: index for index, cell in enumerate(ordered_cells)}
+
+    nodes = {
+        _expect_string(row.get("id"), "brain/data/nodes.jsonl.id"): row
+        for row in sqlite_payloads("SELECT payload_json FROM nodes ORDER BY ordinal")
+    }
+
+    parent: dict[str, str] = {}
+    xrefs: dict[str, list[str]] = defaultdict(list)
+    for row in sqlite_payloads(
+        "SELECT payload_json FROM edges WHERE stream = 'main' ORDER BY ordinal"
+    ):
+        if (
+            row.get("kind") == "contains"
+            and isinstance(row.get("dst"), str)
+            and row["dst"].startswith("path:")
+        ):
+            parent[row["dst"]] = row["src"]
+        if row.get("kind") == "xref":
+            xrefs[row["dst"]].append(row["src"])
+
+    synapse_meta = sqlite_metadata("synapses")
+    expected_trace_prov = synapse_meta.get("prov", [])
+    if _same_logical_json(expected_trace_prov, cell_meta.get("prov", [])):
+        if "prov" in traces:
+            _fail(manifest_relative, "traces.prov must be omitted when provenance tables agree")
+    elif not _same_logical_json(traces.get("prov"), expected_trace_prov):
+        _fail(manifest_relative, "traces.prov does not match synapses.jsonl metadata")
     trace_prov = expected_trace_prov
     if not isinstance(trace_prov, list):
         _fail("brain/data/synapses.jsonl._meta.prov", "must be an array")
-    for index, row in enumerate(cell_rows):
-        _validate_provenance_indexes(row, len(cell_prov), f"brain/data/cells.jsonl[{index}]")
-    for index, row in enumerate(synapse_rows):
-        _validate_provenance_indexes(row, len(trace_prov), f"brain/data/synapses.jsonl[{index}]")
 
-    expected_cell_ids = set(cells)
-    nodes = {
-        _expect_string(row.get("id"), "brain/data/nodes.jsonl.id"): row
-        for row in node_rows
-    }
-    parent = {
-        row["dst"]: row["src"]
-        for row in edge_rows
-        if row.get("kind") == "contains"
-        and isinstance(row.get("dst"), str)
-        and row["dst"].startswith("path:")
-    }
+    frontier_meta, frontier_rows = _jsonl_rows(
+        read_artifact("brain/data/frontier.jsonl"), "brain/data/frontier.jsonl"
+    )
 
     def breadcrumb(owner: str | None) -> list[dict[str, str]]:
         chain: list[dict[str, str]] = []
@@ -1167,21 +1515,20 @@ def _verify_current_static_closure(
             current = parent.get(current)
         return chain
 
-    by_cell: dict[str, list[dict[str, Any]]] = defaultdict(list)
     expected_trace_values: dict[str, dict[str, Any]] = {}
-    for synapse in synapse_rows:
+    expected_explorer_edges: list[list[int]] = []
+    for index, synapse in enumerate(
+        sqlite_payloads("SELECT payload_json FROM synapses ORDER BY ordinal")
+    ):
+        _validate_provenance_indexes(
+            synapse, len(trace_prov), f"brain/data/synapses.jsonl[{index}]"
+        )
         src = _expect_string(synapse.get("src"), "brain/data/synapses.jsonl.src")
         dst = _expect_string(synapse.get("dst"), "brain/data/synapses.jsonl.dst")
-        traces_for_card = [
-            _trim_trace(trace)
-            for trace in _pick_traces(synapse.get("traces") or [], 6)
-        ]
-        dropped = len(synapse.get("traces") or []) - len(traces_for_card) + synapse.get("truncated", 0)
-        for owner, partner in ((src, dst), (dst, src)):
-            entry = {"id": partner, "w": synapse["weight"], "kinds": synapse["kinds"], "traces": traces_for_card}
-            if dropped:
-                entry["tt"] = len(synapse.get("traces") or []) + synapse.get("truncated", 0)
-            by_cell[owner].append(entry)
+        if src in cell_index and dst in cell_index:
+            expected_explorer_edges.append(
+                [cell_index[src], cell_index[dst], synapse["weight"]]
+            )
         if src not in cells or dst not in cells:
             pair = f"{src}|{dst}"
             traces = [
@@ -1192,16 +1539,54 @@ def _verify_current_static_closure(
                 "tt": len(synapse.get("traces") or []) + synapse.get("truncated", 0),
                 "traces": traces,
             }
+    expected_explorer_edges.sort(key=lambda value: (-value[2], value[0], value[1]))
+
+    def synapses_for(owner: str) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        query = (
+            "SELECT payload_json FROM ("
+            "SELECT payload_json, ordinal FROM synapses INDEXED BY synapses_src_idx "
+            "WHERE src = ? UNION ALL "
+            "SELECT payload_json, ordinal FROM synapses INDEXED BY synapses_dst_idx "
+            "WHERE dst = ? AND src <> ?"
+            ") ORDER BY ordinal"
+        )
+        for synapse in sqlite_payloads(query, (owner, owner, owner)):
+            src = _expect_string(synapse.get("src"), "brain/data/synapses.jsonl.src")
+            dst = _expect_string(synapse.get("dst"), "brain/data/synapses.jsonl.dst")
+            partner = dst if src == owner else src
+            traces_for_card = [
+                _trim_trace(trace)
+                for trace in _pick_traces(synapse.get("traces") or [], 6)
+            ]
+            dropped = (
+                len(synapse.get("traces") or [])
+                - len(traces_for_card)
+                + synapse.get("truncated", 0)
+            )
+            entry = {
+                "id": partner,
+                "w": synapse["weight"],
+                "kinds": synapse["kinds"],
+                "traces": traces_for_card,
+            }
+            if dropped:
+                entry["tt"] = (
+                    len(synapse.get("traces") or [])
+                    + synapse.get("truncated", 0)
+                )
+            rows.append(entry)
+        return rows
 
     served_cell_ids: set[str] = set()
     for key, declared_count in shards.items():
         _expect_int(declared_count, f"{manifest_relative}.shards.{key}")
         relative = f"{STATIC_CELLS_PREFIX}{key}.json"
-        shard = _expect_object(parse_artifact_json_bytes(artifact_bytes[relative], location=relative), relative)
+        shard = _expect_object(parse_artifact_json_bytes(read_artifact(relative), location=relative), relative)
         if len(shard) != declared_count:
             _fail(relative, f"manifest declares {declared_count} entries, found {len(shard)}")
         for cell_id, entry_value in shard.items():
-            routed = _routed_shard(cell_id, set(shards), shard_pad)
+            routed = _routed_shard(cell_id, shard_keys, shard_pad, shard_lengths)
             if routed != key:
                 _fail(relative, f"cell {cell_id!r} routes to shard {routed!r}, not {key!r}")
             if cell_id in served_cell_ids:
@@ -1210,12 +1595,13 @@ def _verify_current_static_closure(
             cell = cells.get(cell_id)
             if cell is None:
                 continue
+            cell_synapses = synapses_for(cell_id)
             expected_entry: dict[str, Any] = {
                 "cell": {field: value for field, value in cell.items() if field != "organs"},
                 "organs": [_organ_payload(organ, nodes) for organ in cell.get("organs") or []],
-                "syn": _pick_synapses(by_cell.get(cell_id, []), 200),
+                "syn": _pick_synapses(cell_synapses, 200),
                 "counts": {
-                    "syn": len(by_cell.get(cell_id, [])),
+                    "syn": len(cell_synapses),
                     "organs": len(cell.get("organs") or []),
                 },
             }
@@ -1228,7 +1614,7 @@ def _verify_current_static_closure(
                 expected_entry["breadcrumb"] = breadcrumb(
                     min(supercells, key=lambda value: (value.count("/"), value))
                 )
-            if entry_value != expected_entry:
+            if not _same_logical_json(entry_value, expected_entry):
                 _fail(relative, f"cell entry {cell_id!r} does not match JSONL projection")
     if served_cell_ids != expected_cell_ids:
         missing_cells = sorted(expected_cell_ids - served_cell_ids)
@@ -1246,7 +1632,7 @@ def _verify_current_static_closure(
         _fail(f"{manifest_relative}._meta.counts.shards", "does not match manifest shards")
 
     labels_relative = f"{STATIC_CELLS_PREFIX}labels.json"
-    labels = _expect_array(parse_artifact_json_bytes(artifact_bytes[labels_relative], location=labels_relative), labels_relative)
+    labels = _expect_array(parse_artifact_json_bytes(read_artifact(labels_relative), location=labels_relative), labels_relative)
     expected_labels: list[dict[str, Any]] = []
     for cell_id, cell in sorted(cells.items()):
         ranked: dict[str, int] = {}
@@ -1267,11 +1653,11 @@ def _verify_current_static_closure(
             row["p"] = min(supercells, key=lambda value: (value.count("/"), value))
         expected_labels.append(row)
     expected_labels.sort(key=lambda row: (-len(row.get("aka") or []), row["label"]))
-    if labels != expected_labels:
+    if not _same_logical_json(labels, expected_labels):
         _fail(labels_relative, "does not match the cells.jsonl search projection")
 
     aliases_relative = f"{STATIC_CELLS_PREFIX}aliases.json"
-    aliases = _expect_object(parse_artifact_json_bytes(artifact_bytes[aliases_relative], location=aliases_relative), aliases_relative)
+    aliases = _expect_object(parse_artifact_json_bytes(read_artifact(aliases_relative), location=aliases_relative), aliases_relative)
     expected_owners: dict[str, str] = {}
     expected_decls: dict[str, str] = {}
     expected_slugs: dict[str, str] = {}
@@ -1297,18 +1683,16 @@ def _verify_current_static_closure(
         if aliases.get(field) != {key: expected_map[key] for key in sorted(expected_map)}:
             _fail(aliases_relative, f"{field} does not match the JSONL projection")
 
-    frontier_source = artifact_bytes["brain/data/frontier_graph.json"]
-    frontier_copy = artifact_bytes[f"{STATIC_CELLS_PREFIX}frontier_graph.json"]
+    frontier_source = read_artifact("brain/data/frontier_graph.json")
+    frontier_copy = read_artifact(f"{STATIC_CELLS_PREFIX}frontier_graph.json")
     if frontier_copy != frontier_source:
         _fail("$.artifacts", "static frontier_graph.json is not the verbatim Brain data copy")
 
     explorer_relative = f"{STATIC_CELLS_PREFIX}explorer.json"
     explorer = _expect_object(
-        parse_artifact_json_bytes(artifact_bytes[explorer_relative], location=explorer_relative),
+        parse_artifact_json_bytes(read_artifact(explorer_relative), location=explorer_relative),
         explorer_relative,
     )
-    ordered_cells = [cells[cell_id] for cell_id in sorted(cells)]
-    cell_index = {cell["id"]: index for index, cell in enumerate(ordered_cells)}
     expected_explorer_nodes = [
         {
             "id": cell["id"],
@@ -1320,18 +1704,13 @@ def _verify_current_static_closure(
         }
         for cell in ordered_cells
     ]
-    expected_explorer_edges = sorted(
-        ([cell_index[row["src"]], cell_index[row["dst"]], row["weight"]]
-         for row in synapse_rows
-         if row["src"] in cell_index and row["dst"] in cell_index),
-        key=lambda value: (-value[2], value[0], value[1]),
-    )
-    if explorer.get("nodes") != expected_explorer_nodes or explorer.get("edges") != expected_explorer_edges:
+    if not _same_logical_json(explorer.get("nodes"), expected_explorer_nodes) \
+            or not _same_logical_json(explorer.get("edges"), expected_explorer_edges):
         _fail(explorer_relative, "does not match the complete cells/synapses projection")
 
     supercells_relative = f"{STATIC_CELLS_PREFIX}supercells.json"
     supercells_doc = _expect_object(
-        parse_artifact_json_bytes(artifact_bytes[supercells_relative], location=supercells_relative),
+        parse_artifact_json_bytes(read_artifact(supercells_relative), location=supercells_relative),
         supercells_relative,
     )
     expected_members: dict[str, list[str]] = defaultdict(list)
@@ -1369,8 +1748,8 @@ def _verify_current_static_closure(
             row["cells"] = sorted(expected_members[path_id])
         if supercell_organs.get(path_id):
             row["organs"] = supercell_organs[path_id]
-        if by_cell.get(path_id):
-            synapses = by_cell[path_id]
+        synapses = synapses_for(path_id)
+        if synapses:
             kept = _pick_synapses(synapses, 200)
             row["syn"] = [
                 {key: value for key, value in synapse.items() if key != "traces"}
@@ -1405,10 +1784,10 @@ def _verify_current_static_closure(
             ):
                 row[field] = value
         expected_supercells[frontier_id] = row
-    if supercells_doc.get("supercells") != expected_supercells:
+    if not _same_logical_json(supercells_doc.get("supercells"), expected_supercells):
         _fail(supercells_relative, "does not match the complete cell/frontier projection")
     expected_roots = sorted(path_id for path_id in expected_supercells if path_id not in parent)
-    if supercells_doc.get("roots") != expected_roots:
+    if not _same_logical_json(supercells_doc.get("roots"), expected_roots):
         _fail(supercells_relative, "roots do not match the containment projection")
     expected_manifest_roots: list[dict[str, Any]] = []
     for path_id in expected_roots:
@@ -1436,7 +1815,7 @@ def _verify_current_static_closure(
             if facets.get(path_id):
                 root_row["fa"] = facets[path_id]
         expected_manifest_roots.append(root_row)
-    if manifest_obj.get("roots") != expected_manifest_roots:
+    if not _same_logical_json(manifest_obj.get("roots"), expected_manifest_roots):
         _fail(manifest_relative, "roots do not match the complete containment/frontier projection")
     expected_counts = {
         "supercells": len(expected_supercells),
@@ -1458,12 +1837,12 @@ def _verify_current_static_closure(
         _expect_object(supercells_doc.get("_meta"), f"{supercells_relative}._meta").get("counts"),
         f"{supercells_relative}._meta.counts",
     )
-    if actual_counts != expected_counts:
+    if not _same_logical_json(actual_counts, expected_counts):
         _fail(supercells_relative, "metadata counts do not match the complete projection")
 
     source_registry = _expect_object(
         parse_artifact_json_bytes(
-            artifact_bytes["catalog/data/source_registry.json"],
+            read_artifact("catalog/data/source_registry.json"),
             location="catalog/data/source_registry.json",
         ),
         "catalog/data/source_registry.json",
@@ -1486,21 +1865,17 @@ def _verify_current_static_closure(
         for key, value in _expect_object(source_registry.get(group, {}), f"source_registry.{group}").items():
             add_source(key, _expect_object(value, f"source_registry.{group}.{key}"), group)
     sources_doc = parse_artifact_json_bytes(
-        artifact_bytes["site/assets/brain/sources.json"], location="site/assets/brain/sources.json"
+        read_artifact("site/assets/brain/sources.json"), location="site/assets/brain/sources.json"
     )
     expected_sources_doc = {
         "layers": source_registry["layers"],
         "our_data_license": source_registry["our_data_license"],
         "sources": expected_sources,
     }
-    if sources_doc != expected_sources_doc:
+    if not _same_logical_json(sources_doc, expected_sources_doc):
         _fail("site/assets/brain/sources.json", "does not match source_registry.json")
 
-    xrefs: dict[str, list[str]] = defaultdict(list)
-    for row in edge_rows:
-        if row.get("kind") == "xref":
-            xrefs[row["dst"]].append(row["src"])
-    for line_number, raw in enumerate(artifact_bytes["brain/data/community_edges.jsonl"].splitlines(), 1):
+    for line_number, raw in enumerate(read_artifact("brain/data/community_edges.jsonl").splitlines(), 1):
         if not raw.strip():
             continue
         row = _expect_object(
@@ -1510,26 +1885,26 @@ def _verify_current_static_closure(
         if row.get("kind") == "xref":
             xrefs[row["dst"]].append(row["src"])
     xref_doc = parse_artifact_json_bytes(
-        artifact_bytes["site/assets/brain/xref_index.json"], location="site/assets/brain/xref_index.json"
+        read_artifact("site/assets/brain/xref_index.json"), location="site/assets/brain/xref_index.json"
     )
-    if xref_doc != dict(xrefs):
+    if not _same_logical_json(xref_doc, dict(xrefs)):
         _fail("site/assets/brain/xref_index.json", "does not match edge inputs")
 
     served_trace_values: dict[str, dict[str, Any]] = {}
     for key, declared_count in trace_files.items():
         _expect_int(declared_count, f"{manifest_relative}.traces.files.{key}")
         relative = f"{STATIC_CELLS_PREFIX}traces/{key}.json"
-        shard = _expect_object(parse_artifact_json_bytes(artifact_bytes[relative], location=relative), relative)
+        shard = _expect_object(parse_artifact_json_bytes(read_artifact(relative), location=relative), relative)
         if len(shard) != declared_count:
             _fail(relative, f"manifest declares {declared_count} entries, found {len(shard)}")
         for pair, trace_value in shard.items():
-            routed = _routed_shard(pair, set(trace_files), trace_pad)
+            routed = _routed_shard(pair, trace_keys, trace_pad, trace_lengths)
             if routed != key:
                 _fail(relative, f"trace pair {pair!r} routes to shard {routed!r}, not {key!r}")
             if pair in served_trace_values:
                 _fail(relative, f"trace pair {pair!r} appears in more than one shard")
             served_trace_values[pair] = trace_value
-    if served_trace_values != expected_trace_values:
+    if not _same_logical_json(served_trace_values, expected_trace_values):
         _fail("$.artifacts", "trace sidecars do not match supercell synapse projections")
 
     cells_root = root.resolve(strict=True) / "site/assets/brain/cells"
@@ -1551,205 +1926,579 @@ def _sqlite_payload_root(
     query: str,
     parameters: tuple[Any, ...] = (),
 ) -> str:
-    digest = hashlib.sha256()
-    digest.update(f"wikilean\0{LOGICAL_JSONL_DOMAIN}\0canonical-artifact-json-v1\0".encode("ascii"))
-    digest.update(b"[")
-    first = True
-    for (payload,) in connection.execute(query, parameters):
-        if not isinstance(payload, str):
-            _fail("$.artifacts", "SQLite payload_json must be text")
-        data = payload.encode("utf-8")
-        value = parse_artifact_json_bytes(data, location="SQLite payload_json")
-        canonical = _decimal_json(value)
-        # SQLite stores the builder's compact JSON spelling; exact logical
-        # parity is established by the canonical decimal root below.
-        if not first:
-            digest.update(b",")
-        digest.update(canonical)
-        first = False
-    digest.update(b"]")
-    return "sha256:" + digest.hexdigest()
-
-
-def _verify_sqlite_projection(
-    data: bytes,
-    artifacts: dict[str, dict[str, Any]],
-    artifact_bytes: dict[str, bytes],
-) -> None:
-    fd, name = tempfile.mkstemp(prefix="wikilean-release-", suffix=".sqlite3")
+    table = "release_logical_rows"
+    connection.execute(f"DROP TABLE IF EXISTS temp.{table}")
+    connection.execute(f"CREATE TEMP TABLE {table} (payload BLOB NOT NULL)")
     try:
-        with os.fdopen(fd, "wb") as handle:
-            handle.write(data)
-        uri = Path(name).resolve().as_uri() + "?mode=ro&immutable=1"
-        connection = sqlite3.connect(uri, uri=True)
-        try:
-            version = connection.execute("PRAGMA user_version").fetchone()[0]
-            if version != 1:
-                _fail("$.artifacts", f"unsupported Brain SQLite schema {version}")
-            snapshot = connection.execute(
-                "SELECT build_state, snapshot_id FROM snapshot WHERE singleton = 1"
-            ).fetchone()
-            if snapshot is None or snapshot[0] != "complete":
-                _fail("$.artifacts", "Brain SQLite snapshot is incomplete")
-            recorded = dict(connection.execute("SELECT name, source_digest FROM artifacts"))
-            projected_roots = {
-                "nodes": _sqlite_payload_root(
-                    connection, "SELECT payload_json FROM nodes ORDER BY payload_json"
-                ),
-                "edges": _sqlite_payload_root(
-                    connection,
-                    "SELECT payload_json FROM edges WHERE stream = ? ORDER BY payload_json",
-                    ("main",),
-                ),
-                "edges_links": _sqlite_payload_root(
-                    connection,
-                    "SELECT payload_json FROM edges WHERE stream = ? ORDER BY payload_json",
-                    ("links",),
-                ),
-                "cells": _sqlite_payload_root(
-                    connection, "SELECT payload_json FROM cells ORDER BY payload_json"
-                ),
-                "synapses": _sqlite_payload_root(
-                    connection, "SELECT payload_json FROM synapses ORDER BY payload_json"
-                ),
-            }
-            indexed_rows = {
-                "nodes": list(connection.execute(
-                    "SELECT id, type, label FROM nodes ORDER BY ordinal"
-                )),
-                "edges": list(connection.execute(
-                    "SELECT src, dst, kind, confidence, provenance_source "
-                    "FROM edges WHERE stream = 'main' ORDER BY ordinal"
-                )),
-                "edges_links": list(connection.execute(
-                    "SELECT src, dst, kind, confidence, provenance_source "
-                    "FROM edges WHERE stream = 'links' ORDER BY ordinal"
-                )),
-                "cells": list(connection.execute(
-                    "SELECT id, anchor, label FROM cells ORDER BY ordinal"
-                )),
-                "synapses": list(connection.execute(
-                    "SELECT src, dst, weight FROM synapses ORDER BY ordinal"
-                )),
-            }
-            owner_rows = list(connection.execute(
-                "SELECT organ_id, owner_id, organ_kind, bare_decl "
-                "FROM organ_owners ORDER BY organ_id"
-            ))
-            artifact_metadata = dict(connection.execute(
-                "SELECT name, metadata_json FROM artifacts"
-            ))
-        except sqlite3.Error as exc:
-            raise VerificationError(f"$.artifacts: invalid Brain SQLite projection: {exc}") from exc
-        finally:
-            connection.close()
-    finally:
-        Path(name).unlink(missing_ok=True)
+        batch: list[tuple[Any, ...]] = []
+        for (payload,) in connection.execute(query, parameters):
+            if not isinstance(payload, str):
+                _fail("$.artifacts", "SQLite payload_json must be text")
+            value = parse_artifact_json_bytes(
+                payload.encode("utf-8"), location="SQLite payload_json"
+            )
+            batch.append((sqlite3.Binary(_decimal_json(value)),))
+            if len(batch) >= 1_000:
+                connection.executemany(
+                    f"INSERT INTO temp.{table} VALUES (?)", batch
+                )
+                batch.clear()
+        if batch:
+            connection.executemany(f"INSERT INTO temp.{table} VALUES (?)", batch)
 
-    expected_paths = {
-        "nodes": "brain/data/nodes.jsonl",
-        "edges": "brain/data/edges.jsonl",
-        "edges_links": "brain/data/edges_links.jsonl",
-        "cells": "brain/data/cells.jsonl",
-        "synapses": "brain/data/synapses.jsonl",
-    }
-    if set(recorded) != set(expected_paths):
-        _fail("$.artifacts", "Brain SQLite artifact set does not match the current release profile")
-    parsed: dict[str, tuple[dict[str, Any], list[dict[str, Any]]]] = {}
-    for name, path in expected_paths.items():
-        if recorded[name] != artifacts[path]["sha256"]:
-            _fail("$.artifacts", f"Brain SQLite is stale relative to {path}")
-        if projected_roots[name] != artifacts[path]["logical_root"]:
+        digest = hashlib.sha256()
+        digest.update(
+            f"wikilean\0{LOGICAL_JSONL_DOMAIN}\0canonical-artifact-json-v1\0".encode(
+                "ascii"
+            )
+        )
+        digest.update(b"[")
+        first = True
+        for (payload,) in connection.execute(
+            f"SELECT payload FROM temp.{table} ORDER BY payload"
+        ):
+            if not first:
+                digest.update(b",")
+            digest.update(bytes(payload))
+            first = False
+        digest.update(b"]")
+        return "sha256:" + digest.hexdigest()
+    finally:
+        with suppress(sqlite3.Error):
+            connection.execute(f"DROP TABLE IF EXISTS temp.{table}")
+
+
+def _sqlite_integrity_check(connection: sqlite3.Connection) -> None:
+    """Require a complete SQLite b-tree/index integrity check without buffering errors."""
+    try:
+        cursor = connection.execute("PRAGMA integrity_check")
+        first = cursor.fetchone()
+        if first != ("ok",):
+            detail = first[0] if first and isinstance(first[0], str) else repr(first)
+            _fail("$.artifacts", f"Brain SQLite integrity check failed: {detail}")
+        if cursor.fetchone() is not None:
+            _fail("$.artifacts", "Brain SQLite integrity check returned unexpected extra rows")
+    except VerificationError:
+        raise
+    except sqlite3.Error as exc:
+        raise VerificationError(
+            f"$.artifacts: Brain SQLite integrity check failed: {exc}"
+        ) from exc
+
+
+def _verify_sqlite_schema_v2(connection: sqlite3.Connection) -> None:
+    """Require the tables, columns, and named query indexes used by schema v2."""
+    for table, expected_columns in BRAIN_SQLITE_V2_TABLE_COLUMNS.items():
+        actual_columns = tuple(
+            row[1] for row in connection.execute(f'PRAGMA table_xinfo("{table}")')
+        )
+        if actual_columns != expected_columns:
             _fail(
                 "$.artifacts",
-                f"Brain SQLite payload rows do not match the logical content of {path}",
+                f"Brain SQLite schema v2 table {table!r} has columns "
+                f"{actual_columns!r}; expected {expected_columns!r}",
             )
-        parsed[name] = _jsonl_rows(artifact_bytes[path], path)
-        metadata_value = parse_json_bytes(
-            artifact_metadata[name].encode("utf-8"),
-            location=f"SQLite artifacts.{name}.metadata_json",
+
+    indexes_by_table: dict[str, dict[str, tuple[Any, ...]]] = {}
+    for table in BRAIN_SQLITE_V2_TABLE_COLUMNS:
+        indexes_by_table[table] = {
+            row[1]: row
+            for row in connection.execute(f'PRAGMA index_list("{table}")')
+        }
+    for index, (table, expected_columns) in BRAIN_SQLITE_V2_INDEXES.items():
+        index_row = indexes_by_table[table].get(index)
+        if index_row is None:
+            _fail(
+                "$.artifacts",
+                f"Brain SQLite schema v2 is missing required index {index!r}",
+            )
+        if index_row[2] != 0 or index_row[3] != "c" or index_row[4] != 0:
+            _fail(
+                "$.artifacts",
+                f"Brain SQLite schema v2 index {index!r} must be a non-unique, "
+                "non-partial created index",
+            )
+        actual_key_columns = tuple(
+            (row[2], row[3], row[4])
+            for row in connection.execute(f'PRAGMA index_xinfo("{index}")')
+            if row[5]
         )
-        if metadata_value != parsed[name][0]:
-            _fail("$.artifacts", f"Brain SQLite metadata disagrees with {path}")
+        expected_key_columns = tuple(
+            (column, 0, "BINARY") for column in expected_columns
+        )
+        if actual_key_columns != expected_key_columns:
+            _fail(
+                "$.artifacts",
+                f"Brain SQLite schema v2 index {index!r} has key columns "
+                f"{actual_key_columns!r}; expected {expected_key_columns!r}",
+            )
 
-    expected_indexed = {
-        "nodes": [
-            (row["id"], row["type"], row.get("label"))
-            for row in parsed["nodes"][1]
-        ],
-        "edges": [
-            (row["src"], row["dst"], row["kind"], row.get("confidence"),
-             (row.get("provenance") or {}).get("source"))
-            for row in parsed["edges"][1]
-        ],
-        "edges_links": [
-            (row["src"], row["dst"], row["kind"], row.get("confidence"),
-             (row.get("provenance") or {}).get("source"))
-            for row in parsed["edges_links"][1]
-        ],
-        "cells": [
-            (row["id"], row.get("anchor"), row.get("label"))
-            for row in parsed["cells"][1]
-        ],
-        "synapses": [
-            (row["src"], row["dst"], row["weight"])
-            for row in parsed["synapses"][1]
-        ],
-    }
-    for name, expected in expected_indexed.items():
-        if indexed_rows[name] != expected:
-            _fail("$.artifacts", f"Brain SQLite indexed columns disagree with {expected_paths[name]}")
 
-    expected_owners: dict[str, tuple[str, str | None, str | None]] = {}
-    for cell in parsed["cells"][1]:
-        for organ in cell.get("organs") or []:
+def _iter_jsonl_objects(handle: BinaryIO, location: str) -> Iterator[dict[str, Any]]:
+    """Parse JSONL one row at a time from an already verified artifact handle."""
+    handle.seek(0)
+    for line_number, raw in enumerate(handle, 1):
+        if not raw.strip():
+            continue
+        yield _expect_object(
+            parse_artifact_json_bytes(raw, location=f"{location}:{line_number}"),
+            f"{location}:{line_number}",
+        )
+
+
+def _indexed_values(name: str, row: dict[str, Any]) -> tuple[Any, ...]:
+    if name == "nodes":
+        return row["id"], row["type"], row.get("label")
+    if name in {"edges", "edges_links"}:
+        return (
+            row["src"],
+            row["dst"],
+            row["kind"],
+            row.get("confidence"),
+            (row.get("provenance") or {}).get("source"),
+        )
+    if name == "cells":
+        return row["id"], row.get("anchor"), row.get("label")
+    if name == "synapses":
+        return row["src"], row["dst"], row["weight"]
+    raise AssertionError(f"unknown SQLite artifact {name!r}")
+
+
+def _record_expected_owner(
+    connection: sqlite3.Connection,
+    organ_id: str,
+    owner: str,
+    kind: str | None,
+    bare: str | None,
+    *,
+    location: str,
+) -> None:
+    prior = connection.execute(
+        "SELECT owner_id, organ_kind, bare_decl FROM temp.expected_organ_owners "
+        "WHERE organ_id = ?",
+        (organ_id,),
+    ).fetchone()
+    if prior is None:
+        connection.execute(
+            "INSERT INTO temp.expected_organ_owners "
+            "(organ_id, owner_id, organ_kind, bare_decl) VALUES (?, ?, ?, ?)",
+            (organ_id, owner, kind, bare),
+        )
+    elif prior[0] != owner:
+        _fail(location, f"organ {organ_id!r} has two owners")
+
+
+def _verify_sqlite_artifact_rows(
+    connection: sqlite3.Connection,
+    root: Path,
+    artifact: dict[str, Any],
+    name: str,
+    query: str,
+    metadata_json: str,
+) -> tuple[dict[str, Any], str, int]:
+    """Stream one JSONL artifact against its ordinal SQLite index projection."""
+    path = artifact["path"]
+    location = f"SQLite parity for {path}"
+    metadata: dict[str, Any] | None = None
+    saw_data = False
+    row_count = 0
+    row_digest = hashlib.sha256()
+    cursor = connection.execute(query)
+    with open_verified_file(root, artifact, location) as handle:
+        for row in _iter_jsonl_objects(handle, path):
+            if set(row) == {"_meta"}:
+                if metadata is not None or saw_data:
+                    _fail(path, "metadata must be the first non-empty row")
+                metadata = _expect_object(row["_meta"], f"{path}._meta")
+                continue
+            saw_data = True
+            row_count += 1
+            actual = cursor.fetchone()
+            if actual is None or actual[:-1] != _indexed_values(name, row):
+                _fail("$.artifacts", f"Brain SQLite indexed columns disagree with {path}")
+            payload = actual[-1]
+            if not isinstance(payload, str):
+                _fail("$.artifacts", f"Brain SQLite payload_json is not text for {path}")
+            payload_value = _expect_object(
+                parse_artifact_json_bytes(
+                    payload.encode("utf-8"), location=f"SQLite payload for {path}"
+                ),
+                f"SQLite payload for {path}",
+            )
+            if not _same_logical_json(payload_value, row):
+                _fail(
+                    "$.artifacts",
+                    f"Brain SQLite payload_json is paired with the wrong ordinal/index row for {path}",
+                )
+            row_digest.update(payload.encode("utf-8"))
+            row_digest.update(b"\n")
+            if name == "cells":
+                for organ in row.get("organs") or []:
+                    organ_id = organ.get("id")
+                    if not isinstance(organ_id, str):
+                        continue
+                    kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
+                    bare = (
+                        organ_id.split(":", 2)[2]
+                        if kind == "decl" and organ_id.count(":") >= 2
+                        else None
+                    )
+                    _record_expected_owner(
+                        connection,
+                        organ_id,
+                        row["id"],
+                        kind,
+                        bare,
+                        location=path,
+                    )
+    if metadata is None:
+        _fail(path, "missing metadata row")
+    if cursor.fetchone() is not None:
+        _fail("$.artifacts", f"Brain SQLite indexed columns disagree with {path}")
+    parsed_metadata = parse_json_bytes(
+        metadata_json.encode("utf-8"),
+        location=f"SQLite artifacts.{name}.metadata_json",
+    )
+    if not _same_logical_json(parsed_metadata, metadata):
+        _fail("$.artifacts", f"Brain SQLite metadata disagrees with {path}")
+    logical_digest = hashlib.sha256(
+        metadata_json.encode("utf-8")
+        + b"\n"
+        + row_digest.hexdigest().encode("ascii")
+    ).hexdigest()
+    return metadata, logical_digest, row_count
+
+
+def _verify_sqlite_owner_rows(
+    connection: sqlite3.Connection, cells_metadata: dict[str, Any]
+) -> None:
+    # Regular cell ownership has precedence over the fallback ownership map in
+    # cells metadata. INSERT OR IGNORE mirrors the builder's setdefault rule.
+    for owner, organs in (cells_metadata.get("supercell_organs") or {}).items():
+        for organ in organs:
             organ_id = organ.get("id")
             if not isinstance(organ_id, str):
                 continue
             kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
-            bare = organ_id.split(":", 2)[2] if kind == "decl" and organ_id.count(":") >= 2 else None
-            prior = expected_owners.setdefault(organ_id, (cell["id"], kind, bare))
-            if prior[0] != cell["id"]:
-                _fail("brain/data/cells.jsonl", f"organ {organ_id!r} has two owners")
-    for owner, organs in (parsed["cells"][0].get("supercell_organs") or {}).items():
-        for organ in organs:
-            organ_id = organ.get("id")
-            if isinstance(organ_id, str) and organ_id not in expected_owners:
-                kind = organ.get("kind") if isinstance(organ.get("kind"), str) else None
-                bare = organ_id.split(":", 2)[2] if kind == "decl" and organ_id.count(":") >= 2 else None
-                expected_owners[organ_id] = (owner, kind, bare)
-    expected_owner_rows = [
-        (organ_id, owner, kind, bare)
-        for organ_id, (owner, kind, bare) in sorted(expected_owners.items())
-    ]
-    if owner_rows != expected_owner_rows:
-        _fail("$.artifacts", "Brain SQLite organ_owners disagrees with cells.jsonl")
+            bare = (
+                organ_id.split(":", 2)[2]
+                if kind == "decl" and organ_id.count(":") >= 2
+                else None
+            )
+            connection.execute(
+                "INSERT OR IGNORE INTO temp.expected_organ_owners "
+                "(organ_id, owner_id, organ_kind, bare_decl) VALUES (?, ?, ?, ?)",
+                (organ_id, owner, kind, bare),
+            )
+
+    for actual_table, expected_table in (
+        ("organ_owners", "temp.expected_organ_owners"),
+        ("temp.expected_organ_owners", "organ_owners"),
+    ):
+        mismatch = connection.execute(
+            f"SELECT organ_id, owner_id, organ_kind, bare_decl FROM {actual_table} "
+            "EXCEPT "
+            f"SELECT organ_id, owner_id, organ_kind, bare_decl FROM {expected_table} "
+            "LIMIT 1"
+        ).fetchone()
+        if mismatch is not None:
+            _fail("$.artifacts", "Brain SQLite organ_owners disagrees with cells.jsonl")
+
+
+def _verify_sqlite_projection(
+    handle: BinaryIO,
+    root: Path,
+    artifacts: dict[str, dict[str, Any]],
+    *,
+    verify_static_closure: bool = False,
+) -> None:
+    # Keep the already hashed descriptor pinned and make SQLite open that exact
+    # inode. This avoids both a whole-database bytes object and a temporary copy.
+    descriptor_path = Path("/dev/fd") / str(handle.fileno())
+    if not descriptor_path.exists():
+        _fail("$.artifacts", "this platform cannot safely open a pinned SQLite descriptor")
+    uri = descriptor_path.as_uri() + "?mode=ro&immutable=1"
+    try:
+        connection = sqlite3.connect(uri, uri=True)
+        try:
+            connection.execute("PRAGMA temp_store = FILE")
+            _sqlite_integrity_check(connection)
+            version = connection.execute("PRAGMA user_version").fetchone()[0]
+            if version != 2:
+                _fail(
+                    "$.artifacts",
+                    f"{RELEASE_PROFILE} requires Brain SQLite schema 2, found {version}",
+                )
+            if connection.execute("PRAGMA application_id").fetchone()[0] != BRAIN_SQLITE_APPLICATION_ID:
+                _fail("$.artifacts", "Brain SQLite application_id is not WLBN")
+            _verify_sqlite_schema_v2(connection)
+            snapshot = connection.execute(
+                "SELECT schema_version, build_state, snapshot_id, "
+                "base_snapshot_id, projection_id, metadata_json "
+                "FROM snapshot WHERE singleton = 1"
+            ).fetchone()
+            if snapshot is None:
+                _fail("$.artifacts", "Brain SQLite snapshot row is missing")
+            (
+                snapshot_schema,
+                build_state,
+                snapshot_id,
+                base_snapshot_id,
+                projection_id,
+                snapshot_metadata_json,
+            ) = snapshot
+            if snapshot_schema != version:
+                _fail("$.artifacts", "Brain SQLite schema versions disagree")
+            if build_state != "complete":
+                _fail("$.artifacts", "Brain SQLite snapshot is incomplete")
+            artifact_records = {
+                name: {
+                    "digest": digest,
+                    "generated_at": generated_at,
+                    "row_count": row_count,
+                    "source_digest": source_digest,
+                    "logical_digest": logical_digest,
+                    "raw_digest": raw_digest,
+                    "source_present": source_present,
+                    "metadata_json": metadata_json,
+                }
+                for (
+                    name,
+                    digest,
+                    generated_at,
+                    row_count,
+                    source_digest,
+                    logical_digest,
+                    raw_digest,
+                    source_present,
+                    metadata_json,
+                ) in connection.execute(
+                    "SELECT name, digest, generated_at, row_count, source_digest, logical_digest, "
+                    "raw_digest, source_present, metadata_json FROM artifacts"
+                )
+            }
+            projected_roots = {
+                "nodes": _sqlite_payload_root(
+                    connection, "SELECT payload_json FROM nodes"
+                ),
+                "edges": _sqlite_payload_root(
+                    connection,
+                    "SELECT payload_json FROM edges WHERE stream = ?",
+                    ("main",),
+                ),
+                "edges_links": _sqlite_payload_root(
+                    connection,
+                    "SELECT payload_json FROM edges WHERE stream = ?",
+                    ("links",),
+                ),
+                "cells": _sqlite_payload_root(
+                    connection, "SELECT payload_json FROM cells"
+                ),
+                "synapses": _sqlite_payload_root(
+                    connection, "SELECT payload_json FROM synapses"
+                ),
+            }
+            expected_paths = {
+                "nodes": "brain/data/nodes.jsonl",
+                "edges": "brain/data/edges.jsonl",
+                "edges_links": "brain/data/edges_links.jsonl",
+                "cells": "brain/data/cells.jsonl",
+                "synapses": "brain/data/synapses.jsonl",
+            }
+            if set(artifact_records) != set(expected_paths):
+                _fail(
+                    "$.artifacts",
+                    "Brain SQLite artifact set does not match the current release profile",
+                )
+            for name, path in expected_paths.items():
+                if artifact_records[name]["source_digest"] != artifacts[path]["sha256"]:
+                    _fail("$.artifacts", f"Brain SQLite is stale relative to {path}")
+                record = artifact_records[name]
+                if record["source_present"] != 1:
+                    _fail("$.artifacts", f"Brain SQLite has no raw source for {path}")
+                if record["raw_digest"] != artifacts[path]["sha256"]:
+                    _fail("$.artifacts", f"Brain SQLite raw digest is stale for {path}")
+                if record["source_digest"] != record["raw_digest"]:
+                    _fail("$.artifacts", f"Brain SQLite raw digest aliases disagree for {path}")
+                if record["digest"] != record["logical_digest"]:
+                    _fail(
+                        "$.artifacts",
+                        f"Brain SQLite logical digest aliases disagree for {path}",
+                    )
+                if projected_roots[name] != artifacts[path]["logical_root"]:
+                    _fail(
+                        "$.artifacts",
+                        f"Brain SQLite payload rows do not match the logical content of {path}",
+                    )
+
+            connection.execute(
+                "CREATE TEMP TABLE expected_organ_owners ("
+                "organ_id TEXT PRIMARY KEY, owner_id TEXT NOT NULL, "
+                "organ_kind TEXT, bare_decl TEXT) WITHOUT ROWID"
+            )
+            queries = {
+                "nodes": "SELECT id, type, label, payload_json FROM nodes ORDER BY ordinal",
+                "edges": (
+                    "SELECT src, dst, kind, confidence, provenance_source, payload_json "
+                    "FROM edges WHERE stream = 'main' ORDER BY ordinal"
+                ),
+                "edges_links": (
+                    "SELECT src, dst, kind, confidence, provenance_source, payload_json "
+                    "FROM edges WHERE stream = 'links' ORDER BY ordinal"
+                ),
+                "cells": "SELECT id, anchor, label, payload_json FROM cells ORDER BY ordinal",
+                "synapses": "SELECT src, dst, weight, payload_json FROM synapses ORDER BY ordinal",
+            }
+            cells_metadata: dict[str, Any] | None = None
+            logical_digests: dict[str, str] = {}
+            for name, path in expected_paths.items():
+                parsed_metadata, logical_digest, row_count = _verify_sqlite_artifact_rows(
+                    connection,
+                    root,
+                    artifacts[path],
+                    name,
+                    queries[name],
+                    artifact_records[name]["metadata_json"],
+                )
+                logical_digests[name] = logical_digest
+                if artifact_records[name]["row_count"] != row_count:
+                    _fail(
+                        "$.artifacts",
+                        f"Brain SQLite row_count disagrees with {path}",
+                    )
+                if artifact_records[name]["generated_at"] != parsed_metadata.get(
+                    "generated_at"
+                ):
+                    _fail(
+                        "$.artifacts",
+                        f"Brain SQLite generated_at disagrees with {path}",
+                    )
+                if artifact_records[name]["logical_digest"] != logical_digest:
+                    _fail(
+                        "$.artifacts",
+                        f"Brain SQLite logical digest disagrees with {path}",
+                    )
+                if name == "cells":
+                    cells_metadata = parsed_metadata
+            if cells_metadata is None:
+                _fail("$.artifacts", "Brain SQLite cells metadata is missing")
+            snapshot_metadata = _expect_object(
+                parse_json_bytes(
+                    snapshot_metadata_json.encode("utf-8"),
+                    location="SQLite snapshot.metadata_json",
+                ),
+                "SQLite snapshot.metadata_json",
+            )
+            nodes_metadata = parse_json_bytes(
+                artifact_records["nodes"]["metadata_json"].encode("utf-8"),
+                location="SQLite artifacts.nodes.metadata_json",
+            )
+            if not _same_logical_json(snapshot_metadata, nodes_metadata):
+                _fail(
+                    "$.artifacts",
+                    "Brain SQLite snapshot metadata disagrees with nodes.jsonl",
+                )
+            _verify_sqlite_owner_rows(connection, cells_metadata)
+            published_base_id = parse_json_bytes(
+                artifact_records["nodes"]["metadata_json"].encode("utf-8"),
+                location="SQLite artifacts.nodes.metadata_json",
+            ).get("snapshot_id")
+            if base_snapshot_id != published_base_id:
+                _fail(
+                    "$.artifacts",
+                    "Brain SQLite base_snapshot_id disagrees with nodes.jsonl",
+                )
+            projection_preimage = {
+                "domain": "wikilean-brain-projection-v1",
+                "artifacts": [
+                    [name, logical_digests[name]]
+                    for name in ("nodes", "edges", "edges_links", "cells", "synapses")
+                ],
+            }
+            expected_projection_id = hashlib.sha256(
+                canonical_json_bytes(projection_preimage)
+            ).hexdigest()
+            if snapshot_id != base_snapshot_id:
+                _fail(
+                    "$.artifacts",
+                    "Brain SQLite base snapshot identity aliases disagree",
+                )
+            if projection_id != expected_projection_id:
+                _fail(
+                    "$.artifacts",
+                    "Brain SQLite projection_id does not bind its complete logical projection",
+                )
+            if verify_static_closure:
+                _verify_current_static_closure(root, artifacts, connection)
+        except VerificationError:
+            raise
+        except sqlite3.Error as exc:
+            raise VerificationError(f"$.artifacts: invalid Brain SQLite projection: {exc}") from exc
+        finally:
+            connection.close()
+    except sqlite3.Error as exc:
+        raise VerificationError(f"$.artifacts: cannot open Brain SQLite projection: {exc}") from exc
 
 
 def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]:
+    root = root.resolve(strict=True)
     artifact_by_name: dict[str, dict[str, Any]] = {}
-    artifact_paths = {artifact["path"] for artifact in manifest["artifacts"]}
+    artifacts_by_path = {
+        artifact["path"]: artifact for artifact in manifest["artifacts"]
+    }
+    artifact_paths = set(artifacts_by_path)
     metadata: dict[str, dict[str, Any]] = {}
-    artifact_bytes: dict[str, bytes] = {}
+    sqlite_artifact: dict[str, Any] | None = None
+    sqlite_location = "$.artifacts"
     for index, artifact in enumerate(manifest["artifacts"]):
         location = f"$.artifacts[{index}]"
-        data = verify_file_ref(root, artifact, location)
-        artifact_bytes[artifact["path"]] = data
-        logical_root = _artifact_logical_root(data, artifact["logical_format"], artifact["path"])
+        if artifact["path"] == "brain/data/brain.sqlite3":
+            # The SQLite verifier hashes through the pinned descriptor before
+            # opening it. Never materialize or copy the database as bytes.
+            sqlite_artifact = artifact
+            sqlite_location = location
+            artifact_by_name[artifact["logical_name"]] = artifact
+            continue
+        with open_verified_file(root, artifact, location) as handle:
+            logical_root = _artifact_logical_root_handle(
+                handle, artifact["logical_format"], artifact["path"]
+            )
+            if artifact["logical_format"] == "json":
+                handle.seek(0)
+                metadata[artifact["path"]] = _json_meta(
+                    handle.read(), artifact["path"]
+                )
+            elif artifact["logical_format"] == "jsonl-rowset":
+                metadata[artifact["path"]] = _jsonl_meta_handle(
+                    handle, artifact["path"]
+                )
         if logical_root != artifact["logical_root"]:
             _fail(f"{location}.logical_root", f"expected {artifact['logical_root']}, found {logical_root}")
         artifact_by_name[artifact["logical_name"]] = artifact
-        if artifact["logical_format"] == "json":
-            metadata[artifact["path"]] = _json_meta(data, artifact["path"])
-        elif artifact["logical_format"] == "jsonl-rowset":
-            metadata[artifact["path"]] = _jsonl_meta(data, artifact["path"])
 
-    _verify_current_static_closure(root, artifact_paths, artifact_bytes)
-    _verify_sqlite_projection(
-        artifact_bytes["brain/data/brain.sqlite3"],
-        {artifact["path"]: artifact for artifact in manifest["artifacts"]},
-        artifact_bytes,
-    )
+    if sqlite_artifact is None:
+        _fail("$.artifacts", "release does not contain brain/data/brain.sqlite3")
+    with open_verified_file(root, sqlite_artifact, sqlite_location) as sqlite_handle:
+        _verify_sqlite_projection(
+            sqlite_handle,
+            root,
+            artifacts_by_path,
+            verify_static_closure=True,
+        )
+
+    allowed_paths = artifact_paths | {ref["path"] for ref in manifest["attestations"]} | {"release.json"}
+    actual_paths: set[str] = set()
+    for path in root.rglob("*"):
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink():
+            _fail("$", f"release contains a symlink: {relative}")
+        if path.is_file():
+            actual_paths.add(relative)
+        elif not path.is_dir():
+            _fail("$", f"release contains a non-regular entry: {relative}")
+    undeclared = sorted(actual_paths - allowed_paths)
+    if undeclared:
+        _fail("$", f"release contains undeclared files: {', '.join(undeclared)}")
 
     base_paths = ("brain/data/nodes.jsonl", "brain/data/edges.jsonl", "brain/data/edges_links.jsonl")
     base_generations = {metadata.get(path, {}).get("generated_at") for path in base_paths}
@@ -1774,6 +2523,27 @@ def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]
         _fail("$.artifacts", "cell/frontier artifacts have mixed or missing generated_at values")
     base_generation = next(iter(base_generations))
     base_snapshot_id = next(iter(base_snapshot_ids))
+    if not isinstance(base_snapshot_id, str) or not DIGEST_RE.fullmatch(base_snapshot_id):
+        _fail("$.artifacts", "organ graph snapshot_id must be 64 lowercase SHA-256 hex digits")
+    expected_semantic_root = compatibility_semantic_state_root(
+        manifest["semantic_epoch"],
+        base_snapshot_id,
+        {
+            path: next(
+                artifact["logical_root"]
+                for artifact in manifest["artifacts"]
+                if artifact["path"] == path
+            )
+            for path in COMPATIBILITY_SEMANTIC_PATHS
+        },
+    )
+    if manifest["authority"].get("through_changeset") is not None:
+        _fail(
+            "$.authority.through_changeset",
+            "accepted changeset replay verification is not implemented for this release profile",
+        )
+    if manifest["authority"]["semantic_state_root"] != expected_semantic_root:
+        _fail("$.authority.semantic_state_root", f"expected compatibility root {expected_semantic_root}")
     for path in ("brain/data/cells.jsonl", "brain/data/synapses.jsonl"):
         if metadata[path].get("base_generated_at") != base_generation:
             _fail("$.artifacts", f"{path} does not name the organ graph generated_at")
@@ -1805,7 +2575,7 @@ def verify_release_files(manifest: dict[str, Any], root: Path) -> dict[str, int]
                 _fail(location, "build attestation output root does not match release semantic root")
             builder = attestation["builder"]
             reducer = manifest["reducer"]
-            for field in ("version", "git_commit", "configuration_sha256", "environment_sha256"):
+            for field in ("git_commit", "configuration_sha256", "environment_sha256"):
                 if builder[field] != reducer[field]:
                     _fail(location, f"build attestation builder.{field} does not match release reducer.{field}")
         else:

@@ -1,11 +1,15 @@
 # Roadmap — user-submitted brain edits (Project 2)
 
-> Status: **Phases 0–4 SHIPPED + DEPLOYED 2026-07-05** (wrangler version
-> b1683966; remote migration 0010 applied). Branch `feat/brain-community-edges`
-> — local, awaiting merge to `main`. Full auto-nightly graduation waits on the
-> brain-rebuild-in-ops backlog item; the harvest + fold are done. This is the
-> plan for letting people (and scripts/agents) add connections to the Brain
-> through the same GitHub-login auth used for article annotations.
+> Status: **historical rollout record; Phases 0–4 shipped, deployed, and merged.**
+> The initial production deployment was 2026-07-05 (wrangler version b1683966;
+> remote migration 0010 applied). Community harvesting/folding is now wired into
+> nightly operations, while Brain release deployment remains separately opt-in.
+>
+> **Architecture status (2026-08-31):** this document describes the current
+> mutable-row overlay. Its future replacement is the release-pinned, append-only
+> Phase 3 plan in `docs/ROADMAP.md`. Treat the implementation narrative below as
+> an as-built record, not the active TODO list; do not extend this schema into
+> promotion or rebase machinery before the complete Phase 2 contracts are frozen.
 
 ## Goal
 
@@ -42,25 +46,27 @@ script or an agent can post them too. Provenance is tracked on every edge:
   (who deleted which edge). Wiki-style: open to act, fully accountable.
 - **Looser rate limit for API/bearer scripts** (a separate, higher limiter than
   the per-user browser one).
-- **This session: write the roadmap only.** Build after Jack confirms.
 
-## What already exists (recon findings — reuse, don't rebuild)
+## Implementation context and current corrections
 
 - **Auth seam** `getUser(c)` (wiki/src/auth.ts): resolves a bearer `PIPELINE_TOKEN`,
   a better-auth GitHub OAuth session, or a dev cookie → `{id, name, role}` or
   `null`. This is the same identity annotations use.
-- **Write guards** on `POST /api/article/:slug` (wiki/src/index.ts): `checkOrigin`
-  (CSRF), `EDIT_LIMITER.limit({key:"edit:"+user.id})` (per-user rate limit),
-  CAS-on-version, `db.batch([...])` atomicity, and an `annotation_events` audit
-  log with a server-derived `actor_type ('human'|'pipeline')` — **provenance is
-  never client-claimed.** We reuse all of this.
+- **Write-guard reference** on `POST /api/article/:slug` (wiki/src/index.ts):
+  `checkOrigin` (CSRF), per-user rate limiting, CAS-on-version, batched writes,
+  and a server-derived actor. The Brain routes reuse auth, origin/rate limits,
+  and server-derived identity, but current node/edge writes are mutable row
+  operations rather than one atomic changeset and deletes do not accept an
+  expected revision. Phase 3 in `docs/ROADMAP.md` owns that correction.
 - **`proposals` table** (migrations/0009): the house style for our new table —
   12-hex TEXT PK, `created_at` ms, `status` enum, `decided_at`/`decided_by`,
   status/slug indexes. Migration-apply gotcha: run remote via
   `wrangler d1 execute wikilean --remote --file=…`, not `d1 migrations apply`.
-- **Brain serving** (wiki/src/brain.ts): read-only `GET /api/brain/node|search`
-  over static shards; **no write path today.** Node ids: `Q…`, `decl:Lib:Name`,
-  `path:…`, `lit:…`. The shard set is the node-existence oracle (via `ASSETS.fetch`).
+- **Brain serving:** the supported static/SQLite read surface is
+  `/api/brain/{unit,transfer,neighborhood,snippets,filter}`. The retired
+  `GET /api/brain/node` route intentionally returns 404. Community writes are
+  separate: `POST /api/brain/node`, `POST /api/brain/edge`, and their soft-delete
+  routes. Node ids remain durable (`Q…`, `decl:Lib:Name`, `path:…`, `lit:…`).
 - **Annotations are ALREADY brain edges** (brain/build_common.py:123): the nightly
   build turns `site/annotations/*.json` into `mentions`/`formalizes` edges +
   `article_annotations` node summaries. The only gap is the **live→nightly lag**;
@@ -75,9 +81,9 @@ script or an agent can post them too. Provenance is tracked on every edge:
 
 ```
 id          TEXT PRIMARY KEY        -- 12-hex, minted server-side
-src         TEXT NOT NULL           -- existing brain node id (shard-validated)
-dst         TEXT NOT NULL           -- brain node id, OR "xref:<db>:<value>" for cross-db
-kind        TEXT NOT NULL           -- relates|formalizes|depends|mentions|matches|cites|xref
+src         TEXT NOT NULL           -- release node id or validated/minted Wikidata QID
+dst         TEXT NOT NULL           -- same, OR "xref:<db>:<value>" for cross-db
+kind        TEXT NOT NULL           -- relates|formalizes|mentions|matches|cites|xref
 evidence    TEXT NOT NULL           -- JSON: {note, ...; for xref: {db, value, url}}
 added_by    TEXT NOT NULL           -- users.id who added it (or 'pipeline' for a bearer token)
 actor_type  TEXT NOT NULL           -- 'human' | 'ai'   ← the human-vs-AI distinction
@@ -95,10 +101,11 @@ audit table is optional; the row itself already records add + delete attribution
 so we can skip it unless we want a full history of re-adds.)
 
 **Node identity:** edges reference durable node ids only (never session UUIDs).
-`src` is always shard-validated. `dst`: for `xref`, validate `db` ∈ the known
-registry (`source_registry.json`) and the value shape; otherwise shard-validate.
+Non-`xref` endpoints resolve against the selected Brain release or, for an absent QID,
+through live Wikidata validation followed by a `brain_nodes` mint. For `xref`, validate
+`db` ∈ the known registry (`source_registry.json`) and the value shape.
 
-### API (all reuse the annotation guards)
+### API
 
 - **`POST /api/brain/edge`** — create. `getUser` (401 if none) · `checkOrigin` ·
   rate limit (per-user for browser, looser for bearer). Body
@@ -108,8 +115,9 @@ registry (`source_registry.json`) and the value shape; otherwise shard-validate.
     declares `human` or `ai` — the server can't infer intent, so the caller
     asserts it (same trust boundary as any signed API claim; misuse is
     attributable to the token).
-  - Validates `src`/`dst` against the shards, `kind` ∈ enum, evidence note
-    non-empty, and (xref) `db` ∈ registry. Dedupe on `(src,dst,kind)`.
+  - Resolves `src`/`dst` against the selected release or a validated QID mint,
+    validates `kind` ∈ enum and (xref) `db` ∈ registry, caps an optional evidence
+    note, and dedupes live rows on `(src,dst,kind)`.
   - `added_by` = the authenticated identity. Every edge is `status='live'`.
   - Returns `{ok, id}`.
 - **`GET /api/brain/edges?id=<node>`** — the live D1 overlay: every non-deleted
@@ -132,20 +140,19 @@ registry (`source_registry.json`) and the value shape; otherwise shard-validate.
 
 Everything is live and attributed; the human/AI label lets viewers weight/filter
 AI-submitted edges, and a bad edge is corrected by **deletion** (which leaves the
-gravestone), not a review queue. The deterministic `fold_proposals` verifier
-still runs at **nightly graduation** (Phase 5) as a quality gate on what becomes
-*permanent* in the static base — so unverified AI edges can appear live but don't
-silently become permanent graph facts without passing the oracle checks.
+gravestone), not a review queue. At nightly graduation, the harvester reuses the
+declaration/QID endpoint-oracle helpers for AI rows; it does not run community rows through
+the complete proposal-fold state machine. Failed AI endpoint checks do not enter the next
+static base.
 
 ### Read model (locality preserved)
 
-Static shards stay the base layer (nightly, immutable, version-pinned). The page
-already fetches per-node shards in `getEntry`; we add **one overlay fetch** to
-`GET /api/brain/edges?id=` and merge — so a node's community edges appear the
-instant they're posted, without loading the whole graph. Rebuild rule: **a live
-(non-deleted) community edge is never dropped** by a rebuild; a `deleted`
-gravestone stays a tombstone and is never resurrected (the annotation
-tombstone-never-delete law, applied to edges).
+Static release assets stay the base layer and `GET /api/brain/edges?id=` supplies the live
+D1 tail. The current narrow guarantee is that the overlay immediately hides a deleted D1
+row and the next harvest excludes it. A previously published static copy can remain visible
+until a new release, and rollback to an older release can expose it again. Preventing
+tombstone resurrection across publication and rollback is a Phase 3 requirement in the
+canonical roadmap.
 
 ### Cross-pollination (Jack's insight — Phase 4)
 
@@ -161,25 +168,28 @@ connections with no new nodes.**
 | Phase | Deliverable | Acceptance |
 |---|---|---|
 | **0. Schema ✅** | `0010_brain_edges.sql`; Drizzle types; apply local + remote (per gotcha) | migration applies; table queryable |
-| **1. Write/read/delete API ✅** | `POST /api/brain/edge`, `GET /api/brain/edges`, `DELETE /api/brain/edge/:id`; auth + origin + rate-limit + shard/kind/registry validation + provenance + dedupe + soft-delete gravestone; unit tests | ✅ 18 tests + adversarial security review (1 finding fixed) |
+| **1. Write/read/delete API ✅** | `POST /api/brain/edge`, `GET /api/brain/edges`, `DELETE /api/brain/edge/:id`; auth + origin + rate-limit + release/QID/kind/registry validation + provenance + dedupe + soft-delete gravestone; unit tests | ✅ 18 tests + adversarial security review (1 finding fixed) |
 | **2. Overlay UI ✅** | overlay fetch in `renderPanel` (`renderCommunity`); community chip (added-by + human/AI); "add a connection" panel (labels search for target, kind dropdown, xref DB picker + value, evidence note) + a delete affordance on community edges | ✅ verified in preview: list renders with chips, add-form + xref toggle work, graceful-degrades when the API is absent |
 | **3. Cross-pollination ✅** | `xref-shared` inference over community + static xref edges (build emits `xref_index.json`; overlay endpoint infers partners; UI "Same object elsewhere" block) | ✅ 3 tests (community↔community, community→static both ways, no false partners) + verified in preview |
-| **4. Graduation ✅** | `harvest_community_edges.py`: live (non-deleted) D1 edges → `brain/data/community_edges.jsonl` (human trusted; AI through the oracle); `build_shards.py` folds graduated xrefs into `xref_index.json`; wired into the nightly (`WIKILEAN_COMMUNITY_HARVEST`) | ✅ 6 tests + offline end-to-end run (AI-to-bogus-node dropped; graduated xref appears in the static index). *Note:* the brain SHARD rebuild+deploy is not yet nightly (separate ops backlog), so full auto-graduation runs when that lands; the harvest + fold are done and on-demand-runnable |
+| **4. Graduation ✅** | `harvest_community_edges.py`: live (non-deleted) D1 edges → `brain/data/community_edges.jsonl` (human trusted; AI through the oracle); `build_shards.py` folds graduated xrefs into `xref_index.json`; wired into nightly moderation (`WIKILEAN_COMMUNITY_HARVEST`) | ✅ 6 tests + offline end-to-end run (AI-to-bogus-node dropped; graduated xref appears in the static index). A later Brain release incorporates the harvested file; production release deployment remains opt-in and is currently blocked on `docs/ROADMAP.md` P1A. |
 
-**Suggested build order for the first PR:** Phases 0 + 1 (backend, curl-verified),
-then 2 (make it real on `/brain`), then 3–4 as follow-ups.
+The original build order—backend, UI, cross-pollination, then graduation—is complete.
+All new architecture work is tracked in `docs/ROADMAP.md`.
 
 ## Invariants to hold (from the recon)
 
 - `added_by`/`deleted_by` are **server-derived** identity (never client-claimed);
   `actor_type` is forced `human` for OAuth and explicitly declared for API.
-- Durable node ids only; `src` always shard-validated; xref `dst` registry-validated.
-- CAS-on-`version`, `db.batch` atomicity, rate limit, `checkOrigin` — reused verbatim.
-- **Soft-delete only** — a delete never removes the row; it writes the gravestone
-  (`status='deleted'`, `deleted_by/at`). A `deleted` edge is never resurrected by
-  a rebuild; a live edge is never silently dropped.
-- The deterministic `fold_proposals` verifier gates what AI edges become
-  **permanent** in the static base (nightly graduation), not what appears live.
+- Durable node ids only; non-`xref` endpoints are release-resolved or validated/minted QIDs,
+  while xref `dst` values are registry-validated.
+- Rate limits, `checkOrigin`, authentication, and server-derived identity remain mandatory.
+  The current overlay's lack of atomic append-only changesets and expected-revision CAS is
+  known migration debt, not an invariant to preserve.
+- **Soft-delete only in D1** — a delete never removes the row; it writes the gravestone
+  (`status='deleted'`, `deleted_by/at`). Cross-release no-resurrection is not yet guaranteed
+  and is explicitly owned by Phase 3.
+- Nightly graduation applies additional endpoint-oracle checks to AI rows before they enter
+  the next static base; this is narrower than the full `fold_proposals` state machine.
 
 ## Resolved (Jack, 2026-07-05)
 
@@ -188,11 +198,8 @@ then 2 (make it real on `/brain`), then 3–4 as follow-ups.
 - AI edges live directly in `brain_edges` (dedicated row, not the annotation-shaped
   `proposals` table); the human/AI label is `actor_type`.
 
-## Open question
+## Deletion policy (resolved)
 
-- **Who may delete an edge?** Options: (a) **anyone logged in** can delete any
-  edge (fully wiki-style; the gravestone makes bad deletes visible and reversible)
-  — the assumed default; (b) only the **`added_by` author + admins**; (c)
-  author + admins, with a separate "flag for deletion" for everyone else. Default
-  = (a) open + accountable, matching the "everything live, tracked" ethos; say the
-  word if you want it tighter.
+Any authenticated user may soft-delete any community edge or community-added node. The
+gravestone records the actor. Phase 3 must preserve that history while adding stable
+assertion identity, expected revisions, and deterministic restore/rebase behavior.

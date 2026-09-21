@@ -20,13 +20,16 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import os
 import sqlite3
+import stat
 import sys
 import tempfile
 import unittest
 from contextlib import closing
 from pathlib import Path
 from typing import Any, Iterable
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -241,6 +244,13 @@ class HybridStoreTest(unittest.TestCase):
                             encoding="utf-8")
         (self.data_dir / "edges_links.jsonl").unlink()
         self.build()
+        with closing(sqlite3.connect(self.db_path)) as conn:
+            snapshot_id, base_snapshot_id, projection_id = conn.execute(
+                "SELECT snapshot_id, base_snapshot_id, projection_id FROM snapshot"
+            ).fetchone()
+        self.assertEqual(snapshot_id, "snapshot-a")
+        self.assertEqual(base_snapshot_id, "snapshot-a")
+        self.assertNotEqual(projection_id, "snapshot-a")
         sqlite_store = self.open("sqlite")
         try:
             self.assertEqual(call_iter(sqlite_store, "iter_edges"), MAIN_EDGES)
@@ -265,6 +275,12 @@ class HybridStoreTest(unittest.TestCase):
     def test_missing_links_partition_is_valid_and_empty(self) -> None:
         make_fixture(self.data_dir, include_links=False)
         self.build()
+        with closing(sqlite3.connect(self.db_path)) as conn:
+            source = conn.execute(
+                "SELECT source_present, raw_digest, source_digest "
+                "FROM artifacts WHERE name = 'edges_links'"
+            ).fetchone()
+        self.assertEqual(source, (0, None, None))
         for backend in ("jsonl", "sqlite"):
             opened = self.open(backend)
             try:
@@ -288,6 +304,67 @@ class HybridStoreTest(unittest.TestCase):
                                            direction="in", kinds={"depends"}), [])
             finally:
                 close_store(opened)
+
+    def test_endpoint_kind_query_preserves_order_and_deduplicates_self_loops(self) -> None:
+        main_edges = [
+            {"src": "Q1", "dst": "Q1", "kind": "depends"},
+            {"src": "Q1", "dst": "Q2", "kind": "depends"},
+            {"src": "Q2", "dst": "Q1", "kind": "formalizes"},
+            {"src": "Q2", "dst": "Q1", "kind": "depends"},
+        ]
+        link_edges = [
+            {"src": "Q1", "dst": "Q9", "kind": "links"},
+            {"src": "Q9", "dst": "Q1", "kind": "links"},
+            {"src": "Q1", "dst": "Q1", "kind": "links"},
+        ]
+        base_meta = {
+            "schema": "brain/SCHEMA.md",
+            "generated_at": ORGAN_GENERATION,
+        }
+        write_jsonl(self.data_dir / "edges.jsonl", base_meta, main_edges)
+        write_jsonl(
+            self.data_dir / "edges_links.jsonl",
+            {**base_meta, "split_from": "edges.jsonl"},
+            link_edges,
+        )
+        self.build()
+        jsonl = self.open("jsonl")
+        sqlite_store = self.open("sqlite")
+        try:
+            cases = (
+                {"endpoint": "Q1", "direction": "both"},
+                {
+                    "endpoint": "Q1",
+                    "direction": "both",
+                    "kinds": {"depends", "links"},
+                },
+                {
+                    "endpoint": "Q1",
+                    "direction": "both",
+                    "kinds": {"links"},
+                    "stream": "links",
+                },
+                {"endpoint": "Q1", "direction": "out", "kinds": {"depends"}},
+                {"endpoint": "Q1", "direction": "in", "kinds": {"depends"}},
+            )
+            for kwargs in cases:
+                self.assertEqual(
+                    call_iter(sqlite_store, "iter_edges", **kwargs),
+                    call_iter(jsonl, "iter_edges", **kwargs),
+                )
+            both = call_iter(
+                sqlite_store,
+                "iter_edges",
+                endpoint="Q1",
+                direction="both",
+                kinds={"depends", "links"},
+            )
+            self.assertEqual(both, [main_edges[0], main_edges[1], main_edges[3], *link_edges])
+            self.assertEqual(both.count(main_edges[0]), 1)
+            self.assertEqual(both.count(link_edges[2]), 1)
+        finally:
+            close_store(jsonl)
+            close_store(sqlite_store)
 
     def test_cells_synapses_and_owner_parity_when_supported(self) -> None:
         self.build()
@@ -321,6 +398,28 @@ class HybridStoreTest(unittest.TestCase):
         finally:
             close_store(jsonl)
             close_store(sqlite)
+
+    def test_streaming_builder_indexes_bare_decl_for_supercell_owner(self) -> None:
+        cells_path = self.data_dir / "cells.jsonl"
+        metadata, cells = self.store_module.read_jsonl(cells_path)
+        metadata["supercell_organs"]["path:Mathlib"].append(
+            {
+                "kind": "decl",
+                "id": "decl:Mathlib:Fallback",
+                "bond": "field",
+                "prov": 0,
+            }
+        )
+        write_jsonl(cells_path, metadata, cells)
+
+        self.build()
+        with closing(sqlite3.connect(self.db_path)) as connection:
+            owner = connection.execute(
+                "SELECT owner_id, organ_kind, bare_decl FROM organ_owners "
+                "WHERE organ_id = ?",
+                ("decl:Mathlib:Fallback",),
+            ).fetchone()
+        self.assertEqual(owner, ("path:Mathlib", "decl", "Fallback"))
 
     def test_consistent_layers_may_have_different_generations(self) -> None:
         # Organ artifacts and cell artifacts are built in different pipeline phases.
@@ -380,6 +479,13 @@ class HybridStoreTest(unittest.TestCase):
         self.assert_rejected(lambda: self.open("sqlite"),
                              "forced sqlite must report an invalid database path")
 
+    def test_application_id_rejects_an_unrecognized_sqlite_database(self) -> None:
+        self.build()
+        with closing(sqlite3.connect(self.db_path)) as conn:
+            conn.execute("PRAGMA application_id = 0")
+        with self.assertRaisesRegex(Exception, "not a Brain SQLite database"):
+            self.open("sqlite")
+
     def test_absent_or_incomplete_snapshot_falls_back_but_forced_sqlite_rejects(self) -> None:
         automatic = self.open("auto")
         try:
@@ -433,9 +539,144 @@ class HybridStoreTest(unittest.TestCase):
                     "SELECT name FROM sqlite_master WHERE type='index'"
                 )
             }
+            analyzed = {
+                row[0]
+                for row in conn.execute("SELECT idx FROM sqlite_stat1 WHERE idx IS NOT NULL")
+            }
         self.assertTrue({"edges_src_kind_idx", "edges_dst_kind_idx",
                          "synapses_src_idx", "synapses_dst_idx",
                          "organ_owners_bare_decl_idx"} <= indexes)
+        self.assertTrue(
+            {"edges_src_kind_idx", "edges_dst_kind_idx"} <= analyzed,
+            "builder must persist ANALYZE statistics for endpoint planning",
+        )
+
+        sqlite_store = self.open("sqlite")
+        try:
+            sql, _ = sqlite_store._edge_query(
+                endpoint="Q1",
+                direction="both",
+                kinds={"depends", "formalizes"},
+            )
+            details = sqlite_store.edge_query_plan(
+                endpoint="Q1",
+                direction="both",
+                kinds={"depends", "formalizes"},
+            )
+        finally:
+            close_store(sqlite_store)
+        self.assertIn("UNION ALL", sql)
+        self.assertTrue(any("edges_src_kind_idx" in detail for detail in details))
+        self.assertTrue(any("edges_dst_kind_idx" in detail for detail in details))
+        self.assertFalse(any(detail == "SCAN edges" for detail in details), details)
+
+    def test_both_sqlite_builders_persist_analyze_statistics(self) -> None:
+        self.build()
+        direct_path = self.root / "direct.sqlite"
+        artifacts = self.store_module.load_artifacts(self.data_dir)
+        raw_digests = {
+            name: self.store_module.digest_file(
+                self.data_dir / self.store_module.DEFAULT_ARTIFACT_FILES[name]
+            )
+            for name in artifacts
+        }
+        self.store_module.write_sqlite_snapshot(
+            direct_path, artifacts, source_digests=raw_digests
+        )
+        for path in (self.db_path, direct_path):
+            with closing(sqlite3.connect(path)) as conn:
+                stats = conn.execute("SELECT count(*) FROM sqlite_stat1").fetchone()[0]
+            self.assertGreater(stats, 0, f"ANALYZE statistics missing from {path.name}")
+
+    def test_schema_v2_separates_base_projection_and_raw_logical_digests(self) -> None:
+        self.build()
+
+        def identities() -> tuple[str, str, str]:
+            with closing(sqlite3.connect(self.db_path)) as conn:
+                self.assertEqual(conn.execute("PRAGMA user_version").fetchone()[0], 2)
+                self.assertEqual(
+                    conn.execute("PRAGMA application_id").fetchone()[0],
+                    self.store_module.APPLICATION_ID,
+                )
+                snapshot = conn.execute(
+                    "SELECT snapshot_id, base_snapshot_id, projection_id FROM snapshot"
+                ).fetchone()
+                rows = list(conn.execute(
+                    "SELECT name, digest, source_digest, logical_digest, raw_digest, "
+                    "source_present FROM artifacts ORDER BY name"
+                ))
+            self.assertEqual(snapshot[0], snapshot[1])
+            logical = self.store_module.artifact_digests(
+                self.store_module.load_artifacts(self.data_dir)
+            )
+            for name, digest, source, logical_digest, raw, present in rows:
+                self.assertEqual(digest, logical_digest)
+                self.assertEqual(logical_digest, logical[name])
+                self.assertEqual(source, raw)
+                self.assertEqual(present, 1)
+                self.assertEqual(
+                    raw,
+                    self.store_module.digest_file(
+                        self.data_dir / self.store_module.DEFAULT_ARTIFACT_FILES[name]
+                    ),
+                )
+            return snapshot
+
+        before = identities()
+        cell_path = self.data_dir / "cells.jsonl"
+        cell_meta, cells = self.store_module.read_jsonl(cell_path)
+        cells[0] = {**cells[0], "label": "Alpha revised"}
+        write_jsonl(cell_path, cell_meta, cells)
+        self.build()
+        after = identities()
+        self.assertEqual(before[1], after[1], "derived changes altered base identity")
+        self.assertNotEqual(
+            before[2], after[2], "derived changes did not alter projection identity"
+        )
+
+    def test_builder_rejects_source_replacement_and_preserves_database(self) -> None:
+        self.build()
+        before = hashlib.sha256(self.db_path.read_bytes()).digest()
+        original = self.store_module._inspect_source_handle
+        replaced = False
+
+        def replace_after_inspection(handle, path):
+            nonlocal replaced
+            result = original(handle, path)
+            if path.name == "nodes.jsonl" and not replaced:
+                replacement = path.with_suffix(".next")
+                write_jsonl(
+                    replacement,
+                    result[0],
+                    [*NODES, {"id": "Q999", "type": "concept"}],
+                )
+                replacement.replace(path)
+                replaced = True
+            return result
+
+        with mock.patch.object(
+            self.store_module,
+            "_inspect_source_handle",
+            side_effect=replace_after_inspection,
+        ):
+            with self.assertRaisesRegex(Exception, "replaced while building SQLite"):
+                self.build()
+        self.assertEqual(hashlib.sha256(self.db_path.read_bytes()).digest(), before)
+
+    def test_atomic_publish_fsyncs_database_and_parent_directory(self) -> None:
+        kinds: list[str] = []
+        real_fsync = os.fsync
+
+        def observed_fsync(fd: int) -> None:
+            mode = os.fstat(fd).st_mode
+            kinds.append("directory" if stat.S_ISDIR(mode) else "file")
+            real_fsync(fd)
+
+        with mock.patch.object(
+            self.store_module.os, "fsync", side_effect=observed_fsync
+        ):
+            self.build()
+        self.assertEqual(kinds[-2:], ["file", "directory"])
 
     def test_failed_rebuild_preserves_previous_database(self) -> None:
         self.build()

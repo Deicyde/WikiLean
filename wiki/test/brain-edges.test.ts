@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
-import { _resetBrainEditCaches } from "../src/brain-edits.js";
+import { _brainEditCacheReleaseIds, _resetBrainEditCaches } from "../src/brain-edits.js";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import {
   installBrainFixture,
@@ -47,17 +47,8 @@ function installBrainAssets(
       ...DEFAULT_ALIASES,
       organs: { ...DEFAULT_ALIASES.organs, ...extraOrgans },
     },
+    xrefIndex,
   });
-  const assets = (env as unknown as { ASSETS: { fetch: (r: Request) => Promise<Response> } });
-  const inner = assets.ASSETS.fetch;
-  assets.ASSETS = {
-    fetch: async (req: Request) => {
-      const path = new URL(req.url).pathname;
-      if (path === "/assets/brain/xref_index.json")
-        return new Response(JSON.stringify(xrefIndex), { status: 200 });
-      return inner(req);
-    },
-  };
 }
 
 function harness(opts: Parameters<typeof setup>[0] = {}): Harness {
@@ -250,6 +241,16 @@ describe("POST /api/brain/edge", () => {
     expect(res.status).toBe(400);
     expect(String((await res.json() as Record<string, unknown>).error)).toContain("not a known brain node");
     expect(edgeRows(h)).toHaveLength(0);
+  });
+
+  it("fails closed when the mandatory alias oracle is unavailable", async () => {
+    const h = setup();
+    installBrainFixture(h.env, { aliases: null });
+    const res = await postEdge(h, REL, { user: "u-human" });
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ ok: false, error: "brain release unavailable" });
+    expect(edgeRows(h)).toHaveLength(0);
+    expect(h.db.prepare("SELECT * FROM brain_nodes").all()).toHaveLength(0);
   });
 
   it("rejects an unanchored xref:/lit: endpoint with the named v3-drop reason", async () => {
@@ -588,6 +589,14 @@ describe("POST /api/brain/node — introduce a concept (no edge)", () => {
     expect(nodeRows(h)).toHaveLength(0);
   });
 
+  it("does not mint a static QID when the mandatory alias oracle is unavailable", async () => {
+    const h = setup();
+    installBrainFixture(h.env, { aliases: null });
+    const res = await withWikidata(WD, () => addNode(h, { qid: CONCEPT }, { user: "u-human" }));
+    expect(res.status).toBe(503);
+    expect(nodeRows(h)).toHaveLength(0);
+  });
+
   it("the overlay returns `self` for a community node, cleared on delete", async () => {
     const h = harness();
     await withWikidata(WD, () => addNode(h, { qid: QID }, { user: "u-human" }));
@@ -632,6 +641,73 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
     // viewing NODE_B surfaces the community CONCEPT
     const sB = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`)).json());
     expect(sB.some((s) => s.node === CONCEPT && s.source === "community")).toBe(true);
+  });
+
+  it("does not reuse an xref inversion after selector rollover", async () => {
+    const h = setup();
+    installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
+    const first = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`)).json());
+    expect(first).toEqual([]);
+
+    const releaseB = installBrainFixture(h.env, {
+      releaseVariant: "xref-rollover",
+      aliases: { ...DEFAULT_ALIASES, organs: { ...DEFAULT_ALIASES.organs, [NODE_B]: "cell:Q11650" } },
+      xrefIndex: { [PAGE]: [CONCEPT] },
+    });
+    await postEdge(h, { src: NODE_B, dst: PAGE, kind: "xref", evidence: { note: "release B" } }, { user: "u-human" });
+    const response = await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`);
+    const body = await response.json() as Record<string, unknown>;
+    expect(body.release_id).toBe(releaseB.releaseId);
+    expect(sharedOf(body).some((s) => s.node === CONCEPT)).toBe(true);
+  });
+
+  it("evicts the oldest xref index and inversion after a third release", async () => {
+    const h = setup();
+    const paths: string[] = [];
+    const observed = (path: string) => paths.push(path);
+    const install = (releaseVariant: string) => installBrainFixture(h.env, {
+      releaseVariant,
+      xrefIndex: { [PAGE]: [CONCEPT] },
+      onAssetPath: observed,
+    });
+
+    const releaseA = install("xref-lru-a");
+    expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
+    const releaseB = install("xref-lru-b");
+    expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
+    install("xref-lru-a");
+    expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
+    const releaseC = install("xref-lru-c");
+    expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
+
+    expect(_brainEditCacheReleaseIds()).toEqual({
+      xrefIndex: [releaseA.releaseId, releaseC.releaseId],
+      xrefPagesByNode: [releaseA.releaseId, releaseC.releaseId],
+    });
+
+    install("xref-lru-b");
+    expect((await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).status).toBe(200);
+    const releaseBXref = `/assets/brain/releases/${releaseB.releaseHex}/xref_index.json`;
+    expect(paths.filter((path) => path === releaseBXref)).toHaveLength(2);
+  });
+
+  it("returns 503 for a missing xref index and retries it on the next request", async () => {
+    const h = setup();
+    const paths: string[] = [];
+    installBrainFixture(h.env, {
+      xrefIndex: { [PAGE]: [NODE_B, CONCEPT] },
+      xrefIndexFailures: 1,
+      onAssetPath: (path) => paths.push(path),
+    });
+
+    const first = await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`);
+    expect(first.status).toBe(503);
+    expect(await first.json()).toMatchObject({ ok: false, error: "brain release unavailable" });
+
+    const second = await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`);
+    expect(second.status).toBe(200);
+    expect(sharedOf(await second.json()).some((s) => s.node === CONCEPT)).toBe(true);
+    expect(paths.filter((path) => path.endsWith("/xref_index.json"))).toHaveLength(2);
   });
 
   it("no false partners: a node whose page is unique has no shared", async () => {
