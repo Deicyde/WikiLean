@@ -26,6 +26,7 @@ sys.path.insert(0, str(TOOLS))
 import authority_contracts as contracts  # noqa: E402
 import build_context  # noqa: E402
 import execution_environment as execution_env  # noqa: E402
+import source_plan_contracts  # noqa: E402
 import store  # noqa: E402
 
 ZERO_DIGEST = "0" * 64
@@ -2546,6 +2547,927 @@ class V2SourceSetVerificationTest(unittest.TestCase):
         )
         self.assertNotEqual(process.returncode, 0)
         self.assertIn("offline-pack/v2 requires --workspace", process.stderr)
+
+
+class V3EvidenceClosureTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.v2 = V2SourceSetVerificationTest(methodName="runTest")
+        self.v2.setUp()
+        self.root = self.v2.root
+
+    def tearDown(self) -> None:
+        self.v2.tearDown()
+
+    @staticmethod
+    def _evidence_object(source_object: dict[str, object]) -> dict[str, object]:
+        return {
+            "object": source_object["name"],
+            "sha256": source_object["sha256"],
+            "bytes": source_object["bytes"],
+            "media_type": source_object["media_type"],
+        }
+
+    def _write_evidence_document(
+        self,
+        directory: str,
+        identity: str,
+        document: dict[str, object],
+        identity_field: str,
+    ) -> dict[str, object]:
+        relative = f"evidence/{directory}/{identity.removeprefix('sha256:')}.json"
+        write_canonical(self.root / relative, document)
+        return {
+            **file_ref(self.root, relative, "application/json"),
+            identity_field: identity,
+        }
+
+    def make_v3_pack(
+        self,
+    ) -> tuple[
+        dict[str, object],
+        Path,
+        dict[str, dict[str, object]],
+        dict[str, object],
+        dict[str, object],
+        bytes,
+    ]:
+        pack, pack_path = self.v2.make_pack()
+        manifests_by_source: dict[str, tuple[dict[str, object], dict[str, object]]] = {}
+        for ref in pack["source_manifests"]:
+            manifest = json.loads((self.root / ref["path"]).read_text())
+            manifests_by_source[manifest["source"]] = (manifest, ref)
+
+        curated, curated_ref = manifests_by_source["curated-fixture"]
+        external, external_ref = manifests_by_source["external-fixture"]
+        old_ids = {
+            curated["source_manifest_id"]: "curated-fixture",
+            external["source_manifest_id"]: "external-fixture",
+        }
+
+        preimage = b'{"query":"fixture"}'
+        preimage_digest = hashlib.sha256(preimage).hexdigest()
+        preimage_path = f"evidence/request-parameters/sha256/{preimage_digest}"
+        preimage_file = self.root / preimage_path
+        preimage_file.parent.mkdir(parents=True, exist_ok=True)
+        preimage_file.write_bytes(preimage)
+
+        raw_object = next(item for item in external["objects"] if "raw" in item["roles"])
+        normalized_object = next(
+            item for item in external["objects"] if "normalized" in item["roles"]
+        )
+        requests = [
+            {
+                "kind": "http_get",
+                "uri": "https://example.invalid/fixture",
+                "parameters_sha256": preimage_digest,
+            }
+        ]
+        receipt: dict[str, object] = {
+            "schema": contracts.ACQUISITION_RECEIPT_SCHEMA_V1,
+            "acquisition_receipt_id": ZERO_HASH,
+            "source": external["source"],
+            "upstream_uri": "https://example.invalid/fixture",
+            "pin": copy.deepcopy(external["pin"]),
+            "tool": copy.deepcopy(external["acquisition"]),
+            "requests": requests,
+            "batch": {
+                "status": "complete",
+                "request_set_root": contracts.acquisition_request_set_root(requests),
+                "requests_total": 1,
+                "requests_succeeded": 1,
+                "requests_failed": 0,
+            },
+            "outputs": [self._evidence_object(raw_object)],
+            "audit": {"acquired_at": "2030-01-01T00:00:00Z"},
+        }
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
+        receipt_ref = self._write_evidence_document(
+            "acquisition-receipts",
+            receipt["acquisition_receipt_id"],
+            receipt,
+            "acquisition_receipt_id",
+        )
+
+        lineage: dict[str, object] = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": ZERO_HASH,
+            "source": external["source"],
+            "mode": "transform",
+            "acquisition_receipt_ids": [receipt["acquisition_receipt_id"]],
+            "parent_source_manifest_ids": [],
+            "normalization_schema": external["normalization"]["schema"],
+            "configuration_sha256": "5" * 64,
+            "tool": copy.deepcopy(external["normalization"]["tool"]),
+            "inputs": [
+                {
+                    **self._evidence_object(raw_object),
+                    "origin": {
+                        "kind": "acquisition_receipt",
+                        "id": receipt["acquisition_receipt_id"],
+                    },
+                }
+            ],
+            "outputs": [self._evidence_object(normalized_object)],
+            "result": "complete",
+            "audit": {"normalized_at": "2030-01-01T00:01:00Z"},
+        }
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
+        lineage_ref = self._write_evidence_document(
+            "normalization-lineages",
+            lineage["normalization_lineage_id"],
+            lineage,
+            "normalization_lineage_id",
+        )
+
+        external["schema"] = contracts.SOURCE_SCHEMA_V3
+        external["evidence"] = {
+            "acquisition_receipt_ids": [receipt["acquisition_receipt_id"]],
+            "normalization_lineage_id": lineage["normalization_lineage_id"],
+            "request_parameter_preimages": [
+                {
+                    "parameters_sha256": preimage_digest,
+                    "bytes": len(preimage),
+                    "media_type": "application/json",
+                }
+            ],
+        }
+        external["source_manifest_id"] = contracts.source_manifest_identity(external)
+        write_canonical(self.root / external_ref["path"], external)
+        external_ref = {
+            **file_ref(self.root, external_ref["path"], "application/json"),
+            "source_manifest_id": external["source_manifest_id"],
+        }
+
+        curated["schema"] = contracts.SOURCE_SCHEMA_V3
+        curated["source_manifest_id"] = contracts.source_manifest_identity(curated)
+        write_canonical(self.root / curated_ref["path"], curated)
+        curated_ref = {
+            **file_ref(self.root, curated_ref["path"], "application/json"),
+            "source_manifest_id": curated["source_manifest_id"],
+        }
+        new_ids = {
+            "curated-fixture": curated["source_manifest_id"],
+            "external-fixture": external["source_manifest_id"],
+        }
+        for binding in pack["input_bindings"]:
+            binding["source_manifest_ids"] = sorted(
+                new_ids[old_ids[item]] for item in binding["source_manifest_ids"]
+            )
+            for member in binding["members"]:
+                member["source_manifest_id"] = new_ids[
+                    old_ids[member["source_manifest_id"]]
+                ]
+        pack["source_manifests"] = sorted(
+            [curated_ref, external_ref],
+            key=lambda item: item["source_manifest_id"],
+        )
+        pack["schema"] = contracts.PACK_SCHEMA_V3
+        pack["evidence"] = {
+            "acquisition_receipts": [receipt_ref],
+            "normalization_lineages": [lineage_ref],
+            "request_parameter_preimages": [
+                {
+                    **file_ref(self.root, preimage_path, "application/json"),
+                    "parameters_sha256": preimage_digest,
+                }
+            ],
+        }
+        pack["source_set_root"] = contracts.source_set_root_v3(
+            pack["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            pack["input_bindings"],
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+        return (
+            pack,
+            pack_path,
+            {"curated-fixture": curated, "external-fixture": external},
+            receipt,
+            lineage,
+            preimage,
+        )
+
+    def make_source_plan(
+        self,
+        pack: dict[str, object],
+        manifests: dict[str, dict[str, object]],
+    ) -> dict[str, object]:
+        manifest_ids = {
+            manifest["source_manifest_id"]: source
+            for source, manifest in manifests.items()
+        }
+        receipt_refs = {
+            item["acquisition_receipt_id"]: item
+            for item in pack["evidence"]["acquisition_receipts"]
+        }
+        lineage_refs = {
+            item["normalization_lineage_id"]: item
+            for item in pack["evidence"]["normalization_lineages"]
+        }
+        preimage_refs = {
+            item["parameters_sha256"]: item
+            for item in pack["evidence"]["request_parameter_preimages"]
+        }
+        sources = []
+        for source_name, manifest in sorted(manifests.items()):
+            source = {
+                key: copy.deepcopy(value)
+                for key, value in manifest.items()
+                if key not in {"schema", "source_manifest_id", "evidence"}
+            }
+            source["objects"] = [
+                {**copy.deepcopy(item), "root": "fixture"}
+                for item in manifest["objects"]
+            ]
+            if "evidence" in manifest:
+                logical = manifest["evidence"]
+                source["evidence"] = {
+                    "acquisition_receipts": [
+                        {**copy.deepcopy(receipt_refs[item]), "root": "fixture"}
+                        for item in logical["acquisition_receipt_ids"]
+                    ],
+                    "normalization_lineage": {
+                        **copy.deepcopy(
+                            lineage_refs[logical["normalization_lineage_id"]]
+                        ),
+                        "root": "fixture",
+                    },
+                    "request_parameter_preimages": [
+                        {**copy.deepcopy(preimage_refs[item["parameters_sha256"]]), "root": "fixture"}
+                        for item in logical["request_parameter_preimages"]
+                    ],
+                }
+            sources.append(source)
+
+        bindings = []
+        for binding in pack["input_bindings"]:
+            bindings.append(
+                {
+                    "input_id": binding["input_id"],
+                    "sources": sorted(
+                        manifest_ids[item] for item in binding["source_manifest_ids"]
+                    ),
+                    "state": binding["state"],
+                    "members": [
+                        {
+                            "path": member["path"],
+                            "source": manifest_ids[member["source_manifest_id"]],
+                            "object": member["object"],
+                        }
+                        for member in binding["members"]
+                    ],
+                }
+            )
+        return {
+            "schema": contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3,
+            "inventory_id": pack["inventory"]["inventory_id"],
+            "input_bindings": bindings,
+            "sources": sources,
+            "reducer": {
+                "root": "fixture",
+                "git_commit": pack["reducer"]["git_commit"],
+                "entrypoint": pack["reducer"]["entrypoint"],
+            },
+            "configuration": {
+                "root": "fixture",
+                **{key: pack["configuration"][key] for key in ("path", "sha256", "bytes")},
+            },
+            "environment": {
+                "root": "fixture",
+                **{key: pack["environment"][key] for key in ("path", "sha256", "bytes")},
+            },
+            "schemas": [
+                {
+                    "root": "fixture",
+                    **copy.deepcopy(item),
+                    "pack_path": item["path"],
+                }
+                for item in pack["schemas"]
+            ],
+        }
+
+    def add_parent_only_child(
+        self,
+        pack: dict[str, object],
+        pack_path: Path,
+        manifests: dict[str, dict[str, object]],
+    ) -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+        parent = manifests["external-fixture"]
+        parent_object = next(
+            item for item in parent["objects"] if "normalized" in item["roles"]
+        )
+        child_object = copy.deepcopy(parent_object)
+        child_object["roles"] = ["normalized", "raw"]
+        lineage: dict[str, object] = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": ZERO_HASH,
+            "source": "derived-fixture",
+            "mode": "identity",
+            "acquisition_receipt_ids": [],
+            "parent_source_manifest_ids": [parent["source_manifest_id"]],
+            "normalization_schema": "fixture/derived-v1",
+            "configuration_sha256": "c" * 64,
+            "tool": {"name": "fixture-fold", "version": "1", "sha256": ZERO_DIGEST},
+            "inputs": [
+                {
+                    **self._evidence_object(parent_object),
+                    "origin": {
+                        "kind": "source_manifest",
+                        "id": parent["source_manifest_id"],
+                    },
+                }
+            ],
+            "outputs": [self._evidence_object(child_object)],
+            "result": "complete",
+            "audit": {"normalized_at": "2030-01-01T00:02:00Z"},
+        }
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(
+            lineage
+        )
+        lineage_ref = self._write_evidence_document(
+            "normalization-lineages",
+            lineage["normalization_lineage_id"],
+            lineage,
+            "normalization_lineage_id",
+        )
+        child: dict[str, object] = {
+            "schema": contracts.SOURCE_SCHEMA_V3,
+            "source_manifest_id": ZERO_HASH,
+            "source": "derived-fixture",
+            "source_kind": "sealed_snapshot",
+            "pin": {"type": "database_snapshot", "value": "derived-r1"},
+            "objects": [child_object],
+            "license": {"expression": "CC0-1.0", "redistribution": "allowed"},
+            "acquisition": {"name": "fixture-fold", "version": "1", "sha256": ZERO_DIGEST},
+            "normalization": {
+                "schema": lineage["normalization_schema"],
+                "tool": copy.deepcopy(lineage["tool"]),
+                "inputs": [child_object["name"]],
+                "outputs": [child_object["name"]],
+            },
+            "evidence": {
+                "acquisition_receipt_ids": [],
+                "normalization_lineage_id": lineage["normalization_lineage_id"],
+                "request_parameter_preimages": [],
+            },
+        }
+        child["source_manifest_id"] = contracts.source_manifest_identity(child)
+        child_path = "manifests/derived-fixture.json"
+        write_canonical(self.root / child_path, child)
+        child_ref = {
+            **file_ref(self.root, child_path, "application/json"),
+            "source_manifest_id": child["source_manifest_id"],
+        }
+        pack["source_manifests"].append(child_ref)
+        pack["source_manifests"].sort(key=lambda item: item["source_manifest_id"])
+        pack["evidence"]["normalization_lineages"].append(lineage_ref)
+        pack["evidence"]["normalization_lineages"].sort(
+            key=lambda item: item["normalization_lineage_id"]
+        )
+        source_binding = next(
+            item for item in pack["input_bindings"] if item["input_id"] == "source"
+        )
+        source_binding["source_manifest_ids"] = [child["source_manifest_id"]]
+        source_binding["members"][0]["source_manifest_id"] = child[
+            "source_manifest_id"
+        ]
+        pack["source_set_root"] = contracts.source_set_root_v3(
+            pack["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in pack["source_manifests"]],
+            pack["input_bindings"],
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+        return child, lineage, lineage_ref
+
+    def test_v3_pack_and_source_plan_seal_complete_evidence(self) -> None:
+        pack, pack_path, manifests, _receipt, _lineage, _preimage = self.make_v3_pack()
+        result = contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            self.root,
+            manifest_path=pack_path,
+        )
+        self.assertEqual(result["acquisition_receipts"], 1)
+        self.assertEqual(result["normalization_lineages"], 1)
+        self.assertEqual(result["request_parameter_preimages"], 1)
+
+        schemas = HERE / "authority/schemas"
+        source_schema = json.loads((schemas / "source-manifest/v3.json").read_text())
+        pack_schema = json.loads((schemas / "offline-pack/v3.json").read_text())
+        plan_schema = json.loads(
+            (schemas / "offline-pack-source-plan/v3.json").read_text()
+        )
+        for schema in (source_schema, pack_schema, plan_schema):
+            jsonschema.Draft202012Validator.check_schema(schema)
+        self.assertEqual(
+            source_schema["properties"]["schema"]["const"],
+            contracts.SOURCE_SCHEMA_V3,
+        )
+        self.assertEqual(
+            pack_schema["properties"]["schema"]["const"],
+            contracts.PACK_SCHEMA_V3,
+        )
+        self.assertEqual(
+            plan_schema["properties"]["schema"]["const"],
+            contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3,
+        )
+        jsonschema.Draft202012Validator(source_schema).validate(
+            manifests["external-fixture"]
+        )
+        jsonschema.Draft202012Validator(pack_schema).validate(pack)
+        plan = self.make_source_plan(pack, manifests)
+        source_plan_contracts.validate_source_plan_v3(plan)
+        jsonschema.Draft202012Validator(plan_schema).validate(plan)
+        self.assertEqual(
+            source_plan_contracts.verify_source_plan_v3_evidence(
+                plan, {"fixture": self.root}
+            ),
+            {
+                "source_manifests": 2,
+                "acquisition_receipts": 1,
+                "normalization_lineages": 1,
+                "request_parameter_preimages": 1,
+            },
+        )
+        external_path = next(
+            ref["path"]
+            for ref in pack["source_manifests"]
+            if ref["source_manifest_id"]
+            == manifests["external-fixture"]["source_manifest_id"]
+        )
+        standalone = subprocess.run(
+            [
+                sys.executable,
+                str(TOOLS / "verify_source_set.py"),
+                "--manifest",
+                str(self.root / external_path),
+                "--root",
+                str(self.root),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertNotEqual(standalone.returncode, 0)
+        self.assertIn("verify the enclosing offline-pack/v3", standalone.stderr)
+
+    def test_v3_source_identity_is_clock_free_but_pack_seals_audit_bytes(self) -> None:
+        pack, _pack_path, manifests, receipt, _lineage, _preimage = self.make_v3_pack()
+        source_id = manifests["external-fixture"]["source_manifest_id"]
+        pack_id = pack["offline_pack_id"]
+        receipt["audit"]["acquired_at"] = "2040-02-03T04:05:06Z"
+        self.assertEqual(
+            contracts.acquisition_receipt_identity(receipt),
+            receipt["acquisition_receipt_id"],
+        )
+        self.assertEqual(
+            contracts.source_manifest_identity(manifests["external-fixture"]),
+            source_id,
+        )
+        changed = copy.deepcopy(pack)
+        ref = changed["evidence"]["acquisition_receipts"][0]
+        raw = contracts.canonical_json_bytes(receipt)
+        ref["sha256"] = hashlib.sha256(raw).hexdigest()
+        ref["bytes"] = len(raw)
+        changed["offline_pack_id"] = contracts.offline_pack_identity(changed)
+        self.assertNotEqual(changed["offline_pack_id"], pack_id)
+
+    def test_v3_rejects_missing_or_incoherent_evidence(self) -> None:
+        pack, pack_path, manifests, receipt, lineage, _preimage = self.make_v3_pack()
+        missing = copy.deepcopy(manifests["external-fixture"])
+        missing.pop("evidence")
+        missing["source_manifest_id"] = contracts.source_manifest_identity(missing)
+        with self.assertRaisesRegex(contracts.VerificationError, "requires acquisition"):
+            contracts.validate_source_manifest(missing)
+
+        changed_lineage = copy.deepcopy(lineage)
+        changed_lineage["outputs"][0]["sha256"] = "e" * 64
+        changed_lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(changed_lineage)
+        )
+        changed_manifest = copy.deepcopy(manifests["external-fixture"])
+        changed_manifest["evidence"]["normalization_lineage_id"] = changed_lineage[
+            "normalization_lineage_id"
+        ]
+        changed_manifest["source_manifest_id"] = contracts.source_manifest_identity(
+            changed_manifest
+        )
+        preimage_ref = pack["evidence"]["request_parameter_preimages"][0]
+        with self.assertRaisesRegex(contracts.VerificationError, "normalized source objects"):
+            contracts.validate_source_manifest_evidence_documents(
+                changed_manifest,
+                receipts={receipt["acquisition_receipt_id"]: receipt},
+                lineage=changed_lineage,
+                request_parameter_preimages={
+                    preimage_ref["parameters_sha256"]: {
+                        key: preimage_ref[key]
+                        for key in ("parameters_sha256", "sha256", "bytes", "media_type")
+                    }
+                },
+                parent_source_manifests={},
+            )
+
+        preimage_path = self.root / pack["evidence"]["request_parameter_preimages"][0]["path"]
+        preimage_path.write_bytes(b"tampered")
+        with self.assertRaisesRegex(contracts.VerificationError, "sha256"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v3_rejects_receipt_and_lineage_semantic_mismatches(self) -> None:
+        pack, _pack_path, manifests, receipt, lineage, _preimage = self.make_v3_pack()
+        original_manifest = manifests["external-fixture"]
+        preimage_ref = pack["evidence"]["request_parameter_preimages"][0]
+        preimages = {
+            preimage_ref["parameters_sha256"]: {
+                key: preimage_ref[key]
+                for key in ("parameters_sha256", "sha256", "bytes", "media_type")
+            }
+        }
+
+        for field, value, message in (
+            ("source", "different-source", "must equal source manifest source"),
+            ("pin", {"type": "dataset_revision", "value": "different"}, "must equal source manifest pin"),
+            (
+                "tool",
+                {"name": "different-fetch", "version": "1", "sha256": ZERO_DIGEST},
+                "must equal source manifest acquisition tool",
+            ),
+        ):
+            with self.subTest(receipt_field=field):
+                changed_receipt = copy.deepcopy(receipt)
+                changed_receipt[field] = value
+                changed_receipt["acquisition_receipt_id"] = (
+                    contracts.acquisition_receipt_identity(changed_receipt)
+                )
+                changed_lineage = copy.deepcopy(lineage)
+                changed_lineage["acquisition_receipt_ids"] = [
+                    changed_receipt["acquisition_receipt_id"]
+                ]
+                changed_lineage["inputs"][0]["origin"]["id"] = changed_receipt[
+                    "acquisition_receipt_id"
+                ]
+                changed_lineage["normalization_lineage_id"] = (
+                    contracts.normalization_lineage_identity(changed_lineage)
+                )
+                changed_manifest = copy.deepcopy(original_manifest)
+                changed_manifest["evidence"]["acquisition_receipt_ids"] = [
+                    changed_receipt["acquisition_receipt_id"]
+                ]
+                changed_manifest["evidence"]["normalization_lineage_id"] = (
+                    changed_lineage["normalization_lineage_id"]
+                )
+                changed_manifest["source_manifest_id"] = (
+                    contracts.source_manifest_identity(changed_manifest)
+                )
+                with self.assertRaisesRegex(contracts.VerificationError, message):
+                    contracts.validate_source_manifest_evidence_documents(
+                        changed_manifest,
+                        receipts={
+                            changed_receipt["acquisition_receipt_id"]: changed_receipt
+                        },
+                        lineage=changed_lineage,
+                        request_parameter_preimages=preimages,
+                    )
+
+        for field, value, message in (
+            ("normalization_schema", "different/schema", "must equal source manifest normalization schema"),
+            (
+                "tool",
+                {"name": "different-normalizer", "version": "1", "sha256": ZERO_DIGEST},
+                "must equal source manifest normalization tool",
+            ),
+        ):
+            with self.subTest(lineage_field=field):
+                changed_lineage = copy.deepcopy(lineage)
+                changed_lineage[field] = value
+                changed_lineage["normalization_lineage_id"] = (
+                    contracts.normalization_lineage_identity(changed_lineage)
+                )
+                changed_manifest = copy.deepcopy(original_manifest)
+                changed_manifest["evidence"]["normalization_lineage_id"] = (
+                    changed_lineage["normalization_lineage_id"]
+                )
+                changed_manifest["source_manifest_id"] = (
+                    contracts.source_manifest_identity(changed_manifest)
+                )
+                with self.assertRaisesRegex(contracts.VerificationError, message):
+                    contracts.validate_source_manifest_evidence_documents(
+                        changed_manifest,
+                        receipts={receipt["acquisition_receipt_id"]: receipt},
+                        lineage=changed_lineage,
+                        request_parameter_preimages=preimages,
+                    )
+
+    def test_v3_rejects_request_preimage_set_and_metadata_mismatches(self) -> None:
+        pack, _pack_path, manifests, receipt, lineage, _preimage = self.make_v3_pack()
+        manifest = manifests["external-fixture"]
+        ref = pack["evidence"]["request_parameter_preimages"][0]
+        digest = ref["parameters_sha256"]
+        valid = {
+            digest: {
+                key: ref[key]
+                for key in ("parameters_sha256", "sha256", "bytes", "media_type")
+            }
+        }
+        with self.assertRaisesRegex(contracts.VerificationError, "exactly match"):
+            contracts.validate_source_manifest_evidence_documents(
+                manifest,
+                receipts={receipt["acquisition_receipt_id"]: receipt},
+                lineage=lineage,
+                request_parameter_preimages={},
+            )
+        extra = copy.deepcopy(valid)
+        extra_digest = "f" * 64
+        extra[extra_digest] = {
+            "parameters_sha256": extra_digest,
+            "sha256": extra_digest,
+            "bytes": 0,
+            "media_type": "application/octet-stream",
+        }
+        with self.assertRaisesRegex(contracts.VerificationError, "exactly match"):
+            contracts.validate_source_manifest_evidence_documents(
+                manifest,
+                receipts={receipt["acquisition_receipt_id"]: receipt},
+                lineage=lineage,
+                request_parameter_preimages=extra,
+            )
+        for field, value in (("bytes", 999), ("media_type", "text/plain")):
+            with self.subTest(field=field):
+                changed = copy.deepcopy(valid)
+                changed[digest][field] = value
+                with self.assertRaisesRegex(contracts.VerificationError, "metadata disagrees"):
+                    contracts.validate_source_manifest_evidence_documents(
+                        manifest,
+                        receipts={receipt["acquisition_receipt_id"]: receipt},
+                        lineage=lineage,
+                        request_parameter_preimages=changed,
+                    )
+
+    def test_v3_sealed_snapshot_can_use_parent_only_lineage(self) -> None:
+        _pack, _pack_path, manifests, _receipt, _lineage, _preimage = self.make_v3_pack()
+        parent = manifests["curated-fixture"]
+        parent_object = next(
+            item for item in parent["objects"] if "normalized" in item["roles"]
+        )
+        output = {
+            "name": "derived",
+            "roles": ["normalized"],
+            "path": "objects/sha256/" + "d" * 64,
+            "sha256": "d" * 64,
+            "bytes": 7,
+            "media_type": "application/json",
+            "redistribution": "allowed",
+        }
+        raw = {**copy.deepcopy(parent_object), "roles": ["raw"]}
+        child: dict[str, object] = {
+            "schema": contracts.SOURCE_SCHEMA_V3,
+            "source_manifest_id": ZERO_HASH,
+            "source": "derived-fixture",
+            "source_kind": "sealed_snapshot",
+            "pin": {"type": "database_snapshot", "value": "derived-r1"},
+            "objects": sorted([output, raw], key=lambda item: item["name"]),
+            "license": {"expression": "CC0-1.0", "redistribution": "allowed"},
+            "acquisition": {"name": "fixture-fold", "version": "1", "sha256": ZERO_DIGEST},
+            "normalization": {
+                "schema": "fixture/derived-v1",
+                "tool": {"name": "fixture-fold", "version": "1", "sha256": ZERO_DIGEST},
+                "inputs": [raw["name"]],
+                "outputs": [output["name"]],
+            },
+            "evidence": {
+                "acquisition_receipt_ids": [],
+                "normalization_lineage_id": ZERO_HASH,
+                "request_parameter_preimages": [],
+            },
+        }
+        lineage: dict[str, object] = {
+            "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
+            "normalization_lineage_id": ZERO_HASH,
+            "source": child["source"],
+            "mode": "transform",
+            "acquisition_receipt_ids": [],
+            "parent_source_manifest_ids": [parent["source_manifest_id"]],
+            "normalization_schema": child["normalization"]["schema"],
+            "configuration_sha256": "c" * 64,
+            "tool": copy.deepcopy(child["normalization"]["tool"]),
+            "inputs": [
+                {
+                    **self._evidence_object(parent_object),
+                    "origin": {
+                        "kind": "source_manifest",
+                        "id": parent["source_manifest_id"],
+                    },
+                }
+            ],
+            "outputs": [self._evidence_object(output)],
+            "result": "complete",
+            "audit": {"normalized_at": "2030-01-01T00:02:00Z"},
+        }
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
+        child["evidence"]["normalization_lineage_id"] = lineage[
+            "normalization_lineage_id"
+        ]
+        child["source_manifest_id"] = contracts.source_manifest_identity(child)
+        contracts.validate_source_manifest_evidence_documents(
+            child,
+            receipts={},
+            lineage=lineage,
+            request_parameter_preimages={},
+            parent_source_manifests={parent["source_manifest_id"]: parent},
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "exactly match the lineage parent IDs"):
+            contracts.validate_source_manifest_evidence_documents(
+                child,
+                receipts={},
+                lineage=lineage,
+                request_parameter_preimages={},
+                parent_source_manifests={},
+            )
+
+        non_normalized_parent = copy.deepcopy(parent)
+        target = non_normalized_parent["objects"][0]
+        target["roles"] = ["raw"]
+        normalized_copy = copy.deepcopy(target)
+        normalized_copy.update(
+            {
+                "name": "normalized-copy",
+                "roles": ["normalized"],
+                "path": "objects/sha256/" + "b" * 64,
+                "sha256": "b" * 64,
+            }
+        )
+        non_normalized_parent["objects"] = sorted(
+            [target, normalized_copy], key=lambda item: item["name"]
+        )
+        non_normalized_parent["normalization"]["inputs"] = [target["name"]]
+        non_normalized_parent["normalization"]["outputs"] = [normalized_copy["name"]]
+        non_normalized_parent["source_manifest_id"] = (
+            contracts.source_manifest_identity(non_normalized_parent)
+        )
+        changed_lineage = copy.deepcopy(lineage)
+        changed_lineage["parent_source_manifest_ids"] = [
+            non_normalized_parent["source_manifest_id"]
+        ]
+        changed_lineage["inputs"][0]["origin"]["id"] = non_normalized_parent[
+            "source_manifest_id"
+        ]
+        changed_lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(changed_lineage)
+        )
+        changed_child = copy.deepcopy(child)
+        changed_child["evidence"]["normalization_lineage_id"] = changed_lineage[
+            "normalization_lineage_id"
+        ]
+        changed_child["source_manifest_id"] = contracts.source_manifest_identity(
+            changed_child
+        )
+        with self.assertRaisesRegex(contracts.VerificationError, "must reference normalized"):
+            contracts.validate_source_manifest_evidence_documents(
+                changed_child,
+                receipts={},
+                lineage=changed_lineage,
+                request_parameter_preimages={},
+                parent_source_manifests={
+                    non_normalized_parent["source_manifest_id"]: non_normalized_parent
+                },
+            )
+        with self.assertRaisesRegex(contracts.VerificationError, "contains a cycle"):
+            contracts._validate_source_manifest_parent_dag(
+                {"manifest-a": ["manifest-b"], "manifest-b": ["manifest-a"]}
+            )
+
+    def test_v3_pack_rejects_unreferenced_evidence_documents(self) -> None:
+        pack, pack_path, _manifests, receipt, _lineage, _preimage = self.make_v3_pack()
+        extra = copy.deepcopy(receipt)
+        extra["requests"][0]["uri"] = "https://example.invalid/fixture-extra"
+        extra["batch"]["request_set_root"] = contracts.acquisition_request_set_root(
+            extra["requests"]
+        )
+        extra["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(extra)
+        extra_ref = self._write_evidence_document(
+            "acquisition-receipts",
+            extra["acquisition_receipt_id"],
+            extra,
+            "acquisition_receipt_id",
+        )
+        pack["evidence"]["acquisition_receipts"].append(extra_ref)
+        pack["evidence"]["acquisition_receipts"].sort(
+            key=lambda item: item["acquisition_receipt_id"]
+        )
+        pack["offline_pack_id"] = contracts.offline_pack_identity(pack)
+        write_canonical(pack_path, pack)
+        with self.assertRaisesRegex(contracts.VerificationError, "unreferenced receipts"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(pack),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v3_pack_rejects_unreferenced_lineage_and_preimage(self) -> None:
+        pack, pack_path, _manifests, _receipt, lineage, _preimage = self.make_v3_pack()
+        extra_lineage = copy.deepcopy(lineage)
+        extra_lineage["configuration_sha256"] = "9" * 64
+        extra_lineage["normalization_lineage_id"] = (
+            contracts.normalization_lineage_identity(extra_lineage)
+        )
+        extra_lineage_ref = self._write_evidence_document(
+            "normalization-lineages",
+            extra_lineage["normalization_lineage_id"],
+            extra_lineage,
+            "normalization_lineage_id",
+        )
+        with_extra_lineage = copy.deepcopy(pack)
+        with_extra_lineage["evidence"]["normalization_lineages"].append(
+            extra_lineage_ref
+        )
+        with_extra_lineage["evidence"]["normalization_lineages"].sort(
+            key=lambda item: item["normalization_lineage_id"]
+        )
+        with_extra_lineage["offline_pack_id"] = contracts.offline_pack_identity(
+            with_extra_lineage
+        )
+        write_canonical(pack_path, with_extra_lineage)
+        with self.assertRaisesRegex(contracts.VerificationError, "unreferenced lineages"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(with_extra_lineage),
+                self.root,
+                manifest_path=pack_path,
+            )
+        (self.root / extra_lineage_ref["path"]).unlink()
+
+        extra_bytes = b"extra-request"
+        extra_digest = hashlib.sha256(extra_bytes).hexdigest()
+        extra_path = f"evidence/request-parameters/sha256/{extra_digest}"
+        (self.root / extra_path).write_bytes(extra_bytes)
+        with_extra_preimage = copy.deepcopy(pack)
+        with_extra_preimage["evidence"]["request_parameter_preimages"].append(
+            {
+                **file_ref(self.root, extra_path, "application/octet-stream"),
+                "parameters_sha256": extra_digest,
+            }
+        )
+        with_extra_preimage["evidence"]["request_parameter_preimages"].sort(
+            key=lambda item: item["parameters_sha256"]
+        )
+        with_extra_preimage["offline_pack_id"] = contracts.offline_pack_identity(
+            with_extra_preimage
+        )
+        write_canonical(pack_path, with_extra_preimage)
+        with self.assertRaisesRegex(contracts.VerificationError, "unreferenced preimages"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(with_extra_preimage),
+                self.root,
+                manifest_path=pack_path,
+            )
+
+    def test_v3_pack_allows_evidence_only_parent_and_rejects_missing_parent(self) -> None:
+        pack, pack_path, manifests, _receipt, _lineage, _preimage = self.make_v3_pack()
+        _child, _child_lineage, _lineage_ref = self.add_parent_only_child(
+            pack, pack_path, manifests
+        )
+        result = contracts.verify_offline_pack_files(
+            contracts.validate_offline_pack(pack),
+            self.root,
+            manifest_path=pack_path,
+        )
+        self.assertEqual(result["source_manifests"], 3)
+
+        parent_id = manifests["external-fixture"]["source_manifest_id"]
+        missing_parent = copy.deepcopy(pack)
+        missing_parent["source_manifests"] = [
+            ref
+            for ref in missing_parent["source_manifests"]
+            if ref["source_manifest_id"] != parent_id
+        ]
+        remaining_object_paths = {
+            item["path"]
+            for ref in missing_parent["source_manifests"]
+            for item in json.loads((self.root / ref["path"]).read_text())["objects"]
+        }
+        missing_parent["objects"] = [
+            ref
+            for ref in missing_parent["objects"]
+            if ref["path"] in remaining_object_paths
+        ]
+        missing_parent["source_set_root"] = contracts.source_set_root_v3(
+            missing_parent["inventory"]["inventory_id"],
+            [ref["source_manifest_id"] for ref in missing_parent["source_manifests"]],
+            missing_parent["input_bindings"],
+        )
+        missing_parent["offline_pack_id"] = contracts.offline_pack_identity(
+            missing_parent
+        )
+        write_canonical(pack_path, missing_parent)
+        with self.assertRaisesRegex(contracts.VerificationError, "parent source manifests absent"):
+            contracts.verify_offline_pack_files(
+                contracts.validate_offline_pack(missing_parent),
+                self.root,
+                manifest_path=pack_path,
+            )
 
 
 class ReleaseVerificationTest(unittest.TestCase):

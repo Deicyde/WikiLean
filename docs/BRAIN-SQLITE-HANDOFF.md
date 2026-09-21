@@ -6,16 +6,50 @@ Architecture details live in [`BRAIN-ARCHITECTURE.plan.md`](BRAIN-ARCHITECTURE.p
 the executable authority contracts are summarized in
 [`../brain/authority/README.md`](../brain/authority/README.md).
 
+## Laptop-transfer checkpoint
+
+Resume from branch `codex/brain-architecture-phase1` and pull `origin`. The latest
+implementation checkpoint is `39632d33 Preserve Wikidata evidence freshness`, after
+`4cd402c1 Seal Wikidata proposal evidence`, `85d30e54 Pin Brain replay pack identity`,
+`bc158cfd Integrate v3 Brain replay pipeline`, `bf52553a Record final Brain handoff
+verification`, `7d311adb Harden Wikidata acquisition publication`, `dba596f2 Define v3
+Brain evidence contracts`, and `92703ac0 Seal D1 annotation mirroring`. This handoff and
+roadmap update is committed immediately after that implementation history.
+
+```bash
+git fetch origin
+git switch --track origin/codex/brain-architecture-phase1
+git status --short --branch
+```
+
+The worktree should be clean before continuing.
+
+Immediate continuation order:
+
+1. Configure a D1 Read-scoped Cloudflare token locally (never paste or commit it), run
+   `brain/acquire-d1-snapshot.sh`, review the private bundle, and bind it into a v3 plan.
+2. Restore a read-only Mathlib source checkout and author the complete reviewed v3 source
+   plan, including the pinned Hugging Face inputs and license decisions.
+3. Run the bounded v3 preflight and compile the first real pack on a volume with adequate
+   headroom, then perform the two-path clean-room replay and semantic comparison.
+4. Replace the still-separate legacy Wikidata universe/edge/description reads with one shared
+   sealed generation, then bind it and the completed proposal-entity bundle into the reviewed
+   v3 current-corpus source plan.
+
+No Worker deployment, production promotion, D1 write, operator Wikidata bundle acquisition,
+or tracked-data regeneration was performed in this stabilization session. Read-only API
+compatibility probes published no artifact and changed no production state.
+
 ## Bottom line
 
 The SQLite architecture and its fixture-scale sealed replay path are substantially
 implemented. This branch does **not** yet establish an authoritative full-corpus build:
 
 - no reviewed current-corpus source plan exists;
-- no real `offline-pack/v2` has been compiled;
+- no real `offline-pack/v3` has been compiled;
 - no full-corpus clean-room replay, dual-build equality result, or reproducibility
   attestation exists;
-- no v2 pack identity has been bound into an authoritative release; and
+- no verified v3 pack identity has been bound into an authoritative release; and
 - nothing in this work authorizes a Worker deployment or production promotion.
 
 Production remains on the compatibility authority path. P1 activation remains a separate,
@@ -31,8 +65,8 @@ Branch: `codex/brain-architecture-phase1`. At this handoff it contains:
 - immutable Brain release assembly and streamed closure verification;
 - exact-release promotion, durable deployment-journal, public-baseline, and activation-
   evidence tooling, all production-inactive;
-- versioned source-manifest, `offline-pack/v2`, reducer-inventory, build-context,
-  execution-environment, and build-attestation contracts;
+- versioned source-manifest and offline-pack contracts through v3, plus reducer-inventory,
+  build-context, execution-environment, and build-attestation contracts;
 - standalone, self-identifying acquisition-receipt and normalization-lineage contracts
   with fail-closed request accounting, query-free evidence URIs, hashed request parameters,
   exact origins, and audit-only timestamps;
@@ -45,8 +79,9 @@ The latest sealed-pack milestone adds:
 
 - stricter live environment probing for Python, NumPy's installed closure, SQLite, locale
   and hash settings, runner-file closure, development-host identity, and sandbox policy;
-- a canonical offline-pack source-plan schema and deterministic, network-free v2 compiler;
-- a bounded source-plan preflight that hashes and validates only small control documents,
+- canonical offline-pack source-plan schemas and a deterministic, network-free compiler
+  that preserves v1-plan→v2-pack identity and emits v3 packs only from validated v3 plans;
+- a bounded source-plan preflight that hashes and validates small control/evidence documents,
   uses Git/lstat sizes for corpus payloads, and reports separate `compile_ready`,
   `source_authority_ready`, and `source_publishable` states; and
 - source-selector and test-gate updates for the current reducer inventory.
@@ -55,11 +90,12 @@ The report is explicitly `source-plan-only` with `runtime_environment_checked: f
 readiness fields are not runtime, replay, release, or deployment claims. The preflight CLI
 returns `0` only when `source_publishable` is true, `2` for a valid but non-publishable source
 plan (including warning-class authority/publication concerns), and `1` for structural or
-argument errors. All report/error output is canonical JSON. Receipt-role detection is
-presence-only in v2: standalone `acquisition-receipt/v1` and
-`normalization-lineage/v1` contracts now exist, but they cannot make a v2 source
-authority-ready until an explicit v3 pack/source-manifest integration seals and verifies
-their bytes.
+argument errors. All report/error output is canonical JSON. Receipt-role detection remains
+presence-only in v2. The explicit v3 source-manifest, source-plan, and offline-pack contracts
+now validate and seal receipt, lineage, and request-preimage bytes with clock-free logical
+identities. The compiler preserves exact v1-plan→v2-pack compatibility while emitting
+evidence-closed v3 packs from v3 plans; preflight validates and accounts for evidence, and
+preparation/replay accept only fully verified v2 or v3 packs.
 
 The subsequent acquisition-integrity milestone adds:
 
@@ -70,14 +106,46 @@ The subsequent acquisition-integrity milestone adds:
   caught failures, first-publication interruption, concurrent writers, and real `SIGKILL`;
 - validation in the graph build, proposal fold, agent candidate generator, and acceptance
   gate, while explicit replay bindings reject orphan or unregistered source objects; and
-- fail-closed inline Wikidata acquisition in `fold_proposals.py`, including typed response
-  validation, redirect support, missing-QID isolation, complete-batch enforcement, and a
-  proof that later-batch failure leaves every prior output byte unchanged.
+- a sealed Wikidata `wbgetentities` acquisition command for proposal QIDs, with an isolated
+  CPython 3.12 launcher, exact curl/request policy, canonical request preimages, complete
+  response/bisection transcript, redirect and missing-identity validation, clock-free
+  normalized bytes, receipt/lineage evidence, and atomic no-replace publication into a
+  private content-addressed store. Receipt and lineage logical IDs exclude audit clocks,
+  while the bundle directory ID hashes the exact canonical audit-bearing evidence bytes, so
+  a fresh observation of unchanged upstream data publishes as a distinct immutable evidence
+  generation;
+- an independently implemented verifier that closes paths and members, replays request order
+  and bisection, recomputes normalized entities, and checks toolchain, receipt, lineage, and
+  requested-QID-set identity; and
+- an offline-only proposal fold: it emits the canonical plan in planning mode, performs no
+  network fallback, requires an explicit absolute verified bundle for a non-empty plan, and
+  preserves every fold output byte on a plan/bundle mismatch or verification failure.
 
-This does not complete the acquisition/replay split: current legacy pairs remain readable,
-Wikidata is still fetched inside the fold command, and physical external JSONL bytes still
-contain observation/run metadata even though that metadata is excluded from
-`pair_generation`.
+Brain nightly now makes that boundary a hard gate. It creates a private per-run directory,
+validates the canonical plan, skips acquisition when the plan is empty, otherwise acquires
+into `catalog/.cache/wikidata/entity-bundles`, validates that stdout names exactly one
+content-addressed child of that store, and passes that explicit bundle to the fold. Any plan,
+acquisition, path, verification, or fold failure aborts build and release. The Brain lock is
+never stolen based on age; after confirming no owning process exists, an operator must remove
+the stale lock manually. Cleanup removes only the known plan/stdout files and leaves an
+unexpected nonempty run directory for inspection.
+
+This completes acquisition separation for proposal folding, not for the whole Wikidata
+surface. Current legacy external pairs remain readable; the universe, relation-edge, and
+description jobs still perform separate live reads without a shared sealed generation; and
+physical external JSONL bytes still contain some observation/run metadata even where that
+metadata is excluded from `pair_generation`. The proposal bundle receipt/lineage is also not
+yet bound into the reviewed v3 current-corpus source plan, so this milestone is not an
+authority or production-release claim.
+
+The latest Wikidata safety milestone makes the universe, relation-edge, and description
+harvesters all-or-nothing and atomic. Typed response validation, deterministic
+canonicalization, redirect handling, prior-generation/input-relative volume floors, and
+label/slug/description coverage guards prevent successful-but-collapsed responses from
+replacing known-good artifacts. Description output no longer merges a prior cache or embeds
+run timestamps. The focused hermetic suite passes 27 tests. These remain separate live API
+reads, not a shared upstream snapshot or sealed receipt/lineage generation; concurrent
+writers are not yet serialized.
 
 The immutable Hugging Face acquisition milestone additionally adds:
 
@@ -92,9 +160,10 @@ The immutable Hugging Face acquisition milestone additionally adds:
 - deterministic hierarchy/theoremgraph-link lineage plus immutable premise-index API pins,
   with backward compatibility for the deployed legacy mtime-shaped manifest.
 
-These pins do not by themselves make v2 authority-ready: acquisition receipts, lineage,
-and request preimages still require explicit v3 source-plan/source-manifest/offline-pack
-integration.
+These pins do not by themselves make v2 authority-ready. The v3 contracts now express and
+verify acquisition receipts, lineage, and request preimages, and the compiler/preflight/
+preparation/replay path accepts fully verified v3 packs. Current inputs still need real,
+reviewed evidence and one authoritative current-corpus v3 plan.
 
 The sealed D1 acquisition foundation additionally exists, but has not completed a production
 capture in this branch. Run it only through `brain/acquire-d1-snapshot.sh`, which selects
@@ -104,8 +173,13 @@ counts and exact migrated column inventories; binds the production account/datab
 pinned Wrangler package, digest-bound Node 22 executable, exact Python executable/version,
 and the local transitive Python dependency closure; then atomically publishes a private
 content-addressed bundle containing
-clock-free normalized objects and validated receipt/lineage evidence. No source-plan or
-release authority claim follows from the acquisition tool alone.
+clock-free normalized objects and validated receipt/lineage evidence. Logical receipt and
+lineage IDs exclude audit clocks, while the bundle directory binds the exact canonical
+audit-bearing evidence bytes. Reacquiring unchanged rows therefore publishes a distinct
+immutable observation with the new acquisition time instead of silently reusing stale
+evidence. This incompatible publication identity is explicitly versioned as D1 acquisition
+bundle v2; no production v1 bundle was captured. No source-plan or release authority claim
+follows from the acquisition tool alone.
 
 Community graduation and the annotation mirror are now wired to that boundary through one
 shared independent bundle verifier. `harvest_community_edges.py` accepts only an explicit
@@ -122,6 +196,28 @@ generated plists, and installs files without loading jobs. Community graduation 
 default and requires an absolute reviewed bundle path; the moderation job never acquires D1
 state implicitly.
 
+For a manual proposal-fold acquisition, use one private run directory and keep planning,
+acquisition, and folding as three explicit steps. Do not invoke the acquirer for an empty
+`qids` array:
+
+```bash
+mkdir -m 0700 /absolute/private/wikidata-run
+python3 brain/fold_proposals.py \
+  --write-wikidata-request-plan /absolute/private/wikidata-run/request-plan.json
+# If the plan has qids:[], run `python3 brain/fold_proposals.py` and stop here.
+BUNDLE="$(brain/acquire-wikidata-entities.sh \
+  /absolute/private/wikidata-run/request-plan.json \
+  --store /absolute/private/wikidata-entity-store)"
+python3 brain/fold_proposals.py \
+  --wikidata-entity-bundle "$BUNDLE"
+```
+
+The launcher deliberately strips proxy variables and forces `NO_PROXY=*`; the operator host
+therefore needs direct HTTPS egress to `www.wikidata.org`. Proxy-only environments fail
+closed. Each response is capped at 64 MiB, but the current producer and verifier materialize
+the aggregate transcript/bundle in memory. Keep plans operationally bounded and implement
+streaming before materially scaling toward the 50,000-QID schema ceiling.
+
 Frontier replay no longer accepts `manage/data/halo.json` as authority input.
 `mean_stateability` is deterministically re-derived from the exact bound cells and synapses
 with the historical ring-1 neighbor-fraction semantics. On the current corpus, all 47 area
@@ -134,22 +230,24 @@ worklists only.
 
 Focused results recorded through 2026-09-05:
 
-- offline-pack compiler: 22 tests passed;
-- source-plan preflight: 15 tests passed;
-- authority contracts: 65 tests passed;
-- proposal-fold acquisition: 10 tests passed;
+- offline-pack compiler: 26 tests passed;
+- source-plan preflight: 21 tests passed;
+- authority contracts: 74 tests passed, including the v3 evidence and parent-DAG closure;
+- sealed Wikidata entity acquisition and independent verification: 23 tests passed;
+- offline-only proposal folding: 9 tests passed;
 - external pair publication/reader fixtures: all checks passed;
 - execution environment: 20 tests passed;
-- replay executor: 33 tests passed;
-- replay preparation: 24 tests passed;
+- replay executor: 36 tests passed;
+- replay preparation: 29 tests passed;
 - base-graph context: 11 tests passed after the annotation-selector fix; and
 - replay sandbox: one expected local skip because strict clean-host evidence was not
   requested/available.
 
 The latest continuation additionally passed 12 sealed-harvester/shared-verifier tests,
-15 D1-acquisition tests, 19 annotation-mirror tests, 10 top-level-shard tests, 15
-portable-launcher tests, and 13 Brain-nightly shell tests. The complete D1 acquisition and
-consumer slice received an independent clean P0/P1 audit.
+17 D1-acquisition tests, 19 annotation-mirror tests, 10 top-level-shard tests, 15
+portable-launcher tests, and 18 Brain-nightly shell tests. The complete D1 acquisition and
+consumer slice and the Wikidata proposal-acquisition slice received independent clean
+P0/P1 audits after their identified blockers were fixed.
 
 The remaining D1-consumer audit notes are P2: a hard kill after the atomic exchange can
 leave a complete old-cache sibling for an operator to identify and remove; acquisition and
@@ -157,10 +255,11 @@ mirroring still buffer/clone the current corpus; bootstrap executable discovery 
 operator `PATH` before recording exact digests; and long-lived historical bundles would
 need an explicit versioned verifier profile rather than weakening the current v1 policy.
 
-Final branch-wide verification on 2026-09-05 passed the expanded Python gate (38
-commands) and the Worker gate (37 files / 845 tests). The Python result includes the one
-expected local replay-sandbox skip described below; every required offline scenario ran.
-Before merging, or after any continuation changes, rerun exactly:
+Final branch-wide verification after the `39632d33` evidence-generation freshness fix passed
+the complete 40-command Python gate and the Worker gate (37 files / 845 tests). The Python
+result includes the one expected local replay-sandbox skip; every required offline scenario
+ran. Focused final results were 23 acquisition/verifier, 9 fold, and 18 nightly tests. Before
+merging, or after any continuation changes, rerun exactly:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -179,6 +278,8 @@ For a quick regression while editing the current P0-R slice:
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 -m unittest -v \
+  brain.test_acquire_wikidata_entities \
+  brain.test_fold_proposals \
   brain.test_compile_offline_pack_v2 \
   brain.test_preflight_offline_pack_v2 \
   brain.test_authority_contracts \
@@ -189,6 +290,8 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 -m unittest -v \
   brain.test_run_replay_v2 \
   brain.test_base_graph_context \
   wiki.scripts.test_pull_annotations
+
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python3 site/ops/test_brain_nightly.py
 ```
 
 Strict sandbox evidence is still outstanding. On a clean supported macOS host, require it
@@ -243,18 +346,18 @@ the current checkout:
    to one acquisition, before treating the pins as source-pack authority.
 4. Resolve the redistribution policy for `theorem_matching.csv` before publication. The
    registry text alone is not sufficient approval for pack redistribution.
-5. Integrate the standalone acquisition-receipt and normalization-lineage contracts through
-   explicit v3 source-manifest/source-plan/offline-pack contracts, including sealed
-   request-parameter preimages. Current v2 receipt-like files still prove presence only,
-   not complete batch success or output ancestry.
+5. Author the reviewed current-corpus v3 plan and supply real receipt, lineage, and request-
+   preimage files for every non-Git source. The contract/compiler/preflight/replay path is
+   implemented, but historical v2 receipt-like files still prove presence only.
 6. Remove observation times and local paths from remaining external-harvest and
    catalog-derived bytes. Hierarchy and theoremgraph-link outputs are immutable-revision-
    derived; Frontier no longer consumes halo output, and community provenance now uses the
    sealed D1 normalization-lineage identity.
-7. Finish acquisition separation before issuing evidence: move the now-fail-closed
-   Wikidata lookup out of `fold_proposals.py`, make the remaining
-   Wikidata harvesters reject partial results, and bind the reviewed Hugging Face revisions
-   into v3 evidence. Re-harvest legacy external pairs through the sealed writer.
+7. Proposal-fold acquisition is separated and sealed. Before issuing authority evidence,
+   replace the separately fail-closed Wikidata universe/edge/description harvesters with one
+   shared sealed generation, bind that generation plus the proposal-entity bundle and the
+   reviewed Hugging Face revisions into v3 evidence, and re-harvest legacy external pairs
+   through the sealed writer.
 8. Finish the trusted OCI launcher, immutable dependency artifacts, NumPy/BLAS CPU policy,
    and strict clean-host sandbox evidence. Direct authoritative-OCI replay intentionally
    fails closed today.
@@ -265,7 +368,7 @@ the current checkout:
 
 ## Disk warning
 
-The filesystem had about 45 GiB free at the 2026-09-05 handoff check, after temporarily
+The filesystem had about 43 GiB free at the final 2026-09-05 handoff check, after temporarily
 falling below 6 GiB during this work. The available non-Mathlib corpus occupies 1.425 GiB,
 before the required Mathlib source tree, content-addressed pack, compiler temporary
 duplication, or replay outputs.
@@ -282,10 +385,10 @@ the exact plan does not retain ample headroom.
    fail-closed checkpoints.
 2. Configure the local D1 Read credential, run and review one sealed production D1 bundle,
    bind it into source-plan authority, remove remaining observation/run metadata from
-   normalized bytes, finish Wikidata acquisition separation, then design the explicit
-   v3 receipt/lineage pack integration
-   (including the reviewed Hugging Face sources) and author the
-   reviewed current-corpus source plan with immutable pins, licenses, receipts, and lineage.
+   normalized bytes, replace the three legacy Wikidata harvesters with one shared sealed
+   generation, and author the reviewed current-corpus v3 source plan with immutable pins,
+   licenses, receipts, lineage, the proposal-entity bundle, and the reviewed Hugging Face
+   sources.
 3. Run the bounded preflight on a larger volume; require structural success and separately
    review `compile_ready`, `source_authority_ready`, and `source_publishable`.
 4. Compile and independently verify the first real pack, then prove Mathlib/oracle,
