@@ -163,18 +163,19 @@ def acquire(plan_path, store, curl, selector_path):
     plan = core.validate_plan(core.parse(raw_plan, "plan"))
     core.require(raw_plan == core.canonical(plan), "reviewed OPENALEX plan must be canonical")
     tool, programs = runtime_identity(curl)
+    core.validate_plan_profile(plan, core.validate_tool(tool))
     selector = core.validate_selector(plan, core.read_regular(selector_path, core.POLICY["maximum_selector_bytes"]), programs["brain/ingest/openalex_citations.py"])
     records, pending = [], None
     state = core.WalkState(plan, programs["brain/ingest/openalex_citations.py"])
     try:
         while state.next_name is not None:
             core.require(len(records) < core.POLICY["maximum_attempts"], "OPENALEX request budget exceeded")
-            parameters = core.parameters(state.next_name)
+            parameters = core.parameters(state.next_name, state.policy)
             key = core.sha(core.canonical(parameters))
             core.require(runtime_identity(curl) == (tool, programs) and core.read_regular(plan_path) == raw_plan,
                 "OPENALEX runtime or plan changed before request")
             core.require(state.filtered_attempts < core.POLICY["maximum_filtered_attempts"] or state.next_name["phase"].split(":")[0] in {"docs", "direct", "arxiv"}, "OpenAlex keyless request budget exhausted before request")
-            interval = core.POLICY["arxiv_interval_milliseconds"] if state.next_name["phase"].startswith("arxiv:") else core.POLICY["minimum_request_interval_milliseconds"]
+            interval = state.policy["arxiv_interval_milliseconds"] if state.next_name["phase"].startswith("arxiv:") else state.policy["minimum_request_interval_milliseconds"]
             time.sleep(interval / 1000)
             print(f"Acquiring OpenAlex {state.next_name['phase']} ({state.count + 1}, filtered {state.filtered_attempts}, attempt {state.ordinal})", file=sys.stderr, flush=True)
             pending = {"request": parameters, "response": None, "body_base64": "", "attempt": state.ordinal,
@@ -188,7 +189,8 @@ def acquire(plan_path, store, curl, selector_path):
             if (response["curl_exit_code"] == 0 and response["http_status"] == 200) or (state.next_name["phase"].startswith("direct:") and ((response["http_status"] == 301 and response["curl_exit_code"] == 0) or (response["http_status"] == 404 and response["curl_exit_code"] in (0, 22)))):
                 pending["outcome"] = "succeeded"
             else:
-                delay = core.retry_delay(response, state.ordinal)
+                delay = core.retry_delay(response, state.ordinal,
+                    phase=state.next_name["phase"].split(":", 1)[0], policy=state.policy)
                 core.require(delay is not None, "OPENALEX failed response is nonretryable or retries exhausted")
                 pending["retry_delay_seconds"] = delay
             state.accept(pending)

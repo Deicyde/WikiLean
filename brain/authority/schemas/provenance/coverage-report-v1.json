@@ -1,0 +1,289 @@
+{
+  "$id": "wikilean.provenance-coverage-report/v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "binding": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_root": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "inventory_id": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "offline_pack_id": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "reducer_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "release_id": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "release_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_set_root": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "offline_pack_id",
+        "source_set_root",
+        "inventory_id",
+        "reducer_sha256",
+        "release_id",
+        "release_manifest_sha256",
+        "artifact_root"
+      ],
+      "type": "object"
+    },
+    "failures": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "detail": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "location": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "location",
+              "detail"
+            ],
+            "type": "object"
+          },
+          "maxItems": 200,
+          "type": "array"
+        },
+        "total": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "total",
+        "truncated",
+        "items"
+      ],
+      "type": "object"
+    },
+    "implementation_root": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "limits": {
+      "const": {
+        "content_field_policy": "independently supplied public review only; provenance coverage does not infer field licensing",
+        "semantic_reconstruction": "not performed; input witnesses cover only the named simple producer checks"
+      }
+    },
+    "mapping_id": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "occurrences": {
+      "additionalProperties": false,
+      "properties": {
+        "by_artifact": {
+          "additionalProperties": {
+            "maximum": 20000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "by_type": {
+          "additionalProperties": {
+            "maximum": 20000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "direct",
+              "pool",
+              "reference"
+            ]
+          },
+          "type": "object"
+        },
+        "covered_by_family": {
+          "additionalProperties": {
+            "maximum": 20000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "agent-grounding",
+              "annotation-citation",
+              "article-organ",
+              "container-fold",
+              "discovery-fold",
+              "erdos-oeis-join",
+              "external-internal-link",
+              "external-page-qid",
+              "external-projected-link",
+              "external-verified-anchor",
+              "formal-conjectures-fold",
+              "formal-dependency-lift",
+              "frontier-library",
+              "frontier-reference-xrefs",
+              "hierarchy-containment",
+              "literature-containment",
+              "mathlib-external-tags",
+              "mathlib-gold",
+              "openalex-citations",
+              "tag-queue",
+              "tauceti-fold",
+              "theoremgraph-derived-links",
+              "theoremgraph-matching",
+              "wikidata-external-ids",
+              "wikidata-relations"
+            ]
+          },
+          "type": "object"
+        },
+        "root": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "total": {
+          "maximum": 20000000,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "by_type",
+        "by_artifact",
+        "covered_by_family",
+        "root"
+      ],
+      "type": "object"
+    },
+    "private_review_id": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provenance_coverage_ready": {
+      "type": "boolean"
+    },
+    "public_review_id": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "report_id": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "resolved_input_root": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "wikilean.provenance-coverage-report/v1"
+    },
+    "scope": {
+      "const": {
+        "accepted_authority": false,
+        "legal_determination": false,
+        "production_activation": false,
+        "semantic_reconstruction": false,
+        "trust": "expected-id-pinned-local-mapping"
+      }
+    },
+    "unused_rule_ids": {
+      "items": {
+        "maxLength": 4096,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "used_rule_ids": {
+      "items": {
+        "maxLength": 4096,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "witnesses": {
+      "additionalProperties": {
+        "maximum": 20000000,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": [
+          "checked",
+          "partial-witness",
+          "declaration-only",
+          "not-reconstructed"
+        ]
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "report_id",
+    "scope",
+    "implementation_root",
+    "mapping_id",
+    "private_review_id",
+    "public_review_id",
+    "binding",
+    "provenance_coverage_ready",
+    "occurrences",
+    "resolved_input_root",
+    "witnesses",
+    "used_rule_ids",
+    "unused_rule_ids",
+    "failures",
+    "limits"
+  ],
+  "type": "object"
+}
