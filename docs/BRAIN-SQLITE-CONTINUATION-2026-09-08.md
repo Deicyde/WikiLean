@@ -17,7 +17,9 @@ No deployment or D1 write was performed during this continuation.
 The first reviewed implementation tranche is committed as `f51fc27c` (source evidence,
 inventory coherence, OCI tools and sealed publication fixes), followed by `3f822f04`
 (native ARM OpenBLAS identity). Further acquisition and pack-bound release work has
-passed integration checks and is committed as `d4ed6e42`. Completion of a fixture suite is
+passed integration checks and is committed as `d4ed6e42`, followed by `c64438d2`
+(dataset evidence and actual native replay isolation), then `a99d48fa` (derived
+catalog fragments and retained rejected observations). Completion of a fixture suite is
 not evidence of a full-corpus or native Linux OCI run.
 
 ## Real source acquisitions
@@ -109,18 +111,87 @@ diagnostics. The failed query succeeded when probed again; a larger batch was sl
 and approached the upstream timeout. The next complete 194-request attempt failed
 at request 69 with curl status 22/HTTP 502 and no Retry-After. Its diagnostics are
 in `wikidata-observations/failed-attempt-ff538d414ceb4875a09eab8777487186`.
-An explicitly versioned retry mode is being integrated: every attempt and failed
+The explicitly versioned retry mode is implemented: every attempt and failed
 response is retained, receipt v2 counts actual attempts, and each planned request
 must end in exactly one success. The existing no-retry evidence stays verifiable.
-The fresh explicit-retry capture is running under profile
+The first explicit-retry capture ran under profile
 `sha256:e69a4fdd13c937439ba781afdec6c204f99f55387b0d361a425e3287ca0158a4`.
-Its log is `wikidata-plan-20260908/acquisition-explicit-retries.log`; it has already
-retained and recovered from an HTTP 502 without restarting earlier requests.
+Its log is `wikidata-plan-20260908/acquisition-explicit-retries.log`. It recovered
+from two HTTP 502s and completed all 194 requests, then failed the reviewed class
+floor for Q21550639. A fresh diagnostic query returned 25 distinct QIDs versus
+the previous 26, with exactly Q44946 (point) removed. The independently verified
+entity capture records Q44946 revision `2536250970`, modified August 25, whose
+P31 statements no longer include Q21550639. The prospective floor was reviewed
+from 26 to 25; all other floors, selectors and request parameters remain unchanged.
+The review is `wikidata-plan-20260908/q21550639-floor-review.json`; it grants no
+production semantic approval. A fresh complete acquisition is running with
+`request-plan-v2-reviewed-class-drift.json` (SHA-256
+`4f14434d1cdaefa0404cb859d47d78161ec09c90ac99e47d146a521a5762aab3`),
+tool profile
+`sha256:da17f29e23a2f883e28cedcb92f919ced455edc1637a8c58a0f8ffa3c8545939`.
+The first attempt under this plan exhausted five DNS failures at request 129;
+its single-request diagnostic is retained under
+`wikidata-observations/failed-attempt-3d4e06e1d8e749548bb7b212df7f650c/`.
+DNS resolution subsequently recovered. A fresh complete attempt uses the same
+plan/profile and log `acquisition-reviewed-class-drift-retry2.log`.
+The producer now preserves complete rejected transcripts as private diagnostics;
+these have no receipt, normalized output, authority bundle or resume path.
 
 A separate complete entity capture succeeded for the 3,069 QIDs in the reviewed
 observation edge/description union (covering all 2,500 grounding QIDs):
 `/Users/jack/.local/share/wikilean-migration/wikidata-entity-captures/4ba24db76b9aa37c49e35cbbdd160f01a3e108c2ab8a2e208d241550e87701d6`.
-The crossref derivation and its immutable source export are still being implemented.
+The crossref derivation and independent export verification succeeded:
+`/Users/jack/.local/share/wikilean-migration/wikidata-crossref-source-exports/426b0e2025d9717a78b9e82701d51ce9efc1dd11c1096acf0c6fda0ae3f38d88`.
+It covers all 3,069 requested QIDs, with 3,031 containing concrete truthy external
+identifiers. It retains the original acquisition evidence and adds an explicit
+claims normalization plus the committed source-registry parent. Source IDs are:
+
+- Entity claims: `sha256:2e045d2ee23b90ee359efece1efa09887bd8030c700921a14da8a6113a183594`.
+- Registry: `sha256:2e60086743c4f7e904cae1eb5a691a0478e585a31531a07efbda142d418f6550`.
+- Crossrefs: `sha256:c7d301b5ab8783cd68b7ce4c87cecd572b9addd5022e29d6a17ed643d7db6f2d`.
+
+Fresh public Git source captures and independently reconstructed exports also
+succeeded for Formal Conjectures, ErdosProblems and TauCeti, using six actual
+requests and exact complete Git trees. Their paths and identities are retained in
+`/Users/jack/.local/share/wikilean-migration/public-git/verified-source-exports.json`.
+Pure harvester normalization is the next step for these source families.
+
+Fresh nLab and Stacks Git captures and second-process export verification also
+succeeded. The summary is `public-git/verified-nlab-stacks-source-exports.json`:
+nLab commit `155c084fedf98b24d14ff8883d692140a6f0a942` has 41,428 files;
+Stacks commit `c4fe5c4a3db63dab0f8c7b65f828662ef952ab2a` has 154 files.
+Their source IDs are respectively
+`sha256:d8cfe64994d5325bd49a33f02fc295b329468ee80fa7b530c57ea982f806dd7d`
+and `sha256:a1988cb44467ba2aa060e572cf6d9b18e49a3db1a08ea53a4be448ec74623cab`.
+The Git acquisition profile now explicitly binds allowed repositories; historical
+profiles remain restricted to their original three repositories.
+
+The independently verified identifier export is
+`derived-identifier-source-exports/0035986f00ab36f6519a044dcb60f2c410b8f4171aa71284e4a341c5acc4d18f`.
+It contains 710 Mathlib tag rows from the exact source/oracle pair and 1,738
+MathWorld identifiers from verified P2812 claims. No MathWorld sitemap was acquired;
+the empty link pair and explicit inventory metadata retain that limitation.
+The source IDs are `sha256:3e679da797cb7f6f544623258a4ba34dd5b1f842c81cb01b324b51b8c67551e1`
+and `sha256:eea3d8d9e5867143d9c125f4f922c8f957b582c353e663de2fa44b6cb8ce7a6b`.
+These exports are private and carry no production semantic approval.
+
+The derived catalog normalizer covers concept layer, concept graph/declaration
+bindings, hierarchy and theorem links. Its 22 evidence/compiler tests and five
+legacy semantic parity tests pass. The private draft in
+`derived-catalog-plan-20260908/draft-plan.json` explicitly awaits Wikidata edges;
+all ten available parent manifests and 10,148 objects (3,593,020,375 bytes) were
+independently checked. Its current profile is
+`sha256:98623f9f769343f566693da9d4371111a9ae0b78fcb878f805c630b4e981e0b8`.
+Curated source objects use native Git paths. Final logical input assembly belongs
+in a separate Git-backed staging tree, never the original dirty checkout.
+
+The private `full-corpus-plan-20260908/control/source-plan-draft.json` currently
+binds 28 of 43 input groups, with 15 explicitly unresolved. Its detached staging
+checkout is at `c64438d2`; verified source members are copied into logical input
+locations with checksums and materialization records. MathWorld contributes only
+a partial external-pages/links binding. All previously present external source
+families remain required by the draft completeness review. The draft is explicitly
+non-authoritative and is not a full plan or compiled pack.
 
 ## Engineering changes in progress
 
@@ -141,7 +212,9 @@ The crossref derivation and its immutable source export are still being implemen
   Caught failures clean only the known candidate inode. A killed publisher may leave
   an inaccessible candidate that must be rejected rather than adopted.
 - V3 source manifests can preserve distinct named outputs sharing identical CAS bytes;
-  aliased digest, size, and media type must agree. V2 remains strict.
+  aliased digest, size, and media type must agree. The compiler's v3 compatibility
+  shape validator now also accepts these aliases; legacy v1 plans/v2 manifests
+  remain strict. A real compiled-pack regression verifies both boundaries.
 - Mathlib tag harvesting reads one immutable Git tree, emits logical paths and exact
   source/oracle hashes, and explicitly refuses to imply revision coherence from an
   unbound cache. Rename metadata normalization preserves historical reviewed claims.
@@ -149,7 +222,7 @@ The crossref derivation and its immutable source export are still being implemen
   are implemented for native Linux. Runtime v2 describes builtin `_sqlite3` linkage
   explicitly while retaining v1's extension-file contract. A real native Linux
   container kernel probe now passes under an exact scoped AppArmor policy. This is
-  baseline-image evidence; the final committed runner image still needs its own probe.
+  final-image evidence under committed runner `c64438d2`.
 - Pack-bound release production and independent verification now have a distinct
   `brain-offline-replay-v1` profile. The producer-owned two-build gate freezes all
   completed outputs plus exact sealed provenance inputs, compares bytes/identities,
@@ -187,21 +260,38 @@ the new source evidence, release profile, explicit retry, and Linux policy integ
 its log is `/tmp/wikilean-migration-python-ci-native-policy.log`. The latest focused
 Wikidata observation suite passes 48 cases; authority contracts pass 76. Native Linux
 kernel and runtime diagnostic logs are retained in the guest's `runtime/evidence/`.
-Two fresh sandboxed runtime probes agree on CPython 3.12.14, NumPy 2.3.3, SQLite 3.40.1
-and bubblewrap 0.8.0; final committed-image verification is still outstanding.
+Two fresh sandboxed runtime probes under the final committed image agree on
+CPython 3.12.14, NumPy 2.3.3, SQLite 3.40.1 and bubblewrap 0.8.0. The actual final
+image passed the strict Linux kernel isolation test and exact AppArmor policy
+verification. The sealed descriptor is
+`linux-runtime/execution-environment-c64438d2.json`, environment ID
+`sha256:30cf669d261f3fcccf5ba1200c2a27f6727dc342c6d442b137d6da3a589da8b0`,
+OCI manifest `sha256:4813bc6a62e0e5e3537e749a24fd194e18506ec68104b70c269cfe17d6b7bafd`.
+The OCI archive and preparation diagnostics are retained alongside it. These
+prove runtime preparation, not a full-corpus replay or its launch receipt.
+The expanded 59-command Python suite passed, log
+`/tmp/wikilean-migration-python-ci-source-fragments.log`; focused counts include
+Wikidata 49, compiler 31, crossref 28 and public Git 10 tests. The unchanged Worker
+remains at the previously passing typecheck and 872 tests.
+The subsequent 60-command Python suite passed in
+`/tmp/wikilean-migration-python-ci-identifiers.log`, including all 13 identifier
+tests and the expanded 12 public Git tests. CI now pins PyYAML 6.0.3 for the
+upcoming pure Erdos importer; source normalization separately retains its complete
+installed dependency preimages and interpreter identity.
 Current focused release tests pass 37 cases. Strict
 Darwin evidence is retained in the private migration root's
 `darwin-kernel-probe-20260908.log` and is diagnostic, not OCI evidence.
 
 ## Remaining completion order
 
-1. Finish the remaining source adapters and verify the final committed native Linux
-   runner image; retain the already-passing kernel and runtime diagnostics separately.
+1. Finish the remaining source adapters and shared Wikidata capture. The final
+   committed native Linux runner image is verified; preserve its preparation evidence.
 2. Seal D1, the revision-bound oracle/Mathlib source, Hugging Face objects, shared
    Wikidata observation, proposal-fold inputs, and other source families into the
    reviewed current-corpus v3 plan. Close policy and cross-object provenance gaps.
-3. Freeze actual native Linux OCI/dependency artifacts and retain strict sandbox
-   evidence under that exact runtime identity.
+3. Assemble the logical inputs in the private detached staging checkout at
+   `full-corpus-plan-20260908/repo` (commit `c64438d2`), and bind the already sealed
+   native Linux runtime identity. No valid full source plan has been emitted yet.
 4. Compile the real pack, run two isolated builds in different paths with adversarial
    mtimes/environment, verify complete byte/identity equality, and compare the approved
    semantic baseline with explicit provenance migration review.

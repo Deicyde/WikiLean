@@ -184,6 +184,40 @@ def _private_directory(path: Path) -> None:
             raise observation.ObservationError("observation store has a linked ancestor")
 
 
+def record_rejected_observation(store: Path, plan_bytes: bytes, records: list[dict],
+                                toolchain: dict) -> Path:
+    """Retain a complete live transcript after a failed quality/publication check.
+
+    This deliberately has no bundle, receipt or normalized output. A changed
+    review plan requires a fresh acquisition; these bytes are diagnostic only.
+    """
+    files = {
+        "request-plan.json": plan_bytes,
+        "toolchain.json": observation.canonical(toolchain),
+        "transcript.jsonl": b"".join(observation.canonical(row) + b"\n" for row in records),
+    }
+    # Base64 adds one third to the already bounded raw transcript. Metadata is
+    # bounded by the reviewed request plan and the maximum retry count.
+    if sum(map(len, files.values())) > 2 * observation.MAX_TRANSCRIPT_BYTES:
+        raise observation.ObservationError("rejected observation diagnostics exceed bound")
+    document = {
+        "schema": "wikilean.wikidata-rejected-observation/v1", "authority": False,
+        "category": "complete-requests-rejected-before-authority-publication",
+        "reuse": "diagnostic-only; fresh-acquisition-required-for-changed-plan",
+        "files": [{"path": path, "sha256": observation.sha(raw), "bytes": len(raw)}
+                  for path, raw in sorted(files.items())],
+    }
+    files["failure.json"] = observation.canonical(document)
+    target = store / ("rejected-observation-" + uuid.uuid4().hex)
+    with stage_io.owned_directory(store, store / (".rejected-observation-" + uuid.uuid4().hex)) as owned:
+        for path, raw in files.items():
+            stage_io.write_bytes_exclusive(owned.path / path, raw, mode=0o644)
+        stage_io.fsync_directory(owned.path)
+        stage_io.publish_directory_no_replace(owned, target)
+    stage_io.fsync_directory(store)
+    return target
+
+
 def prepare_store(store: Path) -> Path:
     if not store.is_absolute() or ".." in store.parts:
         raise observation.ObservationError("store must be an explicit absolute path")
@@ -314,7 +348,16 @@ def acquire(plan_path: Path, *, store: Path, curl: Path, retry_transient: bool =
         if observation.read_regular(plan_path, max_bytes=16 * 1024 * 1024) != plan_bytes:
             raise observation.ObservationError("reviewed plan changed during acquisition")
         audit_time = dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
-        return _publish_locked(plan, records, store=store, toolchain=toolchain, audit_time=audit_time)
+        try:
+            return _publish_locked(plan, records, store=store, toolchain=toolchain, audit_time=audit_time)
+        except observation.ObservationError as failure:
+            try:
+                diagnostic = record_rejected_observation(store, plan_bytes, records, toolchain)
+                failure.add_note(f"Private rejected-observation diagnostics: {diagnostic}")
+                print(f"Private rejected-observation diagnostics: {diagnostic}", file=sys.stderr)
+            except (observation.ObservationError, OSError) as diagnostic_error:
+                failure.add_note(f"Could not retain rejected-observation diagnostics: {type(diagnostic_error).__name__}")
+            raise
 
 
 def main() -> int:
