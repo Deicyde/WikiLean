@@ -11,8 +11,10 @@ import hashlib
 import json
 import os
 import sqlite3
+import stat
+import sys
 import tempfile
-from collections.abc import Iterable, Iterator, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -625,10 +627,61 @@ def _inspect_source_handle(
     return metadata, count, raw.hexdigest(), _artifact_digest(metadata, rows.hexdigest())
 
 
-def _source_handles(paths: Mapping[str, Path]) -> dict[str, Any | None]:
-    """Open one immutable view of all source paths, including optional layers."""
+def _open_regular_source(path: Path, *, required: bool) -> Any | None:
+    """Open one source without following its final path component."""
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except FileNotFoundError as exc:
+        if required:
+            raise StoreError(f"missing Brain artifact: {path}") from exc
+        return None
+    except OSError as exc:
+        raise StoreError(f"could not securely open Brain artifact {path}: {exc}") from exc
+    try:
+        opened = os.fstat(descriptor)
+        if not stat.S_ISREG(opened.st_mode):
+            raise StoreError(f"Brain artifact is not a regular file: {path}")
+        current = path.lstat()
+        if stat.S_ISLNK(current.st_mode) or not os.path.samestat(opened, current):
+            raise StoreError(f"Brain artifact is a symlink or changed while opening: {path}")
+        return os.fdopen(descriptor, "rb")
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _source_handles(
+    paths: Mapping[str, Path],
+    *,
+    required_artifacts: Iterable[str] | None = None,
+) -> dict[str, Any | None]:
+    """Open one immutable view of all source paths, including optional layers.
+
+    ``required_artifacts`` enables the sealed-replay path: every named artifact
+    is mandatory and is opened as a regular file without following a final
+    symlink.  Omitting it preserves the legacy optional links/cell behavior.
+    """
+    strict = required_artifacts is not None
+    required = set(required_artifacts or ())
+    known = set(DEFAULT_ARTIFACT_FILES)
+    unknown = sorted(required - known)
+    if unknown:
+        raise StoreError("unknown required Brain artifacts: " + ", ".join(unknown))
+    if strict and not {"nodes", "edges"} <= required:
+        raise StoreError("nodes and edges must be required Brain artifacts")
+    if strict and (("cells" in required) != ("synapses" in required)):
+        raise StoreError("cells and synapses must be required together")
+
     handles: dict[str, Any | None] = {}
     try:
+        if strict:
+            for name in DEFAULT_ARTIFACT_FILES:
+                handles[name] = _open_regular_source(
+                    paths[name], required=name in required
+                )
+            return handles
+
         for name in ("nodes", "edges"):
             try:
                 handles[name] = paths[name].open("rb")
@@ -656,10 +709,26 @@ def _source_handles(paths: Mapping[str, Path]) -> dict[str, Any | None]:
         raise
 
 
+def _close_source_handles(handles: Mapping[str, Any | None]) -> None:
+    """Attempt every close and report the first failure after all handles."""
+    errors: list[BaseException] = []
+    for handle in handles.values():
+        if handle is None:
+            continue
+        try:
+            handle.close()
+        except BaseException as exc:
+            errors.append(exc)
+    if errors:
+        raise errors[0]
+
+
 def _sources_unchanged(
     paths: Mapping[str, Path],
     handles: Mapping[str, Any | None],
     signatures: Mapping[str, tuple[int, int, int] | None],
+    *,
+    reject_symlinks: bool = False,
 ) -> None:
     """Fail a build if a pinned source was replaced or changed in place."""
     for name, handle in handles.items():
@@ -668,9 +737,13 @@ def _sources_unchanged(
                 raise StoreError(f"{paths[name]} appeared while building SQLite")
             continue
         try:
-            path_stat = paths[name].stat()
+            path_stat = paths[name].lstat() if reject_symlinks else paths[name].stat()
         except FileNotFoundError as exc:
             raise StoreError(f"{paths[name]} disappeared while building SQLite") from exc
+        if reject_symlinks and (
+            stat.S_ISLNK(path_stat.st_mode) or not stat.S_ISREG(path_stat.st_mode)
+        ):
+            raise StoreError(f"{paths[name]} is no longer a regular non-symlink file")
         if not os.path.samestat(os.fstat(handle.fileno()), path_stat):
             raise StoreError(f"{paths[name]} was replaced while building SQLite")
         current = os.fstat(handle.fileno())
@@ -679,19 +752,40 @@ def _sources_unchanged(
             raise StoreError(f"{paths[name]} changed while building SQLite")
 
 
-def write_sqlite_from_jsonl(path: Path, data_dir: Path) -> Path:
-    """Stream one pinned, self-consistent JSONL generation into SQLite."""
-    paths = _paths(data_dir)
-    handles = _source_handles(paths)
+def write_sqlite_from_jsonl(
+    path: Path,
+    data_dir: Path,
+    *,
+    artifact_paths: Mapping[str, str | os.PathLike[str]] | None = None,
+    required_artifacts: Iterable[str] | None = None,
+    temp_dir: Path | None = None,
+    publisher: Callable[[Path, Path], None] | None = None,
+) -> Path:
+    """Stream one pinned, self-consistent JSONL generation into SQLite.
+
+    The optional keyword arguments are for sealed replay.  They bind every
+    logical artifact to an exact path, make selected artifacts mandatory, and
+    keep temporary SQLite files inside stage-owned scratch space.  A custom
+    publisher can enforce the caller's output ownership policy.
+    """
+    paths = _paths(data_dir, artifact_paths)
+    handles: dict[str, Any | None] = {}
     target = Path(path)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    fd, temp_name = tempfile.mkstemp(
-        prefix=f".{target.name}.", suffix=".tmp", dir=target.parent
-    )
-    os.close(fd)
-    temp = Path(temp_name)
+    temp: Path | None = None
     connection: sqlite3.Connection | None = None
     try:
+        handles = _source_handles(paths, required_artifacts=required_artifacts)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        temp_parent = Path(temp_dir) if temp_dir is not None else target.parent
+        temp_parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temp_name = tempfile.mkstemp(
+            prefix=f".{target.name}.", suffix=".tmp", dir=temp_parent
+        )
+        temp = Path(temp_name)
+        try:
+            os.fchmod(descriptor, 0o600)
+        finally:
+            os.close(descriptor)
         inspected: dict[str, tuple[dict[str, Any], int, str | None, str]] = {}
         for name, handle in handles.items():
             if handle is None:
@@ -865,7 +959,12 @@ def write_sqlite_from_jsonl(path: Path, data_dir: Path) -> Path:
 
         if imported_digests != logical_digests:
             raise StoreError("Brain JSONL logical content changed while building SQLite")
-        _sources_unchanged(paths, handles, signatures)
+        _sources_unchanged(
+            paths,
+            handles,
+            signatures,
+            reject_symlinks=required_artifacts is not None,
+        )
 
         for name, meta in metadata.items():
             raw_digest = raw_digests[name]
@@ -892,17 +991,48 @@ def write_sqlite_from_jsonl(path: Path, data_dir: Path) -> Path:
             raise StoreError("SQLite integrity_check failed")
         connection.close()
         connection = None
-        _publish_sqlite(temp, target)
+        _sources_unchanged(
+            paths,
+            handles,
+            signatures,
+            reject_symlinks=required_artifacts is not None,
+        )
+        try:
+            _close_source_handles(handles)
+        finally:
+            handles = {}
+        if publisher is None:
+            _publish_sqlite(temp, target)
+        else:
+            publisher(temp, target)
         return target
     except (KeyError, sqlite3.Error) as exc:
         raise StoreError(f"could not import JSONL snapshot: {exc}") from exc
     finally:
+        cleanup_errors: list[BaseException] = []
         if connection is not None:
-            connection.close()
-        for handle in handles.values():
-            if handle is not None:
-                handle.close()
-        temp.unlink(missing_ok=True)
+            try:
+                connection.close()
+            except BaseException as exc:
+                cleanup_errors.append(exc)
+        try:
+            _close_source_handles(handles)
+        except BaseException as exc:
+            cleanup_errors.append(exc)
+        if temp is not None:
+            try:
+                temp.unlink(missing_ok=True)
+            except BaseException as exc:
+                cleanup_errors.append(exc)
+        if cleanup_errors:
+            active = sys.exception()
+            if active is not None and hasattr(active, "add_note"):
+                active.add_note(
+                    "SQLite cleanup also failed: "
+                    + "; ".join(str(error) for error in cleanup_errors)
+                )
+            else:
+                raise cleanup_errors[0]
 
 
 class JsonlStore:
