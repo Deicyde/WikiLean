@@ -7,10 +7,11 @@ socket. It never pulls an image, builds an image, contacts a registry, selects a
 remote engine, or installs virtualization. macOS and emulated architectures fail
 before any engine command.
 
-This implementation has hermetic integrity/policy tests. No actual OCI image has
-been built or replayed on this development Mac. Native Linux kernel evidence,
-final image/dependency pins, and the full-corpus two-build attestation remain
-required before an authoritative release claim.
+The implementation has hermetic integrity/policy tests and a real strict sandbox
+pass in a native aarch64 Linux VM's scoped, non-root Docker container. That proof
+uses the acquired base image. The final committed runner image still needs its
+own pinned runtime probe and full-corpus two-build attestation before an
+authoritative release claim.
 
 ## Inputs and preparation
 
@@ -25,6 +26,14 @@ The operator must retain:
   feature lists; the explicit baseline OpenBLAS core; and its verified companion
   library/symbol. No example policy is pre-approved: derive these values from the
   actual pinned wheel and review them before image construction.
+- On AppArmor hosts, `wikilean.oci-runtime-policy/v2` also pins the exact reviewed
+  profile text/name, compiled policy artifact, compiler executable/version, and
+  kernel ABI. The compiled artifact accompanies the wheel. Explicit host
+  provisioning loads that dedicated profile; the launcher never loads policy or
+  changes host settings. Before and after replay it recompiles the reviewed text
+  with the pinned parser, compares the exact compiled bytes, and verifies the
+  kernel's enforce mode and compiled-policy SHA-256 through the native AppArmor
+  filesystem. Ordinary files cannot substitute for kernel readback.
 - A sealed execution descriptor whose image digest, architecture, dependency lock,
   installed NumPy tree, Python/SQLite facts, runner closure, and bubblewrap identity
   match the resulting runtime. `execution-environment/v1` remains unchanged for
@@ -55,8 +64,10 @@ pack manifest's parent is not its root. Run it with CPython 3.12 `-I`.
 ## What execution verifies
 
 The launcher binds the verified platform manifest to its config digest and ordered
-uncompressed layer identities, then verifies that the existing engine image has
-that exact config/rootfs. It creates a container without starting it, inspects the
+uncompressed layer identities, then verifies the existing engine image. It supports
+the exact platform-manifest image ID used by containerd stores and the exact config
+image ID used by classic stores; there is no tag fallback. It creates a container
+without starting it, inspects the
 actual command, user, mounts, network mode, and isolation flags, and only then
 starts it through a fresh stdio channel. It rechecks image/container state after
 exit and removes only its labelled container, including reconciliation after an
@@ -72,6 +83,16 @@ unconfined to permit nested unprivileged user namespaces; this does **not** gran
 capabilities or disable inner isolation. Hosts whose kernel/AppArmor policy blocks
 the inner namespace fail closed and need a separately reviewed host policy, not a
 privileged-container workaround.
+
+The v2 AppArmor profile permits the namespace setup needed by this deployment;
+its effective confinement still relies on the explicit Docker and inner bubblewrap
+boundaries. `systempaths=unconfined` removes the outer locked proc masks that would
+prevent an unprivileged fresh inner procfs mount. This setting is accepted only
+with the verified scoped AppArmor profile and is checked in engine observations.
+The profile retains restrictions on sensitive proc/sys writes. Inner bubblewrap
+creates its own PID namespace and procfs, makes its root read-only, and exposes
+only the declared read/write mounts and ephemeral `/tmp`. Strict kernel tests
+check arbitrary root writes, host sentinels, sealed inputs, and network denial.
 
 NumPy's complete compiled dispatch list is disabled and checked inside the actual
 probe process. The selected OpenBLAS core is measured through its pinned companion

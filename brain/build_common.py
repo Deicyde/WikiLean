@@ -1820,10 +1820,22 @@ def _build(
 ) -> tuple[list[dict], list[dict], dict]:
     """Returns (nodes, edges, meta) — both lists fully sorted, byte-deterministic."""
     if source_set is None:
-        inputs = INPUTS
+        inputs = dict(INPUTS)
         optional_inputs: dict[str, Path | None] = dict(OPTIONAL_INPUTS)
+        # Legacy builds use the one verified installed observation, if present.
+        # Context replay continues to use only its explicit sealed bindings.
+        from install_wikidata_observation import load_installed
+        observation_bundle = load_installed(ROOT)
+        if observation_bundle is not None:
+            from wikidata_observation import OUTPUTS as observation_outputs
+            for input_id, relative in observation_outputs.items():
+                name = Path(relative).name
+                target = optional_inputs if input_id == "wikidata-descriptions" else inputs
+                target[name] = observation_bundle["path"] / relative
 
         def source_pin(name: str, _input_id: str) -> str:
+            if observation_bundle is not None and _input_id in observation_outputs:
+                return observation_bundle["lineage"]["normalization_lineage_id"]
             if local_hf_metadata is not None and name in local_hf_metadata:
                 metadata = local_hf_metadata[name]
                 return (
@@ -3086,8 +3098,8 @@ def _build(
 
     if source_set is None:
         present = {
-            **INPUTS,
-            **{k: v for k, v in OPTIONAL_INPUTS.items() if v.exists()},
+            **inputs,
+            **{k: v for k, v in optional_inputs.items() if v is not None and v.exists()},
         }
         external_input_metadata: dict[str, dict] = {}
         external_mtimes: list[float] = []

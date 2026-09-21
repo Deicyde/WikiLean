@@ -573,6 +573,9 @@ export interface BrainFixtureOpts {
   releaseVariant?: string;
   // Override only the manifest claim after its identity is computed.
   manifestReleaseId?: string;
+  // Set before identity calculation, including malformed profile bindings.
+  releaseProfile?: string;
+  releaseReplay?: unknown;
   // Mutate a complete manifest after its identity is computed, to model tampering.
   mutateReleaseManifest?: (manifest: Record<string, unknown>) => void;
   // Omit paths before computing identity, producing a self-consistent but incomplete release.
@@ -685,7 +688,8 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
   const variant = fixtureDigest(opts.releaseVariant ?? "default").slice(0, 16);
   const releaseManifest: Record<string, unknown> = {
     schema: "wikilean.release/v1",
-    profile: "brain-current-v1",
+    profile: opts.releaseProfile ?? "brain-current-v1",
+    ...(opts.releaseReplay === undefined ? {} : { replay: opts.releaseReplay }),
     authority: {
       git_commit: "0".repeat(40),
       semantic_state_root: `sha256:${"1".repeat(64)}`,
@@ -701,7 +705,10 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
       environment_sha256: "4".repeat(64),
     },
     artifacts,
-    attestations: [],
+    attestations: opts.releaseProfile === "brain-offline-replay-v1" ? [
+      { kind: "build", path: "attestations/build.json", sha256: "a".repeat(64), bytes: 1 },
+      { kind: "validation", path: "attestations/validation.json", sha256: "b".repeat(64), bytes: 1 },
+    ] : [],
     compatible_overlay_generation_ids: [],
     created_at: "2026-07-15T00:00:00Z",
   };

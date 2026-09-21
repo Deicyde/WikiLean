@@ -160,6 +160,88 @@ class OCIImageTests(unittest.TestCase):
             oci._json(b'{"schema":1,"schema":2}', "fixture")
 
 
+class AppArmorPolicyTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name).resolve()
+        self.module = oci.apparmor_runtime
+        self.binary = b"compiled fixture policy"
+        self.parser = self.root / "apparmor_parser"
+        self.parser.write_bytes(b"fixture parser")
+        self.policy = {"name": self.module.NAME, "text": self.module.PROFILE_TEXT,
+            "text_sha256": hashlib.sha256(self.module.PROFILE_TEXT.encode()).hexdigest(),
+            "binary": self.module.NAME + ".bin", "binary_sha256": hashlib.sha256(self.binary).hexdigest(),
+            "binary_bytes": len(self.binary), "parser_sha256": hashlib.sha256(self.parser.read_bytes()).hexdigest(),
+            "parser_version": "4.0.1", "kernel_abi": "v7"}
+        (self.root / self.policy["binary"]).write_bytes(self.binary)
+
+    def test_source_name_and_compiled_artifact_are_closed(self):
+        self.module.verify_artifact(self.policy, self.root)
+        for key, value in (("text", self.policy["text"].replace("enforce", "complain") + "# altered\n"),
+                           ("name", "docker-default"), ("binary", "../other.bin")):
+            changed = {**self.policy, key: value}
+            with self.subTest(key=key), self.assertRaises(self.module.AppArmorError):
+                self.module.validate_policy(changed)
+        (self.root / self.policy["binary"]).write_bytes(b"other")
+        with self.assertRaisesRegex(self.module.AppArmorError, "compiled AppArmor artifact"):
+            self.module.verify_artifact(self.policy, self.root)
+
+    def test_caller_named_or_complain_or_replaced_kernel_profile_is_rejected(self):
+        directory = self.root / "profiles" / (self.module.NAME + ".42")
+        directory.mkdir(parents=True)
+        values = {"sha256": "a" * 64, "name": self.module.NAME, "mode": "enforce",
+                  "raw_sha256": self.policy["binary_sha256"], "raw_abi": "v7"}
+        def read(path):
+            return values[path.name]
+        with mock.patch.object(self.module, "SECURITY_ROOT", self.root), \
+             mock.patch.object(self.module, "_kernel_text", side_effect=read):
+            self.assertEqual(self.module.loaded_policy(self.policy)["binary_sha256"], self.policy["binary_sha256"])
+            for field, changed in (("name", "another-profile"), ("mode", "complain"), ("raw_sha256", "b" * 64)):
+                original = values[field]
+                values[field] = changed
+                with self.subTest(field=field), self.assertRaisesRegex(self.module.AppArmorError, "loaded AppArmor policy differs"):
+                    self.module.loaded_policy(self.policy)
+                values[field] = original
+            def replaced(path):
+                result = read(path)
+                if path.name == "raw_abi":
+                    values["sha256"] = "b" * 64
+                return result
+            with mock.patch.object(self.module, "_kernel_text", side_effect=replaced):
+                with self.assertRaisesRegex(self.module.AppArmorError, "changed during readback"):
+                    self.module.loaded_policy(self.policy)
+
+    def test_compiler_must_reproduce_exact_binary_before_kernel_readback(self):
+        version = subprocess.CompletedProcess([], 0, b"AppArmor parser version 4.0.1\n", b"")
+        good = subprocess.CompletedProcess([], 0, self.binary, b"")
+        with mock.patch.object(self.module, "PARSER", self.parser), \
+             mock.patch.object(self.module, "loaded_policy", return_value={"fixture": True}) as loaded, \
+             mock.patch.object(self.module.subprocess, "run", side_effect=[version, good]) as process:
+            self.module.verify_loaded(self.policy, self.root)
+            command = process.call_args.args[0]
+            self.assertIn("--skip-kernel-load", command)
+            self.assertIn("--skip-cache", command)
+            self.assertNotIn("--replace", command)
+            self.assertEqual(process.call_args.kwargs["input"], self.module.PROFILE_TEXT.encode())
+            loaded.assert_called_once()
+        bad = subprocess.CompletedProcess([], 0, b"different compiled policy", b"")
+        with mock.patch.object(self.module, "PARSER", self.parser), \
+             mock.patch.object(self.module, "loaded_policy") as loaded, \
+             mock.patch.object(self.module.subprocess, "run", side_effect=[version, bad]):
+            with self.assertRaisesRegex(self.module.AppArmorError, "exact compiled policy"):
+                self.module.verify_loaded(self.policy, self.root)
+            loaded.assert_not_called()
+
+    def test_ordinary_files_cannot_impersonate_kernel_securityfs(self):
+        path = self.root / "profile-sha256"
+        path.write_bytes(b"a" * 64 + b"\n")
+        path.chmod(0o444)
+        with mock.patch.object(self.module, "SECURITY_ROOT", self.root):
+            with self.assertRaises(self.module.AppArmorError):
+                self.module._kernel_text(path)
+
+
 class OCILaunchBoundaryTests(unittest.TestCase):
     def setUp(self):
         self.policy = policy_fixture()
@@ -228,6 +310,26 @@ class OCILaunchBoundaryTests(unittest.TestCase):
             with self.assertRaises(launcher.OCILaunchError):
                 self.verify(changed)
 
+    def test_scoped_apparmor_requires_explicit_option_and_actual_container_profile(self):
+        value = copy.deepcopy(self.container)
+        value["HostConfig"]["SecurityOpt"].append("apparmor=" + oci.apparmor_runtime.NAME)
+        value["HostConfig"].update(MaskedPaths=[], ReadonlyPaths=[])
+        value["AppArmorProfile"] = oci.apparmor_runtime.NAME
+        arguments = dict(image=self.image, child=self.child, mounts=self.mounts,
+            uid=1000, gid=1000, memory_bytes=1024**3, status="created", cid=self.cid,
+            apparmor_profile=oci.apparmor_runtime.NAME)
+        launcher.verify_container(value, **arguments)
+        for mutate in (lambda item: item.update(AppArmorProfile="unconfined"),
+                       lambda item: item["HostConfig"].update(MaskedPaths=["/proc/kcore"]),
+                       lambda item: item["HostConfig"].update(ReadonlyPaths=["/proc/sys"]),
+                       lambda item: item["HostConfig"].pop("MaskedPaths"),
+                       lambda item: item["HostConfig"].update(ReadonlyPaths=None),
+                       lambda item: item["HostConfig"].update(SecurityOpt=["no-new-privileges", "seccomp=unconfined"])):
+            changed = copy.deepcopy(value)
+            mutate(changed)
+            with self.assertRaises(launcher.OCILaunchError):
+                launcher.verify_container(changed, **arguments)
+
     def test_failed_or_oom_exit_never_becomes_success(self):
         self.container["State"].update(Status="exited", ExitCode=0)
         self.verify(status="exited")
@@ -245,6 +347,40 @@ class OCILaunchBoundaryTests(unittest.TestCase):
         observation["RootFS"]["Layers"] = []
         with self.assertRaisesRegex(launcher.OCILaunchError, "rootfs"):
             launcher.verify_engine_image(observation, self.image)
+
+    def test_manifest_id_engine_store_and_classic_config_store_are_explicit(self):
+        classic = {"Id": self.image.config_digest, "Os": "linux", "Architecture": "amd64",
+                   "RootFS": {"Type": "layers", "Layers": list(self.image.diff_ids)},
+                   "Config": {"Labels": {oci.POLICY_LABEL: self.image.policy_sha256}}}
+        modern = {**classic, "Id": self.image.manifest_digest,
+                  "Descriptor": {"digest": self.image.manifest_digest, "mediaType": oci.MANIFEST_MEDIA}}
+        engine = mock.Mock()
+        engine.command.return_value = (0, json.dumps([modern]).encode(), b"")
+        self.assertEqual(launcher.inspect_engine_image(engine, self.image), (modern, self.image.manifest_digest))
+        self.assertEqual(engine.command.call_args.args[0], ["image", "inspect", self.image.manifest_digest])
+        engine.command.side_effect = [(1, b"[]\n", ("Error response from daemon: No such image: " + self.image.manifest_digest + "\n").encode()),
+                                      (0, json.dumps([classic]).encode(), b"")]
+        self.assertEqual(launcher.inspect_engine_image(engine, self.image), (classic, self.image.config_digest))
+        altered = copy.deepcopy(modern)
+        altered["Descriptor"]["digest"] = "sha256:" + "f" * 64
+        with self.assertRaisesRegex(launcher.OCILaunchError, "approved platform manifest"):
+            launcher.verify_engine_image(altered, self.image)
+        for selector in ("fixture:latest", "sha256:" + "f" * 64):
+            with self.assertRaisesRegex(launcher.OCILaunchError, "exact verified digest"):
+                launcher.create_arguments(self.image, Path("/private/workspace"), Path("/private/pack"), self.policy,
+                    uid=1000, gid=1000, name="fixture", memory_bytes=1024**3, engine_image_id=selector)
+
+    def test_manifest_selected_container_cannot_switch_identity_at_exit(self):
+        value = copy.deepcopy(self.container)
+        value["Image"] = self.image.manifest_digest
+        value["Config"]["Image"] = self.image.manifest_digest
+        parameters = dict(image=self.image, child=self.child, mounts=self.mounts, uid=1000, gid=1000,
+                          memory_bytes=1024**3, status="created", cid=self.cid, engine_image_id=self.image.manifest_digest)
+        launcher.verify_container(value, **parameters)
+        value["State"].update(Status="exited", ExitCode=0)
+        value["Image"] = self.image.config_digest
+        with self.assertRaisesRegex(launcher.OCILaunchError, "container identity mismatch"):
+            launcher.verify_container(value, **{**parameters, "status": "exited"})
 
     def test_policy_rejects_floating_versions_partial_features_and_unknown_fields(self):
         for mutate in (
@@ -269,6 +405,28 @@ class OCILaunchBoundaryTests(unittest.TestCase):
         with mock.patch.dict(os.environ, oci.numerical_environment(self.policy)):
             with self.assertRaisesRegex(oci.OCIRuntimeError, "enabled CPU dispatch"):
                 oci.verify_numerical_runtime(self.policy, numpy_module=numpy)
+
+    def test_arm_baseline_requires_exact_actual_openblas_reported_core(self):
+        policy = copy.deepcopy(self.policy)
+        policy["architecture"] = "aarch64"
+        policy["cpu"].update(baseline=["ASIMD", "NEON", "NEON_FP16", "NEON_VFPV4"],
+                             disable=["ASIMDFHM", "ASIMDHP", "SVE"], openblas_core="ARMV8")
+        numpy = mock.Mock()
+        numpy.__version__ = policy["numpy"]["version"]
+        core = numpy._core._multiarray_umath
+        core.__cpu_baseline__ = policy["cpu"]["baseline"]
+        core.__cpu_dispatch__ = policy["cpu"]["disable"]
+        core.__cpu_features__ = {feature: False for feature in policy["cpu"]["disable"]}
+        library = mock.Mock()
+        function = getattr(library, policy["cpu"]["blas_symbol"])
+        with mock.patch.dict(os.environ, oci.numerical_environment(policy)), \
+             mock.patch.object(environment, "secure_file_digest"), mock.patch.object(oci.ctypes, "CDLL", return_value=library):
+            function.return_value = b"armv8"
+            oci.verify_numerical_runtime(policy, numpy_module=numpy)
+            for report in (b"ARMV8", b"ARMV8SVE", b"neoversen1"):
+                function.return_value = report
+                with self.assertRaisesRegex(oci.OCIRuntimeError, "different CPU core"):
+                    oci.verify_numerical_runtime(policy, numpy_module=numpy)
 
     def test_no_evidence_file_or_remote_engine_flag_exists(self):
         flags = {action.dest for action in launcher.parser()._actions}

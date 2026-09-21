@@ -51,6 +51,14 @@ overlay, or serving topology.
   the portable JSON Schemas describe shape but cannot express root recomputation, count
   equality, exact origin sets, or identity-mode equality.
   These documents are not silently grafted onto source-manifest/v2 or offline-pack/v2.
+- `schemas/acquisition-receipt/v2.json` adds an ordered attempt transcript. Its
+  counters describe actual attempts, including failures; every canonical request
+  must have exactly one final success and no later attempts. Each attempt binds
+  the returned bytes and outcome. Wikidata's explicit `--retry-transient` mode
+  retains all failed bodies in the raw source object, independently checks the
+  complete transcript, and uses bounded reviewed backoff only for selected transient
+  failures. Unsupported or excessive Retry-After values abort. Malformed successful
+  HTTP payloads abort. The original v1 receipt and no-retry tool profiles are unchanged.
 - `schemas/source-manifest/v3.json`, `schemas/offline-pack-source-plan/v3.json`, and
   `schemas/offline-pack/v3.json` define that fail-closed integration without changing v2.
   Every acquired dataset carries one or more logical acquisition-receipt IDs, one
@@ -67,8 +75,14 @@ overlay, or serving topology.
   verifies evidence bytes against explicit physical roots. `request.json` is the D1 request
   preimage; its `sql_sha256` transitively binds the reviewed `request.sql` used by the sealed
   acquisition bundle. `source.audit` remains descriptive only; freshness decisions must use
-  the audit timestamp from the validated receipt document. The current v2 compiler/preflight
-  do not yet accept v3 plans.
+  the audit timestamp from the validated receipt document. The compiler and preflight accept
+  v3 plans and verify their evidence closure; v1-plan to v2-pack compatibility is retained.
+- `schemas/reducer-input-inventory/v3.json` adds explicit shared-acquisition groups.
+  `reducer-inputs-v3.json` requires Wikidata universe, relation edges, and descriptions
+  to be present and bound to the same evidence-bearing acquired-dataset manifest.
+  Preflight, compilation, and independent pack verification enforce this membership.
+  Inventory v3 requires source-plan/pack v3 and cannot downgrade to the older evidence
+  contract. The existing v2 inventory and its identity recipe remain unchanged.
 - `schemas/execution-environment/v1.json` gives the environment descriptor its own
   strict, self-identifying contract. It pins the exact CPython, NumPy lock and installed
   tree, SQLite library and compile options, locale, replay-runner closure, and sandbox
@@ -77,7 +91,14 @@ overlay, or serving topology.
   runner Git commit must equal the pack reducer commit. Other runtime byte/root recipes
   become authoritative only when the runner probes them and the OCI profile is frozen;
   descriptor validation alone is not execution evidence.
-- `schemas/release/v1.json` describes one release over the current artifact topology.
+- `schemas/execution-environment/v2.json` records builtin `_sqlite3` using the
+  digest of the loaded binary owning its initialization function plus the connected
+  engine's SQLite source ID and compile options. V1 retains its extension-file
+  digest contract. The [OCI runtime guide](../oci/README.md) describes the trusted
+  native-Linux launcher, pinned numerical policy, and remaining real-runtime evidence.
+- `schemas/release/v1.json` describes compatibility and sealed offline replay
+  profiles over the current artifact topology. The latter binds the input pack,
+  inventory, authority/prior-state roots and generation in the release identity.
 - `schemas/release-selector/v1.json` describes the public current/previous selector.
   Current release fields are required; the flat `previous_*` fields are all-or-none, and
   each release hex and immutable manifest URL must agree with its full `sha256:` ID.
@@ -86,10 +107,13 @@ overlay, or serving topology.
   `schemas/attestation/validation-v1.json` describe immutable build and validation
   evidence. Attestations bind a timestamp-independent release ID; they do not embed
   the final manifest digest, which would create a manifest/attestation hash cycle.
-- `schemas/attestation/build-v2.json` is reserved for a real
+- `schemas/attestation/build-v2.json` describes a real
   `full-offline-replay`. It requires the exact offline-pack ID, source-set root,
   reducer-inventory ID, and `network: "disabled"`; the compatibility release freezer
   does not emit it.
+- `schemas/attestation/reproducibility-v1.json` describes the separately reviewed
+  two-build evidence. The producer owns both actual OCI launches and the resulting
+  frozen releases; imported caller success summaries cannot satisfy its CLI.
 - `schemas/build-context/v1.json` documents the strict runtime-only context assembled
   after pack verification: disjoint absolute code/input/output/scratch roots, exact
   materialized bindings and native source pins, the inventory stage schedule, replay
@@ -160,9 +184,10 @@ unisolated direct invocation before Wrangler can run. Local helper modules are l
 after the standard-library paths and must resolve to their exact reviewed repository
 files. The normalization identity also names the reviewed community-row
 policy and mirror-safe article filename policy (including NFD/casefold collision and
-length checks), rather than relying on wrapper identity alone. No live snapshot has
-been captured as part of the repository change. The v3 contracts can represent this
-evidence, but the current v2 compiler/preflight do not yet consume v3 plans.
+length checks), rather than relying on wrapper identity alone. A private production
+capture was independently verified on 2026-09-08 (778 articles, no community nodes or
+edges); the continuation handoff records its identities. Acquisition alone does not
+make a reviewed source plan, authoritative pack, or production release.
 
 Both current consumers require that same explicit absolute bundle path and run
 the shared consumer-side verifier before writing anything:
@@ -181,6 +206,32 @@ staging, or exchange failure leaves the prior cache generation in place.
 The quarantine is gitignored, local recovery data only; it is never an
 authority source and must not be packed, seeded, or served.
 
+`brain/export_d1_sources.py` provides the separate immutable authority export. It
+captures and verifies the bundle bytes once, preserves the original receipt/lineage,
+and derives fresh annotation sidecars without inheriting disk-cache metadata. Its
+source fragment has an acquired D1 parent and a derived sealed-snapshot child. The
+entire export stays restricted/private; nonempty community graduation currently
+requires additional explicit dependencies and is rejected by this narrow exporter.
+V3 permits distinct named outputs to share identical content-addressed bytes only
+when digest, byte count, and media type agree, preserving empty edge/node outputs
+without rewriting their original evidence.
+
+The shared Wikidata observation command is
+`brain/acquire-wikidata-observation.sh /absolute/path/to/reviewed-plan.json`.
+`plan_wikidata_observation.py` prepares that plan from five explicit selector files
+(or explicit prior-node absence) and reviewed count floors. The bundle records the
+complete universe/relationship/description request transcript under the policy
+`independent-live-requests/no-snapshot`. The consumer verifies exact reconstruction
+and a whole reviewed tool generation from `wikidata_observation_profiles.json`;
+later helper updates do not silently redefine earlier generation identities.
+`verify_wikidata_observation.py source` exports evidence-closed source-plan fragments.
+
+Nightly requires `WIKILEAN_WIKIDATA_OBSERVATION_PLAN` to name that explicit canonical
+plan. It acquires the shared generation on bootstrap/weekly cadence, installs all
+three compatibility mirrors with a durable rollback journal, and verifies the exact
+installed bundle on every other run. Build, fold, agent, and remaining graph readers
+consume verified immutable bundle paths. The standalone live publishing CLIs are retired.
+
 `prepare_replay_v2.py` is prepare-only. It reopens and verifies every copied byte,
 copies rather than links the exact normalized input and reducer closures into a private
 sibling staging directory, emits the canonical build context with final workspace paths,
@@ -194,11 +245,15 @@ executor must still enforce an operating-system boundary while running reducer c
 reads curated inputs and reducer code from the plan's pinned Git commits rather than the
 mutable worktree, streams approved source bytes into a deduplicated content-addressed
 object closure, rechecks mutable selector membership immediately before sealing, verifies
-the generated v2 pack, and publishes it with an atomic no-replace rename. The output store
+the generated v2 or v3 pack, and publishes it with an atomic no-replace rename. The output store
 must be current-user-owned mode `0700`; completed packs are read-only and same-ID reuse is
-accepted only after full closure and byte verification. The compiler deliberately does not
-prove that upstream acquisition receipts, dataset revisions, or cross-source revisions are
-coherent: approving the source plan is a separate fail-closed gate.
+accepted only after full closure and byte verification. On Darwin, the retained root
+descriptor temporarily sets mode `0600` for exclusive rename, preventing member reads until
+the root is resealed. Full closure is checked again after publication. A caught failure
+removes only the candidate's known inode; a hard interruption before resealing leaves an
+inaccessible pack that verification rejects. V3 checks receipt/lineage closure and declared
+inventory coherence groups; upstream revision truth and other cross-source coherence still
+require review of the source plan.
 
 `preflight_offline_pack_v2.py` performs the bounded check before a large compile. It reads
 canonical metadata, filesystem sizes, directory membership, and pinned Git object sizes but
@@ -297,9 +352,21 @@ verifies the complete candidate, and atomically renames it to
 only after full verification and byte equality. The CLI prints one JSON object containing
 `release_id`, `release`, `root`, `manifest`, `artifact_count`, `byte_count`, and `reused`.
 Its `build-attestation/v1` records compatibility release assembly, not a clean-room graph
-replay. `release/v1` continues to require that v1 attestation until the v2 replay path is
-exercised with a real pack, the execution environment and pack-only isolation are pinned,
-and the resulting dual build is independently verified.
+replay. The `brain-current-v1` profile continues to require that v1 attestation.
+
+The `brain-offline-replay-v1` profile instead requires `build-attestation/v2` and an
+exact `replay` binding. `build_replay_release.py` is an internal producer handoff,
+with no CLI that certifies pre-existing output from a caller-supplied success receipt.
+After its own successful launch, `reproducibility_gate.py run` calls the handoff,
+which re-verifies the v3 pack, complete prepared context/input/program closure and
+all owned outputs. It freezes all outputs, including review files, plus exactly the
+sealed source-registry and community-edge input members. It verifies full SQLite
+and static parity before publication. The two runs use distinct paths, randomized
+input mtimes and hostile inherited environments; every output byte and logical
+identity must agree. The resulting session remains `pending-attestation` until
+`finalize` receives the explicitly reviewed exact session ID and re-verifies both
+producer-owned releases and retained evidence. Fixture scope stays diagnostic;
+neither these fixtures nor a development-host replay establishes a full-corpus run.
 
 ## Phase 1 activation evidence
 

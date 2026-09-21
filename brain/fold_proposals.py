@@ -287,8 +287,14 @@ def _completed_retract_key(
 
 def known_qids() -> dict[str, dict]:
     """qid -> {label, aliases?} from the universe + extension (labels only)."""
+    from install_wikidata_observation import load_installed
+    bundle = load_installed(CATALOG.parent.parent)
+    universe_path = (
+        bundle["path"] / "normalized/wikidata_universe.jsonl"
+        if bundle is not None else CATALOG / "wikidata_universe.jsonl"
+    )
     out: dict[str, dict] = {}
-    for f in (CATALOG / "wikidata_universe.jsonl", CATALOG / "universe_extension.jsonl"):
+    for f in (universe_path, CATALOG / "universe_extension.jsonl"):
         if not f.exists():
             continue
         for line in f.read_text().splitlines():

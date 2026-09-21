@@ -64,6 +64,79 @@ const q = encodeURIComponent;
 beforeEach(() => _resetBrainAssetMemo());
 
 describe("Brain release selection", () => {
+  const replay = {
+    authority_root: `sha256:${"5".repeat(64)}`,
+    offline_pack_id: `sha256:${"6".repeat(64)}`,
+    reducer_inventory_id: `sha256:${"7".repeat(64)}`,
+    generation_id: `sha256:${"8".repeat(64)}`,
+    prior_state_root: null,
+  };
+
+  it.each([null, `sha256:${"9".repeat(64)}`])("serves a verified offline replay profile with prior state %s", async (prior) => {
+    const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: { ...replay, prior_state_root: prior } });
+    const { status, j } = await getJson(h, `/api/brain/cell?key=${MODULE_Q}`);
+    expect(status).toBe(200);
+    expect(j.release_id).not.toBe(FIXTURE_RELEASE_ID);
+  });
+
+  it.each([
+    undefined, null, {}, { ...replay, extra: true }, Object.fromEntries(Object.entries(replay).filter(([key]) => key !== "prior_state_root")),
+    { ...replay, authority_root: "5".repeat(64) }, { ...replay, offline_pack_id: 42 },
+    { ...replay, reducer_inventory_id: null }, { ...replay, generation_id: "sha256:bad" },
+    { ...replay, prior_state_root: "sha256:bad" },
+  ])("rejects self-consistent offline releases with malformed replay bindings: %j", async (binding) => {
+    const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: binding });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+  });
+
+  it("keeps the frozen profile closed to replay fields and unknown profiles", async () => {
+    for (const profile of ["brain-current-v1", "brain-future-v1"]) {
+      const h = harness({ releaseProfile: profile, releaseReplay: replay });
+      expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    }
+  });
+
+  it("binds offline replay metadata into release identity and preserves changeset rejection", async () => {
+    const changed = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay,
+      mutateReleaseManifest: (manifest) => { manifest.replay = { ...replay, generation_id: `sha256:${"9".repeat(64)}` }; } });
+    expect((await getJson(changed, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    const invalid = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay, throughChangeset: "unsupported" });
+    expect((await getJson(invalid, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+  });
+
+  it.each([
+    [],
+    [{ kind: "build", path: "attestations/build.json", sha256: "a".repeat(64), bytes: 1 }],
+    ["wrong", "shape"],
+  ].map((attestations) => ({ attestations })))("rejects missing or malformed offline attestation pairs despite an unchanged release ID: %j", async ({ attestations }) => {
+    const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay,
+      mutateReleaseManifest: (manifest) => { manifest.attestations = attestations; } });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+  });
+
+  it.each(["kind", "path", "hash", "size", "extra", "order", "duplicate", "third", "normalized-path"])(
+    "rejects offline attestation reference mutation %s", async (change) => {
+      const h = harness({ releaseProfile: "brain-offline-replay-v1", releaseReplay: replay,
+        mutateReleaseManifest: (manifest) => {
+          const refs = manifest.attestations as Array<Record<string, unknown>>;
+          if (change === "kind") refs[1].kind = "build";
+          if (change === "path") refs[0].path = "../outside.json";
+          if (change === "hash") refs[0].sha256 = "invalid";
+          if (change === "size") refs[0].bytes = -1;
+          if (change === "extra") refs[0].unchecked = true;
+          if (change === "order") refs.reverse();
+          if (change === "duplicate") refs[1].path = refs[0].path;
+          if (change === "third") refs.push({ ...refs[0], path: "attestations/third.json" });
+          if (change === "normalized-path") refs[0].path = "attestations//build.json";
+        } });
+      expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(503);
+    });
+
+  it("preserves frozen-profile runtime attestation handling", async () => {
+    const h = harness({ mutateReleaseManifest: (manifest) => { manifest.attestations = []; } });
+    expect((await getJson(h, `/api/brain/cell?key=${MODULE_Q}`)).status).toBe(200);
+  });
+
   it("revalidates the selector per request and memoizes a verified immutable manifest", async () => {
     const paths: string[] = [];
     const h = harness({ onAssetPath: (path) => paths.push(path) });
