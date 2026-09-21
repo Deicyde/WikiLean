@@ -20,8 +20,10 @@ from pathlib import Path
 from typing import Any
 
 import execution_environment as environment
+import apparmor_runtime
 
 POLICY_SCHEMA = "wikilean.oci-runtime-policy/v1"
+POLICY_SCHEMA_V2 = "wikilean.oci-runtime-policy/v2"
 POLICY_LABEL = "org.wikilean.runtime-policy-sha256"
 MANIFEST_MEDIA = "application/vnd.oci.image.manifest.v1+json"
 CONFIG_MEDIA = "application/vnd.oci.image.config.v1+json"
@@ -30,6 +32,10 @@ ARCHITECTURES = {"amd64": "x86_64", "arm64": "aarch64"}
 JSON_LIMIT = 4 * 1024 * 1024
 EXPANDED_LAYER_LIMIT = 16 * 1024**3
 CORE_TYPES = {"x86_64": "Prescott", "aarch64": "ARMV8"}
+# OpenBLAS accepts the architecture policy token above but reports its ARM
+# baseline through get_corename as lowercase. Keep the exact measured spelling;
+# case folding would accept unreviewed variants from a different implementation.
+REPORTED_CORE_TYPES = {"x86_64": b"Prescott", "aarch64": b"armv8"}
 BLAS_SYMBOLS = {
     "openblas_get_corename", "openblas_get_corename64_",
     "scipy_openblas_get_corename", "scipy_openblas_get_corename64_",
@@ -85,8 +91,13 @@ def read_control(path: Path) -> tuple[dict[str, Any], bytes]:
 
 
 def validate_policy(value: Any) -> dict[str, Any]:
-    policy = _keys(value, {"schema", "architecture", "python", "numpy", "cpu"}, "policy")
-    _require(policy["schema"] == POLICY_SCHEMA, "unknown OCI runtime policy schema")
+    fields = {"schema", "architecture", "python", "numpy", "cpu"}
+    if isinstance(value, dict) and value.get("schema") == POLICY_SCHEMA_V2:
+        fields.add("apparmor")
+    policy = _keys(value, fields, "policy")
+    _require(policy["schema"] in {POLICY_SCHEMA, POLICY_SCHEMA_V2}, "unknown OCI runtime policy schema")
+    if policy["schema"] == POLICY_SCHEMA_V2:
+        apparmor_runtime.validate_policy(policy["apparmor"])
     architecture = policy["architecture"]
     _require(architecture in CORE_TYPES, "unsupported numerical-policy architecture")
     _require(policy["python"] == "/usr/local/bin/python3.12", "policy requires the fixed CPython 3.12 entry point")
@@ -144,7 +155,7 @@ def verify_numerical_runtime(policy: dict[str, Any], *, numpy_module: Any = None
     function = getattr(loaded, cpu["blas_symbol"])
     function.restype = ctypes.c_char_p
     function.argtypes = []
-    _require(function() == cpu["openblas_core"].encode("ascii"), "OpenBLAS selected a different CPU core")
+    _require(function() == REPORTED_CORE_TYPES[policy["architecture"]], "OpenBLAS selected a different CPU core")
 
 
 @dataclass(frozen=True)
@@ -230,6 +241,8 @@ def verify_image(layout: Path, manifest_digest: str, policy: dict[str, Any],
     package = policy["numpy"]
     _require(environment.secure_file_digest(artifacts / package["wheel"]) == (package["sha256"], package["bytes"]),
              "immutable NumPy wheel digest/size mismatch")
+    if "apparmor" in policy:
+        apparmor_runtime.verify_artifact(policy["apparmor"], artifacts)
     lock = descriptor["dependency_lock"]["packages"]
     _require(len(lock) == 1 and lock[0]["name"] == "numpy" and
              lock[0]["version"] == package["version"] and

@@ -161,7 +161,7 @@ LOCAL_DEPENDENCIES = (
     (
         "brain/tools/authority_contracts.py",
         TOOLS / "authority_contracts.py",
-        "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc",
+        "225d2eb930e1b21e3a2681a7f93a1d69e628566c4ff4b84fd78cd72ae829d160",
     ),
     (
         "brain/tools/execution_environment.py",

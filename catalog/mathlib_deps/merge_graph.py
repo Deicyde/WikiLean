@@ -14,6 +14,7 @@ And prints a diff: edges only-in-mathlib, only-in-wikidata, in-both.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -61,8 +62,12 @@ def main() -> None:
                         ml.setdefault((qa, qb), []).append([a, b])
 
     wd: dict[tuple[str, str], list[dict]] = {}
-    if WD_EDGES.exists():
-        with WD_EDGES.open() as fh:
+    sys.path.append(str(HERE.parent.parent / "brain"))
+    import install_wikidata_observation
+    observation = install_wikidata_observation.load_installed(WD_EDGES.parent.parent.parent)
+    wd_edges = observation["path"] / "normalized/wikidata_edges.jsonl" if observation is not None else WD_EDGES
+    if wd_edges.exists():
+        with wd_edges.open() as fh:
             for line in fh:
                 r = json.loads(line)
                 s, o = r["s"], r["o"]

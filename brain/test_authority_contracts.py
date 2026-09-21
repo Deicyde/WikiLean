@@ -978,6 +978,46 @@ class AcquisitionEvidenceContractTest(unittest.TestCase):
             contracts.normalization_lineage_identity(changed), lineage_id
         )
 
+    def test_v2_receipt_counts_attempts_and_requires_one_final_success_per_request(self) -> None:
+        receipt = self._receipt()
+        old_identity = receipt["acquisition_receipt_id"]
+        receipt["schema"] = "wikilean.acquisition-receipt/v2"
+        receipt["attempts"] = [
+            {"request_index": index, "outcome": outcome,
+             "response_sha256": str(number) * 64, "response_bytes": number}
+            for number, (index, outcome) in enumerate(((0, "failed"), (0, "succeeded"), (1, "succeeded")), 1)
+        ]
+        receipt["batch"].update(requests_total=3, requests_succeeded=2, requests_failed=1)
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
+        contracts.validate_acquisition_receipt(receipt)
+        schema = json.loads((HERE / "authority/schemas/acquisition-receipt/v2.json").read_bytes())
+        jsonschema.Draft202012Validator.check_schema(schema)
+        jsonschema.Draft202012Validator(schema).validate(receipt)
+        self.assertNotEqual(old_identity, receipt["acquisition_receipt_id"])
+        for mutate in (
+            lambda x: x["batch"].update(requests_total=2),
+            lambda x: x["batch"].update(requests_failed=0),
+            lambda x: x["attempts"][1].update(outcome="failed"),
+            lambda x: x["attempts"][0].update(outcome="succeeded"),
+            lambda x: x["attempts"][2].update(request_index=0),
+            lambda x: x["attempts"][2].update(request_index=True),
+            lambda x: x["attempts"].reverse(),
+            lambda x: x["attempts"][0].update(response_sha256="bad"),
+            lambda x: x["attempts"][0].update(response_bytes=-1),
+        ):
+            changed = copy.deepcopy(receipt)
+            mutate(changed)
+            changed["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(changed)
+            with self.assertRaises(contracts.VerificationError):
+                contracts.validate_acquisition_receipt(changed)
+        changed = copy.deepcopy(receipt)
+        changed["attempts"][0]["response_sha256"] = "f" * 64
+        self.assertNotEqual(contracts.acquisition_receipt_identity(changed), receipt["acquisition_receipt_id"])
+        receipt["schema"] = contracts.ACQUISITION_RECEIPT_SCHEMA_V1
+        receipt["acquisition_receipt_id"] = contracts.acquisition_receipt_identity(receipt)
+        with self.assertRaises(contracts.VerificationError):
+            contracts.validate_acquisition_receipt(receipt)
+
     def test_receipt_requires_complete_fail_closed_batch(self) -> None:
         receipt = self._receipt()
         receipt["batch"]["requests_succeeded"] = 1
@@ -4087,7 +4127,7 @@ class ReleaseVerificationTest(unittest.TestCase):
                 ref["sha256"], ref["bytes"] = contracts.digest_file(build_path)
         with self.assertRaisesRegex(
             contracts.VerificationError,
-            "offline replay attestations are not integrated yet",
+            "brain-current-v1 requires wikilean.build-attestation/v1",
         ):
             contracts.verify_release_files(
                 contracts.validate_release_manifest(release), self.root

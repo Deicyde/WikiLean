@@ -44,7 +44,7 @@ WRANGLER_INTEGRITY = (
 )
 WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
 PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "350fa3d7c130d3c3c7b8057a8bcf39c3d5ce7536e2559c342833a5f56e879aa1"
+ACQUIRER_WRAPPER_SHA256 = "45276c90f4b9c9a74c2ba03f38510c2c94bb2590d2544b13ac7323dc5411897d"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
@@ -52,7 +52,7 @@ LOCAL_DEPENDENCY_PINS = (
     },
     {
         "path": "brain/tools/authority_contracts.py",
-        "sha256": "e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc",
+        "sha256": "225d2eb930e1b21e3a2681a7f93a1d69e628566c4ff4b84fd78cd72ae829d160",
     },
     {
         "path": "brain/tools/execution_environment.py",
@@ -62,6 +62,20 @@ LOCAL_DEPENDENCY_PINS = (
 # Review whole wrapper/dependency generations together. Historical acquisitions
 # remain verifiable; mixing individually recognized hashes is never permitted.
 REVIEWED_ACQUIRER_GENERATIONS = (
+    ('160254977bc70370920fb0df03cfa00389db4876df35e3d816656bccec05c35c',
+     ({'path': 'brain/stage_io.py',
+       'sha256': '9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf'},
+      {'path': 'brain/tools/authority_contracts.py',
+       'sha256': 'fd87f76991f52f522587d0ef45cf4605b00f0970a23f0dfe1b50d6597c9a9319'},
+      {'path': 'brain/tools/execution_environment.py',
+       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
+    ('350fa3d7c130d3c3c7b8057a8bcf39c3d5ce7536e2559c342833a5f56e879aa1',
+     ({'path': 'brain/stage_io.py',
+       'sha256': '9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf'},
+      {'path': 'brain/tools/authority_contracts.py',
+       'sha256': 'e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc'},
+      {'path': 'brain/tools/execution_environment.py',
+       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
     (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
     ("47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650", (
         {"path": "brain/stage_io.py", "sha256": "9b659899ce6c62709ac75b8bec2b9d83cd8550281e5d0ca2122ea6a8a805e4cf"},

@@ -21,6 +21,10 @@ sys.modules[SPEC.name] = brain_canary
 SPEC.loader.exec_module(brain_canary)
 
 BASE = "https://example.test"
+MISSING = object()
+REPLAY = {"authority_root": "sha256:" + "5" * 64, "offline_pack_id": "sha256:" + "6" * 64,
+          "reducer_inventory_id": "sha256:" + "7" * 64, "generation_id": "sha256:" + "8" * 64,
+          "prior_state_root": None}
 
 
 def make_selector(release: str, previous: str | None = None) -> dict[str, object]:
@@ -67,7 +71,7 @@ class FakeResponse:
 
 
 class Fixture:
-    def __init__(self):
+    def __init__(self, *, profile="brain-current-v1", replay=MISSING, manifest_overrides=None):
         cells = {"scheme": {"min_len": 2, "max_len": 8, "pad": "_"}, "shards": {"aa": 1}, "prov": []}
         shard = {"cell:Q1": {"cell": {"id": "cell:Q1"}}}
         aliases = {"organs": {"Q1": "cell:Q1"}}
@@ -96,12 +100,22 @@ class Fixture:
         artifact_bytes["site/out/brain.html"] = page
         identity_value = {
             "schema": "wikilean.release/v1",
-            "profile": "brain-current-v1",
+            "profile": profile,
+            "authority": {"git_commit": "0" * 40, "semantic_state_root": "sha256:" + "1" * 64, "through_changeset": None},
+            "source_set_root": "sha256:" + "2" * 64,
+            "semantic_epoch": "canary-fixture",
+            "reducer": {"schedule": "fixture", "version": "1", "git_commit": "0" * 40,
+                        "configuration_sha256": "3" * 64, "environment_sha256": "4" * 64},
+            "compatible_overlay_generation_ids": [],
             "artifacts": [
                 {"path": path, "bytes": len(body), "sha256": hashlib.sha256(body).hexdigest()}
                 for path, body in artifact_bytes.items()
             ],
         }
+        if replay is not MISSING:
+            identity_value["replay"] = replay
+        if manifest_overrides:
+            identity_value.update(manifest_overrides)
         payload = b"wikilean\0wikilean.release.v1\0canonical-json-v1\0" + json.dumps(
             identity_value, ensure_ascii=False, separators=(",", ":"), sort_keys=True
         ).encode()
@@ -109,7 +123,10 @@ class Fixture:
         self.release = self.release_id.removeprefix("sha256:")
         immutable = f"/assets/brain/releases/{self.release}"
         selector = make_selector(self.release)
-        manifest = {**identity_value, "release_id": self.release_id, "attestations": []}
+        manifest = {**identity_value, "release_id": self.release_id, "attestations": [
+            {"kind": "build", "path": "attestations/build.json", "sha256": "a" * 64, "bytes": 1},
+            {"kind": "validation", "path": "attestations/validation.json", "sha256": "b" * 64, "bytes": 1},
+        ] if profile == "brain-offline-replay-v1" else []}
         shard_bytes = artifact_bytes["site/assets/brain/cells/aa.json"]
         cursor_one = base64.b64encode(
             json.dumps({
@@ -230,6 +247,70 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertGreaterEqual(result["check_duration_ms"], 0)
         self.assertGreater(result["max_rss_bytes"], 0)
         self.assertIn("POST", fixture.requested_methods)
+
+    def test_offline_replay_release_surface_passes_with_null_or_pinned_prior_state(self):
+        for prior in (None, "sha256:" + "9" * 64):
+            with self.subTest(prior=prior):
+                fixture = Fixture(profile="brain-offline-replay-v1", replay={**REPLAY, "prior_state_root": prior})
+                self.assertTrue(self.canary(fixture).check_once()["ok"])
+
+    def test_offline_replay_requires_exact_closed_well_formed_binding(self):
+        variants = [MISSING, None, {}, {**REPLAY, "extra": True},
+                    {key: value for key, value in REPLAY.items() if key != "prior_state_root"}]
+        for key in REPLAY:
+            variants.append({**REPLAY, key: "invalid"})
+        for replay in variants:
+            with self.subTest(replay=replay):
+                fixture = Fixture(profile="brain-offline-replay-v1", replay=replay)
+                with self.assertRaisesRegex(brain_canary.CanaryError, "replay binding"):
+                    self.canary(fixture).check_once()
+
+    def test_offline_attestations_require_one_build_and_validation_with_strict_references(self):
+        for change in ("empty", "one", "kind", "path", "hash", "size", "extra", "order", "duplicate", "third", "normalized-path"):
+            fixture = Fixture(profile="brain-offline-replay-v1", replay=REPLAY)
+            path = f"/assets/brain/releases/{fixture.release}/release.json"
+            manifest = json.loads(fixture.routes[path]._body)
+            refs = manifest["attestations"]
+            if change == "empty": refs.clear()
+            if change == "one": refs.pop()
+            if change == "kind": refs[1]["kind"] = "build"
+            if change == "path": refs[0]["path"] = "../outside.json"
+            if change == "hash": refs[0]["sha256"] = "invalid"
+            if change == "size": refs[0]["bytes"] = True
+            if change == "extra": refs[0]["unchecked"] = True
+            if change == "order": refs.reverse()
+            if change == "duplicate": refs[1]["path"] = refs[0]["path"]
+            if change == "third": refs.append({**refs[0], "path": "attestations/third.json"})
+            if change == "normalized-path": refs[0]["path"] = "attestations//build.json"
+            fixture.add_json(path, manifest)
+            with self.subTest(change=change), self.assertRaisesRegex(brain_canary.CanaryError, "attestation"):
+                self.canary(fixture).check_once()
+
+    def test_frozen_profile_rejects_replay_and_unknown_profiles_remain_rejected(self):
+        for profile in ("brain-current-v1", "brain-future-v1"):
+            with self.subTest(profile=profile):
+                fixture = Fixture(profile=profile, replay=REPLAY)
+                with self.assertRaises(brain_canary.CanaryError):
+                    self.canary(fixture).check_once()
+
+    def test_both_profiles_preserve_semantic_metadata_and_closed_top_level_checks(self):
+        for profile, replay in (("brain-current-v1", MISSING), ("brain-offline-replay-v1", REPLAY)):
+            for overrides in ({"authority": {"git_commit": "0" * 40, "semantic_state_root": "sha256:" + "1" * 64,
+                                              "through_changeset": "unsupported"}},
+                              {"semantic_epoch": ""}, {"source_set_root": "bad"}, {"surplus": True}):
+                with self.subTest(profile=profile, overrides=overrides):
+                    fixture = Fixture(profile=profile, replay=replay, manifest_overrides=overrides)
+                    with self.assertRaises(brain_canary.CanaryError):
+                        self.canary(fixture).check_once()
+
+    def test_replay_binding_is_part_of_unchanged_release_identity_domain(self):
+        fixture = Fixture(profile="brain-offline-replay-v1", replay=REPLAY)
+        path = f"/assets/brain/releases/{fixture.release}/release.json"
+        manifest = json.loads(fixture.routes[path]._body)
+        manifest["replay"]["generation_id"] = "sha256:" + "9" * 64
+        fixture.add_json(path, manifest)
+        with self.assertRaisesRegex(brain_canary.CanaryError, "self-identity mismatch"):
+            self.canary(fixture).check_once()
 
     def test_public_baseline_assets_are_checked_by_digest(self):
         fixture = Fixture()
