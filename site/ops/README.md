@@ -52,6 +52,22 @@ The Brain job also requires Python 3.12+ and an explicit readable
 `BRAIN_MATHLIB_CHECKOUT=/absolute/path/to/mathlib4/Mathlib`. Put host-local
 paths in the gitignored `site/ops/nightly.local.env`; see the runbook.
 
+P1B activation-review tooling is implemented but has not been run operationally.
+Promoter dry-run can retain its exact sealed public/Worker/config inputs and raw read-only
+production probes in an external content-addressed store. `brain_activation_bundle.py
+context|freeze|verify` runs the exact Node 22/Python 3.12 Worker and Python CI gates itself
+with explicit absolute Git/Node/npm/Python tools and no caller `PATH`,
+binds the candidate and semantic-baseline releases, immutable public baseline and source
+attestation, release/shadow metrics, complete seven-path semantic-diff v2 report, promoter
+dry-run, two-worktree context, and CI receipt into exactly 11 canonical evidence files in
+the external `WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`. It freezes a fresh fixed-setting
+SQLite measurement, requires an externally anchored non-self semantic baseline, and
+re-verifies the retained
+dry-run bytes plus the entire non-Brain public baseline. Verification requires the
+referenced companion retained-artifact root. These commands do not deploy.
+Generating the first real bundle remains blocked until Jack merges P1A onto `main` and
+authorizes the launch-context Mathlib and interpreter paths; see the release runbook.
+
 Install (same pattern as the moderate job; the Full Disk Access grant below
 covers this job too):
 

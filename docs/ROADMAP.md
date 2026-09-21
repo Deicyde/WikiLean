@@ -158,12 +158,14 @@ never independent semantic writers.
 
 ### Current Brain execution queue (updated 2026-09-02)
 
-P1A's exact-release promoter tooling is implemented and remains production-inactive. The
-current commit intentionally has no `wiki/public-asset-source-attestation.json`, so public
-baseline freeze/verify fails closed until P1B creates and reviews the first complete
-attestation. The next operational ticket is P1B: produce and review one complete activation
-evidence bundle, including the immutable non-Brain public baseline, without changing production. In
-parallel, P0-R remains the main architecture workstream. P2A is a safe third,
+P1A's exact-release promoter and P1B's evidence-recorder/bundle tooling are implemented and
+remain production-inactive. The current commit intentionally has no
+`wiki/public-asset-source-attestation.json`, so public baseline freeze/verify fails closed
+until the first complete attestation is created and reviewed. Actual P1B evidence generation
+is blocked on Jack merging P1A onto `main` and authorizing the launch-context Mathlib and
+Git/Node/npm/Python paths. The next operational ticket is to produce and review one complete activation
+evidence bundle, including the immutable non-Brain public baseline, without changing
+production. In parallel, P0-R remains the main architecture workstream. P2A is a safe third,
 shadow-only workstream, but P2B and later wait for P0-R's source/build contracts. Do not
 start a Phase 3 D1 schema cutover until all Phase 2 contracts and the reviewed genesis
 are complete.
@@ -214,15 +216,41 @@ rollback is not implemented; recovery is manual and independently approved. The 
 `WIKILEAN_BRAIN_DEPLOY=1` nightly path and its deployment code are deleted because it rebuilt
 before deployment.
 
-#### P1B — activation evidence bundle `[PREP; NO PRODUCTION]`
+#### P1B — activation evidence bundle `[TOOLING IMPLEMENTED; PREP; NO PRODUCTION]`
 
+- [x] Implement `site/ops/brain_activation_ci.py`. It runs the exact `npm ci`,
+  `npm run test:ci`, and `PYTHON=<selected> ./scripts/ci-python.sh` gates in the clean
+  promotion checkout, checks Node 22/Python 3.12 and Git authority before and after,
+  strips inherited credentials and Git overrides, and emits canonical
+  `wikilean.brain-activation-ci/v2` evidence with complete command output.
+- [x] Implement `site/ops/brain_activation_bundle.py context|freeze|verify`. The immutable
+  bundle contains exactly 11 evidence files, validates their identities and external
+  worktree/artifact roots before freezing, generates fresh CI evidence in-process using
+  explicit absolute Git/Node/npm/Python paths with caller `PATH` discarded, and freezes a
+  fresh fixed-setting SQLite measurement. It remains independently verifiable after the
+  mutable build context is gone when retained with its required content-addressed promoter
+  companion root. Its semantic comparison requires an externally supplied prior
+  release ID, rejects candidate self-comparison, and requires
+  `wikilean.semantic-diff/v2` coverage of all seven compatibility paths: nodes, both edge
+  streams, cells, synapses, frontier rows, and the frontier graph.
+- [x] Make promoter dry-run evidence durable and inspectable. With
+  `--retain-dry-run-store`, the no-mutation path atomically freezes the exact sealed public
+  tree, Worker bundle, Wrangler config, and raw selector/status/history bodies in an
+  external content-addressed read-only root; the activation freezer re-verifies those
+  bytes before and immediately before publication. Verification also proves the complete
+  retained non-Brain public file closure equals the immutable baseline and refuses to pass
+  if this companion root is unavailable.
 - [ ] **Jack prerequisite:** review and merge the final Phase 1/P1A pull request onto a
-  clean `main`, and authorize the read-only Mathlib checkout and interpreter paths used by
-  the launch job.
+  clean `main`, and authorize the read-only Mathlib checkout plus Git/Node/npm/Python
+  executable paths used by the launch job.
 - [ ] Provision and verify those paths plus gitignored `site/ops/nightly.local.env` in the
-  same launch context used by the job. Keep agents and deploy disabled.
-- [ ] At the reviewed tip, run `(cd wiki && npm ci && npm run test:ci)` followed from the
-  repository root by `PYTHON=.venv/bin/python3 ./scripts/ci-python.sh`.
+  same launch context used by the job, including the external retained-dry-run and
+  activation-bundle stores and the approved absolute Git/Node/npm/Python executables. Keep
+  agents and deploy disabled.
+- [ ] At the reviewed tip, run activation-bundle `freeze` from the clean promotion
+  checkout with the approved Git, Node, npm, and Python executables. The freezer itself
+  executes and retains the exact Worker and Python CI evidence; standalone or hand-written
+  summaries are not freeze inputs.
 - [ ] Run the shadow nightly in an isolated build worktree/output context so its
   timestamp-bearing generated files cannot dirty the clean promotion checkout.
 - [ ] Build all non-Brain Worker assets once (including declaration/suffix/premise indexes
@@ -243,15 +271,23 @@ before deployment.
     > <review-bundle>/semantic-diff.json
   ```
 
-  The bundle must cover graph JSONL (including `edges_links.jsonl` and `synapses.jsonl`),
-  SQLite, and release-coupled static artifacts. If no complete trustworthy baseline exists,
-  a sealed `brain/data` comparison is explicitly partial evidence; proceeding requires
-  Jack's waiver in the deployment journal and does not satisfy P0-R semantic parity.
-- [ ] Run the exact promoter through local verification and transport dry-run, then review
-  its proposed intent record without invoking a mutating Wrangler command.
+  The v2 semantic report must completely compare the seven compatibility paths:
+  `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`, `cells.jsonl`, `synapses.jsonl`,
+  `frontier.jsonl`, and `frontier_graph.json`. The activation bundle separately verifies
+  the complete candidate/baseline release manifests, including SQLite and release-coupled
+  static artifacts. A sealed `brain/data` comparison is partial supplemental evidence only;
+  it cannot satisfy activation-bundle freeze or P0-R semantic parity.
+- [ ] Run the exact promoter through local verification and transport dry-run with
+  `--retain-dry-run-store`, then review its proposed intent and retain the referenced
+  content-addressed execution-artifact root without invoking a mutating Wrangler command.
+- [ ] Generate the verified two-worktree context, assemble all 11 evidence files, freeze
+  them under `WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`, and independently run
+  `brain_activation_bundle.py verify` with both the expected bundle ID and reviewed prior
+  release ID on the resulting immutable bundle.
 
-**Done when:** exact release A and a self-contained review bundle are ready, all automated
-checks pass, and production has not changed.
+**Done when:** exact release A and its complete two-root review set (activation bundle plus
+the referenced retained promoter artifacts) are ready, all automated checks pass, and
+production has not changed.
 
 #### P1C — production activation and rollback drill `[JACK GATE]`
 

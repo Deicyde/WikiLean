@@ -381,6 +381,13 @@ def _validate_manifest(document: Mapping[str, object]) -> tuple[str, str, tuple[
     return raw_id, authority, files
 
 
+def validate_public_baseline_manifest(
+    document: Mapping[str, object],
+) -> tuple[str, str, tuple[PublicAssetFile, ...]]:
+    """Validate an in-memory baseline manifest for other trusted tooling."""
+    return _validate_manifest(document)
+
+
 def _lstat_directory(path: Path, label: str) -> os.stat_result:
     try:
         info = path.lstat()
@@ -404,7 +411,13 @@ def _resolve_repo(repo_root: os.PathLike[str] | str) -> Path:
         raise BaselineValidationError(f"cannot resolve repository root: {exc}") from exc
 
 
-def _run_git(repository: Path, arguments: Sequence[str], label: str) -> bytes:
+def _run_git(
+    repository: Path,
+    arguments: Sequence[str],
+    label: str,
+    *,
+    git_executable: Path | None = None,
+) -> bytes:
     environment = dict(os.environ)
     for name in tuple(environment):
         if name in {
@@ -424,9 +437,28 @@ def _run_git(repository: Path, arguments: Sequence[str], label: str) -> bytes:
     environment["GIT_NO_REPLACE_OBJECTS"] = "1"
     environment["GIT_OPTIONAL_LOCKS"] = "0"
     environment["LC_ALL"] = "C"
+    if git_executable is not None:
+        if not git_executable.is_absolute():
+            raise BaselineValidationError("Git executable path must be absolute")
+        try:
+            target = (
+                git_executable.resolve(strict=True)
+                if git_executable.is_symlink()
+                else git_executable
+            )
+        except OSError as exc:
+            raise BaselineValidationError(f"Git executable is invalid: {exc}") from exc
+        if not target.is_file() or not os.access(git_executable, os.X_OK):
+            raise BaselineValidationError(
+                "Git executable must be an executable regular file"
+            )
+        command = str(git_executable)
+        environment["PATH"] = os.defpath
+    else:
+        command = "git"
     try:
         result = subprocess.run(
-            ["git", *arguments],
+            [command, *arguments],
             cwd=repository,
             env=environment,
             stdin=subprocess.DEVNULL,
@@ -444,8 +476,15 @@ def _run_git(repository: Path, arguments: Sequence[str], label: str) -> bytes:
     return result.stdout
 
 
-def _validate_git_repository(repository: Path) -> None:
-    raw_root = _run_git(repository, ["rev-parse", "--show-toplevel"], "locate repository root")
+def _validate_git_repository(
+    repository: Path, *, git_executable: Path | None = None
+) -> None:
+    raw_root = _run_git(
+        repository,
+        ["rev-parse", "--show-toplevel"],
+        "locate repository root",
+        git_executable=git_executable,
+    )
     try:
         declared_root = Path(raw_root.decode("utf-8", errors="strict").strip()).resolve(strict=True)
     except (OSError, UnicodeDecodeError) as exc:
@@ -459,6 +498,8 @@ def _validate_git_repository(repository: Path) -> None:
 def _load_source_attestation(
     repository: Path,
     authority_git_commit: str,
+    *,
+    git_executable: Path | None = None,
 ) -> tuple[PublicAssetFile, ...]:
     """Load the public inventory from the literal authority commit.
 
@@ -469,12 +510,13 @@ def _load_source_attestation(
     files or a caller-selected sidecar.
     """
 
-    _validate_git_repository(repository)
+    _validate_git_repository(repository, git_executable=git_executable)
     try:
         resolved = _run_git(
             repository,
             ["rev-parse", "--verify", f"{authority_git_commit}^{{commit}}"],
             "resolve authority Git commit",
+            git_executable=git_executable,
         ).decode("ascii", errors="strict").strip()
     except UnicodeDecodeError as exc:
         raise BaselineValidationError("Git returned an invalid authority commit id") from exc
@@ -487,6 +529,7 @@ def _load_source_attestation(
         repository,
         ["ls-tree", "-z", authority_git_commit, "--", SOURCE_ATTESTATION_PATH],
         "locate committed public source attestation",
+        git_executable=git_executable,
     )
     records = [record for record in entry.split(b"\0") if record]
     if len(records) != 1:
@@ -511,6 +554,7 @@ def _load_source_attestation(
                 repository,
                 ["cat-file", "-s", object_id],
                 "inspect committed public source attestation",
+                git_executable=git_executable,
             ).decode("ascii", errors="strict").strip()
         )
     except (UnicodeDecodeError, ValueError) as exc:
@@ -521,6 +565,7 @@ def _load_source_attestation(
         repository,
         ["cat-file", "blob", object_id],
         "read committed public source attestation",
+        git_executable=git_executable,
     )
     if len(raw) != size:
         raise BaselineValidationError("committed public source attestation size changed while reading")
@@ -1152,6 +1197,7 @@ def verify_public_baseline(
     *,
     expected_baseline_id: str | None = None,
     expected_authority_git_commit: str | None = None,
+    git_executable: Path | None = None,
 ) -> PublicAssetBaseline:
     """Verify a sealed baseline, its identity, complete inventory, and modes."""
 
@@ -1163,7 +1209,9 @@ def verify_public_baseline(
     manifest_raw, _ = _read_regular_file(root, MANIFEST_NAME, MAX_MANIFEST_BYTES)
     document = _load_manifest_bytes(manifest_raw)
     baseline_id, authority, files = _validate_manifest(document)
-    attested_files = _load_source_attestation(repository, authority)
+    attested_files = _load_source_attestation(
+        repository, authority, git_executable=git_executable
+    )
     _require_attested_source(files, attested_files, authority)
     baseline_hex = BASELINE_ID_RE.fullmatch(baseline_id).group(1)  # type: ignore[union-attr]
     if root.name != baseline_hex:
