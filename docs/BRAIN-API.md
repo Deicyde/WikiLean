@@ -519,7 +519,13 @@ resolved seed's **stored premise list** and rank the union. MCP twin:
   ],
   "seeds_resolved": [ … ],
   "seeds_unknown": [],
-  "index_pin": { "edges_mtime": "…", "decl_index_etag": "…" } }
+  "index_pin": {
+    "dataset_revision": "8c706461fe266802197b62af324de12a3f1aa7fb",
+    "edges_sha256": "78b20d6311388159bdab03ddfb68d5ef5687ced629ee04a99d9880bcd043a08f",
+    "edges_bytes": 753711915,
+    "edges_url": "https://huggingface.co/datasets/MathNetwork/MathlibGraph/resolve/8c706461fe266802197b62af324de12a3f1aa7fb/edges.csv",
+    "decl_index_etag": "…"
+  } }
 ```
 
 Ranking is **(multiplicity across seeds, then stored rank)** — the output
@@ -536,8 +542,11 @@ MathlibGraph** (arXiv [2604.24797](https://arxiv.org/abs/2604.24797),
 hub-drop list. **Staleness caveat**: the index is a frozen snapshot and
 Mathlib renames decls (~5.5% observed drift in the decl-existence sweep) —
 re-verify every name you cite with `decl_exists`, and trust the response's
-**`index_pin`** `{edges_mtime, decl_index_etag}` — this index's own build
-pin — over any assumption of freshness. (The top-level `snapshot` echo tracks
+**`index_pin`** `{dataset_revision, edges_sha256, edges_bytes, edges_url,
+decl_index_etag}` — this index's own immutable build pin — over any assumption
+of freshness. Older deployed assets may instead report the legacy
+`edges_mtime`; clients should accept that field during the transition. (The
+top-level `snapshot` echo tracks
 the brain **cells** manifest, a different artifact rebuilt on a different
 cadence; it says nothing about the premise index.) The three decl-grain
 indexes rebuild in lockstep with `cd wiki && npm run build:indexes`

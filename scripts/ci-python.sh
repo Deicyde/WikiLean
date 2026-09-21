@@ -30,6 +30,9 @@ run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py 
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
+run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingface_download.py
+run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_snapshot.py
+run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Brain authority contract tests" "$PYTHON_BIN" brain/test_authority_contracts.py
 run_check "Brain offline-pack compiler tests" "$PYTHON_BIN" brain/test_compile_offline_pack_v2.py
@@ -55,8 +58,9 @@ run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py
+run_check "Portable nightly launcher tests" "$PYTHON_BIN" site/ops/test_nightly_launchd.py
 run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.py
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
 
-printf '\nCI Python summary: 34 commands passed; all required offline scenarios ran.\n'
+printf '\nCI Python summary: 38 commands passed; all required offline scenarios ran.\n'

@@ -6,11 +6,10 @@
 # so it does NO run-time probing (which would 503-storm the Worker).
 set -uo pipefail
 
-REPO="/Users/jack/Desktop/LEAN/WikiLean"
-PY="$REPO/catalog/.venv/bin/python3"
-export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-export WIKILEAN_MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"
-export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.vars")"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)" || exit 1
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/nightly-runtime.sh"
+wikilean_ops_init || exit 1
 
 # Force Max-subscription auth. If this script is launched from an interactive
 # shell (e.g. run-now), it inherits ANTHROPIC_API_KEY from the user's profile;
@@ -19,6 +18,11 @@ export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.var
 # spending a token. launchd never sees the key (no profile sourced); scrub it
 # here so BOTH launch paths use the subscription.
 unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
+
+if [ "${WIKILEAN_OPS_PREFLIGHT_ONLY:-0}" = "1" ]; then
+  wikilean_ops_print_check
+  exit 0
+fi
 
 LIMIT="${WIKILEAN_NEW_LIMIT:-25}"
 BUDGET="${WIKILEAN_BUDGET_TOKENS:-6000000}"

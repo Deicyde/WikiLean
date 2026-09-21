@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Live coverage — the annotation half of WikiLean's control plane.
 
-Reads site/annotations/*.json (the annotation layer, kept fresh from the
-canonical D1 store by ``npm run pull``) and writes manage/data/coverage.json:
+Reads site/annotations/*.json (the annotation cache, refreshed from an explicit
+verified D1 snapshot bundle by ``npm run pull -- --snapshot-bundle /abs/path``)
+and writes manage/data/coverage.json:
 per-article statement counts and a coverage fraction, joined to a Wikidata QID.
 
 Coverage is per-*statement* (how many of an article's annotations are

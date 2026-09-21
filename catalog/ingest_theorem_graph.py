@@ -19,9 +19,15 @@ of which its own judges reject. We keep only the **paper-affirmed** slice
 BOTH judges' labels + the similarity band per link so the UI can badge
 exact-vs-inexact and a human can audit. LLMs propose, humans publish.
 
-Run:  python3 catalog/ingest_theorem_graph.py            # from the cached CSV
-      python3 catalog/ingest_theorem_graph.py --download # (re)fetch the 108MB CSV
-      python3 catalog/ingest_theorem_graph.py --tier exact   # stricter slice
+Run:
+  python3 catalog/ingest_theorem_graph.py --revision <40-hex-commit>
+  python3 catalog/ingest_theorem_graph.py --revision <commit> --download
+  python3 catalog/ingest_theorem_graph.py --revision <commit> --adopt-existing
+  python3 catalog/ingest_theorem_graph.py --revision <commit> --tier exact
+
+The revision may instead be supplied through
+WIKILEAN_THEOREM_MATCHING_REVISION. Branches and tags (including main) are
+rejected, and an existing cache is accepted only with a matching sidecar.
 """
 from __future__ import annotations
 
@@ -30,10 +36,20 @@ import collections
 import csv
 import glob
 import json
-import subprocess
-import sys
-import time
+import os
 from pathlib import Path
+
+from huggingface_download import (
+    ArtifactRequest,
+    HuggingFaceArtifactError,
+    ReviewedDatasetPin,
+    adopt_existing_artifacts,
+    fetch_huggingface_artifacts,
+    load_reviewed_pin,
+    require_reviewed_revision,
+    resolve_revision,
+    verified_artifact_set,
+)
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
@@ -43,7 +59,8 @@ ANNOT = HERE.parent / "site" / "annotations"
 OUT = DATA / "theoremgraph_links.json"
 
 DATASET = "uw-math-ai/theorem-matching"
-RESOLVE = f"https://huggingface.co/datasets/{DATASET}/resolve/main/theorem_matching.csv"
+REMOTE_FILE = "theorem_matching.csv"
+REVISION_ENV = "WIKILEAN_THEOREM_MATCHING_REVISION"
 UA = "WikiLean-theoremgraph-ingest/1.0 (https://wikilean.jackmccarthy.org; jack.mccarthy.1@stonybrook.edu)"
 
 AFFIRM = {"exact", "inexact"}          # the paper's GPT-5.4 "match" bar (47.7% globally)
@@ -51,11 +68,27 @@ MAX_LINKS_PER_QID = 12                  # keep the map artifact + panel readable
 csv.field_size_limit(10 ** 9)
 
 
-def download() -> None:
-    CACHE.parent.mkdir(parents=True, exist_ok=True)
-    print(f"downloading {DATASET} theorem_matching.csv (~108MB) …")
-    subprocess.run(["curl", "-sS", "-L", "-m", "300", "-H", f"User-Agent: {UA}",
-                    "-o", str(CACHE), RESOLVE], check=True)
+def source_request(pin: ReviewedDatasetPin) -> ArtifactRequest:
+    return pin.request(REMOTE_FILE, CACHE)
+
+
+def download(
+    pin: ReviewedDatasetPin,
+    revision: str,
+) -> dict[str, object]:
+    print(
+        f"downloading {DATASET} {REMOTE_FILE} at immutable revision "
+        f"{revision} (~108MB) …"
+    )
+    result = fetch_huggingface_artifacts(
+        dataset=DATASET,
+        revision=revision,
+        requests=[source_request(pin)],
+        user_agent=UA,
+        force=True,
+        timeout_seconds=300,
+    )[0]
+    return result.metadata
 
 
 def wikilean_decls() -> tuple[dict[str, set[str]], dict[str, set[str]]]:
@@ -84,18 +117,76 @@ def wikilean_decls() -> tuple[dict[str, set[str]], dict[str, set[str]]]:
     return primary, cited
 
 
-def main() -> int:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--download", action="store_true", help="(re)fetch the CSV")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--download", action="store_true", help="(re)fetch the CSV"
+    )
+    mode.add_argument(
+        "--adopt-existing",
+        action="store_true",
+        help="write a sidecar only after the cache matches the reviewed hash",
+    )
+    ap.add_argument(
+        "--revision",
+        default=os.environ.get(REVISION_ENV),
+        help=f"exact 40-hex Hugging Face dataset commit (or {REVISION_ENV})",
+    )
     ap.add_argument("--tier", choices=["affirmed", "exact"], default="affirmed",
                     help="affirmed = gpt54 ∈ {exact,inexact} (paper bar); exact = gpt54==exact")
-    args = ap.parse_args()
+    return ap.parse_args(argv)
 
-    if args.download or not CACHE.exists():
-        if not CACHE.exists() and not args.download:
-            print(f"no cached CSV at {CACHE}; fetching (pass --download to force refresh)")
-        download()
 
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    try:
+        pin = load_reviewed_pin(DATASET)
+        revision = require_reviewed_revision(
+            resolve_revision(
+                args.revision, environment_variable=REVISION_ENV
+            ),
+            pin,
+        )
+        request = source_request(pin)
+        if args.adopt_existing:
+            result = adopt_existing_artifacts(
+                dataset=DATASET,
+                revision=revision,
+                requests=[request],
+            )[0]
+            print(
+                f"adopted/verified {result.destination.name} "
+                f"({int(result.metadata['size']) / 1e6:.0f} MB, "
+                f"revision {revision})"
+            )
+            return 0
+        elif args.download or not CACHE.exists():
+            if not CACHE.exists() and not args.download:
+                print(
+                    f"no cached CSV at {CACHE}; fetching exact revision "
+                    f"{revision} (pass --download to force refresh)"
+                )
+            download(pin, revision)
+        with verified_artifact_set(
+            dataset=DATASET,
+            revision=revision,
+            requests=[request],
+        ) as verified:
+            source_metadata = verified[0]
+            print(
+                f"verified cached {REMOTE_FILE} at immutable revision "
+                f"{revision}"
+            )
+            return ingest(args, source_metadata)
+    except HuggingFaceArtifactError as exc:
+        raise SystemExit(f"FATAL: {exc}") from exc
+
+
+def ingest(
+    args: argparse.Namespace,
+    source_metadata: dict[str, object],
+) -> int:
     primary, cited = wikilean_decls()
     all_decls = set(primary) | set(cited)
     print(f"WikiLean decls: {len(primary)} primary / {len(all_decls)} total (primary ∪ cited)")
@@ -148,7 +239,10 @@ def main() -> int:
                            "facts only; arXiv papers retain their own licenses.",
             "tier": args.tier,
             "affirm_labels": sorted(AFFIRM) if args.tier == "affirmed" else ["exact"],
-            "generated_at": int(time.time()),
+            "source_revision": source_metadata["revision"],
+            "source_url": source_metadata["file_url"],
+            "source_sha256": source_metadata["sha256"],
+            "source_bytes": source_metadata["size"],
             "n_concepts": len(links),
             "n_links": sum(len(v) for v in links.values()),
         },

@@ -1,143 +1,142 @@
 #!/usr/bin/env python3
-"""Graduate live community brain edges from D1 into the committed static base.
+"""Graduate community edges from one verified, sealed D1 snapshot bundle.
 
-docs/BRAIN-EDITS-ROADMAP.md phase 4. Reads the LIVE (non-deleted) rows of the D1
-`brain_edges` table, validates each edge's endpoints against the node universe,
-runs AI-submitted edges through the existence oracle (decl / QID), and writes the
-survivors to `brain/data/community_edges.jsonl` — the durable, git-versioned
-graduation record that `build_shards.py` folds into the base (the xref reverse
-index) and that `query.py` / the AI surface can read.
-
-Trust model (docs/BRAIN-EDITS-ROADMAP.md): human edges are endpoint-validated and
-trusted; AI edges (`actor_type='ai'`) must ADDITIONALLY pass the oracle — mirroring
-`fold_proposals.py`, so AI data never becomes a permanent graph fact without a
-machine check. Deleted (gravestoned) edges are excluded, so a rebuild never
-resurrects one and never drops a currently-live edge. D1 stays canonical for the
-LIVE tail (the /brain overlay renders from D1); this snapshot is the base layer.
-
-    python3 brain/harvest_community_edges.py             # read remote D1 → jsonl
-    python3 brain/harvest_community_edges.py --dry-run   # report only
-    python3 brain/harvest_community_edges.py --from-json rows.json   # offline/test
+The harvester is deliberately not an acquisition client. It accepts only an
+explicit bundle produced by ``brain/acquire_d1_snapshot.py`` and delegates the
+complete bundle check to the shared consumer-side verifier.
 """
 from __future__ import annotations
 
 import argparse
-import datetime
-import json
-import subprocess
+import os
+import stat
 import sys
+import uuid
 from pathlib import Path
+from typing import Any, Mapping, Sequence
 
 ROOT = Path(__file__).resolve().parent.parent
-NODES = ROOT / "brain" / "data" / "nodes.jsonl"
-OUT = ROOT / "brain" / "data" / "community_edges.jsonl"
+BRAIN = ROOT / "brain"
+TOOLS = BRAIN / "tools"
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
 
-# must mirror wiki/src/brain-edits.ts COMMUNITY_KINDS + XREF_DBS
-COMMUNITY_KINDS = {"relates", "xref", "formalizes", "mentions", "matches", "cites"}
-XREF_DBS = {"mathworld", "nlab", "proofwiki", "eom", "planetmath", "metamath",
-            "lmfdb_knowl", "oeis", "dlmf", "msc", "stacks", "kerodon", "kgmid"}
+import authority_contracts as contracts  # noqa: E402
+import stage_io  # noqa: E402
+from d1_snapshot_bundle import (  # noqa: E402
+    ACTOR_TYPES,
+    COMMUNITY_KINDS,
+    ROW_STATUSES,
+    SnapshotBundle,
+    SnapshotBundleError,
+    _canonical_line,
+    verify_snapshot_bundle,
+)
+
+HarvestError = SnapshotBundleError
+
+NODES = BRAIN / "data" / "nodes.jsonl"
+OUT = BRAIN / "data" / "community_edges.jsonl"
+XREF_DBS = {
+    "mathworld", "nlab", "proofwiki", "eom", "planetmath", "metamath",
+    "lmfdb_knowl", "oeis", "dlmf", "msc", "stacks", "kerodon", "kgmid",
+}
 
 
-def load_node_ids() -> set[str]:
+def load_node_ids(path: Path = NODES) -> set[str]:
+    """Load a generated node file with exactly one first-line metadata row."""
     ids: set[str] = set()
-    for line in NODES.read_text().splitlines():
-        line = line.strip()
+    try:
+        lines = Path(path).read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        raise HarvestError(f"cannot read static Brain nodes {path}: {exc}") from exc
+    if not lines:
+        raise HarvestError(f"{path}: empty node file")
+    for index, line in enumerate(lines, start=1):
         if not line:
+            raise HarvestError(f"{path}:{index}: blank lines are forbidden")
+        try:
+            row = contracts.parse_artifact_json_bytes(
+                line.encode("utf-8"), location=f"{path}:{index}"
+            )
+        except contracts.VerificationError as exc:
+            raise HarvestError(str(exc)) from exc
+        if index == 1:
+            if (
+                not isinstance(row, dict)
+                or set(row) != {"_meta"}
+                or not isinstance(row["_meta"], dict)
+            ):
+                raise HarvestError(f"{path}: first line must be exactly one _meta object")
             continue
-        r = json.loads(line)
-        if r.get("id"):
-            ids.add(r["id"])
+        if not isinstance(row, dict):
+            raise HarvestError(f"{path}:{index}: expected node object")
+        if "_meta" in row:
+            raise HarvestError(f"{path}:{index}: metadata is permitted only on the first line")
+        node_id = row.get("id")
+        if not isinstance(node_id, str) or not node_id:
+            raise HarvestError(f"{path}:{index}: node lacks a non-empty id")
+        if node_id in ids:
+            raise HarvestError(f"{path}:{index}: duplicate node id {node_id!r}")
+        ids.add(node_id)
     return ids
 
 
-def read_d1_live() -> list[dict]:
-    """One read-only remote SELECT of every live brain_edges row."""
-    proc = subprocess.run(
-        ["npx", "wrangler", "d1", "execute", "wikilean", "--remote", "--json",
-         "--command", "SELECT id,src,dst,kind,evidence,added_by,actor_type,created_at "
-                      "FROM brain_edges WHERE status='live'"],
-        cwd=str(ROOT / "wiki"), capture_output=True, text=True)
-    if proc.returncode != 0:
-        raise RuntimeError(f"wrangler d1 execute failed:\n{proc.stderr[-2000:]}")
-    out = proc.stdout
-    start = min((i for i in (out.find("["), out.find("{")) if i != -1), default=-1)
-    if start == -1:
-        raise RuntimeError("no JSON in wrangler output")
-    parsed = json.loads(out[start:])
-    return (parsed[0] if isinstance(parsed, list) else parsed)["results"]
-
-
-# ---- AI oracle (reused from fold_proposals; lazily built, fail-closed) --------
-_oracle: set[str] | None = None
-_qids: dict | None = None
-
-
-def _ai_endpoint_ok(node_id: str) -> bool:
-    """AI edges: a decl endpoint must exist in the oracle/checkout; a QID must be
-    a known Wikidata item. Fail closed (drop the AI edge) if the oracle is
-    unavailable — never let unverified AI data through."""
-    global _oracle, _qids
-    try:
-        from fold_proposals import oracle_names, checkout_has, known_qids
-    except Exception:
-        return False
-    if node_id.startswith("decl:"):
-        if _oracle is None:
-            _oracle = oracle_names()
-        if not _oracle:
-            return False
-        fq = node_id.split(":", 2)[2] if node_id.count(":") >= 2 else ""
-        return bool(fq) and (fq in _oracle or checkout_has(fq))
-    if len(node_id) > 1 and node_id[0] == "Q" and node_id[1:].isdigit():
-        if _qids is None:
-            _qids = known_qids()
-        return node_id in _qids
-    # container/literature endpoints: universe membership (checked already) suffices
-    return True
-
-
-def validate_edge(row: dict, node_ids: set[str], pin: str) -> tuple[dict | None, str]:
-    """(edge, "") if the row graduates into the base, else (None, drop-reason)."""
+def validate_edge(
+    row: Mapping[str, Any], node_ids: set[str], pin: str
+) -> tuple[dict[str, Any] | None, str]:
+    """Graduate against only the sealed static-plus-community node universe."""
+    if not contracts.HASH_RE.fullmatch(pin):
+        raise HarvestError("community provenance pin must be an authority identity")
+    actor = row.get("actor_type")
+    status = row.get("status")
     kind = row.get("kind")
+    if actor not in ACTOR_TYPES:
+        raise HarvestError(f"unknown actor {actor!r}")
+    if status not in ROW_STATUSES:
+        raise HarvestError(f"unknown status {status!r}")
     if kind not in COMMUNITY_KINDS:
-        return None, f"bad kind: {kind}"
+        raise HarvestError(f"unknown community kind {kind!r}")
+    if status != "live":
+        return None, "deleted"
     src, dst = row.get("src"), row.get("dst")
-    ai = row.get("actor_type") == "ai"
     if src not in node_ids:
         return None, "src not a known node"
-    if ai and not _ai_endpoint_ok(src):
-        return None, "src fails AI oracle"
     if kind == "xref":
         if not (isinstance(dst, str) and dst.startswith("xref:")):
             return None, "xref dst malformed"
         parts = dst.split(":")
         if len(parts) < 3 or parts[1] not in XREF_DBS or not parts[2]:
             return None, "unknown/empty xref db"
-    else:
-        if dst not in node_ids:
-            return None, "dst not a known node"
-        if ai and not _ai_endpoint_ok(dst):
-            return None, "dst fails AI oracle"
-    try:
-        ev = json.loads(row.get("evidence") or "{}")
-        if not isinstance(ev, dict):
-            ev = {"note": str(ev)}
-    except (TypeError, json.JSONDecodeError):
-        ev = {"note": row.get("evidence")}
-    actor = row.get("actor_type", "human")
+    elif dst not in node_ids:
+        return None, "dst not a known node"
+    evidence = row.get("evidence")
+    if not isinstance(evidence, dict):
+        raise HarvestError("edge evidence must be a normalized object")
     edge = {
-        "src": src, "dst": dst, "kind": kind,
-        "provenance": {"source": "community",
-                       "method": f"community-{actor} (brain_edges)", "pin": pin},
+        "src": src,
+        "dst": dst,
+        "kind": kind,
+        "provenance": {
+            "source": "community",
+            "method": f"community-{actor} (brain_edges)",
+            "pin": pin,
+        },
         "confidence": "high" if actor == "human" else "medium",
-        "evidence": {**ev, "added_by": row.get("added_by"),
-                     "actor_type": actor, "edge_id": row.get("id")},
+        "evidence": {
+            **evidence,
+            "added_by": row.get("added_by"),
+            "actor_type": actor,
+            "edge_id": row.get("id"),
+        },
     }
     return edge, ""
 
 
-def harvest(rows: list[dict], node_ids: set[str], pin: str) -> tuple[list[dict], dict]:
-    kept: list[dict] = []
+def harvest(
+    rows: Sequence[Mapping[str, Any]], node_ids: set[str], pin: str
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    kept: list[dict[str, Any]] = []
     dropped: dict[str, int] = {}
     for row in rows:
         edge, reason = validate_edge(row, node_ids, pin)
@@ -145,39 +144,85 @@ def harvest(rows: list[dict], node_ids: set[str], pin: str) -> tuple[list[dict],
             kept.append(edge)
         else:
             dropped[reason] = dropped.get(reason, 0) + 1
+    kept.sort(key=contracts.canonical_artifact_json_bytes)
     return kept, dropped
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--dry-run", action="store_true", help="report, don't write")
-    ap.add_argument("--from-json", help="read rows from a JSON file instead of D1 (offline/test)")
-    args = ap.parse_args()
+def _output_bytes(edges: Sequence[dict[str, Any]]) -> bytes:
+    return b"".join(_canonical_line(edge) for edge in edges)
 
-    node_ids = load_node_ids()
+
+def write_output(path: Path, data: bytes) -> None:
+    """Durably replace one output with fully staged bytes."""
+    path = Path(path).absolute()
+    parent = path.parent
+    try:
+        parent_meta = parent.lstat()
+    except OSError as exc:
+        raise HarvestError(f"cannot inspect output directory {parent}: {exc}") from exc
+    if stat.S_ISLNK(parent_meta.st_mode) or not stat.S_ISDIR(parent_meta.st_mode):
+        raise HarvestError(f"output parent is not a real directory: {parent}")
+    if path.exists() or path.is_symlink():
+        current = path.lstat()
+        if stat.S_ISLNK(current.st_mode) or not stat.S_ISREG(current.st_mode):
+            raise HarvestError(f"refusing to replace non-regular output: {path}")
+    temporary = parent / f".{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
+    try:
+        stage_io.write_bytes_exclusive(temporary, data, mode=0o644)
+        os.replace(temporary, path)
+        stage_io.fsync_directory(parent)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+
+
+def run(
+    snapshot_bundle: Path,
+    *,
+    output: Path = OUT,
+    static_nodes: Path = NODES,
+    dry_run: bool = False,
+) -> tuple[list[dict[str, Any]], dict[str, int], SnapshotBundle]:
+    bundle = verify_snapshot_bundle(snapshot_bundle)
+    node_ids = load_node_ids(static_nodes)
+    node_ids.update(row["id"] for row in bundle.nodes if row["status"] == "live")
     if not node_ids:
-        sys.exit(f"FATAL: no nodes at {NODES} — run the brain build first")
+        raise HarvestError("node universe is empty")
+    kept, dropped = harvest(bundle.edges, node_ids, bundle.normalization_lineage_id)
+    if not dry_run:
+        write_output(output, _output_bytes(kept))
+    return kept, dropped, bundle
 
-    if args.from_json:
-        rows = json.loads(Path(args.from_json).read_text())
-    else:
-        rows = read_d1_live()
 
-    pin = datetime.date.today().isoformat()
-    kept, dropped = harvest(rows, node_ids, pin)
-
-    n_human = sum(1 for e in kept if e["evidence"].get("actor_type") == "human")
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--snapshot-bundle",
+        type=Path,
+        required=True,
+        help="absolute sealed bundle directory produced by acquire_d1_snapshot.py",
+    )
+    parser.add_argument("--output", type=Path, default=OUT)
+    parser.add_argument("--dry-run", action="store_true", help="verify and report without writing")
+    args = parser.parse_args(argv)
+    if not args.snapshot_bundle.is_absolute():
+        parser.error("--snapshot-bundle must be an absolute path")
+    try:
+        kept, dropped, bundle = run(
+            args.snapshot_bundle, output=args.output, dry_run=args.dry_run
+        )
+    except (HarvestError, OSError, ValueError) as exc:
+        print(f"FATAL: {exc}", file=sys.stderr)
+        return 2
+    n_human = sum(edge["evidence"]["actor_type"] == "human" for edge in kept)
     n_ai = len(kept) - n_human
-    print(f"community edges: {len(rows)} live → {len(kept)} graduate "
-          f"({n_human} human, {n_ai} AI-verified)")
-    for reason, n in sorted(dropped.items(), key=lambda kv: -kv[1]):
-        print(f"  dropped {n}: {reason}")
-
-    if args.dry_run:
-        print("(dry run — not written)")
-        return 0
-    OUT.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in kept))
-    print(f"wrote {OUT} ({len(kept)} edges)")
+    print(
+        f"community edges: {len(bundle.edges)} sealed rows -> {len(kept)} graduate "
+        f"({n_human} human, {n_ai} AI-attributed); pin={bundle.normalization_lineage_id}"
+    )
+    for reason, count in sorted(dropped.items(), key=lambda item: (-item[1], item[0])):
+        print(f"  dropped {count}: {reason}")
+    print("(dry run - not written)" if args.dry_run else f"wrote {args.output} ({len(kept)} edges)")
     return 0
 
 

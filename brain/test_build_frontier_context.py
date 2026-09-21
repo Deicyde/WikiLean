@@ -34,11 +34,6 @@ INPUTS = {
         "path": "catalog/data/concept_layer.jsonl",
         "requirement": "optional",
     },
-    "halo": {
-        "class": "immutable_source_object",
-        "path": "manage/data/halo.json",
-        "requirement": "optional",
-    },
 }
 
 
@@ -60,6 +55,10 @@ class FrontierContextTest(unittest.TestCase):
         (self.host / "brain/data").mkdir(parents=True)
         (self.host / "catalog/data").mkdir(parents=True)
         (self.host / "manage/data").mkdir(parents=True)
+        self.host.joinpath("manage/data/halo.json").write_text(
+            '{"items":[{"all_frac":0.25,"cell":"cell:Q1"}]}\n',
+            encoding="utf-8",
+        )
 
     def tearDown(self) -> None:
         self.temp.cleanup()
@@ -95,7 +94,10 @@ class FrontierContextTest(unittest.TestCase):
             {
                 "id": "cell:Q1",
                 "label": "Alpha",
-                "organs": [{"id": "Q1", "kind": "concept"}],
+                "organs": [
+                    {"id": "Q1", "kind": "concept"},
+                    {"db": "nlab", "id": "alpha", "kind": "page"},
+                ],
                 "supercells": [],
             },
             {
@@ -133,8 +135,6 @@ class FrontierContextTest(unittest.TestCase):
                 b'{"primary_decl":null,"qid":"Q1",'
                 b'"secondary_decls":["Fixture.foo"]}\n'
             )
-        if input_id == "halo":
-            return b'{"items":[{"all_frac":0.75,"cell":"cell:Q1"}]}\n'
         raise AssertionError(input_id)
 
     def _binding(self, input_id: str, *, present: bool) -> dict:
@@ -209,7 +209,6 @@ class FrontierContextTest(unittest.TestCase):
             NODES_IN=host_data / "nodes.jsonl",
             SYNAPSES_IN=host_data / "synapses.jsonl",
             EDGES_IN=host_data / "edges.jsonl",
-            HALO_IN=self.host / "manage/data/halo.json",
             OUT=host_data / "frontier.jsonl",
             GRAPH_OUT=host_data / "frontier_graph.json",
             REVIEW_OUT=host_data / "frontier_review.jsonl",
@@ -250,14 +249,19 @@ class FrontierContextTest(unittest.TestCase):
             for line in outputs[0].read_text(encoding="utf-8").splitlines()[1:]
         ]
         self.assertEqual([row["id"] for row in rows], ["frontier:Algebra"])
-        self.assertIsNone(rows[0]["mean_stateability"])
+        self.assertEqual(rows[0]["mean_stateability"], 1.0)
+        meta = json.loads(
+            outputs[0].read_text(encoding="utf-8").splitlines()[0]
+        )["_meta"]
+        self.assertEqual(meta["inputs"]["stateability_joined"], 1)
+        self.assertNotIn("halo_joined", meta["inputs"])
         review_meta = json.loads(outputs[2].read_text().splitlines()[0])["_meta"]
         self.assertEqual(review_meta["counts"]["candidates"], 0)
         self.assertFalse((self.base / "scratch/frontier/publish").exists())
         self.assertFalse((self.host / "brain/data/frontier.jsonl").exists())
 
     def test_context_routes_every_dependency_and_declared_input(self) -> None:
-        context = self.context(present_optional={"concept-layer", "halo"})
+        context = self.context(present_optional={"concept-layer"})
 
         def fake_build(**kwargs) -> int:
             for key in ("frontier_output", "graph_output", "review_output"):
@@ -284,9 +288,7 @@ class FrontierContextTest(unittest.TestCase):
             kwargs["secondary_only_path"],
             self.base / "input/repo/catalog/data/concept_layer.jsonl",
         )
-        self.assertEqual(
-            kwargs["halo_path"], self.base / "input/repo/manage/data/halo.json"
-        )
+        self.assertNotIn("halo_path", kwargs)
         self.assertTrue(kwargs["strict_inputs"])
         self.assertTrue(kwargs["sealed_outputs"])
         self.assertEqual(kwargs["generated_at"], context.generation_id)
@@ -300,9 +302,9 @@ class FrontierContextTest(unittest.TestCase):
         )
 
     def test_present_optional_and_required_dependencies_cannot_disappear(self) -> None:
-        for missing in ("concept-layer", "halo"):
+        for missing in ("concept-layer",):
             with self.subTest(missing=missing):
-                context = self.context(present_optional={"concept-layer", "halo"})
+                context = self.context(present_optional={"concept-layer"})
                 context.require_one(missing).unlink()
                 with mock.patch.object(build_frontier, "build_frontier") as reducer:
                     with self.assertRaisesRegex(FileNotFoundError, missing):

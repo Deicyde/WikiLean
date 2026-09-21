@@ -59,7 +59,10 @@ rows do not create unnecessary network dependencies.
 Prerequisites on a fresh clone (all gitignored, all fetchable):
 
 ```bash
-python3 catalog/fetch_math_graph.py          # statement_formal + formal_dependency CSVs (~1.1 GB)
+python3 catalog/fetch_math_graph.py \
+  --revision ced4ca9de1bd9e5b67aa09d1d515e270e438fa1e # reviewed math-graph CSVs (~2.1 GB)
+python3 catalog/ingest_theorem_graph.py \
+  --revision 5caba941dd716f17dba4880bd7173edfb1cc36d1 # reviewed theorem-matching cache
 python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live  # warms the decl oracle cache
 # plus a mathlib4 checkout (default /Users/jack/Desktop/LEAN/mathlib4; override
 # with BRAIN_MATHLIB_CHECKOUT) — build_graph_v2 and fold_proposals FAIL HARD
@@ -67,7 +70,7 @@ python3 .claude/skills/mathlib-search/mathlib_search.py decl Nat.add_comm --live
 ```
 
 ```bash
-cd /Users/jack/Desktop/LEAN/WikiLean
+cd "$(git rev-parse --show-toplevel)"
 python3 brain/fold_proposals.py    # only when proposals/ changed (network: Wikidata)
 python3 catalog/build_graph_v2.py --grounding catalog/data/rebuild_grounding.json
 python3 brain/build_snapshot.py    # one graph build → nodes + both edge streams + local SQLite index
@@ -79,6 +82,41 @@ cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-manifest ../site/out/brain-releases/<release-hex>/release.json \
   --brain-release-dir ../site/out/brain-releases/<release-hex>
 ```
+
+For the P0-R acquisition boundary, capture articles plus all community edge/node
+rows with one read-only D1 statement into a private content-addressed bundle:
+
+```bash
+brain/acquire-d1-snapshot.sh
+```
+
+The command uses isolated CPython 3.12, repository-pinned Wrangler, a digest-bound Node 22
+executable, a private config bound to the production D1 UUID, and a sanitized subprocess
+environment.
+It binds the exact Python executable/version and transitive local dependency closure, then
+emits validated acquisition-receipt and normalization-lineage documents under
+`catalog/.cache/d1/snapshots/`. It does not write D1. Graduate community edges only from
+one explicit bundle:
+
+```bash
+python3 brain/harvest_community_edges.py --snapshot-bundle <bundle>
+```
+
+The harvester and annotation mirror share an independent verifier for bundle closure,
+modes, toolchain/evidence, normalized rows, and tombstones. Mirror the exact article
+generation only from that same kind of explicit bundle:
+
+```bash
+cd wiki
+npm run pull -- --snapshot-bundle /absolute/path/to/<bundle-id>
+```
+
+The mirror stages the complete cache, atomically exchanges generations, and quarantines
+disk-only recovery sidecars outside active selectors. These consumers do not confer
+source-plan authority: a production bundle still needs capture/review and explicit v3
+receipt/lineage binding. A 2026-09-05 attempt stopped before querying because no local
+D1-read credential was available; it created no snapshot store and made no production
+change.
 
 Writers publish through temporary files + rename; ordinary publication errors roll
 back the full base generation, and snapshot IDs make a hard interruption between
@@ -212,7 +250,9 @@ JSONL rather than silently serving an old index.
   away, layer toggles per edge family, label search. The Frontier queue preserves every
   declaration-less cell but sorts bounded formalization candidates before broad,
   ambiguous, elementary, already-covered, or non-target rows, with a visible reason for
-  every demotion. One shard fetch per interaction; the whole graph never ships.
+  every demotion. Its stateability tint is derived from the same bound cells and synapses;
+  `manage/data/halo.json` is an operational report, not a replay input. One shard fetch per
+  interaction; the whole graph never ships.
 
 ## Shards
 
@@ -260,7 +300,7 @@ when `catalog/data/external/` lacks the needed ingest file (P6–P8) or when
 | `brain/data/discovery_proposals.jsonl` | 153 verified discovery links | 79 KB | yes |
 | `brain/data/discovery_rejected.jsonl` | rejected rows + reasons (audit trail) | 104 KB | yes |
 | `brain/data/grading_disputes.jsonl` | skeptic-rejected audits of SHIPPED grounding grades — the human-review queue feeding grounding_overrides.jsonl | small | yes |
-| `brain/data/community_edges.jsonl` | graduated live D1 community edges (harvest_community_edges.py) | small | yes |
+| `brain/data/community_edges.jsonl` | community edges graduated from a verified sealed D1 bundle (`harvest_community_edges.py`) | small | yes |
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~820 KB | yes |
 | `site/assets/brain/` | cells/ (v3 atom shards, build_cell_shards.py) + xref_index.json + sources.json — the v2 per-node shards/manifest/labels/aliases/views are retired | ~95 MB | **gitignored** (rebuild) |
 
@@ -287,7 +327,9 @@ biases the BRAIN must correct for, and three of its findings are wired in:
   logical structure is visible at every zoom level.
 
 Their released dataset (MathNetwork/MathlibGraph, Apache-2.0) is now ingested:
-`catalog/fetch_mathlib_graph.py` → `catalog/.cache/mathnetwork/edges.csv`
+`catalog/fetch_mathlib_graph.py --revision
+8c706461fe266802197b62af324de12a3f1aa7fb` →
+`catalog/.cache/mathnetwork/edges.csv`
 (10.9M edges, 29.8% explicit — confirming the paper's 74.2%-synthesized figure),
 joined by decl name onto the pinned TheoremGraph substrate in
 `build_rollups.py`. Tree-grain rows carry **`w_types.exp`** — the count of
@@ -296,6 +338,13 @@ distinct EXPLICIT (source-visible) decl pairs, the paper's closest proxy for
 names (~9% of explicit rows, the fresher snapshot's drift) are counted and
 skipped, never guessed. Full snapshot adoption (replacing TheoremGraph as the
 substrate) remains open — it would need the informal-matching layer re-keyed.
+
+All three Hugging Face datasets are pinned in `catalog/huggingface_pins.json` by
+full commit, byte count, and SHA-256. Existing matching caches can be sealed
+without downloading via the corresponding `--adopt-existing` command. Readers
+hold a shared generation lock for their complete parse; downloads stage behind a
+separate writer lock and publish the complete reviewed generation through a
+durable journal.
 
 ## Provenance & licensing
 
