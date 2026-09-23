@@ -119,8 +119,9 @@ diagnostic sources. Source restrictions remain intact. The initial plan SHA-256 
 `26977c772b009c7de3b3155169cc12acd15d404df55072f60ee0c3e68b3235e1`;
 its 80,133 unique objects total 8,057,483,795 bytes.
 
-Use the corrected compiler candidate at `candidate-03/source-plan.json` with
-`candidate-03/roots.json`, not either earlier plan. Preflight caught one curated
+The first corrected compiler candidate was `candidate-03/source-plan.json` with
+`candidate-03/roots.json`; its successor `candidate-04` is now the active plan (below).
+Preflight caught one curated
 registry binding whose physical root label disagreed with the inventory. The correction
 changes only that label from `wikilean_git` to `repo`; the original registry Git pin,
 bytes, all 114 source-manifest identities, input bindings, and evidence remain unchanged.
@@ -131,7 +132,7 @@ A targeted control check then found that all 23 schema documents were valid but 
 pretty-printed Git bytes, while preflight requires canonical JSON. `candidate-03` stores
 new canonical copies in a private `schema_control` root: 91,278 bytes with identical parsed
 documents. Only their file-reference roots, sizes, and hashes change from `candidate-02`;
-every source entry and logical input binding is identical. The current plan SHA-256 is
+every source entry and logical input binding is identical. The candidate-03 SHA-256 is
 `5f601da7fce3bb9997e70a5a29149bfc17444a70923045de0b5c587743ae1e71`.
 `candidate-03/schema-canonicalization.json` records the exact transformation. The earlier
 candidates and unsuccessful preflight attempts remain available for diagnosis.
@@ -177,9 +178,37 @@ After the idle VM was stopped, a separate fresh preflight completed successfully
 compilation blockers, with 16,614,936,576 free bytes at its capacity sample. The source
 authority/publication warnings are unchanged. Its invocation and stderr are retained
 separately; the earlier resource failure remains historical evidence. Full-pack compilation
-then started under a resource supervisor with a 3 GiB host reserve. The supervisor records
-capacity in `full-pack-resource-log.jsonl` and will independently verify the compiler's
-actual resulting manifest. Keep the VM stopped while compilation runs.
+then started under a resource supervisor with a 3 GiB host reserve. The supervisor recorded
+capacity in `full-pack-resource-log.jsonl`.
+
+That first compilation exited 1 after its final normative verification rejected
+`sha256:81d936b07f3152e9fda275e031e1dca28fc95ea583770e9fbe3c6519e81a3ce3`
+(`hf-mathnetwork-mathlibgraph`) as unbound to any reducer input. No pack was published;
+the compiler removed its owned staging output, and the host recovered about 19 GB free.
+The exact failure is retained in `full-pack-compilation.stderr` and
+`full-pack-compilation-exit.json`; the resource guard did not interrupt it.
+This source belongs to the separate premise search-index build and optional rollups,
+neither of which is in the pinned twelve-program Brain reducer. Its captured data and
+prepared public indexes remain retained. A successor candidate removes only the unused
+source entry. Use `candidate-04/source-plan.json` and `candidate-04/roots.json` for the
+retry. Its plan SHA-256 is
+`340e67491ee48c9287a0434776bab5a492ad861b6d195ec0d6b3919312121cca`.
+Its 113 sources are exactly 30 direct inputs plus 83 evidence ancestors. All 43 input
+groups, logical members, roots, and other plan fields remain unchanged. An independent
+reachability audit confirmed the removed source has no parents, children, or bindings;
+five unique objects totaling 804,849,022 bytes leave this pack while shared HF support
+objects remain. Exact derivation is in `candidate-04/correction-proof.json`. A preflight
+regression test adds this source-use check before another full corpus copy. Keep the VM
+stopped during the next compilation.
+The narrow preflight fix passed 24 focused tests, 31 compiler tests, and 11 coherence tests;
+an independent reviewer reran all 24 preflight tests and found no actionable issue.
+It preserves legitimate evidence-only ancestors and reads only bounded evidence controls
+before inspecting the corpus. The normative compiler, core contracts, and runtime code
+are unchanged. Candidate04 has 83 receipts, 107 lineages, and 9,940 request preimages;
+its 80,128 unique declared objects total 7,252,634,773 bytes.
+The independent full control audit is `source-reachability-audit/candidate-03.json`;
+`source-reachability-audit/candidate-04-correspondence.json` proves the exact single-entry
+change without rereading corpus payloads.
 
 The legacy preparation recipe was also checked without copying its inputs. The retained
 checkout still has the exact required `ebac34dc1d07b66ce97692c31a914a084328f5df`
@@ -187,6 +216,22 @@ commit/tree and all eleven old program/support files. Its 9,345 input members, m
 overlays, and programs require at least 1,616,143,663 copied bytes, excluding outputs,
 the completed-layout copy, SQLite, release assembly, guest pack transfer, and host swap.
 See `legacy-preparation-plan.json`. No old full-corpus stage was executed.
+
+The later `native-resource-plan/README.md` and `resource-plan.json` quantify the next
+sequence. Known retained input copies alone total 7.52 GiB for legacy preparation/completed
+layout/assembly and two replay inputs, plus 1.51 GiB if preparing on the host for transfer.
+They exclude graph outputs, SQLite, releases, temporary files, and host swap. Operational
+headroom is **30 GiB free on the host after pack creation and 25 GiB in the guest**, with
+a 3 GiB monitored host reserve; these allowances are not guaranteed output bounds.
+
+Supported read-only virtiofs sharing can avoid a second 8.25 GB pack copy, but the retained
+VM has `plain: true`, which ignores mounts. The future recipe must disable plain mode,
+mount only the exact sealed pack read-only, preserve disabled containerd/port-forwarding,
+and recheck actual mount permissions and native isolation. No VM configuration was changed.
+An explicit 6 GiB container limit is supported under the 8 GiB VM; it changes observed
+launch/session policy, not the pinned image/environment identity. Containers have no swap,
+and actual full-corpus memory sufficiency is unmeasured. Do not use the replay's 16 GiB
+default on this VM. Keep the VM stopped until host capacity and the next launch are ready.
 
 The independent source-policy review covers exactly these 114 sources across 19 families,
 with 161 retained evidence files checked. All decisions remain pending. The review matrix
@@ -198,6 +243,9 @@ license statements, and public excerpt/code attribution. See
 `completion-20260923/source-policy/README.md`, `review-matrix.json`, and `validation.json`.
 `validation-candidate-02.json` and `validation-candidate-03.json` prove correspondence
 with the two corrected plans; all 114 source identities remain covered.
+`validation-candidate-04.json` proves that all 113 remaining Brain sources still match
+that unchanged pending matrix; the removed MathNetwork entry remains separately pending
+for its non-Brain premise-index use. No policy decision was promoted by this correction.
 These are questions for the operator's standalone private/public policy reviews, not
 approved policy changes. Public-policy readiness is not currently enforced by the promoter.
 
@@ -239,11 +287,18 @@ A separate read checked all inventory hashes against the actual tree. This is th
 inventory for review; it is not a frozen baseline, source-policy approval, or a production
 authority commit. Preserve the exact private tree until reviewed main commit C is known.
 
+The exporter, tests, inventory, and operational documentation were committed and pushed
+at `ba40b9f690c217464da969b4d4ae8fbe8dd035c3`. The private `commit-binding.json` proves
+all twelve captured generator/helper/asset inputs match native Git blobs at that commit.
+
 Worker typecheck and all 885 tests across 38 files passed with verified Node 22.23.2.
-The first full Python run stopped at existing compiler tests because the host's default
-Git path is a symlink. The gate is being rerun with the literal verified Git executable
-and Node 22 first on `PATH`; no test or compiler contract was weakened. Both full logs
-are retained as `python-ci-completion.log` and `python-ci-completion-verified-tools.log`.
+All **90 commands in the full Python gate passed** with Python 3.12.13, the literal Git
+2.48.1 executable, and Node 22 first on `PATH`. An earlier run stopped at existing compiler
+tests because the host's default Git path is a symlink; no test or compiler contract was
+weakened. Both full logs remain as `python-ci-completion.log` and
+`python-ci-completion-verified-tools.log`. The [Linux CI run for the exact code commit](https://github.com/Deicyde/WikiLean/actions/runs/35906628247)
+also passed its Worker, Python, required aggregate, and browser jobs. These are development
+checks, not the separately required P1B activation evidence produced by its freezer.
 
 A real
 bootstrap Brain release is **not** required by the baseline contract: only the monolithic
@@ -271,7 +326,7 @@ first-deployment handling. No production mutation was attempted.
    input copies, full graph outputs, releases, and VM storage all need additional space.
    The user was asked to free at least 30 GiB or provide an external storage path. Do not
    treat the guest VM's reported free space as separate from the host backing its disk.
-2. Finish compilation and independent verification of `candidate-03` under the resource
+2. Finish compilation and independent verification of `candidate-04` under the resource
    supervisor, then record the first full pack's actual IDs. Preserve
    restricted source policies; source-plan or fixture success is not publication approval.
 3. Review the concrete private-use policy evidence and source/decision deltas. Run the
