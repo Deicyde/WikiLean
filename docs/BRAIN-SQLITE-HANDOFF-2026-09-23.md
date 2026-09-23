@@ -13,6 +13,8 @@ used for the September 19 handoff. Its old captures, drafts, and worktrees are p
 - Code: `/Users/jack/Desktop/LEAN/WikiLean-completion`, branch
   `codex/brain-migration-completion`, created from current remote `main`.
 - New private work: `/Users/jack/.local/share/wikilean-migration/completion-20260923`.
+- Final private evidence index: `completion-20260923/checkpoint-02.json`; it preserves
+  the earlier checkpoint and records a fresh stopped-VM observation and storage sample.
 - Retained source store: `/Users/jack/.local/share/wikilean-migration`.
 - Original checkout: `/Users/jack/Desktop/LEAN/WikiLean`; still on older local `main`
   with its pre-existing data changes. Do not reset it or use its working files as
@@ -198,8 +200,8 @@ groups, logical members, roots, and other plan fields remain unchanged. An indep
 reachability audit confirmed the removed source has no parents, children, or bindings;
 five unique objects totaling 804,849,022 bytes leave this pack while shared HF support
 objects remain. Exact derivation is in `candidate-04/correction-proof.json`. A preflight
-regression test adds this source-use check before another full corpus copy. Keep the VM
-stopped during the next compilation.
+regression test adds this source-use check before another full corpus copy. The retry
+kept the VM stopped.
 The narrow preflight fix passed 24 focused tests, 31 compiler tests, and 11 coherence tests;
 an independent reviewer reran all 24 preflight tests and found no actionable issue.
 It preserves legitimate evidence-only ancestors and reads only bounded evidence controls
@@ -210,12 +212,62 @@ The independent full control audit is `source-reachability-audit/candidate-03.js
 `source-reachability-audit/candidate-04-correspondence.json` proves the exact single-entry
 change without rereading corpus payloads.
 
+The fix is committed and pushed at `e5ae8fc70dd57d6690183ef00aa8590a2d701058`.
+All 90 commands in the full Python gate passed again, and the
+[CI run for this exact commit](https://github.com/Deicyde/WikiLean/actions/runs/35909079284)
+passed Worker, Python, browser, and required jobs. The retained logs and binding are
+`python-ci-e5ae8fc7.log`, `github-ci-e5ae8fc7.json`, and
+`development-validation-e5ae8fc7.json`.
+
+The corrected normative preflight in `full-pack-attempt-02/preflight.json` passed with
+`compile_ready: true`, zero compilation blockers, and all 15 required inputs present.
+Its estimated pack size is 7,444,959,966 bytes; estimated compiler peak is 8,498,992,282
+bytes, with 9,773,841,125 bytes recommended. The capacity sample had 15,540,879,360 bytes
+free. The 322 source-authority/publication warnings remain, and those readiness flags
+remain false. These capacity estimates do not include the later native replay sequence.
+
+### First real pack
+
+The second official compilation completed successfully at **2026-09-23 19:56:12 UTC**,
+exit 0, with no resource-guard interruption. It passed the compiler's checks before and
+after publication. The retained pack contains **113 source manifests, 80,128 distinct
+source objects, and 90,410 files totaling 7,408,247,678 bytes**.
+
+- Pack ID: `sha256:5fa8e3d5ed91db4b0615696d6a3ff7e0d8e25619b821c6e6283ca6bccb621d74`.
+- Source-set root: `sha256:162aa162f2ae5b6a71ccf08736fefd5247ea488fc044bc138f6484bf10924654`.
+- Private root: `completion-20260923/offline-packs-attempt-02/5fa8e3d5ed91db4b0615696d6a3ff7e0d8e25619b821c6e6283ca6bccb621d74`.
+- Manifest: `offline-pack.json`, 23,039,995 bytes,
+  SHA-256 `d967d4cff6c37da4a8472e781ad85932f69e0f2316968db6f309d9b6f67157a6`.
+- Compiler evidence: `full-pack-attempt-02/compilation.json`, `compilation-exit.json`,
+  `compilation-ready.json`, exact invocation, and resource log.
+
+The separate official verifier passed at **20:06:17 UTC**, exit 0, with no interruption.
+It rehashed the complete corpus and verified all 43 input bindings, 83 acquisition
+receipts, 107 normalization lineages, 9,940 request preimages, and twelve reducer files.
+The subsequent metadata-only tally confirmed all 90,410 files are read-only, regular,
+and single-link. The verifier's count of 90,409 excludes the top-level manifest; the
+compiler and complete-tree count include it. See `full-pack-attempt-02/result.json`,
+`independent-verification.json`, the retained exact invocation/exit/resource logs, and
+its private `README.md`.
+
+The pack remains bound to reducer/runtime commit `7627ccba`; successful compilation and
+verification are not accepted source authority, policy approval, full-corpus replay, or
+production activation. Free host space at the final verifier checkpoint was about
+5.8 GB, below even the known replay-input copies plus the 3 GiB reserve.
+
+### Replay capacity
+
 The legacy preparation recipe was also checked without copying its inputs. The retained
 checkout still has the exact required `ebac34dc1d07b66ce97692c31a914a084328f5df`
 commit/tree and all eleven old program/support files. Its 9,345 input members, mixed-data
 overlays, and programs require at least 1,616,143,663 copied bytes, excluding outputs,
 the completed-layout copy, SQLite, release assembly, guest pack transfer, and host swap.
 See `legacy-preparation-plan.json`. No old full-corpus stage was executed.
+Host-side legacy preparation is supported and portable when exact file bytes, modes,
+and fixed timestamps are preserved. Its record is nevertheless bound to the exact
+`offline_pack_id`; the native driver rejects preparation from another pack, even if its
+logical input bytes are unchanged. Rebinding the final reducer/runtime to main commit C
+therefore also requires matching preparation evidence. Do not relabel a 7627ccba result.
 
 The later `native-resource-plan/README.md` and `resource-plan.json` quantify the next
 sequence. Known retained input copies alone total 7.52 GiB for legacy preparation/completed
@@ -224,7 +276,7 @@ They exclude graph outputs, SQLite, releases, temporary files, and host swap. Op
 headroom is **30 GiB free on the host after pack creation and 25 GiB in the guest**, with
 a 3 GiB monitored host reserve; these allowances are not guaranteed output bounds.
 
-Supported read-only virtiofs sharing can avoid a second 8.25 GB pack copy, but the retained
+Supported read-only virtiofs sharing can avoid a second full pack copy, but the retained
 VM has `plain: true`, which ignores mounts. The future recipe must disable plain mode,
 mount only the exact sealed pack read-only, preserve disabled containerd/port-forwarding,
 and recheck actual mount permissions and native isolation. No VM configuration was changed.
@@ -248,6 +300,19 @@ that unchanged pending matrix; the removed MathNetwork entry remains separately 
 for its non-Brain premise-index use. No policy decision was promoted by this correction.
 These are questions for the operator's standalone private/public policy reviews, not
 approved policy changes. Public-policy readiness is not currently enforced by the promoter.
+
+The official `review_source_policy.py draft-private` command also completed its own full
+verification of the sealed pack and emitted an unchanged canonical pending draft:
+`pending-private-policy-01/pending-private-review.json`, 85,255 bytes, SHA-256
+`52b36338f497edfda073674d4f999b0ae4525ff2f74a4a7277e9324b37ff22b9`.
+Its **pending** review identity is
+`sha256:3851f9f5404bf049b86ddf8f655ccbe74c8f88b24855e81217d4a34e010571b0`;
+this must not be supplied as an approved review ID. All 113 decisions remain pending,
+with no reviewer or approvals invented. `pending-private-policy-01/correspondence.json`
+checks complete source metadata and all 164,227 source/object-role references against
+candidate04 and the unchanged 114-entry matrix. The directory also retains exact native
+Git program bytes, invocation, raw output/stderr, exit, and resource observations.
+MathNetwork remains separately pending for the non-Brain premise index.
 
 ## Public assets and operator access
 
@@ -291,6 +356,18 @@ The exporter, tests, inventory, and operational documentation were committed and
 at `ba40b9f690c217464da969b4d4ae8fbe8dd035c3`. The private `commit-binding.json` proves
 all twelve captured generator/helper/asset inputs match native Git blobs at that commit.
 
+A separate actual-content audit inspected all 2,699 files and every generated data row.
+The mathematical data consists of titles, identifiers, links, and dependency edges;
+Wikipedia article prose, annotation explanations, declaration types/bodies/docstrings,
+and private D1 columns are not embedded in this tree. Fixed application HTML/CSS/JS does
+contain site prose and code. No private absolute paths or credential-pattern matches were
+found. Relative cache labels in the public manifests remain producer metadata, not oracle
+digests. Exact source identities are retained in the private preparation, including native
+Git provenance for the catalog and the separate MathNetwork premise-index source. See
+`public-asset-preparation/content-scope-review.json` and `content-scope-review.md`.
+This bounded inspection changed no public bytes and does not approve source policy or
+inspect dynamically served article/API content.
+
 Worker typecheck and all 885 tests across 38 files passed with verified Node 22.23.2.
 All **90 commands in the full Python gate passed** with Python 3.12.13, the literal Git
 2.48.1 executable, and Node 22 first on `PATH`. An earlier run stopped at existing compiler
@@ -320,24 +397,29 @@ first-deployment handling. No production mutation was attempted.
 
 ## Immediate continuation
 
-1. Provide storage headroom for the replay sequence. Free space initially fell to 1.7 GiB;
-   stopping the idle VM recovered enough for a fresh passing preflight and compilation.
-   The assembled plan alone references about 7.5 GiB of distinct objects; compilation, prepared
-   input copies, full graph outputs, releases, and VM storage all need additional space.
-   The user was asked to free at least 30 GiB or provide an external storage path. Do not
-   treat the guest VM's reported free space as separate from the host backing its disk.
-2. Finish compilation and independent verification of `candidate-04` under the resource
-   supervisor, then record the first full pack's actual IDs. Preserve
-   restricted source policies; source-plan or fixture success is not publication approval.
-3. Review the concrete private-use policy evidence and source/decision deltas. Run the
-   exact seven-stage legacy baseline and the two isolated candidate builds. Verify semantic
-   parity and provenance coverage, then retain the appropriately reviewed attestation.
-4. Review and land the prepared non-Brain asset inventory to establish final authority
-   commit C, then freeze the unchanged private public tree against C. Rebind the
-   runtime/candidate to C as required; a technical result
-   bound to 7627ccba is not an activation result bound to C.
-5. Follow [the release runbook](BRAIN-RELEASE-RUNBOOK.md) for the retained dry run, activation
-   evidence, concrete release review, production promotion, canaries, and rollback exercise.
+1. Provide storage headroom for the native sequence: the recorded operational allowance is
+   **30 GiB free on the host after pack creation and 25 GiB in the guest**. The known input
+   copies plus the 3 GiB host reserve already exceed the remaining host space, before graph
+   outputs, releases, and VM/swap growth. The user was asked for additional free space or an
+   external storage path. Do not treat guest free space as separate from its host backing.
+2. Review and land the tested code and prepared non-Brain asset inventory to establish
+   final authority commit C, then freeze the unchanged private public tree against C.
+   Direct assembly permits this **before** the full Brain runs; the baseline freezer has
+   no Brain-release prerequisite. Landing these inputs does not approve a graph delta or
+   production deployment.
+3. Rebind and qualify the actual runtime/reducer/pack for C, independently verify that
+   generation, and refresh policy documents against its exact identities. The current
+   7627ccba pack and runtime remain useful retained evidence, but are not C-bound results.
+   Establishing C first avoids deliberately repeating the full runs after a later merge.
+4. Review the concrete private-use policy evidence and source/decision deltas. Run the
+   exact seven-stage legacy baseline on the final pack; assemble its compatibility release
+   and obtain the required semantic-baseline/provenance/graph decisions. Then run the two
+   isolated candidate builds, verify parity and provenance coverage, and review/finalize
+   their reproducibility attestation. Findings that change code or assets require a new C
+   and repetition of the affected evidence.
+5. Follow [the release runbook](BRAIN-RELEASE-RUNBOOK.md) for the retained P1B dry run and
+   activation evidence, then the separate P1C release review, production promotion,
+   canaries, and rollback exercise.
    `completion-20260923/release-prerequisite-audit.json` lists the observed prerequisites.
 
 P0-R and P1 activation remain open. Later Git-authority, D1-overlay, and generated-artifact

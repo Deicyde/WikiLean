@@ -173,36 +173,46 @@ sources and all 43 input groups**. The initial 114-source plan's evidence verifi
 **84 acquisition receipts, 108 normalization lineages, and 9,944 request preimages**.
 Its full compiler later rejected one source used only by separate search indexes;
 `candidate-04` removes exactly that unbound entry and preserves its retained data/indexes.
-These are candidate-plan results,
-not a compiled pack or approved authority.
+The corrected candidate has now compiled into the first real v3 pack and passed a
+separate full verification: **113 sources, 80,128 distinct source objects, 90,410 files,
+and 7,408,247,678 bytes**, pack ID `sha256:5fa8e3d5ed91db4b0615696d6a3ff7e0d8e25619b821c6e6283ca6bccb621d74`.
+Its 43 bindings, 83 receipts, 107 lineages, and 9,940 request preimages verify.
+This is retained technical evidence, not approved authority or a completed replay.
 
 The native Linux runtime for `7627ccba` passed strict sandbox and runtime checks; its legacy
 bootstrap probe remains a fixture. The complete non-Brain asset tree is prepared privately
 (2,699 files, 96.3 MB), including three pinned search-index families. Its exact inventory is
 prepared for review at `wiki/public-asset-source-attestation.json`; freeze awaits the
-reviewed main commit. Cloudflare's exact read-only status/history checks passed, while the
+reviewed main commit. An actual-content audit checked every generated row and found no
+private paths or credential patterns; the exported mathematical fields are identifiers,
+titles, links, and edges. Cloudflare's exact read-only status/history checks passed, while the
 production selector still returns 404. No production mutation occurred. Source-policy review
 covers all 114 sources in 19 families; every private/public decision remains pending.
+The official pack-bound private-policy draft independently verified the actual pack and
+matches all 113 Brain sources to that matrix; MathNetwork remains separately pending for
+the premise index. No approval was inferred from either successful verification.
 
 Candidate `candidate-03` passed structural/control/evidence preflight, with all 15
 required inputs present. The initial capacity check failed at 1.7 GiB free. Stopping the
 idle migration VM recovered enough headroom for a fresh preflight to report
 `compile_ready: true`; full-pack compilation then caught the unused-source error. Its
-temporary output was cleaned, and the independently checked `candidate-04` is the retry
-plan. A preflight regression check now catches unbound sources before corpus copying.
-Replay needs additional storage
-beyond the estimated 8.7 GiB compiler peak. Source/publication readiness remains false;
+temporary output was cleaned, and the independently checked `candidate-04` succeeded on
+retry. A preflight regression check now catches unbound sources before corpus copying.
+The corrected normative preflight passed with zero compilation blockers and an estimated
+7.92 GiB compiler peak. The fix passed all 90 local Python checks and every hosted CI job.
+Replay needs additional storage beyond compilation. Source/publication readiness remains false;
 source policies are still restricted.
 
-**Immediate queue:** (1) provide storage headroom for the full pack and prepared replay
-copies (at least 30 GB was requested for the whole sequence); (2) review the recorded source
-scope/policy concerns and compile/independently verify the first real v3 pack;
-(3) run the seven-stage same-input legacy baseline and review its semantic comparison;
-(4) run two actual isolated candidate builds and finalize reproducibility evidence;
-(5) review/land the prepared asset attestation, freeze the non-Brain baseline, and rebind the
-final reducer/runtime to that authority commit before P1B/P1C. Direct non-Brain assembly
-does not require a bootstrap Brain release; that dependency belongs to the convenience
-`build-public.ts` path, not the baseline contract.
+**Immediate queue:** (1) provide native replay storage headroom: 30 GiB free on the host
+after pack creation and 25 GiB in the guest is the recorded operational allowance;
+(2) review/land the tested code and prepared asset inventory as main commit C, then freeze
+the unchanged non-Brain tree against C; (3) rebind/qualify the runtime and independently
+verify the final C-bound pack, refreshing exact-ID private policy decisions;
+(4) run the seven-stage same-input legacy baseline and obtain its semantic/provenance/graph
+decisions; (5) run two actual isolated candidate builds and review/finalize reproducibility
+evidence before separate P1B/P1C work. Direct non-Brain assembly has no bootstrap Brain
+release prerequisite, so establish C before those expensive final runs. Later findings
+that change code/assets still require a new C and the affected evidence to be repeated.
 
 P1B evidence and P1C activation/rollback remain separate reviewed operations from clean
 `main`. No candidate, fixture, index build, merge, or runtime descriptor supplies production
@@ -306,7 +316,8 @@ before deployment.
   The three index families were generated and independently checked from pinned inputs on
   2026-09-23. An explicit verified D1 membership mode now removes the concepts export's
   dependency on ignored rendered article files. The complete 2,699-file tree and canonical
-  attestation are now prepared and independently checked. Review/landing, the resulting
+  attestation are now prepared and independently checked, including an audit of actual
+  public fields and source provenance. Review/landing, the resulting
   main authority commit, and freeze remain outstanding; preserve every prepared byte.
   A bootstrap Brain release is unnecessary for this direct non-Brain assembly.
 - [ ] Freeze or identify a complete trusted semantic pre-activation comparison bundle, and
@@ -370,10 +381,10 @@ explicit approval.
   loosening v1 in place. The v2 contracts represent raw plus normalized source objects,
   curated Git trees, the complete multi-file reducer DAG, `offline_pack_id`,
   `source_set_root`, and required-versus-absent optional inputs. The v2 document shapes are
-  validation-ready and the fixture replay path is implemented. No real full-corpus pack or
-  authoritative replay is claimed, and current release creation continues to use the v1
-  compatibility contracts until environment pinning, clean-room dual-build evidence, and
-  independent verification land.
+  validation-ready and the fixture replay path is implemented. The v2 fixture path remains
+  supported. The first real v3 pack is now compiled and independently verified; full-corpus
+  replay and its pack-bound release remain pending. The v1 compatibility profile remains
+  available for legacy comparison.
 - [x] **Repair declared input-inventory closure.** Replaced the ineffective Python brace glob
   `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; added
   consumed `brain/data/discovery_rejected.jsonl`, optional
@@ -489,7 +500,8 @@ explicit approval.
       Exact tool-generation profiles preserve historical verification, including non-NFC
       corpus/response handling without changing hashed source bytes.
     - [x] Complete and independently verify a real observation, then bind its retained
-      generation into the 2026-09-23 candidate. Final pack and policy review remain pending.
+      generation into the independently verified 2026-09-23 pack. Final authority and
+      policy decisions remain pending.
     - [x] Fix `brain/sync_agents.py` to unwrap the current `{_meta, descriptions}` envelope
       while retaining its legacy flat-map reader, so agent candidates receive the 2,582
       descriptions already present in the current corpus.
@@ -653,8 +665,8 @@ explicit approval.
     control corrections are retained in `candidate-03`; all required inputs and v3 evidence
     validate. A fresh capacity check passed after the idle VM was stopped; compilation
     started with a monitored host reserve but failed its final unused-source check.
-    Candidate-04 removes that exact unused source; the new preflight regression prevents
-    late discovery. Full replay still needs additional capacity.
+    Candidate-04 removes that exact unused source and subsequently compiled and verified;
+    the new preflight regression prevents late discovery. Full replay needs more capacity.
   - [ ] Review the candidate's exact source scope, freshness, cross-source pins and concrete
     private/public policies before claiming accepted authority.
     The 19-family policy audit preserves unresolved terms, including theorem-matching,
@@ -665,12 +677,16 @@ explicit approval.
     mismatches fail; policy concerns remain explicit blockers/warnings in canonical output.
     Its readiness fields are explicitly source-plan-only and do not claim runtime, replay,
     release, or deployment readiness.
-  - [ ] Compile the first real pack on a host with enough free space, then bind its verified
-    `offline_pack_id` and `source_set_root` into build-attestation/v2 and release verification.
+  - [x] Compile and independently verify the first real v3 pack. The September 23 result
+    contains 113 sources and 90,410 files totaling 7.408 GB; exact IDs and full SHA/evidence
+    verification are retained in the current handoff and private `full-pack-attempt-02`.
+  - [ ] Bind the final authority generation's verified `offline_pack_id` and
+    `source_set_root` into build-attestation/v2 and release verification.
     Pack-bound release production/verification is implemented in the continuation:
     `brain-offline-replay-v1` hashes the exact replay roots and generation, requires
     build-attestation/v2, and freezes all outputs plus two sealed provenance inputs.
-    The actual full-corpus pack and release remain outstanding.
+    The first actual pack exists; the final C-bound generation, full replay, and release
+    remain outstanding.
   - [ ] Before repeated full-corpus builds, derive the candidate identity before materializing
     duplicate bytes so a verified same-ID pack can be reused without another full staging
     copy; add a safe shared-CAS/reflink strategy if cross-pack storage pressure warrants it.
@@ -726,13 +742,16 @@ explicit approval.
     profiles remain unchanged; fixtures do not supply a full-corpus approval.
   - [ ] Complete the concrete full-pack policy decisions and release-specific
     provenance mapping, then rerun their verifiers on the real retained outputs.
+    The first actual pack's canonical pending draft and its complete correspondence to
+    the source-policy matrix are retained; its pending identity is not an approval ID.
 
-**Next P0-R execution order:** resolve storage headroom; review the completed preflight's
-source-policy concerns; compile and verify the real pack with cross-object coherence; run the
-seven-stage legacy baseline and two-path adversarial clean-room gate; review semantic parity
-and finalize the reproducibility attestation. The current runtime is qualified for `7627ccba`;
-the later public-asset attestation changes the promotion authority commit and requires a
-corresponding reducer/runtime binding. Acquisition and proposal folding remain outside replay.
+**Next P0-R execution order:** resolve storage headroom; review/land the prepared code and
+public-asset inventory to establish C; freeze that unchanged asset tree; bind/qualify the
+runtime and verify the final pack for C; complete exact-pack private-policy review; run and
+review the seven-stage legacy baseline; execute the two-path adversarial clean-room gate
+and finalize its reviewed reproducibility evidence. The current verified pack/runtime are
+bound to `7627ccba`. Establishing final C before full runs avoids a planned repetition after
+merging the inventory. Acquisition and proposal folding remain outside replay.
 No merge, candidate plan, or fixture result authorizes production activation.
 
 **Done when:** two clean-room full-corpus builds from one verified pack are identical;
