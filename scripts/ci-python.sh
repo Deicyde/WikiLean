@@ -69,6 +69,7 @@ run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikida
 run_check "Wikidata crossref source evidence tests" "$PYTHON_BIN" brain/test_wikidata_crossref_sources.py
 run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_observation.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
+run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py

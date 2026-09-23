@@ -15,11 +15,26 @@ Outputs:
 
 Usage:
     python export_wikidata_rdf.py     # run after render.py / build_index.py
+
+For private baseline preparation, --d1-articles and --d1-articles-sha256 select
+an already verified normalized D1 article object. Its complete, exact annotation
+sidecars must also be supplied. Article links then reflect D1 membership, as the
+Worker does, without reading rendered article files. This checks correspondence
+to the supplied digest; it does not authenticate an acquisition or approve a
+public baseline.
 """
 from __future__ import annotations
 
+import argparse
+import hashlib
 import html
+import io
 import json
+import os
+import re
+import stat
+import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -32,17 +47,110 @@ WIKILEAN_NS = "https://wikilean.jackmccarthy.org/ns#"
 WD = "http://www.wikidata.org/entity/"
 MATHLIB_DOCS = "https://leanprover-community.github.io/mathlib4_docs"
 
+# Keep equal to the Worker's RESERVED set; the dedicated test checks the source.
+RESERVED_ARTICLE_SLUGS = frozenset({
+    "assets", "api", "favicon.ico", "robots.txt", "sitemap.xml",
+    "recent-changes", "flags", "stats", "wikifunctions", "wikifunctions/verify",
+    "login", "logout", "graph", "graph_data.json", "article-graph",
+    "article-graph-data.json", "review", "queue", "quickstatements", "u",
+    "decl", "proposals", "atlas", "brain", "articles", "mcp", "repos", "about",
+    "concepts", "map", "map-v2", "map_data_v2.json", "atlas_data.json",
+    "wikilean.ttl", "404.html", "brain.html", "concepts.html",
+})
+MAX_D1_BYTES = 256 * 1024 * 1024
+MAX_ARTICLE_BYTES = 16 * 1024 * 1024
+MAX_ARTICLES = 100_000
 
-def load_qid_map() -> dict:
+
+class ExportInputError(ValueError):
+    """Explicit baseline inputs do not describe one closed D1 article set."""
+
+
+def _read_regular(path: Path, limit: int) -> bytes:
+    """Read a bounded regular file without following its final symlink."""
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
+            raise ExportInputError(f"not a bounded regular input: {path}")
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            raw = stream.read(limit + 1)
+        after = os.fstat(descriptor)
+        signature = lambda item: (item.st_dev, item.st_ino, item.st_size,
+                                  item.st_mtime_ns, item.st_ctime_ns)
+        if len(raw) > limit or len(raw) != before.st_size or signature(before) != signature(after):
+            raise ExportInputError(f"input changed while reading: {path}")
+        return raw
+    finally:
+        os.close(descriptor)
+
+
+def load_d1_articles(path: Path, expected_sha256: str, annotation_dir: Path) -> list[tuple[str, dict]]:
+    """Capture and check exact canonical D1 rows and their complete sidecars."""
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_sha256):
+        raise ExportInputError("D1 article SHA-256 must be 64 lowercase hexadecimal characters")
+    # Reuse the actual normalized-row contract, including exact decimal parsing.
+    # These imports are intentionally absent from the legacy/default path.
+    brain = str(ROOT.parent / "brain")
+    if brain not in sys.path:
+        sys.path.insert(0, brain)
+    import d1_snapshot_bundle as snapshots
+
+    raw = _read_regular(path, MAX_D1_BYTES)
+    if hashlib.sha256(raw).hexdigest() != expected_sha256:
+        raise ExportInputError("D1 article SHA-256 mismatch")
+    records = {}
+    filenames = set()
+    for number, line in enumerate(raw.splitlines(keepends=True), 1):
+        if number > MAX_ARTICLES or len(line) > MAX_ARTICLE_BYTES:
+            raise ExportInputError("D1 article count or row size exceeds the limit")
+        location = f"D1 articles line {number}"
+        row = snapshots.contracts.parse_artifact_json_bytes(line, location=location)
+        row = snapshots._validate_article(row, location, raw=False)
+        canonical = snapshots.contracts.canonical_artifact_json_bytes(row)
+        if canonical + b"\n" != line:
+            raise ExportInputError(f"{location}: row is not canonical JSONL")
+        slug = row["slug"]
+        if unicodedata.normalize("NFC", slug) != slug:
+            raise ExportInputError(f"{location}: slug must already be Unicode NFC")
+        if slug in RESERVED_ARTICLE_SLUGS:
+            raise ExportInputError(f"{location}: slug is a reserved Worker route")
+        filename_key = snapshots._article_filename_key(slug, location)
+        if filename_key in filenames:
+            raise ExportInputError(f"{location}: duplicate or colliding article slug")
+        filenames.add(filename_key)
+        records[slug] = (row, canonical)
+    if not records:
+        raise ExportInputError("D1 article set must be nonempty")
+    if annotation_dir.is_symlink() or not annotation_dir.is_dir():
+        raise ExportInputError("annotation input must be a real directory")
+    expected_names = {slug + ".json" for slug in records}
+    actual_names = {entry.name for entry in annotation_dir.iterdir()}
+    if actual_names != expected_names:
+        raise ExportInputError("annotation directory does not match the complete D1 article set")
+    for slug, (_, canonical) in records.items():
+        if _read_regular(annotation_dir / (slug + ".json"), MAX_ARTICLE_BYTES) != canonical:
+            raise ExportInputError(f"annotation sidecar differs from its D1 row: {slug}")
+    if {entry.name for entry in annotation_dir.iterdir()} != expected_names:
+        raise ExportInputError("annotation directory changed while reading")
+    # Render the validated captured values, never reopen the sidecars afterward.
+    return [(slug, records[slug][0]) for slug in sorted(records)]
+
+
+def load_qid_map(catalog: Path | None = None, *, strict: bool = False) -> dict:
     """Map article title -> Wikidata QID from the catalog JSONL."""
     qmap = {}
-    if not CATALOG.exists():
+    catalog = CATALOG if catalog is None else catalog
+    if not strict and not catalog.exists():
         return qmap
-    with CATALOG.open() as f:
-        for line in f:
+    stream = io.StringIO(_read_regular(catalog, MAX_D1_BYTES).decode("utf-8")) if strict else catalog.open()
+    with stream:
+        for line in stream:
             try:
                 rec = json.loads(line)
             except Exception:
+                if strict:
+                    raise ExportInputError("catalog contains an invalid JSON row")
                 continue
             title = rec.get("title")
             qid = rec.get("wikidata_qid")
@@ -61,11 +169,59 @@ def decl_url(module: str | None, decl: str) -> str | None:
     return f"{MATHLIB_DOCS}/{module.replace('.', '/')}.html#{decl}"
 
 
-def main() -> None:
-    qmap = load_qid_map()
-    anns = sorted(ANNOT.glob("*.json"))
-    OUT.mkdir(exist_ok=True)
-    OUT_W3C.mkdir(exist_ok=True)
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--d1-articles", type=Path)
+    parser.add_argument("--d1-articles-sha256")
+    parser.add_argument("--annotations-dir", type=Path)
+    parser.add_argument("--catalog", type=Path)
+    parser.add_argument("--out-dir", type=Path)
+    parser.add_argument("--out-w3c-dir", type=Path)
+    args = parser.parse_args(argv)
+    if (args.d1_articles is None) != (args.d1_articles_sha256 is None):
+        parser.error("--d1-articles and --d1-articles-sha256 must be supplied together")
+    strict = args.d1_articles is not None
+    if strict and any(getattr(args, key) is None for key in ("annotations_dir", "catalog", "out_dir", "out_w3c_dir")):
+        parser.error("D1 mode requires explicit --annotations-dir, --catalog, --out-dir and --out-w3c-dir")
+    args.annotations_dir = args.annotations_dir or ANNOT
+    args.catalog = args.catalog or CATALOG
+    args.out_dir = args.out_dir or OUT
+    args.out_w3c_dir = args.out_w3c_dir or OUT_W3C
+    if strict:
+        outputs = (args.out_dir, args.out_w3c_dir)
+        inputs = (args.annotations_dir, args.catalog, args.d1_articles)
+        for output in outputs:
+            if output.is_symlink() or (output.exists() and not output.is_dir()):
+                raise ExportInputError("output must be a real directory")
+            resolved = output.resolve()
+            if any(resolved == path.resolve() or resolved in path.resolve().parents
+                   or path.resolve() in resolved.parents for path in inputs):
+                raise ExportInputError("output directory overlaps an input")
+        left, right = (path.resolve() for path in outputs)
+        if left == right or left in right.parents or right in left.parents:
+            raise ExportInputError("output directories must not overlap")
+        for output, names in ((args.out_dir, ("concepts.html", "wikilean.ttl")),
+                              (args.out_w3c_dir, ("wikilean.ttl",))):
+            for name in names:
+                destination = output / name
+                if destination.is_symlink():
+                    raise ExportInputError("output file must not be a symlink")
+                if destination.exists():
+                    info = destination.stat()
+                    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+                        raise ExportInputError("output file must be regular with no hardlink aliases")
+        records = load_d1_articles(args.d1_articles, args.d1_articles_sha256, args.annotations_dir)
+    else:
+        records = []
+        for jf in sorted(args.annotations_dir.glob("*.json")):
+            try:
+                records.append((jf.stem, json.loads(jf.read_text())))
+            except Exception:
+                continue
+    qmap = load_qid_map(args.catalog, strict=strict)
+    out, out_w3c = args.out_dir, args.out_w3c_dir
+    out.mkdir(exist_ok=True)
+    out_w3c.mkdir(exist_ok=True)
 
     concepts = []  # (title, slug, qid, [(decl, module)], has_article)
     ttl_lines = [
@@ -76,12 +232,7 @@ def main() -> None:
     ]
 
     n_links = 0
-    for jf in anns:
-        slug = jf.stem
-        try:
-            d = json.loads(jf.read_text())
-        except Exception:
-            continue
+    for slug, d in records:
         title = d.get("wikipedia_title") or slug_to_title(slug)
         qid = qmap.get(title)
         if not qid:
@@ -98,7 +249,7 @@ def main() -> None:
         if not decls:
             continue
         n_links += 1
-        has_article = (OUT / f"{slug}.html").exists()
+        has_article = strict or (out / f"{slug}.html").exists()
         concepts.append((title, slug, qid, decls, has_article))
         subj = f"wd:{qid}"
         for decl, module in decls:
@@ -108,8 +259,8 @@ def main() -> None:
                 ttl_lines.append(f'{subj} rdfs:seeAlso <{url}> .')
 
     ttl = "\n".join(ttl_lines) + "\n"
-    (OUT / "wikilean.ttl").write_text(ttl)
-    (OUT_W3C / "wikilean.ttl").write_text(ttl)
+    (out / "wikilean.ttl").write_text(ttl)
+    (out_w3c / "wikilean.ttl").write_text(ttl)
 
     n_decls = sum(len(c[3]) for c in concepts)
 
@@ -133,7 +284,7 @@ def main() -> None:
         n_decls=n_decls,
         rows="\n".join(rows),
     )
-    (OUT / "concepts.html").write_text(page)
+    (out / "concepts.html").write_text(page)
     print(f"Wrote out/concepts.html + out/wikilean.ttl — "
           f"{n_links} concepts, {n_decls} formalized declarations")
 
