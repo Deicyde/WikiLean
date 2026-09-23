@@ -397,6 +397,21 @@ first-deployment handling. No production mutation was attempted.
 
 ## Immediate continuation
 
+The subsequent sync incorporates `b4060b50351553a2e5988ffe413f9e55071eee30`
+(`codex/mathlib-profile-refresh`) into the migration branch. Remote `main` was still
+`7627ccba` at sync time. This adds one current generation to each Mathlib, Hugging Face,
+and Git-harvest profile registry plus regression checks; every previous profile remains
+unchanged. Independent review confirmed current Mathlib/Hugging Face validation and
+historical profile acceptance; all 63 tests in the three focused suites passed after
+integration. Existing captures and the verified pack retain their exact
+recorded identities; this registry refresh does not require rebuilding them.
+
+The new Git-harvest profile records a different Python/PyYAML installation. The retained
+migration virtual environment matches the old recorded runtime and remains appropriate
+for its historical exports. Fresh Git-harvest acquisition requires the new recorded
+runtime or another explicitly reviewed generation; do not relabel the old environment.
+The original checkout's local commit and data changes remain untouched.
+
 1. Provide storage headroom for the native sequence: the recorded operational allowance is
    **30 GiB free on the host after pack creation and 25 GiB in the guest**. The known input
    copies plus the 3 GiB host reserve already exceed the remaining host space, before graph
