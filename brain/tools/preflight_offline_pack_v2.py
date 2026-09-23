@@ -211,6 +211,7 @@ def _verify_v3_evidence(
     dict[str, int],
     dict[str, list[tuple[str, Mapping[str, Any]]]],
     dict[str, int],
+    set[str],
 ]:
     """Bound, hash, and fully validate v3 evidence before trusting it."""
     references = _v3_evidence_references(plan)
@@ -239,20 +240,63 @@ def _verify_v3_evidence(
         raise PreflightError(str(exc)) from exc
 
     receipts_by_source: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
+    evidence_parent_ids: set[str] = set()
     for _source_index, source_name, kind, _identity, ref, location in references:
-        if kind != "acquisition_receipt":
+        if kind not in {"acquisition_receipt", "normalization_lineage"}:
             continue
         raw = _read_control_file(ref, resolved_roots, location)
         try:
             document = contracts.parse_json_bytes(raw, location=ref["path"])
-            contracts.validate_acquisition_receipt(
-                document, location=f"{location}.document"
-            )
+            if kind == "acquisition_receipt":
+                contracts.validate_acquisition_receipt(
+                    document, location=f"{location}.document"
+                )
+                receipts_by_source.setdefault(source_name, []).append((location, document))
+            else:
+                # The complete evidence closure was verified above. Read the
+                # same hash-bound, size-limited lineage to retain its legitimate
+                # parent references for the sealed verifier's binding rule.
+                contracts.validate_normalization_lineage(
+                    document, location=f"{location}.document"
+                )
+                evidence_parent_ids.update(document["parent_source_manifest_ids"])
         except contracts.VerificationError as exc:
             raise PreflightError(str(exc)) from exc
-        receipts_by_source.setdefault(source_name, []).append((location, document))
 
-    return verification, receipts_by_source, evidence_capacity
+    return verification, receipts_by_source, evidence_capacity, evidence_parent_ids
+
+
+def _require_bound_sources(plan: dict[str, Any], evidence_parent_ids: set[str]) -> None:
+    """Match the sealed v2/v3 verifier's source-use rule before corpus inspection."""
+    bound_names = {
+        name for binding in plan["input_bindings"] for name in binding["sources"]
+    } | {
+        member["source"]
+        for binding in plan["input_bindings"]
+        for member in binding["members"]
+    }
+    if plan["schema"] == contracts.OFFLINE_PACK_SOURCE_PLAN_SCHEMA_V3:
+        manifests = {
+            source["source"]: source_plan_contracts._source_manifest_from_plan(
+                source, f"$.sources[{index}]"
+            )["source_manifest_id"]
+            for index, source in enumerate(plan["sources"])
+        }
+        bound_ids = evidence_parent_ids | {manifests[name] for name in bound_names}
+        unused = [
+            f"{name} ({identity})"
+            for name, identity in sorted(manifests.items())
+            if identity not in bound_ids
+        ]
+    else:
+        # Legacy source-plan/v1 produces source-manifest/v2, with no evidence
+        # ancestry. Unique source names are retained in their manifest identities.
+        unused = sorted({source["source"] for source in plan["sources"]} - bound_names)
+    if unused:
+        _fail(
+            "$.sources",
+            "source manifests are not bound to any reducer input: " + ", ".join(unused),
+        )
 
 
 def _resolve_roots(
@@ -671,12 +715,15 @@ def preflight_offline_pack_v2(
     evidence_verification: dict[str, int] | None = None
     evidence_receipts: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
     evidence_capacity = {"bytes": 0, "references": 0, "unique_files": 0}
+    evidence_parent_ids: set[str] = set()
     if is_v3:
         (
             evidence_verification,
             evidence_receipts,
             evidence_capacity,
+            evidence_parent_ids,
         ) = _verify_v3_evidence(plan, resolved_roots)
+    _require_bound_sources(plan, evidence_parent_ids)
     try:
         store_path, store_exists = compiler._resolve_output_store(output_store)
     except compiler.PackCompilationError as exc:

@@ -168,9 +168,12 @@ pending-merge, live-process, and quota instructions are no longer the current qu
 The original Mac's private evidence store was recovered. New work under
 `/Users/jack/.local/share/wikilean-migration/completion-20260923` preserves the old captures
 and drafts. Kerodon and replacement OpenAlex evidence independently verify, the final
-proposal/fold generation was regenerated, and the assembled candidate covers **114 sources
-and all 43 input groups**. Its evidence verifier checked **84 acquisition receipts,
-108 normalization lineages, and 9,944 request preimages**. These are candidate-plan results,
+proposal/fold generation was regenerated, and the corrected candidate covers **113 Brain
+sources and all 43 input groups**. The initial 114-source plan's evidence verifier checked
+**84 acquisition receipts, 108 normalization lineages, and 9,944 request preimages**.
+Its full compiler later rejected one source used only by separate search indexes;
+`candidate-04` removes exactly that unbound entry and preserves its retained data/indexes.
+These are candidate-plan results,
 not a compiled pack or approved authority.
 
 The native Linux runtime for `7627ccba` passed strict sandbox and runtime checks; its legacy
@@ -181,10 +184,13 @@ reviewed main commit. Cloudflare's exact read-only status/history checks passed,
 production selector still returns 404. No production mutation occurred. Source-policy review
 covers all 114 sources in 19 families; every private/public decision remains pending.
 
-Final candidate `candidate-03` passed structural/control/evidence preflight, with all 15
+Candidate `candidate-03` passed structural/control/evidence preflight, with all 15
 required inputs present. The initial capacity check failed at 1.7 GiB free. Stopping the
 idle migration VM recovered enough headroom for a fresh preflight to report
-`compile_ready: true`; full-pack compilation started. Replay needs additional storage
+`compile_ready: true`; full-pack compilation then caught the unused-source error. Its
+temporary output was cleaned, and the independently checked `candidate-04` is the retry
+plan. A preflight regression check now catches unbound sources before corpus copying.
+Replay needs additional storage
 beyond the estimated 8.7 GiB compiler peak. Source/publication readiness remains false;
 source policies are still restricted.
 
@@ -640,12 +646,15 @@ explicit approval.
     receipt from the annotation payload selector while retaining Unicode slug support.
   - [x] Recover the immutable D1, Mathlib/oracle, Hugging Face and other source evidence;
     finish Kerodon/OpenAlex and proposal/fold exports; assemble the complete v3 candidate.
-    The 2026-09-23 candidate has 114 sources and 43 groups with receipt/lineage verification.
+    The corrected 2026-09-23 candidate has 113 Brain sources and 43 unchanged groups;
+    the one removed search-index-only source remains retained separately.
     D1 remains the sealed September 8 observation, not a claim about today's live state.
   - [x] Complete isolated staging and source-plan preflight. Registry-root and canonical-schema
     control corrections are retained in `candidate-03`; all required inputs and v3 evidence
     validate. A fresh capacity check passed after the idle VM was stopped; compilation
-    started with a monitored host reserve. Full replay still needs additional capacity.
+    started with a monitored host reserve but failed its final unused-source check.
+    Candidate-04 removes that exact unused source; the new preflight regression prevents
+    late discovery. Full replay still needs additional capacity.
   - [ ] Review the candidate's exact source scope, freshness, cross-source pins and concrete
     private/public policies before claiming accepted authority.
     The 19-family policy audit preserves unresolved terms, including theorem-matching,
