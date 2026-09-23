@@ -14,15 +14,14 @@ A reader can scan an article and see at a glance which statements are formalized
   2026-09-23 still showed the 2026-08-28 Brain without a release identity;
   [`/assets/brain/current.json`](https://wikilean.jackmccarthy.org/assets/brain/current.json)
   still returned 404 on 2026-09-23. The repository has no automatic deploy-on-merge workflow.
-- **Private migration evidence recovered on 2026-09-23:** the candidate source plan
-  now covers 113 Brain sources and all 43 input groups, including completed Kerodon and
-  OpenAlex evidence. The current native Linux runtime is qualified; the complete non-Brain
-  asset tree and its exact inventory are prepared for review. The first full pack, legacy baseline, two full replay builds,
-  policy decisions, and production activation remain unfinished. After stopping the idle
-  migration VM, a fresh preflight passed the capacity check and full-pack compilation
-  started. Its final check caught one unused search-index source; the corrected candidate
-  removes that entry while retaining its data for the separate search indexes. Further
-  storage is needed for the native replay sequence. See the
+- **The first real private migration pack was compiled and independently verified on
+  2026-09-23:** it covers
+  113 Brain sources and all 43 input groups, including completed Kerodon and OpenAlex
+  evidence. The native Linux runtime for the
+  recorded code commit is qualified; the complete non-Brain asset tree and its exact
+  inventory are prepared and independently reviewed. The seven-stage legacy baseline,
+  two full replay builds, policy decisions, and production activation remain unfinished.
+  More storage is needed for the native replay sequence. See the
   [September 23 handoff](docs/BRAIN-SQLITE-HANDOFF-2026-09-23.md) and
   [remaining queue](docs/ROADMAP.md#current-brain-execution-queue-updated-2026-09-23).
 - **Live annotation snapshot checked on 2026-09-21:** 778 articles and 37,936
