@@ -170,9 +170,10 @@ cd /Users/jackmccarthy/projects/WikiLean
 ## Freeze the non-Brain public baseline
 
 Promotion never trusts the ignored `wiki/public` directory directly. The first baseline
-requires a reviewed, Git-native inventory. Generate the complete public tree and all
-three search-index families exactly once, render its canonical attestation, and commit
-that attestation for review:
+requires a reviewed, Git-native inventory. Generate the complete non-Brain public tree and
+all three search-index families exactly once, render its canonical attestation, and commit
+that attestation for review. The convenience build below requires an existing verified Brain
+release. Direct non-Brain assembly, described afterward, has no such dependency:
 
 ```bash
 cd /Users/jackmccarthy/projects/WikiLean
@@ -184,18 +185,67 @@ cd /Users/jackmccarthy/projects/WikiLean
   --brain-release-dir /absolute/release-store/<bootstrap-manifest-hex>)
 (cd wiki && npm run build:indexes)
 
+export PUBLIC_SOURCE_ROOT="$PWD/wiki/public"
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py attest \
-  --source-public "$PWD/wiki/public" \
+  --source-public "$PUBLIC_SOURCE_ROOT" \
   > wiki/public-asset-source-attestation.json
 git add wiki/public-asset-source-attestation.json
 git commit -m "Attest reviewed non-Brain public assets"
 ```
 
-The bootstrap Brain release is excluded from the attestation and is not the promotion
-candidate. After the exact inventory is reviewed and lands on `main` as commit C, keep the
+For direct assembly, use a fresh isolated tree containing exact generator/helper bytes,
+committed CSS/JS, the selected Git-pinned `catalog/data/articles.jsonl`, and the complete
+canonical annotation sidecars from one verified D1 source export. Record those input and
+program identities. The exporter accepts the normalized D1 article object and its retained
+SHA-256 as an explicit membership source:
+
+```bash
+"$WIKILEAN_PYTHON" "$ASSET_TREE/site/export_wikidata_rdf.py" \
+  --d1-articles "$D1_ARTICLES_OBJECT" \
+  --d1-articles-sha256 "$D1_ARTICLES_SHA256" \
+  --annotations-dir "$ASSET_TREE/site/annotations" \
+  --catalog "$ASSET_TREE/catalog/data/articles.jsonl" \
+  --out-dir "$ASSET_TREE/site/out" \
+  --out-w3c-dir "$ASSET_TREE/site/out_w3c"
+"$WIKILEAN_PYTHON" "$ASSET_TREE/site/build_static_pages.py"
+(cd "$ASSET_TREE/wiki" && "$WIKILEAN_BRAIN_NODE" --experimental-strip-types \
+  scripts/build-mathlib-index.ts)
+```
+
+Use Python 3.12 and Node 22; all variables above are explicit absolute input/tool paths
+except the lowercase hexadecimal digest. The D1 mode validates canonical article rows and
+exact complete sidecars, then renders from the captured rows; ignored article HTML cannot
+select which concepts get links. It does not independently authenticate the D1 acquisition.
+The default exporter behavior remains available for existing workflows.
+
+Copy exactly `404.html`, `robots.txt`, `concepts.html`, and `wikilean.ttl` from that tree's
+`site/out` into `wiki/public`; copy `style.css`, `script.js`, and `review.css` from
+`site/assets`, plus `wiki/assets/editor.js`, into `wiki/public/assets`. Keep the generated
+`assets/mathlib-index.json`. Copy the three already verified index directories
+(`decl-index`, `suffix-index`, `premise-index`) unchanged, with complete manifest-declared
+shards/name chunks. Do not copy the generated `sitemap.xml`: the Worker serves it dynamically.
+Do not invent article HTML or stage a synthetic Brain release. The unchanged `attest`
+command checks every required asset and full index closure:
+
+```bash
+export PUBLIC_SOURCE_ROOT="$ASSET_TREE/wiki/public"
+"$WIKILEAN_PYTHON" site/ops/brain_public_baseline.py attest \
+  --source-public "$PUBLIC_SOURCE_ROOT" \
+  > wiki/public-asset-source-attestation.json
+```
+
+Review and commit the exact inventory and retain the private input/program/output lineage.
+The September 23 direct assembly recipe and measurements are retained under
+`completion-20260923/public-asset-preparation` in the private migration store; the pinned
+index recipe is under `public-index-preparation`. Its offline index generation uses the
+retained declaration oracle and MathNetwork inputs, avoiding a fresh doc-gen download.
+
+Any bootstrap Brain release used by the convenience path is excluded from the attestation
+and is not the promotion candidate. After the exact inventory is reviewed and lands on
+`main` as commit C, keep the
 generated non-Brain public tree byte-for-byte unchanged—especially the timestamp-bearing
 index manifests, and freeze it against C. Separately produce the actual candidate Brain
-release through the P1B isolated shadow-build flow at the same commit C; do not use the
+release through the P1B isolated shadow-build flow at the same commit C; do not use a
 bootstrap release and do not rerun `npm run build:indexes`. Any non-Brain byte change
 between `attest` and `freeze` is a hard mismatch, not a repair:
 
@@ -204,7 +254,7 @@ cd /Users/jackmccarthy/projects/WikiLean
 
 AUTHORITY_COMMIT="$(git rev-parse HEAD)"
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py freeze \
-  --source-public "$PWD/wiki/public" \
+  --source-public "$PUBLIC_SOURCE_ROOT" \
   --store "$WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE" \
   --repo-root "$PWD" \
   --authority-git-commit "$AUTHORITY_COMMIT"
@@ -214,8 +264,10 @@ The command prints the exact `baseline_id` and immutable root. Review and retain
 The freezer excludes `brain.html` and `assets/brain/**`, rejects missing shell/index
 assets, validates every manifest-declared shard/name chunk, and publishes only a canonical
 manifest plus its complete read-only inventory. Confirm the shadow release result and the
-baseline both name C as their authority commit. This repository intentionally does not yet contain the
-first attestation; freeze and verify therefore fail closed until P1B completes this workflow.
+baseline both name C as their authority commit. The September 23 continuation prepares the
+first attestation for review; its presence on a work branch does not establish the final
+main authority commit or complete P1B. Freeze reloads the inventory from the exact named
+commit and rejects any mismatch with the retained source tree.
 
 ## Build the P1B activation evidence bundle
 

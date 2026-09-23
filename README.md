@@ -9,11 +9,21 @@ A reader can scan an article and see at a glance which statements are formalized
 - **The editable wiki is live.** Sign in with GitHub to add, correct, or discuss
   annotations directly in an article. D1 remains the canonical store for article
   annotations, revisions, moderation state, and the community-edge overlay.
-- **The immutable Brain release architecture is merged, but not yet deployed or
-  activated.** As checked on 2026-09-21, production still serves the 2026-08-28
-  Brain snapshot, the Brain API does not report a release identity, and
+- **The SQLite and immutable Brain release stack is merged**, including PRs #32–#34
+  on 2026-09-21, but remains inactive in production. The snapshot/API check on
+  2026-09-23 still showed the 2026-08-28 Brain without a release identity;
   [`/assets/brain/current.json`](https://wikilean.jackmccarthy.org/assets/brain/current.json)
-  returns 404. The repository has no automatic deploy-on-merge workflow.
+  still returned 404 on 2026-09-23. The repository has no automatic deploy-on-merge workflow.
+- **The first real private migration pack was compiled and independently verified on
+  2026-09-23:** it covers
+  113 Brain sources and all 43 input groups, including completed Kerodon and OpenAlex
+  evidence. The native Linux runtime for the
+  recorded code commit is qualified; the complete non-Brain asset tree and its exact
+  inventory are prepared and independently reviewed. The seven-stage legacy baseline,
+  two full replay builds, policy decisions, and production activation remain unfinished.
+  More storage is needed for the native replay sequence. See the
+  [September 23 handoff](docs/BRAIN-SQLITE-HANDOFF-2026-09-23.md) and
+  [remaining queue](docs/ROADMAP.md#current-brain-execution-queue-updated-2026-09-23).
 - **Live annotation snapshot checked on 2026-09-21:** 778 articles and 37,936
   annotated results: 27.9% formalized and 14.1% partial.
 - **Two complementary editable exports** remain keyed to Wikidata entities:
