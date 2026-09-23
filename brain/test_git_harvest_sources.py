@@ -23,6 +23,21 @@ import export_git_harvest as cli
 WHEN = "2026-09-08T20:00:00Z"
 
 
+class GitHarvestProfileRegistryTest(unittest.TestCase):
+    def test_current_profile_matches_reviewed_generation(self):
+        registry = core.profiles()
+        profile = next(
+            item for item in registry["profiles"]
+            if item["profile_id"] == registry["current_profile"]
+        )
+        expected = [
+            {"path": path, "sha256": core.sha((core.ROOT / path).read_bytes())}
+            for path in core.TOOL_FILES
+        ]
+        self.assertEqual(profile["files"], expected)
+        self.assertEqual(profile["profile_id"], registry["current_profile"])
+
+
 class GitHarvestTest(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
