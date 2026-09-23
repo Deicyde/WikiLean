@@ -174,23 +174,29 @@ and all 43 input groups**. Its evidence verifier checked **84 acquisition receip
 not a compiled pack or approved authority.
 
 The native Linux runtime for `7627ccba` passed strict sandbox and runtime checks; its legacy
-bootstrap probe remains a fixture. Three pinned search-index families are prepared privately
-(2,690 files, 92.4 MB). Cloudflare's exact read-only status/history checks passed, while the
+bootstrap probe remains a fixture. The complete non-Brain asset tree is prepared privately
+(2,699 files, 96.3 MB), including three pinned search-index families. Its exact inventory is
+prepared for review at `wiki/public-asset-source-attestation.json`; freeze awaits the
+reviewed main commit. Cloudflare's exact read-only status/history checks passed, while the
 production selector still returns 404. No production mutation occurred. Source-policy review
 covers all 114 sources in 19 families; every private/public decision remains pending.
 
 Final candidate `candidate-03` passed structural/control/evidence preflight, with all 15
-required inputs present. It remains unready for compilation: the final measurement found
-1.7 GiB free, versus an 8.7 GiB compiler peak and roughly 10 GiB with safety margin.
-Source/publication readiness also remains false; source policies are still restricted.
+required inputs present. The initial capacity check failed at 1.7 GiB free. Stopping the
+idle migration VM recovered enough headroom for a fresh preflight to report
+`compile_ready: true`; full-pack compilation started. Replay needs additional storage
+beyond the estimated 8.7 GiB compiler peak. Source/publication readiness remains false;
+source policies are still restricted.
 
 **Immediate queue:** (1) provide storage headroom for the full pack and prepared replay
 copies (at least 30 GB was requested for the whole sequence); (2) review the recorded source
 scope/policy concerns and compile/independently verify the first real v3 pack;
 (3) run the seven-stage same-input legacy baseline and review its semantic comparison;
 (4) run two actual isolated candidate builds and finalize reproducibility evidence;
-(5) complete the non-Brain public baseline with a real bootstrap release, commit its asset
-attestation, and rebind the final reducer/runtime to that authority commit before P1B/P1C.
+(5) review/land the prepared asset attestation, freeze the non-Brain baseline, and rebind the
+final reducer/runtime to that authority commit before P1B/P1C. Direct non-Brain assembly
+does not require a bootstrap Brain release; that dependency belongs to the convenience
+`build-public.ts` path, not the baseline contract.
 
 P1B evidence and P1C activation/rollback remain separate reviewed operations from clean
 `main`. No candidate, fixture, index build, merge, or runtime descriptor supplies production
@@ -292,9 +298,11 @@ before deployment.
   baseline ID/root beside the exact Brain release ID/root, and verify the promoter's
   baseline-aware canary samples every required family.
   The three index families were generated and independently checked from pinned inputs on
-  2026-09-23. Their private recipe also records the concepts-page dependency on rendered
-  article existence. Shell assets, a real bootstrap release, the complete attestation, and
-  the resulting authority commit remain outstanding; preserve the prepared index bytes.
+  2026-09-23. An explicit verified D1 membership mode now removes the concepts export's
+  dependency on ignored rendered article files. The complete 2,699-file tree and canonical
+  attestation are now prepared and independently checked. Review/landing, the resulting
+  main authority commit, and freeze remain outstanding; preserve every prepared byte.
+  A bootstrap Brain release is unnecessary for this direct non-Brain assembly.
 - [ ] Freeze or identify a complete trusted semantic pre-activation comparison bundle, and
   store the release/store/public metrics plus JSON from this command:
 
@@ -636,7 +644,8 @@ explicit approval.
     D1 remains the sealed September 8 observation, not a claim about today's live state.
   - [x] Complete isolated staging and source-plan preflight. Registry-root and canonical-schema
     control corrections are retained in `candidate-03`; all required inputs and v3 evidence
-    validate. Compilation is blocked by the measured storage shortfall.
+    validate. A fresh capacity check passed after the idle VM was stopped; compilation
+    started with a monitored host reserve. Full replay still needs additional capacity.
   - [ ] Review the candidate's exact source scope, freshness, cross-source pins and concrete
     private/public policies before claiming accepted authority.
     The 19-family policy audit preserves unresolved terms, including theorem-matching,

@@ -16,11 +16,11 @@ A reader can scan an article and see at a glance which statements are formalized
   still returned 404 on 2026-09-23. The repository has no automatic deploy-on-merge workflow.
 - **Private migration evidence recovered on 2026-09-23:** the candidate source plan
   now covers 114 sources and all 43 input groups, including completed Kerodon and
-  OpenAlex evidence. The current native Linux runtime is qualified and three search
-  indexes are prepared. The first full pack, legacy baseline, two full replay builds,
-  policy decisions, and production activation remain unfinished. The final preflight
-  validated the source evidence and found all required inputs, but only 1.7 GiB was free;
-  compilation alone recommends about 10 GiB, before full replay storage. See the
+  OpenAlex evidence. The current native Linux runtime is qualified; the complete non-Brain
+  asset tree and its exact inventory are prepared for review. The first full pack, legacy baseline, two full replay builds,
+  policy decisions, and production activation remain unfinished. After stopping the idle
+  migration VM, a fresh preflight passed the capacity check and full-pack compilation
+  started. Further storage is needed for the native replay sequence. See the
   [September 23 handoff](docs/BRAIN-SQLITE-HANDOFF-2026-09-23.md) and
   [remaining queue](docs/ROADMAP.md#current-brain-execution-queue-updated-2026-09-23).
 - **Live annotation snapshot checked on 2026-09-21:** 778 articles and 37,936

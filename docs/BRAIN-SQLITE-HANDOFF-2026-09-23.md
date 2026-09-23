@@ -101,6 +101,13 @@ fixture, not the seven-stage full-corpus baseline.
 This qualifies the runtime for the recorded code commit. It does not certify a full pack
 or a full replay, and it must be rebound and rechecked if the final authority commit changes.
 
+The dedicated `wl` VM was already running at session start. After confirming it had no
+containers or active user jobs, it was stopped gracefully to release its 8 GiB memory
+reservation. Its configuration, disk, image, and qualification evidence remain retained;
+`completion-20260923/runtime-shutdown-report.json` records the independently observed
+`Stopped` state. The private qualification README has the exact restart command.
+This recovered storage headroom temporarily; check current host capacity before restarting.
+
 ## Source-plan integration
 
 The new private assembler selects exactly eight source replacements and eight additions,
@@ -153,7 +160,7 @@ Assembly/staging results are under `candidate`; corrections are under `candidate
 `preflight.json`, `preflight.stderr`, and `preflight-exit.json` in the run root. A complete
 source plan is not a compiled pack, public-policy approval, or accepted authority.
 
-The final normative preflight completed with `ok: true` and exit 2, which reports remaining
+The initial normative preflight completed with `ok: true` and exit 2, which reports remaining
 readiness concerns rather than a validation failure. All 15 required inputs are present;
 the 43 groups contain 38 present and five explicitly absent optional groups, totaling
 9,345 members. All v3 receipt/lineage/preimage and parent-closure checks passed again.
@@ -164,6 +171,22 @@ The estimated pack alone is 8,249,835,136 bytes. These estimates exclude subsequ
 workspaces and outputs. The 325 warnings comprise 97 native pins not locally independently
 verifiable and 114 source-level plus 114 object-level restricted-publication notices.
 Corpus payloads were size-checked here; compilation must still hash their full bytes.
+
+After the idle VM was stopped, a separate fresh preflight completed successfully:
+`preflight-capacity-restored.json` reports `ok: true`, `compile_ready: true`, and zero
+compilation blockers, with 16,614,936,576 free bytes at its capacity sample. The source
+authority/publication warnings are unchanged. Its invocation and stderr are retained
+separately; the earlier resource failure remains historical evidence. Full-pack compilation
+then started under a resource supervisor with a 3 GiB host reserve. The supervisor records
+capacity in `full-pack-resource-log.jsonl` and will independently verify the compiler's
+actual resulting manifest. Keep the VM stopped while compilation runs.
+
+The legacy preparation recipe was also checked without copying its inputs. The retained
+checkout still has the exact required `ebac34dc1d07b66ce97692c31a914a084328f5df`
+commit/tree and all eleven old program/support files. Its 9,345 input members, mixed-data
+overlays, and programs require at least 1,616,143,663 copied bytes, excluding outputs,
+the completed-layout copy, SQLite, release assembly, guest pack transfer, and host swap.
+See `legacy-preparation-plan.json`. No old full-corpus stage was executed.
 
 The independent source-policy review covers exactly these 114 sources across 19 families,
 with 161 retained evidence files checked. All decisions remain pending. The review matrix
@@ -194,11 +217,39 @@ name references, source hashes, and generator hashes pass. Keep these timestamp-
 bytes unchanged for eventual baseline assembly; see
 `completion-20260923/public-index-preparation/README.md` and `result.json`.
 
-No real bootstrap Brain release or complete non-Brain baseline exists yet. The only
-retained release is a synthetic format fixture and is unsuitable as the real baseline.
-Shell-asset generation also needs an explicit article/rendered-page membership source:
-`export_wikidata_rdf.py` currently chooses links by checking for `site/out/<slug>.html`.
-Do not let the presence or absence of ignored files silently select baseline semantics.
+The optional D1 mode in `export_wikidata_rdf.py` now takes explicit article-object and
+annotation/catalog/output paths plus the expected D1 digest. It validates canonical rows,
+safe unique membership, and every exact sidecar before rendering from captured values.
+Default legacy behavior remains unchanged. Twelve focused tests passed, including exact
+legacy byte parity and independence from ignored rendered article files; a separate review
+found no actionable defect. The test is registered in the offline Python gate.
+
+A complete non-Brain tree has been generated from those verified D1 rows, the pinned
+catalog, current shell generators/assets, and the preserved search indexes. It contains
+2,699 files totaling 96,337,594 bytes. The concepts page has 631 concepts and 8,937
+declaration links; the annotation-derived autocomplete index has 5,380 pairs. Independent
+review checked every file, the unchanged required-payload/index-closure contracts, all
+3,476 clone correspondences and separate inodes, generator/helper bytes, and input lineage.
+All 2,690 prepared search-index files remain byte-identical. Exact commands and reports are
+under `completion-20260923/public-asset-preparation`.
+
+The canonical inventory is now prepared at `wiki/public-asset-source-attestation.json`:
+351,949 bytes, SHA-256 `e3a2de02bee45054d17da334b8f8e4424b624024b048dd96cfb5f8e1e54172cd`.
+A separate read checked all inventory hashes against the actual tree. This is the concrete
+inventory for review; it is not a frozen baseline, source-policy approval, or a production
+authority commit. Preserve the exact private tree until reviewed main commit C is known.
+
+Worker typecheck and all 885 tests across 38 files passed with verified Node 22.23.2.
+The first full Python run stopped at existing compiler tests because the host's default
+Git path is a symlink. The gate is being rerun with the literal verified Git executable
+and Node 22 first on `PATH`; no test or compiler contract was weakened. Both full logs
+are retained as `python-ci-completion.log` and `python-ci-completion-verified-tools.log`.
+
+A real
+bootstrap Brain release is **not** required by the baseline contract: only the monolithic
+`build-public.ts` convenience path requires one. Direct assembly must still pass the
+unchanged required-payload and index-closure checks. The retained synthetic Brain release
+is a format fixture and supplies no real-release evidence.
 
 Fresh locked dependencies were installed in the completion checkout. Read-only Wrangler
 4.120.0 `deployments status`, `deployments list`, and `versions list` all succeeded with
@@ -214,21 +265,21 @@ first-deployment handling. No production mutation was attempted.
 
 ## Immediate continuation
 
-1. Provide storage headroom. Free space fell from about 10 GiB to 1.7 GiB during the final
-   read-only preflight; no full pack or replay was started.
+1. Provide storage headroom for the replay sequence. Free space initially fell to 1.7 GiB;
+   stopping the idle VM recovered enough for a fresh passing preflight and compilation.
    The assembled plan alone references about 7.5 GiB of distinct objects; compilation, prepared
    input copies, full graph outputs, releases, and VM storage all need additional space.
    The user was asked to free at least 30 GiB or provide an external storage path. Do not
    treat the guest VM's reported free space as separate from the host backing its disk.
-2. Use `candidate-03` and its exact roots, recheck storage/readiness, then compile and
-   independently verify the first full pack. Record its actual IDs. Preserve
+2. Finish compilation and independent verification of `candidate-03` under the resource
+   supervisor, then record the first full pack's actual IDs. Preserve
    restricted source policies; source-plan or fixture success is not publication approval.
 3. Review the concrete private-use policy evidence and source/decision deltas. Run the
    exact seven-stage legacy baseline and the two isolated candidate builds. Verify semantic
    parity and provenance coverage, then retain the appropriately reviewed attestation.
-4. Produce the real bootstrap release and complete non-Brain public tree, commit its exact
-   reviewed attestation, and establish final authority commit C. The prepared indexes should
-   be copied unchanged. Rebind the runtime/candidate to C as required; a technical result
+4. Review and land the prepared non-Brain asset inventory to establish final authority
+   commit C, then freeze the unchanged private public tree against C. Rebind the
+   runtime/candidate to C as required; a technical result
    bound to 7627ccba is not an activation result bound to C.
 5. Follow [the release runbook](BRAIN-RELEASE-RUNBOOK.md) for the retained dry run, activation
    evidence, concrete release review, production promotion, canaries, and rollback exercise.
