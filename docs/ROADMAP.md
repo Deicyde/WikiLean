@@ -179,9 +179,14 @@ bootstrap probe remains a fixture. Three pinned search-index families are prepar
 production selector still returns 404. No production mutation occurred. Source-policy review
 covers all 114 sources in 19 families; every private/public decision remains pending.
 
-**Immediate queue:** (1) provide storage headroom—about 10 GiB remains, insufficient for the
-full pack and prepared replay copies; (2) finish candidate staging/preflight, review exact
-source scope and policy decisions, and compile/independently verify the first real v3 pack;
+Final candidate `candidate-03` passed structural/control/evidence preflight, with all 15
+required inputs present. It remains unready for compilation: the final measurement found
+1.7 GiB free, versus an 8.7 GiB compiler peak and roughly 10 GiB with safety margin.
+Source/publication readiness also remains false; source policies are still restricted.
+
+**Immediate queue:** (1) provide storage headroom for the full pack and prepared replay
+copies (at least 30 GB was requested for the whole sequence); (2) review the recorded source
+scope/policy concerns and compile/independently verify the first real v3 pack;
 (3) run the seven-stage same-input legacy baseline and review its semantic comparison;
 (4) run two actual isolated candidate builds and finalize reproducibility evidence;
 (5) complete the non-Brain public baseline with a real bootstrap release, commit its asset
@@ -629,8 +634,11 @@ explicit approval.
     finish Kerodon/OpenAlex and proposal/fold exports; assemble the complete v3 candidate.
     The 2026-09-23 candidate has 114 sources and 43 groups with receipt/lineage verification.
     D1 remains the sealed September 8 observation, not a claim about today's live state.
-  - [ ] Complete staging/preflight and review the candidate's exact source scope, freshness,
-    cross-source pins and concrete private/public policies before claiming accepted authority.
+  - [x] Complete isolated staging and source-plan preflight. Registry-root and canonical-schema
+    control corrections are retained in `candidate-03`; all required inputs and v3 evidence
+    validate. Compilation is blocked by the measured storage shortfall.
+  - [ ] Review the candidate's exact source scope, freshness, cross-source pins and concrete
+    private/public policies before claiming accepted authority.
     The 19-family policy audit preserves unresolved terms, including theorem-matching,
     and grants no approval.
   - [x] Add a bounded source-plan preflight that reports availability, selector membership,
@@ -701,8 +709,8 @@ explicit approval.
   - [ ] Complete the concrete full-pack policy decisions and release-specific
     provenance mapping, then rerun their verifiers on the real retained outputs.
 
-**Next P0-R execution order:** resolve storage headroom; finish staging/preflight and exact
-source-policy review; compile and verify the real pack with cross-object coherence; run the
+**Next P0-R execution order:** resolve storage headroom; review the completed preflight's
+source-policy concerns; compile and verify the real pack with cross-object coherence; run the
 seven-stage legacy baseline and two-path adversarial clean-room gate; review semantic parity
 and finalize the reproducibility attestation. The current runtime is qualified for `7627ccba`;
 the later public-asset attestation changes the promotion authority commit and requires a
