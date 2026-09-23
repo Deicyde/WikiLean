@@ -108,9 +108,32 @@ preserves all other source entries and curated Git pins, uses the folded invento
 closes the two external aggregate input groups with Kerodon. Verification passed for
 114 sources and all 43 input groups: 84 acquisition receipts, 108 normalization lineages,
 and 9,944 request-parameter preimages. It excludes the two unbound fold-comparison
-diagnostic sources. Source restrictions remain intact. The plan SHA-256 is
+diagnostic sources. Source restrictions remain intact. The initial plan SHA-256 is
 `26977c772b009c7de3b3155169cc12acd15d404df55072f60ee0c3e68b3235e1`;
 its 80,133 unique objects total 8,057,483,795 bytes.
+
+Use the corrected compiler candidate at `candidate-03/source-plan.json` with
+`candidate-03/roots.json`, not either earlier plan. Preflight caught one curated
+registry binding whose physical root label disagreed with the inventory. The correction
+changes only that label from `wikilean_git` to `repo`; the original registry Git pin,
+bytes, all 114 source-manifest identities, input bindings, and evidence remain unchanged.
+`candidate-02/root-binding-correction.json` retains the exact derivation and the Git-byte
+check at the new root.
+
+A targeted control check then found that all 23 schema documents were valid but retained
+pretty-printed Git bytes, while preflight requires canonical JSON. `candidate-03` stores
+new canonical copies in a private `schema_control` root: 91,278 bytes with identical parsed
+documents. Only their file-reference roots, sizes, and hashes change from `candidate-02`;
+every source entry and logical input binding is identical. The current plan SHA-256 is
+`5f601da7fce3bb9997e70a5a29149bfc17444a70923045de0b5c587743ae1e71`.
+`candidate-03/schema-canonicalization.json` records the exact transformation. The earlier
+candidates and unsuccessful preflight attempts remain available for diagnosis.
+The independent logical-input check covers all 43 groups and 9,345 members, including
+exact curated Git blobs and path-collision checks; see
+`candidate-02/logical-input-independent-review.json`. Those bindings are unchanged in
+`candidate-03`; its `logical-input-review-applicability.json` binds that correspondence.
+`candidate-03/control-independent-review.json` independently verifies all 23 canonical
+schemas plus the unchanged configuration/environment controls and exact runner commit.
 
 Private control files are `candidate-config.json`, `assemble-candidate.py`, and
 `stage-candidate.py`. Both scripts received an independent read-through. They create new
@@ -125,8 +148,22 @@ The independent `candidate/staging-independent-review.json` subsequently verifie
 input and schema against its origin, the exact file/directory closure, and absence of
 symlinks, special files, and hard links. Both staging-script review findings were resolved.
 
-Assembly and preflight results must be read from the private candidate reports. A complete
+Assembly/staging results are under `candidate`; corrections are under `candidate-02` and
+`candidate-03`. The final readiness invocation and result are `preflight-invocation.json`,
+`preflight.json`, `preflight.stderr`, and `preflight-exit.json` in the run root. A complete
 source plan is not a compiled pack, public-policy approval, or accepted authority.
+
+The final normative preflight completed with `ok: true` and exit 2, which reports remaining
+readiness concerns rather than a validation failure. All 15 required inputs are present;
+the 43 groups contain 38 present and five explicitly absent optional groups, totaling
+9,345 members. All v3 receipt/lineage/preimage and parent-closure checks passed again.
+`compile_ready`, `source_authority_ready`, and `source_publishable` are all false.
+The sole compilation blocker is insufficient storage: 1,823,653,888 bytes free against a
+9,303,867,452-byte estimated peak and 10,699,447,570 bytes recommended with headroom.
+The estimated pack alone is 8,249,835,136 bytes. These estimates exclude subsequent replay
+workspaces and outputs. The 325 warnings comprise 97 native pins not locally independently
+verifiable and 114 source-level plus 114 object-level restricted-publication notices.
+Corpus payloads were size-checked here; compilation must still hash their full bytes.
 
 The independent source-policy review covers exactly these 114 sources across 19 families,
 with 161 retained evidence files checked. All decisions remain pending. The review matrix
@@ -136,6 +173,8 @@ scope questions include DLMF bulk-content terms, Kerodon raw-content permission,
 ProofWiki namespaces retained in the raw dump, conflicting PlanetMath and TheoremGraph
 license statements, and public excerpt/code attribution. See
 `completion-20260923/source-policy/README.md`, `review-matrix.json`, and `validation.json`.
+`validation-candidate-02.json` and `validation-candidate-03.json` prove correspondence
+with the two corrected plans; all 114 source identities remain covered.
 These are questions for the operator's standalone private/public policy reviews, not
 approved policy changes. Public-policy readiness is not currently enforced by the promoter.
 
@@ -175,13 +214,14 @@ first-deployment handling. No production mutation was attempted.
 
 ## Immediate continuation
 
-1. Provide storage headroom. This Mac had about 10 GiB free after bounded preparation.
+1. Provide storage headroom. Free space fell from about 10 GiB to 1.7 GiB during the final
+   read-only preflight; no full pack or replay was started.
    The assembled plan alone references about 7.5 GiB of distinct objects; compilation, prepared
    input copies, full graph outputs, releases, and VM storage all need additional space.
    The user was asked to free at least 30 GiB or provide an external storage path. Do not
    treat the guest VM's reported free space as separate from the host backing its disk.
-2. Read the new assembly/staging/preflight reports, resolve their concrete findings, and
-   compile and independently verify the first full pack. Record its actual IDs. Preserve
+2. Use `candidate-03` and its exact roots, recheck storage/readiness, then compile and
+   independently verify the first full pack. Record its actual IDs. Preserve
    restricted source policies; source-plan or fixture success is not publication approval.
 3. Review the concrete private-use policy evidence and source/decision deltas. Run the
    exact seven-stage legacy baseline and the two isolated candidate builds. Verify semantic

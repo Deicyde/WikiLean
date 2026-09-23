@@ -18,8 +18,9 @@ A reader can scan an article and see at a glance which statements are formalized
   now covers 114 sources and all 43 input groups, including completed Kerodon and
   OpenAlex evidence. The current native Linux runtime is qualified and three search
   indexes are prepared. The first full pack, legacy baseline, two full replay builds,
-  policy decisions, and production activation remain unfinished. About 10 GiB of free
-  disk space currently blocks the large runs. See the
+  policy decisions, and production activation remain unfinished. The final preflight
+  validated the source evidence and found all required inputs, but only 1.7 GiB was free;
+  compilation alone recommends about 10 GiB, before full replay storage. See the
   [September 23 handoff](docs/BRAIN-SQLITE-HANDOFF-2026-09-23.md) and
   [remaining queue](docs/ROADMAP.md#current-brain-execution-queue-updated-2026-09-23).
 - **Live annotation snapshot checked on 2026-09-21:** 778 articles and 37,936
