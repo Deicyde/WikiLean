@@ -16,8 +16,17 @@ import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { stageBrainPublicRelease } from "../scripts/brain-release-public";
+import releaseProfiles from "../../brain/authority/fixtures/release-profile-v1-conformance.json";
 
 const roots: string[] = [];
+const profileCases = releaseProfiles as Array<{
+  name: string;
+  accepted: boolean;
+  profile: string;
+  replay?: unknown;
+  attestationKinds?: Array<"build" | "validation">;
+}>;
+const REPLAY = profileCases.find(value => value.name === "replay-genesis")!.replay as Record<string, unknown>;
 const REQUIRED = [
   "brain/data/nodes.jsonl",
   "brain/data/edges.jsonl",
@@ -80,6 +89,8 @@ function makeRelease(
     throughChangeset?: string | null;
     omitArtifact?: string;
     createdAt?: string;
+    replay?: unknown;
+    attestationKinds?: Array<"build" | "validation">;
   } = {},
 ): {
   releaseDir: string;
@@ -127,6 +138,7 @@ function makeRelease(
   const identityInput = {
     schema: "wikilean.release/v1",
     profile: overrides.profile ?? "brain-current-v1",
+    ...(Object.hasOwn(overrides, "replay") ? { replay: overrides.replay } : {}),
     authority: {
       git_commit: "0".repeat(40),
       semantic_state_root: `sha256:${"1".repeat(64)}`,
@@ -155,18 +167,14 @@ function makeRelease(
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, item.bytes);
   }
-  const attestationData = [
-    {
-      kind: "build" as const,
-      path: "attestations/build.json",
-      bytes: Buffer.from(JSON.stringify({ schema: "wikilean.build-attestation/v1", release_id: releaseId })),
-    },
-    {
-      kind: "validation" as const,
-      path: "attestations/validation.json",
-      bytes: Buffer.from(JSON.stringify({ schema: "wikilean.validation-attestation/v1", release_id: releaseId })),
-    },
-  ];
+  const attestationData = (overrides.attestationKinds ?? ["build", "validation"]).map((kind, index, kinds) => ({
+    kind,
+    path: `attestations/${kind}${kinds.indexOf(kind) === index ? "" : `-${index}`}.json`,
+    bytes: Buffer.from(JSON.stringify({
+      schema: `wikilean.${kind}-attestation/${kind === "build" && overrides.profile === "brain-offline-replay-v1" ? "v2" : "v1"}`,
+      release_id: releaseId,
+    })),
+  })).sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
   const attestations = attestationData.map(item => ({
     kind: item.kind,
     path: item.path,
@@ -325,6 +333,73 @@ function immutablePath(destination: string, hex: string, relativePath: string): 
 }
 
 describe("stageBrainPublicRelease", () => {
+  // The Python metadata verifier consumes the same cases. Full SQLite, source,
+  // and attestation evidence remains the independent verifier's responsibility.
+  it.each(profileCases)("matches the release-profile contract: $name", (entry) => {
+    const root = tempRoot();
+    const prior = makeRelease(join(root, "store"), "prior");
+    const candidate = makeRelease(join(root, "store"), entry.name, 0, entry);
+    const destination = join(root, "brain");
+    stage(prior, destination);
+    const previousSelector = readFileSync(join(destination, "current.json"));
+
+    if (entry.accepted) {
+      const result = stage(candidate, destination);
+      expect(result.release_id).toBe(candidate.releaseId);
+      expect(readFileSync(immutablePath(destination, candidate.manifestSha256, "release.json")))
+        .toEqual(readFileSync(candidate.manifestPath));
+      expect(existsSync(immutablePath(destination, candidate.manifestSha256, "brain/data/brain.sqlite3"))).toBe(false);
+    } else {
+      expect(() => stage(candidate, destination)).toThrow(/Brain public staging:/);
+      expect(readFileSync(join(destination, "current.json"))).toEqual(previousSelector);
+      expect(readdirSync(join(destination, "releases"))).toEqual([prior.manifestSha256]);
+    }
+  });
+
+  it.each([
+    ["brain-current-v1", "brain-offline-replay-v1", false],
+    ["brain-offline-replay-v1", "brain-current-v1", false],
+    ["brain-offline-replay-v1", "brain-offline-replay-v1", false],
+    ["brain-current-v1", "brain-offline-replay-v1", true],
+    ["brain-offline-replay-v1", "brain-current-v1", true],
+    ["brain-offline-replay-v1", "brain-offline-replay-v1", true],
+  ] as const)("retains %s when staging %s with explicit prior %s", (priorProfile, currentProfile, explicitPrior) => {
+    const root = tempRoot();
+    const store = join(root, "store");
+    const options = (profile: string) => ({ profile, ...(profile === "brain-offline-replay-v1" ? { replay: REPLAY } : {}) });
+    const prior = makeRelease(store, "prior", 0, options(priorProfile));
+    const current = makeRelease(store, "current", 0, options(currentProfile));
+    const destination = join(root, "brain");
+    if (!explicitPrior) stage(prior, destination);
+    const result = stage(current, destination, explicitPrior ? {
+      previousManifestPath: prior.manifestPath,
+      previousReleaseDir: prior.releaseDir,
+    } : {});
+    expect(result.previous_release_id).toBe(prior.releaseId);
+    expect(result.release_id).toBe(current.releaseId);
+    expect(readdirSync(join(destination, "releases")).sort())
+      .toEqual([prior.manifestSha256, current.manifestSha256].sort());
+    expect(readFileSync(immutablePath(destination, prior.manifestSha256, "release.json")))
+      .toEqual(readFileSync(prior.manifestPath));
+    expect(readFileSync(join(destination, "cells/aa.json")))
+      .toEqual(readFileSync(immutablePath(destination, current.manifestSha256, "cells/aa.json")));
+  });
+
+  it("rejects replay-binding tampering without changing the staged release", () => {
+    const root = tempRoot();
+    const release = makeRelease(join(root, "store"), "offline", 0, {
+      profile: "brain-offline-replay-v1", replay: REPLAY,
+    });
+    const destination = join(root, "brain");
+    stage(release, destination);
+    const before = readFileSync(join(destination, "current.json"));
+    const manifest = JSON.parse(readFileSync(release.manifestPath, "utf8"));
+    manifest.replay.offline_pack_id = `sha256:${"9".repeat(64)}`;
+    writeFileSync(release.manifestPath, JSON.stringify(manifest) + "\n");
+    expect(() => stage(release, destination)).toThrow(/does not identify the canonical manifest/);
+    expect(readFileSync(join(destination, "current.json"))).toEqual(before);
+  });
+
   it("stages a first immutable release, selector, and byte-identical aliases", () => {
     const root = tempRoot();
     const release = makeRelease(join(root, "store"), "A");
@@ -801,7 +876,7 @@ describe("buildPublic", () => {
     expect(JSON.parse(readFileSync(join(wiki, "public", "assets", "mathlib-index.json"), "utf8"))).toEqual([]);
   });
 
-  it("builds a fresh external public tree with a fixed selector audit timestamp", () => {
+  it.each(["brain-current-v1", "brain-offline-replay-v1"])("builds a fresh external public tree for %s with a fixed selector audit timestamp", (profile) => {
     const root = tempRoot();
     const checkout = join(root, "checkout");
     const wiki = join(checkout, "wiki");
@@ -820,7 +895,9 @@ describe("buildPublic", () => {
     }
     writeFileSync(join(wiki, "assets", "editor.js"), "editor");
     writeFileSync(join(wiki, "public", "stale.txt"), "must remain isolated");
-    const release = makeRelease(join(root, "store"), "A");
+    const release = makeRelease(join(root, "store"), "A", 0, {
+      profile, ...(profile === "brain-offline-replay-v1" ? { replay: REPLAY } : {}),
+    });
     const baseline = makePublicBaseline(join(root, "baselines"));
 
     const output = invokeBuildPublic(wiki, [

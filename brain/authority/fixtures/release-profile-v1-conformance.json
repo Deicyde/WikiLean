@@ -1,0 +1,254 @@
+[
+  {
+    "name": "compatibility",
+    "accepted": true,
+    "profile": "brain-current-v1"
+  },
+  {
+    "name": "replay-genesis",
+    "accepted": true,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-prior-state",
+    "accepted": true,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+    }
+  },
+  {
+    "name": "missing-replay",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1"
+  },
+  {
+    "name": "compatibility-replay-field",
+    "accepted": false,
+    "profile": "brain-current-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "unknown-profile",
+    "accepted": false,
+    "profile": "brain-future-v1"
+  },
+  {
+    "name": "replay-null",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": null
+  },
+  {
+    "name": "replay-array",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": []
+  },
+  {
+    "name": "replay-empty",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {}
+  },
+  {
+    "name": "replay-unknown-field",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null,
+      "extra": true
+    }
+  },
+  {
+    "name": "replay-missing-prior-state",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    }
+  },
+  {
+    "name": "replay-unprefixed-authority",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-numeric-pack",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": 42,
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-null-inventory",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": null,
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-malformed-generation",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:bad",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-uppercase-generation",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-malformed-prior-state",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": "sha256:bad"
+    }
+  },
+  {
+    "name": "brain-current-v1-extra-attestation",
+    "accepted": true,
+    "profile": "brain-current-v1",
+    "attestationKinds": [
+      "build",
+      "build",
+      "validation"
+    ]
+  },
+  {
+    "name": "brain-offline-replay-v1-extra-attestation",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "attestationKinds": [
+      "build",
+      "build",
+      "validation"
+    ],
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    }
+  },
+  {
+    "name": "replay-attestations-empty",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    },
+    "attestationKinds": []
+  },
+  {
+    "name": "replay-attestations-build",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    },
+    "attestationKinds": [
+      "build"
+    ]
+  },
+  {
+    "name": "replay-attestations-build-build",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    },
+    "attestationKinds": [
+      "build",
+      "build"
+    ]
+  },
+  {
+    "name": "replay-attestations-validation-validation",
+    "accepted": false,
+    "profile": "brain-offline-replay-v1",
+    "replay": {
+      "authority_root": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "offline_pack_id": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "reducer_inventory_id": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "generation_id": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "prior_state_root": null
+    },
+    "attestationKinds": [
+      "validation",
+      "validation"
+    ]
+  }
+]

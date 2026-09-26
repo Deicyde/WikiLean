@@ -29,7 +29,7 @@ from test_build_context import _document  # noqa: E402
 class FrontierPageTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.run(["python3", str(BUILDER)], cwd=ROOT, check=True,
+        subprocess.run([sys.executable, str(BUILDER)], cwd=ROOT, check=True,
                        capture_output=True, text=True)
         cls.html = PAGE.read_text(encoding="utf-8")
 

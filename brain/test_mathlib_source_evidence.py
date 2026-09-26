@@ -71,6 +71,12 @@ def fixture():
     return plan, raw, files
 
 
+class MathlibProfileRegistryTest(unittest.TestCase):
+    def test_current_profile_matches_reviewed_generation(self):
+        profile = CURRENT_PROFILE()
+        self.assertEqual(profile["profile_id"], evidence.profiles()["current_profile"])
+
+
 class MathlibEvidenceTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

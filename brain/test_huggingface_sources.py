@@ -20,6 +20,12 @@ WHEN = "2026-09-08T20:00:00Z"
 CURRENT_PROFILE = evidence.current_profile
 
 
+class HuggingFaceProfileRegistryTest(unittest.TestCase):
+    def test_current_profile_matches_reviewed_generation(self):
+        profile = CURRENT_PROFILE()
+        self.assertEqual(profile["profile_id"], evidence.profiles()["current_profile"])
+
+
 class HuggingFaceEvidenceTest(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
