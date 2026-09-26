@@ -45,9 +45,19 @@ Private evidence is retained under
 `planning-diagnostic.json`, `replay-diagnostic.json`, `legacy-diff.json`, and
 `compatibility-findings.json`. The subsequent source exporter retains the complete
 Mathlib subtree and a detailed comparison including those two module changes.
-This is diagnostic evidence, not a sealed source
-export or approved graph baseline. The active draft still binds the original
-committed files.
+Those September 8 reports are diagnostic evidence, not an approved graph baseline.
+The draft at that checkpoint still bound the original committed files.
+
+The September 23 continuation subsequently produced and independently verified the
+generation-2 source export `349546239e0973f5286eacabf61d493519d77ea1c1d5b6c06918ea40a16d11e9`
+under the private `completion-20260923/proposal-fold-exports` store. Its current candidate
+binds the composed curated/proposal outputs. The export retains all 452 proposal files,
+the exact five manual rows, 99 proposal-derived and 104 composed container rows, and
+2,100 FC rows. Its separate comparison records evidence for all 15 FC retractions and
+the two discovery module changes, with `authority_baseline_approved: false`.
+This completes the candidate provenance reconstruction; the full same-input legacy
+comparison and Jack's decision remain outstanding. See the
+[current handoff](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
 
 ## Decision proposed
 
@@ -77,12 +87,16 @@ when its history shows both.
 
 ## Consequences and action items
 
-- [ ] Encode and independently verify the exact curated/proposal contribution
-  split, with no production writer change.
-- [ ] Seal the fold's complete source dependencies and original decisions.
-- [ ] Add regression coverage preserving the five curated rows and retracting
-  the 15 completed identities without collapsing independent assertions.
-- [ ] Prepare both the pre-refactor-code comparison on identical verified
-  inputs and the separate source/decision drift report.
+- [x] Encode and independently verify the exact curated/proposal contribution
+  split in the private candidate export, with no production writer change.
+- [x] Seal the fold's complete source dependencies and original decisions in
+  that export.
+- [x] Add regression coverage preserving all five curated rows, completing rejected
+  declaration names, and retaining independent contribution origins. The real export
+  separately proves all 15 retractions have corresponding recorded rejection decisions;
+  the smaller test fixture does not enumerate all 15 corpus identities.
+- [x] Retain the separate source/decision drift report, including both discovery
+  module changes and all FC rejection evidence.
+- [ ] Prepare the full pre-refactor-code comparison on identical verified inputs.
 - [ ] Review the concrete graph delta and baseline before asserting P0-R
   compatibility or accepting genesis. This ADR grants no deployment approval.

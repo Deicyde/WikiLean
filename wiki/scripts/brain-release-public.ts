@@ -25,6 +25,7 @@ const EPOCH_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$/;
 const SELECTOR_SCHEMA = "wikilean.release-selector/v2";
 const RELEASE_SCHEMA = "wikilean.release/v1";
 const RELEASE_PROFILE = "brain-current-v1";
+const OFFLINE_REPLAY_PROFILE = "brain-offline-replay-v1";
 const STATIC_PREFIX = "site/assets/brain/";
 const CELLS_PREFIX = `${STATIC_PREFIX}cells/`;
 const REQUIRED_RELEASE_PATHS = new Set([
@@ -88,7 +89,14 @@ interface AttestationRef {
 
 interface ReleaseManifest {
   schema: typeof RELEASE_SCHEMA;
-  profile: typeof RELEASE_PROFILE;
+  profile: typeof RELEASE_PROFILE | typeof OFFLINE_REPLAY_PROFILE;
+  replay?: {
+    authority_root: string;
+    offline_pack_id: string;
+    reducer_inventory_id: string;
+    generation_id: string;
+    prior_state_root: string | null;
+  };
   release_id: string;
   authority: {
     git_commit: string;
@@ -346,17 +354,34 @@ function resolveContained(root: string, relativePath: string): string {
 
 function parseReleaseManifest(bytes: Buffer, label: string): ReleaseManifest {
   const raw = parseJsonObject(bytes, label);
+  const offlineReplay = raw.profile === OFFLINE_REPLAY_PROFILE;
   exactKeys(
     raw,
     label,
     [
       "schema", "profile", "release_id", "authority", "source_set_root", "semantic_epoch",
       "reducer", "artifacts", "attestations", "compatible_overlay_generation_ids",
+      ...(offlineReplay ? ["replay"] : []),
     ],
     ["created_at"],
   );
   if (raw.schema !== RELEASE_SCHEMA) fail(`${label} has unsupported schema`);
-  if (raw.profile !== RELEASE_PROFILE) fail(`${label} has unsupported profile`);
+  if (raw.profile !== RELEASE_PROFILE && !offlineReplay) fail(`${label} has unsupported profile`);
+  // Match the independent Python release verifier. Staging preserves the exact
+  // replay binding; it does not convert replay evidence into a compatibility
+  // release or replace the promoter's complete release/attestation verification.
+  if (offlineReplay) {
+    if (!isRecord(raw.replay)) fail(`${label}.replay must be an object`);
+    exactKeys(raw.replay, `${label}.replay`, [
+      "authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id", "prior_state_root",
+    ]);
+    for (const key of ["authority_root", "offline_pack_id", "reducer_inventory_id", "generation_id"]) {
+      hashValue(raw.replay[key], `${label}.replay.${key}`);
+    }
+    if (raw.replay.prior_state_root !== null) {
+      hashValue(raw.replay.prior_state_root, `${label}.replay.prior_state_root`);
+    }
+  }
   hashValue(raw.release_id, `${label}.release_id`);
 
   if (!isRecord(raw.authority)) fail(`${label}.authority must be an object`);
@@ -470,6 +495,9 @@ function parseReleaseManifest(bytes: Buffer, label: string): ReleaseManifest {
   if (attestationKinds.size !== 2 || !attestationKinds.has("build") || !attestationKinds.has("validation")) {
     fail(`${label}.attestations must contain build and validation entries`);
   }
+  if (offlineReplay && attestations.length !== 2) {
+    fail(`${label}.attestations must contain exactly one build and one validation entry for offline replay`);
+  }
   const sortedAttestationPaths = [...attestationPaths].sort();
   if (attestations.some((attestation, index) => attestation.path !== sortedAttestationPaths[index])) {
     fail(`${label}.attestations must be sorted by path`);
@@ -489,7 +517,8 @@ function parseReleaseManifest(bytes: Buffer, label: string): ReleaseManifest {
   if (raw.release_id !== expectedReleaseId) fail(`${label}.release_id does not identify the canonical manifest`);
   return {
     schema: RELEASE_SCHEMA,
-    profile: RELEASE_PROFILE,
+    profile: raw.profile as ReleaseManifest["profile"],
+    ...(offlineReplay ? { replay: raw.replay as ReleaseManifest["replay"] } : {}),
     release_id: raw.release_id as string,
     authority: raw.authority as ReleaseManifest["authority"],
     source_set_root: raw.source_set_root as string,

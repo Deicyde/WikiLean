@@ -675,6 +675,127 @@ class OfflinePackPreflightTest(unittest.TestCase):
         )
         self.assertTrue(compiled.manifest_path.is_file())
 
+    def test_v2_rejects_unused_source_before_store_or_corpus_inspection(self) -> None:
+        unused = copy.deepcopy(self.plan["sources"][0])
+        unused["source"] = "unused-fixture"
+        self.plan["sources"].append(unused)
+        self._write_plan()
+        with (
+            mock.patch.object(
+                compiler,
+                "_resolve_output_store",
+                side_effect=AssertionError("output store inspected before source-use check"),
+            ),
+            mock.patch.object(
+                compiler,
+                "_load_git_snapshot",
+                side_effect=AssertionError("Git corpus inspected before source-use check"),
+            ),
+            self.assertRaisesRegex(
+                preflight.PreflightError,
+                "source manifests are not bound to any reducer input: unused-fixture",
+            ),
+        ):
+            self._run()
+        self.assertFalse(self.store.exists())
+
+    def test_v3_rejects_complete_but_unused_acquisition_before_corpus_inspection(self) -> None:
+        self._upgrade_to_v3()
+        self.inventory["inputs"] = [self.inventory["inputs"][0]]
+        self.inventory["inventory_id"] = contracts.reducer_input_inventory_identity(
+            self.inventory
+        )
+        _write_canonical(self.inventory_path, self.inventory)
+        self.plan["inventory_id"] = self.inventory["inventory_id"]
+        self.plan["input_bindings"] = [self.plan["input_bindings"][0]]
+        self._write_plan()
+        with (
+            mock.patch.object(
+                compiler,
+                "_resolve_output_store",
+                side_effect=AssertionError("output store inspected before source-use check"),
+            ),
+            mock.patch.object(
+                compiler,
+                "_load_git_snapshot",
+                side_effect=AssertionError("Git corpus inspected before source-use check"),
+            ),
+            self.assertRaisesRegex(
+                preflight.PreflightError,
+                r"source manifests are not bound to any reducer input: external-fixture \(sha256:",
+            ),
+        ):
+            self._run()
+        self.assertFalse(self.store.exists())
+        # This is the failure previously discovered only after all corpus bytes
+        # had been copied and the candidate pack reached its sealed verifier.
+        with self.assertRaisesRegex(
+            compiler.PackCompilationError,
+            "source manifests are not bound to any reducer input",
+        ):
+            compiler.compile_offline_pack_v2(
+                self.plan_path,
+                self.inventory_path,
+                self.base / "compile-store",
+                roots={"external": self.external, "repo": self.repo},
+            )
+
+    def test_v3_accepts_verified_evidence_only_ancestor_in_sealed_pack(self) -> None:
+        # Two raw inputs require a native dataset pin, rather than a one-object
+        # content pin. The warning about that pin does not block compilation.
+        self.plan["sources"][1]["pin"] = {
+            "type": "dataset_revision", "value": "fixture-r1"
+        }
+        details = self._upgrade_to_v3()
+        ancestor = copy.deepcopy(self.plan["sources"][0])
+        ancestor["source"] = "ancestor-fixture"
+        self.plan["sources"].append(ancestor)
+        self.plan["sources"].sort(key=lambda source: source["source"])
+        ancestor_id = source_plan_contracts._source_manifest_from_plan(
+            ancestor, "$.sources[0]"
+        )["source_manifest_id"]
+
+        raw_parent = copy.deepcopy(ancestor["objects"][0])
+        raw_parent.update({"path": "ancestor-raw.json", "root": "external", "roles": ["raw"]})
+        (self.external / raw_parent["path"]).write_bytes(CURATED)
+        source = details["source"]
+        source["objects"].append(raw_parent)
+        source["objects"].sort(key=lambda item: item["name"])
+        source["normalization"]["inputs"] = ["identity", "raw"]
+        lineage = details["lineage"]
+        lineage["parent_source_manifest_ids"] = [ancestor_id]
+        lineage["inputs"].append({
+            **self._evidence_object(raw_parent),
+            "origin": {"kind": "source_manifest", "id": ancestor_id},
+        })
+        lineage["normalization_lineage_id"] = contracts.normalization_lineage_identity(lineage)
+        lineage_raw = contracts.canonical_json_bytes(lineage)
+        (self.external / details["lineage_path"]).write_bytes(lineage_raw)
+        source["evidence"]["normalization_lineage"] = self._evidence_ref(
+            details["lineage_path"], lineage_raw,
+            identity_field="normalization_lineage_id",
+            identity=lineage["normalization_lineage_id"],
+        )
+        self._write_plan()
+
+        report = self._run()
+        self.assertTrue(report["compile_ready"])
+        self.assertEqual(report["evidence"]["source_manifests"], 3)
+        compiled = compiler.compile_offline_pack_v2(
+            self.plan_path,
+            self.inventory_path,
+            self.base / "compile-store",
+            roots={"external": self.external, "repo": self.repo},
+        )
+        pack, _raw = contracts.load_canonical_json(compiled.manifest_path)
+        self.assertNotIn(ancestor_id, {
+            identity for binding in pack["input_bindings"]
+            for identity in binding["source_manifest_ids"]
+        })
+        contracts.verify_offline_pack_files(
+            pack, compiled.root, manifest_path=compiled.manifest_path
+        )
+
     def test_rejects_mutable_declared_size_mismatch(self) -> None:
         self.plan["sources"][1]["objects"][0]["bytes"] += 1
         self._write_plan()
@@ -1029,6 +1150,9 @@ class OfflinePackPreflightTest(unittest.TestCase):
         }
         self.plan["sources"].append(duplicate)
         self.plan["sources"].sort(key=lambda source: source["source"])
+        self.plan["input_bindings"][1]["sources"] = [
+            "duplicate-fixture", "external-fixture"
+        ]
         self._write_plan()
         result = self._run()
         self.assertEqual(
