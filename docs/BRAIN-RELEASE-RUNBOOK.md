@@ -14,8 +14,12 @@ release gates pass:
    `site/out/brain-releases/<manifest-sha256>/`. The logical `release_id` remains
    timestamp and attestation independent.
 2. `brain/tools/verify_release.py` independently verifies the frozen bytes and attestations.
-   The current `brain-current-v1` profile requires the WLBN SQLite schema v2 and
-   path-specific media/logical formats; legacy schema-v1 indexes are not publishable.
+   Both `brain-current-v1` compatibility releases and `brain-offline-replay-v1`
+   replay releases require the WLBN SQLite schema v2 and path-specific media/logical
+   formats; legacy schema-v1 indexes are not publishable. Public staging accepts
+   both profiles, preserving the replay binding and exact manifest bytes. Replay
+   releases must carry their complete five-field replay binding and exactly one
+   build and one validation attestation reference.
 3. `site/ops/brain_public_baseline.py` freezes every non-Brain Worker asset into a
    separate content-addressed, read-only baseline. Required shell files and the
    declaration, suffix, and premise indexes must all be present and exactly close
