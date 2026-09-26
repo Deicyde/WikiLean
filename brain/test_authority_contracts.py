@@ -3716,6 +3716,30 @@ class ReleaseVerificationTest(unittest.TestCase):
         write_canonical(manifest_path, release)
         return release, manifest_path
 
+    def test_release_profile_conformance_with_public_staging(self) -> None:
+        """Keep the public stager's profile boundary aligned with this verifier."""
+        base, _manifest_path = self.make_release()
+        cases = json.loads((HERE / "authority/fixtures/release-profile-v1-conformance.json").read_text())
+        for case in cases:
+            with self.subTest(case=case["name"]):
+                release = copy.deepcopy(base)
+                release["profile"] = case["profile"]
+                if "replay" in case:
+                    release["replay"] = case["replay"]
+                if "attestationKinds" in case:
+                    kinds = case["attestationKinds"]
+                    release["attestations"] = sorted([
+                        {"kind": kind, "path": f"attestations/{kind}-{index}.json",
+                         "sha256": ZERO_DIGEST, "bytes": 1}
+                        for index, kind in enumerate(kinds)
+                    ], key=lambda ref: ref["path"])
+                release["release_id"] = contracts.release_identity(release)
+                if case["accepted"]:
+                    self.assertEqual(contracts.validate_release_manifest(release), release)
+                else:
+                    with self.assertRaises(contracts.VerificationError):
+                        contracts.validate_release_manifest(release)
+
     def refresh_sqlite_ref(self, release: dict[str, object]) -> None:
         sqlite_path = self.root / "brain/data/brain.sqlite3"
         for artifact in release["artifacts"]:

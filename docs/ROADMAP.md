@@ -157,13 +157,24 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-09-23)
+### Current Brain execution queue (updated 2026-09-26)
 
 The current operational checkpoint is
-[`BRAIN-SQLITE-HANDOFF-2026-09-23.md`](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
+[`BRAIN-SQLITE-HANDOFF-2026-09-26.md`](BRAIN-SQLITE-HANDOFF-2026-09-26.md), with the
+retained pack/source details in the [September 23 handoff](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
 The SQLite stack and PRs #32–#34 merged on 2026-09-21. Earlier handoffs and the
 [review map](BRAIN-SQLITE-PR-REVIEW.md) preserve implementation history; their missing-store,
 pending-merge, live-process, and quota instructions are no longer the current queue.
+
+The September 26 continuation fixes a publication mismatch: the verified replay
+producer emits `brain-offline-replay-v1`, while public staging previously accepted
+only `brain-current-v1`. Staging now validates both profiles with shared Python/TypeScript
+conformance cases, preserves replay bindings and exact manifest bytes, and retains
+the independent full-release verification gates. PR #35's prepared 2,699-file public
+inventory was rehashed and its required payload/index closure rechecked. Production
+still serves the August 28 snapshot; its release selector is absent. Full-corpus
+execution remains pending storage, final-commit binding, and the recorded source-policy
+and semantic decisions.
 
 The original Mac's private evidence store was recovered. New work under
 `/Users/jack/.local/share/wikilean-migration/completion-20260923` preserves the old captures
