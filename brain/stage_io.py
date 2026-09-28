@@ -261,9 +261,13 @@ def publish_files_no_replace(
 
     Sources must live on the same filesystem as their destinations.  Prepared
     replay workspaces satisfy that condition; checking it explicitly avoids a
-    late ``EXDEV`` after an expensive SQLite build.  The owned scratch tree is
-    removed before success is reported.  If publication, fsync, or cleanup
-    fails, every output still owned by this call is removed and synchronized.
+    late ``EXDEV`` after an expensive SQLite build.  When the scratch and output
+    roots are separate bind mounts of that one filesystem (the sealed replay
+    sandboxes mount them independently), the kernel still refuses the hard
+    link, and each file is instead published as an fsynced private copy moved
+    into place without replacement.  The owned scratch tree is removed before
+    success is reported.  If publication, fsync, or cleanup fails, every output
+    still owned by this call is removed and synchronized.
     """
     pairs = tuple(
         (Path(source), Path(destination)) for source, destination in publications
@@ -299,10 +303,22 @@ def publish_files_no_replace(
     published: list[tuple[Path, os.stat_result]] = []
     try:
         for source, destination in pairs:
-            os.link(source, destination, follow_symlinks=False)
-            published.append((destination, source_metadata[source]))
+            try:
+                os.link(source, destination, follow_symlinks=False)
+            except OSError as error:
+                if error.errno != errno.EXDEV:
+                    raise
+                # Same filesystem, but a different mount: the replay sandboxes
+                # bind the scratch and output roots separately, and Linux
+                # refuses hard links across mounts even on one filesystem.
+                # Publish an fsynced private copy with the same no-replace
+                # guarantee instead of failing after the expensive stage.
+                expected = _copy_no_replace(source, destination, source_metadata[source])
+            else:
+                expected = source_metadata[source]
+            published.append((destination, expected))
             linked = destination.lstat()
-            if not os.path.samestat(source_metadata[source], linked):
+            if not os.path.samestat(expected, linked):
                 raise RuntimeError(
                     f"published output does not match its source: {destination}"
                 )
@@ -329,6 +345,46 @@ def publish_files_no_replace(
         if rollback_errors and hasattr(exc, "add_note"):
             exc.add_note("stage publication rollback issues: " + "; ".join(rollback_errors))
         raise
+
+
+def _copy_no_replace(
+    source: Path, destination: Path, metadata: os.stat_result
+) -> os.stat_result:
+    """Publish a private, fsynced copy when a hard link crosses a mount.
+
+    The copy is written exclusively into the destination directory, given the
+    source's permission bits, synchronized, then moved into place with a
+    no-replace rename.  The returned metadata identifies the published inode so
+    callers can detect later replacement exactly as they do for a hard link.
+    """
+    parent = destination.parent
+    temporary = parent / f".{destination.name}.publish-{os.getpid()}.tmp"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(temporary, flags, 0o600)
+    try:
+        try:
+            with os.fdopen(descriptor, "wb") as target, source.open("rb") as origin:
+                descriptor = -1
+                shutil.copyfileobj(origin, target, 1024 * 1024)
+                target.flush()
+                os.fchmod(target.fileno(), stat.S_IMODE(metadata.st_mode))
+                os.fsync(target.fileno())
+                copied = os.fstat(target.fileno())
+        finally:
+            if descriptor != -1:
+                os.close(descriptor)
+        if copied.st_size != metadata.st_size:
+            raise OSError(
+                f"stage publication copy size differs from its source: {source}"
+            )
+        _rename_no_replace(temporary, destination)
+    except BaseException:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+        raise
+    return copied
 
 
 def _rename_no_replace(source: Path, destination: Path) -> None:
