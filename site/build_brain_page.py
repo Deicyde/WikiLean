@@ -3012,42 +3012,29 @@ const XREF_NAME = {mathworld: "MathWorld", nlab: "nLab", proofwiki: "ProofWiki",
   eom: "Encyclopedia of Math", planetmath: "PlanetMath", metamath: "Metamath",
   lmfdb_knowl: "LMFDB", oeis: "OEIS", dlmf: "DLMF", msc: "MSC",
   stacks: "Stacks Project", kerodon: "Kerodon"};
-// Whether a source's LICENCE permits storing its text — mirrors
-// catalog/data/source_registry.json `crossref_sources.<db>.ingest.snippets`, the
-// single source of truth (and nodes.jsonl `_meta.licenses.external`, which names
-// mathworld/dlmf/eom/kerodon as the no-content sources).
-//
-// This is a PER-SOURCE POLICY and it is NOT the same question as "did this organ
-// ship with text". Conflating the two is a licensing LIE, and it fires constantly:
-// all 296 supercell area-page organs are snippet-stripped for supercells.json's
-// eager-fetch byte budget, and 160 of them come from sources that expressly permit
-// their text (stacks 106, proofwiki 27, nlab 22, planetmath 5). Stacks is GFDL and
-// the text is sitting in catalog/data/external/stacks_pages.jsonl — telling a
-// reader Stacks' licence forbids quoting it defames the source, and licensing
-// honesty is this project's whole point. Distinguish the two cases; never guess.
+// Mirrors catalog/data/source_registry.json `crossref_sources.<db>.ingest.snippets`.
+// This describes our ingestion configuration, not a license grant or whether a
+// particular organ includes text. Supercell organs can omit enabled snippets.
 const DB_SNIPPETS = {
   nlab: true, proofwiki: true, lmfdb_knowl: true, oeis: true, planetmath: true,
   stacks: true,                                    // ingest.snippets: true
   mathworld: false, eom: false, dlmf: false, kerodon: false,   // ingest.snippets: false
 };
-// Why is there no text here? Two different facts, and they must never read alike.
-// Returns null when we genuinely do not know the source's policy — in which case we
-// say only what we can see (it isn't in this shard), never what the licence allows.
+// Explain the configured content scope or the missing excerpt without inferring
+// what a source's license permits. Unknown sources only get an absence statement.
 function snippetAbsence(db) {
   const name = XREF_NAME[db] || db || "this source";
   if (DB_SNIPPETS[db] === false)
-    return {licensed: false, short: `no stored content — ${name}'s licence permits ids, titles and links only`,
-            prose: `stores ids, titles and links only — ${name}'s licence permits no more`};
+    return {snippetsEnabled: false, short: `this view uses metadata and links from ${name}, without text excerpts`,
+            prose: `is represented here by metadata and links, without a text excerpt`};
   if (DB_SNIPPETS[db] === true)
-    return {licensed: true, short: `${name}'s licence permits its text, but this snippet wasn't carried into this shard`,
-            prose: `permits its text under its own licence, but this snippet wasn't carried into this shard`};
-  return {licensed: null, short: `no text in this shard`,
-          prose: `has no text stored in this shard`};
+    return {snippetsEnabled: true, short: `no ${name} excerpt is included in this view`,
+            prose: `has no excerpt included in this view`};
+  return {snippetsEnabled: null, short: `no excerpt in this view`,
+          prose: `has no excerpt included in this view`};
 }
-// The pointer to the surface that DOES serve the text — only ever shown when the
-// licence actually permits it (or when we don't know), never as a promise the
-// source's terms forbid us to keep.
-const SNIP_API = `fetch it from <code>/api/brain/snippets</code>`;
+// Offer a lookup only when snippets are not disabled; an excerpt may be absent.
+const SNIP_API = `check for an excerpt at <code>/api/brain/snippets</code>`;
 const XREF_URL = {
   mathworld: v => `https://mathworld.wolfram.com/${v}.html`,
   nlab: v => `https://ncatlab.org/nlab/show/${encodeURIComponent(v)}`,
@@ -3371,13 +3358,10 @@ async function enrichEvidence(root) {
       box.innerHTML = `“${esc(o.snippet)}”<span class="cite">— from “${esc(title)}” on ${
         esc(dbName)} · ${esc(o.snippet_license)}${link}</span>`;
     } else {
-      // No text. Which reason? EVERY co-page trace lands here (rule 4 routes a
-      // multi-claimant page to a SUPERCELL, whose organs ship snippet-stripped),
-      // so "the licence forbids it" would be a lie on most of them — see
-      // DB_SNIPPETS. Say the true thing and point at the surface that has it.
+      // An omitted excerpt does not establish a source's licensing conditions.
       const a = snippetAbsence(db);
       box.innerHTML = `<span class="cite">“${esc(title)}” on ${esc(dbName)} ${
-        esc(a.prose)}${a.licensed === false ? "." : ` — ${SNIP_API}.`}${link}</span>`;
+        esc(a.prose)}${a.snippetsEnabled === false ? "." : ` — ${SNIP_API}.`}${link}</span>`;
     }
   });
 }
@@ -3493,10 +3477,8 @@ function organHtml(o, anchor) {
             <span class="badge n">${aa.not_formalized} not</span>` : ""}
       <span class="chip"><a href="https://en.wikipedia.org/wiki/${esc(o.id)}" rel="noopener" target="_blank">Wikipedia</a></span></div>`;
   } else if (o.kind === "page") {
-    // A snippet NEVER renders without its licence. When there is no text, say
-    // WHICH of the two reasons applies — see DB_SNIPPETS: a licence that permits
-    // ids/titles/links only is a fact about the SOURCE; a missing snippet on an
-    // area-page organ is a fact about THIS SHARD, and the text is a call away.
+    // Keep the existing attribution requirement; describe missing text without
+    // treating ingestion flags or an omitted excerpt as a license determination.
     const readLink = url
       ? ` · <a href="${esc(url)}" rel="noopener" target="_blank">read at ${
         esc(XREF_NAME[o.db] || o.db)} ↗</a>` : "";
@@ -3506,7 +3488,7 @@ function organHtml(o, anchor) {
     else {
       const a = snippetAbsence(o.db);
       body += `<div class="srclic">${esc(a.short)}${
-        a.licensed === false ? "" : ` — ${SNIP_API}`}${readLink}</div>`;
+        a.snippetsEnabled === false ? "" : ` — ${SNIP_API}`}${readLink}</div>`;
     }
     if (o.kind_hint) body += `<p class="osub">${esc(o.kind_hint)}</p>`;
     // `claimants` ships as an ARRAY of the claiming cell ids (SCHEMA rule 4 — 121
