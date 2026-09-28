@@ -2,9 +2,11 @@
 """Hermetic ownership and rollback tests for the top-level Brain assets."""
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
+import stat
 import sys
 import tempfile
 import unittest
@@ -237,6 +239,75 @@ class StageIOOwnershipTest(unittest.TestCase):
 
             self.assertTrue(replaced)
             self.assertEqual(output.read_bytes(), b"competitor")
+
+    def test_cross_mount_publication_copies_without_replacing(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw).resolve()
+            scratch_root = base / "scratch"
+            output_root = base / "output"
+            scratch_root.mkdir()
+            output_root.mkdir()
+            first = output_root / "result.json"
+            second = output_root / "brain.sqlite3"
+
+            def cross_mount(src, destination, *, follow_symlinks=True):
+                raise OSError(errno.EXDEV, "Invalid cross-device link", str(src))
+
+            with stage_io.owned_directory(
+                scratch_root, scratch_root / "stage/publish"
+            ) as ownership:
+                source = ownership.path / "result.json"
+                database = ownership.path / "brain.sqlite3"
+                stage_io.write_bytes_exclusive(source, b"ours", mode=0o644)
+                stage_io.write_bytes_exclusive(database, b"db" * 4096, mode=0o444)
+                with mock.patch.object(stage_io.os, "link", side_effect=cross_mount):
+                    stage_io.publish_files_no_replace(
+                        [(source, first), (database, second)], scratch=ownership
+                    )
+
+            self.assertEqual(first.read_bytes(), b"ours")
+            self.assertEqual(second.read_bytes(), b"db" * 4096)
+            self.assertEqual(stat.S_IMODE(first.lstat().st_mode), 0o644)
+            self.assertEqual(stat.S_IMODE(second.lstat().st_mode), 0o444)
+            self.assertEqual(first.lstat().st_nlink, 1)
+            self.assertFalse(ownership.path.exists())
+            self.assertEqual(
+                sorted(path.name for path in output_root.iterdir()),
+                ["brain.sqlite3", "result.json"],
+            )
+
+    def test_cross_mount_publication_rolls_back_on_second_output_race(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw).resolve()
+            scratch_root = base / "scratch"
+            output_root = base / "output"
+            scratch_root.mkdir()
+            output_root.mkdir()
+            first = output_root / "first.json"
+            second = output_root / "second.json"
+
+            def cross_mount(src, destination, *, follow_symlinks=True):
+                if Path(destination) == second:
+                    second.write_bytes(b"competitor")
+                raise OSError(errno.EXDEV, "Invalid cross-device link", str(src))
+
+            with stage_io.owned_directory(
+                scratch_root, scratch_root / "stage/publish"
+            ) as ownership:
+                one = ownership.path / "first.json"
+                two = ownership.path / "second.json"
+                stage_io.write_bytes_exclusive(one, b"one", mode=0o644)
+                stage_io.write_bytes_exclusive(two, b"two", mode=0o644)
+                with mock.patch.object(
+                    stage_io.os, "link", side_effect=cross_mount
+                ), self.assertRaises(FileExistsError):
+                    stage_io.publish_files_no_replace(
+                        [(one, first), (two, second)], scratch=ownership
+                    )
+
+            self.assertFalse(first.exists())
+            self.assertEqual(second.read_bytes(), b"competitor")
+            self.assertEqual(sorted(path.name for path in output_root.iterdir()), ["second.json"])
 
     def test_consumed_scratch_token_ignores_path_reuse(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
