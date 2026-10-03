@@ -44,11 +44,11 @@ WRANGLER_INTEGRITY = (
 )
 WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
 PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "8fb821603ed99e436c76b4e283e64eedc664363601d08593fee6ab4276323c34"
+ACQUIRER_WRAPPER_SHA256 = "84c5348d2d3875f708388a3d6ab23efc6972d8a9d32e5928396ccaad8d2cce3c"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
-        "sha256": "1b36939218889694c4b7bfc55cb63f8cfc35bd6f69eda2bd52b944ad157c705a",
+        "sha256": "018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e",
     },
     {
         "path": "brain/tools/authority_contracts.py",
@@ -64,21 +64,21 @@ LOCAL_DEPENDENCY_PINS = (
 REVIEWED_ACQUIRER_GENERATIONS = (
     ('160254977bc70370920fb0df03cfa00389db4876df35e3d816656bccec05c35c',
      ({'path': 'brain/stage_io.py',
-       'sha256': '1b36939218889694c4b7bfc55cb63f8cfc35bd6f69eda2bd52b944ad157c705a'},
+       'sha256': '018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e'},
       {'path': 'brain/tools/authority_contracts.py',
        'sha256': 'fd87f76991f52f522587d0ef45cf4605b00f0970a23f0dfe1b50d6597c9a9319'},
       {'path': 'brain/tools/execution_environment.py',
        'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
     ('350fa3d7c130d3c3c7b8057a8bcf39c3d5ce7536e2559c342833a5f56e879aa1',
      ({'path': 'brain/stage_io.py',
-       'sha256': '1b36939218889694c4b7bfc55cb63f8cfc35bd6f69eda2bd52b944ad157c705a'},
+       'sha256': '018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e'},
       {'path': 'brain/tools/authority_contracts.py',
        'sha256': 'e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc'},
       {'path': 'brain/tools/execution_environment.py',
        'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
     (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
     ("47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650", (
-        {"path": "brain/stage_io.py", "sha256": "1b36939218889694c4b7bfc55cb63f8cfc35bd6f69eda2bd52b944ad157c705a"},
+        {"path": "brain/stage_io.py", "sha256": "018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e"},
         {"path": "brain/tools/authority_contracts.py", "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6"},
         {"path": "brain/tools/execution_environment.py", "sha256": "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd"},
     )),
