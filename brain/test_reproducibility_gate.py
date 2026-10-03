@@ -223,6 +223,65 @@ class CompatibilityTests(unittest.TestCase):
             with self.assertRaisesRegex(gate.GateError, "roots differ|content differs"):
                 gate.verify_compatibility(report, policy)
 
+    def test_node_pin_only_changes_pass_only_as_reviewed_provenance(self):
+        before, after = copy.deepcopy(self.fixture), copy.deepcopy(self.fixture)
+        before["nodes"][0]["pin"] = "legacy-snapshot-digest"
+        after["nodes"][0]["pin"] = "sha256:" + "b" * 64
+        semantic_fixtures.write_fixture(self.before, before)
+        semantic_fixtures.write_fixture(self.after, after)
+        report = self.report()
+        self.assertEqual(report["semantic"]["nodes"]["changed"][0]["changed_fields"], ["pin"])
+        with self.assertRaisesRegex(gate.GateError, "provenance changes"):
+            gate.verify_compatibility(report, {"mode": "exact", "expected_report_sha256": None})
+        policy = {"mode": "reviewed-provenance-only", "expected_report_sha256": gate.sha(gate.report_bytes(report))}
+        self.assertEqual(gate.verify_compatibility(report, policy)["provenance"], "reviewed-only")
+        after["nodes"][0]["label"] = "Alpha renamed"
+        semantic_fixtures.write_fixture(self.after, after)
+        report = self.report()
+        policy = {"mode": "reviewed-provenance-only", "expected_report_sha256": gate.sha(gate.report_bytes(report))}
+        with self.assertRaisesRegex(gate.GateError, "cannot waive"):
+            gate.verify_compatibility(report, policy)
+
+    def test_provenance_table_and_index_changes_pass_only_with_identical_organs_and_traces(self):
+        trace = {"kind": "formalizes", "src": "Q1", "dst": "decl:Mathlib:Alpha", "evidence": {"match_kind": "exact"}, "prov": 0}
+        before = copy.deepcopy(self.fixture)
+        before["synapses"] = [{"src": "cell:Q1", "dst": "cell:Q2", "weight": 1, "kinds": {"formalizes": 1}, "traces": [trace]}]
+        semantic_fixtures.write_fixture(self.before, before)
+        reindexed = {**semantic_fixtures.META, "prov": [semantic_fixtures.PROV_B, semantic_fixtures.PROV_A]}
+        for label, meta, members in (("same provenance under new indices", reindexed, slice(None)),
+                                     ("different provenance for one organ and trace", None, slice(0, 1))):
+            with self.subTest(label):
+                after = copy.deepcopy(before)
+                for item in after["cells"][0]["organs"][members] + after["synapses"][0]["traces"][members]:
+                    item["prov"] = 1
+                semantic_fixtures.write_fixture(self.after, after, meta=meta)
+                report = self.report()
+                self.assertEqual(report["semantic"]["summary"]["synapses"], {"changed": 1})
+                self.assertEqual(report["semantic"]["summary"]["organ_membership"]["provenance_only"], 0 if meta else 1)
+                with self.assertRaises(gate.GateError):
+                    gate.verify_compatibility(report, {"mode": "exact", "expected_report_sha256": None})
+                policy = {"mode": "reviewed-provenance-only", "expected_report_sha256": gate.sha(gate.report_bytes(report))}
+                self.assertEqual(gate.verify_compatibility(report, policy)["provenance"], "reviewed-only")
+        for label, edit in (("trace kind", lambda after: after["synapses"][0]["traces"][0].update(kind="links")),
+                            ("organ bond", lambda after: after["cells"][0]["organs"][0].update(bond="field")),
+                            ("extra trace", lambda after: after["synapses"][0]["traces"].append(dict(trace)))):
+            with self.subTest(label):
+                after = copy.deepcopy(before)
+                edit(after)
+                semantic_fixtures.write_fixture(self.after, after)
+                report = self.report()
+                policy = {"mode": "reviewed-provenance-only", "expected_report_sha256": gate.sha(gate.report_bytes(report))}
+                with self.assertRaisesRegex(gate.GateError, "cannot waive"):
+                    gate.verify_compatibility(report, policy)
+
+    def test_provenance_index_outside_its_table_is_rejected_before_any_comparison_result(self):
+        after = copy.deepcopy(self.fixture)
+        after["synapses"] = [{"src": "cell:Q1", "dst": "cell:Q2", "weight": 1, "kinds": {"formalizes": 1},
+                              "traces": [{"kind": "formalizes", "src": "Q1", "dst": "decl:Mathlib:Alpha", "prov": 7}]}]
+        semantic_fixtures.write_fixture(self.after, after)
+        with self.assertRaisesRegex(gate.GateError, "_meta.prov"):
+            self.report()
+
     def test_diagnostic_cli_preserves_exact_source_decimals_without_claiming_authority(self):
         raw = (self.after / "edges.jsonl").read_bytes().replace(
             b'"confidence":"high"', b'"confidence":0.123456789012345678901')
