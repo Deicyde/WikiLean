@@ -156,7 +156,7 @@ LOCAL_DEPENDENCIES = (
     (
         "brain/stage_io.py",
         BRAIN / "stage_io.py",
-        "1b36939218889694c4b7bfc55cb63f8cfc35bd6f69eda2bd52b944ad157c705a",
+        "018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e",
     ),
     (
         "brain/tools/authority_contracts.py",
