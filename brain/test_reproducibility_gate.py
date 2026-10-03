@@ -59,7 +59,7 @@ def complete_output(root: Path):
     database.unlink()
     store.write_sqlite_from_jsonl(database, root / "brain/data")
     for path in root.rglob("*"):
-        path.chmod(0o700 if path.is_dir() else 0o444 if path == database else 0o644)
+        path.chmod(0o700 if path.is_dir() else 0o600 if path == database else 0o644)
     return snapshot
 
 
@@ -98,12 +98,12 @@ class OutputVerificationTests(unittest.TestCase):
                 database.chmod(0o644)
                 with sqlite3.connect(database) as connection:
                     connection.execute(statement)
-                database.chmod(0o444)
+                database.chmod(0o600)
                 with self.assertRaises(gate.contracts.VerificationError):
                     self.measure()
                 database.chmod(0o644)
                 database.write_bytes(original)
-                database.chmod(0o444)
+                database.chmod(0o600)
 
     def test_static_shard_tampering_fails_independent_projection_verification(self):
         path = self.output / "site/assets/brain/cells/ce.json"
