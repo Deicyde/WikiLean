@@ -53,6 +53,14 @@ IMPLEMENTATION_PATHS = tuple(sorted({
     "brain/tools/build_replay_release.py", "brain/tools/build_release.py",
 }))
 PROVENANCE_SECTIONS = {"edges", "organ_membership"}
+# The provenance representation an explicitly reviewed migration may change: a
+# node's source `pin`, an edge row's `provenance` object, and the interned
+# provenance table (`_meta.prov`) that organs (cells) and traces (synapses)
+# address through integer `prov` indices. Every other byte of every semantic
+# artifact, and every artifact that carries no provenance, must still match.
+PROVENANCE_PROJECTION_POLICY = "strip-provenance/v2"
+PROVENANCE_PROJECTION_DOMAIN = "wikilean.semantic-content-without-provenance.v2"
+PROVENANCE_PROJECTED = ("nodes", "edges", "edges_links", "cells", "synapses")
 
 
 class GateError(ValueError):
@@ -233,29 +241,56 @@ def measure_output(root: Path, *, semantic_epoch: str, context=None) -> dict:
             "entries": before, "artifacts": list(artifacts.values())}
 
 
+def provenance_projection(name: str, path: Path) -> str:
+    """Order-independent multiset root of an artifact's rows with exactly its
+    provenance representation removed. The representation itself must be well
+    formed: every stripped `prov` index has to address the file's own table."""
+    table = None
+
+    def strip_index(item: Any) -> None:
+        require(isinstance(item, dict), name + ": organs and traces must be objects")
+        if "prov" in item:
+            index = item.pop("prov")
+            require(table is not None and isinstance(index, int) and not isinstance(index, bool)
+                    and 0 <= index < len(table), name + ": prov must index the leading _meta.prov table")
+
+    rows = Counter()
+    with path.open("rb") as stream:
+        for raw in stream:
+            row = contracts.parse_artifact_json_bytes(raw, location="provenance projection")
+            require(isinstance(row, dict), "provenance projection requires JSONL objects")
+            if "_meta" in row:
+                require(set(row) == {"_meta"}, "metadata cannot hide a semantic row")
+                if name in {"cells", "synapses"}:
+                    require(table is None and isinstance(row["_meta"], dict), name + ": one leading _meta row is required")
+                    table = row["_meta"].get("prov", [])
+                    require(isinstance(table, list), name + ": _meta.prov must be an array")
+                continue
+            if name == "nodes":
+                require(isinstance(row.pop("pin", ""), str), "node pin must be a string")
+            elif name in {"edges", "edges_links"}:
+                require(isinstance(row.pop("provenance", {}), dict), "edge provenance must be an object")
+            else:
+                members = row.get("organs" if name == "cells" else "traces", [])
+                require(isinstance(members, list), name + ": organs and traces must be arrays")
+                for member in members:
+                    strip_index(member)
+            rows[sha(contracts.canonical_artifact_json_bytes(row))] += 1
+    return contracts.domain_hash(PROVENANCE_PROJECTION_DOMAIN,
+        [{"sha256": digest, "count": count} for digest, count in sorted(rows.items())])
+
+
 def comparison_report(baseline: Path, candidate: Path) -> dict:
     report = semantic_diff.compare_paths(baseline, candidate)
     # Absolute paths and optional release labels identify observations, not semantics.
     report.pop("from")
     report.pop("to")
-    def projection(path: Path) -> str:
-        rows = Counter()
-        with path.open("rb") as stream:
-            for raw in stream:
-                row = contracts.parse_artifact_json_bytes(raw, location="provenance projection")
-                require(isinstance(row, dict), "provenance projection requires JSONL objects")
-                if "_meta" in row:
-                    require(set(row) == {"_meta"}, "metadata cannot hide a semantic row")
-                    continue
-                row.pop("provenance", None)
-                rows[sha(contracts.canonical_artifact_json_bytes(row))] += 1
-        return contracts.domain_hash("wikilean.edge-content-without-provenance.v1",
-            [{"sha256": digest, "count": count} for digest, count in sorted(rows.items())])
     before, after = semantic_diff._resolve_snapshot(baseline), semantic_diff._resolve_snapshot(candidate)
-    roots = {semantic_diff.RELEASE_PATHS[name]: {"from": projection(before.artifacts[name]), "to": projection(after.artifacts[name])}
-             for name in ("edges", "edges_links") if name in before.artifacts and name in after.artifacts}
-    return {"schema": "wikilean.reproducibility-compatibility/v1", "semantic": report,
-            "provenance_projection": {"policy": "strip-only-edge-provenance/v1", "roots": roots}}
+    roots = {semantic_diff.RELEASE_PATHS[name]: {"from": provenance_projection(name, before.artifacts[name]),
+                                                "to": provenance_projection(name, after.artifacts[name])}
+             for name in PROVENANCE_PROJECTED if name in before.artifacts and name in after.artifacts}
+    return {"schema": "wikilean.reproducibility-compatibility/v2", "semantic": report,
+            "provenance_projection": {"policy": PROVENANCE_PROJECTION_POLICY, "roots": roots}}
 
 
 def report_bytes(report: dict) -> bytes:
@@ -265,12 +300,14 @@ def report_bytes(report: dict) -> bytes:
 
 def verify_compatibility(report: dict, policy: dict) -> dict:
     exact(report, {"schema", "semantic", "provenance_projection"}, "compatibility report")
-    require(report["schema"] == "wikilean.reproducibility-compatibility/v1", "unsupported compatibility report")
+    require(report["schema"] == "wikilean.reproducibility-compatibility/v2", "unsupported compatibility report")
     semantic = report["semantic"]
     summary = semantic_diff.summarize_report(semantic)
     require(semantic.get("summary") == summary and semantic.get("different") == semantic_diff.summary_has_differences(summary),
             "semantic comparison summary disagrees with detailed evidence")
     require(semantic.get("coverage", {}).get("complete") is True, "semantic baseline comparison lacks complete artifact coverage")
+    projection = exact(report["provenance_projection"], {"policy", "roots"}, "provenance projection")
+    projected_equal = {path: item["from"] == item["to"] for path, item in projection["roots"].items()}
     changes = {(section, kind): count for section, values in summary.items() for kind, count in values.items() if count}
     def non_provenance(variants):
         rows = Counter()
@@ -278,13 +315,23 @@ def verify_compatibility(report: dict, policy: dict) -> dict:
             row = {key: value for key, value in item["row"].items() if key != "provenance"}
             rows[contracts.canonical_artifact_json_bytes(row)] += item["count"]
         return rows
+    def without_pin(row):
+        return {key: value for key, value in row.items() if key != "pin"}
     # semantic-diff/v2 intentionally labels same-source pin edits as "changed".
     # Independently prove those exact variants retain every non-provenance byte
     # and multiplicity before accepting an explicitly reviewed migration report.
     changed_edges_are_provenance = all(non_provenance(item["before"]) == non_provenance(item["after"])
                                        for item in semantic["edges"]["changed"])
+    # A node whose only differing field is its source pin is "changed" the same way.
+    changed_nodes_are_pins = all(item["changed_fields"] == ["pin"] and without_pin(item["before"]) == without_pin(item["after"])
+                                 for item in semantic["nodes"]["changed"])
+    # Synapses are compared as one artifact root; only the projection can show
+    # that their traces differ by provenance table and index alone.
+    synapses_are_provenance = projected_equal.get(semantic_diff.RELEASE_PATHS["synapses"]) is True
     provenance_only = all((section in PROVENANCE_SECTIONS and kind == "provenance_only") or
-                          (section == "edges" and kind == "changed" and changed_edges_are_provenance)
+                          (section == "edges" and kind == "changed" and changed_edges_are_provenance) or
+                          (section == "nodes" and kind == "changed" and changed_nodes_are_pins) or
+                          (section == "synapses" and kind == "changed" and synapses_are_provenance)
                           for section, kind in changes)
     if policy["mode"] == "exact":
         require(not changes, "approved baseline has graph/topology/content/provenance changes")
@@ -292,13 +339,11 @@ def verify_compatibility(report: dict, policy: dict) -> dict:
                 "exact semantic artifact roots differ even though the summarized JSON values agree")
     else:
         require(provenance_only, "reviewed provenance policy cannot waive graph/topology/content or snippet changes")
-        projection = report["provenance_projection"]
-        require(projection["policy"] == "strip-only-edge-provenance/v1" and set(projection["roots"]) ==
-                {"brain/data/edges.jsonl", "brain/data/edges_links.jsonl"}, "incomplete provenance projection")
-        require(all(item["from"] == item["to"] for item in projection["roots"].values()),
-                "exact non-provenance edge content differs")
+        require(projection["policy"] == PROVENANCE_PROJECTION_POLICY and set(projection["roots"]) ==
+                {semantic_diff.RELEASE_PATHS[name] for name in PROVENANCE_PROJECTED}, "incomplete provenance projection")
+        require(all(projected_equal.values()), "exact non-provenance semantic content differs")
         require(all(item["from"] == item["to"] for path, item in semantic["semantic_artifacts"].items()
-                    if path not in projection["roots"]), "non-edge semantic artifact roots differ")
+                    if path not in projection["roots"]), "provenance-free semantic artifact roots differ")
         require(sha(report_bytes(report)) == policy["expected_report_sha256"], "provenance migration differs from the exact reviewed report")
     return {"mode": policy["mode"], "report_sha256": sha(report_bytes(report)),
             "graph_topology_content": "equal", "provenance": "equal" if not changes else "reviewed-only"}
