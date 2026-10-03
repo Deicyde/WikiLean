@@ -540,6 +540,9 @@ def run_gate(args: argparse.Namespace) -> dict:
             comparison = comparison_report(args.baseline, workspace / "output/brain/data")
             write_new(private / "compatibility.json", report_bytes(comparison))
             compatibility = verify_compatibility(comparison, approval["provenance"])
+            # The parsed full-corpus report is gigabytes of Python objects; it must not
+            # stay alive while the next build's container holds its own memory limit.
+            del comparison
             builds.append({"directory": private.name, "workspace": str(workspace), "generation_id": prepared.generation_id,
                            "container_id": record["container_id"], "launch_sha256": sha(receipt_raw), "measurement_sha256": sha(canonical(measured)),
                            "stdout_sha256": sha(stdout), "stderr_sha256": sha(stderr), "mtime_schedule": schedule,
@@ -659,6 +662,7 @@ def finalize(args: argparse.Namespace) -> dict:
                 "retained complete output measurement changed after review")
         report = comparison_report(Path(session["baseline_manifest"]), workspace / "output/brain/data")
         compatibility = verify_compatibility(report, approval["provenance"])
+        del report  # release the parsed report before the second comparison
         require(compatibility == build["compatibility"], "baseline comparison changed after review")
         require(environment.secure_file_digest(private / "compatibility.json")[0] == compatibility["report_sha256"],
                 "retained compatibility report changed after review")
