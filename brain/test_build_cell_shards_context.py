@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import copy
+import errno
 import json
 import os
+import stat
 import sys
 import tempfile
 import unittest
@@ -447,6 +449,71 @@ class CellShardContextTest(unittest.TestCase):
 
             self.assertTrue((source / "escape").is_symlink())
             self.assertFalse((output_root / "published").exists())
+
+    def test_cross_mount_directory_publication_copies_without_replacing(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw)
+            scratch_root = base / "scratch"
+            output_root = base / "output"
+            scratch_root.mkdir(mode=0o700)
+            output_root.mkdir(mode=0o700)
+            source = scratch_root / "owned"
+            ownership = stage_io.create_owned_directory(scratch_root, source)
+            (source / "cells").mkdir(mode=0o700)
+            nested = source / "cells" / "deep"
+            nested.mkdir(mode=0o700)
+            stage_io.write_bytes_exclusive(source / "manifest.json", b'{"a":1}', mode=0o644)
+            stage_io.write_bytes_exclusive(nested / "shard.json", b"x" * 70000, mode=0o644)
+            destination = output_root / "published"
+            real_rename = stage_io._rename_no_replace
+
+            def cross_mount(src, dst):
+                if Path(src) == source:
+                    raise OSError(errno.EXDEV, "Invalid cross-device link", str(src))
+                return real_rename(src, dst)
+
+            with mock.patch.object(stage_io, "_rename_no_replace", side_effect=cross_mount):
+                published = stage_io.publish_directory_no_replace(ownership, destination)
+
+            self.assertEqual(published, destination)
+            self.assertEqual((destination / "manifest.json").read_bytes(), b'{"a":1}')
+            self.assertEqual((destination / "cells" / "deep" / "shard.json").read_bytes(), b"x" * 70000)
+            self.assertEqual(stat.S_IMODE(destination.lstat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE((destination / "cells").lstat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE((destination / "manifest.json").lstat().st_mode), 0o644)
+            self.assertTrue(ownership.removed)
+            self.assertFalse(source.exists())
+            self.assertEqual(sorted(path.name for path in output_root.iterdir()), ["published"])
+
+    def test_cross_mount_directory_publication_rolls_back_on_race(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            base = Path(raw)
+            scratch_root = base / "scratch"
+            output_root = base / "output"
+            scratch_root.mkdir(mode=0o700)
+            output_root.mkdir(mode=0o700)
+            source = scratch_root / "owned"
+            ownership = stage_io.create_owned_directory(scratch_root, source)
+            stage_io.write_bytes_exclusive(source / "owned.json", b"owned", mode=0o644)
+            destination = output_root / "published"
+            real_rename = stage_io._rename_no_replace
+
+            def cross_mount_then_race(src, dst):
+                if Path(src) == source:
+                    raise OSError(errno.EXDEV, "Invalid cross-device link", str(src))
+                destination.mkdir(mode=0o700)
+                (destination / "competitor.json").write_bytes(b"competitor")
+                return real_rename(src, dst)
+
+            with mock.patch.object(
+                stage_io, "_rename_no_replace", side_effect=cross_mount_then_race
+            ), self.assertRaises(FileExistsError):
+                stage_io.publish_directory_no_replace(ownership, destination)
+
+            self.assertEqual((destination / "competitor.json").read_bytes(), b"competitor")
+            self.assertEqual((source / "owned.json").read_bytes(), b"owned")
+            self.assertFalse(ownership.removed)
+            self.assertEqual(sorted(path.name for path in output_root.iterdir()), ["published"])
 
     def test_directory_rollback_never_deletes_a_racing_competitor(self) -> None:
         with tempfile.TemporaryDirectory() as raw:

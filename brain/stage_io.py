@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import ctypes
 import errno
+import hashlib
 import os
 import shutil
 import stat
@@ -492,11 +493,120 @@ def _snapshot_directory_tree(
     return state
 
 
+def _content_state(root: Path) -> dict[str, tuple]:
+    """Record a tree by relative path, kind, mode, size and SHA-256 (no inodes)."""
+    state: dict[str, tuple] = {}
+    for directory, names, filenames in os.walk(root, topdown=True, followlinks=False):
+        directory_path = Path(directory)
+        names.sort()
+        filenames.sort()
+        for name in names:
+            child = directory_path / name
+            metadata = child.lstat()
+            if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+                raise OSError(f"stage output tree contains a non-directory: {child}")
+            state[child.relative_to(root).as_posix()] = ("directory", stat.S_IMODE(metadata.st_mode))
+        for name in filenames:
+            child = directory_path / name
+            metadata = _regular_metadata(child)
+            digest = hashlib.sha256()
+            with child.open("rb") as stream:
+                for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            state[child.relative_to(root).as_posix()] = (
+                "file", stat.S_IMODE(metadata.st_mode), metadata.st_size, digest.hexdigest()
+            )
+    return state
+
+
+def _publish_directory_copy(
+    scratch: OwnedDirectory,
+    destination: Path,
+    source_state: dict[str, tuple[int, int, int, int, int, int]],
+) -> Path:
+    """Publish an owned directory across a mount boundary as a verified copy.
+
+    Every directory is created 0o700 and every file written exclusively, 0o644
+    and fsynced, inside a private sibling of the destination (same mount), so the
+    final step is still a no-replace rename. The copy is compared to the scratch
+    tree by content before it is published; on any failure the private copy is
+    removed and the scratch tree is left intact.
+    """
+    destination_parent = destination.parent
+    temporary = destination_parent / f".{destination.name}.publish-{os.getpid()}.tmp"
+    temporary.mkdir(mode=0o700)
+    try:
+        for directory, names, filenames in os.walk(
+            scratch.path, topdown=True, followlinks=False
+        ):
+            relative = Path(directory).relative_to(scratch.path)
+            target_directory = temporary / relative
+            if relative != Path("."):
+                target_directory.mkdir(mode=0o700)
+            names.sort()
+            filenames.sort()
+            for name in filenames:
+                source = Path(directory) / name
+                metadata = _regular_metadata(source)
+                target = target_directory / name
+                flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+                descriptor = os.open(target, flags, 0o600)
+                with os.fdopen(descriptor, "wb") as stream, source.open("rb") as origin:
+                    shutil.copyfileobj(origin, stream, 1024 * 1024)
+                    stream.flush()
+                    os.fchmod(stream.fileno(), stat.S_IMODE(metadata.st_mode))
+                    os.fsync(stream.fileno())
+            fsync_directory(target_directory)
+        expected = _content_state(scratch.path)
+        if _content_state(temporary) != expected:
+            raise RuntimeError(
+                f"stage directory copy does not match its source: {scratch.path}"
+            )
+        if _snapshot_directory_tree(scratch.path, synchronize=False) != source_state:
+            raise RuntimeError(
+                f"stage directory changed during publication: {scratch.path}"
+            )
+        _rename_no_replace(temporary, destination)
+    except BaseException:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+    try:
+        if _content_state(destination) != expected:
+            raise RuntimeError(
+                f"published output tree changed during publication: {destination}"
+            )
+        fsync_directory(destination_parent)
+        remove_owned_directory(scratch)
+        return destination
+    except BaseException as exc:
+        rollback_errors: list[str] = []
+        try:
+            shutil.rmtree(destination)
+        except BaseException as rollback_error:
+            rollback_errors.append(f"{destination}: {rollback_error}")
+        try:
+            fsync_directory(destination_parent)
+        except BaseException as rollback_error:
+            rollback_errors.append(f"fsync {destination_parent}: {rollback_error}")
+        if rollback_errors and hasattr(exc, "add_note"):
+            exc.add_note(
+                "stage directory copy publication rollback issues: "
+                + "; ".join(rollback_errors)
+            )
+        raise
+
+
 def publish_directory_no_replace(
     scratch: OwnedDirectory,
     destination: Path,
 ) -> Path:
-    """Atomically publish one complete owned directory without replacement."""
+    """Atomically publish one complete owned directory without replacement.
+
+    When the scratch and output roots are separate bind mounts of one filesystem
+    (the sealed replay sandboxes mount them independently), the kernel refuses
+    the directory rename and the tree is instead published as a verified,
+    fsynced private copy moved into place without replacement.
+    """
     destination = assert_outputs_absent([destination])[0]
     destination_parent = destination.parent
     source_metadata = _require_real_directory(scratch.path)
@@ -518,7 +628,17 @@ def publish_directory_no_replace(
     source_state = _snapshot_directory_tree(scratch.path, synchronize=True)
     moved = False
     try:
-        _rename_no_replace(scratch.path, destination)
+        try:
+            _rename_no_replace(scratch.path, destination)
+        except OSError as error:
+            if error.errno != errno.EXDEV:
+                raise
+            # Same filesystem, but a different mount: the replay sandboxes bind
+            # the scratch and output roots separately, and a directory cannot be
+            # renamed across mounts. Publish a private, fsynced copy built beside
+            # the destination, prove it matches the scratch tree by content, then
+            # move it into place with the same no-replace rename.
+            return _publish_directory_copy(scratch, destination, source_state)
         moved = True
         current = destination.lstat()
         if (
