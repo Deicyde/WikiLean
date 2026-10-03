@@ -150,7 +150,9 @@ def capture_tree(root: Path) -> list[dict]:
             else:
                 require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1,
                         "output must contain only private regular files and directories")
-                require(mode == (0o444 if relative == SQLITE_PATH else 0o644), "unexpected output file mode")
+                # The sealed runner (run_replay_v2._verify_outputs) keeps the SQLite
+                # index private at 0o600; every other output file is 0o644.
+                require(mode == (0o600 if relative == SQLITE_PATH else 0o644), "unexpected output file mode")
                 digest, size = environment.secure_file_digest(path)
                 after = path.lstat()
                 require((metadata.st_dev, metadata.st_ino, metadata.st_ctime_ns) ==
