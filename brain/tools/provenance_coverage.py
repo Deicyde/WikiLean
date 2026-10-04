@@ -124,7 +124,9 @@ class Inputs:
             if lib is not None:result=[m for m in result if self.metadata(m).get('lib')==lib]
         if group=='annotations' and context.get('kind')=='article':
             slug=context.get('id')
-            result=[m for m in result if self.read_json(m).get('slug')==slug]
+            # The reducer hyphenates en dashes when it joins an article to its annotation file.
+            slugs={slug,slug.replace('\u2013','-')} if isinstance(slug,str) else {slug}
+            result=[m for m in result if self.read_json(m).get('slug') in slugs]
         return result
     def read(self,member):
         key=(member['source_manifest_id'],member['object'])
@@ -344,6 +346,27 @@ def draft_mapping(pack_path,release_path):
     result['mapping_id']=identity(result);return result
 
 
+WEAK_FORMALIZES_KINDS=frozenset({'invocation','related','special_case','generalization'})
+
+
+def claim_kind(spec,context,occurrence_type):
+    """Edge kind a pooled trace stands for.
+
+    The cell projector keeps a `formalizes` claim that did not merge two cells as a
+    synapse trace whose `kind` is the claim's own `evidence.match_kind` (SCHEMA rule 3).
+    Only that exact shape is read back as `formalizes`; every other kind is literal.
+    Rule 3 never projects a claim on a `path:` container, and queue bonds never
+    become traces, so neither is read back.
+    """
+    kind=context.get('kind');evidence=context.get('evidence');dst=context.get('dst')
+    if (occurrence_type=='reference' and kind in WEAK_FORMALIZES_KINDS and isinstance(evidence,dict)
+            and evidence.get('match_kind')==kind and kind not in spec['kinds'] and spec['family']!='tag-queue'
+            and (not spec['kinds'] or 'formalizes' in spec['kinds'])
+            and not (isinstance(dst,str) and dst.startswith('path:'))):
+        return 'formalizes'
+    return kind
+
+
 def witness(spec,prov,context,selected,inputs,occurrence_type):
     """Check simple retained input witnesses; do not claim general reconstruction."""
     kind=spec['witness']
@@ -408,7 +431,10 @@ def witness(spec,prov,context,selected,inputs,occurrence_type):
     elif kind=='discovery':
         rows=indexed(('src',),(src,))
         # A discovered declaration can be remapped into its existing library.
-        found=any(r.get('src')==src and (r.get('dst')==dst or isinstance(r.get('dst'),str) and r['dst'].startswith('decl:') and dst.startswith('decl:') and r['dst'].split(':',2)[-1]==dst.split(':',2)[-1]) and r.get('verified') is True and not r.get('rejected_reason') and r.get('kind')==context.get('kind') for r in rows)
+        claimed=claim_kind(spec,context,occurrence_type);weak=claimed!=context.get('kind')
+        # A weak-bond trace must name the retained proposal's own match kind.
+        found=any(r.get('src')==src and (r.get('dst')==dst or isinstance(r.get('dst'),str) and r['dst'].startswith('decl:') and dst.startswith('decl:') and r['dst'].split(':',2)[-1]==dst.split(':',2)[-1]) and r.get('verified') is True and not r.get('rejected_reason') and r.get('kind')==claimed
+                  and (not weak or isinstance(r.get('evidence'),dict) and r['evidence'].get('match_kind')==context.get('kind')) for r in rows)
     elif kind=='fc':found=any(indexed(('qid','decl','kind'),(src,dst.split(':',2)[-1],context.get('kind'))))
     else:raise CoverageError('unsupported witness mode')
     require(found,'claim has no matching retained '+kind+' witness');return 'checked'
@@ -416,8 +442,9 @@ def witness(spec,prov,context,selected,inputs,occurrence_type):
 
 def validate_context(spec,prov,context,occurrence_type):
     if occurrence_type=='pool':return
-    family=spec['family'];kind=context.get('kind')
+    family=spec['family']
     require('evidence' not in context or isinstance(context['evidence'],dict),'malformed claim evidence')
+    kind=claim_kind(spec,context,occurrence_type)
     if kind in {'contains','formalizes','mentions','depends','relates','xref','cites','matches','invocation','links'}:
         require(not spec['kinds'] or kind in spec['kinds'],'method contradicts emitted edge kind')
     if family=='article-organ':require(kind=='article','D1 article provenance attached to a non-article organ')

@@ -174,6 +174,63 @@ class CoverageEnumerationTest(unittest.TestCase):
             with self.assertRaises(core.CoverageError):core.validate_context(spec,prov,changed,'reference')
         changed=copy.deepcopy(cases[0][1]);changed['dst']='xref:nlab:A1'
         with self.assertRaisesRegex(core.CoverageError,'shared-page'):core.validate_context(core.families.classify(cases[0][0]),cases[0][0],changed,'reference')
+    def test_weak_bond_trace_is_read_as_formalizes_only_in_its_exact_projected_shape(self):
+        prov={'source':'mathlib','method':'agent+oracle','pin':'a'*64};spec=core.families.classify(prov)
+        for kind in sorted(core.WEAK_FORMALIZES_KINDS):
+            context={'src':'Q1','dst':'decl:Mathlib:A','kind':kind,'evidence':{'match_kind':kind}}
+            self.assertEqual(core.claim_kind(spec,context,'reference'),'formalizes');core.validate_context(spec,prov,context,'reference')
+            # A base edge row, a trace naming another match kind, and a trace without one stay literal and are refused.
+            for changed,occurrence in (({},'direct'),({'evidence':{'match_kind':'exact'}},'reference'),({'evidence':{}},'reference')):
+                bad={**context,**changed};self.assertEqual(core.claim_kind(spec,bad,occurrence),kind)
+                with self.assertRaisesRegex(core.CoverageError,'edge kind'):core.validate_context(spec,prov,bad,occurrence)
+            with self.assertRaisesRegex(core.CoverageError,'endpoint context'):core.validate_context(spec,prov,{**context,'dst':'Q2'},'reference')
+        # A family that cannot emit `formalizes`, or whose own vocabulary already has the kind, is never rewritten.
+        depends={'source':'mathlib_deps','method':'lift_formal_edges (formal_dependency.csv)'}
+        with self.assertRaisesRegex(core.CoverageError,'edge kind'):core.validate_context(core.families.classify(depends),depends,{'src':'Q1','dst':'Q2','kind':'related','evidence':{'match_kind':'related'}},'reference')
+        frontier={'source':'tauceti','method':'fq-name-in-statement'}
+        self.assertEqual(core.claim_kind(core.families.classify(frontier),{'kind':'invocation','evidence':{'match_kind':'invocation'}},'reference'),'invocation')
+        self.assertEqual(core.claim_kind(spec,{'kind':'exact','evidence':{'match_kind':'exact'}},'reference'),'exact')
+        self.assertEqual(core.WEAK_FORMALIZES_KINDS,frozenset({'invocation','related','special_case','generalization'}))
+        self.assertEqual(core.claim_kind(spec,{'kind':'related'},'reference'),'related')
+        self.assertEqual(core.claim_kind(spec,{'kind':'related','evidence':{'match_kind':'invocation'}},'reference'),'related')
+        self.assertEqual(core.claim_kind(core.families.classify(depends),{'kind':'related','evidence':{'match_kind':'related'}},'reference'),'related')
+        # Rule 3 skips `path:` targets and queue bonds never become traces: both stay literal and are refused.
+        container={'source':'mathlib','method':'container_links'}
+        with self.assertRaisesRegex(core.CoverageError,'edge kind'):core.validate_context(core.families.classify(container),container,{'src':'Q1','dst':'path:Mathlib/Algebra','kind':'related','evidence':{'match_kind':'related'}},'reference')
+        queued={'source':'tag-queue','method':'AI-queued @[wikidata] candidate (unreviewed)','queue':'seed_queue'}
+        with self.assertRaisesRegex(core.CoverageError,'unrelated organ/trace'):core.validate_context(core.families.classify(queued),queued,{'src':'Q1','dst':'decl:Mathlib:A','kind':'related','evidence':{'match_kind':'related'}},'reference')
+    def test_weak_bond_discovery_witness_must_carry_the_trace_match_kind(self):
+        prov={'source':'mathlib','method':'discovery_proposals (verified)','pin':'a'*64};spec=core.families.classify(prov)
+        row={'src':'Q1','dst':'decl:Mathlib:A','kind':'formalizes','verified':True,'evidence':{'match_kind':'invocation'}}
+        inputs=mock.Mock();inputs.indexed.side_effect=lambda member,fields,values:[row] if values==('Q1',) else []
+        selected={'brain-discovery-proposals':[{'source_manifest_id':'m','object':'rows'}]}
+        context={'src':'Q1','dst':'decl:Mathlib:A','kind':'invocation','evidence':{'match_kind':'invocation'}}
+        self.assertEqual(core.witness(spec,prov,context,selected,inputs,'reference'),'checked')
+        for changed in ({'kind':'related','evidence':{'match_kind':'related'}},{'evidence':{'match_kind':'exact'}}):
+            with self.assertRaisesRegex(core.CoverageError,'discovery witness'):core.witness(spec,prov,{**context,**changed},selected,inputs,'reference')
+        # The same shape on a base edge row is not a projected trace, and an ordinary `formalizes` claim is compared literally.
+        with self.assertRaisesRegex(core.CoverageError,'discovery witness'):core.witness(spec,prov,context,selected,inputs,'direct')
+        self.assertEqual(core.witness(spec,prov,{**context,'kind':'formalizes'},selected,inputs,'direct'),'checked')
+        # A retained proposal that states no match kind cannot witness a weak trace.
+        row.pop('evidence')
+        with self.assertRaisesRegex(core.CoverageError,'discovery witness'):core.witness(spec,prov,context,selected,inputs,'reference')
+    def test_article_organ_matches_its_annotation_file_under_the_reducer_en_dash_rule_only(self):
+        inputs=core.Inputs.__new__(core.Inputs)
+        members=[{'path':'site/annotations/Curry-Howard_correspondence.json','source_manifest_id':'a','object':'x'},{'path':'site/annotations/Other.json','source_manifest_id':'a','object':'y'}]
+        inputs.groups={'annotations':{'members':members}};slugs={'x':'Curry-Howard_correspondence','y':'Other'}
+        prov={'source':'wikilean','method':'annotated article (D1)'}
+        with mock.patch.object(inputs,'read_json',side_effect=lambda member:{'slug':slugs[member['object']]}):
+            for organ in ('Curry\u2013Howard_correspondence','Curry-Howard_correspondence'):
+                self.assertEqual(inputs.members('annotations',prov,{'kind':'article','id':organ}),members[:1])
+            for organ in ('Curry\u2014Howard_correspondence','Curry_Howard_correspondence','curry-howard_correspondence'):
+                self.assertEqual(inputs.members('annotations',prov,{'kind':'article','id':organ}),[])
+        # Every en dash of the organ id is folded, the exact slug still matches, and the file side is never folded.
+        more=[{'path':'site/annotations/A-B-C.json','source_manifest_id':'a','object':'p'},{'path':'site/annotations/P.json','source_manifest_id':'a','object':'q'}]
+        inputs.groups={'annotations':{'members':more}};slugs={'p':'A-B-C','q':'P\u2013Q'}
+        with mock.patch.object(inputs,'read_json',side_effect=lambda member:{'slug':slugs[member['object']]}):
+            self.assertEqual(inputs.members('annotations',prov,{'kind':'article','id':'A\u2013B\u2013C'}),more[:1])
+            self.assertEqual(inputs.members('annotations',prov,{'kind':'article','id':'P\u2013Q'}),more[1:])
+            self.assertEqual(inputs.members('annotations',prov,{'kind':'article','id':'P-Q'}),[])
     def test_import_captured_whole_local_closure_rejects_changed_helper_and_origin(self):
         records=core.implementation();self.assertEqual(len(records),5);self.assertIn('brain/tools/provenance_coverage_families.py',[r[0] for r in records])
         original=policy.secure_read
