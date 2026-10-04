@@ -1585,6 +1585,60 @@ class BrainActivationBundleTests(unittest.TestCase):
             PRIOR_RELEASE_ID,
         )
 
+    def test_semantic_diff_has_a_dedicated_size_cap_enforced_at_freeze_and_verify(self):
+        self.assertGreater(bundle.MAX_SEMANTIC_DIFF_BYTES, bundle.MAX_JSON_BYTES)
+        for kind, _ in bundle.EVIDENCE_PATHS:
+            expected = (
+                bundle.MAX_SEMANTIC_DIFF_BYTES if kind == "semantic_diff" else bundle.MAX_JSON_BYTES
+            )
+            self.assertEqual(bundle._max_json_bytes(kind), expected)
+        source = self.fixture.paths["semantic_diff"]
+        with mock.patch.object(bundle, "MAX_SEMANTIC_DIFF_BYTES", source.stat().st_size - 1):
+            with self.assertRaisesRegex(
+                bundle.BundleValidationError, "semantic diff exceeds the supported size limit"
+            ):
+                self.fixture.freeze()
+        with mock.patch.object(
+            bundle, "_parse_json_bytes", wraps=bundle._parse_json_bytes
+        ) as parse:
+            frozen = self.fixture.freeze()
+        caps = {call.args[1]: call.kwargs.get("maximum") for call in parse.call_args_list}
+        self.assertEqual(caps["semantic diff"], bundle.MAX_SEMANTIC_DIFF_BYTES)
+        self.assertEqual(caps["semantic-diff.json"], bundle.MAX_SEMANTIC_DIFF_BYTES)
+        self.assertEqual(caps["release result"], bundle.MAX_JSON_BYTES)
+        self.assertEqual(caps["release-result.json"], bundle.MAX_JSON_BYTES)
+        stored = (frozen.root / "semantic-diff.json").stat().st_size
+        with mock.patch.object(bundle, "MAX_SEMANTIC_DIFF_BYTES", stored - 1):
+            with self.assertRaisesRegex(
+                bundle.BundleValidationError, "size limit: semantic-diff.json"
+            ):
+                self.fixture.verify(frozen.root)
+
+    def test_general_evidence_cap_still_binds_every_other_document(self):
+        frozen = self.fixture.freeze()
+        with mock.patch.object(bundle, "MAX_JSON_BYTES", 16):
+            document, _ = bundle._read_source_json(
+                self.fixture.paths["semantic_diff"],
+                "semantic diff",
+                maximum=bundle._max_json_bytes("semantic_diff"),
+            )
+            self.assertIn("summary", document)
+            for kind, path in self.fixture.paths.items():
+                if kind == "semantic_diff":
+                    continue
+                with self.assertRaisesRegex(
+                    bundle.BundleValidationError, "exceeds the supported size limit"
+                ):
+                    bundle._read_source_json(
+                        path, kind.replace("_", " "), maximum=bundle._max_json_bytes(kind)
+                    )
+            with self.assertRaisesRegex(
+                bundle.BundleValidationError, "exceeds the supported size limit"
+            ):
+                self.fixture.freeze()
+            with self.assertRaisesRegex(bundle.BundleValidationError, "size limit"):
+                self.fixture.verify(frozen.root)
+
     def test_rejects_tampered_evidence(self):
         frozen = self.fixture.freeze()
         target = frozen.root / "release-metrics.json"

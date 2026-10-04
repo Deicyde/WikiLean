@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shlex
 import shutil
 import stat
 import tempfile
@@ -53,6 +54,7 @@ class FakeRunner:
         self.python_version = python_version
         self.calls: list[tuple[tuple[str, ...], Path, float, dict[str, str]]] = []
         self.path_resolutions: list[dict[str, Path]] = []
+        self.git_shims: list[tuple[bool, str]] = []
         self.status_calls = 0
 
     def run(
@@ -72,6 +74,15 @@ class FakeRunner:
                 if (resolved := shutil.which(name, path=env.get("PATH"))) is not None
             }
         )
+        git_shim = shutil.which("git", path=env.get("PATH"))
+        if git_shim is not None:
+            shim = Path(git_shim)
+            self.git_shims.append(
+                (
+                    shim.is_symlink(),
+                    shim.read_text(encoding="utf-8") if shim.is_file() and not shim.is_symlink() else "",
+                )
+            )
         if command == self.failure:
             return activation_ci.RunResult(command, 7, b"partial stdout\n", b"fixture failure\n")
 
@@ -407,13 +418,19 @@ class ActivationCITests(unittest.TestCase):
         evidence = self.fixture.recorder(runner).record()
         self.assertFalse(evidence["environment"]["caller_path_inherited"])
         expected = {
-            "git": self.fixture.git.resolve(),
             "node": self.fixture.node.resolve(),
             "npm": self.fixture.npm.resolve(),
         }
         self.assertTrue(runner.path_resolutions)
         for resolutions in runner.path_resolutions:
-            self.assertEqual(resolutions, expected)
+            self.assertEqual({name: path for name, path in resolutions.items() if name != "git"}, expected)
+            self.assertEqual(resolutions["git"].name, "git")
+        # Git is reached through a regular-file wrapper (the offline-pack preflight
+        # refuses symlinked executables) that execs the approved executable.
+        self.assertTrue(runner.git_shims)
+        for is_symlink, text in runner.git_shims:
+            self.assertFalse(is_symlink)
+            self.assertIn("exec " + shlex.quote(str(self.fixture.git)) + ' "$@"', text)
         for command, _, _, environment in runner.calls:
             self.assertNotIn(str(self.fixture.hostile_bin), environment["PATH"])
             if command[0] in {str(self.fixture.git), str(self.fixture.node), str(self.fixture.npm)}:
