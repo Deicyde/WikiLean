@@ -24,6 +24,16 @@ done
 [ -f "$SCRIPT_DIR/nightly.env" ] && . "$SCRIPT_DIR/nightly.env"
 [ -f "$SCRIPT_DIR/nightly.local.env" ] && . "$SCRIPT_DIR/nightly.local.env"
 
+# The reviewed host-local toolchain (the same WIKILEAN_BRAIN_GIT / WIKILEAN_BRAIN_NODE
+# the nightly uses) takes precedence over whatever PATH offers; the promoter still
+# records every executable's resolved path and digest and enforces Node 22.
+for tool in "${WIKILEAN_BRAIN_GIT:-}" "${WIKILEAN_BRAIN_NODE:-}"; do
+  if [ -n "$tool" ] && [ -x "$tool" ]; then
+    PATH="$(CDPATH= cd -- "$(dirname -- "$tool")" && pwd -P):$PATH"
+  fi
+done
+export PATH
+
 if [ -n "${WIKILEAN_PYTHON:-}" ]; then
   PYTHON_BIN="$WIKILEAN_PYTHON"
 else
