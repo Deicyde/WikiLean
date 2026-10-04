@@ -72,11 +72,19 @@ no second, partial SQLite query is substituted for it.
 
 Each occurrence resolves its exact primary/support input members. External objects
 are selected by their database filename, user repositories by printed source pin,
-and D1 article organs by the exact article slug. The historical printed pin must
+and D1 article organs by the article slug, or by its en-dash-hyphenated form as the
+reducer joins an article to its annotation file. The historical printed pin must
 match the designated first primary input. Additional inputs of mixed-source joins
 are still required: for example the Erdos/OEIS problems.yaml join binds both Formal
 Conjectures and the Erdos join source. A single label is never assumed to be a source
 manifest name or a complete statement of all inputs.
+
+A pooled trace whose `kind` is one of `invocation`, `related`, `special_case` or
+`generalization` and equals its own `evidence.match_kind` is read as the `formalizes`
+claim the cell projector keeps as a weak bond when two cells do not merge. The reading
+applies only to that shape, only where the producer family can emit `formalizes`, and
+never to a `path:` target or a queue bond; its discovery witness must be a retained
+`formalizes` proposal stating the same match kind. Every other kind is checked literally.
 
 Family rules identify the direct producer inputs and named secondary joins. General
 base-stage node/topology materialization is bound by the complete pack input snapshot,

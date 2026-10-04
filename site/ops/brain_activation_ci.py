@@ -14,6 +14,7 @@ import json
 import math
 import os
 import re
+import shlex
 import signal
 import subprocess
 import sys
@@ -550,8 +551,16 @@ class ActivationCIRecorder:
 
     def _create_tool_shims(self, tool_bin: Path) -> None:
         tool_bin.mkdir(mode=0o700)
+        # Git is shimmed by a wrapper script, not a symlink: the repository's own
+        # offline-pack preflight (exercised by the Python CI gate) resolves `git`
+        # from PATH and refuses a symlinked executable.
+        git_shim = tool_bin / "git"
+        git_shim.write_text(
+            "#!/bin/sh\nexec " + shlex.quote(str(self.git)) + ' "$@"\n',
+            encoding="utf-8",
+        )
+        git_shim.chmod(0o700)
         for name, target in (
-            ("git", self.git),
             ("node", self.node),
             ("npm", self.npm),
             ("python", self.python),
