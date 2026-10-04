@@ -87,6 +87,11 @@ PUBLIC_STAGE_SCHEMA = "wikilean.public-stage-result/v2"
 DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v2"
 MANIFEST_NAME = "manifest.json"
 MAX_JSON_BYTES = 64 * 1024 * 1024
+# A semantic diff records both complete rows of every changed edge, and a source's
+# content pin changes on all of its edges whenever that source is re-acquired, so this
+# one evidence kind is routinely hundreds of megabytes. Every other document keeps
+# MAX_JSON_BYTES.
+MAX_SEMANTIC_DIFF_BYTES = 1024 * 1024 * 1024
 COPY_BUFFER_BYTES = 1024 * 1024
 ACTIVATION_METRICS_LIMIT = 100
 ACTIVATION_METRICS_ITERATIONS = 5
@@ -201,8 +206,14 @@ def _canonical_json_bytes(value: object) -> bytes:
         raise BundleValidationError(f"cannot encode canonical JSON: {exc}") from exc
 
 
-def _parse_json_bytes(raw: bytes, label: str, *, require_canonical: bool) -> dict[str, Any]:
-    if len(raw) > MAX_JSON_BYTES:
+def _max_json_bytes(kind: str) -> int:
+    return MAX_SEMANTIC_DIFF_BYTES if kind == "semantic_diff" else MAX_JSON_BYTES
+
+
+def _parse_json_bytes(
+    raw: bytes, label: str, *, require_canonical: bool, maximum: int = MAX_JSON_BYTES
+) -> dict[str, Any]:
+    if len(raw) > maximum:
         raise BundleValidationError(f"{label} exceeds the supported size limit")
     try:
         value = parse_artifact_json_bytes(raw, location=label)
@@ -228,7 +239,9 @@ def _signature(value: os.stat_result) -> tuple[int, ...]:
     )
 
 
-def _read_source_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
+def _read_source_json(
+    path: Path, label: str, *, maximum: int = MAX_JSON_BYTES
+) -> tuple[dict[str, Any], bytes]:
     if not path.is_absolute():
         raise BundleValidationError(f"{label} path must be absolute")
     if path.is_symlink():
@@ -244,7 +257,7 @@ def _read_source_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
             raise BundleValidationError(f"{label} must be a regular file")
         if before.st_nlink != 1:
             raise BundleValidationError(f"{label} must not be hard-linked")
-        if before.st_size > MAX_JSON_BYTES:
+        if before.st_size > maximum:
             raise BundleValidationError(f"{label} exceeds the supported size limit")
         chunks: list[bytes] = []
         total = 0
@@ -253,7 +266,7 @@ def _read_source_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
             if not chunk:
                 break
             total += len(chunk)
-            if total > MAX_JSON_BYTES:
+            if total > maximum:
                 raise BundleValidationError(f"{label} exceeds the supported size limit")
             chunks.append(chunk)
         after = os.fstat(descriptor)
@@ -261,7 +274,9 @@ def _read_source_json(path: Path, label: str) -> tuple[dict[str, Any], bytes]:
         os.close(descriptor)
     if _signature(before) != _signature(after) or total != before.st_size:
         raise BundleValidationError(f"{label} changed while reading")
-    document = _parse_json_bytes(b"".join(chunks), label, require_canonical=False)
+    document = _parse_json_bytes(
+        b"".join(chunks), label, require_canonical=False, maximum=maximum
+    )
     return document, _canonical_json_bytes(document)
 
 
@@ -2799,7 +2814,9 @@ def _load_inputs(
     documents: dict[str, Mapping[str, Any]] = {}
     canonical: dict[str, bytes] = {}
     for kind, _ in EXTERNAL_EVIDENCE_PATHS:
-        document, encoded = _read_source_json(paths[kind], kind.replace("_", " "))
+        document, encoded = _read_source_json(
+            paths[kind], kind.replace("_", " "), maximum=_max_json_bytes(kind)
+        )
         documents[kind] = document
         canonical[kind] = encoded
     ci_bytes = _canonical_json_bytes(dict(ci_evidence))
@@ -3236,10 +3253,12 @@ def verify_activation_bundle(root_input: Path) -> ActivationBundle:
     documents: dict[str, Mapping[str, Any]] = {}
     canonical: dict[str, bytes] = {}
     for item in files:
-        raw = _read_frozen_file(root, item.path)
+        raw = _read_frozen_file(root, item.path, _max_json_bytes(item.kind))
         if len(raw) != item.bytes or hashlib.sha256(raw).hexdigest() != item.sha256:
             raise BundleValidationError(f"bundle evidence digest/size mismatch: {item.path}")
-        document = _parse_json_bytes(raw, item.path, require_canonical=True)
+        document = _parse_json_bytes(
+            raw, item.path, require_canonical=True, maximum=_max_json_bytes(item.kind)
+        )
         documents[item.kind] = document
         canonical[item.kind] = raw
     validated = _validate_evidence(
