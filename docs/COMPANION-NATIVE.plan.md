@@ -1,9 +1,12 @@
 # Native companion annotations in WikiLean and Autoform
 
 **Date:** 2026-10-06.
-**Status:** WikiLean's native-format direction is requested by Jack. The Autoform
-article-as-source design is recommended here for discussion. Implementation has
-not cut over: the current local integration is still a conversion bridge.
+**Status:** Implemented on the local integration branches, pending deployment.
+WikiLean's new articles use native records; existing databases require the explicit
+copied-SQLite migration. Autoform articles remain informal sources with separately
+stored annotations. See [the local workspace guide](COMPANION-WORKSPACE.md) and
+[the native lifecycle runbook](COMPANION-NATIVE.md) for the implemented interfaces.
+The design below records the rationale; no production migration has been run.
 
 ## Decision and scope
 
@@ -52,8 +55,7 @@ schemas or mandatory tables for other applications.
 | Source occurrence without a target | Application work item with its source and location; it has not yet become a companion link. Unresolved target candidates remain application evidence. |
 | Revision and moderation history | Authenticated changes, proposal decisions, rejection tombstones, record/group identity mappings and the source revision used by that snapshot. |
 
-Keeping targetless work items separate is the current planning assumption, pending
-Jack's answer. Do not make `target` optional or invent a placeholder formal URI to
+Targetless source occurrences remain separate application work items. Do not make `target` optional or invent a placeholder formal URI to
 fit an unformalized statement into the link schema.
 
 Keep the existing review-item IDs through migration. Several old anchors can

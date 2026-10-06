@@ -24,8 +24,10 @@ python3.12 -m venv /tmp/companion-env
 /tmp/companion-env/bin/python -m pip install /absolute/path/to/formal-companion-minimal
 ```
 
-The package supplies both validation and shard discovery. WikiLean does not copy the
-schema or implement a second validator. This draft requires that exact reference package version, so an older graph-format package cannot silently pass through. It is optional for ordinary WikiLean work;
+The package supplies validation and shard discovery for this Python importer.
+WikiLean's native Worker separately vendors the exact pinned schema and generates
+a Worker-safe validator from it; the native Python pipeline validates the same
+schema. That pin and semantic parity checks are described in [the native runbook](COMPANION-NATIVE.md). This draft requires that exact reference package version, so an older graph-format package cannot silently pass through. It is optional for ordinary WikiLean work;
 ingestion fails with an actionable error if absent. There is no public package URL
 or network fallback assumed by this draft. Querying an already built index requires
 only Python's standard library.
@@ -62,7 +64,10 @@ output outside input roots to avoid selecting generated artifacts on a later sca
 
 The query emits JSONL with `annotation`, `origin`, `source` and `target` lookup keys,
 and per-endpoint `resolution` status. The annotation is the complete original decoded object. `origin` contains
-the carrier's absolute file URI, JSON pointer, and physical JSONL line when relevant.
+the carrier's absolute base URI, JSON pointer, and physical JSONL line when relevant.
+Discovery supplies file bases; `import_retained(entries, ...)` also accepts native
+operational `{annotation, origin}` entries with HTTP or opaque bases, preserving
+all origin fields (including an explicit null line).
 It is essential context when moving a record that contains relative references:
 **references resolve against the containing shard**, not the scan root or source URI.
 Query output is a transport report, not an FCA shard. To re-export, deliberately

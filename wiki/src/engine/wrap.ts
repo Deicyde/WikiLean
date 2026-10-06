@@ -8,6 +8,8 @@
 // final sliced output is still identical because slices always fall on char
 // boundaries.
 
+import { isNativeItem, legacyAnchorOccurrences, type SourceContext } from "../native-companion.js";
+import { formalTargetLabel } from "./formal-links.js";
 import { htmlEscape, htmlUnescape } from "./html.js";
 import type { Annotation, Anchor, WrapperTag } from "./types.js";
 
@@ -616,7 +618,7 @@ export interface WrapResult {
   matched: boolean[];
 }
 
-export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): WrapResult {
+export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], context?: SourceContext): WrapResult {
   const matched = new Array<boolean>(annotations.length).fill(false);
 
   // group key "start:end" → list of [annotationIndex, wrapperTag]
@@ -637,11 +639,16 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): Wr
       matched[i] = true;
       continue;
     }
-    const anchors: Anchor[] = a.anchors && a.anchors.length ? a.anchors : [a.anchor ?? {}];
+    const native = isNativeItem(a);
+    const anchors = legacyAnchorOccurrences(a, context) as Array<Anchor | null>;
+    let nMatched = 0;
     for (const anchor of anchors) {
+      if (!anchor) continue;
       const t = anchor.type;
       let loc: [number, number, WrapperTag] | null = null;
-      if (t === "math_alttext") {
+      if (t === "whole_resource" && native) {
+        loc = [0, bodyHtml.length, "div"];
+      } else if (t === "math_alttext") {
         const r = findMathSpan(bodyHtml, anchor.value ?? "");
         if (!r) continue;
         loc = [r[0], r[1], "span"];
@@ -666,14 +673,16 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): Wr
       } else {
         continue;
       }
+      nMatched++;
       matched[i] = true;
       const key = `${loc[0]}:${loc[1]}`;
       if (!groups.has(key)) {
         groups.set(key, []);
         groupRange.set(key, [loc[0], loc[1]]);
       }
-      groups.get(key)!.push([i, loc[2]]);
+      if (!groups.get(key)!.some(member => member[0] === i)) groups.get(key)!.push([i, loc[2]]);
     }
+    if (native) matched[i] = anchors.length > 0 && nMatched === anchors.length;
   }
 
   const edits: Edit[] = [];
@@ -686,7 +695,7 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): Wr
     let decl: string | null = null;
     for (const i of indices) {
       const a = annotations[i];
-      const d = (a.mathlib && a.mathlib.decl) || a.decl;
+      const d = isNativeItem(a) ? (a.links[0] ? formalTargetLabel(a.links[0].annotation.target) : null) : (a.mathlib && a.mathlib.decl) || a.decl;
       if (d) {
         decl = d;
         break;

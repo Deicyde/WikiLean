@@ -1,156 +1,128 @@
 # One local workspace for all three projects
 
-This is the current conversion-based workspace. The [native adoption plan](COMPANION-NATIVE.plan.md)
-records the requested next step: WikiLean stores shared annotations directly, and
-Autoform articles remain informal resources with separate companion links.
+WikiLean stores complete FCA records natively. Autoform's Markdown articles remain
+independent informal sources; separate records associate them with formal results.
+This workspace captures selected records once and supplies the same values to
+WikiLean's local Brain SQLite index and Autoform's native attachment reader.
+It does not call the legacy WikiLean or workflow-derived Autoform exporters.
 
-The workspace connects Autoform's authored blueprint, the FCA single-annotation
-reference package, and WikiLean's SQLite store and local browser. It installs one
-Python 3.12 environment from the local checkouts and Autoform's dependency lock.
-Annotations require only `source` and `target`, with no schema version field.
-Workspace configuration, receipts and
-generation reports are operational files, not another companion format.
+The FCA schema stays unversioned: one source, one target, and optional location,
+id, extensions and schema hint. Workspace configuration and record-origin envelopes
+are application data, not companion schemas. The development package is 2.0.0a2.
 
 ## Create a workspace
 
-Use the integration checkouts of Autoform and WikiLean and the unversioned FCA draft
-from the reference package's 2.0.0a2 development build.
-You need `uv`, Git, and a directory outside the tool checkouts. From WikiLean:
+Use the local integration checkouts, `uv`, Git, and a directory outside all three
+tool repositories. An Autoform consumer is an independent project, not its product
+checkout. Either the project root or its `blueprint/` directory is accepted.
 
 ```sh
-python3.12 scripts/companion-workspace.py --workspace /absolute/path/to/workspace init \
-  --autoform-root /absolute/path/to/autoform \
-  --fca-root /absolute/path/to/formal-companion-annotations \
-  --consumer /absolute/path/to/lean-project \
-  --repo https://github.com/owner/lean-project --commit FULL_COMMIT_SHA \
-  --shards /absolute/path/to/another-companion
+python3.12 scripts/companion-workspace.py --workspace /absolute/workspace init \
+  --autoform-root /absolute/autoform \
+  --fca-root /absolute/formal-companion-annotations \
+  --consumer /absolute/lean-project \
+  --shards /absolute/annotations \
+  --article /absolute/native-article.json
 ```
 
-Consumer coordinates are optional as a group: omit all three to use only imported
-annotations. A consumer is an independent Autoform project, not the Autoform product
-checkout. Both its project root and its `blueprint/` directory are accepted. The
-commit is explicit; refreshing never silently follows a new HEAD. Edit the
-`consumer` coordinates in `workspace.json` when deliberately changing projects or
-revisions. This command does not initialize a Lean project, plan work, run proofs,
-push Git refs, deploy a Worker, or publish a package.
+The consumer, shards, and article inputs are optional. The workspace creates an
+`inbox/` for individual annotations, arrays, JSONL or NDJSON. Repeated `--shards`,
+`--include`, and `--exclude` select any directory arrangement supported by FCA's
+reader. Keep reports and generated workspace history outside the shard selection.
+No repository URL, commit, or Node exporter is needed for native synchronization.
+Older configuration coordinates are retained as unused operational metadata.
 
-`--shards` can be repeated; `--include` and `--exclude` select arbitrary layouts
-using the reference reader's patterns. The workspace also creates an `inbox/`:
-drop individual annotations, JSON arrays or JSONL/NDJSON shards there. Keep other
-reports outside selected roots. Workspace history cannot itself be an input root.
-The producer outputs are always selected independently of user shard filters.
-With source attachment enabled, do not scan the consumer's entire `blueprint/sources`
-directory or an ancestor: later scans would encounter generated catalog reports.
-Select a dedicated input subdirectory such as `blueprint/sources/external`, or use
-`--no-attach-sources`. The workspace checks this before generating a catalog.
+An article input is a saved native WikiLean snapshot with `schema_version: 4` and
+an `annotations` array of review items containing `links` and `unlinked`. The 4 is
+WikiLean's **application storage marker**, never a field on an FCA record. Rejected
+items and targetless occurrences remain in WikiLean; the shared association index
+contains only existing public links. Relative references require the original
+`base_uri` on their link envelope. No reference is reconstructed from old fields.
+Legacy snapshots fail with an explicit migration-required error.
 
-To include an explicit local WikiLean article snapshot, add:
+Setup installs the local editable Autoform and FCA packages into one Python 3.12
+environment using Autoform's lock. If interrupted, finish with `setup` in place of
+`init`. Repeat setup after package definitions or the dependency lock change.
+It never modifies the live D1 database or runs formalization/proof workers.
+
+## Refresh and view
 
 ```sh
-  --node /absolute/path/to/node22 --article /absolute/path/to/article.json
+/absolute/workspace/companion doctor
+/absolute/workspace/companion sync
+/absolute/workspace/companion serve --port 8743
+/absolute/workspace/companion status
+/absolute/workspace/companion query --target 'urn:lean:Example.result'
 ```
 
-The file must be one native WikiLean article object with `slug`, `version`, `revid`,
-`annotations`, and `wikipedia_title` (or `wikipediaTitle`). This accepts a saved API
-read or a deliberate local fixture; it neither reads nor writes live D1. Setup
-installs `wiki/` dependencies with the supplied Node 22. Already-exported FCA shards
-need no Node runtime. Unpinned articles fail export. Native entries without formal
-targets remain producer diagnostics instead of fabricated links.
+[The local viewer](http://127.0.0.1:8743/) searches original source/formal references
+and shows stored records and selectors. It listens only on loopback, reads without
+writing, and follows the selected generation on each request.
 
-If installation stops, finish it with:
+Each generation contains `index/brain.sqlite3` and
+`autoform-native/records.jsonl`. The latter is a lossless operational archive:
+each entry has `annotation` and its original `origin`, including `base_uri` and
+pointer. It must not be mistaken for a naked FCA shard. Relative references never
+start resolving against the generated archive's location.
+
+With a consumer configured, sync registers one stable archive reference in its
+`.autoform-companions.json`. Existing selections and bindings are preserved. Later
+syncs switch `workspace/current`, so both readers follow the same capture without
+creating numbered Markdown copies. Use `--no-attach-sources` to omit registration.
+
+To attach records to an existing article, add an explicit binding in the consumer:
+
+```json
+{
+  "archives": ["/absolute/workspace/current/autoform-native/records.jsonl"],
+  "bindings": [{
+    "source": "https://example.org/pinned/wiki/article.md",
+    "article": "blueprint/roadmap/result.md",
+    "sha256": "SHA256_OF_THE_EXACT_AUTHORED_MARKDOWN_BYTES"
+  }]
+}
+```
+
+Bindings are Autoform application configuration. An article ID can replace the
+path. The recorded digest checks that the local article matches the deliberately
+bound revision; it does not fetch or verify the remote resource. Changed articles
+show historical associations. Unbound sources appear together in a generated
+companion index. Unknown selectors remain visible and unresolved. Neither the
+article text nor its proof graph, readiness, or verification state is changed.
+Autoform's local renderer generates the view, including its Obsidian projection.
+
+## Refresh guarantees and failure handling
+
+A refresh validates selected shards with the FCA reference reader, reads native
+article links, and detaches one in-memory capture. Both consumers receive that
+capture; a final comparison checks full values and origins, including duplicates.
+The completed generation records tool fingerprints and package versions before
+one atomic `current` symlink replacement.
+
+Invalid or empty inputs, mismatched outputs, or tool changes before selection
+leave the old generation active. Generation directories remain for diagnosis.
+Initial Autoform configuration registration happens after a valid selection; if
+registration fails, sync reports the error and preserves the valid selected index
+and its interruption record. Fix the configuration and retry. Once registered,
+refreshing normally requires only the single shared-pointer update.
+
+The workspace lock serializes setup and synchronization. An interrupted lock is
+never stolen: inspect its PID before removing it. Do not feed retained archives
+or historical generated catalogs back into annotation discovery. No sync pushes,
+publishes, deploys, or writes back into the canonical WikiLean application database.
+
+## Verification
 
 ```sh
-python3.12 scripts/companion-workspace.py --workspace /absolute/path/to/workspace setup
+/absolute/workspace/.venv/bin/python brain/test_companion_workspace.py --require-integrations
+/absolute/workspace/.venv/bin/python brain/test_companion_ingest.py --require-reference
+/absolute/workspace/.venv/bin/python scripts/check-companion-integration.py \
+  --autoform /absolute/workspace/.venv/bin/autoform \
+  --node /absolute/node22 --output /absolute/new-rehearsal-directory
 ```
 
-Setup never replaces an existing workspace. Its launcher uses the shared virtual
-environment and the configured WikiLean checkout. Autoform and FCA are editable
-local installs. A receipt binds their dependency inputs; after changing a package
-definition, Autoform's lock or a used Node lock, run `companion setup` again.
-
-## Refresh, browse, and use evidence in Autoform
-
-The installed workspace has a `companion` launcher:
-
-```sh
-/absolute/path/to/workspace/companion doctor
-/absolute/path/to/workspace/companion sync
-/absolute/path/to/workspace/companion serve --port 8743
-```
-
-Open [the local browser](http://127.0.0.1:8743/). It searches source and formal links
-and shows their locations and original annotations. The server is read-only and
-listens only on this computer. Stop it with Ctrl-C. It follows the current snapshot
-on each request; there is no need to restart it after a refresh.
-
-When a consumer is configured, each successful refresh adds a new Markdown source
-catalog under its `blueprint/sources/companion-<generation>/`. The report gives its
-path and the corresponding blueprint-relative citation. Autoform's existing local
-renderer and Obsidian can read these pages. Each imported occurrence has its own
-page, including duplicates. The untouched annotation and original carrier base are
-retained in an operational `records.jsonl` archive beside the pages. This archive
-is not a relocated FCA shard and should not be fed back into shard discovery.
-
-Existing source indexes, roadmap articles, dependency edges and proof state are
-not rewritten. Import makes evidence available for ordinary source review; it does
-not turn an external status into an Autoform assertion. `--no-attach-sources` at
-initialization keeps the same catalog inside the workspace instead of adding it to
-the consumer. Older source catalogs remain available after later refreshes.
-
-```sh
-/absolute/path/to/workspace/companion status
-/absolute/path/to/workspace/companion query --target 'urn:lean:Example.result'
-```
-
-Query output includes the complete original annotation, its origin and URI lookup
-keys. Only annotation records themselves use the FCA schema. These responses are
-transport reports. The current index lives at `WORKSPACE/current/index`.
-
-## Refresh guarantees
-
-A refresh performs this sequence:
-
-1. Check the shared environment, local package origins and dependency receipt.
-2. Export the committed Autoform associations and selected local WikiLean articles.
-3. Capture selected shards once with the reference validator and discovery API.
-4. Feed that same capture to WikiLean's SQLite builder and Autoform's source catalog.
-5. Compare complete values and occurrence origins in both outputs, including duplicates.
-6. Record tool checkout fingerprints and installed package versions, then atomically
-   switch the single `current` symlink to the completed generation.
-
-Each generation is built at its final path from the beginning. It is never renamed
-after capture, so generated carrier URIs remain valid. External shards retain their
-original bases; a relative reference never starts resolving against the workspace.
-Malformed or empty combined input leaves the previous active snapshot unchanged.
-An individual producer may emit no links while other valid inputs remain, with its
-omissions recorded. Unknown locations and extensions stay intact.
-
-The workspace lock serializes setup and refresh. It is never stolen automatically.
-After an interrupted process, inspect `.workspace.lock` and confirm its recorded PID
-is no longer using the workspace before removing that lock manually. An interruption
-after selection preserves the already-active catalog. Failed generations remain
-unselected for diagnosis, and existing user files are not overwritten.
-
-`generations/<id>/generation.json` records the tool commits, dirty-code fingerprints,
-installed distributions, producer diagnostics, selected consumer and output paths.
-New generations have new carrier identities even when their mathematical endpoints
-are unchanged. Occurrence identity is not a claim of mathematical identity.
-
-The workspace is deliberately local. It does not make imported URI endpoints
-eligible for WikiLean's published semantic Brain graph or write article annotations
-back into D1. Those remain separate application adapters; all three tools already
-exchange and consume the atomic records here without expanding the core schema.
-
-## Check the lifecycle
-
-```sh
-/absolute/path/to/workspace/.venv/bin/python brain/test_companion_workspace.py --require-integrations
-/absolute/path/to/workspace/.venv/bin/python brain/test_companion_ingest.py --require-reference
-/absolute/path/to/workspace/.venv/bin/python brain/test_companion_server.py
-```
-
-The workspace tests cover shared capture despite changing input files, exact
-recovery, failed and empty refreshes, mismatched consumers, interruption after
-selection, independent project paths, locks, dependency receipts and tool identity.
-The ordinary Python CI gate runs the standard-library cases; the shared environment
-is required for the actual cross-project cases.
+The rehearsal copies a synthetic SQLite database, migrates the copy, verifies that
+HTTP returns its stored annotations unchanged, exercises all four source modes
+and duplicate occurrences, and renders native attachments on the original
+Autoform article without changing its bytes. The original database and reports
+are retained alongside the result for inspection.

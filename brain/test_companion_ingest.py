@@ -429,6 +429,60 @@ class ReferenceTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["annotation"], annotation())
 
 
+@unittest.skipUnless(reference, "FCA reference required")
+class RetainedNativeTests(unittest.TestCase):
+    def test_http_origin_preserves_values_duplicate_occurrences_and_large_integers(self):
+        with tempfile.TemporaryDirectory() as root:
+            entry = {"annotation": annotation(), "origin": {"base_uri": "https://example.org/shards/a.json", "pointer": "/links/0", "line": None, "custom": "retained"}}
+            output = Path(root) / "index"
+            companion.import_retained([entry, entry], source_key="native", output=output)
+            rows = list(companion.iter_annotations(output))
+            self.assertEqual(len(rows), 2)
+            for row in rows:
+                self.assertEqual(row["annotation"], annotation())
+                self.assertEqual(row["origin"], entry["origin"])
+                self.assertEqual(row["source"], "https://example.org/source.md")
+
+    def test_origin_contract_matches_autoform_for_pointers_and_foreign_paths(self):
+        with tempfile.TemporaryDirectory() as root:
+            output = Path(root) / "index"
+            for extra in [{"pointer":"/bad~2escape"}, {"path":42}, {"path":""}]:
+                origin = {"base_uri":"https://example.org/shards/a.json","pointer":"",**extra}
+                with self.assertRaises(companion.ImportError):
+                    companion.import_retained([{"annotation":annotation(),"origin":origin}], source_key="native", output=output)
+                self.assertFalse(output.exists())
+            origin={"base_uri":"https://example.org/shards/a.json","pointer":"/valid~0~1","path":r"C:\foreign\shard.json","line":None}
+            companion.import_retained([{"annotation":annotation(),"origin":origin}], source_key="native", output=output)
+            row, = companion.iter_annotations(output)
+            self.assertEqual(row["origin"],origin)
+
+    def test_bad_carrier_base_rejected_without_output(self):
+        with tempfile.TemporaryDirectory() as root:
+            for base in ["relative.json", "https://example.org/a b", "https://example.org/a\\u0000", "https://example.org/a\\n"]:
+                base = base.replace("\\u0000", "\x00").replace("\\n", "\n")
+                output = Path(root) / "index"
+                with self.assertRaises(companion.ImportError):
+                    companion.import_retained([{"annotation": annotation(), "origin": {"base_uri": base, "pointer": ""}}], source_key="native", output=output)
+                self.assertFalse(output.exists())
+
+    def test_malformed_carrier_authority_is_retained_but_not_claimed_resolved(self):
+        with tempfile.TemporaryDirectory() as root:
+            output = Path(root) / "index"
+            companion.import_retained([{"annotation": annotation(), "origin": {"base_uri":"https://[oops/shards/a.json","pointer":""}}], source_key="native", output=output)
+            row, = companion.iter_annotations(output)
+            self.assertEqual(row["annotation"], annotation())
+            self.assertEqual(row["resolution"]["source"], {"status":"unresolved","reason":"unsupported_carrier_syntax"})
+            self.assertTrue(row["source"].startswith("urn:wikilean:companion:unresolved:"))
+
+    def test_opaque_carrier_retained_with_explicit_unresolved_lookup(self):
+        with tempfile.TemporaryDirectory() as root:
+            output = Path(root) / "index"
+            companion.import_retained([{"annotation": annotation(), "origin": {"base_uri":"urn:carrier:opaque","pointer":""}}], source_key="native", output=output)
+            row, = companion.iter_annotations(output)
+            self.assertEqual(row["annotation"], annotation())
+            self.assertEqual(row["resolution"]["source"], {"status":"unresolved","reason":"opaque_carrier_base"})
+
+
 if __name__ == "__main__":
     if "--require-reference" in sys.argv:
         sys.argv.remove("--require-reference")
