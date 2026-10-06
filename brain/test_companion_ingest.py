@@ -85,6 +85,63 @@ class ProjectionTests(unittest.TestCase):
             "EXPLAIN QUERY PLAN SELECT payload_json FROM edges WHERE dst = ?", (target,)).fetchall()
         self.assertTrue(any("edges_dst_kind_idx" in row[3] for row in plan))
 
+    def test_relative_resolution_preserves_rfc_components(self):
+        base = "file:///a/b/c/d.json"
+        cases = {
+            "g": "file:///a/b/c/g", "./g": "file:///a/b/c/g",
+            "g/": "file:///a/b/c/g/", "/g": "file:///g",
+            "//g": "file://g", "?y": "file:///a/b/c/d.json?y",
+            "#s": "file:///a/b/c/d.json#s", "g?y#s": "file:///a/b/c/g?y#s",
+            ".": "file:///a/b/c/", "..": "file:///a/b/", "../g": "file:///a/b/g",
+            "../../g": "file:///a/g", "../../../g": "file:///g",
+            "../../../../g": "file:///g", "/./g": "file:///g", "/../g": "file:///g",
+            "g/./h": "file:///a/b/c/g/h", "g/../h": "file:///a/b/c/h",
+            "g?y/../x": "file:///a/b/c/g?y/../x",
+            "g#s/../x": "file:///a/b/c/g#s/../x",
+            "a//b": "file:///a/b/c/a//b", "a//../b": "file:///a/b/c/a/b",
+            "#": "file:///a/b/c/d.json#", "?": "file:///a/b/c/d.json?",
+            "?#": "file:///a/b/c/d.json?#", "g?#": "file:///a/b/c/g?#",
+            "./%2E%2e/%2F%25": "file:///a/b/c/%2E%2e/%2F%25",
+            "../café.tex#α": "file:///a/b/café.tex#α",
+        }
+        for value, expected in cases.items():
+            with self.subTest(value=value):
+                key, resolution = companion._resolve_reference(base, value)
+                self.assertEqual(key, expected)
+                self.assertEqual(resolution, {"status": "resolved"})
+
+    def test_absolute_identifiers_stay_verbatim(self):
+        for value in ("file:foo", "FILE:foo", "urn:lean:My.result", "custom:a/../b",
+                      "https://é.example/%2f#", "https://EXAMPLE.org/a/../b?", "https:g"):
+            with self.subTest(value=value):
+                key, resolution = companion._resolve_reference(self.shard.as_uri(), value)
+                self.assertEqual(key, value)
+                self.assertEqual(resolution, {"status": "absolute"})
+
+    def test_malformed_authorities_preserve_occurrences_with_lookup_status(self):
+        first, second = annotation(), annotation()
+        first["source"]["uri"] = "https://[oops"
+        second["source"]["uri"] = "//[oops"
+        first["target"] = second["target"] = "file:foo"
+        self.import_fixture([first, second])
+        rows = list(companion.iter_annotations(self.output))
+        self.assertEqual([row["annotation"] for row in rows], [first, second])
+        self.assertEqual(rows[0]["source"], "https://[oops")
+        self.assertTrue(rows[1]["source"].startswith("urn:wikilean:companion:unresolved:"))
+        for row in rows:
+            self.assertEqual(row["target"], "file:foo")
+            self.assertEqual(row["resolution"]["source"]["status"], "unresolved")
+            self.assertEqual(row["resolution"]["target"]["status"], "absolute")
+            self.assertEqual(list(companion.iter_annotations(self.output, source=row["source"])), [row])
+
+    def test_unresolved_relative_lookup_keys_are_scoped_to_carrier(self):
+        a, status = companion._resolve_reference("file:///a/shard.json", "//[oops")
+        b, _ = companion._resolve_reference("file:///b/shard.json", "//[oops")
+        again, _ = companion._resolve_reference("file:///a/shard.json", "//[oops")
+        self.assertEqual(a, again)
+        self.assertNotEqual(a, b)
+        self.assertEqual(status, {"status": "unresolved", "reason": "unsupported_authority_syntax"})
+
     def test_duplicates_and_order_preserved(self):
         self.import_fixture([annotation(), annotation()])
         rows = list(companion.iter_annotations(self.output))
@@ -288,6 +345,27 @@ class ReferenceTests(unittest.TestCase):
         self.ingest()
         recovered, = companion.iter_annotations(self.output)
         self.assertEqual(recovered["annotation"]["location"], doc["location"])
+
+    def test_core_lexical_reference_rule_does_not_require_full_uri_grammar(self):
+        docs = []
+        for source in ("https://[oops", "//[oops", "file:foo", "urn:opaque:a/../b",
+                       "../café.tex#", "../%2E%2e/%2f", "a//b?#"):
+            doc = annotation()
+            doc["source"]["uri"] = source
+            doc["target"] = source
+            self.assertFalse(reference.check(doc).problems)
+            docs.append(doc)
+        self.write("links.json", docs)
+        self.ingest()
+        rows = list(companion.iter_annotations(self.output))
+        self.assertEqual([row["annotation"] for row in rows], docs)
+        self.assertEqual(rows[0]["resolution"]["source"]["status"], "unresolved")
+        self.assertEqual(rows[1]["resolution"]["source"]["status"], "unresolved")
+        self.assertEqual(rows[2]["source"], "file:foo")
+        self.assertEqual(rows[3]["source"], "urn:opaque:a/../b")
+        self.assertTrue(rows[4]["source"].endswith("/café.tex#"))
+        self.assertTrue(rows[5]["source"].endswith("/%2E%2e/%2f"))
+        self.assertTrue(rows[6]["source"].endswith("/a//b?#"))
 
     def test_command_line_ingest_and_query(self):
         self.write("link.json", annotation())
