@@ -5,11 +5,11 @@ For each article whose pinned Wikipedia revision trails upstream, fetch the
 article HTML at `latest_revid` (render.py's revid-aware fetch), run the
 EXISTING anchor matcher (render.wrap_annotations) against the new HTML, and:
 
-  - every non-tombstone annotation still anchors  →  POST the annotations
-    back UNCHANGED (echoed verbatim, ids included — any mutation of a stored
-    human annotation would 422) with revid=latest_revid. The Worker re-pins
-    atomically (one UPDATE advances version + revid together) and resets
-    wp_drifted.
+  - every non-tombstone occurrence still anchors → POST with revid=latest_revid.
+    Legacy items remain verbatim. Native AI-owned source URIs move to the new
+    pin with an explicit per-occurrence audit; human-owned source changes need
+    an approved proposal and stop this automatic update. The Worker advances
+    version + revid atomically and resets wp_drifted.
   - any anchor fails  →  NO write. The slug + failing anchors are appended to
     site/cache/.wp_update_report.jsonl — these are the candidates for future
     stage-1/2 re-anchoring (fuzzy / AI semantic), which stay unbuilt until
@@ -53,6 +53,7 @@ from pathlib import Path
 import requests
 
 import render
+import native_annotations as native
 
 # render.fetch_article_html uses urllib, which under the catalog/.venv
 # python.org-framework build can't find system SSL roots (CERTIFICATE_VERIFY_
@@ -203,7 +204,7 @@ def _retry_after(r: requests.Response) -> int | None:
 def _anchor_summary(a: dict) -> str:
     """Human-readable one-liner for a failing annotation's anchor (mirrors
     render.main's unmatched-anchor warning formatting)."""
-    anchor = a.get("anchor") or (a.get("anchors") or [{}])[0] or {}
+    anchor = native.primary_anchor(a)
     if "snippet" in anchor:
         label = f"section={anchor.get('section')!r} snippet={anchor.get('snippet')!r}"
     elif anchor.get("type") == "prose_range" or "from" in anchor or "from_snippet" in anchor:
@@ -248,8 +249,29 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
         return rec
 
     annotations = art["annotations"]
+    source_uri = None
+    source_changes = []
+    if any(native.is_native(item) for item in annotations):
+        try:
+            native.validate_items(annotations)
+            annotations, source_changes = native.repin_items(
+                annotations, title=art["wikipedia_title"], old_revid=old_revid, new_revid=target)
+            source_uri = native.wikipedia_source_uri(art["wikipedia_title"], target)
+        except native.NativeAnnotationError as exc:
+            rec["outcome"] = "needs-source-review"
+            rec["error"] = str(exc)
+            return rec
     src = render.absolutize_wikipedia_urls(html)
-    _, matched_flags = render.wrap_annotations(src, annotations)
+    _, matched_flags = render.wrap_annotations(src, annotations, source_uri=source_uri)
+    # Legacy rendering groups spans for display; re-pinning requires every
+    # occurrence to survive, including spans after an already matched first.
+    for index, item in enumerate(annotations):
+        if native.is_native(item) or item.get("status") == "rejected":
+            continue
+        anchors = native.anchors(item)
+        probes = [{**item, "anchor": anchor, "anchors": []} for anchor in anchors if anchor is not None]
+        _, flags = render.wrap_annotations(src, probes)
+        matched_flags[index] = bool(anchors) and len(probes) == len(anchors) and all(flags)
 
     # Tombstones (status='rejected') are human vetoes: the engines report them
     # matched=True ("excluded, not anchor rot"), so they never count as
@@ -272,6 +294,7 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
             "new_revid": target,
             "matched": matched,
             "total": total,
+            "native_source_repin": source_changes,
             "dry_run": bool(args.dry_run),
             "failing": [
                 {"index": i,
@@ -291,8 +314,8 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
         return rec
 
     # All non-tombstone anchors survive at the new revision → atomic re-pin.
-    # Annotations are echoed VERBATIM (ids included): the Worker's 422
-    # human-preservation check deep-equals stored human annotations.
+    # Legacy annotations stay verbatim. Native AI-owned source URI changes
+    # are explicit audit data; human-owned changes were refused above.
     payload = {
         "annotations": annotations,
         "base_version": art["version"],
@@ -306,6 +329,7 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
             "new_revid": target,
             "matched": matched,
             "total": total,
+            "native_source_repin": source_changes,
         },
     }
     status, body = post_repin(s, base, token_getter(), slug, payload)

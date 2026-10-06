@@ -24,6 +24,8 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+import native_annotations as native
+
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / "cache"
 ANNOT = ROOT / "annotations"
@@ -762,7 +764,8 @@ def _apply_nested_edits(src: str, edits: list[tuple[int, int, str, str]]) -> str
     return render(root)
 
 
-def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list[bool]]:
+def wrap_annotations(body_html: str, annotations: list[dict], *,
+                     source_uri: str | None = None) -> tuple[str, list[bool]]:
     """Wrap each annotation's target span in a WikiLean wrapper.
 
     Multiple annotations can resolve to the same anchor range (e.g. several
@@ -790,10 +793,15 @@ def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list
         # Support both `anchor` (single) and `anchors` (list) — a single
         # annotation can have multiple anchor targets that all share its
         # label, decl, note, etc.
-        anchors = a.get("anchors") or [a.get("anchor", {})]
+        anchors = native.anchors(a, source_uri=source_uri, require_source=True)
+        resolved_count = 0
         for anchor in anchors:
+            if anchor is None:
+                continue
             t = anchor.get("type")
-            if t == "math_alttext":
+            if t == "whole_resource" and native.is_native(a):
+                start, end, wrapper = 0, len(body_html), "div"
+            elif t == "math_alttext":
                 loc = find_math_span(body_html, anchor["value"])
                 if loc is None:
                     continue
@@ -821,8 +829,12 @@ def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list
                 start, end, wrapper = loc
             else:
                 continue
-            matched[i] = True
-            groups.setdefault((start, end), []).append((i, wrapper))
+            resolved_count += 1
+            members = groups.setdefault((start, end), [])
+            if (i, wrapper) not in members:
+                members.append((i, wrapper))
+        matched[i] = (bool(anchors) and resolved_count == len(anchors)
+                      if native.is_native(a) else resolved_count > 0)
 
     edits: list[tuple[int, int, str, str]] = []
     for (start, end), members in groups.items():
@@ -836,7 +848,11 @@ def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list
         decl = None
         for i in indices:
             a = annotations[i]
-            d = (a.get("mathlib") or {}).get("decl") or a.get("decl")
+            if native.is_native(a):
+                links = native.formal_links(a)
+                d = links[0]["label"] if links else None
+            else:
+                d = (a.get("mathlib") or {}).get("decl") or a.get("decl")
             if d:
                 decl = d
                 break
@@ -930,63 +946,10 @@ window.__WL_ANNOTATIONS__ = {data};
 """
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("slug", help="article slug (matches annotations/<slug>.json)")
-    args = ap.parse_args()
-    slug = args.slug
-
-    annot_path = ANNOT / f"{slug}.json"
-    if not annot_path.exists():
-        print(f"missing: {annot_path}", file=sys.stderr)
-        return 1
-    annot = json.loads(annot_path.read_text(encoding="utf-8"))
-
-    src = fetch_article_html(slug, annot["wikipedia_title"])
-    src = absolutize_wikipedia_urls(src)
-    wrapped, matched_flags = wrap_annotations(src, annot["annotations"])
-
-    n_total_displays = src.count('<span class="mwe-math-element mwe-math-element-block">')
-    n_annotated = sum(matched_flags)
-    # Only math_alttext annotations consume display-math elements; theorem_box
-    # (and any future block-level anchor types) target their own elements.
-    # Tombstones (status="rejected") report matched=True from the wrap engine
-    # but emit no wrap, so any math element they once covered counts as
-    # unannotated again (mirrors page.ts).
-    n_display_annotated = sum(
-        1
-        for a, ok in zip(annot["annotations"], matched_flags)
-        if ok
-        and a.get("status") != "rejected"
-        and a.get("anchor", {}).get("type") == "math_alttext"
-    )
-    n_untouched = max(0, n_total_displays - n_display_annotated)
-    n_unmatched = len(matched_flags) - n_annotated
-
-    # "rejected" is deliberately absent from `counts`, so tombstones never
-    # reach the header badges or the meta description (mirrors page.ts).
-    counts = {"formalized": 0, "partial": 0, "not_formalized": 0}
-    for a in annot["annotations"]:
-        st = a.get("status")
-        if st in counts:
-            counts[st] += 1
-
-    if n_unmatched:
-        print(f"warning: {n_unmatched} annotation(s) had no matching anchor in HTML:")
-        for i, m in enumerate(matched_flags):
-            if not m:
-                anchor = annot["annotations"][i].get("anchor", {})
-                if "snippet" in anchor:
-                    label = f"section={anchor.get('section')!r} snippet={anchor.get('snippet')!r}"
-                else:
-                    label = anchor.get("value", "?")
-                print(f"  [{i}] {label[:120]}{'…' if len(label) > 120 else ''}")
-
-    # Build the lean per-annotation payload the client needs.
-    # Handles both v2 schema (status/decl/module/note flat) and v3 schema
-    # (status/label/kind/mathlib.decl/mathlib.module/match_kind/proof_note).
+def build_client_data(annotations: list[dict]) -> list[dict | None]:
+    """Public display data; native private notes and archives never leave it."""
     client_data = []
-    for a in annot["annotations"]:
+    for a in annotations:
         # Human-deletion tombstones must not ship to readers; a None
         # placeholder (not a filter) keeps the array index-aligned with
         # data-anno-indices in the wrapped HTML. Tombstones are never
@@ -994,6 +957,19 @@ def main() -> int:
         # buildClientData).
         if a.get("status") == "rejected":
             client_data.append(None)
+            continue
+        if native.is_native(a):
+            item = {"status": a.get("status") or "not_formalized",
+                    "formal_links": native.formal_links(a)}
+            for key in ("id", "label", "kind", "provenance", "match_kind"):
+                if isinstance(a.get(key), str) and a[key]:
+                    item[key] = a[key]
+            first = next((link for link in item["formal_links"] if "url" in link), None)
+            if first:
+                item["mathlib_url"] = first["url"]
+            if item["formal_links"]:
+                item["decl"] = item["formal_links"][0]["label"]
+            client_data.append(item)
             continue
         m = a.get("mathlib") or {}
         decl = m.get("decl") or a.get("decl")
@@ -1016,6 +992,67 @@ def main() -> int:
         if url:
             item["mathlib_url"] = url
         client_data.append(item)
+
+    return client_data
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("slug", help="article slug (matches annotations/<slug>.json)")
+    args = ap.parse_args()
+    slug = args.slug
+
+    annot_path = ANNOT / f"{slug}.json"
+    if not annot_path.exists():
+        print(f"missing: {annot_path}", file=sys.stderr)
+        return 1
+    annot = json.loads(annot_path.read_text(encoding="utf-8"))
+
+    pinned = annot.get("revid")
+    src = fetch_article_html(slug, annot["wikipedia_title"], target_revid=pinned)
+    src = absolutize_wikipedia_urls(src)
+    source_uri = native.wikipedia_source_uri(annot["wikipedia_title"], pinned) if pinned else None
+    wrapped, matched_flags = wrap_annotations(src, annot["annotations"], source_uri=source_uri)
+
+    n_total_displays = src.count('<span class="mwe-math-element mwe-math-element-block">')
+    n_annotated = sum(matched_flags)
+    # Only math_alttext annotations consume display-math elements; theorem_box
+    # (and any future block-level anchor types) target their own elements.
+    # Tombstones (status="rejected") report matched=True from the wrap engine
+    # but emit no wrap, so any math element they once covered counts as
+    # unannotated again (mirrors page.ts).
+    n_display_annotated = 0
+    for a, ok in zip(annot["annotations"], matched_flags):
+        if not ok or a.get("status") == "rejected":
+            continue
+        if native.is_native(a):
+            n_display_annotated += len({anchor.get("value") for anchor in native.anchors(
+                a, source_uri=source_uri, require_source=True) if anchor and anchor.get("type") == "math_alttext"})
+        elif a.get("anchor", {}).get("type") == "math_alttext":
+            n_display_annotated += 1
+    n_untouched = max(0, n_total_displays - n_display_annotated)
+    n_unmatched = len(matched_flags) - n_annotated
+
+    # "rejected" is deliberately absent from `counts`, so tombstones never
+    # reach the header badges or the meta description (mirrors page.ts).
+    counts = {"formalized": 0, "partial": 0, "not_formalized": 0}
+    for a in annot["annotations"]:
+        st = a.get("status")
+        if st in counts:
+            counts[st] += 1
+
+    if n_unmatched:
+        print(f"warning: {n_unmatched} annotation(s) had no matching anchor in HTML:")
+        for i, m in enumerate(matched_flags):
+            if not m:
+                anchor = native.primary_anchor(annot["annotations"][i])
+                if "snippet" in anchor:
+                    label = f"section={anchor.get('section')!r} snippet={anchor.get('snippet')!r}"
+                else:
+                    label = anchor.get("value", "?")
+                print(f"  [{i}] {label[:120]}{'…' if len(label) > 120 else ''}")
+
+    client_data = build_client_data(annot["annotations"])
 
     css = (ASSETS / "style.css").read_text(encoding="utf-8")
     js = (ASSETS / "script.js").read_text(encoding="utf-8")
