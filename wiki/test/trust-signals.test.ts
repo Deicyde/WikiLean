@@ -122,7 +122,7 @@ describe("trust signals through the app", () => {
     expect(html).toContain(">0/2 human-reviewed<");
     expect(html).toContain('id="wl-legend-btn"');
     const keys = [...h.renderCache.store.keys()];
-    expect(keys.some((k) => k.startsWith("render:v17:"))).toBe(true);
+    expect(keys.some((k) => k.startsWith("render:v18:"))).toBe(true);
     expect(keys.some((k) => k.startsWith("render:v16:"))).toBe(false);
   });
 

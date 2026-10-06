@@ -100,7 +100,7 @@ function main(): void {
     { version: number; revid: number | null; pulled_at: string }
   >;
 
-  const rows = wranglerJson("SELECT slug, annotations, version FROM articles") as Array<{
+  const rows = wranglerJson("SELECT slug, annotations, version FROM articles WHERE schema_version = 3") as Array<{
     slug: string;
     annotations: string;
     version: number;
@@ -146,7 +146,7 @@ function main(): void {
     const annJson = JSON.stringify(withIds);
     const update =
       `UPDATE articles SET annotations=${q(annJson)}, version=version+1, updated_at=${now} ` +
-      `WHERE slug=${q(r.slug)} AND version=${r.version};`;
+      `WHERE slug=${q(r.slug)} AND version=${r.version} AND schema_version=3;`;
     // Revision log, matching the Worker's bot-write convention (src/index.ts):
     // user_id 'pipeline', kind 'pipeline', parent_id = latest prior revision.
     // The WHERE EXISTS ties it to the CAS above — version is now r.version+1
@@ -155,7 +155,7 @@ function main(): void {
       `INSERT INTO revisions (slug, user_id, annotations, comment, kind, parent_id, created_at) ` +
       `SELECT ${q(r.slug)}, 'pipeline', ${q(annJson)}, 'id backfill', 'pipeline', ` +
       `(SELECT MAX(id) FROM revisions WHERE slug=${q(r.slug)}), ${now} ` +
-      `WHERE EXISTS (SELECT 1 FROM articles WHERE slug=${q(r.slug)} AND version=${r.version + 1});`;
+      `WHERE EXISTS (SELECT 1 FROM articles WHERE slug=${q(r.slug)} AND version=${r.version + 1} AND schema_version=3 AND annotations=${q(annJson)});`;
     if (update.length > MAX_STATEMENT_BYTES || insert.length > MAX_STATEMENT_BYTES) {
       throw new Error(`statement for ${r.slug} exceeds ${MAX_STATEMENT_BYTES} bytes (D1 statement cap)`);
     }

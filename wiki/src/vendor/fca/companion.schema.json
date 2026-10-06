@@ -1,0 +1,274 @@
+{
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "$ref": "#/$defs/reference",
+      "description": "Optional tooling hint identifying a schema; never fetched or used to override the bundled validator."
+    },
+    "source": {
+      "$ref": "#/$defs/source",
+      "description": "The single informal resource participating in this association."
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions",
+      "description": "Optional application metadata for this single association; no inherited collection context."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional nonempty application-defined label. It is not a reference base and has no prescribed global uniqueness or deduplication meaning."
+    },
+    "target": {
+      "$ref": "#/$defs/reference",
+      "description": "The single formal destination URI/IRI reference. This name does not mean the W3C annotation target."
+    },
+    "location": {
+      "type": "object",
+      "description": "A location in the informal source, interpreted by its type. Omission selects the whole source; null is invalid."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "target"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mathlib-initiative.github.io/formal-companion-annotations/schema/companion.schema.json",
+  "title": "Formal Companion single-annotation working draft",
+  "description": "Exactly one association between an informal source and a formal destination. Collections, directories and shard containers are outside this schema. This is an experimental application format, not a W3C Web Annotation serialization. Omitted location selects the whole source. Generic locations and extensions are opaque JSON. Semantic checks also enforce PDF rectangle bounds and ordered LaTeX lines. Schema identifiers are not fetched.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "type": {
+                "const": "pdf"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "$ref": "#/$defs/pdf_location"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "type": {
+                "const": "latex"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "$ref": "#/$defs/latex_location"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "type": {
+                "const": "html"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "$ref": "#/$defs/html_location"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+(?![\\s\\S])",
+      "description": "Nonempty URI/IRI reference without Unicode White_Space or C0/C1 controls. Absolute, relative and opaque references are preserved. Relative references use the containing file as base; no resource is fetched. This lexical check is not a full URI grammar."
+    },
+    "extensions": {
+      "type": "object",
+      "patternProperties": {
+        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+(?![\\s\\S])": true
+      },
+      "additionalProperties": false,
+      "description": "Tool-owned JSON values under nonempty keys without Unicode White_Space or C0/C1 controls. Namespaced keys are recommended; unknown values are preserved."
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "pdf",
+            "latex",
+            "html",
+            "generic"
+          ],
+          "description": "Location mode: pdf, latex, html, or generic for an application-defined location."
+        },
+        "uri": {
+          "$ref": "#/$defs/reference",
+          "description": "URI/IRI reference to the informal resource, relative to the containing file when not absolute."
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions",
+          "description": "Optional source metadata, independent of the annotation extensions."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "uri"
+      ],
+      "description": "One concrete informal resource. Its type determines the location convention."
+    },
+    "pdf_location": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Physical page index starting at 1, independent of printed page labels."
+        },
+        "rect": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "description": "[x,y,width,height], normalized to the displayed CropBox after intrinsic rotation, from the top-left. Width/height must be positive; the rectangle must fit inside the page (semantic checks)."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "page"
+      ],
+      "description": "One physical PDF page and optionally a rectangular region in its displayed coordinates."
+    },
+    "latex_location": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nonempty literal LaTeX label in the identified source file; no macro expansion or resolution is performed."
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "Inclusive one-based line range [start,end], with end >= start (semantic check)."
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "label"
+          ]
+        },
+        {
+          "required": [
+            "lines"
+          ]
+        }
+      ],
+      "description": "Exactly one literal label or inclusive source-line range."
+    },
+    "html_location": {
+      "type": "object",
+      "properties": {
+        "fragment": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/reference"
+            },
+            {
+              "not": {
+                "pattern": "^#"
+              }
+            }
+          ],
+          "description": "Decoded HTML element ID without a leading #. The validator does not resolve the element."
+        },
+        "css": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nonempty CSS selector. Structural validation does not parse or execute it; consumers report absent or ambiguous matches."
+        },
+        "quote": {
+          "$ref": "#/$defs/quote",
+          "description": "Literal quotation and optional adjacent context in the text layer defined by the companion specification."
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "fragment"
+          ]
+        },
+        {
+          "required": [
+            "css"
+          ]
+        },
+        {
+          "required": [
+            "quote"
+          ]
+        }
+      ],
+      "description": "Exactly one element ID, CSS selector, or quotation in the identified HTML document."
+    },
+    "quote": {
+      "type": "object",
+      "properties": {
+        "exact": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nonempty exact selected text in the defined HTML text layer."
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Optional literal text immediately before the selected text, excluded from the selection."
+        },
+        "suffix": {
+          "type": "string",
+          "description": "Optional literal text immediately after the selected text, excluded from the selection."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "exact"
+      ],
+      "description": "Text selection using the companion HTML text convention, without rewriting the supplied strings."
+    }
+  }
+}

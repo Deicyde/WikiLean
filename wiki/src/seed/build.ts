@@ -36,6 +36,9 @@ export function buildSeedRows(siteDir: string): SeedRow[] {
     }
     const slug = (model.slug as string) || f.slice(0, -5);
     const anns = Array.isArray(model.annotations) ? (model.annotations as Array<Record<string, unknown>>) : [];
+    if (model.schema_version === 4 || anns.some(a => a && typeof a === 'object' && ('links' in a || 'unlinked' in a))) {
+      throw new Error(`${f}: native companion data must use the canonical API or explicit migration, not legacy seed tools`);
+    }
     const count = anns.filter((a) => STATUS.has(a.status as string)).length;
     const prev = best.get(slug);
     if (!prev || count > prev.count) best.set(slug, { count, model: { ...model, slug } });

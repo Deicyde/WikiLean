@@ -15,7 +15,7 @@ export const articles = sqliteTable("articles", {
   latestRevid: integer("latest_revid"), // newest upstream revid seen (null = unknown)
   lastUpstreamCheck: integer("last_upstream_check"), // ms; null = never checked
   annotations: text("annotations").notNull(), // JSON array (same shape as the sidecar files)
-  schemaVersion: integer("schema_version").notNull().default(3), // annotation-blob schema generation (v4 = formalizations[], deferred)
+  schemaVersion: integer("schema_version").notNull().default(3), // application storage: 3 legacy; 4 native FCA work items
   version: integer("version").notNull().default(1), // bumped each save → busts the render cache
   // Per-status annotation counts (homepage data), computed from the FINAL
   // persisted annotations (tombstones excluded) in every write path, in the
@@ -35,6 +35,8 @@ export const revisions = sqliteTable(
     slug: text("slug").notNull(),
     userId: text("user_id"), // null = system/seed
     annotations: text("annotations").notNull(), // full snapshot AFTER this edit
+    sourceRevid: integer("source_revid"), // NULL on old history means unknown; never infer from current article
+    schemaVersion: integer("schema_version"), // internal snapshot dialect, independent of unversioned FCA
     comment: text("comment"),
     kind: text("kind").notNull().default("edit"), // edit | revert | seed | pipeline | contribution
     meta: text("meta"), // JSON: run_id, model, tokens, cost, mathlib_sha, auth_mode, approved_by, ...
