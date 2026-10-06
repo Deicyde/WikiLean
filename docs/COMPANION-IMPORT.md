@@ -1,7 +1,7 @@
 # Companion annotations in the local Brain store
 
-WikiLean can ingest directories of independent FCA v2 annotations into its existing
-Brain JSONL/SQLite reader. This is a **local, unreviewed import**, useful for exploring
+WikiLean can ingest directories of independent annotations in the unversioned FCA
+draft into its existing Brain JSONL/SQLite reader. This is a **local, unreviewed import**, useful for exploring
 Autoform blueprints or a book companion and querying every association. The live
 wiki remains canonical in D1; imported companions do not modify articles, moderation,
 the source registry, the nightly reducer, or a published Brain release.
@@ -14,8 +14,9 @@ Autoform-specific extension is required.
 
 ## Install the reference validator
 
-The working integration is tested against the unpublished FCA **2.0.0a2** draft,
-commit `6be1da3` of the `codex/minimal-companion-schema` branch. Use Python 3.12.
+The working integration uses the unpublished FCA reference package **2.0.0a2**
+from the `codex/minimal-companion-schema` branch. The annotation itself has no
+version field; the package version identifies the software only. Use Python 3.12.
 Install that reviewed local checkout or its built wheel in your environment:
 
 ```sh

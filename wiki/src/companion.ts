@@ -1,4 +1,4 @@
-// Projection of one D1 article snapshot into independent FCA v2 records.
+// Projection of one D1 article snapshot into independent unversioned FCA draft records.
 // The reference schema lives in formal-companion-annotations, not in this repo.
 import { Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
@@ -24,7 +24,6 @@ export interface CompanionArticle {
 
 // This is the subset emitted by this adapter, not a replacement core validator.
 export interface CompanionAnnotation {
-  version: 2;
   source: { type: "generic"; uri: string };
   target: string;
   location: { profile: string; anchor: Record<string, string>; resolution: "not_attempted" };
@@ -109,7 +108,7 @@ export function exportCompanionAnnotations(article: CompanionArticle): {
       const matchKind = mathlib.match_kind || annotation.match_kind;
       if (scalarString(matchKind)) metadata.match_kind = matchKind;
       annotations.push({
-        version: 2, source: { type: "generic", uri: source }, target,
+        source: { type: "generic", uri: source }, target,
         // WikiLean snippets use a different normalization and ranges include
         // the endpoint. Keeping the locator opaque avoids false HTML quotes
         // or silently changing an unresolved span into the entire article.

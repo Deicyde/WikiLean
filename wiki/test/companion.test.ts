@@ -20,8 +20,8 @@ describe("atomic companion export", () => {
     const result = exportCompanionAnnotations(article);
     expect(result.diagnostics).toEqual([]);
     expect(result.annotations).toHaveLength(1);
+    expect(result.annotations[0]).not.toHaveProperty("version");
     expect(result.annotations[0]).toMatchObject({
-      version: 2,
       source: { type: "generic", uri: "https://en.wikipedia.org/w/index.php?title=Group_(mathematics)&oldid=12345" },
       target: "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group",
       location: { profile: ANCHOR_PROFILE, anchor: annotation.anchor, resolution: "not_attempted" },

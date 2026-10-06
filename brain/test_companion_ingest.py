@@ -30,7 +30,7 @@ except ModuleNotFoundError:
 
 
 def annotation():
-    return {"version": 2, "id": "same-id", "source": {"type": "generic", "uri": "../source.md"},
+    return {"id": "same-id", "source": {"type": "generic", "uri": "../source.md"},
             "location": {"profile": "urn:fixture:markdown", "unknown": [3, 1]},
             "target": "../formal.html#result", "extensions": {"custom": {"z": 2**80, "a": None}}}
 
@@ -308,7 +308,7 @@ class ReferenceTests(unittest.TestCase):
         with self.assertRaisesRegex(companion.ImportError, "PDF_RECT"):
             self.ingest()
         self.assertFalse(self.output.exists())
-        bad_path.write_text('{"version":2,"version":2}')
+        bad_path.write_text('{"target":"urn:x","target":"urn:x"}')
         with self.assertRaisesRegex(companion.ImportError, "JSON"):
             self.ingest()
         self.assertFalse(self.output.exists())

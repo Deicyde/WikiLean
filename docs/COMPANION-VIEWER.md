@@ -57,7 +57,7 @@ generation, profile, and publication status.
   "records": [
     {
       "ordinal": 0,
-      "annotation": {"version": 2, "source": {"type": "generic", "uri": "../notes.md"}, "target": "urn:lean:Example.result"},
+      "annotation": {"source": {"type": "generic", "uri": "../notes.md"}, "target": "urn:lean:Example.result"},
       "origin": {"base_uri": "file:///example/links/shard.json", "pointer": "/0"},
       "source": "file:///example/notes.md",
       "target": "urn:lean:Example.result",

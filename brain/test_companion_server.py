@@ -23,12 +23,12 @@ from brain.ingest import companion
 
 def docs():
     return [
-        {"version": 2, "id": "one", "source": {"type": "pdf", "uri": "https://example.org/book.pdf"},
+        {"id": "one", "source": {"type": "pdf", "uri": "https://example.org/book.pdf"},
          "location": {"page": 2}, "target": "https://example.org/formal#one"},
-        {"version": 2, "id": "two", "source": {"type": "latex", "uri": "../book.tex"},
+        {"id": "two", "source": {"type": "latex", "uri": "../book.tex"},
          "location": {"label": "thm:two"}, "target": "urn:lean:Example.two",
          "extensions": {"opaque": {"large": 2**100}}},
-        {"version": 2, "id": "three", "source": {"type": "generic", "uri": "//[oops"},
+        {"id": "three", "source": {"type": "generic", "uri": "//[oops"},
          "location": {"custom": [3, 2, 1]}, "target": "file:result.html"},
     ]
 
