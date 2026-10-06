@@ -118,8 +118,8 @@ def list_checkpoints(pending_dir: Path | None = None) -> list[dict]:
     out = []
     for p in sorted(d.glob("*.json")):
         try:
-            out.append(json.loads(p.read_text(encoding="utf-8")))
-        except (OSError, json.JSONDecodeError):
+            out.append(native.strict_loads(p.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError, native.NativeAnnotationError):
             continue  # a corrupt checkpoint is dropped on the floor, not fatal
     return out
 
@@ -965,9 +965,9 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
               f"(reading disk artifact by pipeline slug, posting to D1 slug)",
               flush=True)
     try:
-        final = json.loads(
+        final = native.strict_loads(
             (ctx.ba.ANNOT / f"{disk_slug}.json").read_text())["annotations"]
-    except (OSError, json.JSONDecodeError, KeyError) as e:
+    except (OSError, json.JSONDecodeError, KeyError, native.NativeAnnotationError) as e:
         rec["error"] = f"final_read_failed: {type(e).__name__}"
         return rec
 
@@ -1051,8 +1051,8 @@ async def process_new(article: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore
               f"(reading disk artifact by pipeline slug, creating at D1 slug)",
               flush=True)
     try:
-        envelope = json.loads((ctx.ba.ANNOT / f"{disk_slug}.json").read_text())
-    except (OSError, json.JSONDecodeError) as e:
+        envelope = native.strict_loads((ctx.ba.ANNOT / f"{disk_slug}.json").read_text())
+    except (OSError, json.JSONDecodeError, native.NativeAnnotationError) as e:
         rec["error"] = f"final_read_failed: {type(e).__name__}"
         return rec
 

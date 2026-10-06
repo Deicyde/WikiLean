@@ -32,6 +32,22 @@ def is_native(item: Any) -> bool:
     return isinstance(item, dict) and ("links" in item or "unlinked" in item)
 
 
+def strict_loads(text: str) -> Any:
+    """Read an unambiguous finite JSON value without collapsing duplicate keys."""
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise NativeAnnotationError(f"duplicate JSON key: {key}")
+            result[key] = value
+        return result
+    def invalid(value):
+        raise NativeAnnotationError(f"nonfinite JSON number: {value}")
+    value = json.loads(text, object_pairs_hook=pairs, parse_constant=invalid)
+    _strict_json(value)
+    return value
+
+
 def _strict_json(value: Any) -> None:
     try:
         encoded = json.dumps(value, ensure_ascii=False, allow_nan=False)
@@ -393,7 +409,7 @@ def migrate_items(items: list[dict], *, title: str, revid: int) -> tuple[list[di
             diagnostics.append({"item": index, "code": "NO_FORMAL_TARGET"})
         elif old.get("status") == "not_formalized":
             diagnostics.append({"item": index, "code": "STATUS_TARGET_CONFLICT"})
-        if not old.get("anchor") and not (isinstance(old.get("anchors"), list) and old["anchors"]):
+        if "anchor" not in old and not (isinstance(old.get("anchors"), list) and old["anchors"]):
             diagnostics.append({"item": index, "code": "MISSING_ANCHOR"})
         for anchor_index, anchor in enumerate(raw_spans):
             valid = isinstance(anchor, dict) and all(key not in anchor or isinstance(anchor[key], str) for key in ANCHOR_FIELDS)
