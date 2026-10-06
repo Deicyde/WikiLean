@@ -8,7 +8,7 @@ EXISTING anchor matcher (render.wrap_annotations) against the new HTML, and:
   - every non-tombstone occurrence still anchors → POST with revid=latest_revid.
     Legacy items remain verbatim. Native AI-owned source URIs move to the new
     pin with an explicit per-occurrence audit; human-owned source changes need
-    an approved proposal and stop this automatic update. The Worker advances
+    a moderator source-revision save and stop this automatic update. The Worker advances
     version + revid atomically and resets wp_drifted.
   - any anchor fails  →  NO write. The slug + failing anchors are appended to
     site/cache/.wp_update_report.jsonl — these are the candidates for future

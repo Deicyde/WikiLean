@@ -427,7 +427,7 @@ def repin_items(items: list[dict], *, title: str, old_revid: int, new_revid: int
             if resolved_web_uri(previous, span.get("base_uri")) != old_uri:
                 continue
             if item.get("provenance") == "human":
-                raise NativeAnnotationError("human source revision update requires an approved proposal")
+                raise NativeAnnotationError("human source revision update requires a moderator source-revision save")
             source["uri"] = new_uri
             changes.append({"item": item.get("id", index), "occurrence": span_index, "from": previous, "to": new_uri})
     validate_items(result, title=title, revid=new_revid)
