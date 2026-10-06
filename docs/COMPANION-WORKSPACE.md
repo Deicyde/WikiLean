@@ -32,8 +32,9 @@ reader. Keep reports and generated workspace history outside the shard selection
 No repository URL, commit, or Node exporter is needed for native synchronization.
 Older configuration coordinates are retained as unused operational metadata.
 
-An article input is a saved native WikiLean snapshot with `schema_version: 4` and
-an `annotations` array of review items containing `links` and `unlinked`. The 4 is
+An article input is a saved native WikiLean snapshot with `schema_version: 4`,
+`wikipedia_title` (or `wikipediaTitle`), a positive `revid`, and an `annotations`
+array of review items containing `links` and `unlinked`. The 4 is
 WikiLean's **application storage marker**, never a field on an FCA record. Rejected
 items and targetless occurrences remain in WikiLean; the shared association index
 contains only existing public links. Relative references require the original
@@ -114,6 +115,10 @@ or historical generated catalogs back into annotation discovery. No sync pushes,
 publishes, deploys, or writes back into the canonical WikiLean application database.
 
 ## Verification
+
+The full rehearsal also requires Node 22 and WikiLean's installed JavaScript
+dependencies (`npm ci` inside `wiki/`). Workspace setup installs only the Python
+packages; native synchronization itself does not require Node.
 
 ```sh
 /absolute/workspace/.venv/bin/python brain/test_companion_workspace.py --require-integrations
