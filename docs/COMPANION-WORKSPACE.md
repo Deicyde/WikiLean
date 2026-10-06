@@ -89,7 +89,9 @@ bound revision; it does not fetch or verify the remote resource. Changed article
 show historical associations. Unbound sources appear together in a generated
 companion index. Unknown selectors remain visible and unresolved. Neither the
 article text nor its proof graph, readiness, or verification state is changed.
-Autoform's local renderer generates the view, including its Obsidian projection.
+Autoform's local renderer includes these associations in its generated publication
+view. The authored Obsidian vault is unchanged; it has no native companion reader
+yet.
 
 ## Refresh guarantees and failure handling
 
