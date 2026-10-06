@@ -125,6 +125,22 @@ for row in iter_annotations("/tmp/index", target="urn:lean:My.result"):
     print(row["annotation"], row["origin"])
 ```
 
+To build several local views from the same input generation, discover once and pass
+that captured collection to each consumer. `import_collected(collection,
+source_key=..., output=...)` revalidates and copies all annotation values in memory,
+but never reopens shards or resolves their captured absolute carrier paths again.
+This preserves a coherent capture even if files change or directories are moved
+between discovery and publication. Invalid mutated records still reject the batch.
+
+```python
+from formal_companion_annotations.discovery import collect
+from brain.ingest.companion import import_collected
+
+captured = collect(["/path/to/shards"])
+report = import_collected(captured, source_key="example", output="/tmp/captured-index")
+# The same captured collection can also feed Autoform's companion catalog.
+```
+
 ## Validation
 
 `brain/test_companion_ingest.py` tests the adapter against the real Brain builder,

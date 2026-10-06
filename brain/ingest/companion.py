@@ -11,6 +11,7 @@ import argparse
 import builtins
 import ctypes
 import hashlib
+import importlib
 import json
 import os
 import re
@@ -40,7 +41,7 @@ class ImportError(ValueError):
     """An input batch or destination cannot be imported safely."""
 
 
-def _collect(paths, *, include, exclude):
+def _require_reference():
     try:
         import formal_companion_annotations as fca
         if getattr(fca, "__version__", None) != REFERENCE_VERSION:
@@ -49,13 +50,44 @@ def _collect(paths, *, include, exclude):
                 f"found {getattr(fca, '__version__', 'unknown')}. "
                 "See docs/COMPANION-IMPORT.md."
             )
-        from formal_companion_annotations.discovery import collect
+        companion = importlib.import_module("formal_companion_annotations.companion")
+        discovery = importlib.import_module("formal_companion_annotations.discovery")
     except builtins.ImportError as exc:
         raise ImportError(
             "Install the FCA 2.0.0a2 reference package in this Python environment; "
             "see docs/COMPANION-IMPORT.md. Validation is required, never bypassed."
         ) from exc
-    return collect(paths, include=include, exclude=exclude)
+    return companion, discovery
+
+
+def _collect(paths, *, include, exclude):
+    _, discovery = _require_reference()
+    return discovery.collect(paths, include=include, exclude=exclude)
+
+
+def _validate_captured(collection):
+    """Copy and revalidate in memory without reopening or resolving carriers."""
+    if collection.problems or not collection.records:
+        return collection  # The shared projection path reports fatal batch findings.
+    reference, discovery = _require_reference()
+    copied = discovery.Collection(files=list(collection.files))
+    for record in collection.records:
+        if not isinstance(record.path, Path) or not record.path.is_absolute():
+            raise ImportError("Captured records require an absolute carrier Path")
+        if not isinstance(record.pointer, str):
+            raise ImportError("Captured records require a JSON pointer string")
+        if record.line is not None and (type(record.line) is not int or record.line < 1):
+            raise ImportError("Captured JSONL line must be a positive integer")
+        try:
+            annotation = reference.loads(reference.dumps(record.annotation))
+        except ValueError as exc:
+            raise ImportError(f"Invalid captured annotation at {record.path}: {exc}") from exc
+        findings = reference.check(annotation).problems
+        if findings:
+            raise ImportError("Invalid captured annotation; nothing imported: " +
+                              "; ".join(str(problem) for problem in findings))
+        copied.records.append(discovery.Record(annotation, record.path, record.pointer, record.line))
+    return copied
 
 
 def _json(value: Any) -> str:
@@ -142,15 +174,18 @@ def _projection(collection, source_key: str):
     edges = []
     for record in collection.records:
         annotation = record.annotation
-        origin = {"base_uri": record.base_uri, "pointer": record.pointer}
+        # Discovery already captured the resolved absolute carrier path. Do not
+        # resolve it again: later directory/symlink changes cannot rewrite origin.
+        base_uri = record.path.as_uri()
+        origin = {"base_uri": base_uri, "pointer": record.pointer}
         if record.line is not None:
             origin["line"] = record.line
         encoded = _json(annotation)
         # Origin+ordinal identifies an occurrence, not mathematical identity.
         # Repeated IDs and even repeated content remain separate edge rows.
         identity = hashlib.sha256(_json([source_key, origin, encoded]).encode()).hexdigest()
-        source, source_resolution = _resolve_reference(record.base_uri, annotation["source"]["uri"])
-        target, target_resolution = _resolve_reference(record.base_uri, annotation["target"])
+        source, source_resolution = _resolve_reference(base_uri, annotation["source"]["uri"])
+        target, target_resolution = _resolve_reference(base_uri, annotation["target"])
         edges.append({
             "src": source,
             "dst": target,
@@ -212,12 +247,29 @@ def import_companions(paths: Iterable[Path | str], *, source_key: str,
     The output must not exist. It contains the normal Brain JSONL artifacts and
     generated SQLite index. Resource URIs are indexed but never fetched or read.
     """
-    if not SOURCE_KEY.fullmatch(source_key):
+    _preflight(source_key, output)
+    collection = _collect(paths, include=include, exclude=exclude)
+    return import_collected(collection, source_key=source_key, output=output)
+
+
+def _preflight(source_key, output):
+    if not isinstance(source_key, str) or not SOURCE_KEY.fullmatch(source_key):
         raise ImportError("source-key must be 1–128 letters/digits/dots/underscores/hyphens, starting with a letter or digit")
     target = Path(output).absolute()
     if target.exists() or target.is_symlink():
         raise ImportError(f"Output already exists: {target}")
-    collection = _collect(paths, include=include, exclude=exclude)
+    return target
+
+
+def import_collected(collection, *, source_key: str, output: Path | str) -> dict[str, Any]:
+    """Publish one captured FCA Collection without rediscovering source files.
+
+    Every annotation is copied and revalidated with the reference checker. Carrier
+    paths are the already captured absolute paths, never resolved again. A caller
+    can pass the same collection to several consumers for a coherent generation.
+    """
+    target = _preflight(source_key, output)
+    collection = _validate_captured(collection)
     metadata, edges = _projection(collection, source_key)
     # Failures before this point cannot create any output or parent directory.
     target.parent.mkdir(parents=True, exist_ok=True)
