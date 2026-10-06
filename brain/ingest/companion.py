@@ -19,7 +19,7 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Iterable
-from urllib.parse import urljoin
+from urllib.parse import urlsplit
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -28,6 +28,11 @@ from brain import store
 
 REFERENCE_VERSION = "2.0.0a2"
 PROFILE = "companion-local-import-v1"
+REFERENCE_PARTS = re.compile(
+    r"^(?:(?P<scheme>[A-Za-z][A-Za-z0-9+.-]*):)?"
+    r"(?://(?P<authority>[^/?#]*))?(?P<path>[^?#]*)"
+    r"(?:\?(?P<query>[^#]*))?(?:#(?P<fragment>.*))?$"
+)
 SOURCE_KEY = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
 
 
@@ -59,6 +64,75 @@ def _json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
 
 
+def _remove_local_dot_segments(path: str) -> str:
+    """Normalize literal dot segments of an absolute carrier path, preserving //."""
+    if not path:
+        return path
+    if not path.startswith("/"):
+        raise ValueError("carrier resolution requires an absolute hierarchical base path")
+    output = [""]
+    parts = path.split("/")[1:]
+    for index, part in enumerate(parts):
+        if part == "..":
+            if len(output) > 1:
+                output.pop()
+        elif part != ".":
+            output.append(part)
+        if part in (".", "..") and index == len(parts) - 1:
+            output.append("")
+    return "/".join(output)
+
+
+def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, str]]:
+    """Produce a lookup key without silently rewriting opaque identifiers.
+
+    Relative references use RFC 3986 section 5.2 component/path merging. The
+    carrier is always an absolute file URI. Core validation is only lexical;
+    unsupported authority syntax is retained with explicit unresolved status.
+    """
+    parsed = REFERENCE_PARTS.fullmatch(reference)
+    assert parsed is not None  # FCA's lexical rule excludes control characters.
+    parts = parsed.groupdict()
+    try:
+        # Inspect only; never use urllib's recomposition, case folding, percent
+        # decoding, or legacy same-scheme relative handling for output keys.
+        urlsplit(reference)
+    except ValueError:
+        if parts["scheme"] is not None:
+            key = reference
+        else:
+            digest = hashlib.sha256(_json([base_uri, reference]).encode()).hexdigest()
+            key = "urn:wikilean:companion:unresolved:" + digest
+        return key, {"status": "unresolved", "reason": "unsupported_authority_syntax"}
+    if parts["scheme"] is not None:
+        return reference, {"status": "absolute"}
+    base = REFERENCE_PARTS.fullmatch(base_uri).groupdict()
+    authority = parts["authority"]
+    path = parts["path"]
+    query = parts["query"]
+    if authority is not None:
+        path = _remove_local_dot_segments(path)
+    else:
+        authority = base["authority"]
+        if not path:
+            path = base["path"]
+            if query is None:
+                query = base["query"]
+        else:
+            if not path.startswith("/"):
+                path = base["path"].rsplit("/", 1)[0] + "/" + path
+            path = _remove_local_dot_segments(path)
+    key = base["scheme"] + ":"
+    if authority is not None:
+        key += "//" + authority
+    key += path
+    if query is not None:
+        key += "?" + query
+    if parts["fragment"] is not None:
+        key += "#" + parts["fragment"]
+    return key, {"status": "resolved"}
+
+
 def _projection(collection, source_key: str):
     if collection.problems:
         findings = [f"{p.code} {p.path}: {p.message}" for p in collection.problems]
@@ -75,9 +149,11 @@ def _projection(collection, source_key: str):
         # Origin+ordinal identifies an occurrence, not mathematical identity.
         # Repeated IDs and even repeated content remain separate edge rows.
         identity = hashlib.sha256(_json([source_key, origin, encoded]).encode()).hexdigest()
+        source, source_resolution = _resolve_reference(record.base_uri, annotation["source"]["uri"])
+        target, target_resolution = _resolve_reference(record.base_uri, annotation["target"])
         edges.append({
-            "src": urljoin(record.base_uri, annotation["source"]["uri"]),
-            "dst": urljoin(record.base_uri, annotation["target"]),
+            "src": source,
+            "dst": target,
             "kind": "links",
             "confidence": "unreviewed",
             "provenance": {"source": source_key, "method": PROFILE},
@@ -86,6 +162,7 @@ def _projection(collection, source_key: str):
                 "annotation": annotation,
                 "annotation_json": encoded,
                 "origin": origin,
+                "resolution": {"source": source_resolution, "target": target_resolution},
             },
         })
     digest = hashlib.sha256(store.canonical_json([source_key, edges]).encode()).hexdigest()
@@ -184,7 +261,9 @@ def iter_annotations(data_dir: Path | str, *, source: str | None = None,
             evidence = edge["evidence"]
             yield {"annotation": json.loads(evidence["annotation_json"]),
                    "origin": evidence["origin"],
-                   "source": edge["src"], "target": edge["dst"]}
+                   "source": edge["src"], "target": edge["dst"],
+                   "resolution": evidence.get("resolution", {
+                       "source": {"status": "legacy"}, "target": {"status": "legacy"}})}
     finally:
         database.close()
 
@@ -200,8 +279,8 @@ def main(argv: list[str] | None = None) -> int:
     ingest.add_argument("--exclude", action="append", default=[])
     query = commands.add_parser("query", help="read original annotations and origins from SQLite")
     query.add_argument("--data-dir", required=True, type=Path)
-    query.add_argument("--source", help="exact resolved source URI")
-    query.add_argument("--target", help="exact resolved target URI")
+    query.add_argument("--source", help="exact source lookup key from query output")
+    query.add_argument("--target", help="exact target lookup key from query output")
     args = parser.parse_args(argv)
     try:
         if args.command == "ingest":

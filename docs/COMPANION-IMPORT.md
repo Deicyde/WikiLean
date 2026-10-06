@@ -59,8 +59,8 @@ API's root-relative shell patterns: `*` can match `/`, and `**/` also matches th
 Selected unrelated JSON is an error, not a hidden source of dropped records. Put
 output outside input roots to avoid selecting generated artifacts on a later scan.
 
-The query emits JSONL with `annotation`, `origin`, resolved `source`, and resolved
-`target`. The annotation is the complete original decoded object. `origin` contains
+The query emits JSONL with `annotation`, `origin`, `source` and `target` lookup keys,
+and per-endpoint `resolution` status. The annotation is the complete original decoded object. `origin` contains
 the carrier's absolute file URI, JSON pointer, and physical JSONL line when relevant.
 It is essential context when moving a record that contains relative references:
 **references resolve against the containing shard**, not the scan root or source URI.
@@ -69,7 +69,24 @@ retain the origin or rebase both references; do not discard the origin and reloc
 relative records unchanged.
 
 No source or target is fetched, opened, or evaluated. URI resolution only creates
-lookup keys. Source metadata, opaque generic anchors, unknown extensions, large
+lookup keys. Scheme-qualified references, including opaque URNs and `file:foo`,
+remain verbatim. Relative references use the carrier base and literal dot-segment
+removal, preserving repeated slashes, Unicode, percent-encoded bytes and their case,
+and explicit empty queries/fragments (`?`/`#`). No decoding, host normalization,
+resource lookup, or filename guessing occurs.
+
+The core's reference check is lexical, not a complete URI grammar. A malformed
+authority such as `https://[oops` or `//[oops` therefore remains valid FCA input.
+Such records are retained with `resolution.source` or `resolution.target` status
+`unresolved` and reason `unsupported_authority_syntax`. An absolute malformed
+reference keeps its original lookup key; an unresolved relative reference gets
+`urn:wikilean:companion:unresolved:<sha256>` computed from the carrier URI and raw
+reference. That key is only an index key, never written into the annotation or
+claimed to name a formal object. Use the returned key with `--source`/`--target`
+to retrieve those occurrences. The other statuses are `absolute` (retained without
+resolving) and `resolved` (relative component merging completed); neither certifies
+resource existence or full URI validity. Older local imports without this metadata
+report `legacy` and can be rebuilt from their original shards. Source metadata, opaque generic anchors, unknown extensions, large
 integers, array order, and decoded object insertion order survive a round trip.
 An unresolved generic anchor remains a generic anchor, never a whole-resource link.
 Duplicate IDs and identical annotations remain separate occurrences. Discovery only
@@ -112,7 +129,7 @@ for row in iter_annotations("/tmp/index", target="urn:lean:My.result"):
 
 `brain/test_companion_ingest.py` tests the adapter against the real Brain builder,
 SQLite indexes, provenance recovery, duplicates, freshness, atomic failure cleanup,
-and existing-output protection. These standard-library tests run in the normal
+existing-output protection, and URI-resolution edge cases. These standard-library tests run in the normal
 Python CI gate. Optional reference tests additionally exercise all four FCA modes,
 semantic/JSON failures, arbitrary shards, include/exclude, relative origins, and CLI
 round trips. Run the complete boundary suite in the FCA environment:
