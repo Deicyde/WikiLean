@@ -53,7 +53,7 @@ def main() -> int:
         return 2
 
     sections = json.loads(sections_path.read_text())["sections"]
-    annotations = json.loads(agent1_path.read_text())["annotations"]
+    annotations = native.strict_loads(agent1_path.read_text())["annotations"]
 
     # Collect all snippets from annotations (normalized).
     snippets = set()

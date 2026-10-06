@@ -14,22 +14,8 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
-from typing import Any
 
-from native_annotations import NativeAnnotationError, migrate_items
-
-
-def strict_loads(text: str) -> Any:
-    def pairs(items):
-        result = {}
-        for key, value in items:
-            if key in result:
-                raise NativeAnnotationError(f"duplicate JSON key: {key}")
-            result[key] = value
-        return result
-    def invalid(value):
-        raise NativeAnnotationError(f"nonfinite JSON number: {value}")
-    return json.loads(text, object_pairs_hook=pairs, parse_constant=invalid)
+from native_annotations import NativeAnnotationError, migrate_items, strict_loads
 
 
 def _publish_new(source: Path, destination: Path) -> None:

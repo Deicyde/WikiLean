@@ -45,6 +45,17 @@ def old_item(**extras):
 
 
 class NativeContract(unittest.TestCase):
+    def test_strict_native_json_rejects_duplicate_keys_and_nonfinite_numbers(self):
+        import batch_annotate as ba
+        for payload in ('{"annotations":[],"annotations":[]}',
+                        '{"annotations":[{"links":[{"id":"a","id":"b"}]}]}',
+                        '{"value":1e999}', '{"value":NaN}'):
+            with self.subTest(payload=payload):
+                with self.assertRaises(n.NativeAnnotationError): n.strict_loads(payload)
+                self.assertIsNone(ba.parse_json_object(payload))
+        self.assertEqual(n.strict_loads('{"left":{"id":"a"},"right":{"id":"b"}}'),
+                         {'left':{'id':'a'},'right':{'id':'b'}})
+
     def test_native_fca_all_modes_and_unknown_values_survive(self):
         locations = {'pdf': {'page': 1, 'rect': [0, 0, 1, 1]}, 'latex': {'lines': [1, 2]},
                      'html': {'fragment': 'α'}, 'generic': {'unknown': {'list': [None, True, 1.25]}}}
@@ -161,6 +172,14 @@ class Migration(unittest.TestCase):
         self.assertEqual([link['id'] for link in converted['links']], ['aabbccddeeff:link:0','aabbccddeeff:link:1'])
         again, diagnostics=n.migrate_items(result, title=TITLE, revid=42)
         self.assertEqual(again, result); self.assertEqual(diagnostics, [])
+
+    def test_only_absent_anchor_is_missing_and_explicit_null_is_invalid(self):
+        for value in ({},None,[]):
+            with self.subTest(anchor=value):
+                converted,diagnostics=n.migrate_items([old_item(anchor=value)],title=TITLE,revid=42)
+                self.assertNotIn('MISSING_ANCHOR',[entry['code'] for entry in diagnostics])
+                self.assertEqual(len(converted[0]['links']),int(isinstance(value,dict)))
+                self.assertEqual('INVALID_ANCHOR' in [entry['code'] for entry in diagnostics],not isinstance(value,dict))
 
     def test_targetless_conflicting_and_invalid_anchors_are_preserved(self):
         for old, links, code in ((old_item(mathlib=None), 0, 'NO_FORMAL_TARGET'),
