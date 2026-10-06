@@ -118,7 +118,7 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         self.path = self.root / "workspace"
         self.shards = self.root / "annotations"
         self.shards.mkdir()
-        self.record = {"version": 2, "source": {"type": "generic", "uri": "../source.md"},
+        self.record = {"source": {"type": "generic", "uri": "../source.md"},
                        "target": "urn:lean:Fixture.result", "location": {"opaque": [1, 2]},
                        "extensions": {"test": {"large": 2**100}}}
         (self.shards / "record.json").write_text(json.dumps(self.record))
@@ -146,7 +146,7 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         workspace.synchronize(self.path)
         previous = workspace.current_generation(self.path)
         database = (previous / "index/brain.sqlite3").read_bytes()
-        (self.shards / "bad.json").write_text('{"version":2}')
+        (self.shards / "bad.json").write_text('{"source":{"type":"generic","uri":"urn:missing-target"}}')
         with self.assertRaises(workspace.WorkspaceError):
             workspace.synchronize(self.path)
         self.assertEqual(workspace.current_generation(self.path), previous)

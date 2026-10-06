@@ -3,12 +3,14 @@
 The workspace connects Autoform's authored blueprint, the FCA single-annotation
 reference package, and WikiLean's SQLite store and local browser. It installs one
 Python 3.12 environment from the local checkouts and Autoform's dependency lock.
-The annotation schema remains unchanged. Workspace configuration, receipts and
+Annotations require only `source` and `target`, with no schema version field.
+Workspace configuration, receipts and
 generation reports are operational files, not another companion format.
 
 ## Create a workspace
 
-Use the integration checkouts of Autoform and WikiLean and the FCA 2.0.0a2 draft.
+Use the integration checkouts of Autoform and WikiLean and the unversioned FCA draft
+from the reference package's 2.0.0a2 development build.
 You need `uv`, Git, and a directory outside the tool checkouts. From WikiLean:
 
 ```sh

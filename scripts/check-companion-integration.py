@@ -82,13 +82,13 @@ def main() -> int:
     # Mix all location modes, duplicate IDs and huge integers with real exports.
     # Relative references deliberately resolve against nested/modes.jsonl.
     modes = [
-        {"version": 2, "id": "repeated", "source": {"type": "pdf", "uri": "../book.pdf"},
+        {"id": "repeated", "source": {"type": "pdf", "uri": "../book.pdf"},
          "location": {"page": 2, "rect": [0.1, 0.2, 0.3, 0.4]}, "target": "../../formal.html#pdf"},
-        {"version": 2, "id": "repeated", "source": {"type": "latex", "uri": "../book.tex"},
+        {"id": "repeated", "source": {"type": "latex", "uri": "../book.tex"},
          "location": {"label": "thm:result"}, "target": "urn:lean:Fixture.result"},
-        {"version": 2, "source": {"type": "html", "uri": "../book.html"},
+        {"source": {"type": "html", "uri": "../book.html"},
          "location": {"fragment": "result"}, "target": "../../formal.html#html"},
-        {"version": 2, "source": {"type": "generic", "uri": "../image.svg"},
+        {"source": {"type": "generic", "uri": "../image.svg"},
          "location": {"custom": [1, 2, "arbitrary input"]}, "target": "urn:lean:Fixture.image",
          "extensions": {"example.org/opaque": {"integer": 2**100, "unknown": [3, 1, 2]}}},
     ]
@@ -98,6 +98,7 @@ def main() -> int:
     assert not discovered.problems, discovered.problems
     assert len(discovered.records) == 12, len(discovered.records)
     assert all(not check(record.annotation).problems for record in discovered.records)
+    assert all("version" not in record.annotation for record in discovered.records)
 
     index = output / "index"
     report = import_companions(roots, source_key="synthetic-integration", output=index)

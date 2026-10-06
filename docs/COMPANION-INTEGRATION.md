@@ -3,7 +3,7 @@
 For one installed environment, a repeatable refresh, a local browser, and the return
 path into Autoform's source catalog, use [the local workspace](COMPANION-WORKSPACE.md).
 
-The shared exchange unit is one FCA v2 informal–formal association. Autoform emits
+The shared exchange unit is one FCA informal–formal association. Autoform emits
 that unit from committed blueprint articles; WikiLean emits it from a consistent
 D1 article snapshot and ingests it into a local SQLite index. Authors can arrange
 shards however they want. The reference schema remains in Formal Companion
@@ -22,10 +22,10 @@ flowchart LR
   V --> C[Autoform source catalog and occurrence archive]
 ```
 
-This implementation uses the unpublished FCA **2.0.0a2** single-annotation draft,
-commit `6be1da39be6fae5c384393fb812530beee07911e`. It does not use the graph-shaped
-release-candidate proposal. No new schema mode, manifest, collection identity, or
-required application profile was introduced.
+The unpublished single-annotation schema has no version field. Only `source` and
+`target` are required. This integration uses the reference Python package's
+**2.0.0a2** development build; that package version is separate from the annotation
+format. No manifest, collection identity, or required application profile is added.
 
 ## Use an existing Autoform project
 
