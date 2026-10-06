@@ -1,5 +1,10 @@
 # Autoform, companion annotations, and WikiLean
 
+This page documents the current local conversion bridge. The intended next
+architecture is [native WikiLean records and independent Autoform articles with
+companion attachments](COMPANION-NATIVE.plan.md). The exporters described below
+are transitional compatibility tools, not the target WikiLean data model.
+
 For one installed environment, a repeatable refresh, a local browser, and the return
 path into Autoform's source catalog, use [the local workspace](COMPANION-WORKSPACE.md).
 
