@@ -31,6 +31,7 @@ run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
+run_check "Companion workspace lifecycle tests" "$PYTHON_BIN" brain/test_companion_workspace.py
 run_check "Companion local import projection tests" "$PYTHON_BIN" brain/test_companion_ingest.py
 run_check "Companion local viewer tests" "$PYTHON_BIN" brain/test_companion_server.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
