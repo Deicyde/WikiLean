@@ -1,5 +1,9 @@
 # One local workspace for all three projects
 
+This is the current conversion-based workspace. The [native adoption plan](COMPANION-NATIVE.plan.md)
+records the requested next step: WikiLean stores shared annotations directly, and
+Autoform articles remain informal resources with separate companion links.
+
 The workspace connects Autoform's authored blueprint, the FCA single-annotation
 reference package, and WikiLean's SQLite store and local browser. It installs one
 Python 3.12 environment from the local checkouts and Autoform's dependency lock.
