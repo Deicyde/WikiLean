@@ -1,5 +1,8 @@
 # Autoform, companion annotations, and WikiLean
 
+For one installed environment, a repeatable refresh, a local browser, and the return
+path into Autoform's source catalog, use [the local workspace](COMPANION-WORKSPACE.md).
+
 The shared exchange unit is one FCA v2 informal–formal association. Autoform emits
 that unit from committed blueprint articles; WikiLean emits it from a consistent
 D1 article snapshot and ingests it into a local SQLite index. Authors can arrange
@@ -15,6 +18,8 @@ flowchart LR
   S --> V[Reference validation and discovery]
   V --> Q[Local WikiLean SQLite index]
   Q --> R[Query original records and carrier origins]
+  Q --> B[Local companion browser]
+  V --> C[Autoform source catalog and occurrence archive]
 ```
 
 This implementation uses the unpublished FCA **2.0.0a2** single-annotation draft,
@@ -118,6 +123,7 @@ This is a working local interchange path. It does not write live D1 articles or
 admit arbitrary URI endpoints into the public Brain graph. That graph requires
 semantic identities and reviewed source evidence. See
 [the storage and publication boundary](COMPANION-IMPORT.md#storage-and-application-boundary).
-Live admission, a companion viewer, pinned external-library resolution, and a
-reverse FCA-to-authored-blueprint importer are separate follow-ups. The core schema
-needs no expansion for those adapters.
+The local workspace now includes a companion viewer and FCA-to-Autoform source
+catalog import. Live admission, pinned external-library resolution, and automatic
+roadmap authorship remain separate concerns. The core schema needs no expansion
+for these adapters.

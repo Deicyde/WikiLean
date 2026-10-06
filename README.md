@@ -35,9 +35,9 @@ A reader can scan an article and see at a glance which statements are formalized
 
 ## Architecture
 
-The experimental [companion integration](docs/COMPANION-INTEGRATION.md) exchanges
-single informal–formal links with Autoform: committed blueprint exports and a
-WikiLean article endpoint feed the same validated, local SQLite import path.
+The experimental [companion workspace](docs/COMPANION-WORKSPACE.md) exchanges
+single informal–formal links with Autoform: committed blueprint exports and
+WikiLean article exports feed a shared SQLite view and Autoform source catalog.
 It uses the unpublished FCA v2 draft and does not change live D1 or publish a Brain release.
 
 WikiLean has two deliberately separate data planes:

@@ -148,7 +148,17 @@ def page_html(page, metadata, params):
     cards = []
     for row in page["records"]:
         annotation = row["annotation"]
-        identity = annotation.get("id") or f"Link {row['ordinal'] + 1}"
+        extensions = annotation.get("extensions", {})
+        identity = None
+        for namespace, field in (("org.autoform", "title"), ("org.wikilean", "label")):
+            data = extensions.get(namespace)
+            label = data.get(field) if isinstance(data, dict) else None
+            if isinstance(label, str) and label.strip():
+                identity = label[:160]
+                break
+        opaque_id = annotation.get("id")
+        identity = identity or (opaque_id if isinstance(opaque_id, str) and len(opaque_id) <= 80 else None)
+        identity = identity or f"Link {row['ordinal'] + 1}"
         mode = annotation["source"]["type"]
         resources = []
         for field, title, label in (("source", "Informal source", annotation["source"]["uri"]),
