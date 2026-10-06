@@ -7,7 +7,7 @@
     "test:unit": "vitest run",
     "test:corpus": "node scripts/check-corpus-tests.mjs && vitest run --config vitest.corpus.config.ts",
     "test:e2e": "playwright test",
-    "test:ci": "npm run typecheck && npm run test:unit",
+    "test:ci": "npm run check:companion-validator && npm run typecheck && npm run test:unit",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "seed:sql": "node --experimental-strip-types scripts/seed.ts",
@@ -23,7 +23,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "backup:d1": "bash scripts/backup-d1.sh",
-    "tail": "wrangler tail --format=pretty"
+    "tail": "wrangler tail --format=pretty",
+    "check:companion-validator": "node scripts/generate-companion-validator.mjs --check"
   },
   "dependencies": {
     "better-auth": "1.6.22",
@@ -36,6 +37,8 @@
     "@hono/node-server": "^1.19.1",
     "@playwright/test": "^1.55.0",
     "@types/node": "^22.10.0",
+    "ajv": "8.17.1",
+    "esbuild": "0.28.2",
     "tsx": "^4.23.1",
     "typescript": "^5.7.0",
     "vitest": "3.2.6",

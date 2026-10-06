@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { articles } from "./db/schema.js";
 import { mathlibDocsUrl } from "./engine/page.js";
 import type { Env } from "./env.js";
+import { NATIVE_SCHEMA_VERSION, storedCompanionRecords, validateNativeItems, isAbsoluteReference, strictJsonParse } from './native-companion.js';
 
 type ObjectValue = Record<string, unknown>;
 const ANCHOR_FIELDS = [
@@ -121,10 +122,37 @@ export function exportCompanionAnnotations(article: CompanionArticle): {
 }
 
 export function registerCompanionRoutes(app: Hono<{ Bindings: Env }>): void {
+  // Lossless stored-record read. Carrier bases accompany raw references; no
+  // URI normalization, source fetching, or extension projection takes place.
+  app.get('/api/article/:slug/companion-records.json', async (c) => {
+    const db = drizzle(c.env.DB);
+    const row = (await db.select().from(articles).where(eq(articles.slug, c.req.param('slug'))).limit(1))[0];
+    if (!row) return c.json({ ok: false, error: 'unknown slug' }, 404);
+    if (row.schemaVersion !== NATIVE_SCHEMA_VERSION) return c.json({ ok: false, error: 'explicit native migration required' }, 409);
+    const items = strictJsonParse(row.annotations) as ObjectValue[];
+    if (validateNativeItems(items).length) return c.json({ ok: false, error: 'invalid native stored snapshot' }, 409);
+    c.header('Cache-Control', 'no-store');
+    return c.json({ version: row.version, records: storedCompanionRecords(items) });
+  });
   app.get("/api/article/:slug/companion.json", async (c) => {
     const db = drizzle(c.env.DB);
     const row = (await db.select().from(articles).where(eq(articles.slug, c.req.param("slug"))).limit(1))[0];
     if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
+    if (row.schemaVersion === NATIVE_SCHEMA_VERSION) {
+      const items = strictJsonParse(row.annotations) as ObjectValue[];
+      if (validateNativeItems(items).length) return c.json({ ok: false, error: 'invalid native stored snapshot' }, 409);
+      const records = storedCompanionRecords(items);
+      if (records.some(record => record.base_uri !== undefined || !isAbsoluteReference(record.annotation.source.uri) || !isAbsoluteReference(record.annotation.target)
+        || (record.annotation.$schema !== undefined && !isAbsoluteReference(record.annotation.$schema)))) {
+        return c.json({ ok: false, error: 'relative records require their original carrier bases',
+          records_url: `/api/article/${encodeURIComponent(row.slug)}/companion-records.json` }, 409);
+      }
+      const annotations = records.map(record => record.annotation);
+      c.header('Cache-Control', 'no-store');
+      c.header('X-Companion-Annotations', String(annotations.length));
+      c.header('X-Companion-Omissions', '0');
+      return c.json(c.req.query('report') === '1' ? { annotations, diagnostics: [] } : annotations);
+    }
     if (!isPinnedRevision(row.revid)) {
       return c.json({ ok: false, error: "article has no pinned Wikipedia revision" }, 409);
     }
