@@ -8,6 +8,7 @@ no invented declarations/concepts, and no formalization or review claims.
 from __future__ import annotations
 
 import argparse
+from types import SimpleNamespace
 import builtins
 import ctypes
 import hashlib
@@ -138,7 +139,15 @@ def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, st
         return key, {"status": "unresolved", "reason": "unsupported_authority_syntax"}
     if parts["scheme"] is not None:
         return reference, {"status": "absolute"}
+    try:
+        urlsplit(base_uri)
+    except ValueError:
+        digest = hashlib.sha256(_json([base_uri, reference]).encode()).hexdigest()
+        return "urn:wikilean:companion:unresolved:" + digest, {"status": "unresolved", "reason": "unsupported_carrier_syntax"}
     base = REFERENCE_PARTS.fullmatch(base_uri).groupdict()
+    if base["authority"] is None and not base["path"].startswith("/"):
+        digest = hashlib.sha256(_json([base_uri, reference]).encode()).hexdigest()
+        return "urn:wikilean:companion:unresolved:" + digest, {"status": "unresolved", "reason": "opaque_carrier_base"}
     authority = parts["authority"]
     path = parts["path"]
     query = parts["query"]
@@ -162,6 +171,11 @@ def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, st
         key += "?" + query
     if parts["fragment"] is not None:
         key += "#" + parts["fragment"]
+    try:
+        urlsplit(key)
+    except ValueError:
+        digest = hashlib.sha256(_json([base_uri, reference]).encode()).hexdigest()
+        return "urn:wikilean:companion:unresolved:" + digest, {"status": "unresolved", "reason": "unsupported_authority_syntax"}
     return key, {"status": "resolved"}
 
 
@@ -176,10 +190,13 @@ def _projection(collection, source_key: str):
         annotation = record.annotation
         # Discovery already captured the resolved absolute carrier path. Do not
         # resolve it again: later directory/symlink changes cannot rewrite origin.
-        base_uri = record.path.as_uri()
-        origin = {"base_uri": base_uri, "pointer": record.pointer}
-        if record.line is not None:
-            origin["line"] = record.line
+        if hasattr(record, "origin"):
+            origin = record.origin
+        else:
+            origin = {"base_uri": record.path.as_uri(), "pointer": record.pointer}
+            if record.line is not None:
+                origin["line"] = record.line
+        base_uri = origin["base_uri"]
         encoded = _json(annotation)
         # Origin+ordinal identifies an occurrence, not mathematical identity.
         # Repeated IDs and even repeated content remain separate edge rows.
@@ -268,8 +285,44 @@ def import_collected(collection, *, source_key: str, output: Path | str) -> dict
     paths are the already captured absolute paths, never resolved again. A caller
     can pass the same collection to several consumers for a coherent generation.
     """
-    target = _preflight(source_key, output)
     collection = _validate_captured(collection)
+    return _publish_collection(collection, source_key=source_key, output=output)
+
+
+def import_retained(entries, *, source_key: str, output: Path | str) -> dict[str, Any]:
+    """Read native annotations with durable carrier bases, including HTTP bases.
+
+    This operational envelope is not part of FCA. Core values are validated by
+    the reference package and retained unchanged; no native-to-legacy projection.
+    """
+    _preflight(source_key, output)
+    reference, _ = _require_reference()
+    records = []
+    for entry in entries:
+        if not isinstance(entry, dict) or set(entry) != {"annotation", "origin"}:
+            raise ImportError("Expected retained annotation and origin")
+        value = reference.loads(reference.dumps(entry))
+        origin = value["origin"]
+        if not isinstance(origin, dict) or not isinstance(origin.get("base_uri"), str) or not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", origin["base_uri"]) or re.search(r"\s", origin["base_uri"]):
+            raise ImportError("Retained origin requires an absolute carrier base_uri")
+        if reference.check({"source": {"type": "generic", "uri": origin["base_uri"]}, "target": "urn:wikilean:origin-validation"}).problems:
+            raise ImportError("Retained carrier base_uri is not a valid URI reference")
+        if not isinstance(origin.get("pointer"), str) or (origin["pointer"] and not origin["pointer"].startswith("/")) or re.search(r"~(?![01])", origin["pointer"]):
+            raise ImportError("Retained origin requires a JSON pointer with valid escapes")
+        if "path" in origin and (not isinstance(origin["path"], str) or not origin["path"]):
+            raise ImportError("Retained origin path must be a nonempty string when supplied")
+        if origin.get("line") is not None and (type(origin["line"]) is not int or origin["line"] < 1):
+            raise ImportError("Retained origin line must be positive")
+        findings = reference.check(value["annotation"]).problems
+        if findings:
+            raise ImportError("Invalid retained annotation: " + "; ".join(str(p) for p in findings))
+        records.append(SimpleNamespace(annotation=value["annotation"], origin=origin))
+    collection = SimpleNamespace(records=records, problems=[], files=sorted({r.origin["base_uri"] for r in records}))
+    return _publish_collection(collection, source_key=source_key, output=output)
+
+
+def _publish_collection(collection, *, source_key, output):
+    target = _preflight(source_key, output)
     metadata, edges = _projection(collection, source_key)
     # Failures before this point cannot create any output or parent directory.
     target.parent.mkdir(parents=True, exist_ok=True)

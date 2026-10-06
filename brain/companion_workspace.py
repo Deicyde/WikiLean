@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -94,8 +95,6 @@ def _dependency_inputs(config: dict) -> dict:
         "autoform_package": Path(config["autoform_root"]) / "pyproject.toml",
         "fca_package": Path(config["fca_root"]) / "pyproject.toml",
     }
-    if config["articles"]:
-        paths["wikilean_node_lock"] = ROOT / "wiki/package-lock.json"
     return {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
 
 
@@ -119,25 +118,14 @@ def _check_roots(workspace: Path, config: dict) -> None:
             raise WorkspaceError("Shard selections must not include the workspace or its generated snapshots; use inbox/")
 
 
-def _check_catalog_inputs(config: dict) -> None:
-    consumer = config.get("consumer")
-    if not consumer or not consumer["attach_sources"]:
-        return
-    from autoform_cli.runtime import resolve_runtime_paths
-
-    sources = (resolve_runtime_paths(consumer["path"]).blueprint_dir / "sources").resolve()
-    if any(sources.is_relative_to(Path(item).resolve()) for item in config["shards"]):
-        raise WorkspaceError("Shard selections would include generated Autoform catalogs; select a narrower input "
-                             "directory beneath sources/ or initialize with --no-attach-sources")
-
 
 def initialize(workspace: Path, *, autoform_root: Path, fca_root: Path,
                node: str | None = None, shards=(), articles=(), consumer=None,
                repo=None, commit=None, include=None, exclude=(), attach_sources=True) -> dict:
     if workspace.exists() or workspace.is_symlink():
         raise WorkspaceError("Workspace already exists; use setup to finish an earlier initialization")
-    if any((consumer, repo, commit)) and not all((consumer, repo, commit)):
-        raise WorkspaceError("Consumer path, repository URL and full commit must be supplied together")
+    if (repo or commit) and not consumer:
+        raise WorkspaceError("Repository metadata requires a consumer path")
     config = {
         "format": FORMAT, "workspace_id": uuid.uuid4().hex,
         "autoform_root": str(autoform_root.resolve()), "fca_root": str(fca_root.resolve()),
@@ -198,15 +186,6 @@ def setup(workspace: Path) -> dict:
         _run([uv, "pip", "sync", "--python", python, lock], timeout=600)
         _run([uv, "pip", "install", "--python", python, "--no-deps", "--editable",
               config["autoform_root"], "--editable", config["fca_root"]], timeout=600)
-        if config["articles"]:
-            if not config["node"] or not _run([config["node"], "--version"]).startswith("v22."):
-                raise WorkspaceError("Local WikiLean article export needs an explicit Node 22 executable")
-            npm = shutil.which("npm")
-            if not npm:
-                raise WorkspaceError("npm is required for local WikiLean article export")
-            # Invoke npm's actual JS entry with the requested Node, not a system
-            # shebang that could select a different major version.
-            _run([config["node"], Path(npm).resolve(), "ci"], cwd=ROOT / "wiki", timeout=600)
         launcher = workspace / "companion"
         text = "#!/bin/sh\nexec " + " ".join(shlex.quote(str(p)) for p in (
             python, ROOT / "scripts/companion-workspace.py", "--workspace", workspace)) + ' "$@"\n'
@@ -238,9 +217,8 @@ def doctor(workspace: Path) -> dict:
             raise WorkspaceError(f"The installed {name} package does not come from the configured local checkout; run setup")
     if fca.__version__ != "2.0.0a2":
         raise WorkspaceError("This integration requires the FCA 2.0.0a2 draft")
-    if not hasattr(__import__("autoform_cli.companion_sources", fromlist=["write_annotation_catalog"]), "write_annotation_catalog"):
-        raise WorkspaceError("The configured Autoform checkout lacks the companion importer")
-    _check_catalog_inputs(config)
+    if not hasattr(__import__("autoform_cli.companions", fromlist=["capture_retained_records"]), "capture_retained_records"):
+        raise WorkspaceError("The configured Autoform checkout lacks native companion attachments")
     return {"ready": True, "python": sys.version.split()[0], "fca": fca.__version__,
             "autoform": importlib.metadata.version("autoform"), "tools": _tool_revisions(config)}
 
@@ -271,17 +249,15 @@ def _select(workspace: Path, generation: Path) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def _same_occurrences(collection, index: Path, catalog: Path) -> None:
+def _same_occurrences(entries, index: Path, catalog: Path) -> None:
     from brain.ingest.companion import iter_annotations
 
     def identity(annotation, origin):
         # Ignore the archive's human-readable path alias, not the URI base,
         # pointer or physical line identifying an occurrence.
-        key = {k: origin[k] for k in ("base_uri", "pointer", "line") if origin.get(k) is not None}
-        return json.dumps([annotation, key], ensure_ascii=True, separators=(",", ":"))
+        return json.dumps([annotation, origin], sort_keys=True, ensure_ascii=True, separators=(",", ":"))
 
-    expected = Counter(identity(r.annotation, {"base_uri": r.path.as_uri(), "pointer": r.pointer,
-                                              "line": r.line}) for r in collection.records)
+    expected = Counter(identity(entry["annotation"], entry["origin"]) for entry in entries)
     indexed = Counter(identity(row["annotation"], row["origin"]) for row in iter_annotations(index))
     archived = Counter()
     with (catalog / "records.jsonl").open(encoding="utf8") as handle:
@@ -292,93 +268,144 @@ def _same_occurrences(collection, index: Path, catalog: Path) -> None:
         raise WorkspaceError("SQLite and the Autoform source catalog do not contain the same captured occurrences")
 
 
+def _article_entries(path: Path) -> tuple[list[dict], dict]:
+    """Capture native stored links once. No annotation fields are synthesized."""
+    from formal_companion_annotations import companion
+    article = companion.loads(path.read_text(encoding="utf8"))
+    if not isinstance(article, dict) or article.get("schema_version", article.get("schemaVersion")) != 4:
+        raise WorkspaceError(f"{path}: explicit native migration required before synchronization")
+    items = article.get("annotations")
+    if not isinstance(items, list):
+        raise WorkspaceError(f"{path}: expected a native article annotations array")
+    spec = importlib.util.spec_from_file_location("wikilean_native_model", ROOT / "site/native_annotations.py")
+    native = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(native)
+    title = article.get("wikipedia_title", article.get("wikipediaTitle"))
+    revid = article.get("revid")
+    try:
+        native.wikipedia_source_uri(title, revid)
+        native.validate_items([item for item in items if item is not None], title=title, revid=revid)
+    except (ValueError, TypeError, AttributeError) as error:
+        raise WorkspaceError(f"{path}: invalid native article: {error}") from error
+    entries = []
+    for i, item in enumerate(items):
+        if item is None:  # Public API redaction of a rejected work item.
+            continue
+        if not isinstance(item, dict) or not isinstance(item.get("links"), list) or not isinstance(item.get("unlinked"), list):
+            raise WorkspaceError(f"{path}: invalid native work item {i}")
+        if any(key in item for key in ("anchor", "anchors", "mathlib", "decl", "module")):
+            raise WorkspaceError(f"{path}: mixed native and legacy work item {i}")
+        if item.get("status") == "rejected":
+            continue
+        for j, link in enumerate(item["links"]):
+            annotation = link.get("annotation") if isinstance(link, dict) else None
+            if companion.check(annotation).problems:
+                raise WorkspaceError(f"{path}: invalid native annotation {i}/{j}")
+            base = link.get("base_uri")
+            if base is None:
+                import re
+                if any(not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", reference)
+                       for reference in (annotation["source"]["uri"], annotation["target"], *([annotation["$schema"]] if "$schema" in annotation else []))):
+                    raise WorkspaceError(f"{path}: relative native references require their original base_uri")
+                base = path.as_uri()
+            entries.append({"annotation": annotation, "origin": {
+                "base_uri": base, "pointer": f"/annotations/{i}/links/{j}/annotation"}})
+    return entries, {"producer": "wikilean-native", "article": str(path), "annotations": len(entries)}
+
+
+def _prepare_native_attachment(workspace: Path, config: dict):
+    """Register one stable pointer; subsequent selections update both readers."""
+    from autoform_cli.runtime import resolve_runtime_paths
+    from autoform_cli.companions import load_project_companions
+    root = resolve_runtime_paths(config["consumer"]["path"]).project_root
+    path = root / ".autoform-companions.json"
+    if path.is_symlink():
+        raise WorkspaceError("Refusing to replace a symlinked companion project configuration")
+    before = path.read_bytes() if path.exists() else None
+    load_project_companions(root)  # Validate authored selections before changing authority.
+    value = json.loads(before) if before is not None else {}
+    if not isinstance(value, dict) or not isinstance(value.get("archives", []), list):
+        raise WorkspaceError("Invalid existing Autoform companion configuration")
+    archive = str(workspace / "current/autoform-native/records.jsonl")
+    if archive in value.get("archives", []):
+        return None
+    value["archives"] = [*value.get("archives", []), archive]
+    temporary = path.with_name(".autoform-companions-" + uuid.uuid4().hex + ".tmp")
+    _write_new(temporary, value)
+    return path, temporary, before
+
+
+def _install_native_attachment(prepared) -> None:
+    if prepared is None:
+        return
+    path, temporary, before = prepared
+    if path.is_symlink() or (path.read_bytes() if path.exists() else None) != before:
+        raise WorkspaceError("Autoform configuration changed after preflight; selected data is intact, retry sync")
+    os.replace(temporary, path)
+
+
 def synchronize(workspace: Path) -> dict:
-    from autoform_cli.annotations import export_annotations, write_annotation_shards
-    from autoform_cli.companion_sources import write_annotation_catalog
+    from autoform_cli.companions import capture_retained_records, write_retained_annotations
     from formal_companion_annotations.discovery import collect
-    from brain.ingest.companion import import_collected
+    from brain.ingest.companion import import_retained
 
     config = _configuration(workspace)
     with _lock(workspace):
-        _check_catalog_inputs(config)
         checked = doctor(workspace)
         current_generation(workspace)
         name = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ-") + uuid.uuid4().hex[:12]
         generation = workspace / "generations" / name
         generation.mkdir(mode=0o700)
-        catalog = generation / "autoform-catalog"
-        attached = False
+        archive = generation / "autoform-native"
+        prepared_attachment = None
         try:
-            roots = list(config["shards"])
+            if config["consumer"] and config["consumer"]["attach_sources"]:
+                prepared_attachment = _prepare_native_attachment(workspace, config)
             report = {"workspace_id": config["workspace_id"], "generation": name, "state": "building",
                       "tools": checked["tools"], "python": checked["python"], "producer_reports": []}
-            consumer = config["consumer"]
-            if consumer:
-                exported = export_annotations(consumer["path"], repo=consumer["repo"], commit=consumer["commit"])
-                destination = generation / "autoform-export"
-                write_annotation_shards(exported, destination)
-                report["producer_reports"].append({"producer": "autoform", **exported.report()})
-                # Generated records are selected explicitly: user shard globs
-                # must not accidentally filter these known producer outputs.
-                roots.append(str(destination / "annotations"))
-            for number, article in enumerate(config["articles"]):
-                if not config["node"]:
-                    raise WorkspaceError("Article export needs Node 22; run setup with a configured node")
-                destination = generation / f"wikilean-{number:04d}.json"
-                result = json.loads(_run([config["node"], "--import", "tsx", "scripts/export-companion.ts",
-                                          article, destination], cwd=ROOT / "wiki"))
-                roots.append(str(destination))
-                report["producer_reports"].append({"producer": "wikilean", **result})
-            user_inputs = collect(config["shards"], include=config["include"], exclude=config["exclude"])
-            producer_roots = roots[len(config["shards"]):]
-            generated_inputs = collect(producer_roots) if producer_roots else None
-            # Empty component selections are fine; the combined selection must
-            # contain records. All other read/schema failures remain fatal.
-            from formal_companion_annotations.discovery import Collection
-            selections = [user_inputs, *([generated_inputs] if generated_inputs else [])]
-            records, problems, files = [], [], []
-            for selection in selections:
-                records.extend(selection.records)
-                problems.extend(p for p in selection.problems if p.code != "NO_ANNOTATIONS")
-                files.extend(selection.files)
-            if problems or not records:
-                details = "; ".join(f"{p.code}: {p.message}" for p in problems) or "No annotations selected"
-                raise WorkspaceError(details)
-            captured = Collection(records=records, problems=problems, files=files)
-            index_report = import_collected(captured, source_key="companion-workspace", output=generation / "index")
-            if consumer and consumer["attach_sources"]:
-                from autoform_cli.runtime import resolve_runtime_paths
-                consumer_paths = resolve_runtime_paths(consumer["path"])
-                catalog = consumer_paths.blueprint_dir / "sources" / ("companion-" + name)
-                catalog.parent.mkdir(parents=True, exist_ok=True)
-                if catalog.exists() or catalog.is_symlink():
-                    raise WorkspaceError("Source catalog destination already exists")
-                catalog_report = write_annotation_catalog(captured, output=catalog, project=consumer["path"])
-                attached = True
-            else:
-                catalog_report = write_annotation_catalog(captured, output=catalog)
-            _same_occurrences(captured, generation / "index", catalog)
+            selection = collect(config["shards"], include=config["include"], exclude=config["exclude"])
+            problems = [p for p in selection.problems if p.code != "NO_ANNOTATIONS"]
+            if problems:
+                raise WorkspaceError("; ".join(f"{p.code}: {p.message}" for p in problems))
+            entries = []
+            for record in selection.records:
+                origin = {"base_uri": record.path.as_uri(), "pointer": record.pointer}
+                if record.line is not None:
+                    origin["line"] = record.line
+                entries.append({"annotation": record.annotation, "origin": origin})
+            for article in config["articles"]:
+                article_records, producer_report = _article_entries(Path(article).resolve())
+                entries.extend(article_records)
+                report["producer_reports"].append(producer_report)
+            if not entries:
+                raise WorkspaceError("No annotations selected")
+            # Both consumers receive the same detached, reference-validated values.
+            captured = capture_retained_records(entries)
+            entries = [record.entry() for record in captured.records]
+            index_report = import_retained(entries, source_key="companion-workspace", output=generation / "index")
+            archive_report = write_retained_annotations(captured, output=archive)
+            _same_occurrences(entries, generation / "index", archive)
             if _tool_revisions(config) != checked["tools"]:
                 raise WorkspaceError("A tool checkout changed during sync; retry with stable code")
-            report.update(state="ready", annotations=len(records), files=len(files),
-                          index=index_report, catalog=catalog_report, catalog_path=str(catalog),
-                          consumer=consumer,
+            report.update(state="ready", annotations=len(entries), files=len(selection.files) + len(config["articles"]),
+                          index=index_report, catalog=archive_report, catalog_path=str(archive),
+                          consumer=config["consumer"],
                           packages={d.metadata["Name"]: d.version for d in importlib.metadata.distributions()})
             _write_new(generation / "generation.json", report)
             _select(workspace, generation)
+            _install_native_attachment(prepared_attachment)
             return report
         except BaseException as error:
-            # Only a catalog successfully created by this exact attempt is ours
-            # to remove. Incomplete generations remain unselected for diagnosis.
             try:
                 selected = current_generation(workspace) == generation
             except (OSError, ValueError):
-                selected = None  # Unknown outcome: preserve artifacts.
-            if attached and selected is False:
-                shutil.rmtree(catalog)
+                selected = None
             marker = "interruption.json" if selected is not False else "failure.json"
             _write_new(generation / marker, {"error": str(error), "selected": selected})
             raise
+        finally:
+            if prepared_attachment is not None:
+                prepared_attachment[1].unlink(missing_ok=True)
 
 
 def main(argv=None) -> int:

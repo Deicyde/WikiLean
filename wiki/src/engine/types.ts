@@ -1,3 +1,4 @@
+import type { NativeLink, UnlinkedOccurrence } from "../native-companion.js";
 // Annotation data model — mirrors the JSON sidecar schema consumed by render.py.
 // Supports v1/v2 (flat decl/module/note) and v3 (nested `mathlib`, kind/label/anchors).
 
@@ -24,6 +25,10 @@ export interface Anchor {
 }
 
 export interface Annotation {
+  [key: string]: unknown;
+  links?: NativeLink[];
+  unlinked?: UnlinkedOccurrence[];
+  legacy?: Record<string, unknown>;
   // Stable 12-hex id (assigned by the pipeline/editor/Worker heal; immutable).
   id?: string;
   status: string;

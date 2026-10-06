@@ -41,10 +41,9 @@ class WorkspaceConfigTests(unittest.TestCase):
             self.init()
         self.assertEqual(before, (self.path / "workspace.json").read_bytes())
 
-    def test_consumer_coordinates_are_all_required(self):
-        with self.assertRaisesRegex(workspace.WorkspaceError, "supplied together"):
-            self.init(consumer=self.root / "consumer")
-        self.assertFalse(self.path.exists())
+    def test_consumer_needs_no_export_coordinates(self):
+        result = self.init(consumer=self.root / "consumer")
+        self.assertEqual(result["consumer"]["path"], str(self.root / "consumer"))
 
     def test_workspace_cannot_be_inside_a_tool_checkout(self):
         self.path = self.tools / "generated"
@@ -160,29 +159,29 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         self.assertIsNone(workspace.current_generation(self.path))
 
     def test_catalog_and_index_share_capture_even_if_source_changes(self):
-        from autoform_cli import companion_sources
-        actual = companion_sources.write_annotation_catalog
+        from autoform_cli import companions
+        actual = companions.write_retained_annotations
 
         def change_source(collection, **kwargs):
             (self.shards / "record.json").write_text("invalid after capture")
             return actual(collection, **kwargs)
 
-        with patch.object(companion_sources, "write_annotation_catalog", side_effect=change_source):
+        with patch.object(companions, "write_retained_annotations", side_effect=change_source):
             report = workspace.synchronize(self.path)
         self.assertEqual(report["annotations"], 1)
         archive = Path(report["catalog_path"]) / "records.jsonl"
         self.assertEqual(json.loads(archive.read_text())["annotation"], self.record)
 
     def test_record_mismatch_cannot_become_current(self):
-        from autoform_cli import companion_sources
-        actual = companion_sources.write_annotation_catalog
+        from autoform_cli import companions
+        actual = companions.write_retained_annotations
 
         def change_archive(collection, **kwargs):
             result = actual(collection, **kwargs)
             (Path(kwargs["output"]) / "records.jsonl").write_text("")
             return result
 
-        with patch.object(companion_sources, "write_annotation_catalog", side_effect=change_archive):
+        with patch.object(companions, "write_retained_annotations", side_effect=change_archive):
             with self.assertRaisesRegex(workspace.WorkspaceError, "same captured occurrences"):
                 workspace.synchronize(self.path)
         self.assertIsNone(workspace.current_generation(self.path))
@@ -200,16 +199,18 @@ class WorkspaceIntegrationTests(unittest.TestCase):
             (), ({"code": "NO_ASSOCIATIONS"},), config["consumer"]["repo"], "a" * 40)))
         return consumer
 
-    def test_failure_before_selection_removes_only_new_attached_catalog(self):
+    def test_failure_before_selection_preserves_native_config_and_current(self):
         consumer = self._attach_consumer()
         workspace.synchronize(self.path)
         previous = workspace.current_generation(self.path)
-        old = set((consumer / "blueprint/sources").iterdir())
+        config = consumer / ".autoform-companions.json"
+        before = config.read_bytes()
         with patch.object(workspace, "_select", side_effect=RuntimeError("before selection")):
             with self.assertRaisesRegex(RuntimeError, "before selection"):
                 workspace.synchronize(self.path)
-        self.assertEqual(set((consumer / "blueprint/sources").iterdir()), old)
+        self.assertEqual(config.read_bytes(), before)
         self.assertEqual(workspace.current_generation(self.path), previous)
+        self.assertFalse((consumer / "blueprint/sources").exists())
 
     def test_interrupt_after_selection_preserves_active_catalog(self):
         self._attach_consumer()
@@ -234,22 +235,59 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         config["consumer"]["path"] = str(consumer / "blueprint")
         (self.path / "workspace.json").write_text(json.dumps(config))
         result = workspace.synchronize(self.path)
-        self.assertEqual(Path(result["catalog_path"]).parent, consumer / "blueprint/sources")
+        self.assertEqual(Path(result["catalog_path"]).name, "autoform-native")
+        self.assertTrue((consumer / ".autoform-companions.json").is_file())
 
-    def test_attached_catalogs_cannot_be_inside_an_input_root(self):
+    def test_invalid_attachment_config_does_not_select_new_generation(self):
         consumer = self._attach_consumer()
         workspace.synchronize(self.path)
         previous = workspace.current_generation(self.path)
-        existing = set((consumer / "blueprint/sources").iterdir())
-        config = workspace._configuration(self.path)
-        config["consumer"]["path"] = str(consumer / "blueprint")
-        config["shards"] = [str(consumer / "blueprint/sources")]
-        (self.path / "workspace.json").write_text(json.dumps(config))
+        config = consumer / ".autoform-companions.json"
+        config.write_text("{broken json")
+        with self.assertRaises(ValueError):
+            workspace.synchronize(self.path)
+        self.assertEqual(workspace.current_generation(self.path), previous)
+        self.assertEqual(config.read_text(), "{broken json")
+
+    def test_native_attachment_preserves_authored_roots_bindings_and_updates_once(self):
+        consumer = self._attach_consumer()
+        config_path = consumer / ".autoform-companions.json"
+        authored = {"roots": [str(self.shards)], "bindings": [{"source": "urn:article", "article_id": "a", "sha256": "b"*64}]}
+        config_path.write_text(json.dumps(authored))
         for _ in range(2):
-            with self.assertRaisesRegex(workspace.WorkspaceError, "narrower input"):
-                workspace.synchronize(self.path)
-            self.assertEqual(workspace.current_generation(self.path), previous)
-            self.assertEqual(set((consumer / "blueprint/sources").iterdir()), existing)
+            workspace.synchronize(self.path)
+        result = json.loads(config_path.read_text())
+        for key, value in authored.items():
+            self.assertEqual(result[key], value)
+        self.assertEqual(result["archives"], [str(self.path / "current/autoform-native/records.jsonl")])
+        self.assertFalse((consumer / "blueprint/sources").exists())
+
+    def test_native_article_records_are_read_without_conversion_and_keep_http_bases(self):
+        article = self.root / "article.json"
+        record = {"source": {"type": "latex", "uri": "../paper.tex"}, "target": "../formal.html#x", "location": {"label": "theorem:1"}, "extensions": {"opaque": [99]}}
+        article.write_text(json.dumps({"schema_version": 4, "wikipedia_title":"Test", "revid":12345, "annotations": [{"status":"partial", "links":[{"id":"x","annotation":record,"base_uri":"https://example.net/shards/article.json"}], "unlinked": [], "legacy": {"private": "do not publish"}}]}))
+        config = workspace._configuration(self.path)
+        config["articles"] = [str(article)]
+        (self.path / "workspace.json").write_text(json.dumps(config))
+        result = workspace.synchronize(self.path)
+        from brain.ingest.companion import iter_annotations
+        rows = list(iter_annotations(Path(result["index"]["output"])))
+        retained = next(row for row in rows if row["annotation"] == record)
+        self.assertEqual(retained["origin"]["base_uri"], "https://example.net/shards/article.json")
+        self.assertEqual(retained["source"], "https://example.net/paper.tex")
+        self.assertEqual(retained["target"], "https://example.net/formal.html#x")
+        self.assertNotIn("do not publish", json.dumps(rows))
+
+    def test_legacy_articles_require_explicit_migration_and_do_not_replace_current(self):
+        workspace.synchronize(self.path)
+        previous = workspace.current_generation(self.path)
+        article = self.root / "old.json"
+        article.write_text(json.dumps({"annotations": [{"status":"partial", "mathlib":{"decl":"X"}}]}))
+        config = workspace._configuration(self.path); config["articles"] = [str(article)]
+        (self.path / "workspace.json").write_text(json.dumps(config))
+        with self.assertRaisesRegex(workspace.WorkspaceError, "explicit native migration"):
+            workspace.synchronize(self.path)
+        self.assertEqual(workspace.current_generation(self.path), previous)
 
     def test_narrow_source_input_stays_refreshable_with_attached_catalogs(self):
         consumer = self._attach_consumer()
