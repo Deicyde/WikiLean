@@ -61,6 +61,8 @@ import sys
 import time
 import urllib.parse
 from pathlib import Path
+
+import native_annotations as native
 from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
@@ -186,15 +188,7 @@ def _anchor_sig(a: dict) -> str:
     a non-dict `anchor` (string/list/number — must not crash) falls through to
     `anchors[0]` when `anchors` is a non-empty list whose first element is a
     plain dict; otherwise the all-null signature."""
-    anc = a.get("anchor")
-    if not isinstance(anc, dict):
-        anchors = a.get("anchors")
-        if isinstance(anchors, list) and anchors and isinstance(anchors[0], dict):
-            anc = anchors[0]
-        else:
-            anc = {}
-    return json.dumps([anc.get("type"), anc.get("section"), anc.get("snippet"),
-                       anc.get("value"), anc.get("from")], sort_keys=True)
+    return native.anchor_sig(a)
 
 
 def fresh_id(used: set[str]) -> str:
@@ -216,17 +210,31 @@ def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
     contains >50% of the tombstone snippet's word tokens — a near-miss
     resurrection of a human veto. Exact-sig resurrections are already replaced
     by the stored tombstone; this closes the shifted-anchor bypass."""
-    anc = a.get("anchor") if isinstance(a.get("anchor"), dict) else {}
-    toks = _snippet_tokens(anc.get("snippet"))
-    if not toks:
-        return False
-    for t in tombstones:
-        tanc = t.get("anchor") if isinstance(t.get("anchor"), dict) else {}
-        ttoks = _snippet_tokens(tanc.get("snippet"))
-        if not ttoks or anc.get("section") != tanc.get("section"):
+    def candidates(item):
+        if not native.is_native(item):
+            return [(native.primary_anchor(item), None)]
+        from urllib.parse import urljoin
+        result = []
+        for span, anchor in zip(native.occurrences(item), native.anchors(item)):
+            if anchor is not None:
+                try:
+                    uri = urljoin(span.get("base_uri", ""), span["source"]["uri"])
+                except ValueError:
+                    continue
+                result.append((anchor, uri))
+        return result
+
+    for anc, source in candidates(a):
+        toks = _snippet_tokens(anc.get("snippet"))
+        if not toks:
             continue
-        if len(toks & ttoks) / len(ttoks) > 0.5:
-            return True
+        for tombstone in tombstones:
+            for tanc, tomb_source in candidates(tombstone):
+                ttoks = _snippet_tokens(tanc.get("snippet"))
+                if source != tomb_source or not ttoks or anc.get("section") != tanc.get("section"):
+                    continue
+                if len(toks & ttoks) / len(ttoks) > 0.5:
+                    return True
     return False
 
 
@@ -257,6 +265,7 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
         as veto_adjacent_dropped (F6: shifted-anchor resurrections of human
         vetoes don't reach the wire).
     """
+    produced = native.preserve_native_items(existing, produced)
     humans = [a for a in existing if a.get("provenance") == "human"]
     tombs = [a for a in existing if a.get("status") == "rejected"]
     h_by_id = {a["id"]: i for i, a in enumerate(humans)
@@ -327,6 +336,8 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
         if i not in consumed:
             out.append(h)
             stats["human_reinserted_wire"] += 1
+    if any(native.is_native(item) for item in out):
+        native.validate_items(out)
     return out, stats
 
 
@@ -782,8 +793,12 @@ async def _write_article(ctx, slug: str, body: dict, method: str,
             rebased = True
             art, status = await get_article(ctx.api_base, slug, ctx.token)
             if art is not None:
-                posted, wire = finalize_for_post(
-                    art.get("annotations") or [], body.get("annotations") or [])
+                try:
+                    posted, wire = finalize_for_post(
+                        art.get("annotations") or [], body.get("annotations") or [])
+                except native.NativeAnnotationError as exc:
+                    print(f"  {slug}: native rebase needs review ({exc}); checkpoint kept", flush=True)
+                    return 409, {"error": "native_rebase_needs_review"}, rebased
                 body = {**body, "annotations": posted,
                         "base_version": art["version"]}
                 if isinstance(body.get("meta"), dict):
@@ -858,8 +873,13 @@ async def flush_pending(ctx, pending_dir: Path | None = None) -> dict:
             stats["failed"] += 1
             print(f"  {slug}: re-GET failed ({st}) — keeping checkpoint", flush=True)
             continue
-        posted, wire = finalize_for_post(
-            art.get("annotations") or [], body.get("annotations") or [])
+        try:
+            posted, wire = finalize_for_post(
+                art.get("annotations") or [], body.get("annotations") or [])
+        except native.NativeAnnotationError as exc:
+            stats["failed"] += 1
+            print(f"  {slug}: native checkpoint needs review ({exc}); kept", flush=True)
+            continue
         nbody = {**body, "annotations": posted, "base_version": art["version"]}
         if isinstance(nbody.get("meta"), dict):
             nbody["meta"] = {**nbody["meta"], "ids": wire, "flushed": True}
@@ -951,7 +971,11 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
         rec["error"] = f"final_read_failed: {type(e).__name__}"
         return rec
 
-    posted, wire = finalize_for_post(existing, final)
+    try:
+        posted, wire = finalize_for_post(existing, final)
+    except native.NativeAnnotationError as exc:
+        rec["error"] = f"native_output_needs_review: {exc}"
+        return rec
     rec["ids"] = wire
     body = {
         "annotations": posted,

@@ -28,6 +28,8 @@ import time
 import unicodedata
 from pathlib import Path
 
+import native_annotations as native
+
 # Pop the API key BEFORE importing the SDK so the spawned `claude` subprocess
 # uses the Max-subscription login rather than billing an API account.
 # moderate.py --auth api-key sets WIKILEAN_KEEP_API_KEY=1 (before importing this
@@ -118,6 +120,72 @@ or "ai-moderated", echo that string back unchanged — do NOT downgrade it to
    "provenance": "<echoed verbatim from input, if present>"}
 ]}
 """
+
+NATIVE_ITEM_GUIDANCE = """
+Use WikiLean's native review-item format. Each item retains id, kind, label,
+status, note, provenance and other review metadata, and REQUIRES two arrays:
+  links: [{"id":"<stable internal link id>", "annotation":{
+    "source":{"type":"generic","uri":"<supplied pinned article URI>"},
+    "location":{"profile":"urn:wikilean:anchor:v3","anchor":{
+      "section":"<heading>","snippet":"<verbatim phrase>"},"resolution":"not_attempted"},
+    "target":"<explicit formal resource URI>"}, "base_uri":"<only if needed>"}]
+  unlinked: [{"source":{...},"location":{...}}]
+Every annotation in links is one independent, unversioned FCA record with ONE
+informal source and ONE formal target. No root mathlib/decl/module/anchor/anchors.
+An unlinked source selection has no formal target; never invent a URI to fill it.
+PDF, LaTeX, HTML and generic imported links may be opaque: retain them exactly.
+Preserve ALL incoming IDs, source URIs, base_uri values, legacy archives,
+unfamiliar JSON/extension fields, existing links and review items. Use rejected
+status for a rejected item rather than dropping it. Never translate native data
+back into the legacy shape. Human items must be echoed byte-for-byte; proposed
+changes belong only in moderation_proposal, never in human-owned fields.
+Reply only with {"annotations":[<review items>]}.
+"""
+
+NATIVE_AGENT1_SYSTEM = """Enumerate or review the mathematical statements in
+the supplied Wikipedia sections. Copy snippet phrases exactly; select one
+statement per review item. For new statements use status not_formalized,
+provenance ai, links [], and unlinked source selections using the supplied
+pinned article URI. The generic WikiLean anchor can be section+snippet,
+theorem_box/value, math_alttext/value or prose_range. Keep all occurrences as
+separate selections. Do not guess formal targets. Review existing selections
+without discarding existing links or unknown data.
+""" + NATIVE_ITEM_GUIDANCE
+
+NATIVE_AGENT2_SYSTEM = """Search the local Mathlib checkout to classify each
+supplied review item as formalized, partial or not_formalized. Keep all items
+in order. Only add links after verifying an explicit module and declaration.
+The Mathlib target URI is https://leanprover-community.github.io/mathlib4_docs/
+followed by individually percent-encoded dotted module segments separated by
+slashes, then .html# and the percent-encoded declaration. The URI is the sole
+formal-link authority; do not add mathlib/decl/module fields. Reuse each source
+selection unchanged, including its location, to create one FCA record per
+selection and formal target. Use <item-id>:link:<ordinal> for new internal link
+IDs and preserve existing internal link IDs. Move a newly linked selection out
+of unlinked; retain genuinely unlinked selections there. No target means no
+link, even for a review item with a partial status. Keep a short review note.
+""" + NATIVE_ITEM_GUIDANCE
+
+
+def _native_agent_output(produced: list[dict], existing: list[dict], *,
+                         title: str | None = None, revid: int | None = None) -> list[dict]:
+    """Validate agent output before writing a native artifact or another prompt."""
+    import secrets
+    if not isinstance(produced, list) or any(not isinstance(item, dict) for item in produced):
+        raise native.NativeAnnotationError("agent annotations must be review objects")
+    preserved = native.preserve_native_items(existing, produced)
+    used = {item.get("id") for item in preserved if isinstance(item.get("id"), str)}
+    for item in preserved:
+        if "id" not in item:
+            if item.get("provenance") == "human" and item in existing:
+                continue
+            identity = secrets.token_hex(6)
+            while identity in used:
+                identity = secrets.token_hex(6)
+            used.add(identity)
+            item["id"] = identity
+    native.validate_items(preserved, title=title, revid=revid)
+    return preserved
 
 
 # ---------------------------------------------------------------------------
@@ -349,15 +417,7 @@ def _anchor_sig(a: dict) -> str:
     a non-dict `anchor` (string/list/number — must not crash) falls through to
     `anchors[0]` when `anchors` is a non-empty list whose first element is a
     plain dict; otherwise the all-null signature."""
-    anc = a.get("anchor")
-    if not isinstance(anc, dict):
-        anchors = a.get("anchors")
-        if isinstance(anchors, list) and anchors and isinstance(anchors[0], dict):
-            anc = anchors[0]
-        else:
-            anc = {}
-    return json.dumps([anc.get("type"), anc.get("section"), anc.get("snippet"),
-                       anc.get("value"), anc.get("from")], sort_keys=True)
+    return native.anchor_sig(a)
 
 
 def _preserve_human(existing: list[dict], produced: list[dict],
@@ -476,6 +536,16 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                         except (json.JSONDecodeError, OSError):
                             existing = []
             do_moderate = moderate and bool(existing)
+            native_mode = not existing or all(native.is_native(item) for item in existing)
+            if any(native.is_native(item) for item in existing) and not native_mode:
+                raise native.NativeAnnotationError("mixed legacy/native article requires explicit migration")
+            source_uri = None
+            if native_mode:
+                meta = ({"revid": target_revid} if target_revid is not None
+                        else json.loads((CACHE / f"{cache_slug}.meta.json").read_text()))
+                source_uri = native.wikipedia_source_uri(title, target_revid or meta.get("revid"))
+                if existing:
+                    native.validate_items(existing, title=title, revid=target_revid or meta.get("revid"))
             rec["mode"] = "moderate" if do_moderate else "regen"
 
             # 3. Agent 1 — enumerate, or moderate the existing set
@@ -496,6 +566,9 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                     "Reply with ONLY the JSON object."
                 )
                 a1_system = AGENT1_SYSTEM
+            if native_mode:
+                a1_system = NATIVE_AGENT1_SYSTEM
+                a1_prompt += f"\n\nPinned source URI for NEW selections: {source_uri}"
             a1, a1_meta = await run_agent(a1_system, a1_prompt, HERE, [], 12)
             if not a1 or "annotations" not in a1:
                 rec["error"] = "agent1_no_json"
@@ -513,9 +586,11 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 # Step 2: proposals ride the ladder ONLY when found — a gated-off /
                 # proposal-free pass keeps the historical ladder shape byte-for-byte.
                 _merge_proposals(ladder, ph1.get("proposals"))
+            if native_mode:
+                annotations = _native_agent_output(annotations, existing, title=title, revid=target_revid or meta.get("revid"))
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
-                "schema_version": 3, "annotations": [
+                "schema_version": 4 if native_mode else 3, "revid": target_revid or (meta.get("revid") if native_mode else None), "annotations": [
                     {**a, "provenance": "ai-agent1"} for a in annotations
                 ],
             }
@@ -541,6 +616,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             )
             a2_system = (AGENT2_SYSTEM + (AGENT2_TOOLS_GUIDANCE if _SEARCH_TOOLS else "")
                          + (AGENT2_PROPOSAL_GUIDANCE if (_PROPOSALS and do_moderate) else ""))
+            if native_mode:
+                a2_system = NATIVE_AGENT2_SYSTEM + (AGENT2_TOOLS_GUIDANCE if _SEARCH_TOOLS else "")
             a2, a2_meta = await run_agent(
                 a2_system, a2_prompt, MATHLIB,
                 ["Read", "Grep", "Glob"] + _SEARCH_TOOLS, 60,
@@ -579,9 +656,12 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                     out_annos.append({**a, "provenance": winner or "ai"})
             else:
                 out_annos = [{**a, "provenance": "ai"} for a in a2_annos]
+            if native_mode:
+                out_annos = _native_agent_output(out_annos, annotations, title=title, revid=target_revid or meta.get("revid"))
             final = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
-                "schema_version": 3, "annotation_style": "theorem_article",
+                "schema_version": 4 if native_mode else 3, "annotation_style": "theorem_article",
+                "revid": target_revid or (meta.get("revid") if native_mode else None),
                 "annotations": out_annos,
             }
             (ANNOT / f"{slug}.json").write_text(
@@ -602,7 +682,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 import render as _render
                 src = _render.absolutize_wikipedia_urls(
                     (CACHE / f"{cache_slug}.html").read_text(encoding="utf-8"))
-                _, flags = _render.wrap_annotations(src, final["annotations"])
+                _, flags = _render.wrap_annotations(src, final["annotations"], source_uri=source_uri)
                 non_tomb = [i for i, a in enumerate(final["annotations"])
                             if a.get("status") != "rejected"]
                 matched = sum(1 for i in non_tomb if flags[i])
