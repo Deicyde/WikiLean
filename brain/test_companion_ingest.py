@@ -53,7 +53,8 @@ class ProjectionTests(unittest.TestCase):
 
     def import_fixture(self, documents=None):
         documents = documents if documents is not None else [annotation()]
-        with patch.object(companion, "_collect", return_value=collection(self.shard, documents)):
+        with patch.object(companion, "_collect", return_value=collection(self.shard, documents)), \
+             patch.object(companion, "_validate_captured", side_effect=lambda value: value):
             return companion.import_companions([self.shard], source_key="fixture", output=self.output)
 
     def test_ordinary_brain_sqlite_reader(self):
@@ -345,6 +346,55 @@ class ReferenceTests(unittest.TestCase):
         self.ingest()
         recovered, = companion.iter_annotations(self.output)
         self.assertEqual(recovered["annotation"]["location"], doc["location"])
+
+    def test_captured_collection_is_not_reread_after_input_change(self):
+        original = annotation()
+        shard = self.write("link.json", original)
+        captured = collect([shard])
+        shard.write_text("invalid changed source")
+        companion.import_collected(captured, source_key="capture", output=self.output)
+        row, = companion.iter_annotations(self.output)
+        self.assertEqual(row["annotation"], original)
+        self.assertEqual(row["origin"]["base_uri"], captured.records[0].path.as_uri())
+
+    def test_captured_origin_does_not_follow_a_replaced_parent(self):
+        original = self.write("nested/link.json", annotation())
+        captured = collect([original])
+        base_uri = captured.records[0].path.as_uri()
+        moved = self.root / "moved"
+        original.parent.rename(moved)
+        original.parent.symlink_to(moved, target_is_directory=True)
+        self.assertNotEqual(captured.records[0].base_uri, base_uri)
+        companion.import_collected(captured, source_key="capture", output=self.output)
+        row, = companion.iter_annotations(self.output)
+        self.assertEqual(row["origin"]["base_uri"], base_uri)
+
+    def test_captured_mutated_invalid_annotation_is_revalidated(self):
+        shard = self.write("link.json", annotation())
+        captured = collect([shard])
+        captured.records[0].annotation["target"] = None
+        with self.assertRaisesRegex(companion.ImportError, "Invalid captured annotation"):
+            companion.import_collected(captured, source_key="capture", output=self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_captured_invalid_json_and_origins_are_rejected(self):
+        shard = self.write("link.json", annotation())
+        captured = collect([shard])
+        captured.records[0].annotation["extensions"]["bad"] = float("nan")
+        with self.assertRaises(companion.ImportError):
+            companion.import_collected(captured, source_key="capture", output=self.output)
+        captured = collect([shard])
+        captured.records[0].path = Path("relative.json")
+        with self.assertRaisesRegex(companion.ImportError, "absolute carrier"):
+            companion.import_collected(captured, source_key="capture", output=self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_captured_values_are_copied_before_projection(self):
+        shard = self.write("link.json", annotation())
+        captured = collect([shard])
+        copied = companion._validate_captured(captured)
+        captured.records[0].annotation["extensions"]["custom"]["z"] = "changed"
+        self.assertEqual(copied.records[0].annotation, annotation())
 
     def test_core_lexical_reference_rule_does_not_require_full_uri_grammar(self):
         docs = []
