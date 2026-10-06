@@ -1,0 +1,128 @@
+# Companion annotations in the local Brain store
+
+WikiLean can ingest directories of independent FCA v2 annotations into its existing
+Brain JSONL/SQLite reader. This is a **local, unreviewed import**, useful for exploring
+Autoform blueprints or a book companion and querying every association. The live
+wiki remains canonical in D1; imported companions do not modify articles, moderation,
+the source registry, the nightly reducer, or a published Brain release.
+
+FCA is the interchange format. There is no companion manifest or imposed directory
+layout. Each record has one informal source and one formal target; JSON objects,
+arrays of complete records, and JSONL/NDJSON shards are supported by the reference
+package's recursive discovery. PDF, LaTeX, HTML, and generic sources all work. No
+Autoform-specific extension is required.
+
+## Install the reference validator
+
+The working integration is tested against the unpublished FCA **2.0.0a2** draft,
+commit `6be1da3` of the `codex/minimal-companion-schema` branch. Use Python 3.12.
+Install that reviewed local checkout or its built wheel in your environment:
+
+```sh
+python3.12 -m venv /tmp/companion-env
+/tmp/companion-env/bin/python -m pip install /absolute/path/to/formal-companion-minimal
+```
+
+The package supplies both validation and shard discovery. WikiLean does not copy the
+schema or implement a second validator. This draft requires that exact reference package version, so an older graph-format package cannot silently pass through. It is optional for ordinary WikiLean work;
+ingestion fails with an actionable error if absent. There is no public package URL
+or network fallback assumed by this draft. Querying an already built index requires
+only Python's standard library.
+
+## Import and read
+
+From the WikiLean repository:
+
+```sh
+/tmp/companion-env/bin/python -m brain.ingest.companion ingest \
+  /path/to/book/annotations /path/to/autoform/annotations.json \
+  --source-key my-companion --output /tmp/my-companion-brain
+
+/tmp/companion-env/bin/python -m brain.ingest.companion query \
+  --data-dir /tmp/my-companion-brain
+
+/tmp/companion-env/bin/python -m brain.ingest.companion query \
+  --data-dir /tmp/my-companion-brain \
+  --target 'https://example.org/formal.html#result'
+```
+
+The source key is a local label, not a trusted source-registry key. Output must be a
+new directory. Every selected input must validate before any output is created. A
+malformed selected shard, bad PDF rectangle, invalid JSON, or explicit symlink rejects
+the whole batch. Empty imports also fail. The directory is staged and published only
+after SQLite construction and its existing integrity/freshness reader succeed.
+Existing output is never updated, even if an empty destination appears concurrently; rebuild to a new directory. Atomic no-replace directory publication supports macOS and Linux and fails closed on other platforms.
+
+Use `--include 'annotations/**/*.json'` or `--exclude 'metadata.json'` to select
+shards when a root also contains other JSON. Patterns are the reference discovery
+API's root-relative shell patterns: `*` can match `/`, and `**/` also matches the root.
+Selected unrelated JSON is an error, not a hidden source of dropped records. Put
+output outside input roots to avoid selecting generated artifacts on a later scan.
+
+The query emits JSONL with `annotation`, `origin`, resolved `source`, and resolved
+`target`. The annotation is the complete original decoded object. `origin` contains
+the carrier's absolute file URI, JSON pointer, and physical JSONL line when relevant.
+It is essential context when moving a record that contains relative references:
+**references resolve against the containing shard**, not the scan root or source URI.
+Query output is a transport report, not an FCA shard. To re-export, deliberately
+retain the origin or rebase both references; do not discard the origin and relocate
+relative records unchanged.
+
+No source or target is fetched, opened, or evaluated. URI resolution only creates
+lookup keys. Source metadata, opaque generic anchors, unknown extensions, large
+integers, array order, and decoded object insertion order survive a round trip.
+An unresolved generic anchor remains a generic anchor, never a whole-resource link.
+Duplicate IDs and identical annotations remain separate occurrences. Discovery only
+deduplicates overlapping selections of the same carrier file.
+
+## Storage and application boundary
+
+The adapter uses `brain.store.write_sqlite_from_jsonl` and `open_store`, with the
+normal `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`, and `brain.sqlite3` layout.
+Every annotation is one `links` edge with URI endpoints and `unreviewed` confidence.
+Its full value, lossless decoded-order JSON string, carrier origin, and occurrence
+identity live in the edge evidence. Existing SQLite endpoint indexes support lookups
+without rescanning all shards; existing source digest checks reject a stale database.
+
+`nodes.jsonl` is empty on purpose: an arbitrary URI does not establish a Wikidata
+concept, registered external database, or verified Lean declaration. This local
+projection uses the existing **storage** contract; its raw URI endpoints are not the
+production Brain **semantic** node contract. It carries
+`profile: companion-local-import-v1` and `publication_status: local-unreviewed`.
+It does not create cells or claim compatibility with the cell viewer or release
+acceptance gates. The local generation hash binds imported values and transport
+origins, so moving shards changes that generation; it is not sealed source authority.
+
+To admit these associations to the published Brain, a reviewed source adapter must
+map endpoints to existing semantic identities, establish source/license evidence,
+and participate in the normal sealed source plan/replay/release workflow. A schema
+validity check is not that review, nor evidence of mathematical equivalence or proof.
+
+Python callers can use:
+
+```python
+from brain.ingest.companion import import_companions, iter_annotations
+
+report = import_companions(["/path/to/shards"], source_key="example", output="/tmp/index")
+for row in iter_annotations("/tmp/index", target="urn:lean:My.result"):
+    print(row["annotation"], row["origin"])
+```
+
+## Validation
+
+`brain/test_companion_ingest.py` tests the adapter against the real Brain builder,
+SQLite indexes, provenance recovery, duplicates, freshness, atomic failure cleanup,
+and existing-output protection. These standard-library tests run in the normal
+Python CI gate. Optional reference tests additionally exercise all four FCA modes,
+semantic/JSON failures, arbitrary shards, include/exclude, relative origins, and CLI
+round trips. Run the complete boundary suite in the FCA environment:
+
+```sh
+/tmp/companion-env/bin/python brain/test_companion_ingest.py --require-reference
+```
+
+The flag fails if FCA is absent; the standard CI gate reports those tests as skipped
+until the draft reference dependency is available to the public CI environment.
+
+For the cross-project Autoform → FCA → WikiLean flow and Worker export, see
+[the integration guide](COMPANION-INTEGRATION.md).
