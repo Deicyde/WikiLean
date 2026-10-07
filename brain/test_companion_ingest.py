@@ -364,7 +364,7 @@ class ReferenceTests(unittest.TestCase):
         moved = self.root / "moved"
         original.parent.rename(moved)
         original.parent.symlink_to(moved, target_is_directory=True)
-        self.assertNotEqual(captured.records[0].base_uri, base_uri)
+        self.assertNotEqual(captured.records[0].path.resolve().as_uri(), base_uri)
         companion.import_collected(captured, source_key="capture", output=self.output)
         row, = companion.iter_annotations(self.output)
         self.assertEqual(row["origin"]["base_uri"], base_uri)
