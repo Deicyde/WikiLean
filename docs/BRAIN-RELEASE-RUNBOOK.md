@@ -273,12 +273,31 @@ first attestation for review; its presence on a work branch does not establish t
 main authority commit or complete P1B. Freeze reloads the inventory from the exact named
 commit and rejects any mismatch with the retained source tree.
 
+## When `main` moves past the authority commit
+
+A release and its activation bundle name the commit they were built from, but `main`
+need not stay there. The promoter and the bundle freezer accept a clean `main` checkout at
+a later commit when it descends from the authority and every path that differs is
+release-neutral: `docs/`, README files, `test_*.py` and the `wiki/test` and `wiki/e2e`
+trees, CI definitions, `site/ops/` tooling other than `nightly.env` and
+`brain-nightly.sh`, and the bot, bench, manage and wikifunctions trees (the list is
+`site/ops/brain_release_authority.py`; anything not listed is release-affecting). Reducer
+code and curated inputs, authority contracts and schemas, Worker source and configuration,
+lockfiles, public asset sources and annotation mirrors invalidate the release and require a
+rebuild at the new commit. The accepted state is durable: the dry-run and execute intents
+record `promotion_commit` and `neutral_changes`, the build context records the same list,
+and the freezer recomputes both from Git. Pass `--authority-git-commit` to the `context`
+subcommand when the worktrees are ahead of the release authority. The dry run, the freeze
+and the execution all run at one commit; a merge after the freeze means a fresh P1B at the
+new commit, not a rebuild of the release.
+
 ## Build the P1B activation evidence bundle
 
-Use two non-overlapping worktrees at the same reviewed authority commit: an isolated build
-worktree for the shadow nightly and generated assets, and a clean promotion worktree whose
-`HEAD` and `refs/heads/main` both equal that commit. Keep all evidence and the final bundle
-outside both checkouts:
+Use two non-overlapping worktrees at one commit: an isolated build worktree for the shadow
+nightly and generated assets, and a clean promotion worktree whose `HEAD` and
+`refs/heads/main` both equal that commit, which is the reviewed authority commit or a
+release-neutral descendant of it. Keep all evidence and the final bundle outside both
+checkouts:
 
 ```bash
 export BUILD_WORKTREE=/absolute/path/to/wikilean-p1b-build

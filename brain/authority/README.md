@@ -387,7 +387,9 @@ external content-addressed root. The proposed intent refers to those durable byt
 `site/ops/brain_activation_ci.py` emits canonical
 `wikilean.brain-activation-ci/v3` evidence for the exact required CI commands. Bundle
 `freeze` invokes it in-process, so caller-authored CI evidence is not accepted. It requires
-a clean promotion checkout whose `HEAD` and `refs/heads/main` equal the candidate authority.
+a clean promotion checkout whose `HEAD` and `refs/heads/main` equal each other and are the
+candidate authority or a later commit that differs from it only in release-neutral paths
+(`site/ops/brain_release_authority.py`).
 Git, Node, npm, and Python are explicit absolute paths; caller `PATH` is discarded and a
 private shim directory pins child-tool resolution. The recorder captures the canonical Node
 path, digest, size, and Node 22 version; bundle validation requires them to equal the
