@@ -3,6 +3,7 @@ import { app } from '../src/index.js';
 import { setup, SLUG } from '../test/helpers/fixture.js';
 import { makeD1 } from '../test/helpers/d1shim.js';
 import { migrateDatabaseCopy } from './migrate-native.js';
+import { storedCompanionRecords } from '../src/native-companion.js';
 import { DatabaseSync, backup } from 'node:sqlite';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -26,7 +27,9 @@ try {
   const annotations=await response.json();
   const stored=nativeDb.prepare('SELECT annotations,revid,schema_version,version,wikipedia_title FROM articles WHERE slug=?').get(SLUG)!;
   const items=JSON.parse(String(stored.annotations));
-  const expected=items.filter((item:any)=>item.status!=='rejected').flatMap((item:any)=>item.links.map((link:any)=>link.annotation));
+  // The route returns each stored link with the item's review facts and the
+  // article's website pin projected into the format's own fields.
+  const expected=storedCompanionRecords(items,{wikipediaTitle:String(stored.wikipedia_title),revid:Number(stored.revid)}).map(record=>record.annotation);
   if(JSON.stringify(expected)!==JSON.stringify(annotations)) throw new Error('HTTP changed stored native records');
   writeFileSync(resolve(directory,'article.json'),JSON.stringify({...stored,slug:SLUG,annotations:items},null,2)+'\n');
   writeFileSync(resolve(directory,'links.json'),JSON.stringify(annotations,null,2)+'\n');

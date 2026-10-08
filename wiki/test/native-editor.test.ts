@@ -16,6 +16,14 @@ describe('native editor preservation',()=>{
     const expected=base(); expected.links[0].annotation.target='urn:changed';
     expect(after).toEqual(expected); expect(before).toEqual(base());
   });
+  it('reads endpoint targets and replaces a pinned target with the plain new reference',()=>{
+    const pinned:any=base(); pinned.links[1].annotation.target={uri:'urn:two',pin:{type:'repository',declaration:'Two'}};
+    expect(model.targetOf(model.entries(pinned)[1].occurrence)).toBe('urn:two');
+    expect(model.edit(pinned,'link:second',{target:'urn:two'},newId).item).toEqual(pinned);
+    const after=model.edit(pinned,'link:second',{target:'urn:three'},newId).item;
+    expect(after.links[1].annotation.target).toBe('urn:three');
+    expect(model.edit(pinned,'link:second',{target:''},newId).item.unlinked).toHaveLength(2);
+  });
   it('never treats a retained PDF location as editable Wikipedia prose',()=>{
     expect(model.anchor(model.entries(base())[0],sourceUri)).toBeNull();
     expect(()=>model.edit(base(),'link:first',{anchor:{snippet:'bad'}},newId)).toThrow(/cannot be edited/);

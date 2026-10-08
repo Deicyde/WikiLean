@@ -3,7 +3,7 @@
 // /assets/script.js externally (served as static assets) instead of inlining —
 // the annotation wrapping in <main> is byte-identical to the static site.
 
-import { isNativeItem, legacyAnchorOccurrences } from "../native-companion.js";
+import { isNativeItem, legacyAnchorOccurrences, targetUri } from "../native-companion.js";
 import { formalTargetLabel, safeFormalUrl } from "./formal-links.js";
 import { htmlEscape } from "./html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./searchbox.js";
@@ -58,10 +58,10 @@ export function buildClientData(annotations: Annotation[]): Array<ClientAnno | n
     }
     if (isNativeItem(a)) {
       const item: ClientAnno = { status: a.status, formal_links: a.links.map(link => ({
-        target: link.annotation.target, label: formalTargetLabel(link.annotation.target),
-        url: safeFormalUrl(link.annotation.target, link.base_uri),
+        target: targetUri(link.annotation) ?? "", label: formalTargetLabel(link.annotation),
+        url: safeFormalUrl(targetUri(link.annotation) ?? "", link.base_uri),
       })) };
-      for (const key of ["id", "label", "kind", "provenance", "match_kind"] as const)
+      for (const key of ["id", "label", "kind", "note", "provenance", "match_kind"] as const)
         if (typeof a[key] === "string" && a[key]) item[key] = a[key];
       const first = item.formal_links!.find(link => link.url);
       if (first) item.mathlib_url = first.url; // Existing alt-click navigation.

@@ -27,7 +27,10 @@ test('native editor updates one retained link and preserves other occurrences th
     source:{type:'pdf',uri:'../group.pdf',extensions:{publisher:{retained:true}}},
     target:'urn:formal:changed',location:{page:2},extensions:{custom:{nested:[1,'keep',null]}}
   }});
-  expect(records.records.find((record:any)=>record.id!=='pdf-companion').annotation.target).toContain('#AddCommGroup');
+  const migrated=records.records.find((record:any)=>record.id!=='pdf-companion').annotation;
+  expect(migrated.target.uri).toContain('#AddCommGroup');
+  expect(migrated.target.pin).toMatchObject({type:'repository',declaration:'AddCommGroup'});
+  expect(migrated).toMatchObject({status:'formalized',source:{pin:{type:'website',revision:'12345'}}});
   expect(errors).toEqual([]);
 });
 

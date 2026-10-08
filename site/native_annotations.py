@@ -21,6 +21,8 @@ ANCHOR_FIELDS = ("type", "value", "section", "snippet", "from", "from_snippet",
 SCHEMA_PATH = Path(__file__).resolve().parents[1] / "wiki/src/vendor/fca/companion.schema.json"
 LEGACY_FIELDS = frozenset({"mathlib", "decl", "module", "anchor", "anchors"})
 STATUSES = frozenset({"formalized", "partial", "not_formalized", "rejected"})
+MATHLIB_REPOSITORY = "https://github.com/leanprover-community/mathlib4"
+MATHLIB_DOCS = "https://leanprover-community.github.io/mathlib4_docs/"
 _JS_SAFE = "-_.!~*'()"
 
 
@@ -30,6 +32,28 @@ class NativeAnnotationError(ValueError):
 
 def is_native(item: Any) -> bool:
     return isinstance(item, dict) and ("links" in item or "unlinked" in item)
+
+
+def target_uri(annotation: Any) -> str | None:
+    """The formal reference of a record whose target is a string or an endpoint object."""
+    target = annotation.get("target") if isinstance(annotation, dict) else None
+    if isinstance(target, str):
+        return target
+    if isinstance(target, dict) and isinstance(target.get("uri"), str):
+        return target["uri"]
+    return None
+
+
+def target_pin(annotation: Any) -> dict | None:
+    target = annotation.get("target") if isinstance(annotation, dict) else None
+    pin = target.get("pin") if isinstance(target, dict) else None
+    return pin if isinstance(pin, dict) and isinstance(pin.get("type"), str) else None
+
+
+def mathlib_target(module: str, decl: str) -> dict:
+    """WikiLean's explicit module+declaration link: the docs URL plus a repository pin."""
+    uri = MATHLIB_DOCS + "/".join(quote(part, safe=_JS_SAFE) for part in module.split(".")) + ".html#" + quote(decl, safe=_JS_SAFE)
+    return {"uri": uri, "pin": {"type": "repository", "url": MATHLIB_REPOSITORY, "module": module, "declaration": decl}}
 
 
 def strict_loads(text: str) -> Any:
@@ -148,7 +172,11 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
             link_ids.add(identity)
             annotation = link.get("annotation")
             validate_fca(annotation)
-            references = [annotation["source"]["uri"], annotation["target"]]
+            uri = target_uri(annotation)
+            # A link is an occurrence with a formal destination; a record without one belongs in unlinked.
+            if uri is None:
+                raise NativeAnnotationError("native link annotation requires a formal target; keep targetless selections in unlinked")
+            references = [annotation["source"]["uri"], uri]
             if "$schema" in annotation:
                 references.append(annotation["$schema"])
             _validate_base(link, references)
@@ -157,9 +185,7 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
             _safe_storage_numbers(span)
             if not isinstance(span, dict) or set(span) - {"source", "location", "base_uri"}:
                 raise NativeAnnotationError("invalid unlinked source selection")
-            # The sentinel exists only inside this validation call, never in data.
-            selection = {key: value for key, value in span.items() if key != "base_uri"}
-            validate_fca({**selection, "target": "urn:wikilean:selection-validation"})
+            validate_fca({key: value for key, value in span.items() if key != "base_uri"})
             _validate_base(span, [span["source"]["uri"]])
             _validate_pin(span["source"]["uri"], span.get("base_uri"), None if item["status"] == "rejected" else title, revid)
 
@@ -256,14 +282,19 @@ def formal_links(item: dict) -> list[dict]:
     """Public link labels with navigation restricted to HTTP(S)."""
     result = []
     for link in item.get("links", []):
-        target = link.get("annotation", {}).get("target")
-        if not isinstance(target, str):
+        annotation = link.get("annotation", {}) if isinstance(link, dict) else {}
+        target = target_uri(annotation)
+        if target is None:
             continue
+        pin = target_pin(annotation)
         fragment = target.partition("#")[2]
-        try:
-            label = unquote(fragment, errors="strict") if fragment else target
-        except UnicodeError:
-            label = fragment
+        if pin and isinstance(pin.get("declaration"), str) and pin["declaration"]:
+            label = pin["declaration"]
+        else:
+            try:
+                label = unquote(fragment, errors="strict") if fragment else target
+            except UnicodeError:
+                label = fragment
         record = {"target": target, "label": label}
         url = resolved_web_uri(target, link.get("base_uri"))
         if url:
@@ -370,11 +401,72 @@ def first_target(item: dict) -> str | None:
     if not is_native(item):
         return None
     for link in item.get("links", []):
-        annotation = link.get("annotation", {})
-        target = annotation.get("target")
-        if isinstance(target, str):
+        target = target_uri(link.get("annotation", {}))
+        if target is not None:
             return urljoin(link.get("base_uri", ""), target)
     return None
+
+
+def article_source_pin(title: str, revid: int, *, wikidata_qid: str | None = None) -> dict:
+    """The website pin citing the article's pinned Wikipedia revision."""
+    pin = {"type": "website", "title": title, "owner": "Wikipedia",
+           "url": wikipedia_source_uri(title, revid), "revision": str(revid)}
+    if isinstance(wikidata_qid, str) and wikidata_qid:
+        pin["identifiers"] = {"wikidata": wikidata_qid}
+    return pin
+
+
+def companion_annotation(item: dict, link: dict, *, title: str | None = None, revid: int | None = None,
+                         wikidata_qid: str | None = None) -> dict:
+    """The portable record for one stored link (mirrors TS companionAnnotation).
+
+    The stored annotation gains the review item's facts in the format's own
+    fields (status, kind, label, note, id), the article's website pin on an
+    article-local source, and provenance/match_kind under org.wikilean. The item
+    stays the editable authority; stored fields are kept and only absent ones
+    are filled, except status, which is always the item's review status.
+    """
+    stored = deepcopy(link["annotation"])
+    record: dict = {}
+    if isinstance(stored.get("id"), str):
+        record["id"] = stored["id"]
+    elif isinstance(item.get("id"), str) and item["id"]:
+        record["id"] = item["id"]
+    for key in ("kind", "label"):
+        if isinstance(stored.get(key), str):
+            record[key] = stored[key]
+        elif isinstance(item.get(key), str) and item[key].strip():
+            record[key] = item[key]
+    if isinstance(item.get("status"), str) and item["status"]:
+        record["status"] = ({**stored["status"], "value": item["status"]}
+                            if isinstance(stored.get("status"), dict) else item["status"])
+    elif "status" in stored:
+        record["status"] = stored["status"]
+    if "$schema" in stored:
+        record["$schema"] = stored["$schema"]
+    record["source"] = stored["source"]
+    if title is not None and revid is not None and "pin" not in record["source"]:
+        pinned = resolved_web_uri(wikipedia_source_uri(title, revid))
+        if resolved_web_uri(record["source"].get("uri", ""), link.get("base_uri")) == pinned:
+            record["source"] = {**record["source"], "pin": article_source_pin(title, revid, wikidata_qid=wikidata_qid)}
+    if "location" in stored:
+        record["location"] = stored["location"]
+    if "target" in stored:
+        record["target"] = stored["target"]
+    if isinstance(stored.get("note"), str):
+        record["note"] = stored["note"]
+    elif isinstance(item.get("note"), str) and item["note"].strip():
+        record["note"] = item["note"]
+    extensions = stored.get("extensions") if isinstance(stored.get("extensions"), dict) else {}
+    wikilean = dict(extensions["org.wikilean"]) if isinstance(extensions.get("org.wikilean"), dict) else {}
+    for key in ("provenance", "match_kind"):
+        if isinstance(item.get(key), str) and item[key]:
+            wikilean[key] = item[key]
+    if wikilean:
+        record["extensions"] = {**extensions, "org.wikilean": wikilean}
+    elif "extensions" in stored:
+        record["extensions"] = stored["extensions"]
+    return record
 
 
 def wikipedia_source_uri(title: str, revid: int) -> str:
@@ -401,10 +493,12 @@ def migrate_items(items: list[dict], *, title: str, revid: int) -> tuple[list[di
         if "match_kind" not in item and isinstance(mathlib.get("match_kind"), str):
             item["match_kind"] = mathlib["match_kind"]
         decl, module = mathlib.get("decl") or old.get("decl"), mathlib.get("module") or old.get("module")
+        # The legacy module and declaration become the target's repository pin,
+        # so the only remaining copy of that information is not the archive.
         target = None
         if (isinstance(decl, str) and decl.strip() and isinstance(module, str) and module.strip()
                 and all(part and not re.search(r"[\s/\\#?]", part) for part in module.split("."))):
-            target = "https://leanprover-community.github.io/mathlib4_docs/" + "/".join(quote(part, safe=_JS_SAFE) for part in module.split(".")) + ".html#" + quote(decl, safe=_JS_SAFE)
+            target = mathlib_target(module, decl)
         if target is None:
             diagnostics.append({"item": index, "code": "NO_FORMAL_TARGET"})
         elif old.get("status") == "not_formalized":

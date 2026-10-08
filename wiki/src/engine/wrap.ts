@@ -695,7 +695,7 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], con
     let decl: string | null = null;
     for (const i of indices) {
       const a = annotations[i];
-      const d = isNativeItem(a) ? (a.links[0] ? formalTargetLabel(a.links[0].annotation.target) : null) : (a.mathlib && a.mathlib.decl) || a.decl;
+      const d = isNativeItem(a) ? (a.links[0] ? formalTargetLabel(a.links[0].annotation) : null) : (a.mathlib && a.mathlib.decl) || a.decl;
       if (d) {
         decl = d;
         break;

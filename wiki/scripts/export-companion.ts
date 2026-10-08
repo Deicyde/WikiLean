@@ -9,7 +9,8 @@ try {
   if (!article || !Array.isArray(article.annotations)) throw new Error("expected one native WikiLean article snapshot");
   const result = exportCompanionAnnotations({
     slug: article.slug, wikipediaTitle: article.wikipediaTitle ?? article.wikipedia_title,
-    version: article.version, revid: article.revid, annotations: article.annotations,
+    version: article.version, revid: article.revid, wikidataQid: article.wikidataQid ?? article.wikidata_qid ?? null,
+    annotations: article.annotations,
   });
   writeFileSync(output, JSON.stringify(result.annotations, null, 2) + "\n", { flag: "wx" });
   process.stdout.write(JSON.stringify({ annotations: result.annotations.length, diagnostics: result.diagnostics }) + "\n");

@@ -16,7 +16,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from brain import store
-from brain.ingest.companion import PROFILE
+from brain.ingest.companion import PROFILE, target_reference
 
 MAX_LIMIT = 100
 MAX_OFFSET = 1_000_000
@@ -149,22 +149,25 @@ def page_html(page, metadata, params):
     for row in page["records"]:
         annotation = row["annotation"]
         extensions = annotation.get("extensions", {})
-        identity = None
+        identity = annotation.get("label") if isinstance(annotation.get("label"), str) and annotation["label"].strip() else None
         for namespace, field in (("org.autoform", "title"), ("org.wikilean", "label")):
+            if identity:
+                break
             data = extensions.get(namespace)
             label = data.get(field) if isinstance(data, dict) else None
             if isinstance(label, str) and label.strip():
-                identity = label[:160]
-                break
+                identity = label
+        identity = identity[:160] if identity else None
         opaque_id = annotation.get("id")
         identity = identity or (opaque_id if isinstance(opaque_id, str) and len(opaque_id) <= 80 else None)
         identity = identity or f"Link {row['ordinal'] + 1}"
         mode = annotation["source"]["type"]
         resources = []
+        formal = target_reference(annotation)
         for field, title, label in (("source", "Informal source", annotation["source"]["uri"]),
-                                     ("target", "Formal result", annotation["target"])):
+                                     ("target", "Formal result", formal if formal is not None else "No formal counterpart")):
             state = row["resolution"][field]["status"]
-            link = _link(row[field], label) if state != "unresolved" else _escape(label)
+            link = _link(row[field], label) if state not in {"unresolved", "absent"} else _escape(label)
             resources.append(f'<div><p class="eyebrow">{title}</p><p class="reference">{link}</p>'
                              + ('<p class="unresolved">Reference needs a resolver</p>' if state == "unresolved" else '') + '</div>')
         location = ('<pre>' + _escape(_json(annotation["location"], pretty=True)) + '</pre>'

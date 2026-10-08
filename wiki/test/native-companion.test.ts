@@ -2,8 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
-  validateFCA, validateNativeItems, migrateLegacyItems, nativeAnchorSig,
-  legacyAnchorOccurrences, wikipediaSourceUri, strictJsonParse, type NativeItem, type FCARecord,
+  validateFCA, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, wikipediaSourceUri,
+  strictJsonParse, targetUri, targetPin, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
+  type NativeItem, type FCARecord,
 } from '../src/native-companion.js';
 
 const context = { wikipediaTitle: 'Test Article', revid: 12345 };
@@ -35,10 +36,49 @@ describe('canonical native companion records', () => {
     }
   });
   it('rejects invalid core shapes without discarding arbitrary valid generic location data', () => {
-    for (const bad of [{ ...core(), version: 2 }, { ...core(), location: null }, { ...core('html'), location: { css: 'x', fragment: 'y' } }, { ...core(), target: '' }]) {
+    for (const bad of [{ ...core(), version: 2 }, { ...core(), location: null }, { ...core('html'), location: { css: 'x', fragment: 'y' } }, { ...core(), target: '' },
+      { ...core(), target: {} }, { ...core(), target: { uri: 'urn:x', pin: { type: 'repository', bogus: 1 } } }, { ...core(), status: '' }, { ...core(), kind: 1 }]) {
       expect(validateFCA(bad)).not.toEqual([]);
     }
     expect(validateFCA({ ...core(), location: { profile: 'unknown', arbitrary: [1, null] } })).toEqual([]);
+  });
+  it('accepts endpoint targets, typed pins and facts; a link still needs a formal destination', () => {
+    const pinned: FCARecord = { ...core(), kind: 'theorem', label: 'Lagrange', note: 'checked by hand',
+      status: { value: 'partial', pin: { type: 'repository', url: MATHLIB_REPOSITORY, commit: 'a'.repeat(40) } },
+      target: { uri: 'urn:x', pin: { type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.X', declaration: 'x' } } };
+    expect(validateFCA(pinned)).toEqual([]);
+    expect(targetUri(pinned)).toBe('urn:x'); expect(targetPin(pinned)?.declaration).toBe('x');
+    expect(validateNativeItems([item(pinned)])).toEqual([]);
+    const absent: FCARecord = { source: { type: 'html', uri: 'urn:source' }, status: 'not_formalized' };
+    expect(validateFCA(absent)).toEqual([]);
+    expect(targetUri(absent)).toBeUndefined();
+    expect(validateNativeItems([item(absent)]).join()).toContain('requires a formal target');
+    const relative = item({ ...core(), target: { uri: '../formal.lean#x' } });
+    expect(validateNativeItems([relative]).join()).toContain('base_uri');
+    relative.links[0].base_uri = 'file:///shards/a.json';
+    expect(validateNativeItems([relative])).toEqual([]);
+  });
+  it('projects the review item onto each stored link without changing what is stored', () => {
+    const local = { source: { type: 'generic' as const, uri: wikipediaSourceUri(context) }, target: 'urn:formal:a', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
+    const foreign: FCARecord = { id: 'their-id', label: 'Their label', source: { type: 'pdf', uri: '../paper.pdf' }, target: { uri: 'urn:formal:b' },
+      status: { pin: { type: 'repository', url: MATHLIB_REPOSITORY } }, extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1 } } };
+    const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'partial', kind: 'theorem', label: 'Ours', note: 'why partial', provenance: 'ai-moderated', match_kind: 'generalization',
+      links: [{ id: 'one', annotation: local }, { id: 'two', annotation: foreign, base_uri: 'https://example.net/shards/a.json' }], unlinked: [] };
+    const before = structuredClone(work);
+    const [first, second] = storedCompanionRecords([work, { ...work, id: 'bbbbbbbbbbbb', status: 'rejected' }], { ...context, wikidataQid: 'Q1' });
+    expect(storedCompanionRecords([work], context)).toHaveLength(2);
+    expect(first.annotation).toEqual({ id: 'aaaaaaaaaaaa', kind: 'theorem', label: 'Ours', status: 'partial',
+      source: { ...local.source, pin: { type: 'website', title: 'Test Article', owner: 'Wikipedia', url: local.source.uri, revision: '12345', identifiers: { wikidata: 'Q1' } } },
+      location: local.location, target: 'urn:formal:a', note: 'why partial',
+      extensions: { 'org.wikilean': { provenance: 'ai-moderated', match_kind: 'generalization' } } });
+    // A foreign source gets no article pin; stored id, label, extensions and the status pin survive.
+    expect(second.annotation).toEqual({ id: 'their-id', kind: 'theorem', label: 'Their label', status: { value: 'partial', pin: { type: 'repository', url: MATHLIB_REPOSITORY } },
+      source: foreign.source, target: foreign.target, note: 'why partial',
+      extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1, provenance: 'ai-moderated', match_kind: 'generalization' } } });
+    expect(second.item_id).toBe('aaaaaaaaaaaa'); expect(second.base_uri).toBe('https://example.net/shards/a.json');
+    expect(work).toEqual(before);
+    for (const record of [first.annotation, second.annotation]) expect(validateFCA(record)).toEqual([]);
+    expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).source).not.toHaveProperty('pin');
   });
   it('requires carrier bases for relative references and schema hints', () => {
     const a = item({ ...core(), target: '../formal.lean#x', $schema: '../schema.json' });
@@ -75,7 +115,8 @@ describe('canonical native companion records', () => {
     const result = migrateLegacyItems(legacy, context);
     expect(result.items).toHaveLength(3);
     expect(result.items[0].links).toHaveLength(2);
-    expect(result.items[0].links[0].annotation.target).toContain('Mathlib/%C3%9C%25X.html#x');
+    expect(targetUri(result.items[0].links[0].annotation)).toContain('Mathlib/%C3%9C%25X.html#x');
+    expect(targetPin(result.items[0].links[0].annotation)).toEqual({ type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.Ü%X', declaration: 'x' });
     expect(result.items[0].legacy).toEqual(legacy[0]);
     expect(result.items[0].provenance).toBe('human');
     expect(result.items[0]).not.toHaveProperty('mathlib');

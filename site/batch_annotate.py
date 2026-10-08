@@ -128,10 +128,14 @@ status, note, provenance and other review metadata, and REQUIRES two arrays:
     "source":{"type":"generic","uri":"<supplied pinned article URI>"},
     "location":{"profile":"urn:wikilean:anchor:v3","anchor":{
       "section":"<heading>","snippet":"<verbatim phrase>"},"resolution":"not_attempted"},
-    "target":"<explicit formal resource URI>"}, "base_uri":"<only if needed>"}]
+    "target":{"uri":"<explicit formal resource URI>","pin":{"type":"repository",
+      "url":"https://github.com/leanprover-community/mathlib4",
+      "module":"<Mathlib module>","declaration":"<declaration>"}}}, "base_uri":"<only if needed>"}]
   unlinked: [{"source":{...},"location":{...}}]
 Every annotation in links is one independent, unversioned FCA record with ONE
-informal source and ONE formal target. No root mathlib/decl/module/anchor/anchors.
+informal source and ONE formal target. A target may also be a plain URI string;
+the repository pin names the Mathlib module and declaration the URI points at.
+No root mathlib/decl/module/anchor/anchors.
 An unlinked source selection has no formal target; never invent a URI to fill it.
 PDF, LaTeX, HTML and generic imported links may be opaque: retain them exactly.
 Preserve ALL incoming IDs, source URIs, base_uri values, legacy archives,
@@ -157,8 +161,11 @@ supplied review item as formalized, partial or not_formalized. Keep all items
 in order. Only add links after verifying an explicit module and declaration.
 The Mathlib target URI is https://leanprover-community.github.io/mathlib4_docs/
 followed by individually percent-encoded dotted module segments separated by
-slashes, then .html# and the percent-encoded declaration. The URI is the sole
-formal-link authority; do not add mathlib/decl/module fields. Reuse each source
+slashes, then .html# and the percent-encoded declaration. Give the target as
+{"uri": <that URI>, "pin": {"type": "repository", "url":
+"https://github.com/leanprover-community/mathlib4", "module": <dotted module>,
+"declaration": <declaration>}}. The target is the sole formal-link authority;
+do not add mathlib/decl/module fields to the review item. Reuse each source
 selection unchanged, including its location, to create one FCA record per
 selection and formal target. Use <item-id>:link:<ordinal> for new internal link
 IDs and preserve existing internal link IDs. Move a newly linked selection out

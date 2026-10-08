@@ -70,6 +70,18 @@ class ProjectionTests(unittest.TestCase):
         self.assertEqual(edges[0]["confidence"], "unreviewed")
         self.assertEqual(edges[0]["evidence"]["annotation"], annotation())
 
+    def test_absent_and_endpoint_targets_are_indexed_without_inventing_references(self):
+        absent = annotation(); del absent["target"]; absent["status"] = "not_formalized"
+        endpoint = annotation(); endpoint["target"] = {"uri": "../formal.html#result", "pin": {"type": "repository", "url": "https://example.org/repo"}}
+        self.import_fixture([absent, endpoint])
+        rows = list(companion.iter_annotations(self.output))
+        self.assertEqual([row["annotation"] for row in rows], [absent, endpoint])
+        self.assertEqual(rows[0]["target"], companion.ABSENT_TARGET_KEY)
+        self.assertEqual(rows[0]["resolution"]["target"], {"status": "absent"})
+        self.assertEqual(rows[1]["target"], (self.root / "formal.html").as_uri() + "#result")
+        self.assertEqual(rows[1]["resolution"]["target"]["status"], "resolved")
+        self.assertEqual([row["annotation"] for row in companion.iter_annotations(self.output, target=companion.ABSENT_TARGET_KEY)], [absent])
+
     def test_selective_endpoint_uses_existing_sqlite_index(self):
         documents = []
         for i in range(200):

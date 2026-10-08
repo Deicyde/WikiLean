@@ -9,6 +9,12 @@ function createCompanionEditorModel() {
       .concat(item.unlinked.map((occurrence, index) => ({ key: "unlinked:" + index, kind: "unlinked", index, occurrence, base: occurrence.base_uri })));
   }
   function selected(item, key) { return entries(item).find(entry => entry.key === key); }
+  // A target is a reference string or an endpoint object {uri, pin, extensions}.
+  function targetOf(occurrence) {
+    const target = occurrence && occurrence.target;
+    if (typeof target === "string") return target;
+    return target && typeof target === "object" && typeof target.uri === "string" ? target.uri : "";
+  }
   function makeItem(source, anchor) {
     if (!source) throw new Error("The article has no pinned source revision. A source revision is required before adding a location.");
     return { links: [], unlinked: [{ source: { type: "generic", uri: source }, location: { profile, anchor: clone(anchor) } }] };
@@ -35,10 +41,12 @@ function createCompanionEditorModel() {
         occ.location = { ...occ.location, anchor: { ...occ.location.anchor, ...clone(change.anchor) } };
       }
     }
-    if ("target" in change && change.target !== (occ.target || "")) {
+    if ("target" in change && change.target !== targetOf(occ)) {
       const target = change.target.trim();
       if (target && /\s/.test(target)) throw new Error("The formal reference must not contain spaces; use an encoded URI.");
       if (entry.kind === "link") {
+        // A new destination replaces the old one entirely: a pin cites the
+        // previous declaration and would be false for the new reference.
         if (target) occ.target = target;
         else {
           const unlinked = { source: clone(occ.source) };
@@ -80,7 +88,7 @@ function createCompanionEditorModel() {
     const promoted = edited && edited.kind === "unlinked" && after.unlinked.length === before.unlinked.length - 1;
     return "unlinked:" + (requested.index - (promoted && edited.index < requested.index ? 1 : 0));
   }
-  return { clone, native, entries, selected, makeItem, anchor, edit, add, selectionAfterEdit };
+  return { clone, native, entries, selected, targetOf, makeItem, anchor, edit, add, selectionAfterEdit };
 }
 // ---- editor runtime ----
 // WikiLean live-wiki editor. Injected on article pages for logged-in users by
@@ -444,7 +452,7 @@ function createCompanionEditorModel() {
       <option value="invocation">invocation</option>
     </select>
     <label for="wlr-f-note">Note</label>
-    <small class="wlr-help">Review notes for editors.</small>
+    <small class="wlr-help">Optional caveats or context for readers.</small>
     <textarea id="wlr-f-note"></textarea>
     <label for="wlr-f-comment">Edit summary (optional)</label>
     <small class="wlr-help">A one-line description shown in /recent-changes.</small>
@@ -1274,13 +1282,13 @@ function createCompanionEditorModel() {
     entries.forEach(function (entry, index) {
       const option = document.createElement("option");
       option.value = entry.key;
-      option.textContent = (index + 1) + ". " + (entry.kind === "link" ? entry.occurrence.target : "No formal link yet");
+      option.textContent = (index + 1) + ". " + (entry.kind === "link" ? companions.targetOf(entry.occurrence) : "No formal link yet");
       select.appendChild(option);
     });
     if (!entries.some(entry => entry.key === nativeKey)) nativeKey = entries[0] ? entries[0].key : "";
     select.value = nativeKey;
     const entry = companions.selected(nativeDraft, nativeKey);
-    $("wlr-f-target").value = entry && entry.kind === "link" ? entry.occurrence.target : "";
+    $("wlr-f-target").value = entry && entry.kind === "link" ? companions.targetOf(entry.occurrence) : "";
     $("wlr-source-info").textContent = entry ? entry.occurrence.source.type + " · " + entry.occurrence.source.uri : "No source location. Select article text and use Re-anchor to add one.";
     const anchor = companions.anchor(entry, sourceUri);
     populateAnchorFields(anchor || { type: "source location retained; select article text to replace" });

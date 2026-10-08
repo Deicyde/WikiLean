@@ -6,9 +6,11 @@ This workspace captures selected records once and supplies the same values to
 WikiLean's local Brain SQLite index and Autoform's native attachment reader.
 It does not call the legacy WikiLean or workflow-derived Autoform exporters.
 
-The FCA schema stays unversioned: one source, one target, and optional location,
-id, extensions and schema hint. Workspace configuration and record-origin envelopes
-are application data, not companion schemas. The development package is 2.0.0a2.
+The FCA schema stays unversioned: one source; an optional target that is a
+reference or an endpoint object with a pin; and optional location, status, kind,
+label, note, id, extensions and schema hint. Workspace configuration and
+record-origin envelopes are application data, not companion schemas. The
+development package is 2.0.0a2.
 
 ## Create a workspace
 
@@ -37,9 +39,12 @@ An article input is a saved native WikiLean snapshot with `schema_version: 4`,
 array of review items containing `links` and `unlinked`. The 4 is
 WikiLean's **application storage marker**, never a field on an FCA record. Rejected
 items and targetless occurrences remain in WikiLean; the shared association index
-contains only existing public links. Relative references require the original
-`base_uri` on their link envelope. No reference is reconstructed from old fields.
-Legacy snapshots fail with an explicit migration-required error.
+contains only existing public links. Each link is read with the item's review
+facts and the article's website pin projected into the format's fields, exactly
+as the Worker's companion routes serve it (see [the native runbook](COMPANION-NATIVE.md)).
+Relative references require the original `base_uri` on their link envelope. No
+reference is reconstructed from old fields. Legacy snapshots fail with an
+explicit migration-required error.
 
 Setup installs the local editable Autoform and FCA packages into one Python 3.12
 environment using Autoform's lock. If interrupted, finish with `setup` in place of
@@ -129,7 +134,7 @@ packages; native synchronization itself does not require Node.
 ```
 
 The rehearsal copies a synthetic SQLite database, migrates the copy, verifies that
-HTTP returns its stored annotations unchanged, exercises all four source modes
+HTTP returns its stored annotations with the projected facts and pins, exercises all four source modes
 and duplicate occurrences, and renders native attachments on the original
 Autoform article without changing its bytes. The original database and reports
 are retained alongside the result for inspection.

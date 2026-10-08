@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { migrateLocalDatabase, migrateDatabaseCopy } from '../scripts/migrate-native.js';
 import { setup, articleRow, storedAnnotations, latestRevision, revisionCount, SLUG, REVID } from './helpers/harness.js';
 import { buildSeedRows } from '../src/seed/build.js';
-import { validateNativeItems } from '../src/native-companion.js';
+import { validateNativeItems, type NativeItem } from '../src/native-companion.js';
 
 describe('offline native migration', () => {
   it('archives exact original bytes and proposal state, adds observed source checkpoints, and is idempotent', () => {
@@ -26,6 +26,8 @@ describe('offline native migration', () => {
     expect(native.map(item => item.id)).toEqual(old.map(item => item.id));
     expect(native[0].provenance).toBe('human'); expect(native[2].status).toBe('rejected');
     expect(native[0].legacy).toEqual(old[0]); expect(validateNativeItems(native)).toEqual([]);
+    expect((native[0] as unknown as NativeItem).links[0].annotation.target).toEqual({ uri: expect.stringContaining('/Mathlib/Algebra/Group/Defs.html#AddCommGroup'),
+      pin: { type: 'repository', url: 'https://github.com/leanprover-community/mathlib4', module: 'Mathlib.Algebra.Group.Defs', declaration: 'AddCommGroup' } });
     expect(h.db.prepare('SELECT source_revid FROM revisions WHERE id=1').get()).toMatchObject({ source_revid: null });
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE id=2').get()).toMatchObject({ source_revid: REVID, schema_version: 3 });
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE id=3').get()).toMatchObject({ source_revid: REVID, schema_version: 4 });

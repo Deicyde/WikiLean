@@ -4,11 +4,22 @@ import schemaCheck from './vendor/fca/validate.js';
 
 export const NATIVE_SCHEMA_VERSION = 4;
 export const ANCHOR_PROFILE = 'urn:wikilean:anchor:v3';
+export const MATHLIB_REPOSITORY = 'https://github.com/leanprover-community/mathlib4';
+export const MATHLIB_DOCS = 'https://leanprover-community.github.io/mathlib4_docs/';
 export type JsonObject = Record<string, unknown>;
+/** A citation outside the companion. Only `type` is required; it decides the other keys. */
+export type FCAPin = JsonObject & { type: string };
+export interface FCATargetObject { uri: string; pin?: FCAPin; extensions?: JsonObject }
 export interface FCARecord {
-  source: { type: 'pdf' | 'latex' | 'html' | 'generic'; uri: string; extensions?: JsonObject };
-  target: string;
+  source: { type: 'pdf' | 'latex' | 'html' | 'generic'; uri: string; pin?: FCAPin; extensions?: JsonObject };
+  /** A reference, or an object with uri, pin and extensions. Absent means no formal counterpart. */
+  target?: string | FCATargetObject;
   location?: JsonObject;
+  /** The format's facts about the link; status may also be an object with value, pin and extensions. */
+  status?: string | JsonObject;
+  kind?: string;
+  label?: string;
+  note?: string;
   id?: string;
   $schema?: string;
   extensions?: JsonObject;
@@ -22,10 +33,10 @@ export interface NativeItem extends JsonObject {
   unlinked: UnlinkedOccurrence[];
   legacy?: JsonObject;
 }
-export interface SourceContext { wikipediaTitle: string; revid: number | null }
+export interface SourceContext { wikipediaTitle: string; revid: number | null; wikidataQid?: string | null }
 export interface MigrationDiagnostic { item: number; anchor?: number; code: string }
 const LEGACY_FIELDS = ['anchor', 'anchors', 'mathlib', 'decl', 'module'];
-const PUBLIC_FIELDS = ['id', 'status', 'kind', 'label', 'provenance', 'match_kind', 'links', 'unlinked'];
+const PUBLIC_FIELDS = ['id', 'status', 'kind', 'label', 'note', 'provenance', 'match_kind', 'links', 'unlinked'];
 const EDIT_FIELDS = new Set([...PUBLIC_FIELDS, 'note', 'proof_note']);
 const ABSOLUTE = /^[A-Za-z][A-Za-z0-9+.-]*:/;
 const REFERENCE = /^[^\u0000-\u0020\u007f-\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+(?![\s\S])/u;
@@ -35,6 +46,23 @@ export function isNativeItem(value: unknown): value is NativeItem {
 }
 export const isAbsoluteReference = (value: string): boolean => ABSOLUTE.test(value);
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+/** The formal reference of a record whose target is a string or an endpoint object. */
+export function targetUri(record: { target?: unknown }): string | undefined {
+  const target = record.target;
+  if (typeof target === 'string') return target;
+  return isObject(target) && typeof target.uri === 'string' ? target.uri : undefined;
+}
+export function targetPin(record: { target?: unknown }): FCAPin | undefined {
+  const target = record.target;
+  return isObject(target) && isObject(target.pin) && typeof target.pin.type === 'string' ? target.pin as FCAPin : undefined;
+}
+/** WikiLean's explicit module+declaration link: the docs URL plus a repository pin naming the declaration. */
+export function mathlibTarget(module: string, decl: string): FCATargetObject {
+  return {
+    uri: MATHLIB_DOCS + module.split('.').map(encodeURIComponent).join('/') + '.html#' + encodeURIComponent(decl),
+    pin: { type: 'repository', url: MATHLIB_REPOSITORY, module, declaration: decl },
+  };
+}
 
 /** Strict transport decoding before schema checks. JSON.parse alone silently
  * discards duplicate members and rounds oversized integer tokens. This scanner
@@ -172,14 +200,14 @@ export function legacyAnchorOccurrences(item: JsonObject, context?: SourceContex
   });
 }
 export function itemFormalTargets(item: JsonObject): string[] {
-  return isNativeItem(item) ? item.links.map(link => link.annotation.target) : [];
+  return isNativeItem(item) ? item.links.flatMap(link => { const uri = targetUri(link.annotation); return uri === undefined ? [] : [uri]; }) : [];
 }
 
-function occurrenceProblems(occ: UnlinkedOccurrence, target: string, context?: SourceContext): string[] {
-  const errors = validateFCA({ source: occ.source, target, ...('location' in occ ? { location: occ.location } : {}) });
+function occurrenceProblems(occ: UnlinkedOccurrence, target: string | undefined, context?: SourceContext): string[] {
+  const errors = validateFCA({ source: occ.source, ...('location' in occ ? { location: occ.location } : {}) });
   if (errors.length) return errors;
   if (occ.base_uri !== undefined && (typeof occ.base_uri !== 'string' || !ABSOLUTE.test(occ.base_uri) || !REFERENCE.test(occ.base_uri))) errors.push('base_uri must be an absolute reference');
-  if ((!ABSOLUTE.test(occ.source?.uri ?? '') || !ABSOLUTE.test(target)) && !occ.base_uri) errors.push('relative references require durable base_uri');
+  if ((!ABSOLUTE.test(occ.source?.uri ?? '') || (target !== undefined && !ABSOLUTE.test(target))) && !occ.base_uri) errors.push('relative references require durable base_uri');
   if (context && typeof occ.source?.uri === 'string') {
     // Only the article's own Wikipedia source is constrained by its source pin;
     // unrelated imported resources remain valid, without fetching any target.
@@ -230,13 +258,15 @@ export function validateNativeItems(items: unknown[], context?: SourceContext): 
       if (Object.keys(link).some(key => !['id', 'annotation', 'base_uri'].includes(key))) errors.push(prefix + 'unknown link envelope field');
       const coreErrors = validateFCA(link.annotation);
       errors.push(...coreErrors.map(e => prefix + e));
+      // A link is an occurrence with a formal destination; a record without one belongs in unlinked.
+      if (!coreErrors.length && targetUri(link.annotation) === undefined) { errors.push(prefix + 'link annotation requires a formal target; keep targetless selections in unlinked'); continue; }
       if (!coreErrors.length && link.annotation.$schema && !ABSOLUTE.test(link.annotation.$schema) && !link.base_uri) errors.push(prefix + 'relative schema hint requires durable base_uri');
-      if (!coreErrors.length) errors.push(...occurrenceProblems({ ...link.annotation, base_uri: link.base_uri }, link.annotation.target, value.status === 'rejected' ? undefined : context).map(e => prefix + e));
+      if (!coreErrors.length) errors.push(...occurrenceProblems({ ...link.annotation, base_uri: link.base_uri }, targetUri(link.annotation), value.status === 'rejected' ? undefined : context).map(e => prefix + e));
     }
     for (const [n, occ] of value.unlinked.entries()) {
       if (!isObject(occ)) { errors.push(`item ${index} unlinked ${n}: expected object`); continue; }
       if (Object.keys(occ).some(key => !['source', 'location', 'base_uri'].includes(key))) errors.push(`item ${index} unlinked ${n}: unknown occurrence field`);
-      errors.push(...occurrenceProblems(occ as unknown as UnlinkedOccurrence, 'urn:wikilean:validation-only', value.status === 'rejected' ? undefined : context).map(e => `item ${index} unlinked ${n}: ${e}`));
+      errors.push(...occurrenceProblems(occ as unknown as UnlinkedOccurrence, undefined, value.status === 'rejected' ? undefined : context).map(e => `item ${index} unlinked ${n}: ${e}`));
     }
   }
   return errors;
@@ -254,10 +284,12 @@ export function migrateLegacyItems(items: JsonObject[], context: SourceContext):
     const mathlib = isObject(original.mathlib) ? original.mathlib : {};
     if (!('match_kind' in item) && typeof mathlib.match_kind === 'string') item.match_kind = mathlib.match_kind;
     const decl = mathlib.decl || original.decl; const module = mathlib.module || original.module;
-    let target: string | null = null;
+    // The legacy module and declaration become the target's repository pin, so
+    // the only remaining copy of that information is not the private archive.
+    let target: FCATargetObject | null = null;
     if (typeof decl === 'string' && decl.trim() && typeof module === 'string' && module.trim()
       && !jsonProblem(decl) && !jsonProblem(module) && module.split('.').every(part => part && !/[\s/\\#?]/u.test(part))) {
-      target = 'https://leanprover-community.github.io/mathlib4_docs/' + module.split('.').map(encodeURIComponent).join('/') + '.html#' + encodeURIComponent(decl);
+      target = mathlibTarget(module, decl);
     }
     if (!target) diagnostics.push({ item: index, code: 'NO_FORMAL_TARGET' });
     if (target && original.status === 'not_formalized') diagnostics.push({ item: index, code: 'STATUS_TARGET_CONFLICT' });
@@ -303,7 +335,46 @@ export function restorePrivateMetadata(stored: JsonObject[], posted: JsonObject[
     return result;
   });
 }
-export function storedCompanionRecords(items: JsonObject[]): Array<NativeLink & { item_id?: string }> {
+/** The website pin citing the article's pinned Wikipedia revision. */
+export function articleSourcePin(context: SourceContext): FCAPin {
+  const pin: FCAPin = { type: 'website', title: context.wikipediaTitle, owner: 'Wikipedia', url: wikipediaSourceUri(context), revision: String(context.revid) };
+  if (typeof context.wikidataQid === 'string' && context.wikidataQid) pin.identifiers = { wikidata: context.wikidataQid };
+  return pin;
+}
+/** The portable record for one stored link: the stored annotation plus the
+ * review item's facts in the format's own fields (status, kind, label, note,
+ * id), the article's website pin on an article-local source, and provenance
+ * and match_kind under org.wikilean. The item stays the editable authority;
+ * stored fields are kept and only absent ones are filled, except status, which
+ * is always the item's review status. */
+export function companionAnnotation(item: JsonObject, link: NativeLink, context?: SourceContext): FCARecord {
+  const stored = copy(link.annotation);
+  const record = {} as FCARecord;
+  if (typeof stored.id === 'string') record.id = stored.id;
+  else if (typeof item.id === 'string' && item.id) record.id = item.id;
+  for (const key of ['kind', 'label'] as const) {
+    if (typeof stored[key] === 'string') record[key] = stored[key];
+    else if (typeof item[key] === 'string' && item[key].trim()) record[key] = item[key];
+  }
+  if (typeof item.status === 'string' && item.status) {
+    record.status = isObject(stored.status) ? { ...stored.status, value: item.status } : item.status;
+  } else if (stored.status !== undefined) record.status = stored.status;
+  if (stored.$schema !== undefined) record.$schema = stored.$schema;
+  record.source = stored.source;
+  if (context && record.source.pin === undefined && sourceMatches(record.source, context, link.base_uri)) {
+    record.source = { ...record.source, pin: articleSourcePin(context) };
+  }
+  if ('location' in stored) record.location = stored.location;
+  if (stored.target !== undefined) record.target = stored.target;
+  if (typeof stored.note === 'string') record.note = stored.note;
+  else if (typeof item.note === 'string' && item.note.trim()) record.note = item.note;
+  const wikilean: JsonObject = isObject(stored.extensions?.['org.wikilean']) ? { ...stored.extensions['org.wikilean'] } : {};
+  for (const key of ['provenance', 'match_kind'] as const) if (typeof item[key] === 'string' && item[key]) wikilean[key] = item[key];
+  if (Object.keys(wikilean).length) record.extensions = { ...stored.extensions, 'org.wikilean': wikilean };
+  else if (stored.extensions !== undefined) record.extensions = stored.extensions;
+  return record;
+}
+export function storedCompanionRecords(items: JsonObject[], context?: SourceContext): Array<NativeLink & { item_id?: string }> {
   return items.flatMap(item => isNativeItem(item) && item.status !== 'rejected'
-    ? item.links.map(link => ({ ...copy(link), ...(typeof item.id === 'string' ? { item_id: item.id } : {}) })) : []);
+    ? item.links.map(link => ({ ...copy(link), annotation: companionAnnotation(item, link, context), ...(typeof item.id === 'string' ? { item_id: item.id } : {}) })) : []);
 }
