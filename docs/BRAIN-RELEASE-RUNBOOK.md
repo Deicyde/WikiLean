@@ -589,6 +589,14 @@ automate frozen-store garbage collection around assumed semantic equivalence.
 
 ## Canary
 
+The canary compares production bytes against the frozen release, so its requests never
+advertise `text/html`. Cloudflare zone features that rewrite HTML (Web Analytics
+auto-injection appends a `cloudflareinsights.com` beacon script) apply only to requests
+whose `Accept` includes `text/html`; the 2026-10-04 first promotion deployed correctly
+but its canary failed on `/brain` for exactly that reason. A local rehearsal cannot see
+zone-level transformations: before a promotion, also fetch `/brain` from production with
+the canary's exact headers and compare the byte count with the frozen page.
+
 Run the same release-qualified canary manually with both the logical release ID and
 the bare SHA-256 digest of the exact `release.json` bytes:
 

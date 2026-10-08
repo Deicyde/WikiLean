@@ -283,6 +283,30 @@ class BrainCanaryTest(unittest.TestCase):
         self.assertGreater(result["max_rss_bytes"], 0)
         self.assertIn("POST", fixture.requested_methods)
 
+    def test_requests_never_advertise_html(self):
+        # Cloudflare zone features that rewrite HTML (Web Analytics auto-injection)
+        # key on an Accept header that includes text/html; the canary compares
+        # frozen bytes, so none of its requests may send one.
+        fixture = Fixture()
+        accepts: list[str | None] = []
+
+        def opener(request, timeout):
+            accepts.append(request.get_header("Accept"))
+            return fixture.open(request, timeout)
+
+        canary = brain_canary.BrainCanary(
+            BASE,
+            fixture.release_id,
+            fixture.manifest_sha256,
+            opener=opener,
+            nonce=lambda: "test-nonce",
+        )
+        self.assertTrue(canary.check_once()["ok"])
+        self.assertEqual(len(accepts), len(fixture.requested))
+        for accept in accepts:
+            self.assertIsNotNone(accept)
+            self.assertNotIn("text/html", accept)
+
     def test_offline_replay_release_surface_passes_with_null_or_pinned_prior_state(self):
         for prior in (None, "sha256:" + "9" * 64):
             with self.subTest(prior=prior):
@@ -521,7 +545,9 @@ class BrainCanaryTest(unittest.TestCase):
             b'<html><script>fetch("/assets/brain/current.json")</script><p>stale</p></html>',
             "text/html; charset=utf-8",
         )
-        with self.assertRaisesRegex(brain_canary.CanaryError, "/brain"):
+        with self.assertRaisesRegex(
+            brain_canary.CanaryError, r"/brain \(declared \d+ bytes, observed \d+ bytes\)"
+        ):
             self.canary(fixture).check_once()
 
     def test_missing_required_view_asset_fails(self):
