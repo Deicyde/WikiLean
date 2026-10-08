@@ -25,7 +25,7 @@ import sys
 import tempfile
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -47,6 +47,12 @@ from brain_public_baseline import (
     _verify_directory_at,
     _verify_store_identity,
     verify_public_baseline,
+)
+from brain_release_authority import (
+    POLICY as NEUTRAL_POLICY,
+    blocking_changes,
+    changed_paths,
+    describe_blocking,
 )
 
 
@@ -204,6 +210,8 @@ class PreparedPromotion:
     activation: ReviewedActivation | None = None
     wrangler_installation: Mapping[str, object] | None = None
     node_executables: Mapping[str, object] | None = None
+    promotion_commit: str = field(kw_only=True)
+    neutral_changes: tuple[str, ...] = field(kw_only=True)
 
 
 @dataclass(frozen=True)
@@ -1417,6 +1425,7 @@ class BrainPromoter:
         self.selector_opener = selector_opener
         self.retain_dry_run_store = retain_dry_run_store
         self._selector_probe_count = 0
+        self._authority_equivalence: dict[str, object] | None = None
         self.wiki = self.repo / "wiki"
         self.receipt_root: Path | None = None
         self._reviewed_node_executables: Mapping[str, object] | None = None
@@ -1701,7 +1710,7 @@ class BrainPromoter:
             *arguments,
         ]
 
-    def _git_text(self, *args: str, allow_failure: bool = False) -> str:
+    def _git_result(self, *args: str) -> RunResult:
         environment = dict(os.environ)
         for name in tuple(environment):
             if name in {
@@ -1718,12 +1727,15 @@ class BrainPromoter:
         environment["GIT_NO_REPLACE_OBJECTS"] = "1"
         environment["GIT_OPTIONAL_LOCKS"] = "0"
         environment["LC_ALL"] = "C"
-        result = self._run(
+        return self._run(
             ["git", "-C", str(self.repo), *args],
             cwd=self.repo,
             timeout=60,
             env=environment,
         )
+
+    def _git_text(self, *args: str, allow_failure: bool = False) -> str:
+        result = self._git_result(*args)
         if not result.ok:
             if allow_failure:
                 return ""
@@ -1732,6 +1744,17 @@ class BrainPromoter:
                 + result.stderr.decode("utf-8", errors="replace").strip()
             )
         return result.stdout.decode("utf-8", errors="strict").strip()
+
+    def _git_is_ancestor(self, base: str, head: str) -> bool:
+        result = self._git_result("merge-base", "--is-ancestor", base, head)
+        if not result.timed_out and result.returncode == 0:
+            return True
+        if not result.timed_out and result.returncode == 1:
+            return False
+        raise PromotionError(
+            f"git merge-base --is-ancestor {base} {head} failed: "
+            + result.stderr.decode("utf-8", errors="replace").strip()
+        )
 
     def _clean_checkout_state(self) -> tuple[str, str, str]:
         top = Path(self._git_text("rev-parse", "--show-toplevel")).resolve(strict=True)
@@ -1752,15 +1775,46 @@ class BrainPromoter:
         return head, main, branch
 
     def _check_git_authority(self, expected_commit: str) -> str:
+        """Require a clean main checkout that still describes the release authority.
+
+        HEAD must equal refs/heads/main. It may be the authority commit itself or a
+        descendant whose only differences are release-neutral paths; the accepted
+        state is recorded for the durable intent.
+        """
         head, main, branch = self._clean_checkout_state()
-        if head != expected_commit or main != expected_commit:
+        if head != main:
             raise PromotionError(
-                f"release authority {expected_commit} must equal HEAD and refs/heads/main "
-                f"(HEAD={head}, main={main})"
+                f"promotion checkout HEAD must equal refs/heads/main (HEAD={head}, main={main})"
             )
         if branch not in {"", "main"}:
             raise PromotionError(f"promotion checkout is on {branch!r}, not main or detached main")
+        neutral_changes: list[str] = []
+        if head != expected_commit:
+            if not self._git_is_ancestor(expected_commit, head):
+                raise PromotionError(
+                    f"release authority {expected_commit} is not an ancestor of main {head}; "
+                    "main only moves forward past a built release"
+                )
+            neutral_changes = changed_paths(
+                lambda arguments: self._git_text(*arguments), expected_commit, head
+            )
+            blocking = blocking_changes(neutral_changes)
+            if blocking:
+                raise PromotionError(describe_blocking(expected_commit, head, blocking))
+        self._authority_equivalence = {
+            "policy": NEUTRAL_POLICY,
+            "authority_commit": expected_commit,
+            "promotion_commit": head,
+            "neutral_changes": neutral_changes,
+        }
         return head
+
+    def _recorded_neutral_changes(self) -> tuple[str, ...]:
+        if self._authority_equivalence is None:
+            raise PromotionError("Git authority was not checked before preparing the intent")
+        changes = self._authority_equivalence["neutral_changes"]
+        assert isinstance(changes, list)
+        return tuple(changes)
 
     def _check_recovery_checkout(self, authority_commit: str) -> str:
         head, main, branch = self._clean_checkout_state()
@@ -2579,7 +2633,8 @@ class BrainPromoter:
         reviewed_worker = intent.get("worker_bundle")
         if not isinstance(reviewed_worker, dict):
             raise PromotionError("activation Worker bundle evidence is malformed")
-        self._check_git_authority(candidate.authority_commit)
+        promotion_commit = self._check_git_authority(candidate.authority_commit)
+        neutral_changes = self._recorded_neutral_changes()
         node_executables = self._node_executables_identity()
         if reviewed_worker.get("executables") != node_executables:
             raise PromotionError(
@@ -2739,6 +2794,8 @@ class BrainPromoter:
             activation=activation,
             wrangler_installation=wrangler_installation,
             node_executables=node_executables,
+            promotion_commit=promotion_commit,
+            neutral_changes=neutral_changes,
         )
         reconstructed = self._intent_payload(prepared)
         reconstructed.pop("activation_bundle", None)
@@ -2770,7 +2827,8 @@ class BrainPromoter:
             )
         except BaselineValidationError as exc:
             raise PromotionError(f"public asset baseline verification failed: {exc}") from exc
-        self._check_git_authority(candidate.authority_commit)
+        promotion_commit = self._check_git_authority(candidate.authority_commit)
+        neutral_changes = self._recorded_neutral_changes()
         node_executables = self._node_executables_identity()
         wrangler_installation = self._wrangler_installation_identity()
         self._bind_node_executables(node_executables)
@@ -2873,7 +2931,8 @@ class BrainPromoter:
                 )
                 if prior_after.tree != prior.tree or prior_after.manifest_sha256 != prior.manifest_sha256:
                     raise PromotionError("prior frozen release changed during preparation")
-            self._check_git_authority(candidate.authority_commit)
+            if self._check_git_authority(candidate.authority_commit) != promotion_commit:
+                raise PromotionError("promotion checkout moved during preparation")
 
             history, history_raw = self._history_evidence(deploy_config)
             status_before, status_before_result = self._wrangler_status(deploy_config)
@@ -2919,6 +2978,8 @@ class BrainPromoter:
                 history_raw=history_raw,
                 wrangler_installation=wrangler_installation,
                 node_executables=node_executables,
+                promotion_commit=promotion_commit,
+                neutral_changes=neutral_changes,
             )
         except BaseException:
             remove_sealed_tree(work_root)
@@ -3180,6 +3241,8 @@ class BrainPromoter:
             "release_tree": prepared.candidate.tree,
             "authority_commit": prepared.candidate.authority_commit,
             "reducer_commit": prepared.candidate.reducer_commit,
+            "promotion_commit": prepared.promotion_commit,
+            "neutral_changes": list(prepared.neutral_changes),
             "retained_release": (
                 {
                     "release_id": prepared.prior.release_id,
@@ -3359,7 +3422,8 @@ class BrainPromoter:
             or wrangler_version != prepared.wrangler_version
         ):
             raise PromotionError("Node/Wrangler identity changed after preparation")
-        self._check_git_authority(prepared.candidate.authority_commit)
+        if self._check_git_authority(prepared.candidate.authority_commit) != prepared.promotion_commit:
+            raise PromotionError("promotion checkout moved after preparation")
 
         before, before_result, probe, after, after_result = self._remote_predeploy_fence(
             prepared,
