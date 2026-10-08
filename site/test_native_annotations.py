@@ -85,9 +85,43 @@ class NativeContract(unittest.TestCase):
         work=item(anchor={}); broken.append(work)
         work=item(); work['links'].append(deepcopy(work['links'][0])); broken.append(work)
         work=item(); work['links'][0]['annotation']['target']='../formal'; broken.append(work)
+        work=item(); work['links'][0]['annotation']['target']={'uri': '../formal'}; broken.append(work)
+        work=item(); work['links'][0]['annotation']['target']={}; broken.append(work)
+        work=item(); del work['links'][0]['annotation']['target']; broken.append(work)
         work=item(); work['links'][0]['annotation']['extensions']={'exact': 2**53}; broken.append(work)
         for work in broken:
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError): n.validate_items([work])
+
+    def test_endpoint_targets_pins_and_facts_validate_and_project(self):
+        work = item(kind='theorem', note='why', match_kind='exact')
+        pinned = {'uri': 'https://formal.example/Groups.html#identity',
+                  'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY, 'module': 'Mathlib.Group', 'declaration': 'Group.identity'}}
+        work['links'][0]['annotation']['target'] = pinned
+        foreign = {'id': 'their-id', 'label': 'Their label', 'source': {'type': 'pdf', 'uri': '../paper.pdf'},
+                   'target': {'uri': 'urn:formal:b'}, 'status': {'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY}},
+                   'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1}}}
+        work['links'].append({'id': 'foreign', 'base_uri': 'https://example.net/shards/a.json', 'annotation': foreign})
+        before = deepcopy(work)
+        n.validate_items([work], title=TITLE, revid=42)
+        first = n.companion_annotation(work, work['links'][0], title=TITLE, revid=42, wikidata_qid='Q1')
+        self.assertEqual(first, {'id': 'aabbccddeeff', 'kind': 'theorem', 'label': 'Fixture', 'status': 'formalized',
+            'source': {'type': 'generic', 'uri': URI, 'pin': {'type': 'website', 'title': TITLE, 'owner': 'Wikipedia', 'url': URI,
+                                                              'revision': '42', 'identifiers': {'wikidata': 'Q1'}}},
+            'location': occurrence()['location'], 'target': pinned, 'note': 'why',
+            'extensions': {'org.wikilean': {'provenance': 'ai', 'match_kind': 'exact'}}})
+        # A foreign source gets no article pin; stored id, label, extensions and the status pin survive.
+        second = n.companion_annotation(work, work['links'][1], title=TITLE, revid=42)
+        self.assertEqual(second, {'id': 'their-id', 'kind': 'theorem', 'label': 'Their label',
+            'status': {'value': 'formalized', 'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY}},
+            'source': foreign['source'], 'target': foreign['target'], 'note': 'why',
+            'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1, 'provenance': 'ai', 'match_kind': 'exact'}}})
+        for record in (first, second):
+            n.validate_fca(record)
+        self.assertEqual(work, before)
+        self.assertEqual(n.formal_links(work)[0]['label'], 'Group.identity')
+        self.assertEqual(n.first_target(work), pinned['uri'])
+        self.assertNotIn('pin', n.companion_annotation({'status': 'partial', 'links': [], 'unlinked': []}, work['links'][0])['source'])
+        n.validate_fca({'source': {'type': 'html', 'uri': URI}, 'status': 'not_formalized'})
 
     def test_opaque_extension_fields_survive_agent_partial_updates(self):
         original = item(private={'audit': [1, 2]})
@@ -170,6 +204,9 @@ class Migration(unittest.TestCase):
         self.assertFalse(n.LEGACY_FIELDS & converted.keys())
         self.assertEqual(converted['match_kind'], 'exact')
         self.assertEqual([link['id'] for link in converted['links']], ['aabbccddeeff:link:0','aabbccddeeff:link:1'])
+        self.assertEqual(converted['links'][0]['annotation']['target'], {
+            'uri': 'https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#Group.identity',
+            'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY, 'module': 'Mathlib.Group', 'declaration': 'Group.identity'}})
         again, diagnostics=n.migrate_items(result, title=TITLE, revid=42)
         self.assertEqual(again, result); self.assertEqual(diagnostics, [])
 
@@ -251,12 +288,13 @@ class Rendering(unittest.TestCase):
             self.assertEqual(work,before)
 
     def test_public_links_are_safe_and_private_review_data_is_absent(self):
-        work=item(note='secret',proof_note='secret',legacy={'secret':True},private='secret')
+        work=item(note='a public note',proof_note='secret',legacy={'secret':True},private='secret')
         work['links'] += [{'id':'bad','annotation':{**occurrence(),'target':'javascript:alert(1)'}},
                           {'id':'credentials','annotation':{**occurrence(),'target':'https://user:pass@example.org/'}},
                           {'id':'relative','annotation':{**occurrence(),'target':'../formal#α'},'base_uri':'https://example.org/shards/one.json'}]
         public=render.build_client_data([work,item(status='rejected')])
         self.assertIsNone(public[1]); self.assertNotIn('secret',json.dumps(public))
+        self.assertEqual(public[0]['note'],'a public note')
         self.assertEqual(public[0]['formal_links'][0]['label'],'identity')
         self.assertNotIn('url',public[0]['formal_links'][1]); self.assertNotIn('url',public[0]['formal_links'][2])
         self.assertEqual(public[0]['formal_links'][3]['url'],'https://example.org/formal#%CE%B1')

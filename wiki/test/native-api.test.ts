@@ -41,7 +41,9 @@ describe('native canonical API and lifecycle', () => {
     expect(stored[0].provenance).toBe('ai');
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE slug=?').get('Native_New')).toMatchObject({ source_revid: REVID, schema_version: 4 });
     const records = await get(h.env, '/api/article/Native_New/companion.json');
-    expect(await records.json()).toEqual(items[0].links.map(link => link.annotation));
+    // Stored records come back with the item's facts; the sources are not the article, so no website pin.
+    expect(await records.json()).toEqual(items[0].links.map(link => ({ id: 'aaaaaaaaaaaa', status: 'formalized', ...link.annotation,
+      extensions: { ...link.annotation.extensions, 'org.wikilean': { provenance: 'ai' } } })));
     const legacy = await put(h.env, '/api/article/Legacy_Implicit', { wikipedia_title: 'Legacy', revid: REVID, annotations: [{ status: 'partial', anchor: {} }] }, { bearer: PIPELINE_TOKEN });
     expect(legacy.status).toBe(400);
   });
@@ -52,7 +54,9 @@ describe('native canonical API and lifecycle', () => {
     const saved = await botSave(h.env, { annotations: items, base_version: 2 });
     expect(saved.status).toBe(200);
     const response = await get(h.env, `/api/article/${SLUG}/companion-records.json`);
-    expect(await response.json()).toEqual({ version: 3, records: items[0].links.map(link => ({ ...link, item_id: items[0].id })) });
+    const projected = { ...value, status: 'formalized', kind: 'definition', label: 'Abelian group',
+      extensions: { ...value.extensions, 'org.wikilean': { provenance: 'ai', match_kind: 'exact' } } };
+    expect(await response.json()).toEqual({ version: 3, records: items[0].links.map(link => ({ ...link, annotation: projected, item_id: items[0].id })) });
     expect((await get(h.env, `/api/article/${SLUG}/companion.json`)).status).toBe(409);
   });
   it('retains relative schema hints in record reads and refuses to change their carrier silently', async () => {
@@ -82,16 +86,19 @@ describe('native canonical API and lifecycle', () => {
   });
   it('withholds private archives and workflow data from public API, editor state, and history', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
-    items[0].private_token = 'secret-native-value'; items[0].note = 'private-note';
+    items[0].private_token = 'secret-native-value'; items[0].proof_note = 'private-proof-note'; items[0].note = 'a public note';
     h.db.prepare('UPDATE articles SET annotations=? WHERE slug=?').run(JSON.stringify(items), SLUG);
     const initial = latestRevision(h.db).id;
-    expect(await (await get(h.env, `/api/article/${SLUG}.json`)).text()).not.toMatch(/secret-native-value|private-note|"legacy"/);
+    const publicJson = await (await get(h.env, `/api/article/${SLUG}.json`)).text();
+    expect(publicJson).not.toMatch(/secret-native-value|private-proof-note|"legacy"/);
+    expect(publicJson).toContain('a public note');
     expect(await (await get(h.env, `/${SLUG}`, { user: 'u-human' })).text()).not.toContain('secret-native-value');
     const posted = editorItems(items); posted[0].label = 'edited';
     expect((await save(h.env, { annotations: posted, base_version: 2 }, { user: 'u-human' })).status).toBe(200);
     expect(nativeItems(h)[0].private_token).toBe('secret-native-value');
+    expect(nativeItems(h)[0].proof_note).toBe('private-proof-note');
     const diff = await (await get(h.env, `/${SLUG}/diff/${initial}/${latestRevision(h.db).id}`)).text();
-    expect(diff).not.toMatch(/secret-native-value|private-note|"legacy"/);
+    expect(diff).not.toMatch(/secret-native-value|private-proof-note|"legacy"/);
   });
   it('does not reveal the archived legacy side of a migration in a public cross-format diff', async () => {
     const h = setup(); const old = storedAnnotations(h.db); old[0].internal_review = 'legacy-private-secret';

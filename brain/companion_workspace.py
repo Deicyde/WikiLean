@@ -298,14 +298,21 @@ def _article_entries(path: Path) -> tuple[list[dict], dict]:
         if item.get("status") == "rejected":
             continue
         for j, link in enumerate(item["links"]):
-            annotation = link.get("annotation") if isinstance(link, dict) else None
+            if not isinstance(link, dict) or not isinstance(link.get("annotation"), dict):
+                raise WorkspaceError(f"{path}: invalid native annotation {i}/{j}")
+            # The stored link plus the item's review facts and the article's
+            # website pin, exactly as the Worker's companion routes serve it.
+            annotation = native.companion_annotation(item, link, title=title, revid=revid,
+                                                     wikidata_qid=article.get("wikidata_qid"))
             if companion.check(annotation).problems:
                 raise WorkspaceError(f"{path}: invalid native annotation {i}/{j}")
             base = link.get("base_uri")
             if base is None:
                 import re
-                if any(not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", reference)
-                       for reference in (annotation["source"]["uri"], annotation["target"], *([annotation["$schema"]] if "$schema" in annotation else []))):
+                references = [annotation["source"]["uri"], *([annotation["$schema"]] if "$schema" in annotation else [])]
+                if native.target_uri(annotation) is not None:
+                    references.append(native.target_uri(annotation))
+                if any(not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", reference) for reference in references):
                     raise WorkspaceError(f"{path}: relative native references require their original base_uri")
                 base = path.as_uri()
             entries.append({"annotation": annotation, "origin": {

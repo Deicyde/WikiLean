@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { exportCompanionAnnotations, ANCHOR_PROFILE, type CompanionArticle } from "../src/companion.js";
+import { MATHLIB_REPOSITORY } from "../src/native-companion.js";
 import { setup, get, articleRow, blockNetwork, SLUG, PIPELINE_TOKEN } from "./helpers/harness.js";
 
 blockNetwork();
 
 const article: CompanionArticle = {
-  slug: "Group", wikipediaTitle: "Group (mathematics)", revid: 12345, version: 7,
+  slug: "Group", wikipediaTitle: "Group (mathematics)", revid: 12345, version: 7, wikidataQid: "Q83478",
   annotations: [{
     id: "aaaaaaaaaaaa", status: "formalized", kind: "definition", label: "Group",
     anchor: { section: "(lead)", snippet: "a group" },
@@ -16,17 +17,29 @@ const article: CompanionArticle = {
 const annotation = article.annotations[0] as Record<string, unknown>;
 
 describe("atomic companion export", () => {
-  it("pins the source and preserves native locator semantics without asserting a proof", () => {
+  it("maps the item's facts onto the format and pins both ends without asserting a proof", () => {
     const result = exportCompanionAnnotations(article);
     expect(result.diagnostics).toEqual([]);
     expect(result.annotations).toHaveLength(1);
     expect(result.annotations[0]).not.toHaveProperty("version");
-    expect(result.annotations[0]).toMatchObject({
-      source: { type: "generic", uri: "https://en.wikipedia.org/w/index.php?title=Group_(mathematics)&oldid=12345" },
-      target: "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group",
+    const source = "https://en.wikipedia.org/w/index.php?title=Group_(mathematics)&oldid=12345";
+    expect(result.annotations[0]).toEqual({
+      id: "aaaaaaaaaaaa", kind: "definition", label: "Group", status: "formalized",
+      source: { type: "generic", uri: source, pin: {
+        type: "website", title: "Group (mathematics)", owner: "Wikipedia", url: source, revision: "12345",
+        identifiers: { wikidata: "Q83478" },
+      } },
       location: { profile: ANCHOR_PROFILE, anchor: annotation.anchor, resolution: "not_attempted" },
-      extensions: { "org.wikilean": { article_version: 7, status: "formalized", proof_verification: "not_asserted", target_pinned: false } },
+      target: {
+        uri: "https://leanprover-community.github.io/mathlib4_docs/Mathlib/Algebra/Group/Defs.html#Group",
+        pin: { type: "repository", url: MATHLIB_REPOSITORY, module: "Mathlib.Algebra.Group.Defs", declaration: "Group" },
+      },
+      extensions: { "org.wikilean": { match_kind: "exact" } },
     });
+    // The legacy item never says which Mathlib commit it was judged against.
+    expect(result.annotations[0].target.pin).not.toHaveProperty("commit");
+    const unpinned = exportCompanionAnnotations({ ...article, wikidataQid: null });
+    expect(unpinned.annotations[0].source.pin).not.toHaveProperty("identifiers");
   });
 
   it("each source span is independent; duplicate native IDs and content are not collapsed", () => {
@@ -37,12 +50,12 @@ describe("atomic companion export", () => {
     const result = exportCompanionAnnotations({ ...article, annotations: [multiple, multiple] });
     expect(result.annotations).toHaveLength(4);
     expect(result.annotations.map((a) => a.location.anchor.type)).toEqual(["prose_range", "math_alttext", "prose_range", "math_alttext"]);
-    expect(result.annotations.map((a) => a.extensions["org.wikilean"].annotation_index)).toEqual([0, 0, 1, 1]);
+    expect(result.annotations.map((a) => a.id)).toEqual(["aaaaaaaaaaaa", "aaaaaaaaaaaa", "aaaaaaaaaaaa", "aaaaaaaaaaaa"]);
   });
 
-  it("excludes vetoes, unlinked statuses and private provenance fields", () => {
+  it("excludes vetoes and unlinked statuses; keeps note and provenance but never private fields", () => {
     const input = { ...article, annotations: [
-      { ...annotation, author: "private", provenance: "human", note: "private note", review: { token: "secret" },
+      { ...annotation, author: "private-author", provenance: "human", note: "a public note", review: { token: "secret" },
         anchor: { snippet: "visible", editor_private: "secret" } },
       { ...annotation, status: "rejected", label: "secret veto" },
       { ...annotation, status: "pending", label: "secret proposal" },
@@ -51,10 +64,11 @@ describe("atomic companion export", () => {
     ] };
     const result = exportCompanionAnnotations(input);
     expect(result.annotations).toHaveLength(1);
+    expect(result.annotations[0]).toMatchObject({ note: "a public note", extensions: { "org.wikilean": { provenance: "human", match_kind: "exact" } } });
     expect(result.diagnostics).toEqual([
       { annotation: 3, code: "NO_FORMAL_TARGET" }, { annotation: 4, code: "NO_FORMAL_TARGET" },
     ]);
-    expect(JSON.stringify(result)).not.toMatch(/private|secret|provenance|human/);
+    expect(JSON.stringify(result)).not.toMatch(/private-author|secret|review|editor_private/);
   });
 
   it("keeps unresolved anchors opaque; missing or malformed anchors are explicit omissions", () => {
@@ -77,7 +91,8 @@ describe("atomic companion export", () => {
       { ...annotation, mathlib: { decl: "\udfff", module: "Mathlib.Group" } },
     ] });
     expect(result.annotations).toHaveLength(1);
-    expect(result.annotations[0].target).toBe("https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#x%22%3C%3E%23%20%26%F0%9F%98%80");
+    expect(result.annotations[0].target.uri).toBe("https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#x%22%3C%3E%23%20%26%F0%9F%98%80");
+    expect(result.annotations[0].target.pin).toMatchObject({ module: "Mathlib.Group", declaration: "x\"<># &😀" });
     expect(result.diagnostics).toHaveLength(2);
   });
 
@@ -115,6 +130,10 @@ describe("GET /api/article/:slug/companion.json", () => {
     const records = await response.json() as Array<{ source: { uri: string } }>;
     expect(records).toHaveLength(1);
     expect(records[0].source.uri).toContain("oldid=12345");
+    expect(records[0]).toMatchObject({ status: "formalized", kind: "definition", label: "Abelian group",
+      source: { pin: { type: "website", title: "Test Article", revision: "12345" } },
+      target: { pin: { type: "repository", module: "Mathlib.Algebra.Group.Defs", declaration: "AddCommGroup" } },
+      extensions: { "org.wikilean": { provenance: "ai", match_kind: "exact" } } });
     expect(articleRow(db)).toEqual(before);
     const report = await get(env, `/api/article/${SLUG}/companion.json?report=1`);
     expect(await report.json()).toMatchObject({ annotations: records, diagnostics: [{ code: "NO_FORMAL_TARGET" }] });

@@ -7,7 +7,7 @@ wiki remains canonical in D1; imported companions do not modify articles, modera
 the source registry, the nightly reducer, or a published Brain release.
 
 FCA is the interchange format. There is no companion manifest or imposed directory
-layout. Each record has one informal source and one formal target; JSON objects,
+layout. Each record has one informal source and at most one formal target; JSON objects,
 arrays of complete records, and JSONL/NDJSON shards are supported by the reference
 package's recursive discovery. PDF, LaTeX, HTML, and generic sources all work. No
 Autoform-specific extension is required.
@@ -89,7 +89,11 @@ reference keeps its original lookup key; an unresolved relative reference gets
 `urn:wikilean:companion:unresolved:<sha256>` computed from the carrier URI and raw
 reference. That key is only an index key, never written into the annotation or
 claimed to name a formal object. Use the returned key with `--source`/`--target`
-to retrieve those occurrences. The other statuses are `absolute` (retained without
+to retrieve those occurrences. A record with no `target` (a checked absence, or
+merely an unlinked passage) is indexed under the constant lookup key
+`urn:wikilean:companion:absent-target` with `resolution.target` status `absent`;
+an endpoint-object target is resolved by its `uri`, and its pin stays inside the
+annotation. The other statuses are `absolute` (retained without
 resolving) and `resolved` (relative component merging completed); neither certifies
 resource existence or full URI validity. Older local imports without this metadata
 report `legacy` and can be rebuilt from their original shards. Source metadata, opaque generic anchors, unknown extensions, large

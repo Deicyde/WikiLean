@@ -961,7 +961,7 @@ def build_client_data(annotations: list[dict]) -> list[dict | None]:
         if native.is_native(a):
             item = {"status": a.get("status") or "not_formalized",
                     "formal_links": native.formal_links(a)}
-            for key in ("id", "label", "kind", "provenance", "match_kind"):
+            for key in ("id", "label", "kind", "note", "provenance", "match_kind"):
                 if isinstance(a.get(key), str) and a[key]:
                     item[key] = a[key]
             first = next((link for link in item["formal_links"] if "url" in link), None)

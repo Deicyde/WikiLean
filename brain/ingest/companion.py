@@ -30,6 +30,10 @@ from brain import store
 
 REFERENCE_VERSION = "2.0.0a2"
 PROFILE = "companion-local-import-v1"
+# Index key for a record with no formal counterpart (a target-less annotation).
+# It is only a lookup key: it names no formal object and is never written into
+# the annotation. Such records report resolution.target.status "absent".
+ABSENT_TARGET_KEY = "urn:wikilean:companion:absent-target"
 REFERENCE_PARTS = re.compile(
     r"^(?:(?P<scheme>[A-Za-z][A-Za-z0-9+.-]*):)?"
     r"(?://(?P<authority>[^/?#]*))?(?P<path>[^?#]*)"
@@ -179,6 +183,14 @@ def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, st
     return key, {"status": "resolved"}
 
 
+def target_reference(annotation: dict) -> str | None:
+    """The formal reference of a record whose target is absent, a string or an endpoint object."""
+    target = annotation.get("target")
+    if isinstance(target, dict):
+        return target.get("uri")
+    return target
+
+
 def _projection(collection, source_key: str):
     if collection.problems:
         findings = [f"{p.code} {p.path}: {p.message}" for p in collection.problems]
@@ -202,7 +214,11 @@ def _projection(collection, source_key: str):
         # Repeated IDs and even repeated content remain separate edge rows.
         identity = hashlib.sha256(_json([source_key, origin, encoded]).encode()).hexdigest()
         source, source_resolution = _resolve_reference(base_uri, annotation["source"]["uri"])
-        target, target_resolution = _resolve_reference(base_uri, annotation["target"])
+        reference = target_reference(annotation)
+        if reference is None:
+            target, target_resolution = ABSENT_TARGET_KEY, {"status": "absent"}
+        else:
+            target, target_resolution = _resolve_reference(base_uri, reference)
         edges.append({
             "src": source,
             "dst": target,

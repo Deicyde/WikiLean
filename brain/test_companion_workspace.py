@@ -145,7 +145,8 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         workspace.synchronize(self.path)
         previous = workspace.current_generation(self.path)
         database = (previous / "index/brain.sqlite3").read_bytes()
-        (self.shards / "bad.json").write_text('{"source":{"type":"generic","uri":"urn:missing-target"}}')
+        # A record without a target is valid (a checked absence); one without a source is not.
+        (self.shards / "bad.json").write_text('{"target":"urn:missing-source"}')
         with self.assertRaises(workspace.WorkspaceError):
             workspace.synchronize(self.path)
         self.assertEqual(workspace.current_generation(self.path), previous)
@@ -272,7 +273,9 @@ class WorkspaceIntegrationTests(unittest.TestCase):
         result = workspace.synchronize(self.path)
         from brain.ingest.companion import iter_annotations
         rows = list(iter_annotations(Path(result["index"]["output"])))
-        retained = next(row for row in rows if row["annotation"] == record)
+        retained = next(row for row in rows if row["annotation"].get("extensions") == {"opaque": [99]})
+        # The stored record is kept; the item's review status is projected onto it.
+        self.assertEqual(retained["annotation"], {**record, "status": "partial"})
         self.assertEqual(retained["origin"]["base_uri"], "https://example.net/shards/article.json")
         self.assertEqual(retained["source"], "https://example.net/paper.tex")
         self.assertEqual(retained["target"], "https://example.net/formal.html#x")

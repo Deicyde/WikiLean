@@ -120,6 +120,10 @@ def main() -> int:
     assert {row["target"] for row in pdf} == {(output / "formal.html").as_uri() + "#pdf"}
     exported = [row for row in rows if row["annotation"].get("extensions", {}).get("fixture", {}).get("native")]
     assert len(exported) == 2
+    wikilean = [row["annotation"] for row in rows if row["origin"]["base_uri"].endswith("/wiki/nested/article.json")]
+    assert len(wikilean) == 5, len(wikilean)
+    assert all(a["status"] in {"formalized", "partial"} and a["source"]["pin"]["type"] == "website"
+               and a["target"]["pin"]["declaration"] for a in wikilean), wikilean
     assert len(list(iter_annotations(index, target=exported[0]["target"]))) == 1
     from autoform_cli.companions import capture_annotations, write_retained_annotations
     from autoform_cli.render import render_site

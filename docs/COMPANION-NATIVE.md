@@ -33,6 +33,27 @@ Neither changes the companion schema. Work items with no formal destination keep
 source/location selections in `unlinked`, without inventing a target. Several
 anchors or formal destinations remain several links within one coverage item.
 
+A link's `target` is a reference string or an endpoint object `{uri, pin,
+extensions}`. Migration turns the legacy Mathlib module and declaration into a
+`repository` pin on the target (`url`, `module`, `declaration`; no `commit`,
+because legacy items never recorded one), so that information is stored on the
+link itself rather than only in the private archive. A link must have a target;
+the format also allows records without one, and WikiLean keeps those in
+`unlinked`. The editor replaces a pinned target with the plain new reference when
+its destination changes, since the pin cites the old declaration.
+
+The review item stays the editable authority for its facts. When a record leaves
+WikiLean, those facts fill the format's own fields: item `status`, `kind`,
+`label`, `note` and `id` become the annotation's `status`, `kind`, `label`,
+`note` and `id` (stored values take precedence; `status` is always the item's);
+an occurrence whose source is the article's pinned Wikipedia revision gets a
+`website` pin (`title`, `owner`, `url`, `revision`, `identifiers.wikidata` when
+the article has a QID); `provenance` and `match_kind`, which have no format
+slot, go under `extensions["org.wikilean"]`. Stored extensions are kept. The
+same projection lives in `wiki/src/native-companion.ts` (`companionAnnotation`)
+and `site/native_annotations.py` (`companion_annotation`). No retrieval date is
+emitted: WikiLean stores none per article.
+
 Internal link IDs are unique within an article and remain distinct from optional
 FCA IDs. Duplicate FCA IDs and identical annotations are preserved as independent
 occurrences. Both `links` and `unlinked` arrays are required, including when empty.
@@ -78,14 +99,16 @@ saves retain the existing work-item count, field-length and payload-size limits.
 
 ## Read and write contracts
 
-- `GET /api/article/:slug/companion.json` returns the stored public FCA objects as
-  a discovery-compatible array. Rejected items are omitted for every caller.
+- `GET /api/article/:slug/companion.json` returns the stored public FCA objects,
+  with the item facts and pins projected as above, as a discovery-compatible
+  array. Rejected items are omitted for every caller.
   It returns 409 whenever a record has an explicit carrier base, including when
   all core references are absolute: an opaque profile may contain relative values.
 - `GET /api/article/:slug/companion-records.json` returns
-  `{version, records:[{item_id,id,annotation,base_uri?}]}` for native articles.
-  This is a lossless application response, including relative references and bases;
-  it is not an FCA shard container.
+  `{version, records:[{item_id,id,annotation,base_uri?}]}` for native articles,
+  with the same projection applied to each `annotation`. Nothing stored is
+  removed, so the response keeps relative references and bases; it is not an
+  FCA shard container.
 - `GET /api/article/:slug.json` retains the application envelope. Anonymous reads
   use a native metadata allowlist and null tombstone placeholders. The pipeline
   bearer receives full work items so it can preserve protected data.
@@ -97,6 +120,7 @@ saves retain the existing work-item count, field-length and payload-size limits.
   explicit migration before accepting native payloads; a save is not a migration.
 
 Native editor state omits private archives and unfamiliar workflow fields.
+`note` is public, as on legacy articles; `proof_note` stays editor-only.
 The server restores those stored fields when the editor saves. Public historical
 diffs involving native state apply the public metadata boundary to both sides,
 including an older legacy snapshot. Conflict responses use editor-safe native

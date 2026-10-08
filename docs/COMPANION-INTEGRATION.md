@@ -27,8 +27,9 @@ flowchart LR
   V --> C[Autoform source catalog and occurrence archive]
 ```
 
-The unpublished single-annotation schema has no version field. Only `source` and
-`target` are required. This integration uses the reference Python package's
+The unpublished single-annotation schema has no version field. Only `source` is
+required; `target` is a reference or an endpoint object with a typed pin, and
+`status`, `kind`, `label` and `note` are optional facts. This integration uses the reference Python package's
 **2.0.0a2** development build; that package version is separate from the annotation
 format. No manifest, collection identity, or required application profile is added.
 
@@ -70,9 +71,14 @@ The Worker adds `GET /api/article/:slug/companion.json`. After deploying this br
 a caller can save its default JSON array as a shard and feed it to the same import
 command. This endpoint is not assumed to be deployed on the public site yet.
 
-The endpoint reads D1 once, pins the informal URL to `articles.revid`, and uses the
-article's explicit Mathlib module and declaration for its existing documentation
-link. The documentation target is mutable and marked `target_pinned: false`.
+The endpoint reads D1 once and pins the informal URL to `articles.revid`, with a
+`website` pin on the source (title, owner, oldid permalink, revision, and the
+article's Wikidata QID when known). The article's explicit Mathlib module and
+declaration become the target: an endpoint object whose `uri` is the existing
+documentation link and whose `repository` pin names the module and declaration.
+No commit is recorded, because the item never says which one it was judged
+against. The item's `status`, `kind`, `label`, `note` and `id` fill the format's
+own fields; `provenance` and `match_kind` stay under `extensions["org.wikilean"]`.
 It never uses `latest_revid` to move an existing anchor to another revision.
 
 Each native anchor produces its own record. WikiLean anchor normalization and
@@ -86,8 +92,8 @@ highlight its text.
 Only `formalized` and `partial` annotations with explicit formal destinations can
 produce links. `not_formalized` entries are reported as having no target. Rejected
 and pending entries are excluded, including from diagnostics and even for bots.
-Editor identities, review metadata, provenance, notes, and unknown private fields
-are not exported. A public status still does not establish equivalence or a proof.
+Editor identities, review tokens and unknown private fields are not exported.
+A public status still does not establish equivalence or a proof.
 
 The response has `X-Companion-Annotations` and `X-Companion-Omissions` counts.
 `?report=1` returns `{annotations, diagnostics}` for inspection; that report is not

@@ -197,6 +197,29 @@ class ViewerTests(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertIn("No matching links", body)
 
+    def test_endpoint_and_absent_targets_render_without_inventing_links(self):
+        pinned = docs()[0]
+        pinned["label"] = "Pinned result"
+        pinned["target"] = {"uri": "https://example.org/formal#pinned",
+                            "pin": {"type": "repository", "url": "https://example.org/repo", "declaration": "Pinned"}}
+        absent = docs()[1]
+        del absent["target"]
+        absent["status"] = {"value": "not_formalized", "pin": {"type": "repository", "url": "https://example.org/repo"}}
+        index = self.root / "facts"
+        build_index(index, [pinned, absent])
+        self.server.data_dir = index
+        code, _, body = self.request("/")
+        self.assertEqual(code, 200)
+        self.assertIn("Pinned result", body)
+        self.assertIn('href="https://example.org/formal#pinned"', body)
+        self.assertIn("No formal counterpart", body)
+        self.assertNotIn("absent-target", body.split("Reference and origin details")[0])
+        code, _, body = self.request("/api/annotations?" + urlencode({"target": companion.ABSENT_TARGET_KEY}))
+        self.assertEqual(code, 200)
+        rows = json.loads(body)["records"]
+        self.assertEqual([row["annotation"] for row in rows], [absent])
+        self.assertEqual(rows[0]["resolution"]["target"], {"status": "absent"})
+
     def test_hostile_annotation_html_is_escaped_and_only_web_links_open(self):
         hostile = docs()[0]
         hostile["id"] = '</h2><script>alert("x")</script>'

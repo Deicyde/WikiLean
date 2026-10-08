@@ -1296,6 +1296,7 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
     wikipedia_title: row.wikipediaTitle,
     display_title: row.displayTitle,
     version: row.version,
+    wikidata_qid: row.wikidataQid,
     revid: row.revid,
     latest_revid: row.latestRevid,
     schema_version: row.schemaVersion,
