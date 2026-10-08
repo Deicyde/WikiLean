@@ -259,6 +259,8 @@ def make_prepared(base: Path) -> promote.PreparedPromotion:
         {"deployments": b'[{"id":"deployment"}]\n', "versions": b'[{"id":"version"}]\n'},
         wrangler_installation=node_modules_identity(base),
         node_executables=node_executables_identity(base),
+        promotion_commit=COMMIT,
+        neutral_changes=(),
     )
 
 
@@ -567,6 +569,12 @@ class FenceScenario(DeployScenario):
         raise AssertionError(expected_release_id)
 
     def _check_git_authority(self, expected_commit):
+        self._authority_equivalence = {
+            "policy": promote.NEUTRAL_POLICY,
+            "authority_commit": expected_commit,
+            "promotion_commit": expected_commit,
+            "neutral_changes": [],
+        }
         return expected_commit
 
     def _check_recovery_checkout(self, authority_commit):
@@ -657,6 +665,12 @@ class ReconcileScenario(promote.BrainPromoter):
         raise AssertionError(expected_release_id)
 
     def _check_git_authority(self, expected_commit):
+        self._authority_equivalence = {
+            "policy": promote.NEUTRAL_POLICY,
+            "authority_commit": expected_commit,
+            "promotion_commit": expected_commit,
+            "neutral_changes": [],
+        }
         return expected_commit
 
     def _check_recovery_checkout(self, authority_commit):
@@ -1199,11 +1213,15 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 main=COMMIT,
                 branch="",
                 dirty=False,
+                ancestor=True,
+                changes=(),
             ):
                 self.head = head
                 self.main = main
                 self.branch = branch
                 self.dirty = dirty
+                self.ancestor = ancestor
+                self.changes = tuple(changes)
 
             def run(inner, args, *, cwd, timeout=None, env=None):
                 del cwd, timeout
@@ -1226,16 +1244,64 @@ class BrainPromotionUnitTest(unittest.TestCase):
                     output = " M wiki/src/index.ts" if inner.dirty else ""
                 elif tail == ("rev-parse", "--absolute-git-dir"):
                     output = str(git_dir)
+                elif tail == ("merge-base", "--is-ancestor", COMMIT, inner.head):
+                    return promote.RunResult(tuple(args), 0 if inner.ancestor else 1, b"", b"")
+                elif tail == ("diff", "--no-renames", "--name-only", "-z", COMMIT, inner.head):
+                    output = "".join(path + "\0" for path in inner.changes)
+                    return promote.RunResult(tuple(args), 0, output.encode(), b"")
                 else:
                     raise AssertionError(tail)
                 return promote.RunResult(tuple(args), 0, (output + "\n").encode(), b"")
 
-        with self.assertRaisesRegex(promote.PromotionError, "must equal HEAD"):
+        with self.assertRaisesRegex(promote.PromotionError, "must equal refs/heads/main"):
             self.promoter(runner=GitRunner(main="d" * 40))._check_git_authority(COMMIT)
         with self.assertRaisesRegex(promote.PromotionError, "checkout is dirty"):
             self.promoter(runner=GitRunner(dirty=True))._check_git_authority(COMMIT)
+        with self.assertRaisesRegex(promote.PromotionError, "not main or detached main"):
+            self.promoter(runner=GitRunner(branch="feature"))._check_git_authority(COMMIT)
+
+        at_authority = self.promoter(runner=GitRunner())
+        self.assertEqual(at_authority._check_git_authority(COMMIT), COMMIT)
+        self.assertEqual(at_authority._recorded_neutral_changes(), ())
 
         current = "d" * 40
+        moved = self.promoter(
+            runner=GitRunner(
+                head=current,
+                main=current,
+                branch="main",
+                changes=("site/ops/brain-canary.py", "docs/x.md"),
+            )
+        )
+        self.assertEqual(moved._check_git_authority(COMMIT), current)
+        self.assertEqual(
+            moved._authority_equivalence,
+            {
+                "policy": promote.NEUTRAL_POLICY,
+                "authority_commit": COMMIT,
+                "promotion_commit": current,
+                "neutral_changes": ["docs/x.md", "site/ops/brain-canary.py"],
+            },
+        )
+        self.assertEqual(
+            moved._recorded_neutral_changes(), ("docs/x.md", "site/ops/brain-canary.py")
+        )
+        with self.assertRaisesRegex(
+            promote.PromotionError, "release-affecting paths.*wiki/src/index.ts"
+        ):
+            self.promoter(
+                runner=GitRunner(
+                    head=current, main=current, branch="main",
+                    changes=("docs/x.md", "wiki/src/index.ts"),
+                )
+            )._check_git_authority(COMMIT)
+        with self.assertRaisesRegex(promote.PromotionError, "not an ancestor"):
+            self.promoter(
+                runner=GitRunner(head=current, main=current, branch="main", ancestor=False)
+            )._check_git_authority(COMMIT)
+        with self.assertRaisesRegex(promote.PromotionError, "was not checked"):
+            self.promoter(runner=GitRunner())._recorded_neutral_changes()
+
         self.assertEqual(
             self.promoter(
                 runner=GitRunner(head=current, main=current, branch="main")
@@ -1275,6 +1341,12 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 return candidate
 
             def _check_git_authority(inner, expected_commit):
+                inner._authority_equivalence = {
+                    "policy": promote.NEUTRAL_POLICY,
+                    "authority_commit": expected_commit,
+                    "promotion_commit": expected_commit,
+                    "neutral_changes": [],
+                }
                 return expected_commit
 
             def _verify_toolchain(inner):
@@ -2233,6 +2305,12 @@ class BrainPromotionDryRunTest(unittest.TestCase):
 
                 def _check_git_authority(inner, expected_commit):
                     self.assertEqual(expected_commit, COMMIT)
+                    inner._authority_equivalence = {
+                        "policy": promote.NEUTRAL_POLICY,
+                        "authority_commit": expected_commit,
+                        "promotion_commit": expected_commit,
+                        "neutral_changes": [],
+                    }
                     return expected_commit
 
                 def _verify_toolchain(inner):
@@ -2356,6 +2434,8 @@ class BrainPromotionDryRunTest(unittest.TestCase):
             self.assertFalse(value["production_mutated"])
             self.assertIsNone(value["proposed_intent"]["approval_note"])
             self.assertIsNone(value["proposed_intent"]["first_deploy_approval"])
+            self.assertEqual(value["proposed_intent"]["promotion_commit"], COMMIT)
+            self.assertEqual(value["proposed_intent"]["neutral_changes"], [])
             attempts = receipt.resolve() / "attempts"
             self.assertFalse(attempts.exists())
 

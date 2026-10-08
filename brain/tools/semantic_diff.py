@@ -4,12 +4,25 @@
 Each operand may be a Brain data directory, a release manifest, or a local release
 root containing release.json, release-manifest.json, or manifest.json.
 
+Edge rows are compared by identity (artifact, src, dst, kind) and then paired in a
+fixed order: exact matches first; then rows with the same source and the same
+non-provenance content (a pin edit), reported as aggregated ``provenance_only``
+transitions; then rows with the same source but different content (``changed``,
+with full before/after rows); then rows with the same content under a different
+source (also ``provenance_only``); whatever remains pairs by multiplicity as
+``changed`` and the leftovers are ``added`` or ``removed``. A ``provenance_only``
+transition names only the artifact, kind, before/after provenance objects and a
+count, so re-pinning every edge of a source produces a handful of records instead
+of one full row pair per edge (semantic-diff/v3; v2 kept per-edge rows and labelled
+same-source pin edits as ``changed``).
+
 Example:
     python3 brain/tools/semantic_diff.py --from old/brain/data --to new/brain/data
 """
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import sqlite3
 import sys
@@ -22,7 +35,7 @@ from typing import Any
 
 import authority_contracts as contracts
 
-SCHEMA = "wikilean.semantic-diff/v2"
+SCHEMA = "wikilean.semantic-diff/v3"
 DIRECT_REQUIRED = {
     "nodes": "nodes.jsonl",
     "edges": "edges.jsonl",
@@ -441,20 +454,40 @@ def _db_variants(
     })
 
 
-def _non_provenance(counter: Counter[str]) -> Counter[str]:
-    result: Counter[str] = Counter()
-    for encoded, count in counter.items():
-        row = _parse_json(encoded, "edge variant")
-        row.pop("provenance", None)
-        result[_canonical(row)] += count
-    return result
+@functools.lru_cache(maxsize=4096)
+def _variant_parts(encoded: str) -> tuple[str, Any, str]:
+    """Return ``(source, provenance, semantic)`` for one canonical edge variant.
+
+    Callers only read the returned provenance object; the cache keeps the
+    pairing stages from re-parsing the same row several times per identity.
+    """
+    row = _parse_json(encoded, "edge variant")
+    provenance = row.pop("provenance", None)
+    source = provenance.get("source") if isinstance(provenance, dict) else None
+    return (
+        source if isinstance(source, str) and source else MISSING_SOURCE,
+        provenance,
+        _canonical(row),
+    )
+
+
+def _key_source_semantic(encoded: str) -> tuple[str, str]:
+    source, _, semantic = _variant_parts(encoded)
+    return source, semantic
+
+
+def _key_source(encoded: str) -> str:
+    return _variant_parts(encoded)[0]
+
+
+def _key_semantic(encoded: str) -> str:
+    return _variant_parts(encoded)[2]
 
 
 def _edge_sources(counter: Counter[str]) -> Counter[str]:
     result: Counter[str] = Counter()
     for encoded, count in counter.items():
-        source = _parse_json(encoded, "edge variant").get("provenance", {}).get("source")
-        result[source if isinstance(source, str) and source else MISSING_SOURCE] += count
+        result[_variant_parts(encoded)[0]] += count
     return result
 
 
@@ -475,43 +508,52 @@ def _take_variants(counter: Counter[str], count: int) -> tuple[Counter[str], Cou
     return taken, remainder
 
 
-def _variant_source(encoded: str) -> str:
-    source = _parse_json(encoded, "edge variant").get("provenance", {}).get("source")
-    return source if isinstance(source, str) and source else MISSING_SOURCE
-
-
-def _variant_semantic(encoded: str) -> str:
-    return next(iter(_non_provenance(Counter({encoded: 1}))))
-
-
-def _pair_by_key(
+def _pair_variants(
     before: Counter[str],
     after: Counter[str],
     key_fn: Any,
-) -> tuple[Counter[str], Counter[str], Counter[str], Counter[str]]:
+) -> tuple[list[tuple[str, str, int]], Counter[str], Counter[str]]:
+    """Pair before/after variants that share ``key_fn`` and return the remainders.
+
+    Within one key group the variants pair in canonical order with greedy
+    multiplicity, so the pairing is a deterministic function of the inputs.
+    """
     before_groups: dict[Any, Counter[str]] = defaultdict(Counter)
     after_groups: dict[Any, Counter[str]] = defaultdict(Counter)
     for encoded, count in before.items():
         before_groups[key_fn(encoded)][encoded] += count
     for encoded, count in after.items():
         after_groups[key_fn(encoded)][encoded] += count
-
-    paired_before: Counter[str] = Counter()
-    paired_after: Counter[str] = Counter()
+    pairs: list[tuple[str, str, int]] = []
     remaining_before = before.copy()
     remaining_after = after.copy()
     for key in sorted(set(before_groups) & set(after_groups)):
-        pair_count = min(
-            sum(before_groups[key].values()),
-            sum(after_groups[key].values()),
-        )
-        taken_before, _ = _take_variants(before_groups[key], pair_count)
-        taken_after, _ = _take_variants(after_groups[key], pair_count)
-        paired_before.update(taken_before)
-        paired_after.update(taken_after)
-        remaining_before.subtract(taken_before)
-        remaining_after.subtract(taken_after)
-    return paired_before, paired_after, +remaining_before, +remaining_after
+        left = [[encoded, count] for encoded, count in sorted(before_groups[key].items())]
+        right = [[encoded, count] for encoded, count in sorted(after_groups[key].items())]
+        i = j = 0
+        while i < len(left) and j < len(right):
+            amount = min(left[i][1], right[j][1])
+            pairs.append((left[i][0], right[j][0], amount))
+            remaining_before[left[i][0]] -= amount
+            remaining_after[right[j][0]] -= amount
+            left[i][1] -= amount
+            right[j][1] -= amount
+            if not left[i][1]:
+                i += 1
+            if not right[j][1]:
+                j += 1
+    return pairs, +remaining_before, +remaining_after
+
+
+def _paired_counters(
+    pairs: Iterable[tuple[str, str, int]],
+) -> tuple[Counter[str], Counter[str]]:
+    before: Counter[str] = Counter()
+    after: Counter[str] = Counter()
+    for before_encoded, after_encoded, count in pairs:
+        before[before_encoded] += count
+        after[after_encoded] += count
+    return before, after
 
 
 def _record_source_delta(
@@ -590,8 +632,28 @@ def _compare_indexed_edges(
     added = []
     removed = []
     changed = []
-    provenance_only = []
+    # (artifact path, kind, before provenance, after provenance) -> paired rows
+    transitions: dict[tuple[str, str, str, str], int] = defaultdict(int)
     grouped: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
+
+    def record_provenance_only(
+        identity: tuple[str, str, str, str],
+        pairs: Iterable[tuple[str, str, int]],
+    ) -> None:
+        for before_encoded, after_encoded, count in pairs:
+            before_source, before_provenance, _ = _variant_parts(before_encoded)
+            after_source, after_provenance, _ = _variant_parts(after_encoded)
+            transitions[(
+                RELEASE_PATHS[identity[0]],
+                identity[3],
+                _canonical(before_provenance),
+                _canonical(after_provenance),
+            )] += count
+            if before_source == after_source:
+                grouped[(before_source, identity[3])]["provenance_only"] += count
+            else:
+                grouped[(before_source, identity[3])]["removed"] += count
+                grouped[(after_source, identity[3])]["added"] += count
 
     for identity in identities:
         before_variants = _db_variants(connection, "before", identity)
@@ -611,10 +673,17 @@ def _compare_indexed_edges(
         shared = before_variants & after_variants
         unmatched_before = before_variants - shared
         unmatched_after = after_variants - shared
-        same_source_before, same_source_after, remaining_before, remaining_after = (
-            _pair_by_key(unmatched_before, unmatched_after, _variant_source)
+        # 1. Same source, same non-provenance content: a pin edit.
+        pin_pairs, unmatched_before, unmatched_after = _pair_variants(
+            unmatched_before, unmatched_after, _key_source_semantic
         )
-        if same_source_before:
+        record_provenance_only(identity, pin_pairs)
+        # 2. Same source, different content: a semantic change within one source.
+        same_source_pairs, remaining_before, remaining_after = _pair_variants(
+            unmatched_before, unmatched_after, _key_source
+        )
+        if same_source_pairs:
+            same_source_before, same_source_after = _paired_counters(same_source_pairs)
             changed.append({
                 **_identity_json(identity),
                 "before": _row_variants(same_source_before),
@@ -627,22 +696,12 @@ def _compare_indexed_edges(
                 _edge_sources(same_source_after),
                 changed=True,
             )
-        provenance_before, provenance_after, semantic_before, semantic_after = _pair_by_key(
-            remaining_before, remaining_after, _variant_semantic
+        # 3. Same content under a different source: provenance moved between sources.
+        moved_pairs, semantic_before, semantic_after = _pair_variants(
+            remaining_before, remaining_after, _key_semantic
         )
-        if provenance_before:
-            provenance_only.append({
-                **_identity_json(identity),
-                "before": _row_variants(provenance_before),
-                "after": _row_variants(provenance_after),
-            })
-            _record_source_delta(
-                grouped,
-                identity[3],
-                _edge_sources(provenance_before),
-                _edge_sources(provenance_after),
-                changed=True,
-            )
+        record_provenance_only(identity, moved_pairs)
+        # 4. Whatever remains pairs by multiplicity; the leftovers were added or removed.
         paired_count = min(sum(semantic_before.values()), sum(semantic_after.values()))
         paired_before, removed_variants = _take_variants(semantic_before, paired_count)
         paired_after, added_variants = _take_variants(semantic_after, paired_count)
@@ -674,6 +733,17 @@ def _compare_indexed_edges(
             for source, count in _edge_sources(added_variants).items():
                 grouped[(source, identity[3])]["added"] += count
 
+    provenance_only = [
+        {
+            "artifact": artifact,
+            "kind": kind,
+            "before": {"provenance": _parse_json(before_provenance, "edge provenance")},
+            "after": {"provenance": _parse_json(after_provenance, "edge provenance")},
+            "count": count,
+        }
+        for (artifact, kind, before_provenance, after_provenance), count
+        in sorted(transitions.items())
+    ]
     groups = [
         {
             "source": source,
@@ -681,6 +751,7 @@ def _compare_indexed_edges(
             "added": counts["added"],
             "removed": counts["removed"],
             "changed": counts["changed"],
+            "provenance_only": counts["provenance_only"],
         }
         for (source, kind), counts in sorted(grouped.items())
     ]
@@ -1022,6 +1093,11 @@ def _validate_generation(snapshot: Snapshot) -> None:
 
 
 def _edge_record_count(record: Mapping[str, Any], status: str) -> int:
+    if status == "provenance_only":
+        count = record["count"]
+        if type(count) is not int or count < 1:
+            raise ValueError("provenance_only transition count must be a positive integer")
+        return count
     variants = record.get("variants") if status in {"added", "removed"} else None
     if variants is not None:
         return sum(item["count"] for item in variants)
@@ -1072,12 +1148,12 @@ def _has_differences(summary: Mapping[str, Any]) -> bool:
 
 
 def summarize_report(report: Mapping[str, Any]) -> dict[str, Any]:
-    """Recompute the compact v2 summary from the detailed comparison sections."""
+    """Recompute the compact v3 summary from the detailed comparison sections."""
     return _summary(report)
 
 
 def summary_has_differences(summary: Mapping[str, Any]) -> bool:
-    """Return whether a validated v2 summary contains a semantic change."""
+    """Return whether a validated v3 summary contains a semantic change."""
     return _has_differences(summary)
 
 

@@ -292,7 +292,7 @@ before deployment.
   mutable build context is gone when retained with its required content-addressed promoter
   companion root. Its semantic comparison requires an externally supplied prior
   release ID, rejects candidate self-comparison, and requires
-  `wikilean.semantic-diff/v2` coverage of all seven compatibility paths: nodes, both edge
+  `wikilean.semantic-diff/v3` coverage of all seven compatibility paths: nodes, both edge
   streams, cells, synapses, frontier rows, and the frontier graph.
 - [x] Make promoter dry-run evidence durable and inspectable. With
   `--retain-dry-run-store`, the no-mutation path atomically freezes the exact sealed public

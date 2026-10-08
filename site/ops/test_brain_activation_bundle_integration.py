@@ -166,6 +166,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             "site/ops/brain_http.py",
             "site/ops/brain_promote_release.py",
             "site/ops/brain_public_baseline.py",
+            "site/ops/brain_release_authority.py",
             "brain/tools/authority_contracts.py",
             "brain/tools/release_selector_contracts.py",
             "brain/tools/execution_environment.py",
@@ -585,6 +586,8 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             history_raw=history_raw,
             wrangler_installation=wrangler_installation,
             node_executables=node_executables,
+            promotion_commit=authority,
+            neutral_changes=(),
         )
         receipt_root = self.base / "receipts"
         receipt_root.mkdir()
@@ -618,6 +621,8 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                 "release_tree": _tree_inventory(Path(candidate["root"])),
                 "authority_commit": authority,
                 "reducer_commit": authority,
+                "promotion_commit": authority,
+                "neutral_changes": [],
                 "retained_release": None,
                 "public_baseline": {
                     "baseline_id": baseline.baseline_id,
@@ -772,6 +777,12 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                 raise AssertionError((expected_release_id, root_input))
 
             def _check_git_authority(inner, expected_commit):
+                inner._authority_equivalence = {
+                    "policy": promoter.NEUTRAL_POLICY,
+                    "authority_commit": expected_commit,
+                    "promotion_commit": expected_commit,
+                    "neutral_changes": [],
+                }
                 self.assertEqual(expected_commit, authority)
                 return expected_commit
 
