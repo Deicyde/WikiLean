@@ -443,6 +443,7 @@ class ActivationFixture:
                 "branch": "main",
                 "clean": True,
             },
+            "neutral_changes": [],
         }
         selected_git = str(self.git)
         selected_node = "/usr/bin/node"
@@ -618,6 +619,8 @@ class ActivationFixture:
                 "release_tree": bundle._inventory_tree(self.release_root),
                 "authority_commit": self.authority,
                 "reducer_commit": self.authority,
+                "promotion_commit": self.authority,
+                "neutral_changes": [],
                 "retained_release": None,
                 "public_baseline": {
                     "baseline_id": BASELINE_ID,
@@ -826,6 +829,8 @@ class ActivationFixture:
             history_raw=history_raw,
             wrangler_installation=self.wrangler_installation,
             node_executables=self.node_executables,
+            promotion_commit=self.authority,
+            neutral_changes=(),
         )
         receipt_root = self.root / "receipts"
         receipt_root.mkdir(exist_ok=True)
@@ -1513,6 +1518,136 @@ class BrainActivationBundleTests(unittest.TestCase):
                     inspect_external=True,
                     git=self.fixture.git,
                 )
+
+    def _advance_main(self, relative: str, content: str = "x\n") -> str:
+        path = self.fixture.promotion / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        _run("git", "add", relative, cwd=self.fixture.promotion)
+        _run(
+            "git", "-c", "commit.gpgsign=false", "commit", "-q", "-m", f"touch {relative}",
+            cwd=self.fixture.promotion,
+        )
+        head = _run("git", "rev-parse", "HEAD", cwd=self.fixture.promotion)
+        _run("git", "checkout", "-q", "--detach", head, cwd=self.fixture.build)
+        for key in ("build_worktree", "promotion_worktree"):
+            self.fixture.build_context[key]["head"] = head
+        return head
+
+    def test_accepts_main_that_moved_past_the_authority_by_neutral_paths_only(self):
+        head = self._advance_main("docs/release-note.md")
+        self.fixture.build_context["neutral_changes"] = ["docs/release-note.md"]
+        with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
+            roots = bundle._validate_build_context(
+                self.fixture.build_context,
+                self.fixture.authority,
+                inspect_external=True,
+                git=self.fixture.git,
+            )
+        self.assertEqual(roots, (self.fixture.build, self.fixture.promotion, head))
+        with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
+            context = bundle.create_build_context(
+                self.fixture.build,
+                self.fixture.promotion,
+                git=self.fixture.git,
+                authority_git_commit=self.fixture.authority,
+            )
+        self.assertEqual(context["neutral_changes"], ["docs/release-note.md"])
+        self.assertEqual(context["authority_git_commit"], self.fixture.authority)
+        self.assertEqual(context["promotion_worktree"]["head"], head)
+        # Without Git the sealed record is checked for internal consistency only.
+        self.assertEqual(
+            bundle._validate_build_context(
+                context, self.fixture.authority, inspect_external=False
+            )[2],
+            head,
+        )
+        # A declared list that disagrees with Git is rejected.
+        self.fixture.build_context["neutral_changes"] = []
+        with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
+            with self.assertRaisesRegex(bundle.BundleValidationError, "neutral_changes differ"):
+                bundle._validate_build_context(
+                    self.fixture.build_context,
+                    self.fixture.authority,
+                    inspect_external=True,
+                    git=self.fixture.git,
+                )
+        # At the authority commit itself no neutral changes may be claimed.
+        self.fixture.build_context["neutral_changes"] = ["docs/release-note.md"]
+        for key in ("build_worktree", "promotion_worktree"):
+            self.fixture.build_context[key]["head"] = self.fixture.authority
+        with self.assertRaisesRegex(bundle.BundleValidationError, "lists neutral changes"):
+            bundle._validate_build_context(
+                self.fixture.build_context, self.fixture.authority, inspect_external=False
+            )
+
+    def test_rejects_main_that_changed_release_affecting_paths(self):
+        self._advance_main("wiki/src/index.ts", "export {};\n")
+        self.fixture.build_context["neutral_changes"] = ["wiki/src/index.ts"]
+        with self.assertRaisesRegex(bundle.BundleValidationError, "release-affecting"):
+            bundle._validate_build_context(
+                self.fixture.build_context, self.fixture.authority, inspect_external=False
+            )
+        self.fixture.build_context["neutral_changes"] = []
+        with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
+            with self.assertRaisesRegex(bundle.BundleValidationError, "release-affecting"):
+                bundle._validate_build_context(
+                    self.fixture.build_context,
+                    self.fixture.authority,
+                    inspect_external=True,
+                    git=self.fixture.git,
+                )
+            with self.assertRaisesRegex(bundle.BundleValidationError, "release-affecting"):
+                bundle.create_build_context(
+                    self.fixture.build,
+                    self.fixture.promotion,
+                    git=self.fixture.git,
+                    authority_git_commit=self.fixture.authority,
+                )
+
+    def test_rejects_worktrees_that_do_not_descend_from_the_authority(self):
+        tree = _run("git", "write-tree", cwd=self.fixture.promotion)
+        other = _run(
+            "git", "-c", "commit.gpgsign=false", "commit-tree", tree, "-m", "unrelated root",
+            cwd=self.fixture.promotion,
+        )
+        _run("git", "update-ref", "refs/heads/main", other, cwd=self.fixture.promotion)
+        _run("git", "checkout", "-q", "--detach", other, cwd=self.fixture.build)
+        for key in ("build_worktree", "promotion_worktree"):
+            self.fixture.build_context[key]["head"] = other
+        with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
+            with self.assertRaisesRegex(bundle.BundleValidationError, "does not descend"):
+                bundle._validate_build_context(
+                    self.fixture.build_context,
+                    self.fixture.authority,
+                    inspect_external=True,
+                    git=self.fixture.git,
+                )
+
+    def test_rejects_worktrees_at_different_commits(self):
+        self._advance_main("docs/release-note.md")
+        self.fixture.build_context["build_worktree"]["head"] = self.fixture.authority
+        self.fixture.build_context["neutral_changes"] = ["docs/release-note.md"]
+        with self.assertRaisesRegex(bundle.BundleValidationError, "same commit"):
+            bundle._validate_build_context(
+                self.fixture.build_context, self.fixture.authority, inspect_external=False
+            )
+
+    def test_promoter_intent_must_name_the_promotion_worktree_commit(self):
+        intent = self.fixture.dry_run["proposed_intent"]
+        intent["promotion_commit"] = "f" * 40
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "different commit"):
+            self.fixture.freeze()
+        intent["promotion_commit"] = self.fixture.authority
+        intent["neutral_changes"] = ["docs/x.md"]
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "must be empty"):
+            self.fixture.freeze()
+        intent["neutral_changes"] = ["wiki/src/index.ts"]
+        self.fixture.sync()
+        with self.assertRaisesRegex(bundle.BundleValidationError, "release-affecting"):
+            self.fixture.freeze()
 
     def test_context_builder_records_the_verified_worktrees(self):
         with mock.patch.object(bundle, "REPO_ROOT", self.fixture.promotion):
