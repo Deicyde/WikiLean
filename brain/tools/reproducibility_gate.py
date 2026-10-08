@@ -302,34 +302,30 @@ def verify_compatibility(report: dict, policy: dict) -> dict:
     exact(report, {"schema", "semantic", "provenance_projection"}, "compatibility report")
     require(report["schema"] == "wikilean.reproducibility-compatibility/v2", "unsupported compatibility report")
     semantic = report["semantic"]
-    summary = semantic_diff.summarize_report(semantic)
+    try:
+        summary = semantic_diff.summarize_report(semantic)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise GateError(f"semantic comparison detail is malformed: {exc}") from exc
     require(semantic.get("summary") == summary and semantic.get("different") == semantic_diff.summary_has_differences(summary),
             "semantic comparison summary disagrees with detailed evidence")
     require(semantic.get("coverage", {}).get("complete") is True, "semantic baseline comparison lacks complete artifact coverage")
     projection = exact(report["provenance_projection"], {"policy", "roots"}, "provenance projection")
     projected_equal = {path: item["from"] == item["to"] for path, item in projection["roots"].items()}
     changes = {(section, kind): count for section, values in summary.items() for kind, count in values.items() if count}
-    def non_provenance(variants):
-        rows = Counter()
-        for item in variants:
-            row = {key: value for key, value in item["row"].items() if key != "provenance"}
-            rows[contracts.canonical_artifact_json_bytes(row)] += item["count"]
-        return rows
     def without_pin(row):
         return {key: value for key, value in row.items() if key != "pin"}
-    # semantic-diff/v2 intentionally labels same-source pin edits as "changed".
-    # Independently prove those exact variants retain every non-provenance byte
-    # and multiplicity before accepting an explicitly reviewed migration report.
-    changed_edges_are_provenance = all(non_provenance(item["before"]) == non_provenance(item["after"])
-                                       for item in semantic["edges"]["changed"])
-    # A node whose only differing field is its source pin is "changed" the same way.
+    # semantic-diff/v3 aggregates edge rows whose non-provenance content is equal
+    # but whose provenance differs (a same-source pin edit or a move between
+    # sources) as "provenance_only" transitions without per-edge rows; "changed"
+    # edges always differ in content and are never waivable. The projection roots
+    # below independently prove that stripping provenance makes the artifacts equal.
+    # A node whose only differing field is its source pin is still "changed".
     changed_nodes_are_pins = all(item["changed_fields"] == ["pin"] and without_pin(item["before"]) == without_pin(item["after"])
                                  for item in semantic["nodes"]["changed"])
     # Synapses are compared as one artifact root; only the projection can show
     # that their traces differ by provenance table and index alone.
     synapses_are_provenance = projected_equal.get(semantic_diff.RELEASE_PATHS["synapses"]) is True
     provenance_only = all((section in PROVENANCE_SECTIONS and kind == "provenance_only") or
-                          (section == "edges" and kind == "changed" and changed_edges_are_provenance) or
                           (section == "nodes" and kind == "changed" and changed_nodes_are_pins) or
                           (section == "synapses" and kind == "changed" and synapses_are_provenance)
                           for section, kind in changes)

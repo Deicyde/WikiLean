@@ -367,7 +367,7 @@ identity and version to equal the promoter dry-run's Worker toolchain.
 freeze input.
 
 Generate `semantic-diff.json` with `brain/tools/semantic_diff.py`. Its
-`wikilean.semantic-diff/v2` coverage must include exactly these seven release paths:
+`wikilean.semantic-diff/v3` coverage must include exactly these seven release paths:
 
 - `brain/data/nodes.jsonl`
 - `brain/data/edges.jsonl`
@@ -376,6 +376,14 @@ Generate `semantic-diff.json` with `brain/tools/semantic_diff.py`. Its
 - `brain/data/synapses.jsonl`
 - `brain/data/frontier.jsonl`
 - `brain/data/frontier_graph.json`
+
+Edge rows whose non-provenance content is unchanged but whose provenance differs (a
+re-pinned source, or an edge that moved between sources) are reported as aggregated
+`provenance_only` transitions: one record per artifact, kind and before/after provenance
+object with a count, never one full row pair per edge. Re-acquiring a source therefore
+adds a few records, not hundreds of megabytes; `changed` edges always differ in content and
+keep their full before/after rows. Bundles frozen with the v2 report verify only with the
+tool version that produced them.
 
 Freeze the completed review set from the promotion checkout:
 

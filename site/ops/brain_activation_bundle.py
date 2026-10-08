@@ -77,7 +77,7 @@ from brain_promote_release import (  # noqa: E402
 BUNDLE_SCHEMA = "wikilean.brain-activation-bundle/v1"
 BUNDLE_DOMAIN = "wikilean.brain-activation-bundle.v1"
 BUILD_CONTEXT_SCHEMA = "wikilean.brain-activation-build-context/v1"
-SEMANTIC_DIFF_SCHEMA = "wikilean.semantic-diff/v2"
+SEMANTIC_DIFF_SCHEMA = "wikilean.semantic-diff/v3"
 RELEASE_SCHEMA = "wikilean.release/v1"
 BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1"
 SOURCE_ATTESTATION_SCHEMA = "wikilean.public-asset-source-attestation/v1"

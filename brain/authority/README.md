@@ -406,9 +406,12 @@ measurement, requires a reviewed non-self semantic baseline ID, proves the retai
 non-Brain public closure equals the baseline, and re-verifies the retained promoter
 artifacts before and immediately before publication.
 
-The included `wikilean.semantic-diff/v2` report must completely bind the logical roots for
+The included `wikilean.semantic-diff/v3` report must completely bind the logical roots for
 the seven compatibility paths: `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`,
-`cells.jsonl`, `synapses.jsonl`, `frontier.jsonl`, and `frontier_graph.json`. Complete
+`cells.jsonl`, `synapses.jsonl`, `frontier.jsonl`, and `frontier_graph.json`. Edge rows
+that differ only in provenance are aggregated `provenance_only` transitions (artifact,
+kind, before/after provenance, count); the reviewed provenance policy still proves content
+equality through the provenance-stripped projection roots, not through the diff's labels. Complete
 release verification separately covers SQLite and release-coupled static artifacts.
 Tooling completion is not activation: generating the first P1B bundle remains blocked on
 Jack authorizing the host Mathlib checkout, reviewed Wikidata observation plan,
