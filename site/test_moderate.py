@@ -2198,6 +2198,197 @@ def test_resolver_r2_implicit_formalized_carryover_stays_pending():
     assert a == "approve", (a, w)
 
 
+# ---------------------------------------------------------------------------
+# Failure visibility: per-run error sample in pipeline_runs.notes
+# ---------------------------------------------------------------------------
+
+LOGIN_ERR = "RuntimeError: agent_error: Not logged in · Please run /login"
+
+
+def test_sanitize_error_strips_secrets_paths_and_control_bytes():
+    raw = ("RuntimeError: agent_error: \x1b[31mfailed\x1b[0m\n at "
+           "/Users/jack/Desktop/LEAN/mathlib4 with Bearer pipetok123 "
+           "sk-ant-oat01-abcDEF_123 ghp_" + "A1" * 15 + " for jack@example.org "
+           "and the secret s3cr3t-pipeline-token")
+    s = m.sanitize_error(raw, token="s3cr3t-pipeline-token", limit=400)
+    for leaked in ("/Users/jack", "pipetok123", "sk-ant", "ghp_", "jack@",
+                   "s3cr3t", "\x1b", "\n"):
+        assert leaked not in s, (leaked, s)
+    assert "~/Desktop/LEAN/mathlib4" in s and "failed" in s, s
+    assert len(m.sanitize_error("x" * 500)) == 160
+
+
+def test_error_sample_groups_distinct_errors_most_common_first():
+    jobs = ([{"slug": f"Head_{i}", "error": LOGIN_ERR, "elapsed_s": 2.0}
+             for i in range(13)]
+            + [{"slug": "Odd", "error": "extract_failed", "elapsed_s": 0.3},
+               {"slug": "Ok", "error": None, "elapsed_s": 300.0}])
+    s = m.error_sample(jobs)
+    assert s.startswith("14/15 errors: 13x ~2s " + LOGIN_ERR), s
+    assert "(e.g. Head_0, Head_1)" in s and "| 1x ~0s extract_failed (e.g. Odd)" in s, s
+    assert m.error_sample([{"slug": "Ok", "error": None}]) == ""
+
+
+def test_error_sample_caps_distinct_errors():
+    jobs = [{"slug": f"S{i}", "error": f"post_5{i:02d}: boom"} for i in range(8)]
+    s = m.error_sample(jobs)
+    assert s.count("x post_5") == m.ERROR_SAMPLE_DISTINCT, s
+    assert s.endswith("+3 more distinct"), s
+
+
+def test_build_run_notes_fits_the_worker_cap():
+    """The Worker 413s notes over 2000 JS (UTF-16) units and drops the row."""
+    def units(s):
+        return len(s.encode("utf-16-le")) // 2
+
+    jobs = [{"slug": f"Slug_{i}_" + "\U0001d4d0" * 80,
+             "error": f"err {i} " + "\U0001d4d1" * 200} for i in range(40)]
+    sample = m.error_sample(jobs)
+    assert units(sample) > m.RUN_NOTES_MAX, "fixture must overflow the cap"
+    notes = m.build_run_notes(["review"], False, sample)
+    assert notes.startswith("modes=review; 40/40 errors: "), notes[:60]
+    assert units(notes) <= m.RUN_NOTES_MAX and notes.endswith("…"), units(notes)
+    assert m.build_run_notes(["wp-update", "review"], True) == "modes=wp-update+review aborted"
+
+
+def test_run_jobs_returns_per_job_outcomes():
+    import asyncio
+    import tempfile
+
+    old_mod, old_dec = m.MODERATE_LOG, m.DECISIONS_LOG
+    with tempfile.TemporaryDirectory() as td:
+        m.MODERATE_LOG = Path(td) / "run.log"
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        ctx = SimpleNamespace(run_id="testrun2", mode="review", model=None,
+                              prompt_sha=None, concurrency=2, budget_tokens=None)
+
+        async def mixed(job, _ctx, sem):
+            async with sem:
+                if job["slug"] == "bad":
+                    return {"slug": "bad", "error": LOGIN_ERR, "elapsed_s": 1.0}
+                return {"slug": job["slug"], "post_status": 200, "tokens": 10}
+
+        try:
+            rc, stats = asyncio.run(m.run_jobs(
+                [{"slug": "good"}, {"slug": "bad"}], ctx, mixed))
+        finally:
+            m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
+    assert rc == 0 and stats["processed"] == 2 and stats["errors"] == 1
+    by_slug = {j["slug"]: j for j in stats["jobs"]}
+    assert by_slug["bad"] == {"slug": "bad", "error": LOGIN_ERR, "elapsed_s": 1.0}
+    assert by_slug["good"]["error"] is None
+
+
+# ---------------------------------------------------------------------------
+# Queue rotation: recently failed reviews move behind the rest
+# ---------------------------------------------------------------------------
+
+DAY_MS = 86_400_000
+NOW_MS = 1_792_000_000_000
+
+
+def test_defer_recent_failures_moves_failed_articles_back():
+    jobs = [{"slug": f"h{i}"} for i in range(10)]
+    failures = {"h0": {"ts": NOW_MS - DAY_MS}, "h1": {"ts": NOW_MS - 2 * DAY_MS},
+                "h2": {"ts": NOW_MS - 10 * DAY_MS}}   # h2's retry delay is over
+    picked, deferred = m.defer_recent_failures(jobs, failures, 3, NOW_MS)
+    assert [j["slug"] for j in picked] == ["h2", "h3", "h4"], picked
+    assert deferred == ["h1", "h0"], deferred   # oldest failure first
+
+
+def test_defer_recent_failures_never_empties_a_run():
+    jobs = [{"slug": "a"}, {"slug": "b"}, {"slug": "c"}]
+    failures = {"a": {"ts": NOW_MS - 1}, "b": {"ts": NOW_MS - DAY_MS},
+                "c": {"ts": NOW_MS - 2}}
+    picked, deferred = m.defer_recent_failures(jobs, failures, 2, NOW_MS)
+    assert [j["slug"] for j in picked] == ["b", "c"] and deferred == ["a"], picked
+    picked, _ = m.defer_recent_failures(jobs, {}, 5, NOW_MS)
+    assert [j["slug"] for j in picked] == ["a", "b", "c"]
+
+
+def test_record_review_outcomes_stamps_clears_and_prunes():
+    failures = {"stuck": {"ts": NOW_MS - DAY_MS, "n": 2, "error": "x"},
+                "fixed": {"ts": NOW_MS - DAY_MS, "n": 1, "error": "x"},
+                "ancient": {"ts": NOW_MS - 40 * DAY_MS, "n": 9, "error": "x"}}
+    jobs = [{"slug": "stuck", "error": LOGIN_ERR},
+            {"slug": "fixed", "error": None},
+            {"slug": "new", "error": "extract_failed"}]
+    out = m.record_review_outcomes(failures, jobs, NOW_MS, token="tok")
+    assert set(out) == {"stuck", "new"}, out
+    assert out["stuck"] == {"ts": NOW_MS, "n": 3, "error": LOGIN_ERR}
+    assert out["new"]["n"] == 1
+    assert failures["fixed"]["n"] == 1, "input must not be mutated"
+
+
+def test_review_failures_file_roundtrip_and_corruption():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "sub" / ".review_failures.json"
+        assert m.load_review_failures(p) == {}
+        m.save_review_failures({"a": {"ts": 5, "n": 1, "error": "e"}}, p)
+        assert m.load_review_failures(p) == {"a": {"ts": 5, "n": 1, "error": "e"}}
+        p.write_text("{not json", encoding="utf-8")
+        assert m.load_review_failures(p) == {}
+        p.write_text(json.dumps({"a": {"n": 1}, "b": {"ts": 1}}), encoding="utf-8")
+        assert m.load_review_failures(p) == {"b": {"ts": 1}}
+
+
+def test_review_mode_rotates_the_queue_across_nights():
+    """End to end through run_mode: a night where the top three articles fail
+    defers them on the next night, which over-fetches and reviews the next
+    three instead; a dry run never writes the record."""
+    import tempfile
+
+    saved = {k: getattr(m, k) for k in (
+        "fetch_work", "_import_ba", "_try_import_ba", "process_review",
+        "get_mathlib_sha", "REVIEW_FAILURES", "MODERATE_LOG", "DECISIONS_LOG")}
+    calls: list[int] = []
+    reviewed: list[list[str]] = []
+    fake_ba = SimpleNamespace(MODEL="test-model", MODERATE_AGENT1_SYSTEM="a",
+                              AGENT1_SYSTEM="a", AGENT2_SYSTEM="b")
+
+    def fake_fetch(api_base, token, mode, limit):
+        calls.append(limit)
+        return [{"slug": f"h{i}"} for i in range(min(limit, 10))]
+
+    async def fake_review(job, ctx, sem):
+        async with sem:
+            reviewed[-1].append(job["slug"])
+            if job["slug"] in ("h0", "h1", "h2"):
+                return {"slug": job["slug"], "error": LOGIN_ERR, "elapsed_s": 1.0}
+            return {"slug": job["slug"], "post_status": 200}
+
+    with tempfile.TemporaryDirectory() as td:
+        try:
+            m.fetch_work = fake_fetch
+            m._import_ba = m._try_import_ba = lambda auth: fake_ba
+            m.process_review = fake_review
+            m.get_mathlib_sha = lambda: None
+            m.REVIEW_FAILURES = Path(td) / ".review_failures.json"
+            m.MODERATE_LOG = Path(td) / "run.log"
+            m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+            args = SimpleNamespace(dry_run=False, auth="subscription", slugs=None,
+                                   api_base="http://api.test", limit=3,
+                                   concurrency=1, budget_tokens=None,
+                                   run_id="0000aaaa", seed_decls={})
+            for night in range(2):
+                reviewed.append([])
+                rc, stats = m.run_mode("review", args, "tok")
+            dry = SimpleNamespace(**{**vars(args), "dry_run": True})
+            before = m.REVIEW_FAILURES.read_text()
+            reviewed.append([])
+            m.run_mode("review", dry, "tok")
+            after = m.REVIEW_FAILURES.read_text()
+        finally:
+            for k, v in saved.items():
+                setattr(m, k, v)
+    assert calls == [3, 6, 6], calls          # night 2 over-fetches by 3 failures
+    assert sorted(reviewed[0]) == ["h0", "h1", "h2"], reviewed
+    assert sorted(reviewed[1]) == ["h3", "h4", "h5"], reviewed
+    assert rc == 0 and stats["errors"] == 0
+    assert before == after, "a dry run must not touch the failure record"
+
+
 def main() -> int:
     tests = [(n, f) for n, f in sorted(globals().items())
              if n.startswith("test_") and callable(f)]
