@@ -728,21 +728,23 @@ footer p { margin:4px 0; }
   an account — report a problem from any annotation's tooltip (the ⚑ link).</p>
 
   <h2>How edits are moderated</h2>
-  <p>Edits by people take effect immediately and are marked as human-authored. They are
-  not screened first: each one is listed for patrollers to review, and the
-  <a href="/stats">Stats</a> page shows how many have been patrolled. Every change, by a
-  person or by the AI pipeline, is kept in the article's history and in
-  <a href="/recent-changes">Recent changes</a>, and can be reverted.</p>
-  <p>The AI pipeline cannot silently overwrite a human-authored annotation: a pipeline save
+  <p>Annotation edits by people take effect immediately and are shown as human-curated.
+  They are not screened first: each one appears in <a href="/recent-changes">Recent
+  changes</a> marked as awaiting patrol, and the <a href="/stats">Stats</a> page shows how
+  many have been patrolled. Every change to an article&rsquo;s annotations, by a person or
+  by the AI pipeline, is recorded in the article&rsquo;s history, and patrollers can
+  restore an article to any earlier revision.</p>
+  <p>The AI pipeline cannot silently overwrite a human-curated annotation: a pipeline save
   that drops or alters one is refused, and the pipeline can file a proposal instead. Under
-  WikiLean's human-at-boundaries policy (adopted August 2026), those proposals are decided
-  by software rather than held for a person. Each night a deterministic resolver, which
-  uses no language model, approves or rejects the proposals that match its fixed rules;
-  the rest stay pending until a patroller decides them. When an AI change to a
-  human-authored annotation is approved, the annotation is relabeled AI-moderated, so
-  AI-changed text is never presented as human work. People remain the gate where WikiLean
-  contributes to projects that take only human-reviewed changes, such as Mathlib and
-  Wikidata.</p>
+  WikiLean&rsquo;s human-at-boundaries policy (adopted August 2026), those proposals do
+  not wait for a person by default. Each night a deterministic resolver, which uses no
+  language model, approves or rejects the proposals that match its fixed rules; the rest
+  stay pending until a patroller decides them, or lapse when their target annotation is
+  removed or already matches them. When the pipeline approves a change to a human-curated
+  annotation, the annotation stops being shown as human-curated; when a patroller approves
+  a proposal, the result is shown as human-curated. People remain the gate wherever
+  WikiLean contributes to outside projects, such as pull requests to Mathlib and
+  statements added to Wikidata.</p>
 
   <footer>
     <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
