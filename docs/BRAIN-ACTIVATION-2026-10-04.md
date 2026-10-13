@@ -38,9 +38,11 @@ Its identity fields:
 The offline pack `294b1fc7…` is not the 2026-09-23 pack `5fa8e3d5…` that ROADMAP and the
 September handoffs describe. No other tracked file or PR body (#35–#45) names it.
 
-REST and MCP report the same release. `GET /api/brain/search?q=group` returns
+The REST API reports the same release: `GET /api/brain/search?q=group` returns
 `release_id` `sha256:8305822b…` with `snapshot.generated_at` `sha256:b3016dec…` (the replay
-generation ID) and `snapshot.pin` `sha256:9dbb5d68…` (a source digest). Under this profile the
+generation ID) and `snapshot.pin` `sha256:9dbb5d68…` (a source digest). MCP tool responses
+carry the same `release_id` field (`wiki/src/mcp.ts`); no MCP response was captured for this
+record. Under this profile the
 snapshot echo carries digests, not the build time and Mathlib revision that the MCP
 instructions (`wiki/src/mcp.ts`) and `docs/BRAIN-API.md` describe.
 
@@ -113,8 +115,8 @@ bash site/ops/brain-promote-release.sh \
   so it cannot verify a rollback to the pre-selector Worker. Verify that state by hand: the
   selector returns 404 again and `/api/brain/*` responses carry no `release_id`.
 - To roll forward to `8305822b…` after a rollback, restore the recorded candidate Worker
-  version with `wrangler rollback <version-id>`. Re-promoting through the promoter from
-  current `main` is blocked (next section).
+  version with `wrangler rollback <version-id>`. This release cannot be re-promoted through
+  the promoter from current `main` (next section).
 - The P1C rollback and roll-forward drill has not been run, and recovery time is unmeasured.
 
 ## Constraints from PR #45's release-affecting rule
@@ -125,20 +127,21 @@ and every changed path is release-neutral. The neutral set is `docs/`, every `RE
 `test_*.py`, `.github/`, `.claude/`, `scripts/`, `bench/`, `bot/`, `manage/`,
 `wikifunctions/`, `wiki/test/`, `wiki/e2e/`, `brain/authority/fixtures/`, `site/ops/` (except
 `nightly.env` and `brain-nightly.sh`), `CLAUDE.md`, `HANDOFF.md`, `LICENSE`, `.gitignore`,
-and `.gitattributes`. Everything else is release-affecting by default, including Worker
-source and configuration, `wiki/scripts/`, lockfiles, `site/*.py`, site assets, reducer code,
-and Markdown outside those paths. `AGENTS.md` and `CONTRIBUTING.md` are currently
-release-affecting.
+and `.gitattributes`, with one exception: `site/test_frontier_page.py` is release-affecting.
+Everything else is release-affecting by default, including Worker source and configuration,
+`wiki/scripts/` (other than `test_*.py`), lockfiles, non-test `site/*.py`, site assets, reducer
+code, and Markdown outside those paths. `AGENTS.md` and `CONTRIBUTING.md` are currently
+release-affecting. The module itself is the authority for this list.
 
 What that means for this release:
 
-1. **Current `main` cannot re-promote it.** `git diff --name-only 2eb31baa 37b7036d`
+1. **No reviewed `main` can re-promote this release.** `git diff --name-only 2eb31baa 37b7036d`
    includes `brain/tools/reproducibility_gate.py` and `brain/tools/semantic_diff.py` from PR
-   #45's second commit, and both are release-affecting. At `bf6b4e4a`, the promoter predates
-   the rule and requires `HEAD` and `main` to equal `2eb31baa` exactly. At `2eb31baa`, the
-   promoter runs that commit's canary, which still advertises `text/html` and fails on
-   `/brain` while Web Analytics injection is on. Re-promotion needs either a local `main`
-   built from `2eb31baa` plus only the `site/ops` commits of #44 and #45, or a new build.
+   #45's `brain/tools` commit (`70301fa0`), and both are release-affecting. At `bf6b4e4a`, the
+   promoter predates the rule and requires `HEAD` and `main` to equal `2eb31baa` exactly. At
+   `2eb31baa`, the promoter runs that commit's canary, which still advertises `text/html` and
+   fails on `/brain` while Web Analytics injection is on. Any future promotion therefore needs
+   a new release built at current `main`. Reconciliation of the open attempt is unaffected.
 2. **The activation bundle verifies only with `2eb31baa`'s tooling.** At `2eb31baa`, the
    bundle tool uses `semantic-diff/v2` and `build-context/v1`. Main's tool accepts only
    `semantic-diff/v3` and `build-context/v2` (`site/ops/brain_activation_bundle.py`), and PR #45 states that v2 bundles verify only
@@ -177,7 +180,7 @@ journal and stores; do not reconstruct them.
 |---|---|
 | Journal outcome for attempt `20261004T172504Z-8305822b0083-27c7c461cb` (still open, `deployed_reconciled`, or other), with the date | |
 | Event-chain hash of that attempt | |
-| Text of Jack's promotion approval (`--approval-note`, and the first-deploy approval if one was used) and the exclusive window | |
+| Text of Jack's promotion approval (`--approval-note`) and first-deploy approval (`--first-deploy-approval`; required at `2eb31baa` because no selector existed) and the exclusive window | |
 | Reconciliation approval text, if reconciled | |
 | Full public baseline ID and root (PR #44 cites the prefix `sha256:0ee63469…`) | |
 | Activation bundle ID and root | |
