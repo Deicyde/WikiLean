@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import base64
 import contextlib
 import io
 import json
@@ -18,6 +19,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import status  # noqa: E402
+
+HOUR = 3600.0
 
 
 def _stats_html(review=(118, 1776, 858, 26345645)) -> str:
@@ -47,21 +50,37 @@ POLL_LOG = (
     "poll\tUNKNOWN STEP\t2026-10-13T17:03:50.7020591Z \x1b[36;1mpython3 bot/poll.py --mathlib /tmp/unused --decide | tee /tmp/decide.txt\x1b[0m\n"
     "poll\tUNKNOWN STEP\t2026-10-13T17:03:50.7020855Z \x1b[36;1mif grep -q 'POLL_DECISION=act' /tmp/decide.txt; then\x1b[0m\n"
     "poll\tUNKNOWN STEP\t2026-10-13T17:03:52.7021760Z POLL_DECISION=wait\n")
+POLL_ERROR_LOG = (
+    "poll\tDecide\t2026-10-14T01:00:00.1Z POLL_ERROR: gh api repos/x/pulls/42608 failed: HTTP 401\n"
+    "poll\tDecide\t2026-10-14T01:00:00.2Z ##[error]Process completed with exit code 1.\n")
 
 
-def _iso_days_ago(days: float) -> str:
-    return (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+def _iso_ago(hours: float) -> str:
+    return (datetime.now(timezone.utc) - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _api_runs(*runs) -> str:
+    """GET /api/runs body; each run is (hours_ago, articles, errors, tokens, notes)."""
+    now_ms = time.time() * 1000
+    return json.dumps({"runs": [
+        {"run_id": f"{i:08x}", "kind": "review", "started_at": now_ms - h * 3.6e6 - 6e5,
+         "finished_at": now_ms - h * 3.6e6, "articles_processed": a, "errors": e,
+         "tokens": t, "notes": n} for i, (h, a, e, t, n) in enumerate(runs)]})
 
 
 class FakeNet:
     """Dispatches status._run by command; records every call."""
 
-    def __init__(self, stats=None, local="POLL_DECISION=act", pr=None, ci_log=POLL_LOG):
-        self.stats = _stats_html() if stats is None else stats
-        self.local = local
-        self.pr = pr if pr is not None else {"state": "OPEN", "mergeable": "CONFLICTING",
-                                             "createdAt": _iso_days_ago(64)}
-        self.ci_log = ci_log
+    def __init__(self, **kw):
+        self.stats = kw.get("stats", _stats_html())
+        self.api_runs = kw.get("api_runs")          # None = endpoint not deployed (404)
+        self.local = kw.get("local", "POLL_DECISION=act")
+        self.ci_runs = kw.get("ci_runs", [{"databaseId": 38435564796, "createdAt": _iso_ago(2),
+                                           "conclusion": "success"}])
+        self.ci_log = kw.get("ci_log", POLL_LOG)
+        self.ci_state = kw.get("ci_state")          # None = no bot-state branch
+        self.pr = kw.get("pr", {"state": "OPEN", "mergeable": "CONFLICTING",
+                                "createdAt": _iso_ago(64 * 24)})
         self.calls = []
 
     def __call__(self, cmd, timeout=12):
@@ -70,15 +89,21 @@ class FakeNet:
             if "-w" in cmd:
                 return "200"
             url = cmd[-1]
+            if "/api/runs" in url:
+                return self.api_runs
             if url.endswith("/stats"):
                 return self.stats
             if url.endswith("/assets/brain/current.json"):
                 return CURRENT_JSON
             return None
         if cmd[:3] == ["gh", "run", "list"]:
-            return json.dumps([{"databaseId": 38435564796, "createdAt": _iso_days_ago(0.1)}])
+            return json.dumps(self.ci_runs) if self.ci_runs is not None else None
         if cmd[:3] == ["gh", "run", "view"]:
             return self.ci_log
+        if cmd[:2] == ["gh", "api"]:
+            if self.ci_state is None:
+                return None
+            return base64.b64encode(json.dumps(self.ci_state).encode()).decode()
         if cmd[:3] == ["gh", "pr", "view"]:
             return json.dumps(self.pr) if self.pr != "fail" else None
         if any("poll.py" in c for c in cmd):
@@ -89,7 +114,7 @@ class FakeNet:
 
 
 @contextlib.contextmanager
-def patched(net, td: Path, digest: dict | None, batch: dict | None):
+def patched(net, td: Path, digest: dict | None = None, batch: dict | None = None):
     saved = {k: getattr(status, k) for k in ("_run", "DIGEST", "BOT_STATE", "LIVE_STATE")}
     status._run = net
     status.DIGEST = td / "digest.json"
@@ -129,6 +154,8 @@ def _snapshot_output(net, digest, batch, live=True) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Review health
+# ---------------------------------------------------------------------------
 
 def test_parse_pipeline_runs_reads_the_stats_table():
     runs = status.parse_pipeline_runs(_stats_html())
@@ -139,45 +166,117 @@ def test_parse_pipeline_runs_reads_the_stats_table():
     assert status.parse_pipeline_runs(None) == {}
 
 
-def test_review_health_alerts_on_an_all_error_zero_token_night_and_persists():
+def test_review_from_runs_alerts_on_a_failing_streak_and_shows_notes():
+    now = time.time()
+    runs = json.loads(_api_runs(
+        (3, 15, 15, 0, "modes=review; 15/15 errors: 15x ~2s Not logged in"),
+        (27, 15, 15, 0, None),
+        (51, 15, 1, 400000, None)))["runs"]
+    lines, alerts = status.review_from_runs(runs, now)
+    assert lines[0].startswith("  review     last run 3h ago: 15 articles · 15 errors · 0 tokens"), lines
+    assert "notes: modes=review; 15/15 errors" in lines[1], lines
+    assert alerts == ["nightly review failing: the last 2 run(s) had errors equal articles "
+                      "(15/15) and tokens unchanged; see docs/OPERATIONS.md"], alerts
+
+
+def test_review_from_runs_healthy_stale_empty_and_zero_article():
+    now = time.time()
+    healthy = json.loads(_api_runs((3, 15, 2, 400000, None)))["runs"]
+    assert status.review_from_runs(healthy, now)[1] == []
+    stale = json.loads(_api_runs((50, 15, 0, 400000, None)))["runs"]
+    assert status.review_from_runs(stale, now)[1] == ["no review run has finished in 50h"]
+    empty = json.loads(_api_runs((3, 0, 0, 0, None)))["runs"]
+    assert status.review_from_runs(empty, now)[1] == [], "a run with no jobs is not a failure"
+    assert status.review_from_runs([], now)[1] == ["no review run has been reported"]
+
+
+def test_review_health_delta_alerts_persists_and_clears():
     with tempfile.TemporaryDirectory() as td:
         state = Path(td) / "s.json"
-        line, alerts = status.review_health(_stats_html((117, 1761, 843, 26345645)),
-                                            "2026-10-12 22:17Z", state)
-        assert "baseline saved" in line and alerts == [], (line, alerts)
-        line, alerts = status.review_health(_stats_html((118, 1776, 858, 26345645)),
-                                            "2026-10-13 19:37Z", state)
+        t0 = time.time() - 30 * HOUR
+        lines, alerts = status.review_health(_stats_html((117, 1761, 843, 26345645)), t0, state)
+        assert "baseline saved" in lines[0] and alerts == [], (lines, alerts)
+        lines, alerts = status.review_health(_stats_html((118, 1776, 858, 26345645)),
+                                             t0 + 21 * HOUR, state)
         assert len(alerts) == 1, alerts
-        a = alerts[0]
-        assert "1 run(s) since 2026-10-12 22:17Z" in a, a
-        assert "errors equal articles (15/15) and tokens unchanged" in a, a
+        assert "1 run(s) since" in alerts[0], alerts
+        assert "errors equal articles (15/15) and tokens unchanged" in alerts[0], alerts
         # the same totals read again (no new run): the alert must not vanish
         _, again = status.review_health(_stats_html((118, 1776, 858, 26345645)),
-                                        "2026-10-13 21:00Z", state)
+                                        t0 + 23 * HOUR, state)
         assert again == alerts, again
         # a healthy night clears it
         _, healthy = status.review_health(_stats_html((119, 1791, 860, 26745645)),
-                                          "2026-10-14 08:00Z", state)
+                                          t0 + 30 * HOUR, state)
         assert healthy == [], healthy
+
+
+def test_review_health_alerts_when_review_stops_running():
+    with tempfile.TemporaryDirectory() as td:
+        state = Path(td) / "s.json"
+        t0 = time.time() - 60 * HOUR
+        status.review_health(_stats_html(), t0, state)
+        _, alerts = status.review_health(_stats_html(), t0 + 40 * HOUR, state)
+    assert len(alerts) == 1 and alerts[0].startswith("no new review run since"), alerts
+
+
+def test_review_health_survives_bad_state_files():
+    with tempfile.TemporaryDirectory() as td:
+        state = Path(td) / "s.json"
+        for bad in ("null", "[]", '"x"', '{"last": 5}', '{"last": {"runs": 1}}',
+                    '{"prev": {"runs": true, "articles": 1, "errors": 1, "tokens": 1}}',
+                    "{not json"):
+            state.write_text(bad)
+            lines, alerts = status.review_health(_stats_html(), time.time(), state)
+            assert "baseline saved" in lines[0] and alerts == [], (bad, lines, alerts)
+
+
+def test_review_health_reports_an_unsaved_baseline():
+    with tempfile.TemporaryDirectory() as td:
+        blocker = Path(td) / "file"
+        blocker.write_text("x")
+        lines, _ = status.review_health(_stats_html(), time.time(), blocker / "s.json")
+    assert "could not save a baseline" in lines[0], lines
+
+
+def test_review_health_flags_a_markup_change():
+    with tempfile.TemporaryDirectory() as td:
+        lines, alerts = status.review_health("<html>redesigned</html>", time.time(),
+                                             Path(td) / "s.json")
+        assert alerts and "parse_pipeline_runs" in alerts[0], alerts
+        lines, alerts = status.review_health(None, time.time(), Path(td) / "s.json")
+        assert "unavailable" in lines[0] and alerts == []
 
 
 def test_review_alerts_each_condition_alone():
     prev = {"runs": 10, "articles": 150, "errors": 5, "tokens": 1000, "at": "t0"}
-    only_tokens = {"runs": 11, "articles": 165, "errors": 6, "tokens": 1000}
-    (a,) = status.review_alerts(prev, only_tokens)
+    (a,) = status.review_alerts(prev, {"runs": 11, "articles": 165, "errors": 6, "tokens": 1000})
     assert "tokens unchanged" in a and "errors equal" not in a, a
-    only_errors = {"runs": 12, "articles": 180, "errors": 35, "tokens": 9000}
-    (a,) = status.review_alerts(prev, only_errors)
+    (a,) = status.review_alerts(prev, {"runs": 12, "articles": 180, "errors": 35, "tokens": 9000})
     assert "errors equal articles (30/30)" in a and "tokens unchanged" not in a, a
+    assert status.review_alerts(prev, {"runs": 11, "articles": 150, "errors": 5,
+                                       "tokens": 1000}) == [], "zero-article run"
     assert status.review_alerts(prev, {**prev}) == []
-    assert status.review_alerts(None, only_errors) == []
+    assert status.review_alerts(None, prev) == []
 
 
-def test_review_health_without_stats():
-    with tempfile.TemporaryDirectory() as td:
-        line, alerts = status.review_health(None, "now", Path(td) / "s.json")
-    assert "unavailable" in line and alerts == []
+def test_review_section_prefers_api_runs_and_falls_back_to_stats():
+    net = FakeNet(api_runs=_api_runs((3, 15, 15, 0, None)))
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+        lines, alerts = status.review_section(time.time())
+        assert lines[0].startswith("  review     last run 3h ago"), lines
+        assert alerts and "last 1 run(s)" in alerts[0], alerts
+        assert not any(c[-1].endswith("/stats") for c in net.calls if c[0] == "curl")
+    net = FakeNet()          # /api/runs not deployed
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+        lines, _ = status.review_section(time.time())
+        assert lines[0].startswith("  review     118 runs · 1,776 articles"), lines
+        assert status.LIVE_STATE.exists()
 
+
+# ---------------------------------------------------------------------------
+# Bot gate
+# ---------------------------------------------------------------------------
 
 def test_decision_ignores_the_echoed_grep_command():
     assert status._decision(POLL_LOG) == "wait"
@@ -186,48 +285,90 @@ def test_decision_ignores_the_echoed_grep_command():
     assert status._decision("if grep -q 'POLL_DECISION=act' x; then") is None
 
 
-def test_gate_line_reports_local_timeout_and_ci_decision():
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td), None, None):
-        line, alerts = status.gate_line(None)
-        assert line.startswith("gate: local timeout/error · CI wait (run 38435564796"), line
-        assert alerts == []
-        line, alerts = status.gate_line("POLL_DECISION=act")
-        assert line.startswith("gate: local act · CI wait"), line
-        assert len(alerts) == 1 and "MATHLIB_FORK_PAT" in alerts[0], alerts
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_log=None), Path(td), None, None):
-        line, _ = status.gate_line("POLL_DECISION=wait")
-        assert line.startswith("gate: local wait · CI ? (run"), line
+def test_ci_gate_reads_the_latest_finished_run():
+    runs = [{"databaseId": 9, "createdAt": _iso_ago(1), "conclusion": "cancelled"},
+            {"databaseId": 8, "createdAt": _iso_ago(2), "conclusion": "success"}]
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=runs), Path(td)):
+        dec, text, alerts = status.ci_gate()
+    assert dec == "wait" and text == "CI wait (run 8, 2h ago)" and alerts == [], (dec, text, alerts)
 
 
-def test_batch_pr_alerts_on_conflict_and_age():
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td), None, None):
-        line, alerts = status.batch_pr(42608)
-    assert "#42608 OPEN · CONFLICTING · opened 64d ago" in line, line
+def test_ci_gate_alerts_on_poll_error_failure_and_staleness():
+    failed = [{"databaseId": 7, "createdAt": _iso_ago(1), "conclusion": "failure"}]
+    with tempfile.TemporaryDirectory() as td, patched(
+            FakeNet(ci_runs=failed, ci_log=POLL_ERROR_LOG), Path(td)):
+        dec, text, alerts = status.ci_gate()
+    assert dec == "error" and text.startswith("CI error (run 7"), text
+    assert len(alerts) == 1 and "HTTP 401" in alerts[0], alerts
+    with tempfile.TemporaryDirectory() as td, patched(
+            FakeNet(ci_runs=failed, ci_log="no decide line"), Path(td)):
+        _, text, alerts = status.ci_gate()
+    assert text.startswith("CI ? (run 7") and alerts == ["wikidata-poll run 7 ended 'failure'"]
+    old = [{"databaseId": 6, "createdAt": _iso_ago(30), "conclusion": "success"}]
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=old), Path(td)):
+        _, _, alerts = status.ci_gate()
+    assert len(alerts) == 1 and "not finished a run in 30h" in alerts[0], alerts
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=None), Path(td)):
+        assert status.ci_gate() == (None, "CI ?", [])
+
+
+def test_gate_section_prints_local_timeout_and_never_blames_the_token():
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(local=None), Path(td)):
+        lines, alerts = status.gate_section()
+    assert lines[0].startswith("  gate       local timeout/error · CI wait (run 38435564796"), lines
+    assert alerts == []
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
+        lines, alerts = status.gate_section()
+    assert "local act · CI wait" in lines[0] and "can lag CI's" in lines[0], lines
+    assert alerts == [], "a stale local state must not raise a token alert"
+
+
+# ---------------------------------------------------------------------------
+# Batch PR, Brain, graph staleness
+# ---------------------------------------------------------------------------
+
+def test_batch_pr_alerts_by_state():
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
+        lines, alerts = status.batch_pr(42608)
+    assert "#42608 OPEN · CONFLICTING · opened 64d ago (state: local)" in lines[0], lines
     assert len(alerts) == 2, alerts
     assert "conflicts with mathlib master" in alerts[0] and "open 64 days" in alerts[1], alerts
-    labelled = {"state": "OPEN", "mergeable": "UNKNOWN", "createdAt": _iso_days_ago(3),
-                "labels": [{"name": "merge-conflict"}, {"name": "LLM-generated"}]}
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr=labelled), Path(td), None, None):
-        _, alerts = status.batch_pr(42608)
-    assert len(alerts) == 1 and "conflicts with mathlib master" in alerts[0], alerts
-    fresh = {"state": "OPEN", "mergeable": "MERGEABLE", "createdAt": _iso_days_ago(3)}
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr=fresh), Path(td), None, None):
-        _, alerts = status.batch_pr(42608)
-    assert alerts == [], alerts
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr="fail"), Path(td), None, None):
-        line, alerts = status.batch_pr(42608)
-    assert "gh unavailable" in line and alerts == []
+    labelled = {"state": "OPEN", "mergeable": "UNKNOWN", "createdAt": _iso_ago(72),
+                "labels": [{"name": "merge-conflict"}]}
+    cases = [(labelled, ["conflicts with mathlib master"]),
+             ({"state": "OPEN", "mergeable": "MERGEABLE", "createdAt": _iso_ago(72)}, []),
+             ({"state": "MERGED", "mergeable": "UNKNOWN", "createdAt": _iso_ago(900),
+               "labels": [{"name": "merge-conflict"}]}, []),
+             ({"state": "CLOSED", "mergeable": "CONFLICTING", "createdAt": _iso_ago(900),
+               "labels": [{"name": "merge-conflict"}]}, ["closed without merging"])]
+    for pr, want in cases:
+        with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr=pr), Path(td)):
+            _, alerts = status.batch_pr(42608)
+        assert len(alerts) == len(want) and all(w in a for w, a in zip(want, alerts)), (pr, alerts)
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr="fail"), Path(td)):
+        lines, alerts = status.batch_pr(42608)
+    assert "gh unavailable" in lines[0] and alerts == []
+
+
+def test_live_section_prefers_the_bot_state_branch():
+    net = FakeNet(ci_state={"current_pr": 99999, "batch_num": 8})
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+        lines, _ = status.live_section({"current_pr": 42608})
+    pr_line = [ln for ln in lines if "batch PR" in ln][0]
+    assert "#99999" in pr_line and "(state: bot-state branch)" in pr_line, lines
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
+        lines, _ = status.live_section({"current_pr": 42608})
+    assert any("#42608" in ln and "(state: local snapshot)" in ln for ln in lines), lines
 
 
 def test_brain_release_line():
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td), None, None):
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
         line = status.brain_release()
     assert "release sha256:8305822b0083a086" in line and "audited 2026-10-04T17:25:04Z (" in line, line
     net = FakeNet()
-    net_call = net.__call__
     with tempfile.TemporaryDirectory() as td, patched(
-            lambda cmd, timeout=12: None if "current.json" in cmd[-1] else net_call(cmd, timeout),
-            Path(td), None, None):
+            lambda cmd, timeout=12: None if "current.json" in cmd[-1] else net(cmd, timeout),
+            Path(td)):
         assert "unavailable" in status.brain_release()
 
 
@@ -236,45 +377,54 @@ def test_graph_staleness_tolerates_one_bulk_copy():
     assert status.graph_older_than_annotations(1787159418.83, 1787159418.83 + 3600)
 
 
-def test_snapshot_ignores_a_stored_stale_flag_from_a_bulk_copy():
-    """Digests written before this rule store the strict-< flag; status must
-    recompute from the mtimes instead of trusting it."""
-    out = _snapshot_output(FakeNet(), _digest(1787159418.83, 1787159422.83, True), {}, live=False)
-    assert "concept graph is stale" not in out, out
+# ---------------------------------------------------------------------------
+# snapshot
+# ---------------------------------------------------------------------------
+
+def test_offline_snapshot_makes_no_network_calls_and_writes_nothing():
+    """The SessionStart hook runs this path: git status only, no state file,
+    and a stored strict-< graph flag from a bulk copy no longer alerts."""
+    net = FakeNet()
+    with tempfile.TemporaryDirectory() as td, patched(
+            net, Path(td), _digest(1787159418.83, 1787159422.83, True), {"current_pr": 42608}):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            status.snapshot(live=False)
+        assert net.calls == [["git", "status", "--porcelain"]], net.calls
+        assert not status.LIVE_STATE.exists()
+    assert "concept graph is stale" not in buf.getvalue(), buf.getvalue()
     out = _snapshot_output(FakeNet(), _digest(1.0, 7200.0, False), {}, live=False)
     assert "concept graph is stale" in out, out
 
 
 def test_snapshot_live_prints_every_health_line_and_alert():
-    batch = {"current_pr": 42608, "batch_num": 7}
-    with tempfile.TemporaryDirectory() as td:
-        net = FakeNet(stats=_stats_html((117, 1761, 843, 26345645)))
-        with patched(net, Path(td), _digest(1.0, 2.0, False), batch):
-            with contextlib.redirect_stdout(io.StringIO()):
-                status.snapshot(live=True)  # baseline night
-            net.stats = _stats_html((118, 1776, 858, 26345645))
-            buf = io.StringIO()
-            with contextlib.redirect_stdout(buf):
-                status.snapshot(live=True)
-    out = buf.getvalue()
-    for want in ("gate: local act · CI wait (run 38435564796",
-                 "review     118 runs · 1,776 articles · 858 errors · 26,345,645 tokens",
+    net = FakeNet(api_runs=_api_runs((3, 15, 15, 0, "modes=review; 15/15 errors: x")),
+                  ci_runs=[{"databaseId": 7, "createdAt": _iso_ago(1), "conclusion": "failure"}],
+                  ci_log=POLL_ERROR_LOG)
+    out = _snapshot_output(net, _digest(1.0, 2.0, False), {"current_pr": 42608, "batch_num": 7})
+    for want in ("site       https://wikilean.jackmccarthy.org → 200",
+                 "gate       local act · CI error (run 7",
+                 "review     last run 3h ago: 15 articles · 15 errors · 0 tokens",
+                 "notes: modes=review; 15/15 errors: x",
                  "brain      release sha256:8305822b",
                  "batch PR   #42608 OPEN · CONFLICTING",
-                 "→ bot gate: CI decided 'wait'",
-                 "→ nightly review failing: 1 run(s) since",
+                 "→ the poller's decide failed in run 7",
+                 "→ nightly review failing: the last 1 run(s)",
                  "→ batch PR #42608 conflicts with mathlib master",
                  "→ batch PR #42608 has been open 64 days"):
         assert want in out, (want, out)
-    assert not any(c[:3] == ["gh", "pr", "merge"] for c in net.calls), "read-only only"
+    reads = {("gh", "run", "list"), ("gh", "run", "view"), ("gh", "pr", "view")}
+    assert all(tuple(c[:3]) in reads or c[:2] == ["gh", "api"]
+               for c in net.calls if c[0] == "gh"), "gh is used read-only"
 
 
-def test_snapshot_without_digest_still_runs_live_checks():
+def test_snapshot_without_digest_still_runs_every_live_check():
     out = _snapshot_output(FakeNet(), None, {"current_pr": 42608}, live=True)
-    assert "no digest yet" in out and "brain      release" in out, out
-    assert "batch PR   #42608" in out and "→ batch PR #42608 conflicts" in out, out
+    for want in ("no digest yet", "site       ", "gate       local act", "review     118 runs",
+                 "brain      release", "batch PR   #42608", "→ batch PR #42608 conflicts"):
+        assert want in out, (want, out)
     out = _snapshot_output(FakeNet(), None, {}, live=False)
-    assert out.strip().startswith("no digest yet") and "brain" not in out, out
+    assert out.strip() == "no digest yet — run `python3 manage/refresh.py` first", out
 
 
 def main() -> int:

@@ -7,12 +7,13 @@ pool runway, graph freshness, the live @[wikidata] batch, and uncommitted git
 state — then the decisions that are waiting on a human.
 
 Offline and instant by default (reads manage/data/digest.json + local state).
-``--live`` adds network checks: the site returns 200; the bot gate, both from a
-local ``poll.py --decide`` and from the latest CI poll run's Decide step; the
-batch PR's merge state and age; the live Brain release; and nightly review
-health from the /stats pipeline-runs table, compared with the previous --live
-reading (kept in site/cache/.status_live.json). ``--refresh`` regenerates the
-digest first (see refresh.py).
+``--live`` adds read-only network checks: the site returns 200; the bot gate
+from a local ``poll.py --decide`` and from the latest CI poll run; the batch
+PR's merge state and age; nightly review health (per run from GET /api/runs,
+or from the /stats totals compared with the previous --live reading in
+site/cache/.status_live.json where that endpoint is not deployed); and the
+live Brain release. ``--refresh`` regenerates the digest first (see
+refresh.py).
 
     python3 manage/status.py
     python3 manage/status.py --live
@@ -20,7 +21,9 @@ digest first (see refresh.py).
 """
 from __future__ import annotations
 
+import base64
 import json
+import os
 import re
 import subprocess
 import sys
@@ -43,9 +46,12 @@ LIVE_STATE = ROOT / "site" / "cache" / ".status_live.json"  # gitignored
 LOW_POOL_BATCHES = 3.0     # generate more tags below this
 STALE_DIGEST_HOURS = 36    # nightly refresh should keep it under a day
 BATCH_PR_STALE_DAYS = 30   # a batch PR open longer than this needs a nudge
+POLL_STALE_HOURS = 12      # the poll cron completes a run every few hours in practice
+REVIEW_STALE_HOURS = 36    # the review runs once a night
 # One bulk copy of the catalog and annotations leaves their mtimes seconds apart
 # (4 s on 2026-08-19); only a gap longer than this means the graph is stale.
 GRAPH_STALE_SLACK_S = 300
+RUN_KEYS = ("runs", "articles", "errors", "tokens")
 
 
 def graph_older_than_annotations(graph_mtime: float, ann_mtime: float) -> bool:
@@ -72,14 +78,54 @@ def _fetch(url: str, timeout: int = 15) -> str | None:
     return _run(["curl", "-sS", "-f", "-m", str(timeout), url], timeout=timeout + 5)
 
 
-def _days_since(iso: str) -> float | None:
+def _hours_since(iso: str) -> float | None:
     try:
-        t = datetime.fromisoformat(iso.replace("Z", "+00:00"))
-    except (AttributeError, ValueError):
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    except ValueError:
         return None
     if t.tzinfo is None:
         t = t.replace(tzinfo=timezone.utc)
-    return (time.time() - t.timestamp()) / 86400
+    return (time.time() - t.timestamp()) / 3600
+
+
+# ---------------------------------------------------------------------------
+# Nightly review health
+# ---------------------------------------------------------------------------
+
+def _failing(articles: int, errors: int, tokens: int) -> list[str]:
+    found = []
+    if articles > 0 and errors == articles:
+        found.append(f"errors equal articles ({errors}/{articles})")
+    if articles > 0 and tokens == 0:
+        found.append("tokens unchanged")
+    return found
+
+
+def review_from_runs(runs: list, now: float) -> tuple[list[str], list[str]]:
+    """Per-run review health from GET /api/runs (newest first)."""
+    if not runs:
+        return ["  review     no review runs reported"], ["no review run has been reported"]
+    newest = runs[0]
+    age_h = (now - (newest.get("finished_at") or 0) / 1000) / 3600
+    lines = [f"  review     last run {age_h:.0f}h ago: {newest.get('articles_processed', 0)} "
+             f"articles · {newest.get('errors', 0)} errors · {newest.get('tokens', 0):,} tokens"]
+    alerts = []
+    streak = 0
+    for r in runs:
+        if not _failing(r.get("articles_processed") or 0, r.get("errors") or 0,
+                        r.get("tokens") or 0):
+            break
+        streak += 1
+    if streak:
+        why = _failing(newest.get("articles_processed") or 0, newest.get("errors") or 0,
+                       newest.get("tokens") or 0)
+        alerts.append(f"nightly review failing: the last {streak} run(s) had "
+                      f"{' and '.join(why)}; see docs/OPERATIONS.md")
+        if newest.get("notes"):
+            lines.append(f"             notes: {str(newest['notes'])[:300]}")
+    if age_h > REVIEW_STALE_HOURS:
+        alerts.append(f"no review run has finished in {age_h:.0f}h")
+    return lines, alerts
 
 
 def parse_pipeline_runs(html: str) -> dict:
@@ -91,8 +137,7 @@ def parse_pipeline_runs(html: str) -> dict:
     out = {}
     for kind, *vals in re.findall(r"<tr><td>([^<]+)</td>" + num * 4, m.group(1)):
         if kind != "all runs":
-            out[kind] = dict(zip(("runs", "articles", "errors", "tokens"),
-                                 (int(v.replace(",", "")) for v in vals)))
+            out[kind] = dict(zip(RUN_KEYS, (int(v.replace(",", "")) for v in vals)))
     return out
 
 
@@ -100,97 +145,172 @@ def review_alerts(prev: dict | None, last: dict | None) -> list[str]:
     """Alerts from the review totals between two readings with new runs."""
     if not prev or not last or last["runs"] <= prev["runs"]:
         return []
-    runs = last["runs"] - prev["runs"]
-    arts = last["articles"] - prev["articles"]
-    errs = last["errors"] - prev["errors"]
-    toks = last["tokens"] - prev["tokens"]
-    found = []
-    if arts > 0 and errs == arts:
-        found.append(f"errors equal articles ({errs}/{arts})")
-    if arts > 0 and toks == 0:
-        found.append("tokens unchanged")
+    found = _failing(last["articles"] - prev["articles"], last["errors"] - prev["errors"],
+                     last["tokens"] - prev["tokens"])
     if not found:
         return []
-    since = prev.get("at") or "?"
-    return [f"nightly review failing: {runs} run(s) since {since}, "
-            f"{' and '.join(found)}; see docs/OPERATIONS.md"]
+    return [f"nightly review failing: {last['runs'] - prev['runs']} run(s) since "
+            f"{prev.get('at') or '?'}, {' and '.join(found)}; see docs/OPERATIONS.md"]
 
 
-def review_health(stats_html: str | None, now_iso: str,
-                  state_path: Path | None = None) -> tuple[str, list[str]]:
-    """Compare the /stats review row with the stored readings. The state keeps
-    the last reading and the one before the last change, so an alert persists
-    until the next run changes the totals."""
-    review = parse_pipeline_runs(stats_html or "").get("review")
-    if review is None:
-        return "  review     /stats unavailable", []
-    path = state_path or LIVE_STATE
+def _load_state(path: Path) -> dict:
+    def ok(r):
+        return isinstance(r, dict) and all(
+            isinstance(r.get(k), int) and not isinstance(r.get(k), bool) for k in RUN_KEYS)
     try:
-        state = json.loads(path.read_text())
+        st = json.loads(path.read_text())
     except (OSError, ValueError):
-        state = {}
-    last = state.get("last")
-    cur = {**review, "at": now_iso}
-    note = ""
-    if not last or review["runs"] < last["runs"]:
-        state = {"prev": None, "last": cur}
-        note = "  (baseline saved; compared from the next nightly run)"
-    elif any(review[k] != last[k] for k in review):
-        state = {"prev": last, "last": cur}
+        return {}
+    if not isinstance(st, dict):
+        return {}
+    return {k: st.get(k) if ok(st.get(k)) else None for k in ("prev", "last")}
+
+
+def _save_state(path: Path, state: dict) -> bool:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(state, indent=1))
+        tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(state, indent=1))
+        os.replace(tmp, path)
+        return True
     except OSError:
-        pass
+        return False
+
+
+def review_health(stats_html: str | None, now: float,
+                  state_path: Path | None = None) -> tuple[list[str], list[str]]:
+    """Fallback without GET /api/runs: compare the /stats review totals with
+    stored readings. The state keeps the last reading and the one before the
+    last change, so an alert persists until the next run changes the totals.
+    It cannot see a failing night between two healthy ones."""
+    if stats_html is None:
+        return ["  review     /stats unavailable"], []
+    review = parse_pipeline_runs(stats_html).get("review")
+    if review is None:
+        return (["  review     no review row in the /stats Pipeline runs table"],
+                ["could not read the review row on /stats; parse_pipeline_runs "
+                 "needs updating for the page's markup"])
+    path = state_path or LIVE_STATE
+    state = _load_state(path)
+    last = state.get("last")
+    cur = {**review, "at": datetime.fromtimestamp(now, timezone.utc).strftime("%Y-%m-%d %H:%MZ"),
+           "at_ts": now}
+    note, alerts = "", []
+    if not last or review["runs"] < last["runs"]:
+        state = {"prev": None, "last": cur}
+        note = ("  (baseline saved; compared from the next nightly run)"
+                if _save_state(path, state) else "  (could not save a baseline)")
+    elif any(review[k] != last[k] for k in RUN_KEYS):
+        state = {"prev": last, "last": cur}
+        _save_state(path, state)
+    elif isinstance(last.get("at_ts"), (int, float)) and \
+            (now - last["at_ts"]) / 3600 > REVIEW_STALE_HOURS:
+        alerts.append(f"no new review run since {last.get('at')}")
     line = (f"  review     {review['runs']} runs · {review['articles']:,} articles · "
             f"{review['errors']:,} errors · {review['tokens']:,} tokens{note}")
-    return line, review_alerts(state.get("prev"), state.get("last"))
+    return [line], alerts + review_alerts(state.get("prev"), state.get("last"))
 
+
+def review_section(now: float) -> tuple[list[str], list[str]]:
+    try:
+        runs = json.loads(_fetch(f"{SITE_URL}/api/runs?kind=review&limit=10") or "")["runs"]
+    except (ValueError, TypeError, KeyError):
+        runs = None
+    if isinstance(runs, list):
+        return review_from_runs(runs, now)
+    return review_health(_fetch(f"{SITE_URL}/stats"), now)
+
+
+# ---------------------------------------------------------------------------
+# Bot gate and batch PR
+# ---------------------------------------------------------------------------
 
 def _decision(text: str | None) -> str | None:
     m = re.findall(r"POLL_DECISION=(act|wait)\s*$", text or "", re.M)
     return m[-1] if m else None
 
 
-def ci_gate() -> tuple[str | None, str]:
-    """The latest completed wikidata-poll run's Decide output, via gh. CI runs
-    decide with MATHLIB_FORK_PAT, which a local decide (the operator's gh
-    login) cannot see failing."""
+def ci_gate() -> tuple[str | None, str, list[str]]:
+    """The latest finished wikidata-poll run, via gh. CI decides with
+    MATHLIB_FORK_PAT, which a local decide (the operator's gh login) cannot
+    see failing. Cancelled runs are skipped: concurrency cancels them."""
     out = _run(["gh", "run", "list", "--repo", POLL_REPO, "--workflow", POLL_WORKFLOW,
-                "--status", "completed", "-L", "1", "--json", "databaseId,createdAt"],
+                "--status", "completed", "-L", "5", "--json", "databaseId,createdAt,conclusion"],
                timeout=30)
     try:
-        run = json.loads(out)[0]
-    except (TypeError, ValueError, IndexError, KeyError):
-        return None, "CI ?"
+        runs = json.loads(out)
+    except (TypeError, ValueError):
+        return None, "CI ?", []
+    run = next((r for r in runs if r.get("conclusion") not in ("cancelled", "skipped")), None)
+    if run is None:
+        return None, "CI ?", []
+    age = _hours_since(run.get("createdAt", ""))
+    alerts = []
+    if age is not None and age > POLL_STALE_HOURS:
+        alerts.append(f"the wikidata poller has not finished a run in {age:.0f}h; "
+                      f"check that the workflow is enabled and has Actions minutes")
     log = _run(["gh", "run", "view", str(run["databaseId"]), "--repo", POLL_REPO, "--log"],
                timeout=60)
-    age = _days_since(run.get("createdAt", ""))
-    when = f"{age * 24:.0f}h ago" if age is not None else "?"
+    err = re.search(r"Z POLL_ERROR: (.*)$", log or "", re.M)
     dec = _decision(log)
-    return dec, f"CI {dec or '?'} (run {run['databaseId']}, {when})"
+    if err:
+        dec = "error"
+        alerts.append(f"the poller's decide failed in run {run['databaseId']}: {err.group(1)[:160]}")
+    elif run.get("conclusion") != "success":
+        alerts.append(f"wikidata-poll run {run['databaseId']} ended '{run.get('conclusion')}'")
+    when = f"{age:.0f}h ago" if age is not None else "?"
+    return dec, f"CI {dec or '?'} (run {run['databaseId']}, {when})", alerts
 
 
-def batch_pr(pr) -> tuple[str, list[str]]:
+def gate_section() -> tuple[list[str], list[str]]:
+    local = _decision(_run([sys.executable, "bot/poll.py", "--mathlib", "/tmp/unused",
+                            "--decide"], timeout=30))
+    dec_ci, ci, alerts = ci_gate()
+    note = ""
+    if local and dec_ci in ("act", "wait") and local != dec_ci:
+        note = "  (a local decide reads this checkout's bot state, which can lag CI's)"
+    return [f"  gate       local {local or 'timeout/error'} · {ci}{note}"], alerts
+
+
+def ci_bot_state() -> dict | None:
+    """The poller's live state from the bot-state branch, when that branch exists."""
+    out = _run(["gh", "api", f"repos/{POLL_REPO}/contents/bot/state/bot_state.json?ref=bot-state",
+                "--jq", ".content"], timeout=30)
+    try:
+        st = json.loads(base64.b64decode(out or ""))
+    except (ValueError, TypeError):
+        return None
+    return st if isinstance(st, dict) else None
+
+
+def batch_pr(pr, source: str = "local") -> tuple[list[str], list[str]]:
     out = _run(["gh", "pr", "view", str(pr), "--repo", MATHLIB_REPO,
                 "--json", "state,mergeable,createdAt,labels"], timeout=30)
     try:
         d = json.loads(out)
     except (TypeError, ValueError):
-        return f"  batch PR   #{pr}: gh unavailable", []
-    age = _days_since(d.get("createdAt", ""))
+        return [f"  batch PR   #{pr}: gh unavailable"], []
+    state = d.get("state", "?")
+    age = _hours_since(d.get("createdAt", ""))
+    days = age / 24 if age is not None else None
     alerts = []
     # GitHub often answers UNKNOWN while it recomputes mergeability; mathlib's
     # bot-managed merge-conflict label is the steadier signal.
     labels = {lab.get("name") for lab in d.get("labels") or [] if isinstance(lab, dict)}
-    if d.get("mergeable") == "CONFLICTING" or "merge-conflict" in labels:
-        alerts.append(f"batch PR #{pr} conflicts with mathlib master; rebuild it off master")
-    if d.get("state") == "OPEN" and age is not None and age > BATCH_PR_STALE_DAYS:
-        alerts.append(f"batch PR #{pr} has been open {age:.0f} days; find a maintainer to merge it")
-    age_s = f"{age:.0f}d" if age is not None else "?"
-    return (f"  batch PR   #{pr} {d.get('state', '?')} · {d.get('mergeable', '?')} "
-            f"· opened {age_s} ago"), alerts
+    if state == "OPEN":
+        if d.get("mergeable") == "CONFLICTING" or "merge-conflict" in labels:
+            alerts.append(f"batch PR #{pr} conflicts with mathlib master; the poller rebuilds "
+                          f"it on its next act tick, so act only if this persists")
+        if days is not None and days > BATCH_PR_STALE_DAYS:
+            alerts.append(f"batch PR #{pr} has been open {days:.0f} days; find a maintainer to merge it")
+    elif state == "CLOSED":
+        alerts.append(f"batch PR #{pr} was closed without merging; the poller waits for a human")
+    age_s = f"{days:.0f}d" if days is not None else "?"
+    return [f"  batch PR   #{pr} {state} · {d.get('mergeable', '?')} · opened {age_s} ago "
+            f"(state: {source})"], alerts
 
+
+# ---------------------------------------------------------------------------
 
 def brain_release() -> str:
     try:
@@ -200,35 +320,27 @@ def brain_release() -> str:
     if not isinstance(sel, dict):
         return "  brain      /assets/brain/current.json unavailable"
     audited = sel.get("audited_at") or "?"
-    age = _days_since(audited)
-    age_s = f" ({age:.0f}d ago)" if age is not None else ""
+    age = _hours_since(audited)
+    age_s = f" ({age / 24:.0f}d ago)" if age is not None else ""
     return f"  brain      release {sel.get('release_id', '?')}  audited {audited}{age_s}"
 
 
-def live_health(batch: dict) -> tuple[list[str], list[str]]:
-    """Live lines and alerts that need no digest."""
+def live_section(batch: dict) -> tuple[list[str], list[str]]:
+    """Every --live line and alert. Read-only: GETs, gh reads, a local decide."""
     lines, alerts = [], []
-    line, a = review_health(_fetch(f"{SITE_URL}/stats"),
-                            datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%MZ"))
-    lines.append(line)
-    alerts += a
+    code = _run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "-m", "8", SITE_URL])
+    lines.append(f"  site       {SITE_URL} → {code or 'unreachable'}")
+    for part in (gate_section(), review_section(time.time())):
+        lines += part[0]
+        alerts += part[1]
     lines.append(brain_release())
-    if batch.get("current_pr"):
-        line, a = batch_pr(batch["current_pr"])
-        lines.append(line)
+    ci_state = ci_bot_state()
+    state, source = (ci_state, "bot-state branch") if ci_state else (batch, "local snapshot")
+    if state.get("current_pr"):
+        more, a = batch_pr(state["current_pr"], source)
+        lines += more
         alerts += a
     return lines, alerts
-
-
-def gate_line(local: str | None) -> tuple[str, list[str]]:
-    dec_local = _decision(local)
-    dec_ci, ci = ci_gate()
-    alerts = []
-    if dec_local == "act" and dec_ci == "wait":
-        alerts.append("bot gate: CI decided 'wait' where a local decide says 'act': "
-                      "the poller's MATHLIB_FORK_PAT may be failing; read the "
-                      "wikidata-poll Decide step")
-    return f"gate: local {dec_local or 'timeout/error'} · {ci}", alerts
 
 
 def snapshot(live: bool = False) -> None:
@@ -236,9 +348,9 @@ def snapshot(live: bool = False) -> None:
     if not DIGEST.exists():
         print("no digest yet — run `python3 manage/refresh.py` first")
         if live:
-            lines, alerts = live_health(batch)
-            for line in lines:
-                print(line)
+            lines, alerts = live_section(batch)
+            print("\n".join(lines))
+            print("\n  decisions waiting:" if alerts else "\n  nothing waiting (live checks).")
             for a in alerts:
                 print(f"    → {a}")
         return
@@ -253,17 +365,10 @@ def snapshot(live: bool = False) -> None:
           f"/ {c['pct_not_formalized']}% not   ({c['n_articles']} articles)")
     print(f"  graph      {d['graph']['n_nodes']} concepts, {d['graph']['n_edges']} edges")
 
-    # @[wikidata] batch (offline from bot state; live gate with --live)
-    gate_alerts: list[str] = []
-    gate_s = ""
-    if live:
-        local = _run([sys.executable, "bot/poll.py", "--mathlib", "/tmp/unused", "--decide"],
-                     timeout=30)
-        g, gate_alerts = gate_line(local)
-        gate_s = f"  {g}"
+    # @[wikidata] batch (offline from bot state; the live gate is under --live)
     if batch:
         print(f"  pipeline   batch {batch.get('batch_num')} · PR #{batch.get('current_pr')}"
-              f" · pool {pool['fresh_candidates']} candidates (~{pool['approx_batches']} batches){gate_s}")
+              f" · pool {pool['fresh_candidates']} candidates (~{pool['approx_batches']} batches)")
 
     print()
     print("  work waiting (from the coverage graph):")
@@ -273,17 +378,13 @@ def snapshot(live: bool = False) -> None:
     for r in w["formalize"]["top"][:3]:
         print(f"      · {r['label']} ({r['n_extracted']} stmts, cen {r['centrality_pct']:.0f})")
 
-    # Live site check
-    live_alerts: list[str] = []
+    alerts = []
     if live:
-        code = _run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "-m", "8", SITE_URL])
-        print(f"\n  site       {SITE_URL} → {code or 'unreachable'}")
-        lines, live_alerts = live_health(batch)
-        for line in lines:
-            print(line)
+        lines, alerts = live_section(batch)
+        print()
+        print("\n".join(lines))
 
     # Decisions waiting on a human
-    alerts = gate_alerts + live_alerts
     stale_graph = (graph_older_than_annotations(fresh["graph_mtime"], fresh["annotations_mtime"])
                    if "graph_mtime" in fresh and "annotations_mtime" in fresh
                    else fresh.get("graph_older_than_annotations"))

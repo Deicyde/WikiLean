@@ -27,6 +27,7 @@ HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 GRAPH = ROOT / "catalog" / "data" / "concept_graph.json"
 sys.path.insert(0, str(ROOT / "bot"))
+sys.path.insert(1, str(HERE))  # for status (sys.path[0] is unset under -I/-P)
 import pool
 from status import graph_older_than_annotations
 
