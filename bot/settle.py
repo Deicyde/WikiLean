@@ -284,7 +284,8 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
 def ready_header(cls):
     """The settle comment's first line, stating the rule classify() applied. It names
-    reviewers in code font, without @, so it notifies no one."""
+    reviewers in code font, without @, so it adds no mentions of its own (the tag
+    table below it already lists reviewers)."""
     green, recycle = cls["green"], cls["recycle"]
     who = ", ".join(f"`{u}`" for u in cls["reviewers"]) or "none"
     return (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags with at least one approval 🟢 "
