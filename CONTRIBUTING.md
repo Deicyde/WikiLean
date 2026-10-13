@@ -35,8 +35,9 @@ Each annotation marks a span of article text with:
 ### What happens to your edits
 - Saved instantly to the production D1 database; visible to the next reader immediately.
 - Edits are kept in `revisions` and can be viewed at `https://wikilean.jackmccarthy.org/<slug>/history`.
-- The seeding pipeline that pushes new AI annotations from the local repo to D1 is **edit-safe**: it explicitly skips any article that has a user revision. So your work is never silently overwritten by an automated pass.
-- Occasional moderation passes (an AI moderation agent reviewing edits in context) preserve `provenance: "human"` annotations verbatim — see `site/batch_annotate.py`'s moderation mode.
+- Automated passes (the nightly AI review and the Wikipedia-drift re-pin) write through the same Worker API. A bot save that drops or alters any `provenance: "human"` annotation, tombstones included, is rejected with HTTP 422, so automation never silently overwrites your work.
+- Moderation follows the **Human-at-boundaries** policy (ratified 2026-08-06; see [docs/ROADMAP.md](docs/ROADMAP.md)). An AI reviewer that disagrees with a human annotation files a *proposal* instead of editing it. The nightly decides pending proposals automatically with a deterministic resolver. An AI-approved change re-labels the annotation `ai-moderated` and is recorded as its own revision kind (`proposal-decided-ai`), so AI decisions are never attributed to a human. Humans remain the gate only where WikiLean pushes into human-edited systems: Mathlib PRs, Wikidata, and Wikipedia.
+- Human edits also enter a patrol queue on the live site, where patrollers can mark them reviewed.
 
 ---
 
@@ -137,7 +138,7 @@ Its preflight requires more than 200 cached Wikipedia pages in `site/cache/*.htm
 WikiLean is partly a bet that math-formalization metadata belongs on Wikidata and in Mathlib itself.
 
 ### Wikidata
-- A property proposal for **"Mathlib declaration"** (an external identifier mapping a math concept to its primary Mathlib4 declaration) is drafted at [docs/wikidata_property_proposal.md](docs/wikidata_property_proposal.md). Once posted on Wikidata, support comments and concrete feedback on the identifier-format question both help.
+- Wikidata property **[P14534 (Mathlib Declaration ID)](https://www.wikidata.org/wiki/Property:P14534)**, an external identifier mapping a concept item to its Mathlib4 declaration name, was created on 2026-06-17 from WikiLean's proposal ([docs/wikidata_property_proposal.md](docs/wikidata_property_proposal.md)). It had 115 statements on 2026-10-13. Adding or checking P14534 statements on concept items helps.
 
 ### Mathlib4
 - Mathlib4 has an `@[wikidata]` attribute (defined in `Mathlib/Tactic/CrossRefAttribute.lean`) that tags declarations with their Wikidata QID — the *inverse* of the proposed property. The WikiLean concept layer is being used to propose batch additions of this tag.
