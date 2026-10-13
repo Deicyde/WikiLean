@@ -45,6 +45,7 @@ import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
+import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -130,6 +131,7 @@ registerBrainApiRoutes(app);
 registerMcpRoutes(app);
 registerQueueRoutes(app);
 registerRepoRoutes(app);
+registerVersionRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor

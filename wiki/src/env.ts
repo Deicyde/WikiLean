@@ -30,6 +30,13 @@ export interface Env {
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 
+  // Deploy identity for GET /api/version (src/version.ts). CF_VERSION_METADATA
+  // is the wrangler.jsonc version_metadata binding (every deploy path).
+  // WIKILEAN_GIT_SHA is stamped by `npm run deploy` (scripts/deploy.ts) as
+  // "<40-hex>" or "<40-hex>-dirty"; the Brain promoter does not set it.
+  CF_VERSION_METADATA?: WorkerVersionMetadata;
+  WIKILEAN_GIT_SHA?: string;
+
   // Shared bearer secret for the moderation pipeline (site/moderate.py).
   // Optional: when unset, the bearer branch in getUser is disabled entirely.
   // Single-token scheme by decision — graduate to an api_tokens table when a

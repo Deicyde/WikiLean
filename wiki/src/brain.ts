@@ -95,6 +95,7 @@ type ReadableBrainReleaseSelector = BrainReleaseSelector | LegacyBrainReleaseSel
 interface BrainReleaseManifestCommon {
   schema: "wikilean.release/v1";
   release_id: string;
+  authority: { git_commit: string }; // validReleaseMetadata: 40-hex WikiLean commit
   artifacts: BrainReleaseArtifact[];
   attestations: unknown[];
 }

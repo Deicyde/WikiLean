@@ -21,7 +21,7 @@
     "build:premise-index": "node --experimental-strip-types scripts/build-premise-index.ts",
     "build:indexes": "DECL_DATA_CACHE=../catalog/.cache/declaration-data.json npm run build:decl-index && npm run build:suffix-index && npm run build:premise-index",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "node --experimental-strip-types scripts/deploy.ts",
     "backup:d1": "bash scripts/backup-d1.sh",
     "tail": "wrangler tail --format=pretty"
   },
