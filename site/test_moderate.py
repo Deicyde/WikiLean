@@ -2216,6 +2216,17 @@ def test_sanitize_error_strips_secrets_paths_and_control_bytes():
         assert leaked not in s, (leaked, s)
     assert "~/Desktop/LEAN/mathlib4" in s and "failed" in s, s
     assert len(m.sanitize_error("x" * 500)) == 160
+    # a token wrapped across lines or split by an escape code still goes
+    tok = "Zq9xxxxxxxxxxxxxxxxx-_abc"
+    for split in ("Zq9xxxxxxxx\nxxxxxxxxx-_abc", "Zq9xxxxxxxx\x1b[0mxxxxxxxxx-_abc"):
+        assert "Zq9" not in m.sanitize_error(f"bad {split} end", token=tok), split
+
+
+def test_sanitize_error_keeps_package_versions():
+    s = m.sanitize_error("Claude Code @anthropic-ai/claude-code@2.0.14 needs "
+                         "claude-agent-sdk@0.1.3; mail ops@example.org")
+    assert "@anthropic-ai/claude-code@2.0.14" in s and "claude-agent-sdk@0.1.3" in s, s
+    assert "ops@example.org" not in s and "[email]" in s, s
 
 
 def test_error_sample_groups_distinct_errors_most_common_first():
@@ -2227,6 +2238,14 @@ def test_error_sample_groups_distinct_errors_most_common_first():
     assert s.startswith("14/15 errors: 13x ~2s " + LOGIN_ERR), s
     assert "(e.g. Head_0, Head_1)" in s and "| 1x ~0s extract_failed (e.g. Odd)" in s, s
     assert m.error_sample([{"slug": "Ok", "error": None}]) == ""
+
+
+def test_error_sample_gives_one_systemic_error_room():
+    """One distinct error keeps its tail: the cause usually follows a long
+    'RuntimeError: agent_error:' prefix."""
+    err = "RuntimeError: agent_error: " + "x" * 300 + " THE-CAUSE"
+    s = m.error_sample([{"slug": f"S{i}", "error": err} for i in range(15)])
+    assert "THE-CAUSE" in s, s
 
 
 def test_error_sample_caps_distinct_errors():
@@ -2251,7 +2270,7 @@ def test_build_run_notes_fits_the_worker_cap():
     assert m.build_run_notes(["wp-update", "review"], True) == "modes=wp-update+review aborted"
 
 
-def test_run_jobs_returns_per_job_outcomes():
+def test_run_jobs_returns_per_job_outcomes_keyed_by_queue_slug():
     import asyncio
     import tempfile
 
@@ -2264,23 +2283,25 @@ def test_run_jobs_returns_per_job_outcomes():
 
         async def mixed(job, _ctx, sem):
             async with sem:
-                if job["slug"] == "bad":
-                    return {"slug": "bad", "error": LOGIN_ERR, "elapsed_s": 1.0}
+                if job["slug"] == "Bad_(x)":
+                    # annotate_one re-slugs from the title (make_slug)
+                    return {"slug": "Bad_x", "error": LOGIN_ERR, "elapsed_s": 1.0}
                 return {"slug": job["slug"], "post_status": 200, "tokens": 10}
 
         try:
             rc, stats = asyncio.run(m.run_jobs(
-                [{"slug": "good"}, {"slug": "bad"}], ctx, mixed))
+                [{"slug": "good"}, {"slug": "Bad_(x)"}], ctx, mixed))
         finally:
             m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
     assert rc == 0 and stats["processed"] == 2 and stats["errors"] == 1
     by_slug = {j["slug"]: j for j in stats["jobs"]}
-    assert by_slug["bad"] == {"slug": "bad", "error": LOGIN_ERR, "elapsed_s": 1.0}
+    assert by_slug["Bad_(x)"] == {"slug": "Bad_(x)", "error": LOGIN_ERR, "elapsed_s": 1.0}
     assert by_slug["good"]["error"] is None
 
 
 # ---------------------------------------------------------------------------
-# Queue rotation: recently failed reviews move behind the rest
+# Queue rotation: articles whose review failed for article-specific reasons
+# move behind the rest
 # ---------------------------------------------------------------------------
 
 DAY_MS = 86_400_000
@@ -2296,6 +2317,15 @@ def test_defer_recent_failures_moves_failed_articles_back():
     assert deferred == ["h1", "h0"], deferred   # oldest failure first
 
 
+def test_retry_delay_counts_nights_not_exact_days():
+    """Stamped at the end of a run, retried at the start of the run three
+    nights later even though that is a few minutes short of 72 hours."""
+    end_of_run = NOW_MS - 3 * DAY_MS + 20 * 60_000
+    assert "a" not in m.recently_failed({"a": {"ts": end_of_run}}, NOW_MS)
+    two_nights = NOW_MS - 2 * DAY_MS + 20 * 60_000
+    assert "a" in m.recently_failed({"a": {"ts": two_nights}}, NOW_MS)
+
+
 def test_defer_recent_failures_never_empties_a_run():
     jobs = [{"slug": "a"}, {"slug": "b"}, {"slug": "c"}]
     failures = {"a": {"ts": NOW_MS - 1}, "b": {"ts": NOW_MS - DAY_MS},
@@ -2306,16 +2336,23 @@ def test_defer_recent_failures_never_empties_a_run():
     assert [j["slug"] for j in picked] == ["a", "b", "c"]
 
 
-def test_record_review_outcomes_stamps_clears_and_prunes():
+def test_record_review_outcomes_only_article_specific_errors():
     failures = {"stuck": {"ts": NOW_MS - DAY_MS, "n": 2, "error": "x"},
                 "fixed": {"ts": NOW_MS - DAY_MS, "n": 1, "error": "x"},
+                "kept": {"ts": NOW_MS - DAY_MS, "n": 4, "error": "fetch_failed"},
                 "ancient": {"ts": NOW_MS - 40 * DAY_MS, "n": 9, "error": "x"}}
-    jobs = [{"slug": "stuck", "error": LOGIN_ERR},
+    jobs = [{"slug": "stuck", "error": "extract_failed"},
             {"slug": "fixed", "error": None},
-            {"slug": "new", "error": "extract_failed"}]
+            {"slug": "kept", "error": LOGIN_ERR},          # account-wide: untouched
+            {"slug": "login", "error": LOGIN_ERR},         # account-wide: not added
+            {"slug": "limit", "error": "agent_error: You've hit your limit · resets 7am"},
+            {"slug": "worker", "error": "network_post_failed"},
+            {"slug": "?", "error": "fetch_failed"},
+            {"slug": "new", "error": "agent2_no_json"}]
     out = m.record_review_outcomes(failures, jobs, NOW_MS, token="tok")
-    assert set(out) == {"stuck", "new"}, out
-    assert out["stuck"] == {"ts": NOW_MS, "n": 3, "error": LOGIN_ERR}
+    assert set(out) == {"stuck", "kept", "new"}, out
+    assert out["stuck"] == {"ts": NOW_MS, "n": 3, "error": "extract_failed"}
+    assert out["kept"] == failures["kept"]
     assert out["new"]["n"] == 1
     assert failures["fixed"]["n"] == 1, "input must not be mutated"
 
@@ -2327,66 +2364,126 @@ def test_review_failures_file_roundtrip_and_corruption():
         assert m.load_review_failures(p) == {}
         m.save_review_failures({"a": {"ts": 5, "n": 1, "error": "e"}}, p)
         assert m.load_review_failures(p) == {"a": {"ts": 5, "n": 1, "error": "e"}}
+        assert [q.name for q in p.parent.iterdir()] == [p.name], "no tmp left behind"
         p.write_text("{not json", encoding="utf-8")
         assert m.load_review_failures(p) == {}
-        p.write_text(json.dumps({"a": {"n": 1}, "b": {"ts": 1}}), encoding="utf-8")
-        assert m.load_review_failures(p) == {"b": {"ts": 1}}
+        p.write_text(json.dumps({"a": {"n": 1}, "b": {"ts": 1}, "c": {"ts": 2, "n": "x"}}),
+                     encoding="utf-8")
+        loaded = m.load_review_failures(p)
+        assert set(loaded) == {"b", "c"} and loaded["c"]["n"] == 1, loaded
+        out = m.record_review_outcomes(loaded, [{"slug": "c", "error": "fetch_failed"}], 10)
+        assert out["c"]["n"] == 2, out
 
 
-def test_review_mode_rotates_the_queue_across_nights():
-    """End to end through run_mode: a night where the top three articles fail
-    defers them on the next night, which over-fetches and reviews the next
-    three instead; a dry run never writes the record."""
+class _Nights:
+    """Drive run_mode('review') night after night with fakes for the Worker
+    and the agents; `fail` maps slug -> error for the next night."""
+
+    def __init__(self, td: Path):
+        self.calls: list[int] = []
+        self.reviewed: list[list[str]] = []
+        self.saves = 0
+        self.fail: dict[str, str] = {}
+        self.td = td
+
+    def __enter__(self):
+        self.saved = {k: getattr(m, k) for k in (
+            "fetch_work", "_import_ba", "_try_import_ba", "process_review",
+            "get_mathlib_sha", "save_review_failures", "REVIEW_FAILURES",
+            "MODERATE_LOG", "DECISIONS_LOG")}
+        fake_ba = SimpleNamespace(MODEL="test-model", MODERATE_AGENT1_SYSTEM="a",
+                                  AGENT1_SYSTEM="a", AGENT2_SYSTEM="b")
+        real_save = m.save_review_failures
+
+        def fake_fetch(api_base, token, mode, limit):
+            self.calls.append(limit)
+            return [{"slug": f"h{i}"} for i in range(min(limit, 10))]
+
+        async def fake_review(job, ctx, sem):
+            async with sem:
+                self.reviewed[-1].append(job["slug"])
+                err = self.fail.get(job["slug"])
+                if err:
+                    return {"slug": job["slug"], "error": err, "elapsed_s": 1.0}
+                return {"slug": job["slug"], "post_status": 200}
+
+        def counting_save(failures, path=None):
+            self.saves += 1
+            real_save(failures, path)
+
+        m.fetch_work = fake_fetch
+        m._import_ba = m._try_import_ba = lambda auth: fake_ba
+        m.process_review = fake_review
+        m.get_mathlib_sha = lambda: None
+        m.save_review_failures = counting_save
+        m.REVIEW_FAILURES = self.td / ".review_failures.json"
+        m.MODERATE_LOG = self.td / "run.log"
+        m.DECISIONS_LOG = self.td / "dec.jsonl"
+        return self
+
+    def __exit__(self, *exc):
+        for k, v in self.saved.items():
+            setattr(m, k, v)
+        return False
+
+    def night(self, dry_run=False, limit=3):
+        args = SimpleNamespace(dry_run=dry_run, auth="subscription", slugs=None,
+                               api_base="http://api.test", limit=limit,
+                               concurrency=1, budget_tokens=None,
+                               run_id="0000aaaa", seed_decls={})
+        self.reviewed.append([])
+        return m.run_mode("review", args, "tok")
+
+
+def test_review_mode_rotates_past_article_specific_failures():
+    """The top three articles fail to fetch; the next night over-fetches by
+    three and reviews the next three instead."""
     import tempfile
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {s: "fetch_failed" for s in ("h0", "h1", "h2")}
+        n.night()
+        n.fail = {}
+        rc, stats = n.night()
+        assert n.calls == [3, 6], n.calls
+        assert sorted(n.reviewed[0]) == ["h0", "h1", "h2"], n.reviewed
+        assert sorted(n.reviewed[1]) == ["h3", "h4", "h5"], n.reviewed
+        assert rc == 0 and stats["errors"] == 0
 
-    saved = {k: getattr(m, k) for k in (
-        "fetch_work", "_import_ba", "_try_import_ba", "process_review",
-        "get_mathlib_sha", "REVIEW_FAILURES", "MODERATE_LOG", "DECISIONS_LOG")}
-    calls: list[int] = []
-    reviewed: list[list[str]] = []
-    fake_ba = SimpleNamespace(MODEL="test-model", MODERATE_AGENT1_SYSTEM="a",
-                              AGENT1_SYSTEM="a", AGENT2_SYSTEM="b")
 
-    def fake_fetch(api_base, token, mode, limit):
-        calls.append(limit)
-        return [{"slug": f"h{i}"} for i in range(min(limit, 10))]
+def test_review_mode_does_not_rotate_on_account_wide_failures():
+    """A night where every article fails to log in records nothing: once the
+    login is fixed, the same top articles go first."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {f"h{i}": LOGIN_ERR for i in range(10)}
+        n.night()
+        n.fail = {}
+        n.night()
+        assert n.calls == [3, 3], n.calls
+        assert sorted(n.reviewed[1]) == ["h0", "h1", "h2"], n.reviewed
 
-    async def fake_review(job, ctx, sem):
-        async with sem:
-            reviewed[-1].append(job["slug"])
-            if job["slug"] in ("h0", "h1", "h2"):
-                return {"slug": job["slug"], "error": LOGIN_ERR, "elapsed_s": 1.0}
-            return {"slug": job["slug"], "post_status": 200}
 
-    with tempfile.TemporaryDirectory() as td:
-        try:
-            m.fetch_work = fake_fetch
-            m._import_ba = m._try_import_ba = lambda auth: fake_ba
-            m.process_review = fake_review
-            m.get_mathlib_sha = lambda: None
-            m.REVIEW_FAILURES = Path(td) / ".review_failures.json"
-            m.MODERATE_LOG = Path(td) / "run.log"
-            m.DECISIONS_LOG = Path(td) / "dec.jsonl"
-            args = SimpleNamespace(dry_run=False, auth="subscription", slugs=None,
-                                   api_base="http://api.test", limit=3,
-                                   concurrency=1, budget_tokens=None,
-                                   run_id="0000aaaa", seed_decls={})
-            for night in range(2):
-                reviewed.append([])
-                rc, stats = m.run_mode("review", args, "tok")
-            dry = SimpleNamespace(**{**vars(args), "dry_run": True})
-            before = m.REVIEW_FAILURES.read_text()
-            reviewed.append([])
-            m.run_mode("review", dry, "tok")
-            after = m.REVIEW_FAILURES.read_text()
-        finally:
-            for k, v in saved.items():
-                setattr(m, k, v)
-    assert calls == [3, 6, 6], calls          # night 2 over-fetches by 3 failures
-    assert sorted(reviewed[0]) == ["h0", "h1", "h2"], reviewed
-    assert sorted(reviewed[1]) == ["h3", "h4", "h5"], reviewed
-    assert rc == 0 and stats["errors"] == 0
-    assert before == after, "a dry run must not touch the failure record"
+def test_review_mode_aborted_run_records_nothing():
+    """An aborted run (exit 3) is a window/budget/auth stop, not evidence
+    about its articles, even when some errors look article-specific."""
+    import tempfile
+    limit_err = "agent_error: You've hit your limit · resets 7:30am"
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {"h0": "fetch_failed", **{f"h{i}": limit_err for i in range(1, 10)}}
+        rc, _ = n.night(limit=10)
+        assert rc == 3, rc
+        assert n.saves == 0 and not m.REVIEW_FAILURES.exists()
+
+
+def test_review_mode_dry_run_never_writes_the_record():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {"h0": "fetch_failed"}
+        n.night(dry_run=True)
+        assert n.saves == 0 and not m.REVIEW_FAILURES.exists()
+        n.night()
+        assert n.saves == 1 and "h0" in json.loads(m.REVIEW_FAILURES.read_text())
+
 
 
 def main() -> int:
