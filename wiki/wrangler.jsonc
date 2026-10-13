@@ -15,6 +15,11 @@
   "observability": {
     "enabled": true
   },
+  // Worker Version id/tag/upload time at runtime, served by GET /api/version
+  // (src/version.ts) so the live deploy can be identified without Wrangler.
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  },
   // Daily Wikipedia drift-detection sweep (src/drift.ts scheduled handler):
   // prop=info lastrevid checks, 50 titles/request, rotating KV cursor.
   "triggers": {
