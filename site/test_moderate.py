@@ -2295,7 +2295,7 @@ def test_run_jobs_returns_per_job_outcomes_keyed_by_queue_slug():
             m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
     assert rc == 0 and stats["processed"] == 2 and stats["errors"] == 1
     by_slug = {j["slug"]: j for j in stats["jobs"]}
-    assert by_slug["Bad_(x)"] == {"slug": "Bad_(x)", "error": LOGIN_ERR, "elapsed_s": 1.0}
+    assert by_slug.get("Bad_(x)") == {"slug": "Bad_(x)", "error": LOGIN_ERR, "elapsed_s": 1.0}, by_slug
     assert by_slug["good"]["error"] is None
 
 
