@@ -83,7 +83,13 @@ describe("POST /api/flag/:slug", () => {
     const rows = flagRows(h.db);
     expect(rows.length).toBe(1);
     expect(rows[0].ip_hash).toBeNull();
-    expect(rows[0].ip_hash).not.toBe(UNSALTED_IP_HASH);
+  });
+
+  it("an empty IP_HASH_SECRET counts as unset (no zero-length HMAC key, no 500)", async () => {
+    const h = setup();
+    h.env.IP_HASH_SECRET = "";
+    expect((await flag(h, { reason: "other" })).status).toBe(200);
+    expect(flagRows(h.db)[0].ip_hash).toBeNull();
   });
 
   it("no CF-Connecting-IP → ip_hash NULL even with the secret set", async () => {
@@ -263,12 +269,15 @@ describe("migration 0013_flags_ip_hash_scrub", () => {
     ins.run("A", "other", UNSALTED_IP_HASH, 1);
     ins.run("B", "other", TEST_IP_HASH, 2);
     ins.run("C", "other", null, 3);
+    ins.run("D", "other", "HMAC-SHA256:" + "0".repeat(64), 4); // not the exact prefix
     db.exec(readFileSync(resolvePath(dir, scrub), "utf8"));
+    db.exec(readFileSync(resolvePath(dir, scrub), "utf8")); // idempotent
     const rows = db.prepare("SELECT slug, ip_hash FROM flags ORDER BY slug").all();
     expect(rows).toEqual([
       { slug: "A", ip_hash: null },
       { slug: "B", ip_hash: TEST_IP_HASH },
       { slug: "C", ip_hash: null },
+      { slug: "D", ip_hash: null },
     ]);
   });
 });

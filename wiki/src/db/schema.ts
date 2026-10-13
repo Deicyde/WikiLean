@@ -126,7 +126,8 @@ export const annotationEvents = sqliteTable(
 // Anonymous reader problem reports (tooltip ⚑ micro-form; no auth required).
 // annotation_id NULL = whole-article report. ip_hash = "hmac-sha256:<hex>" of
 // CF-Connecting-IP under the IP_HASH_SECRET Worker secret, or NULL when the
-// secret is unset (pseudonymous, never exported). Open flags feed
+// secret is unset (pseudonymous; excluded from research exports, present in
+// full D1 backups). Open flags feed
 // moderation_state.flag_count → the /api/work priority queue.
 export const flags = sqliteTable(
   "flags",
