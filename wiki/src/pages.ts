@@ -15,6 +15,13 @@ function fmtDate(ms: number): string {
   return new Date(ms).toISOString().slice(0, 16).replace("T", " ") + " UTC";
 }
 
+// ISO prefix of a stored ms timestamp, or null when it is not a valid Date
+// (runner-reported times are unbounded integers; toISOString would throw).
+function isoPrefix(ms: number, len: number): string | null {
+  const d = new Date(ms);
+  return Number.isFinite(d.getTime()) ? d.toISOString().slice(0, len) : null;
+}
+
 // Compact relative age ("4m ago", "3h ago", "2d ago") for the flags queue,
 // where recency matters more than the exact timestamp.
 function fmtAge(ms: number): string {
@@ -676,7 +683,7 @@ export function statsPage(d: StatsData): string {
     statRow("Bot-save stamp >30d old", d.articles.stale, "RQ5") +
     statRow("AI-reviewed ≤30d (articles an AI review changed; reviews that changed nothing are not counted)", d.articles.aiReviewedFresh, "RQ5") +
     `<tr><td>Most recent AI review revision (UTC date)</td><td class="wl-stat-num">${
-      d.articles.aiReviewLatest === null ? '<span class="muted">none</span>' : new Date(d.articles.aiReviewLatest).toISOString().slice(0, 10)
+      (d.articles.aiReviewLatest === null ? null : isoPrefix(d.articles.aiReviewLatest, 10)) ?? '<span class="muted">none</span>'
     }</td>${rqCell("RQ5")}</tr>` +
     statRow("Drifted from pinned Wikipedia revision", d.articles.drifted, "RQ8") +
     statRow("Parked (moved / deleted / needs human)", d.articles.parked, "RQ4");
@@ -753,9 +760,9 @@ export function statsPage(d: StatsData): string {
     ? d.recentRuns
         .map(
           (r) =>
-            `<tr><td>${new Date(r.startedAt).toISOString().slice(0, 16).replace("T", " ")}</td>` +
+            `<tr><td style="white-space:nowrap">${isoPrefix(r.startedAt, 16)?.replace("T", " ") ?? '<span class="muted">—</span>'}</td>` +
             `<td>${htmlEscape(r.kind, false)}</td>${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}` +
-            `<td>${r.notes ? `<code>${htmlEscape(r.notes, false)}</code>` : '<span class="muted">—</span>'}</td></tr>`,
+            `<td>${r.notes ? `<code style="overflow-wrap:anywhere">${htmlEscape(r.notes, false)}</code>` : '<span class="muted">—</span>'}</td></tr>`,
         )
         .join("")
     : `<tr><td colspan="6" class="muted">No run reports yet.</td></tr>`;
@@ -803,10 +810,11 @@ export function statsPage(d: StatsData): string {
             : "—"
         }</td>${rqCell("RQ4")}</tr>`,
     ) +
-    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in an ` +
-    `all-time row means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
-    `Windowed rows (≤30d, last 30d) can legitimately read 0; a 0 in AI-reviewed ≤30d means the AI review has ` +
-    `stopped changing articles. ` +
+    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 where ` +
+    `activity is expected (event, revision and run counts) means the instrumentation or the pipeline is broken, ` +
+    `not that nothing happened — investigate before celebrating. Some rows are 0 by design (wp-update spends no ` +
+    `tokens; errors, open flags and parked articles are best at 0), and windowed rows (≤30d, last 30d) can ` +
+    `legitimately read 0; a 0 in AI-reviewed ≤30d means the AI review has stopped changing articles. ` +
     `Median time-to-first-human-touch is omitted: it needs a per-annotation pipeline-event × human-event self-join ` +
     `that is not a cheap single SQL pass on D1. RQ3 (AI dissent / ladder blocks) is measured in the runner&#x27;s ` +
     `decision sidecars, not in this database; RQ6 (inter-generation agreement) and RQ7 (confidence calibration) ` +
