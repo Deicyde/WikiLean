@@ -85,6 +85,7 @@ review-gated Brain lane:
 | `daily_bot.py` | orchestrator (settle → split → triage → open) | only via triage |
 | `open_batch_pr.py` | apply tags + build + open PR (from the existing pipeline) | no |
 | `ops/state-branch.sh` | restore/save the poller's state on the `bot-state` branch | no |
+| `gate_status.py` | read-only poller status as JSON with alerts (meant for `manage/status.py`; not wired in yet) | no |
 
 ## State: the `bot-state` branch
 
@@ -157,6 +158,23 @@ protection does not cover:
   copy, not the live state.
 
 ## Runbook
+
+### Checking the poller
+
+`python3 bot/gate_status.py --live` prints one JSON object built from read-only
+`gh` calls (allow 90 s):
+
+- the live state on `bot-state`
+- what the latest poller run on `main` concluded: `act`, `wait` or `error`, plus the
+  first step that failed, read from step outcomes rather than logs
+- the batch PR's state
+- `alerts`: a red latest run, any red run in the last 24 h, no success in 24 h, a
+  missing `bot-state` branch or state file, a conflicting, long-open or closed batch
+  PR, and anything it could not read
+
+Without `--live` it reports `main`'s frozen snapshot, touches no network, and says so
+in `alerts`. It never runs `decide()` itself: that would use your gh login, not the
+CI token.
 
 ### A poller run is red
 
