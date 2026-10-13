@@ -24,8 +24,8 @@ name: wikidata batch poller
 #   PIPELINE_TOKEN          the wiki bot bearer (same value as wiki/.dev.vars
 #                           PIPELINE_TOKEN) for the /queue publish.
 #
-# STATE: the runner is stateless, so bot state (bot/state/ + bot/data/corrections.jsonl)
-# lives on the unprotected `bot-state` branch of THIS repo: restored at the start of
+# STATE: the runner is stateless, so bot state (bot/state/ + the bot/data/ files the
+# tick writes) lives on the unprotected `bot-state` branch of THIS repo: restored at the start of
 # each run and pushed back at the end, only when it changed (bot/ops/state-branch.sh).
 # main requires the 'required' check, so the bot cannot push there; main's bot/state/
 # is a frozen snapshot that bootstraps the branch on the first run. The laptop

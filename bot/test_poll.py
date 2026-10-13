@@ -11,6 +11,7 @@ import contextlib
 import io
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -66,7 +67,7 @@ class FakeGh:
 
     def __init__(self, *, pr_json=None, state="OPEN", mergeable=("MERGEABLE",),
                  master=MASTER, diff=DIFF, reviews=(), comments=(), issue_comments=(),
-                 checks=(0, CHECKS_GREEN, ""), fail=None):
+                 checks=(0, CHECKS_GREEN, ""), edits=None, fail=None):
         self.pr_json = pr_json if pr_json is not None else pull()
         self.state = state
         self.mergeable = list(mergeable)
@@ -76,6 +77,7 @@ class FakeGh:
         self.comments = list(comments)
         self.issue_comments = list(issue_comments)
         self.checks = checks
+        self.edits = edits or {}
         self.fail = fail
         self.calls = []
 
@@ -101,6 +103,8 @@ class FakeGh:
             return 0, self.diff, ""
         if sub[:2] == ["pr", "checks"]:
             return self.checks
+        if sub[:2] in (["pr", "close"], ["pr", "reopen"]):
+            return self.edits.get(sub[1], (0, "", ""))
         if sub[0] == "api":
             path = sub[1]
             lines = lambda items: "".join(json.dumps(i) + "\n" for i in items)
@@ -317,6 +321,17 @@ class TickTest(PollFixture):
         with self.assertRaises(settle.GhError):
             self.run_with(FakeGh(fail=auth_failure), poll.tick, Path("/unused"), True)
 
+    def test_failed_ci_retrigger_fails_the_tick_and_keeps_the_retry(self):
+        self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
+        flake = "ci / Build\tpass\t10m\tu\t\nci / Post-Build Step\tfail\t1m\tu\t\n"
+        fake = FakeGh(reviews=approvals("Deicyde") + approvals("jcommelin"), checks=(1, flake, ""),
+                      edits={"reopen": (1, "", "HTTP 401: Bad credentials\n")})
+        with mock.patch.object(poll.split, "freshen_branch_and_push", return_value=False):
+            with self.assertRaises(SystemExit):
+                self.run_with(fake, poll.tick, Path("/unused"), False)
+        state = json.loads((self.here / "state" / "bot_state.json").read_text())
+        self.assertNotIn("retriggered_pr", state)
+
     def test_refresh_table_auth_failure_raises(self):
         self.write_state()
         with self.assertRaises(settle.GhError):
@@ -334,6 +349,13 @@ class SettleHelpersTest(PollFixture):
                 with self.assertRaises(settle.GhError):
                     self.run_with(FakeGh(fail=lambda c, o=out: (0, o, "")),
                                   settle.gh_obj, REPO, f"pulls/{PR}")
+
+    def test_rotation_hint_only_on_a_real_401(self):
+        failed = lambda err: subprocess.CompletedProcess([], 1, stdout="", stderr=err)
+        hint = "MATHLIB_FORK_PAT"
+        self.assertIn(hint, settle.gh_failure(["api", "x"], failed("gh: Bad credentials (HTTP 401)")))
+        self.assertNotIn(hint, settle.gh_failure(["pr", "view", "44015"], failed(
+            "GraphQL: Could not resolve to a PullRequest with the number of 44015.")))
 
     def test_is_merged_raises_on_auth_failure(self):
         with self.assertRaises(settle.GhError):
@@ -392,13 +414,21 @@ sys.exit(f"unexpected mode {mode}")
 
     def run_decide(self, mode, with_gh=True):
         with tempfile.TemporaryDirectory() as tmp:
-            bindir = Path(tmp)
+            # A private copy of bot/ with its own state, so the repo's state is never read.
+            botdir = Path(tmp) / "bot"
+            shutil.copytree(HERE, botdir, ignore=shutil.ignore_patterns(
+                "state", "data", "reports", "ops", "__pycache__", "test_*.py"))
+            (botdir / "state").mkdir()
+            (botdir / "state" / "bot_state.json").write_text(json.dumps(
+                {"current_pr": PR, "batch_num": 7, "settled_pr": PR}))
+            bindir = Path(tmp) / "bin"
+            bindir.mkdir()
             if with_gh:
                 gh = bindir / "gh"
                 gh.write_text(f"#!{sys.executable}\n" + self.FAKE_GH % {"body": AUTH_BODY})
                 gh.chmod(0o755)
             env = {"PATH": str(bindir), "FAKE_GH_MODE": mode, "PYTHONDONTWRITEBYTECODE": "1"}
-            return subprocess.run([sys.executable, str(HERE / "poll.py"), "--mathlib", "/tmp/unused",
+            return subprocess.run([sys.executable, str(botdir / "poll.py"), "--mathlib", "/tmp/unused",
                                    "--decide"], capture_output=True, text=True, env=env, timeout=60)
 
     def test_auth_failure_exits_nonzero_with_a_clear_message(self):

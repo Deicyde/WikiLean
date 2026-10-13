@@ -86,25 +86,29 @@ review-gated Brain lane:
 ## State: the `bot-state` branch
 
 `main` requires the strict `required` check, so the poller cannot push its state
-commit there. Its mutable state (`bot/state/` and `bot/data/corrections.jsonl`)
-lives on the orphan `bot-state` branch instead, which branch protection does not
-cover:
+commit there. Its mutable state (`bot/state/`, plus the `bot/data/` files the tick
+writes and reads back: `corrections.jsonl`, `tagged_in_master.txt`,
+`tagged_pairs.txt`) lives on the orphan `bot-state` branch instead, which branch
+protection does not cover:
 
-- Each run starts with `bot/ops/state-branch.sh restore`, which copies the branch's
-  files over the checkout before anything reads them, and ends with
+- Each run starts with `bot/ops/state-branch.sh restore`, which makes those paths
+  in the checkout match the branch (deletions included) before anything reads
+  them, and ends with
   `state-branch.sh save`, which commits any change on top of the restored commit
   and pushes it as a fast-forward. A failed read fails the run; it never falls back
   to `main`'s copy.
 - If `bot-state` does not exist, the first run creates it from `main`'s
   `bot/state/`. No setup is needed.
-- `main`'s `bot/state/` is now a frozen snapshot. The Brain build reads
-  `bot/state/{cut_log,seed_queue,recycle_queue,brain_queue}.json` from `main`, so
-  it sees the bot's queue changes only after someone folds them back with a
-  reviewed PR:
+- `main`'s copies are now a frozen snapshot. The Brain build reads
+  `bot/state/{cut_log,seed_queue,recycle_queue,brain_queue}.json` from `main`, and
+  the catalog and `manage/` read `bot/data/tagged_in_master.txt`, so they see the
+  bot's changes only after someone folds them back with a reviewed PR
+  (`git restore --source` also carries deletions):
 
       git fetch origin bot-state
       git switch -c bot/fold-state origin/main
-      git checkout origin/bot-state -- bot/state bot/data/corrections.jsonl
+      git restore --source=origin/bot-state --staged --worktree -- bot/state \
+        bot/data/corrections.jsonl bot/data/tagged_in_master.txt bot/data/tagged_pairs.txt
       git diff --cached    # review, commit, open a PR
 
 - To fix the state by hand (for example after a clobber), commit on `bot-state`,
@@ -120,7 +124,9 @@ cover:
 
 - Tick from the workflow (`gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean`),
   not a laptop. The laptop poller is retired: two runners with diverging state
-  force-pushed over batch 7's reviewed tags in 2026-08.
+  force-pushed over batch 7's reviewed tags in 2026-08. `poll.py --decide` in a
+  `main` checkout reads the frozen snapshot, so its answer describes `main`'s
+  copy, not the live state.
 
 ## Runbook
 

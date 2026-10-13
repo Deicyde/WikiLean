@@ -7,8 +7,9 @@ Each tick looks at the current batch PR's GitHub state and acts on it:
     (>=2 reviewers incl >=1 maintainer)   + post the reviewer table + ready comment
   - CLOSED, not merged             -> halt: exit non-zero for a human
   - otherwise                      -> wait (nothing to do)
-A gh failure (bad token, error body, empty answer) exits non-zero with POLL_ERROR;
-it never reads as 'wait'.
+A failed GitHub read in decide()/tick() (bad token, error body, empty answer) exits
+non-zero with POLL_ERROR; it never reads as 'wait'. Best-effort subprocess steps
+(triage, harvest, pr_table, publish) stay unchecked, as before.
 
 Idempotent via state.settled_pr (won't re-settle) and merge state (won't
 re-open). Dry-run by default — prints the decision; --apply acts.
@@ -232,8 +233,10 @@ def retrigger(pr, repo):
     """Re-run a fork PR's CI without a noise commit: close then reopen (the
     'reopened' event re-fires the workflow). A fork author can do this; they
     can't hit 'Re-run' on the upstream Actions UI."""
-    sh(["gh", "pr", "close", str(pr), "--repo", repo])
-    sh(["gh", "pr", "reopen", str(pr), "--repo", repo])
+    # Checked: a silent failure would spend the once-per-PR retrigger, and a failed
+    # reopen leaves the PR closed by the bot itself.
+    sh(["gh", "pr", "close", str(pr), "--repo", repo], check=True)
+    sh(["gh", "pr", "reopen", str(pr), "--repo", repo], check=True)
 
 
 def tick(mathlib, dry, no_open=False):
