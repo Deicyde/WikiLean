@@ -1519,6 +1519,24 @@ describe("snapshot echo", () => {
     const { j } = await getJson(h, "/api/brain/cell?key=Q999999999");
     expect(j.snapshot).toMatchObject({ generated_at: "2026-07-15" });
   });
+
+  it("an offline-replay release echoes its sha256: generation id and Mathlib source digest verbatim", async () => {
+    const generatedAt = "sha256:" + "b".repeat(64);
+    const mathlibPin = "sha256:" + "9".repeat(64);
+    const h = harness({ replaySnapshot: { generatedAt, mathlibPin } });
+    const { j } = await getJson(h, "/api/brain/search?q=abelian");
+    // No Mathlib-family git commit in the release: pin falls back to the first
+    // Mathlib-family digest; theoremgraph's 40-hex pin is not Mathlib's.
+    expect(j.snapshot).toEqual({ generated_at: generatedAt, pin: mathlibPin });
+  });
+
+  it("the API reference describes the fields as opaque identifiers, not a date and a commit", async () => {
+    const h = harness();
+    const res = await get(h.env, "/brain/api");
+    const text = (await res.text()).replace(/\s+/g, " ");
+    expect(text).toContain("both opaque identifiers");
+    expect(text).toContain("digest of the sealed Mathlib source input");
+  });
 });
 
 // BRIDGE item 7 — the composite brain_bridge call.

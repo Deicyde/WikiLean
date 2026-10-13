@@ -342,13 +342,16 @@ async function supercellsFile(c: Ctx, release: BrainReleaseContext): Promise<Sup
 
 // ---- snapshot echo (SCHEMA v3; held-out evaluation is dishonest without it) ----
 
-// The Mathlib pin the decl organs were built against. Organs carry a `prov`
-// index; the pointed-at prov row carries the pin. Rather than open an organ, we
-// read the SAME rows off the manifest's `prov` table (already fetched): prefer a
-// git-commit-shaped pin from a Mathlib-family source (the @[wikidata]/@[stacks]/
-// @[kerodon] attribute rows carry the mathlib4 checkout commit — e.g.
-// "bf3266149cda603f"), else the first Mathlib-source pin (a data date), else
-// null. Honest about what is available: no pin ⇒ null, never a guess.
+// The Mathlib source pin the decl organs were built from. Organs carry a
+// `prov` index; the pointed-at prov row carries the pin. Rather than open an
+// organ, we read the SAME rows off the manifest's `prov` table (already
+// fetched): prefer a git-commit-shaped pin from a Mathlib-family source (older
+// releases' @[wikidata]/@[stacks]/@[kerodon] attribute rows carried the
+// mathlib4 checkout commit, e.g. "bf3266149cda603f"), else the first
+// Mathlib-family pin, else null. Offline-replay releases record every
+// Mathlib-family pin as a "sha256:" digest of the sealed source input, so
+// there the fallback is that digest, an opaque identifier rather than a
+// mathlib4 commit. No pin ⇒ null, never a guess.
 function mathlibPin(prov: Array<Record<string, string>> | undefined): string | null {
   if (!prov) return null;
   let fallback: string | null = null;
@@ -363,8 +366,10 @@ function mathlibPin(prov: Array<Record<string, string>> | undefined): string | n
 }
 
 export interface Snapshot {
+  // cells/manifest.json _meta.generated_at: an ISO build timestamp in older
+  // releases, the "sha256:" replay generation id in offline-replay releases.
   generated_at: string | null;
-  pin: string | null;
+  pin: string | null; // mathlibPin(): git commit if recorded, else a sha256: source digest
 }
 
 // EVERY brain API/MCP response echoes this. Zero EXTRA fetches: the cells
@@ -2675,7 +2680,11 @@ mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_premises</code>.
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
 card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
-<code>release_id</code> and <code>snapshot:{generated_at,pin}</code>.</p>
+<code>release_id</code> and <code>snapshot:{generated_at,pin}</code>, both opaque identifiers:
+<code>generated_at</code> names the brain generation (an ISO build timestamp in older releases,
+a <code>sha256:</code> generation id in offline-replay releases) and <code>pin</code> names the
+Mathlib source (a git commit when the release records one, otherwise a <code>sha256:</code>
+digest of the sealed Mathlib source input).</p>
 
 <h2>Id grammar</h2>
 <table>

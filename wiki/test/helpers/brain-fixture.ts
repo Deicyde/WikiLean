@@ -590,6 +590,10 @@ export interface BrainFixtureOpts {
   // changeset claims until accepted-changeset replay verification exists.
   throughChangeset?: string;
   xrefIndex?: Record<string, string[]>;
+  // Shape cells/manifest.json like an offline-replay release: generated_at is
+  // the sha256: generation id and every Mathlib-family prov pin is a sha256:
+  // source digest (no git commit anywhere).
+  replaySnapshot?: { generatedAt: string; mathlibPin: string };
   // Return a transient 404 this many times before serving xref_index.json.
   xrefIndexFailures?: number;
   // Return 404 for a declared release-relative asset (for example cells/mo____.json).
@@ -643,19 +647,26 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
       ...(spec.breadcrumb ? { breadcrumb: spec.breadcrumb } : {}),
     };
   }
+  const replay = opts.replaySnapshot;
   const cellsManifest = {
     scheme: { kind: "prefix", min_len: KEY_LEN, max_len: KEY_LEN, pad: "_" },
     shards,
-    prov: [
-      { source: "test", method: "fixture", pin: "2026-07-15" },
-      { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "2026-07-04" },
-      { source: "mathlib_deps", method: "kernel extraction", pin: "2026-07-04" },
-      { source: "theoremgraph", method: "dual-judge match", pin: "2026-07-04" },
-    ],
+    prov: replay
+      ? [
+        { source: "mathlib", method: "sealed source", pin: replay.mathlibPin },
+        { source: "kerodon", method: "@[kerodon] attribute", pin: "sha256:" + "a".repeat(64) },
+        { source: "theoremgraph", method: "dual-judge match", pin: "5caba941dd716f17dba4880bd7173edfb1cc36d1" },
+      ]
+      : [
+        { source: "test", method: "fixture", pin: "2026-07-15" },
+        { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "2026-07-04" },
+        { source: "mathlib_deps", method: "kernel extraction", pin: "2026-07-04" },
+        { source: "theoremgraph", method: "dual-judge match", pin: "2026-07-04" },
+      ],
     roots: ["path:Mathlib"],
     _meta: {
       schema: "brain/SCHEMA.md#v3",
-      generated_at: "2026-07-15",
+      generated_at: replay ? replay.generatedAt : "2026-07-15",
       caps: { synapses_per_cell: 200, traces_per_synapse: 6 },
     },
   };
