@@ -207,9 +207,11 @@ describe("GET /stats", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain("Reading a zero:");
-    expect(html).toContain("instrumentation is broken");
-    // The windowed AI-review row reading 0 is the outage signal, not a bug.
-    expect(html).toContain("Windowed rows (≤30d, last 30d) can legitimately read 0");
+    expect(html).toContain("means the instrumentation or the pipeline is broken");
+    // The windowed AI-review row reading 0 is the outage signal, not a bug,
+    // and design-zero rows are named.
+    expect(html).toContain("windowed rows (≤30d, last 30d) can legitimately read 0");
+    expect(html).toContain("wp-update spends no tokens");
     expect(html).toContain("Median time-to-first-human-touch is omitted");
   });
 
@@ -268,12 +270,26 @@ describe("GET /stats", () => {
     expect(html).toContain("<h2 class=\"wl-stats-h\">Recent pipeline runs</h2>");
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain(
-      '<tr><td>2026-10-12 07:20</td><td>review</td><td class="wl-stat-num">15</td><td class="wl-stat-num">15</td>' +
-        '<td class="wl-stat-num">0</td><td><code>15/15 errors: &lt;script&gt;alert(1)&lt;/script&gt; [redacted] [redacted]</code></td></tr>',
+      '<tr><td style="white-space:nowrap">2026-10-12 07:20</td><td>review</td><td class="wl-stat-num">15</td><td class="wl-stat-num">15</td>' +
+        '<td class="wl-stat-num">0</td><td><code style="overflow-wrap:anywhere">15/15 errors: &lt;script&gt;alert(1)&lt;/script&gt; [redacted] [redacted]</code></td></tr>',
     );
     expect(html).not.toContain("abc.def");
     expect(html).not.toContain("ops@example.org");
     expect(html.indexOf("2026-10-12 07:20")).toBeLessThan(html.indexOf("2026-10-11 07:20"));
+  });
+
+  it("an out-of-range runner timestamp renders as — instead of taking /stats down", async () => {
+    const h = setup();
+    const res = await post(
+      h.env,
+      "/api/runs",
+      { run_id: "0000eee9", kind: "review", started_at: Number.MAX_SAFE_INTEGER, finished_at: Number.MAX_SAFE_INTEGER, articles_processed: 1, errors: 0, tokens: 0 },
+      { bearer: PIPELINE_TOKEN, origin: null },
+    );
+    expect(res.status).toBe(200);
+    const page = await get(h.env, "/stats");
+    expect(page.status).toBe(200);
+    expect(await page.text()).toContain('<tr><td style="white-space:nowrap"><span class="muted">—</span></td><td>review</td>');
   });
 
   it("an empty run registry renders a placeholder row", async () => {

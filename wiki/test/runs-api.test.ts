@@ -49,11 +49,14 @@ describe("GET /api/runs", () => {
     expect(body.runs[0]).toMatchObject({ kind: "wp-update", cost_usd_equiv: null, model: null, notes: null });
   });
 
-  it("breaks started_at ties by server receipt time, newest first", async () => {
+  it("breaks started_at ties by server receipt time, newest first, then run_id", async () => {
     const h = setup();
     expect((await report(h, { run_id: "0000bbb1", kind: "review", started_at: 500 })).status).toBe(200);
-    h.db.prepare("UPDATE pipeline_runs SET created_at = 1 WHERE run_id = '0000bbb1'").run();
     expect((await report(h, { run_id: "0000bbb2", kind: "review", started_at: 500 })).status).toBe(200);
+    // Backdate the SECOND insert, so insertion order would give the wrong answer.
+    h.db.prepare("UPDATE pipeline_runs SET created_at = 1 WHERE run_id = '0000bbb2'").run();
+    expect((await runs(h)).body.runs!.map((r) => r.run_id)).toEqual(["0000bbb1", "0000bbb2"]);
+    h.db.prepare("UPDATE pipeline_runs SET created_at = 1").run();
     expect((await runs(h)).body.runs!.map((r) => r.run_id)).toEqual(["0000bbb2", "0000bbb1"]);
   });
 
@@ -90,9 +93,39 @@ describe("GET /api/runs", () => {
     expect((await report(h, { run_id: "0000ddd1", kind: "review", started_at: 10, notes })).status).toBe(200);
     const got = (await runs(h)).body.runs![0].notes as string;
     expect(got).toBe("agent_error: Authorization: [redacted] [redacted] [redacted] [redacted] mail [redacted] [31mred");
-    // Rows written before this release could exceed the cap after redaction.
-    h.db.prepare("UPDATE pipeline_runs SET notes = ? WHERE run_id = '0000ddd1'").run("x".repeat(3000));
-    expect(((await runs(h)).body.runs![0].notes as string).length).toBe(2000);
+    // Redaction runs before the cap, so a secret straddling char 2000 never
+    // leaves a prefix behind, and a lengthening redaction is cut back to 2000.
+    h.db.prepare("UPDATE pipeline_runs SET notes = ? WHERE run_id = '0000ddd1'").run("x ".repeat(997) + "Bearer secretvalue");
+    const capped = (await runs(h)).body.runs![0].notes as string;
+    expect(capped.length).toBe(2000);
+    expect(capped).not.toContain("Bea");
+  });
+
+  it("also catches lowercase/Basic schemes, the Worker's own secrets, high-entropy runs, IDN emails, home paths", async () => {
+    const h = setup();
+    const notes = [
+      "bearer lowercase1",
+      "BASIC dXNlcjpwYXNz",
+      "Authorization%3A%20Bearer%20enc0ded",
+      `raw ${PIPELINE_TOKEN} leaked`,
+      "cf " + "Ab1".repeat(14),
+      "jürgen@exämple.de",
+      "/Users/jack/projects/x and /home/ops/y",
+      "slug Group_(mathematics) kept, 15/15 errors kept, token budget kept",
+    ].join(" | ");
+    expect((await report(h, { run_id: "0000ddd2", kind: "review", started_at: 10, notes })).status).toBe(200);
+    expect((await runs(h)).body.runs![0].notes).toBe(
+      [
+        "[redacted]",
+        "[redacted]",
+        "Authorization%3A%20[redacted]",
+        "raw [redacted] leaked",
+        "cf [redacted]",
+        "[redacted]",
+        "~/projects/x and ~/y",
+        "slug Group_(mathematics) kept, 15/15 errors kept, token budget kept",
+      ].join(" | "),
+    );
   });
 
   it("POST /api/runs still requires the bot bearer", async () => {
