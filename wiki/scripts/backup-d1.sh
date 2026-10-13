@@ -10,8 +10,9 @@
 #
 # Decrypt and restore (local D1 first): see docs/BACKUP.md.
 #
-# Schedule daily via launchd / cron, e.g. add to your crontab:
-#   30 7 * * *  cd /Users/jack/Desktop/LEAN/WikiLean/wiki && BACKUP_AGE_RECIPIENTS='age1…' ./scripts/backup-d1.sh
+# Schedule daily via launchd / cron, e.g. add to your crontab (keep the key
+# file in sync with the repo variable when keys rotate):
+#   30 7 * * *  cd /Users/jack/Desktop/LEAN/WikiLean/wiki && PATH=/opt/homebrew/bin:$PATH BACKUP_AGE_RECIPIENTS="$(cat ~/.config/wikilean/backup-recipients.txt)" ./scripts/backup-d1.sh
 set -euo pipefail
 
 DIR="${1:-./backups}"
@@ -26,13 +27,20 @@ if [ -z "${RECIPIENTS//[[:space:]]/}" ]; then
   exit 1
 fi
 umask 077
-WORK=$(mktemp -d)
-trap 'rm -rf "$WORK"' EXIT
+WORK=$(mktemp -d "${TMPDIR:-/tmp}/wikilean-backup.XXXXXX")
+trap 'rm -rf "$WORK"; rm -f "$OUT.partial"' EXIT
 printf '%s\n' "$RECIPIENTS" > "$WORK/recipients.txt"
-age -R "$WORK/recipients.txt" -o /dev/null < /dev/null
+age -R "$WORK/recipients.txt" -o /dev/null < /dev/null || {
+  echo "BACKUP_AGE_RECIPIENTS is not a valid age recipient list; refusing to export (see docs/BACKUP.md)" >&2
+  exit 1
+}
 
 mkdir -p "$DIR"
 npx wrangler d1 export wikilean --remote --output="$WORK/wikilean-$STAMP.sql"
-age -R "$WORK/recipients.txt" -o "$OUT" "$WORK/wikilean-$STAMP.sql"
+test -s "$WORK/wikilean-$STAMP.sql" || { echo "wrangler produced an empty export" >&2; exit 1; }
+# Encrypt next to the destination and rename, so an interrupted run never
+# leaves a truncated .age that looks like a real backup.
+age -R "$WORK/recipients.txt" -o "$OUT.partial" "$WORK/wikilean-$STAMP.sql"
 rm -f "$WORK/wikilean-$STAMP.sql"
+mv "$OUT.partial" "$OUT"
 echo "wrote $OUT ($(du -h "$OUT" | cut -f1))"
