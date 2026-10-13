@@ -25,8 +25,8 @@ the `{{Property proposal}}` template with minimal editing.
 
 > **Pre-submission checklist** (historical; the proposal was posted on 2026-06-09):
 > - [ ] **Human-review the seed mappings** — REFRAMED 2026-07-02: the seed batch is
->   now the ~126 tags already **merged into mathlib master** (each passed ≥2 human
->   reviewers incl. a maintainer, plus CI) rather than the 815 AI mappings.
+>   now the ~126 tags already **merged into mathlib master** (each merged into Mathlib
+>   by a maintainer after Mathlib CI) rather than the 815 AI mappings.
 >   Sign-off artifacts (from `bot/export_property_seed.py`):
 >   `bot/data/property_seed.tsv` (126 rows with PR provenance),
 >   `property_seed_quickstatements.csv` (119 ready rows, `PXXXX` placeholder),
