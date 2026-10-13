@@ -3,7 +3,7 @@
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
 // RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v2',
-// TTL 300s), aboutPage() ('page:about:v1', TTL 300s), and sitemapXml()
+// TTL 300s), aboutPage() ('page:about:v2', TTL 300s), and sitemapXml()
 // ('page:sitemap:v4', TTL 3600s).
 //
 // Visual language: warm academic-minimalist — paper background, serif display
@@ -565,7 +565,7 @@ export interface AboutStats {
   nNotFormalized: number;
 }
 
-// The About & method page, served dynamically from D1 (KV 'page:about:v1',
+// The About & method page, served dynamically from D1 (KV 'page:about:v2',
 // TTL 300s). Replaces the static site/out/about.html asset (retired from
 // build_static_pages.py) whose baked stats went stale the day it was built.
 // Visual shell reproduced from that page: self-contained inline CSS, warm
@@ -720,14 +720,29 @@ footer p { margin:4px 0; }
   documents where every external link comes from, with its Wikidata property and license.</p>
 
   <h2>Limitations &amp; how to contribute</h2>
-  <p>Annotations are best-effort and cover a growing sample of WikiProject Mathematics,
+  <p>Annotations are best-effort and cover a sample of WikiProject Mathematics,
   not the whole corpus. A match reflects a judgment that a Mathlib declaration formalizes
   a statement; it can be incomplete or wrong, and Mathlib itself evolves, so coverage is
-  a snapshot rather than a guarantee. Corrections happen right on the site: sign in
-  (GitHub or Google) to edit annotations in-context on any article, or — without an account — report
-  a problem from any annotation's tooltip (the ⚑ link). Human edits are patrolled by
-  moderators, and AI proposals to change a human-authored annotation are queued for
-  human approval before anything lands.</p>
+  a snapshot rather than a guarantee. Corrections happen right on the site:
+  <a href="/login">sign in</a> to edit annotations in-context on any article, or — without
+  an account — report a problem from any annotation's tooltip (the ⚑ link).</p>
+
+  <h2>How edits are moderated</h2>
+  <p>Edits by people take effect immediately and are marked as human-authored. They are
+  not screened first: each one is listed for patrollers to review, and the
+  <a href="/stats">Stats</a> page shows how many have been patrolled. Every change, by a
+  person or by the AI pipeline, is kept in the article's history and in
+  <a href="/recent-changes">Recent changes</a>, and can be reverted.</p>
+  <p>The AI pipeline cannot silently overwrite a human-authored annotation: a pipeline save
+  that drops or alters one is refused, and the pipeline can file a proposal instead. Under
+  WikiLean's human-at-boundaries policy (adopted August 2026), those proposals are decided
+  by software rather than held for a person. Each night a deterministic resolver, which
+  uses no language model, approves or rejects the proposals that match its fixed rules;
+  the rest stay pending until a patroller decides them. When an AI change to a
+  human-authored annotation is approved, the annotation is relabeled AI-moderated, so
+  AI-changed text is never presented as human work. People remain the gate where WikiLean
+  contributes to projects that take only human-reviewed changes, such as Mathlib and
+  Wikidata.</p>
 
   <footer>
     <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
