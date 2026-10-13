@@ -2,11 +2,11 @@
 #
 # This mirrors `wiki/scripts/backup-d1.sh` (which runs `wrangler d1 export`)
 # but on GitHub-hosted infrastructure, so backups happen even when no one's
-# laptop is on. The repo is public, so the export of the `wikilean` D1
-# database is encrypted with age before it leaves the runner: only the .age
-# file is uploaded as a workflow artifact (retained for 30 days), and the
-# plaintext is deleted as soon as it is encrypted. Keys, decryption and
-# restore: docs/BACKUP.md.
+# laptop is on. The repo is public (artifacts and run logs included), so the
+# export of the `wikilean` D1 database is encrypted with age on the runner:
+# only the .age file is uploaded as a workflow artifact (retained for 30
+# days), and the plaintext is deleted as soon as it is encrypted. Keys,
+# decryption and restore: docs/BACKUP.md.
 #
 # ── Required repo variable ────────────────────────────────────────────────
 #   BACKUP_AGE_RECIPIENTS — the age public key(s) the backups are encrypted
@@ -65,12 +65,12 @@ jobs:
           AGE_VERSION: v1.3.2
           # sha256 of age-v1.3.2-linux-amd64.tar.gz: equals the release asset's
           # GitHub digest, and the tarball verifies against the release's
-          # Sigsum proof (docs/BACKUP.md, "Upgrading age").
+          # Sigsum proof (docs/BACKUP.md, "Upgrading the pinned age").
           AGE_SHA256: cbe24006683f8eb669266162894b9a522a1af52f2665fbc63a4bb032ed26ac10
         run: |
           set -euo pipefail
           tarball="$RUNNER_TEMP/age.tar.gz"
-          curl --fail -sSL --proto '=https' --tlsv1.2 -o "$tarball" \
+          curl --fail -sSL --retry 3 --proto '=https' --tlsv1.2 -o "$tarball" \
             "https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-amd64.tar.gz"
           echo "${AGE_SHA256}  ${tarball}" | sha256sum --check --strict
           mkdir -p "$RUNNER_TEMP/age-bin"
@@ -117,6 +117,10 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
+          # `d1 export --remote` logs a presigned URL that serves the plaintext
+          # dump to anyone for an hour. The run log is public, so keep wrangler
+          # to warnings and errors and discard its stdout.
+          WRANGLER_LOG: warn
         run: |
           set -euo pipefail
           umask 077
@@ -124,7 +128,8 @@ jobs:
           # exit path; only the .age file is left for the upload step.
           plain="$RUNNER_TEMP/wikilean-${{ steps.stamp.outputs.ts }}.sql"
           trap 'rm -f "$plain"' EXIT
-          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain"
+          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" > /dev/null
+          test -s "$plain" # an empty export must fail, not upload as a valid-looking .age
           age -R "$RUNNER_TEMP/age-recipients.txt" -o "wikilean-${{ steps.stamp.outputs.ts }}.sql.age" "$plain"
           rm -f "$plain"
           test "$(head -n 1 "wikilean-${{ steps.stamp.outputs.ts }}.sql.age")" = "age-encryption.org/v1"
