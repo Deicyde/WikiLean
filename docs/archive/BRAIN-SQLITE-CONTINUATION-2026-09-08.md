@@ -377,7 +377,7 @@ is `kerodon-plan-20260908/acquisition.log`; incomplete captures cannot supply bi
 The proposal diagnostic replays all 452 pinned proposal files with an exactly
 empty unknown-entity request plan. Replaying from an empty FC seed produces the
 same 2,100 rows as the old seeded run, removing an opaque prior-output dependency.
-The separate [curation decision](BRAIN-SQLITE-CURATION-DECISION.md) explains five
+The separate [curation decision](../BRAIN-SQLITE-CURATION-DECISION.md) explains five
 direct Git container contributions that must be preserved separately, and 15 FC
 links whose completed declaration names match recorded rejections. No diagnostic
 fold output has replaced the currently bound runtime input. This is an explicit
@@ -406,7 +406,7 @@ requires a new committed reducer generation and the complete coherent source
 replacement; no source plan, graph-change approval or runtime binding was changed.
 
 Standalone private-replay and public-release policy review tooling is implemented
-in [`standalone-policy-reviews-v1.md`](../brain/authority/specs/standalone-policy-reviews-v1.md).
+in [`standalone-policy-reviews-v1.md`](../../brain/authority/specs/standalone-policy-reviews-v1.md).
 It binds exact pack/source/object closure separately from exact public artifact
 coverage, keeps original source restrictions, and drafts pending records only.
 No policy approval has been issued. The separate private replay gate now binds
@@ -468,7 +468,7 @@ P2A's experimental shadow kernel implements four assertion operations, independe
 contribution identity, exact revision/retraction history, predecessor checks,
 derived conflicts and full/incremental replay. Its fixture envelope and kind policy
 are separate from accepted changesets; see
-[`experimental-assertions-v1.md`](../brain/authority/specs/experimental-assertions-v1.md).
+[`experimental-assertions-v1.md`](../../brain/authority/specs/experimental-assertions-v1.md).
 The actual Git pilot at `c64438d2` preserves all 104 container and 326 discovery
 contributions with identical canonical per-file roots. Evidence is retained in
 `assertion-shadow-20260908/`; source files, runtime routes and
