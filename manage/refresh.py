@@ -28,6 +28,7 @@ DATA = HERE / "data"
 GRAPH = ROOT / "catalog" / "data" / "concept_graph.json"
 sys.path.insert(0, str(ROOT / "bot"))
 import pool
+from status import graph_older_than_annotations
 
 
 def _run(cmd: list[str], cwd: Path = ROOT, optional: bool = False) -> bool:
@@ -75,7 +76,7 @@ def refresh(snapshot_bundle: Path | None = None) -> dict:
             "graph_mtime": graph_mtime,
             # The concept graph is rebuilt from the catalog, not from D1; if the
             # annotation layer is newer, article-level coverage has moved under it.
-            "graph_older_than_annotations": graph_mtime < ann_mtime,
+            "graph_older_than_annotations": graph_older_than_annotations(graph_mtime, ann_mtime),
         },
         "pool": {"fresh_candidates": n_pool, "approx_batches": round(n_pool / pool.BATCH_SIZE, 1),
                  "field_qids_excluded": pipe["excluded_fields"]},
