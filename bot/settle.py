@@ -29,6 +29,12 @@ MAINTAINERS = frozenset({
     "mattrobball", "ocfnash", "PatrickMassot", "RemyDegenne", "riccardobrasca",
     "robertylewis", "sgouezel", "TwoFX", "urkud", "Vierkantor",
 })
+_MAINTAINERS_LC = frozenset(m.lower() for m in MAINTAINERS)
+
+
+def is_maintainer(login):
+    """GitHub logins are case-insensitive."""
+    return bool(login) and login.lower() in _MAINTAINERS_LC
 OBJECT = ("reject", "revise", "flag")  # hard objections (a note is NOT one)
 BOTS = {"github-actions[bot]"}
 REACTION_VERDICT = {"+1": "approve", "-1": "reject"}  # 👍 = approve, 👎 = reject (REST content names)
@@ -161,17 +167,21 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
     # explicit[(qid, login)] = (status, ts); notes[(qid, login)] = text
     explicit, notes, reviewers = {}, {}, set()
-    # (qid, login) pairs whose latest verdict is a reaction, not a written comment.
-    by_reaction = set()
+    # (qid, login) pairs whose latest verdict is a reaction, not a written comment;
+    # written[(qid, login)] = (status, ts) of their latest WRITTEN verdict.
+    by_reaction, written = set(), {}
     # The PR author is the operator (the bot opens PRs under the operator's account):
     # their verdicts count per tag, but they are never one of the gate's reviewers.
     author = (meta.get("user") or {}).get("login", "")
-    maint = MAINTAINERS
+    if not author:
+        raise GhError(f"pulls/{pr}: no author login; cannot exclude the author from the gate")
     def note_explicit(qid, login, status, ts, text="", reaction=False):
         if not login or login in BOTS:
             return
         reviewers.add(login)
         k = (qid, login)
+        if not reaction and (k not in written or ts > written[k][1]):
+            written[k] = (status, ts)
         if k not in explicit or ts > explicit[k][1]:
             explicit[k] = (status, ts)
             (by_reaction.add if reaction else by_reaction.discard)(k)
@@ -223,10 +233,20 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     def decide(qid):
         ex = {u: stt for (q, u), (stt, _) in explicit.items() if q == qid}
         real = {u: stt for u, stt in ex.items() if stt != "(note)"}
-        # A reaction never overrides the operator's written objection.
-        author_objects = real.get(author) in OBJECT and (qid, author) not in by_reaction
-        mver = [stt for u, stt in real.items()
-                if u in maint and not (author_objects and (qid, u) in by_reaction)]
+        # A reaction never overrides the operator's written objection: while the author
+        # objects (latest verdict) and has objected in writing, a maintainer counts only
+        # through their latest written verdict.
+        author_objects = (real.get(author) in OBJECT
+                          and written.get((qid, author), ("",))[0] in OBJECT)
+        mver = []
+        for u, stt in real.items():
+            if not is_maintainer(u):
+                continue
+            if author_objects and (qid, u) in by_reaction:
+                stt = written.get((qid, u), ("(note)",))[0]
+                if stt == "(note)":
+                    continue
+            mver.append(stt)
         if mver:
             if any(s in OBJECT for s in mver):
                 return "recycle", ex, "maintainer rejected/revised"
@@ -261,7 +281,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         (green if verdict == "green" else recycle).append(rec)
 
     reviewers.discard(author)
-    maint_reviewers = sorted(reviewers & maint)
+    maint_reviewers = sorted(u for u in reviewers if is_maintainer(u))
     gate_ok = len(reviewers) >= 2 and bool(maint_reviewers)
     return {
         "pr": pr, "repo": repo, "head_sha": head_sha, "age_h": round(age_h, 1),

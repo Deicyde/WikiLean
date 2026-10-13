@@ -313,7 +313,7 @@ class TickTest(PollFixture):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             self.run_with(fake, poll.tick, Path("/unused"), True)
-        self.assertIn("RESOLVE-CONFLICT #42608: rebuild off fresh master with 2 green tags", out.getvalue())
+        self.assertIn("RESOLVE-CONFLICT #42608: rebuild off fresh master with the 2 tags it carries", out.getvalue())
 
     def test_auth_failure_raises(self):
         self.write_state(settled_pr=PR)

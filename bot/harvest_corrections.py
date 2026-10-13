@@ -177,7 +177,6 @@ def classify_failure_mode(note, suggested_qid, suggested_decl, orig_decl):
 
 def harvest(pr, repo=REPO):
     """Return a list of correction records for the PR (no I/O)."""
-    maint = set(settle.MAINTAINERS)
     records = []
     for c in settle.gh_list(repo, f"issues/{pr}/comments"):
         login = (c.get("user") or {}).get("login", "")
@@ -188,9 +187,7 @@ def harvest(pr, repo=REPO):
             continue
 
         # Maintainer only if on settle's explicit list (not GitHub's association).
-        is_maint = login in settle.MAINTAINERS
-        if is_maint:
-            maint.add(login)
+        is_maint = settle.is_maintainer(login)
 
         per_qid = settle.parse_pasted(body)     # {qid: {status, note}}
         line_meta = parse_line_meta(body)       # {qid: {label, file}}

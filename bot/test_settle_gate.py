@@ -4,6 +4,8 @@ maintainer list is 'maintainer', a reaction never overrides the author's written
 objection, and the public header states the rule that was applied."""
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import unittest
 from pathlib import Path
@@ -11,7 +13,7 @@ from unittest import mock
 
 import poll
 import settle
-from test_poll import PR, REPO, FakeGh, PollFixture
+from test_poll import CONFLICT_SHA, PR, REPO, FakeGh, PollFixture, pull
 
 AUTHOR = "Deicyde"
 
@@ -100,6 +102,43 @@ class GateTest(PollFixture):
                           issue_comments=[pasted_review(AUTHOR, {"Q36161": "reject"})])
         self.assertIn("Q36161", [g["qid"] for g in r["green"]])
 
+    def test_the_author_s_reaction_after_a_written_reject_keeps_the_objection(self):
+        r = self.classify(
+            comments=[crossref_comment(101, "Q36161", plus=1, minus=1)],
+            reactions={101: [reaction("jcommelin", "+1", "2026-08-25T00:00:00Z"),
+                             reaction(AUTHOR, "-1", "2026-08-26T00:00:00Z")]},
+            issue_comments=[pasted_review(AUTHOR, {"Q36161": "reject"}, at="2026-08-24T00:00:00Z")])
+        self.assertIn("Q36161", [t["qid"] for t in r["recycle"]])
+
+    def test_a_maintainer_s_reaction_after_their_written_approve_keeps_the_trump(self):
+        r = self.classify(
+            comments=[written_verdict("jcommelin", "Q36161", "approve", at="2026-08-12T00:00:00Z"),
+                      crossref_comment(101, "Q36161", plus=1)],
+            reactions={101: [reaction("jcommelin", "+1", "2026-08-30T00:00:00Z")]},
+            issue_comments=[pasted_review(AUTHOR, {"Q36161": "reject"})])
+        q = next(t for t in r["green"] if t["qid"] == "Q36161")
+        self.assertEqual(q["reason"], "maintainer approved")
+
+    def test_the_author_retracting_by_reaction_lifts_the_objection(self):
+        r = self.classify(
+            comments=[crossref_comment(101, "Q36161", plus=2)],
+            reactions={101: [reaction("jcommelin", "+1", "2026-08-25T00:00:00Z"),
+                             reaction(AUTHOR, "+1", "2026-08-26T00:00:00Z")]},
+            issue_comments=[pasted_review(AUTHOR, {"Q36161": "reject"}, at="2026-08-24T00:00:00Z")])
+        self.assertIn("Q36161", [t["qid"] for t in r["green"]])
+
+    def test_maintainer_logins_match_case_insensitively(self):
+        r = self.classify(reviews=[review("JCommelin"), review("SnirBroshi")])
+        self.assertEqual(r["maintainer_reviewers"], ["JCommelin"])
+        self.assertTrue(settle.is_maintainer("remydegenne"))
+        self.assertFalse(settle.is_maintainer(""))
+
+    def test_a_pr_without_an_author_fails_closed(self):
+        pr_json = pull()
+        del pr_json["user"]
+        with self.assertRaisesRegex(settle.GhError, "no author login"):
+            self.classify(pr_json=pr_json, reviews=[review("jcommelin"), review("SnirBroshi")])
+
     def test_pr_42608_shape(self):
         # The author rejected Set and PartialOrder in writing; a reviewer (not a
         # maintainer) thumbed both up. The old gate opened on author + reviewer and
@@ -122,6 +161,19 @@ class GateTest(PollFixture):
         by_qid = {g["qid"]: g for g in r["green"]}
         self.assertFalse(by_qid["Q36161"]["approved_by_reviewer"])
         self.assertTrue(by_qid["Q474715"]["approved_by_reviewer"])
+
+
+class ConflictRebuildTest(PollFixture):
+    def test_a_rebuild_keeps_every_tag_on_the_pr(self):
+        # Under the new rule the author's written reject recycles Q36161, but the gate is
+        # closed, so no settle trims it; the conflict rebuild must not drop it either.
+        self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
+        fake = FakeGh(mergeable=("CONFLICTING",), reviews=[review("SnirBroshi", "COMMENTED")],
+                      issue_comments=[pasted_review(AUTHOR, {"Q36161": "reject"})])
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.run_with(fake, poll.tick, Path("/unused"), True)
+        self.assertIn("rebuild off fresh master with the 2 tags it carries", out.getvalue())
 
 
 class HeaderTest(PollFixture):
