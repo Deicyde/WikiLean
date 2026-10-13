@@ -10,10 +10,10 @@ next batch only after the current one merges.
 Each run does two phases:
 
 1. **Settle** the current PR (`settle.py`, deterministic):
-   - **Gate:** ≥2 distinct people with a recorded verdict on the PR, **counting the
-     PR author**, at least one of them a "maintainer": `jcommelin`, `faenuccio`, or
-     anyone GitHub lists as an owner, member or collaborator of mathlib4 (which
-     includes Mathlib reviewers). No minimum PR age is checked.
+   - **Gate:** ≥2 distinct human reviewers on the PR besides its author,
+     including ≥1 Mathlib maintainer from the explicit list in `settle.py`
+     (`MAINTAINERS`). GitHub's author association does not count: it also marks
+     Mathlib reviewers, and misses maintainers whose org membership is private.
    - When the gate is open, classify each tag and **split** the PR down to its
      green tags (`split.py`, force-push), then post a ready-to-merge comment.
    - Any Mathlib maintainer merges the now-all-green PR (`bors merge`, or delegates
@@ -26,9 +26,13 @@ Each run does two phases:
 ## Per-tag rule (`settle.py`)
 
 - A bare **note/comment = "defer to the other reviewer"** → ignored.
-- A **maintainer's explicit approve/reject/revise/flag trumps** everything.
+- A **maintainer's explicit approve/reject/revise/flag trumps** everything, except
+  that a maintainer's 👍 reaction never overrides the PR author's written objection.
 - Otherwise: any **reject/revise/flag → recycle**; else **≥1 approve → green**;
-  else (no review) → recycle.
+  else (no review) → recycle. The author's own verdicts count per tag, but never
+  toward the gate.
+- The ready comment says how many green tags a reviewer other than the author
+  approved, and how many rest on the author's approval with no reviewer objection.
 
 So one approval suffices per tag (silence = agreement), but any unresolved
 objection recycles, and a maintainer overrides. Recording model: the detailed

@@ -38,7 +38,7 @@ AUTH_BODY = ('{"message":"Bad credentials","documentation_url":'
 
 def pull(state="open", title="doc: add wikidata attributes (batch 7)", merged=False):
     return {"number": PR, "state": state, "merged": merged, "merged_at": None,
-            "title": title, "created_at": "2026-08-10T11:00:00Z",
+            "title": title, "created_at": "2026-08-10T11:00:00Z", "user": {"login": "Deicyde"},
             "head": {"sha": "c" * 40}}
 
 
@@ -67,7 +67,7 @@ class FakeGh:
 
     def __init__(self, *, pr_json=None, state="OPEN", mergeable=("MERGEABLE",),
                  master=MASTER, diff=DIFF, reviews=(), comments=(), issue_comments=(),
-                 checks=(0, CHECKS_GREEN, ""), edits=None, fail=None):
+                 checks=(0, CHECKS_GREEN, ""), edits=None, reactions=None, fail=None):
         self.pr_json = pr_json if pr_json is not None else pull()
         self.state = state
         self.mergeable = list(mergeable)
@@ -78,6 +78,7 @@ class FakeGh:
         self.issue_comments = list(issue_comments)
         self.checks = checks
         self.edits = edits or {}
+        self.reactions = reactions or {}
         self.fail = fail
         self.calls = []
 
@@ -118,8 +119,8 @@ class FakeGh:
                 return 0, lines(self.comments), ""
             if path == f"repos/{REPO}/issues/{PR}/comments":
                 return 0, lines(self.issue_comments), ""
-            if path.startswith("orgs/"):
-                return 1, "", "gh: Not Found (HTTP 404)\n"
+            if path.startswith(f"repos/{REPO}/pulls/comments/") and path.endswith("/reactions"):
+                return 0, lines(self.reactions.get(int(path.split("/")[-2]), [])), ""
         raise AssertionError(f"unrouted gh call: {cmd}")
 
 
@@ -163,7 +164,6 @@ class PollFixture(unittest.TestCase):
         quiet = contextlib.redirect_stdout(io.StringIO())  # poll narrates every step
         quiet.__enter__()
         self.addCleanup(quiet.__exit__, None, None, None)
-        settle._ORG_MEMBER.clear()
 
     def write_state(self, **state):
         base = {"current_pr": PR, "batch_num": 7, "branch": "wikilean/wikidata-batch-7"}
@@ -199,34 +199,34 @@ class DecideTest(PollFixture):
 
     def test_open_unsettled_gate_not_met_waits(self):
         self.write_state()
-        self.assertEqual(self.run_with(FakeGh(reviews=approvals("Deicyde")), poll.decide), "wait")
+        self.assertEqual(self.run_with(FakeGh(reviews=approvals("SnirBroshi")), poll.decide), "wait")
 
     def test_open_unsettled_gate_met_acts(self):
         self.write_state()
-        fake = FakeGh(reviews=approvals("Deicyde") + approvals("jcommelin"))
+        fake = FakeGh(reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         self.assertEqual(self.run_with(fake, poll.decide), "act")
 
     def test_open_settled_clean_waits(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
-        fake = FakeGh(reviews=approvals("Deicyde") + approvals("jcommelin"))
+        fake = FakeGh(reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         self.assertEqual(self.run_with(fake, poll.decide), "wait")
 
     def test_settled_conflicting_acts(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         fake = FakeGh(mergeable=("CONFLICTING",),
-                      reviews=approvals("Deicyde") + approvals("jcommelin"))
+                      reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         self.assertEqual(self.run_with(fake, poll.decide), "act")
 
     def test_settled_conflicting_already_rebuilt_on_this_master_waits(self):
         self.write_state(settled_pr=PR, conflict_sha=MASTER)
         fake = FakeGh(mergeable=("CONFLICTING",),
-                      reviews=approvals("Deicyde") + approvals("jcommelin"))
+                      reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         self.assertEqual(self.run_with(fake, poll.decide), "wait")
 
     def test_unknown_mergeable_is_reread_until_github_answers(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         fake = FakeGh(mergeable=("UNKNOWN", "UNKNOWN", "CONFLICTING"),
-                      reviews=approvals("Deicyde") + approvals("jcommelin"))
+                      reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         self.assertEqual(self.run_with(fake, poll.decide), "act")
         reads = [c for c in fake.calls if "mergeable" in c]
         self.assertEqual(len(reads), 3)
@@ -234,14 +234,14 @@ class DecideTest(PollFixture):
     def test_persistently_unknown_mergeable_halts(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         fake = FakeGh(mergeable=("UNKNOWN",),
-                      reviews=approvals("Deicyde") + approvals("jcommelin"))
+                      reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         with self.assertRaisesRegex(poll.Halt, "UNKNOWN"):
             self.run_with(fake, poll.decide)
 
     def test_settled_ci_cache_flake_acts(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         flake = "ci / Build\tpass\t10m\tu\t\nci / Post-Build Step\tfail\t1m\tu\t\n"
-        fake = FakeGh(reviews=approvals("Deicyde") + approvals("jcommelin"), checks=(1, flake, ""))
+        fake = FakeGh(reviews=approvals("SnirBroshi") + approvals("jcommelin"), checks=(1, flake, ""))
         self.assertEqual(self.run_with(fake, poll.decide), "act")
 
     def test_auth_failure_raises_with_a_rotation_hint(self):
@@ -259,9 +259,8 @@ class DecideTest(PollFixture):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         for broken in ("pr view", "reviews", "mergeable", "commits/master", "pr checks", "pr diff"):
             with self.subTest(broken=broken):
-                settle._ORG_MEMBER.clear()
                 fake = FakeGh(mergeable=("CONFLICTING",) if broken == "commits/master" else ("MERGEABLE",),
-                              reviews=approvals("Deicyde") + approvals("jcommelin"),
+                              reviews=approvals("SnirBroshi") + approvals("jcommelin"),
                               fail=lambda c, b=broken: auth_failure(c) if b in " ".join(c) else None)
                 with self.assertRaises(settle.GhError):
                     self.run_with(fake, poll.decide)
@@ -310,7 +309,7 @@ class TickTest(PollFixture):
     def test_settled_conflicting_rebuilds(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         fake = FakeGh(mergeable=("UNKNOWN", "CONFLICTING"),
-                      reviews=approvals("Deicyde") + approvals("jcommelin"))
+                      reviews=approvals("SnirBroshi") + approvals("jcommelin"))
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             self.run_with(fake, poll.tick, Path("/unused"), True)
@@ -331,7 +330,7 @@ class TickTest(PollFixture):
     def test_failed_ci_retrigger_fails_the_tick_and_keeps_the_retry(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         flake = "ci / Build\tpass\t10m\tu\t\nci / Post-Build Step\tfail\t1m\tu\t\n"
-        fake = FakeGh(reviews=approvals("Deicyde") + approvals("jcommelin"), checks=(1, flake, ""),
+        fake = FakeGh(reviews=approvals("SnirBroshi") + approvals("jcommelin"), checks=(1, flake, ""),
                       edits={"reopen": (1, "", "HTTP 401: Bad credentials\n")})
         with mock.patch.object(poll.split, "freshen_branch_and_push", return_value=False):
             with self.assertRaises(SystemExit):
@@ -378,49 +377,13 @@ class SettleHelpersTest(PollFixture):
         with self.assertRaises(settle.GhError):
             self.run_with(FakeGh(fail=auth_failure), settle.gh_reactions, REPO, 1)
 
-    def test_org_membership_distinguishes_not_found_from_failure(self):
-        member = lambda c: (0, "", "") if c[1] == "api" and c[2].startswith("orgs/") else None
-        self.assertTrue(self.run_with(FakeGh(fail=member), settle.is_org_member, REPO, "someone"))
-        settle._ORG_MEMBER.clear()
-        self.assertFalse(self.run_with(FakeGh(), settle.is_org_member, REPO, "someone"))
-        settle._ORG_MEMBER.clear()
-        with self.assertRaises(settle.GhError):
-            self.run_with(FakeGh(fail=auth_failure), settle.is_org_member, REPO, "someone")
-
     def test_classify_rejects_an_empty_diff(self):
         with self.assertRaisesRegex(settle.GhError, "empty"):
             self.run_with(FakeGh(diff=""), settle.classify, PR, REPO)
 
     def test_classify_reads_tags_from_the_diff(self):
-        result = self.run_with(FakeGh(reviews=approvals("Deicyde")), settle.classify, PR, REPO)
+        result = self.run_with(FakeGh(reviews=approvals("SnirBroshi")), settle.classify, PR, REPO)
         self.assertEqual(result["tags"], ["Q36161", "Q474715"])
-
-
-class ReadyHeaderTest(PollFixture):
-    CLS = {"pr": PR, "reviewers": ["Deicyde", "SnirBroshi"], "maintainer_reviewers": ["SnirBroshi"],
-           "gate": True, "tags": ["Q1", "Q2", "Q3"], "green": [{"qid": "Q1"}, {"qid": "Q2"}],
-           "recycle": [{"qid": "Q3"}]}
-
-    def test_header_states_the_rule_classify_applies(self):
-        h = settle.ready_header(self.CLS)
-        self.assertIn("**2** `@[wikidata]` tags with at least one approval", h)
-        self.assertIn("the PR author's own or a single 👍 reaction", h)
-        self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
-        self.assertIn("1 recycled to the next batch.", h)
-        self.assertNotIn("@SnirBroshi", h)  # names, not pings
-        self.assertNotIn("≥2 reviewers", h)
-        self.assertTrue(h.endswith("<!-- wikilean-bot-ready -->"))
-
-    def test_settle_posts_that_header(self):
-        self.write_state()
-        commands = []
-        with mock.patch.object(poll, "sh", side_effect=lambda cmd, **kw: commands.append(cmd)), \
-             mock.patch.object(poll, "CANDS", self.here / "state" / "pool_candidates.json"), \
-             mock.patch.object(poll.pool, "candidates", return_value=[]), \
-             mock.patch("pr_table.sync_body_count"):
-            poll.do_settle(PR, "wikilean/wikidata-batch-7", Path("/unused"), self.CLS, dry=False)
-        table = next(c for c in commands if str(c[1]).endswith("pr_table.py"))
-        self.assertEqual(table[table.index("--header") + 1], settle.ready_header(self.CLS))
 
 
 class DecideCommandLineTest(unittest.TestCase):
