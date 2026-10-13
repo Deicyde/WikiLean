@@ -5,10 +5,13 @@ Reads an upstream PR's reviews and computes the gate + per-tag green/recycle
 split. No mutations. Importable (`classify(pr)`) and runnable (prints a report).
 
 Rule (see bot/README.md):
-  - Gate: >=2 distinct human reviewers on the PR AND >=24h since it opened.
+  - Gate: >=2 distinct people with a recorded review on the PR, the PR author
+    included, >=1 of them a "maintainer": MAINTAINERS, an OWNER/MEMBER/COLLABORATOR
+    association on the PR, or a public org member who reacted. No PR age is checked.
   - A bare note/comment = "defer to the other reviewer" -> ignored.
-  - A maintainer's explicit approve/reject/revise/flag TRUMPS.
-  - Else: any reject/revise/flag -> recycle; else >=1 approve -> green; else recycle.
+  - A maintainer's explicit approve/reject/revise/flag (a 👍/👎 reaction included) TRUMPS.
+  - Else: any reject/revise/flag -> recycle; else >=1 approve (the author's own
+    included) -> green; else recycle.
 """
 import json, subprocess, re, sys, datetime as dt
 
@@ -277,6 +280,20 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         "gate_reasons": {"two_reviewers": len(reviewers) >= 2, "has_maintainer": bool(maint_reviewers)},
         "tags": tags, "green": green, "recycle": recycle,
     }
+
+
+def ready_header(cls):
+    """The settle comment's first line, stating the rule classify() applied. It names
+    reviewers in code font, without @, so it notifies no one."""
+    green, recycle = cls["green"], cls["recycle"]
+    who = ", ".join(f"`{u}`" for u in cls["reviewers"]) or "none"
+    return (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags with at least one approval 🟢 "
+            f"and no unresolved objection. Under this bot's rule one approval per tag is enough, and it can "
+            f"be the PR author's own or a single 👍 reaction; a verdict from a Mathlib maintainer or from "
+            f"anyone GitHub lists as a mathlib4 owner, member or collaborator overrides the others. "
+            f"Reviews recorded from: {who}. **Ready for a maintainer's review.**"
+            + (f" {len(recycle)} recycled to the next batch." if recycle else "")
+            + " <!-- wikilean-bot-ready -->")
 
 
 if __name__ == "__main__":
