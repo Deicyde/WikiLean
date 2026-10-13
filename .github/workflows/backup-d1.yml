@@ -119,8 +119,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
           # `d1 export --remote` logs a presigned URL that serves the plaintext
           # dump to anyone for an hour. The run log is public, so keep wrangler
-          # to warnings and errors and discard its stdout.
+          # to warnings and errors, discard its stdout, and skip its on-disk
+          # debug log (which records every message, URL included).
           WRANGLER_LOG: warn
+          WRANGLER_WRITE_LOGS: "false"
         run: |
           set -euo pipefail
           umask 077
@@ -129,7 +131,8 @@ jobs:
           plain="$RUNNER_TEMP/wikilean-${{ steps.stamp.outputs.ts }}.sql"
           trap 'rm -f "$plain"' EXIT
           wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" > /dev/null
-          test -s "$plain" # an empty export must fail, not upload as a valid-looking .age
+          # An empty export must fail, not upload as a valid-looking .age.
+          test -s "$plain" || { echo "::error::wrangler produced an empty export"; exit 1; }
           age -R "$RUNNER_TEMP/age-recipients.txt" -o "wikilean-${{ steps.stamp.outputs.ts }}.sql.age" "$plain"
           rm -f "$plain"
           test "$(head -n 1 "wikilean-${{ steps.stamp.outputs.ts }}.sql.age")" = "age-encryption.org/v1"
