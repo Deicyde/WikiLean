@@ -373,7 +373,8 @@ function hexOf(buf: ArrayBuffer): string {
   return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Salted research-export pseudonyms (see /api/research/export.jsonl).
+// Plain SHA-256 hex; callers that need a pseudonym append their own salt
+// (the research export salts with PIPELINE_TOKEN).
 async function sha256Hex(s: string): Promise<string> {
   return hexOf(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
 }
@@ -382,8 +383,9 @@ async function sha256Hex(s: string): Promise<string> {
 // under the IP_HASH_SECRET Worker secret, stored as "hmac-sha256:<hex>". The
 // prefix tells these rows apart from the legacy unsalted sha256(ip) values,
 // which migration 0013 scrubs. No secret (or no IP) → null, never a bare hash.
-// Nothing reads ip_hash today; the flag rate limit keys FLAG_LIMITER on the
-// raw IP, which the binding does not persist.
+// No code path uses ip_hash (dedupe and the per-target cap count open flags,
+// and FLAG_LIMITER keys on the raw IP, which the binding does not persist);
+// it leaves D1 only in full database backups.
 const IP_HASH_PREFIX = "hmac-sha256:";
 
 async function flagIpHash(env: Env, ip: string): Promise<string | null> {
