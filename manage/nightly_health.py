@@ -38,32 +38,39 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 P3_THRESHOLD = 0.90  # docs/ROADMAP.md: re-anchoring stages 1-2 trigger at "<90%"
+P3_MIN_SLUGS = 20    # fewer distinct drifted slugs than this is too few to judge
 
-# Ordered: the first matching pattern names the likely cause. The section names
-# match the "What each outcome means" table in docs/OPERATIONS.md.
+# Ordered: the first matching pattern names the likely cause, matched against
+# the raw (untruncated) error. The names are the "Likely cause" column of the
+# "What each outcome means" table in docs/OPERATIONS.md.
 CAUSES = [
-    ("python3 on the launchd PATH",
-     r"extract_failed|'python3'|xcrun|xcode-select|commandlinetools"),
-    ("Mathlib checkout path", r"working directory does not exist|mathlib"),
-    ("claude CLI launch",
-     r"claude code not found|command failed with exit code|cliconnection"
-     r"|processerror|no such file or directory|exec format|permission denied"),
+    ("python3 on the job's PATH",
+     r"^extract_failed|'python3'|xcrun|xcode-select|commandlinetools"),
+    ("Mathlib checkout path", r"working directory does not exist"),
+    ("API-key credential", r"credit balance"),
     ("Claude login",
-     r"log ?in\b|logged in|/login|api key|oauth|authenticat|unauthori[sz]ed"
-     r"|\b401\b|credential|keychain"),
+     r"not logged in|/login|invalid api key|oauth|authentication|unauthori[sz]ed"
+     r"|\b401\b|keychain"),
     ("plan or usage limit",
-     r"credit balance|usage limit|hit your|limit|quota|billing|subscription"
-     r"|overloaded|rate"),
-    ("model id", r"model"),
-    ("network", r"fetch_failed|get_failed|network|timed? ?out|connection"),
-    ("agent output", r"agent[12]_no_json|final_read_failed|render_failed"),
+     r"hit your|usage limit|weekly limit|limit reached|resets \d|quota"
+     r"|overloaded|\b529\b|rate.?limit(?!ed_429)"),
+    ("model id", r"selected model|\bmodel\b.*(not.?found|not available|access)"
+     r"|not_found_error"),
+    ("Worker write", r"^(network_post_failed|network_put_failed|rate_limited_429"
+     r"|post_\d|put_\d|human_lost_422|create_422)"),
+    ("claude CLI",
+     r"claude code not found|command failed with exit code|cliconnection"
+     r"|processerror|error result|jsondecode|exec format|permission denied"),
+    ("Wikipedia fetch", r"^fetch_failed"),
+    ("Worker read", r"^get_failed_"),
+    ("agent output", r"^(agent[12]_no_json|final_read_failed|render_failed)"),
 ]
 
 _HOME = re.compile(r"/(?:Users|home)/[^/\s'\"]+")
 _SECRET = re.compile(
     r"sk-ant-[\w-]+|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_\w+|Bearer\s+\S+"
     r"|\b(?=[A-Za-z]*\d)[A-Za-z0-9]{32,}\b")
-_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}\b")
 
 
 def clean(text, limit: int = 200) -> str:
@@ -75,8 +82,8 @@ def clean(text, limit: int = 200) -> str:
     return s if len(s) <= limit else s[: limit - 1] + "…"
 
 
-def likely_cause(error: str) -> str:
-    low = error.lower()
+def likely_cause(error) -> str:
+    low = " ".join(str(error).split()).lower()
     for name, pattern in CAUSES:
         if re.search(pattern, low):
             return name
@@ -111,14 +118,19 @@ def _utc(ms) -> str:
 def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
     """The last n_runs review runs, oldest first, from the per-article recs.
 
-    The run log has no timestamps, so a run's start is its earliest decisions
-    line; its mode comes from decisions when present, else the rec's 'op'."""
+    The run log has no timestamps, so 'first result' is the run's earliest
+    decisions line (each is written when an article finishes). A rec's mode is
+    its 'op'; recs without one (job_crashed) take the mode of the decisions
+    line for the same run and slug. `moderate.py all` runs therefore count
+    their review articles too."""
+    if n_runs <= 0:
+        return []
     mode_of, start_of = {}, {}
     for d in decisions:
         rid = d.get("run_id")
         if not rid:
             continue
-        mode_of.setdefault(rid, d.get("mode"))
+        mode_of.setdefault((rid, d.get("slug")), d.get("mode"))
         ts = d.get("ts")
         if isinstance(ts, (int, float)) and (rid not in start_of or ts < start_of[rid]):
             start_of[rid] = ts
@@ -127,7 +139,7 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
         rid = rec.get("run_id")
         if not rid:
             continue
-        mode = mode_of.get(rid) or rec.get("op")
+        mode = rec.get("op") or mode_of.get((rid, rec.get("slug")))
         if mode != "review":
             continue
         by_run.setdefault(rid, []).append(rec)
@@ -138,14 +150,14 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
         for r in errs:
             key = clean(r["error"])
             g = groups.setdefault(key, {"error": key, "count": 0, "slugs": [],
-                                        "elapsed": []})
+                                        "elapsed": [], "raw": r["error"]})
             g["count"] += 1
             if len(g["slugs"]) < 3:
                 g["slugs"].append(str(r.get("slug", "?")))
             if isinstance(r.get("elapsed_s"), (int, float)):
                 g["elapsed"].append(float(r["elapsed_s"]))
         for g in groups.values():
-            g["cause"] = likely_cause(g["error"])
+            g["cause"] = likely_cause(g.pop("raw"))
             g["median_elapsed_s"] = (round(statistics.median(g["elapsed"]), 1)
                                      if g["elapsed"] else None)
             del g["elapsed"]
@@ -172,11 +184,16 @@ def drift_trigger(decisions: list, report: list, days: int, now: float) -> dict:
 
     posted = re-pinned. A noop with anchors matched < total = anchors failed
     (the article needs stage 1/2). Everything else (already current, no
-    latest_revid, 409 races, fetch errors) is not a drift attempt."""
+    latest_revid, 409 races, fetch errors) is not a drift attempt. Dry runs
+    are dropped: their needs-work lines look like real ones in decisions, so a
+    run counts as dry if any of its lines is 'dry-run' or its report rows say
+    dry_run."""
     cutoff = (now - days * 86400) * 1000
+    dry = ({d.get("run_id") for d in decisions if d.get("outcome") == "dry-run"}
+           | {r.get("run_id") for r in report if r.get("dry_run")})
     repinned, failed, errors = [], [], 0
     for d in decisions:
-        if d.get("mode") != "wp-update":
+        if d.get("mode") != "wp-update" or d.get("run_id") in dry:
             continue
         ts = d.get("ts")
         if not isinstance(ts, (int, float)) or ts < cutoff:
@@ -197,7 +214,7 @@ def drift_trigger(decisions: list, report: list, days: int, now: float) -> dict:
     distinct = len(rp | fl)
     report_rows = 0
     for r in report:
-        if r.get("dry_run"):
+        if r.get("dry_run") or r.get("run_id") in dry:
             continue
         try:
             ts = datetime.fromisoformat(str(r.get("ts"))).timestamp() * 1000
@@ -231,7 +248,7 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
     if not runs:
         print("review: no review runs found in .moderate_run.log")
     for run in runs:
-        print(f"review run {run['run_id']}  started {run['started']}  "
+        print(f"review run {run['run_id']}  first result {run['started']}  "
               f"articles {run['articles']}  errors {run['errors']}  "
               f"tokens {run['tokens']:,}")
         for g in run["error_groups"]:
@@ -257,8 +274,8 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
                     if (g["median_elapsed_s"] or 0) >= 60]
             if slow:
                 print("  failing articles ran for a minute or more: the agents "
-                      "ran and spent Max quota, although each errored article "
-                      "is recorded with 0 tokens.")
+                      "ran and spent Max quota, although an article that fails "
+                      "inside annotate_one is recorded with 0 tokens.")
         elif last["errors"]:
             print(f"verdict: the latest run had {last['errors']} error(s) "
                   f"out of {last['articles']} articles.")
@@ -277,6 +294,9 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
     rate = drift["distinct_clear_rate"]
     if rate is None:
         print("  P3 trigger    no stage-0 attempts in the window")
+    elif drift["distinct_slugs"] < P3_MIN_SLUGS:
+        print(f"  P3 trigger    too few drifted slugs to judge "
+              f"({drift['distinct_slugs']} < {P3_MIN_SLUGS})")
     elif rate < P3_THRESHOLD:
         print(f"  P3 trigger    MET: stage-0 clears {_pct(rate)} of drifted articles "
               f"(< {P3_THRESHOLD:.0%}); docs/ROADMAP.md gates re-anchoring stages 1-2 on this")
@@ -296,7 +316,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--cache", type=Path, default=default_cache,
                     help="the host checkout's site/cache directory")
-    ap.add_argument("--runs", type=int, default=5, help="review runs to summarize")
+    ap.add_argument("--runs", type=lambda v: max(1, int(v)), default=5,
+                    help="review runs to summarize (at least 1)")
     ap.add_argument("--days", type=int, default=30, help="drift window in days")
     args = ap.parse_args(argv)
     cache = args.cache
