@@ -10,7 +10,10 @@ next batch only after the current one merges.
 Each run does two phases:
 
 1. **Settle** the current PR (`settle.py`, deterministic):
-   - **Gate:** ≥2 distinct human reviewers on the PR **and** ≥24h since it opened.
+   - **Gate:** ≥2 distinct people with a recorded verdict on the PR, **counting the
+     PR author**, at least one of them a "maintainer": `jcommelin`, `faenuccio`, or
+     anyone GitHub lists as an owner, member or collaborator of mathlib4 (which
+     includes Mathlib reviewers). No minimum PR age is checked.
    - When the gate is open, classify each tag and **split** the PR down to its
      green tags (`split.py`, force-push), then post a ready-to-merge comment.
    - Any Mathlib maintainer merges the now-all-green PR (`bors merge`, or delegates
