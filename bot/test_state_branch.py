@@ -168,7 +168,12 @@ class StateBranchTest(unittest.TestCase):
         self.ok(a, "restore")
         self.ok(b, "restore")  # both saw 'absent'
         self.ok(a, "save", MESSAGE)
+        # Identical state in the same second makes an identical commit, and that
+        # push is a harmless no-op; different state must be rejected.
+        self.write(b, "bot/state/bot_state.json", json.dumps({"current_pr": 11}))
         self.assertNotEqual(self.run_script(b, "save", MESSAGE).returncode, 0)
+        tip = self.git("show", "bot-state:bot/state/bot_state.json", cwd=self.origin)
+        self.assertEqual(json.loads(tip), {"current_pr": 7})
 
     def test_read_error_fails_and_blocks_save(self):
         a = self.clone("a")
