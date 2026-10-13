@@ -148,6 +148,7 @@ Worker secrets needed in production:
 
 Optional:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — adds Google sign-in (not currently set)
+- `IP_HASH_SECRET` — HMAC key for `flags.ip_hash`, the anonymous flag endpoint's abuse handle. Unset or empty means flags store `NULL` (there is no unsalted fallback). Set it with `openssl rand -base64 32 | npx wrangler secret put IP_HASH_SECRET`.
 
 ## Edit-safety guarantees
 
