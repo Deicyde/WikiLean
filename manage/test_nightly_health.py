@@ -95,37 +95,73 @@ def test_run_log_without_decisions_falls_back_to_op():
              "error": "extract_failed", "elapsed_s": 0.4}]
     (run,) = nh.review_runs(recs, [], 5)
     assert run["started"] == "?" and run["errors"] == 1
-    assert run["error_groups"][0]["cause"] == "python3 on the launchd PATH"
+    assert run["error_groups"][0]["cause"] == "python3 on the job's PATH"
 
 
 def test_likely_cause_table():
     cases = {
         "FileNotFoundError: [Errno 2] No such file or directory: 'python3'":
-            "python3 on the launchd PATH",
-        "extract_failed": "python3 on the launchd PATH",
+            "python3 on the job's PATH",
+        "extract_failed": "python3 on the job's PATH",
         "RuntimeError: agent_error: Working directory does not exist: "
         "~/Desktop/LEAN/mathlib4": "Mathlib checkout path",
         "RuntimeError: agent_error: Command failed with exit code 1":
-            "claude CLI launch",
+            "claude CLI",
         "RuntimeError: agent_error: Claude Code not found. Install with:":
-            "claude CLI launch",
+            "claude CLI",
+        "RuntimeError: agent_error: Claude Code returned an error result: success":
+            "claude CLI",
         "RuntimeError: agent_error: Invalid API key · Please run /login":
             "Claude login",
+        "RuntimeError: agent_error: Not logged in · Please run /login": "Claude login",
         'agent_error: API Error: 401 {"type":"authentication_error"}': "Claude login",
-        "RuntimeError: agent_error: Credit balance is too low":
-            "plan or usage limit",
+        "RuntimeError: agent_error: Credit balance is too low": "API-key credential",
         "agent_error: You've hit your weekly limit · resets Oct 16":
+            "plan or usage limit",
+        "agent_error: You've hit your limit · resets 7:30am (America/New_York)":
             "plan or usage limit",
         "agent_error: There's an issue with the selected model (claude-opus-4-7)":
             "model id",
-        "fetch_failed": "network",
-        "get_failed_503": "network",
+        'agent_error: API Error: 404 {"type":"not_found_error","message":"model"}':
+            "model id",
+        "rate_limited_429": "Worker write",
+        "network_post_failed": "Worker write",
+        "post_503: {}": "Worker write",
+        "fetch_failed": "Wikipedia fetch",
+        "get_failed_503": "Worker read",
         "agent1_no_json": "agent output",
+        # 'moderate' and 'generate' contain 'rate' but are not limits
+        "job_crashed: KeyError: 'moderate generate'": "unclassified",
+        "FileNotFoundError: [Errno 2] No such file or directory: "
+        "'site/cache/X.123.sections.json'": "unclassified",
         "something new": "unclassified",
     }
     for err, want in cases.items():
         got = nh.likely_cause(err)
         assert got == want, (err, got, want)
+
+
+def test_cause_uses_the_untruncated_error():
+    recs = [{"slug": "X", "op": "review", "run_id": "ffff0006",
+             "error": "agent_error: API Error: 400 " + "x" * 300 + " selected model gone"}]
+    (run,) = nh.review_runs(recs, [], 5)
+    assert run["error_groups"][0]["cause"] == "model id", run
+
+
+def test_all_mode_runs_keep_their_review_articles():
+    """`moderate.py all` writes wp-update decisions first under the same
+    run_id; the review recs still count (their op says review)."""
+    decisions = [{"ts": 1, "run_id": "abcd0007", "mode": "wp-update", "slug": "W",
+                  "outcome": "noop"},
+                 {"ts": 2, "run_id": "abcd0007", "mode": "review", "slug": "R1",
+                  "outcome": "error"},
+                 {"ts": 3, "run_id": "abcd0007", "mode": "review", "slug": "R2",
+                  "outcome": "error"}]
+    recs = [{"slug": "R1", "op": "review", "run_id": "abcd0007", "error": "extract_failed"},
+            {"slug": "R2", "run_id": "abcd0007", "error": "job_crashed: boom"}]
+    (run,) = nh.review_runs(recs, decisions, 5)
+    assert run["articles"] == 2 and run["errors"] == 2, run
+    assert nh.review_runs(recs, decisions, 0) == []
 
 
 def test_clean_keeps_slugs_and_paths_readable():
@@ -135,6 +171,7 @@ def test_clean_keeps_slugs_and_paths_readable():
     assert "Generalized_hypergeometric_function_and_more" in s, s
     assert nh.clean("token a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6") == "token [redacted]"
     assert nh.clean("mail jack@example.org now") == "mail [email] now"
+    assert nh.clean("claude-agent-sdk@0.1.3") == "claude-agent-sdk@0.1.3"
     assert len(nh.clean("x" * 500)) == 200
 
 
@@ -191,6 +228,38 @@ def test_drift_trigger_rates_and_queue_head():
     assert d["never_cleared"] == 4
     assert d["report_rows"] == 20, d
     assert d["queue_head"][0] == ("Blocked_0", 5), d["queue_head"]
+
+
+def test_drift_trigger_drops_dry_runs():
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        _drift_logs(cache)
+        decisions = nh.read_jsonl(cache / ".decisions.jsonl")
+        report = nh.read_jsonl(cache / ".wp_update_report.jsonl")
+        t = (NOW - 3600) * MS
+        # a dry run whose needs-work lines look real, flagged only by its report rows
+        decisions += [{"ts": t, "run_id": "dry1", "mode": "wp-update", "slug": f"D{i}",
+                       "outcome": "noop", "anchors": {"matched": 1, "total": 9}}
+                      for i in range(30)]
+        report += [{"ts": datetime_iso(NOW - 3600), "run_id": "dry1", "slug": f"D{i}",
+                    "dry_run": True} for i in range(30)]
+        # a dry run flagged by a would-repin line
+        decisions += [{"ts": t, "run_id": "dry2", "mode": "wp-update", "slug": "E",
+                       "outcome": "dry-run"},
+                      {"ts": t, "run_id": "dry2", "mode": "wp-update", "slug": "F",
+                       "outcome": "noop", "anchors": {"matched": 1, "total": 9}}]
+        d = nh.drift_trigger(decisions, report, 30, NOW)
+    assert d["anchors_failed"] == 20 and d["distinct_slugs"] == 9, d
+
+
+def test_report_withholds_the_trigger_on_a_small_sample():
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        _drift_logs(cache)
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            nh.main(["--cache", str(cache), "--runs", "0"])
+    assert "too few drifted slugs to judge (9 < 20)" in buf.getvalue(), buf.getvalue()
 
 
 def test_report_prints_verdict_and_trigger():
