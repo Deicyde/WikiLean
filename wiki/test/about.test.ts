@@ -61,19 +61,26 @@ describe("GET /about", () => {
     // Copy that no longer matches the code or the ratified policy is gone.
     expect(text).not.toContain("queued for human approval");
     expect(text).not.toContain("patrolled by moderators");
+    expect(text).not.toContain("growing sample");
     // What actually happens.
     expect(html).toContain("<h2>How edits are moderated</h2>");
     expect(text).toContain("Annotation edits by people take effect immediately and are shown as human-curated");
+    expect(text).toContain('in <a href="/recent-changes?kind=edit">Recent changes</a> with an awaiting-patrol marker');
     expect(text).toContain('<a href="/stats">Stats</a> page shows how many have been patrolled');
+    // Revert restores annotations only; the Wikipedia pin is not rolled back.
+    expect(text).toContain("restore an article&rsquo;s annotations to any earlier version in that history");
     expect(text).toContain("a pipeline save that drops or alters one is refused");
-    expect(text).toContain("those proposals do not wait for a person by default");
+    expect(text).toContain("those proposals no longer need a person&rsquo;s approval");
     expect(text).toContain("deterministic resolver, which uses no language model");
-    expect(text).toContain("the rest stay pending until a patroller decides them");
+    expect(text).toContain("the rest stay pending until a patroller or a later nightly run decides them");
+    expect(text).toContain("lapse when the pipeline next saves the article");
     // index.ts approve path: a bot approval re-labels human → ai-moderated,
     // a patroller approval stamps human. The copy states both directions.
     expect(text).toContain("When the pipeline approves a change to a human-curated annotation, the annotation stops being shown as human-curated");
-    expect(text).toContain("when a patroller approves a proposal, the result is shown as human-curated");
-    expect(text).toContain("pull requests to Mathlib and statements added to Wikidata");
+    expect(text).toContain("when a patroller approves a change, the result is shown as human-curated");
+    // The bot opens Mathlib PRs unattended; the human gate is Mathlib review.
+    expect(text).toContain("the tagging bot opens pull requests to Mathlib on its own, but they merge only after Mathlib reviewers approve them");
+    expect(text).toContain("statements are added to Wikidata only for mappings people have reviewed");
   });
 
   it("handles an empty corpus without dividing by zero", async () => {

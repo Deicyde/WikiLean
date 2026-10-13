@@ -729,22 +729,25 @@ footer p { margin:4px 0; }
 
   <h2>How edits are moderated</h2>
   <p>Annotation edits by people take effect immediately and are shown as human-curated.
-  They are not screened first: each one appears in <a href="/recent-changes">Recent
-  changes</a> marked as awaiting patrol, and the <a href="/stats">Stats</a> page shows how
-  many have been patrolled. Every change to an article&rsquo;s annotations, by a person or
-  by the AI pipeline, is recorded in the article&rsquo;s history, and patrollers can
-  restore an article to any earlier revision.</p>
+  They are not screened first: each one is listed, newest first, in
+  <a href="/recent-changes?kind=edit">Recent changes</a> with an awaiting-patrol marker,
+  and the <a href="/stats">Stats</a> page shows how many have been patrolled. Every change
+  to an article&rsquo;s annotations, by a person or by the AI pipeline, is recorded in the
+  article&rsquo;s history, and patrollers can restore an article&rsquo;s annotations to
+  any earlier version in that history.</p>
   <p>The AI pipeline cannot silently overwrite a human-curated annotation: a pipeline save
   that drops or alters one is refused, and the pipeline can file a proposal instead. Under
-  WikiLean&rsquo;s human-at-boundaries policy (adopted August 2026), those proposals do
-  not wait for a person by default. Each night a deterministic resolver, which uses no
+  WikiLean&rsquo;s human-at-boundaries policy (adopted August 2026), those proposals no
+  longer need a person&rsquo;s approval. Each night a deterministic resolver, which uses no
   language model, approves or rejects the proposals that match its fixed rules; the rest
-  stay pending until a patroller decides them, or lapse when their target annotation is
-  removed or already matches them. When the pipeline approves a change to a human-curated
-  annotation, the annotation stops being shown as human-curated; when a patroller approves
-  a proposal, the result is shown as human-curated. People remain the gate wherever
-  WikiLean contributes to outside projects, such as pull requests to Mathlib and
-  statements added to Wikidata.</p>
+  stay pending until a patroller or a later nightly run decides them, or lapse when the
+  pipeline next saves the article and finds their target annotation removed or already
+  matching them. When the pipeline approves a change to a human-curated annotation, the
+  annotation stops being shown as human-curated; when a patroller approves a change, the
+  result is shown as human-curated. People remain the gate wherever WikiLean contributes
+  to outside projects: the tagging bot opens pull requests to Mathlib on its own, but they
+  merge only after Mathlib reviewers approve them, and statements are added to Wikidata
+  only for mappings people have reviewed.</p>
 
   <footer>
     <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
