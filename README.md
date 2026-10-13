@@ -4,34 +4,34 @@
 
 A reader can scan an article and see at a glance which statements are formalized (green), partially formalized (yellow), or not yet formalized (red), with a one-click link out to the Mathlib declaration. A formalizer can use the same view as a coverage map: "what's a notable concept Mathlib hasn't reached yet?"
 
-## Current status (September 2026)
+## Current status (October 2026)
 
 - **The editable wiki is live.** Sign in with GitHub to add, correct, or discuss
   annotations directly in an article. D1 remains the canonical store for article
   annotations, revisions, moderation state, and the community-edge overlay.
-- **The SQLite and immutable Brain release stack is merged**, including PRs #32–#34
-  on 2026-09-21, but remains inactive in production. The snapshot/API check on
-  2026-09-26 still showed the 2026-08-28 Brain without a release identity;
+- **The immutable Brain release has been live in production since 2026-10-04.**
   [`/assets/brain/current.json`](https://wikilean.jackmccarthy.org/assets/brain/current.json)
-  still returned 404 on 2026-09-26. The repository has no automatic deploy-on-merge workflow.
-- **The first real private migration pack was compiled and independently verified on
-  2026-09-23:** it covers
-  113 Brain sources and all 43 input groups, including completed Kerodon and OpenAlex
-  evidence. The native Linux runtime for the
-  recorded code commit is qualified; the complete non-Brain asset tree and its exact
-  inventory are prepared and independently reviewed. The seven-stage legacy baseline,
-  two full replay builds, policy decisions, and production activation remain unfinished.
-  More storage is needed for the native replay sequence. See the
-  [September 26 continuation](docs/BRAIN-SQLITE-HANDOFF-2026-09-26.md) and
-  [remaining queue](docs/ROADMAP.md#current-brain-execution-queue-updated-2026-09-26).
-- **Live annotation snapshot checked on 2026-09-21:** 778 articles and 37,936
-  annotated results: 27.9% formalized and 14.1% partial.
+  selects release `sha256:8305822b…` (manifest `fa645b2b…`), a `brain-offline-replay-v1`
+  build from authority commit `2eb31baa` (PR #43). The promoter's canary failed that day
+  because Cloudflare Web Analytics adds bytes to `text/html` responses (fixed in PR #44).
+  The attempt is journaled `manual_intervention_required`, and reconciling it is still
+  pending; until it is reconciled, the promoter refuses any later promotion. See the
+  [activation record](docs/BRAIN-ACTIVATION-2026-10-04.md). The repository has no automatic
+  deploy-on-merge workflow.
+- **Live annotation snapshot checked on 2026-10-13:** 778 articles and 37,936
+  annotated statements: 27.9% formalized and 14.1% partial. Current numbers are on
+  [/about](https://wikilean.jackmccarthy.org/about) and
+  [/stats](https://wikilean.jackmccarthy.org/stats).
 - **Two complementary editable exports** remain keyed to Wikidata entities:
-  the per-article [W3C annotation layer](site/out_w3c/) and the per-QID
-  [RDF concept layer](catalog/data/wikilean_mathlib.ttl).
-- **Upstream work:** the [Wikidata property proposal](docs/wikidata_property_proposal.md)
-  for a Mathlib declaration identifier and Mathlib `@[wikidata]` tags provide the
-  two directions of the same mapping.
+  the per-article W3C annotation layer (generated locally by
+  [`site/export_w3c.py`](site/export_w3c.py) into the gitignored `site/out_w3c/`; not
+  published) and the per-QID [RDF concept layer](catalog/data/wikilean_mathlib.ttl)
+  (the site serves its RDF dump at
+  [/wikilean.ttl](https://wikilean.jackmccarthy.org/wikilean.ttl)).
+- **Upstream work:** Wikidata property
+  [P14534 (Mathlib Declaration ID)](https://www.wikidata.org/wiki/Property:P14534) was
+  created on 2026-06-17 from the [property proposal](docs/wikidata_property_proposal.md);
+  Mathlib `@[wikidata]` tags provide the other direction of the same mapping.
 
 ## Architecture
 
@@ -84,9 +84,9 @@ reviewed sources + explicit sealed acquisitions
 Acquisition is separate from replay. Networked tools first capture immutable source
 objects and evidence; the reducer then runs offline from an explicit inventory. JSONL is
 the reviewable source of truth, while SQLite is a generated local query projection and is
-never a Cloudflare asset. The merged machinery supports sealed offline replay releases,
-but the current nightly still freezes the compatibility profile; no full-corpus v2/v3
-replay has been accepted as production authority.
+never a Cloudflare asset. Production has served a full offline replay release since
+2026-10-04, but the nightly still freezes the compatibility profile; nothing on `main`
+automates the next replay release.
 
 Every frozen release has two identities. `release_id` names the logical graph content;
 `manifest_sha256` names the exact `release.json` bytes and therefore the public namespace
@@ -107,10 +107,11 @@ and a release-qualified canary. See the [Brain API](docs/BRAIN-API.md),
 | State | Current value |
 |---|---|
 | Architecture code merged to `main` | Yes |
-| New Worker/site bundle deployed | No |
-| Immutable Brain release assets published | No production v2 selector observed |
-| Production selector activated | No |
+| New Worker/site bundle deployed | Yes: promoted 2026-10-04 from authority commit `2eb31baa`; `wiki/src` is unchanged on `main` since |
+| Immutable Brain release assets published | Yes: release `sha256:8305822b…`, manifest `fa645b2b…` |
+| Production selector activated | Yes: v2 selector, `audited_at` 2026-10-04T17:25:04Z, no previous release |
 
+Checked on 2026-10-13; see the [activation record](docs/BRAIN-ACTIVATION-2026-10-04.md).
 A successful merge or CI run changes only the first row. It does not deploy Worker code,
 publish Brain data, or authorize activation.
 
@@ -125,7 +126,7 @@ publish Brain data, or authorize activation.
 | [`site/ops/`](site/ops/) | Shadow nightly, public-baseline freezer, activation evidence, promotion journal, exact release promoter, and canary. |
 | [`bot/`](bot/) | Human-gated automation for upstream Mathlib `@[wikidata]` work. |
 | [`manage/`](manage/) | Coverage and centrality control plane for choosing the next work. |
-| [`wikifunctions/`](wikifunctions/) | Experimental specification and verification work. |
+| [`wikifunctions/`](wikifunctions/) | QID → Wikifunctions ZID → Mathlib data pipeline behind `/wikifunctions`; the verification project moved to [Deicyde/wikifunctions](https://github.com/Deicyde/wikifunctions). |
 | [`docs/`](docs/) | Long-form docs (Wikidata property proposal, …). |
 
 ## How to contribute
@@ -134,7 +135,7 @@ Three independent paths, you can pick any:
 
 1. **Annotate articles directly on the live site.** Sign in with GitHub at [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org), open any article, hover a highlight to edit it, or select text to add a new one. Edits are saved to D1 and visible to the next reader. See [CONTRIBUTING.md](CONTRIBUTING.md#annotating-on-the-live-site).
 2. **Improve the pipeline / engine.** Patches to `site/`, `wiki/`, or `catalog/` welcome. See [CONTRIBUTING.md](CONTRIBUTING.md#code-contributions).
-3. **Help upstream.** Vote on the Wikidata property proposal once it's posted, or review the in-flight Mathlib `@[wikidata]` PRs (see the docs).
+3. **Help upstream.** Add or check [P14534 (Mathlib Declaration ID)](https://www.wikidata.org/wiki/Property:P14534) statements on Wikidata concept items, or review the in-flight Mathlib `@[wikidata]` PRs (see the docs).
 
 ## License
 
