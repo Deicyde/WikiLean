@@ -12,13 +12,14 @@
 // The CSP ships in Report-Only mode and describes what the pages load today:
 // inline <script>/<style> blocks and style attributes, same-origin assets and
 // fetches, the same-origin iframe of /brain on the landing page, Wikipedia
-// media inside article bodies, OAuth avatars on profiles, and the Cloudflare
-// Web Analytics beacon that Cloudflare injects into text/html responses.
-// Tighten it, then enforce it, once /api/csp-report stays quiet.
+// media inside article bodies, OAuth avatars on profiles, GitHub-rendered
+// comment media and the JuliaMono webfont (jsDelivr) on /review, and the
+// Cloudflare Web Analytics beacon that Cloudflare injects into text/html
+// responses. Tighten it, then enforce it, once /api/csp-report stays quiet.
 //
-// frame-ancestors is ignored inside a Report-Only policy, so the framing ban
-// rides a separate, enforced Content-Security-Policy header (alongside the
-// legacy X-Frame-Options for older browsers).
+// A Report-Only frame-ancestors only reports, so the framing ban rides a
+// separate, enforced Content-Security-Policy header (alongside the legacy
+// X-Frame-Options for older browsers).
 
 import type { Hono } from "hono";
 import type { Env } from "./env.js";
@@ -29,8 +30,9 @@ export const CSP_REPORT_ONLY = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://*.wikimedia.org https://wikimedia.org https://*.githubusercontent.com https://*.googleusercontent.com",
-  "media-src 'self' https://*.wikimedia.org",
+  "img-src 'self' data: https://*.wikimedia.org https://wikimedia.org https://*.githubusercontent.com https://*.googleusercontent.com https://github.com",
+  "media-src 'self' https://*.wikimedia.org https://github.com",
+  "font-src 'self' https://cdn.jsdelivr.net",
   "connect-src 'self' https://cloudflareinsights.com",
   "frame-src 'self'",
   "form-action 'self'",
@@ -56,8 +58,9 @@ function applyHeaders(headers: Headers): void {
 
 // Violation reports arrive in two shapes: the legacy report-uri body
 // ({"csp-report": {...}}, kebab-case keys) and the Reporting API batch
-// ([{type: "csp-violation", body: {...}}], camelCase keys).
-const MAX_REPORT_BYTES = 16 * 1024;
+// ([{type: "csp-violation", body: {...}}], camelCase keys). A batch carries
+// about 1 KB per report (each repeats the policy text), hence the 64 KB cap.
+const MAX_REPORT_BYTES = 64 * 1024;
 const MAX_REPORTS_LOGGED = 20;
 const MAX_FIELD_CHARS = 300;
 
@@ -110,6 +113,33 @@ export function parseCspReports(payload: unknown): CspViolation[] {
   return out.slice(0, MAX_REPORTS_LOGGED);
 }
 
+// Reads at most `max` bytes of the body, counting bytes as they stream, so a
+// chunked request without Content-Length cannot buffer an unbounded body.
+// null = over the cap.
+async function readCapped(req: Request, max: number): Promise<string | null> {
+  if (!req.body) return "";
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > max) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const buf = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    buf.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(buf);
+}
+
 // Register FIRST, before any route: Hono runs middleware in registration
 // order, and a route registered earlier answers without reaching it.
 export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
@@ -124,21 +154,25 @@ export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
     }
   });
 
-  // Log-only sink: one structured line per violation (Workers observability),
-  // no storage. Unauthenticated by necessity (browsers send the reports), so
-  // the body and the per-request line count are capped.
+  // Log-only sink: at most one structured line per request (Workers
+  // observability), no storage. Unauthenticated by necessity (browsers send
+  // the reports), so the body is byte-capped and the violations per line are
+  // capped.
   app.post(CSP_REPORT_PATH, async (c) => {
-    const declared = Number(c.req.header("Content-Length") ?? "0");
-    if (declared > MAX_REPORT_BYTES) return c.json({ ok: false, error: "report too large" }, 413);
-    const text = await c.req.text();
-    if (text.length > MAX_REPORT_BYTES) return c.json({ ok: false, error: "report too large" }, 413);
+    const declared = Number(c.req.header("Content-Length"));
+    if (Number.isFinite(declared) && declared > MAX_REPORT_BYTES) {
+      return c.json({ ok: false, error: "report too large" }, 413);
+    }
+    const text = await readCapped(c.req.raw, MAX_REPORT_BYTES);
+    if (text === null) return c.json({ ok: false, error: "report too large" }, 413);
     let payload: unknown;
     try {
       payload = JSON.parse(text);
     } catch {
       return c.json({ ok: false, error: "bad json" }, 400);
     }
-    for (const v of parseCspReports(payload)) console.log(JSON.stringify({ event: "csp-report", ...v }));
+    const violations = parseCspReports(payload);
+    if (violations.length > 0) console.log(JSON.stringify({ event: "csp-report", violations }));
     return c.body(null, 204);
   });
 }
