@@ -4,7 +4,8 @@
 Each tick looks at the current batch PR's GitHub state and acts on it:
   - MERGED                         -> open the next batch (open_batch.py)
   - OPEN + settle gate met         -> trim to greens + triage/queue the rest
-    (>=2 reviewers incl >=1 maintainer)   + post the reviewer table + ready comment
+    (>=2 reviewers besides the author,   + post the reviewer table + ready comment
+     incl >=1 listed maintainer)
   - CLOSED, not merged             -> halt: exit non-zero for a human
   - otherwise                      -> wait (nothing to do)
 A failed GitHub read in decide()/tick() (bad token, error body, empty answer) exits

@@ -181,15 +181,14 @@ def harvest(pr, repo=REPO):
     records = []
     for c in settle.gh_list(repo, f"issues/{pr}/comments"):
         login = (c.get("user") or {}).get("login", "")
-        assoc = c.get("author_association")
         body = c.get("body", "") or ""
         if login in settle.BOTS:
             continue
         if "## WikiLean review" not in body and not re.search(r"##\s*WikiLean review", body):
             continue
 
-        # Maintainer if org-role association OR on the allowlist.
-        is_maint = (assoc in settle.ORG_ROLES) or (login in settle.MAINTAINERS)
+        # Maintainer only if on settle's explicit list (not GitHub's association).
+        is_maint = login in settle.MAINTAINERS
         if is_maint:
             maint.add(login)
 
