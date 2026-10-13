@@ -1,7 +1,8 @@
 // /stats (P2a): the public experiment-instrumentation dashboard. Pins the
-// SQL aggregates against seeded fixtures (review states, count columns,
+// SQL aggregates against seeded fixtures (review states, AI-review freshness
+// split from bot-touch freshness, count columns,
 // event_type × actor_type cells, flags, revisions/patrol, pipeline_runs),
-// the RQ labels, the KV cache (page:stats:v5, TTL 300), and the
+// the RQ labels, the KV cache (page:stats:v6, TTL 300), and the
 // zero-means-broken footnote.
 
 import { describe, it, expect } from "vitest";
@@ -80,6 +81,16 @@ async function seedWorld(h: Harness): Promise<void> {
   // more edit (then patrol it) and one pipeline revision.
   const editId = insertRevision(h.db, "Test_Article", { userId: "u-human", kind: "edit" });
   insertRevision(h.db, "Test_Article", { userId: "pipeline", kind: "pipeline" });
+  // AI review revisions: Fresh_A reviewed twice in the window (counts once),
+  // Stale_B reviewed 40 days ago (outside), Drift_C only re-pinned (not a
+  // review), and a session edit whose free-text comment mimics the review
+  // shape (not a pipeline revision, so not counted).
+  const review = { userId: "pipeline", kind: "pipeline" };
+  insertRevision(h.db, "Fresh_A", { ...review, comment: "ai-moderate:review:9abcf468", createdAt: now - 2000 });
+  insertRevision(h.db, "Fresh_A", { ...review, comment: "ai-moderate:review:9abcf469", createdAt: now - 1000 });
+  insertRevision(h.db, "Stale_B", { ...review, comment: "ai-moderate:review:00000001", createdAt: now - 40 * DAY });
+  insertRevision(h.db, "Drift_C", { ...review, comment: "wp-update:stage0:9abcf468", createdAt: now - 1000 });
+  insertRevision(h.db, "Parked_D", { userId: "u-human", kind: "edit", comment: "ai-moderate:review:fake" });
   const patrolRes = await post(h.env, `/api/revision/${editId}/patrol`, {}, { user: "u-patroller" });
   expect(patrolRes.status).toBe(200);
 
@@ -123,9 +134,18 @@ describe("GET /stats", () => {
 
     // Articles by review state.
     expect(html).toContain('<td>Articles</td><td class="wl-stat-num">5</td>');
-    expect(html).toContain('<td>Never reviewed by the pipeline</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Review fresh (≤30d)</td><td class="wl-stat-num">3</td>');
-    expect(html).toContain('<td>Review stale (&gt;30d)</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>No bot save recorded</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain(
+      '<td>Bot-touched ≤30d (AI review, Wikipedia re-pin, or unchanged-save stamp)</td><td class="wl-stat-num">3</td>',
+    );
+    expect(html).toContain('<td>Not bot-touched in &gt;30d</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain(
+      '<td>AI-reviewed ≤30d (AI review revision; no-change reviews not counted)</td><td class="wl-stat-num">1</td>',
+    );
+    expect(html).toContain(
+      `<td>Most recent AI review revision</td><td class="wl-stat-num">${new Date(Date.now() - 1000).toISOString().slice(0, 10)}</td>`,
+    );
+    expect(html).not.toContain("Review fresh");
     expect(html).toContain('<td>Drifted from pinned Wikipedia revision</td><td class="wl-stat-num">1</td>');
     expect(html).toContain('<td>Parked (moved / deleted / needs human)</td><td class="wl-stat-num">1</td>');
 
@@ -153,9 +173,9 @@ describe("GET /stats", () => {
     expect(html).toContain('<td>Resolved: dismissed</td><td class="wl-stat-num">0</td>');
 
     // Revisions by kind + patrol split (seed edit unpatrolled, second edit patrolled).
-    expect(html).toContain('<td>Revisions: edit</td><td class="wl-stat-num">2</td>');
-    expect(html).toContain('<td>Revisions: pipeline</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Human edits awaiting patrol</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>Revisions: edit</td><td class="wl-stat-num">3</td>');
+    expect(html).toContain('<td>Revisions: pipeline</td><td class="wl-stat-num">5</td>');
+    expect(html).toContain('<td>Human edits awaiting patrol</td><td class="wl-stat-num">2</td>');
     expect(html).toContain('<td>Human edits patrolled</td><td class="wl-stat-num">1</td>');
 
     // Proposals: the AI-decided count is pinned NONZERO (extreme-minority
@@ -188,6 +208,31 @@ describe("GET /stats", () => {
     expect(html).toContain("Median time-to-first-human-touch is omitted");
   });
 
+  it("a review outage shows: re-pins keep articles bot-touched while AI-reviewed drops to 0", async () => {
+    const h = setup();
+    const now = Date.now();
+    insertArticle(h.db, "Repinned_E");
+    insertModState(h.db, "Repinned_E", { lastReviewedAt: now - 1000 }); // stamped by the re-pin
+    insertRevision(h.db, "Repinned_E", { userId: "pipeline", kind: "pipeline", comment: "ai-moderate:review:0000aaaa", createdAt: now - 45 * DAY });
+    insertRevision(h.db, "Repinned_E", { userId: "pipeline", kind: "pipeline", comment: "wp-update:stage0:0000bbbb", createdAt: now - 1000 });
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain(
+      '<td>Bot-touched ≤30d (AI review, Wikipedia re-pin, or unchanged-save stamp)</td><td class="wl-stat-num">1</td>',
+    );
+    expect(html).toContain(
+      '<td>AI-reviewed ≤30d (AI review revision; no-change reviews not counted)</td><td class="wl-stat-num">0</td>',
+    );
+    expect(html).toContain(
+      `<td>Most recent AI review revision</td><td class="wl-stat-num">${new Date(now - 45 * DAY).toISOString().slice(0, 10)}</td>`,
+    );
+  });
+
+  it("no AI review revision at all renders the latest-review cell as none", async () => {
+    const h = setup();
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain('<td>Most recent AI review revision</td><td class="wl-stat-num"><span class="muted">none</span></td>');
+  });
+
   it("a runs table with no $ figures renders cost as — (unknown ≠ $0)", async () => {
     const h = setup();
     const res = await post(
@@ -211,10 +256,11 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v5 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v6 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v5")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v6")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v5")).toBe(false);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/stats")).text();

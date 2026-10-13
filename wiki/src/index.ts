@@ -701,7 +701,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v5"; // v5: AI-decided proposals row (Human-at-boundaries)
+  const cacheKey = "page:stats:v6"; // v6: AI-review freshness split from bot-touch freshness
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -721,6 +721,23 @@ app.get("/stats", async (c) => {
       })
       .from(articles)
       .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
+  )[0];
+
+  // AI review passes, counted apart from the stamp above. last_reviewed_at is
+  // stamped by EVERY bot save (AI review, Wikipedia re-pin, unchanged no-op),
+  // so it cannot show a review outage. A review that changed annotations
+  // leaves a pipeline revision commented `ai-moderate:review:<runId>`
+  // (site/moderate.py); a review that changed nothing writes no revision and
+  // is not counted here. kind='pipeline' keeps session edits, whose comment
+  // is free text, out of the count.
+  const aiReview = (
+    await db
+      .select({
+        fresh: sql<number>`COUNT(DISTINCT CASE WHEN ${revisions.createdAt} >= ${cutoff} THEN ${revisions.slug} END)`,
+        latest: sql<number | null>`MAX(${revisions.createdAt})`,
+      })
+      .from(revisions)
+      .where(and(eq(revisions.kind, "pipeline"), sql`${revisions.comment} LIKE 'ai-moderate:review:%'`))
   )[0];
 
   // Annotation totals by status from the count columns (NOT a blob parse —
@@ -805,7 +822,7 @@ app.get("/stats", async (c) => {
   )[0];
 
   const html = statsPage({
-    articles: review,
+    articles: { ...review, aiReviewedFresh: aiReview.fresh, aiReviewLatest: aiReview.latest },
     annotations: ann,
     events,
     flags: flagAgg,

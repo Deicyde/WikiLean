@@ -598,9 +598,13 @@ export interface StatsEventCell {
 export interface StatsData {
   articles: {
     total: number;
+    // neverReviewed/fresh/stale read moderation_state.last_reviewed_at, which
+    // every bot save stamps (AI review, Wikipedia re-pin, unchanged no-op).
     neverReviewed: number;
-    fresh: number; // reviewed within the last 30d
-    stale: number; // reviewed, but >30d ago
+    fresh: number; // any bot save within the last 30d
+    stale: number; // last bot save >30d ago
+    aiReviewedFresh: number; // distinct articles with an ai-moderate:review revision ≤30d
+    aiReviewLatest: number | null; // newest ai-moderate:review revision (ms), null if none
     drifted: number; // moderation_state.wp_drifted = 1
     parked: number; // state in (moved, deleted, needs_human)
   };
@@ -657,9 +661,13 @@ export function statsPage(d: StatsData): string {
 
   const reviewRows =
     statRow("Articles", d.articles.total, "RQ8") +
-    statRow("Never reviewed by the pipeline", d.articles.neverReviewed, "RQ5") +
-    statRow("Review fresh (≤30d)", d.articles.fresh, "RQ5") +
-    statRow("Review stale (>30d)", d.articles.stale, "RQ5") +
+    statRow("No bot save recorded", d.articles.neverReviewed, "RQ5") +
+    statRow("Bot-touched ≤30d (AI review, Wikipedia re-pin, or unchanged-save stamp)", d.articles.fresh, "RQ5") +
+    statRow("Not bot-touched in >30d", d.articles.stale, "RQ5") +
+    statRow("AI-reviewed ≤30d (AI review revision; no-change reviews not counted)", d.articles.aiReviewedFresh, "RQ5") +
+    `<tr><td>Most recent AI review revision</td><td class="wl-stat-num">${
+      d.articles.aiReviewLatest === null ? '<span class="muted">none</span>' : new Date(d.articles.aiReviewLatest).toISOString().slice(0, 10)
+    }</td>${rqCell("RQ5")}</tr>` +
     statRow("Drifted from pinned Wikipedia revision", d.articles.drifted, "RQ8") +
     statRow("Parked (moved / deleted / needs human)", d.articles.parked, "RQ4");
 
