@@ -415,7 +415,9 @@ that differ only in provenance are aggregated `provenance_only` transitions (art
 kind, before/after provenance, count); the reviewed provenance policy still proves content
 equality through the provenance-stripped projection roots, not through the diff's labels. Complete
 release verification separately covers SQLite and release-coupled static artifacts.
-Tooling completion is not activation: generating the first P1B bundle remains blocked on
-Jack authorizing the host Mathlib checkout, reviewed Wikidata observation plan,
-interpreter paths, and external evidence stores. P1A is merged on `main`; P1C still
-requires separate deployment approval.
+Tooling completion is not activation. The first P1B bundle was frozen for the 2026-10-04
+promotion of release `sha256:8305822b…` ([activation record](../../docs/BRAIN-ACTIVATION-2026-10-04.md)).
+Bundles frozen before PR #45 use `semantic-diff/v2` and build-context v1, and they verify only
+with the tool version that produced them. Each new bundle still needs Jack to authorize the host
+Mathlib checkout, reviewed Wikidata observation plan, interpreter paths, and external evidence
+stores, and every promotion needs separate deployment approval.

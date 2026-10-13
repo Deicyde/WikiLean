@@ -117,6 +117,11 @@ Production reads the same names as Worker secrets (`wrangler secret put NAME`).
 
 ## Seeding D1 from `site/`
 
+> **Legacy.** D1 is canonical and is never re-seeded from disk. The pipeline now reads and
+> writes D1 directly through the Worker API (`site/moderate.py`). `seed-delta` and
+> `seed-refresh` are retired legacy migration tools (docs/ROADMAP.md); do not run them
+> against production.
+
 The pipeline that produces local annotations lives in `site/`. To sync new and changed annotations to the live D1:
 
 ```sh
@@ -137,8 +142,15 @@ npx wrangler d1 execute wikilean --remote --file=refresh.sql
 
 ## Deploy
 
+Production deploys go only through the exact Brain release promoter,
+`site/ops/brain-promote-release.sh`, following
+[`docs/BRAIN-RELEASE-RUNBOOK.md`](../docs/BRAIN-RELEASE-RUNBOOK.md). Since 2026-10-04 production
+serves an immutable Brain release ([activation record](../docs/BRAIN-ACTIVATION-2026-10-04.md)).
+Do **not** run plain `npm run deploy` (`wrangler deploy`) against production: it uploads the local
+`public/` directory and replaces the live Brain selector and the whole asset tree, without the
+journal or canary. Worker source changes are release-affecting and ship only in a new release.
+
 ```sh
-npm run deploy        # wrangler deploy — production
 npm run tail          # follow Worker logs
 ```
 
