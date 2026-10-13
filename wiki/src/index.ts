@@ -369,10 +369,34 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
-// Pseudonymous abuse handle for anonymous flags: sha256 hex of the client IP.
+function hexOf(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Salted research-export pseudonyms (see /api/research/export.jsonl).
 async function sha256Hex(s: string): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+  return hexOf(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+}
+
+// Pseudonymous abuse handle for anonymous flags: HMAC-SHA256 of the client IP
+// under the IP_HASH_SECRET Worker secret, stored as "hmac-sha256:<hex>". The
+// prefix tells these rows apart from the legacy unsalted sha256(ip) values,
+// which migration 0013 scrubs. No secret (or no IP) → null, never a bare hash.
+// Nothing reads ip_hash today; the flag rate limit keys FLAG_LIMITER on the
+// raw IP, which the binding does not persist.
+const IP_HASH_PREFIX = "hmac-sha256:";
+
+async function flagIpHash(env: Env, ip: string): Promise<string | null> {
+  if (!ip || !env.IP_HASH_SECRET) return null;
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(env.IP_HASH_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return IP_HASH_PREFIX + hexOf(await crypto.subtle.sign("HMAC", key, enc.encode(ip)));
 }
 
 // Each mutation unit bundles its guarded article write, revision, events, and
@@ -2447,7 +2471,7 @@ app.post("/api/flag/:slug", async (c) => {
     reason: posted.reason,
     comment,
     userId: user?.id ?? null,
-    ipHash: ip ? await sha256Hex(ip) : null,
+    ipHash: await flagIpHash(c.env, ip),
     createdAt: now,
   });
   // flag_count feeds the /api/work priority ladder (flagged sorts first).

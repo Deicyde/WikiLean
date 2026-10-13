@@ -3,7 +3,11 @@
 // resolve endpoint with flag_count decrement, the /api/flags list, and the
 // /flags patrol page gating.
 
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
+import { readFileSync, readdirSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+import { dirname, resolve as resolvePath } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
 import {
   setup,
@@ -21,7 +25,15 @@ import {
 blockNetwork();
 
 const ANNO_ID = "aaaaaaaaaaaa"; // seed annotation
-const TEST_IP_HASH = createHash("sha256").update(TEST_IP).digest("hex");
+const IP_SECRET = "test-ip-hash-secret";
+const TEST_IP_HASH = "hmac-sha256:" + createHmac("sha256", IP_SECRET).update(TEST_IP).digest("hex");
+const UNSALTED_IP_HASH = createHash("sha256").update(TEST_IP).digest("hex");
+
+function setupWithSecret(): Harness {
+  const h = setup();
+  h.env.IP_HASH_SECRET = IP_SECRET;
+  return h;
+}
 
 function flag(
   h: Harness,
@@ -37,8 +49,8 @@ function resolve(h: Harness, id: number, resolution: string, user = "u-patroller
 }
 
 describe("POST /api/flag/:slug", () => {
-  it("anonymous flag inserts a row, hashes the IP, and bumps moderation_state.flag_count", async () => {
-    const h = setup();
+  it("anonymous flag inserts a row, HMACs the IP, and bumps moderation_state.flag_count", async () => {
+    const h = setupWithSecret();
     const res = await flag(h, { annotation_id: ANNO_ID, reason: "wrong_decl", comment: "decl points elsewhere" });
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
@@ -51,7 +63,7 @@ describe("POST /api/flag/:slug", () => {
       reason: "wrong_decl",
       comment: "decl points elsewhere",
       user_id: null, // anonymous
-      ip_hash: TEST_IP_HASH, // pseudonymous, never the raw IP
+      ip_hash: TEST_IP_HASH, // keyed HMAC: never the raw IP, never a bare sha256
       status: "open",
       resolved_by: null,
       resolved_at: null,
@@ -62,6 +74,33 @@ describe("POST /api/flag/:slug", () => {
     expect((await flag(h, { annotation_id: ANNO_ID, reason: "wrong_status" })).status).toBe(200);
     expect(flagRows(h.db).length).toBe(2);
     expect(moderationRow(h.db)!.flag_count).toBe(2);
+  });
+
+  it("without IP_HASH_SECRET, ip_hash is NULL (no unsalted fallback) and the flag still lands", async () => {
+    const h = setup();
+    expect(h.env.IP_HASH_SECRET).toBeUndefined();
+    expect((await flag(h, { annotation_id: ANNO_ID, reason: "wrong_decl" })).status).toBe(200);
+    const rows = flagRows(h.db);
+    expect(rows.length).toBe(1);
+    expect(rows[0].ip_hash).toBeNull();
+    expect(rows[0].ip_hash).not.toBe(UNSALTED_IP_HASH);
+  });
+
+  it("no CF-Connecting-IP → ip_hash NULL even with the secret set", async () => {
+    const h = setupWithSecret();
+    expect((await flag(h, { reason: "other" }, {})).status).toBe(200);
+    expect(flagRows(h.db)[0].ip_hash).toBeNull();
+  });
+
+  it("the HMAC depends on the secret: the same IP under another key gives another handle", async () => {
+    const h = setupWithSecret();
+    expect((await flag(h, { reason: "other" })).status).toBe(200);
+    h.env.IP_HASH_SECRET = "rotated-secret";
+    expect((await flag(h, { reason: "wrong_status" })).status).toBe(200);
+    const [a, b] = flagRows(h.db).map((r) => r.ip_hash);
+    expect(a).toBe(TEST_IP_HASH);
+    expect(b).toBe("hmac-sha256:" + createHmac("sha256", "rotated-secret").update(TEST_IP).digest("hex"));
+    expect(a).not.toBe(b);
   });
 
   it("article-level flag (no annotation_id) works; logged-in reporters get user_id recorded", async () => {
@@ -207,5 +246,29 @@ describe("GET /api/flags + GET /flags (patrol surfaces)", () => {
     const patrol = await get(h.env, "/flags", { user: "u-patroller" });
     expect(patrol.status).toBe(200);
     expect(await patrol.text()).toContain("wl-resolve");
+  });
+});
+
+// Migration 0013 NULLs the legacy unsalted sha256(ip) values and keeps the
+// prefixed HMAC handles, so it is safe to apply any time after the deploy.
+describe("migration 0013_flags_ip_hash_scrub", () => {
+  it("scrubs legacy bare-sha256 ip_hash values, keeps HMAC handles and NULLs", () => {
+    const dir = resolvePath(dirname(fileURLToPath(import.meta.url)), "../migrations");
+    const files = readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
+    const scrub = "0013_flags_ip_hash_scrub.sql";
+    expect(files).toContain(scrub);
+    const db = new DatabaseSync(":memory:");
+    for (const f of files.filter((f) => f < scrub)) db.exec(readFileSync(resolvePath(dir, f), "utf8"));
+    const ins = db.prepare("INSERT INTO flags (slug, reason, ip_hash, created_at) VALUES (?,?,?,?)");
+    ins.run("A", "other", UNSALTED_IP_HASH, 1);
+    ins.run("B", "other", TEST_IP_HASH, 2);
+    ins.run("C", "other", null, 3);
+    db.exec(readFileSync(resolvePath(dir, scrub), "utf8"));
+    const rows = db.prepare("SELECT slug, ip_hash FROM flags ORDER BY slug").all();
+    expect(rows).toEqual([
+      { slug: "A", ip_hash: null },
+      { slug: "B", ip_hash: TEST_IP_HASH },
+      { slug: "C", ip_hash: null },
+    ]);
   });
 });
