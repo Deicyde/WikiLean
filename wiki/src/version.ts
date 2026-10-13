@@ -5,13 +5,16 @@
 // (id, tag, upload timestamp), plus git_sha when the deploy was stamped by
 // `npm run deploy` (scripts/deploy.ts). The Brain promoter
 // (site/ops/brain-promote-release.sh) runs wrangler directly, so its versions
-// carry git_sha null and a "brain-<release>-<attempt>" tag. Their Worker
+// carry git_sha null and a "brain-<release>-<attempt>" version_tag (that tag
+// is how to tell a promoter deploy apart; a bare `npx wrangler deploy` also
+// leaves git_sha null, with no tag). Their Worker
 // source is brain_release.git_commit's: the promoter only deploys a checkout
 // whose release-affecting paths (wiki/src included) match the release's
 // authority commit (site/ops/brain_release_authority.py).
 //
-// brain_release: the release the asset selector names, and the WikiLean
-// commit it was built from (release.json authority.git_commit). Null when the
+// brain_release: the release the asset selector names (logical id plus the
+// exact manifest digest) and the WikiLean commit it was built from
+// (release.json authority.git_commit). Null when the
 // release cannot be resolved; this endpoint never 503s on a Brain outage.
 
 import type { Hono } from "hono";
@@ -39,7 +42,13 @@ export function registerVersionRoutes(app: Hono<{ Bindings: Env }>): void {
           uploaded_at: meta?.timestamp || null,
         },
         brain_release: release
-          ? { release_id: release.releaseId, git_commit: release.manifest.authority.git_commit }
+          ? {
+            release_id: release.releaseId,
+            // release_id excludes attestations/created_at, so two manifests
+            // can share it; manifest_sha256 pins the exact one served.
+            manifest_sha256: release.manifestSha256,
+            git_commit: release.manifest.authority.git_commit,
+          }
           : null,
       },
       200,

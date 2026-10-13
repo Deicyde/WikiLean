@@ -18,7 +18,7 @@ const SHA = "37b7036d0123456789abcdef0123456789abcdef";
 describe("GET /api/version", () => {
   it("reports the git stamp, Worker Version metadata, and Brain release commit", async () => {
     const h = setup();
-    const { releaseId } = installBrainFixture(h.env);
+    const { releaseId, manifestSha256 } = installBrainFixture(h.env);
     h.env.WIKILEAN_GIT_SHA = SHA;
     h.env.CF_VERSION_METADATA = { id: "ver-123", tag: "brain-8305822b0083-27c7c461cb", timestamp: "2026-10-04T17:25:30Z" };
     const res = await get(h.env, "/api/version");
@@ -33,7 +33,7 @@ describe("GET /api/version", () => {
         version_tag: "brain-8305822b0083-27c7c461cb",
         uploaded_at: "2026-10-04T17:25:30Z",
       },
-      brain_release: { release_id: releaseId, git_commit: "0".repeat(40) },
+      brain_release: { release_id: releaseId, manifest_sha256: manifestSha256, git_commit: "0".repeat(40) },
     });
   });
 
