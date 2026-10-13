@@ -57,20 +57,23 @@ describe("GET /about", () => {
   it("describes the Human-at-boundaries moderation policy, not a human gate on proposals", async () => {
     const h = setup();
     const html = await (await get(h.env, "/about")).text();
-    // The pre-2026-08-06 promises are gone: proposals are no longer held for
-    // human approval, and human edits are not claimed to be patrolled.
-    expect(html).not.toContain("queued for human approval");
-    expect(html).not.toContain("patrolled by moderators");
-    expect(html).not.toContain("growing sample");
+    const text = html.replace(/\s+/g, " ");
+    // Copy that no longer matches the code or the ratified policy is gone.
+    expect(text).not.toContain("queued for human approval");
+    expect(text).not.toContain("patrolled by moderators");
     // What actually happens.
     expect(html).toContain("<h2>How edits are moderated</h2>");
-    expect(html).toContain("Edits by people take effect immediately");
-    expect(html).toContain('<a href="/stats">Stats</a> page shows how many have been patrolled');
-    expect(html).toContain("a pipeline save\n  that drops or alters one is refused");
-    expect(html).toContain("decided\n  by software rather than held for a person");
-    expect(html).toContain("deterministic resolver, which\n  uses no language model");
-    expect(html).toContain("relabeled AI-moderated");
-    expect(html).toContain("such as Mathlib and\n  Wikidata");
+    expect(text).toContain("Annotation edits by people take effect immediately and are shown as human-curated");
+    expect(text).toContain('<a href="/stats">Stats</a> page shows how many have been patrolled');
+    expect(text).toContain("a pipeline save that drops or alters one is refused");
+    expect(text).toContain("those proposals do not wait for a person by default");
+    expect(text).toContain("deterministic resolver, which uses no language model");
+    expect(text).toContain("the rest stay pending until a patroller decides them");
+    // index.ts approve path: a bot approval re-labels human → ai-moderated,
+    // a patroller approval stamps human. The copy states both directions.
+    expect(text).toContain("When the pipeline approves a change to a human-curated annotation, the annotation stops being shown as human-curated");
+    expect(text).toContain("when a patroller approves a proposal, the result is shown as human-curated");
+    expect(text).toContain("pull requests to Mathlib and statements added to Wikidata");
   });
 
   it("handles an empty corpus without dividing by zero", async () => {
