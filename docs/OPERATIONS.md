@@ -65,7 +65,11 @@ On the nightly host. Paths are relative to the checkout `$C` unless absolute.
 Without host access, the only evidence is public: the `/stats` Pipeline runs table
 (all-time totals per kind), `/recent-changes`, and `/<slug>/history`. A review night
 that fails on every article shows up as review runs +1, articles +15, errors +15, tokens
-unchanged.
+unchanged. Once the host runs a checkout with PR #52, each run's `pipeline_runs.notes`
+also carries a sanitized sample of its distinct errors (counts, median time, example
+slugs). Read it from a D1 backup or with
+`wrangler d1 execute <db> --remote --command "SELECT run_id, started_at, errors, notes FROM pipeline_runs WHERE kind='review' ORDER BY started_at DESC LIMIT 5"`
+until the Worker shows recent runs itself.
 
 ## Diagnosis checklist for the nightly host
 
