@@ -1,9 +1,18 @@
 # Brain release runbook
 
-This runbook covers Phase 1 static Brain releases for `wikilean`. Exact-release
-promotion is implemented, but production activation remains blocked on the reviewed P1B
-evidence bundle and Jack-gated P1C rollout/rollback drill. Keep the nightly
+This runbook covers Phase 1 static Brain releases for `wikilean`. Since 2026-10-04,
+production has served release `sha256:8305822b…` (manifest `fa645b2b…`) through a v2
+selector with no previous release; the [activation record](BRAIN-ACTIVATION-2026-10-04.md)
+has the IDs and constraints. That promotion's attempt
+`20261004T172504Z-8305822b0083-27c7c461cb` is journaled `manual_intervention_required`, and
+it blocks every later promotion until it is reconciled (see "If an attempt is incomplete"
+below). The Jack-gated P1C release-B and rollback drill has not been run. Keep the nightly
 `WIKILEAN_BRAIN_DEPLOY=0`.
+
+Run operator commands on the operator Mac: the host that holds the deployment journal, the
+release and evidence stores, and authenticated Wrangler. `/Users/jackmccarthy/projects/WikiLean`
+in the examples below is an example checkout path, not a statement that the host can operate
+production.
 
 ## Safety model
 
@@ -126,9 +135,9 @@ The optional proposal agents use a separate interpreter
 skipped with an explicit warning if that environment is absent. Verify all configured
 paths from the same launch context that will run the job; missing paths fail closed.
 
-P1A is merged on `main`, but evidence generation is not yet authorized: Jack must approve
-the exact read-only Mathlib checkout, observation plan, and Git/Node/npm/Python executable
-paths. Do not substitute an arbitrary project-local Mathlib dependency or unreviewed plan
+P1A is merged on `main`, and P1B evidence was generated for the 2026-10-04 promotion. Each
+new release's evidence still needs Jack's approval of the exact read-only Mathlib checkout,
+observation plan, and Git/Node/npm/Python executable paths. Do not substitute an arbitrary project-local Mathlib dependency or unreviewed plan
 for that reviewed host context.
 
 ## Shadow release
@@ -338,7 +347,8 @@ absolute path outside every checkout, release, baseline, receipt, and temporary 
 workspace:
 
 ```bash
-# First activation only, while /assets/brain/current.json returns HTTP 404.
+# Historical first-activation form. A selector has existed since 2026-10-04, so omit
+# --allow-first-deploy-without-selector now; supplying it fails deliberately.
 cd "$PROMOTION_WORKTREE"
 bash site/ops/brain-promote-release.sh sha256:<candidate-release-hex> \
   --release-root /absolute/releases/<candidate-manifest-hex> \
@@ -457,8 +467,8 @@ independently with both returned IDs and retain its bundle ID/root for review:
 ```
 
 This entire section is P1B preparation only. `context`, the CI recorder, `freeze`, and
-`verify` do not authorize or perform a production deployment. Actual evidence generation
-remains blocked until Jack authorizes the host paths and evidence inputs above.
+`verify` do not authorize or perform a production deployment. Evidence generation for each
+new release requires Jack's authorization of the host paths and evidence inputs above.
 
 The review artifact is an attested two-root set: the 11-file activation bundle plus the
 content-addressed retained promoter root named by `promoter-dry-run.json`. Normal `verify`
@@ -468,8 +478,11 @@ Do not delete or relocate either root after review.
 
 ## Deploy
 
-> **Production activation is currently blocked on P1B/P1C review and approval.** The
-> exact promoter is available, but running it with `--execute` changes production.
+> **Production has served release `sha256:8305822b…` since 2026-10-04.** The open
+> 2026-10-04 attempt blocks further promotions until it is reconciled. Running the promoter
+> with `--execute` changes production and needs Jack's approval for the exact release and
+> window. Never deploy with plain `npm run deploy` / `wrangler deploy`: it uploads the local
+> `wiki/public` and replaces the selector and the whole asset tree.
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.
@@ -673,10 +686,15 @@ These commands were verified against the repository-pinned Wrangler `4.120.0`
 `wiki/node_modules` is absent. `--no-install` is deliberate: it prevents `npx` from
 downloading a newer Wrangler during a recovery.
 
+Run these on the operator Mac, from its checkout's `wiki/` directory, with Wrangler
+authenticated. A checkout without `wiki/node_modules` or Cloudflare credentials cannot run
+them; check with a read-only `npx --no-install wrangler deployments list --json` before an
+incident, not during one.
+
 Inspect the current production deployment as machine-readable JSON:
 
 ```bash
-cd /Users/jackmccarthy/projects/WikiLean/wiki
+cd <operator-checkout>/wiki
 npx --no-install wrangler deployments status --json
 ```
 
@@ -691,7 +709,7 @@ an exclusive deployment window.
 Roll back noninteractively to a verified version ID:
 
 ```bash
-cd /Users/jackmccarthy/projects/WikiLean/wiki
+cd <operator-checkout>/wiki
 npx --no-install wrangler rollback <version-id> --yes \
   --message "Rollback Brain release sha256:<failed-release-hex>"
 ```
@@ -703,10 +721,24 @@ Cross-check that UUID against `npx --no-install wrangler deployments list --json
 confirm that candidate B still owns 100% of traffic before mutation. Never substitute a
 Brain release hash for a Worker version ID.
 
+If the journal or its intent record is unavailable, Cloudflare's deployment history is the
+version source: `npx --no-install wrangler deployments list --json` lists past deployments
+with their version IDs, and promoter deployments carry an attempt-unique tag and message
+(Safety model, step 9). Identify the deployment that preceded the failed candidate, cross-check it
+with `versions list --json`, and record in the incident notes that the ID came from
+Cloudflare rather than the journal.
+
+For the live 2026-10-04 release, the predeploy state is a Worker with no selector (last
+observed as deployment `d2926a43-483b-4447-b570-d067c4d77d98`, 2026-08-28; see the
+[activation record](BRAIN-ACTIVATION-2026-10-04.md)). The release canary below requires an
+expected release ID and manifest digest, so it cannot verify that rollback. Verify it by hand
+instead: `/assets/brain/current.json` returns 404 again and `/api/brain/*` responses carry no
+`release_id`.
+
 After rollback, run the canary against the predeploy Brain release:
 
 ```bash
-cd /Users/jackmccarthy/projects/WikiLean
+cd <operator-checkout>
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain-canary.py \
   --base-url https://wikilean.jackmccarthy.org \
   --expected-release-id sha256:<predeploy-release-hex> \
