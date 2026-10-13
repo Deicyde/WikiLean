@@ -199,9 +199,18 @@ routine schedule.
 
 1. Generate the new keypair (setup step 1) and update the variable to the new
    public key(s) (step 2). The next run uses them, with no workflow change.
+   Also update any local copy of the recipients, such as the key file that a
+   local cron job reads.
 2. Artifacts made before the change are still encrypted to the old key, and
-   they expire 30 days after their run. Keep the old private key until then,
-   or delete those artifacts.
+   they expire 30 days after their run. Local `.age` files made by
+   `wiki/scripts/backup-d1.sh` never expire. Keep the old private key as long
+   as you keep any of them. The alternative is to re-encrypt each one to the
+   new keys before retiring the old key:
+
+   ```bash
+   age -d -i old.key wikilean-<ts>.sql.age | age -R backup-recipients.txt -o wikilean-<ts>.sql.age.new \
+     && mv wikilean-<ts>.sql.age.new wikilean-<ts>.sql.age
+   ```
 3. **If the old private key leaked**, every artifact encrypted to it is
    readable by whoever holds it. Delete them all right away:
 
@@ -210,6 +219,10 @@ routine schedule.
      --jq '.artifacts[] | select(.name | test("^(wikilean-d1|research-export)-")) | "\(.id) \(.name) \(.created_at)"'
    gh api -X DELETE repos/Deicyde/WikiLean/actions/artifacts/<id>
    ```
+
+   Local `.age` files encrypted to the old key are just as readable to whoever
+   holds it. Re-encrypt them as in step 2 wherever copies may have travelled,
+   such as laptop backups.
 
    Then treat their contents as exposed: revoke the OAuth app's user tokens,
    rotate `BETTER_AUTH_SECRET`, and consider whether users must be notified.
@@ -246,10 +259,18 @@ export BACKUP_AGE_RECIPIENTS="$(gh variable get BACKUP_AGE_RECIPIENTS --repo Dei
 npm run backup:d1                       # → wiki/backups/wikilean-<ts>.sql.age
 ```
 
-Decrypt and restore its output exactly like a workflow artifact. Dumps made by
-older versions of the script are plaintext `wikilean-<ts>.sql` files in
-`wiki/backups/`. Encrypt or delete them:
+Decrypt and restore its output exactly like a workflow artifact. For a cron
+job, keep the recipients in a file and read it on each run, as in the script's
+header. Then rotating keys means updating that file.
+
+Dumps made by older versions of the script are plaintext `wikilean-<ts>.sql`
+files in `wiki/backups/`. From the repository root, with
+`BACKUP_AGE_RECIPIENTS` exported as above, encrypt them in place (or delete
+them):
 
 ```bash
-age -R backup-recipients.txt -o wikilean-<ts>.sql.age wikilean-<ts>.sql && rm wikilean-<ts>.sql
+cd wiki/backups
+for f in wikilean-*.sql; do
+  age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
+done
 ```
