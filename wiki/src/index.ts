@@ -701,7 +701,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v6"; // v6: AI-review freshness split from bot-touch freshness
+  const cacheKey = "page:stats:v6"; // v6: AI-review freshness rows + recent pipeline runs table
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -803,6 +803,9 @@ app.get("/stats", async (c) => {
     .groupBy(pipelineRuns.kind)
     .orderBy(pipelineRuns.kind);
 
+  // The last 10 run reports, notes re-redacted (same rows GET /api/runs serves).
+  const recentRuns = (await recentRunRows(db, null, 10)).map((r) => ({ ...r, notes: redactRunNotes(r.notes) }));
+
   // Propose-then-approve outcomes (the AI-precision measure): counts by
   // status, acceptance rate, and mean time-to-decision — from the proposals
   // lifecycle table. Zero-denominator guards live in statsPage.
@@ -829,6 +832,7 @@ app.get("/stats", async (c) => {
     revisions: revByKind,
     patrol,
     runs,
+    recentRuns,
     proposals: proposalAgg,
   });
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
@@ -2670,6 +2674,79 @@ app.get("/api/work", async (c) => {
 // {ok:true, duplicate:true}, first-report row wins and is never overwritten).
 const RUN_ID_RE = /^[0-9a-f]{8}$/;
 const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
+
+// Run notes are runner-sanitized (tokens, emails, home paths, control bytes)
+// before POST, and they become public through GET /api/runs and /stats, so
+// they are re-redacted here as defense in depth and capped at MAX_TEXT_LEN.
+const NOTE_REDACTIONS: RegExp[] = [
+  /Bearer\s+\S+/g,
+  /sk-ant-[\w-]+/g,
+  /gh[pousr]_[A-Za-z0-9]{20,}/g,
+  /github_pat_\w+/g,
+  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
+];
+
+function redactRunNotes(notes: string | null): string | null {
+  if (notes === null) return null;
+  let out = notes.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "");
+  for (const re of NOTE_REDACTIONS) out = out.replace(re, "[redacted]");
+  return out.slice(0, MAX_TEXT_LEN);
+}
+
+async function recentRunRows(db: DrizzleDB, kind: string | null, limit: number) {
+  return db
+    .select({
+      runId: pipelineRuns.runId,
+      kind: pipelineRuns.kind,
+      startedAt: pipelineRuns.startedAt,
+      finishedAt: pipelineRuns.finishedAt,
+      articles: pipelineRuns.articlesProcessed,
+      errors: pipelineRuns.errors,
+      tokens: pipelineRuns.tokens,
+      cost: pipelineRuns.costUsdEquiv,
+      model: pipelineRuns.model,
+      promptSha: pipelineRuns.promptSha,
+      notes: pipelineRuns.notes,
+    })
+    .from(pipelineRuns)
+    .where(kind === null ? undefined : eq(pipelineRuns.kind, kind))
+    .orderBy(desc(pipelineRuns.startedAt), desc(pipelineRuns.createdAt))
+    .limit(limit);
+}
+
+// GET /api/runs — public, read-only per-run reports (newest first), so the
+// session-start status check can read run errors without a bearer token.
+// ?kind filters on the run's own kind (one of RUN_KINDS; 'all' is a run kind,
+// the full nightly, not a wildcard); omit it for every kind. ?limit 1..50,
+// default 10. Unknown kind or a bad limit → 400 (no clamping).
+app.get("/api/runs", async (c) => {
+  const kindRaw = c.req.query("kind");
+  if (kindRaw !== undefined && !RUN_KINDS.has(kindRaw)) return c.json({ ok: false, error: "bad kind" }, 400);
+  const limitRaw = c.req.query("limit") ?? "10";
+  if (!/^[0-9]{1,2}$/.test(limitRaw) || Number(limitRaw) < 1 || Number(limitRaw) > 50) {
+    return c.json({ ok: false, error: "bad limit" }, 400);
+  }
+  const rows = await recentRunRows(drizzle(c.env.DB), kindRaw ?? null, Number(limitRaw));
+  return c.json(
+    {
+      runs: rows.map((r) => ({
+        run_id: r.runId,
+        kind: r.kind,
+        started_at: r.startedAt,
+        finished_at: r.finishedAt,
+        articles_processed: r.articles,
+        errors: r.errors,
+        tokens: r.tokens,
+        cost_usd_equiv: r.cost,
+        model: r.model,
+        prompt_sha: r.promptSha,
+        notes: redactRunNotes(r.notes),
+      })),
+    },
+    200,
+    { "Cache-Control": "public, max-age=300" },
+  );
+});
 
 app.post("/api/runs", async (c) => {
   const originErr = checkOrigin(c);

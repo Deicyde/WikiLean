@@ -599,10 +599,11 @@ export interface StatsData {
   articles: {
     total: number;
     // neverReviewed/fresh/stale read moderation_state.last_reviewed_at, which
-    // every bot save stamps (AI review, Wikipedia re-pin, unchanged no-op).
+    // every bot save and bot create stamps (AI review, Wikipedia re-pin,
+    // unchanged no-op). AI proposal decisions and revert-runs do not stamp it.
     neverReviewed: number;
-    fresh: number; // any bot save within the last 30d
-    stale: number; // last bot save >30d ago
+    fresh: number; // bot-save stamp within the last 30d
+    stale: number; // bot-save stamp >30d old
     aiReviewedFresh: number; // distinct articles with an ai-moderate:review revision ≤30d
     aiReviewLatest: number | null; // newest ai-moderate:review revision (ms), null if none
     drifted: number; // moderation_state.wp_drifted = 1
@@ -623,6 +624,15 @@ export interface StatsData {
     errors: number;
     tokens: number;
     cost: number | null;
+  }>;
+  // The last 10 run reports, newest first; notes already re-redacted.
+  recentRuns: Array<{
+    kind: string;
+    startedAt: number;
+    articles: number;
+    errors: number;
+    tokens: number;
+    notes: string | null;
   }>;
   // Propose-then-approve lifecycle (the AI-precision measure): acceptance
   // rate = approved / (approved + rejected); stale = target vanished before a
@@ -661,11 +671,11 @@ export function statsPage(d: StatsData): string {
 
   const reviewRows =
     statRow("Articles", d.articles.total, "RQ8") +
-    statRow("No bot save recorded", d.articles.neverReviewed, "RQ5") +
-    statRow("Bot-touched ≤30d (AI review, Wikipedia re-pin, or unchanged-save stamp)", d.articles.fresh, "RQ5") +
-    statRow("Not bot-touched in >30d", d.articles.stale, "RQ5") +
-    statRow("AI-reviewed ≤30d (AI review revision; no-change reviews not counted)", d.articles.aiReviewedFresh, "RQ5") +
-    `<tr><td>Most recent AI review revision</td><td class="wl-stat-num">${
+    statRow("No bot-save stamp", d.articles.neverReviewed, "RQ5") +
+    statRow("Bot-save stamp ≤30d (any pipeline save or create, incl. Wikipedia re-pins and unchanged saves)", d.articles.fresh, "RQ5") +
+    statRow("Bot-save stamp >30d old", d.articles.stale, "RQ5") +
+    statRow("AI-reviewed ≤30d (articles an AI review changed; reviews that changed nothing are not counted)", d.articles.aiReviewedFresh, "RQ5") +
+    `<tr><td>Most recent AI review revision (UTC date)</td><td class="wl-stat-num">${
       d.articles.aiReviewLatest === null ? '<span class="muted">none</span>' : new Date(d.articles.aiReviewLatest).toISOString().slice(0, 10)
     }</td>${rqCell("RQ5")}</tr>` +
     statRow("Drifted from pinned Wikipedia revision", d.articles.drifted, "RQ8") +
@@ -739,6 +749,16 @@ export function statsPage(d: StatsData): string {
     `<tr><td>${htmlEscape(label, false)}</td>${statNum(r.runs)}${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}${fmtCost(r.cost)}${rqCell("RQ8")}</tr>`;
   const runsRows =
     d.runs.map((r) => runRow(r.kind, r)).join("") + runRow("all runs", runTotal);
+  const recentRunRows = d.recentRuns.length
+    ? d.recentRuns
+        .map(
+          (r) =>
+            `<tr><td>${new Date(r.startedAt).toISOString().slice(0, 16).replace("T", " ")}</td>` +
+            `<td>${htmlEscape(r.kind, false)}</td>${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}` +
+            `<td>${r.notes ? `<code>${htmlEscape(r.notes, false)}</code>` : '<span class="muted">—</span>'}</td></tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="6" class="muted">No run reports yet.</td></tr>`;
 
   const body =
     `<h1>Stats</h1>` +
@@ -760,6 +780,10 @@ export function statsPage(d: StatsData): string {
     statTable(metricHead, revisionRows) +
     `<h2 class="wl-stats-h">Pipeline runs</h2>` +
     statTable(`<th>Kind</th><th>Runs</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Cost</th><th>Feeds</th>`, runsRows) +
+    `<h2 class="wl-stats-h">Recent pipeline runs</h2>` +
+    statTable(`<th>Started (UTC)</th><th>Kind</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Notes</th>`, recentRunRows) +
+    `<p class="muted" style="font-size:.82rem">The last 10 run reports, newest first; notes are the runner&#x27;s ` +
+    `sanitized summary (also at <a href="/api/runs">/api/runs</a>).</p>` +
     `<h2 class="wl-stats-h">AI proposals (propose-then-approve)</h2>` +
     statTable(
       metricHead,
@@ -779,8 +803,10 @@ export function statsPage(d: StatsData): string {
             : "—"
         }</td>${rqCell("RQ4")}</tr>`,
     ) +
-    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in any row ` +
-    `means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
+    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in an ` +
+    `all-time row means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
+    `Windowed rows (≤30d, last 30d) can legitimately read 0; a 0 in AI-reviewed ≤30d means the AI review has ` +
+    `stopped changing articles. ` +
     `Median time-to-first-human-touch is omitted: it needs a per-annotation pipeline-event × human-event self-join ` +
     `that is not a cheap single SQL pass on D1. RQ3 (AI dissent / ladder blocks) is measured in the runner&#x27;s ` +
     `decision sidecars, not in this database; RQ6 (inter-generation agreement) and RQ7 (confidence calibration) ` +
