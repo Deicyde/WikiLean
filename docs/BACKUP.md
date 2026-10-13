@@ -170,12 +170,18 @@ reading the abandoned copy without any error:
 
 - `database_id` in `wiki/wrangler.jsonc`, the Worker's `DB` binding. This is a
   Worker change, so it ships through the reviewed release and promotion path.
-- The database name `wikilean` in `.github/workflows/backup-d1.yml` and
-  `wiki/scripts/backup-d1.sh`. Both resolve the database by name, so while the
-  old database exists they keep backing it up and stay green.
-- The hardcoded id in `brain/acquire_d1_snapshot.py`,
-  `brain/d1_snapshot_bundle.py` and
-  `brain/authority/requests/d1-community-snapshot-v1.json`.
+  Commands run from `wiki/` follow this id as long as `database_name` stays
+  `wikilean`. That covers `wiki/scripts/backup-d1.sh`,
+  `site/discover_articles.py` and every `wrangler d1 execute wikilean --remote`.
+- The database name `wikilean` in `.github/workflows/backup-d1.yml`. The
+  workflow runs without `wrangler.jsonc` and resolves the database by name
+  through the API. While the old database exists, the workflow keeps backing it
+  up and stays green.
+- The Brain D1 snapshot acquisition. It pins the id in
+  `brain/acquire_d1_snapshot.py`, `brain/d1_snapshot_bundle.py` and the request
+  descriptor `brain/authority/requests/d1-community-snapshot-v1.json`. Both
+  Python files also pin that descriptor's sha256, so moving the id takes a new,
+  reviewed request version. An in-place edit will not work.
 
 Then decrypt the next backup and confirm that it contains post-restore data.
 
