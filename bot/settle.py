@@ -35,7 +35,7 @@ def gh_failure(args, r):
     also prints the JSON error body on stdout. Neither carries the token itself."""
     detail = " ".join((r.stderr or "").split()) or " ".join((r.stdout or "").split()) or "no output"
     msg = f"gh {' '.join(str(a) for a in args[:3])} failed (exit {r.returncode}): {detail[:300]}"
-    if "401" in detail or "Bad credentials" in detail:
+    if "HTTP 401" in detail or "Bad credentials" in detail or '"status":"401"' in detail:
         msg += (" -- GH_TOKEN is missing, expired or revoked (CI: MATHLIB_FORK_PAT;"
                 " see 'Token rotation' in bot/README.md)")
     return msg
@@ -153,7 +153,8 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
     diff = gh_run(["pr", "diff", str(pr), "--repo", repo])
     if not diff.strip():
-        raise GhError(f"gh pr diff {pr}: empty diff")  # a batch PR always adds tags
+        # A batch PR always adds tags; an empty one had every tag recycled by hand.
+        raise GhError(f"gh pr diff {pr}: empty diff (if every tag was recycled, close the PR)")
     tags, decl_line, f = [], {}, None
     lines = diff.split("\n")
     for idx, ln in enumerate(lines):

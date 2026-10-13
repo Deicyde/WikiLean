@@ -6,7 +6,7 @@
 # (default: bot-state), an orphan branch that holds only STATE_PATHS. main keeps
 # its copy of bot/state/ as a frozen snapshot (the Brain build reads it).
 #
-#   state-branch.sh restore   overlay the branch's files onto the working tree
+#   state-branch.sh restore   make the working tree's STATE_PATHS match the branch
 #   state-branch.sh save MSG  commit the working tree's STATE_PATHS onto the
 #                             restored commit and push it (fast-forward only)
 #
@@ -21,10 +21,11 @@ set -euo pipefail
 
 BRANCH="${BOT_STATE_BRANCH:-bot-state}"
 REMOTE="${BOT_STATE_REMOTE:-origin}"
-# bot/state/ plus the one bot-written dataset in bot/data/ that accumulates. The
-# other bot/data files the tick writes are caches it regenerates (tagged_in_master
-# is refreshed before every open), and main's copies stay authoritative for them.
-STATE_PATHS=(bot/state bot/data/corrections.jsonl)
+# bot/state/ plus the bot/data/ files the tick writes and later reads: the harvested
+# corrections, and the tagged-in-master lists open_batch refreshes before each open
+# (settle-time pool exclusion and brain_queue read them). main's copies of those
+# lists advance only through a fold-back PR or a manual refresh_tagged.py run.
+STATE_PATHS=(bot/state bot/data/corrections.jsonl bot/data/tagged_in_master.txt bot/data/tagged_pairs.txt)
 
 die() { echo "state-branch: $*" >&2; exit 1; }
 
@@ -52,16 +53,25 @@ restore() {
   fi
   [ "$rc" -eq 0 ] || die "cannot read $REMOTE/$BRANCH (git ls-remote exit $rc)"
   git fetch --quiet --no-tags "$REMOTE" "+refs/heads/$BRANCH:refs/remotes/$REMOTE/$BRANCH"
-  local base files=()
+  local base path paths=()
   base="$(git rev-parse --verify "refs/remotes/$REMOTE/$BRANCH^{commit}")"
   while IFS= read -r -d '' path; do
     in_state_paths "$path" || die "$BRANCH:$path is outside the state paths"
-    files+=("$path")
   done < <(git ls-tree -r -z --name-only "$base")
-  [ "${#files[@]}" -gt 0 ] || die "$BRANCH ($base) holds no state files"
-  git checkout "$base" -- "${files[@]}"
+  # Without it a tick would read main's frozen current_pr: the stale-state clobber.
+  git cat-file -e "$base:bot/state/bot_state.json" 2>/dev/null \
+    || die "$BRANCH ($base) has no bot/state/bot_state.json"
+  # Mirror every state path the branch carries, deletions included (--no-overlay
+  # removes tracked files the branch lacks). A path the branch has never carried
+  # keeps main's copy, and the next save adds it.
+  for path in "${STATE_PATHS[@]}"; do
+    if git cat-file -e "$base:$path" 2>/dev/null; then
+      paths+=("$path")
+    fi
+  done
+  git checkout --no-overlay "$base" -- "${paths[@]}"
   echo "$base" >"$BASE_FILE"
-  echo "state-branch: restored ${#files[@]} files from $REMOTE/$BRANCH at $base"
+  echo "state-branch: restored ${paths[*]} from $REMOTE/$BRANCH at $base"
 }
 
 save() {

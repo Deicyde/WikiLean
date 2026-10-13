@@ -80,10 +80,12 @@ class StateBranchTest(unittest.TestCase):
         self.assertIn("does not exist yet", self.ok(a, "restore"))
         self.write(a, "bot/state/bot_state.json", json.dumps({"current_pr": 8}))
         self.write(a, "bot/state/pool_candidates.json", "[]")  # ignored, never persisted
-        self.write(a, "bot/data/tagged_in_master.txt", "Q1\nQ2\n")  # a cache: stays on main
+        self.write(a, "bot/data/tagged_in_master.txt", "Q1\nQ2\n")
+        self.write(a, "bot/data/most_used_qids.json", "{}")  # not bot-written: stays on main
         self.ok(a, "save", MESSAGE)
 
         self.assertEqual(self.branch_files(), ["bot/data/corrections.jsonl",
+                                               "bot/data/tagged_in_master.txt",
                                                "bot/state/bot_state.json", "bot/state/cut_log.json"])
         self.assertEqual(self.git("rev-list", "--count", "bot-state", cwd=self.origin), "1")
         self.assertEqual(self.git("rev-parse", "main", cwd=self.origin), self.main_sha)
@@ -92,7 +94,7 @@ class StateBranchTest(unittest.TestCase):
         b = self.clone("b")
         self.ok(b, "restore")
         self.assertEqual(json.loads((b / "bot/state/bot_state.json").read_text()), {"current_pr": 8})
-        self.assertEqual((b / "bot/data/tagged_in_master.txt").read_text(), "Q1\n")
+        self.assertEqual((b / "bot/data/tagged_in_master.txt").read_text(), "Q1\nQ2\n")
         self.assertIn("no state change", self.ok(b, "save", MESSAGE))
         self.assertEqual(self.git("rev-list", "--count", "bot-state", cwd=self.origin), "1")
 
@@ -101,8 +103,51 @@ class StateBranchTest(unittest.TestCase):
         self.ok(b, "save", MESSAGE)
         self.assertEqual(self.git("rev-list", "--count", "bot-state", cwd=self.origin), "2")
         self.assertEqual(self.branch_files(), ["bot/data/corrections.jsonl",
+                                               "bot/data/tagged_in_master.txt",
                                                "bot/state/batch8_approved.json",
                                                "bot/state/bot_state.json"])
+
+    def test_restore_mirrors_the_branch_including_deletions(self):
+        a = self.clone("a")
+        self.ok(a, "restore")
+        self.write(a, "bot/state/batch8_approved.json", "{}")
+        self.ok(a, "save", MESSAGE)
+        editor = self.tmp / "editor"
+        self.git("clone", "--quiet", "--branch", "bot-state", self.origin.as_uri(), str(editor), cwd=self.tmp)
+        self.git("rm", "--quiet", "bot/state/cut_log.json", cwd=editor)
+        self.git("commit", "--quiet", "-m", "drop cut_log by hand", cwd=editor)
+        self.git("push", "--quiet", "origin", "bot-state", cwd=editor)
+
+        b = self.clone("b")  # main still has cut_log.json and lacks batch8_approved.json
+        self.ok(b, "restore")
+        self.assertFalse((b / "bot/state/cut_log.json").exists())
+        self.assertTrue((b / "bot/state/batch8_approved.json").exists())
+        self.assertIn("no state change", self.ok(b, "save", MESSAGE))
+        self.assertNotIn("bot/state/cut_log.json", self.branch_files())
+
+    def test_a_path_the_branch_never_carried_keeps_main_s_copy(self):
+        rogue = self.clone("old")
+        self.git("checkout", "--quiet", "--orphan", "bot-state", cwd=rogue)
+        self.git("rm", "-r", "--quiet", "--cached", ".", cwd=rogue)
+        self.git("add", "bot/state", cwd=rogue)
+        self.git("commit", "--quiet", "-m", "branch from before tagged lists were persisted", cwd=rogue)
+        self.git("push", "--quiet", "origin", "bot-state", cwd=rogue)
+        a = self.clone("a")
+        self.ok(a, "restore")
+        self.assertEqual((a / "bot/data/tagged_in_master.txt").read_text(), "Q1\n")
+        self.ok(a, "save", MESSAGE)
+        self.assertIn("bot/data/tagged_in_master.txt", self.branch_files())
+
+    def test_restore_refuses_a_branch_without_bot_state_json(self):
+        editor = self.clone("editor")
+        self.git("checkout", "--quiet", "--orphan", "bot-state", cwd=editor)
+        self.git("rm", "-r", "--quiet", "--cached", ".", cwd=editor)
+        self.git("add", "bot/state/cut_log.json", cwd=editor)
+        self.git("commit", "--quiet", "-m", "no bot_state.json", cwd=editor)
+        self.git("push", "--quiet", "origin", "bot-state", cwd=editor)
+        r = self.run_script(self.clone("a"), "restore")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("no bot/state/bot_state.json", r.stderr)
 
     def test_concurrent_writer_is_rejected_not_overwritten(self):
         a = self.clone("a")
