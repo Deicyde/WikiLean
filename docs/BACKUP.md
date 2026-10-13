@@ -12,7 +12,7 @@ tokens.
 |---|---|---|
 | D1 Time Travel | 7 days on Workers Free, 30 days on Workers Paid (Cloudflare D1 limits) | Cloudflare, on-platform |
 | `Backup D1` workflow (`.github/workflows/backup-d1.yml`) | 30 days | GitHub Actions artifacts, **age-encrypted** |
-| `wiki/scripts/backup-d1.sh` (`npm run backup:d1`) | as long as you keep the file | the machine that runs it, **plaintext** (see below) |
+| `wiki/scripts/backup-d1.sh` (`npm run backup:d1`) | as long as you keep the file | the machine that runs it, **age-encrypted** (see below) |
 
 The workflow runs daily (scheduled for 08:27 UTC; GitHub often starts it hours
 late) and on demand. Each run uploads two artifacts:
@@ -234,14 +234,22 @@ then update `AGE_VERSION` and `AGE_SHA256` together.
 
 ## The local script
 
-`wiki/scripts/backup-d1.sh` (`npm run backup:d1`) does **not** encrypt yet. It
-writes a plaintext `wikilean-<ts>.sql` to `wiki/backups/`, which is gitignored
-but otherwise unprotected. Until it encrypts, treat its output like the
-decrypted dump above, or encrypt it straight away:
+`wiki/scripts/backup-d1.sh` (`npm run backup:d1`) does the same job on your
+machine. It exports, encrypts to the same recipients, and keeps only
+`wikilean-<ts>.sql.age`. The plaintext lives in a private temp directory and is
+deleted as soon as it is encrypted. Like the workflow, it refuses to export if
+age or the recipients are missing or invalid. Run it from the repository root:
+
+```bash
+cd wiki
+export BACKUP_AGE_RECIPIENTS="$(gh variable get BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean)"
+npm run backup:d1                       # → wiki/backups/wikilean-<ts>.sql.age
+```
+
+Decrypt and restore its output exactly like a workflow artifact. Dumps made by
+older versions of the script are plaintext `wikilean-<ts>.sql` files in
+`wiki/backups/`. Encrypt or delete them:
 
 ```bash
 age -R backup-recipients.txt -o wikilean-<ts>.sql.age wikilean-<ts>.sql && rm wikilean-<ts>.sql
 ```
-
-Its header also suggests restoring straight into production with `--remote`.
-Follow the local-first drill above instead.
