@@ -1,0 +1,12 @@
+-- Scrub legacy flags.ip_hash values. Until this release ip_hash held an
+-- unsalted sha256 hex of CF-Connecting-IP, which is reversible for IPv4 by
+-- enumerating 2^32 addresses. The Worker now writes "hmac-sha256:<hex>" under
+-- the IP_HASH_SECRET secret (or NULL without it). Nothing reads ip_hash, so the
+-- legacy values carry no function, only exposure; NULL them. HMAC rows are
+-- kept, so this is safe to run at any point after the new Worker is live. Rows
+-- the old Worker writes after this runs would stay unsalted, so run it after
+-- the deploy, not before.
+--
+-- NB deploy: remote migration tracking is out of sync — apply remote via
+--   wrangler d1 execute wikilean --remote --file=migrations/0013_flags_ip_hash_scrub.sql
+UPDATE flags SET ip_hash = NULL WHERE ip_hash IS NOT NULL AND ip_hash NOT LIKE 'hmac-sha256:%';

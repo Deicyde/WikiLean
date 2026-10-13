@@ -36,6 +36,11 @@ export interface Env {
   // second token-holder exists.
   PIPELINE_TOKEN?: string;
 
+  // HMAC key for flags.ip_hash (the anonymous flag endpoint's abuse handle).
+  // Optional: when unset, flags store ip_hash NULL. An unsalted sha256 of an
+  // IPv4 address is reversible by enumeration, so there is no keyless fallback.
+  IP_HASH_SECRET?: string;
+
   // better-auth (used when AUTH_MODE === "oauth")
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
