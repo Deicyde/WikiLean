@@ -83,10 +83,7 @@ def main():
                                    input=json.dumps(recycle), text=True)
             # 3) tag table = trim/ready notice (one idempotent comment: green table
             #    + ready-to-merge + recycled summary; template: trim comment on #40682)
-            header = (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags approved 🟢 "
-                      f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
-                      + (f" {len(recycle)} recycled to the next batch." if recycle else "")
-                      + " <!-- wikilean-bot-ready -->")
+            header = settle.ready_header(r)
             print(f"\n{tag}TABLE+READY on #{pr}: pr_table.py --post --header …")
             if dry:
                 print("  " + header)
