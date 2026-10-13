@@ -143,7 +143,7 @@ def master_tip():
 
 def resolve_conflicts(pr, branch, mathlib, dry):
     """Auto-resolve a settled PR that CONFLICTS with master: RE-DERIVE the branch off
-    FRESH master and re-apply its green tags, then force-push. @[wikidata] tags are
+    FRESH master and re-apply the tags it carries, then force-push. @[wikidata] tags are
     purely ADDITIVE, so rebuilding on master is conflict-proof — text-merging master in
     (freshen_master) is what kept hitting unresolvable conflicts on doc-attr PRs."""
     cls = settle.classify(pr, REPO)
@@ -158,13 +158,14 @@ def resolve_conflicts(pr, branch, mathlib, dry):
                    f"cannot rebuild without decl/file per green tag; reconstruct it by "
                    f"hand from the PR diff on the bot-state branch, then re-tick.")
     approved = json.loads(apath.read_text())
-    # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
-    # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
-    # minus recycled, which would wrongly re-add the trimmed tags). decl/file from approved.
-    green_qids = {g["qid"] for g in cls["green"]}
+    # Rebuild exactly the tags CURRENTLY on the PR (classify's tags, read from its diff),
+    # not approved minus recycled, which would re-add trimmed tags, and not the green set:
+    # trimming belongs to the settle (triage, requeue, table), and a tag that recycles
+    # without the gate being met must not silently vanish here. decl/file from approved.
+    green_qids = set(cls["tags"])
     green = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
              "tags": [t for t in approved["tags"] if t["qid"] in green_qids]}
-    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with {len(green['tags'])} green tags")
+    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with the {len(green['tags'])} tags it carries")
     if dry:
         return
     sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base

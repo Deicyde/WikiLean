@@ -246,7 +246,7 @@ Steps:
   moved since its last rebuild (`conflict_sha` in `bot_state.json`), the next tick
   rebuilds the branch from fresh master, re-applies the green tags (no build;
   Mathlib CI compiles), force-pushes, and refreshes the tag table and PR body. The
-  log says `RESOLVE-CONFLICT #N: rebuild off fresh master with K green tags`.
+  log says `RESOLVE-CONFLICT #N: rebuild off fresh master with the K tags it carries`.
 - It records the master it rebuilt onto before pushing, so it tries at most once
   per master commit. Master moves many times a day, so a failed rebuild is retried
   on a later tick; to retry now, dispatch the workflow.
