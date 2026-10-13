@@ -94,7 +94,11 @@ describe("security headers", () => {
       expect.arrayContaining(["'self'", "data:", "https://*.wikimedia.org", "https://wikimedia.org"]),
     );
     expect(directive("object-src")).toEqual(["'none'"]);
-    // frame-ancestors is ignored in report-only policies; it is enforced
+    // /review: the JuliaMono webfont (jsDelivr) and GitHub-rendered comment media.
+    expect(directive("font-src")).toEqual(["'self'", "https://cdn.jsdelivr.net"]);
+    expect(directive("img-src")).toContain("https://github.com");
+    expect(directive("media-src")).toContain("https://github.com");
+    // A report-only frame-ancestors would only report; the ban is enforced
     // through the separate Content-Security-Policy header instead.
     expect(CSP_REPORT_ONLY).not.toContain("frame-ancestors");
     expect(SECURITY_HEADERS["Content-Security-Policy"]).toBe("frame-ancestors 'none'");
@@ -129,12 +133,16 @@ describe("POST /api/csp-report", () => {
     expect(lines).toEqual([
       {
         event: "csp-report",
-        disposition: "report",
-        directive: "script-src-elem",
-        blocked: "https://evil.example/x.js",
-        document: `${ORIGIN}/Test_Article`,
-        source: `${ORIGIN}/Test_Article`,
-        line: "12",
+        violations: [
+          {
+            disposition: "report",
+            directive: "script-src-elem",
+            blocked: "https://evil.example/x.js",
+            document: `${ORIGIN}/Test_Article`,
+            source: `${ORIGIN}/Test_Article`,
+            line: "12",
+          },
+        ],
       },
     ]);
   });
@@ -159,8 +167,9 @@ describe("POST /api/csp-report", () => {
     expect(res.status).toBe(204);
     const lines = log.mock.calls.map((call) => JSON.parse(String(call[0])));
     expect(lines).toHaveLength(1);
-    expect(lines[0]).toMatchObject({
-      event: "csp-report",
+    expect(lines[0].event).toBe("csp-report");
+    expect(lines[0].violations).toHaveLength(1);
+    expect(lines[0].violations[0]).toMatchObject({
       directive: "img-src",
       blocked: "https://images.example/a.png",
       document: `${ORIGIN}/stats`,
@@ -169,11 +178,35 @@ describe("POST /api/csp-report", () => {
 
   it("rejects oversized and malformed bodies, and caps fields and line count", async () => {
     const h = setup();
-    vi.spyOn(console, "log").mockImplementation(() => {});
-    const big = await postReport(h.env, "x".repeat(17 * 1024), "application/csp-report");
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    const big = await postReport(h.env, "x".repeat(65 * 1024), "application/csp-report");
     expect(big.status).toBe(413);
     const bad = await postReport(h.env, "{not json", "application/csp-report");
     expect(bad.status).toBe(400);
+    // A chunked body with no Content-Length is still byte-capped while streaming.
+    const chunk = new TextEncoder().encode("x".repeat(16 * 1024));
+    let sent = 0;
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        if (sent++ < 8) controller.enqueue(chunk);
+        else controller.close();
+      },
+    });
+    const chunked = await app.request(
+      "/api/csp-report",
+      { method: "POST", headers: { "Content-Type": "application/csp-report" }, body: stream, duplex: "half" } as RequestInit,
+      h.env,
+    );
+    expect(chunked.status).toBe(413);
+    expect(sent).toBeLessThan(8); // the reader stopped early
+    // A batch of 50 violations is one log line holding the first 20.
+    const batch = Array.from({ length: 50 }, () => ({
+      type: "csp-violation",
+      body: { effectiveDirective: "img-src", blockedURL: "https://x.example/a.png" },
+    }));
+    expect((await postReport(h.env, JSON.stringify(batch), "application/reports+json")).status).toBe(204);
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(log.mock.calls[0][0])).violations).toHaveLength(20);
 
     const many = Array.from({ length: 50 }, () => ({
       type: "csp-violation",
