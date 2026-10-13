@@ -81,8 +81,12 @@ const INSTRUCTIONS =
   "match:'none' with `nearest` candidates instead of a forced weak grounding (a forced " +
   "match is what creates hallucinated citations). When the best hit is a generalization or " +
   "special_case rather than exact, a top-level `note` says so. " +
-  "SNAPSHOT ECHO: every response carries snapshot:{generated_at,pin} — the brain build " +
-  "time and the Mathlib rev the decls were built against. " +
+  "SNAPSHOT ECHO: every response carries release_id plus snapshot:{generated_at,pin}, " +
+  "copied from the release's cells manifest. generated_at identifies the brain generation: " +
+  "an ISO build timestamp in older releases, a sha256: generation id in offline-replay " +
+  "releases. pin identifies the Mathlib source: a git commit when the release records one, " +
+  "otherwise a sha256: digest of the sealed Mathlib source input (null if none). Treat both " +
+  "as opaque identifiers to compare across responses, not as a date or a mathlib4 commit. " +
   "An organ's `bond` says why it is in the cell: 'exact' = it IS the atom (identity); " +
   "'generalization'/'special_case' = it has no formal home of its own and attaches to " +
   "its single best target; 'xref'/'field' = a cross-reference / an area concept.";
