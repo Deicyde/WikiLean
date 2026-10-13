@@ -13,8 +13,8 @@ user's login keychain — a cloud cron can't reach it).
   it once on next wake. It runs **flush → wp-update → review**, logs to
   `site/cache/cron/moderate-<ts>.log`, and accepts the documented limit overrides.
 - `newtags-nightly.sh` — NEW-article tagging @ 03:10 (own lock; see the script
-  header). Not a running job: `/stats` still shows 7 `new` runs in total and the last
-  `ai-create` revision is from 2026-07-03. Loading its plist is Jack's decision.
+  header). It has not run as a routine job: `/stats` still shows 7 `new` runs in total and
+  the last `ai-create` revisions are from 2026-07-03. Loading its plist is Jack's decision.
 - `brain-nightly.sh` — the BRAIN refresh @ 02:20 (see below).
 
 ## Brain nightly (org.wikilean.brain @ 02:20)
@@ -88,7 +88,7 @@ Run the focused nightly shell suite after changing this gate:
 python3 site/ops/test_brain_nightly.py
 ```
 
-P1B activation-review tooling has run once operationally, for the 2026-10-04 promotion of
+P1B activation-review tooling has run operationally for the 2026-10-04 promotion of
 release `sha256:8305822b…` ([activation record](../../docs/BRAIN-ACTIVATION-2026-10-04.md)).
 Promoter dry-run can retain its exact sealed public/Worker/config inputs and raw read-only
 production probes in an external content-addressed store. `brain_activation_bundle.py
@@ -108,9 +108,9 @@ Jack supplies `--first-deploy-approval` only during P1C execution, after reviewi
 frozen evidence IDs and deployment window.
 P1A is merged on `main`. A selector has existed since 2026-10-04, so later promotions omit
 the first-deploy exception. The 2026-10-04 attempt is journaled `manual_intervention_required`
-and blocks further promotions until it is reconciled. Each new bundle still needs Jack to
-authorize the launch-context Mathlib checkout, Wikidata observation plan, interpreter paths,
-and external evidence stores; see the release runbook.
+and blocks further promotions until it is reconciled. Bundles use the launch-context
+Mathlib checkout, Wikidata observation plan, interpreter paths, and external evidence stores
+that Jack authorized; see the release runbook.
 
 ## Install the three nightly jobs
 ```sh

@@ -24,7 +24,7 @@ have shipped. Every source below is live; counts are from
 | Revision patrol marks | **LIVE** (migration 0006) | 0 of the 32 `edit` revisions patrolled. Those 32 include `system` import revisions, not only human edits. |
 | `proposals` lifecycle table (D1) | **LIVE** (migration 0009; propose-then-approve, 2026-08-06) | 12 approved, 3 rejected, 6 decided by AI, 1 pending; mean 19.0 h to decision. |
 | `/stats` page | **LIVE** (cache key `page:stats:v5`) | RQ-labelled rows; footer explains what a zero means. |
-| Research export | **LIVE** | `GET /api/research/export.jsonl` (bot bearer or admin), pseudonymized; a nightly artifact rides the D1 backup workflow. |
+| Research export | **LIVE** endpoint | `GET /api/research/export.jsonl` (bot bearer or admin), pseudonymized. A nightly artifact step rides the D1 backup workflow and needs the `PIPELINE_TOKEN` repo secret. |
 | `site/cache/.decisions.jsonl` sidecar | **LIVE, host-local** | Written by `site/moderate.py` on the nightly host; gitignored, not in this repo. RQ3's ladder data lives here. |
 | Per-annotation `confidence` | **NO**, deferred | Gates RQ7. |
 | Considered-candidates / tool transcript | **NO**, deferred | Planned as a deterministic post-pass strip. |
