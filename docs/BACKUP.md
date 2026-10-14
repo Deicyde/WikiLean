@@ -284,7 +284,8 @@ then update `AGE_VERSION` and `AGE_SHA256` together.
 machine. It exports, encrypts to the same recipients, and keeps only
 `wikilean-<ts>.sql.age`. The plaintext lives in a private temp directory and is
 deleted as soon as it is encrypted. Like the workflow, it refuses to export if
-age or the recipients are missing or invalid. Run it from the repository root:
+age or the recipients are missing or invalid, or if age would skip a line (such
+as an unsupported SSH key type). Run it from the repository root:
 
 ```bash
 cd wiki
