@@ -33,10 +33,14 @@ can read them.
   export to encryption. The research export streams straight into age.
 - `wrangler d1 export --remote` logs a presigned URL that serves the plaintext
   dump to anyone for an hour. The workflow runs wrangler with
-  `WRANGLER_LOG=warn` and discards its stdout, so that URL stays out of the log.
+  `WRANGLER_LOG=warn`, discards its stdout, and redacts URLs from its stderr, so
+  that URL stays out of the log even if a wrangler upgrade starts printing it
+  as a warning or in an error.
 - The job fails **before exporting anything** if `BACKUP_AGE_RECIPIENTS` is
   empty or is not a valid age recipient list. A pasted private key, a malformed
-  key and a plugin recipient without its plugin are all rejected.
+  key and a plugin recipient without its plugin are all rejected. So is any
+  line age would only warn about and skip, such as an ECDSA or security-key SSH
+  key, so a spare key can't silently drop out of the list.
 
 Runs from before this encryption existed uploaded plaintext and logged that
 URL. See [One-time cutover](#one-time-cutover-from-plaintext-backups).
@@ -52,10 +56,25 @@ outward-facing, so the maintainer decides and runs them:
 
 1. Disable the workflow until the variable is set and this change is merged:
    `gh workflow disable backup-d1.yml --repo Deicyde/WikiLean`.
-2. Delete every `wikilean-d1-*` and `research-export-*` artifact created before
+2. **Never re-run a run from before this change, and dispatch only from
+   `main`.** A re-run replays the workflow file of the run's original commit, so
+   re-running an old run uploads a plaintext dump and logs a live presigned URL
+   again. GitHub allows re-runs for 30 days after a run. A manual dispatch uses
+   the workflow file on the ref you pick, and any branch cut before this change
+   still has the plaintext version. Delete the old runs so they can't be
+   re-run:
+
+   ```bash
+   gh run list --workflow backup-d1.yml --repo Deicyde/WikiLean --limit 200 \
+     --json databaseId,createdAt,headSha          # pick the runs before the first encrypted one
+   gh run delete <run-id> --repo Deicyde/WikiLean  # once per old run
+   ```
+
+   Deleting a run also deletes its log and artifacts.
+3. Delete every `wikilean-d1-*` and `research-export-*` artifact created before
    the first encrypted run. List them with the `gh api` command under
    [Key rotation](#key-rotation), filtering on `created_at`, and delete each id.
-3. Treat their contents as exposed: revoke the OAuth app's user tokens, rotate
+4. Treat their contents as exposed: revoke the OAuth app's user tokens, rotate
    `BETTER_AUTH_SECRET` (this signs everyone out), and decide whether users
    must be notified.
 
@@ -97,7 +116,7 @@ Do this on a trusted machine (`brew install age`).
 
    ```bash
    gh workflow enable backup-d1.yml --repo Deicyde/WikiLean
-   gh workflow run backup-d1.yml --repo Deicyde/WikiLean
+   gh workflow run backup-d1.yml --repo Deicyde/WikiLean --ref main
    gh run list --workflow backup-d1.yml --repo Deicyde/WikiLean --limit 1   # note the run id
    ```
 
