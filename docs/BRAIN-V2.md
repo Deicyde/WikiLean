@@ -1,10 +1,11 @@
 # BRAIN v2 — external databases, atomic units, filters, live sync, agent API
 
-> **Historical (marked 2026-10-13).** Superseded by `docs/BRAIN-V3.md` (data model) and
-> `docs/BRAIN-ARCHITECTURE.plan.md` (authority and release); the binding contract is
-> `brain/SCHEMA.md`. It stays at this path because code, the bench specs and
-> `brain/SCHEMA.md` cite its sections; other superseded docs are in
-> [`archive/`](archive/README.md).
+> **Partly historical (marked 2026-10-13).** Its data model is superseded by
+> `docs/BRAIN-V3.md` and its authority and release design by
+> `docs/BRAIN-ARCHITECTURE.plan.md`; the binding contract is `brain/SCHEMA.md`. Its
+> benchmark ("Benchmark (axis 5's referee)", the spec for `bench/`), ingestion-matrix and
+> "Nightly brain sync" sections are still cited by code, `bench/` and `brain/SCHEMA.md`, so it
+> stays at this path. Superseded docs are in [`archive/`](archive/README.md).
 
 > Design doc for the five-axis Brain upgrade (2026-07-10). Companion to `brain/SCHEMA.md`
 > (the binding data contract — v2 amendments live THERE; this doc explains why and how).

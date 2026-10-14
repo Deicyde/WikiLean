@@ -57,7 +57,7 @@ the exact five manual rows, 99 proposal-derived and 104 composed container rows,
 the two discovery module changes, with `authority_baseline_approved: false`.
 This completes the candidate provenance reconstruction; the full same-input legacy
 comparison and Jack's decision remain outstanding. See the
-[current handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md).
+[September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md).
 
 ## Decision proposed
 
