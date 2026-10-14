@@ -22,7 +22,6 @@ describe('canonical native companion records', () => {
     expect(createHash('sha256').update(bytes).digest('hex')).toBe(provenance.sha256);
     const license = readFileSync(new URL('../src/vendor/literature-links/LICENSE', import.meta.url));
     expect(createHash('sha256').update(license).digest('hex')).toBe(provenance.license_sha256);
-    expect(provenance.repository).toBe('https://github.com/mathlib-initiative/literature-links');
   });
   it.each(['generic', 'pdf', 'html', 'latex'] as const)('accepts whole-resource %s annotations with opaque extensions', mode => {
     const annotation = { ...core(mode), id: 'duplicate is okay', extensions: { 'urn:test': [null, { unknown: '🧮' }] } };

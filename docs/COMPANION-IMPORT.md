@@ -15,9 +15,8 @@ Autoform-specific extension is required.
 
 ## Install the reference validator
 
-The integration uses the Literature Links package **1.0.0** at commit
-`3ad716af885ca7ebe8091f824fca829e03492f00`
-(https://github.com/mathlib-initiative/literature-links, private). The annotation
+The integration uses the Literature Links package **1.0.0** at the commit recorded in
+`wiki/src/vendor/literature-links/provenance.json`. The annotation
 itself has no version field; the package version identifies the software only. Use
 Python 3.12. Install that checkout in your environment:
 
