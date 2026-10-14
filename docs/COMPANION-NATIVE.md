@@ -1,7 +1,7 @@
 # Native companion records in WikiLean
 
-WikiLean's native application format stores complete Formal Companion Annotation
-(Literature Links) objects in D1. Normal native reads and edits use those objects directly.
+WikiLean's native application format stores complete Literature Links annotations
+in D1. Normal native reads and edits use those objects directly.
 The current implementation is available for local testing; no production database
 has been migrated or Worker deployed by this work.
 

@@ -111,7 +111,7 @@ These resolved real conflicts between competing proposals. Build each thing **on
 
 Jack requests that WikiLean use the unversioned, single-link companion format
 natively rather than maintain a permanent conversion/export layer. The target
-link representation is the shared FCA record; the earlier deferred `formalizations[]`
+link representation is the shared Literature Links record; the earlier deferred `formalizations[]`
 proposal is not an additional authoritative representation to build alongside it.
 The [native adoption plan](COMPANION-NATIVE.plan.md) records the coupled storage,
 editor, pipeline, history and renderer migration. The existing local integration
@@ -120,7 +120,7 @@ still uses a bridge; native cutover has not been implemented or deployed.
 Targetless coverage/review items remain separate application data as the current
 planning assumption. The shared annotation schema continues to describe exactly
 one informal–formal link. For Autoform, the recommended model keeps Markdown wiki
-articles independent and attaches separate FCA records; moving proof workflow
+articles independent and attaches separate Literature Links records; moving proof workflow
 metadata out of Markdown is a distinct, larger decision.
 
 ---

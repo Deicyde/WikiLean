@@ -263,7 +263,7 @@ class ProjectionTests(unittest.TestCase):
         report2 = self.import_fixture()
         self.assertEqual(report1["generation"], report2["generation"])
 
-    def test_query_cli_recovers_annotation_without_fca_installed(self):
+    def test_query_cli_recovers_annotation_without_literature_links_installed(self):
         self.import_fixture()
         stdout = io.StringIO()
         with contextlib.redirect_stdout(stdout):
