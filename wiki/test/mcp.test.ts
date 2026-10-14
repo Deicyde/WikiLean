@@ -78,6 +78,13 @@ describe("POST /mcp — lifecycle", () => {
     // the instructions ARE the model contract — they must teach cells, not nodes
     expect(j.result.instructions).toContain("CELL");
     expect(j.result.instructions).toContain("SYNAPSE");
+    // The snapshot echo is opaque provenance, not a build time and a commit.
+    const instructions = String(j.result.instructions);
+    expect(instructions).not.toContain("the brain build time and the Mathlib rev");
+    expect(instructions).toContain(
+      "generated_at and pin are opaque provenance values of the release's inputs: compare them " +
+      "for equality, never parse them, and do not read them as a build time or a Mathlib revision",
+    );
   });
 
   it("offers 2025-06-18 when the client asks for an unknown version", async () => {

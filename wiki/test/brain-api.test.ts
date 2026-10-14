@@ -1519,6 +1519,88 @@ describe("snapshot echo", () => {
     const { j } = await getJson(h, "/api/brain/cell?key=Q999999999");
     expect(j.snapshot).toMatchObject({ generated_at: "2026-07-15" });
   });
+
+  const replayRelease = (generatedAt: string, mathlibPin: string, leadingProv?: Array<Record<string, string>>) =>
+    harness({
+      releaseProfile: "brain-offline-replay-v1",
+      releaseReplay: {
+        authority_root: `sha256:${"5".repeat(64)}`,
+        offline_pack_id: `sha256:${"6".repeat(64)}`,
+        reducer_inventory_id: `sha256:${"7".repeat(64)}`,
+        generation_id: generatedAt,
+        prior_state_root: null,
+      },
+      mutateReleaseManifest: (m) => {
+        delete m.created_at; // live replay releases carry no build time
+      },
+      replaySnapshot: { generatedAt, mathlibPin, leadingProv },
+    });
+
+  it("pin is the FIRST mathlib/kerodon/stacks row's pin (row order decides), unless one is git-shaped", async () => {
+    const generatedAt = "sha256:" + "b".repeat(64);
+    const conceptGraph = "sha256:" + "9".repeat(64);
+    // A kerodon row interned before the concept-graph row wins the fallback.
+    const kerodonFirst = replayRelease(generatedAt, conceptGraph, [
+      { source: "kerodon", method: "internal_link", pin: "sha256:" + "c".repeat(64) },
+    ]);
+    expect((await getJson(kerodonFirst, "/api/brain/search?q=abelian")).j.snapshot).toEqual({
+      generated_at: generatedAt,
+      pin: "sha256:" + "c".repeat(64),
+    });
+    // theoremgraph is not a mathlib/kerodon/stacks row, so its hex pin is skipped.
+    const shaped = replayRelease(generatedAt, conceptGraph, [
+      { source: "theoremgraph", method: "dual-judge match", pin: "1111111111111111" },
+      { source: "stacks", method: "@[stacks] attribute (mathlib4 source)", pin: "sha256:" + "d".repeat(64) },
+    ]);
+    expect((await getJson(shaped, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
+      pin: "sha256:" + "d".repeat(64),
+    });
+    // A git-SHAPED pin on those rows beats an earlier non-shaped one: older
+    // releases' 16-hex statement_formal.csv digest truncation took this branch.
+    const truncated = replayRelease(generatedAt, conceptGraph, [
+      { source: "mathlib", method: "agent+oracle", pin: "sha256:" + "e".repeat(64) },
+      { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "bf3266149cda603f" },
+    ]);
+    expect((await getJson(truncated, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
+      pin: "bf3266149cda603f",
+    });
+  });
+
+  it("an offline-replay release echoes its generation id and the first mathlib/kerodon/stacks row's digest verbatim", async () => {
+    const generatedAt = "sha256:" + "b".repeat(64);
+    const mathlibPin = "sha256:" + "9".repeat(64);
+    const h = harness({
+      releaseProfile: "brain-offline-replay-v1",
+      releaseReplay: {
+        authority_root: `sha256:${"5".repeat(64)}`,
+        offline_pack_id: `sha256:${"6".repeat(64)}`,
+        reducer_inventory_id: `sha256:${"7".repeat(64)}`,
+        generation_id: generatedAt,
+        prior_state_root: null,
+      },
+      mutateReleaseManifest: (m) => {
+        delete m.created_at; // live replay releases carry no build time
+      },
+      replaySnapshot: { generatedAt, mathlibPin },
+    });
+    const { status, j } = await getJson(h, "/api/brain/search?q=abelian");
+    expect(status).toBe(200);
+    // No git-shaped mathlib/kerodon/stacks pin: pin is the FIRST mathlib row's
+    // digest (the concept-graph family), not the attribute lineage digest,
+    // and theoremgraph's 40-hex dataset revision is never picked.
+    expect(j.snapshot).toEqual({ generated_at: generatedAt, pin: mathlibPin });
+  });
+
+  it("the API reference describes the fields as opaque identifiers, not a build time and a commit", async () => {
+    const h = harness();
+    const res = await get(h.env, "/brain/api");
+    const text = (await res.text()).replace(/\s+/g, " ");
+    expect(text).toContain(
+      "<code>generated_at</code> and <code>pin</code> are opaque provenance values of the release's " +
+      "inputs: compare them for equality, never parse them, and do not read them as a build time or a " +
+      "Mathlib revision",
+    );
+  });
 });
 
 // BRIDGE item 7 — the composite brain_bridge call.
