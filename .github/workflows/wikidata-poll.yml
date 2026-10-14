@@ -9,34 +9,45 @@ name: wikidata batch poller
 # repo only).
 #
 # SECRETS to create (Settings → Secrets and variables → Actions):
-#   MATHLIB_FORK_PAT        classic PAT (scope: repo) owned by Deicyde — pushes
-#                           the branch to Deicyde/mathlib4 and opens/comments on
-#                           the leanprover-community/mathlib4 PR. (A fork PR needs
-#                           no write access to mathlib — any authed user can open
-#                           one; the PAT just is your `gh login`.)
+#   MATHLIB_FORK_PAT        classic PAT (scopes: public_repo, workflow) owned by
+#                           Deicyde — pushes the branch to Deicyde/mathlib4 and
+#                           opens/comments on the leanprover-community/mathlib4 PR.
+#                           (A fork PR needs no write access to mathlib — any authed
+#                           user can open one; the PAT just is your `gh login`.)
+#                           It must be classic: a fine-grained PAT cannot write to a
+#                           public repo its owner is not a member of. It EXPIRES:
+#                           rotation steps and the current expiry date are in
+#                           bot/README.md. An expired token now fails the Decide step.
 #   CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token` on your Mac — lets triage.py
 #                           run `claude -p` against your Max subscription headless
 #                           (avoids the out-of-credits ANTHROPIC_API_KEY).
 #   PIPELINE_TOKEN          the wiki bot bearer (same value as wiki/.dev.vars
 #                           PIPELINE_TOKEN) for the /queue publish.
 #
-# STATE: the runner is stateless, so bot state (bot/state/{bot_state,recycle_queue,
-# cut_log,brain_queue}.json + batchN_approved.json) is persisted by committing it
-# back to THIS repo at the end of each run ([skip ci], only when it changed). The laptop
-# launchd poller MUST be retired once this is live, or the two diverge.
+# STATE: the runner is stateless, so bot state (bot/state/ + the bot/data/ files the
+# tick writes) lives on the unprotected `bot-state` branch of THIS repo: restored at the start of
+# each run and pushed back at the end, only when it changed (bot/ops/state-branch.sh).
+# main requires the 'required' check, so the bot cannot push there; main's bot/state/
+# is a frozen snapshot that seeds the branch once, on a dispatch with
+# bootstrap_state=true. Without that input a missing branch fails the run. The
+# laptop launchd poller MUST stay retired, or the two diverge.
 
 on:
   schedule:
-    # BUDGET: private repo bills 1 min/run min (rounded up). At */30 that's ~1460
-    # no-op min/month + the rare heavy settle/open runs (~250-350) ≈ ~1750, under
-    # the 2,000-min Free allowance. The HARD guarantee against ever being charged
-    # is the account's $0 Actions spending limit (Settings → Billing → Cost
-    # management): if the allowance is ever exhausted, runs PAUSE — no overage.
-    - cron: '*/30 * * * *'        # every 30 min (GitHub may delay under load)
+    # BUDGET: the repo is public, so standard GitHub-hosted runner minutes are free;
+    # there is no minute allowance to stay under. CADENCE: schedules are best-effort.
+    # Since 2026-08-27 GitHub has fired this */30 cron about every 4 hours (median
+    # gap 4.2 h), so after a merge or a review, dispatch the workflow to react sooner.
+    # GitHub disables schedules in a public repo after 60 days without activity.
+    - cron: '*/30 * * * *'
   workflow_dispatch:               # run on demand
     inputs:
       force_heavy:
         description: "Force the heavy setup + apply even if decide=wait (one-off validation)"
+        type: boolean
+        default: false
+      bootstrap_state:
+        description: "Create the bot-state branch from main's bot/state/ and skip the tick (first run after the state move only)"
         type: boolean
         default: false
 
@@ -88,20 +99,38 @@ jobs:
         with:
           python-version: '3.12'
 
+      # Before anything reads bot/state/. A read error fails the run rather than
+      # fall back to main's snapshot: acting on a stale copy of the state is how
+      # batch 7 was clobbered in 2026-08. A missing branch is created only when
+      # the dispatch sets bootstrap_state (empty on scheduled runs).
+      - name: Restore bot state from the bot-state branch
+        id: restore
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOT_STATE_BOOTSTRAP: ${{ inputs.bootstrap_state }}
+        run: bot/ops/state-branch.sh restore
+
       - name: Refresh Brain queue
         run: python3 bot/brain_queue.py
 
       # ---- cheap gh-only decision: act or wait? ----
+      # shell: bash runs with -o pipefail, so a failing decide (a gh error, an expired
+      # token, a crash) fails the step through the tee instead of reading as 'wait'.
+      # A bootstrap_state run only seeds bot-state: it never ticks on main's snapshot.
       - name: Decide
         id: decide
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: |
+          if [ "${{ inputs.bootstrap_state }}" = "true" ]; then
+            echo "act=false" >> "$GITHUB_OUTPUT"; echo "bootstrap run: seed bot-state only, no tick"; exit 0
+          fi
           if [ "${{ inputs.force_heavy }}" = "true" ]; then
             echo "act=true" >> "$GITHUB_OUTPUT"; echo "forced heavy path (validation)"; exit 0
           fi
-          python3 bot/poll.py --mathlib /tmp/unused --decide | tee /tmp/decide.txt
-          if grep -q 'POLL_DECISION=act' /tmp/decide.txt; then
+          python3 bot/poll.py --mathlib /tmp/unused --decide | tee "$RUNNER_TEMP/decide.txt"
+          if grep -q 'POLL_DECISION=act' "$RUNNER_TEMP/decide.txt"; then
             echo "act=true" >> "$GITHUB_OUTPUT"
           else
             echo "act=false" >> "$GITHUB_OUTPUT"
@@ -147,21 +176,17 @@ jobs:
           git config --global user.email "bot@wikilean.jackmccarthy.org"
           python3 bot/poll.py --mathlib "$MATHLIB" --apply
 
-      # ---- persist advanced state back to this repo ----
+      # ---- persist advanced state to the bot-state branch ----
+      # Runs even after a failed tick (it may have recorded conflict_sha before a
+      # fallible push), but never without a successful restore.
       - name: Commit poll state
-        if: always()
+        if: always() && steps.restore.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "wikilean-bot"
           git config user.email "bot@wikilean.jackmccarthy.org"
-          git add bot/state/ bot/data/ 2>/dev/null || true   # advanced state + the harvested feedback corpus (pool_candidates stays ignored)
-          if git diff --cached --quiet; then
-            echo "no state change"
-          else
-            git commit -m "bot: advance @[wikidata] poll state [skip ci]"
-            git push
-          fi
+          bot/ops/state-branch.sh save "bot: advance @[wikidata] poll state [skip ci]"
 
       # ---- keep the tag table's Reviews column current between open & settle ----
       # Cheap (gh + /api/review only, no lean/mathlib): re-post the OPEN PR's table so
@@ -169,7 +194,7 @@ jobs:
       # idempotent and skips the write when unchanged, so this runs every tick — incl.
       # the no-op waits, which is exactly when reviews trickle in.
       - name: Refresh tag table
-        if: always()
+        if: always() && steps.restore.outcome == 'success' && !inputs.bootstrap_state
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: python3 bot/poll.py --mathlib /tmp/unused --refresh-table
