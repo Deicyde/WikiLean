@@ -653,8 +653,12 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
     shards,
     prov: replay
       ? [
-        { source: "mathlib", method: "sealed source", pin: replay.mathlibPin },
-        { source: "kerodon", method: "@[kerodon] attribute", pin: "sha256:" + "a".repeat(64) },
+        // Live order (2026-10 offline replay): the concept-graph family row
+        // first, then attribute rows pinned by a different lineage digest,
+        // then TheoremGraph's 40-hex dataset revision (not a Mathlib source).
+        { source: "mathlib", method: "agent+oracle", pin: replay.mathlibPin },
+        { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "sha256:" + "a".repeat(64) },
+        { source: "kerodon", method: "@[kerodon] attribute (mathlib4 source)", pin: "sha256:" + "a".repeat(64) },
         { source: "theoremgraph", method: "dual-judge match", pin: "5caba941dd716f17dba4880bd7173edfb1cc36d1" },
       ]
       : [
