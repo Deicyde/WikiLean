@@ -17,6 +17,7 @@ package is Literature Links 1.0.0, pinned by commit.
 Use the local integration checkouts, `uv`, Git, and a directory outside all three
 tool repositories. An Autoform consumer is an independent project, not its product
 checkout. Either the project root or its `blueprint/` directory is accepted.
+Requires an Autoform checkout that reads Literature Links (origins without a JSON pointer).
 
 ```sh
 python3.12 scripts/companion-workspace.py --workspace /absolute/workspace init \

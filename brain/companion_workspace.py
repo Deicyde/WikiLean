@@ -226,6 +226,12 @@ def doctor(workspace: Path) -> dict:
     companions = __import__("autoform_cli.companions", fromlist=["capture_retained_records"])
     if not hasattr(companions, "capture_retained_records"):
         raise WorkspaceError("The configured Autoform checkout lacks native companion attachments")
+    try:
+        companions.capture_retained_records([{"annotation": {"source": {"type": "generic", "uri": "urn:wikilean:probe"}},
+                                              "origin": {"base_uri": "urn:wikilean:probe"}}])
+    except Exception as error:
+        raise WorkspaceError("The configured Autoform checkout does not read Literature Links origins "
+                             "(no pointer); update Autoform") from error
     return {"ready": True, "python": sys.version.split()[0], "literature_links": literature_links.__version__,
             "autoform": importlib.metadata.version("autoform"), "tools": _tool_revisions(config)}
 

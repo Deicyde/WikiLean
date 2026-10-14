@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 
@@ -114,6 +115,32 @@ class WorkspaceConfigTests(unittest.TestCase):
         with patch.object(workspace, "_dependency_inputs", return_value={"lock": "changed"}):
             with self.assertRaisesRegex(workspace.WorkspaceError, "run setup"):
                 workspace.doctor(self.path)
+
+    def test_doctor_rejects_other_reference_build_and_pointer_only_autoform(self):
+        from brain.ingest import companion as importer
+        self.init()
+        config = workspace._configuration(self.path)
+        (self.path / "setup.json").write_text(json.dumps({"workspace_id": config["workspace_id"], "dependencies": {}}))
+        modules = {name: types.ModuleType(name) for name in ("autoform_cli", "autoform_cli.companions", "literature_links")}
+        for module in modules.values():
+            module.__file__ = str(self.tools / module.__name__.replace(".", "/") / "__init__.py")
+        modules["literature_links"].__version__ = "1.0.0"
+
+        def pointer_only(entries):
+            if any("pointer" not in entry["origin"] for entry in entries):
+                raise ValueError("retained origin requires pointer and base_uri")
+        modules["autoform_cli.companions"].capture_retained_records = pointer_only
+        with patch.dict(sys.modules, modules), patch.object(workspace, "_dependency_inputs", return_value={}):
+            with patch.object(importer, "_require_reference", side_effect=importer.ImportError("must be the build at commit")):
+                with self.assertRaisesRegex(workspace.WorkspaceError, "must be the build at commit"):
+                    workspace.doctor(self.path)
+            with patch.object(importer, "_require_reference", return_value=(None, None)):
+                with self.assertRaisesRegex(workspace.WorkspaceError, "no pointer"):
+                    workspace.doctor(self.path)
+                modules["autoform_cli.companions"].capture_retained_records = lambda entries: None
+                with patch.object(workspace, "_tool_revisions", return_value={}), \
+                     patch.object(workspace.importlib.metadata, "version", return_value="0"):
+                    self.assertTrue(workspace.doctor(self.path)["ready"])
 
 
 @unittest.skipUnless(autoform_cli and literature_links, "shared Literature Links/Autoform environment required")
