@@ -159,9 +159,9 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
                 g["elapsed"].append(float(r["elapsed_s"]))
         for g in groups.values():
             g["cause"] = likely_cause(g.pop("raw"))
-            # elapsed_s starts before annotate_one waits for a concurrency
-            # slot, so queued articles also count that wait; the fastest one
-            # is the closest to a single article's own time.
+            # Older checkouts start elapsed_s before annotate_one waits for a
+            # concurrency slot, so queued articles also count that wait; the
+            # fastest one is the closest to a single article's own time.
             g["min_elapsed_s"] = (round(min(g["elapsed"]), 1)
                                   if g["elapsed"] else None)
             del g["elapsed"]

@@ -136,9 +136,10 @@ runs inside launchd itself.
 
    It prints, for each review run:
    - the distinct errors with counts and example slugs;
-   - the fastest failing article's `elapsed_s`. That clock starts before an article
-     waits for one of the run's concurrency slots, so queued articles also count the
-     wait (`site/batch_annotate.py:449-450`);
+   - the fastest failing article's `elapsed_s`. On a checkout without PR #52 that clock
+     starts before an article waits for one of the run's concurrency slots, so queued
+     articles also count the wait (`site/batch_annotate.py:449-450`); PR #52 starts it
+     once the slot is acquired;
    - a likely cause from the table below.
 
    It also lists the slugs that failed in more than one run, and the drift trigger (last
@@ -345,7 +346,7 @@ job's Mathlib and Wikidata inputs too.
      The CLI's login failures fit: `Not logged in · Please run /login`, `Invalid API
      key` and an expired or revoked token's `Failed to authenticate. API Error: 401 …`
      contain neither keyword ("authenticate" is not "authentication"), so they give 15
-     of 15 on any checkout. PR #52 extends the abort keywords;
+     of 15 on any checkout without PR #52, which adds both strings to the abort keywords;
    - on an older checkout, any text without the retry signature gives 15 of 15. A
      5-hour-window notice carries the signature and would have produced a second review
      run that night; none appears.
@@ -375,14 +376,14 @@ job's Mathlib and Wikidata inputs too.
    login it fails every article within seconds, and the SDK surfaces its text as
    `RuntimeError: agent_error: Not logged in · Please run /login` or `Invalid API key ·
    Please run /login` (`site/batch_annotate.py:259-268`). Neither contains an abort
-   keyword, so the result is 15 of 15, exit 0 and no retry on any checkout, which is the
+   keyword, so the result is 15 of 15, exit 0 and no retry on any checkout without PR #52, which is the
    observed pattern. Credentials that are missing, unreadable or expired fit this:
    - removed by a logout or by a CLI update elsewhere rewriting the stored login;
    - stored where the launchd session can't read them (a keychain Terminal can read
      but the LaunchAgent can't);
    - an expired or revoked token. The CLI reports it as `Failed to authenticate. API
      Error: 401 …`, which doesn't contain the abort keyword `authentication` either, so
-     it also gives 15 of 15 on a current checkout (point 2).
+     it also gives 15 of 15 on a current checkout without PR #52 (point 2).
 
    *Confirms it:* login wording in step 4 and the same failure from step 5's launchd
    check.
