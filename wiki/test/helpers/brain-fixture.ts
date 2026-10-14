@@ -591,9 +591,11 @@ export interface BrainFixtureOpts {
   throughChangeset?: string;
   xrefIndex?: Record<string, string[]>;
   // Shape cells/manifest.json like an offline-replay release: generated_at is
-  // the sha256: generation id and every Mathlib-family prov pin is a sha256:
-  // source digest (no git commit anywhere).
-  replaySnapshot?: { generatedAt: string; mathlibPin: string };
+  // the sha256: generation id and the prov rows follow the live order
+  // (concept-graph family digest first, attribute-lineage digest next, no
+  // git-shaped pin on any mathlib/kerodon/stacks row). `leadingProv` rows are
+  // prepended, to model a different first-seen row order.
+  replaySnapshot?: { generatedAt: string; mathlibPin: string; leadingProv?: Array<Record<string, string>> };
   // Return a transient 404 this many times before serving xref_index.json.
   xrefIndexFailures?: number;
   // Return 404 for a declared release-relative asset (for example cells/mo____.json).
@@ -653,6 +655,7 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
     shards,
     prov: replay
       ? [
+        ...(replay.leadingProv ?? []),
         // Live order (2026-10 offline replay): the concept-graph family row
         // first, then attribute rows pinned by a different lineage digest,
         // then TheoremGraph's 40-hex dataset revision (not a Mathlib source).

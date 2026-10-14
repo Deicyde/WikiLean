@@ -1520,7 +1520,52 @@ describe("snapshot echo", () => {
     expect(j.snapshot).toMatchObject({ generated_at: "2026-07-15" });
   });
 
-  it("an offline-replay release echoes its generation id and the first mathlib-row digest verbatim", async () => {
+  const replayRelease = (generatedAt: string, mathlibPin: string, leadingProv?: Array<Record<string, string>>) =>
+    harness({
+      releaseProfile: "brain-offline-replay-v1",
+      releaseReplay: {
+        authority_root: `sha256:${"5".repeat(64)}`,
+        offline_pack_id: `sha256:${"6".repeat(64)}`,
+        reducer_inventory_id: `sha256:${"7".repeat(64)}`,
+        generation_id: generatedAt,
+        prior_state_root: null,
+      },
+      mutateReleaseManifest: (m) => {
+        delete m.created_at; // live replay releases carry no build time
+      },
+      replaySnapshot: { generatedAt, mathlibPin, leadingProv },
+    });
+
+  it("pin is the FIRST mathlib/kerodon/stacks row's pin (row order decides), unless one is git-shaped", async () => {
+    const generatedAt = "sha256:" + "b".repeat(64);
+    const conceptGraph = "sha256:" + "9".repeat(64);
+    // A kerodon row interned before the concept-graph row wins the fallback.
+    const kerodonFirst = replayRelease(generatedAt, conceptGraph, [
+      { source: "kerodon", method: "internal_link", pin: "sha256:" + "c".repeat(64) },
+    ]);
+    expect((await getJson(kerodonFirst, "/api/brain/search?q=abelian")).j.snapshot).toEqual({
+      generated_at: generatedAt,
+      pin: "sha256:" + "c".repeat(64),
+    });
+    // A git-SHAPED pin anywhere on those rows is preferred: older releases'
+    // 16-hex statement_formal.csv digest truncation took this branch.
+    const shaped = replayRelease(generatedAt, conceptGraph, [
+      { source: "theoremgraph", method: "dual-judge match", pin: "1111111111111111" },
+      { source: "stacks", method: "@[stacks] attribute (mathlib4 source)", pin: "sha256:" + "d".repeat(64) },
+    ]);
+    // theoremgraph is not a mathlib/kerodon/stacks row, so its hex pin is skipped.
+    expect((await getJson(shaped, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
+      pin: "sha256:" + "d".repeat(64),
+    });
+    const truncated = replayRelease(generatedAt, conceptGraph, [
+      { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "bf3266149cda603f" },
+    ]);
+    expect((await getJson(truncated, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
+      pin: "bf3266149cda603f",
+    });
+  });
+
+  it("an offline-replay release echoes its generation id and the first mathlib/kerodon/stacks row's digest verbatim", async () => {
     const generatedAt = "sha256:" + "b".repeat(64);
     const mathlibPin = "sha256:" + "9".repeat(64);
     const h = harness({
@@ -1549,10 +1594,11 @@ describe("snapshot echo", () => {
     const h = harness();
     const res = await get(h.env, "/brain/api");
     const text = (await res.text()).replace(/\s+/g, " ");
-    expect(text).toContain("both opaque provenance identifiers");
-    expect(text).toContain("a mathlib4 commit only when the release records one");
+    expect(text).toContain("compare the snapshot fields verbatim as opaque strings and never parse them");
     expect(text).toContain("so it can change while Mathlib does not");
+    expect(text).toContain("is not a mathlib4 commit, and equal pins do not mean equal build inputs");
     expect(text).not.toContain("sealed Mathlib source input");
+    expect(text).not.toContain("only when the release records one");
   });
 });
 
