@@ -4,9 +4,9 @@ This runbook covers Phase 1 static Brain releases for `wikilean`. Since 2026-10-
 production has served release `sha256:8305822b…` (manifest `fa645b2b…`) through a v2
 selector with no previous release; the [activation record](BRAIN-ACTIVATION-2026-10-04.md)
 has the IDs and constraints. That promotion's attempt
-`20261004T172504Z-8305822b0083-27c7c461cb` is journaled `manual_intervention_required`, and
-it blocks every later promotion until it is reconciled (see "If an attempt is incomplete"
-below). The Jack-gated P1C release-B and rollback drill has not been run. Keep the nightly
+`20261004T172504Z-8305822b0083-27c7c461cb` was reconciled on 2026-10-08 (journal outcome
+`deployed_reconciled`), so no incomplete attempt blocks the next promotion. The Jack-gated
+P1C release-B and rollback drill has not been run. Keep the nightly
 `WIKILEAN_BRAIN_DEPLOY=0`.
 
 Run operator commands on the operator Mac: the host that holds the deployment journal, the
@@ -479,10 +479,13 @@ Do not delete or relocate either root after review.
 
 ## Deploy
 
-> **Production has served release `sha256:8305822b…` since 2026-10-04.** The open
-> 2026-10-04 attempt blocks further promotions until it is reconciled. Running the promoter
+> **Production has served release `sha256:8305822b…` since 2026-10-04.** Its attempt was
+> reconciled on 2026-10-08 (`deployed_reconciled`). Running the promoter
 > with `--execute` changes production and needs Jack's approval for the exact release and
-> window. Never deploy with plain `npm run deploy` / `wrangler deploy`: it uploads the local
+> window. After any `--execute`, keep `wiki/wrangler.jsonc` and the Node/Wrangler toolchain
+> unchanged until that attempt has a clean `final_state`: reconciliation requires both to match
+> the attempt's intent byte for byte (see "If an attempt is incomplete"). Never deploy with
+> plain `npm run deploy` / `wrangler deploy`: it uploads the local
 > `wiki/public` and replaces the selector and the whole asset tree.
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
@@ -599,8 +602,10 @@ A stable unrelated deployment remains blocked unless Jack explicitly authorizes
 `--accept-external-supersession --external-supersession-approval "<Jack approval>"`; the
 same timeout/process/history fence applies, and reconciliation records that it made no
 production change. Reconciliation may run from clean current `main` (so reviewed recovery
-fixes remain usable) or a clean detached checkout of the historical authority commit; its
-Wrangler configuration and toolchain must still match the durable intent.
+fixes remain usable) or a clean detached checkout of the historical authority commit. Either
+way, the checkout's `wiki/wrangler.jsonc` and its Node/Wrangler executables and versions must
+match the durable intent byte for byte, or reconciliation refuses. Do not change them between
+`--execute` and a clean `final_state`.
 
 ```bash
 bash site/ops/brain-promote-release.sh \
@@ -730,7 +735,7 @@ with `versions list --json`, and record in the incident notes that the ID came f
 Cloudflare rather than the journal.
 
 For the live 2026-10-04 release, the predeploy state is a Worker with no selector (last
-observed as deployment `d2926a43-483b-4447-b570-d067c4d77d98`, 2026-08-28; see the
+observed as Worker version `d2926a43-483b-4447-b570-d067c4d77d98`, 2026-08-28; see the
 [activation record](BRAIN-ACTIVATION-2026-10-04.md)). The release canary below requires an
 expected release ID and manifest digest, so it cannot verify that rollback. Verify it by hand
 instead: `/assets/brain/current.json` returns 404 again and `/api/brain/*` responses carry no

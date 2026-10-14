@@ -1,8 +1,8 @@
 # Brain SQLite operational handoff
 
 **Production state:** the [2026-10-04 activation record](BRAIN-ACTIVATION-2026-10-04.md).
-It covers what production serves, the open promotion attempt, rollback, the release-neutral
-constraints, and the values the operator must copy from the journal.
+It covers what production serves, the promotion attempt (reconciled 2026-10-08), rollback,
+the release-neutral constraints, and the values the operator must copy from the journal.
 
 **Latest checkpoint before activation:** [2026-09-26](BRAIN-SQLITE-HANDOFF-2026-09-26.md), with
 the retained pack and source details in the [2026-09-23 checkpoint](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
