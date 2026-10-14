@@ -218,9 +218,13 @@ def doctor(workspace: Path) -> dict:
     for name, module in (("autoform", autoform_cli), ("literature_links", literature_links)):
         if not Path(module.__file__).resolve().is_relative_to(Path(config[f"{name}_root"]).resolve()):
             raise WorkspaceError(f"The installed {name} package does not come from the configured local checkout; run setup")
-    if literature_links.__version__ != "1.0.0":
-        raise WorkspaceError("This integration requires Literature Links 1.0.0")
-    if not hasattr(__import__("autoform_cli.companions", fromlist=["capture_retained_records"]), "capture_retained_records"):
+    from brain.ingest import companion as importer
+    try:
+        importer._require_reference()
+    except importer.ImportError as error:
+        raise WorkspaceError(str(error)) from error
+    companions = __import__("autoform_cli.companions", fromlist=["capture_retained_records"])
+    if not hasattr(companions, "capture_retained_records"):
         raise WorkspaceError("The configured Autoform checkout lacks native companion attachments")
     return {"ready": True, "python": sys.version.split()[0], "literature_links": literature_links.__version__,
             "autoform": importlib.metadata.version("autoform"), "tools": _tool_revisions(config)}

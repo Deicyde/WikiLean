@@ -296,6 +296,14 @@ class ReferenceTests(unittest.TestCase):
     def ingest(self, **kwargs):
         return companion.import_companions([self.input], source_key="reference", output=self.output, **kwargs)
 
+    def test_other_build_with_same_version_is_rejected(self):
+        companion._require_reference()
+        other = self.root / "companion.schema.json"
+        other.write_bytes(Path(reference.SCHEMA_PATH).read_bytes() + b"\n")
+        with patch.object(reference, "SCHEMA_PATH", other):
+            with self.assertRaisesRegex(companion.ImportError, "must be the build at commit"):
+                companion._require_reference()
+
     def test_all_modes_opaque_extensions_and_no_location(self):
         docs = []
         for mode, location in (("pdf", {"page": 2, "rect": [.1, .2, .3, .4]}),
