@@ -22,6 +22,10 @@ export interface Anchor {
   to_snippet?: string;
   to_math?: string;
   to_alttext?: string;
+  // quote (a built-in Literature Links quotation read as an anchor)
+  exact?: string;
+  prefix?: string;
+  suffix?: string;
 }
 
 export interface Annotation {

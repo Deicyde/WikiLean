@@ -25,7 +25,7 @@ export interface LinkRecord {
   extensions?: JsonObject;
 }
 export interface NativeLink { id: string; annotation: LinkRecord; base_uri?: string }
-export interface UnlinkedOccurrence { source: LinkRecord['source']; location?: JsonObject; base_uri?: string }
+export interface UnlinkedOccurrence { source: LinkRecord['source']; location?: JsonObject; extensions?: JsonObject; base_uri?: string }
 export interface NativeItem extends JsonObject {
   id?: string;
   status: string;
@@ -192,21 +192,54 @@ export function legacyAnchorOccurrences(item: JsonObject, context?: SourceContex
     if (!('location' in occurrence) && ['html', 'generic'].includes(occurrence.source.type)) return { type: 'whole_resource' };
     const loc = occurrence.location;
     // Written as html since the profile form exists; generic records predate it.
-    if (!['html', 'generic'].includes(occurrence.source.type) || loc?.profile !== ANCHOR_PROFILE || !isObject(loc.anchor)) return null;
-    const keys = ['type', 'value', 'section', 'snippet', 'from', 'from_snippet', 'to', 'to_snippet', 'to_math', 'to_alttext'];
-    const anchor = loc.anchor;
-    if (keys.some(key => key in anchor && typeof anchor[key] !== 'string')) return null;
-    if (['math_alttext', 'theorem_box'].includes(String(loc.anchor.type)) && !loc.anchor.value) return null;
-    if (loc.anchor.type === 'prose_range' && (loc.anchor.section === undefined || !(loc.anchor.from || loc.anchor.from_snippet))) return null;
-    return loc.anchor;
+    if (!['html', 'generic'].includes(occurrence.source.type) || !isObject(loc)) return null;
+    if (loc.profile === ANCHOR_PROFILE && isObject(loc.anchor)) return wellFormedAnchor(loc.anchor);
+    if ('profile' in loc) return null;
+    // A built-in Literature Links location. WikiLean's own records keep the
+    // editing key beside it; any other record is read from the location itself.
+    const key = anchorExtension(occurrence);
+    return isObject(key) ? wellFormedAnchor(key) : deriveAnchor(loc);
   });
+}
+const ANCHOR_KEYS = ['type', 'value', 'section', 'snippet', 'from', 'from_snippet', 'to', 'to_snippet', 'to_math', 'to_alttext'];
+function wellFormedAnchor(anchor: JsonObject): JsonObject | null {
+  if (ANCHOR_KEYS.some(key => key in anchor && typeof anchor[key] !== 'string')) return null;
+  if (['math_alttext', 'theorem_box'].includes(String(anchor.type)) && !anchor.value) return null;
+  if (anchor.type === 'prose_range' && (anchor.section === undefined || !(anchor.from || anchor.from_snippet))) return null;
+  return anchor;
+}
+/** The WikiLean editing key stored beside a built-in location. */
+export function anchorExtension(record: { extensions?: JsonObject }): unknown {
+  const wikilean = isObject(record.extensions) ? record.extensions['org.wikilean'] : undefined;
+  return isObject(wikilean) ? wikilean.anchor : undefined;
+}
+const MATH_SELECTOR = /^(img\[alt|math\[alttext)="((?:[^"\\]|\\.)*)"\]$/;
+/** The alt text named by a selector the Python resolver writes, or null. */
+export function parseMathSelector(selector: string): string | null {
+  const match = MATH_SELECTOR.exec(selector);
+  return match ? match[2].replace(/\\a /g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\') : null;
+}
+/** Read a built-in HTML location as a renderer anchor: a quotation, a formula or an element id. */
+export function deriveAnchor(location: JsonObject): JsonObject | null {
+  const quote = location.quote;
+  if (isObject(quote) && typeof quote.exact === 'string' && quote.exact) {
+    const anchor: JsonObject = { type: 'quote', exact: quote.exact };
+    for (const key of ['prefix', 'suffix'] as const) if (typeof quote[key] === 'string') anchor[key] = quote[key];
+    return anchor;
+  }
+  if (typeof location.css === 'string') {
+    const value = parseMathSelector(location.css);
+    return value ? { type: 'math_alttext', value } : null;
+  }
+  if (typeof location.fragment === 'string' && location.fragment) return { type: 'fragment', value: location.fragment };
+  return null;
 }
 export function itemFormalTargets(item: JsonObject): string[] {
   return isNativeItem(item) ? item.links.flatMap(link => { const uri = targetUri(link.annotation); return uri === undefined ? [] : [uri]; }) : [];
 }
 
 function occurrenceProblems(occ: UnlinkedOccurrence, target: string | undefined, context?: SourceContext): string[] {
-  const errors = validateLinkRecord({ source: occ.source, ...('location' in occ ? { location: occ.location } : {}) });
+  const errors = validateLinkRecord({ source: occ.source, ...('location' in occ ? { location: occ.location } : {}), ...(occ.extensions !== undefined ? { extensions: occ.extensions } : {}) });
   if (errors.length) return errors;
   if (occ.base_uri !== undefined && (typeof occ.base_uri !== 'string' || !ABSOLUTE.test(occ.base_uri) || !REFERENCE.test(occ.base_uri))) errors.push('base_uri must be an absolute reference');
   if ((!ABSOLUTE.test(occ.source?.uri ?? '') || (target !== undefined && !ABSOLUTE.test(target))) && !occ.base_uri) errors.push('relative references require durable base_uri');
@@ -267,7 +300,7 @@ export function validateNativeItems(items: unknown[], context?: SourceContext): 
     }
     for (const [n, occ] of value.unlinked.entries()) {
       if (!isObject(occ)) { errors.push(`item ${index} unlinked ${n}: expected object`); continue; }
-      if (Object.keys(occ).some(key => !['source', 'location', 'base_uri'].includes(key))) errors.push(`item ${index} unlinked ${n}: unknown occurrence field`);
+      if (Object.keys(occ).some(key => !['source', 'location', 'extensions', 'base_uri'].includes(key))) errors.push(`item ${index} unlinked ${n}: unknown occurrence field`);
       errors.push(...occurrenceProblems(occ as unknown as UnlinkedOccurrence, undefined, value.status === 'rejected' ? undefined : context).map(e => `item ${index} unlinked ${n}: ${e}`));
     }
   }

@@ -270,6 +270,116 @@ function buildPlainTextMap(src: string, start: number, end: number, lowercase = 
   return { text: chars.join(""), starts, ends };
 }
 
+// ---- Literature Links text layer: textContent without script/style/template,
+// White_Space runs collapsed to one space, trimmed; MathML text counts and no
+// space is inserted at element boundaries. Mirrors site/anchor_resolve.text_layer.
+const WHITE_SPACE = new Set<string>([
+  ...Array.from({ length: 5 }, (_, k) => String.fromCharCode(0x09 + k)), " ", "\u0085", "\u00a0", "\u1680",
+  ...Array.from({ length: 11 }, (_, k) => String.fromCharCode(0x2000 + k)), "\u2028", "\u2029", "\u202f", "\u205f", "\u3000",
+]);
+const SKIP_ELEMENTS = new Set(["script", "style", "template"]);
+const TAG_RE = /<(\/?)([A-Za-z][A-Za-z0-9:-]*)/y;
+function textLayer(src: string): PlainTextMap {
+  const chars: string[] = [], starts: number[] = [], ends: number[] = [];
+  let pending: [number, number] | null = null;
+  const lower = src.toLowerCase();
+  const n = src.length;
+  let i = 0;
+  const push = (ch: string, s: number, e: number): void => {
+    if (WHITE_SPACE.has(ch)) { if (pending === null) pending = [s, e]; return; }
+    if (pending !== null && chars.length) { chars.push(" "); starts.push(pending[0]); ends.push(pending[1]); }
+    pending = null;
+    chars.push(ch); starts.push(s); ends.push(e);
+  };
+  while (i < n) {
+    const c = src[i];
+    if (c === "<") {
+      if (src.startsWith("<!--", i)) { const close = src.indexOf("-->", i + 4); i = close === -1 ? n : close + 3; continue; }
+      TAG_RE.lastIndex = i;
+      const tag = TAG_RE.exec(src);
+      if (tag) {
+        let end = src.indexOf(">", TAG_RE.lastIndex);
+        end = end === -1 ? n : end + 1;
+        const name = tag[2].toLowerCase();
+        if (!tag[1] && SKIP_ELEMENTS.has(name)) {
+          const close = lower.indexOf("</" + name, end);
+          if (close === -1) i = n;
+          else { const gt = src.indexOf(">", close); i = gt === -1 ? n : gt + 1; }
+          continue;
+        }
+        i = end;
+        continue;
+      }
+    }
+    if (c === "&") {
+      const semi = pyFind(src, ";", i, Math.min(i + 16, n));
+      if (semi !== -1) {
+        const entity = src.slice(i, semi + 1);
+        const decoded = htmlUnescape(entity);
+        if (decoded !== entity) {
+          for (let k = 0; k < decoded.length; k++) push(decoded[k], i, semi + 1);
+          i = semi + 1;
+          continue;
+        }
+      }
+    }
+    push(c, i, i + 1);
+    i += 1;
+  }
+  return { text: chars.join(""), starts, ends };
+}
+
+const BLOCK_TAG_RE = /<\/?(?:p|div|dl|dd|dt|li|ul|ol|blockquote|table|tr|td|th|h[1-6]|section)\b/i;
+const BLOCK_TAGS = new Set(["p", "div", "dl", "dd", "dt", "li", "ul", "ol", "blockquote", "table", "tr", "td", "th", "h1", "h2", "h3", "h4", "h5", "h6", "section"]);
+
+/** Locate a Literature Links HTML quotation: exact text, with optional prefix
+ * and suffix, in the specification's text layer. Mirrors render.find_quote. */
+function findQuote(src: string, anchor: Anchor): [number, number, WrapperTag] | null {
+  const exact = anchor.exact;
+  if (!exact) return null;
+  const { text, starts, ends } = textLayer(src);
+  const prefix = anchor.prefix ?? "", suffix = anchor.suffix ?? "";
+  const hits = (hay: string, needle: string, before: string, after: string): number[] => {
+    const found: number[] = [];
+    let p = hay.indexOf(needle);
+    while (p !== -1) {
+      const beforeOk = !before || (p >= before.length && hay.startsWith(before, p - before.length));
+      const afterOk = !after || hay.startsWith(after, p + needle.length);
+      if (beforeOk && afterOk) found.push(p);
+      p = hay.indexOf(needle, p + 1);
+    }
+    return found;
+  };
+  let matches = hits(text, exact, prefix, suffix);
+  if (!matches.length && (prefix || suffix)) matches = hits(text, exact, "", "");
+  if (!matches.length) {
+    const lowered = text.toLowerCase();
+    if (lowered.length === text.length) matches = hits(lowered, exact.toLowerCase(), prefix.toLowerCase(), suffix.toLowerCase());
+  }
+  if (!matches.length) return null;
+  const start = starts[matches[0]], end = ends[matches[0] + exact.length - 1];
+  return [start, end, BLOCK_TAG_RE.test(src.slice(start, end)) ? "div" : "span"];
+}
+
+/** Locate the element whose id attribute equals elementId. Mirrors render.find_fragment. */
+function findFragment(src: string, elementId: string): [number, number, WrapperTag] | null {
+  if (!elementId) return null;
+  const escaped = htmlEscape(elementId, true).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m = new RegExp(`<([A-Za-z][A-Za-z0-9:-]*)\\b[^>]*\\sid="${escaped}"[^>]*>`).exec(src);
+  if (!m) return null;
+  const tag = m[1].toLowerCase();
+  let depth = 1, pos = m.index + m[0].length;
+  const openRe = new RegExp(`<${tag}\\b`, "ig"), closeRe = new RegExp(`</${tag}\\s*>`, "ig");
+  while (depth > 0) {
+    openRe.lastIndex = pos; closeRe.lastIndex = pos;
+    const nextOpen = openRe.exec(src), nextClose = closeRe.exec(src);
+    if (!nextClose) return null;
+    if (nextOpen && nextOpen.index < nextClose.index) { depth += 1; pos = nextOpen.index + nextOpen[0].length; }
+    else { depth -= 1; pos = nextClose.index + nextClose[0].length; }
+  }
+  return [m.index, pos, BLOCK_TAGS.has(tag) ? "div" : "span"];
+}
+
 function findPlainTextRange(src: string, start: number, end: number, snippet: string): [number, number] | null {
   const snippetNorm = snippet.replace(/\s+/g, " ").trim().toLowerCase();
   if (!snippetNorm) return null;
@@ -664,6 +774,14 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], con
           anchor.to_math ?? anchor.to_alttext,
           anchor.to ?? anchor.to_snippet,
         );
+        if (!r) continue;
+        loc = r;
+      } else if (t === "quote") {
+        const r = findQuote(bodyHtml, anchor);
+        if (!r) continue;
+        loc = r;
+      } else if (t === "fragment") {
+        const r = findFragment(bodyHtml, anchor.value ?? "");
         if (!r) continue;
         loc = r;
       } else if (anchor.section !== undefined && anchor.snippet !== undefined) {

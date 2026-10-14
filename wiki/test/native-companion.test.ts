@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
-  validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, wikipediaSourceUri,
+  validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, parseMathSelector, wikipediaSourceUri,
   strictJsonParse, targetUri, targetPin, normalize, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
   type NativeItem, type LinkRecord,
 } from '../src/native-companion.js';
@@ -90,6 +90,24 @@ describe('canonical native companion records', () => {
     expect(work).toEqual(before);
     for (const record of [first.annotation, second.annotation]) expect(validateLinkRecord(record)).toEqual([]);
     expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).source).not.toHaveProperty('pin');
+  });
+  it('reads built-in locations: the editing key beside them, else the location itself', () => {
+    const uri = wikipediaSourceUri(context);
+    const keyed = item({ source: { type: 'html', uri }, target: 'urn:x', location: { quote: { exact: 'finite group' } }, extensions: { 'org.wikilean': { anchor: { section: '(lead)', snippet: 'finite group' } } } });
+    expect(legacyAnchorOccurrences(keyed, context)).toEqual([{ section: '(lead)', snippet: 'finite group' }]);
+    const quoted = item({ source: { type: 'html', uri }, target: 'urn:x', location: { quote: { exact: 'finite group', prefix: 'A ' } } });
+    expect(legacyAnchorOccurrences(quoted, context)).toEqual([{ type: 'quote', exact: 'finite group', prefix: 'A ' }]);
+    const math = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'img[alt="{\\\\displaystyle |G|}"]' } });
+    expect(legacyAnchorOccurrences(math, context)).toEqual([{ type: 'math_alttext', value: '{\\displaystyle |G|}' }]);
+    expect(parseMathSelector('article > p')).toBeNull();
+    const heading = item({ source: { type: 'html', uri }, target: 'urn:x', location: { fragment: 'Statement' } });
+    expect(legacyAnchorOccurrences(heading, context)).toEqual([{ type: 'fragment', value: 'Statement' }]);
+    const other = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'article > p' } });
+    expect(legacyAnchorOccurrences(other, context)).toEqual([null]);
+    // An unlinked selection may carry the editing key too.
+    const work: NativeItem = { status: 'not_formalized', links: [], unlinked: [{ source: { type: 'html', uri }, location: { quote: { exact: 'finite group' } }, extensions: { 'org.wikilean': { anchor: { snippet: 'finite group' } } } }] };
+    expect(validateNativeItems([work], context)).toEqual([]);
+    expect(legacyAnchorOccurrences(work, context)).toEqual([{ snippet: 'finite group' }]);
   });
   it('requires carrier bases for relative references and schema hints', () => {
     const a = item({ ...core(), target: '../formal.lean#x', $schema: '../schema.json' });

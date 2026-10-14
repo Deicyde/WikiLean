@@ -81,7 +81,7 @@ export function injectAuthAndEditor(
       // v=16: save-UX niceties — kind/match_kind <select>s (unknown stored
       // values preserved), comment cleared after save, label-based panel
       // titles, alt-click → Mathlib docs, orphaned-anchor Re-anchor flow.
-      `<script src="/assets/editor.js?v=18"></script>\n`;
+      `<script src="/assets/editor.js?v=19"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +

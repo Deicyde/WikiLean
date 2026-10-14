@@ -24,6 +24,19 @@ describe('native article rendering', () => {
     a.unlinked.push({source,location:{profile:ANCHOR_PROFILE,anchor:{snippet:'absent',section:'(lead)'}}});
     expect(wrapAnnotations(body,[annotation(a)],context).matched).toEqual([false]);
   });
+  it('highlights built-in quotations and fragments', () => {
+    const page='<h2><span class="mw-headline" id="Statement">Statement</span></h2><p>A finite group has a finite set of elements. A finite group is finite.</p>';
+    const quoted=item(); quoted.links[0].annotation.location={quote:{exact:'A finite group',suffix:' is finite.'}};
+    const wrapped=wrapAnnotations(page,[annotation(quoted)],context);
+    expect(wrapped.matched).toEqual([true]);
+    expect(wrapped.html).toContain('<span class="anno anno-formalized" data-status="formalized" data-provenance="ai" data-anno-indices="0" data-decl="Finite Group">A finite group</span> is finite.');
+    const keyed=item(); keyed.links[0].annotation.location={quote:{exact:'nowhere'}}; keyed.links[0].annotation.extensions={'org.wikilean':{anchor:{section:'(lead)',snippet:'finite group'}}};
+    expect(wrapAnnotations(body,[annotation(keyed)],context).matched).toEqual([true]);
+    const heading=item(); heading.links[0].annotation.location={fragment:'Statement'};
+    expect(wrapAnnotations(page,[annotation(heading)],context).html).toContain('data-decl="Finite Group"><span class="mw-headline" id="Statement">Statement</span></span></h2>');
+    const missing=item(); missing.links[0].annotation.location={quote:{exact:'absent words'}};
+    expect(wrapAnnotations(page,[annotation(missing)],context).matched).toEqual([false]);
+  });
   it('distinguishes absent location from empty generic location', () => {
     const a=item(); delete a.links[0].annotation.location;
     expect(wrapAnnotations(body,[annotation(a)],context).matched).toEqual([true]);
