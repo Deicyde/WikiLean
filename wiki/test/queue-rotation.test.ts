@@ -1,8 +1,8 @@
 // Queue rotation via per-mode attempt stamps on moderation_state (migration
 // 0014). POST /api/runs `attempted` stamps the slugs a run worked on (review →
-// last_review_attempt_at, wp-update → last_update_attempt_at, all → both;
-// first report only, atomically with the run row; scheduling metadata, never
-// articles.version). GET /api/work's last tier orders by the later of
+// last_review_attempt_at, wp-update → last_update_attempt_at, all/new →
+// neither; first report only, atomically with the run row; a bad list never
+// costs the run report; scheduling metadata, never articles.version). GET /api/work's last tier orders by the later of
 // last_reviewed_at and the mode's own stamp, never-touched first. Without it,
 // a review that fails before saving, or a stage-0 re-pin whose anchors fail,
 // never stamps anything and the same articles head the queue every night.
@@ -103,25 +103,50 @@ describe("POST /api/runs attempted", () => {
     expect(attemptedAt(h, "Mid_B")).toBeNull();
   });
 
-  it("400s on malformed attempted (nothing stored); omitted/null keeps the old response", async () => {
+  it("a malformed attempted list still records the run, stamps nothing, and says why", async () => {
     const h = setup();
     seedReviewed(h);
-    const bad: unknown[] = ["Old_A", [1], [""], ["a/b"], ["x\u0000y"], ["x".repeat(301)], { slug: "Old_A" }];
+    const bad: unknown[] = ["Old_A", [1], [""], ["a/b"], ["x\u0000y"], ["x".repeat(301)], { slug: "Old_A" }, ["Old_A", 7]];
     for (const attempted of bad) {
       const res = await reportRun(h, { attempted });
-      expect(res.status, JSON.stringify(attempted).slice(0, 40)).toBe(400);
+      expect(res.status, JSON.stringify(attempted).slice(0, 40)).toBe(200);
+      expect(await res.json()).toEqual({
+        ok: true,
+        stamped: 0,
+        attempted_error: "attempted must be an array of single-segment slugs; none stamped",
+      });
     }
-    expect(h.db.prepare("SELECT COUNT(*) AS n FROM pipeline_runs").get()).toEqual({ n: 0 });
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM pipeline_runs").get()).toEqual({ n: bad.length });
+    expect(attemptedAt(h, "Old_A")).toBeNull();
     expect(await (await reportRun(h, {})).json()).toEqual({ ok: true });
     expect(await (await reportRun(h, { attempted: null })).json()).toEqual({ ok: true });
   });
 
-  it("stamps in chunks (D1's 100-parameter cap) and never loses the run to an oversized list", async () => {
+  it("stamps in chunks under D1's 100-parameter cap and never loses the run to an oversized list", async () => {
     const h = setup();
+    // Record every statement's bind arity (the shim itself has no limit).
+    const arities: number[] = [];
+    const realPrepare = h.env.DB.prepare.bind(h.env.DB);
+    (h.env.DB as unknown as { prepare: (q: string) => unknown }).prepare = (q: string) => {
+      const stmt = realPrepare(q) as unknown as { bind: (...a: unknown[]) => unknown };
+      const realBind = stmt.bind.bind(stmt);
+      stmt.bind = (...args: unknown[]) => {
+        arities.push(args.length);
+        return realBind(...args);
+      };
+      return stmt;
+    };
     for (let i = 0; i < 120; i++) insertArticle(h.db, `Bulk_${i}`);
     const many = Array.from({ length: 120 }, (_, i) => `Bulk_${i}`);
     expect(await (await reportRun(h, { attempted: many })).json()).toEqual({ ok: true, stamped: 120 });
     expect(attemptedAt(h, "Bulk_119")).not.toBeNull();
+    expect(arities.length).toBeGreaterThanOrEqual(4); // 3 stamp chunks + the run insert
+    expect(Math.max(...arities)).toBeLessThanOrEqual(100);
+    // Duplicates are folded before the cap: 301 entries, 120 unique, is fine.
+    expect(await (await reportRun(h, { attempted: [...many, ...many, ...many.slice(0, 61)] })).json()).toEqual({
+      ok: true,
+      stamped: 120,
+    });
     // Over the cap: the run row is still stored, nothing is stamped.
     const tooMany = Array.from({ length: 301 }, (_, i) => `X${i}`);
     const res = await reportRun(h, { attempted: tooMany }, "0000feed");
@@ -130,16 +155,18 @@ describe("POST /api/runs attempted", () => {
     expect(h.db.prepare("SELECT COUNT(*) AS n FROM pipeline_runs WHERE run_id = '0000feed'").get()).toEqual({ n: 1 });
   });
 
-  it("stamps the column for the run's kind: review, wp-update, all (both), new (none)", async () => {
+  it("stamps the column for the run's kind: review, wp-update; all and new stamp nothing", async () => {
     const h = setup();
     seedReviewed(h);
-    expect((await reportRun(h, { kind: "review", attempted: ["Old_A"] })).status).toBe(200);
-    expect((await reportRun(h, { kind: "wp-update", attempted: ["Mid_B"] })).status).toBe(200);
-    expect((await reportRun(h, { kind: "all", attempted: ["New_C"] })).status).toBe(200);
+    expect(await (await reportRun(h, { kind: "review", attempted: ["Old_A"] })).json()).toEqual({ ok: true, stamped: 1 });
+    expect(await (await reportRun(h, { kind: "wp-update", attempted: ["Mid_B"] })).json()).toEqual({ ok: true, stamped: 1 });
+    // An 'all' run's flat list mixes phases; stamping it would sink articles
+    // the other phase never tried.
+    expect(await (await reportRun(h, { kind: "all", attempted: ["New_C"] })).json()).toEqual({ ok: true, stamped: 0 });
     expect(await (await reportRun(h, { kind: "new", attempted: ["Test_Article"] })).json()).toEqual({ ok: true, stamped: 0 });
     expect([attemptedAt(h, "Old_A"), attemptedAt(h, "Old_A", "last_update_attempt_at")].map((v) => v !== null)).toEqual([true, false]);
     expect([attemptedAt(h, "Mid_B"), attemptedAt(h, "Mid_B", "last_update_attempt_at")].map((v) => v !== null)).toEqual([false, true]);
-    expect([attemptedAt(h, "New_C"), attemptedAt(h, "New_C", "last_update_attempt_at")].map((v) => v !== null)).toEqual([true, true]);
+    expect([attemptedAt(h, "New_C"), attemptedAt(h, "New_C", "last_update_attempt_at")]).toEqual([null, null]);
     expect(attemptedAt(h, "Test_Article")).toBeNull();
   });
 });

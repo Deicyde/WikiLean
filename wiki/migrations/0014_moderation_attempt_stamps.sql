@@ -1,7 +1,7 @@
 -- Per-queue attempt stamps on moderation_state (ms; NULL = never attempted).
 -- POST /api/runs stamps the slugs a run reports in `attempted`: review runs
 -- set last_review_attempt_at, wp-update runs set last_update_attempt_at
--- ('all' runs set both). GET /api/work orders its last tier by the later of
+-- ('all' and 'new' runs set neither). GET /api/work orders its last tier by the later of
 -- last_reviewed_at and the stamp for its own mode, so an article whose review
 -- fails, or whose stage-0 re-pin cannot anchor, rotates to the back of that
 -- queue instead of heading it every night. Separate columns keep a wp-update
@@ -13,8 +13,9 @@
 -- column in INSERTs and in select() without a column list, so without these
 -- columns the new Worker fails every moderation_state write and full read:
 -- article create, every bot save and proposal decide, the public flag POST
--- (after the flag row is written), the drift cron batch, POST /api/runs and
--- GET /api/work. The old Worker is unaffected by the new nullable columns.
+-- (after the flag row is written), the drift cron batch, POST /api/runs
+-- with `attempted`, and GET /api/work. The old Worker is unaffected by the
+-- new nullable columns.
 --
 -- NB deploy: remote migration tracking is out of sync — do NOT use
 -- `wrangler d1 migrations apply`; apply remote via

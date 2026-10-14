@@ -2668,18 +2668,21 @@ app.get("/api/work", async (c) => {
 // {ok:true, duplicate:true}, first-report row wins and is never overwritten).
 const RUN_ID_RE = /^[0-9a-f]{8}$/;
 const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
-// attempted[]: up to three /api/work pages (an 'all' run spans wp-update,
-// review and new); a slug is one path segment (no '/', no control chars).
+// attempted[]: at most 300 unique slugs (headroom over one 100-row /api/work
+// page for --slugs runs); a slug is one path segment (no '/', no control chars).
 // D1 caps bound parameters at 100 per statement, so stamps go in chunks of 50.
 const MAX_ATTEMPTED = 300;
 const ATTEMPT_CHUNK = 50;
 const ATTEMPTED_SLUG_RE = /^[^/\p{C}]+$/u;
 // Which attempt stamp each run kind sets. 'new' runs create articles rather
-// than work the queues, so they stamp nothing.
+// than work the queues. 'all' runs report wp-update, review and new phases in
+// one flat list, so stamping either column would sink articles the other
+// phase never tried (a needs-work re-pin must reach review next); they stamp
+// nothing until the report carries per-phase lists.
 const ATTEMPT_COLUMNS: Record<string, string[]> = {
   review: ["last_review_attempt_at"],
   "wp-update": ["last_update_attempt_at"],
-  all: ["last_review_attempt_at", "last_update_attempt_at"],
+  all: [],
   new: [],
 };
 
@@ -2725,12 +2728,13 @@ app.post("/api/runs", async (c) => {
     }
     cost = posted.cost_usd_equiv;
   }
-  // attempted: optional slugs this run worked on (processed, failed, or
-  // skipped after an attempt). Existing articles get this run kind's attempt
-  // stamp (ATTEMPT_COLUMNS), which rotates that /api/work queue. Malformed →
-  // 400. Over MAX_ATTEMPTED → the run is still recorded, nothing is stamped,
-  // and the response carries attempted_error (a run report is never lost to
-  // an oversized scheduling hint).
+  // attempted: optional slugs this run actually worked on (processed or
+  // failed for a non-transient reason; jobs skipped by a rate-limit abort must
+  // not be reported, or the retry would find them at the back of the queue).
+  // Existing articles get this run kind's attempt stamp (ATTEMPT_COLUMNS),
+  // which rotates that /api/work queue. A malformed or oversized list never
+  // costs the run report: the run is recorded, nothing is stamped, and the
+  // response carries attempted_error.
   let attempted: string[] = [];
   let attemptedError: string | null = null;
   if (posted.attempted !== undefined && posted.attempted !== null) {
@@ -2739,10 +2743,12 @@ app.post("/api/runs", async (c) => {
       !Array.isArray(a) ||
       !a.every((s) => typeof s === "string" && s.length > 0 && s.length <= MAX_FIELD_LEN && ATTEMPTED_SLUG_RE.test(s))
     ) {
-      return c.json({ ok: false, error: "bad attempted" }, 400);
+      attemptedError = "attempted must be an array of single-segment slugs; none stamped";
+    } else {
+      const unique = [...new Set(a as string[])];
+      if (unique.length > MAX_ATTEMPTED) attemptedError = `more than ${MAX_ATTEMPTED} attempted slugs; none stamped`;
+      else attempted = unique;
     }
-    if (a.length > MAX_ATTEMPTED) attemptedError = `more than ${MAX_ATTEMPTED} attempted slugs; none stamped`;
-    else attempted = [...new Set(a as string[])];
   }
   // notes is free text — size-capped like every other free-text field.
   let notes: string | null = null;
@@ -2755,7 +2761,7 @@ app.post("/api/runs", async (c) => {
   // One D1 batch, in order: the attempt stamps, each guarded on the run_id
   // not existing yet (so a duplicate report never re-stamps), then INSERT OR
   // IGNORE on the run_id PK (0 rows changed = already reported). D1 runs a
-  // batch as one transaction, so stamps land iff the run row does. Native
+  // batch as one transaction, so it never records one without the other. Native
   // prepare/bind: drizzle's batch() cannot carry a parameterized raw query.
   // Unknown slugs fall out of the SELECT (moderation_state.slug references
   // articles). Scheduling metadata: articles.version is never touched.
@@ -2795,10 +2801,9 @@ app.post("/api/runs", async (c) => {
   );
   const results = await c.env.DB.batch([...stampStatements, runInsert]);
   if (results[results.length - 1].meta.changes === 0) return c.json({ ok: true, duplicate: true });
-  // Rows stamped for the first column = articles stamped (an 'all' run's
-  // second column stamps the same set).
-  const perColumn = columns.length > 0 ? stampStatements.length / columns.length : 0;
-  const stamped = results.slice(0, perColumn).reduce((n, r) => n + r.meta.changes, 0);
+  // Every run kind stamps at most one column, so the stamp rows changed are
+  // the articles stamped.
+  const stamped = results.slice(0, stampStatements.length).reduce((n, r) => n + r.meta.changes, 0);
   console.log(
     JSON.stringify({
       event: "run-report",
