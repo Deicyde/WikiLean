@@ -154,8 +154,8 @@ notice"): edits are public and attributed (display name, article, timestamp,
 comment), and contributors are told up front that edit *metadata* —
 field-level changes, provenance, timing — is analyzed and published **in
 aggregate**. Research exports use salted-hash pseudonyms by default and
-never include emails or IP addresses (`flags.ip_hash` is a pseudonymous
-abuse handle and is never exported; the roadmap also tracks dropping
+never include emails or IP addresses (anonymous flags store no IP-derived
+value; `flags.ip_hash` is always `NULL`. The roadmap also tracks dropping
 better-auth's session `ip_address` storage). An **IRB exemption is filed
 before any paper** — that's a roadmap line item (P2 "Privacy"), not an
 afterthought; nothing in RQ1–RQ8 requires identifiable data.
