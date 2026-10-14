@@ -2,7 +2,7 @@
 // Replaces the static site/out/ pages that build-public.ts used to copy into
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v2',
+// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v3',
 // TTL 300s), aboutPage() ('page:about:v2', TTL 300s), and sitemapXml()
 // ('page:sitemap:v4', TTL 3600s).
 //
@@ -471,8 +471,8 @@ footer a:hover { text-decoration:underline; }
         cross-database pages, and literature &mdash; with machine-checkable
         provenance on every edge.</li>
       <li><a href="/concepts">Wikidata concept links</a> &mdash; every formalized concept keyed
-        to its Wikidata item, as an open RDF dataset (the basis for a proposed
-        <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
+        to its Wikidata item, as an open RDF dataset (Wikidata&rsquo;s property for these
+        links is <em>&ldquo;Mathlib Declaration ID&rdquo;</em>, P14534).</li>
       <li><a href="/mcp">Wikibrain MCP</a> &mdash; a remote MCP server any AI agent can
         connect to mid-proof: jump between informal mathematics and formal
         Mathlib declarations (full REST reference at <a href="/brain/api">/brain/api</a>).</li>
@@ -695,10 +695,10 @@ footer p { margin:4px 0; }
   <h2>Wikidata concept links</h2>
   <p>Every concept matched to a <em>formalized</em> declaration is also keyed to its
   <a href="https://www.wikidata.org/">Wikidata</a> item and published as an open
-  <a href="/concepts">RDF dataset</a>. This is the basis for a proposed Wikidata
-  property, <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> — the long-term goal is
-  for these links to live in Wikidata itself, maintainable by the community and queryable
-  via SPARQL.</p>
+  <a href="/concepts">RDF dataset</a>. Wikidata has a property for these links,
+  <a href="https://www.wikidata.org/wiki/Property:P14534"><em>&ldquo;Mathlib Declaration
+  ID&rdquo;</em> (P14534)</a>; the long-term goal is for them to live in Wikidata
+  itself, maintainable by the community and queryable via SPARQL.</p>
 
   <h2>For AI agents: the Wikibrain MCP</h2>
   <p>For AI agents, the same graph is queryable as the
@@ -743,8 +743,10 @@ footer p { margin:4px 0; }
   stay pending until a patroller or a later nightly run decides them, or lapse when the
   pipeline next saves the article and finds their target annotation removed or already
   matching them. When the pipeline approves a change to a human-curated annotation, the
-  annotation stops being shown as human-curated; when a patroller approves a change, the
-  result is shown as human-curated. People remain the gate wherever WikiLean contributes
+  annotation is relabeled: it is then shown as &ldquo;AI-generated &middot; not yet
+  reviewed&rdquo; and loses the human-curated protection, so later pipeline saves can
+  change it directly. When a patroller approves a change, the result is shown as
+  human-curated. People remain the gate wherever WikiLean contributes
   to outside projects: the tagging bot opens pull requests to Mathlib on its own, but they
   merge only after Mathlib reviewers approve them, and statements are added to Wikidata
   only for mappings people have reviewed.</p>

@@ -567,7 +567,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v2";  // v2: Recent changes + Stats links in the nav
+  const cacheKey = "page:articles:v3";  // v3: Wikidata property named (P14534)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = homePage(await homeRows(c));
