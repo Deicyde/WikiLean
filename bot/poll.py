@@ -5,7 +5,11 @@ Each tick looks at the current batch PR's GitHub state and acts on it:
   - MERGED                         -> open the next batch (open_batch.py)
   - OPEN + settle gate met         -> trim to greens + triage/queue the rest
     (>=2 reviewers incl >=1 maintainer)   + post the reviewer table + ready comment
+  - CLOSED, not merged             -> halt: exit non-zero for a human
   - otherwise                      -> wait (nothing to do)
+A failed GitHub read in decide()/tick() (bad token, error body, empty answer) exits
+non-zero with POLL_ERROR; it never reads as 'wait'. Best-effort subprocess steps
+(triage, harvest, pr_table, publish) stay unchecked, as before.
 
 Idempotent via state.settled_pr (won't re-settle) and merge state (won't
 re-open). Dry-run by default — prints the decision; --apply acts.
@@ -23,6 +27,13 @@ STATE = HERE / "state" / "bot_state.json"
 QUEUE = HERE / "state" / "recycle_queue.json"
 CANDS = HERE / "state" / "pool_candidates.json"
 REPO = "leanprover-community/mathlib4"
+# GitHub computes `mergeable` lazily and answers UNKNOWN until it has; re-read with
+# these pauses (seconds) before giving up.
+MERGEABLE_RETRIES = (2, 4, 8, 16)
+
+
+class Halt(RuntimeError):
+    """The tick cannot proceed without a human. Exits non-zero, never 'wait'."""
 
 
 def sh(cmd, check=False, **kw):
@@ -39,8 +50,10 @@ def sh(cmd, check=False, **kw):
 
 
 def gh_state(pr):
-    return subprocess.run(["gh", "pr", "view", str(pr), "--repo", REPO, "--json", "state", "--jq", ".state"],
-                          capture_output=True, text=True).stdout.strip() or "?"
+    state = settle.gh_run(["pr", "view", str(pr), "--repo", REPO, "--json", "state", "--jq", ".state"]).strip()
+    if not state:
+        raise settle.GhError(f"gh pr view {pr}: empty state")
+    return state
 
 
 def do_settle(pr, branch, mathlib, cls, dry):
@@ -111,13 +124,23 @@ def do_settle(pr, branch, mathlib, cls, dry):
 
 
 def pr_conflicting(pr):
-    return subprocess.run(["gh", "pr", "view", str(pr), "--repo", REPO, "--json", "mergeable", "--jq", ".mergeable"],
-                          capture_output=True, text=True).stdout.strip() == "CONFLICTING"
+    args = ["pr", "view", str(pr), "--repo", REPO, "--json", "mergeable", "--jq", ".mergeable"]
+    for pause in (*MERGEABLE_RETRIES, None):
+        value = settle.gh_run(args).strip()
+        if not value:
+            raise settle.GhError(f"gh pr view {pr}: empty mergeable")
+        if value != "UNKNOWN":
+            return value == "CONFLICTING"
+        if pause is not None:
+            time.sleep(pause)
+    raise Halt(f"#{pr} mergeable is still UNKNOWN after {len(MERGEABLE_RETRIES) + 1} reads")
 
 
 def master_tip():
-    return subprocess.run(["gh", "api", f"repos/{REPO}/commits/master", "--jq", ".sha"],
-                          capture_output=True, text=True).stdout.strip()
+    sha = settle.gh_run(["api", f"repos/{REPO}/commits/master", "--jq", ".sha"]).strip()
+    if len(sha) != 40:
+        raise settle.GhError(f"gh api commits/master: no sha in output {sha[:80]!r}")
+    return sha
 
 
 def resolve_conflicts(pr, branch, mathlib, dry):
@@ -131,12 +154,11 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     if not apath.exists():
         # An ADOPTED batch (open_batch adopt guard) heals bot_state but cannot
         # conjure the approved file another runner assembled. Without it we can't
-        # map green qids back to decl/file, so we cannot rebuild — wait loudly
-        # for a human instead of crash-looping every tick.
-        print(f"  RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
-              f"cannot rebuild without decl/file per green tag; reconstruct it by "
-              f"hand from the PR diff, then re-tick.")
-        return
+        # map green qids back to decl/file, so we cannot rebuild — halt (a red run)
+        # for a human; a green 'wait' here would hide the stall.
+        raise Halt(f"RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
+                   f"cannot rebuild without decl/file per green tag; reconstruct it by "
+                   f"hand from the PR diff on the bot-state branch, then re-tick.")
     approved = json.loads(apath.read_text())
     # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
     # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
@@ -192,9 +214,15 @@ def ci_cache_flake(pr, repo):
     passed — lake 'target is out-of-date' at cache replay, on core files the PR
     never touched. A close+reopen re-runs CI against a warmer cache and clears it
     (batch #40682 passed Post-Build with the same files; #40747 flaked)."""
-    out = subprocess.run(["gh", "pr", "checks", str(pr), "--repo", repo],
-                         capture_output=True, text=True).stdout
-    rows = [l.split("\t") for l in out.splitlines() if "\t" in l]
+    args = ["pr", "checks", str(pr), "--repo", repo]
+    proc = subprocess.run(["gh", *args], capture_output=True, text=True)
+    rows = [l.split("\t") for l in proc.stdout.splitlines() if "\t" in l]
+    # gh exits 1 when a check failed and 8 while one is pending, still listing rows.
+    if not rows or proc.returncode not in (0, 1, 8):
+        if proc.returncode != 0 and "no checks reported" in (proc.stderr or ""):
+            return False
+        raise settle.GhError(settle.gh_failure(args, proc) if proc.returncode
+                             else f"gh pr checks {pr}: no checks listed")
     pb = [r[1] for r in rows if len(r) > 1 and "Post-Build Step" in r[0]]
     build = [r[1] for r in rows if len(r) > 1 and "/ Build" in r[0]]
     return ("fail" in pb) and ("pass" in build) and ("fail" not in build)
@@ -204,8 +232,10 @@ def retrigger(pr, repo):
     """Re-run a fork PR's CI without a noise commit: close then reopen (the
     'reopened' event re-fires the workflow). A fork author can do this; they
     can't hit 'Re-run' on the upstream Actions UI."""
-    sh(["gh", "pr", "close", str(pr), "--repo", repo])
-    sh(["gh", "pr", "reopen", str(pr), "--repo", repo])
+    # Checked: a silent failure would spend the once-per-PR retrigger, and a failed
+    # reopen leaves the PR closed by the bot itself.
+    sh(["gh", "pr", "close", str(pr), "--repo", repo], check=True)
+    sh(["gh", "pr", "reopen", str(pr), "--repo", repo], check=True)
 
 
 def tick(mathlib, dry, no_open=False):
@@ -234,7 +264,7 @@ def tick(mathlib, dry, no_open=False):
             STATE.write_text(json.dumps(st, indent=1))
         return
     if state != "OPEN":
-        print(f"  #{pr} is {state} but NOT merged — needs manual attention; skipping"); return
+        raise Halt(f"#{pr} is {state} but not merged — needs manual attention")
     if st.get("settled_pr") == pr:
         # Reviews can land AFTER the settle (e.g. a maintainer rejects a tag that
         # was green). Re-classify against the PR's CURRENT tags: if any are now
@@ -324,8 +354,9 @@ def decide():
         return "act"                                   # open the first batch
     if settle.is_merged(pr, REPO):
         return "act"                                   # merged -> open next
-    if gh_state(pr) != "OPEN":
-        return "wait"                                  # closed-not-merged -> manual
+    state = gh_state(pr)
+    if state != "OPEN":                                # closed-not-merged -> a human decides
+        raise Halt(f"#{pr} is {state} but not merged — needs manual attention")
     if st.get("settled_pr") == pr:                     # settled -> re-trim new rejections, else CI self-heal
         cls = settle.classify(pr, REPO)
         if cls["gate"] and cls["recycle"]:
@@ -362,18 +393,21 @@ def main():
     ap.add_argument("--refresh-table", action="store_true",
                     help="cheap: re-post the current OPEN PR's tag table to reflect new reviews, then exit")
     args = ap.parse_args()
-    if args.decide:
-        print(f"POLL_DECISION={decide()}")
-        return
-    if args.refresh_table:
-        refresh_table()
-        return
-    dry = not args.apply
-    while True:
-        tick(args.mathlib, dry, args.no_open)
-        if not args.watch:
-            break
-        time.sleep(args.watch)
+    try:
+        if args.decide:
+            print(f"POLL_DECISION={decide()}")
+            return
+        if args.refresh_table:
+            refresh_table()
+            return
+        dry = not args.apply
+        while True:
+            tick(args.mathlib, dry, args.no_open)
+            if not args.watch:
+                break
+            time.sleep(args.watch)
+    except (settle.GhError, Halt) as ex:
+        sys.exit(f"POLL_ERROR: {ex}")
 
 
 if __name__ == "__main__":
