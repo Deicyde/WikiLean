@@ -163,8 +163,8 @@ def alerts_for(report, now):
         alerts.append(f"bot state unreadable ({state['source']}): {state['error']}")
     elif state.get("branch_missing"):
         alerts.append(f"no {STATE_BRANCH} branch: showing main's frozen snapshot. Expected only before the "
-                      f"poller's first run with the state-branch workflow; after that it means the branch was "
-                      f"deleted and the next run would act on this stale snapshot")
+                      f"one-time bootstrap_state dispatch; after that the branch was deleted or renamed, and "
+                      f"every poller run fails at restore until it is recreated (bot/README.md, Restore failed)")
     if not report["live"]:
         alerts.append("offline: main's frozen snapshot only; poller runs and the batch PR were not checked "
                       "(use --live)")
