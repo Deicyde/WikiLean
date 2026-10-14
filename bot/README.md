@@ -100,13 +100,38 @@ protection does not cover:
   `state-branch.sh save`, which commits any change on top of the restored commit
   and pushes it as a fast-forward. A failed read fails the run; it never falls back
   to `main`'s copy.
-- If `bot-state` does not exist, the first run creates it from `main`'s
-  `bot/state/`. No setup is needed.
-- `main`'s copies are now a frozen snapshot. The Brain build reads
-  `bot/state/{cut_log,seed_queue,recycle_queue,brain_queue}.json` from `main`, and
-  the catalog and `manage/` read `bot/data/tagged_in_master.txt`, so they see the
-  bot's changes only after someone folds them back with a reviewed PR
-  (`git restore --source` also carries deletions):
+- The branch is created once, by hand: after the change that moved the state off
+  `main` merges, run
+  `gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean -f bootstrap_state=true`.
+  That run seeds `bot-state` from `main`'s copies of the state paths. It does not
+  tick or touch the upstream PR, but the next run does, and a scheduled run can
+  start right after it. So check the seed before any run has a working token:
+  compare `bot_state.json` (`current_pr`, `batch_num`, `branch`) and the open
+  batch's `batchN_approved.json` with the live upstream PR, and fix them on
+  `bot-state`. Without the flag a missing branch fails the run, because after the
+  first save it means the branch was deleted or renamed, and seeding again from
+  `main`'s stale snapshot is the clobber the branch exists to prevent. Once the
+  branch exists, restore ignores the flag (the run still skips the tick), and a
+  re-run attempt never bootstraps. See [Restore failed](#restore-failed) for
+  recovery.
+- `main`'s copies are now a frozen snapshot. Edits to them never reach the bot:
+  restore overwrites them with the branch's copies and deletes `bot/state/` files
+  the branch lacks. Everything below reads `main`'s copies, so it sees the bot's
+  changes only after someone folds them back with a reviewed PR:
+  - the Brain build: `bot/state/{cut_log,seed_queue,recycle_queue,brain_queue}.json`,
+    `curated_git_input` entries in `brain/authority/reducer-inputs-v1.json`, read
+    by `brain/build_cells.py` (the fifth entry, `pool_candidates.json`, is
+    gitignored);
+  - `manage/refresh.py` → `manage/worklists.py` → `pool.candidates()`, which
+    excludes `pool.seen_qids()` (`batch*_approved.json`, `recycle_queue.json`,
+    `cut_log.json`) and `bot/data/tagged_in_master.txt`;
+  - `manage/status.py` (`bot/state/bot_state.json`);
+  - `catalog/build_join_fabric.py` (`bot/data/tagged_in_master.txt`) and
+    `catalog/tag_with_mathlib.py` (`bot/data/corrections.jsonl`, from a local
+    checkout);
+  - `poll.py --decide` run in a `main` checkout.
+
+  To fold back (`git restore --source` also carries deletions):
 
       git fetch origin bot-state
       git switch -c bot/fold-state origin/main
@@ -146,9 +171,42 @@ Before this, an expired token kept every run green and the bot blind from
   `bot_state.json` on `bot-state` at the next step.
 - `mergeable is still UNKNOWN` → GitHub had not computed mergeability after five
   reads (~30 s). Dispatch again; if it repeats, look at the PR page.
-- `Commit poll state` failed → someone pushed to `bot-state` mid-run, or the
-  branch holds files outside the state paths. Read the log, fix the branch, and
-  dispatch again.
+- `RESOLVE-CONFLICT #N: batchN_approved.json MISSING (adopted batch?)` → see
+  [Merge conflict on the batch PR](#merge-conflict-on-the-batch-pr).
+- `Restore bot state` failed → see [Restore failed](#restore-failed).
+- `Commit poll state` failed → someone pushed to `bot-state` mid-run. Read the
+  log and dispatch again.
+
+### Restore failed
+
+- `bot-state does not exist` → if the branch ever existed, it was deleted or
+  renamed. Do not bootstrap: that re-seeds from `main`'s stale snapshot. If it
+  was renamed, rename it back. If it was deleted, recreate it at its last commit:
+  1. Find the commit it pointed at when it was deleted:
+     `gh api 'repos/Deicyde/WikiLean/activity?ref=bot-state&activity_type=branch_deletion' --jq '.[0].before'`.
+     A clone that fetched `bot-state` also has it as `origin/bot-state` or in
+     its reflog. Run logs are only a fallback: they show the commits the bot
+     restored or pushed, not hand edits pushed between runs, and after a failed
+     `Commit poll state` the logged restore commit is older than the one that
+     beat it.
+  2. GitHub normally still has that commit after the branch is deleted, so
+     `gh api repos/Deicyde/WikiLean/git/refs -f ref=refs/heads/bot-state -f sha=<sha>`
+     recreates the branch. A clone that has the commit can instead run
+     `git push origin <sha>:refs/heads/bot-state`.
+  3. Dispatch a new run without the flag. Don't use *Re-run*: a re-run replays
+     the original run's commit and inputs.
+
+  Only on the first run after the state moved off `main` is
+  `-f bootstrap_state=true` the fix.
+- `refusing to bootstrap … on re-run attempt N` → dispatch a new run with
+  `-f bootstrap_state=true` if this really is the first run; otherwise see above.
+- `outside the state paths` or `has no bot/state/bot_state.json` → someone
+  committed other files to `bot-state`, or removed the state file. Fix the
+  branch (see the hand-edit steps under [State](#state-the-bot-state-branch))
+  and dispatch again.
+- `cannot read`, or a bare git `fatal:` line from the fetch or checkout → a
+  network or auth error reading the branch. Dispatch again; if it repeats, read
+  the log.
 
 ### Token rotation
 

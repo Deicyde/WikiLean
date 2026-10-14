@@ -493,9 +493,10 @@ esac
             return [script_path if a == "{0}" else a for a in shell.split()]
         self.fail(f"unsupported shell {shell!r}")
 
-    def run_step(self, decide_mode):
-        script = self.step["run"].replace("${{ inputs.force_heavy }}", "")
-        self.assertNotIn("${{", script, "the test only substitutes inputs.force_heavy")
+    def run_step(self, decide_mode, bootstrap_state=""):
+        script = (self.step["run"].replace("${{ inputs.force_heavy }}", "")
+                  .replace("${{ inputs.bootstrap_state }}", bootstrap_state))
+        self.assertNotIn("${{", script, "the test only substitutes the dispatch inputs")
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             (tmp / "bin").mkdir()
@@ -524,6 +525,14 @@ esac
                 r, output = self.run_step(mode)
                 self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
                 self.assertEqual(output.strip(), expected)
+
+    def test_a_bootstrap_run_skips_the_tick(self):
+        for mode in ("act", "fail"):  # poll.py is never consulted
+            with self.subTest(mode=mode):
+                r, output = self.run_step(mode, bootstrap_state="true")
+                self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+                self.assertEqual(output.strip(), "act=false")
+                self.assertIn("seed bot-state only", r.stdout)
 
 
 if __name__ == "__main__":

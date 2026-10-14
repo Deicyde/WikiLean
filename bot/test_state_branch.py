@@ -62,14 +62,22 @@ class StateBranchTest(unittest.TestCase):
         self.git("clone", "--quiet", "--depth=1", self.origin.as_uri(), str(path), cwd=self.tmp)
         return path
 
-    def run_script(self, cwd, *args):
-        return subprocess.run(["bash", str(SCRIPT), *args], cwd=cwd, env=self.env,
+    def run_script(self, cwd, *args, bootstrap=None, extra_env=None):
+        env = dict(self.env, **(extra_env or {}))
+        if bootstrap is not None:
+            env["BOT_STATE_BOOTSTRAP"] = bootstrap
+        return subprocess.run(["bash", str(SCRIPT), *args], cwd=cwd, env=env,
                               capture_output=True, text=True, timeout=60)
 
-    def ok(self, cwd, *args):
-        r = self.run_script(cwd, *args)
+    def ok(self, cwd, *args, bootstrap=None, extra_env=None):
+        r = self.run_script(cwd, *args, bootstrap=bootstrap, extra_env=extra_env)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         return r.stdout
+
+    def has_branch(self):
+        r = subprocess.run(["git", "rev-parse", "--verify", "--quiet", "refs/heads/bot-state"],
+                           cwd=self.origin, env=self.env, capture_output=True, text=True)
+        return r.returncode == 0
 
     def branch_files(self):
         out = self.git("ls-tree", "-r", "--name-only", "bot-state", cwd=self.origin)
@@ -77,7 +85,7 @@ class StateBranchTest(unittest.TestCase):
 
     def test_bootstrap_then_round_trip(self):
         a = self.clone("a")
-        self.assertIn("does not exist yet", self.ok(a, "restore"))
+        self.assertIn("bootstrap_state is set", self.ok(a, "restore", bootstrap="true"))
         self.write(a, "bot/state/bot_state.json", json.dumps({"current_pr": 8}))
         self.write(a, "bot/state/pool_candidates.json", "[]")  # ignored, never persisted
         self.write(a, "bot/data/tagged_in_master.txt", "Q1\nQ2\n")
@@ -109,7 +117,7 @@ class StateBranchTest(unittest.TestCase):
 
     def test_restore_mirrors_the_branch_including_deletions(self):
         a = self.clone("a")
-        self.ok(a, "restore")
+        self.ok(a, "restore", bootstrap="true")
         self.write(a, "bot/state/batch8_approved.json", "{}")
         self.ok(a, "save", MESSAGE)
         editor = self.tmp / "editor"
@@ -151,7 +159,7 @@ class StateBranchTest(unittest.TestCase):
 
     def test_concurrent_writer_is_rejected_not_overwritten(self):
         a = self.clone("a")
-        self.ok(a, "restore")
+        self.ok(a, "restore", bootstrap="true")
         self.ok(a, "save", MESSAGE)
         c, d = self.clone("c"), self.clone("d")
         self.ok(c, "restore")
@@ -165,8 +173,8 @@ class StateBranchTest(unittest.TestCase):
 
     def test_second_bootstrap_cannot_replace_an_existing_branch(self):
         a, b = self.clone("a"), self.clone("b")
-        self.ok(a, "restore")
-        self.ok(b, "restore")  # both saw 'absent'
+        self.ok(a, "restore", bootstrap="true")
+        self.ok(b, "restore", bootstrap="true")  # both saw 'absent'
         self.ok(a, "save", MESSAGE)
         # Identical state in the same second makes an identical commit, and that
         # push is a harmless no-op; different state must be rejected.
@@ -174,6 +182,42 @@ class StateBranchTest(unittest.TestCase):
         self.assertNotEqual(self.run_script(b, "save", MESSAGE).returncode, 0)
         tip = self.git("show", "bot-state:bot/state/bot_state.json", cwd=self.origin)
         self.assertEqual(json.loads(tip), {"current_pr": 7})
+
+    def test_absent_branch_without_the_flag_fails_and_blocks_save(self):
+        for flag in (None, "false", ""):  # unset, the dispatch default, a scheduled run
+            with self.subTest(flag=flag):
+                a = self.clone(f"a{flag}")
+                self.ok(a, "restore", bootstrap="true")  # leaves an 'absent' record behind
+                r = self.run_script(a, "restore", bootstrap=flag)
+                self.assertNotEqual(r.returncode, 0)
+                self.assertIn("does not exist", r.stderr)
+                self.assertIn("bootstrap_state=true", r.stderr)
+                self.assertIn("Restore failed", r.stderr)
+                r = self.run_script(a, "save", MESSAGE)
+                self.assertNotEqual(r.returncode, 0)
+                self.assertIn("no restore record", r.stderr)
+                self.assertFalse(self.has_branch())
+
+    def test_a_re_run_never_bootstraps(self):
+        a = self.clone("a")
+        r = self.run_script(a, "restore", bootstrap="true", extra_env={"GITHUB_RUN_ATTEMPT": "2"})
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("re-run attempt 2", r.stderr)
+        self.assertNotEqual(self.run_script(a, "save", MESSAGE).returncode, 0)
+        self.assertFalse(self.has_branch())
+        self.assertIn("bootstrap_state is set",
+                      self.ok(a, "restore", bootstrap="true", extra_env={"GITHUB_RUN_ATTEMPT": "1"}))
+
+    def test_the_flag_is_ignored_once_the_branch_exists(self):
+        a = self.clone("a")
+        self.ok(a, "restore", bootstrap="true")
+        self.write(a, "bot/state/bot_state.json", json.dumps({"current_pr": 8}))
+        self.ok(a, "save", MESSAGE)
+        b = self.clone("b")  # main still says current_pr 7
+        self.assertIn("restored", self.ok(b, "restore", bootstrap="true"))
+        self.assertEqual(json.loads((b / "bot/state/bot_state.json").read_text()), {"current_pr": 8})
+        self.assertIn("no state change", self.ok(b, "save", MESSAGE))
+        self.assertEqual(self.git("rev-list", "--count", "bot-state", cwd=self.origin), "1")
 
     def test_read_error_fails_and_blocks_save(self):
         a = self.clone("a")
@@ -215,9 +259,25 @@ class WorkflowWiringTest(unittest.TestCase):
         for later in ("Refresh Brain queue", "Decide", "Poll tick", "Refresh tag table"):
             self.assertLess(restore, self.index(later), later)
 
+    def test_bootstrap_is_an_explicit_dispatch_input(self):
+        doc = yaml.safe_load(WORKFLOW.read_text())
+        triggers = doc.get("on", doc.get(True))  # PyYAML reads the bare key `on` as True
+        flag = triggers["workflow_dispatch"]["inputs"]["bootstrap_state"]
+        self.assertEqual((flag["type"], flag["default"]), ("boolean", False))
+        restore = self.steps[self.index("Restore bot state")]
+        self.assertEqual(restore["env"]["BOT_STATE_BOOTSTRAP"], "${{ inputs.bootstrap_state }}")
+
+    def test_a_bootstrap_run_never_ticks_or_writes_upstream(self):
+        decide = self.steps[self.index("Decide")]["run"]
+        self.assertLess(decide.index('"${{ inputs.bootstrap_state }}" = "true"'), decide.index("poll.py"))
+        self.assertEqual(self.steps[self.index("Refresh tag table")]["if"],
+                         "always() && steps.restore.outcome == 'success' && !inputs.bootstrap_state")
+
     def test_state_is_saved_to_the_branch_only_after_a_restore(self):
         save = self.steps[self.index("Commit poll state")]
         self.assertIn("steps.restore.outcome == 'success'", save["if"])
+        # A bootstrap run sets act=false; the save must still run to create the branch.
+        self.assertNotIn("steps.decide", save["if"])
         self.assertIn("bot/ops/state-branch.sh save", save["run"])
 
     def test_always_steps_never_act_on_main_s_snapshot(self):
