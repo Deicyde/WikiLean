@@ -129,8 +129,14 @@ class BrainCanary:
         require_body: bool = True,
     ) -> HttpResult:
         method = "POST" if body is not None else "GET"
+        # The canary compares the origin's frozen bytes, so it must never advertise
+        # text/html: Cloudflare zone features that rewrite HTML (Web Analytics
+        # auto-injection adds a beacon script) key on an Accept header that includes
+        # text/html, which broke the 2026-10-04 promotion canary on /brain. The
+        # Worker negotiates on Accept only for GET /decl and GET /mcp, neither of
+        # which the canary requests.
         headers = {
-            "Accept": "application/json,text/html;q=0.9,*/*;q=0.1",
+            "Accept": "application/json,*/*;q=0.1",
             "Cache-Control": "no-cache",
             "User-Agent": "WikiLean-Brain-Canary/1",
         }
@@ -291,7 +297,10 @@ class BrainCanary:
             raise CanaryError(f"release manifest does not declare {release_path}")
         declared_size, declared_digest = declared
         if len(body) != declared_size or hashlib.sha256(body).hexdigest() != declared_digest:
-            raise CanaryError(f"immutable asset does not match release manifest: {public_path}")
+            raise CanaryError(
+                f"immutable asset does not match release manifest: {public_path} "
+                f"(declared {declared_size} bytes, observed {len(body)} bytes)"
+            )
 
     def _verify_public_baseline(self) -> list[str]:
         if self.public_baseline is None:
@@ -322,7 +331,10 @@ class BrainCanary:
             else:
                 body = self.fetch("/" + path).body
             if len(body) != expected.bytes or hashlib.sha256(body).hexdigest() != expected.sha256:
-                raise CanaryError(f"public asset differs from frozen baseline: /{path}")
+                raise CanaryError(
+                    f"public asset differs from frozen baseline: /{path} "
+                    f"(frozen {expected.bytes} bytes, observed {len(body)} bytes)"
+                )
             checked.append(path)
         return checked
 

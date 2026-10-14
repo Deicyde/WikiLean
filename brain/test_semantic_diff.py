@@ -209,7 +209,7 @@ class SemanticDiffTest(unittest.TestCase):
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertEqual(first.stdout, second.stdout)
         report = json.loads(first.stdout)
-        self.assertEqual(report["schema"], "wikilean.semantic-diff/v2")
+        self.assertEqual(report["schema"], "wikilean.semantic-diff/v3")
         self.assertTrue(report["coverage"]["complete"])
         self.assertEqual(
             report["coverage"]["required"],
@@ -337,8 +337,8 @@ class SemanticDiffTest(unittest.TestCase):
             "provenance_only": 0,
         })
         self.assertEqual(report["edges"]["grouped_by_source_kind"], [
-            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1},
-            {"source": "source-b", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1},
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1, "provenance_only": 0},
+            {"source": "source-b", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1, "provenance_only": 0},
         ])
 
     def test_edges_preserve_duplicates_and_separate_provenance_only(self) -> None:
@@ -370,17 +370,72 @@ class SemanticDiffTest(unittest.TestCase):
         report, _ = self.compare(before, after)
         edges = report["edges"]
         self.assertEqual(len(edges["provenance_only"]), 1)
-        provenance_change = edges["provenance_only"][0]
-        self.assertEqual(provenance_change["before"][0]["count"], 2)
-        self.assertEqual(provenance_change["after"][0]["count"], 2)
+        self.assertEqual(edges["provenance_only"][0], {
+            "artifact": "brain/data/edges.jsonl",
+            "kind": "formalizes",
+            "before": {"provenance": PROV_A},
+            "after": {"provenance": PROV_B},
+            "count": 2,
+        })
         self.assertEqual(len(edges["changed"]), 0)
         self.assertEqual(len(edges["added"]), 1)
         self.assertEqual(len(edges["removed"]), 1)
         self.assertEqual(edges["grouped_by_source_kind"], [
-            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 2, "changed": 0},
-            {"source": "source-a", "kind": "xref", "added": 1, "removed": 0, "changed": 0},
-            {"source": "source-b", "kind": "formalizes", "added": 2, "removed": 0, "changed": 0},
-            {"source": "source-b", "kind": "relates", "added": 0, "removed": 1, "changed": 0},
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 2, "changed": 0, "provenance_only": 0},
+            {"source": "source-a", "kind": "xref", "added": 1, "removed": 0, "changed": 0, "provenance_only": 0},
+            {"source": "source-b", "kind": "formalizes", "added": 2, "removed": 0, "changed": 0, "provenance_only": 0},
+            {"source": "source-b", "kind": "relates", "added": 0, "removed": 1, "changed": 0, "provenance_only": 0},
+        ])
+
+    def test_same_source_pin_edits_aggregate_as_provenance_only(self) -> None:
+        before = base_fixture()
+        before["edges"].append(copy.deepcopy(before["edges"][0]))
+        before["edges"].append({**copy.deepcopy(before["edges"][0]), "dst": "decl:Mathlib:Beta"})
+        after = copy.deepcopy(before)
+        repinned = {**PROV_A, "pin": "two"}
+        for row in after["edges"]:
+            row["provenance"] = repinned
+
+        report, process = self.compare(before, after)
+        self.assertTrue(report["different"])
+        self.assertEqual(report["edges"]["changed"], [])
+        self.assertEqual(report["edges"]["provenance_only"], [{
+            "artifact": "brain/data/edges.jsonl",
+            "kind": "formalizes",
+            "before": {"provenance": PROV_A},
+            "after": {"provenance": repinned},
+            "count": 3,
+        }])
+        self.assertEqual(report["summary"]["edges"], {
+            "added": 0,
+            "removed": 0,
+            "changed": 0,
+            "provenance_only": 3,
+        })
+        self.assertEqual(report["edges"]["grouped_by_source_kind"], [
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 0, "provenance_only": 3},
+        ])
+        # The aggregate carries no per-edge rows, so its size does not grow with the corpus.
+        self.assertNotIn("src", report["edges"]["provenance_only"][0])
+        # Row order never changes the report bytes.
+        after["edges"].reverse()
+        reordered, reordered_process = self.compare(before, after)
+        self.assertEqual(reordered_process.stdout, process.stdout)
+
+        # A genuine content change in the same source stays a full "changed" record.
+        after["edges"][0]["confidence"] = "low"
+        mixed, _ = self.compare(before, after)
+        self.assertEqual(mixed["summary"]["edges"], {
+            "added": 0,
+            "removed": 0,
+            "changed": 1,
+            "provenance_only": 2,
+        })
+        self.assertEqual(len(mixed["edges"]["changed"]), 1)
+        self.assertEqual(mixed["edges"]["changed"][0]["dst"], "decl:Mathlib:Beta")
+        self.assertEqual(mixed["edges"]["changed"][0]["before"][0]["row"]["provenance"], PROV_A)
+        self.assertEqual(mixed["edges"]["grouped_by_source_kind"], [
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1, "provenance_only": 2},
         ])
 
     def test_moving_an_edge_between_streams_is_detected(self) -> None:
@@ -431,8 +486,8 @@ class SemanticDiffTest(unittest.TestCase):
             "provenance_only": 0,
         })
         self.assertEqual(report["edges"]["grouped_by_source_kind"], [
-            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 2, "changed": 0},
-            {"source": "source-b", "kind": "formalizes", "added": 1, "removed": 0, "changed": 0},
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 2, "changed": 0, "provenance_only": 0},
+            {"source": "source-b", "kind": "formalizes", "added": 1, "removed": 0, "changed": 0, "provenance_only": 0},
         ])
 
         same_source_before = base_fixture()
@@ -440,7 +495,7 @@ class SemanticDiffTest(unittest.TestCase):
         same_source_after["edges"][0]["confidence"] = "medium"
         same_source_report, _ = self.compare(same_source_before, same_source_after)
         self.assertEqual(same_source_report["edges"]["grouped_by_source_kind"], [
-            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1},
+            {"source": "source-a", "kind": "formalizes", "added": 0, "removed": 0, "changed": 1, "provenance_only": 0},
         ])
 
     def test_cells_organs_split_merge_and_layout(self) -> None:
