@@ -29,7 +29,7 @@ python3.12 -m venv /tmp/companion-env
 The package supplies validation and shard discovery for this Python importer.
 WikiLean's native Worker separately vendors the exact pinned schema and generates
 a Worker-safe validator from it; the native Python pipeline validates the same
-schema. That pin and semantic parity checks are described in [the native runbook](COMPANION-NATIVE.md). The importer requires that exact package version, so an older format package cannot silently pass through. It is optional for ordinary WikiLean work;
+schema. That pin and semantic parity checks are described in [the native runbook](COMPANION-NATIVE.md). The importer checks the package's schema and checker bytes against `provenance.json`, so another build that reports the same version cannot silently pass through. It is optional for ordinary WikiLean work;
 ingestion fails with an actionable error if absent. There is no public package URL
 or network fallback. Querying an already built index requires
 only Python's standard library.

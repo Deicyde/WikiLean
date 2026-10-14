@@ -30,6 +30,9 @@ if __package__ in (None, ""):
 from brain import store
 
 REFERENCE_VERSION = "1.0.0"
+# Literature Links keeps its version across format changes, so the build is
+# pinned by the bytes of its schema and checker recorded here.
+PROVENANCE = Path(__file__).resolve().parents[2] / "wiki/src/vendor/literature-links/provenance.json"
 PROFILE = "companion-local-import-v1"
 # Index key for a record with no formal counterpart (a target-less annotation).
 # It is only a lookup key: it names no formal object and is never written into
@@ -58,6 +61,13 @@ def _require_reference():
             )
         companion = importlib.import_module("literature_links.companion")
         discovery = importlib.import_module("literature_links.discovery")
+        pin = json.loads(PROVENANCE.read_text(encoding="utf-8"))
+        if (hashlib.sha256(Path(companion.SCHEMA_PATH).read_bytes()).hexdigest() != pin["sha256"]
+                or hashlib.sha256(Path(companion.__file__).read_bytes()).hexdigest() != pin["semantic_sha256"]):
+            raise ImportError(
+                f"Literature Links {REFERENCE_VERSION} must be the build at commit {pin['commit']}; "
+                "see docs/COMPANION-IMPORT.md"
+            )
     except builtins.ImportError as exc:
         raise ImportError(
             f"Install the Literature Links {REFERENCE_VERSION} package in this Python environment; "
