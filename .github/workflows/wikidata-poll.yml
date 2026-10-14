@@ -28,8 +28,9 @@ name: wikidata batch poller
 # tick writes) lives on the unprotected `bot-state` branch of THIS repo: restored at the start of
 # each run and pushed back at the end, only when it changed (bot/ops/state-branch.sh).
 # main requires the 'required' check, so the bot cannot push there; main's bot/state/
-# is a frozen snapshot that bootstraps the branch on the first run. The laptop
-# launchd poller MUST stay retired, or the two diverge.
+# is a frozen snapshot that seeds the branch once, on a dispatch with
+# bootstrap_state=true. Without that input a missing branch fails the run. The
+# laptop launchd poller MUST stay retired, or the two diverge.
 
 on:
   schedule:
@@ -43,6 +44,10 @@ on:
     inputs:
       force_heavy:
         description: "Force the heavy setup + apply even if decide=wait (one-off validation)"
+        type: boolean
+        default: false
+      bootstrap_state:
+        description: "Create the bot-state branch from main's bot/state/ and skip the tick (first run after the state move only)"
         type: boolean
         default: false
 
@@ -96,11 +101,13 @@ jobs:
 
       # Before anything reads bot/state/. A read error fails the run rather than
       # fall back to main's snapshot: acting on a stale copy of the state is how
-      # batch 7 was clobbered in 2026-08.
+      # batch 7 was clobbered in 2026-08. A missing branch is created only when
+      # the dispatch sets bootstrap_state (empty on scheduled runs).
       - name: Restore bot state from the bot-state branch
         id: restore
         env:
           GH_TOKEN: ${{ github.token }}
+          BOT_STATE_BOOTSTRAP: ${{ inputs.bootstrap_state }}
         run: bot/ops/state-branch.sh restore
 
       - name: Refresh Brain queue
@@ -109,12 +116,16 @@ jobs:
       # ---- cheap gh-only decision: act or wait? ----
       # shell: bash runs with -o pipefail, so a failing decide (a gh error, an expired
       # token, a crash) fails the step through the tee instead of reading as 'wait'.
+      # A bootstrap_state run only seeds bot-state: it never ticks on main's snapshot.
       - name: Decide
         id: decide
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: |
+          if [ "${{ inputs.bootstrap_state }}" = "true" ]; then
+            echo "act=false" >> "$GITHUB_OUTPUT"; echo "bootstrap run: seed bot-state only, no tick"; exit 0
+          fi
           if [ "${{ inputs.force_heavy }}" = "true" ]; then
             echo "act=true" >> "$GITHUB_OUTPUT"; echo "forced heavy path (validation)"; exit 0
           fi
@@ -183,7 +194,7 @@ jobs:
       # idempotent and skips the write when unchanged, so this runs every tick — incl.
       # the no-op waits, which is exactly when reviews trickle in.
       - name: Refresh tag table
-        if: always() && steps.restore.outcome == 'success'
+        if: always() && steps.restore.outcome == 'success' && !inputs.bootstrap_state
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
         run: python3 bot/poll.py --mathlib /tmp/unused --refresh-table

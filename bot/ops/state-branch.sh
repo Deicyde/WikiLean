@@ -10,13 +10,18 @@
 #   state-branch.sh save MSG  commit the working tree's STATE_PATHS onto the
 #                             restored commit and push it (fast-forward only)
 #
-# restore records the commit it read, or 'absent' when the branch does not exist
-# yet; save refuses to run without that record. A first save on an absent branch
-# bootstraps it from the working tree, which is main's bot/state/. A push that
-# is not a fast-forward of the restored commit is rejected, so a concurrent
-# writer fails the run instead of being overwritten. Any read error other than
-# "branch absent" fails rather than fall back to main's snapshot: acting on a
-# stale copy of the state is how batch 7 was clobbered in 2026-08.
+# restore records the commit it read; save refuses to run without that record.
+# The branch is created once: with BOT_STATE_BOOTSTRAP=true (the workflow's
+# bootstrap_state dispatch input), restore records 'absent' for a missing branch
+# and the next save bootstraps it from the working tree, which is main's
+# bot/state/. Without the flag a missing branch fails the run: after the first
+# save it means the branch was deleted or renamed, and seeding from main's
+# frozen snapshot again is the clobber this script exists to prevent; for the
+# same reason a re-run attempt never bootstraps. A push that is not a
+# fast-forward of the restored commit is rejected, so a concurrent writer fails
+# the run instead of being overwritten. Any other read error fails rather than
+# fall back to main's snapshot: acting on a stale copy of the state is how
+# batch 7 was clobbered in 2026-08.
 set -euo pipefail
 
 BRANCH="${BOT_STATE_BRANCH:-bot-state}"
@@ -47,7 +52,16 @@ restore() {
   local rc=0
   git ls-remote --exit-code --heads "$REMOTE" "refs/heads/$BRANCH" >/dev/null || rc=$?
   if [ "$rc" -eq 2 ]; then
-    echo "state-branch: $REMOTE/$BRANCH does not exist yet; the next save bootstraps it from this checkout"
+    [ "${BOT_STATE_BOOTSTRAP:-}" = true ] || die "$REMOTE/$BRANCH does not exist." \
+      "If it ever existed, it was deleted or renamed: do NOT bootstrap, recreate it at" \
+      "its last commit (bot/README.md, 'Restore failed'). Only on the first run after" \
+      "the state moved off main, dispatch the workflow with bootstrap_state=true."
+    # A re-run reuses the original dispatch's inputs, so re-running an old
+    # bootstrap run after the branch is deleted would seed from main again.
+    [ "${GITHUB_RUN_ATTEMPT:-1}" = 1 ] || die "refusing to bootstrap $REMOTE/$BRANCH on" \
+      "re-run attempt $GITHUB_RUN_ATTEMPT, which reuses an old dispatch's bootstrap_state." \
+      "Dispatch a new run instead (bot/README.md, 'Restore failed')."
+    echo "state-branch: $REMOTE/$BRANCH does not exist; bootstrap_state is set, so the next save creates it from this checkout"
     echo absent >"$BASE_FILE"
     return
   fi
