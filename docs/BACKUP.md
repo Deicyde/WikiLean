@@ -229,13 +229,19 @@ routine schedule.
 
    ```bash
    OLD=/path/to/old.key NEW=/path/to/backup-recipients.txt
-   for f in wikilean-*.sql.age; do
-     if ( set -o pipefail; age -d -i "$OLD" "$f" | age -R "$NEW" -o "$f.new" ); then
-       mv "$f.new" "$f"
-     else
-       rm -f "$f.new"; echo "left unchanged: $f" >&2
-     fi
-   done
+   # Check the new list first, like the workflow: any output from age means a
+   # bad line or one it would skip (such as an unsupported SSH key type).
+   if out=$(age -R "$NEW" -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
+     for f in wikilean-*.sql.age; do
+       if ( set -o pipefail; age -d -i "$OLD" "$f" | age -R "$NEW" -o "$f.new" ); then
+         mv "$f.new" "$f"
+       else
+         rm -f "$f.new"; echo "left unchanged: $f" >&2
+       fi
+     done
+   else
+     printf '%s\n' "$out" >&2; echo "fix the recipients first; nothing changed" >&2
+   fi
    ```
 
    `pipefail` matters: without it, a failed decryption (wrong key, damaged
@@ -257,7 +263,7 @@ routine schedule.
    tool cannot be re-encrypted in place: delete them there, or treat them as
    exposed.
 
-   Then treat their contents as exposed: revoke the OAuth app's user tokens,
+   Then treat the contents of everything encrypted to the old key as exposed: revoke the OAuth app's user tokens,
    rotate `BETTER_AUTH_SECRET`, and consider whether users must be notified.
 
 ## Upgrading the pinned age
@@ -304,9 +310,14 @@ them):
 
 ```bash
 cd wiki/backups
-for f in wikilean-*.sql; do
-  age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
-done
+# Same recipient check as the workflow and the script: any age output stops it.
+if out=$(age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
+  for f in wikilean-*.sql; do
+    age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
+  done
+else
+  printf '%s\n' "$out" >&2; echo "fix BACKUP_AGE_RECIPIENTS first; nothing changed" >&2
+fi
 ```
 
 This reaches only the files in `wiki/backups/`. Copies of the plaintext that
