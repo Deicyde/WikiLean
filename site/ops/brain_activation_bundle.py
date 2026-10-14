@@ -59,6 +59,7 @@ from brain_public_baseline import (  # noqa: E402
 )
 import semantic_diff as semantic_diff_tool  # noqa: E402
 import measure_store as measure_store_tool  # noqa: E402
+import brain_release_authority as release_authority  # noqa: E402
 from brain_activation_ci import (  # noqa: E402
     ActivationCIError,
     EVIDENCE_SCHEMA as CI_EVIDENCE_SCHEMA,
@@ -76,8 +77,8 @@ from brain_promote_release import (  # noqa: E402
 
 BUNDLE_SCHEMA = "wikilean.brain-activation-bundle/v1"
 BUNDLE_DOMAIN = "wikilean.brain-activation-bundle.v1"
-BUILD_CONTEXT_SCHEMA = "wikilean.brain-activation-build-context/v1"
-SEMANTIC_DIFF_SCHEMA = "wikilean.semantic-diff/v2"
+BUILD_CONTEXT_SCHEMA = "wikilean.brain-activation-build-context/v2"
+SEMANTIC_DIFF_SCHEMA = "wikilean.semantic-diff/v3"
 RELEASE_SCHEMA = "wikilean.release/v1"
 BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1"
 SOURCE_ATTESTATION_SCHEMA = "wikilean.public-asset-source-attestation/v1"
@@ -644,22 +645,82 @@ def _inspect_worktree(
     return root, actual_head, actual_branch, actual_clean
 
 
+def _require_neutral_descendant(
+    git: Path,
+    root: Path,
+    authority_commit: str,
+    head: str,
+    declared: Sequence[str],
+    label: str,
+) -> None:
+    """Require ``head`` to descend from the authority with only release-neutral changes."""
+    try:
+        ancestry = subprocess.run(
+            [str(git), "-C", str(root), "merge-base", "--is-ancestor", authority_commit, head],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=30,
+            env=_git_environment(),
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise BundleValidationError(f"cannot inspect {label} ancestry: {exc}") from exc
+    if ancestry.returncode == 1:
+        raise BundleValidationError(
+            f"{label}: {head} does not descend from the candidate authority {authority_commit}"
+        )
+    if ancestry.returncode != 0:
+        detail = ancestry.stderr.decode("utf-8", errors="replace").strip()
+        raise BundleValidationError(f"cannot inspect {label} ancestry: {detail or 'git failed'}")
+    changes = release_authority.changed_paths(
+        lambda arguments: _git(git, root, arguments, f"{label} diff").decode(
+            "utf-8", errors="strict"
+        ),
+        authority_commit,
+        head,
+    )
+    blocking = release_authority.blocking_changes(changes)
+    if blocking:
+        raise BundleValidationError(
+            release_authority.describe_blocking(authority_commit, head, blocking)
+        )
+    if changes != list(declared):
+        raise BundleValidationError(
+            f"{label} neutral_changes differ from the Git diff between the candidate "
+            f"authority and {head}"
+        )
+
+
 def _validate_build_context(
     document: Mapping[str, Any],
     authority_commit: str,
     *,
     inspect_external: bool,
     git: Path | None = None,
-) -> tuple[Path, Path]:
+) -> tuple[Path, Path, str]:
+    """Validate the two P1B worktrees; return their roots and the promotion HEAD.
+
+    Both worktrees sit at one commit: the candidate authority, or a descendant of it
+    whose only differences are release-neutral paths, listed exactly in
+    ``neutral_changes``. With Git available the descent and the path list are
+    recomputed; without it the sealed record is checked for internal consistency.
+    """
     _exact_keys(
         document,
-        {"schema", "authority_git_commit", "build_worktree", "promotion_worktree"},
+        {"schema", "authority_git_commit", "build_worktree", "promotion_worktree", "neutral_changes"},
         "build context",
     )
     if document.get("schema") != BUILD_CONTEXT_SCHEMA:
         raise BundleValidationError("build context schema mismatch")
     if _require_commit(document.get("authority_git_commit"), "build context authority") != authority_commit:
         raise BundleValidationError("build context authority differs from the candidate release")
+    try:
+        neutral_changes = release_authority.validate_neutral_changes(
+            document.get("neutral_changes"), "build context neutral_changes"
+        )
+    except ValueError as exc:
+        raise BundleValidationError(str(exc)) from exc
     build_value = _require_object(document.get("build_worktree"), "build context build_worktree")
     promotion_value = _require_object(
         document.get("promotion_worktree"), "build context promotion_worktree"
@@ -701,8 +762,24 @@ def _validate_build_context(
         promotion_clean = _require_bool(
             promotion_value.get("clean"), "build context promotion_worktree.clean"
         )
-    if build_head != authority_commit or promotion_head != authority_commit:
-        raise BundleValidationError("both worktrees must be at the candidate authority commit")
+    if build_head != promotion_head:
+        raise BundleValidationError("both worktrees must be at the same commit")
+    if promotion_head == authority_commit:
+        if neutral_changes:
+            raise BundleValidationError(
+                "build context lists neutral changes although the worktrees are at the "
+                "candidate authority commit"
+            )
+    elif inspect_external:
+        assert git is not None
+        _require_neutral_descendant(
+            git,
+            promotion_root,
+            authority_commit,
+            promotion_head,
+            neutral_changes,
+            "build context promotion_worktree",
+        )
     if build_root == promotion_root or _overlap(build_root, promotion_root):
         raise BundleValidationError("build and promotion worktrees must be distinct and non-overlapping")
     if promotion_branch not in {"main", "detached"}:
@@ -725,9 +802,9 @@ def _validate_build_context(
             .decode("ascii", errors="strict")
             .strip()
         )
-        if main_commit != authority_commit:
+        if main_commit != promotion_head:
             raise BundleValidationError(
-                "refs/heads/main must equal the candidate authority commit"
+                "refs/heads/main must equal the promotion worktree HEAD"
             )
         git_dir = Path(
             _git(
@@ -750,7 +827,7 @@ def _validate_build_context(
             raise BundleValidationError(
                 "promotion worktree has a merge or rebase in progress"
             )
-    return build_root, promotion_root
+    return build_root, promotion_root, promotion_head
 
 
 def _validate_public_result(
@@ -1561,6 +1638,8 @@ def _validate_promoter_intent(
     release_manifest_sha256: str,
     authority_commit: str,
     reducer_commit: str,
+    promotion_head: str,
+    expected_neutral_changes: Sequence[str],
     inspect_external: bool,
 ) -> dict[str, Any]:
     _exact_keys(
@@ -1585,6 +1664,8 @@ def _validate_promoter_intent(
             "release_tree",
             "authority_commit",
             "reducer_commit",
+            "promotion_commit",
+            "neutral_changes",
             "retained_release",
             "public_baseline",
             "public_tree",
@@ -1612,6 +1693,25 @@ def _validate_promoter_intent(
         or intent.get("release_manifest_sha256") != release_manifest_sha256
     ):
         raise BundleValidationError("promoter dry-run release identity is inconsistent")
+    promotion_commit = _require_commit(intent.get("promotion_commit"), "promoter promotion_commit")
+    try:
+        neutral_changes = release_authority.validate_neutral_changes(
+            intent.get("neutral_changes"), "promoter neutral_changes"
+        )
+    except ValueError as exc:
+        raise BundleValidationError(str(exc)) from exc
+    if promotion_commit == authority_commit and neutral_changes:
+        raise BundleValidationError(
+            "promoter neutral_changes must be empty at the candidate authority commit"
+        )
+    if promotion_commit != promotion_head:
+        raise BundleValidationError(
+            "promoter dry run ran at a different commit than the promotion worktree"
+        )
+    if neutral_changes != list(expected_neutral_changes):
+        raise BundleValidationError(
+            "promoter neutral_changes differ from the build context"
+        )
     release_tree = _validate_tree_inventory(intent.get("release_tree"), "promoter release_tree")
     if release_tree.get("root") != str(release_root):
         raise BundleValidationError("promoter release_tree names the wrong root")
@@ -2451,7 +2551,7 @@ def _validate_evidence(
         release_canonical_json_bytes(validated_semantic_baseline)
     ).hexdigest()
 
-    build_root, promotion_root = _validate_build_context(
+    build_root, promotion_root, promotion_head = _validate_build_context(
         documents["build_context"],
         authority_commit,
         inspect_external=inspect_external,
@@ -2464,7 +2564,7 @@ def _validate_evidence(
         validate_ci_evidence(
             ci_evidence,
             expected_repo_root=promotion_root,
-            expected_git_commit=authority_commit,
+            expected_git_commit=promotion_head,
         )
     except ActivationCIError as exc:
         raise BundleValidationError(f"activation CI evidence is invalid: {exc}") from exc
@@ -2593,6 +2693,8 @@ def _validate_evidence(
         release_manifest_sha256=hashlib.sha256(expected_release_bytes).hexdigest(),
         authority_commit=authority_commit,
         reducer_commit=reducer_commit,
+        promotion_head=promotion_head,
+        expected_neutral_changes=documents["build_context"]["neutral_changes"],
         inspect_external=inspect_external,
     )
     _validate_ci_node_binding(ci_evidence, intent)
@@ -2993,7 +3095,7 @@ def _final_publish_fence(validated: ValidatedInputs) -> None:
     """Repeat mutable authority/input checks immediately before publication."""
     if validated.git is None:
         raise BundleFreezeError("approved Git executable is missing from the publish fence")
-    build_root, promotion_root = _validate_build_context(
+    build_root, promotion_root, promotion_head = _validate_build_context(
         validated.documents["build_context"],
         validated.authority_commit,
         inspect_external=True,
@@ -3320,14 +3422,38 @@ def _describe_worktree(
 
 
 def create_build_context(
-    build_worktree: Path, promotion_worktree: Path, *, git: Path
+    build_worktree: Path,
+    promotion_worktree: Path,
+    *,
+    git: Path,
+    authority_git_commit: str | None = None,
 ) -> dict[str, object]:
-    """Describe and validate the two isolated worktrees used for P1B."""
+    """Describe and validate the two isolated worktrees used for P1B.
+
+    ``authority_git_commit`` is the candidate release's authority; it defaults to the
+    promotion worktree HEAD. When the worktrees sit at a later commit, the paths that
+    changed since the authority are recorded and must all be release-neutral.
+    """
     approved_git = _approved_git_path(git)
     promotion = _describe_worktree(
         promotion_worktree, "promotion worktree", git=approved_git
     )
-    authority = _require_commit(promotion["head"], "promotion worktree HEAD")
+    head = _require_commit(promotion["head"], "promotion worktree HEAD")
+    authority = (
+        head
+        if authority_git_commit is None
+        else _require_commit(authority_git_commit, "candidate authority commit")
+    )
+    neutral_changes: list[str] = []
+    if authority != head:
+        promotion_root = Path(str(promotion["root"]))
+        neutral_changes = release_authority.changed_paths(
+            lambda arguments: _git(
+                approved_git, promotion_root, arguments, "promotion worktree diff"
+            ).decode("utf-8", errors="strict"),
+            authority,
+            head,
+        )
     document = {
         "schema": BUILD_CONTEXT_SCHEMA,
         "authority_git_commit": authority,
@@ -3335,6 +3461,7 @@ def create_build_context(
             build_worktree, "build worktree", git=approved_git
         ),
         "promotion_worktree": promotion,
+        "neutral_changes": neutral_changes,
     }
     _validate_build_context(
         document, authority, inspect_external=True, git=approved_git
@@ -3381,6 +3508,10 @@ def _parser() -> argparse.ArgumentParser:
     context.add_argument("--build-worktree", type=Path, required=True)
     context.add_argument("--promotion-worktree", type=Path, required=True)
     context.add_argument("--git", type=Path, required=True)
+    context.add_argument(
+        "--authority-git-commit",
+        help="candidate release authority; defaults to the promotion worktree HEAD",
+    )
     return parser
 
 
@@ -3448,7 +3579,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
         else:
             context = create_build_context(
-                args.build_worktree, args.promotion_worktree, git=args.git
+                args.build_worktree,
+                args.promotion_worktree,
+                git=args.git,
+                authority_git_commit=args.authority_git_commit,
             )
             sys.stdout.buffer.write(_canonical_json_bytes(context))
             return 0
