@@ -31,7 +31,7 @@ export const CSP_REPORT_ONLY = [
   "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://*.wikimedia.org https://wikimedia.org https://*.githubusercontent.com https://*.googleusercontent.com https://github.com",
-  "media-src 'self' https://*.wikimedia.org https://github.com",
+  "media-src 'self' https://*.wikimedia.org https://*.githubusercontent.com https://github.com",
   "font-src 'self' https://cdn.jsdelivr.net",
   "connect-src 'self' https://cloudflareinsights.com",
   "frame-src 'self'",
