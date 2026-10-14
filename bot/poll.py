@@ -90,7 +90,7 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "resolve_concepts.py")])   # fill QIDs the note named but didn't number
     sh([sys.executable, str(HERE / "apply_corrections.py")])
     # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
-    # green-only table + the ready-to-merge + recycled summary, rather than a
+    # green-only table + the ready-for-review header + recycled summary, rather than a
     # separate bare line (template: the trim comment on #40682).
     header = settle.ready_header(cls)
     sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header,
