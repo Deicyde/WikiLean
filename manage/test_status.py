@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for manage/status.py's live health checks. Every network call
-(curl, gh, poll.py, git) goes through status._run, which these tests stub.
+(curl, gh, git) goes through status._run or status._run_err, which these
+tests stub.
 
     python3 manage/test_status.py
 """
@@ -53,6 +54,9 @@ POLL_LOG = (
 POLL_ERROR_LOG = (
     "poll\tDecide\t2026-10-14T01:00:00.1Z POLL_ERROR: gh api repos/x/pulls/42608 failed: HTTP 401\n"
     "poll\tDecide\t2026-10-14T01:00:00.2Z ##[error]Process completed with exit code 1.\n")
+APPLY_ERROR_LOG = (
+    "poll\tDecide\t2026-10-14T01:00:00.1Z POLL_DECISION=act\n"
+    "poll\tPoll tick (apply)\t2026-10-14T01:05:00.1Z POLL_ERROR: #42608 mergeable is still UNKNOWN\n")
 
 
 def _iso_ago(hours: float) -> str:
@@ -69,54 +73,60 @@ def _api_runs(*runs) -> str:
 
 
 class FakeNet:
-    """Dispatches status._run by command; records every call."""
+    """Dispatches status._run and status._run_err by command; records every call."""
 
     def __init__(self, **kw):
         self.stats = kw.get("stats", _stats_html())
         self.api_runs = kw.get("api_runs")          # None = endpoint not deployed (404)
-        self.local = kw.get("local", "POLL_DECISION=act")
         self.ci_runs = kw.get("ci_runs", [{"databaseId": 38435564796, "createdAt": _iso_ago(2),
-                                           "conclusion": "success"}])
-        self.ci_log = kw.get("ci_log", POLL_LOG)
-        self.ci_state = kw.get("ci_state")          # None = no bot-state branch
+                                           "conclusion": "success"}])   # None = gh fails
+        self.ci_log = kw.get("ci_log", POLL_LOG)    # None = gh fails
+        self.ci_state = kw.get("ci_state")          # None = no bot-state branch; "fail" = gh fails
         self.pr = kw.get("pr", {"state": "OPEN", "mergeable": "CONFLICTING",
                                 "createdAt": _iso_ago(64 * 24)})
         self.calls = []
 
     def __call__(self, cmd, timeout=12):
+        return self.run_err(cmd, timeout)[0]
+
+    def run_err(self, cmd, timeout=12):
         self.calls.append(cmd)
         if cmd[0] == "curl":
             if "-w" in cmd:
-                return "200"
+                return "200", ""
             url = cmd[-1]
             if "/api/runs" in url:
-                return self.api_runs
+                return self.api_runs, ""
             if url.endswith("/stats"):
-                return self.stats
+                return self.stats, ""
             if url.endswith("/assets/brain/current.json"):
-                return CURRENT_JSON
-            return None
+                return CURRENT_JSON, ""
+            return None, "curl: (22) The requested URL returned error: 404"
         if cmd[:3] == ["gh", "run", "list"]:
-            return json.dumps(self.ci_runs) if self.ci_runs is not None else None
+            if self.ci_runs is None:
+                return None, "HTTP 401: Bad credentials (https://api.github.com/graphql)"
+            return json.dumps(self.ci_runs), ""
         if cmd[:3] == ["gh", "run", "view"]:
-            return self.ci_log
+            return (self.ci_log, "") if self.ci_log is not None else (None, "HTTP 410: Gone")
         if cmd[:2] == ["gh", "api"]:
             if self.ci_state is None:
-                return None
-            return base64.b64encode(json.dumps(self.ci_state).encode()).decode()
+                return None, "gh: No commit found for the ref bot-state (HTTP 404)"
+            if self.ci_state == "fail":
+                return None, "gh: Bad credentials (HTTP 401)"
+            return base64.b64encode(json.dumps(self.ci_state).encode()).decode(), ""
         if cmd[:3] == ["gh", "pr", "view"]:
-            return json.dumps(self.pr) if self.pr != "fail" else None
-        if any("poll.py" in c for c in cmd):
-            return self.local
+            return (json.dumps(self.pr), "") if self.pr != "fail" else (None, "HTTP 502")
         if cmd[0] == "git":
-            return ""
-        return None
+            return "", ""
+        return None, "unexpected command"
 
 
 @contextlib.contextmanager
 def patched(net, td: Path, digest: dict | None = None, batch: dict | None = None):
-    saved = {k: getattr(status, k) for k in ("_run", "DIGEST", "BOT_STATE", "LIVE_STATE")}
+    saved = {k: getattr(status, k)
+             for k in ("_run", "_run_err", "DIGEST", "BOT_STATE", "LIVE_STATE")}
     status._run = net
+    status._run_err = getattr(net, "run_err", lambda cmd, timeout=12: (net(cmd, timeout), ""))
     status.DIGEST = td / "digest.json"
     status.BOT_STATE = td / "bot_state.json"
     status.LIVE_STATE = td / "cache" / ".status_live.json"
@@ -285,12 +295,15 @@ def test_decision_ignores_the_echoed_grep_command():
     assert status._decision("if grep -q 'POLL_DECISION=act' x; then") is None
 
 
-def test_ci_gate_reads_the_latest_finished_run():
+def test_ci_gate_reads_the_latest_finished_run_on_main():
     runs = [{"databaseId": 9, "createdAt": _iso_ago(1), "conclusion": "cancelled"},
             {"databaseId": 8, "createdAt": _iso_ago(2), "conclusion": "success"}]
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=runs), Path(td)):
+    net = FakeNet(ci_runs=runs)
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
         dec, text, alerts = status.ci_gate()
     assert dec == "wait" and text == "CI wait (run 8, 2h ago)" and alerts == [], (dec, text, alerts)
+    (listing,) = [c for c in net.calls if c[:3] == ["gh", "run", "list"]]
+    assert "--branch main" in " ".join(listing), listing
 
 
 def test_ci_gate_alerts_on_poll_error_failure_and_staleness():
@@ -299,7 +312,14 @@ def test_ci_gate_alerts_on_poll_error_failure_and_staleness():
             FakeNet(ci_runs=failed, ci_log=POLL_ERROR_LOG), Path(td)):
         dec, text, alerts = status.ci_gate()
     assert dec == "error" and text.startswith("CI error (run 7"), text
-    assert len(alerts) == 1 and "HTTP 401" in alerts[0], alerts
+    assert alerts == ["wikidata-poll run 7 reported POLL_ERROR: gh api repos/x/pulls/42608 "
+                      "failed: HTTP 401"], alerts
+    # a POLL_ERROR from a later step keeps the decision and does not blame decide
+    with tempfile.TemporaryDirectory() as td, patched(
+            FakeNet(ci_runs=failed, ci_log=APPLY_ERROR_LOG), Path(td)):
+        dec, text, alerts = status.ci_gate()
+    assert dec == "act" and text.startswith("CI act (run 7"), text
+    assert len(alerts) == 1 and "reported POLL_ERROR: #42608 mergeable" in alerts[0], alerts
     with tempfile.TemporaryDirectory() as td, patched(
             FakeNet(ci_runs=failed, ci_log="no decide line"), Path(td)):
         _, text, alerts = status.ci_gate()
@@ -308,19 +328,28 @@ def test_ci_gate_alerts_on_poll_error_failure_and_staleness():
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=old), Path(td)):
         _, _, alerts = status.ci_gate()
     assert len(alerts) == 1 and "not finished a run in 30h" in alerts[0], alerts
+
+
+def test_ci_gate_alerts_when_a_read_fails():
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=None), Path(td)):
-        assert status.ci_gate() == (None, "CI ?", [])
+        dec, text, alerts = status.ci_gate()
+    assert (dec, text) == (None, "CI ?"), (dec, text)
+    assert alerts == ["could not list wikidata-poll runs (HTTP 401: Bad credentials "
+                      "(https://api.github.com/graphql)); the gate is unknown"], alerts
+    with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_log=None), Path(td)):
+        dec, text, alerts = status.ci_gate()
+    assert dec is None and text.startswith("CI ? (run 38435564796"), text
+    assert alerts == ["could not read the log of wikidata-poll run 38435564796 "
+                      "(HTTP 410: Gone); its decision is unknown"], alerts
 
 
-def test_gate_section_prints_local_timeout_and_never_blames_the_token():
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(local=None), Path(td)):
+def test_gate_section_shows_ci_only_and_runs_no_local_decide():
+    net = FakeNet()
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
         lines, alerts = status.gate_section()
-    assert lines[0].startswith("  gate       local timeout/error · CI wait (run 38435564796"), lines
+    assert lines == ["  gate       CI wait (run 38435564796, 2h ago)"], lines
     assert alerts == []
-    with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
-        lines, alerts = status.gate_section()
-    assert "local act · CI wait" in lines[0] and "can lag CI's" in lines[0], lines
-    assert alerts == [], "a stale local state must not raise a token alert"
+    assert not any("poll.py" in c for cmd in net.calls for c in cmd), net.calls
 
 
 # ---------------------------------------------------------------------------
@@ -333,18 +362,27 @@ def test_batch_pr_alerts_by_state():
     assert "#42608 OPEN · CONFLICTING · opened 64d ago (state: local)" in lines[0], lines
     assert len(alerts) == 2, alerts
     assert "conflicts with mathlib master" in alerts[0] and "open 64 days" in alerts[1], alerts
+    assert "only once it is settled" in alerts[0], "no promise of a rebuild for an unsettled PR"
     labelled = {"state": "OPEN", "mergeable": "UNKNOWN", "createdAt": _iso_ago(72),
                 "labels": [{"name": "merge-conflict"}]}
+    bors = {"state": "CLOSED", "mergeable": "UNKNOWN", "createdAt": _iso_ago(900),
+            "title": "[Merged by Bors] - chore: @[wikidata] tags, batch 7"}
     cases = [(labelled, ["conflicts with mathlib master"]),
              ({"state": "OPEN", "mergeable": "MERGEABLE", "createdAt": _iso_ago(72)}, []),
              ({"state": "MERGED", "mergeable": "UNKNOWN", "createdAt": _iso_ago(900),
                "labels": [{"name": "merge-conflict"}]}, []),
+             (bors, []),
              ({"state": "CLOSED", "mergeable": "CONFLICTING", "createdAt": _iso_ago(900),
+               "title": "chore: @[wikidata] tags, batch 7",
                "labels": [{"name": "merge-conflict"}]}, ["closed without merging"])]
     for pr, want in cases:
-        with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr=pr), Path(td)):
-            _, alerts = status.batch_pr(42608)
+        net = FakeNet(pr=pr)
+        with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+            lines, alerts = status.batch_pr(42608)
         assert len(alerts) == len(want) and all(w in a for w, a in zip(want, alerts)), (pr, alerts)
+        assert "title" in net.calls[0][net.calls[0].index("--json") + 1].split(","), net.calls
+        if pr is bors:
+            assert "#42608 MERGED (Bors) · UNKNOWN" in lines[0], lines
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr="fail"), Path(td)):
         lines, alerts = status.batch_pr(42608)
     assert "gh unavailable" in lines[0] and alerts == []
@@ -358,7 +396,21 @@ def test_live_section_prefers_the_bot_state_branch():
     assert "#99999" in pr_line and "(state: bot-state branch)" in pr_line, lines
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
         lines, _ = status.live_section({"current_pr": 42608})
-    assert any("#42608" in ln and "(state: local snapshot)" in ln for ln in lines), lines
+    assert any("#42608" in ln and "(state: local snapshot; no bot-state branch)" in ln
+               for ln in lines), lines
+
+
+def test_live_section_alerts_when_the_bot_state_branch_cannot_be_read():
+    for ci_state, why in (("fail", "gh: Bad credentials (HTTP 401)"),
+                          ([42608], "bot_state.json is not a JSON object")):
+        net = FakeNet(ci_state=ci_state)
+        with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+            lines, alerts = status.live_section({"current_pr": 42608})
+        assert "  batch PR   ? (the bot-state branch could not be read)" in lines, lines
+        assert f"could not read the poller's state from the bot-state branch ({why}); " \
+               f"the batch PR was not checked" in alerts, alerts
+        assert not any(c[:3] == ["gh", "pr", "view"] for c in net.calls), \
+            "must not fall back to the local snapshot"
 
 
 def test_brain_release_line():
@@ -403,12 +455,12 @@ def test_snapshot_live_prints_every_health_line_and_alert():
                   ci_log=POLL_ERROR_LOG)
     out = _snapshot_output(net, _digest(1.0, 2.0, False), {"current_pr": 42608, "batch_num": 7})
     for want in ("site       https://wikilean.jackmccarthy.org → 200",
-                 "gate       local act · CI error (run 7",
+                 "gate       CI error (run 7",
                  "review     last run 3h ago: 15 articles · 15 errors · 0 tokens",
                  "notes: modes=review; 15/15 errors: x",
                  "brain      release sha256:8305822b",
                  "batch PR   #42608 OPEN · CONFLICTING",
-                 "→ the poller's decide failed in run 7",
+                 "→ wikidata-poll run 7 reported POLL_ERROR: gh api repos/x/pulls/42608",
                  "→ nightly review failing: the last 1 run(s)",
                  "→ batch PR #42608 conflicts with mathlib master",
                  "→ batch PR #42608 has been open 64 days"):
@@ -420,7 +472,7 @@ def test_snapshot_live_prints_every_health_line_and_alert():
 
 def test_snapshot_without_digest_still_runs_every_live_check():
     out = _snapshot_output(FakeNet(), None, {"current_pr": 42608}, live=True)
-    for want in ("no digest yet", "site       ", "gate       local act", "review     118 runs",
+    for want in ("no digest yet", "site       ", "gate       CI wait", "review     118 runs",
                  "brain      release", "batch PR   #42608", "→ batch PR #42608 conflicts"):
         assert want in out, (want, out)
     out = _snapshot_output(FakeNet(), None, {}, live=False)
