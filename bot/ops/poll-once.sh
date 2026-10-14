@@ -7,7 +7,7 @@
 # Each tick acts on the current batch PR's GitHub state (poll.py):
 #   merged PR  -> open the next batch (open_batch.py: lake cache get + build + PR)
 #   gate met   -> trim to greens (split, force-tip push), LLM-triage the recycle,
-#                 post the reviewer table + a ready-to-merge comment
+#                 post the reviewer table under a ready-for-maintainer-review header
 #   else       -> wait (cheap: 2 gh calls).
 # UNSUPERVISED: no --no-open, so a merge auto-opens the next batch (Jack's call).
 #
