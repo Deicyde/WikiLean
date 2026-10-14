@@ -32,8 +32,9 @@
 #   export step fails — the database backup is unaffected (continue-on-error).
 #
 # ── Running it manually ───────────────────────────────────────────────────
-#   GitHub UI:  Actions tab → "Backup D1" → "Run workflow".
-#   gh CLI:     gh workflow run backup-d1.yml
+#   GitHub UI:  Actions tab → "Backup D1" → "Run workflow" (branch: main).
+#   gh CLI:     gh workflow run backup-d1.yml --ref main   (never another ref,
+#               and never re-run a run from before encryption: docs/BACKUP.md)
 #   Download the resulting artifact from the run's summary page.
 #
 # ── Restore ───────────────────────────────────────────────────────────────
@@ -89,8 +90,17 @@ jobs:
           printf '%s\n' "$BACKUP_AGE_RECIPIENTS" > "$RUNNER_TEMP/age-recipients.txt"
           # age itself is the validator: it rejects malformed keys, identities
           # (AGE-SECRET-KEY-…), and plugin recipients whose plugin is absent.
-          if ! age -R "$RUNNER_TEMP/age-recipients.txt" -o /dev/null < /dev/null; then
+          # It only *warns* about SSH key types it can't use (ECDSA, security
+          # keys, short RSA) and skips them, so any output fails the check too:
+          # otherwise a spare key could be dropped from every backup silently.
+          if ! age_out=$(age -R "$RUNNER_TEMP/age-recipients.txt" -o /dev/null < /dev/null 2>&1); then
+            printf '%s\n' "$age_out" >&2
             echo "::error::Repo variable BACKUP_AGE_RECIPIENTS is not a valid age recipient list; refusing to export (see docs/BACKUP.md)."
+            exit 1
+          fi
+          if [ -n "$age_out" ]; then
+            printf '%s\n' "$age_out" >&2
+            echo "::error::age warned about BACKUP_AGE_RECIPIENTS (a line it would skip, such as an unsupported SSH key type); refusing to export (see docs/BACKUP.md)."
             exit 1
           fi
 
@@ -119,8 +129,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
           # `d1 export --remote` logs a presigned URL that serves the plaintext
           # dump to anyone for an hour. The run log is public, so keep wrangler
-          # to warnings and errors, discard its stdout, and skip its on-disk
-          # debug log (which records every message, URL included).
+          # to warnings and errors, discard its stdout, redact URLs from its
+          # stderr (in case a wrangler upgrade starts logging the URL as a
+          # warning or in an error), and skip its on-disk debug log (which
+          # records every message, URL included).
           WRANGLER_LOG: warn
           WRANGLER_WRITE_LOGS: "false"
         run: |
@@ -130,7 +142,10 @@ jobs:
           # exit path; only the .age file is left for the upload step.
           plain="$RUNNER_TEMP/wikilean-${{ steps.stamp.outputs.ts }}.sql"
           trap 'rm -f "$plain"' EXIT
-          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" > /dev/null
+          # stdout goes to /dev/null; stderr goes through the redactor. pipefail
+          # keeps wrangler's exit status.
+          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" 2>&1 > /dev/null \
+            | sed -E 's#[A-Za-z][A-Za-z0-9+.-]*://[^[:space:]]+#[URL redacted]#g' >&2
           # An empty export must fail, not upload as a valid-looking .age.
           test -s "$plain" || { echo "::error::wrangler produced an empty export"; exit 1; }
           age -R "$RUNNER_TEMP/age-recipients.txt" -o "wikilean-${{ steps.stamp.outputs.ts }}.sql.age" "$plain"
