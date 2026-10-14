@@ -446,8 +446,10 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
     # comes from the revid-suffixed cache; the legacy un-suffixed cache is
     # never consulted, so the agents review exactly the revision D1 pins.
     cache_slug = f"{slug}.{target_revid}" if target_revid is not None else slug
-    t0 = time.time()
     async with sem:
+        # Started after the acquire: elapsed_s is this article's own time, not
+        # its wait behind the other queued jobs.
+        t0 = time.time()
         try:
             # 1. fetch (at the pinned revid when given — F1)
             if not fetch_html(slug, title, target_revid=target_revid):
