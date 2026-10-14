@@ -9,29 +9,22 @@
 Decisions only. Each lists its evidence and the options on the table, with no
 recommendation. Remove an item once its decision is recorded below.
 
-1. **Reconcile the 2026-10-04 promotion attempt.** Attempt
-   `20261004T172504Z-8305822b0083-27c7c461cb` is journaled `manual_intervention_required` and
-   blocks every later promotion (PR #44; [activation record](BRAIN-ACTIVATION-2026-10-04.md)).
-   No reconciliation is recorded as of 2026-10-13. Options: approve the read-only `--reconcile-attempt`
-   from clean `main` on the journal host, or leave it open. Either way, the activation
-   record's "Operator must fill" table (outcome, event-chain hash, approval text, baseline
-   and bundle IDs, canonical operator host, backups) can only be filled from the journal.
-2. **P1C: release B and the rollback drill.** All P1C items after release A are unchecked.
+1. **P1C: release B and the rollback drill.** All P1C items after release A are unchecked.
    Release B is a new build at current `main`; PR #45 puts that chain at about 5.5 hours.
    Because current `main` is not release-neutral relative to `2eb31baa` (it changed
    `brain/tools/semantic_diff.py` and `reproducibility_gate.py`), release A also cannot be
    re-promoted from it after a rollback; roll-forward would use `wrangler rollback` to the
    recorded candidate version. Options: run P1C now, defer it, or drop the drill and rely on
    the documented manual rollback.
-3. **Public-release source policy for the live manifest.** The last committed record
+2. **Public-release source policy for the live manifest.** The last committed record
    (2026-09-26 queue below) says every private/public source decision is pending. PR #41's
    approval covered private local replay only. Production has served manifest `fa645b2b…`
    since 2026-10-04 with no committed public-policy record. Options: run
    `brain/tools/review_source_policy.py` against it and record the decisions, record an
    explicit exception, or record where an off-repo approval lives.
-4. **Curation ADR** ([BRAIN-SQLITE-CURATION-DECISION.md](BRAIN-SQLITE-CURATION-DECISION.md),
+3. **Curation ADR** ([BRAIN-SQLITE-CURATION-DECISION.md](BRAIN-SQLITE-CURATION-DECISION.md),
    "Status: Proposed", 2026-09-08). Options: accept, revise, or reject.
-5. **Brain scope versus the End goal (open question, not yet asked or recorded).** All 30
+4. **Brain scope versus the End goal (open question, not yet asked or recorded).** All 30
    PRs merged from 2026-08-29 to 2026-10-08 (#16–#45) are Brain or release work, and the End
    goal below does not mention the Brain. The Bridge report v3.1 (2026-08-18) found that
    tools beat no tools (+27 ± 14 points grounded typecheck, p=0.0004) while the preregistered
@@ -40,13 +33,13 @@ recommendation. Remove an item once its decision is recorded below.
    residuals, P2B–P2D, P3A–P3D, Phase 4. Options: amend the End goal to make the Brain and
    agent API a co-equal product, gate Brain P2B–P4 behind written triggers the way the
    product's "P3 — Deferred" items are gated, or continue the plan as written.
-6. **User acquisition (open question, not yet asked or recorded).** Every one of the 23 human revisions in the 778 article histories
+5. **User acquisition (open question, not yet asked or recorded).** Every one of the 23 human revisions in the 778 article histories
    (2026-05-29 to 2026-08-06) comes from one account. `/stats` (2026-10-13) shows 0 human
    events in the last 30 days, 0 endorsements, 0 rejections, and 0 patrolled edits. The
    roadmap has no outreach item. Options: add an outreach or announcement item (for example
    to the Lean community or WikiProject Mathematics on Wikidata), or keep the wiki
    unannounced.
-7. **newtags on or off (mission op 1).** The 03:10 job was committed on 2026-07-03 and has
+6. **newtags on or off (mission op 1).** The 03:10 job was committed on 2026-07-03 and has
    not run as a routine since: `/stats` still shows 7 `new` runs in total (the 2026-08-04
    token memo calls them one-offs), the last `ai-create` revisions are from 2026-07-03, and
    the corpus has been 778 articles since 2026-07-08. The memo treats loading the LaunchAgent
@@ -54,31 +47,31 @@ recommendation. Remove an item once its decision is recorded below.
    [token_budget.md](token_budget.md) §3 sizes the backlog drain. Options: load the
    LaunchAgent at `WIKILEAN_NEWTAGS_LIMIT` (40 in `nightly.env`), run one supervised batch
    first, or leave it off.
-8. **Review cadence.** `WIKILEAN_REVIEW_LIMIT` is 15/night; token_budget.md §4 computes
+7. **Review cadence.** `WIKILEAN_REVIEW_LIMIT` is 15/night; token_budget.md §4 computes
    ≈26/night for 30-day freshness. No AI review revision has posted since 2026-09-17 (status
    log), so this matters only once reviews post again. Options: 15, ≈26, or another
    value.
-9. **Worker-only hotfix path.** Under PR #45's rule, Worker source, `wiki/scripts/`,
+8. **Worker-only hotfix path.** Under PR #45's rule, Worker source, `wiki/scripts/`,
    lockfiles and site assets are release-affecting, so any Worker fix (including a cache-key
    bump or the `/about` copy, which still promises human approval of AI proposals on human
    annotations) rides a new release, a fresh P1B, and a promotion. No hotfix path is
    documented. Options: define one, or accept that every Worker change rides a release.
-10. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
+9. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
     (flagged 2026-08-07; binding decisions above). Options: keep `'pipeline'`, or rebuild the
     table to allow `'ai'`.
-11. **P2 privacy.** Stop storing better-auth session `ip_address`, and file an IRB exemption
+10. **P2 privacy.** Stop storing better-auth session `ip_address`, and file an IRB exemption
     before any paper (P2 below). Options: do either or both now, or defer until a paper is
     planned.
-12. **`WIKILEAN_BRAIN_AGENTS`.** It is 0 in `site/ops/nightly.env` ("OFF until Jack flips
+11. **`WIKILEAN_BRAIN_AGENTS`.** It is 0 in `site/ops/nightly.env` ("OFF until Jack flips
     it"). Options: enable the propose-only agent team, or keep it off.
-13. **mathlib4 #42608 (`@[wikidata]` batch 7).** Open since 2026-08-10 and labelled
+12. **mathlib4 #42608 (`@[wikidata]` batch 7).** Open since 2026-08-10 and labelled
     `merge-conflict` (last updated 2026-09-28). Upstream contact is human-gated. Options: ask
     a mathlib maintainer to review once the branch is rebuilt, close it, or wait.
-14. **Wikifunctions.** The verification project moved to `Deicyde/wikifunctions` on
+13. **Wikifunctions.** The verification project moved to `Deicyde/wikifunctions` on
     2026-07-02 (last push 2026-07-10). The in-repo data pipeline's last change is
     2026-07-05, and `/wikifunctions` still serves. Options: mark it paused, retire it, or
     resume it.
-15. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
+14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
 
 ## End goal (verbatim from Jack)
@@ -217,8 +210,8 @@ never independent semantic writers.
   result, enable one production release from a clean `main`, measure CDN/isolate
   convergence, deliberately exercise the documented rollback path, and record
   the observed recovery time before claiming a rollback SLO. **Release A promoted
-  2026-10-04** ([activation record](BRAIN-ACTIVATION-2026-10-04.md)). Its attempt has no
-  recorded reconciliation, and release B and the rollback drill are not done.
+  2026-10-04** ([activation record](BRAIN-ACTIVATION-2026-10-04.md)). Its attempt was
+  reconciled on 2026-10-08; release B and the rollback drill are not done.
 - [x] **SQLite v2 hardening** — landed 2026-08-31. Stable base/projection/release
   identities, distinct logical and raw-file digests, pinned-source/race checks,
   durable atomic publication, persisted planner statistics, indexed bounded
@@ -247,12 +240,13 @@ has the full IDs. Most of the 2026-09-26 "immediate queue" below was worked thro
 (PR #43), and the release was built at `2eb31baa` from a new pack (`294b1fc7…`) and promoted.
 No refresh of the exact-ID private policy decisions is recorded.
 The promoter's canary failed on `/brain` because Cloudflare Web Analytics injects a script into
-`text/html` responses (fixed in PR #44). The attempt is journaled `manual_intervention_required`.
+`text/html` responses (fixed in PR #44). The attempt was journaled `manual_intervention_required`
+and reconciled on 2026-10-08 (`deployed_reconciled`), so no incomplete attempt blocks the next
+promotion.
 
-**Immediate queue:** (1) reconcile the open attempt from clean `main` on the journal host
-(Waiting on Jack 1); (2) copy the journal-only values into the activation record;
-(3) decide P1C (release B is a new build at current `main`); (4) record the public-release source-policy decision
-for the live manifest; (5) decide what produces the next replay release. The nightly still
+**Immediate queue:** (1) copy the remaining journal-only values into the activation record;
+(2) decide P1C (release B is a new build at current `main`); (3) record the public-release source-policy decision
+for the live manifest; (4) decide what produces the next replay release. The nightly still
 freezes the compatibility profile, so the Brain data and its search indexes stay frozen at
 this release's inputs until then.
 
@@ -483,8 +477,9 @@ production has not changed.
 - [ ] Promote release A through the manual-only recovery path and record end-to-end canary
   convergence. A first compatibility deployment does not by itself prove rollback.
   **PARTIAL:** release A was promoted on 2026-10-04, but the promoter's canary failed on
-  `/brain` (Web Analytics injection, fixed in PR #44). No convergence was recorded, and the
-  attempt is journaled `manual_intervention_required`.
+  `/brain` (Web Analytics injection, fixed in PR #44), and no convergence time was recorded.
+  The attempt was reconciled on 2026-10-08: its `final_state` is `deployed_reconciled`, which
+  the promoter records only after the candidate's release canary passes.
 - [ ] Build and review exact release B. Jack separately approves B's exact ID and promotion
   window before it is promoted.
 - [ ] Jack separately approves the rollback action/window; manually roll B back to the
@@ -1258,8 +1253,9 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 - 2026-10-13: **Mission operations audit.** A scan of all 778 `/<slug>/history` pages (4,302
   revisions) puts the newest `ai-moderate:review` revision at **2026-09-17 09:05 UTC**
   (Generalized_hypergeometric_function). Stage-0 `wp-update` re-pins keep posting through
-  2026-10-13, so the nightly runs, but no review has changed an article since 2026-09-17 (a
-  no-op review writes no revision, so this does not show whether the review step runs). Review
+  2026-10-13, so the nightly runs, but no review has changed an article since 2026-09-17. The
+  review step itself still runs, but it has failed on every article since
+  2026-09-18, so no review tokens have been spent since. Review
   revisions by month: June 256, July 187, August 284, September 144, October 0. **newtags has
   not run as a routine:** the 03:10 job was committed on 2026-07-03, `/stats` still shows 7
   `new` runs (355 articles, 302 errors), the 55 `ai-create` revisions span 2026-06-17 to
@@ -1268,22 +1264,25 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   account. `/stats` on 2026-10-13: 778 articles, 37,936 annotations (27.9% formalized, 14.1%
   partial), 198 review-fresh (≤30 d; this count includes stage-0 re-pin saves), 457 drifted.
 
-- 2026-10-08: **Canary fix and release-neutral merges (PRs #44, #45).** #44: the canary no
+- 2026-10-08: **Canary fix, attempt reconciled, release-neutral merges (PRs #44, #45).** #44: the canary no
   longer advertises `text/html`, and the patched canary passed read-only against production
   (ok on attempt 1, 40 requests, 12 s). #45: the promoter and bundle freezer accept a clean
   `main` past a release's authority commit when every changed path is release-neutral
   (`site/ops/brain_release_authority.py`). Pin-only edge changes aggregate in
   `semantic-diff/v3` (28.8 MB instead of 668 MB). #45's own `brain/tools` changes make current
-  `main` non-neutral relative to the live release.
+  `main` non-neutral relative to the live release. Between the two merges, the 2026-10-04
+  attempt was reconciled: the deployment journal's `final_state` at 06:58:30Z has outcome
+  `deployed_reconciled` (Worker deployment `499ba4bf…`, version `63b11a7e…`), so no
+  incomplete attempt blocks promotion.
 
 - 2026-10-04: **First production Brain release promoted.** The selector names release
   `sha256:8305822b…` (manifest `fa645b2b…`, `brain-offline-replay-v1`, authority `2eb31baa` =
   PR #43, offline pack `sha256:294b1fc7…`), `audited_at` 17:25:04Z. The promoter's canary failed
   for 300 s on `/brain`: production served the frozen page plus 367 bytes, because Cloudflare
   Web Analytics injects a beacon script into responses for requests whose `Accept` includes
-  `text/html`. Attempt `20261004T172504Z-8305822b0083-27c7c461cb` is journaled
-  `manual_intervention_required` and blocks further promotions; no reconciliation is
-  recorded as of 2026-10-13. The selector has no previous release. Preceded by Jack's acceptance of refreshed
+  `text/html`. Attempt `20261004T172504Z-8305822b0083-27c7c461cb` was journaled
+  `manual_intervention_required` (reconciled 2026-10-08; see that entry). The selector has no
+  previous release. Preceded by Jack's acceptance of refreshed
   tool generations (2026-10-02, PRs #38/#39) and the private-scope provenance exception
   (2026-10-03, PR #41). Record: [BRAIN-ACTIVATION-2026-10-04.md](BRAIN-ACTIVATION-2026-10-04.md).
 

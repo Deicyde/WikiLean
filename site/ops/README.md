@@ -107,10 +107,10 @@ For an absent production selector, the P1B dry-run records the explicit
 Jack supplies `--first-deploy-approval` only during P1C execution, after reviewing the
 frozen evidence IDs and deployment window.
 P1A is merged on `main`. A selector has existed since 2026-10-04, so later promotions omit
-the first-deploy exception. The 2026-10-04 attempt is journaled `manual_intervention_required`
-and blocks further promotions until it is reconciled. Each new bundle still needs Jack to
-authorize the launch-context Mathlib checkout, Wikidata observation plan, interpreter paths,
-and external evidence stores; see the release runbook.
+the first-deploy exception. The 2026-10-04 attempt was reconciled on 2026-10-08 (journal
+outcome `deployed_reconciled`), so no incomplete attempt blocks the next promotion. Each new
+bundle still needs Jack to authorize the launch-context Mathlib checkout, Wikidata observation
+plan, interpreter paths, and external evidence stores; see the release runbook.
 
 ## Install the three nightly jobs
 ```sh

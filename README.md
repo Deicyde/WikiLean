@@ -14,9 +14,8 @@ A reader can scan an article and see at a glance which statements are formalized
   selects release `sha256:8305822b…` (manifest `fa645b2b…`), a `brain-offline-replay-v1`
   build from authority commit `2eb31baa` (PR #43). The promoter's canary failed that day
   because Cloudflare Web Analytics adds bytes to `text/html` responses (fixed in PR #44).
-  The attempt is journaled `manual_intervention_required`, and reconciliation is pending:
-  none is recorded as of 2026-10-13. Until it is reconciled, the promoter refuses any later
-  promotion. See the
+  The attempt was reconciled on 2026-10-08 (journal outcome `deployed_reconciled`), so no
+  incomplete attempt blocks the next promotion. See the
   [activation record](docs/BRAIN-ACTIVATION-2026-10-04.md). The repository has no automatic
   deploy-on-merge workflow.
 - **Live annotation snapshot checked on 2026-10-13:** 778 articles and 37,936
@@ -135,8 +134,8 @@ publish Brain data, or authorize activation.
 
 Three independent paths, you can pick any:
 
-1. **Annotate articles directly on the live site.** Sign in with GitHub at [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org), open any article, hover a highlight to edit it, or select text to add a new one. Edits are saved to D1 and visible to the next reader. See [CONTRIBUTING.md](CONTRIBUTING.md#annotating-on-the-live-site).
-2. **Improve the pipeline / engine.** Patches to `site/`, `wiki/`, or `catalog/` welcome. See [CONTRIBUTING.md](CONTRIBUTING.md#code-contributions).
+1. **Annotate articles directly on the live site.** Sign in with GitHub at [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org), open any article, hover a highlight to edit it, or select text to add a new one. Edits are saved to D1 and visible to the next reader. See [CONTRIBUTING.md](CONTRIBUTING.md#1-annotating-on-the-live-site).
+2. **Improve the pipeline / engine.** Patches to `site/`, `wiki/`, or `catalog/` welcome. See [CONTRIBUTING.md](CONTRIBUTING.md#2-code-contributions).
 3. **Help upstream.** Add or check [P14534 (Mathlib Declaration ID)](https://www.wikidata.org/wiki/Property:P14534) statements on Wikidata concept items, or review the in-flight Mathlib `@[wikidata]` PRs (see the docs).
 
 ## License

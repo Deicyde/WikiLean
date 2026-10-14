@@ -2,7 +2,8 @@
 
 This is the record of the first production promotion of an immutable Brain release.
 Every value outside the final section can be checked publicly: against the live site
-(read on 2026-10-13), the PR bodies cited, or the code at `main` `37b7036d`. The final
+(read on 2026-10-13), the PR bodies cited, or the code at `main` `37b7036d`. The exception
+is the attempt's reconciliation, which comes from the deployment journal. The final
 section lists what only the deployment journal and the operator host know. Fill it in
 from the journal; never infer those values.
 
@@ -56,6 +57,7 @@ instructions (`wiki/src/mcp.ts`) and `docs/BRAIN-API.md` describe.
 | 2026-10-04 17:25:04 | Promotion: the selector's `audited_at`; attempt `20261004T172504Z-8305822b0083-27c7c461cb` | live selector, PR #44 |
 | 2026-10-04 | The promoter's canary failed on `/brain` for 300 s; the attempt was journaled `manual_intervention_required` | PR #44 |
 | 2026-10-08 06:42 | PR #44 merged as `bf6b4e4a`: the canary no longer advertises `text/html` | PR #44 |
+| 2026-10-08 06:58:30 | The attempt was reconciled: `final_state` outcome `deployed_reconciled` (Worker deployment `499ba4bf…`, version `63b11a7e…`) | deployment journal |
 | 2026-10-08 18:25 | PR #45 merged as `37b7036d`: release-neutral merge policy and `semantic-diff/v3` | PR #45 |
 
 ## The canary failure
@@ -78,32 +80,29 @@ production for this release and the public baseline: ok on attempt 1, 40 request
 byte-exact, all 15 baseline assets matching, 12 s. The runbook's Canary section now asks for
 a production fetch of `/brain` with the canary's exact headers before any promotion.
 
-## The open promotion attempt
+## The promotion attempt
 
 Attempt `20261004T172504Z-8305822b0083-27c7c461cb` was journaled `manual_intervention_required`
 (PR #44). While any attempt is incomplete, the promoter refuses every later promotion
-(runbook, "If an attempt is incomplete"). PR #44's plan was to reconcile it from clean `main`
-after merge. No commit, PR or doc records that this happened, so treat the attempt as open
-until the journal shows a final-state record.
+(runbook, "If an attempt is incomplete"). As PR #44 planned, it was reconciled after that
+merge: the journal's `final_state` record, at 2026-10-08T06:58:30Z, has outcome
+`deployed_reconciled`, Worker deployment `499ba4bf…` and version `63b11a7e…`. The promoter
+writes that outcome only after the attempt-tagged candidate is live with the exact intended
+selector and its release canary passes. No incomplete attempt blocks the next promotion.
 
-Reconciliation is read-only and must run on the host that holds the journal. The promoter's
-recovery check (`_check_recovery_checkout` in `site/ops/brain_promote_release.py`) accepts a
-clean checkout of current `main` or a clean detached checkout of `2eb31baa`. PR #45's
-release-neutral rule does not block it. From the runbook:
-
-```bash
-bash site/ops/brain-promote-release.sh \
-  --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
-  --reconcile-attempt 20261004T172504Z-8305822b0083-27c7c461cb \
-  --approval-note "Jack approved reconciliation of 20261004T172504Z-8305822b0083-27c7c461cb"
-```
+For future attempts: reconciliation runs read-only on the host that holds the journal, from
+a clean checkout of current `main` or a clean detached checkout of the release's authority
+commit (`_check_recovery_checkout` in `site/ops/brain_promote_release.py`). It also requires
+that checkout's `wiki/wrangler.jsonc` and Node/Wrangler toolchain to match the attempt's
+intent record byte for byte, so do not change either between a P1C `--execute` and a clean
+`final_state`. The commands are in the [release runbook](BRAIN-RELEASE-RUNBOOK.md).
 
 ## Rollback
 
 - The selector has no `previous_*` fields. The public tree holds no release-qualified
   previous Brain release, so rollback is not a selector switch.
 - Before this promotion, production ran a Worker with no selector. The last recorded
-  observation is Cloudflare deployment `d2926a43-483b-4447-b570-d067c4d77d98`, deployed
+  observation is Worker version `d2926a43-483b-4447-b570-d067c4d77d98`, deployed
   2026-08-28T02:55:59Z, with `current.json` returning 404 and the API reporting no release ID
   ([2026-09-26 handoff](BRAIN-SQLITE-HANDOFF-2026-09-26.md)). That is an observation from
   2026-09-26, not a journal read.
@@ -141,7 +140,7 @@ What that means for this release:
    promoter predates the rule and requires `HEAD` and `main` to equal `2eb31baa` exactly. At
    `2eb31baa`, the promoter runs that commit's canary, which still advertises `text/html` and
    fails on `/brain` while Web Analytics injection is on. Any future promotion therefore needs
-   a new release built at current `main`. Reconciliation of the open attempt is unaffected.
+   a new release built at current `main`.
 2. **The activation bundle verifies only with `2eb31baa`'s tooling.** At `2eb31baa`, the
    bundle tool uses `semantic-diff/v2` and `build-context/v1`. Main's tool accepts only
    `semantic-diff/v3` and `build-context/v2` (`site/ops/brain_activation_bundle.py`), and PR #45 states that v2 bundles verify only
@@ -178,17 +177,17 @@ journal and stores; do not reconstruct them.
 
 | Item | Value |
 |---|---|
-| Journal outcome for attempt `20261004T172504Z-8305822b0083-27c7c461cb` (still open, `deployed_reconciled`, or other), with the date | |
+| Journal outcome for attempt `20261004T172504Z-8305822b0083-27c7c461cb` | `deployed_reconciled`, `final_state` at 2026-10-08T06:58:30Z |
 | Event-chain hash of that attempt | |
 | Text of Jack's promotion approval (`--approval-note`) and first-deploy approval (`--first-deploy-approval`; required at `2eb31baa` because no selector existed) and the exclusive window | |
-| Reconciliation approval text, if reconciled | |
+| Reconciliation approval text | |
 | Full public baseline ID and root (PR #44 cites the prefix `sha256:0ee63469…`) | |
 | Activation bundle ID and root | |
 | Retained promoter dry-run root | |
-| Semantic baseline release ID (PR #45 cites the prefix `8328d804…`) | |
+| Semantic baseline release ID and manifest SHA-256 | release ID `bfcfc912…`, manifest `8328d804…` (PR #45 cites the manifest) |
 | Predeploy Worker version ID (from the intent record) | |
-| Candidate Worker version ID now serving production | |
-| Canonical operator host: the machine holding the receipt root, the `fa645b2b…` release store, the baseline and bundle stores, offline pack `294b1fc7…`, and the replay runtime | |
-| Receipt roots on other hosts that are non-canonical | |
-| Backups: are the receipt root and stores in host backups, where, and when was a restore last checked? | |
+| Candidate Worker version and deployment IDs | version `63b11a7e…`, deployment `499ba4bf…` (2026-10-08 `final_state` record) |
+| Canonical operator host: the machine holding the receipt root, the `fa645b2b…` release store, the baseline and bundle stores, offline pack `294b1fc7…`, and the replay runtime | recorded in the private deployment journal |
+| Receipt roots on other hosts that are non-canonical | recorded in the private deployment journal |
+| Backups of the receipt root and stores, and the last restore check | recorded in the private deployment journal |
 | Public-release source-policy record for manifest `fa645b2b…`, or "none" | |
