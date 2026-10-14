@@ -2203,6 +2203,8 @@ def test_resolver_r2_implicit_formalized_carryover_stays_pending():
 # ---------------------------------------------------------------------------
 
 LOGIN_ERR = "RuntimeError: agent_error: Not logged in · Please run /login"
+EXPIRED_ERR = ("RuntimeError: agent_error: Failed to authenticate. API Error: 401 "
+               "OAuth access token has expired. Re-authenticate to continue.")
 
 
 def test_sanitize_error_strips_secrets_paths_and_control_bytes():
@@ -2285,7 +2287,7 @@ def test_run_jobs_returns_per_job_outcomes_keyed_by_queue_slug():
             async with sem:
                 if job["slug"] == "Bad_(x)":
                     # annotate_one re-slugs from the title (make_slug)
-                    return {"slug": "Bad_x", "error": LOGIN_ERR, "elapsed_s": 1.0}
+                    return {"slug": "Bad_x", "error": "agent1_no_json", "elapsed_s": 1.0}
                 return {"slug": job["slug"], "post_status": 200, "tokens": 10}
 
         try:
@@ -2295,8 +2297,28 @@ def test_run_jobs_returns_per_job_outcomes_keyed_by_queue_slug():
             m.MODERATE_LOG, m.DECISIONS_LOG = old_mod, old_dec
     assert rc == 0 and stats["processed"] == 2 and stats["errors"] == 1
     by_slug = {j["slug"]: j for j in stats["jobs"]}
-    assert by_slug.get("Bad_(x)") == {"slug": "Bad_(x)", "error": LOGIN_ERR, "elapsed_s": 1.0}, by_slug
+    assert by_slug.get("Bad_(x)") == {"slug": "Bad_(x)", "error": "agent1_no_json",
+                                      "elapsed_s": 1.0}, by_slug
     assert by_slug["good"]["error"] is None
+
+
+def test_run_jobs_login_and_expired_token_abort_on_first_error():
+    """A logged-out CLI or an expired OAuth token fails every article the same
+    way: the first such error aborts the run (exit 3), and the queued jobs
+    re-queue silently instead of each burning a slot."""
+    for err in (LOGIN_ERR, EXPIRED_ERR):
+        async def logged_out(job, _ctx, sem, err=err):
+            async with sem:
+                await asyncio.sleep(0.001)
+                return {"slug": job["slug"], "error": err}
+
+        jobs = [{"slug": f"a{i}"} for i in range(10)]
+        with _patched_log():
+            rc, stats = asyncio.run(m.run_jobs(
+                jobs, _jobs_ctx(concurrency=2), logged_out))
+        assert rc == 3, (err, rc)
+        # only the jobs already holding a slot when the first error landed
+        assert stats["processed"] == stats["errors"] <= 2, (err, stats)
 
 
 def test_annotate_one_elapsed_excludes_queue_wait():
@@ -2474,12 +2496,14 @@ def test_review_mode_rotates_past_article_specific_failures():
 
 
 def test_review_mode_does_not_rotate_on_account_wide_failures():
-    """A night where every article fails to log in records nothing: once the
-    login is fixed, the same top articles go first."""
+    """A night where every Worker write fails records nothing: once the Worker
+    is back, the same top articles go first. (A login failure aborts the run,
+    which records nothing either.)"""
     import tempfile
     with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
-        n.fail = {f"h{i}": LOGIN_ERR for i in range(10)}
-        n.night()
+        n.fail = {f"h{i}": "network_post_failed" for i in range(10)}
+        rc, _ = n.night()
+        assert rc == 0 and n.saves == 1, (rc, n.saves)
         n.fail = {}
         n.night()
         assert n.calls == [3, 3], n.calls
