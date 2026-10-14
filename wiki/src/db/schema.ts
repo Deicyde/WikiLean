@@ -60,6 +60,11 @@ export const moderationState = sqliteTable(
       .references(() => articles.slug),
     lastReviewedAt: integer("last_reviewed_at"), // ms; null = never reviewed
     lastReviewedVersion: integer("last_reviewed_version"), // articles.version at last review
+    // ms; null = never attempted. Stamped from POST /api/runs `attempted` by
+    // run kind (migration 0014); scheduling metadata, never bumps
+    // articles.version. /api/work orders each mode by its own stamp.
+    lastReviewAttemptAt: integer("last_review_attempt_at"),
+    lastUpdateAttemptAt: integer("last_update_attempt_at"),
     wpDrifted: integer("wp_drifted", { mode: "boolean" }).notNull().default(false), // upstream moved past pinned revid
     flagCount: integer("flag_count").notNull().default(0),
     state: text("state"), // null = normal; update-flow: 'needs_human' | 'moved' | 'deleted'
