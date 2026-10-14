@@ -33,15 +33,17 @@ WORK=$(mktemp -d "${TMPDIR:-/tmp}/wikilean-backup.XXXXXX")
 trap 'rm -rf "$WORK"; rm -f "$OUT.partial"' EXIT
 printf '%s\n' "$RECIPIENTS" > "$WORK/recipients.txt"
 # Like the workflow, any output from age fails the check: age only warns about
-# SSH key types it can't use and skips them, which would drop a spare key.
-if ! age_out=$(age -R "$WORK/recipients.txt" -o /dev/null < /dev/null 2>&1); then
-  printf '%s\n' "$age_out" >&2
+# SSH key types it can't use and skips them, which would drop a spare key. The
+# output goes to a file in $WORK (not a command substitution), so a signal
+# during the check still runs the EXIT trap.
+if ! age -R "$WORK/recipients.txt" -o /dev/null < /dev/null > "$WORK/check.out" 2>&1; then
+  cat "$WORK/check.out" >&2
   echo "BACKUP_AGE_RECIPIENTS is not a valid age recipient list; refusing to export (see docs/BACKUP.md)" >&2
   exit 1
 fi
-if [ -n "$age_out" ]; then
-  printf '%s\n' "$age_out" >&2
-  echo "age warned about BACKUP_AGE_RECIPIENTS (a line it would skip, such as an unsupported SSH key type); refusing to export (see docs/BACKUP.md)" >&2
+if [ -s "$WORK/check.out" ]; then
+  cat "$WORK/check.out" >&2
+  echo "age printed output for BACKUP_AGE_RECIPIENTS (for example a line it would skip, such as an unsupported SSH key type); refusing to export (see docs/BACKUP.md)" >&2
   exit 1
 fi
 
