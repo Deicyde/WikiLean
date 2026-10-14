@@ -574,7 +574,7 @@ explicit approval.
     - [x] Capture and independently verify a fresh canonical production bundle. The
       2026-09-08 read captured 778 articles and zero community edges/nodes; the private
       bundle and receipt/lineage identities are recorded in
-      `archive/BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
+      `docs/archive/BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
     - [x] Bind the retained receipt/lineage and exact normalized annotation/community
       outputs into the complete private candidate source plan on 2026-09-23. The exporter
       preserves original capture evidence and derives sidecars without ambient cache
@@ -807,7 +807,8 @@ explicit approval.
     release, or deployment readiness.
   - [x] Compile and independently verify the first real v3 pack. The September 23 result
     contains 113 sources and 90,410 files totaling 7.408 GB; exact IDs and full SHA/evidence
-    verification are retained in the current handoff and private `full-pack-attempt-02`.
+    verification are retained in the [September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md)
+    and private `full-pack-attempt-02`.
   - [ ] Bind the final authority generation's verified `offline_pack_id` and
     `source_set_root` into build-attestation/v2 and release verification.
     Pack-bound release production/verification is implemented in the continuation:
