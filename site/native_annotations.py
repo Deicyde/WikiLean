@@ -241,7 +241,7 @@ def occurrences(item: dict) -> list[dict]:
 
 def anchors(item: dict, *, source_uri: str | None = None,
             require_source: bool = False) -> list[dict | None]:
-    """Resolve only WikiLean's documented generic selector; unknown stays unknown."""
+    """Resolve only WikiLean's documented anchor profile; unknown stays unknown."""
     if not is_native(item):
         raw = item.get("anchors") or [item.get("anchor", {})]
         return [span if isinstance(span, dict) else None for span in raw]
@@ -258,7 +258,8 @@ def anchors(item: dict, *, source_uri: str | None = None,
                 and source.get("type") in {"generic", "html"}):
             result.append({"type": "whole_resource"})
             continue
-        if (isinstance(source, dict) and source.get("type") == "generic"
+        # Written as html since the profile form exists; generic records predate it.
+        if (isinstance(source, dict) and source.get("type") in {"html", "generic"}
                 and isinstance(location, dict) and location.get("profile") == ANCHOR_PROFILE
                 and isinstance(location.get("anchor"), dict)):
             anchor = location["anchor"]
@@ -528,7 +529,7 @@ def migrate_items(items: list[dict], *, title: str, revid: int) -> tuple[list[di
             if not valid:
                 diagnostics.append({"item": index, "anchor": anchor_index, "code": "INVALID_ANCHOR"})
             selector = {key: deepcopy(anchor[key]) for key in ANCHOR_FIELDS if key in anchor} if valid else {}
-            selection = {"source": {"type": "generic", "uri": source_uri},
+            selection = {"source": {"type": "html", "uri": source_uri},
                          "location": {"profile": ANCHOR_PROFILE, "anchor": selector,
                                       "resolution": "not_attempted" if valid else "unresolved"}}
             if target is None or not valid:

@@ -224,6 +224,10 @@ class Migration(unittest.TestCase):
         self.assertEqual(old, before)
         self.assertFalse(n.LEGACY_FIELDS & converted.keys())
         self.assertEqual(converted['match_kind'], 'exact')
+        self.assertEqual({link['annotation']['source']['type'] for link in converted['links']}, {'html'})
+        # Records written before the profile form used generic sources; both read the same.
+        generic = deepcopy(converted); generic['links'][0]['annotation']['source']['type'] = 'generic'
+        self.assertEqual(n.anchors(generic), n.anchors(converted))
         self.assertEqual([link['id'] for link in converted['links']], ['aabbccddeeff:link:0','aabbccddeeff:link:1'])
         self.assertEqual(converted['links'][0]['annotation']['target'], {
             'uri': 'https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#Group.identity',

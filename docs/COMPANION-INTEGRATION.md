@@ -84,7 +84,9 @@ It never uses `latest_revid` to move an existing anchor to another revision.
 Each native anchor produces its own record. WikiLean anchor normalization and
 inclusive ranges do not equal Literature Links HTML quotation semantics; the adapter preserves
 the known public v3 anchor fields under `location.profile: urn:wikilean:anchor:v3`
-in `generic` mode, with `resolution: not_attempted`. An empty locator stays explicit
+on an `html` source (a profile makes the location application-defined in every
+mode), with `resolution: not_attempted`. Records written as `generic` before the
+profile form existed are still read. An empty locator stays explicit
 and unresolved. Missing or malformed anchors are reported as omissions. Consumers
 that do not understand this profile can retain the record without pretending to
 highlight its text.

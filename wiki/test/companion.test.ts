@@ -25,7 +25,7 @@ describe("atomic companion export", () => {
     const source = "https://en.wikipedia.org/w/index.php?title=Group_(mathematics)&oldid=12345";
     expect(result.annotations[0]).toEqual({
       id: "aaaaaaaaaaaa", kind: "definition", label: "Group", status: "formalized",
-      source: { type: "generic", uri: source, pin: {
+      source: { type: "html", uri: source, pin: {
         type: "website", title: "Group (mathematics)", owner: "Wikipedia", url: source, revision: "12345",
         identifiers: { wikidata: "Q83478" },
       } },
