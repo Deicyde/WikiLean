@@ -28,7 +28,9 @@ def _write(path: Path, rows: list) -> None:
 
 def _outage_logs(cache: Path) -> None:
     """Three review runs: one healthy, then two where every article fails the
-    same way (the 2026-09-18 pattern), plus a new-mode run that must be ignored."""
+    same way (the 2026-09-18 pattern), plus a new-mode run that must be ignored.
+    The failing articles' elapsed_s grows with their wait for one of the two
+    concurrency slots, as annotate_one records it."""
     run_log, decisions = [], []
     t = (NOW - 3 * 86400) * MS
     for i in range(3):
@@ -41,7 +43,8 @@ def _outage_logs(cache: Path) -> None:
         for i in range(15):
             slug = f"Head_{i}"
             run_log.append({
-                "slug": slug, "op": "review", "run_id": rid, "elapsed_s": 1.5,
+                "slug": slug, "op": "review", "run_id": rid,
+                "elapsed_s": 1.5 + 3.0 * (i // 2),
                 "error": ("RuntimeError: agent_error: Not logged in · Please run "
                           "/login (/Users/jack/.claude sk-ant-oat01-SECRETSECRET)")})
             decisions.append({"ts": t + i, "run_id": rid, "mode": "review",
@@ -65,7 +68,7 @@ def test_review_runs_groups_errors_and_drops_other_modes():
     assert last["articles"] == 15 and last["errors"] == 15 and last["tokens"] == 0
     (g,) = last["error_groups"]
     assert g["count"] == 15 and g["cause"] == "Claude login", g
-    assert g["median_elapsed_s"] == 1.5
+    assert g["min_elapsed_s"] == 1.5, g
     assert "/Users/jack" not in g["error"] and "~/.claude" in g["error"], g["error"]
     assert "SECRET" not in g["error"], g["error"]
     assert len(g["slugs"]) == 3
@@ -111,10 +114,16 @@ def test_likely_cause_table():
             "claude CLI",
         "RuntimeError: agent_error: Claude Code returned an error result: success":
             "claude CLI",
+        "RuntimeError: agent_error: Control request timeout: initialize":
+            "claude CLI startup timeout",
+        "RuntimeError: agent_error: API Error: Stream idle timeout - partial "
+        "response received": "API stream timeout",
         "RuntimeError: agent_error: Invalid API key · Please run /login":
             "Claude login",
         "RuntimeError: agent_error: Not logged in · Please run /login": "Claude login",
         'agent_error: API Error: 401 {"type":"authentication_error"}': "Claude login",
+        "RuntimeError: agent_error: Failed to authenticate. API Error: 401 OAuth "
+        "access token has expired": "Claude login",
         "RuntimeError: agent_error: Credit balance is too low": "API-key credential",
         "agent_error: You've hit your weekly limit · resets Oct 16":
             "plan or usage limit",
@@ -272,9 +281,26 @@ def test_report_prints_verdict_and_trigger():
     out = buf.getvalue()
     assert rc == 0
     assert "failed on every article; likely cause: Claude login" in out, out
-    assert "15x  [Claude login; median 1.5s]" in out, out
+    assert "15x  [Claude login; fastest 1.5s]" in out, out
     assert "P3 trigger    no stage-0 attempts" in out, out
     assert "2 runs  Head_0" in out, out
+
+
+def test_report_infers_nothing_from_slow_failures():
+    """A slow failure may be queue wait, not agent work: no quota claim."""
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        _write(cache / ".moderate_run.log", [
+            {"slug": f"S{i}", "op": "review", "run_id": "abab0008",
+             "elapsed_s": 90.0 + 60.0 * (i // 2),
+             "error": "RuntimeError: agent_error: Control request timeout: initialize"}
+            for i in range(4)])
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            nh.main(["--cache", str(cache)])
+    out = buf.getvalue()
+    assert "4x  [claude CLI startup timeout; fastest 90.0s]" in out, out
+    assert "quota" not in out.lower(), out
 
 
 def test_missing_cache_dir_is_an_error():

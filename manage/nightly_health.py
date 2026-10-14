@@ -11,10 +11,10 @@ reads the gitignored run logs under site/cache/ (no network, no writes):
 Two reports:
 
   1. The last N review runs: articles, errors, tokens, the distinct error strings
-     with counts and example slugs, how long failing articles ran, and which
-     slugs failed in more than one run (the review queue does not advance past a
-     failed article). Each distinct error gets a likely cause from
-     docs/OPERATIONS.md.
+     with counts and example slugs, the fastest failing article's elapsed time,
+     and which slugs failed in more than one run (the review queue does not
+     advance past a failed article). Each distinct error gets a likely cause
+     from docs/OPERATIONS.md.
   2. The ROADMAP P3 trigger for re-anchoring stages 1-2 ("stage-0 clears <90%"),
      over the last D days: re-pinned / (re-pinned + anchors failed), per attempt
      and per distinct slug, plus the slugs that block the wp-update queue head.
@@ -30,7 +30,6 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import statistics
 import sys
 import time
 from collections import Counter, OrderedDict
@@ -58,6 +57,8 @@ CAUSES = [
      r"|not_found_error"),
     ("Worker write", r"^(network_post_failed|network_put_failed|rate_limited_429"
      r"|post_\d|put_\d|human_lost_422|create_422)"),
+    ("claude CLI startup timeout", r"control request timeout: initialize"),
+    ("API stream timeout", r"stream idle timeout"),
     ("claude CLI",
      r"claude code not found|command failed with exit code|cliconnection"
      r"|processerror|error result|jsondecode|exec format|permission denied"),
@@ -158,8 +159,11 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
                 g["elapsed"].append(float(r["elapsed_s"]))
         for g in groups.values():
             g["cause"] = likely_cause(g.pop("raw"))
-            g["median_elapsed_s"] = (round(statistics.median(g["elapsed"]), 1)
-                                     if g["elapsed"] else None)
+            # elapsed_s starts before annotate_one waits for a concurrency
+            # slot, so queued articles also count that wait; the fastest one
+            # is the closest to a single article's own time.
+            g["min_elapsed_s"] = (round(min(g["elapsed"]), 1)
+                                  if g["elapsed"] else None)
             del g["elapsed"]
         runs.append({
             "run_id": rid,
@@ -252,8 +256,8 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
               f"articles {run['articles']}  errors {run['errors']}  "
               f"tokens {run['tokens']:,}")
         for g in run["error_groups"]:
-            t = g["median_elapsed_s"]
-            t_s = f"median {t}s" if t is not None else "time ?"
+            t = g["min_elapsed_s"]
+            t_s = f"fastest {t}s" if t is not None else "time ?"
             print(f"  {g['count']:>3}x  [{g['cause']}; {t_s}]  {g['error']}")
             print(f"        e.g. {', '.join(g['slugs'])}")
     rep = repeated_failures(runs)
@@ -270,12 +274,6 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
             causes = sorted({g["cause"] for g in last["error_groups"]})
             print(f"verdict: the latest run failed on every article; likely cause: "
                   f"{', '.join(causes)} (docs/OPERATIONS.md, 'What each outcome means').")
-            slow = [g for g in last["error_groups"]
-                    if (g["median_elapsed_s"] or 0) >= 60]
-            if slow:
-                print("  failing articles ran for a minute or more: the agents "
-                      "ran and spent Max quota, although an article that fails "
-                      "inside annotate_one is recorded with 0 tokens.")
         elif last["errors"]:
             print(f"verdict: the latest run had {last['errors']} error(s) "
                   f"out of {last['articles']} articles.")
