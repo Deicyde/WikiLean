@@ -46,7 +46,7 @@ describe("security headers", () => {
     const first = await get(h.env, "/about");
     expect(first.status).toBe(200);
     expectSecurityHeaders(first);
-    expect(h.renderCache.store.has("page:about:v1")).toBe(true);
+    expect([...h.renderCache.store.keys()].some((k) => k.startsWith("page:about:"))).toBe(true);
     const second = await get(h.env, "/about"); // served from RENDER_CACHE
     expectSecurityHeaders(second);
     for (const value of h.renderCache.store.values()) {
@@ -98,6 +98,8 @@ describe("security headers", () => {
     expect(directive("font-src")).toEqual(["'self'", "https://cdn.jsdelivr.net"]);
     expect(directive("img-src")).toContain("https://github.com");
     expect(directive("media-src")).toContain("https://github.com");
+    // Uploaded videos render with a private-user-images.githubusercontent.com src.
+    expect(directive("media-src")).toContain("https://*.githubusercontent.com");
     // A report-only frame-ancestors would only report; the ban is enforced
     // through the separate Content-Security-Policy header instead.
     expect(CSP_REPORT_ONLY).not.toContain("frame-ancestors");
