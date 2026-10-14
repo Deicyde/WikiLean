@@ -364,6 +364,10 @@ describe("POST /api/article/:slug (proposals)", () => {
     expect(page.status).toBe(200);
     const html = await page.text();
     expect(html).toContain("AI proposals");
+    // Human-at-boundaries: the nightly resolver decides some proposals, so the
+    // intro must not promise the AI never applies them.
+    expect(html).not.toContain("never applies");
+    expect(html).toContain("Each night a deterministic resolver decides the proposals that match its fixed rules");
     expect(html).toContain(pending(db)[0].proposalId);
     expect(html).toContain("wl-prop-approve");
     expect(html).toContain("reject: why?");

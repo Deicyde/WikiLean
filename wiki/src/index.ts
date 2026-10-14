@@ -568,7 +568,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v2";  // v2: Recent changes + Stats links in the nav
+  const cacheKey = "page:articles:v3";  // v3: Wikidata property named (P14534)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = homePage(await homeRows(c));
@@ -614,7 +614,7 @@ app.get("/api/articles", async (c) => {
 // static wiki/public/about.html asset, which used to shadow this path with
 // stats baked at build time). One aggregate over the D-C5 count columns.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v1";  // v1: dynamic port of the static About page
+  const cacheKey = "page:about:v2";  // v2: moderation copy matches Human-at-boundaries
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
