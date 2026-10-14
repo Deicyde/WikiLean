@@ -45,6 +45,7 @@ import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
+import { registerSecurityHeaders } from "./security.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -122,6 +123,7 @@ const RESERVED = new Set([
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
+registerSecurityHeaders(app); // first: middleware must wrap every route below
 registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
