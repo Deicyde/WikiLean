@@ -104,7 +104,7 @@ intent record byte for byte, so do not change either between a P1C `--execute` a
 - Before this promotion, production ran a Worker with no selector. The last recorded
   observation is Worker version `d2926a43-483b-4447-b570-d067c4d77d98`, deployed
   2026-08-28T02:55:59Z, with `current.json` returning 404 and the API reporting no release ID
-  ([2026-09-26 handoff](BRAIN-SQLITE-HANDOFF-2026-09-26.md)). That is an observation from
+  ([2026-09-26 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-26.md)). That is an observation from
   2026-09-26, not a journal read.
 - The authoritative predeploy Worker version is in the attempt's fsynced intent record. When
   the journal is unavailable, Cloudflare's deployment history is the version source:

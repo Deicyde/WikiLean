@@ -2,7 +2,7 @@
 
 This is the current laptop-transfer checkpoint for the 15-patch review stack ending at
 `codex/brain-architecture-phase1`. The durable completion contract is
-[ROADMAP.md](ROADMAP.md), especially P0-R. The review map and exact claims are in
+[ROADMAP.md](../ROADMAP.md), especially P0-R. The review map and exact claims are in
 [BRAIN-SQLITE-PR-REVIEW.md](BRAIN-SQLITE-PR-REVIEW.md).
 
 ## Bottom line

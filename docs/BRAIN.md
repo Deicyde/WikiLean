@@ -1,5 +1,10 @@
 # The BRAIN: The Informal Brain Behind a Formal Mathlib
 
+> **Historical (marked 2026-10-13).** This is the 2026-07-03 pre-build proposal. The binding
+> data contract is `brain/SCHEMA.md`, and the current design docs are `docs/BRAIN-V3.md` and
+> `docs/BRAIN-ARCHITECTURE.plan.md`. It stays at this path because code comments and
+> `brain/SCHEMA.md` cite it; other superseded docs are in [`archive/`](archive/README.md).
+
 > Proposal for Jack (lead) and Fable (orchestrator). Produced 2026-07-03 by a multi-agent research
 > workflow (4 data-verification agents + 6 web+repo research streams, deepened + adversarially
 > critiqued) grounded in the live repo. Companion artifacts: `catalog/data/hierarchy.json` (the
