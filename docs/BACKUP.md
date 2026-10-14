@@ -12,7 +12,7 @@ tokens.
 |---|---|---|
 | D1 Time Travel | 7 days on Workers Free, 30 days on Workers Paid (Cloudflare D1 limits) | Cloudflare, on-platform |
 | `Backup D1` workflow (`.github/workflows/backup-d1.yml`) | 30 days | GitHub Actions artifacts, **age-encrypted** |
-| `wiki/scripts/backup-d1.sh` (`npm run backup:d1`) | as long as you keep the file | the machine that runs it, **plaintext** (see below) |
+| `wiki/scripts/backup-d1.sh` (`npm run backup:d1`) | as long as you keep the file | the machine that runs it, **age-encrypted** (see below) |
 
 The workflow runs daily (scheduled for 08:27 UTC; GitHub often starts it hours
 late) and on demand. Each run uploads two artifacts:
@@ -62,12 +62,13 @@ outward-facing, so the maintainer decides and runs them:
    again. GitHub allows re-runs for 30 days after a run. A manual dispatch uses
    the workflow file on the ref you pick, and any branch cut before this change
    still has the plaintext version. Delete the old runs so they can't be
-   re-run:
+   re-run: list them, pick the runs created before the first encrypted one, and
+   delete each of those by id:
 
    ```bash
    gh run list --workflow backup-d1.yml --repo Deicyde/WikiLean --limit 200 \
-     --json databaseId,createdAt,headSha          # pick the runs before the first encrypted one
-   gh run delete <run-id> --repo Deicyde/WikiLean  # once per old run
+     --json databaseId,createdAt,headSha
+   gh run delete <run-id> --repo Deicyde/WikiLean
    ```
 
    Deleting a run also deletes its log and artifacts.
@@ -84,10 +85,11 @@ Do this on a trusted machine (`brew install age`).
 
 1. **Generate the keypair.** The private key never goes to GitHub: not to the
    repo, not to a secret, not to a runner. The workflow only encrypts, so it
-   never needs the private key.
+   never needs the private key. The first command also prints the public key
+   (`Public key: age1…`):
 
    ```bash
-   age-keygen -o wikilean-backup.key          # prints "Public key: age1…"
+   age-keygen -o wikilean-backup.key
    age-keygen -y wikilean-backup.key > backup-recipients.txt
    ```
 
@@ -102,22 +104,24 @@ Do this on a trusted machine (`brew install age`).
 
 2. **Set the repo variable.** It holds public keys only, one per line, and `#`
    comments are allowed. It is a *variable* rather than a secret because it
-   isn't secret: it is printed in the workflow's public run log.
+   isn't secret: it is printed in the workflow's public run log. The second
+   command should show only `age1…` lines:
 
    ```bash
    gh variable set BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean < backup-recipients.txt
-   gh variable get BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean   # should show only age1… lines
+   gh variable get BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean
    ```
 
    If an `AGE-SECRET-KEY-…` line ever lands in the variable, the workflow
    refuses it. It is still exposed, though, so rotate (below).
 
-3. **Re-enable the workflow and prove a run end to end.**
+3. **Re-enable the workflow and prove a run end to end.** Note the run id that
+   the last command prints:
 
    ```bash
    gh workflow enable backup-d1.yml --repo Deicyde/WikiLean
    gh workflow run backup-d1.yml --repo Deicyde/WikiLean --ref main
-   gh run list --workflow backup-d1.yml --repo Deicyde/WikiLean --limit 1   # note the run id
+   gh run list --workflow backup-d1.yml --repo Deicyde/WikiLean --limit 1
    ```
 
    Then download and decrypt that run's artifact (next section). A run is good
@@ -125,8 +129,11 @@ Do this on a trusted machine (`brew install age`).
 
 ## Download and decrypt
 
+Work in a directory outside any synced folder (iCloud Drive, Dropbox and the
+like), such as `~/wikilean-restore`:
+
 ```bash
-mkdir -p ~/wikilean-restore && cd ~/wikilean-restore      # not inside a synced folder
+mkdir -p ~/wikilean-restore && cd ~/wikilean-restore
 gh run download <run-id> --repo Deicyde/WikiLean -n wikilean-d1-<ts> -D .
 age -d -i /path/to/wikilean-backup.key -o wikilean-<ts>.sql wikilean-<ts>.sql.age
 ```
@@ -162,11 +169,12 @@ Pick the shortest path that covers the damage. Both paths below are
 destructive operator actions, and both need Cloudflare credentials.
 
 **Time Travel (recent damage, database still exists).** It restores the
-database in place to any minute inside the retention window above.
+database in place to any minute inside the retention window above. `info`
+checks that the point exists; `restore` performs the restore:
 
 ```bash
 cd wiki
-npx wrangler d1 time-travel info wikilean --timestamp=2026-10-13T08:00:00Z   # check the point exists
+npx wrangler d1 time-travel info wikilean --timestamp=2026-10-13T08:00:00Z
 npx wrangler d1 time-travel restore wikilean --timestamp=2026-10-13T08:00:00Z
 ```
 
@@ -218,9 +226,37 @@ routine schedule.
 
 1. Generate the new keypair (setup step 1) and update the variable to the new
    public key(s) (step 2). The next run uses them, with no workflow change.
+   Also update any local copy of the recipients, such as the key file that a
+   local cron job reads.
 2. Artifacts made before the change are still encrypted to the old key, and
-   they expire 30 days after their run. Keep the old private key until then,
-   or delete those artifacts.
+   they expire 30 days after their run. Local `.age` files made by
+   `wiki/scripts/backup-d1.sh` never expire. Keep the old private key as long
+   as you keep any of them. The alternative is to re-encrypt each one to the
+   new keys before retiring the old key. Run this in each directory that holds
+   them (`wiki/backups/` by default). It first checks the new list the way the
+   workflow does: if age prints anything (a bad line, a line it would skip such
+   as an unsupported SSH key type, or a plugin message), it stops and changes
+   nothing.
+
+   ```bash
+   OLD=/path/to/old.key NEW=/path/to/backup-recipients.txt
+   if out=$(age -R "$NEW" -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
+     for f in wikilean-*.sql.age; do
+       if ( set -o pipefail; age -d -i "$OLD" "$f" | age -R "$NEW" -o "$f.new" ); then
+         mv "$f.new" "$f"
+       else
+         rm -f "$f.new"; echo "left unchanged: $f" >&2
+       fi
+     done
+   else
+     printf '%s\n' "$out" >&2; echo "fix the recipients first; nothing changed" >&2
+   fi
+   ```
+
+   `pipefail` matters: without it, a failed decryption (wrong key, damaged
+   file) goes unnoticed, the second `age` still writes a valid encryption of
+   whatever it received, and `mv` replaces the backup with it. With it, such a
+   file is left as it was.
 3. **If the old private key leaked**, every artifact encrypted to it is
    readable by whoever holds it. Delete them all right away:
 
@@ -230,17 +266,25 @@ routine schedule.
    gh api -X DELETE repos/Deicyde/WikiLean/actions/artifacts/<id>
    ```
 
-   Then treat their contents as exposed: revoke the OAuth app's user tokens,
-   rotate `BETTER_AUTH_SECRET`, and consider whether users must be notified.
+   Local `.age` files encrypted to the old key are just as readable to whoever
+   holds it. Re-encrypt them as in step 2 on every machine and disk they were
+   copied to. Copies already inside Time Machine, iCloud or another backup
+   tool cannot be re-encrypted in place: delete them there, or treat them as
+   exposed.
+
+   Then treat the contents of everything encrypted to the old key as exposed:
+   revoke the OAuth app's user tokens, rotate `BETTER_AUTH_SECRET`, and
+   consider whether users must be notified.
 
 ## Upgrading the pinned age
 
 The workflow downloads `age-<version>-linux-amd64.tar.gz` from the upstream
 GitHub release. It checks the tarball against `AGE_SHA256` before extracting,
-and installs only the `age` binary. To move to a new release:
+and installs only the `age` binary. To move to a new release, set `V` to its
+tag:
 
 ```bash
-V=v1.x.y   # the new release tag
+V=v1.x.y
 gh release download "$V" --repo FiloSottile/age -p "age-$V-linux-amd64.tar.gz*"
 shasum -a 256 "age-$V-linux-amd64.tar.gz"
 gh api "repos/FiloSottile/age/releases/tags/$V" \
@@ -253,14 +297,41 @@ then update `AGE_VERSION` and `AGE_SHA256` together.
 
 ## The local script
 
-`wiki/scripts/backup-d1.sh` (`npm run backup:d1`) does **not** encrypt yet. It
-writes a plaintext `wikilean-<ts>.sql` to `wiki/backups/`, which is gitignored
-but otherwise unprotected. Until it encrypts, treat its output like the
-decrypted dump above, or encrypt it straight away:
+`wiki/scripts/backup-d1.sh` (`npm run backup:d1`) does the same job on your
+machine. It exports, encrypts to the same recipients, and keeps only
+`wikilean-<ts>.sql.age`. The plaintext lives in a private temp directory and is
+deleted as soon as it is encrypted. Like the workflow, it refuses to export if
+age or the recipients are missing or invalid, or if age would skip a line (such
+as an unsupported SSH key type). Run it from the repository root; it writes
+`wiki/backups/wikilean-<ts>.sql.age`:
 
 ```bash
-age -R backup-recipients.txt -o wikilean-<ts>.sql.age wikilean-<ts>.sql && rm wikilean-<ts>.sql
+cd wiki
+export BACKUP_AGE_RECIPIENTS="$(gh variable get BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean)"
+npm run backup:d1
 ```
 
-Its header also suggests restoring straight into production with `--remote`.
-Follow the local-first drill above instead.
+Decrypt and restore its output exactly like a workflow artifact. For a cron
+job, keep the recipients in a file and read it on each run, as in the script's
+header. Then rotating keys means updating that file.
+
+Dumps made by older versions of the script are plaintext `wikilean-<ts>.sql`
+files in `wiki/backups/`. From the repository root, with
+`BACKUP_AGE_RECIPIENTS` exported as above, encrypt them in place (or delete
+them). The same recipient check as above runs first, and nothing changes if it
+fails:
+
+```bash
+cd wiki/backups
+if out=$(age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
+  for f in wikilean-*.sql; do
+    age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
+  done
+else
+  printf '%s\n' "$out" >&2; echo "fix BACKUP_AGE_RECIPIENTS first; nothing changed" >&2
+fi
+```
+
+This reaches only the files in `wiki/backups/`. Copies of the plaintext that
+Time Machine, iCloud or another backup tool already took cannot be encrypted
+in place: delete them there, or treat their contents as exposed.
