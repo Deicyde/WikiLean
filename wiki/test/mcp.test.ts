@@ -83,8 +83,9 @@ describe("POST /mcp — lifecycle", () => {
     const instructions = String(j.result.instructions);
     expect(instructions).not.toContain("the brain build time and the Mathlib rev");
     expect(instructions).toContain("sha256: generation id");
-    expect(instructions).toContain("a mathlib4 commit only when the release records one");
+    expect(instructions).toContain("ISO 8601 UTC build timestamp in brain-current-v1 releases");
     expect(instructions).toContain("so it can change while Mathlib does not");
+    expect(instructions).toContain("pin is not a mathlib4 commit, and equal pins do not mean equal build inputs");
     expect(instructions).not.toContain("sealed Mathlib source input");
   });
 
