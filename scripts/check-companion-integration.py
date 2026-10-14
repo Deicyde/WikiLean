@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Offline native integration: WikiLean copied SQLite + FCA + Autoform attachments.
+"""Offline native integration: WikiLean copied SQLite + Literature Links + Autoform attachments.
 
 Uses an independent synthetic Git consumer, the installed Autoform CLI, the real
-FCA checker/discovery, and WikiLean's real route over its hermetic D1 fixture.
+Literature Links checker/discovery, and WikiLean's real route over its hermetic D1 fixture.
 Nothing is pushed, deployed, downloaded, or proved. Output is kept for inspection.
 """
 from __future__ import annotations
@@ -35,8 +35,8 @@ def main() -> int:
     parser.add_argument("--node", default="node", help="Node 22 executable (wiki/npm ci must already be installed)")
     parser.add_argument("--output", type=Path, required=True, help="new directory to retain the fixture and index")
     args = parser.parse_args()
-    from formal_companion_annotations.companion import check
-    from formal_companion_annotations.discovery import collect
+    from literature_links.companion import check
+    from literature_links.discovery import collect
 
     output = args.output.expanduser().absolute()
     if output.exists() or output.is_symlink():

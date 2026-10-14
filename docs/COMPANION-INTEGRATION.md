@@ -8,7 +8,7 @@ are transitional compatibility tools, not the target WikiLean data model.
 For one installed environment, a repeatable refresh, a local browser, and the return
 path into Autoform's source catalog, use [the local workspace](COMPANION-WORKSPACE.md).
 
-The shared exchange unit is one FCA informal–formal association. Autoform emits
+The shared exchange unit is one Literature Links informal–formal association. Autoform emits
 that unit from committed blueprint articles; WikiLean emits it from a consistent
 D1 article snapshot and ingests it into a local SQLite index. Authors can arrange
 shards however they want. The reference schema remains in Formal Companion
@@ -18,7 +18,7 @@ Annotations; neither application maintains a copy or adds mandatory core fields.
 flowchart LR
   A[Autoform Markdown and Lean at a commit] --> E[Autoform exporter]
   W[WikiLean D1 article and pinned Wikipedia revision] --> H[Article HTTP export]
-  E --> S[Independent FCA records in arbitrary shards]
+  E --> S[Independent Literature Links records in arbitrary shards]
   H --> S
   S --> V[Reference validation and discovery]
   V --> Q[Local WikiLean SQLite index]
@@ -27,18 +27,18 @@ flowchart LR
   V --> C[Autoform source catalog and occurrence archive]
 ```
 
-The unpublished single-annotation schema has no version field. Only `source` is
+The Literature Links annotation has no version field. Only `source` is
 required; `target` is a reference or an endpoint object with a typed pin, and
-`status`, `kind`, `label` and `note` are optional facts. This integration uses the reference Python package's
-**2.0.0a2** development build; that package version is separate from the annotation
-format. No manifest, collection identity, or required application profile is added.
+`status`, `kind`, `label` and `note` are optional facts. This integration uses the Python package
+**1.0.0** at the commit pinned in `wiki/src/vendor/literature-links/provenance.json`;
+that package version is separate from the annotation format. No manifest, collection identity, or required application profile is added.
 
 ## Use an existing Autoform project
 
 Install the Autoform integration checkout using its normal `uv sync` workflow.
-Install the reviewed FCA checkout or wheel in a Python 3.12 environment, following
+Install the reviewed Literature Links checkout or wheel in a Python 3.12 environment, following
 [the import guide](COMPANION-IMPORT.md#install-the-reference-validator).
-From the WikiLean checkout, with `autoform` and the FCA environment available:
+From the WikiLean checkout, with `autoform` and the Literature Links environment available:
 
 ```sh
 autoform export-annotations /absolute/path/to/consumer \
@@ -82,7 +82,7 @@ own fields; `provenance` and `match_kind` stay under `extensions["org.wikilean"]
 It never uses `latest_revid` to move an existing anchor to another revision.
 
 Each native anchor produces its own record. WikiLean anchor normalization and
-inclusive ranges do not equal FCA HTML quotation semantics; the adapter preserves
+inclusive ranges do not equal Literature Links HTML quotation semantics; the adapter preserves
 the known public v3 anchor fields under `location.profile: urn:wikilean:anchor:v3`
 in `generic` mode, with `resolution: not_attempted`. An empty locator stays explicit
 and unresolved. Missing or malformed anchors are reported as omissions. Consumers
@@ -103,7 +103,7 @@ a shard. Unknown articles return 404; articles without a pinned revision return
 ## Run the complete offline integration check
 
 Install `wiki/` dependencies with `npm ci` under Node 22. Install the Autoform
-integration checkout and the reference FCA package as above, then run:
+integration checkout and the reference Literature Links package as above, then run:
 
 ```sh
 python scripts/check-companion-integration.py \
@@ -134,7 +134,7 @@ This is a working local interchange path. It does not write live D1 articles or
 admit arbitrary URI endpoints into the public Brain graph. That graph requires
 semantic identities and reviewed source evidence. See
 [the storage and publication boundary](COMPANION-IMPORT.md#storage-and-application-boundary).
-The local workspace now includes a companion viewer and FCA-to-Autoform source
+The local workspace now includes a companion viewer and Literature Links-to-Autoform source
 catalog import. Live admission, pinned external-library resolution, and automatic
 roadmap authorship remain separate concerns. The core schema needs no expansion
 for these adapters.

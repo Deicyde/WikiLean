@@ -38,7 +38,7 @@ A reader can scan an article and see at a glance which statements are formalized
 The experimental [companion workspace](docs/COMPANION-WORKSPACE.md) exchanges
 single informal–formal links with Autoform: committed blueprint exports and
 WikiLean article exports feed a shared SQLite view and Autoform source catalog.
-It uses the unpublished, unversioned FCA draft and does not change live D1 or publish a Brain release.
+It uses Literature Links 1.0.0 (vendored, pinned by commit) and does not change live D1 or publish a Brain release.
 
 WikiLean has two deliberately separate data planes:
 

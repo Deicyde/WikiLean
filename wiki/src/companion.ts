@@ -1,5 +1,5 @@
-// Projection of one D1 article snapshot into independent unversioned FCA draft records.
-// The reference schema lives in formal-companion-annotations, not in this repo.
+// Projection of one D1 article snapshot into independent Literature Links annotations.
+// The schema is vendored from Literature Links under vendor/literature-links.
 import { Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { articles } from "./db/schema.js";
 import type { Env } from "./env.js";
 import {
   NATIVE_SCHEMA_VERSION, storedCompanionRecords, validateNativeItems, isAbsoluteReference, strictJsonParse,
-  articleSourcePin, mathlibTarget, targetUri, type FCAPin, type FCATargetObject, type JsonObject as NativeObject,
+  articleSourcePin, mathlibTarget, targetUri, type LinkPin, type LinkTarget, type JsonObject as NativeObject,
 } from './native-companion.js';
 
 type ObjectValue = Record<string, unknown>;
@@ -34,9 +34,9 @@ export interface CompanionAnnotation {
   kind?: string;
   label?: string;
   status: string;
-  source: { type: "generic"; uri: string; pin: FCAPin };
+  source: { type: "generic"; uri: string; pin: LinkPin };
   location: { profile: string; anchor: Record<string, string>; resolution: "not_attempted" };
-  target: FCATargetObject;
+  target: LinkTarget;
   note?: string;
   extensions?: { "org.wikilean": NativeObject };
 }
@@ -53,7 +53,7 @@ function object(value: unknown): ObjectValue | undefined {
 }
 
 function scalarString(value: unknown): value is string {
-  // JSON.parse permits lone surrogates; the reference FCA codec rejects them.
+  // JSON.parse permits lone surrogates; the Literature Links codec rejects them.
   return typeof value === "string" && !/[\uD800-\uDFFF]/u.test(value);
 }
 

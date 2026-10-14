@@ -1,7 +1,7 @@
 # Native companion records in WikiLean
 
 WikiLean's native application format stores complete Formal Companion Annotation
-(FCA) objects in D1. Normal native reads and edits use those objects directly.
+(Literature Links) objects in D1. Normal native reads and edits use those objects directly.
 The current implementation is available for local testing; no production database
 has been migrated or Worker deployed by this work.
 
@@ -26,7 +26,7 @@ notes and moderation history. Each item contains:
 }
 ```
 
-Only the `annotation` value is an FCA record. It has no version field. D1's
+Only the `annotation` value is a Literature Links record. It has no version field. D1's
 `schema_version=4` identifies WikiLean's internal work-item storage format;
 `articles.version` remains its optimistic concurrency and render-cache counter.
 Neither changes the companion schema. Work items with no formal destination keep
@@ -55,7 +55,7 @@ and `site/native_annotations.py` (`companion_annotation`). No retrieval date is
 emitted: WikiLean stores none per article.
 
 Internal link IDs are unique within an article and remain distinct from optional
-FCA IDs. Duplicate FCA IDs and identical annotations are preserved as independent
+Literature Links IDs. Duplicate Literature Links IDs and identical annotations are preserved as independent
 occurrences. Both `links` and `unlinked` arrays are required, including when empty.
 Live native items cannot also contain the old `anchor`, `anchors`, `mathlib`,
 `decl` or `module` fields. An optional private `legacy` archive preserves original
@@ -63,13 +63,13 @@ migration evidence, not editable link authority.
 
 ## Validation and references
 
-All four FCA modes—PDF, LaTeX, HTML and generic—are validated and stored. Unknown
+All four Literature Links modes—PDF, LaTeX, HTML and generic—are validated and stored. Unknown
 extensions and valid generic locations survive edits. An unsupported location can
 be displayed as a link without pretending its source passage was resolved.
 Omitting `location` means the whole resource; an unresolved locator is never
 converted to omission.
 
-`wiki/src/vendor/fca/companion.schema.json` is an exact upstream schema copy.
+`wiki/src/vendor/literature-links/companion.schema.json` is an exact upstream schema copy.
 `provenance.json` records its repository commit, SHA-256, and semantic-checker pin.
 The generated validator is built offline with pinned Ajv/esbuild versions and
 contains no runtime code generation. Regenerate or check it from `wiki/` with:
@@ -94,12 +94,12 @@ or reads that file.
 The JavaScript storage boundary rejects integers outside
 `[-9007199254740991, 9007199254740991]`, including inside opaque extensions and
 private metadata, so it cannot silently persist rounded integer values. This is
-an application limit, not a restriction in the FCA core schema. Native article
+an application limit, not a restriction in the Literature Links core schema. Native article
 saves retain the existing work-item count, field-length and payload-size limits.
 
 ## Read and write contracts
 
-- `GET /api/article/:slug/companion.json` returns the stored public FCA objects,
+- `GET /api/article/:slug/companion.json` returns the stored public Literature Links objects,
   with the item facts and pins projected as above, as a discovery-compatible
   array. Rejected items are omitted for every caller.
   It returns 409 whenever a record has an explicit carrier base, including when
@@ -108,7 +108,7 @@ saves retain the existing work-item count, field-length and payload-size limits.
   `{version, records:[{item_id,id,annotation,base_uri?}]}` for native articles,
   with the same projection applied to each `annotation`. Nothing stored is
   removed, so the response keeps relative references and bases; it is not an
-  FCA shard container.
+  Literature Links shard container.
 - `GET /api/article/:slug.json` retains the application envelope. Anonymous reads
   use a native metadata allowlist and null tombstone placeholders. The pipeline
   bearer receives full work items so it can preserve protected data.

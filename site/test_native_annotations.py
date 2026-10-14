@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline native FCA storage, producer, rendering, moderation and drift checks."""
+"""Offline native Literature Links storage, producer, rendering, moderation and drift checks."""
 from __future__ import annotations
 
 import asyncio
@@ -62,7 +62,7 @@ class NativeContract(unittest.TestCase):
         work = item()
         work['links'] = [{'id': mode, 'base_uri': 'file:///tmp/shards/one.json',
                           'annotation': {'source': {'type': mode, 'uri': '../source', 'extensions': {'owner': {'unknown': 5}}},
-                                         'target': '../formal#target', 'id': 'same-fca-id', 'location': loc,
+                                         'target': '../formal#target', 'id': 'same-record-id', 'location': loc,
                                          'extensions': {'custom': {'z': [3, 2, 1]}}}}
                          for mode, loc in locations.items()]
         before = deepcopy(work)
@@ -116,12 +116,12 @@ class NativeContract(unittest.TestCase):
             'source': foreign['source'], 'target': foreign['target'], 'note': 'why',
             'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1, 'provenance': 'ai', 'match_kind': 'exact'}}})
         for record in (first, second):
-            n.validate_fca(record)
+            n.validate_link_record(record)
         self.assertEqual(work, before)
         self.assertEqual(n.formal_links(work)[0]['label'], 'Group.identity')
         self.assertEqual(n.first_target(work), pinned['uri'])
         self.assertNotIn('pin', n.companion_annotation({'status': 'partial', 'links': [], 'unlinked': []}, work['links'][0])['source'])
-        n.validate_fca({'source': {'type': 'html', 'uri': URI}, 'status': 'not_formalized'})
+        n.validate_link_record({'source': {'type': 'html', 'uri': URI}, 'status': 'not_formalized'})
 
     def test_opaque_extension_fields_survive_agent_partial_updates(self):
         original = item(private={'audit': [1, 2]})
