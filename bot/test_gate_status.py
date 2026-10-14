@@ -165,7 +165,7 @@ class ReportTest(unittest.TestCase):
         r = self.report(FakeGh(state_error=NOT_FOUND, branch_exists=False, pr=pr))
         self.assertEqual(r["state"]["source"], "main-snapshot")
         self.assertTrue(r["state"]["branch_missing"])
-        self.assertTrue(any(a.startswith("no bot-state branch") and "stale snapshot" in a for a in r["alerts"]))
+        self.assertTrue(any(a.startswith("no bot-state branch") and "fails at restore" in a for a in r["alerts"]))
         self.assertIn("batch PR #42608 conflicts with master (batch number from main's frozen snapshot)",
                       r["alerts"])
 
