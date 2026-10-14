@@ -188,7 +188,7 @@ Steps:
 - It records the master it rebuilt onto before pushing, so it tries at most once
   per master commit. Master moves many times a day, so a failed rebuild is retried
   on a later tick; to retry now, dispatch the workflow.
-- `batchN_approved.json MISSING (adopted batch?)` → the rebuild needs the decl
+- The run fails with `batchN_approved.json MISSING (adopted batch?)` → the rebuild needs the decl
   and file of every green tag. Reconstruct `bot/state/batchN_approved.json` from
   the PR diff on `bot-state`, then dispatch.
 - After a clean rebuild, read the new diff before asking anyone to review it.
