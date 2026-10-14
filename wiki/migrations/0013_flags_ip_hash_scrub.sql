@@ -5,9 +5,10 @@
 -- the Worker now stores NULL and this clears every existing value.
 --
 -- Unconditional and idempotent: safe to run any time, before or after the new
--- Worker is live, since no Worker version reads the column. Run it again after
--- any rollback to an older Worker version or a D1 restore to a point before
--- the scrub, because an older Worker writes the unsalted hash again.
+-- Worker is live, since no Worker version reads the column. Run it (again)
+-- once the new Worker is live, because until then the old Worker keeps
+-- writing the unsalted hash; and again after any rollback to an older Worker
+-- version or a D1 restore to a point before the scrub, for the same reason.
 --
 -- This reaches only the live table. Copies taken before it runs (D1 Time
 -- Travel history, `wrangler d1 export` backups) keep the legacy values until
