@@ -369,7 +369,8 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
-// Pseudonymous abuse handle for anonymous flags: sha256 hex of the client IP.
+// Plain SHA-256 hex. The research export salts its pseudonyms with
+// PIPELINE_TOKEN before hashing.
 async function sha256Hex(s: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
@@ -2447,7 +2448,10 @@ app.post("/api/flag/:slug", async (c) => {
     reason: posted.reason,
     comment,
     userId: user?.id ?? null,
-    ipHash: ip ? await sha256Hex(ip) : null,
+    // Never store anything derived from the IP: nothing reads it, and an
+    // unsalted IPv4 hash is reversible. FLAG_LIMITER and the per-target cap
+    // are the abuse defenses. Migration 0013 scrubbed the legacy values.
+    ipHash: null,
     createdAt: now,
   });
   // flag_count feeds the /api/work priority ladder (flagged sorts first).
