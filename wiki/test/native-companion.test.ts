@@ -2,13 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
-  validateFCA, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, wikipediaSourceUri,
+  validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, wikipediaSourceUri,
   strictJsonParse, targetUri, targetPin, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
-  type NativeItem, type FCARecord,
+  type NativeItem, type LinkRecord,
 } from '../src/native-companion.js';
 
 const context = { wikipediaTitle: 'Test Article', revid: 12345 };
-const core = (mode: FCARecord['source']['type'] = 'generic'): FCARecord => ({ source: { type: mode, uri: 'urn:source' }, target: 'urn:target' });
+const core = (mode: LinkRecord['source']['type'] = 'generic'): LinkRecord => ({ source: { type: mode, uri: 'urn:source' }, target: 'urn:target' });
 const item = (annotation = core()): NativeItem => ({ id: 'aaaaaaaaaaaa', status: 'partial', links: [{ id: 'record-1', annotation }], unlinked: [] });
 
 describe('canonical native companion records', () => {
@@ -17,20 +17,23 @@ describe('canonical native companion records', () => {
     expect(strictJsonParse('{"a":[{"x":"\\\""},true,null,-2.5e-1]}')).toEqual({ a: [{ x: '"' }, true, null, -0.25] });
   });
   it('vendors exactly the pinned reference schema', () => {
-    const bytes = readFileSync(new URL('../src/vendor/fca/companion.schema.json', import.meta.url));
-    const provenance = JSON.parse(readFileSync(new URL('../src/vendor/fca/provenance.json', import.meta.url), 'utf8'));
+    const bytes = readFileSync(new URL('../src/vendor/literature-links/companion.schema.json', import.meta.url));
+    const provenance = JSON.parse(readFileSync(new URL('../src/vendor/literature-links/provenance.json', import.meta.url), 'utf8'));
     expect(createHash('sha256').update(bytes).digest('hex')).toBe(provenance.sha256);
+    const license = readFileSync(new URL('../src/vendor/literature-links/LICENSE', import.meta.url));
+    expect(createHash('sha256').update(license).digest('hex')).toBe(provenance.license_sha256);
+    expect(provenance.repository).toBe('https://github.com/mathlib-initiative/literature-links');
   });
   it.each(['generic', 'pdf', 'html', 'latex'] as const)('accepts whole-resource %s annotations with opaque extensions', mode => {
     const annotation = { ...core(mode), id: 'duplicate is okay', extensions: { 'urn:test': [null, { unknown: '🧮' }] } };
-    expect(validateFCA(annotation)).toEqual([]);
+    expect(validateLinkRecord(annotation)).toEqual([]);
     const a = item(annotation); a.links.push({ id: 'record-2', annotation: structuredClone(annotation) });
     expect(validateNativeItems([a])).toEqual([]);
   });
   it('enforces the reference semantic checks and preserves lexical references', () => {
-    expect(validateFCA({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } })).not.toEqual([]);
-    expect(validateFCA({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.1, 1] } })).toEqual([]);
-    expect(validateFCA({ ...core('latex'), location: { lines: [3, 1] } })).not.toEqual([]);
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } })).not.toEqual([]);
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.1, 1] } })).toEqual([]);
+    expect(validateLinkRecord({ ...core('latex'), location: { lines: [3, 1] } })).not.toEqual([]);
     for (const uri of ['https://[oops', 'file:foo', 'urn:opaque:α%2f#']) {
       expect(validateNativeItems([item({ source: { type: 'generic', uri }, target: uri })])).toEqual([]);
     }
@@ -38,19 +41,19 @@ describe('canonical native companion records', () => {
   it('rejects invalid core shapes without discarding arbitrary valid generic location data', () => {
     for (const bad of [{ ...core(), version: 2 }, { ...core(), location: null }, { ...core('html'), location: { css: 'x', fragment: 'y' } }, { ...core(), target: '' },
       { ...core(), target: {} }, { ...core(), target: { uri: 'urn:x', pin: { type: 'repository', bogus: 1 } } }, { ...core(), status: '' }, { ...core(), kind: 1 }]) {
-      expect(validateFCA(bad)).not.toEqual([]);
+      expect(validateLinkRecord(bad)).not.toEqual([]);
     }
-    expect(validateFCA({ ...core(), location: { profile: 'unknown', arbitrary: [1, null] } })).toEqual([]);
+    expect(validateLinkRecord({ ...core(), location: { profile: 'unknown', arbitrary: [1, null] } })).toEqual([]);
   });
   it('accepts endpoint targets, typed pins and facts; a link still needs a formal destination', () => {
-    const pinned: FCARecord = { ...core(), kind: 'theorem', label: 'Lagrange', note: 'checked by hand',
+    const pinned: LinkRecord = { ...core(), kind: 'theorem', label: 'Lagrange', note: 'checked by hand',
       status: { value: 'partial', pin: { type: 'repository', url: MATHLIB_REPOSITORY, commit: 'a'.repeat(40) } },
       target: { uri: 'urn:x', pin: { type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.X', declaration: 'x' } } };
-    expect(validateFCA(pinned)).toEqual([]);
+    expect(validateLinkRecord(pinned)).toEqual([]);
     expect(targetUri(pinned)).toBe('urn:x'); expect(targetPin(pinned)?.declaration).toBe('x');
     expect(validateNativeItems([item(pinned)])).toEqual([]);
-    const absent: FCARecord = { source: { type: 'html', uri: 'urn:source' }, status: 'not_formalized' };
-    expect(validateFCA(absent)).toEqual([]);
+    const absent: LinkRecord = { source: { type: 'html', uri: 'urn:source' }, status: 'not_formalized' };
+    expect(validateLinkRecord(absent)).toEqual([]);
     expect(targetUri(absent)).toBeUndefined();
     expect(validateNativeItems([item(absent)]).join()).toContain('requires a formal target');
     const relative = item({ ...core(), target: { uri: '../formal.lean#x' } });
@@ -60,7 +63,7 @@ describe('canonical native companion records', () => {
   });
   it('projects the review item onto each stored link without changing what is stored', () => {
     const local = { source: { type: 'generic' as const, uri: wikipediaSourceUri(context) }, target: 'urn:formal:a', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
-    const foreign: FCARecord = { id: 'their-id', label: 'Their label', source: { type: 'pdf', uri: '../paper.pdf' }, target: { uri: 'urn:formal:b' },
+    const foreign: LinkRecord = { id: 'their-id', label: 'Their label', source: { type: 'pdf', uri: '../paper.pdf' }, target: { uri: 'urn:formal:b' },
       status: { pin: { type: 'repository', url: MATHLIB_REPOSITORY } }, extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1 } } };
     const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'partial', kind: 'theorem', label: 'Ours', note: 'why partial', provenance: 'ai-moderated', match_kind: 'generalization',
       links: [{ id: 'one', annotation: local }, { id: 'two', annotation: foreign, base_uri: 'https://example.net/shards/a.json' }], unlinked: [] };
@@ -77,7 +80,7 @@ describe('canonical native companion records', () => {
       extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1, provenance: 'ai-moderated', match_kind: 'generalization' } } });
     expect(second.item_id).toBe('aaaaaaaaaaaa'); expect(second.base_uri).toBe('https://example.net/shards/a.json');
     expect(work).toEqual(before);
-    for (const record of [first.annotation, second.annotation]) expect(validateFCA(record)).toEqual([]);
+    for (const record of [first.annotation, second.annotation]) expect(validateLinkRecord(record)).toEqual([]);
     expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).source).not.toHaveProperty('pin');
   });
   it('requires carrier bases for relative references and schema hints', () => {
@@ -96,7 +99,7 @@ describe('canonical native companion records', () => {
   it('rejects unsafe numeric storage and unpaired surrogates, including opaque values', () => {
     const a = item({ ...core(), extensions: { 'urn:test': Number.MAX_SAFE_INTEGER + 1 } });
     expect(validateNativeItems([a]).join()).toContain('lossless');
-    expect(validateFCA({ ...core(), extensions: { 'urn:test': '\ud800' } })).not.toEqual([]);
+    expect(validateLinkRecord({ ...core(), extensions: { 'urn:test': '\ud800' } })).not.toEqual([]);
     a.links[0].annotation.extensions = { 'urn:test': Number.MAX_SAFE_INTEGER };
     expect(validateNativeItems([a])).toEqual([]);
   });

@@ -5,7 +5,7 @@ import {
 } from './helpers/harness.js';
 import { migrateLocalDatabase } from '../scripts/migrate-native.js';
 import { app } from '../src/index.js';
-import { editorItems, wikipediaSourceUri, type NativeItem, type FCARecord } from '../src/native-companion.js';
+import { editorItems, wikipediaSourceUri, type NativeItem, type LinkRecord } from '../src/native-companion.js';
 
 blockNetwork();
 function nativeSetup() { const h = setup(); migrateLocalDatabase(h.db); return h; }
@@ -19,7 +19,7 @@ function repin(items: NativeItem[], revid: number) {
   }
   return output;
 }
-const core = (type: FCARecord['source']['type']): FCARecord => ({ source: { type, uri: 'urn:source' }, target: 'urn:target', extensions: { 'urn:opaque': { deep: [null, 'α', 1] } } });
+const core = (type: LinkRecord['source']['type']): LinkRecord => ({ source: { type, uri: 'urn:source' }, target: 'urn:target', extensions: { 'urn:opaque': { deep: [null, 'α', 1] } } });
 
 describe('native canonical API and lifecycle', () => {
   it('rejects duplicate members in the raw HTTP annotation instead of silently collapsing extensions', async () => {
@@ -32,7 +32,7 @@ describe('native canonical API and lifecycle', () => {
   });
   it('defaults new articles to native storage, records source context, and cannot mint human provenance', async () => {
     const h = setup();
-    const items = [{ id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human', links: ['pdf', 'html', 'latex', 'generic'].map((type, index) => ({ id: `link-${index}`, annotation: core(type as FCARecord['source']['type']) })), unlinked: [] }];
+    const items = [{ id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human', links: ['pdf', 'html', 'latex', 'generic'].map((type, index) => ({ id: `link-${index}`, annotation: core(type as LinkRecord['source']['type']) })), unlinked: [] }];
     const result = await put(h.env, '/api/article/Native_New', { wikipedia_title: 'Native New', revid: REVID, annotations: items }, { bearer: PIPELINE_TOKEN });
     expect(result.status).toBe(201);
     expect(articleRow(h.db, 'Native_New')?.schema_version).toBe(4);
@@ -49,7 +49,7 @@ describe('native canonical API and lifecycle', () => {
   });
   it('serves stored associations verbatim, preserves duplicate IDs and records with their bases', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
-    const value: FCARecord = { source: { type: 'pdf', uri: '../paper.pdf' }, target: '../formal.lean#x', id: 'shared', location: { page: 2 }, extensions: { 'urn:custom': ['keep', { a: true }] } };
+    const value: LinkRecord = { source: { type: 'pdf', uri: '../paper.pdf' }, target: '../formal.lean#x', id: 'shared', location: { page: 2 }, extensions: { 'urn:custom': ['keep', { a: true }] } };
     items[0].links = [{ id: 'one', annotation: value, base_uri: 'file:///papers/shards/a.json' }, { id: 'two', annotation: echo(value), base_uri: 'file:///other/shards/b.json' }];
     const saved = await botSave(h.env, { annotations: items, base_version: 2 });
     expect(saved.status).toBe(200);

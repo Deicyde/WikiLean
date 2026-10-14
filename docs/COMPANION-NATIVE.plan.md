@@ -45,7 +45,7 @@ paper. Imported annotations retain their original informal source.
 ## WikiLean data ownership
 
 The current `Annotation` combines several concepts. The proposed application
-model separates their authority; these are WikiLean storage choices, not new FCA
+model separates their authority; these are WikiLean storage choices, not new Literature Links
 schemas or mandatory tables for other applications.
 
 | Data | Authority and responsibility |
@@ -59,19 +59,19 @@ Targetless source occurrences remain separate application work items. Do not mak
 fit an unformalized statement into the link schema.
 
 Keep the existing review-item IDs through migration. Several old anchors can
-become separate FCA records linked to the same review item, with persistent
+become separate Literature Links records linked to the same review item, with persistent
 application record keys. Core `id` remains optional and is not a global deduplication
 key. Duplicate imported IDs and duplicate associations must not silently merge.
 Coverage counts continue to count review items, not the number of their spans.
 
-Once linked, source/location/target values are read from the actual FCA records.
+Once linked, source/location/target values are read from the actual Literature Links records.
 Legacy `mathlib` and `anchor(s)` values must not remain a second editable authority.
 An editor can still display declaration names and familiar anchor controls by
 interpreting the native record. Unknown extensions and unsupported locations must
 survive an edit that does not explicitly replace them.
 
-Existing WikiLean selectors have different semantics from FCA's HTML quotation
-selectors. They can remain native FCA `generic` locations under the current
+Existing WikiLean selectors have different semantics from the Literature Links HTML quotation
+selectors. They can remain native Literature Links `generic` locations under the current
 WikiLean anchor profile while the resolver consumes them directly. Native storage
 does not require pretending that every existing selector is an HTML quote.
 
@@ -111,7 +111,7 @@ The code audit identified these coupled changes:
 | `wiki/assets/editor.js` | Stop rebuilding legacy `mathlib` and `anchor` objects as link authority; edit native records and preserve unfamiliar values. |
 | `site/batch_annotate.py`, `moderate.py`, `update_from_upstream.py`, `render.py` | Migrate the pipeline and Python renderer with the Worker and editor; preserve TypeScript/Python behavior parity. |
 
-Article-level JSON snapshots can initially hold work items and native FCA records
+Article-level JSON snapshots can initially hold work items and native Literature Links records
 together; native adoption does not itself require separate SQL link tables.
 Centralize validation and mutation assembly across the existing write paths, and
 retire or guard direct legacy writers such as backfill and seed utilities.
@@ -122,7 +122,7 @@ retire or guard direct legacy writers such as backfill and seed utilities.
   never rebuilds live annotations from disk caches.
 - Each mutation commits article content, native links, review items, revision,
   event history and moderation bookkeeping under the existing concurrency guard.
-  Revision counters remain application state, not fields of an FCA annotation.
+  Revision counters remain application state, not fields of a Literature Links annotation.
 - Preserve original snapshots and a deterministic old-item-to-new-record mapping.
   Every item is migrated or explicitly retained for resolution; no omissions are
   treated as successful migration.
@@ -149,7 +149,7 @@ Markdown article. Keeping articles independent therefore does not itself require
 rewriting the roadmap. The gaps are attachment consumption and association
 ownership:
 
-1. Store authored FCA associations in selected shard roots; retain originals and
+1. Store authored Literature Links associations in selected shard roots; retain originals and
    carrier origins when importing other sources.
 2. Build an attachment index that maps explicit informal resource identities to
    existing articles. A verified `article_id` mapping can survive renames; titles
@@ -159,18 +159,18 @@ ownership:
    the current article content.
 3. Render attached links on the original article. Generated numbered evidence
    pages may remain an optional inspection view, never replacement source articles.
-4. Retain and serve the actual FCA records. Import followed by export must preserve
+4. Retain and serve the actual Literature Links records. Import followed by export must preserve
    unknown values and occurrences; relocation must retain or deliberately rewrite
    relative-reference bases.
 5. Keep arbitrary imported associations separate from Autoform's checked execution
    targets, proof assertions, dependencies and review state. A link alone cannot
    make a node ready or verified.
 
-During the transition, existing `lean:` workflow targets and directly authored FCA
+During the transition, existing `lean:` workflow targets and directly authored Literature Links
 records need explicit ownership. `lean:` is an execution contract, so sharing an
-endpoint with an FCA association does not make that execution metadata redundant.
+endpoint with a Literature Links association does not make that execution metadata redundant.
 Derived compatibility links must not be editable independently of their owner.
-If the same association becomes natively authored in FCA, retire duplicate
+If the same association becomes natively authored in Literature Links, retire duplicate
 association authoring in that change, while preserving the separate checked
 execution contract until an explicit workflow migration replaces it.
 
@@ -190,7 +190,7 @@ replace the resource identified in the annotation.
 
 1. **Lossless migration rehearsal:** inventory an authorized snapshot, preserve
    originals, classify unresolved cases, and prove record/item identity mappings.
-2. **Native WikiLean model and consumers:** validate shared FCA records, render
+2. **Native WikiLean model and consumers:** validate shared Literature Links records, render
    them and implement review-item relationships without duplicating link authority.
 3. **Coordinated writes and history:** migrate editor, pipeline, proposals, counts,
    revision/revert handling and provenance guards; test concurrent and failed writes.
@@ -207,7 +207,7 @@ Completion means the same native association survives create/edit/read/render,
 review, re-anchor and revert—not merely that an exporter produces valid JSON.
 Validation must include targetless work, duplicate occurrences, unfamiliar
 extensions, multi-anchor partial failures, rejected items, pending/stale proposals,
-source-revision changes, old history and concurrent saves. All four FCA modes must
+source-revision changes, old history and concurrent saves. All four Literature Links modes must
 round-trip even when a particular UI cannot resolve them.
 
 This plan authorizes no deployment or live migration. The existing local bridge

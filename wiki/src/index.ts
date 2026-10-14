@@ -170,7 +170,7 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v16: trust signals (P2) — the N/M human-reviewed header badge + the "?"
   // legend popover (engine/page.ts; CSS/JS inline in the page shell).
   // v17: attribution links are always underlined so they do not rely on color.
-  // v18: native FCA occurrences, complete-match telemetry, direct formal links.
+  // v18: native Literature Links occurrences, complete-match telemetry, direct formal links.
   const cacheKey = `render:v18:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
@@ -1850,7 +1850,7 @@ app.post("/api/article/:slug", async (c) => {
       return c.json({ ok: false, error: "human annotation lost", missing }, 422);
     }
     // Human ownership can be retained only from the protected stored record.
-    // A client (including an imported FCA extension) cannot mint endorsement.
+    // A client (including an imported annotation extension) cannot mint endorsement.
     finalAnnotations = postedAnnotations.map(a => ({ ...a,
       ...(a.provenance === "human" && findMatch(a, stored)?.provenance !== "human" ? { provenance: "ai" } : {}),
     }));

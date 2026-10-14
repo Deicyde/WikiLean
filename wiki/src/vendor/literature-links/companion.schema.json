@@ -40,11 +40,17 @@
           }
         }
       ],
-      "description": "The formal destination: a reference, or an object with uri, pin and extensions. Absent means no formal counterpart. This name does not mean the W3C annotation target."
+      "description": "The formal destination: a reference, or an object with uri, pin and extensions. Absent means the record links nothing. This name does not mean the W3C annotation target."
     },
     "location": {
       "type": "object",
-      "description": "Part of the source. Its form depends on source.type. Absent means the whole source."
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/reference",
+          "description": "Names the application's convention for this location. Nothing fetches it."
+        }
+      },
+      "description": "Part of the source. With a profile it is application-defined; otherwise its form depends on source.type. Absent means the whole source."
     },
     "status": {
       "type": [
@@ -89,26 +95,40 @@
     "source"
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/mathlib-initiative/formal-companion-annotations/main/schema/companion.schema.json",
-  "title": "Formal companion annotation",
+  "$id": "https://raw.githubusercontent.com/mathlib-initiative/literature-links/main/schema/companion.schema.json",
+  "title": "Literature Links annotation",
   "description": "One link from an informal source, or a location in it, to a formal target, or an informal source alone. Validation also checks that a PDF rect has positive size and fits its page, and that LaTeX lines are in order.",
   "allOf": [
     {
       "if": {
         "properties": {
           "source": {
+            "type": "object",
             "properties": {
               "type": {
                 "const": "pdf"
               }
-            }
+            },
+            "required": [
+              "type"
+            ]
           }
-        }
+        },
+        "required": [
+          "source"
+        ]
       },
       "then": {
         "properties": {
           "location": {
-            "$ref": "#/$defs/pdf_location"
+            "if": {
+              "required": [
+                "profile"
+              ]
+            },
+            "else": {
+              "$ref": "#/$defs/pdf_location"
+            }
           }
         }
       }
@@ -117,18 +137,32 @@
       "if": {
         "properties": {
           "source": {
+            "type": "object",
             "properties": {
               "type": {
                 "const": "latex"
               }
-            }
+            },
+            "required": [
+              "type"
+            ]
           }
-        }
+        },
+        "required": [
+          "source"
+        ]
       },
       "then": {
         "properties": {
           "location": {
-            "$ref": "#/$defs/latex_location"
+            "if": {
+              "required": [
+                "profile"
+              ]
+            },
+            "else": {
+              "$ref": "#/$defs/latex_location"
+            }
           }
         }
       }
@@ -137,18 +171,32 @@
       "if": {
         "properties": {
           "source": {
+            "type": "object",
             "properties": {
               "type": {
                 "const": "html"
               }
-            }
+            },
+            "required": [
+              "type"
+            ]
           }
-        }
+        },
+        "required": [
+          "source"
+        ]
       },
       "then": {
         "properties": {
           "location": {
-            "$ref": "#/$defs/html_location"
+            "if": {
+              "required": [
+                "profile"
+              ]
+            },
+            "else": {
+              "$ref": "#/$defs/html_location"
+            }
           }
         }
       }
@@ -159,7 +207,7 @@
       "type": "string",
       "minLength": 1,
       "pattern": "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]+(?![\\s\\S])",
-      "description": "A URI or IRI reference without White_Space or controls. A relative one resolves against the file that holds the annotation."
+      "description": "A URI or IRI reference without White_Space or controls. A relative one resolves against the file that holds it: the annotation file, or the folder defaults file it came from."
     },
     "extensions": {
       "type": "object",
@@ -219,13 +267,23 @@
             "maximum": 1
           },
           "description": "[x, y, width, height] as fractions of the displayed CropBox after the page's rotation, from the top-left. It has positive size and fits the page (checked outside this schema)."
+        },
+        "quote": {
+          "$ref": "#/$defs/quote",
+          "description": "A quotation in the extracted text of this page, as the specification defines it."
         }
       },
       "additionalProperties": false,
       "required": [
         "page"
       ],
-      "description": "A page, optionally with a rectangle."
+      "not": {
+        "required": [
+          "rect",
+          "quote"
+        ]
+      },
+      "description": "A page, optionally with a rectangle or a quotation, not both."
     },
     "latex_location": {
       "type": "object",
@@ -233,7 +291,7 @@
         "label": {
           "type": "string",
           "minLength": 1,
-          "description": "A literal label in the file. The validator does not expand macros."
+          "description": "A literal label in the document. The validator does not expand macros."
         },
         "lines": {
           "type": "array",
@@ -390,7 +448,7 @@
     "sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
-      "description": "SHA-256 of the bytes that uri points at, as 64 lowercase hex digits."
+      "description": "SHA-256 as 64 lowercase hex digits: of the bytes that the uri next to the pin points at, or, in a status pin, of the file the pin names."
     },
     "identifiers": {
       "type": "object",
@@ -649,6 +707,25 @@
           },
           "then": {
             "$ref": "#/$defs/repository_pin"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "generic"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "url": {
+                "$ref": "#/$defs/reference"
+              }
+            }
           }
         }
       ],

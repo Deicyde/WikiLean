@@ -15,7 +15,7 @@ export const articles = sqliteTable("articles", {
   latestRevid: integer("latest_revid"), // newest upstream revid seen (null = unknown)
   lastUpstreamCheck: integer("last_upstream_check"), // ms; null = never checked
   annotations: text("annotations").notNull(), // JSON array (same shape as the sidecar files)
-  schemaVersion: integer("schema_version").notNull().default(3), // application storage: 3 legacy; 4 native FCA work items
+  schemaVersion: integer("schema_version").notNull().default(3), // application storage: 3 legacy; 4 native Literature Links work items
   version: integer("version").notNull().default(1), // bumped each save → busts the render cache
   // Per-status annotation counts (homepage data), computed from the FINAL
   // persisted annotations (tombstones excluded) in every write path, in the

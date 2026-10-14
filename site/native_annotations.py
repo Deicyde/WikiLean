@@ -1,6 +1,6 @@
-"""Native WikiLean review items containing lossless, single-record FCA links.
+"""Native WikiLean review items containing lossless, single-record Literature Links annotations.
 
-The review item is application data. Only each link's ``annotation`` is an FCA
+The review item is application data. Only each link's ``annotation`` is a Literature Links
 record. Legacy conversion is explicit; read helpers never rewrite stored data.
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit, urlunsplit
 ANCHOR_PROFILE = "urn:wikilean:anchor:v3"
 ANCHOR_FIELDS = ("type", "value", "section", "snippet", "from", "from_snippet",
                  "to", "to_snippet", "to_math", "to_alttext")
-SCHEMA_PATH = Path(__file__).resolve().parents[1] / "wiki/src/vendor/fca/companion.schema.json"
+SCHEMA_PATH = Path(__file__).resolve().parents[1] / "wiki/src/vendor/literature-links/companion.schema.json"
 LEGACY_FIELDS = frozenset({"mathlib", "decl", "module", "anchor", "anchors"})
 STATUSES = frozenset({"formalized", "partial", "not_formalized", "rejected"})
 MATHLIB_REPOSITORY = "https://github.com/leanprover-community/mathlib4"
@@ -99,22 +99,22 @@ def _validator():
     return Draft202012Validator(json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
 
 
-def validate_fca(annotation: Any) -> None:
+def validate_link_record(annotation: Any) -> None:
     """Validate the vendored reference schema and its two numeric invariants."""
     _strict_json(annotation)
     problem = next(_validator().iter_errors(annotation), None)
     if problem is not None:
-        raise NativeAnnotationError(f"FCA {problem.json_path}: {problem.message}")
+        raise NativeAnnotationError(f"Literature Links {problem.json_path}: {problem.message}")
     location = annotation.get("location", {})
     mode = annotation["source"]["type"]
     if mode == "pdf" and "rect" in location:
         x, y, width, height = (Fraction(str(value)) for value in location["rect"])
         if width <= 0 or height <= 0 or x + width > 1 or y + height > 1:
-            raise NativeAnnotationError("FCA PDF rectangle has invalid extents or bounds")
+            raise NativeAnnotationError("Literature Links PDF rectangle has invalid extents or bounds")
     if mode == "latex" and "lines" in location:
         start, end = location["lines"]
         if start > end:
-            raise NativeAnnotationError("FCA LaTeX line interval is reversed")
+            raise NativeAnnotationError("Literature Links LaTeX line interval is reversed")
 
 
 def _absolute(uri: Any) -> bool:
@@ -139,11 +139,11 @@ def _validate_base(span: dict, references: list[str]) -> None:
     if "base_uri" in span and not _absolute(base):
         raise NativeAnnotationError("base_uri must be an absolute URI reference")
     if any(not _absolute(uri) for uri in references) and base is None:
-        raise NativeAnnotationError("relative FCA references require a durable base_uri")
+        raise NativeAnnotationError("relative Literature Links references require a durable base_uri")
 
 
 def validate_items(items: Any, *, title: str | None = None, revid: int | None = None) -> None:
-    """Validate native application items without imposing IDs on FCA itself."""
+    """Validate native application items without imposing IDs on Literature Links itself."""
     _strict_json(items)
     if not isinstance(items, list):
         raise NativeAnnotationError("work items must be an array")
@@ -171,7 +171,7 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
                 raise NativeAnnotationError("invalid or duplicate internal link id")
             link_ids.add(identity)
             annotation = link.get("annotation")
-            validate_fca(annotation)
+            validate_link_record(annotation)
             uri = target_uri(annotation)
             # A link is an occurrence with a formal destination; a record without one belongs in unlinked.
             if uri is None:
@@ -185,7 +185,7 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
             _safe_storage_numbers(span)
             if not isinstance(span, dict) or set(span) - {"source", "location", "base_uri"}:
                 raise NativeAnnotationError("invalid unlinked source selection")
-            validate_fca({key: value for key, value in span.items() if key != "base_uri"})
+            validate_link_record({key: value for key, value in span.items() if key != "base_uri"})
             _validate_base(span, [span["source"]["uri"]])
             _validate_pin(span["source"]["uri"], span.get("base_uri"), None if item["status"] == "rejected" else title, revid)
 

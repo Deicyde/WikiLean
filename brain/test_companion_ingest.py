@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Offline tests for the local FCA/Brain boundary.
+"""Offline tests for the local Literature Links/Brain boundary.
 
-Projection/store tests run in ordinary CI without optional FCA. Reference tests
-also run when FCA is installed; --require-reference makes absence a hard error.
+Projection/store tests run in ordinary CI without optional Literature Links. Reference tests
+also run when it is installed; --require-reference makes absence a hard error.
 """
 from __future__ import annotations
 
@@ -23,8 +23,8 @@ from brain import store
 from brain.ingest import companion
 
 try:
-    from formal_companion_annotations import companion as reference
-    from formal_companion_annotations.discovery import collect
+    from literature_links import companion as reference
+    from literature_links.discovery import collect
 except ModuleNotFoundError:
     reference = None
 
@@ -228,8 +228,8 @@ class ProjectionTests(unittest.TestCase):
         self.assertEqual(list(self.root.iterdir()), [])
 
     def test_old_reference_version_fails_with_upgrade_message(self):
-        with patch.dict(sys.modules, {"formal_companion_annotations": SimpleNamespace(__version__="1.0.0")}):
-            with self.assertRaisesRegex(companion.ImportError, "found 1.0.0"):
+        with patch.dict(sys.modules, {"literature_links": SimpleNamespace(__version__="0.9.0")}):
+            with self.assertRaisesRegex(companion.ImportError, "found 0.9.0"):
                 companion._collect([], include=None, exclude=[])
 
     def test_build_failure_cleans_stage(self):
@@ -245,7 +245,7 @@ class ProjectionTests(unittest.TestCase):
             mock.assert_not_called()
 
     def test_missing_reference_is_actionable_never_fallback(self):
-        with patch.dict(sys.modules, {"formal_companion_annotations.discovery": None}):
+        with patch.dict(sys.modules, {"literature_links.discovery": None}):
             with self.assertRaisesRegex(companion.ImportError, "Validation is required"):
                 companion._collect([], include=None, exclude=[])
 
@@ -272,7 +272,7 @@ class ProjectionTests(unittest.TestCase):
         self.assertEqual(row["annotation"], annotation())
 
 
-@unittest.skipIf(reference is None, "Optional FCA reference package is not installed")
+@unittest.skipIf(reference is None, "Optional Literature Links package is not installed")
 class ReferenceTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -441,7 +441,7 @@ class ReferenceTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["annotation"], annotation())
 
 
-@unittest.skipUnless(reference, "FCA reference required")
+@unittest.skipUnless(reference, "Literature Links package required")
 class RetainedNativeTests(unittest.TestCase):
     def test_http_origin_preserves_values_duplicate_occurrences_and_large_integers(self):
         with tempfile.TemporaryDirectory() as root:
@@ -499,5 +499,5 @@ if __name__ == "__main__":
     if "--require-reference" in sys.argv:
         sys.argv.remove("--require-reference")
         if reference is None:
-            raise SystemExit("FCA reference package required: see docs/COMPANION-IMPORT.md")
+            raise SystemExit("Literature Links package required: see docs/COMPANION-IMPORT.md")
     unittest.main()

@@ -1,12 +1,12 @@
 # Companion annotations in the local Brain store
 
-WikiLean can ingest directories of independent annotations in the unversioned FCA
-draft into its existing Brain JSONL/SQLite reader. This is a **local, unreviewed import**, useful for exploring
+WikiLean can ingest directories of independent Literature Links annotations into its
+existing Brain JSONL/SQLite reader. This is a **local, unreviewed import**, useful for exploring
 Autoform blueprints or a book companion and querying every association. The live
 wiki remains canonical in D1; imported companions do not modify articles, moderation,
 the source registry, the nightly reducer, or a published Brain release.
 
-FCA is the interchange format. There is no companion manifest or imposed directory
+Literature Links is the interchange format. There is no companion manifest or imposed directory
 layout. Each record has one informal source and at most one formal target; JSON objects,
 arrays of complete records, and JSONL/NDJSON shards are supported by the reference
 package's recursive discovery. PDF, LaTeX, HTML, and generic sources all work. No
@@ -14,22 +14,23 @@ Autoform-specific extension is required.
 
 ## Install the reference validator
 
-The working integration uses the unpublished FCA reference package **2.0.0a2**
-from the `codex/minimal-companion-schema` branch. The annotation itself has no
-version field; the package version identifies the software only. Use Python 3.12.
-Install that reviewed local checkout or its built wheel in your environment:
+The integration uses the Literature Links package **1.0.0** at commit
+`3ad716af885ca7ebe8091f824fca829e03492f00`
+(https://github.com/mathlib-initiative/literature-links, private). The annotation
+itself has no version field; the package version identifies the software only. Use
+Python 3.12. Install that checkout in your environment:
 
 ```sh
 python3.12 -m venv /tmp/companion-env
-/tmp/companion-env/bin/python -m pip install /absolute/path/to/formal-companion-minimal
+/tmp/companion-env/bin/python -m pip install /absolute/path/to/literature-links
 ```
 
 The package supplies validation and shard discovery for this Python importer.
 WikiLean's native Worker separately vendors the exact pinned schema and generates
 a Worker-safe validator from it; the native Python pipeline validates the same
-schema. That pin and semantic parity checks are described in [the native runbook](COMPANION-NATIVE.md). This draft requires that exact reference package version, so an older graph-format package cannot silently pass through. It is optional for ordinary WikiLean work;
+schema. That pin and semantic parity checks are described in [the native runbook](COMPANION-NATIVE.md). The importer requires that exact package version, so an older format package cannot silently pass through. It is optional for ordinary WikiLean work;
 ingestion fails with an actionable error if absent. There is no public package URL
-or network fallback assumed by this draft. Querying an already built index requires
+or network fallback. Querying an already built index requires
 only Python's standard library.
 
 ## Import and read
@@ -70,7 +71,7 @@ operational `{annotation, origin}` entries with HTTP or opaque bases, preserving
 all origin fields (including an explicit null line).
 It is essential context when moving a record that contains relative references:
 **references resolve against the containing shard**, not the scan root or source URI.
-Query output is a transport report, not an FCA shard. To re-export, deliberately
+Query output is a transport report, not a Literature Links shard. To re-export, deliberately
 retain the origin or rebase both references; do not discard the origin and relocate
 relative records unchanged.
 
@@ -82,7 +83,7 @@ and explicit empty queries/fragments (`?`/`#`). No decoding, host normalization,
 resource lookup, or filename guessing occurs.
 
 The core's reference check is lexical, not a complete URI grammar. A malformed
-authority such as `https://[oops` or `//[oops` therefore remains valid FCA input.
+authority such as `https://[oops` or `//[oops` therefore remains valid Literature Links input.
 Such records are retained with `resolution.source` or `resolution.target` status
 `unresolved` and reason `unsupported_authority_syntax`. An absolute malformed
 reference keeps its original lookup key; an unresolved relative reference gets
@@ -143,7 +144,7 @@ This preserves a coherent capture even if files change or directories are moved
 between discovery and publication. Invalid mutated records still reject the batch.
 
 ```python
-from formal_companion_annotations.discovery import collect
+from literature_links.discovery import collect
 from brain.ingest.companion import import_collected
 
 captured = collect(["/path/to/shards"])
@@ -156,16 +157,16 @@ report = import_collected(captured, source_key="example", output="/tmp/captured-
 `brain/test_companion_ingest.py` tests the adapter against the real Brain builder,
 SQLite indexes, provenance recovery, duplicates, freshness, atomic failure cleanup,
 existing-output protection, and URI-resolution edge cases. These standard-library tests run in the normal
-Python CI gate. Optional reference tests additionally exercise all four FCA modes,
+Python CI gate. Optional reference tests additionally exercise all four Literature Links modes,
 semantic/JSON failures, arbitrary shards, include/exclude, relative origins, and CLI
-round trips. Run the complete boundary suite in the FCA environment:
+round trips. Run the complete boundary suite in the Literature Links environment:
 
 ```sh
 /tmp/companion-env/bin/python brain/test_companion_ingest.py --require-reference
 ```
 
-The flag fails if FCA is absent; the standard CI gate reports those tests as skipped
-until the draft reference dependency is available to the public CI environment.
+The flag fails if Literature Links is absent; the standard CI gate reports those tests as skipped
+until the package is available to the public CI environment.
 
-For the cross-project Autoform → FCA → WikiLean flow and Worker export, see
+For the cross-project Autoform → Literature Links → WikiLean flow and Worker export, see
 [the integration guide](COMPANION-INTEGRATION.md).

@@ -1,16 +1,16 @@
 # One local workspace for all three projects
 
-WikiLean stores complete FCA records natively. Autoform's Markdown articles remain
+WikiLean stores complete Literature Links records natively. Autoform's Markdown articles remain
 independent informal sources; separate records associate them with formal results.
 This workspace captures selected records once and supplies the same values to
 WikiLean's local Brain SQLite index and Autoform's native attachment reader.
 It does not call the legacy WikiLean or workflow-derived Autoform exporters.
 
-The FCA schema stays unversioned: one source; an optional target that is a
+The Literature Links schema stays unversioned: one source; an optional target that is a
 reference or an endpoint object with a pin; and optional location, status, kind,
 label, note, id, extensions and schema hint. Workspace configuration and
 record-origin envelopes are application data, not companion schemas. The
-development package is 2.0.0a2.
+package is Literature Links 1.0.0, pinned by commit.
 
 ## Create a workspace
 
@@ -21,7 +21,7 @@ checkout. Either the project root or its `blueprint/` directory is accepted.
 ```sh
 python3.12 scripts/companion-workspace.py --workspace /absolute/workspace init \
   --autoform-root /absolute/autoform \
-  --fca-root /absolute/formal-companion-annotations \
+  --literature-links-root /absolute/literature-links \
   --consumer /absolute/lean-project \
   --shards /absolute/annotations \
   --article /absolute/native-article.json
@@ -29,7 +29,7 @@ python3.12 scripts/companion-workspace.py --workspace /absolute/workspace init \
 
 The consumer, shards, and article inputs are optional. The workspace creates an
 `inbox/` for individual annotations, arrays, JSONL or NDJSON. Repeated `--shards`,
-`--include`, and `--exclude` select any directory arrangement supported by FCA's
+`--include`, and `--exclude` select any directory arrangement supported by the Literature Links
 reader. Keep reports and generated workspace history outside the shard selection.
 No repository URL, commit, or Node exporter is needed for native synchronization.
 Older configuration coordinates are retained as unused operational metadata.
@@ -37,7 +37,7 @@ Older configuration coordinates are retained as unused operational metadata.
 An article input is a saved native WikiLean snapshot with `schema_version: 4`,
 `wikipedia_title` (or `wikipediaTitle`), a positive `revid`, and an `annotations`
 array of review items containing `links` and `unlinked`. The 4 is
-WikiLean's **application storage marker**, never a field on an FCA record. Rejected
+WikiLean's **application storage marker**, never a field on a Literature Links record. Rejected
 items and targetless occurrences remain in WikiLean; the shared association index
 contains only existing public links. Each link is read with the item's review
 facts and the article's website pin projected into the format's fields, exactly
@@ -46,7 +46,7 @@ Relative references require the original `base_uri` on their link envelope. No
 reference is reconstructed from old fields. Legacy snapshots fail with an
 explicit migration-required error.
 
-Setup installs the local editable Autoform and FCA packages into one Python 3.12
+Setup installs the local editable Autoform and Literature Links packages into one Python 3.12
 environment using Autoform's lock. If interrupted, finish with `setup` in place of
 `init`. Repeat setup after package definitions or the dependency lock change.
 It never modifies the live D1 database or runs formalization/proof workers.
@@ -68,7 +68,7 @@ writing, and follows the selected generation on each request.
 Each generation contains `index/brain.sqlite3` and
 `autoform-native/records.jsonl`. The latter is a lossless operational archive:
 each entry has `annotation` and its original `origin`, including `base_uri` and
-pointer. It must not be mistaken for a naked FCA shard. Relative references never
+pointer. It must not be mistaken for a naked Literature Links shard. Relative references never
 start resolving against the generated archive's location.
 
 With a consumer configured, sync registers one stable archive reference in its
@@ -101,7 +101,7 @@ yet.
 
 ## Refresh guarantees and failure handling
 
-A refresh validates selected shards with the FCA reference reader, reads native
+A refresh validates selected shards with the Literature Links reference reader, reads native
 article links, and detaches one in-memory capture. Both consumers receive that
 capture; a final comparison checks full values and origins, including duplicates.
 The completed generation records tool fingerprints and package versions before

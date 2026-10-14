@@ -1,6 +1,6 @@
 /** Navigation is narrower than portable URI storage: unfamiliar schemes remain text. */
-import { targetPin, targetUri, type FCARecord } from "../native-companion.js";
-export function formalTargetLabel(record: FCARecord): string {
+import { targetPin, targetUri, type LinkRecord } from "../native-companion.js";
+export function formalTargetLabel(record: LinkRecord): string {
   const declaration = targetPin(record)?.declaration;
   if (typeof declaration === "string" && declaration) return declaration;
   const target = targetUri(record) ?? "";

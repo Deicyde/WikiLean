@@ -1,6 +1,6 @@
-"""Private local workspace connecting Autoform, FCA and WikiLean.
+"""Private local workspace connecting Autoform, Literature Links and WikiLean.
 
-Configuration and generation reports are operational files, never FCA schemas.
+Configuration and generation reports are operational files, never Literature Links schemas.
 Run `python scripts/companion-workspace.py --help` for the setup entry point.
 """
 from __future__ import annotations
@@ -86,20 +86,20 @@ def _revision(root: Path) -> dict:
 
 
 def _tool_revisions(config: dict) -> dict:
-    return {name: _revision(Path(config[f"{name}_root"])) for name in ("autoform", "fca", "wikilean")}
+    return {name: _revision(Path(config[f"{name}_root"])) for name in ("autoform", "literature_links", "wikilean")}
 
 
 def _dependency_inputs(config: dict) -> dict:
     paths = {
         "autoform_lock": Path(config["autoform_root"]) / "uv.lock",
         "autoform_package": Path(config["autoform_root"]) / "pyproject.toml",
-        "fca_package": Path(config["fca_root"]) / "pyproject.toml",
+        "literature_links_package": Path(config["literature_links_root"]) / "pyproject.toml",
     }
     return {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in paths.items()}
 
 
 def _check_roots(workspace: Path, config: dict) -> None:
-    for name in ("autoform", "fca", "wikilean"):
+    for name in ("autoform", "literature_links", "wikilean"):
         root = Path(config[f"{name}_root"]).resolve()
         if not root.is_dir():
             raise WorkspaceError(f"Missing {name} checkout: {root}")
@@ -119,7 +119,7 @@ def _check_roots(workspace: Path, config: dict) -> None:
 
 
 
-def initialize(workspace: Path, *, autoform_root: Path, fca_root: Path,
+def initialize(workspace: Path, *, autoform_root: Path, literature_links_root: Path,
                node: str | None = None, shards=(), articles=(), consumer=None,
                repo=None, commit=None, include=None, exclude=(), attach_sources=True) -> dict:
     if workspace.exists() or workspace.is_symlink():
@@ -128,7 +128,7 @@ def initialize(workspace: Path, *, autoform_root: Path, fca_root: Path,
         raise WorkspaceError("Repository metadata requires a consumer path")
     config = {
         "format": FORMAT, "workspace_id": uuid.uuid4().hex,
-        "autoform_root": str(autoform_root.resolve()), "fca_root": str(fca_root.resolve()),
+        "autoform_root": str(autoform_root.resolve()), "literature_links_root": str(literature_links_root.resolve()),
         "wikilean_root": str(ROOT), "node": str(Path(node).resolve()) if node else None,
         "shards": [str(workspace / "inbox"), *[str(Path(p).resolve()) for p in shards]],
         "articles": [str(Path(p).resolve()) for p in articles],
@@ -185,7 +185,7 @@ def setup(workspace: Path) -> dict:
               "--no-emit-project", "--format", "requirements-txt", "--output-file", lock])
         _run([uv, "pip", "sync", "--python", python, lock], timeout=600)
         _run([uv, "pip", "install", "--python", python, "--no-deps", "--editable",
-              config["autoform_root"], "--editable", config["fca_root"]], timeout=600)
+              config["autoform_root"], "--editable", config["literature_links_root"]], timeout=600)
         launcher = workspace / "companion"
         text = "#!/bin/sh\nexec " + " ".join(shlex.quote(str(p)) for p in (
             python, ROOT / "scripts/companion-workspace.py", "--workspace", workspace)) + ' "$@"\n'
@@ -211,15 +211,15 @@ def doctor(workspace: Path) -> dict:
     if receipt.get("workspace_id") != config["workspace_id"] or receipt.get("dependencies") != _dependency_inputs(config):
         raise WorkspaceError("Dependency inputs changed or setup is incomplete; run setup")
     import autoform_cli
-    import formal_companion_annotations as fca
-    for name, module in (("autoform", autoform_cli), ("fca", fca)):
+    import literature_links
+    for name, module in (("autoform", autoform_cli), ("literature_links", literature_links)):
         if not Path(module.__file__).resolve().is_relative_to(Path(config[f"{name}_root"]).resolve()):
             raise WorkspaceError(f"The installed {name} package does not come from the configured local checkout; run setup")
-    if fca.__version__ != "2.0.0a2":
-        raise WorkspaceError("This integration requires the FCA 2.0.0a2 draft")
+    if literature_links.__version__ != "1.0.0":
+        raise WorkspaceError("This integration requires Literature Links 1.0.0")
     if not hasattr(__import__("autoform_cli.companions", fromlist=["capture_retained_records"]), "capture_retained_records"):
         raise WorkspaceError("The configured Autoform checkout lacks native companion attachments")
-    return {"ready": True, "python": sys.version.split()[0], "fca": fca.__version__,
+    return {"ready": True, "python": sys.version.split()[0], "literature_links": literature_links.__version__,
             "autoform": importlib.metadata.version("autoform"), "tools": _tool_revisions(config)}
 
 
@@ -270,7 +270,7 @@ def _same_occurrences(entries, index: Path, catalog: Path) -> None:
 
 def _article_entries(path: Path) -> tuple[list[dict], dict]:
     """Capture native stored links once. No annotation fields are synthesized."""
-    from formal_companion_annotations import companion
+    from literature_links import companion
     article = companion.loads(path.read_text(encoding="utf8"))
     if not isinstance(article, dict) or article.get("schema_version", article.get("schemaVersion")) != 4:
         raise WorkspaceError(f"{path}: explicit native migration required before synchronization")
@@ -353,7 +353,7 @@ def _install_native_attachment(prepared) -> None:
 
 def synchronize(workspace: Path) -> dict:
     from autoform_cli.companions import capture_retained_records, write_retained_annotations
-    from formal_companion_annotations.discovery import collect
+    from literature_links.discovery import collect
     from brain.ingest.companion import import_retained
 
     config = _configuration(workspace)
@@ -421,7 +421,7 @@ def main(argv=None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     init = commands.add_parser("init", help="create and install a private local workspace")
     init.add_argument("--autoform-root", required=True, type=Path)
-    init.add_argument("--fca-root", required=True, type=Path)
+    init.add_argument("--literature-links-root", required=True, type=Path)
     init.add_argument("--node")
     init.add_argument("--shards", action="append", default=[])
     init.add_argument("--article", action="append", default=[])
@@ -441,7 +441,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "init":
-            initialize(args.workspace, autoform_root=args.autoform_root, fca_root=args.fca_root,
+            initialize(args.workspace, autoform_root=args.autoform_root, literature_links_root=args.literature_links_root,
                        node=args.node, shards=args.shards, articles=args.article, consumer=args.consumer,
                        repo=args.repo, commit=args.commit, include=args.include, exclude=args.exclude,
                        attach_sources=not args.no_attach_sources)

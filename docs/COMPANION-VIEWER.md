@@ -1,6 +1,6 @@
 # Browse companion links locally
 
-The companion viewer opens an imported FCA index in a read-only browser interface.
+The companion viewer opens an imported Literature Links index in a read-only browser interface.
 It shows informal sources, formal targets, source locations, carrier origins, and
 complete original annotations. Search narrows links by source or target text;
 optional exact filters use the endpoint lookup keys returned by the API.
@@ -12,7 +12,7 @@ python3.12 -m brain.companion_server --data-dir /tmp/my-companion-brain --port 8
 ```
 
 Open [the local companion viewer](http://127.0.0.1:8743/). The server uses Python's
-standard library and the existing Brain SQLite reader; the optional FCA package is
+standard library and the existing Brain SQLite reader; the optional Literature Links package is
 not needed for browsing an already validated import. Stop it with Ctrl-C.
 
 For the integrated workspace, use the coordinator in
@@ -43,7 +43,7 @@ The viewer does not render a source PDF/HTML document or prove that a locator st
 matches it. It displays the annotation's own source and location information.
 It does not publish, moderate, edit D1, launch proofs, or export relocated records.
 The original shards remain the export format; a JSON response includes origins and
-is a transport report rather than a new FCA shard format.
+is a transport report rather than a new Literature Links shard format.
 
 ## Local read API
 
@@ -98,4 +98,4 @@ Run `python3.12 brain/test_companion_server.py`. The hermetic tests use real loc
 HTTP requests and a generated SQLite fixture to cover browsing, exact filters,
 pagination, literal searches, full-value preservation, hostile HTML/URI input,
 Host/Origin guards, read-only behavior, stale data, and generation changes.
-They run in `scripts/ci-python.sh` without an FCA installation.
+They run in `scripts/ci-python.sh` without a Literature Links installation.

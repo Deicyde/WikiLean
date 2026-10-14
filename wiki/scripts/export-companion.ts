@@ -1,4 +1,4 @@
-// Explicit local article snapshot -> atomic FCA shard. No D1 or network access.
+// Explicit local article snapshot -> atomic annotation file. No D1 or network access.
 import { readFileSync, writeFileSync } from "node:fs";
 import { exportCompanionAnnotations } from "../src/companion.js";
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Import atomic companion shards into an isolated, local Brain SQLite projection.
 
-The reference FCA package owns validation and discovery. This adapter owns only
+The Literature Links package owns validation and discovery. This adapter owns only
 transport provenance and a conservative association projection: raw URI endpoints,
 no invented declarations/concepts, and no formalization or review claims.
 """
@@ -28,7 +28,7 @@ if __package__ in (None, ""):
 
 from brain import store
 
-REFERENCE_VERSION = "2.0.0a2"
+REFERENCE_VERSION = "1.0.0"
 PROFILE = "companion-local-import-v1"
 # Index key for a record with no formal counterpart (a target-less annotation).
 # It is only a lookup key: it names no formal object and is never written into
@@ -48,18 +48,18 @@ class ImportError(ValueError):
 
 def _require_reference():
     try:
-        import formal_companion_annotations as fca
-        if getattr(fca, "__version__", None) != REFERENCE_VERSION:
+        import literature_links
+        if getattr(literature_links, "__version__", None) != REFERENCE_VERSION:
             raise ImportError(
-                f"FCA {REFERENCE_VERSION} is required for this draft integration; "
-                f"found {getattr(fca, '__version__', 'unknown')}. "
+                f"Literature Links {REFERENCE_VERSION} is required; "
+                f"found {getattr(literature_links, '__version__', 'unknown')}. "
                 "See docs/COMPANION-IMPORT.md."
             )
-        companion = importlib.import_module("formal_companion_annotations.companion")
-        discovery = importlib.import_module("formal_companion_annotations.discovery")
+        companion = importlib.import_module("literature_links.companion")
+        discovery = importlib.import_module("literature_links.discovery")
     except builtins.ImportError as exc:
         raise ImportError(
-            "Install the FCA 2.0.0a2 reference package in this Python environment; "
+            f"Install the Literature Links {REFERENCE_VERSION} package in this Python environment; "
             "see docs/COMPANION-IMPORT.md. Validation is required, never bypassed."
         ) from exc
     return companion, discovery
@@ -128,7 +128,7 @@ def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, st
     unsupported authority syntax is retained with explicit unresolved status.
     """
     parsed = REFERENCE_PARTS.fullmatch(reference)
-    assert parsed is not None  # FCA's lexical rule excludes control characters.
+    assert parsed is not None  # The format's lexical rule excludes control characters.
     parts = parsed.groupdict()
     try:
         # Inspect only; never use urllib's recomposition, case folding, percent
@@ -295,7 +295,7 @@ def _preflight(source_key, output):
 
 
 def import_collected(collection, *, source_key: str, output: Path | str) -> dict[str, Any]:
-    """Publish one captured FCA Collection without rediscovering source files.
+    """Publish one captured Literature Links Collection without rediscovering source files.
 
     Every annotation is copied and revalidated with the reference checker. Carrier
     paths are the already captured absolute paths, never resolved again. A caller
@@ -308,7 +308,7 @@ def import_collected(collection, *, source_key: str, output: Path | str) -> dict
 def import_retained(entries, *, source_key: str, output: Path | str) -> dict[str, Any]:
     """Read native annotations with durable carrier bases, including HTTP bases.
 
-    This operational envelope is not part of FCA. Core values are validated by
+    This operational envelope is not part of Literature Links. Core values are validated by
     the reference package and retained unchanged; no native-to-legacy projection.
     """
     _preflight(source_key, output)

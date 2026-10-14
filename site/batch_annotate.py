@@ -132,7 +132,7 @@ status, note, provenance and other review metadata, and REQUIRES two arrays:
       "url":"https://github.com/leanprover-community/mathlib4",
       "module":"<Mathlib module>","declaration":"<declaration>"}}}, "base_uri":"<only if needed>"}]
   unlinked: [{"source":{...},"location":{...}}]
-Every annotation in links is one independent, unversioned FCA record with ONE
+Every annotation in links is one independent Literature Links record with ONE
 informal source and ONE formal target. A target may also be a plain URI string;
 the repository pin names the Mathlib module and declaration the URI points at.
 No root mathlib/decl/module/anchor/anchors.
@@ -166,7 +166,7 @@ slashes, then .html# and the percent-encoded declaration. Give the target as
 "https://github.com/leanprover-community/mathlib4", "module": <dotted module>,
 "declaration": <declaration>}}. The target is the sole formal-link authority;
 do not add mathlib/decl/module fields to the review item. Reuse each source
-selection unchanged, including its location, to create one FCA record per
+selection unchanged, including its location, to create one Literature Links record per
 selection and formal target. Use <item-id>:link:<ordinal> for new internal link
 IDs and preserve existing internal link IDs. Move a newly linked selection out
 of unlinked; retain genuinely unlinked selections there. No target means no

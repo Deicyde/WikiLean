@@ -17,9 +17,9 @@ from brain import companion_workspace as workspace
 
 try:
     import autoform_cli
-    import formal_companion_annotations as fca
+    import literature_links
 except ImportError:
-    autoform_cli = fca = None
+    autoform_cli = literature_links = None
 
 
 class WorkspaceConfigTests(unittest.TestCase):
@@ -32,7 +32,7 @@ class WorkspaceConfigTests(unittest.TestCase):
         self.tools.mkdir()
 
     def init(self, **kwargs):
-        return workspace.initialize(self.path, autoform_root=self.tools, fca_root=self.tools, **kwargs)
+        return workspace.initialize(self.path, autoform_root=self.tools, literature_links_root=self.tools, **kwargs)
 
     def test_existing_workspace_is_not_replaced(self):
         self.init()
@@ -108,7 +108,7 @@ class WorkspaceConfigTests(unittest.TestCase):
                 workspace.doctor(self.path)
 
 
-@unittest.skipUnless(autoform_cli and fca, "shared FCA/Autoform environment required")
+@unittest.skipUnless(autoform_cli and literature_links, "shared Literature Links/Autoform environment required")
 class WorkspaceIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -122,10 +122,10 @@ class WorkspaceIntegrationTests(unittest.TestCase):
                        "extensions": {"test": {"large": 2**100}}}
         (self.shards / "record.json").write_text(json.dumps(self.record))
         workspace.initialize(self.path, autoform_root=Path(autoform_cli.__file__).parents[1],
-                             fca_root=Path(fca.__file__).parents[2], shards=[self.shards])
+                             literature_links_root=Path(literature_links.__file__).parents[2], shards=[self.shards])
         self.stack = contextlib.ExitStack()
         self.addCleanup(self.stack.close)
-        tools = {name: {"commit": "fixture", "dirty": False} for name in ("autoform", "fca", "wikilean")}
+        tools = {name: {"commit": "fixture", "dirty": False} for name in ("autoform", "literature_links", "wikilean")}
         self.stack.enter_context(patch.object(workspace, "doctor", return_value={"tools": tools, "python": "3.12"}))
         self.stack.enter_context(patch.object(workspace, "_tool_revisions", return_value=tools))
 
@@ -309,6 +309,6 @@ class WorkspaceIntegrationTests(unittest.TestCase):
 if __name__ == "__main__":
     if "--require-integrations" in sys.argv:
         sys.argv.remove("--require-integrations")
-        if not (autoform_cli and fca):
+        if not (autoform_cli and literature_links):
             raise SystemExit("Use the shared companion workspace environment")
     unittest.main()
