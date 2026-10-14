@@ -1401,10 +1401,14 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                     state["n_err"] += 1
                     low = str(err).lower()
                     # An auth/credit misconfiguration (e.g. an ANTHROPIC_API_KEY
-                    # shadowing the Max login → "Credit balance is too low") fails
-                    # EVERY article identically and won't self-resolve — abort on
-                    # the first one instead of burning the whole batch.
-                    if "credit balance" in low or "authentication" in low:
+                    # shadowing the Max login → "Credit balance is too low", a
+                    # logged-out CLI → "Not logged in", an expired OAuth token →
+                    # "Failed to authenticate") fails EVERY article identically
+                    # and won't self-resolve — abort on the first one instead of
+                    # burning the whole batch.
+                    if ("credit balance" in low or "authentication" in low
+                            or "failed to authenticate" in low
+                            or "not logged in" in low):
                         state["consec_err"] = ABORT_AFTER
                     elif ("error result" in low or "rate" in low
                             or "limit" in low or "overloaded" in low):
