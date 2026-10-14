@@ -8,12 +8,11 @@ state — then the decisions that are waiting on a human.
 
 Offline and instant by default (reads manage/data/digest.json + local state).
 ``--live`` adds read-only network checks: the site returns 200; the bot gate
-from a local ``poll.py --decide`` and from the latest CI poll run; the batch
-PR's merge state and age; nightly review health (per run from GET /api/runs,
-or from the /stats totals compared with the previous --live reading in
-site/cache/.status_live.json where that endpoint is not deployed); and the
-live Brain release. ``--refresh`` regenerates the digest first (see
-refresh.py).
+from the latest CI poll run; the batch PR's merge state and age; nightly
+review health (per run from GET /api/runs, or from the /stats totals compared
+with the previous --live reading in site/cache/.status_live.json where that
+endpoint is not deployed); and the live Brain release. ``--refresh``
+regenerates the digest first (see refresh.py).
 
     python3 manage/status.py
     python3 manage/status.py --live
@@ -65,12 +64,21 @@ def _age(ts: float) -> str:
     return f"{h:.0f}h ago" if h >= 1 else f"{h * 60:.0f}m ago"
 
 
-def _run(cmd: list[str], timeout: int = 12) -> str | None:
+def _run_err(cmd: list[str], timeout: int = 12) -> tuple[str | None, str]:
+    """(stdout or None on failure, stderr), so a caller can tell why a read failed."""
     try:
         r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
-        return r.stdout.strip() if r.returncode == 0 else None
-    except Exception:
-        return None
+        return (r.stdout.strip() if r.returncode == 0 else None), r.stderr.strip()
+    except Exception as e:
+        return None, str(e)
+
+
+def _run(cmd: list[str], timeout: int = 12) -> str | None:
+    return _run_err(cmd, timeout)[0]
+
+
+def _first_line(err: str) -> str:
+    return (err.strip().splitlines() or ["no error output"])[0][:160]
 
 
 def _fetch(url: str, timeout: int = 15) -> str | None:
@@ -231,16 +239,18 @@ def _decision(text: str | None) -> str | None:
 
 
 def ci_gate() -> tuple[str | None, str, list[str]]:
-    """The latest finished wikidata-poll run, via gh. CI decides with
-    MATHLIB_FORK_PAT, which a local decide (the operator's gh login) cannot
-    see failing. Cancelled runs are skipped: concurrency cancels them."""
-    out = _run(["gh", "run", "list", "--repo", POLL_REPO, "--workflow", POLL_WORKFLOW,
-                "--status", "completed", "-L", "5", "--json", "databaseId,createdAt,conclusion"],
-               timeout=30)
+    """The latest finished wikidata-poll run on main, via gh. Only CI's decision
+    is shown: a local decide reads this checkout's copy of the bot state, which
+    the poller stops updating once it keeps state on the bot-state branch.
+    Cancelled runs are skipped: concurrency cancels them."""
+    out, err = _run_err(["gh", "run", "list", "--repo", POLL_REPO, "--workflow", POLL_WORKFLOW,
+                         "--branch", "main", "--status", "completed", "-L", "5",
+                         "--json", "databaseId,createdAt,conclusion"], timeout=30)
     try:
         runs = json.loads(out)
     except (TypeError, ValueError):
-        return None, "CI ?", []
+        return None, "CI ?", [f"could not list wikidata-poll runs ({_first_line(err)}); "
+                              f"the gate is unknown"]
     run = next((r for r in runs if r.get("conclusion") not in ("cancelled", "skipped")), None)
     if run is None:
         return None, "CI ?", []
@@ -249,13 +259,18 @@ def ci_gate() -> tuple[str | None, str, list[str]]:
     if age is not None and age > POLL_STALE_HOURS:
         alerts.append(f"the wikidata poller has not finished a run in {age:.0f}h; "
                       f"check that the workflow is enabled and has Actions minutes")
-    log = _run(["gh", "run", "view", str(run["databaseId"]), "--repo", POLL_REPO, "--log"],
-               timeout=60)
+    log, log_err = _run_err(["gh", "run", "view", str(run["databaseId"]), "--repo", POLL_REPO,
+                             "--log"], timeout=60)
+    if log is None:
+        alerts.append(f"could not read the log of wikidata-poll run {run['databaseId']} "
+                      f"({_first_line(log_err)}); its decision is unknown")
+    # POLL_ERROR can come from any poll.py step (decide, apply, refresh-table).
     err = re.search(r"Z POLL_ERROR: (.*)$", log or "", re.M)
     dec = _decision(log)
     if err:
-        dec = "error"
-        alerts.append(f"the poller's decide failed in run {run['databaseId']}: {err.group(1)[:160]}")
+        dec = dec or "error"
+        alerts.append(f"wikidata-poll run {run['databaseId']} reported POLL_ERROR: "
+                      f"{err.group(1)[:160]}")
     elif run.get("conclusion") != "success":
         alerts.append(f"wikidata-poll run {run['databaseId']} ended '{run.get('conclusion')}'")
     when = f"{age:.0f}h ago" if age is not None else "?"
@@ -263,34 +278,38 @@ def ci_gate() -> tuple[str | None, str, list[str]]:
 
 
 def gate_section() -> tuple[list[str], list[str]]:
-    local = _decision(_run([sys.executable, "bot/poll.py", "--mathlib", "/tmp/unused",
-                            "--decide"], timeout=30))
-    dec_ci, ci, alerts = ci_gate()
-    note = ""
-    if local and dec_ci in ("act", "wait") and local != dec_ci:
-        note = "  (a local decide reads this checkout's bot state, which can lag CI's)"
-    return [f"  gate       local {local or 'timeout/error'} · {ci}{note}"], alerts
+    _, ci, alerts = ci_gate()
+    return [f"  gate       {ci}"], alerts
 
 
-def ci_bot_state() -> dict | None:
-    """The poller's live state from the bot-state branch, when that branch exists."""
-    out = _run(["gh", "api", f"repos/{POLL_REPO}/contents/bot/state/bot_state.json?ref=bot-state",
-                "--jq", ".content"], timeout=30)
+def ci_bot_state() -> tuple[dict | None, str | None]:
+    """The poller's live state from the bot-state branch: (state, None);
+    (None, None) when there is no such branch (HTTP 404); (None, reason) when
+    the read failed for any other reason."""
+    out, err = _run_err(["gh", "api",
+                         f"repos/{POLL_REPO}/contents/bot/state/bot_state.json?ref=bot-state",
+                         "--jq", ".content"], timeout=30)
+    if out is None:
+        return None, (None if "(HTTP 404)" in err else _first_line(err))
     try:
-        st = json.loads(base64.b64decode(out or ""))
+        st = json.loads(base64.b64decode(out))
     except (ValueError, TypeError):
-        return None
-    return st if isinstance(st, dict) else None
+        st = None
+    return (st, None) if isinstance(st, dict) else (None, "bot_state.json is not a JSON object")
 
 
 def batch_pr(pr, source: str = "local") -> tuple[list[str], list[str]]:
     out = _run(["gh", "pr", "view", str(pr), "--repo", MATHLIB_REPO,
-                "--json", "state,mergeable,createdAt,labels"], timeout=30)
+                "--json", "state,mergeable,createdAt,labels,title"], timeout=30)
     try:
         d = json.loads(out)
     except (TypeError, ValueError):
         return [f"  batch PR   #{pr}: gh unavailable"], []
     state = d.get("state", "?")
+    # mathlib merges through Bors, which closes the PR (mergedAt stays null) and
+    # prefixes its title "[Merged by Bors] - "; only the merge button gives MERGED.
+    if state == "CLOSED" and str(d.get("title") or "").startswith("[Merged by Bors]"):
+        state = "MERGED (Bors)"
     age = _hours_since(d.get("createdAt", ""))
     days = age / 24 if age is not None else None
     alerts = []
@@ -300,7 +319,8 @@ def batch_pr(pr, source: str = "local") -> tuple[list[str], list[str]]:
     if state == "OPEN":
         if d.get("mergeable") == "CONFLICTING" or "merge-conflict" in labels:
             alerts.append(f"batch PR #{pr} conflicts with mathlib master; the poller rebuilds "
-                          f"it on its next act tick, so act only if this persists")
+                          f"a batch off master only once it is settled, so step in if it "
+                          f"still conflicts after the settle")
         if days is not None and days > BATCH_PR_STALE_DAYS:
             alerts.append(f"batch PR #{pr} has been open {days:.0f} days; find a maintainer to merge it")
     elif state == "CLOSED":
@@ -326,7 +346,7 @@ def brain_release() -> str:
 
 
 def live_section(batch: dict) -> tuple[list[str], list[str]]:
-    """Every --live line and alert. Read-only: GETs, gh reads, a local decide."""
+    """Every --live line and alert. Read-only: GETs and gh reads."""
     lines, alerts = [], []
     code = _run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "-m", "8", SITE_URL])
     lines.append(f"  site       {SITE_URL} → {code or 'unreachable'}")
@@ -334,8 +354,14 @@ def live_section(batch: dict) -> tuple[list[str], list[str]]:
         lines += part[0]
         alerts += part[1]
     lines.append(brain_release())
-    ci_state = ci_bot_state()
-    state, source = (ci_state, "bot-state branch") if ci_state else (batch, "local snapshot")
+    ci_state, failed = ci_bot_state()
+    if failed:
+        lines.append("  batch PR   ? (the bot-state branch could not be read)")
+        alerts.append(f"could not read the poller's state from the bot-state branch "
+                      f"({failed}); the batch PR was not checked")
+        return lines, alerts
+    state, source = ((ci_state, "bot-state branch") if ci_state is not None
+                     else (batch, "local snapshot; no bot-state branch"))
     if state.get("current_pr"):
         more, a = batch_pr(state["current_pr"], source)
         lines += more
