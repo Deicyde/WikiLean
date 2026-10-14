@@ -3,9 +3,10 @@
 Wikidata "Mathlib declaration" property proposal (docs/wikidata_property_proposal.md).
 
 Reframing that unblocks the proposal: instead of "human-review ~815 AI mappings",
-the ~127 tags ALREADY MERGED into mathlib master each passed the bot's review gate
-(≥2 human reviewers incl. ≥1 maintainer) plus mathlib CI — they ARE the reviewed
-seed. This script joins them with their provenance and emits sign-off artifacts.
+the ~127 tags ALREADY MERGED into mathlib master were each merged after Mathlib
+review and CI (a maintainer's bors r+, or d+ delegation) — they ARE the reviewed
+seed. Rows include external tags from non-bot PRs, not only the bot's batches.
+This script joins them with their provenance and emits sign-off artifacts.
 Jack still personally reviews the output before anything is submitted to Wikidata
 (standing rule; this script only WRITES LOCAL FILES).
 
@@ -283,7 +284,7 @@ def main() -> int:
     qs = ["# QuickStatements v1 — P14534 (Mathlib Declaration ID) seed batch.",
           "# Value = fully-qualified Mathlib declaration name (proposal Option A).",
           "# Source: @[wikidata] tags merged into leanprover-community/mathlib4 master,",
-          "# each reviewed by >=2 humans incl. a maintainer (PR provenance in property_seed.tsv).",
+          "# each merged after Mathlib review and CI, from bot batches or external PRs (provenance in property_seed.tsv).",
           f"# References per statement: S854 = source permalink @ {sha[:12]}, S813 = retrieved.",
           "# Excluded: ambiguous / catalog-mismatch / multi-site rows — see property_seed_flags.tsv.",
           "# Submit as Mynus grey after human review (Jack's standing rule)."]
