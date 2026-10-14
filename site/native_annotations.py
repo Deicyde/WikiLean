@@ -201,7 +201,7 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
             _validate_pin(annotation["source"]["uri"], link.get("base_uri"), None if item["status"] == "rejected" else title, revid)
         for span in item["unlinked"]:
             _safe_storage_numbers(span)
-            if not isinstance(span, dict) or set(span) - {"source", "location", "base_uri"}:
+            if not isinstance(span, dict) or set(span) - {"source", "location", "base_uri", "extensions"}:
                 raise NativeAnnotationError("invalid unlinked source selection")
             validate_link_record({key: value for key, value in span.items() if key != "base_uri"})
             _validate_base(span, [span["source"]["uri"]])
@@ -231,7 +231,7 @@ def occurrences(item: dict) -> list[dict]:
         if not isinstance(link, dict) or not isinstance(link.get("annotation"), dict):
             continue
         annotation = link["annotation"]
-        span = {key: annotation[key] for key in ("source", "location") if key in annotation}
+        span = {key: annotation[key] for key in ("source", "location", "extensions") if key in annotation}
         if "base_uri" in link:
             span["base_uri"] = link["base_uri"]
         spans.append(span)
@@ -259,20 +259,99 @@ def anchors(item: dict, *, source_uri: str | None = None,
             result.append({"type": "whole_resource"})
             continue
         # Written as html since the profile form exists; generic records predate it.
-        if (isinstance(source, dict) and source.get("type") in {"html", "generic"}
-                and isinstance(location, dict) and location.get("profile") == ANCHOR_PROFILE
-                and isinstance(location.get("anchor"), dict)):
-            anchor = location["anchor"]
-            malformed = any(key in anchor and not isinstance(anchor[key], str) for key in ANCHOR_FIELDS)
-            if anchor.get("type") in {"math_alttext", "theorem_box"} and not anchor.get("value"):
-                malformed = True
-            if anchor.get("type") == "prose_range" and not (anchor.get("section") is not None
-                    and (anchor.get("from") or anchor.get("from_snippet"))):
-                malformed = True
-            result.append(None if malformed else anchor)
-        else:
+        if not (isinstance(source, dict) and source.get("type") in {"html", "generic"} and isinstance(location, dict)):
             result.append(None)
+            continue
+        if location.get("profile") == ANCHOR_PROFILE and isinstance(location.get("anchor"), dict):
+            result.append(_well_formed_anchor(location["anchor"]))
+        elif "profile" in location:
+            result.append(None)
+        else:
+            # A built-in Literature Links location. WikiLean's own records keep the
+            # editing key beside it; any other record is read from the location.
+            editing_key = _anchor_extension(span)
+            result.append(_well_formed_anchor(editing_key) if isinstance(editing_key, dict) else derive_anchor(location))
     return result
+
+
+def _well_formed_anchor(anchor: dict) -> dict | None:
+    malformed = any(key in anchor and not isinstance(anchor[key], str) for key in ANCHOR_FIELDS)
+    if anchor.get("type") in {"math_alttext", "theorem_box"} and not anchor.get("value"):
+        malformed = True
+    if anchor.get("type") == "prose_range" and not (anchor.get("section") is not None
+            and (anchor.get("from") or anchor.get("from_snippet"))):
+        malformed = True
+    return None if malformed else anchor
+
+
+def _anchor_extension(record: dict) -> Any:
+    extensions = record.get("extensions")
+    wikilean = extensions.get("org.wikilean") if isinstance(extensions, dict) else None
+    return wikilean.get("anchor") if isinstance(wikilean, dict) else None
+
+
+def derive_anchor(location: dict) -> dict | None:
+    """Read a built-in HTML location as a renderer anchor: a quotation, a formula or an element id."""
+    from anchor_resolve import parse_math_selector
+    quote = location.get("quote")
+    if isinstance(quote, dict) and isinstance(quote.get("exact"), str) and quote["exact"]:
+        anchor = {"type": "quote", "exact": quote["exact"]}
+        for key in ("prefix", "suffix"):
+            if isinstance(quote.get(key), str):
+                anchor[key] = quote[key]
+        return anchor
+    css = location.get("css")
+    if isinstance(css, str):
+        value = parse_math_selector(css)
+        return {"type": "math_alttext", "value": value} if value else None
+    fragment = location.get("fragment")
+    if isinstance(fragment, str) and fragment:
+        return {"type": "fragment", "value": fragment}
+    return None
+
+
+def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], list[dict]]:
+    """Replace WikiLean profile locations by built-in ones resolved against the pinned article HTML.
+
+    The editing key moves to ``extensions["org.wikilean"]["anchor"]``, so the
+    editor and the renderers keep working from it, while any Literature Links
+    reader can follow the stored quotation or selector. A location that cannot be
+    resolved keeps the profile form with ``resolution`` set to why. Mutates
+    ``items`` in place; returns per-outcome counts and one diagnostic per
+    unresolved occurrence.
+    """
+    from anchor_resolve import resolve, text_layer
+    layer = text_layer(html)
+    counts: dict[str, int] = {}
+    diagnostics: list[dict] = []
+    for index, item in enumerate(items):
+        if not is_native(item):
+            continue
+        records = [("link", k, link.get("annotation")) for k, link in enumerate(item.get("links", []))
+                   if isinstance(link, dict)]
+        records += [("unlinked", k, span) for k, span in enumerate(item.get("unlinked", []))]
+        for kind, position, record in records:
+            if not isinstance(record, dict):
+                continue
+            source, location = record.get("source"), record.get("location")
+            if (not isinstance(source, dict) or source.get("type") not in {"html", "generic"}
+                    or not isinstance(location, dict) or location.get("profile") != ANCHOR_PROFILE
+                    or not isinstance(location.get("anchor"), dict)):
+                continue
+            anchor = location["anchor"]
+            resolved, how = resolve(anchor, html, layer) if _well_formed_anchor(anchor) else (None, "malformed")
+            counts[how] = counts.get(how, 0) + 1
+            if resolved is None:
+                location["resolution"] = "unsupported" if how == "unsupported" else "unresolved"
+                diagnostics.append({"item": index, kind: position, "code": "LOCATION_UNRESOLVED", "reason": how})
+                continue
+            record["location"] = resolved
+            source["type"] = "html"  # a built-in form applies by source type
+            extensions = record.get("extensions") if isinstance(record.get("extensions"), dict) else {}
+            wikilean = dict(extensions["org.wikilean"]) if isinstance(extensions.get("org.wikilean"), dict) else {}
+            wikilean["anchor"] = deepcopy(anchor)
+            record["extensions"] = {**extensions, "org.wikilean": wikilean}
+    return counts, diagnostics
 
 
 def resolved_web_uri(reference: str, base: str | None = None) -> str | None:
@@ -406,9 +485,12 @@ def preserve_native_items(existing: list[dict], produced: list[dict]) -> list[di
         # their full source selection, either unlinked or copied into a link.
         # Explicit location edits belong to the editor/proposal flow; a model
         # dropping an opaque PDF/LaTeX/generic selection must not delete it.
-        current_spans = occurrences(merged)
+        # A selection is its source, location and base; the editing key beside a
+        # built-in location travels with it but is not part of the comparison.
+        selection = lambda span: {key: value for key, value in span.items() if key != "extensions"}
+        current_spans = [selection(span) for span in occurrences(merged)]
         for old_span in old["unlinked"]:
-            if old_span not in current_spans:
+            if selection(old_span) not in current_spans:
                 raise NativeAnnotationError("agent changed or dropped an unlinked selection; copy its complete source selection")
         result.append(merged)
     if by_id.keys() - seen:
@@ -494,8 +576,13 @@ def wikipedia_source_uri(title: str, revid: int) -> str:
     return f"https://en.wikipedia.org/w/index.php?title={quote(title.replace(' ', '_'), safe=_JS_SAFE)}&oldid={revid}"
 
 
-def migrate_items(items: list[dict], *, title: str, revid: int) -> tuple[list[dict], list[dict]]:
-    """Explicit one-way conversion; preserve the entire original in legacy."""
+def migrate_items(items: list[dict], *, title: str, revid: int, html: str | None = None) -> tuple[list[dict], list[dict]]:
+    """Explicit one-way conversion; preserve the entire original in legacy.
+
+    With the pinned article ``html``, every WikiLean anchor is resolved to a
+    built-in Literature Links location (see :func:`resolve_locations`); without
+    it, locations keep the profile form with resolution ``not_attempted``.
+    """
     source_uri = wikipedia_source_uri(title, revid)
     _strict_json(items)
     migrated, diagnostics = [], []
@@ -538,6 +625,8 @@ def migrate_items(items: list[dict], *, title: str, revid: int) -> tuple[list[di
                 identity = f"{old.get('id') or 'item' + str(index)}:link:{anchor_index}"
                 item["links"].append({"id": identity, "annotation": {**selection, "target": target}})
         migrated.append(item)
+    if html is not None:
+        diagnostics.extend(resolve_locations(migrated, html)[1])
     validate_items(migrated, title=title, revid=revid)
     return migrated, diagnostics
 

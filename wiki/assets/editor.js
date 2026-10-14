@@ -15,34 +15,66 @@ function createCompanionEditorModel() {
     if (typeof target === "string") return target;
     return target && typeof target === "object" && typeof target.uri === "string" ? target.uri : "";
   }
-  // The anchor profile on an html source; generic records predate the profile form.
-  function wikipediaText(occ) {
-    return (occ.source.type === "html" || occ.source.type === "generic") && !!occ.location && occ.location.profile === profile;
+  // The WikiLean editing key (section + snippet, or a typed anchor) stored
+  // beside a built-in Literature Links location.
+  function editingKey(occ) {
+    const wikilean = occ.extensions && occ.extensions["org.wikilean"];
+    return wikilean && wikilean.anchor && typeof wikilean.anchor === "object" ? wikilean.anchor : null;
   }
-  function makeItem(source, anchor) {
+  // Wikipedia text on an html source: the anchor profile, or a built-in
+  // location with the editing key beside it. Generic records predate the profile form.
+  function wikipediaText(occ) {
+    if (!(occ.source.type === "html" || occ.source.type === "generic") || !occ.location) return false;
+    return occ.location.profile === profile || (!("profile" in occ.location) && !!editingKey(occ));
+  }
+  // Store the editing key beside a built-in location, or remove it when the
+  // location itself carries the anchor again.
+  function setEditingKey(occ, anchor) {
+    const extensions = { ...(occ.extensions || {}) };
+    const wikilean = { ...(extensions["org.wikilean"] || {}) };
+    if (anchor) wikilean.anchor = clone(anchor); else delete wikilean.anchor;
+    if (Object.keys(wikilean).length) extensions["org.wikilean"] = wikilean; else delete extensions["org.wikilean"];
+    if (Object.keys(extensions).length) occ.extensions = extensions; else delete occ.extensions;
+  }
+  // Write an anchor into an occurrence: as a built-in quotation when the page
+  // can locate the text (locate returns {quote: {...}}), else in the profile form.
+  function placeAnchor(occ, anchor, locate, keepProfileDetails) {
+    const location = locate ? locate(anchor) : null;
+    if (location) {
+      occ.location = clone(location);
+      setEditingKey(occ, anchor);
+    } else {
+      const previous = keepProfileDetails && occ.location && occ.location.profile === profile ? occ.location : {};
+      occ.location = { ...previous, profile, anchor: clone(anchor) };
+      setEditingKey(occ, null);
+    }
+  }
+  function makeItem(source, anchor, locate) {
     if (!source) throw new Error("The article has no pinned source revision. A source revision is required before adding a location.");
-    return { links: [], unlinked: [{ source: { type: "html", uri: source }, location: { profile, anchor: clone(anchor) } }] };
+    const occurrence = { source: { type: "html", uri: source } };
+    placeAnchor(occurrence, anchor, locate, false);
+    return { links: [], unlinked: [occurrence] };
   }
   function anchor(entry, source) {
     if (!entry || !source) return null;
     const occ = entry.occurrence;
     let uri;
     try { uri = entry.base ? new URL(occ.source.uri, entry.base).href : new URL(occ.source.uri).href; } catch (_) { return null; }
-    return uri === source && wikipediaText(occ) && occ.location.anchor
-      ? occ.location.anchor : null;
+    if (uri !== source || !wikipediaText(occ)) return null;
+    return occ.location.profile === profile ? occ.location.anchor || null : editingKey(occ);
   }
-  function edit(item, key, change, newId) {
+  function edit(item, key, change, newId, locate) {
     const next = clone(item), entry = selected(next, key);
     if (!entry) throw new Error("Choose a source location first.");
     const occ = entry.occurrence;
     if (change.anchor) {
       if (change.reanchorSource) {
         occ.source = { type: "html", uri: change.reanchorSource };
-        occ.location = { profile, anchor: clone(change.anchor) };
+        placeAnchor(occ, change.anchor, locate, false);
       } else {
         if (!wikipediaText(occ))
           throw new Error("This location cannot be edited as Wikipedia text. Use a new article selection to replace it explicitly.");
-        occ.location = { ...occ.location, anchor: { ...occ.location.anchor, ...clone(change.anchor) } };
+        placeAnchor(occ, { ...anchor(entry, new URL(occ.source.uri, entry.base || undefined).href) || {}, ...clone(change.anchor) }, locate, true);
       }
     }
     if ("target" in change && change.target !== targetOf(occ)) {
@@ -55,6 +87,7 @@ function createCompanionEditorModel() {
         else {
           const unlinked = { source: clone(occ.source) };
           if ("location" in occ) unlinked.location = clone(occ.location);
+          if ("extensions" in occ) unlinked.extensions = clone(occ.extensions);
           if (entry.base) unlinked.base_uri = entry.base;
           next.unlinked.push(unlinked);
           next.links.splice(entry.index, 1);
@@ -63,6 +96,7 @@ function createCompanionEditorModel() {
       } else if (target) {
         const annotation = { source: clone(occ.source), target };
         if ("location" in occ) annotation.location = clone(occ.location);
+        if ("extensions" in occ) annotation.extensions = clone(occ.extensions);
         const link = { id: newId(), annotation };
         if (entry.base) link.base_uri = entry.base;
         next.links.push(link);
@@ -78,6 +112,8 @@ function createCompanionEditorModel() {
     if (!entry) throw new Error("Choose the source location for the additional link.");
     const annotation = { source: clone(entry.occurrence.source), target };
     if ("location" in entry.occurrence) annotation.location = clone(entry.occurrence.location);
+    // Another link at the same place shares the editing key, not the first link's other data.
+    if (editingKey(entry.occurrence)) annotation.extensions = { "org.wikilean": { anchor: clone(editingKey(entry.occurrence)) } };
     const link = { id: newId(), annotation };
     if (entry.base) link.base_uri = entry.base;
     next.links.push(link);
@@ -92,7 +128,7 @@ function createCompanionEditorModel() {
     const promoted = edited && edited.kind === "unlinked" && after.unlinked.length === before.unlinked.length - 1;
     return "unlinked:" + (requested.index - (promoted && edited.index < requested.index ? 1 : 0));
   }
-  return { clone, native, entries, selected, targetOf, makeItem, anchor, edit, add, selectionAfterEdit };
+  return { clone, native, entries, selected, targetOf, makeItem, anchor, edit, add, selectionAfterEdit, editingKey };
 }
 // ---- editor runtime ----
 // WikiLean live-wiki editor. Injected on article pages for logged-in users by
@@ -956,6 +992,81 @@ function createCompanionEditorModel() {
     }
   });
 
+  // ---- built-in locations -----------------------------------------------
+  // A new or edited WikiLean anchor is stored as a Literature Links quotation
+  // found in this page's text layer (the specification's: text without script,
+  // style and template, White_Space collapsed, trimmed), with the editing key
+  // kept beside it. When the text cannot be found the profile form is used.
+  const WS_RE = /[\t\n\v\f\r \u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/g;
+  function collapseWs(text) { return text.replace(WS_RE, " ").replace(/^ | $/g, ""); }
+  function layerText(root) {
+    if (!root) return "";
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        for (let el = node.parentElement; el && el !== root; el = el.parentElement) {
+          if (/^(SCRIPT|STYLE|TEMPLATE)$/.test(el.tagName)) return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const parts = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) parts.push(node.nodeValue);
+    return collapseWs(parts.join(""));
+  }
+  function findAll(hay, needle) {
+    const found = [];
+    for (let p = hay.indexOf(needle); p !== -1; p = hay.indexOf(needle, p + 1)) found.push(p);
+    return found;
+  }
+  // The approximate text-layer offset of the current selection, so an anchor
+  // that occurs several times resolves to the occurrence the contributor chose.
+  let selectionHint = null;
+  function rememberSelectionHint(sel) {
+    try {
+      const range = document.createRange();
+      range.setStart(articleBody, 0);
+      range.setEnd(sel.anchorNode, sel.anchorOffset);
+      selectionHint = { text: collapseWs(sel.toString()), offset: collapseWs(range.toString()).length };
+    } catch (_) { selectionHint = null; }
+  }
+  function locateInArticle(anchor) {
+    if (!articleBody || !anchor || anchor.type || typeof anchor.snippet !== "string") return null;
+    const text = layerText(articleBody);
+    const key = collapseWs(anchor.snippet);
+    if (!key) return null;
+    let hits = findAll(text, key), exact = key;
+    if (!hits.length) {
+      const lowered = text.toLowerCase();
+      if (lowered.length === text.length) {
+        hits = findAll(lowered, key.toLowerCase());
+        if (hits.length) exact = text.substr(hits[0], key.length);
+      }
+    }
+    if (!hits.length) return null;
+    let chosen = hits[0];
+    if (hits.length > 1 && selectionHint && selectionHint.text === key) {
+      chosen = hits.reduce(function (best, hit) { return Math.abs(hit - selectionHint.offset) < Math.abs(best - selectionHint.offset) ? hit : best; }, hits[0]);
+      exact = text.substr(chosen, key.length);
+    }
+    if (hits.length === 1 && exact.length >= 20) return { quote: { exact: exact } };
+    const after = chosen + exact.length;
+    const widths = [24, 48, 96, 192];
+    for (let w = 0; w < widths.length; w++) {
+      const width = widths[w];
+      let prefix = text.slice(Math.max(0, chosen - width), chosen);
+      if (chosen - width > 0 && prefix.indexOf(" ") !== -1) prefix = prefix.slice(prefix.indexOf(" "));
+      let suffix = text.slice(after, after + width);
+      if (after + width < text.length && suffix.indexOf(" ") !== -1) suffix = suffix.slice(0, suffix.lastIndexOf(" ") + 1);
+      if (findAll(text, prefix + exact + suffix).length === 1) {
+        const quote = { exact: exact };
+        if (prefix) quote.prefix = prefix;
+        if (suffix) quote.suffix = suffix;
+        return { quote: quote };
+      }
+    }
+    return null;
+  }
+
   // Cached article-body element — selections must live inside this to count as
   // an "annotate this prose" gesture. Outside (top bar, edit panel, intro
   // overlay, page footer, etc.) selecting text should never pop the FAB.
@@ -981,6 +1092,7 @@ function createCompanionEditorModel() {
     ) {
       return { outside: true };
     }
+    rememberSelectionHint(sel);
     return { text: text, section: nearestSection(sel.anchorNode) };
   }
 
@@ -1274,7 +1386,7 @@ function createCompanionEditorModel() {
     $("wlr-companions").hidden = !nativeMode;
     $("wlr-legacy-formal").hidden = nativeMode;
     if (!nativeMode) return;
-    try { nativeDraft = item ? companions.clone(item) : companions.makeItem(sourceUri, anchor); }
+    try { nativeDraft = item ? companions.clone(item) : companions.makeItem(sourceUri, anchor, locateInArticle); }
     catch (error) { $("wlr-status-msg").textContent = error.message; return; }
     populateNative();
   }
@@ -1315,10 +1427,10 @@ function createCompanionEditorModel() {
     if (!nativeKey) {
       if (!reanchor && change.target) throw new Error("Select article text and use Re-anchor before adding a formal reference.");
       if (!reanchor) return; // An empty work item is valid and remains empty on metadata edits.
-      nativeDraft.unlinked.push(companions.makeItem(sourceUri, change.anchor).unlinked[0]);
+      nativeDraft.unlinked.push(companions.makeItem(sourceUri, change.anchor, locateInArticle).unlinked[0]);
       nativeKey = "unlinked:" + (nativeDraft.unlinked.length - 1);
     }
-    const result = companions.edit(nativeDraft, nativeKey, change, newLinkId);
+    const result = companions.edit(nativeDraft, nativeKey, change, newLinkId, locateInArticle);
     nativeDraft = result.item; nativeKey = result.key;
   }
   function newLinkId() { return "link:" + crypto.randomUUID(); }

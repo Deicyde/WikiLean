@@ -49,7 +49,7 @@ describe('native editor preservation',()=>{
   it('retains targetless work, and removing one link never removes its source or other links',()=>{
     const result=model.edit(base(),'link:first',{target:''},newId);
     expect(result.item.links).toHaveLength(1); expect(result.item.unlinked).toHaveLength(2);
-    expect(result.item.unlinked[1]).toEqual({source:base().links[0].annotation.source,location:base().links[0].annotation.location,base_uri:base().links[0].base_uri});
+    expect(result.item.unlinked[1]).toEqual({source:base().links[0].annotation.source,location:base().links[0].annotation.location,extensions:base().links[0].annotation.extensions,base_uri:base().links[0].base_uri});
     const linked=model.edit(result.item,result.key,{target:'urn:restored'},newId);
     expect(linked.item.links).toHaveLength(2);expect(linked.item.unlinked).toHaveLength(1);
   });
@@ -65,6 +65,23 @@ describe('native editor preservation',()=>{
     expect(model.selected(result.item,key).occurrence.source.uri).toBe('urn:second');
     const after=model.edit(result.item,key,{target:'urn:second-formal'},newId).item;
     expect(after.links.map((link:any)=>link.annotation.source.uri)).toEqual(['urn:first','urn:second']);
+  });
+  it('stores a located anchor as a quotation with the editing key beside it, and falls back to the profile form',()=>{
+    const locate=(anchor:any)=>anchor.snippet==='findable text'?{quote:{exact:'findable text',suffix:' here'}}:null;
+    const item=model.makeItem(sourceUri,{section:'Statement',snippet:'findable text'},locate);
+    expect(item.unlinked[0]).toEqual({source:{type:'html',uri:sourceUri},location:{quote:{exact:'findable text',suffix:' here'}},extensions:{'org.wikilean':{anchor:{section:'Statement',snippet:'findable text'}}}});
+    expect(model.anchor(model.entries(item)[0],sourceUri)).toEqual({section:'Statement',snippet:'findable text'});
+    // An edit re-locates; a snippet the page cannot find returns to the profile form and drops the stale key.
+    const edited=model.edit(item,'unlinked:0',{anchor:{snippet:'absent text'}},newId,locate).item;
+    expect(edited.unlinked[0]).toEqual({source:{type:'html',uri:sourceUri},location:{profile:'urn:wikilean:anchor:v3',anchor:{section:'Statement',snippet:'absent text'}}});
+    const back=model.edit(edited,'unlinked:0',{anchor:{snippet:'findable text'}},newId,locate).item;
+    expect(back.unlinked[0].location).toEqual({quote:{exact:'findable text',suffix:' here'}});
+    // Promotion to a link carries the location and the key; another link at the place shares only the key.
+    const linked=model.edit(back,'unlinked:0',{target:'urn:formal'},newId).item;
+    expect(linked.links[0].annotation.extensions).toEqual({'org.wikilean':{anchor:{section:'Statement',snippet:'findable text'}}});
+    const added=model.add(linked,linked.links[0]?'link:'+linked.links[0].id:'',"urn:other",newId).item;
+    expect(added.links[1].annotation.extensions).toEqual({'org.wikilean':{anchor:{section:'Statement',snippet:'findable text'}}});
+    expect(model.makeItem(sourceUri,{section:'S',snippet:'nothing'},locate).unlinked[0].location.profile).toBe('urn:wikilean:anchor:v3');
   });
   it('new work requires a pinned source and begins with one targetless occurrence',()=>{
     expect(()=>model.makeItem(null,{snippet:'text'})).toThrow(/pinned/);

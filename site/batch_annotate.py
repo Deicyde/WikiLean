@@ -135,7 +135,8 @@ status, note, provenance and other review metadata, and REQUIRES two arrays:
 Every annotation in links is one independent Literature Links record with ONE
 informal source and ONE formal target. A target may also be a plain URI string;
 the repository pin names the Mathlib module and declaration the URI points at.
-No root mathlib/decl/module/anchor/anchors.
+No root mathlib/decl/module/anchor/anchors. Write every WikiLean anchor in this
+profile form; the pipeline resolves it against the pinned article afterwards.
 An unlinked source selection has no formal target; never invent a URI to fill it.
 PDF, LaTeX, HTML and generic imported links may be opaque: retain them exactly.
 Preserve ALL incoming IDs, source URIs, base_uri values, legacy archives,
@@ -174,9 +175,19 @@ link, even for a review item with a partial status. Keep a short review note.
 """ + NATIVE_ITEM_GUIDANCE
 
 
+def _cached_html(cache_slug: str) -> str | None:
+    path = CACHE / f"{cache_slug}.html"
+    return path.read_text(encoding="utf-8") if path.exists() else None
+
+
 def _native_agent_output(produced: list[dict], existing: list[dict], *,
-                         title: str | None = None, revid: int | None = None) -> list[dict]:
-    """Validate agent output before writing a native artifact or another prompt."""
+                         title: str | None = None, revid: int | None = None,
+                         html: str | None = None) -> list[dict]:
+    """Validate agent output before writing a native artifact or another prompt.
+
+    With the pinned article ``html``, WikiLean anchors the agents wrote in the
+    profile form are resolved to built-in Literature Links locations.
+    """
     import secrets
     if not isinstance(produced, list) or any(not isinstance(item, dict) for item in produced):
         raise native.NativeAnnotationError("agent annotations must be review objects")
@@ -191,6 +202,8 @@ def _native_agent_output(produced: list[dict], existing: list[dict], *,
                 identity = secrets.token_hex(6)
             used.add(identity)
             item["id"] = identity
+    if html is not None:
+        native.resolve_locations(preserved, html)
     native.validate_items(preserved, title=title, revid=revid)
     return preserved
 
@@ -594,6 +607,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 # proposal-free pass keeps the historical ladder shape byte-for-byte.
                 _merge_proposals(ladder, ph1.get("proposals"))
             if native_mode:
+                # Agent 2 reads and echoes agent 1's selections as written; the
+                # pinned-article resolution happens once, on the final output.
                 annotations = _native_agent_output(annotations, existing, title=title, revid=target_revid or meta.get("revid"))
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
@@ -664,7 +679,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             else:
                 out_annos = [{**a, "provenance": "ai"} for a in a2_annos]
             if native_mode:
-                out_annos = _native_agent_output(out_annos, annotations, title=title, revid=target_revid or meta.get("revid"))
+                out_annos = _native_agent_output(out_annos, annotations, title=title, revid=target_revid or meta.get("revid"),
+                                                 html=_cached_html(cache_slug))
             final = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 4 if native_mode else 3, "annotation_style": "theorem_article",

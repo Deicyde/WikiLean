@@ -764,6 +764,70 @@ def _apply_nested_edits(src: str, edits: list[tuple[int, int, str, str]]) -> str
     return render(root)
 
 
+_BLOCK_TAG_RE = re.compile(r"</?(?:p|div|dl|dd|dt|li|ul|ol|blockquote|table|tr|td|th|h[1-6]|section)\b", re.I)
+_BLOCK_TAGS = frozenset({"p", "div", "dl", "dd", "dt", "li", "ul", "ol", "blockquote", "table", "tr", "td", "th",
+                         "h1", "h2", "h3", "h4", "h5", "h6", "section"})
+
+
+def find_quote(src: str, anchor: dict) -> tuple[int, int, str] | None:
+    """Locate a Literature Links HTML quotation (exact text with optional prefix
+    and suffix, in the specification's text layer) in `src`."""
+    from anchor_resolve import text_layer
+    exact = anchor.get("exact")
+    if not isinstance(exact, str) or not exact:
+        return None
+    text, starts, ends = text_layer(src)
+    prefix, suffix = anchor.get("prefix") or "", anchor.get("suffix") or ""
+
+    def hits(haystack: str, needle: str, before: str, after: str) -> list[int]:
+        found, position = [], haystack.find(needle)
+        while position != -1:
+            before_ok = not before or (position >= len(before) and haystack.startswith(before, position - len(before)))
+            after_ok = not after or haystack.startswith(after, position + len(needle))
+            if before_ok and after_ok:
+                found.append(position)
+            position = haystack.find(needle, position + 1)
+        return found
+
+    matches = hits(text, exact, prefix, suffix)
+    if not matches and (prefix or suffix):
+        matches = hits(text, exact, "", "")
+    if not matches:
+        lowered = text.lower()
+        if len(lowered) == len(text):
+            matches = hits(lowered, exact.lower(), prefix.lower(), suffix.lower())
+    if not matches:
+        return None
+    start, end = starts[matches[0]], ends[matches[0] + len(exact) - 1]
+    wrapper = "div" if _BLOCK_TAG_RE.search(src, start, end) else "span"
+    return (start, end, wrapper)
+
+
+def find_fragment(src: str, element_id: str) -> tuple[int, int, str] | None:
+    """Locate the element whose id attribute equals `element_id`."""
+    if not element_id:
+        return None
+    escaped = re.escape(html.escape(element_id, quote=True))
+    m = re.search(rf'<([A-Za-z][A-Za-z0-9:-]*)\b[^>]*\sid="{escaped}"[^>]*>', src)
+    if m is None:
+        return None
+    tag = m.group(1).lower()
+    depth, pos = 1, m.end()
+    open_re = re.compile(rf"<{re.escape(tag)}\b", re.I)
+    close_re = re.compile(rf"</{re.escape(tag)}\s*>", re.I)
+    while depth > 0:
+        nxt_open, nxt_close = open_re.search(src, pos), close_re.search(src, pos)
+        if nxt_close is None:
+            return None
+        if nxt_open is not None and nxt_open.start() < nxt_close.start():
+            depth += 1
+            pos = nxt_open.end()
+        else:
+            depth -= 1
+            pos = nxt_close.end()
+    return (m.start(), pos, "div" if tag in _BLOCK_TAGS else "span")
+
+
 def wrap_annotations(body_html: str, annotations: list[dict], *,
                      source_uri: str | None = None) -> tuple[str, list[bool]]:
     """Wrap each annotation's target span in a WikiLean wrapper.
@@ -819,6 +883,16 @@ def wrap_annotations(body_html: str, annotations: list[dict], *,
                     to_math_alttext=anchor.get("to_math") or anchor.get("to_alttext"),
                     to_snippet=anchor.get("to") or anchor.get("to_snippet"),
                 )
+                if loc is None:
+                    continue
+                start, end, wrapper = loc
+            elif t == "quote":
+                loc = find_quote(body_html, anchor)
+                if loc is None:
+                    continue
+                start, end, wrapper = loc
+            elif t == "fragment":
+                loc = find_fragment(body_html, anchor.get("value", ""))
                 if loc is None:
                     continue
                 start, end, wrapper = loc

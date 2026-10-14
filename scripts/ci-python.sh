@@ -27,6 +27,7 @@ run_check() {
 "$PYTHON_BIN" -c 'import sys; assert sys.version_info[:2] == (3, 12), f"Python 3.12 required, found {sys.version.split()[0]}"'
 
 run_check "native annotation lifecycle tests" "$PYTHON_BIN" site/test_native_annotations.py
+run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
