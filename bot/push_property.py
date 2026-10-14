@@ -7,8 +7,9 @@ no catalog tiebreaks) — diffs it against LIVE Wikidata, and POSTs only the
 net-new statements to the QuickStatements batch API as the property steward.
 Deterministic (no LLM), matching the bot pipeline invariant.
 
-The merge IS the human-review gate: a merged @[wikidata] tag passed >=2
-reviewers + a maintainer + CI upstream, so auto-submitting it respects the
+The merge IS the human-review gate: a merged @[wikidata] tag was approved for
+merge by a Mathlib maintainer (bors r+, or d+ delegation) after Mathlib CI, so
+auto-submitting it respects the
 "review before Wikidata" rule. Anti-slop guards on top:
   - GATED: no-op unless WIKILEAN_PUSH_PROPERTY=1 AND QUICKSTATEMENTS_TOKEN set.
   - DRY-RUN by default: computes/prints net-new, POSTs nothing. --submit to push.

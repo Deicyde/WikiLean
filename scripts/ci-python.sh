@@ -31,6 +31,7 @@ run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
+run_check "Nightly health summary tests" "$PYTHON_BIN" manage/test_nightly_health.py
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
 run_check "Brain storage fixture tests" "$PYTHON_BIN" brain/test_store.py
 run_check "Companion workspace lifecycle tests" "$PYTHON_BIN" brain/test_companion_workspace.py
@@ -38,6 +39,7 @@ run_check "Companion local import projection tests" "$PYTHON_BIN" brain/test_com
 run_check "Companion local viewer tests" "$PYTHON_BIN" brain/test_companion_server.py
 run_check "Brain harvest fixture tests" "$PYTHON_BIN" brain/test_harvest.py
 run_check "Bot triage process-boundary tests" "$PYTHON_BIN" bot/test_triage.py
+run_check "Status dashboard health-check tests" "$PYTHON_BIN" manage/test_status.py
 run_check "Hugging Face acquisition tests" "$PYTHON_BIN" catalog/test_huggingface_download.py
 run_check "Hugging Face immutable source evidence tests" "$PYTHON_BIN" brain/test_huggingface_sources.py
 run_check "Wikidata acquisition tests" "$PYTHON_BIN" catalog/test_wikidata_acquisition.py
@@ -121,5 +123,7 @@ run_check "Portable nightly launcher tests" "$PYTHON_BIN" site/ops/test_nightly_
 run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.py
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
+run_check "Bot poller fail-closed tests" "$PYTHON_BIN" bot/test_poll.py
+run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"

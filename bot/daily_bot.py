@@ -8,7 +8,7 @@ for manual/testing runs; use poll.py (--watch) for the live loop.
 Two phases per run:
   SETTLE the current PR (deterministic): if the gate is open, split it down to
     its green tags (force-push), then LLM-triage the recycled tags into the queue
-    and post a ready-to-merge comment.
+    and post the tag table under a "ready for a maintainer's review" header.
   OPEN the next batch: requeued (retargeted) tags + Brain queue suggestions +
     fresh pool tags -> pool.BATCH_SIZE (10) -> open_batch_pr.py.
 
@@ -82,11 +82,8 @@ def main():
                                     "--out-queue", str(QUEUE), "--model", args.model],
                                    input=json.dumps(recycle), text=True)
             # 3) tag table = trim/ready notice (one idempotent comment: green table
-            #    + ready-to-merge + recycled summary; template: trim comment on #40682)
-            header = (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags approved 🟢 "
-                      f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
-                      + (f" {len(recycle)} recycled to the next batch." if recycle else "")
-                      + " <!-- wikilean-bot-ready -->")
+            #    + ready-for-review header + recycled summary; template: trim comment on #40682)
+            header = settle.ready_header(r)
             print(f"\n{tag}TABLE+READY on #{pr}: pr_table.py --post --header …")
             if dry:
                 print("  " + header)
