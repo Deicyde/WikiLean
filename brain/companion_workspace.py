@@ -55,6 +55,9 @@ def _configuration(workspace: Path) -> dict:
     config = json.loads((workspace / "workspace.json").read_text(encoding="utf8"))
     if config.get("format") != FORMAT or not config.get("workspace_id"):
         raise WorkspaceError("Not a companion workspace")
+    if "literature_links_root" not in config:
+        raise WorkspaceError("This workspace names the pre-release format checkout (fca_root); "
+                             "initialize a new workspace with --literature-links-root")
     if Path(config["wikilean_root"]).resolve() != ROOT:
         raise WorkspaceError("Use this workspace's configured WikiLean checkout")
     return config

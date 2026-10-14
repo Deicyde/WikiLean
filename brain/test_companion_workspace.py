@@ -97,6 +97,14 @@ class WorkspaceConfigTests(unittest.TestCase):
         (self.tools / "ab").symlink_to("c")
         self.assertNotEqual(second["changes_sha256"], workspace._revision(self.tools)["changes_sha256"])
 
+    def test_pre_release_configuration_has_actionable_error(self):
+        self.init()
+        config = json.loads((self.path / "workspace.json").read_text())
+        config["fca_root"] = config.pop("literature_links_root")
+        (self.path / "workspace.json").write_text(json.dumps(config))
+        with self.assertRaisesRegex(workspace.WorkspaceError, "--literature-links-root"):
+            workspace._configuration(self.path)
+
     def test_missing_or_changed_setup_receipt_has_actionable_error(self):
         self.init()
         with self.assertRaisesRegex(workspace.WorkspaceError, "run setup"):
