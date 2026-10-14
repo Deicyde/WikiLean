@@ -2,10 +2,11 @@
 // replaced the static wiki/public/about.html asset. Pins: 200 with live D1
 // counts (COUNT(*) + summed count columns, SUM skipping pre-backfill NULL
 // rows), the unified nav + Concepts + MCP links, the rewritten contribution
-// copy, the moderation copy (Human-at-boundaries, ROADMAP 2026-08-06),
-// licensing notices, and the KV cache (page:about:v2, TTL 300, TTL-only
-// invalidation). The harness ASSETS binding always 404s, so a 200
-// here also proves the route no longer depends on the retired asset.
+// copy, the moderation copy (Human-at-boundaries, ROADMAP 2026-08-06), the
+// Wikidata property name (P14534), licensing notices, and the KV cache
+// (page:about:v2, TTL 300, TTL-only invalidation). The harness ASSETS binding
+// always 404s, so a 200 here also proves the route no longer depends on the
+// retired asset.
 
 import { describe, it, expect } from "vitest";
 import { setup, get, insertArticle, blockNetwork, type Harness } from "./helpers/harness.js";
@@ -49,6 +50,11 @@ describe("GET /about", () => {
     // the static copy must not promise one that may be absent.
     expect(html).not.toContain("GitHub or Google");
     expect(html).toContain("⚑");
+    // The Wikidata property exists (P14534); the old proposal-era name is gone.
+    expect(html).toContain('href="https://www.wikidata.org/wiki/Property:P14534"');
+    expect(html.replace(/\s+/g, " ")).toContain("<em>&ldquo;Mathlib Declaration ID&rdquo;</em> (P14534)");
+    expect(html).not.toContain("formalized as (Lean/Mathlib)");
+    expect(html).not.toContain("basis for a proposed");
     // Licensing: article text CC BY-SA, annotations CC0.
     expect(html).toContain("https://creativecommons.org/licenses/by-sa/4.0/");
     expect(html).toContain("https://creativecommons.org/publicdomain/zero/1.0/");
@@ -75,9 +81,13 @@ describe("GET /about", () => {
     expect(text).toContain("the rest stay pending until a patroller or a later nightly run decides them");
     expect(text).toContain("lapse when the pipeline next saves the article");
     // index.ts approve path: a bot approval re-labels human → ai-moderated,
-    // a patroller approval stamps human. The copy states both directions.
-    expect(text).toContain("When the pipeline approves a change to a human-curated annotation, the annotation stops being shown as human-curated");
-    expect(text).toContain("when a patroller approves a change, the result is shown as human-curated");
+    // a patroller approval stamps human. The copy states both directions and
+    // what the relabel means: script.js shows every non-'human' provenance as
+    // "AI-generated · not yet reviewed", and the anti-clobber guards
+    // (findLostHuman, _preserve_human) protect only provenance 'human'.
+    expect(text).toContain("When the pipeline approves a change to a human-curated annotation, the annotation is relabeled: it is then shown as &ldquo;AI-generated &middot; not yet reviewed&rdquo; and loses the human-curated protection, so later pipeline saves can change it directly");
+    expect(text).not.toContain("stops being shown as human-curated");
+    expect(text).toContain("When a patroller approves a change, the result is shown as human-curated");
     // The bot opens Mathlib PRs unattended; the human gate is Mathlib review.
     expect(text).toContain("the tagging bot opens pull requests to Mathlib on its own, but they merge only after Mathlib reviewers approve them");
     expect(text).toContain("statements are added to Wikidata only for mappings people have reviewed");
