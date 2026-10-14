@@ -105,6 +105,7 @@ empty body. Responses are not cached across versions.
 
 ## Run the complete offline integration check
 
+Requires an Autoform checkout that reads Literature Links (origins without a JSON pointer).
 Install `wiki/` dependencies with `npm ci` under Node 22. Install the Autoform
 integration checkout and the reference Literature Links package as above, then run:
 
