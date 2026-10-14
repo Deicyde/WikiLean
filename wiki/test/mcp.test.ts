@@ -83,7 +83,9 @@ describe("POST /mcp — lifecycle", () => {
     const instructions = String(j.result.instructions);
     expect(instructions).not.toContain("the brain build time and the Mathlib rev");
     expect(instructions).toContain("sha256: generation id");
-    expect(instructions).toContain("sha256: digest of the sealed Mathlib source input");
+    expect(instructions).toContain("a mathlib4 commit only when the release records one");
+    expect(instructions).toContain("so it can change while Mathlib does not");
+    expect(instructions).not.toContain("sealed Mathlib source input");
   });
 
   it("offers 2025-06-18 when the client asks for an unknown version", async () => {

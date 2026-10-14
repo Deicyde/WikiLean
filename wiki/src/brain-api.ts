@@ -342,16 +342,19 @@ async function supercellsFile(c: Ctx, release: BrainReleaseContext): Promise<Sup
 
 // ---- snapshot echo (SCHEMA v3; held-out evaluation is dishonest without it) ----
 
-// The Mathlib source pin the decl organs were built from. Organs carry a
+// The pin of the inputs the decl organs were grounded from. Organs carry a
 // `prov` index; the pointed-at prov row carries the pin. Rather than open an
 // organ, we read the SAME rows off the manifest's `prov` table (already
-// fetched): prefer a git-commit-shaped pin from a Mathlib-family source (older
-// releases' @[wikidata]/@[stacks]/@[kerodon] attribute rows carried the
-// mathlib4 checkout commit, e.g. "bf3266149cda603f"), else the first
-// Mathlib-family pin, else null. Offline-replay releases record every
-// Mathlib-family pin as a "sha256:" digest of the sealed source input, so
-// there the fallback is that digest, an opaque identifier rather than a
-// mathlib4 commit. No pin ⇒ null, never a guess.
+// fetched): prefer a git-commit-shaped pin from a mathlib/kerodon/stacks row
+// (older releases' @[wikidata]/@[stacks]/@[kerodon] attribute rows carried
+// the mathlib4 checkout commit, e.g. "bf3266149cda603f"), else the first such
+// row's pin, else null. What that fallback is depends on the release:
+// offline-replay releases pin each derived family with a "sha256:" digest of
+// its inputs, and the first mathlib row is the concept-graph family, whose
+// inputs include the Mathlib tree AND WikiLean annotations, Wikidata,
+// TheoremGraph and curated grounding (so it can change while Mathlib does
+// not); older releases may pin a date. Not a mathlib4 commit unless it is
+// shaped like one. No pin ⇒ null, never a guess.
 function mathlibPin(prov: Array<Record<string, string>> | undefined): string | null {
   if (!prov) return null;
   let fallback: string | null = null;
@@ -366,10 +369,10 @@ function mathlibPin(prov: Array<Record<string, string>> | undefined): string | n
 }
 
 export interface Snapshot {
-  // cells/manifest.json _meta.generated_at: an ISO build timestamp in older
-  // releases, the "sha256:" replay generation id in offline-replay releases.
+  // cells/manifest.json _meta.generated_at: the "sha256:" replay generation id
+  // in offline-replay releases, a build date in older releases.
   generated_at: string | null;
-  pin: string | null; // mathlibPin(): git commit if recorded, else a sha256: source digest
+  pin: string | null; // mathlibPin(): git commit if recorded, else the first mathlib-row pin
 }
 
 // EVERY brain API/MCP response echoes this. Zero EXTRA fetches: the cells
@@ -2680,11 +2683,13 @@ mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_premises</code>.
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
 card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
-<code>release_id</code> and <code>snapshot:{generated_at,pin}</code>, both opaque identifiers:
-<code>generated_at</code> names the brain generation (an ISO build timestamp in older releases,
-a <code>sha256:</code> generation id in offline-replay releases) and <code>pin</code> names the
-Mathlib source (a git commit when the release records one, otherwise a <code>sha256:</code>
-digest of the sealed Mathlib source input).</p>
+<code>release_id</code> and <code>snapshot:{generated_at,pin}</code>, both opaque provenance
+identifiers (equal values mean the same build inputs). <code>generated_at</code> names the brain
+generation: a <code>sha256:</code> generation id in offline-replay releases, a build date in older
+releases. <code>pin</code> names the decl-grounding inputs: a mathlib4 commit only when the release
+records one, otherwise a <code>sha256:</code> digest of the grounding inputs (the Mathlib tree with
+WikiLean annotations, Wikidata, TheoremGraph and curated grounding, so it can change while Mathlib
+does not), or a date in older releases.</p>
 
 <h2>Id grammar</h2>
 <table>
