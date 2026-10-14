@@ -1547,17 +1547,18 @@ describe("snapshot echo", () => {
       generated_at: generatedAt,
       pin: "sha256:" + "c".repeat(64),
     });
-    // A git-SHAPED pin anywhere on those rows is preferred: older releases'
-    // 16-hex statement_formal.csv digest truncation took this branch.
+    // theoremgraph is not a mathlib/kerodon/stacks row, so its hex pin is skipped.
     const shaped = replayRelease(generatedAt, conceptGraph, [
       { source: "theoremgraph", method: "dual-judge match", pin: "1111111111111111" },
       { source: "stacks", method: "@[stacks] attribute (mathlib4 source)", pin: "sha256:" + "d".repeat(64) },
     ]);
-    // theoremgraph is not a mathlib/kerodon/stacks row, so its hex pin is skipped.
     expect((await getJson(shaped, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
       pin: "sha256:" + "d".repeat(64),
     });
+    // A git-SHAPED pin on those rows beats an earlier non-shaped one: older
+    // releases' 16-hex statement_formal.csv digest truncation took this branch.
     const truncated = replayRelease(generatedAt, conceptGraph, [
+      { source: "mathlib", method: "agent+oracle", pin: "sha256:" + "e".repeat(64) },
       { source: "mathlib", method: "@[wikidata] attribute (mathlib4 source)", pin: "bf3266149cda603f" },
     ]);
     expect((await getJson(truncated, "/api/brain/search?q=abelian")).j.snapshot).toMatchObject({
@@ -1594,11 +1595,11 @@ describe("snapshot echo", () => {
     const h = harness();
     const res = await get(h.env, "/brain/api");
     const text = (await res.text()).replace(/\s+/g, " ");
-    expect(text).toContain("compare the snapshot fields verbatim as opaque strings and never parse them");
-    expect(text).toContain("so it can change while Mathlib does not");
-    expect(text).toContain("is not a mathlib4 commit, and equal pins do not mean equal build inputs");
-    expect(text).not.toContain("sealed Mathlib source input");
-    expect(text).not.toContain("only when the release records one");
+    expect(text).toContain(
+      "<code>generated_at</code> and <code>pin</code> are opaque provenance values of the release's " +
+      "inputs: compare them for equality, never parse them, and do not read them as a build time or a " +
+      "Mathlib revision",
+    );
   });
 });
 
