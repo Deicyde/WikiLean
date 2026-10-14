@@ -2556,9 +2556,18 @@ app.get("/api/flags", async (c) => {
 
 // ---- work queue for the moderation pipeline (bot role only) ----
 // One ORDER BY implements the binding priority policy: flagged > drifted >
-// human-edited-since-review > oldest-reviewed (NULL last_reviewed_at = never
-// reviewed sorts first within that tier). mode=wp-update narrows to articles
-// whose pinned revid trails upstream.
+// human-edited-since-review > least-recently-touched, where touched = the
+// later of last_reviewed_at (a bot save) and this mode's attempt stamp
+// (last_review_attempt_at / last_update_attempt_at: the article was in a
+// reported run of that kind, even if it failed and wrote nothing). Never
+// reviewed and never attempted sorts first within that tier. mode=wp-update
+// narrows to articles whose pinned revid trails upstream.
+//
+// The attempt stamps (migration 0014) keep failures from pinning the head: a
+// review that errors returns before any save, and a stage-0 article whose
+// anchors fail is never written, so without them the same articles would lead
+// both queues every night. Per-mode stamps keep a failed re-pin from pushing
+// the article back in the review queue, which is where it needs to go next.
 //
 // F2: the flagged tier is RECENCY-AWARE — an article counts as flagged only
 // while it has an open flag created AFTER its last review, so a bot review
@@ -2582,6 +2591,7 @@ app.get("/api/work", async (c) => {
   const limit = Math.min(Math.max(Number.isNaN(limitRaw) ? 50 : limitRaw, 1), 100);
 
   const db = drizzle(c.env.DB);
+  const attemptCol = mode === "wp-update" ? moderationState.lastUpdateAttemptAt : moderationState.lastReviewAttemptAt;
   const humanEdited = sql<number>`CASE WHEN ${moderationState.lastReviewedVersion} IS NOT NULL AND ${articles.version} > ${moderationState.lastReviewedVersion} THEN 1 ELSE 0 END`;
   // F2: open flags newer than the last review (never reviewed → every open
   // flag counts). COUNT (not EXISTS) so heavier-flagged articles still sort
@@ -2601,6 +2611,7 @@ app.get("/api/work", async (c) => {
       latestRevid: articles.latestRevid,
       lastReviewedAt: moderationState.lastReviewedAt,
       lastReviewedVersion: moderationState.lastReviewedVersion,
+      lastAttemptedAt: attemptCol,
       recentOpenFlags: recentOpenFlags.as("recent_open_flags"),
       wpDrifted: moderationState.wpDrifted,
     })
@@ -2611,12 +2622,15 @@ app.get("/api/work", async (c) => {
       sql`${recentOpenFlags} DESC`,
       sql`COALESCE(${moderationState.wpDrifted}, 0) DESC`,
       sql`${humanEdited} DESC`,
-      // NULLS FIRST is deliberate (F13) and diverges from the roadmap's
-      // original 'oldest-reviewed > new' wording: every article already has
-      // one pipeline annotation pass, so first-moderation coverage of
-      // never-reviewed articles beats re-reviewing old ones. (Roadmap text
-      // update is on the lead.)
-      sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`,
+      // Never-touched first is deliberate (F13) and diverges from the
+      // roadmap's original 'oldest-reviewed > new' wording: every article
+      // already has one pipeline annotation pass, so first-moderation coverage
+      // of never-reviewed articles beats re-reviewing old ones. Both NULL → 0,
+      // below every real ms timestamp.
+      sql`MAX(COALESCE(${moderationState.lastReviewedAt}, 0), COALESCE(${attemptCol}, 0)) ASC`,
+      // A run stamps all its attempts with one timestamp; break those ties
+      // deterministically.
+      articles.slug,
     )
     .limit(limit);
 
@@ -2641,6 +2655,7 @@ app.get("/api/work", async (c) => {
       latest_revid: r.latestRevid,
       last_reviewed_at: r.lastReviewedAt,
       last_reviewed_version: r.lastReviewedVersion,
+      last_attempted_at: r.lastAttemptedAt,
       reason,
     };
   });
@@ -2653,6 +2668,20 @@ app.get("/api/work", async (c) => {
 // {ok:true, duplicate:true}, first-report row wins and is never overwritten).
 const RUN_ID_RE = /^[0-9a-f]{8}$/;
 const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
+// attempted[]: up to three /api/work pages (an 'all' run spans wp-update,
+// review and new); a slug is one path segment (no '/', no control chars).
+// D1 caps bound parameters at 100 per statement, so stamps go in chunks of 50.
+const MAX_ATTEMPTED = 300;
+const ATTEMPT_CHUNK = 50;
+const ATTEMPTED_SLUG_RE = /^[^/\p{C}]+$/u;
+// Which attempt stamp each run kind sets. 'new' runs create articles rather
+// than work the queues, so they stamp nothing.
+const ATTEMPT_COLUMNS: Record<string, string[]> = {
+  review: ["last_review_attempt_at"],
+  "wp-update": ["last_update_attempt_at"],
+  all: ["last_review_attempt_at", "last_update_attempt_at"],
+  new: [],
+};
 
 app.post("/api/runs", async (c) => {
   const originErr = checkOrigin(c);
@@ -2696,6 +2725,25 @@ app.post("/api/runs", async (c) => {
     }
     cost = posted.cost_usd_equiv;
   }
+  // attempted: optional slugs this run worked on (processed, failed, or
+  // skipped after an attempt). Existing articles get this run kind's attempt
+  // stamp (ATTEMPT_COLUMNS), which rotates that /api/work queue. Malformed →
+  // 400. Over MAX_ATTEMPTED → the run is still recorded, nothing is stamped,
+  // and the response carries attempted_error (a run report is never lost to
+  // an oversized scheduling hint).
+  let attempted: string[] = [];
+  let attemptedError: string | null = null;
+  if (posted.attempted !== undefined && posted.attempted !== null) {
+    const a = posted.attempted;
+    if (
+      !Array.isArray(a) ||
+      !a.every((s) => typeof s === "string" && s.length > 0 && s.length <= MAX_FIELD_LEN && ATTEMPTED_SLUG_RE.test(s))
+    ) {
+      return c.json({ ok: false, error: "bad attempted" }, 400);
+    }
+    if (a.length > MAX_ATTEMPTED) attemptedError = `more than ${MAX_ATTEMPTED} attempted slugs; none stamped`;
+    else attempted = [...new Set(a as string[])];
+  }
   // notes is free text — size-capped like every other free-text field.
   let notes: string | null = null;
   if (posted.notes !== undefined && posted.notes !== null) {
@@ -2704,27 +2752,53 @@ app.post("/api/runs", async (c) => {
     notes = posted.notes;
   }
   const now = Date.now();
-  const db = drizzle(c.env.DB);
-  // Idempotency without a pre-select race: INSERT OR IGNORE on the run_id PK;
-  // 0 rows changed = this run was already reported.
-  const inserted = await db
-    .insert(pipelineRuns)
-    .values({
-      runId: posted.run_id,
-      kind: posted.kind,
-      model: typeof posted.model === "string" ? posted.model : null,
-      promptSha: typeof posted.prompt_sha === "string" ? posted.prompt_sha : null,
-      startedAt: posted.started_at as number,
-      finishedAt: posted.finished_at as number,
-      articlesProcessed: posted.articles_processed as number,
-      errors: posted.errors as number,
-      tokens: posted.tokens as number,
-      costUsdEquiv: cost,
-      notes,
-      createdAt: now,
-    })
-    .onConflictDoNothing({ target: pipelineRuns.runId });
-  if (inserted.meta.changes === 0) return c.json({ ok: true, duplicate: true });
+  // One D1 batch, in order: the attempt stamps, each guarded on the run_id
+  // not existing yet (so a duplicate report never re-stamps), then INSERT OR
+  // IGNORE on the run_id PK (0 rows changed = already reported). D1 runs a
+  // batch as one transaction, so stamps land iff the run row does. Native
+  // prepare/bind: drizzle's batch() cannot carry a parameterized raw query.
+  // Unknown slugs fall out of the SELECT (moderation_state.slug references
+  // articles). Scheduling metadata: articles.version is never touched.
+  const columns = attempted.length > 0 ? ATTEMPT_COLUMNS[posted.kind as string] : [];
+  const stampStatements: D1PreparedStatement[] = [];
+  for (const column of columns) {
+    for (let i = 0; i < attempted.length; i += ATTEMPT_CHUNK) {
+      const chunk = attempted.slice(i, i + ATTEMPT_CHUNK);
+      stampStatements.push(
+        c.env.DB.prepare(
+          `INSERT INTO moderation_state (slug, ${column}, updated_at)
+           SELECT slug, ?, ? FROM articles
+           WHERE slug IN (${chunk.map(() => "?").join(",")})
+             AND NOT EXISTS (SELECT 1 FROM pipeline_runs WHERE run_id = ?)
+           ON CONFLICT(slug) DO UPDATE SET ${column} = excluded.${column}, updated_at = excluded.updated_at`,
+        ).bind(now, now, ...chunk, posted.run_id),
+      );
+    }
+  }
+  const runInsert = c.env.DB.prepare(
+    `INSERT INTO pipeline_runs (run_id, kind, model, prompt_sha, started_at, finished_at,
+       articles_processed, errors, tokens, cost_usd_equiv, notes, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(run_id) DO NOTHING`,
+  ).bind(
+    posted.run_id,
+    posted.kind,
+    typeof posted.model === "string" ? posted.model : null,
+    typeof posted.prompt_sha === "string" ? posted.prompt_sha : null,
+    posted.started_at as number,
+    posted.finished_at as number,
+    posted.articles_processed as number,
+    posted.errors as number,
+    posted.tokens as number,
+    cost,
+    notes,
+    now,
+  );
+  const results = await c.env.DB.batch([...stampStatements, runInsert]);
+  if (results[results.length - 1].meta.changes === 0) return c.json({ ok: true, duplicate: true });
+  // Rows stamped for the first column = articles stamped (an 'all' run's
+  // second column stamps the same set).
+  const perColumn = columns.length > 0 ? stampStatements.length / columns.length : 0;
+  const stamped = results.slice(0, perColumn).reduce((n, r) => n + r.meta.changes, 0);
   console.log(
     JSON.stringify({
       event: "run-report",
@@ -2733,10 +2807,15 @@ app.post("/api/runs", async (c) => {
       articles: posted.articles_processed,
       errors: posted.errors,
       tokens: posted.tokens,
+      attempted_stamped: stamped,
       t: now,
     }),
   );
-  return c.json({ ok: true });
+  return c.json({
+    ok: true,
+    ...(posted.attempted !== undefined && posted.attempted !== null ? { stamped } : {}),
+    ...(attemptedError ? { attempted_error: attemptedError } : {}),
+  });
 });
 
 // ---- research export (P2a): pseudonymized annotation_events JSONL ----------
